@@ -1,16 +1,13 @@
-From: Michael Gale <mgale@utilitran.com>
-Subject: Re: TCP redirect external to external host
-Date: Tue, 9 Dec 2003 13:11:15 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Firewall and trusting state ESTABLISHED :)
+Date: Tue, 9 Dec 2003 20:15:49 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031209131115.619a8638.mgale@utilitran.com>
-References: <20031209190402.GA16255@fobie.net>
-	<20031209194019.GB17111@fobie.net>
-	<20031209124930.79f9bb13.mgale@utilitran.com>
-	<200312091956.40790.Antony@Soft-Solutions.co.uk>
+Message-ID: <200312092015.49175.Antony@Soft-Solutions.co.uk>
+References: <20031209125417.2b031b99.mgale@utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312091956.40790.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20031209125417.2b031b99.mgale@utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,87 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tuesday 09 December 2003 7:54 pm, Michael Gale wrote:
 
-But could you now setup a IPTABLE rule that say:
+> Seems like a dumb question -- I guess what I really should be asking is how
+> secure is "-m state --state ESTABLISHED" ?
 
-iptables -t nat -A PREROUTING -p tcp --dport 25 -j ....
+As far as I'm aware, the strength of this rule is exactly the same as whatever 
+rules you have allowing NEW connections to become ESTABLISHED.
 
-I would have to double check the reject target options to see if icmp redir=
-ects are part of them.
+In other words, I think the simpler version of the rule is perfectly good 
+enough.   Specifying things like the source port adds nothing, because the 
+connection tracking system is already based on {source,destination}{IP,port}.
 
-Michael.
-
-
-On Tue, 9 Dec 2003 19:56:40 +0000
-Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-
-> On Tuesday 09 December 2003 7:49 pm, Michael Gale wrote:
->=20
-> > hmmm.... what about ICMP redirect ?
-> >
-> > I can not remember if the host you are redirecting to has to be on the =
-same
-> > subnet as the client host :(
->=20
-> Unfortunately ICMP redirects would affect ALL connections coming in to th=
-e=20
-> machine, SMTP, DNS, or anything else.
->=20
-> I do not think this is what =D6rjan wants to happen.
->=20
-> Antony.
->=20
-> > On Tue, 9 Dec 2003 20:40:19 +0100 =D6rjan Persson <orange@fobie.net> wr=
-ote:
-> >
-> > > Antony Stone (Antony@Soft-Solutions.co.uk) wrote:
-> > > > If it is not true that the real source IP and the real destination =
-IP
-> > > > exist on the same interface of the netfilter machine, repost your q=
-uery
-> > > > with a bit more detail and we may be able to help futher.
-> > >
-> > > The situation is that I have a hostname where there are both SMTP and
-> > > DNS services atm. The mail service is beeing migrated to another host,
-> > > and since I can't just change the IP for the hostname (would break DNS
-> > > services) I would like to have a temporary redirect to the new
-> > > mailservice for the SMTP-service, until the ppl using it has changed
-> > > their mail settings to use the new hostname.
-> > >
-> > > So, I have two external host with two external IP's. They exists on t=
-he
-> > > same subnet too. Both uses the same gateway.
-> > >
-> > > These are the rules I tried to use, which translates the users IP to =
-the
-> > > first servers IP:
-> > > iptables -t nat -A PREROUTING -p tcp --dport 33 -i eth0 -j DNAT --to
-> > > host2:44 iptables -t nat -A POSTROUTING -d host2 -p tcp --dport 25 -j
-> > > SNAT --to host1
-> > >
-> > > Hope that's enough information to get you into my problem!
-> > >
-> > > Thanks for letting me take your time! :)
->=20
-> --=20
-> It is also possible that putting the birds in a laboratory setting=20
-> inadvertently renders them relatively incompetent.
->=20
->  - Daniel C Dennet
->=20
->                                                      Please reply to the =
-list;
->                                                            please don't C=
-C me.
->=20
->=20
+If packets which you don't want seem to be coming in as ESTABLISHED, then 
+there's something wrong with what you accepted as NEW in the first place.
 
 
---=20
-Michael Gale
-Network Administrator
-Utilitran Corporation
+Antony.
+
+-- 
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
