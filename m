@@ -1,12 +1,13 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Traffic monitoring
-Date: Fri, 13 Sep 2002 12:12:55 +0200 (CEST)
+From: Martijn Klingens <mklingens@ism.nl>
+Subject: Re: using iptables to filter nimda. code red virus
+Date: Fri, 13 Sep 2002 11:57:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209131212080.647-100000@dns.toxicfilms.tv>
-References: <1031910359.24548.1.camel@bigblue>
+Message-ID: <200209131157.20653.mklingens@ism.nl>
+References: <Pine.LNX.4.33.0209091917581.31845-100000@panda.center-f1.ru> <3D7EFBCF.70406@fugmann.dhs.org> <009301c259ee$12079310$6500a8c0@systemsadmin>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1031910359.24548.1.camel@bigblue>
+In-Reply-To: <009301c259ee$12079310$6500a8c0@systemsadmin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: darkstar <security@darkstar.nom.za>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Joe de Vera Jr." <joe@bingotogo.com>, netfilter@lists.netfilter.org
 
-> I have googled and found quite a few products available, but I would
-> like to know your opnion.
-> What is a good traffic monitor, linux and free...thanks
-check out iptraf. Works very good to find abusers in your net and also
-to measure the traffic speed, statistics, etc.
+On Thursday 12 September 2002 01:50, Joe de Vera Jr. wrote:
+> can i make use of the iptables scripting to disable the access pages... for
+> example for code red it access /default.ida page while in nimda /root.exe
+> and cmd.exe
+>
+> is there a way to dis allow this..
 
-Regards,
-Maciej Soltysiak
+Yes, use a transparent proxy like Squid or the Apache proxy module and setup 
+the ACLs.
 
+Netfilter only handles the layers 3 and 4 of the OSI model (and partly 2), but 
+not the application-layers that you need.
+-- 
+Martijn
 
 
