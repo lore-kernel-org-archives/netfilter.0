@@ -1,12 +1,12 @@
-From: "David Whipp" <Whipp@sou.edu>
-Subject: Packet loss when IP precedence bit set by upstream Cisco
-	router
-Date: Thu, 30 Dec 2004 08:44:57 -0800
-Message-ID: <s1d3c014.088@gwdom.sou.edu>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: nmap protection rules
+Date: Thu, 30 Dec 2004 07:18:28 -0500
+Message-ID: <1104409107.2011.119.camel@grendel>
+References: <41D2F4DE.11586.29F761B5@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <41D2F4DE.11586.29F761B5@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: jagrelo@novadevices.com
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Upstream ISP uses IP precedence bit to classify and rate limit Internet
-traffic. We see a 10 - 20% packet loss at our linux firewall when
-traffic is high (6-8Mbps traffic with precedence bit set). Testing with
-iperf, traffic is not dropped when IP precedence is not set. No TOS or
-tc/qdisc has been configured (latest 2.4 kernel and 1.2.11 netfilter).
+On Wed, 2004-12-29 at 18:18, Jorge Agrelo wrote:
+> Does anyone can help me to write iptables rules to?:
+> 
+> * block IP protocol scans (nmap -sO)
 
-Tried
-iptables -A PREROUTING -t mangle -j TOS --set-tos Normal-Service
-Still had packet loss.
+When performing a protocol scan, nmap sends an IP packet with no
+transport header. So for example to check for AH support, byte 9 in the
+IP header is set to "51" but no AH header is included in the packet. The
+concept is a system which supports AH will ignore the packet and not
+respond. A system that does not support AH will return an ICMP type 3
+code 2 (protocol unreachable).
 
-Has anyone seen this? Suggestions for fix? 
+So, provided your iptables default policy is "deny all", you should be
+fine.
+
+> * block UDP scans (nmap -sU)
+
+nmap spews out packets to multiple UDP ports. This time it looks for
+returning ICMP type 3 code 3 (port unreachable) packets to indicate
+which ports are closed. Posts that do not respond are flagged as open.
+Again, your best bet is a default "deny all" rule.
+
+> * block identification via TCP/IP fingerprinting (nmap -O)
+
+nmap needs access to one open TCP port, and both a closed TCP and UDP
+port to perform a fingerprint attempt. Do not permit access to closed
+ports on your system and you should be fine. Again, the default "deny
+all" rule is your friend. Only let though the services you plan to
+support.
+
+HTH,
+Chris
+
+
 
