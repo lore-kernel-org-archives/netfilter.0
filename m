@@ -1,11 +1,13 @@
-From: Jacob Helwig <jhelwig@cs.purdue.edu>
-Subject: Patch-o-Matic problems
-Date: Wed, 6 Nov 2002 19:55:15 -0500
+From: alex <alex@bennee.com>
+Subject: Re: Problem with masqurading "long" connections.
+Date: 07 Nov 2002 07:55:38 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021107005515.GB490@Parkmoor.dyndns.org>
+Message-ID: <1036655738.2727.49.camel@trent.nin>
+References: <1036621365.2727.44.camel@trent.nin>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1036621365.2727.44.camel@trent.nin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Ok, so here's the deal.  I tried following the directions found at
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.html
-but things fell apart when it go to the part where it says:
-"While in the `userspace/' directory,
-let's run p-o-m :
+On Wed, 2002-11-06 at 22:22, alex wrote:
+> <snip>
+> Background
+> 
+> I'm running the firewall on a dedicated linux PC (2.4.19, Mandrake 9.0,
+> iptables 1.2.6a) which is doing normal masqurading for outgoin LAN
+> traffic as well as port forwarding several ports to various internal
+> machines. The webserver is apache running on Debian 3.0 (2.2.20 kernel)
 
-# make patch-o-matic".
-Make just tells me that there is no "patch-o-matic" target. So, next I tried
-running patch-o-matic using the runme script, and all it ever spits back at
-me is "ERROR: Invalid option" (calling it using "./runme pending").  I've set
-the KERNEL_DIR environment variable to /usr/src/linux, which is where my
-kernel sources are, and I tried downloading Patch-o-Matic from CVS first, then
-the patch-o-matic-20020825.tar.bz2 from FTP, and both give me the same thing.
-I'm sure there's something simple I'm missing, but I can't seem to find it.
-Any help is greatly appreciated.
-
-Thanks,
-Jacob
-
+This seems to of been the probelm. I upgraded the kernel on the server
+to 2.4.19 and everything works fine. Anyone want to offer a theory as to
+why?
+ 
 -- 
------BEGIN GEEK CODE-----
-Version: 3.12
-GCS/MU d- s+:- a-- C++++>$ UL+++ P++++ L+++>++++ !E
-W+++ N++ K? W--- M-- PS+ PE Y+ PGP++(+++) t+ 5+ X+
-R(+) tv b++(+++) DI++ D++(+++) G(++) e* h* r++>+++ y?
-------END GEEK CODE------
+Alex@Bennee.com
+http://www.bennee.com/~alex/
+
 
