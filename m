@@ -1,13 +1,12 @@
-From: "Clint M. Sand" <schwack@neotrance.dyndns.org>
-Subject: Re: weird login problem after implementing IPTABLES
-Date: Thu, 14 Nov 2002 01:36:03 -0600
+From: "Kim Leandersson" <kim.leandersson@chs.chalmers.se>
+Subject: RE: ip_conntrack_ftp doesn't work with ftp proxy
+Date: Thu, 14 Nov 2002 09:34:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021114073603.GA3023@neotrance.dyndns.org>
-References: <20021111191512.GA13673@neotrance.dyndns.org>
+Message-ID: <61127EF4BF2E9C4C8DA4E358CFD4E52D7A406A@olga.chs.chalmers.se>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20021111191512.GA13673@neotrance.dyndns.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +17,60 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Thomas Boernert <tb@tbits.net>, netfilter@lists.netfilter.org
 
-Thanks for the thoughts. I will try your sugestions as soon as i can
-schedule some downtime for this box and post the results (and iptables
--nL as requestion).
+Try loading the ip_conntrack_ftp module with the option ports instead.
 
-Thanks.
+ip_conntrack_ftp ports=3D8082 should do the trick for you!
 
-Clint
+//kim
 
-
-On Mon, Nov 11, 2002 at 01:15:12PM -0600, Clint M. Sand wrote:
-> 
-> Greetings. 
-> 
-> I have a Redhat 7.1 box that acts as a main router/gateway for several
-> segments on my network. It is currently filtering on each interface
-> using ipchains. I would like to migrate these services to iptables to
-> take advantage of the ftp connection tracking module and other stateful
-> matching features. 
-> 
-> I migrated my ruleset, hacked up the redhat init script to load my
-> script on boot and tried it out on the box. The script loads fine with
-> no errors, and all the clients on each segment work as expected, even
-> active ftp. 
-> 
-> The problem is, once the script is loaded, even though network-wise
-> everything is fine, i can no longer login at the console on any tty!
-> (ctrl+alt+f2 for example) I enter my username, and hit enter and it just
-> goes into nevernever land. If i log out of the tty that i was in to
-> activate iptables, i'm also unable to log back in on that one either. I
-> have to kill the power to the box and boot single user and switch back
-> to ipchains to restore the box back to production.
-> 
-> I have a test box with very similar hardware which is also running rh
-> 7.1 and i'm not able to duplicate the problem on it. Both of these boxes
-> use redhats "up2date" and have all the latest security and bug patches
-> applied.
-> 
-> Anyone have any ideas on what might be causing this? I have posted all
-> my rules, my init script, dmesg and iptables version here:
-> 
-> http://neotrance.dyndns.org/~schwack/iptables/
-> 
-> ANY help would be GREATLY appreciated. 
-> 
-> Thanks,
-> 
-> Clint
-> 
-
+> -----Original Message-----
+> From: Thomas Boernert [mailto:tb@tbits.net]=20
+> Sent: Wednesday, November 13, 2002 10:55 PM
+> To: netfilter@lists.netfilter.org
+> Subject: ip_conntrack_ftp doesn't work with ftp proxy
+>=20
+>=20
+> Hello,
+>=20
+> i hope anyone can help me.
+>=20
+> network-chart
+>=20
+> linuxbox ----- firewall ---- internet
+>=20
+> on the firewall runs a ftp proxy (suse proxy-suite on port=20
+> 8082) i've the following rules
+>=20
+> iptables -A INPUT -p tcp -s $local_net --sport 1024:65535 -d=20
+> $firewall_internal_ip --dport 8082 -m state --state=20
+> NEW,ESTABLISHED -j ACCEPT
+>=20
+> ipatbles -A OUTPUT -p tcp -s $firewall_internal_ip --sport=20
+> 8082 -d $local_net --dport 1024:65535 -m state --state=20
+> ESTABLISHED -j ACCEPT
+>=20
+> iptables -A INPUT -p tcp -s $local_net --sport 1024:65535 -d=20
+> $firewall_internal_ip --dport 1024:65535 -m state ESTABLISHED,RELATED
+>=20
+> .....
+>=20
+> from the client i do the following
+>=20
+> ftp ip_firewall 8082
+> login to a ftp server like redhat or so
+> do "ls"
+> then the kernel rejects the third rule written upper.
+>=20
+> if i change the rule from RELATED to NEW, the it's working,=20
+> but this is not a solution.
+>=20
+> Thanks for help!
+>=20
+> - Thomas
+>=20
+>=20
+>=20
+>=20
 
