@@ -1,14 +1,13 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: Penetration testing.
-Date: Thu, 12 Dec 2002 17:22:36 +0000
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: bandwidth
+Date: Thu, 12 Dec 2002 20:14:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021212172236.K14289@funkyjesus.org>
-References: <1039684193.11114.59.camel@bigblue> <Pine.LNX.4.44.0212121458440.15278-100000@dns.toxicfilms.tv>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <000001c2a212$a0f05050$0401000a@robbysan.org>
+References: <3DF8CED1.8030509@corp.lcom.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0212121458440.15278-100000@dns.toxicfilms.tv>; from solt@dns.toxicfilms.tv on Thu, Dec 12, 2002 at 03:00:53PM +0100
+In-Reply-To: <3DF8CED1.8030509@corp.lcom.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,19 +18,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thu, Dec 12, 2002 at 03:00:53PM +0100, Maciej Soltysiak wrote:
-> There are lots of tools, try:
-> - nmap
-> - hping2
-> - nemesis
-> - snort
+> There are a couple of situations where I need to limit 
+> bandwidth on some of my machines. Can anyone share some 
+> solutions they have used? Here are a couple of examples of 
 
-Snort?  To pen-test a firewall?  Are you sure?
+HTB with iproute2 tc utility.
+http://luxik.cdi.cz/~devik/qos/htb/ 
 
--- 
-FunkyJesus System Administration Team
+Works just fine, easy to configure.
+
+
+Rob
 
 
