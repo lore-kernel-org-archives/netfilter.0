@@ -1,12 +1,10 @@
-From: "zze-Proxy_Corveller ball001 exterieur FTRD" <proxycorveller.ball001@rd.francetelecom.com>
-Subject: RE: Problem of NAT with VLAN
-Date: Thu, 10 Apr 2003 10:58:11 +0200
+From: James Marcinek <james_marcinek@yahoo.com>
+Subject: What ports need to be open to allow for mail?
+Date: Thu, 10 Apr 2003 02:39:51 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <8C19E3FBB6467846AFF97E366D34CB600189A4AD@lanmhs20.rd.francetelecom.fr>
+Message-ID: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +15,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: jmarc1@eckerd.com
 
-Yes, indeed it's my commands
+Hello All,
 
-> -----Message d'origine-----
-> De : Friedrich Lobenstock [mailto:fl@fl.priv.at]
-> Envoye : mercredi 9 avril 2003 18:20
-> A : netfilter-devel@lists.netfilter.org
-> Objet : Re: Problem of NAT with VLAN
->=20
->=20
-> zze-Proxy_Corveller ball001 exterieur FTRD wrote:
-> >=20
-> > I've got n VLANs that arrive on a Linux machine. I'm using=20
-> vconfig to
-> > receive packets from those VLANs.
-> >=20
-> > I want to perform DNAT on packets between my physical=20
-> interface (eth2)=20
-> > and the virtuals devices
-> > created by vconfig (vlan00xx, where xx is the VLAN ID of=20
-> the associated=20
-> > VLAN).
-> > I've place some rules at the PREROUTING chain in the nat table to=20
-> > perform the address
-> > translation.
-> >=20
-> > My problem is that netfilter seems don't see packets=20
-> between eth2 and=20
-> > vlan00xx.
-> >=20
-> > I've tried some rules such as '-A PREROUTING -i eth2' or=20
-> '-A PREROUTING=20
-> > -i vlan0010' but
-> > the packet counters stay equal to 0.
-> >=20
-> > Any idea ?
-> >=20
->=20
-> Just curious, did you run:
->    vconfig set_name_type VLAN_PLUS_VID
->    vconfig add eth2 10
->=20
-> --=20
-> MfG / Regards
-> Friedrich Lobenstock
->=20
->=20
->=20
+I'm trying to set up my mail server; however I want to
+make sure that I have the correct port(s) open. I
+already have TCP port 25 open; however do I also have
+to have UDP port 25 open as well? Any help would be
+appreciated.
+
+Thanks,
+James
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - File online, calculators, forms, and more
+http://tax.yahoo.com
 
