@@ -1,8 +1,8 @@
 From: mailinglists@belfin.ch
-Subject: TTL target
-Date: Thu, 31 Oct 2002 15:44:12 +0100
+Subject: RE: next topic:  --limit and --burst-limit
+Date: Thu, 31 Oct 2002 15:47:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31347F3CE518D6118ACB00A0246AD0560B23F5@mx.snizek.ch>
+Message-ID: <31347F3CE518D6118ACB00A0246AD0560B23F6@mx.snizek.ch>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,33 +16,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: 'Cedric Blancher' <blancher@cartel-securite.fr>
+Cc: netfilter mailing list <netfilter@lists.netfilter.org>
+
+> >   from one tutorial, here's the lines that deal with 
+> > syn-flooding protection:
+> > 
+> >   iptables -N syn-flood
+> >   iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+> >   iptables -A syn-flood -m limit --limit 1/s --limit-burst 
+> 4 -j RETURN
+> >   iptables -A syn-flood -j DROP
+
+I've just been playing with that, too.
+
+Well, I couldn't stop scans like
+nmap -sS -P0 -T Insane ip.address -p 21,22,25,80
+
+However, 'nmap -sS -P0 -T Polite ip.address' works fine with this --limit
+specification above.
+
+How am I going to stop something like that?
 
 
-Hi
-
-this is my problem:
-
-+ iptables -t mangle -A PREROUTING -i eth1 -j TTL --ttl-inc 1
-iptables: No chain/target/match by that name
-
-modprobe ipt_ttl is in my script. 
-According to 
-http://cert.uni-stuttgart.de/archive/usenet/comp.os.linux.security/2002/08/m
-sg00458.html
-there should be two ttl modules in
-/lib/modules/2.4.18-4GB/kernel/net/ipv4/netfilter/.
-ipt_TTL for the target
-ipt_ttl for matching.
-
-ipt_TTL isnt in the modules directory.
-
-How am I going to get this to work?
 
 Thanks,
-Philipp
-
-PS: 
-System is Suse 8.0, Kernel 2.4.18, iptables 1.2.25
-
+philipp
 
