@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: 1 webserver NATd, 2nd won't work
-Date: Wed, 22 Oct 2003 00:24:28 +0200
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: a sort of n00b question here but I'ld like to know.
+Date: Tue, 21 Oct 2003 15:36:48 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c39822$176fd1a0$0201000a@sterenborg.info>
-References: <Pine.LNX.4.44.0310211011580.16322-100000@orca.princerupertlibrary.ca>
+Message-ID: <20031021223648.2693.qmail@web40204.mail.yahoo.com>
+References: <00ea01c39818$162e5c80$0301a8c0@SIMON>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0310211011580.16322-100000@orca.princerupertlibrary.ca>
+In-Reply-To: <00ea01c39818$162e5c80$0301a8c0@SIMON>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +17,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: joe@princerupertlibrary.ca, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Simon Garner <sgarner@expio.co.nz>, netfilter@lists.netfilter.org
 
-> I will be using pseudonyms for the machines and public IP addresses
-> The two web servers are:
-> NAME		INTERNAL IP ADDRESS	PUBLIC IP ADDRESS
+
+--- Simon Garner <sgarner@expio.co.nz> wrote:
+> On Wednesday, October 22, 2003 7:11 AM [GMT+1200=NZT],
+> SBlaze <dagent.geo@yahoo.com> wrote:
 > 
-> marge.prl.ca 	192.168.0.244		8.8.8.149
-> homer.prl.ca	192.168.0.211		8.8.8.148
-...
-> I have successfully NAT'd the first web server marge with the 
-> following instructions:
-> #Open ports on Marge
-> #First the regular port 80
-> /sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
-> /sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 
-> -j DNAT --to 192.168.0.244:80
+> >
+> > Wouldn't ntop be considered a "probing" tool?
+> >
+> 
+> I wouldn't consider it a probing tool... something like nmap would be
+> probing, ntop just listens. And although it puts your eth into
+> promiscuous mode, I wouldn't call it a packet sniffer since it won't
+> tell you the contents of any packets, only where they're going and how
+> big they are etc. I don't think you have anything to worry about.
+> 
+> Now I have no experience with cable or cable modems (they're practically
+> non-existent over here) but wouldn't running this on your linux box only
+> show you whatever data your cable modem is sending to you anyway...
+> you'd need to put the *cable modem* into promiscuous mode (or
+> equivalent) to actually receive any data you shouldn't.
+> 
+> >
+> > And getting back to my original reason and question for this post. How
+> > statistically can you see just how much iptables/netfilter is using
+> > of system resources?
+> >
+> 
+> I think we're agreed that the level of data you're seeing wouldn't cause
+> any problems CPU-wise. You can see kernel CPU usage as "system CPU%" in
+> top and vmstat and they're saying 0, which would be expected.
+> 
+> -Simon
+> 
+> 
 
-If this is your first PREROUTING rule, it will match *all* http traffic
-coming in at eth1 since you didn't specify a destination IP (-d <ip>).
-
-> But when I try to NAT homer with the following commands I can 
-> NOT find the page outside of 
-> our network.  
-> #Opening a route to Homer
-> /sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
-> /sbin/iptables -t nat -A PREROUTING -d homer.prl.ca -p tcp 
-> --dport 80 -j DNAT --to 192.168.0.211:80
-
-So this PREROUTING rule will never match. The http traffic was already
-cought by the previous rule.
-Besides, the way you're using it you only need the FORWARD rule once.
-
-In short, I think it would be :
-/sbin/iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-/sbin/iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-/sbin/iptables -t nat -A PREROUTING -i eth1 -d marge.prl.ca \
-  -p tcp --dport 80 -j DNAT --to 192.168.0.244:80
-/sbin/iptables -t nat -A PREROUTING -i eth1 -d homer.prl.ca \
-  -p tcp --dport 80 -j DNAT --to 192.168.0.211:80
+Ok guys well I think that just about wraps this thread up. Special thanks go
+out to Jeffery, Simon, and Daniel for all thier help. Really THANKS ALOT
+GUYS!!!
 
 
-Gr,
-Rob
 
+
+=====
+In the absence of order there will be chaos.
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
 
