@@ -1,13 +1,11 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: NAT support for peer-to-peer games
-Date: Thu, 23 Sep 2004 09:45:11 +0100
+From: Raphael Jacquot <raphael.jacquot@imag.fr>
+Subject: nat and dns
+Date: Thu, 23 Sep 2004 11:00:33 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41528D17.3030007@dsl.pipex.com>
-References: <00cf01c49fb1$da5492e0$e310f43e@manowar>
+Message-ID: <415290B1.5030401@imag.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00cf01c49fb1$da5492e0$e310f43e@manowar>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +16,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Serguei I. Ivantsov" <manowar@gsc-game.kiev.ua>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Serguei I. Ivantsov wrote:
-> Hello!
-> 
-> I just interesting - whether something changes in Netfilter to support
-> peer-to-peer games.
-> How to implement the scheme described below using netfilter?
-> 
-> <from the article>
+hi,
+I have a setup that looks like :
+  _____                                ____
+[     ] 192.168.0.100                [    ]
+[ DNS ]------------------------------[ FW ]----
+[_____]                192.168.0.254 [____] (isp)
 
-It's a bit old - 1998.
+and I want the DNS to answer to queries from the outside
+what's the proper way of doing this ?
 
-Andy.
+Sincerely
 
-
+Raphael
 
