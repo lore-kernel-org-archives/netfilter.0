@@ -1,12 +1,14 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: RE: traceroute
-Date: Thu, 1 Jul 2004 10:19:28 +0200 (CEST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Configuring zone
+Date: Thu, 1 Jul 2004 09:48:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0407011012380.29206-100000@blackhole.kfki.hu>
-References: <2E314DE03538984BA5634F12115B3A4E62E819@email1.mitretek.org>
+Message-ID: <200407010948.02278.Antony@Soft-Solutions.co.uk>
+References: <032001c45f11$b5455880$3c8c1fd9@CPQ48762168204>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E819@email1.mitretek.org>
+In-Reply-To: <032001c45f11$b5455880$3c8c1fd9@CPQ48762168204>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +18,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 30 Jun 2004, Piszcz, Justin Michael wrote:
+On Thursday 01 July 2004 3:18 am, sarky wrote:
 
-> If the output chain POLICY is set to ACCEPT; there is no need to setup
-> rules for it.
+> How do i configure a zone to put the ip address before the domain name.
+> i.e 10.10.10.10.isp.com
 
-Exactly, if. And what about the other two possibilities?:
+This doesn't seem like a netfilter question to me.
 
-> Your machine cannot be pinged with the rules above alone. Your rule
-> above does not let through ping responses on a firewall. In other
-> words it does not allow ICMP in general.
->
-> You yourself claimed that:
->
-> > > You do not have to allow it explicitly (ie: allow icmp so other
-> > > machines can ping your machine).
+Perhaps you should consult the documentation or mailing list for whichever 
+name server software you use?
 
-Sorry, but you made a general statement which is true only when a couple
-of other conditions are met as well. Without even mentioning that is
-misleading for the readers of the list.
+Antony.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+-- 
+I own three Windows books, published by O'Reilly.   They are "Windows 
+Annoyances", "Office 97 Annoyances" and "Windows 98 Annoyances".   That 
+pretty much sums it up for me.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
