@@ -1,13 +1,10 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: XP DNS requests
-Date: Mon, 14 Jun 2004 23:02:09 -0400
+From: ads nat <adsnat@yahoo.com>
+Subject: Iptables rule for multiple Ip addresses.
+Date: Mon, 14 Jun 2004 22:35:49 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087268528.2010.14.camel@grendel>
-References: <E9E5BFC4DD34D511B79900104B939D780325D27D@GB-CSC-EXCH-8>
+Message-ID: <20040615053549.29391.qmail@web60408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E9E5BFC4DD34D511B79900104B939D780325D27D@GB-CSC-EXCH-8>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +15,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Wyburn, Marc Anil" <Marc.Wyburn@gb.unisys.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-06-14 at 09:25, Wyburn, Marc Anil wrote:
->
-> Jun	14	10:00:31	fw	kernel:	IN=eth1	OUT=	eth0 SRC=192.168.0.19 DST=***.***.***.*** LEN=61	TOS=0x00 PREC=0x00 TTL=127 ID=26601 PROTO=UDP SPT=1029 DPT=53 LEN=41	
+Hi,
+I am using Redhat Linux 9.0 with Iptables iptables
+v1.2.7a.
+I am trying to apply this rule for diverting trafic. 
+"eth1" is LAN interface for subnet 192.168.0.0/24
+##########
+[root@xxx root]# iptables -t nat -A PREROUTING -s
+192.168.0.2-192.168.0.10 -i eth0 -p tcp -j DNAT --to
+10.0.0.2:80
+iptables v1.2.7a: host/network
+`192.168.0.2-192.168.0.10' not found
+Try `iptables -h' or 'iptables --help' for more
+information.
+##########
 
-You didn't specify what rule is logging this traffic. Is it your default
-drop rule or something earlier?
-
-Try this on the XP box the next time queries start to fail:
-
-ipconfig /flushdns
-
-If you now start working fine, your DNS is just running slow and XP is
-caching negative entries. Make the following reg key change:
-
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters
-
-DWORD: MaxNegativeCacheTtl
-Value: 0
-
-Reboot and you should be all set.
-
-HTH,
-Chris
+It seems it does not accept multipal source addresses.
+I sther any other wat do achieve this.
+Thanks for support.
 
 
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+Friends.  Fun.  Try the all-new Yahoo! Messenger.
+http://messenger.yahoo.com/ 
 
