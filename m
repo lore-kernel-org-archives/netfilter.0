@@ -1,14 +1,11 @@
-From: Thorsten Scherf <tscherf@web.de>
-Subject: Re: Corrupted packets + Logs
-Date: Thu, 18 Sep 2003 15:35:03 +0200
+From: "M. Ziya Ozudogru" <e116132@metu.edu.tr>
+Subject: mac/ip match
+Date: 18 Sep 2003 21:26:00 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309181535.04020.tscherf@web.de>
-References: <200309171256.49551.mrakotom@free.fr>
+Message-ID: <1063909559.19096.12.camel@tux>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200309171256.49551.mrakotom@free.fr>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +16,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rakotomandimby Mihamina <mrakotom@free.fr>, netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-On 17 September 2003 12:56 Rakotomandimby Mihamina wrote:
+Hi 
 
->#1
->I'm learning networks and i saw that there are some tools that send
->"corrupted" packets to a host to have an idea of the local OS ( an exemple
-> is nmap ) .
->I would like my firewall to drop all corrupted packets .
->I made a search on google with the words " iptables drop corrupted
-> packets" but i cannot find any clear-enough documentation .
+Any hints about the following problem will be appreciated. Thanks a
+lot...
 
-There is a Netfilter Extension called "unclean" , which have the state of 
-Experimental. You can try to use this one. Possible Checks are: packet 
-lenght, packet checksum, lenght of a fragment if available, invalid 
-icmp-codes, tcp/udp port 0 testing.
+I want to assure that only given ip/mac matches will access to the
+internet (i mean if someone takes the ip that does not belong to his/her
+mac address no access will be given) . I will give the ip to the mac
+address by the dhcp..
 
+In my knowledge, i want to set these ip/mac groups using the command:
 
->#2
->I would like iptables to log into /var/log/messages .
->What have a got to configure into syslogd && iptables to do it ?
->What rules have i got ad apply ?
+arp -s ip mac
 
-You can use the the target log along with a log-prefix and configure your 
-syslogd to write all Kernel-Messages (Netfilter is Kernel based) to your 
-/var/log/messages.
+and i want to redirect unused ip to an unused mac with the same way...
 
-iptables -A FORWARD -p tcp --dport 80 -s $EXTNET -d $WWW -j LOG --log-prefix 
-WWW-Connection
+Here comes the problem.. How can i define in iptables to use these arp
+rules and give access only the one addresses that match the rules and
+should block all the others ( well i want to block the others [unused ip
+addresses by using iptables mac macth module ] ) . ? Any hints ?
+
+Thanks for your valuable help...
 
 
-Greetings,
-
-Thorsten Scherf
-RHCE, RHCX
 
 
