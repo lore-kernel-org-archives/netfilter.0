@@ -1,16 +1,13 @@
-From: Rainer Arnst <Rainer.Arnst@ee-consultants.de>
-Subject: Re: IPSec Transport Mode
-Date: Fri, 09 Jul 2004 17:38:56 +0200
+From: Payal Rathod <payalrathod@gmail.com>
+Subject: Re: MASQUERADE
+Date: Fri, 9 Jul 2004 21:18:04 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1089387536.4237.20.camel@PCA-ARNSTR.ee-consultants.de>
-References: <1089207305.788.14.camel@PCA-ARNSTR.ee-consultants.de>
-	 <200407071453.49223.Antony@Soft-Solutions.co.uk>
-	 <1089210110.788.27.camel@PCA-ARNSTR.ee-consultants.de>
-	 <200407072154.52923.Antony@Soft-Solutions.co.uk>
+Message-ID: <f51b72bc040709084815892fd4@mail.gmail.com>
+References: <f51b72bc040708204912ab0cc7@mail.gmail.com> <20040709103513.GA18894@itstud.chalmers.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407072154.52923.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040709103513.GA18894@itstud.chalmers.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,40 +17,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: NetFilter Mailling List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Hi everybody...
+Hi,
+On Fri, 9 Jul 2004 12:35:13 +0200, Erik Wikstr=F6m=20
 
-On Wed, 2004-07-07 at 22:54, Antony Stone wrote:
-> And, to answer your question about how to avoid NATting certain types of 
-> packets, the answer is to put an ACCEPT rule in your PREROUTING or 
-> POSTROUTING chain, before the SNAT or DNAT rule which would otherwise nat 
-> them.
-> 
-> For example:
-> 
-> iptables -A PREROUTING -t nat -p 50 -j ACCEPT
-> iptables -A PREROUTING -t nat -d a.b.c.d -j DNAT --to w.x.y.z
-> 
-> These rules will DNAT all packets originally addressed to a.b.c.d and send 
-> them to w.x.y.z instead, *unless* they are protocol 50, in which case they 
-> won't get NATted.
+> First of all I'd like to say that I'm in no way an expert but are you
+> sure that you have the right stuff compiled in kernel or as modules? In
+> 2.6.7 I had to select to compile MASQUERADE in the kernel, same thing
+> with the mangle table if I remember correctly.
 
-I tried to work with that, but failed to produce the desired results,
-which were to enable IPSec transport mode packets to pass through the
-firewall not being NATed. I put these rules at the beginning of the
-PREROUTING Chain:
+I used the default RPM package which came with the Mandrake 10.0
+official distro.
 
-iptables -A PREROUTING -t nat -p 50 -j ACCEPT
-iptables -A PREROUTING -t nat -p 51 -j ACCEPT
-
-Got anyone any ideas? What should the ips and routing tables look like?
-
-Thanks and sorry for asking a possibly silly question... I am quite new
-to this matter!
-
-Regards,
-Rainer
-
+-Payal
 
