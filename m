@@ -1,14 +1,12 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
+From: James Sneeringer <james+netfilter@vincentsystems.com>
 Subject: Re: Error when using iptables 1.2.6a (or another version)
-Date: 04 Jun 2002 23:06:39 +0200
+Date: Tue, 4 Jun 2002 16:28:07 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023224799.8187.18.camel@billy.demon.nl>
-References: <B5747F3DB39FD411884B00B0D07808CCB6C1FC@server10> 
-	<1023223261.8261.2.camel@billy.demon.nl>
+Message-ID: <20020604212807.GA30300@valjean.si.ocslink.com>
+References: <B5747F3DB39FD411884B00B0D07808CCB6C1FC@server10> <1023223261.8261.2.camel@billy.demon.nl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-+BSeolK2JUXTo+8p18vx"
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
 In-Reply-To: <1023223261.8261.2.camel@billy.demon.nl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -19,56 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Tony Earnshaw <tonni@billy.demon.nl>
-Cc: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
+On Tue, Jun 04, 2002 at 10:41:01PM +0200, Tony Earnshaw wrote:
+| O.k., I use Red Hat and kernel.org kernels and modules, but it seems
+| *very* strange to me that Mandrake should use gzipped modules.
 
---=-+BSeolK2JUXTo+8p18vx
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+There is a compile-time option to modutils (modprobe, insmod, et al) that
+permits gzipped kernel modules.  The INSTALL file from modutils-2.4.16
+has this to say about it:
 
-tir, 2002-06-04 kl. 22:41 skrev Tony Earnshaw:
+    [configure options]
 
-> Remove cd /lib/modules/2.4.18-6mdksecure/kernel/net/ipv4/netfilter,
-> whatever happens.
+    --disable-zlib          Handle gzipped objects?  Default is no.
+                            You probably only need this if you are booting
+                            a small root filesystem and the filesystem is
+                            not compressed itself.
 
-***NO***!
+I know Slackware 7.1 and 8.0 enable this feature.
 
-Remove /lib/modules/2.4.18-6mdksecure/kernel/net/ipv4/netfilter.bkup and
-contents!
-
-Humble apologies :-(
-
-Tony
-
---=20
-
-Tony Earnshaw
-
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
-
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
-
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
-
-
-
---=-+BSeolK2JUXTo+8p18vx
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA8/Svf99dgUTvnuYERAq36AJ9yCqpMZHGau96DI/D2eIUaCKe2EACfX647
-pyCHemXm4AgZC+j5HFt7Ykk=
-=v50e
------END PGP SIGNATURE-----
-
---=-+BSeolK2JUXTo+8p18vx--
+-James
 
 
