@@ -1,44 +1,44 @@
-From: "Cassani Alexio" <alexio.cassani@bhuman.it>
-Subject: RE: VPN Server behind a iptables FW (PPTP)
-Date: Thu, 13 Mar 2003 13:01:36 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DBF92B7FA3E6C94A99B4AE5938A62B7E4023C4@excw2k01.bhlan.bhuman.it>
+From: Doug Yeager <doug@aircomwireless.net>
+Subject: spoofing client IP configuration
+Date: Thu, 13 Mar 2003 06:58:24 -0500
+Sender: hostap-admin@shmoo.com
+Message-ID: <5.2.0.9.0.20030313064430.0323ecb0@yeagerautomation.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <hostap-admin@shmoo.com>
+Errors-To: hostap-admin@shmoo.com
+List-Unsubscribe: <http://lists.shmoo.com/mailman/listinfo/hostap>,
+	<mailto:hostap-request@shmoo.com?subject=unsubscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+List-Post: <mailto:hostap@shmoo.com>
+List-Help: <mailto:hostap-request@shmoo.com?subject=help>
+List-Subscribe: <http://lists.shmoo.com/mailman/listinfo/hostap>,
+	<mailto:hostap-request@shmoo.com?subject=subscribe>
+List-Archive: <http://lists.shmoo.com/pipermail/hostap/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: nocat@lists.nocat.net, , nocatnet@lists.nocat.net, , hostap@shmoo.com, , netfilter@lists.netfilter.org
 
-Hi Raymond,
-> >=20
-> > VPN Server Internal IP:192.168.0.1
-> > VPN Server public IP (hosted by the firewall) is a global=20
-> address. So=20
-> > IPTables server performs NAT.
-> How are you doinf NAT? Does the public ip get bound to an=20
-> interface on the iptables server, e.g. eth0:1?
-Yes I've configured all my global addresses on eth0 of the linux box,
-the router cisco simply forward all the requests to it.
+o.k.,
+managing a public WLAN, people have all sorts of IP configurations preset 
+on their clients (not all are dhcp clients enabled).
+i am currently running a DHCP server and it works *MOST* of the time.  the 
+ultimate solution would be to somehow ignore the client ip configuration 
+and map to the clients on the server side based on their mac address, or 
+something like that.  i know this is possible because there are hotels that 
+do this kind of thing.....some terms like "nomadic server" have popped up.
 
-I've used your script but it doesn't work for me. The problem seems to
-be the same, the VPN client reachs the tcp port of the vpn server (1723)
-but then hangs for a few seconds and finally it stops showing up the
-same error message ("721 remote computer is not responding").
+i want the server to route based on local addresses, so this service 
+hopefully would run at the mac level.
+the public wlan currently runs:
+nocat gateway
+HostAP
+Iptables firewall
+DHCPD  (server in question by this email)
 
-The vpn server doesn't log anything of these attempt.
+any alternatives to DHCP that do this would be great....i just want people 
+configured to their work ip configs to be able to get on.  would moving to 
+802.11 auth help?  i don't think so because after authentication you still 
+need an IP to do anything...unless i'm thinking about this wrong.
 
-Maybe the problem could be at kernel level :|
-
-Thanks,
-Alexio
-
+thx,
+doug
