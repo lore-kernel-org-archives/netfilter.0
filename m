@@ -1,12 +1,13 @@
-From: Jay Levitt <jay-netfilter@shopwatch.org>
-Subject: Re: Wayward RST packets - what's the right answer?
-Date: Sun, 28 Mar 2004 21:40:11 -0500
+From: Thomas Lussnig <lussnig@smcc.net>
+Subject: Re: kernel 2.6 IPsec and netfilter
+Date: Mon, 29 Mar 2004 14:33:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <049001c41537$2843e7e0$9701a8c0@office>
-References: <00ca01c412ea$e24fe2f0$9701a8c0@office> <1080295347.2180.399.camel@grendel>
+Message-ID: <4068179D.1030509@smcc.net>
+References: <4068040C.AA93F507@india.hp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4068040C.AA93F507@india.hp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,68 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="macroman"; format="flowed"
 To: netfilter@lists.netfilter.org
+Cc: Devaraj Das <ddas@india.hp.com>
 
-Chris Brenton wrote:
+Devaraj Das wrote:
 
-
-> On Thu, 2004-03-25 at 23:29, Jay Levitt wrote:
-> >
-> > Fairly often - as in a few times an hour on a very, very underused
-> > server - I get repeated RST packets from hosts I've recently been
-> > talking to, but that conntrack thinks aren't part of a connection.  My
-> > rule:
-> >
-> > iptables -A INPUT -p tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state
-> > --state NEW -j LOG --log-prefix "Stealth scan attempt"
-> > iptables -A INPUT -p tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state
-> > --state NEW -j DROP
+>Hi,
+>I wanted to know whether there is a working solution for the issue that
+>was discussed sometime back:
+>http://www.spinics.net/lists/netfilter/msg22099.html
+>In short is there any solution to enable blocking selective ports in a
+>machine running Linux 2.6.0 + in-kernel ipsec.
+>I would be very helpful if I can get a working solution or some
+>information on a possible solution.
+>Thanks,
+>Devaraj.
+> =20
 >
-> Maybe I'm reading this wrong, but I would expect you would only get a
-> match with this rule if SYN was set. I'm surprised your grabbing RST
-> packets. Perhaps another rule that uses the same prefix?
+Hi,
+if you look at ipsec from Linux-2.6.0 you would have noticed that you def=
+ine
+SRC-IP/SRC-PORT -- DST-IP/DST-PORT this mean you question imply the=20
+following setup:
 
-Nope, it's the other way around - this rule matches any packet that is in a
-NEW state but has flags other than SYN-and-only-SYN.
+1. You allow any port combination to go via the ipsec tunnel
+2. You have ports that should not go via the ipsec tunnel wich you allow=20
+via ipsec
+3. Now this ports should be filtered on iptables layer
+- possible at prerouting/mangle
++ define the correkt ipsec config
 
-> Also, not so sure you can consider RST's a "stealth scan" as a receiving
-> host is just going to ignore bogus RST's and not reply, regardless of
-> whether the port is open or not. Best an attacker could hope to receive
-> is a host unreachable.
-
-OK, so it'd be perfectly safe to add this?
-
-iptables -A INPUT -p -tcp --tcp-flags FIN,SYN,RST,ACK RST -m state --state
-NEW -j ACCEPT
-
-One problem is that although I can read about the TCP protocol and valid
-states, I don't know what failure/DOS/etc modes I'm protecting against, and
-therefore I'm not sure what invalid-yet-possible states I should be letting
-through.
-
-> > Mar 25 23:19:05 linux kernel: Stealth scan attemptIN=eth0 OUT=
-> > MAC=00:50:2c:01:62:8e:00:20:78:d0:44:8f:08:00 SRC=208.185.179.12
-> > DST=192.168.1.150 LEN=40 TOS=0x00 PREC=0x00 TTL=47 ID=6376 PROTO=TCP
-> > SPT=2046 DPT=25 WINDOW=0 RES=0x00 RST URGP=0
->
-> What's the time stamp on the accepted packet? If you are
-> logging/dropping RST packets prior to processing ESTABLISHED that would
-> explain this entry. I very rarely see legit RST packets get dropped so
-> if you are seeing them fairly often I would guess a config problem as
-> RSTs are a last resort.
-
-Not sure what you're asking about the timestamp... the rule does log/drop
-RST packets in a NEW state (or, more likely, after a connection has been
-"closed" in conntrack).  I see them a few times an hour; any idea what sort
-of config problem I'd be looking for?
-
-> The other time I've seen it is when there is an IDS on the wire kicking
-> out RST packets when a suspect packet is seen, but the IDS does not get
-> the sequence numbers right in the RST.
-
-What's an IDS?
-
-Jay Levitt
-
+Gru=DF Thomas Lu=DFnig
 
