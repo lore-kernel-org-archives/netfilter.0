@@ -1,10 +1,9 @@
-From: Chris <chris@imi.com.au>
-Subject: Traffic accounting
-Date: 27 Jan 2003 00:18:59 +1100
+From: harish.k@lntinfotech.com
+Subject: Display rulenum
+Date: Sun, 26 Jan 2003 18:59:20 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043587138.2372.4.camel@athlon-boxen>
+Message-ID: <OFFEB3667B.A96202EB-ON65256CBA.0049D79C-65256CBA.004A36FF@lntinfotech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,23 +15,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi list,
 
-I've got a Linux box set up acting as a mail server, web server and
-firewall. There are a few other boxes sitting on the same rack that this
-Linux box firewalls off from the net. 
+How do I make iptables list the rule numbers along with the rules?
+The -L option lists the rules, not the actual rule numbers. This will be
+helpful where there are a *lot* of rules in a particular chain.
 
-My question is this - how can I come up with an appraisal of how much
-traffic each box that we act as a firewall for has received and sent
-over a given period? The only thing I can think of that might complicate
-the process is this fact:
-
-	We are using Proxy ARP and everything's on the same subnet.
-
-All thoughts greatly appreciated! All amusing flames stuck to my wall.
-
-Chris
-
+Pls guide me.
+TIA
+Harish
+-- 
+Harish K
+L&T Infotech
 
