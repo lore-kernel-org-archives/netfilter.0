@@ -1,70 +1,44 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ADMIN] netfilter.org was down due to hardware problem
-Date: Mon, 12 May 2003 12:09:38 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030512100938.GI3344@sunbeam.de.gnumonks.org>
+From: "Dhyanesh Ramaiya" <dhyanesh@intafrica.com>
+Subject: Asymmetric routing
+Date: Mon, 12 May 2003 12:12:12 +0300
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <03d301c31866$937b2d80$0223a8c0@satconet.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2E/hm+v6kSLEYT3h"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: Florian Sippel <fun@noris.net>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Dear all,
 
---2E/hm+v6kSLEYT3h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Below is a simple diagram of my network:
 
-Hi!
+| LAN 1 | ---- | Linux RTR 1 | ---- | INTERNET | ---- | Linux RTR 2 | ---- |
+LAN 2 |
 
-As many of you may have noticed, our main server
-(kashyyyk.netfilter.org) was down from yesterday (May 11), 6pm GMT+1 to
-today, 11:50am GMT+1.
+What I want to do:
+- I want to be able to access a server on LAN 2 from nodes on LAN 1. LAN 1
+and LAN 2 are both using private IPs. However, the gateway for the server
+that I want to access on LAN2 is not my router (Linux RTR 2). It is another
+router (let's say RTR 3 on that network). An easier way to achieve this
+requirement is by adding a static route on the server on LAN 2. However, the
+requirement is such that no configurations should be added/changed on the
+server on LAN 2 and the RTR 3. This results in an asymmetric route for
+packets from LAN 1 to server on LAN 2 as they do not follow the same path on
+the return.
 
-This was due to a hardware problem of the machine (power supply died
-after about one year of operation).
+Kindly assist on how this can be achieved using iptables only (DNAT, SNAT,
+route, etc.).
 
-The power supply has been replaced with a new one (400W, dual-fan) -
-let's hope this time the machine will exceed its 325 days of uptime :)
+Dhyanesh Ramaiya
 
-Sorry for any inconvenience,
-
-	Harald.
-
-P.S.: Thanks to Florian Sippel of noris.net, who did the repairs.
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---2E/hm+v6kSLEYT3h
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+v3LiXaXGVTD0i/8RAvoXAJ4t2/GF2ej+3Jzwn5bZfXgJvtJZvACghzHA
-5xXhELkPimxcAboJdqG7SXQ=
-=lmRt
------END PGP SIGNATURE-----
-
---2E/hm+v6kSLEYT3h--
 
