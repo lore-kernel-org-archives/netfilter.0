@@ -1,13 +1,12 @@
-From: "Elvis Aaron Presley" <elvisa@terra.es>
-Subject: RE: Newbie in a deep trouble!!!
-Date: Thu, 12 Aug 2004 10:09:54 +0200
+From: "=?iso-8859-15?q?Nicol=E1s_Vel=E1squez?= O." <spidyno@yahoo.es>
+Subject: custom redirector
+Date: Thu, 12 Aug 2004 11:58:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c48043$c021a0d0$3d01a8c0@rxn32.biz>
-References: <D5C9032B2B09C64EA2409D6214E91AC9051268@asimail2.alphanumeric.com>
+Message-ID: <200408121158.17197.spidyno@yahoo.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9051268@asimail2.alphanumeric.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +17,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: 'Jason Opperisano' <Jopperisano@alphanumeric.com>, 'Netfilter' <netfilter@lists.netfilter.org>
-
-It works!!!!!!!!!!!
-
-With this three lines:
-
-iptables -t nat -A PREROUTING -p tcp -d 172.16.0.0/16 --dport 80 -j =
-ACCEPT
-iptables -t nat -A PREROUTING -p tcp -d 10.34.0.0/16 --dport 80 -j =
-ACCEPT
-iptables -t nat -A PREROUTING -p tcp -i ! eth0 --dport 80 -j REDIRECT
---to-port 3128
-
-Thank you to all!!!!
-
-Elvis
+To: netfilter@lists.netfilter.org
 
 
------Mensaje original-----
-De: Jason Opperisano [mailto:Jopperisano@alphanumeric.com]=20
-Enviado el: mi=E9rcoles, 11 de agosto de 2004 14:12
-Para: Elvis Aaron Presley; Netfilter
-Asunto: RE: Newbie in a deep trouble!!!
+Hello there,
 
+I want to do some custom redirection rules, I've searched the web with
+no success.
 
->
-> First I put this:
->
-> iptables -t nat -A PREROUTING -p tcp -d ! 172.16.0.0/16 --dport 80 -j=20
-> REDIRECT --to-port 3128
->
-> Ok with this, the 10.34.x.x pcs can access to internet through the=20
-> proxy and can view the web pages of the 172.16.x.x pcs ... It works!!!
->
-> Then I put this:
->
-> iptables -t nat -A PREROUTING -p tcp -d ! 10.34.0.0/16 --dport 80 -j=20
-> REDIRECT --to-port 3128
->
-> With this,  the 172.16.x.x pcs can access to internet through the=20
-> proxy and can view the web pages of the 10.34.x.x pcs ... It works=20
-> too!!!
->
-> This commands works separately, but when I put the two at same time it =
+What I want to do is to set the forward policy a redirect.
 
-> doesn't work.
+Here is what I was trying without success:
+$IPTABLES -t nat -N MY_REDIRECTOR_POLICY
+$IPTABLES -t nat -A PREROUTING -i $LAN_IFACE -p TCP --dport 80 -j
+MY_REDIRECTOR_POLICY --to-port 81
+$IPTABLES -A MY_REDIRECTOR_POLICY -j REDIRECT --to-port 81
+$IPTABLES -A FORWARD -j MY_REDIRECTOR_POLICY
 
-it's because 10.34.0.0/16 matches "-d ! 172.16.0.0/16" and 172.16.0.0/16
-matches "-d ! 10.34.0.0/16"
+That snip would go at the end of the rules. so it will work like a
+policy.
 
-> Can anybody help me please????
+=46irst of all, is it possible to do what I want to do??
 
-i can try.  your PREROUTING rules should be, in order:
+Squid is not an option as no body has to be doing any configuration
+changes on the machines. Transparent Proxy won't do the job, as the
+objective of the project is to do direct connection. Besides the
+connections can happen on non web ports.
 
-iptables -t nat -A PREROUTING -p tcp -d 172.16.0.0/16 --dport 80 -j =
-ACCEPT
-iptables -t nat -A PREROUTING -p tcp -d 10.34.0.0/16 --dport 80 -j =
-ACCEPT
-iptables -t nat -A PREROUTING -p tcp -i ! eth0 --dport 80 -j REDIRECT
---to-port 3128
+=2D-=20
 
-which allows traffic to 172.16.0.0/16 and 10.34.0.0/16 to pass without =
-going
-through the squid proxy, and anything else received on either eth2 or =
-eth1
-to get redirected to the squid cache.
+Atentamente,
+Nicol=E1s Vel=E1squez
+Bogot=E1, Colombia
 
--j
-
+(^) =A0 ASCII Ribbon Campaign
+ X =A0 =A0NO HTML/RTF in e-mail
+/ \ =A0 NO Word docs in e-mail
 
