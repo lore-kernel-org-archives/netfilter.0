@@ -1,13 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: Problem with bridge+iptables+ulog
-Date: Wed, 12 Mar 2003 21:16:31 +0530
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: blocking ports outbound
+Date: Wed, 12 Mar 2003 16:45:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <07cc01c2e8ae$8d8ee160$13fcc5cb@Housecall>
-References: <078601c2e886$039a49e0$13fcc5cb@Housecall> <20030312135021.58bf6699.arnt@c2i.net>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019C41@hslex01.hslbz.local>
+References: <3E6F268A.1060807@connectingyou.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E6F268A.1060807@connectingyou.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,81 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi
+> I would like to know the rule to block ports outbound.
+> 
+> I am trying to block port 3128 my squid/proxy port.
 
-thanks, BR0 have IP becoz of monitoring purpose
+Soo, ehm, you want to prevent outbound packets from squid ?
+If you don't want that squid is sending packets, then why start squid at
+all.
 
-i would like to use IPTABLES to monitor the packets 
-but i could not able to do so, looking for the same help.
-
-hare
------ Original Message ----- 
-From: "Arnt Karlsen" <arnt@c2i.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, March 12, 2003 6:20 PM
-Subject: Re: Problem with bridge+iptables+ulog
+Well, if that's what you really want to :
+iptables -A OUTPUT -p tcp --sport 3128 -j REJECT --reject-with tcp-reset
+or simply
+iptables -A OUTPUT -p tcp --sport 3128 -j DROP
 
 
-> On Wed, 12 Mar 2003 15:55:34 +0530, 
-> "hare ram" <hareram@sol.net.in> wrote in message 
-> <078601c2e886$039a49e0$13fcc5cb@Housecall>:
-> 
-> > Hi all
-> > 
-> > some one can help i have the following setup
-> > 
-> > x.x.x.1/24            x.x.x.2/24
-> >    +----------+                     +------+
-> >    | Router A |---------+ +---------| PC B |
-> >    +----------+         | |         +------+
-> >                         | |
-> >                     eth0| | eth1
-> >                       +-----+
-> >                       | qos | (br0 =3D x.x.x.3/24)
-> >                       +-----+
-> > 
-> > 
-> > 
-> > Router A is connected to internet
-> > QOS box running with bridge
-> > PC B is my LAPTOP
-> > 
-> > iam try to make the ULOG usig the following command
-> > 
-> > 
-> > $IPTABLES -I INPUT -i eth1 -j ULOG --ulog-nlgroup 1 --ulog-cprange
-> >    --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
-> 
-> ..does eth1 have an ip address?  Why does br0 have an ip address 
-> at all?  IMNTHO, it does not need it, but then I can generate logs 
-> from: 'tcpdump -i $interface | grep -v $whatever-I-dont-need \
->  | grep $what-I-want.etc.iterate.greps.as.needed >> $logfile '
->  
-> > iam not able to see any LOG here in my LOG file
-> > 
-> > when i do this with out  interfce
-> > 
-> > $IPTABLES -I INPUT  -j ULOG --ulog-nlgroup 1 --ulog-cprange
-> >    --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
-> > 
-> > iam able to see some logs using BR0
-> > 
-> > how can i get the logs from eth0 and eth1
-> > 
-> > any suggestion will be great
-> > 
-> > hare
-> 
-> 
-> -- 
-> ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-> ...with a number of polar bear hunters in his ancestry...
->   Scenarios always come in sets of three: 
->   best case, worst case, and just in case.
-> 
-> 
-> 
+Or don't you want users from the outside (internet) to connect ?
+
+# Drops everything by default
+iptables -P INPUT DROP
+
+# Accepts anything coming in on your LAN interface,
+# but you may want something more secure.
+iptables -A INPUT -i <if_lan> -j ACCEPT
+
+
+Rob
 
 
