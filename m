@@ -1,12 +1,11 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: forwarding traffic to different hosts
-Date: Thu, 26 Aug 2004 23:43:57 +0100
+From: krzysztof.gostkowski@galileo.net.pl
+Subject: Autoreply: forwarding traffic to different hosts
+Date: Fri, 27 Aug 2004 00:47:13 +0200 (CEST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040826224357.GF22322@metastasis.org.uk>
-Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Message-ID: <20040826224713.CA8C957A93@mail.guide.cz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +15,20 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Hi,
+I am currently out of office till 28 august.
+In urgent cases please contact marcin.pilarski@galileo.net.pl
 
-Sorry, another question, things aren't working well for me tonight.  If
-I want traffic to port 777 on a host to be redirected to another host on
-the same LAN, will this do the job?
-
-I'm on host 198.81.129.100, and I want all traffic from IP address
-207.155.252.12 to port 777 to be redirected to a different host, .101 on
-the same network, if I try this rule it fails:
-
-iptables -t nat -I PREROUTING --source 207.155.252.12 -p tcp --dport 777
--j DNAT --to-destination 198.81.129.101
-
-But I don't see anything in the logs.  I tried permitting all traffic to
-port 777 in for FORWARD and OUTPUT tables, but that didn't make a
-difference.
-
-Any ideas?
-
--- 
-mors omnia vincit
+Krzysztof Gostkowski
+Network Specialist & Technical Support
+Galileo Polska 
+Al. Jana Paw=B3a II 12 
+00-124 Warszawa 
+Tel.: +48 22 850 9997 
+tel.kom.: 506100603 
+Fax: +48 22 850 9991 
+E-mail: krzysztof.gostkowski@galileo.net.pl
+Web site: www.galileo.net.pl
 
