@@ -1,10 +1,15 @@
-From: Dustin Marquess <jailbird@alcatraz.fdf.net>
-Subject: Problem with pptp patch
-Date: Mon, 30 Jun 2003 23:54:09 -0500 (CDT)
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: netfilter resets TCP conversation that was DNATed from the local machine to another
+Date: Tue, 1 Jul 2003 02:00:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.55.0306302348500.1549@bobdole.alcatraz.fdf.net>
+Message-ID: <200307010200.00067.Alistair@nerdnet.ca>
+References: <3EFD10A2.6020807@adsl-209-204-165-151.sonic.net> <20030630142908.GA29083@cannon.eng.us.uu.net> <3F00986E.4040306@adsl-209-204-165-151.sonic.net>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F00986E.4040306@adsl-209-204-165-151.sonic.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,41 +19,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Michael <freeware@adsl-209-204-165-151.sonic.net>, Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.netfilter.org
 
-All,
+On June 30, 2003 04:07 pm, Michael wrote:
 
-I've been trying to ugprade my router/AP running 2.4.19 to 2.4.21.  With
-2.4.19 I was running Brian Kuschak's PPTP patch.
+>
+> That's Squid looking up my domain. (Why twice? I don't know.) The OUTPUT
+> chain in the nat table is
+>
+> Chain OUTPUT (policy ACCEPT)
+>  target prot opt in out source     destination
+>  DNAT   tcp  --  *  *   0.0.0.0/0  1.2.3.5     multiport dports 80,443
+> to:192.168.0.8 DNAT   tcp  --  *  *   0.0.0.0/0  1.2.3.6     multiport
+> dports 80,443 to:192.168.0.9
+>
+>
 
-With 2.4.21 I've tried both the newnat patch from
-http://roeder.goe.net/~koepi/newnat.html and the pptp patches in
-patch-o-matic-20030630.
+	Please read this page
+	
+	http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-3.html
 
-Both apply cleanly and compile without errors.  Both work and allow the
-client to sucessfully make and use a PPTP connection.  The problem comes
-that when the PPTP connection is terminated, the masq machine completely
-hard-locks.  I can't ping it from any machine as soon as I terminate my
-PPTP connection on my client.
+	Why are you DNATting in OUTPUT?
+-- 
 
-I believe the kernel is Oops'ing, although I don't have a console on it
-to verify.  I'll try to get a serial console setup in the morning to
-verify.
-
-The machine is an AMD Duron 800Mhz.  The kernel was compiled with gcc
-2.95.3.  The kernel was a stock 2.4.21 kernel with either the newnat
-patches or the patch-o-matic patches.  The only other patch applied was
-a patch to upgrade the wireless extensions support from 15 to 16.  I can
-try removing this patch, although I don't believe it is the cause of
-the problem, since I'm not even using an 802.11b machine to establish
-the PPTP connection.
-
-The PPTP client was a Windows Server 2003 machine, and the PPTP server
-was a Cisco 3030 VPN Concentrator, if that helps at all.
-
-Thanks!
--Dustin
-
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
