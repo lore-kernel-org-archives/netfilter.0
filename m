@@ -1,11 +1,10 @@
-From: Craig Davison <cd@securityfocus.com>
-Subject: (libiptc) iptc_delete_entry or iptc_delete_num_entry?
-Date: Fri, 31 Jan 2003 13:57:37 -0700
+From: "Nedjm Saadallah" <nedjm@hotmail.com>
+Subject: php , netfilter, linux???
+Date: Mon, 20 Jan 2003 17:25:10 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030131205737.GB27677@securityfocus.com>
+Message-ID: <F163kKIBXEHt3V5g2oH0001696d@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,67 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-Should I be using iptc_delete_num_entry or iptc_delete_entry to delete 
-rules from a chain? I can't seem to find documentation for the 
-parameters of iptc_delete_entry (please point me in the right direction if 
-it exists!), and I'm not 100% sure what to pass for the rulenum parameter 
-to iptc_delete_num_entry.
+hi
 
-The only documentation I have for iptc_delete_num_entry is the 
-Querying-libiptc-HOWTO from the LDP, and it says that rulenum is a rule 
-number starting at 1 for the first rule.
+Has anybody worked with a network traffic controll unit?
+please help me, because i need to anderstand how does it work with lunix?and 
+how can I make en conf file?
 
-So let's say I want to delete every rule one at a time from a chain. Do I 
-have to manually increase my own rulenum counter for every rule, or is 
-there some way to get rulenum from an ipt_entry?
-
-Example:
-
-iptc_handle_t htable;
-const char *chain = "INPUT";
-struct ipt_entry *entry;
-int rulenum = 0, is_chain_changed = 0;
-
-if (!(htable = iptc_init ("filter")))
-{
-  printf ("iptc_init: %s\n", iptc_strerror (errno));
-  exit(0);
-}
-
-entry = (struct ipt_entry *)iptc_first_rule (chain, &htable);
-while (entry)
-{
-  rulenum++;
-  if (!(iptc_delete_num_entry (chain, rulenum, &htable)))
-  {
-    printf ("iptc_delete_num_entry: %s\n", iptc_strerror (errno));
-    break;
-  }
-
-  is_chain_changed = 1;
-  entry = (struct ipt_entry *)iptc_next_rule (entry, &htable);
-}
-
-if (is_chain_changed)
-{
-  if (!(iptc_commit (&htable)))
-    fprintf (stderr, "iptc_commit: %s\n", iptc_strerror (errno));
-}
+tanks
 
 
-Plus, is the rulenum going to change for the rest of the rules in a chain 
-if I delete a rule? If not immediately, how about after I commit?
 
-TIA for any help.
 
--- 
-Craig Davison
-Symantec Corporation
-+1 (403) 213-3939 ext. 228
+
+_________________________________________________________________
+MSN 8: advanced junk mail protection and 2 months FREE*. 
+http://join.msn.com/?page=features/junkmail
+
 
