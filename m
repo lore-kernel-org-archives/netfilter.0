@@ -1,11 +1,13 @@
-From: Steffen Schoenwiese <ss310636@inf.tu-dresden.de>
-Subject: Problem with DNAT
-Date: Sat, 9 Nov 2002 18:36:56 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: firewall machine eating lot of memory
+Date: Sat, 09 Nov 2002 10:34:21 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211091837.00935.ss310636@inf.tu-dresden.de>
+Message-ID: <001f01c2881e$9f8d9e10$6601a8c0@s3ac>
+References: <20021108125208.B27793@server.volta.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <20021108125208.B27793@server.volta.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'mike ledoux' <mwl+netfilter@alumni.unh.edu>, netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Hi,
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> On Fri, Nov 08, 2002 at 09:26:45AM -0500, Sundaram Ramasamy wrote:
+> > Ia m using  Rdhat 7.3  kernel 2.4.18-3custom for my 
+> firewall, suddenly 
+> > its taking lot of memory, after that its not releasing. I ran the 
+> > following script to monitor the memory usage.
 
-I have some problems with iptables 1.2.7a. Some of my rules which worked =
-well=20
-with iptables 1.2.5 produce an error message "iptables: Invalid argument"=
-=2E=20
-The specific rules look like this:
 
-iptables -t nat -A OUTPUT -p tcp -d <ip> -j DNAT --to <ip>:<port>
-
-I also tried to use --to-destination instead of --to, same error message.
-All my other rules work perfect, only the DNAT ones get this error.=20
-Does anyone have a possible solution?
-
-Steffen =20
-
-- --=20
-Quote of the minute:
-
-"Premature optimization is the root of all evil."   =20
-=09-Donald E. Knuth
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE9zUe7ByWeP+lxCPMRAmuOAKC0UimprHxQb+TqyT8QZlLP/n1Q+gCgilKT
-Wdo7eVFbg3FJshcDVBmrX88=3D
-=3DGyFD
------END PGP SIGNATURE-----
+Where can one locate such a script ?
 
 
