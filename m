@@ -1,15 +1,14 @@
-From: Athan <netfilter@miggy.org>
+From: Sam Halliday <fommil@yahoo.ie>
 Subject: Re: firewall bother
-Date: Sat, 22 Feb 2003 20:46:27 +0000
+Date: Sat, 22 Feb 2003 21:41:07 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030222204627.GC16712@miggy.org>
+Message-ID: <20030222214107.66acc315.fommil@yahoo.ie>
 References: <20030222202147.196de8dc.fommil@yahoo.ie>
+	<20030222204627.GC16712@miggy.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m51xatjYGsM+13rf"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030222202147.196de8dc.fommil@yahoo.ie>
+In-Reply-To: <20030222204627.GC16712@miggy.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +18,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Sam Halliday <fommil@yahoo.ie>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Athan wrote:
+> > i am having trouble viewing one particular website under my current
+> > firewall setup... (www.talk21.com)
+>    My first thought would be this is an ECN problem.  Indeed, without
+> changes I get connection refused as well.  With this rule it works:
+<snip>
 
---m51xatjYGsM+13rf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+thankyou so much! now THAT is more support than any commerical firewall
+product i have ever heard about! this webpage is now working for me :-D
 
-On Sat, Feb 22, 2003 at 08:21:47PM +0000, Sam Halliday wrote:
-> hi there,
->=20
-> i am having trouble viewing one particular website under my current
-> firewall setup... (www.talk21.com)
+> Be aware that current released kernel don't have this working.  You'll
+> need a patch:
+thanks, applied with fuzz (as always!)
+at least it made me do a long-overdue kernel recompile with FreeBSD
+partition support :-/
 
-   My first thought would be this is an ECN problem.  Indeed, without
-changes I get connection refused as well.  With this rule it works:
+one small problem with these ECN modules however... i cannot unload
+them! even when i have cleared my iptables chain list and all other
+clean-able modules, i am unable to unload these kernel modules (which in
+turn blocks me from unloading mangle, etc etc). On the same lines i have
+always had trouble unloading the modules ipt_state and ip_conntrack.
+ipt_state does not work with 'modprobe -r', but is OK with rmmod,
+ip_conntrack however i have never been able to unload. the only other
+network modules i ever have loaded are: af_packet, 8139too and mii.
 
-iptables -t mangle -A POSTROUTING -o ${PUBINT} -p tcp -d 62.172.192.30 --ma=
-tch ecn --ecn-ip-ect 0 -j ECN --ecn-tcp-remove
-
-Be aware that current released kernels don't have this working.  You'll
-need a patch:
-
-	http://www.netfilter.org/documentation/pomlist/pom-submitted.html#07_ECN-t=
-cpchecksum-littleendian-fix
-
-HTH,
-
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
-
---m51xatjYGsM+13rf
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj5X4aMACgkQzbc+I5XfxKeTNACgnxTrAdEhlQtLyWIbJYS7b4z6
-AqUAoJzx1F/pmh3ZxPM6wXF1dUG9oFF1
-=RZHM
------END PGP SIGNATURE-----
-
---m51xatjYGsM+13rf--
+thankyou again so much!
+Sam
+-- 
+The fashionable drawing rooms of London have always been happy to accept
+outsiders -- if only on their own, albeit undemanding terms.  That is to
+say, artists, so long as they are not too talented, men of humble
+birth,so long as they have since amassed several million pounds, and
+socialists so long as they are Tories.
+-- Christopher Booker
 
