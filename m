@@ -1,8 +1,8 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: Netfilter vs commercial
-Date: Mon, 09 Aug 2004 13:39:00 -0400
+Date: Mon, 09 Aug 2004 13:45:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1092073140.18387.109.camel@localhost>
+Message-ID: <1092073527.18393.116.camel@localhost>
 References: <BAY4-F16p4k1Cz5WqET0000e7bd@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -30,20 +30,20 @@ On Mon, 2004-08-09 at 12:48, Mike O wrote:
 > checkpoint has limited us in the way we do things here and I have always 
 > wanted to implement netfilter but couldn't because it's open source.
 <snip>
-Sure, although it may reflect more of my ignorance than my sagacity :-)
-
-From what I understand, the out of the box netfilter connection tracking
-sets timers for the dataflow and matches source and destination
-information and, for TCP, session states.  It does not match the
-acknowledgment and sequence numbers for TCP packets unless one adds the
-window tracking patch.  Someone please correct me if I am wrong.
-
-I cannot say so authoritatively but I believe out of the box Checkpoint
-does match ACK and SEQ - John
+I would imagine that you could find "commercial" products that are using
+iptables and thus get around the open source problem.  Astaro, SnapGear
+and iKloak come to mind.  I believe some WatchGuard models are based
+upon iptables.  There are also some other smaller players such as
+SmoothWall (in the UK), Kyzo, NetMAX and NetMaster.
 -- 
 John A. Sullivan III
-Open Source Development Corporation
-Financially sustainable open source development
-http://www.opensourcedevelopmentcorp.com
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
