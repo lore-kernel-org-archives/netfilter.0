@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
 Subject: RE: Squid Accelerator configuration
-Date: Tue, 20 Jul 2004 13:35:42 -0400
+Date: Tue, 20 Jul 2004 14:03:27 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511CC@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511CD@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,10 +17,138 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jim Matthews <jim.matthews@notes.duke.edu>, netfilter@lists.netfilter.org
+To: Jim Matthews <jim.matthews@notes.duke.edu>
+Cc: netfilter@lists.netfilter.org
+
+didn't mean to be terse...
+
+what the logs are saying to me is this:  i am dropping a TCP packet with =
+flags A,P,F in my OUTPUT chain from 192.168.1.1:80 to 192.168.1.15:3582
+
+do you have something along the lines of:
+
+	"-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
+	"-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
+
+at the top of your INPUT and OUTPUT chains?
+
+it appears to me that your rules are not properly allowing replies from =
+the Squid box back to the client machine.
+
+-j
+
+-----Original Message-----
+From: Jim Matthews [mailto:jim.matthews@notes.duke.edu]
+Sent: Tuesday, July 20, 2004 1:55 PM
+To: Jason Opperisano
+Subject: RE: Squid Accelerator configuration
+
+
+Jason
+
+Thanks for the response.  I'm not sure I understand what this line is=20
+doing.  Should I be replacing any of my entries with this line or=20
+appending this line?  I tried adding the line (I added it below my other =
+2=20
+http rules) and it's still not connecting.=20
+
+192.168.1.1 - Squidbox
+192.168.1.15 - Client
+
+
+Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3582 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3583 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3584 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:46 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
+DF PROTO=3DTCP=20
+SPT=3D80 DPT=3D3577 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:48 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1152 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
+DF PROTO=3DTCP=20
+SPT=3D80 DPT=3D3578 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:49 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3579 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:50 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3580 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:50 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D19532 =
+DF PROTO=3DTCP=20
+SPT=3D80 DPT=3D3581 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3582 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3583 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D80 DPT=3D3584 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Jul 20 13:51:54 squidbox52 kernel: drop-n-log:IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.1=20
+DST=3D192.168.1.15 LEN=3D1485 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
+DF PROTO=3DTCP=20
+SPT=3D80 DPT=3D3576 WINDOW=3D10720 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+
+Thanks again for your help and any additional help you could provide.
+---------------------
+Jim Matthews=20
+ISS Systems Administrator=20
+Duke University - Perkins Library
+Box 90196
+Durham, NC 27708
+Email: jim.matthews@duke.edu
+Voice: 919-660-5963
+Fax: 919-684-6990
+
+
+
+"Jason Opperisano" <Jopperisano@alphanumeric.com>=20
+07/20/2004 01:35 PM
+
+To
+"Jim Matthews" <jim.matthews@notes.duke.edu>,=20
+<netfilter@lists.netfilter.org>
+cc
+
+Subject
+RE: Squid Accelerator configuration
+
+
+
+
+
 
 -A OUTPUT -p tcp --syn -s 192.168.1.1 --sport 1024: -d 192.168.1.5 =
---dport 80 -j ACCEPT
+--dport=20
+80 -j ACCEPT
 
 -j
 
@@ -52,6 +180,7 @@ the systems so that:
 
 Has anyone setup something similar?  Any suggestions or pointers on how =
 to=20
+
 configure this?
 
 Here is the ruleset I'm using on my Squid box:
@@ -92,4 +221,6 @@ Durham, NC 27708
 Email: jim.matthews@duke.edu
 Voice: 919-660-5963
 Fax: 919-684-6990
+
+
 
