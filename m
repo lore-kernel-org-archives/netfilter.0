@@ -1,12 +1,12 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: samba
-Date: Thu, 4 Sep 2003 14:51:35 +0800
+From: Sven Riedel <sr@gimp.org>
+Subject: iptables -vv -L output description?
+Date: Thu, 4 Sep 2003 09:39:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E706C21F@overlord.overturemedia.com>
+Message-ID: <20030904073950.GC12077@localnet>
+Reply-To: sr@gimp.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,60 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi,
+is the output format of iptables -vv -L documented somewhere? Didn't
+find anything in the FAQ, HOWTO (the regular one that is) or the
+iptables manpage. 
 
-Hello folks!
+This is with iptables 1.2.8
 
-I can't seem to make samba and iptables work properly...
-
-$IPT =3D /usr/sbin/iptables
-
-# port fritz/samba
-1) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 137:139 -j LOG =
---log-level DEBUG --log-prefix "SAMBA: "
-2) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 137:138 -j LOG =
---log-level DEBUG --log-prefix "SAMBA: "
-
-3) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 137 -j ACCEPT
-4) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 138 -j ACCEPT
-5) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 139 -j ACCEPT
-
-6) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 137 -j ACCEPT
-7) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 138 -j ACCEPT
-8) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 139 -j ACCEPT
-
-
-Line numbers 5, 6 and 7 seem to be logging some packets.
-But when I turn the firewall off and contact samba it works even if I =
-turn the firewall back on.
-If I access Samba again after rebooting my computer it says... =
-"Microsoft Windows Network: The local device name is already in use."
-
-Hope you can help me. Thanks.
-
-
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord=20
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
-
+Regs,
+Sven
+-- 
+Sven Riedel                      sr@gimp.org
+Liebigstr. 38 
+30163 Hannover                  "Python is merely Perl for those who
+                                 prefer Pascal to C" (anon)
 
