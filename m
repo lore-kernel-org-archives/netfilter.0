@@ -1,7 +1,7 @@
-From: "Ricardo A." <ricardoa@dim.fm.usp.br>
-Subject: zlimit rules
-Date: Wed, 10 Nov 2004 09:07:52 -0200
-Message-ID: <4191F688.6040009@dim.fm.usp.br>
+From: Moritz Gartenmeister <moritz@uplink-verein.ch>
+Subject: iptables dnat, ebtables, mark
+Date: Wed, 10 Nov 2004 16:42:46 +0100
+Message-ID: <419236F6.4060306@uplink-verein.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,41 +18,63 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+hi
 
-       Good morning.
+my idea:
+i know the mac-adress from a compromised computer in my lan. i want to re=
+direct all the traffic from
+this computer to a webserver (to show up a page with e.g. "bad guy! you g=
+ot a virus").
 
-       Any one here all ready used zlimit rules for block portscanners=20
-hides!?
+my system:
+debian testing 2.6.7
+iptables
+ebtables
+bridge-code
 
-       The rule is:
+my solution so far:
+ebtables -t nat -A PREROUTING -s $MAC -j mark --set-mark 8 --mark-target =
+CONTINUE
+there are no other rules in this chain.
+some more rules in -A FORWARD all with -s macadress, but not the one abov=
+e.
 
-       iptables -A FORWARD -p tcp -tcp-flags SYN,ACK,FIN,RST -m zlimit=20
--limit 1/s -j ACCEPT.
+is the only rule in prerouting nat.
+iptables -t nat -A PREROUTING -m mark --mark 0x8 -j DNAT --to-destination=
+ $IP-WWW
 
-       I get this rule in a magazine, but don't find the zlimit module.
+is the first role in the mangle chain.
+iptables -t mangle -A PREROUTING -m mark --mark 0x8 -j ACCEPT
 
-       Anybody help-me!??
+one check rule in mangl POSTROUTING
+iptables -t mangle -A POSTROUTING -m -mark --makr 0x8 -j LOG --log-prefix=
+ IPT_MARK
 
-       Thanks.
+my problem:
+the user can access the webserver and only this server, but the user is n=
+ot redirected to the
+web-server, if he tries to access e.g. www.google.com. he only get an err=
+or-message.
+
+my observation:
+number of packets differ...
+ebtables 213 packets
+prerouting mangle 200 packets
+prerouting nat 118 packets
+postrouting mangle 93 packets
+
+any explanations? the number should be at least the same. i don't underst=
+and this. the filter-rules
+seem to work properly...
+
+cheers
+moritz
+
 
 --=20
-             Ricardo A
-        Analista de Suporte
-	   www.usp.br/fm
-
-Linux Registered User # 291904
-
-The box said "Windows XP, Windows NT, or better".
-So I installed GNU/Linux.
-
-"Nunca discuta com um idiota. Ele ir=E1 arrast=E1-lo at=E9 o seu n=EDvel =
-e ent=E3o o derrotar=E1 com a sua vasta experi=EAncia."
-
-
---------------------------
-Esta mensagem foi verificada
-pelo sistema de antiv=EDrus DIM e
-acredita-se estar livre de Virus.
-Virus data file v4405 created Nov 09 2004
-
+Uplink student association
+Moritz Gartenmeister
+B=FClachstrasse 1 F
+8057 Z=FCrich
+Switzerland
 
