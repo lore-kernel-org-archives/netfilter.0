@@ -1,13 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Do I need to write a module?
-Date: 24 Jun 2003 08:57:25 +0200
+From: Jason White <jdwhite@jdwhite.org>
+Subject: Forcing source port with NAT
+Date: Mon, 23 Jun 2003 14:54:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056437845.2764.57.camel@raylinux.internal>
-References: <sef70417.087@mail.stone-ware.com>
+Message-ID: <20030623195459.GA28900@jdwhite.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-y8mLlHKkMs5G8KWhYjtW"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <sef70417.087@mail.stone-ware.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,68 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Greetings,
+  I have an application, Zephyr Messaging Service, which uses a client
+application that sends out UDP packets on port 2104.  The Zephyr server
+will refuse packets from the client if the source address is not 2104.
+I want to run this application behind a NAT on one given machine.  I
+need a way to ensure that packets from this one machine with a source
+address of 2104 go through the NAT that they emerge on port 2104 of the
+external ip address.  To diagram a packet:
 
---=-y8mLlHKkMs5G8KWhYjtW
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+[Intenal machine-10.0.0.2:2104] --> [NAT internal: 10.0.0.1] -->
+  [NAT external: 200.200.200.200: 2104] --> ///internet/// ...
 
-Hi
+Basically, I need to ensure that anything coming in on 200.200.200.200:2104
+goes to 10.0.0.2:2104 and anything going out from 10.0.0.2:2104 goes out
+200.200.200.200:2104.
 
-Why don't you get the Java app to export some kind of text that you can
-get netfilter to parse with regular unix utilities (sed, awk, grep).
+I know how to map the external to internal, but internal to external
+isn't immediately obvious
 
-Create a cron job to parse the file every 10 minutes (if that's regular
-enough) that parses the text file and reloads your iptables rules as per
-the file.
+Thanks,
+-Jason
 
-Ray
-
-On Mon, 2003-06-23 at 20:43, Tony Thompson wrote:
-> I am investigating an option to use netfilter to allow/deny traffic from
-> the local subnet based on rules/accounting information that is in
-> another (Java based) system.  I am new to netfilter so, I can someone
-> offer some suggestions:
->=20
-> 1. Is netfilter the right place to hook or should I look at a firewall
-> that may provide some higher level hooks for authentication and
-> accounting?
->=20
-> 2. If I should hook into netfilter, is it a good idea to call into a
-> JVM from a netfilter module?
->=20
-> 3. I am not sure what kind of control I have when using the userspace
-> driver but, should I use that in this situation?  Can I use that
-> directly from Java so I wouldn't have the hassel of calling into a JVM
-> from a native process?
->=20
-> If anyone can offer any other suggestions or examples, that would be
-> appreciated.
->=20
-> Thanks.
-> Tony
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-y8mLlHKkMs5G8KWhYjtW
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+9/ZVh1fuR/Bv+ygRAixgAKCUvamE/LpE75fT21PG0WEe82geawCgs0pM
-cU995NOEI9xsAjPLWSP0ouk=
-=DzuW
------END PGP SIGNATURE-----
-
---=-y8mLlHKkMs5G8KWhYjtW--
-
+-- 
+Jason White (jdwhite@jdwhite.org)  http://www.jdwhite.org/~jdwhite
+Jabber:jdwhite@jabber.org  IRC:irc.netbsd.org/{jdwhite,jdw}
+AIM:jdwhite90125  Yahoo:jdwhite89  ICQ:9295078  MSN:jdwhite89@hotmail.com
+GPG KeyID: 0x74CF850D/1F57 465A 1357 BA39 2BEF  5629 6E1C 2B20 74CF 850D
 
