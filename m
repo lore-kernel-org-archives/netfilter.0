@@ -1,12 +1,13 @@
-From: Frederic de Villamil <neuro@seclab.jp>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: POM
-Date: Fri, 26 Mar 2004 17:06:07 +0100
+Date: Fri, 26 Mar 2004 16:02:40 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040326160607.GA36137@jesus.seclab.jp>
+Message-ID: <200403261602.40530.Antony@Soft-Solutions.co.uk>
 References: <40644FAF.8080807@wanadoo.fr>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <40644FAF.8080807@wanadoo.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,34 +19,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rakotomandimby Mihamina <rktmb.list@wanadoo.fr>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, 26 Mar 2004, Rakotomandimby Mihamina wrote:
+On Friday 26 March 2004 3:43 pm, Rakotomandimby Mihamina wrote:
 
 > Hi ,
 > I'm sorry to ask such a dumb question but what is Patch-O-Matic ?
 > What is it ? the netfilter website gives me no clear information enough
 > , and i dont know if i should use it or not ...
 
+Patch-O-Matic is a way to add other features to netfilter which are not part 
+of the mainstream distribution.
 
-Hi,
-Patch-o-matic comes from patch and automatic (huhu ^_^).
-There are a lot of  functionnalities added to netfilter that aren't in
-the vanilla  kernel. But  you can  patch your kernel  in order  to use
-them.
-Patch-o-matic  is a script  that let  you select  functionnalities you
-want (like new targets, new matches) and patches your kernel.
+Regard it as a series of patches, each of which adds something different to 
+the standard netfilter, which happen to have been collected all in one place.
 
-You shall have a look at
-http://netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO.html
+Whether or not you want to use it depends on whether you want netfilter to do 
+any of the more unusual or exotic things which people have written the 
+extensions for.
 
-regards
-Frederic
+Take a look at the lists on the website and see if any seem useful.
 
---
-< Ylli> lol je rigole neuro jte prend pa pr un pervers ms un president
-et pere de famille respectable :s
-http://www.seclab.jp
+http://www.netfilter.org/patch-o-matic/pom-base.html
+http://www.netfilter.org/patch-o-matic/pom-extra.html
+
+Regards,
+
+Antony.
+
+-- 
+It is also possible that putting the birds in a laboratory setting 
+inadvertently renders them relatively incompetent.
+
+ - Daniel C Dennet
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
