@@ -1,13 +1,11 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Scary Hole in the Firewall?
-Date: Mon, 19 Jul 2004 15:01:21 -0500
+From: Samuel Richard <Samuel.Richard@USherbrooke.ca>
+Subject: Help building shared version of libiptc library (libiptc.so)
+Date: Mon, 19 Jul 2004 16:14:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40FC2891.4080404@pbl.ca>
-References: <1090265344.11052.7.camel@dchws.tqmcube.com>	 <40FC242E.3050504@pbl.ca> <1090266741.11052.12.camel@dchws.tqmcube.com>
+Message-ID: <1090268046.3172.9.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090266741.11052.12.camel@dchws.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-David Cary Hart wrote:
-> On Mon, 2004-07-19 at 15:42, Aleksandar Milivojevic wrote:
->>Question.  Iniside firewall as in "on separate machine inside firewall", 
->>or as in "on the same machine as firewall"?
-> 
-> -snip-
-> 
->>In later case, what you are seeing is what you were supposed to see (if 
->>I'm correct on how snort works, by sniffig network traffic directly from 
->>the network interface).
-> 
-> Same machine. I think that Snort only sees what gets through the
-> firewall.
+Hi,
 
-Actually, if Snort is sniffing traffic directly on the network interface 
-(like tcpdump or ethereal), than it will see the packets as they arrive 
-on the wire (before Netfilter can filter them out).
+I am trying to use jnetfilter, which requires that I generate a shared
+version of libiptc.  Here's what they say:
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+"In order to get the jnetfilter package to work, you also have to
+download the source code of iptables (from www.netfilter.org or
+www.iptables.org), and modify the Makefile slightly to generate a shared
+version of the libiptc.a library (libiptc.so)."
+
+They also privide us with a modified version of the makefile which looks
+like that:
+
+TOPLEVEL_INCLUDED=YES
+NETFILTER_VERSION=1.2.1a
+CFLAGS=-Wl,-export-dynamic -fPIC -shared -DNETFILTER_VERSION=\"1.2.1a\"
+
+libiptc/libiptc.so : Makefile.libiptc libiptc/libiptc.c
+	gcc $(CFLAGS) libiptc/libip4tc.c -o libiptc/libiptc.so
+
+I tried to modify my makefile without any success...  Does anyone know
+how to do this?
+
+Thanks,
+
+Sam
+
+
+
+ 
+
 
