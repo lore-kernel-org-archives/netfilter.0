@@ -1,13 +1,10 @@
-From: oumer@kom.auc.dk
-Subject: Re: libipq and threads, problems, very annoying problem
-Date: Tue, 14 Oct 2003 23:21:33 +0200 (CEST)
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: MTU issues with tunnel: frag needed, --set-mss, --clamp-mss-to-ptmu
+Date: Tue, 14 Oct 2003 15:37:11 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066166493.3f8c68dd1355c@webmail.kom.auc.dk>
-References: <20031014164734.41953.qmail@web13906.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.53.0310141530230.5712@xena.cft.ca.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031014164734.41953.qmail@web13906.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,259 +14,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I asked some guys at experts-exchange, and here are some of the correspondance
-so far, may be some one from here, pick from that discussion? 
-http://www.experts-exchange.com/Programming/Programming_Platforms/Linux_Programming/Q_20766491.html
+Here's the setup:
 
-Quoting Scott MacKay <scottmackay@yahoo.com>:
+Client ------ NATbox -- Internet --+-- Target-hosts
+(ESP-in-UDP)+                      |
+            ||                     |
+            ||  tunnel             +-- IPSec-server
+             +============================+
 
-> Is there a particular reason why you need to generate
-> a thread per packet?  Threads can have a moderate
-> overhead, expecially if you are creating them in the
-> hundreds (depending on your traffic levels).
-> If you are just looking to delay, I would suggest
-> this:
-> 
-> Create a fifo, linked list, or such with 2 structure
-> elements: a packet buffer (for the ipq_read data) and
-> a timestamp.  Optional: I believe the packet has a
-> timestamp marked on it but I have never used that.
-> in a loop do something like:
-> while (some loop condition)  {
->    get the current time
->    if there are 1+ packets queued
->        get the timestamp of the 1st packet 
->        set 'timeout':subtract first packet time from
-> now
->    else
->        'timeout' = 0
->    call ipq_read with the timeout
->    if we got a packet
->        set its time += 100ms
->        add it to the end of the queue
->    get the current time
->    if first packet time - now <= 0
->       release packet
-> } 
-> Basically, the first packet will always have the
-> shortest delay.  By setting a timeout, you can exit
-> the ipq_read and handle a packet due for release
-> without the need for threads.
-> Hope it helps!
-> 
-> --- Oumer Teyeb <oumer@kom.auc.dk> wrote:
-> > I am sorry, but I forgot to mention that I am aware
-> > that libipq is not 
-> > thread safe (I read it in one of the message boards,
-> > don't remember 
-> > where). Can this problem be attributed to that ? And
-> > if so is there a 
-> > way around it? I am kind of stuck with my project
-> > unless I do this 
-> > properly, so help is really really appreciated.
-> > 
-> > Thanks again
-> > 
-> > Oumer Teyeb wrote:
-> > 
-> > > Hi,
-> > >
-> > > Here is a sample code where I try to delay every
-> > packet by some time 
-> > > (in the code I posted here it is fixed to 100
-> > msec.). Inorder to do 
-> > > so, I start a pthread for every packet that is
-> > received by libipq . I 
-> > > have iptables rules that queues tcp packets that
-> > are coming and going 
-> > > to some other machine. I then ftp to that machine.
-> > The program works, 
-> > > the problem is with the dumping. I have two files,
-> > one is supposed to 
-> > > capture the files when they reach the queue
-> > (new_file_2) and the other 
-> > > just before the set verdict is called
-> > (new_file_3). The new_file_2 
-> > > works properly. The problem is with new_file_3. I
-> > couldn't get how, 
-> > > but somehow, at some location, some erroneous
-> > entries are put into the 
-> > > file, the end effect being tcpdump not able to
-> > recognize the file at 
-> > > some point. To check, I commented out the only
-> > line which makes the 
-> > > two files differ, i.e the one that changes the
-> > time stamp of the 
-> > > packet header (as indicated by *********), and the
-> > two files are not 
-> > > the same. First I thought maybe one thread was
-> > writing to the file, 
-> > > and then another thread becomes active and writes
-> > also. So I 
-> > > introduced a mutex_variable that will avoid such
-> > > problem. But it doesn't help at all. Could you
-> > please tell me what I 
-> > > am doing wrong? I have to save the files myself as
-> > tcpdump get the 
-> > > packets before the firewall for incoming packets 
-> > > Thanks in advance,
-> > > Oumer
-> > >
-> > > #include <sys/time.h>
-> > > #include <linux/netfilter.h>
-> > > #include <netinet/in.h>
-> > > #include <libipq.h>
-> > > #include <pthread.h>
-> > > #include <unistd.h>
-> > > #include <signal.h>
-> > > #include <string.h>
-> > > #include <stdio.h>
-> > > #include <stdlib.h>
-> > > #include "errors.h"
-> > > #include <mcheck.h>
-> > >
-> > > #define BUFSIZE 2048
-> > >
-> > > struct ipq_handle *h;
-> > > ipq_packet_msg_t *m;
-> > >
-> > > FILE* new_file_2;
-> > > FILE* new_file_3;
-> > >
-> > > pthread_mutex_t mutex_write;
-> > >
-> > > /* char src_mac[6] = {0,0,0xb4,0x4b,0x2c, 0xe1};
-> > */
-> > > /* char dst_mac[6] = {0,0xb,0x46, 0x10, 0x57,
-> > 0x80}; */
-> > > /* char ether_type[2] = {8,0}; */
-> > >
-> > > char src_dst_ether [14] = {0,0,0xb4,0x4b,0x2c,
-> > 0xe1,0,0xb,0x46, 0x10, 
-> > > 0x57, 0x80,8,0};
-> > >
-> > > //stolen from pcap
-> > > struct PCAP_file_header {
-> > >    unsigned int magic;
-> > >    short major;
-> > >    short minor;
-> > >    int thiszone;    /* gmt to local correction */
-> > >    unsigned int sigfigs;    /* accuracy of
-> > timestamps */
-> > >    unsigned int snaplen;    /* max length saved
-> > portion of each pkt */
-> > >    unsigned int linktype;    /* data link type
-> > (LINKTYPE_*) */
-> > > };
-> > >
-> > > struct PCAP_packet_header {
-> > >    struct timeval ts;    /* time stamp */
-> > >    int caplen;    /* length of portion present */
-> > >    int len;    /* length this packet (off wire) */
-> > > };
-> > >
-> > > typedef struct {
-> > >  int         sleep_time;
-> > >  ipq_packet_msg_t *packet;
-> > > //  unsigned char *data;
-> > >  struct PCAP_packet_header pkt_header;
-> > >  int thread_id;
-> > > } params;
-> > >
-> > > static void die(struct ipq_handle *h)
-> > > {
-> > >        ipq_perror("ipq_error::");
-> > >        ipq_destroy_handle(h);
-> > >        exit(1);
-> > > }
-> > >
-> > > void *delay_packet (void *param_packet)
-> > > {
-> > >    int status;
-> > >    params *myparams= (params*) param_packet;
-> > >    status = pthread_detach (pthread_self ());
-> > >    if (status != 0)
-> > >        err_abort (status, "Detach thread");
-> > >
-> > >   usleep(100000);
-> > >   pthread_mutex_lock (&mutex_write);
-> > >   //  gettimeofday(&(myparams->pkt_header.ts),
-> > NULL);   
-> > > ************************
-> > >   fwrite(&(myparams->pkt_header), sizeof(struct
-> > PCAP_packet_header),1, 
-> > > new_file_3);
-> > >   fwrite(src_dst_ether,1, 14, new_file_3);
-> > >   fwrite((unsigned int*)(myparams->packet+1), 1, 
-> > > myparams->packet->data_len, new_file_3);
-> > >   //free(myparams->packet);
-> > >   pthread_mutex_unlock (&mutex_write);
-> > >   status = ipq_set_verdict(h,
-> > myparams->packet->packet_id,NF_ACCEPT, 
-> > > 0, NULL);
-> > >   if (status < 0)
-> > >      die(h);
-> > >   free(myparams);
-> > >   return NULL;
-> > > }
-> > >
-> > > void signal_handler(int sig)
-> > > {
-> > >  if (h)
-> > >    ipq_destroy_handle(h);
-> > >  fclose(new_file_2);
-> > >  fclose(new_file_3);
-> > >  exit(0);
-> > > }
-> > >
-> > > int main(int argc, char **argv)
-> > > {
-> > >   mtrace();
-> > >   int status;
-> > >   unsigned char buf[BUFSIZE];
-> > >   int thread_id=0;
-> > >     new_file_2= fopen("dump_tcp_data.txt", "w+b");
-> > >   new_file_3 = fopen("dump_tcp_data_after.txt",
-> > "w+b");
-> > >     pthread_mutex_init(&mutex_write, NULL);
-> > >   struct PCAP_file_header *file_header =   (struct
-> > 
-> > > PCAP_file_header*)(malloc(sizeof(struct
-> > PCAP_file_header)));
-> > >     file_header->magic=0xa1b2c3d4;
-> > >   file_header->major=2;
-> > >   file_header->minor=4;
-> > >   file_header->thiszone=0;
-> > >   file_header->sigfigs=0;
-> > >   file_header->snaplen=65535;
-> > >   file_header->linktype=1;
-> > >     fwrite(file_header, sizeof(struct
-> > PCAP_file_header),1, new_file_2);
-> > >   fwrite(file_header, sizeof(struct
-> > PCAP_file_header),1, new_file_3);
-> > >     free(file_header);
-> > >   pthread_t thread;
-> > >      h = ipq_create_handle(0, PF_INET);
-> > >    sigset(SIGINT, signal_handler);
-> > >    if (!h)
-> > >                die(h);
-> > >    status = ipq_set_mode(h, IPQ_COPY_PACKET,
-> > BUFSIZE);
-> > >    if (status < 0)
-> > >      die(h);
-> > >    printf("PACKET_ID\t\tDATA_LENGTH\tSTATUS\n");
-> > >    printf("=========\t\t============\t=======\n");
-> > 
-> === message truncated ===
-> 
-> 
-> __________________________________
-> Do you Yahoo!?
-> The New Yahoo! Shopping - with improved product search
-> http://shopping.yahoo.com
-> 
-> 
+There is an IPSec tunnel from the client to the IPSec server; the server
+uses FreeS/WAN (super, 1.99, with Nat-T and X.509 patches and ESP-in-UDP
+kernel patch); the client is either Linux with the same setup, or Windows
+XP with native IPSec.  On packets emerging from the tunnel the server
+does NAT, so the target machine will send replies to the server, not to
+the (non-routeable) private IP address of the client.
+
+With this configuration the MSS is 1320 (determined empirically, maybe
+over-conservative by a few bytes), when the client and NATbox link MTUs
+are 1500.  This firewall rule on the server is effective in preventing
+TCP connections from hanging:
+
+    iptables -t filter -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
+	-j TCPMSS --set-mss 1320
+
+However, if the client's link MTU is less, as it would be in the likely
+case of a PPP connection, the code in net/ipv4/netfilter/ipt_TCPMSS.c
+unconditionally sets the MSS to 1320, which would be wrong.  I would
+like to be able to tell my users, find out your real link MTU (let's say
+800), subtract 180, and put the corresponding filter rule on the client,
+e.g.
+
+    iptables -t filter -A INPUT -p tcp --tcp-flags SYN,RST SYN \
+	-j TCPMSS --set-mss 620
+    iptables -t filter -A OUTPUT -p tcp --tcp-flags SYN,RST SYN \
+	-j TCPMSS --set-mss 620
+
+This is effective on non-IPSec connections, but when the connection goes
+through the tunnel, the client is seen to send small packets but the
+target machine sends big packets sized to the payload of 1320 bytes.
+
+I would suggest that in ipt_TCPMSS.c, the logic of --clamp-mss-to-pmtu
+should always be used, i.e. the MSS may be decreased, never increased.
+
+By the way, --clamp-mss-to-ptmu is ineffective at getting the packets to
+be small enough.  I don't know what it's not doing, but it (doesn't)
+happen even with a small value in ipsec.conf overridemtu.
+
+Of course the real solution is to get ICMP Frag Needed packets to work.
+There was a posting earlier on this list describing this scenario, which
+I re-tested on my machines.  The client (xena, 192.168.1.100) starts up
+a connection through the server (harlech, 128.97.4.250) to the target
+machine (holly, 128.97.70.187). The server NATs the packets so the
+target will answer back to the server.  The target machine sends back a
+big packet which it thinks is going to harlech (server).  The server
+de-NATs it and stuffs it down the tunnel.  It doesn't fit.  A ICMP Frag
+Needed packet is generated which looks like this on my system:
+
+    IP header: src 128.97.4.250 (harlech), dst 128.97.70.187 (holly),
+	proto ICMP
+    ICMP data: type 3 (dest unreachable) code 4 (frag needed)
+	Next hop MTU: 1360 (from ipsec.conf overridemtu)
+    Then comes the first part of the rejected packet:
+    IP header: src 128.97.70.187 (holly), dst 192.168.1.100 (xena),
+	proto TCP
+    TCP header: src port 80, dst port 32815 (can't be sure whose port it is)
+    Then the initial part of the payload, total about 500 bytes.
+
+This is the packet that was sent down the tunnel.  For it to tell Holly
+(the target machine) anything useful, the rejected packet needs to be
+NATted to show Harlech as the source and whatever port Harlech is
+NATting this connection to.  As far as I can see, the problem is not
+specific to FreeS/WAN; I had the same problem with vtun.
+
+This is going to be kind of hard to deal with.
+
+Could someone, who is more experienced and authoritative with the
+netfilter sources, please have a look at particularly the --set-mss
+issue?
+
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
