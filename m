@@ -1,13 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Problem with string
-Date: Thu, 27 Feb 2003 19:21:08 +0530
+From: Magnus Solvang <magnus@solvang.net>
+Subject: Re: Problem with string (remove References-line in mailhead)
+Date: Thu, 27 Feb 2003 14:48:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <087d01c2de67$5461f9a0$13fcc5cb@Housecall>
-References: <20030225215326.GA30804@first.knowledge.no> <20030227123531.GA26259@first.knowledge.no>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <20030227134823.GD27107@first.knowledge.no>
+References: <20030225215326.GA30804@first.knowledge.no> <20030227123531.GA26259@first.knowledge.no> <087d01c2de67$5461f9a0$13fcc5cb@Housecall>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <087d01c2de67$5461f9a0$13fcc5cb@Housecall>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all
-i have redhat 8.0 and upgraded to latest kernel
-with the following information
-Linux inca 2.4.18-24.8.0custom #4 Thu Feb 27 14:14:50 IST 2003 i686 i686
-i386 GNU/Linux
+Quoting hare ram (hareram@sol.net.in):
+| Hi all
 
-and patched with string and iptable 1.2.7a
+Please remove the "References"-line in the mailheader when
+replying to someone elses mail while changing the topic.
 
-when i try to excute the command
+This new thread is sorted under a thread I started now
+(lan users surfing on lan webserver), and I first thought
+it was an answer to my question(s).
 
-[root@inca extra]# iptables -I INPUT -m string --string 'cmd.exe' -j QUEUE
-iptables v1.2.7a: Couldn't load match
-`string':/usr/local/lib/iptables/libipt_string.so: cannot open shared object
-file: No such file or directory
+You should have removed this line (my linebreak):
 
-Try `iptables -h' or 'iptables --help' for more information.
----
+References: <20030225215326.GA30804@first.knowledge.no> \
+<20030227123531.GA26259@first.knowledge.no>
 
-
-when i check with modprob its accepting the module
-
-what could be the problem
-
-thanks
-hare
-
+- M
 
