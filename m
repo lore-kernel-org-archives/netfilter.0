@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how can i combine these 2 iprules
-Date: Fri, 5 Mar 2004 18:33:16 +0000
+From: Jan Kanty Palus <atler@poczta.onet.pl>
+Subject: DNAT + user defined chains
+Date: Fri, 5 Mar 2004 18:00:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403051833.16893.Antony@Soft-Solutions.co.uk>
-References: <3405.128.59.176.161.1078511273.squirrel@sojourn.dyndns.org>
+Message-ID: <20040305170028.GA7730@palus>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3405.128.59.176.161.1078511273.squirrel@sojourn.dyndns.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Friday 05 March 2004 6:27 pm, Technical wrote:
+My firewall configuration consist of many rules which redirect some ports
+on my server to particular hosts in lan. I wanted to reduce them so I tried
+to do something like this:
 
-> -A RH-Firewall-1-INPUT ! -s cnnp1.com  -j LOG --log-prefix "IPTABLES: "
-> -A RH-Firewall-1-INPUT ! -s cnnp2.com  -j LOG --log-prefix "IPTABLES: "
+iptables -t nat -N new
+iptables -t -A PREROUTING -i ethX -p tcp --dport <port>:<port> -j new
 
-iptables -N mychain
-iptables -A mychain -s cnnp1.com  -j RETURN
-iptables -A mychain -s cnnp2.com  -j RETURN
-iptables -A mychain -j LOG --log-prefix "IPTABLES: "
-iptables -A RH-Firewall-1-INPUT -j mychain
-
-Note that it is not recommended to use hostnames in netfilter rules - better 
-to identify the IP addresses and put them in yourself, to avoid possibly 
-hidden problems.
-
-Antony.
-
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+and in chain 'new' redirect port to right machine. The problem is that in 
+chain 'new' i have no option '--to-destination'. Is it possible to do 
+this or where can i find some info about it?
 
