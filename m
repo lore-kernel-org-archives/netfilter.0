@@ -1,9 +1,12 @@
-From: "j davis" <davis_compz@hotmail.com>
-Subject: Re: thanks for the help (netfilter)
-Date: Tue, 02 Jul 2002 07:38:36 +0000
+From: "Luigi Cartuccia" <luigicart@tin.it>
+Subject: Re: ping with netfilter
+Date: Tue, 2 Jul 2002 11:29:20 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F68LmvUk7rWY7xnZRXm00003f4c@hotmail.com>
+Message-ID: <000b01c221aa$f3276f40$31d9abd4@q8c7l5>
+References: <200FAA488DE0D41194F10010B597610D2BA1C3@JUPITER>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0008_01C221BB.B5608DC0"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,336 +17,187 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
+To: George Vieira <GeorgeV@citadelcomputer.com.au>
+Cc: netfilter@lists.samba.org
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0008_01C221BB.B5608DC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.samba.org
+
+Thank you for the answer.The problem is :the writer of the software DSR =
+has used linux-2.4.3.There are difference between linux-2.4.3 and =
+linux-2.4.4,5,6,7.... about fragmentation of the IP datagram therefore I =
+must used linux-2.4.3 or I must changed the software.
+I have seen that in my linux-2.4.7 in =
+/usr/src/linux-2.4.7/include/linux/ipv4/netfilter_ipv4 there are =
+ip_conntrck_icmp.h,ip_conntrack_irc.h and in linux-2.4.3 there aren't =
+it.
+Is this the problem?
+If you want I send to you the software
+Thank you very much
+Luigi
+  ----- Original Message -----=20
+  From: George Vieira=20
+  To: 'Luigi Cartuccia' ; netfilter@lists.samba.org=20
+  Sent: Tuesday, July 02, 2002 12:08 AM
+  Subject: RE: ping with netfilter
+
+
+  Firstly we don't have a magic wond so sending us a copy of your rules =
+would help...
+  Secondly are you logging anything at all? Is there any logs of DROPped =
+packets?
+  =20
+  Also is the kernel dual boot with multiple kenel versions? Why are you =
+reverting back to the old kernel. Your iptables is probably =
+compiled/configured for the new kernel.
+  I have a problem where I've reverted back to an old kernel because my =
+boot for the new one got corrupted and now I have untracked packet drops =
+which I know it's because I've gone back to an old kernel...
+  =20
+  We need more information.
+  thanks,
+  George Vieira
+  Systems Manager
+  Citadel Computer Systems P/L
+  http://www.citadelcomputer.com.au
+
+  -----Original Message-----
+  From: Luigi Cartuccia [mailto:luigicart@tin.it]
+  Sent: Tuesday, 02 July 2002 3:10 AM
+  To: netfilter@lists.samba.org
+  Subject: ping with netfilter
+
+
+  Hi to all I'm Luigi.I have recompiled linux-2.4.3 and I set some =
+netfilter options.I have installed software for multi-hop for wireless =
+that use netfilter.
+  With 2.4.3 and the software the ping is not ok,
+  istead with my old kernel 2.4.7 and the software the ping is ok.
+  This is a netfilter problem.
+  Can you help me??
+  What I set in the make xconfig for netfilter ???
+  Thank you=20
+  Luigi
 
 
 
+------=_NextPart_000_0008_01C221BB.B5608DC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-i sent this already but it bounced
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Thank you for the answer.The problem is =
+:the writer=20
+of the software DSR has used linux-2.4.3.There are difference between=20
+linux-2.4.3 and linux-2.4.4,5,6,7.... about fragmentation of the IP =
+datagram=20
+therefore I must used linux-2.4.3 or I must changed the =
+software.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I have seen that in my linux-2.4.7 in=20
+/usr/src/linux-2.4.7/include/linux/ipv4/netfilter_ipv4 there are=20
+ip_conntrck_icmp.h,ip_conntrack_irc.h and in linux-2.4.3 there aren't=20
+it.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Is this the problem?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>If you want I send to you the =
+software</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Thank you very much</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Luigi</FONT></DIV>
+<BLOCKQUOTE=20
+style=3D"BORDER-LEFT: #000000 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
+0px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A href=3D"mailto:GeorgeV@citadelcomputer.com.au"=20
+  title=3DGeorgeV@citadelcomputer.com.au>George Vieira</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
+href=3D"mailto:luigicart@tin.it"=20
+  title=3Dluigicart@tin.it>'Luigi Cartuccia'</A> ; <A=20
+  href=3D"mailto:netfilter@lists.samba.org"=20
+  title=3Dnetfilter@lists.samba.org>netfilter@lists.samba.org</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Tuesday, July 02, 2002 =
+12:08=20
+  AM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> RE: ping with =
+netfilter</DIV>
+  <DIV><BR></DIV>
+  <DIV><SPAN class=3D368070622-01072002><FONT color=3D#0000ff =
+face=3DArial=20
+  size=3D2>Firstly we don't have a magic wond so sending us a copy of =
+your rules=20
+  would help...</FONT></SPAN></DIV>
+  <DIV><SPAN class=3D368070622-01072002><FONT color=3D#0000ff =
+face=3DArial=20
+  size=3D2>Secondly are you logging anything at all? Is there any logs =
+of DROPped=20
+  packets?</FONT></SPAN></DIV>
+  <DIV><SPAN class=3D368070622-01072002><FONT color=3D#0000ff =
+face=3DArial=20
+  size=3D2></FONT></SPAN>&nbsp;</DIV>
+  <DIV><SPAN class=3D368070622-01072002><FONT color=3D#0000ff =
+face=3DArial=20
+  size=3D2>Also&nbsp;is the kernel dual boot with multiple kenel =
+versions? Why are=20
+  you reverting back to the old kernel. Your iptables is probably=20
+  compiled/configured for the new kernel.</FONT></SPAN></DIV>
+  <DIV><SPAN class=3D368070622-01072002><FONT color=3D#0000ff =
+face=3DArial size=3D2>I=20
+  have a problem where I've reverted back to an old kernel because my =
+boot for=20
+  the new one got corrupted and now I have untracked packet drops which =
+I know=20
+  it's because I've gone back to an old kernel...</FONT></SPAN></DIV>
+  <DIV><FONT color=3D#0000ff face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><SPAN class=3D368070622-01072002><FONT color=3D#0000ff =
+face=3DArial size=3D2>We=20
+  need more information.</FONT></SPAN></DIV>
+  <P><FONT size=3D2>thanks,<BR>George Vieira<BR>Systems =
+Manager<BR>Citadel=20
+  Computer Systems P/L<BR><A href=3D"http://www.citadelcomputer.com.au/" =
 
-Hello,
+  target=3D_blank>http://www.citadelcomputer.com.au</A></FONT></P>
+  <DIV align=3Dleft class=3DOutlookMessageHeader dir=3Dltr><FONT =
+face=3DTahoma=20
+  size=3D2>-----Original Message-----<BR><B>From:</B> Luigi Cartuccia=20
+  [mailto:luigicart@tin.it]<BR><B>Sent:</B> Tuesday, 02 July 2002 3:10=20
+  AM<BR><B>To:</B> netfilter@lists.samba.org<BR><B>Subject:</B> ping =
+with=20
+  netfilter<BR><BR></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>Hi to all I'm Luigi.I have recompiled =
+linux-2.4.3=20
+  and I set some netfilter options.I have installed software for =
+multi-hop for=20
+  wireless that use netfilter.</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>With 2.4.3 and the software the ping =
+is not=20
+  ok,</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>istead with my old kernel 2.4.7 and =
+the software=20
+  the ping is ok.</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>This is a netfilter =
+problem.</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>Can you help me??</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>What I set in the make xconfig for =
+netfilter=20
+  ???</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>Thank you </FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>Luigi</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV>&nbsp;</DIV></BLOCKQUOTE></BODY></HTML>
 
-The thing that has helped me the most when trying new firewall rules
-is logging. When you put a log rule before the drop rule you will get
-all the info you need. I see that your deafult polices are accept..
-i hope this is for testing...here are some other things...
-
-    #Forward ssh to internal host
-iptables -t nat -A PREROUTING -p tcp -d $extip --dport 300 -j DNAT --to
-192.168.0.8
-is your sshd listening on port 300 on ip 192.168.0.8 if not add this
-instead of 192.168.0.8>>>  192.168.0.8:22
-
-also maybe your problem is in prerouting...Dnat rule  need
-"--to-destination"
-ex..
-
-iptables -t nat -A PREROUTING -p tcp -d $webip --dport 80 -j DNAT
---to-destinaion\
-192.168.0.8
-
-notice the " \ " allows you to continue a rule on the next line without
-BASH freaking out. Hope this helps if you would like I can send you my
-script it has examples of making custom chains, i like using custom chains
-it makes for easier rule writing when you split up the default chains
-(FORWARD,INPUT,OUTPUT) into smaller more specific chains like...
-INTERNET_to_LAN
-LAN_to_INTERNET
-FIREWALL_TO_LAN
-LAN_TO_FIREWALL
-etc...etc...
-
-also here is a example of a log rule..log then drop...logged stuff
-shows up in /var/log/messages
-
-iptables -A INPUT -d 10.0.0.2 -p udp --dport 137:139 -j LOG
---log-prefix=3D"SMB\ INPUT:"
-iptables -A INPUT -d 10.0.0.2 -p udp --dport 137:139 -j DROP
-
-
-hope this helps
-jd
-http://www.taproot.bz/
-
-
->From: "outspoken" <outspoken@gru.net>
->To: "j davis" <davis_compz@hotmail.com>
->Subject: Re: thanks for the help (netfilter)
->Date: Tue, 2 Jul 2002 03:29:51 -0400
->MIME-Version: 1.0
->Received: from grucom2.gru.net ([209.251.129.7]) by hotmail.com with=20
->Microsoft SMTPSVC(5.0.2195.4905); Tue, 2 Jul 2002 00:29:13 -0700
->Received: from [65.33.189.93] by grucom2.gru.net (NTMail=20
->7.02.3028/NU4112.00.c8d0dec5) with ESMTP id ervcpbaa for=20
->davis_compz@hotmail.com; Tue, 2 Jul 2002 03:30:12 -0400
->Message-ID: <002001c2219a$411d88d0$0200a8c0@SILVERBEAST>
->References: <F197IU1Gj03oHMwVN7m000039db@hotmail.com>
->X-Priority: 3
->X-MSMail-Priority: Normal
->X-Mailer: Microsoft Outlook Express 6.00.2600.0000
->X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
->X-AuthenticatedSender: outspoken@gru.net
->Return-Path: outspoken@gru.net
->X-OriginalArrivalTime: 02 Jul 2002 07:29:13.0759 (UTC)=20
->FILETIME=3D[2A443AF0:01C2219A]
->
->oh, btw.. i made a LOG for port 80 here is the info from the external IP
->
->WEB INPUT:IN=3Deth1 OUT=3D MAC=3Dblah.blah.blah SRC=3D192.168.0.2
->DST=3Dexternal.ip.here LEN=3D46 TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D2458=
-1 DF=20
->PROTO=3DTCP
->SPT=3D2426 DPT=3D110 WINDOW=3D64225 RES=3D0x00 ACK PSH URGP=3D0
->
->
->
->----- Original Message -----
->From: "j davis" <davis_compz@hotmail.com>
->To: <outspoken@gru.net>
->Sent: Monday, July 01, 2002 8:09 PM
->Subject: Re: thanks for the help (netfilter)
->
->
-> >
-> > Hello,
-> >
-> >   The thing that has helped me the most when trying new firewall rules
-> > is logging. When you put a log rule before the drop rule you will get
-> > all the info you need. I see that your deafult polices are accept..
-> > i hope this is for testing...here are some other things...
-> >
-> > >#Forward ssh to internal host
-> > >iptables -t nat -A PREROUTING -p tcp -d $extip --dport 300 -j DNAT --to
-> > >192.168.0.8
-> > is your sshd listening on port 300 on ip 192.168.0.8 if not add this
-> > instead of 192.168.0.8>>>  192.168.0.8:22
-> >
-> > also maybe your problem is in prerouting...Dnat rule  need
-> > "--to-destination"
-> > ex..
-> >
-> > iptables -t nat -A PREROUTING -p tcp -d $webip --dport 80 -j DNAT
-> > --to-destinaion\
-> > 192.168.0.8
-> >
-> > notice the " \ " allows you to continue a rule on the next line without
-> > BASH freaking out. Hope this helps if you would like I can send you my
-> > script it has examples of making custom chains, i like using custom=20
->chains
-> > it makes for easier rule writing when you split up the default chains
-> > (FORWARD,INPUT,OUTPUT) into smaller more specific chains like...
-> > INTERNET_to_LAN
-> > LAN_to_INTERNET
-> > FIREWALL_TO_LAN
-> > LAN_TO_FIREWALL
-> > etc...etc...
-> >
-> > also here is a example of a log rule..log then drop...logged stuff
-> > shows up in /var/log/messages
-> >
-> > iptables -A INPUT -d 10.0.0.2 -p udp --dport 137:139 -j LOG
-> > --log-prefix=3D"SMB\ INPUT:"
-> > iptables -A INPUT -d 10.0.0.2 -p udp --dport 137:139 -j DROP
-> >
-> >
-> > hope this helps
-> > jd
-> > http://www.taproot.bz/
-> > >From: "outspoken" <outspoken@gru.net>
-> > >To: <davis_compz@hotmail.com>
-> > >Subject: thanks for the help (netfilter)
-> > >Date: Mon, 1 Jul 2002 16:09:10 -0400
-> > >MIME-Version: 1.0
-> > >Received: from grucom2.gru.net ([209.251.129.7]) by hotmail.com with
-> > >Microsoft SMTPSVC(5.0.2195.4905); Mon, 1 Jul 2002 13:08:48 -0700
-> > >Received: from [65.33.189.93] by grucom2.gru.net (NTMail
-> > >7.02.3028/NU4112.00.c8d0dec5) with ESMTP id xyqapbaa for
-> > >davis_compz@hotmail.com; Mon, 1 Jul 2002 16:09:29 -0400
-> > >Message-ID: <004301c2213b$2a0ff0b0$0200a8c0@SILVERBEAST>
-> > >X-Priority: 3
-> > >X-MSMail-Priority: Normal
-> > >X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-> > >X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-> > >X-AuthenticatedSender: outspoken@gru.net
-> > >Return-Path: outspoken@gru.net
-> > >X-OriginalArrivalTime: 01 Jul 2002 20:08:48.0527 (UTC)
-> > >FILETIME=3D[1C8831F0:01C2213B]
-> > >
-> > >i was working on this for a few hours now, all the suggestions you gave
->me.
-> > >and here is what i have so far in my script:
-> > >thanks for the "modprobe" instead of insmod, it works much better. but=
-=20
->i
-> > >still can't get to my internal server for apache/mysql
-> > >i added the other 3 lines you posted to the listserv.
-> > >
-> > >sorry for emailing you directly, but since its been a while i didn't=20
->want
-> > >this to pass you by.
-> > >
-> > >i turned off the services on the firewall machine and also stopped=20
->them,
-> > >they are all running on the internal machine and i can see them running
-> > >locally but not from the internet.
-> > >
-> > >
-> > >#!/bin/bash
-> > >
-> > >echo "[-----firewall module init-----]"
-> > >cd /lib/modules/2.4.10-4GB/kernel/net/ipv4/netfilter
-> > >modprobe ip_tables
-> > >modprobe ip_conntrack
-> > >modprobe ipt_state
-> > >modprobe ipt_limit
-> > >modprobe iptable_filter
-> > >modprobe iptable_mangle
-> > >modprobe ipt_LOG
-> > >modprobe ipt_MASQUERADE
-> > >modprobe ipt_REDIRECT
-> > >modprobe ipt_REJECT
-> > >modprobe iptable_nat
-> > >
-> > >echo "[-----clearing firewall rulesets-----]"
-> > >iptables -F INPUT
-> > >iptables -F FORWARD
-> > >iptables -F OUTPUT
-> > >iptables -P INPUT ACCEPT
-> > >iptables -P FORWARD ACCEPT
-> > >iptables -P OUTPUT ACCEPT
-> > >
-> > >echo "[-----network address translation---]"
-> > >
-> > >extif=3Deth0
-> > >intif=3Deth1
-> > >
-> > >extip=3Dxxx.xxx.xxx.xxx
-> > >intip=3D192.168.0.1
-> > >webip=3D192.168.0.8
-> > >
-> > >iptables -t nat -F
-> > >iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> > >echo 1 > /proc/sys/net/ipv4/ip_forward
-> > >
-> > >echo "[-----enabling spoof protection-----]"
-> > >
-> > >for blah in /proc/sys/net/ipv4/conf/*/rp_filter; do
-> > >echo "1" > $blah
-> > >done
-> > >
-> > >echo "[-----setting external rulesets-----]"
-> > >iptables -A INPUT -i eth0 -f -j DROP
-> > >iptables -A INPUT -i eth0 -p TCP --syn -m limit --limit 1/s -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p TCP --tcp-flags SYN,ACK,FIN,RST RST -m=20
->limit
-> > >--limit 1/s -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p TCP --dport 32768:61000 -m state --state
-> > >ESTABLISHED -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p ICMP --icmp-type echo-reply -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p TCP -s 192.168.0.2/255.255.255.255 --dport
->22
-> > >-m state --state NEW,ESTABLISHED -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p TCP --dport 137 -j DROP
-> > >iptables -A INPUT -i eth0 -p UDP --dport 137 -j DROP
-> > >iptables -A INPUT -i eth0 -p TCP --dport 138 -j DROP
-> > >iptables -A INPUT -i eth0 -p UDP --dport 138 -j DROP
-> > >iptables -A INPUT -i eth0 -p TCP --dport 139 -j DROP
-> > >iptables -A INPUT -i eth0 -p UDP --dport 139 -j DROP
-> > >iptables -A INPUT -i eth0 -p TCP --dport 32768:61000 -m state --state
-> > >ESTABLISHED -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p TCP --sport 32768:61000 --dport 22 -m=20
->state
-> > >--state NEW,ESTABLISHED -j ACCEPT
-> > >
-> > >echo "[-----setting internal rulesets-----]"
-> > >iptables -A FORWARD -i eth1 -d 10.0.0.0/8 -j DROP
-> > >iptables -A FORWARD -i eth1 -d 127.0.0.0/8 -j DROP
-> > >iptables -A FORWARD -i eth1 -p igmp -j DROP
-> > >iptables -A FORWARD -i eth1 -p TCP --syn -m limit --limit 10/s -j=20
->ACCEPT
-> > >iptables -A FORWARD -i eth1 -p TCP --tcp-flags SYN,ACK,FIN,RST RST -m
->limit
-> > >--limit 10/s -j ACCEPT
-> > >
-> > >iptables -t nat -A PREROUTING -d 192.168.0.1 -p tcp --dport 80 -j
->DNAT --to
-> > >192.168.0.8
-> > >
-> > >iptables -A FORWARD -d 192.168.0.8 -p tcp --dport 80 -j ACCEPT
-> > >iptables -A FORWARD -s 192.168.0.8 -m state --state
->RELATED,ESTABLISHED -j
-> > >ACCEPT
-> > >
-> > >#Forward web services to internal host
-> > >iptables -t nat -A PREROUTING -p tcp -d $extip --dport 80 -j DNAT --to
-> > >192.168.0.8
-> > >
-> > >#Forward ssh to internal host
-> > >iptables -t nat -A PREROUTING -p tcp -d $extip --dport 300 -j DNAT --to
-> > >192.168.0.8
-> > >
-> > >#Forward mysql to internal host
-> > >iptables -t nat -A PREROUTING -p tcp -d $extip --dport 3306 -j DNAT=20
->--to
-> > >192.168.0.8
-> > >
-> > ># Remember to shut off the above services on your firewall box. And=20
->when
-> > >you change your default FORWARD policy to DROP, you will have to add an
-> > ># explicit -j ACCEPT before each above port forward rule in the FORWARD
-> > >chain.
-> > >
-> > >iptables -A INPUT -i eth1 -p TCP -s 0/0 -d 0/0 --dport 22 -m
->state --state
-> > >NEW,ESTABLISHED -j ACCEPT
-> > >
-> > >echo "[-----setting internal rulesets-----]"
-> > >iptables -A INPUT -i lo -j ACCEPT
-> > >iptables -A FORWARD -i eth1 -p ICMP -s 192.168.0.0/24 -j ACCEPT
-> > >
-> > >echo "[-----setting forward rulesets-----]"
-> > >iptables -A INPUT -i eth1 -s 192.168.0.0/24 -d 192.168.0.0/24 -p TCP -j
-> > >ACCEPT
-> > >iptables -A INPUT -i eth1 -s 192.168.0.0/24 -d 192.168.0.0/24 -p UDP -j
-> > >ACCEPT
-> > >
-> > >echo "[-----firewall.NAT.gateway.DONE-----]"
-> >
-> >
-> > thanks,
-> > jd
-> >
-> > jd@taproot.bz
-> > http://www.taproot.bz
-> >
-> > _________________________________________________________________
-> > MSN Photos is the easiest way to share and print your photos:
-> > http://photos.msn.com/support/worldwide.aspx
-> >
-
-
-thanks,
-jd
-
-jd@taproot.bz
-http://www.taproot.bz
-
-thanks,
-jd
-
-jd@taproot.bz
-http://www.taproot.bz
-
-thanks,
-jd
-
-jd@taproot.bz
-http://www.taproot.bz
-
-_________________________________________________________________
-Join the world=92s largest e-mail service with MSN Hotmail.=20
-http://www.hotmail.com
+------=_NextPart_000_0008_01C221BB.B5608DC0--
 
 
