@@ -1,12 +1,12 @@
-From: "bino-psn" <bino@indoakses-online.com>
-Subject: Re: request and reply/respon packets
-Date: Wed, 3 Mar 2004 08:04:19 +0700
+From: unor <unorlist@yahoo.com>
+Subject: Re: Build Issue with 2.6.3
+Date: Tue, 2 Mar 2004 20:46:22 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <074a01c400bb$755f4a00$0103a8c0@indoaksesbno>
-References: <071f01c400b7$63cc3900$0103a8c0@indoaksesbno> <200403030059.40173.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040303044622.66011.qmail@web21411.mail.yahoo.com>
+References: <0cc501c4009a$2de236e0$d100a8c0@W2RZ8L4S02>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <0cc501c4009a$2de236e0$d100a8c0@W2RZ8L4S02>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,64 +17,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi Antony,
-I think you made a better description .. thx..
-And .. How to implement it in side the rule ?
-well ... How to let's say MARK any http-ACK coming  via an interface ?
+Jim,
 
-Sincerely
--bino-
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, March 03, 2004 8:02 AM
-Subject: Re: request and reply/respon packets
+Running RH 9 here... compiled fine.  Have you tried
+updating your kernel headers?
+
+cd /usr/include
+mv linux linux-old
+ln -s /<PATH>/linux-2.6.3/include/linux linux
 
 
-> On Wednesday 03 March 2004 12:35 am, bino-psn wrote:
->
-> > Dear All.
-> > Is there any way to know whter a packet is a "request" or "reply/respon"
-> > packets ?
->
-> I'm not sure if I understand you correctly, but let me make a few
-definitions
-> of my own, and see if they match yours...
->
-> "Requests" come from a client to a server.   "Responses" and the reply
-from
-> the server to the client.
->
-> Requests start with a SYN packet (I'm assuming we're talking about TCP
-> connections here?), and responses start with a SYN/ACK packet.
-Thereafter,
-> all packets have ACK set.
->
-> So, you can detect the first packet of a request from the fact that SYN
-(only)
-> is set, and you can detect the first packet of a response from that fact
-that
-> SYN and ACK are set.
->
-> Does that help answer your question?
->
-> Antony.
->
-> --
-> Perfection in design is achieved not when there is nothing left to add,
-but
-> rather when there is nothing left to take away.
->
->  - Antoine de Saint-Exupery
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
->
+Earl Sammons
 
+--- Jim Gifford <maillist@jg555.com> wrote:
+> Error is listed below. Any suggestions.
+> 
+> /usr/include/linux/err_kernel_only.h:1:2: #error
+> Kernel only header included
+> in userspace
+> extensions/libipt_ah.c: In function `parse_ah_spi':
+> extensions/libipt_ah.c:39: error: `ERANGE'
+> undeclared (first use in this
+> function)
+> extensions/libipt_ah.c:39: error: (Each undeclared
+> identifier is reported
+> only once
+> extensions/libipt_ah.c:39: error: for each function
+> it appears in.)
+> make: *** [extensions/libipt_ah_sh.o] Error 1
+>                 -----Error at Build has occured-----
+> 
+> ----
+> Jim Gifford
+> maillist@jg555.com
+> 
+> 
+
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
 
