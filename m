@@ -1,14 +1,15 @@
-From: Mihael Kukec <mkukec@public.srce.hr>
-Subject: Re: newbie question : ip_conntrack_ftp
-Date: Wed, 24 Mar 2004 08:28:28 +0100
+From: "Frederic de Villamil" <neuro@seclab.jp>
+Subject: Re: examining data portion of packet
+Date: Wed, 24 Mar 2004 09:59:53 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4061389C.6020703@public.srce.hr>
-References: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr> <406070EC.3010601@nk.nl>
-Reply-To: mihael.kukec@public.srce.hr
+Message-ID: <58774.192.54.193.137.1080118793.squirrel@mail.asocial.org>
+References: <20040324054521.27142.qmail@web60002.mail.yahoo.com>
+    <1080112737.2387.47.camel@raylinux.internal>
+Reply-To: neuro@seclab.jp
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <406070EC.3010601@nk.nl>
+In-Reply-To: <1080112737.2387.47.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +19,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter List <netfilter@lists.netfilter.org>
-
-Victor Julien wrote:
-
-> You're probably running the 'bf24' kernel (which kame with the 
-> bootdisk). If you use 'kernel-image-2.4.18-1-i686' you do have the 
-> modules. So you can use 'apt-get install kernel-image-2.4.18-1-i686' (if 
-> you have an i686). Beware though, you need to modify your lilo.conf 
-> because of initrd (instructions will be on the screen when you install).
-
-Kernel that came originally was 2.2.20. I upgraded to 2.4.18-686. There
-is no such image (kernel-image-2.4.18-1-i686) in latest stable or
-testing packages, but there is kernel-image-2.4.25-1-686 in testing. I
-will try with that...
+Content-Type: text/plain; charset="iso-8859-1"
+To: Ray Leach <raymondl@knowledgefactory.co.za>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Mihael
+> On Wed, 2004-03-24 at 07:45, Sandy C wrote:
+>>    I would like to be able to be able to examine the
+>> data portion of a network packet after matching it.
+>>
+>>    I figured there would be some kind of target for
+>> this, but there isn't...or at least I couldn't find
+>> any.
+>>
+>>    What is the best way to go about this? Should I be
+>> thinking of writing a target extension?
+>>
+> You could use something like ntop or tcpdump.
+>
+>> Thanks!
+>> S C
 
+Hi,
+maybe you should try ethereal. It has some very powerfull filtering
+functions that may fit your needs.
 
-
-
+--=20
+Fr=E9d=E9ric de Villamil.
+Pr=E9sident Epitanime
+Amez vos ennemis; ce n'est pas facile, mais ca va les emmerder.
+neuro@seclab.jp                             http://www.seclab.jp
 
