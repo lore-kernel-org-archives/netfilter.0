@@ -1,16 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: limiting connections
-Date: Mon, 1 Nov 2004 11:33:26 -0500
-Message-ID: <20041101163326.GA18387@bender.817west.com>
-References: <20041101092621.GA6044@tranquility.scriptkitchen.com>
-	<1099316742.3271.12.camel@hubcap.ljm.dom>
-	<20041101145111.GA13130@tranquility.scriptkitchen.com>
-	<20041101150446.GA18016@bender.817west.com>
-	<20041101161947.GA15423@tranquility.scriptkitchen.com>
+From: "Scott Knake" <sknake@Apexsoftware.com>
+Subject: ipt_TCMSS.c -- A slight problem i'm having
+Date: Mon, 1 Nov 2004 11:50:37 -0500
+Message-ID: <424BCB4EA242A1429A8AF0548E8CFF0E123959@apexexchange.ApexSoftware.Com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041101161947.GA15423@tranquility.scriptkitchen.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,44 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Mon, Nov 01, 2004 at 11:19:47AM -0500, Payal Rathod wrote:
-> On Mon, Nov 01, 2004 at 10:04:46AM -0500, Jason Opperisano wrote:
-> > yeah, in your web server configuration, set the maximum number of
-> > simultaneous connections to 10.
-> 
-> Not all webservers (especially windows based) might support it. Also
+         /* Since it passed flags test in tcp match, we know it is is
 
-they should (and yes, IIS does have a max conns setting).
+            not a fragment, and has data >=3D tcp header length.  SYN
 
-> what if the server in question is not a webserver but some simple server with 
-> no such capabalities.
+            packets should not contain data: if they did, then we risk
 
-k.
+            running over MTU, sending Frag Needed and breaking things
 
-> Hence I was looking at iptables to solve it for me.
-> The reason is that I am scared to re-make a core utility such as
-> iptables from  a tar ball. I prefer rpm for such cases.
-> I have Mandrake 10.0 (official).
+            badly. --RR */
 
-which brings us back to connlimit...  take a test machine, follow the
-procedure for patching your kernel via POM, and instead of making and
-installing the kernel, do a 'make rpm' and upgrade your production
-firewall with that rpm (after testing it, of course)...  making &
-installing iptables from source will default to /usr/local/sbin, so it
-won't interfere with your rpm-installed iptables.
+         if (tcplen !=3D tcph->doff*4) {
 
-the question "i want a feature from POM, but don't want to have to
-compile anything" isn't very much in the spirit of linux, IMHO...maybe
-i'm just a crusty old man in that respect.
+                 if (net_ratelimit())
 
--j
+                         printk(KERN_ERR
 
---
-"Lisa, if the Bible has taught us nothing else, and it hasn't, it's
-that girls should stick to girls sports, such as hot oil wrestling
-and foxy boxing and such and such."
-        --The Simpsons
+                                "ipt_tcpmss_target: bad length (%d
+bytes)\n",
+
+                                (*pskb)->len);
+
+                 return NF_DROP;
+
+         }
+
+=20
+
+Feb 20 09:47:02 klogd: ipt_tcpmss_target: bad length (60 bytes)=20
+
+Feb 20 09:47:07 klogd: ipt_tcpmss_target: bad length (60 bytes)=20
+
+Feb 20 09:47:11 klogd: ipt_tcpmss_target: bad length (60 bytes)=20
+
+(router date is wrong)
+
+=20
+
+That is a little excerpt from ipt_TCMSS.c. The problem is that somebody
+DoS'd me with syn Packets that contained data len(header) <!=3D
+len(packet). I have a little ServGate SG100 router that handles my T1
+connection. The router physically seized for the 5 minutes or so while
+he packeted because of the amount of logging I'm guessing. How can I
+block this with just an iptables ruleset? I'm trying not to limit the
+incoming number of syn packets and I cant recompile netfilter since it
+is running on a flavored kernel custom for the router. How am I going to
+prevent this in the future?
 
