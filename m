@@ -1,15 +1,13 @@
-From: Fabrice MARIE <fabrice-marie-sec@ifrance.com>
-Subject: Re: iptables -m time does not func.
-Date: Fri, 1 Nov 2002 23:40:53 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DNAT, SNAT, Portforward
+Date: Fri, 1 Nov 2002 15:23:19 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211012340.54769.fabrice-marie-sec@ifrance.com>
-References: <E187by8-0007J9-00@kashyyyk.netfilter.org>
-Reply-To: fabrice-marie-sec@ifrance.com
+Message-ID: <200211011523.gA1FNRe14921@vulcan.rissington.net>
+References: <34BE59D9.590F1486.03240133@netscape.net> <20021101085825.SDDP292.mta03-svc.ntlworld.com@there> <200211010945.42719.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E187by8-0007J9-00@kashyyyk.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200211010945.42719.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,48 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Torsten Puls <toto@pumpum.de>, IP <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+On Friday 01 November 2002 2:45 pm, Joel Newkirk wrote:
 
-Hello,
+> On Friday 01 November 2002 03:58 am, Antony Stone wrote:
+> > On Friday 01 November 2002 6:08 am, Joel Newkirk wrote:
+> > > Question to list:  At what point in its own travels does the returning
+> > > packet get automatically un-DNATed?  Prerouting again?
+> >
+> > No, it happens in POSTROUTING - because it is then a SNAT operation.
+> >
+> > Useful rule of thumb - in the FORWARD chain, all packets have their
+> > "real" IP addresses.
+> >
+> > That's because DNAT rules have already happened in PREROUTING, so packets
+> > now have the destination address of the machine they're really being sent
+> > on to, and SNAT rules have not yet happened in POSTROUTING, so packets
+> > still have the source address of the machine they really came in from.
+>
+> Is there any chance then of interference from a masquerade rule in
+> postrouting? Or do the automatic reversals take precedence?
 
-On Friday 01 November 2002 21:36, Torsten Puls wrote:
-> Hello
-> My Problem
-> After input of dis order I get the following error message:
-> iptables -A INPUT -m time --timestart 08:00 --timestop 16:00 --days Mon -j ACCEPT
-> iptables: No chain/target/match by that name
-> Why?
+Automatic reversals take precedence.
 
-Works Fine For Me. Just to check with you.. did you follow properly the steps given in
-the netfilter-extensions-HOWTO ? (since the time match is still an extension
-for the moment, and is not merged in the official kernel yet..)
-http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.html
-or in German :
-http://www.netfilter.org/documentation/HOWTO/de/netfilter-extensions-HOWTO.html
+Reply packets are matched by the entry in the connection tracking table (the 
+entry which identifies them as ESTABLISHED or RELATED), and are immediately 
+diverted away in the background to be processed.
 
-Then, you should be able to see the ipt_time module :
-# ll /lib/modules/`uname -r`/kernel/net/ipv4/netfilter/ipt_time*
--rw-r--r--    1 root     root         2.9K Sep 18 16:20 /lib/modules/2.4.19/kernel/net/ipv4/netfilter/ipt_time.o
-and the userspace pair :
-# ll /usr/local/lib/iptables/libipt_time.so 
--rwxr-xr-x    1 root     root         6.5K Aug 20 18:14 /usr/local/lib/iptables/libipt_time.so*
-Can you see them ?
+A side effect of this is that there is no way of specifying a manual rule in 
+the nat tables which will get applied to reply packets (other than the 
+automatic reverse of what got applied to the outgoing packet).
 
-If you cannot see either of them, it means you either forgot to recompile
-your kernel, or you forgot to recompile the iptables userspace part.
-Finally, if you want to use the time match or any other path-o-matic patch,
-make sure you are not using your distro's iptables package, as they will
-clash with the hand-installed iptables. (typically, if you use RedHat, you'd have to
-# rpm -e iptables --no-deps
-first, before you install you own version of iptables).
+Antony.
 
-Have a nice day,
+-- 
 
-Fabrice.
---
-Fabrice MARIE
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
 
-"Silly hacker, root is for administrators"
-       -Unknown
+ - Frank Skinner
 
