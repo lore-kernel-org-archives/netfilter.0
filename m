@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPtables FORWARD syntax question/error
-Date: Sat, 10 Jul 2004 09:40:49 +0100
+From: Erik =?iso-8859-1?Q?Wikstr=F6m?= <eriwik@itstud.chalmers.se>
+Subject: DHCP and Ident
+Date: Sat, 10 Jul 2004 16:12:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407100940.50171.Antony@Soft-Solutions.co.uk>
-References: <40EEC3F6.7050306@mail.co.gilchrist.fl.us>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040710141220.GA22967@itstud.chalmers.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40EEC3F6.7050306@mail.co.gilchrist.fl.us>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,66 +16,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Friday 09 July 2004 5:12 pm, Eric Ellis wrote:
+Hi
 
-> I have a webcache/external proxy on the network that I want to route all
-> web traffic from Squid to.  I assumed the following to work:
->
-> iptables -t nat -A OUTPUT -p tcp --dport 80 -j DNAT --to-destination
-> xx.xx.xx.xx:8080
->
-> the thing is that it gives me the error "invalid argument".  Here's what
-> else I've tried, with errors:
->
-> root@firewall:/etc# iptables -t nat -A POSTROUTING -p tcp --dport 80 -j
-> DNAT --to-destination xx.xx.xx.xx:8080
-> iptables: Invalid argument
+I've been thinking for some time now about the rules needed to allow the
+firewallbox to receive its public IP from a DHCP-server but everywhere I
+look it's done in different ways.
 
-DNAT is not valid in the POSTROUTING chain, only PREROUTING and OUTPUT.
+My first thought was to open up for the DHCP-request in the OUTPUT-chain
+(all policies DROP) and let netfilters connection-tracking abilities
+take care of the rest. Like this:
 
-> root@firewall:/etc# iptables -t nat -A OUTPUT -p tcp --dport 80 -j DNAT
-> --to-destination xx.xx.xx.xx:8080
-> iptables: Invalid argument
+iptables -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEP=
+T
+iptables -t filter -A INPUT -i $WAN -p UDP --dport 67 --sport 68 -j ACCEP=
+T
 
-That looks like a valid rule to me (but see below).
+But then I realised that since I don't have a source or destination
+address netfilter will probably not be able to track the connection.
 
-> root@firewall:/etc# iptables -A OUTPUT -p tcp --dport 80 -j DNAT
-> --to-destination xx.xx.xx.xx:8080
-> iptables: Invalid argument
+On the net I found this:
+$IPTABLES -A OUTPUT -o eth1 -p tcp -s 0.0.0.0/32 --sport 67 \
+	-d 255.255.255.255/32 --dport 68 -j ACCEPT
+$IPTABLES -A OUTPUT -o $internal_int -p udp -s $internal_ip --sport 67 \
+	-d 255.255.255.255 --dport 68 -j ACCEPT
 
-DNAT is not valid in the (default) filter table, only in the nat table.
+$IPTABLES -A INPUT -i $internal_int -p tcp --sport 68 --dport 67 -j ACC\E=
+PT
+$IPTABLES -A INPUT -i $internal_int -p udp --sport 68 --dport 67 -j ACCEP=
+T
 
-> root@firewall:/etc# iptables -A OUTPUT -p tcp --dport 80 -j DNAT
-> --to-destination xx.xx.xx.xx
-> iptables: Invalid argument
+Looks a bit much I think. Also found this:
 
-DNAT is not valid in the (default) filter table, only in the nat table.
+$IPTABLES  -I INPUT -i $LAN_IFACE -p udp --dport 67:68 --sport \
+	67:68 -j ACCEPT
 
-> The troubling thing that I'm having here is that I don't know what about
-> the rule that I'm requesting to set up is borked, and I can't really
-> find any material on it in the past few days that I've been looking.  It
-> *appears* to be a valid rule, according to what I've read at
-> http://iptables-tutorial.frozentux.net/ and other various
-> documentation/HOW-TOs/newb help references.  I think I'm missing
-> something *really* obvious, but I don't have the depth to find it.
+But this opens two ports and the only protocol I know of that uses two
+ports is FTP, so If someone could give me some hints I'd be happy.
 
-I think your netfilter rule is fine, but I suspect you don't have OUTPUT DNAT 
-enabled in the kernel - i's a separate option from the normal NAT stuff, 
-which you have to select if you need it.
 
-Regards,
+I was also wondering if about Ident, today I use it only when connecting
+to IRC-servers and have port 113 forwarded to the computer running the
+IRC-client but this solution is not so good if another computer on my
+network should have a need of Ident. So I was wondering: If I install an
+Identd on my firewallbox and let it take care of requests would it work,
+considering that the connection does not origin from the firewallbox?
 
-Antony.
+Thanks for your time.
 
--- 
-I own three Windows books, published by O'Reilly.   They are "Windows 
-Annoyances", "Office 97 Annoyances" and "Windows 98 Annoyances".   That 
-pretty much sums it up for me.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--
+Erik Wikstr=F6m
 
