@@ -1,10 +1,13 @@
-From: Niall Murphy <nmurphy@viking.ie>
-Subject: RE: Hosts.Deny Question??
-Date: Thu, 12 Sep 2002 13:55:13 +0100
+From: Steve Mickeler <steve@neptune.ca>
+Subject: Re: vrrp ip and netfilter
+Date: Thu, 12 Sep 2002 09:27:50 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9AB58396B028D411B2110050040C7AD801910D78@pc213-104.indigo.ie>
+Message-ID: <Pine.LNX.4.44.0209120926210.29987-100000@triton.neptune.on.ca>
+References: <Pine.LNX.4.44.0209121113430.11946-100000@smtp.myw0rld.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0209121113430.11946-100000@smtp.myw0rld.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,51 +17,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
-
-just what i needed
-thanx
-niall :-)
-
------Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Thursday, September 12, 2002 12:53 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Hosts.Deny Question??
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Rodrigo Hidalgo <rodde@myw0rld.org>
+Cc: netfilter@lists.netfilter.org
 
 
-On Thursday 12 September 2002 12:38 pm, Niall Murphy wrote:
+ifconfig is an old and clunky way of doing things.
 
-> Hi All,
-> i want to use hosts.deny to block emails and ip's to my email
-> server..sounds easy but i cant seem to get it to work
-> do i just need to add the emails or ip's to the host.deny and then add a
-> rule to my script
+you will see the ip via the "ip" command which is part of the iproute
+utils.
 
-Why not do it with netfilter ? (after all, that's what this list is about
-:-)
+the INPUT chain should work just fine with the vrrp ip.
 
-iptables -A FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 25 -j DROP
 
-where a.b.c.d is the remote IP address you want to block (repeat this rule 
-for as many addresses as you want to exclude) and w.x.y.z is the IP address 
-of your mail server.
+On Thu, 12 Sep 2002, Rodrigo Hidalgo wrote:
 
-Make sure this rule comes before any rule which allows general access to
-your 
-mail server from the outside world.
+> Hi all,
+>
+> Just one question, i have a fw cluster using netfilter/iptablesv1.2.5
+> together with vrrpd.
+>
+> My question is how does a packet traverse when it is destined to the
+> internal vrrp_ip? if it is destined for eth1_real_ip then it is the input
+> chain but that can=B4t be the case with vrrp or ?... btw vrrp_ip does
+> not show with ifconfig, so netfilter might not recognise the ip as an
+> locahost ip.
+>
+> so:
+>
+> -----Outer Net----
+> |
+> |
+> eth0 - <some ip>
+> -----FW cluster---
+> eth1 - <vrrp ip>
+> |
+> |
+> -----Inner net---
+>
+> BR
+>
+> Rodrigo Hidalgo C.
+>
+>
+>
 
-You won't be able to use either netfilter or hosts.deny to block actual
-email 
-addresses - you'd have to do that in your mail server itself.
 
-Antony.
 
--- 
+[-] Steve Mickeler [ steve@neptune.ca ]
 
-Having been asked to provide a reference for this man,
-I can confidently state that you will be very lucky indeed
-if you can get him to work for you.
+[|] Todays root password is brought to you by /dev/random
+
+[+] 1024D/9AA80CDF =3D 4103 9E35 2713 D432 924F  3C2E A7B9 A0FE 9AA8 0CDF
+
+
 
