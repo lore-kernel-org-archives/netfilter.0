@@ -1,11 +1,13 @@
-From: g38@rdsbv.ro
-Subject: (no subject)
-Date: Sat, 08 Jun 2002 12:31:58 +00300 (EEST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: mixing static and dynamic mappings
+Date: Sat, 8 Jun 2002 10:39:43 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023528718.3d01cf0e162e2@mail.rdsbv.ro>
+Message-ID: <200206080939.g589djA32218@Networker.rockstone.co.uk>
+References: <a7d60cd.60cda7d@wechsler.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <a7d60cd.60cda7d@wechsler.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,116 +17,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; q="1.0"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-This being my first firewall, I would like those of you who are more experienced and have the time to take a look and point the mistakes I did (and perhaps some improvements would be appreciated)
+On Saturday 08 June 2002 2:38 am, Patrick Conlin wrote:
 
-The box is intended to act as a www and mail server and to masquerade an internal network with private ip's
+> i have a /29 range of public ips from my isp. all but one of the ip
+> addresses are taken up by static mappings (servers of various
+> functions/domains) to addresses on my 10.1.1.0/24 internal network.
 
-The rules I'm not sure of are commented (and I have some questions for the masquerade, but I'll RTFM on this one - still I must ask if I did the masq rules correctly in the firewall below)
+> what i'd like to do with the remaining public ip address is use it as a sort
+> of MASQUERADE ip address for all remaining non-server machines on the
+> network
 
-thanks a lot,
-petre
+> I'm wondering if i could do something like:
+>
+> iptables -t nat -A POSTROUTING -s 10.1.1.200-10.1.1.240 -j SNAT
+> --to-source 207.224.76.205
+>
+> and combine it with state ESTABLISHED
+>
+> somehow so that just that range of ips gets a pnat-style translation for
+> basic browsing, etc.
+>
+> unfortunately the basic iptables command above just gives an error, as
+> it should. i'm pretty sure i'm going about this the wrong way, so would
+> greatly appreciate anyone's suggestions!
 
+Netfiler won't accept an arbitrary "from-to" IP address range - the only way 
+you can specify a range is with "base IP/masklength", so you'd have to be 
+able to specify the range you want as 10.1.1.200/27 (or something - I haven't 
+checked to see if this is a sensible specification, so it almost certainly 
+isn't).
 
-#!/bin/sh
+However, you may not know that you might not need to bother specifying a 
+range.
 
-IPEXT="193.xxx.xxx.xxx"
-IPT="/usr/sbin/iptables"
+Netfilter can quite happily deal with:
 
+a) masqerading machines behind an already-used address for some other service 
+(it automagically makes sure that masquerade port numbers are chosen not to 
+conflict with anything else already mapped onto that address)
 
-echo "Cleaning ..."
-for i in filter nat mangle
-do
-$IPT -t $i -F
-$IPT -t $i -X
-done
+b) multiple SNAT rules, where you specify your servers by source address 
+first, and then anything which hasn't already been matched (and had its 
+source address changed) matches on the last rule
 
-echo "Initial rules ..."
-$IPT -P INPUT ACCEPT
-$IPT -P OUTPUT ACCEPT
-$IPT -P FORWARD DROP
+eg:
 
-#loopback
-$IPT -A INPUT -i lo -p all -j ACCEPT
-$IPT -A OUTPUT -o lo -p all -j ACCEPT
+iptables -A POSTROUTING -t nat -s server1 -j SNAT --to ext1
+iptables -A POSTROUTING -t nat -s server2 -j SNAT --to ext2
+iptables -A POSTROUTING -t nat -s server3 -j SNAT --to ext3
+iptables -A POSTROUTING -t nat -j SNAT ext4
 
-echo -e "\nMASQUERADING ...\n"
-echo "Masquerading 192.168.20.0/24"
-# set up masquerading for everything not destined to the localnets
-$IPT -t nat -A POSTROUTING -s  192.168.20.0/24 -o eth1 -j MASQUERADE
-$IPT -t nat -A POSTROUTING -d  192.168.20.0/24 -o eth1 -j MASQUERADE
+will map anything which isn't server1, server2 or server3 onto ext4
 
-$IPT -A FORWARD -s 192.168.20.0/24 -j ACCEPT
-$IPT -A FORWARD -d 192.168.20.0/24 -j ACCEPT
-
-
-#echo "FWD: Allow all connections OUT and only existing and related ones IN"
-#$IPT -A FORWARD -i eth0 -s 192.168.20.0/24 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-#$IPT -A FORWARD -i eth1 -o eth0 -d 192.168.20.0/24 -j ACCEPT
-#$IPT -A FORWARD -i eth0 -s 192.168.10.5 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-#$IPT -A FORWARD -i eth1 -o eth0 -d 192.168.10.5 -j ACCEPT
-$IPT -A FORWARD -j LOG
-$IPT -A FORWARD -j DROP
-
-echo -e "- Enabling SNAT (MASQUERADE) funtionality on eth0"
-$IPT -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-echo -e "\nDone.\n"
-
-###
-
-echo "no snmpd access from the exterior"
-$IPT -A INPUT -p udp -s 0/0 --dport 161 -j DROP
-
-#cut all which appears to be loopback talking to eth's
-$IPT -A INPUT -p all -s localhost  -i eth+ -j DROP
-
-#cut all syn's except those for incoming http & ssh & smtp & pop3
-#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 80 -j ACCEPT
-#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 22 -j ACCEPT
-#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 25 -j ACCEPT
-#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 110 -j ACCEPT
-#$IPT -A INPUT -p tcp --tcp-flags ALL SYN -j DROP
-
-echo "Syn flood protection..."
-$IPT -N DoS
-$IPT -A INPUT -j DoS
-$IPT -A DoS -p icmp --icmp-type echo-request \
-        -m limit --limit 10/s -j RETURN
-$IPT -A DoS -p icmp --icmp-type echo-request \
-        -m limit -j LOG --log-level warn \
-                --log-prefix "DoS (PING)" \
-                --log-tcp-options \
-                --log-ip-options
-$IPT -A DoS -p icmp --icmp-type echo-request -j REJECT
-
-#cut access from private addresses to eth1
-$IPT -A INPUT -i eth0 -s 10.0.0.0/8 -j DROP
-$IPT -A INPUT -i eth0 -s 172.16.0.0/12 -j DROP
-$IPT -A INPUT -i eth0 -s 192.168.0.0/16 -j DROP
-
-echo "cut ssh except from trusted hosts"
-echo "allow from"
-echo "          - 1"
-$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.x -d $IPEXT --dport 22 -j ACCEPT
-echo "          - 1"
-$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.xxx -d $IPEXT --dport 22 -j ACCEPT
-echo "          - 3"
-$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.xxx -d $IPEXT --dport 22 -j ACCEPT
-echo "          - 4"
-$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.xx -d $IPEXT --dport 22 -j ACCEPT
-echo "cut all"
-$IPT -A INPUT -i eth0 -p tcp --dport 22 -j DROP
+Therefore you can do what you want without actually having to specify the 
+address range :-)
 
 
-
-
-
-
-
-
-
-
-
+Antony.
 
