@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: VPN "Punch-through"
-Date: Sat, 21 Sep 2002 08:48:55 +0100
+Subject: Re: Setting and Routing on the TOS Source (SRC) and Destination (DST) Bits
+Date: Sat, 21 Sep 2002 22:59:21 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020921074858.ORWJ11421.mta03-svc.ntlworld.com@there>
-References: <1032584055.1252.23.camel@rbhome.inside.thedataarc.com>
+Message-ID: <20020921215923.PLBQ27185.mta03-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0209202140330.2337-100000@laptop1.agatha> <20020921135239.CIIH27185.mta03-svc.ntlworld.com@there> <0a5001c261b9$541d3700$c6b22543@repligate>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1032584055.1252.23.camel@rbhome.inside.thedataarc.com>
+In-Reply-To: <0a5001c261b9$541d3700$c6b22543@repligate>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +20,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 21 September 2002 5:54 am, ryanb@thedataarc.com wrote:
+On Saturday 21 September 2002 10:53 pm, Jim Fleming wrote:
 
-> Hi
+> > 16 bits - fragment identifier
 >
-> I help operate an ISP, delivering bandwidth to 50-60 people in Kansas.
-> Right now, I have a cell that is all public IPs.  I'd like to convert it
-> to a private subnet (10.1.2.3) as we've done in other scenarios.
->
-> I have two computers currently using a VPN router to link to a remote
-> office (outside our realm).
->
-> If we convert to a filtered private system, is it possible to use a
-> "DMZ" virtual IP approach to NAT traffic to the VPN routers on the
-> inside?  (Moving our current VPN IP to a virtual on the netfilter
-> router.)
->
-> Interesting, weird I know.  Possible?
+> http://ipv8.dyn.ee/INFO/Papers/RIFRAF
 
-Depends what sort of VPN you're using.
+Fair enough, but that's not IPv4.
 
-IPsec in tunnel mode - perfectly possible, not difficult.
-
-PPTP - possible but challenging to get working.
-
-IPsec in transport mode - forget it.
-
-Hope this helps,
+As the webpage says, it's an extension to IPv4 which they've chosen to call 
+IPv8 (which I think is really confusing considering the next version due to 
+hit the streets is called IPv6).
 
 Antony.
 
 -- 
 
-There are two possible outcomes.
+How I want a drink, alcoholic of course, after the heavy chapters
+involving quantum mechanics.
 
-If the result confirms the hypothesis, then you've made a measurement.
-If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
+ - 3.14159265358979
 
