@@ -1,9 +1,8 @@
-From: Ruprecht Helms <rhelms@mayn.de>
-Subject: Understandingproblem within firewallscript
-Date: 25 Jun 2003 11:53:47 +0200
+From: "Asim Ejaz Butt" <asim.butt@streaming-networks.com>
+Subject: MSN and Yahoo Block through IPTABLES
+Date: Wed, 25 Jun 2003 15:23:37 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056534812.11039.6.camel@linux.local>
-Reply-To: rhelms@mayn.de
+Message-ID: <010a01c33b03$d78da1f0$5505a8c0@asimejaz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,23 +18,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello Gurus,
 
-I've difficulties in understanding a part within a examplescript. For
-what is the last part used in these lines.
+I am trying to block MSN and Yahoo Instant Messengers with my LAN using
+IPTABLES. Following commands are used to block them but unsuccessful.
 
-iptables -N SPECIALPORTS
+ /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 --dport 1863 -j REJECT
+ /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 -d 64.4.0.0/18 -j REJECT
 
-iptables -A SPECIALPORT -p tcp --dport 6670 -j LSPECIALPORT
-...
+ /sbin/iptables -A FORWARD -d cs.yahoo.com -j REJECT
+ /sbin/iptables -A FORWARD -d scsa.yahoo.com -j REJECT
 
-I found nothing before were LSPECIALPORT is defined. The rule
-works within the chain SPECIALPORT   I know.
+Anyone help in blocking them through IPTABLES.
 
-Thanks for help.
-
-Regards,
-Ruprecht
-
+Asim Ejaz Butt
+asim.butt@streaming-networks.com
 
 
