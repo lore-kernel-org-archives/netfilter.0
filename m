@@ -1,11 +1,13 @@
-From: Thomas Boernert <tb@tbits.net>
-Subject: ip_conntrack_ftp doesn't work with ftp proxy
-Date: 13 Nov 2002 22:55:18 +0100
+From: =?ISO-8859-1?Q?Bj=F8rn?= Ruberg <bjorn@ruberg.no>
+Subject: Re: DNAT to localhost
+Date: 13 Nov 2002 23:14:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037224518.1192.29.camel@miraculix>
+Message-ID: <1037225641.10536.1.camel@lilleulv>
+References: <1037219719.6450.5.camel@tux.go-nix.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1037219719.6450.5.camel@tux.go-nix.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,45 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Wed, 2002-11-13 at 21:35, Nix N. Nix wrote:
+> Hi ! I sent the following message to netfilter@lists.samba.org as well,
+> so, if it hits this list twice, please forgive me.
+>=20
+> Here it is:
+>=20
+> Why doesn't this work ?
+>=20
+> /sbin/iptables -t nat -A PREROUTING -p udp --destination 192.168.1.1/32
+> --dport 80 -j DNAT --to-destination 127.0.0.1:8080
 
-i hope anyone can help me.
+[snip]
 
-network-chart
+> So, is there any way to forward TCP ports from local interfaces to the
+> loopback interface ?
 
-linuxbox ----- firewall ---- internet
+Change from "udp" to "tcp" in your iptables line above.
 
-on the firewall runs a ftp proxy (suse proxy-suite on port 8082)
-i've the following rules
+When you debug your iptables rules, turn on full logging to see what is
+being dropped.
 
-iptables -A INPUT -p tcp -s $local_net --sport 1024:65535 -d
-$firewall_internal_ip --dport 8082 -m state --state NEW,ESTABLISHED -j
-ACCEPT
+Hope this helps,
 
-ipatbles -A OUTPUT -p tcp -s $firewall_internal_ip --sport 8082 -d
-$local_net --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
-
-iptables -A INPUT -p tcp -s $local_net --sport 1024:65535 -d
-$firewall_internal_ip --dport 1024:65535 -m state ESTABLISHED,RELATED
-
-.....
-
-from the client i do the following
-
-ftp ip_firewall 8082
-login to a ftp server like redhat or so
-do "ls"
-then the kernel rejects the third rule written upper.
-
-if i change the rule from RELATED to NEW, the it's working, but this
-is not a solution.
-
-Thanks for help!
-
-- Thomas
-
+Bj=F8rn
 
 
