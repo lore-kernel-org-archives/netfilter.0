@@ -1,14 +1,12 @@
 From: Glenn Hancock <ghancock@softeksoftware.com>
-Subject: Re: do not reply
-Date: 13 Aug 2003 16:39:17 -0400
+Subject: iptables question
+Date: 13 Aug 2003 16:49:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060807157.4082.3.camel@localhost.localdomain>
-References: <1060806171.4084.1.camel@localhost.localdomain>
+Message-ID: <1060807798.4082.8.camel@localhost.localdomain>
 Reply-To: ghancock@softeksoftware.com
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-khYdUEkrlptYQ+/Bjn6V"
+Content-Type: multipart/alternative; boundary="=-vPIxFra1LAjT4afc0acZ"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1060806171.4084.1.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,33 +19,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
 
---=-khYdUEkrlptYQ+/Bjn6V
+--=-vPIxFra1LAjT4afc0acZ
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-I'm sorry for the posts, but trying to get the list through our spam
-filters...  Will be fixed shortly I promise...
+I have my rules setup the way I would guess they should be based on 5
+tutorials, 1 book and the man pages.  However, I still can't seem to get
+the thing to do what I want.  Could someone please help me?
 
+I will make this very simple:
+1)  I want to allow all incoming requests to port 80
+2) I want to allow all outgoing requests .... period.
 
-On Wed, 2003-08-13 at 16:22, Glenn Hancock wrote:
+I want to drop all other incoming requests not addressed to port 80.
 
-> test1
-> -- 
-> Glenn Hancock
-> SofTek Software International, Inc.
-> 813 Pavilion Court
-> T: 678-583-5720
-> I: ghancock@softeksoftware.com
-> www.softeksoftware.com
-> www.Spambite.com
-> NOTE: My email address is currently protected by Spambite. If
-> you send me an email, you will be asked to validate your email
-> address on the Spambite network AND re-send you original email
-> to me. Or, you can pro-actively register your email address on
-> the Spambite network by visiting the website:
-> www.spambite.com
-> When visiting the website, please feel free to look around to
-> learn about this exciting new technology.
+Thats it.  I've been fighting with this all day and still can't get it
+to act right.  If you like I can send my current iptables file but its
+basically the same as the earlier one I sent.
+
+P.S.  I'm sorry if someone has already answered my question.  I was
+having a little trouble with my email before...  As long as you reply to
+the list group I should get any further emails without a problem.
+
+Thanks,
 
 -- 
 Glenn Hancock
@@ -66,8 +60,7 @@ www.spambite.com
 When visiting the website, please feel free to look around to
 learn about this exciting new technology.
 
-
---=-khYdUEkrlptYQ+/Bjn6V
+--=-vPIxFra1LAjT4afc0acZ
 Content-Type: text/html; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
@@ -78,36 +71,20 @@ Content-Transfer-Encoding: 7bit
   <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.7">
 </HEAD>
 <BODY>
-I'm sorry for the posts, but trying to get the list through our spam filters...&nbsp; Will be fixed shortly I promise...<BR>
+I have my rules setup the way I would guess they should be based on 5 tutorials, 1 book and the man pages.&nbsp; However, I still can't seem to get the thing to do what I want.&nbsp; Could someone please help me?<BR>
 <BR>
+I will make this very simple:<BR>
+1)&nbsp; I want to allow all incoming requests to port 80<BR>
+2) I want to allow all outgoing requests .... period.<BR>
 <BR>
-On Wed, 2003-08-13 at 16:22, Glenn Hancock wrote:
-<BLOCKQUOTE TYPE=CITE>
-    <FONT COLOR="#737373"><I>test1</I></FONT><BR>
-    <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-Glenn Hancock
-SofTek Software International, Inc.
-813 Pavilion Court
-T: 678-583-5720
-I: ghancock@softeksoftware.com
-www.softeksoftware.com
-www.Spambite.com
-NOTE: My email address is currently protected by Spambite. If
-you send me an email, you will be asked to validate your email
-address on the Spambite network AND re-send you original email
-to me. Or, you can pro-actively register your email address on
-the Spambite network by visiting the website:
-www.spambite.com
-When visiting the website, please feel free to look around to
-learn about this exciting new technology.</PRE>
-</TD>
-</TR>
-</TABLE>
-
-</BLOCKQUOTE>
+I want to drop all other incoming requests not addressed to port 80.<BR>
+<BR>
+Thats it.&nbsp; I've been fighting with this all day and still can't get it to act right.&nbsp; If you like I can send my current iptables file but its basically the same as the earlier one I sent.<BR>
+<BR>
+P.S.&nbsp; I'm sorry if someone has already answered my question.&nbsp; I was having a little trouble with my email before...&nbsp; As long as you reply to the list group I should get any further emails without a problem.<BR>
+<BR>
+Thanks,<BR>
+<BR>
 <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
 <TR>
 <TD>
@@ -130,11 +107,10 @@ learn about this exciting new technology.</PRE>
 </TD>
 </TR>
 </TABLE>
-<BR>
-<BR>
+
 </BODY>
 </HTML>
 
---=-khYdUEkrlptYQ+/Bjn6V--
+--=-vPIxFra1LAjT4afc0acZ--
 
 
