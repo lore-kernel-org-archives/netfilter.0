@@ -1,13 +1,19 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: bridge netfilter patch
-Date: Thu, 08 Jan 2004 20:15:36 +0100
+Subject: Re: TTL patch buggy?
+Date: Thu, 08 Jan 2004 20:17:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073589336.759.10.camel@elendil.intranet.cartel-securite.net>
-References: <1073571538.20576.17.camel@tech004.alphalink.fr>
+Message-ID: <1073589451.762.12.camel@elendil.intranet.cartel-securite.net>
+References: <Pine.LNX.4.44.0401071709030.4717-100000@filer.marasystems.com>
+	 <1073502275.16972.10.camel@jasiiitosh.nexusmgmt.com>
+	 <20040107193547.GF6629@obroa-skai.de.gnumonks.org>
+	 <1073506041.16972.25.camel@jasiiitosh.nexusmgmt.com>
+	 <20040107213853.GD20346@cannon.eng.us.uu.net>
+	 <1073548926.768.15.camel@elendil.intranet.cartel-securite.net>
+	 <20040108162520.GA22229@cannon.eng.us.uu.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1073571538.20576.17.camel@tech004.alphalink.fr>
+In-Reply-To: <20040108162520.GA22229@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +24,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Eric Leblond <eric@regit.org>
-Cc: netfilter@lists.netfilter.org
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>, netfilter@lists.netfilter.org
 
-Le jeu 08/01/2004 =E0 15:18, Eric Leblond a =E9crit :
-> I was used to patch my kernel with :
-> 	bridge-nf-0.0.7-against-2.4.19.diff
-> to be able to use iptables on bridge device.
-> But it does not apply cleanly to 2.4.24 (p-o-m treated)
-[...]
-> Where can I found working patches for this kernel ?
+Le jeu 08/01/2004 =E0 17:25, Ramin Dousti a =E9crit :
+> Yes. but the original question was, "what if one doesn't know the depth
+> of the internal network".
 
-See patch maintainer, Bart de Schuymer <bdschuym@pandora.be>, who can
-get reached on ebtables-user@lists.sourceforge.net mailing list.
+Sorry, I missed that very point. My mistake.
+In this very case, it's a bit tricky to play with TTL ;)
 
 --=20
 http://www.netexit.com/~sid/
