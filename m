@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Packets passing trough...
-Date: Thu, 14 Nov 2002 20:00:41 -0500
+Subject: Re: DMZ Scenario
+Date: Thu, 14 Nov 2002 20:29:57 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211142000.42011.netfilter@newkirk.us>
-References: <3DD2A913.9030100@sezampro.yu>
+Message-ID: <200211142029.57679.netfilter@newkirk.us>
+References: <000c01c28c3e$ab3603a0$64dc0a0a@i>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DD2A913.9030100@sezampro.yu>
+In-Reply-To: <000c01c28c3e$ab3603a0$64dc0a0a@i>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: strenuus <strenuus@sezampro.yu>, netfilter@lists.netfilter.org
+To: Ryan Beisner <ryanb@thedataarc.com>, netfilter@lists.netfilter.org
 
-On Wednesday 13 November 2002 02:33 pm, strenuus wrote:
-> Output from iptables -L -nvx
+On Thursday 14 November 2002 07:33 pm, Ryan Beisner wrote:
+> Hi
 >
-> ---
-> Chain FORWARD (policy ACCEPT 161696 packets, 47270419 bytes)
->      pkts      bytes target     prot opt in     out     source         =
-   =20
->  destination 61547  6434012             all  --  *       eth1  =20
-> 192.168.0.0/24       !192.168.1.0/24 59305 36440468             all  --=
-=20
-> eth1    *       !192.168.1.0/24       192.168.0.0/24 20358  1239485    =
-   =20
->     all  --  *       eth1    192.168.1.0/24       !192.168.0.0/24 20322=
-=20
-> 3148918             all  --  eth1    *      !192.168.0.0/24      =20
-> 192.168.1.0/24 3241   561174             all  --  *       *     =20
-> 194.106.188.0/28      192.168.0.0/24 42     5260             all  --  *=
-   =20
->   *       194.106.188.0/28      192.168.1.0/24 ---
->
-> How is this possible, wouldn't all packets match first 4 rules and neve=
-r
-> get to 6 and 7? Interface eth1 goes to internet (snat is on) and eth0 a=
-nd
-> eth2 are LAN (192.168.0.0 and 192.168.1.0)
+> I have successfully installed a mail + web server in my new dmz, filter=
+ed
+> by netfilter in Redhat 7.3.  My problem is, the request addresses show =
+up
+> as the dmz interface's ip address (of the packet filter box).  This
 
-What's to stop them?  You don't have any targets, so the rules are just=20
-counters.  Your FORWARD policy is ACCEPT, so they get through anyway, and=
- at=20
-a quick glance it looks like you have nearly the same number of packets t=
-hat=20
-hit policy as your rules counted, all together.
+> $ipt -A PREROUTING -t nat -d $PRESext -j DNAT --to $PRESdmz
+> $ipt -A POSTROUTING -t nat -d $PRESdmz -j SNAT --to $PRESext
+
+> $ipt -A PREROUTING -t nat -d $KEYext -j DNAT --to $KEYdmz
+> $ipt -A POSTROUTING -t nat -d $KEYdmz -j SNAT --to $KEYext
+
+Drop the SNAT rules.  In the PRE you take anything coming in the 'real' I=
+P and=20
+change it's destination to the dmz IP.  But in the POST you take those sa=
+me=20
+packets and change their source to the real IP.  If you drop the POST rul=
+es,=20
+then the packets will just pass on to $PRESdmz with their (presumably) re=
+al=20
+source IP intact.
 
 j
 
