@@ -1,13 +1,11 @@
-From: Vinayakam Murugan <vinayakm@theargoncompany.com>
-Subject: Re: Packets missing state ?
-Date: Wed, 24 Dec 2003 09:42:39 +0530
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: OT: Serial ATA
+Date: Wed, 24 Dec 2003 09:40:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312240942.40069.vinayakm@theargoncompany.com>
-References: <200312231828.59518.rajiv@theargoncompany.com> <200312231907.58135.vinayakm@theargoncompany.com> <1072187752.809.114.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <200312240940.41374.pandre@darkstar.nom.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1072187752.809.114.camel@elendil.intranet.cartel-securite.net>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,30 +17,11 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-> These packets are delayed ones, probably due to high latency (heavy load
-> on line ?). Most of the time, there's not much to worry about,
-> especially on DSL line when upload goes up.
+I have to build a new firewall and the salesman is trying to sell me Serial 
+ATA as part of the solution.
+Has anyone used this, because I have heard that Serial ATA is not up to spec?
 
-How can i uniquely identify such packets so that I don't log them and just 
-drop them? Is this possible? 
-
-> Seems that someone wants to ask some DNS stuff to your box :) Maybe this
-> IP is declared somewhere as authoritative for a domain or someone use it
-> as forwarder.
-
-My primary objective is to log suspicious packets only. Any pointers on how I 
-can do that?
-
--- 
-Warm Regards
-~~~~~~~~~~~~~~~~~~~~~~~
-Vinayakam Murugan
-
-Viruses getting you down?
-Get your virus protected mailbox at http://www.tassm.com
-
-Linux: The choice of a GNU generation
-
+Paulo
 
