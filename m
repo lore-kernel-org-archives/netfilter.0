@@ -1,11 +1,13 @@
-From: Sander Smeenk <ssmeenk+netfilter@freshdot.net>
-Subject: Kernel >= 2.6.5, ip_conntrack and udp traffic
-Date: Thu, 12 Aug 2004 09:56:07 +0200
+From: "Elvis Aaron Presley" <elvisa@terra.es>
+Subject: RE: Newbie in a deep trouble!!!
+Date: Thu, 12 Aug 2004 10:09:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040812075607.GA7616@freshdot.net>
+Message-ID: <000001c48043$c021a0d0$3d01a8c0@rxn32.biz>
+References: <D5C9032B2B09C64EA2409D6214E91AC9051268@asimail2.alphanumeric.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9051268@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,38 +17,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: 'Jason Opperisano' <Jopperisano@alphanumeric.com>, 'Netfilter' <netfilter@lists.netfilter.org>
 
-Hello,
+It works!!!!!!!!!!!
 
-I am one of the few people experiencing problems with UDP traffic being
-connection tracked and somehow causing the iptables code to start
-blurting out:
+With this three lines:
 
-Aug  5 12:56:48 valor kernel: ip_conntrack_in: Frag of proto 17 (hook=0)
-Aug  5 12:56:48 valor kernel: NF_IP_ASSERT:
-net/ipv4/netfilter/ip_nat_standalone.c:83(ip_nat_fn)
-Aug  5 12:56:48 valor kernel: ip_conntrack_in: Frag of proto 17 (hook=0)
+iptables -t nat -A PREROUTING -p tcp -d 172.16.0.0/16 --dport 80 -j =
+ACCEPT
+iptables -t nat -A PREROUTING -p tcp -d 10.34.0.0/16 --dport 80 -j =
+ACCEPT
+iptables -t nat -A PREROUTING -p tcp -i ! eth0 --dport 80 -j REDIRECT
+--to-port 3128
 
-When I try to access my sfs mounts. Google shows this has to do with a
-NFS mount to localhost, with r/wsize set to >8192 bytes.
+Thank you to all!!!!
 
-Is sfs/nfs behaving badly, or is the iptables core?
-
-Previously, with kernels < 2.6.8-rcN, I could 'work around' this problem
-by not-tracking UDP traffic, but this doesn't seem to work anymore with
-the newest kernels...
-
-There's not a lot of information in google about this problem. Am I one
-of the few that experience this?
-
-Kind regards,
-Sander.
+Elvis
 
 
--- 
-| Where are the first 6-up's ?
-| 1024D/08CEC94D - 34B3 3314 B146 E13C 70C8  9BDB D463 7E41 08CE C94D
+-----Mensaje original-----
+De: Jason Opperisano [mailto:Jopperisano@alphanumeric.com]=20
+Enviado el: mi=E9rcoles, 11 de agosto de 2004 14:12
+Para: Elvis Aaron Presley; Netfilter
+Asunto: RE: Newbie in a deep trouble!!!
+
+
+>
+> First I put this:
+>
+> iptables -t nat -A PREROUTING -p tcp -d ! 172.16.0.0/16 --dport 80 -j=20
+> REDIRECT --to-port 3128
+>
+> Ok with this, the 10.34.x.x pcs can access to internet through the=20
+> proxy and can view the web pages of the 172.16.x.x pcs ... It works!!!
+>
+> Then I put this:
+>
+> iptables -t nat -A PREROUTING -p tcp -d ! 10.34.0.0/16 --dport 80 -j=20
+> REDIRECT --to-port 3128
+>
+> With this,  the 172.16.x.x pcs can access to internet through the=20
+> proxy and can view the web pages of the 10.34.x.x pcs ... It works=20
+> too!!!
+>
+> This commands works separately, but when I put the two at same time it =
+
+> doesn't work.
+
+it's because 10.34.0.0/16 matches "-d ! 172.16.0.0/16" and 172.16.0.0/16
+matches "-d ! 10.34.0.0/16"
+
+> Can anybody help me please????
+
+i can try.  your PREROUTING rules should be, in order:
+
+iptables -t nat -A PREROUTING -p tcp -d 172.16.0.0/16 --dport 80 -j =
+ACCEPT
+iptables -t nat -A PREROUTING -p tcp -d 10.34.0.0/16 --dport 80 -j =
+ACCEPT
+iptables -t nat -A PREROUTING -p tcp -i ! eth0 --dport 80 -j REDIRECT
+--to-port 3128
+
+which allows traffic to 172.16.0.0/16 and 10.34.0.0/16 to pass without =
+going
+through the squid proxy, and anything else received on either eth2 or =
+eth1
+to get redirected to the squid cache.
+
+-j
+
 
