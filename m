@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FAQ 3.13, but on the same box
-Date: Mon, 19 Jul 2004 10:56:54 +0100
+From: Murugavel Thiruvengadam <tmurugavel@gmail.com>
+Subject: Mangle
+Date: Mon, 19 Jul 2004 16:12:15 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407191056.54823.Antony@Soft-Solutions.co.uk>
-References: <20040718173200.GC718@always.joy.eth.net> <200407190951.37947.Antony@Soft-Solutions.co.uk> <20040719094454.GB1735@always.joy.eth.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <a05ad8750407190342530d09c2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040719094454.GB1735@always.joy.eth.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,47 +18,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 19 July 2004 10:44 am, Joshua N Pritikin wrote:
+we have few clients connected in LInux  firewall
 
-> On Mon, Jul 19, 2004 at 09:51:37AM +0100, Antony Stone wrote:
-> > On Monday 19 July 2004 3:00 am, Joshua N Pritikin wrote:
-> > > On Sun, Jul 18, 2004 at 06:44:22PM +0100, Antony Stone wrote:
-> > > > http://www.squid-cache.org/Doc/FAQ/FAQ-17.html#ss17.4
-> > >
-> > > This FAQ doesn't address my question.  I also looked at "Transparent
-> > > Proxy with Linux and Squid mini-HOWTO" by Daniel Kiracofe.
-> > >
-> > > So far, all docs assume that the squid-box and the browser box are
-> > > different machines.
-> >
-> > No, the link I posted is specifically for Squid + Netfilter on the same
-> > machine - you can tell this by the fact it uses REDIRECT, not DNAT.
->
-> I tried that rule already.  It only works for other machines on my
-> network which are using the proxy as a gateway.
->
-> I am trying to do Squid + Netfilter + BROWSER on the same machine.
+         switch ---- firewall--------internet
+           |          |              |
+200pcs |       pvtip           pubip
 
-Oh, right - I hadn't appreciated that part before.   I thought you just meant 
-transparent proxying to a proxy on the gateway instead of to a proxy 
-somewhere else.
+ all  --  *      *       0.0.0.0/0            0.0.0.0/0          
+SMANG --to-ip  <PUBLIC IP>
 
-In that case you either need to DNAT your OUTPUT packets, as per your previous 
-posting, or else just tell the local browser to use the local proxy (which I 
-suspect is much the simplest solution in terms of understanding when 
-something odd happens in the future).
+-A FORDNS -j SMANG --to-ip PUBLIC Ip
 
-Regards,
+while sending a request to DNS we are using (mangle.) client's source 
+port  . the same port we are using to send a request to dns. while
+coming back.  assume that 3 person used the same port. DNS return
+traffice not going to respective client. can anyone please advise.
 
-Antony.
+it was working fine with nat. we are right now using mangle
 
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
-
- - William H Gates III
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Regards
+TM
 
