@@ -1,14 +1,14 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: ICMP question
-Date: Thu, 14 Nov 2002 20:59:43 -0500
+From: "ryan @ thedataarc" <ryanb@thedataarc.com>
+Subject: Re: DMZ Scenario
+Date: 14 Nov 2002 20:57:37 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211142059.43778.netfilter@newkirk.us>
-References: <NABBIDJPNCAGKGOFGHBFOELFPIAA.luba@assist.com.gt>
-Reply-To: netfilter@newkirk.us
+Message-ID: <1037329062.2827.2.camel@rbhome.inside.thedataarc.com>
+References: <000c01c28c3e$ab3603a0$64dc0a0a@i> 
+	<200211142029.57679.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NABBIDJPNCAGKGOFGHBFOELFPIAA.luba@assist.com.gt>
+In-Reply-To: <200211142029.57679.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,66 +19,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Luis Fernando Barrera <luba@assist.com.gt>, netfilter@lists.netfilter.org
+To: netfilter@newkirk.us
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 14 November 2002 01:28 pm, Luis Fernando Barrera wrote:
+Aha!  Thanks so much.  
 
-> iptables -A FORWARD -p ICMP -s 192.168.1.37 -m state --state
-> NEW,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -p ICMP -d 192.168.1.37 -m state --state ESTABLISHE=
-D -j
-> ACCEPT
->
-> I've been experiencing the problem that with this set of rules, suddenl=
-y,
-> the PC in the LAN cannot "ping" any hosts in the Internet. To solve the
-> problem
+-R Beisner
 
-> iptables -A FORWARD -p ICMP -s 192.168.1.37 -j ACCEPT
-> iptables -A FORWARD -p ICMP -d 192.168.1.37 -j ACCEPT
->
-> These are the same rules, except that don't track the state of the
-> connections...
->
-> Could someone tell me what is the risk asociated to NOT to track the
-> connections?
 
-For the first rule just use the second version (without state match), but=
- for=20
-the second rule you want state as it will prevent any ICMP connections=20
-originating anywhere else from being forwarded to that IP, assuming other=
-=20
-rules and policy don't ACCEPT it.  (and assuming you don't want that...) =
- The=20
-new pair would then allow any ICMP through that came FROM 192.168.1.37, a=
-nd=20
-prevent any ICMP from going TO 192.168.1.37 UNLESS it is part of an=20
-established connection, IE a response to a ping that was ACCEPTed by the=20
-first rule.
+On Thu, 2002-11-14 at 19:29, Joel Newkirk wrote:
+> On Thursday 14 November 2002 07:33 pm, Ryan Beisner wrote:
+> > Hi
+> >
+> > I have successfully installed a mail + web server in my new dmz, filtered
+> > by netfilter in Redhat 7.3.  My problem is, the request addresses show up
+> > as the dmz interface's ip address (of the packet filter box).  This
+> 
+> > $ipt -A PREROUTING -t nat -d $PRESext -j DNAT --to $PRESdmz
+> > $ipt -A POSTROUTING -t nat -d $PRESdmz -j SNAT --to $PRESext
+> 
+> > $ipt -A PREROUTING -t nat -d $KEYext -j DNAT --to $KEYdmz
+> > $ipt -A POSTROUTING -t nat -d $KEYdmz -j SNAT --to $KEYext
+> 
+> Drop the SNAT rules.  In the PRE you take anything coming in the 'real' IP and 
+> change it's destination to the dmz IP.  But in the POST you take those same 
+> packets and change their source to the real IP.  If you drop the POST rules, 
+> then the packets will just pass on to $PRESdmz with their (presumably) real 
+> source IP intact.
+> 
+> j
+> 
 
-Using the state matches can help you tighten things up considerably, and =
-also=20
-considerably reduce the number of rules you need to explicitly define.  Y=
-ou=20
-can allow a local machine out only to port 80 and 53, nothing back to it =
-at=20
-all, then accept ESTABLISHED/RELATED both ways and everything will work,=20
-because the responses back to the local machine, and even ICMP messages=20
-related to the connection, are matched based on state.
 
-> One more question... Is it true that when you specify the ICMP protocol=
-,
-> iptables only
-> applies the rule to the type 0?
-
-Nope, unless it's a bug in a version other than 1.2.5, I just tested.  (P=
-ing=20
-my ISP's DNS, nothing, added ICMP rule with no type specified, 18.2ms)
-
-> thanks in advance
->
-> Luis Fernando Barrera
-> luba@assist.com.gt
-
-j
 
