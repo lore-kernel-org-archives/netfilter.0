@@ -1,13 +1,11 @@
-From: =?ISO-8859-1?Q?S=F6ren_Lorenz?= <soeren.lorenz@web.de>
-Subject: Re: How to start external script when ipfilter rule matches
-Date: Thu, 19 Aug 2004 11:40:33 +0200
+From: Wilson Mak <wilson.mak@digitalview.com>
+Subject: Port Forwarding with iptables
+Date: Thu, 19 Aug 2004 18:57:59 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <41247591.9000902@web.de>
-References: <20040806042631.5824.39404.Mailman@vishnu.netfilter.org> <1089.216.239.71.162.1091820833.squirrel@216.239.71.162> <411DF2E0.3020304@web.de> <200408141220.03743.Antony@Soft-Solutions.co.uk>
+Message-ID: <412487B7.9090505@digitalview.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408141220.03743.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Yes, that's the  way to go. But I need a lightweight userspace program=20
-to trigger the actions I want to execute based on specific log events.=20
-I've only come across perl solutions for this which is not suitable for=20
-a router.
+Hi all,
 
-Regards,
+I like to do the portforwarding with iptables(forward web traffic of an 
+alias IP - <ext ip> to internal web server).  Here is what I have:
 
-S=F6ren Lorenz
+iptables -t nat -A PREROUTING -i eth0 -d <ext ip> -p tcp --dport 80 -j
+DNAT --to 10.1.0.12:80
+iptables -A INPUT -p tcp -i eth0 -d <ext ip> --dport 80 -m state
+--state NEW -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 -o eth1 -d <ext ip> --dport 80 -m
+state --state NEW -j ACCEPT
 
-Antony Stone schrieb:
+However, it keep droping the packets when getting to the NAT box.
 
->
->Try investigating the ULOG target perhaps?
->
->Antony.
->
-> =20
->
+Logs
+====
+(With iptables -A FORWARD -d 10.1.0.12 -j LOG; iptable -A FORWARD -j DROP)
+
+kernel: IN=eth0 OUT=eth1 SRC=202.xxx.122.xxx DST=10.1.0.12 LEN=48
+TOS=0x00 PREC=0x00 TTL=120 ID=6491 DF PROTO=TCP SPT=4023 DPT=80
+WINDOW=64240 RES=0x00 SYN URGP=0
+
+Any clues?  Did I miss something here?
+
+Thanks,
+Wilson
 
 
