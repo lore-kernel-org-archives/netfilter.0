@@ -1,9 +1,9 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: Broken ftp through iptables
-Date: Tue, 26 Aug 2003 13:18:53 -0300
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Traffic going out wrong interface
+Date: Tue, 26 Aug 2003 12:21:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <036701c36bed$bdf3ab70$49caa8c0@caris.priv>
-References: <3F4B7D1A.2010408@nucdc.org> <000a01c36be8$9b990f70$6901a8c0@Station13> <20030826160536.GF1956@propaganda.localdomain>
+Message-ID: <3F4B88F1.2020208@chrisbrenton.org>
+References: <3F4B3DCC.8010104@chrisbrenton.org> <20030826145630.GB1956@propaganda.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,36 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: kluivert@tm.net.my, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: kluivert@tm.net.my
+Cc: netfilter@lists.netfilter.org
 
-Read this page.  It will explaine why I have what I do.  ( well actually it
-just explaines how the connections in ftp work ...  but from that you should
-be able to determine what the problem is :)
+Hello Julian,
 
-http://slacksite.com/other/ftp.html
+Julian Gomez wrote:
+> 
+> I think this behavior is a documented kernel issue.
 
+Thanks for the link, I'll check it out.
 
------ Original Message -----
-From: "Julian Gomez" <kluivert@tm.net.my>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, August 26, 2003 1:05 PM
-Subject: Re: Broken ftp through iptables
+> ARP requests go out on all interfaces, and can be received on all
+> interfaces also
 
+What I found weird was that there is no legitimate "communication" 
+reason for the legal NAT address to be ARPing for the private NAT 
+address, at least not that I can think of. Also, I don't *think* this is 
+a "ARP being seen off of all interfaces" problem, as I would expect to 
+see ARPs for the external gateway on the internal network if it was and 
+I never see these. Its always the legal NAT to private NAT address.
 
-> On Tue, Aug 26, 2003 at 11:42:02AM -0400, Landon Chelf spoke thusly:
-> >Thanks but it is loaded from what I can tell.  Below is the iptables
-> >stuff of an lsmod
-> >
-> >Module                  Size  Used by    Not tainted
-> >ip_conntrack_ftp        5296   0  (unused)
-> >ip_conntrack           26976   1  [ip_conntrack_ftp]
-> >iptable_filter          2412   1  (autoclean)
-> >ip_tables              15096   1  [iptable_filter]
->
-> You have a corresponding --state RELATED rule ?
->
-> (snip remaining)
->
+> Are you running 'tcpdump' on the firewall/routing device itself ? I think a
+> number of us have noticed rather odd things in regards to snat/dnat
+> addresses when running tcpdump on the firewall itself.
+
+Hummm. I'm not running tcpdump, but I am running Snort which would have 
+the same effect on the interface. Let me shut Snort down for a while and 
+see if the problem goes away. If it does turn out to be Snort, that 
+would be kind of weird as well as I've run this config since last fall. 
+I did recently upgrade to Snort 2.0 however, so maybe something that's 
+changed in Snort from 1.9 --> 2.0 is causing it.
+
+Thanks for the help!
+Chris
 
 
