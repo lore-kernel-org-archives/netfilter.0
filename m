@@ -1,14 +1,12 @@
-From: =?iso-8859-1?Q?Mattias_R=F6nnblom?= <hofors@lysator.liu.se>
-Subject: Re: packets dropped when using MASQ and QUEUE
-Date: 05 Sep 2002 13:07:35 +0200
+From: Michael <mutk@iprimus.com.au>
+Subject: Re: forward is not forwarding
+Date: Fri, 06 Sep 2002 19:09:30 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <m34rd43dag.fsf@isengard.firemission.org>
-References: <m3znv08kup.fsf@isengard.firemission.org>
-	<008801c25446$89c61820$3303a8c0@p951>
+Message-ID: <3D7870CA.4010803@iprimus.com.au>
+References: <EF33C96B91C212479FA2B0B0A96868F80102C887@sydxch02.veritas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008801c25446$89c61820$3303a8c0@p951>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: sufcrusher <sufcrusher@zonnet.nl>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: IPtables Users <netfilter@lists.samba.org>
 
-"sufcrusher" <sufcrusher@zonnet.nl> writes:
+Abraham Kim wrote:
 
-> I've had the exact same problem. I did a google search on this and found out
-> pretty quickly that this is how it's supposed to be. For a really technical
-> explanation you might want to do a google search yourself, but it comes down
-> to the fact that the userspace program can only completely ACCEPT or
-> DENY/REJECT a packet. It can *not* let the packet continue traversing the
-> chains/tables.
+> Dear Stewart, Chris, Steve, and many others...
+>  
+> Thanks for giving me help on this.
+> <snip>
+>  
+> I know it does not quite fit to this mailing list, but could anyone
+> shout at me if you had similar experience and a tip together?
 
-Cannot continue traversing that particular chain (FORWARD, in my case),
-or any chain? My MASQ rules are on the POSTROUTING chain.
+I'll bet it's the classic DNS problem in Linux.
+Add the solaris machine's name to /etc/hosts on Linux.
 
-And if it's a design flaw i QUEUE, how come it works for some of
-the packets, but not all?
+Or if the machines you are connecting to are on DNS, make the Linux 
+system can DNS the machines properly
 
-Kind regards,
-        Mattias
+Cheers,
+Michael
+
 
