@@ -1,11 +1,14 @@
-From: Bill Davidsen <davidsen@tmr.com>
-Subject: Fairly complex multi-ISP firewall/router problem
-Date: Fri, 02 Apr 2004 15:57:03 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Fairly complex multi-ISP firewall/router problem
+Date: Fri, 2 Apr 2004 22:06:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <c4kjrg$lqm$1@gatekeeper.tmr.com>
+Message-ID: <200404022206.18921.Antony@Soft-Solutions.co.uk>
+References: <c4kjrg$lqm$1@gatekeeper.tmr.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <c4kjrg$lqm$1@gatekeeper.tmr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,42 +18,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to set up a single Linux router, RH9.0, for a non-profit I 
-am supporting with some free consulting. They have two ISP lines, each 
-of which has a three bit CIDR block, and an internal network.
+On Friday 02 April 2004 9:57 pm, Bill Davidsen wrote:
 
-Part one:
+> I am trying to set up a single Linux router, RH9.0, for a non-profit I
+> am supporting with some free consulting. They have two ISP lines, each
+> of which has a three bit CIDR block, and an internal network.
+>
+> Part one:
+>
+> All I want to do is send packets out the interface which matches the
+> source IP, and I don't think there's any reasonable way to get there
+> without patches or BSD.
 
-I want to have an IP for each of the services, mail and http, on each 
-ISP, so that is DSL is down I can use cable, and vice-versa. I will do 
-NAT in the firewall, and forward the packets to the actual server. 
-Eventually the servers will move to a DMZ after the other stuff settles 
-down.
+So why not use BSD?
 
-The problem is that a packet can come from any IP outside, and when the 
-reply packet is sent out, it may go out either NIC. And that's the root 
-of the problem, getting the source IP to match the NIC. I've added rules 
-to the mangle table to MARK the packets, that just doesn't seem to work 
-reliably.
+BTW: What was Part two?
 
-I want very much to do this without patching the kernel, I have two 
-patches which seem to solve the problem on other systems, but 
-maintaining a patched kernel long term is really undesirable, and makes 
-it hard to turn over the job in the future.
-
-All I want to do is send packets out the interface which matches the 
-source IP, and I don't think there's any reasonable way to get there 
-without patches or BSD.
-
-Yes, I know about the lartc docs, nano.txt and several other things. The 
-problem is that the marks don't reliably WORK, routing by destination IP 
-is being used in some cases (but not all, which is really odd).
+Antony.
 
 -- 
-bill davidsen <davidsen@tmr.com>
-   CTO TMR Associates, Inc
-   Doing interesting things with small computers since 1979
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
+
+ - Frank Skinner
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
