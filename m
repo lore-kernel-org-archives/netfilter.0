@@ -1,13 +1,12 @@
-From: Duncan Sands <baldrick@free.fr>
-Subject: Re: masquerade_check: size 24 != 20
-Date: Sat, 4 Oct 2003 15:18:26 +0200
+From: "Alexander W. Janssen" <yalla@hackers-r-us.org>
+Subject: questions regarding fragmentation
+Date: Sat, 4 Oct 2003 15:53:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310041518.26254.baldrick@free.fr>
-References: <200310031446.18321.duncan.sands@math.u-psud.fr> <1065201775.27885.4.camel@wookie.shorewall.net>
+Message-ID: <20031004135329.GA3533@hackers-r-us.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1065201775.27885.4.camel@wookie.shorewall.net>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,77 +17,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Tom Eastep <teastep@shorewall.net>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Friday 03 October 2003 19:22, Tom Eastep wrote:
-> On Fri, 2003-10-03 at 05:46, Duncan Sands wrote:
-> > translate_table: size 1112
-> > Finished chain 0
-> > Finished chain 3
-> > Finished chain 4
-> > find_inlist: loading `ipt_MASQUERADE'.
-> > masquerade_check: size 24 != 20.
-> > ip_tables: check failed for `MASQUERADE'.
-> >
-> > The check in question is:
-> >
-> >         if (targinfosize != IPT_ALIGN(sizeof(*mr))) {
-> >                 DEBUGP("masquerade_check: size %u != %u.\n",
-> >                        targinfosize, sizeof(*mr));
-> >                 return 0;
-> >         }
->
-> Are you applying any updates from Patch-O-Matic?
 
-OK, it was a gentoo problem: they patched ip_conntrack_tuple.h
-and changed it from:
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-union ip_conntrack_manip_proto
-{
-        /* Add other protocols here. */
-        u_int16_t all;
+Hi all,
 
-        struct {
-                u_int16_t port;
-        } tcp;
-        struct {
-                u_int16_t port;
-        } udp;
-        struct {
-                u_int16_t id;
-        } icmp;
-};
+the filtering howto states:
 
-to
+  "If you are doing connection tracking or NAT, then all fragments will get
+  merged back together before they reach the packet filtering code, so you
+  need never worry about fragments."
 
-union ip_conntrack_manip_proto
-{
-        /* Add other protocols here. */
-        u_int32_t all;
+This fits to my observation regarding NAT: i send out fragmented ICMP packa=
+ges
+with sing and they were reassembled before they left the outbound wire.
 
-        struct {
-                u_int16_t port;
-        } tcp;
-        struct {
-                u_int16_t port;
-        } udp;
-        struct {
-                u_int16_t id;
-        } icmp;
-        struct {
-                u_int32_t key;
-        } gre;
-};
+But it also says:
 
-i.e. two bytes bigger.  Since ip_nat_multi_range includes an
-ip_nat_range, and ip_nat_range uses two ip_conntrack_manip_proto,
-this led to a size increase of 4 bytes.  The gentoo iptables is compiled
-using the gentoo kernel headers, so it is using this larger structure,
-and thus doesn't work with vanilla kernels.
+  "Usually it is regarded as safe to let second and further fragments throu=
+gh,
+  since filtering will effect the first fragment, and thus prevent reassemb=
+ly
+  on the target host; however, bugs have been known to allow crashing of
+  machines simply by sending fragments. Your call."
+  (talking about the -f flag)
 
-Sorry to have wasted your time,
+Does that mean that fragments allways will be reassembled before they get
+forwarded when you use connection tracking a/o NAT?
 
-Duncan.
+It's looks like that for me - never had problems with fragments, though. I'm
+just asking because i'm just creating a big testcase-scenario for a accepta=
+nce
+of a new firewall i just build for a customer.
+I'm just curious. Haven't thought about it for a long time since the
+filtering-code became stateful...
+
+Thanks,
+Alex.
+
+
+--=20
+"Obviously Linux owes its heritage to UNIX, but not its code.
+We would not, nor will not, make such a claim."
+                            -- Darl McBride, August 28th 2002      =20
+
+
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/ftDZEMMZKORQoYIRAjDaAJ47tMZsJP00o3jvnh0tn+JofSX1xACfVAr/
+n/pQmAYxae8kWublctpQpWY=
+=DshO
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
 
