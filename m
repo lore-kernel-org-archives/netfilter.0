@@ -1,11 +1,10 @@
-From: Carlos.facanha <carlos.facanha@frontier.com.br>
-Subject: Question on INPUT and PREROUTING chains
-Date: Wed, 6 Nov 2002 19:14:16
+From: Ben Russo <ben@umialumni.com>
+Subject: redirect doesn't seem to work?
+Date: 04 Nov 2002 23:41:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E189XVl-0008TW-00@kashyyyk.netfilter.org>
-Reply-To: Carlos.facanha <carlos.facanha@frontier.com.br>
+Message-ID: <1036471268.2912.7.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,34 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a Linux box used as NAT server and firewall. All requests on its port
-80 are forwarded to a local webserver inside my network. I want to block
-access to all services including http from a specific external host.
+Have a UNIX server.  User wants to write programs to receive SNMPTraps.
+I *thought* I could redirect incomming traffic to port 162 to a high
+port, (like 4162) where the user could have his programs receive the
+messages with no special privelages?
 
-I'm using the following rule to block the host
+Anyway, a completely normal box, no special firewalling rules....
+The only rule I create is:
 
-iptables -A INPUT -i $extint -s $hostip -j DROP
+iptables -t nat -A POSTROUTING -p udp -m udp --dport 162 -j REDIRECT
+--to-ports 4162
 
-and this one to do the NAT
+Now, the user starts his program that binds to udp port 4162 ( I can see
+it with "netstat -nap" ) but he doesn't see any packets coming in.
+I run tcpdump -n | grep snmptrap and I see packets coming from the
+network to the server on udp port 162, and the server sending back icmp
+unreachable packets back to the sources??
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -d $extip -j DNAT --to
-$webserverip:80
+Why doesn't the redirect work?
 
-The problem is that the host is blocked from accessing all services but
-http. I've already checked if there are any rules before that ACCEPT the
-request. It seems that prerouted packets are bypassing the INPUT chain.
+-Ben.
 
-Is it correct? If not, what am I doing wrong?
-
-TIA
-
-Carlos Fa=E7anha
-
-
-________________________________________________
-Este email foi enviado por Frontier.mail
 
 
