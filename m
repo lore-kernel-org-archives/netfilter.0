@@ -1,8 +1,8 @@
 From: Silkk <crystaldrinker@yahoo.com>
 Subject: Re: iptables does not support chkconfig!
-Date: Sun, 22 Dec 2002 23:01:19 -0800 (PST)
+Date: Sun, 22 Dec 2002 23:04:56 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021223070119.2289.qmail@web40610.mail.yahoo.com>
+Message-ID: <20021223070456.89496.qmail@web40611.mail.yahoo.com>
 References: <200212230153.50801.netfilter@newkirk.us>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,16 +20,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I looked in 
-/sbin/   for iptables and nothing soo i did whereis iptables
-/usr/local/sbin/iptables  /usr/local/lib/iptables
+Just soo you know i compiled the iptables i didnt use the RPM
+I cant find iptables listing when i run
+chkconfig --list 
+either isnt it suppose to be there after i compiled them?
 
-Im not sure where the iptables executable file went?
-casue in  
-/usr/local/sbin/iptables i tryed to veiw that file using vi 
-and it is a special chractors like
-&8$#  
-soo is that the file i need? 
 
 
 
