@@ -1,12 +1,13 @@
-From: Andrew Baumann <andrewb@cse.unsw.edu.au>
-Subject: masquerading before ipsec (2.6)
-Date: Wed, 9 Jun 2004 17:34:44 -0400
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: selective port forwarding
+Date: Wed, 09 Jun 2004 17:35:01 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406091734.44870.andrewb@cse.unsw.edu.au>
+Message-ID: <1086816900.2939.7.camel@localhost>
+References: <40C7699E.7060806@bluechip.ro>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <40C7699E.7060806@bluechip.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +18,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Arthur Kerpician <arthur@bluechip.ro>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Wed, 2004-06-09 at 15:48, Arthur Kerpician wrote:
+> Hi,
+> I have this very simple network layout:
+> 1. Firewall server (host1.domain.com) with eth1 (external static IP) and 
+> eth0 (internal IP)
+> 2. The firewall server do masquerading for LAN
+> 3. Other server (host2) on LAN with eth0 (internal IP)
+> So, the only external IP is on the host1.domain.com.
+> I want to forward some of the ssh traffic to host2, based on the hostname.
+> eg:
+> when trying to ssh to host1.domain.com the firewall server (host1) will 
+> reply and
+> when trying to ssh to host2.domain.com the firewall server will forward 
+> the traffic to host2 inside the LAN
+> 
+> I  know that what I'm looking for has to do with DNAT, but I really 
+> don't know where to start. The DNS is configured to map host1.domain.com 
+> and host2.domain.com to the same external IP on host1.
+> 
+> Thanks,
+> Arthur
+If I understand you correctly, you want to access both devices from the
+Internet.  You wish to ssh host1.domain.com from the Internet and have
+the packets arrive at host and ssh host2.domain.com from the Internet
+and have host1 forward them to host2.  Both host1 and host2 resolve to
+the same public IP, let's call it x.x.x.x.
 
-I have a gateway box with a VPN tunnel to a secure network. This box is also 
-connected to a local LAN with private IPs. I would like the gateway to 
-masquerade traffic from the local LAN destined for the secure network across 
-the VPN tunnel.
+If this is correct, you have a problem.  iptables will resolve the names
+when it loads but thereafter will use the IP address.  So, in effect,
+your rules will look something like:
 
-The way the VPN setup seems to work in 2.6 is that there is only one external 
-interface (ppp0 in this case), but that interface has two IPs, one on the 
-internet and one on the secure network (which is tunneled). The routes and 
-VPN on the gateway box work correctly, and I've done a basic masquerading 
-setup:
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-however, the machines on the LAN can only access the internet, not the VPN 
-tunnel. Watching the log, packets destined for the secure network get sent 
-out on the external interface with the internet IP. I tried adding a rule to 
-use SNAT to force them to the secure IP, but this doesn't work (I guess 
-whatever changes the IP encrypts the packet).
+-d x.x.x.x -p 6 --dport 22 -j DNAT --to-destination $HOST2_INT_IP
+-d x.x.x.x -p 6 --dport 22 -j DNAT --to-destination $HOST1_INT_IP
 
-Observing test packets from the gateway traverse the chains, I see that 
-traffic destined for the secure network always has the source IP address of 
-the tunnel, and traffic destined for the internet always has the internet 
-source IP.
+Notice how the matches are identical; there is no way to distinguish the
+traffic coming to the public address of host1 from the traffic coming to
+the public address of host2.  The rule that comes first will be the one
+that is always matched.
 
-Somewhere there must be a routing decision that says to encrypt traffic 
-destined for the secure network, and use the different source IP, but it 
-seems that this happens before the packet hits iptables. I think I need a way 
-to take a masqueraded packet from the POSTROUTING chain and feed it into the 
-VPN.
+You could try using a non-standard port for SSH for one of the devices
+and then map it back to SSH on the other, e.g., 
+-d x.x.x.x -p 6 --dport 22222 -j DNAT --to-destination $HOST2_INT_IP:22
+-d x.x.x.x -p 6 --dport 22 -j DNAT --to-destination $HOST1_INT_IP
 
-Can anyone tell me if what I'm trying to do is even possible? And if so what 
-I'm doing wrong?
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
-thanks in advance,
-Andrew
 
