@@ -1,11 +1,11 @@
-From: Simone Sestini <simone.sestini@plugit.net>
-Subject: NAT Information
-Date: Wed, 29 Jan 2003 11:13:47 +0100
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: RE: Qos using htb and transparent squid proxy
+Date: Wed, 29 Jan 2003 11:33:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.0.20030129110905.058ac020@imap4.plugit.net>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321685F3F@hslex01.hslbz.local>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="=====================_75867681==.ALT"
+	boundary="----_=_NextPart_001_01C2C781.E3B05D10"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,103 +16,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
 
---=====================_75867681==.ALT
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Hi folks....
+------_=_NextPart_001_01C2C781.E3B05D10
+Content-Type: text/plain
 
-I did a special NAT-Firewall box for a dialup server..
+> > But in squid you should be able to throttle the bandwidth 
+> when you use 
+> > delay pools.
+> 
+> Thanks for all the help so far Rob. Yes, delay pools can be 
+> used to some extent, but I need to throttle according to the 
+> source ip before it gets SNATed, i.e the internal IPs. I need 
+> squid to download at the rate that the client is allowed.
 
-I use the rules like that..
-
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.2.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP1
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.4.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP2
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.6.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP3
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.8.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP4
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.10.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP5
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.12.0/23 -o eth0 -j 
-SNAT --to PUBLIC_IP6
-
-now.. i need to set for examples the class 10.20.10.0/23 to browse only 
-www.microsoft.com and www.ibm.com.
-
-How can i modify my chain ?
-
-I have try to insert a -t nat -A OUTPUT or a -t nat -A PREROUTING rules but 
-nothing is blocking the browsinf over internet..
-
-Any idea ?
+If I'm not mistaken you can use acl's with delay pools.
+If you put source IP's in an acl, you can do what you want, right ?? Or am I
+terribly wrong here..
 
 
+Gr,
+Rob
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+------_=_NextPart_001_01C2C781.E3B05D10
+Content-Type: text/html
 
-Simone Sestini [ SS971-RIPE ]
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
+<TITLE>RE: Qos using htb and transparent squid proxy</TITLE>
+</HEAD>
+<BODY>
 
-Plug IT s.p.a. - Technical Office
-Via Galileo Ferraris 216
-52100 Arezzo
+<P><FONT SIZE=2>&gt; &gt; But in squid you should be able to throttle the bandwidth </FONT>
+<BR><FONT SIZE=2>&gt; when you use </FONT>
+<BR><FONT SIZE=2>&gt; &gt; delay pools.</FONT>
+<BR><FONT SIZE=2>&gt; </FONT>
+<BR><FONT SIZE=2>&gt; Thanks for all the help so far Rob. Yes, delay pools can be </FONT>
+<BR><FONT SIZE=2>&gt; used to some extent, but I need to throttle according to the </FONT>
+<BR><FONT SIZE=2>&gt; source ip before it gets SNATed, i.e the internal IPs. I need </FONT>
+<BR><FONT SIZE=2>&gt; squid to download at the rate that the client is allowed.</FONT>
+</P>
 
-Titles:
-System and Network Administrator
-Data Transmission Manager
+<P><FONT SIZE=2>If I'm not mistaken you can use acl's with delay pools.</FONT>
+<BR><FONT SIZE=2>If you put source IP's in an acl, you can do what you want, right ?? Or am I terribly wrong here..</FONT>
+</P>
+<BR>
 
-Fax             +39 199 440088
-E-mail  simone.sestini@plugit.net
-Web             http://www.plugit.it
+<P><FONT SIZE=2>Gr,</FONT>
+<BR><FONT SIZE=2>Rob</FONT>
+</P>
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
---=====================_75867681==.ALT
-Content-Type: text/html; charset="us-ascii"
-
-<html>
-<body>
-Hi folks....<br><br>
-I did a special NAT-Firewall box for a dialup server..<br><br>
-I use the rules like that..<br><br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.2.0/23 -o eth0 -j
-SNAT --to PUBLIC_IP1<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.4.0/23 -o eth0 -j
-SNAT --to PUBLIC_IP2<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.6.0/23 -o eth0 -j
-SNAT --to PUBLIC_IP3<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.8.0/23 -o eth0 -j
-SNAT --to PUBLIC_IP4<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.10.0/23 -o eth0
--j SNAT --to PUBLIC_IP5<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.20.12.0/23 -o eth0
--j SNAT --to PUBLIC_IP6<br><br>
-now.. i need to set for examples the class 10.20.10.0/23 to browse only
-<a href="http://www.microsoft.com/" eudora="autourl">www.microsoft.com</a>
-and <a href="http://www.ibm.com/" eudora="autourl">www.ibm.com</a>.<br><br>
-How can i modify my chain ?<br><br>
-I have try to insert a -t nat -A OUTPUT or a -t nat -A PREROUTING rules but nothing is blocking the browsinf over internet..<br><br>
-Any idea ?<br><br>
-<br>
-<x-sigsep><p></x-sigsep>
-<font face="Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::<br><br>
-</font><font face="Verdana" color="#FF0000"><b>Simone Sestini </font><font face="Verdana" size=2 color="#FF0000">[ SS971-RIPE ]<br><br>
-</b></font>Plug IT s.p.a. - Technical Office<br>
-Via Galileo Ferraris 216<br>
-52100 Arezzo<br><br>
-<tt><font face="Courier New, Courier" color="#0000FF">Titles:<br>
-System and Network Administrator<br>
-Data Transmission Manager<br><br>
-Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39 199 440088<br>
-E-mail<x-tab>&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
-Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href="http://www.plugit.it/" eudora="autourl">http://www.plugit.it</a><br><br>
-</font></tt><font face="Verdana"><u>:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: <br>
-</font></u></body>
-</html>
-
---=====================_75867681==.ALT--
-
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2C781.E3B05D10--
 
