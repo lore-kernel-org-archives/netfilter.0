@@ -1,13 +1,12 @@
-From: "Sebastian" <netfilter@basti79.de>
-Subject: RE: Iptables 1.2.8 Compile Errors
-Date: Thu, 3 Jul 2003 00:54:08 +0200
+From: "Steven Mugassa" <steven.mugassa@intafrica.com>
+Subject: Log files
+Date: Thu, 3 Jul 2003 09:13:32 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c340ec$d9d377c0$0200a8c0@basti79>
-References: <200307021526.AA497484112@mail.alberni.net>
+Message-ID: <NHBBIEHHKBHELDDLACFGAELOCOAA.steven.mugassa@intafrica.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0009_01C34143.602E09B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307021526.AA497484112@mail.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,79 +16,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hello...
+This is a multi-part message in MIME format.
 
-I'm not so familiar with the sources, but I think the problem is the
-different definition of the struct ipt_route_target_info (in
-include/linux/netfilter_ipv4/ipt_ROUTE.h) between POM you use and the
-laterst CVS. The patch-o-matic 20030107 was release long befor
-iptables-1.2.8, you should probably try a CVS version of patch-o-matic.
-
-Greets
-Sebastian.
+------=_NextPart_000_0009_01C34143.602E09B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
-> Aaron Clausen
-> Sent: Thursday, July 03, 2003 12:26 AM
-> To: Netfilter Mailing List; David Busby
-> Subject: Re: Iptables 1.2.8 Compile Errors
+> Hello everyone,  
 > 
+Although my question seems not to belong to this list, but i'll appreciate
+any help from you guys.
+
+> I have a file that i want to trace all changes that are happening on that
+> file. i.e. 
+> *	date/time
+> *	who has done the changes(username) and from which terminal (IP
+> address)
+> *	What are the changes
 > 
-> ---------- Original Message ----------------------------------
-> From: "David Busby" <busby@pnts.com>
-> Reply-To: "David Busby" <busby@pnts.com>
-> Date:  Wed, 2 Jul 2003 12:27:37 -0700
+> Now, what should i do to "create" the log messages? I tried to define in
+> the syslog.conf file the filename(with its path) to be traced for changes,
+> and define where to log the messages (i created a file in the /var/log
+> directory); but i couldn't find any log message (while i've done the
+> changes in the file to be traced) .
 > 
-> >Show us the errors?
-> 
-> Sorry, here's the whole error:
-> 
-> ld -shared -o extensions/libipt_NETMAP.so 
-> extensions/libipt_NETMAP_sh.o cc -O2 -Wall -Wunused 
-> -I/usr/src/linux/include -Iinclude/ 
-> -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o 
-> extensions/libipt_ROUTE_sh.o -c extensions/libipt_ROUTE.c
-> extensions/libipt_ROUTE.c: In function `init':
-> extensions/libipt_ROUTE.c:44: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:45: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:46: structure has no member named `gw'
-> extensions/libipt_ROUTE.c: In function `parse':
-> extensions/libipt_ROUTE.c:73: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:76: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:78: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:78: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:78: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:91: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:94: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:96: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:96: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:96: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:105: structure has no member named `gw'
-> extensions/libipt_ROUTE.c: In function `print':
-> extensions/libipt_ROUTE.c:142: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:143: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:145: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:146: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:148: structure has no member named `gw'
-> extensions/libipt_ROUTE.c:149: structure has no member named `gw'
-> extensions/libipt_ROUTE.c: In function `save':
-> extensions/libipt_ROUTE.c:161: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:162: structure has no member named `oif'
-> extensions/libipt_ROUTE.c:164: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:165: structure has no member named `iif'
-> extensions/libipt_ROUTE.c:167: structure has no member named `gw'
-> extensions/libipt_ROUTE.c:168: structure has no member named `gw'
-> make: *** [extensions/libipt_ROUTE_sh.o] Error 1
-> 
-> -- 
-> Aaron Clausen
-> 
-> 
+> Thanks,
+> Steven
+
+------=_NextPart_000_0009_01C34143.602E09B0
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+eJ8+IiAGAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
+b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEIAAUABAAAAAAAAAAAAAEJAAQAAgAAAAAA
+AAABBoADAA4AAADTBwcAAwAJAA0AAAAEAP4AAQOQBgDYBgAAJQAAAAsAAgABAAAACwAjAAAAAAAD
+ACYAAAAAAAsAKQAAAAAAAwAuAAAAAAADADYAAAAAAB4ATQABAAAAAQAAAAAAAAAeAHAAAQAAAAoA
+AABMb2cgZmlsZXMAAAACAXEAAQAAACAAAAABw0CPz6cGZNjhrIER14SWAAKzULtkACZsItAAAAxj
+0AsAFwwAAAAAAgEdDAEAAAAiAAAAU01UUDpTVEVWRU4uTVVHQVNTQUBJTlRBRlJJQ0EuQ09NAAAA
+CwABDgAAAABAAAYOAH5IJypBwwECAQoOAQAAABgAAAAAAAAAoXYAa7ky1xGEdwACs1C7ZMKAAAAL
+AB8OAQAAAAIBCRABAAAA8gIAAO4CAACABAAATFpGdeqftWcDAAoAcmNwZzEyNRYyAPgLYG4OEDAz
+M08B9wKkA+MCAGNoCsBz8GV0MCAHEwKDAFAC8t0QxzIGAAbDAoB9CoAIyGwgOwlvDjA1AoAKgXZJ
+CJB3awuAZDQMYGPbAFALA2MAQQ8EMhagC7Z/CrEKgRdQAUAPBgqgA2B04wWQBUBIZWwJAArhGeQp
+EVBldgSQeQIgZSwfGcccYBiVHKUa1kFsdAJoCGBnaCBteSCicQpQc3RpAiAgESCUZW0EIG4Z8CB0
+GpB2YhpgAiBnH9IeEAQAIFJsBAB0LCAAdQVAaeInGnAgYXAZ0AWQBzCvGgAb6Bq4IeBuHpBoGmAU
+cCADUiAbkHUgZ7B1eXMuHJ8aEkkkEP5hG2Ah4CRgAxAm8B4QImCZIZAgdwBwH8N0cgDQ/ybxIcEQ
+4Q8gB5EngwrAJvD/EPAiAAnwC4AgYB8RJ4MnMvouIZAuK3Ec/Qr1GeQAACJwAjBleHQR8idCNjcM
+ggKRKi3BLcFsdv5sAmAuIC3QAEEt0BZxCfB/EUAtsy4QDDAucROQAgBpKC0zOBkhaTHxIGR9ImEv
+HvAHgBiULb8uwXf3HiAmsQQgZBuhIKEm8CkVrCh1ESAEoGEHgCkj0T5kJGQ0wA3gHmAaAHJtQwuA
+B0AgKElQIeBktmQJcAQQKTMvLmdXKaaPNZkr/y0JGJROb3chQOs0wCehcx4hbDcQJ9A1QNUf0iIF
+AGUiYSI1gwkA0yBgB4FzYSlRPyaRKHD/CJA3EB/hAQELgCbwC4A1g/ZzJSBAkS4FoDAAJyYm8Lsn
+MjaSKAPwHhAhkHQEIP8KsB4QNtAf4yhkNxEFsSkV/yFANvJCJTTABJAnYRqQQJL/NZJA1jhgJ9A/
+1DcQJxVClZQvdgrAL0CSZGkiIXMf4BuAKTshVCkAPvJu/icrIjcBI+JAmThgN4FKsv4nJuE1TkKG
+JzRF6TbQJUvaVCkha0dAGJRTGgAbYBcvQRiyE6EAVPAAAAsAAIAIIAYAAAAAAMAAAAAAAABGAAAA
+AAOFAAAAAAAAAwACgAggBgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAAeACCAGAAAAAADAAAAA
+AAAARgAAAABShQAAc3kBAB4ACYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAABAAAABAAAADkuMAAL
+AA2ACCAGAAAAAADAAAAAAAAARgAAAACChQAAAQAAAAsAEYAIIAYAAAAAAMAAAAAAAABGAAAAAAaF
+AAAAAAAAAwASgAggBgAAAAAAwAAAAAAAAEYAAAAAAYUAAAAAAAALABuACCAGAAAAAADAAAAAAAAA
+RgAAAAAOhQAAAAAAAAMAHIAIIAYAAAAAAMAAAAAAAABGAAAAABGFAAAAAAAAAwAegAggBgAAAAAA
+wAAAAAAAAEYAAAAAGIUAAAAAAAACAfgPAQAAABAAAAChdgBruTLXEYR3AAKzULtkAgH6DwEAAAAQ
+AAAAoXYAa7ky1xGEdwACs1C7ZAIB+w8BAAAAXwAAAAAAAAA4obsQBeUQGqG7CAArKlbCAABQU1RQ
+UlguRExMAAAAAAAAAABOSVRB+b+4AQCqADfZbgAAAEY6XHN0ZXZlbi5tdWdhc3NhXE1haWxib3hc
+bWFpbGJveC5wc3QAAAMA/g8FAAAAAwANNP03AAACAX8AAQAAADwAAAA8TkhCQklFSEhLQkhFTERE
+TEFDRkdBRUxPQ09BQS5zdGV2ZW4ubXVnYXNzYUBpbnRhZnJpY2EuY29tPgADAAYQNBfotQMABxAH
+AgAAAwAQEAEAAAADABEQAAAAAB4ACBABAAAAZQAAAEhFTExPRVZFUllPTkUsQUxUSE9VR0hNWVFV
+RVNUSU9OU0VFTVNOT1RUT0JFTE9OR1RPVEhJU0xJU1QsQlVUSUxMQVBQUkVDSUFURUFOWUhFTFBG
+Uk9NWU9VR1VZU0lIQVZFQUYAAAAArZk=
+
+------=_NextPart_000_0009_01C34143.602E09B0--
 
 
