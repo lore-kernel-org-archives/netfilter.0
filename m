@@ -1,14 +1,10 @@
-From: Julian Gomez <julianjose.gomez@getronics.com>
-Subject: Re: Benchmark
-Date: Wed, 14 Jul 2004 09:41:17 +0800
+From: Jason Opperisano <Jopperisano@alphanumeric.com>
+Subject: RE: SSH Connections Lost After 1 minute idle
+Date: Tue, 13 Jul 2004 19:29:26 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040714014117.GA2183@jgomez-p-latitude.asia.unity>
-References: <1089752682.6507.7.camel@aflores> <20040713151747.5af1ef20@mgalepc.utilitran.com> <1089754372.6507.19.camel@aflores>
-Reply-To: julianjose.gomez@getronics.com
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511B9@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1089754372.6507.19.camel@aflores>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,41 +16,75 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: 'Real Cucumber' <monkcucumber@yahoo.com>, netfilter@lists.netfilter.org
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Dunno if this is relevant--but I had similar symptoms SSH-ing to an OpenBSD
+SSH server through IPTables on RH running through an OpenVPN tunnel
+(RH/IPTables was the OVPN server)...  I didn't really spend the proper time
+troubleshooting what was actually causing it--so this may not apply to your
+situation at all... (enough disclaimers yet?)
+
+What fixed it for me was setting the following in sshd_config of the SSH
+server:
+
+  ClientAliveInterval 10
+  ClientAliveCountMax 6
+
+Again--no idea if this is of any value to anyone...
+
+- -j
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFA9HBFqca8HlBdgZoRArZeAJ9rkciHNTmhDythmAkF9efUf2GC/ACeKys6
+z3b6eXHHIcuFfkVQ50XI7ng=
+=+8ya
+-----END PGP SIGNATURE-----
+
+-----Original Message-----
+From: Real Cucumber [mailto:monkcucumber@yahoo.com] 
+Sent: Tuesday, July 13, 2004 12:51 PM
 To: netfilter@lists.netfilter.org
+Subject: SSH Connections Lost After 1 minute idle
 
-On Tue, Jul 13, 2004 at 06:32:52PM -0300, Alejandro Flores spoke thusly:
 
->Hello Michael,
->
->Agreed. If well designed, it will improve performance. But, what
->is the cost to send a packet to another chain? And if you have
->something like:
+I have a fedora firewall/router using iptables to
+forward incoming SSH packets to an internal server and
+it works great....however, only if the user does not
+remain idle for 1 minute.  If they idle for 1 minute,
+the connection "freezes" in the sense that it drops
+the connection but its not a proper "connectoin
+closed" from the server as if it is a timelimit, but
+rather just a connectoin loss like you've unplugged
+your cable in the middle of a connection.
 
-I don't have those numbers.
+If the user is connecting from within the network,
+they can remain idle for an unlimited amount of time
+without being disconnected.  It is only ones
+connecting from outside hte network going through the
+iptables firewall that have this idle problem.
 
->When the packet arrives, and it's from 192.168.0.7, it will be handled
->by INPUT, then C1 and finally C1_SSH at the second rule. What I'm
->trying to discover is, what is the cost to send the packet from one
->chain to another. It's more easy to configure and maintain your rules
->with user-chains, but how much it will cost in performance, if instead
->of the above example, I use the following rules:
+I am only allowing TCP and UDP for SSH to be
+forwarded.
 
-That's relative right? If you properly organise your user-chains taking
-into account that more frequent traffic types are at the top - then
-performance wise, you shouldn't be seeing that dramatic a hit.
+Do I need any ICMP or any other special connection
+timeout rules on the iptables side to fix this
+problem?
 
-On an old bastion host I used to control, I had 6,000++ rules running at
-one time (_no optimisation_ at all). I didn't notice a performance hit,
-except adding/deleting rules took a bit of time to fully finish; but
-Harald has mentioned that problem before on the list - its due to the
-way the rules are stored (circular link list?) IIRC.
+Any help appreciated!
 
-For good security- your rulesets should be really small (where
-possible!) otherwise it becomes a nightmare to maintain.
 
-In regards to "rule sorting" google the firewall-wizards mailing list
-archives, Paul Robertson has participated in a couple of interesting
-threads on the subject.
 
-(snip)
+
+	
+		
+__________________________________
+Do you Yahoo!?
+New and Improved Yahoo! Mail - 100MB free storage!
+http://promotions.yahoo.com/new_mail 
 
