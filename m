@@ -1,14 +1,13 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: accessing a internal port fowarded email server from the
-	internal network
-Date: 08 Dec 2003 07:39:32 +0100
+From: Michael Rash <mbr@cipherdyne.org>
+Subject: Re: Maximum chain name length
+Date: Mon, 8 Dec 2003 04:42:53 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070865572.1705.9.camel@kermit>
-References: <3FD3D65E.7000405@yahoo.com.au>
+Message-ID: <20031208094253.GA16045@orthanc.gambrl01.md.comcast.net>
+References: <1070674657.3314.9.camel@jasiiitosh.nexusmgmt.com> <1070780614.4839.25.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FD3D65E.7000405@yahoo.com.au>
+Content-Disposition: inline
+In-Reply-To: <1070780614.4839.25.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: TN <tnuro@yahoo.com.au>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Am Mon, 2003-12-08 um 02.39 schrieb TN:
+On Dec 07, 2003, John A. Sullivan III wrote:
 
-> Currently, laptop users internal to the network need to then become=20
-> external when they work external to the LAN, and they have to either=20
-> setup 2 different email accounts (one using the internal email server IP=20
-> address, and one using the external IP address), or they have to=20
-> remember to change their server settings each time they move from=20
-> internal to external and vice-versa. Both of these are a pain for them.
-> It doesn't work, the email client just times out, as if I'm still=20
-> blocking some part of the data stream.
-> What am I doing wrong ?
->=20
-The client can reach the mailserver alright, but the mailserver tries to
-respond directly to the client using the wrong IP-Address.=20
-Easiest solution:
-Apply both DNAT and SNAT at the same time. Add the following rule:
-iptables -t nat -A POSTROUTING -p tcp -m multiport --dport 25,110,143 -d
-192.168.10.12 -s  192.168.10.0/24 -j SNAT --to <firewall-ip>
+<snip>
 
-Cheers,
+> AppliedTechnologies/Engineering/NewProducts/SanFranciscoLabs/ProjectB
+> 
+> is not out of the ordinary.  This runs us up against the 30 character
+> limit of chain names very quickly.  Working around this by substituting
+> numbers for names or some other such workaround will greatly complicate
+> the project and reduce ease of troubleshooting in the field.
+> 
+> 	Is there any way to extend the maximum allowed chain name length in
+> iptables? Thanks - John
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+(Re-posting this since my original post did not seem to make it through).
 
-Book: VPN mit Linux
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+On way to extend the chain name length would be to modify
+IPT_FUNCTION_MAXNAMELEN in both the userspace and kernel versions of
+the ip_tables.h header file (or create a new #define just for the chain
+length since several things depend on IPT_FUNCTION_MAXNAMELEN).  You
+might try posting to the netfilter-devel list, but this is not exactly
+a trivial modification (how to maintain backward compatibility with
+older kernels, etc.).
+
+--Mike
+
+Michael Rash
+http://www.cipherdyne.org
+Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
 
