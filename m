@@ -1,13 +1,14 @@
-From: "Gaurav Natani" <Gaurav.Natani@formulasys.com>
-Subject: simple iptables firewall configuration to practice
-Date: Wed, 16 Apr 2003 12:47:09 +0530
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: simple iptables firewall configuration to practice
+Date: Wed, 16 Apr 2003 15:15:04 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <544E7CEC5B4A5B4D86DC7CC755CD43CA2734D1@MAIL.fspl.com>
+Message-ID: <14f801c303fc$ddaf4900$13fcc5cb@Housecall>
+References: <544E7CEC5B4A5B4D86DC7CC755CD43CA2734D1@MAIL.fspl.com>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C303E8.31988242"
+	boundary="----=_NextPart_000_14F5_01C3042A.F5824A40"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +18,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Gaurav Natani <Gaurav.Natani@formulasys.com>, netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C303E8.31988242
+------=_NextPart_000_14F5_01C3042A.F5824A40
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Could any one please send me some simple iptables firewall configuration
-to practice with and get started. I am a new comer and have just started
-on iptables.
-=20
-With warm regards,
-Gaurav Natani.
-=20
-_______________________________________________________
-=20
-=20
+Hi
 
-------_=_NextPart_001_01C303E8.31988242
+just go to linuxguruz.org
+
+you have plenty
+
+good luck
+hare
+  ----- Original Message -----=20
+  From: Gaurav Natani=20
+  To: netfilter@lists.netfilter.org=20
+  Sent: Wednesday, April 16, 2003 12:47 PM
+  Subject: simple iptables firewall configuration to practice
+
+
+  Could any one please send me some simple iptables firewall =
+configuration to practice with and get started. I am a new comer and =
+have just started on iptables.
+
+  =20
+
+  With warm regards,
+
+  Gaurav Natani.
+
+  =20
+
+  _______________________________________________________
+  =20
+
+  =20
+
+
+------=_NextPart_000_14F5_01C3042A.F5824A40
 Content-Type: text/html;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DProgId content=3DWord.Document>
-<meta name=3DGenerator content=3D"Microsoft Word 10">
-<meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C30418.DD758AA0">
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"PersonName"/>
-<!--[if gte mso 9]><xml>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML xmlns=3D"http://www.w3.org/TR/REC-html40" xmlns:o =3D=20
+"urn:schemas-microsoft-com:office:office" xmlns:w =3D=20
+"urn:schemas-microsoft-com:office:word" xmlns:st1 =3D=20
+"urn:schemas-microsoft-com:office:smarttags"><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3DWord.Document name=3DProgId>
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<META content=3D"Microsoft Word 10" name=3DOriginator><LINK=20
+href=3D"cid:filelist.xml@01C30418.DD758AA0" =
+rel=3DFile-List><o:SmartTagType=20
+name=3D"PersonName"=20
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"></o:SmartTagT=
+ype><!--[if gte mso 9]><xml>
  <o:OfficeDocumentSettings>
   <o:DoNotRelyOnCSS/>
  </o:OfficeDocumentSettings>
@@ -77,11 +99,12 @@ namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
   <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
  </w:WordDocument>
 </xml><![endif]--><!--[if !mso]>
-<style>
-st1\:*{behavior:url(#default#ieooui) }
-</style>
+<STYLE>st1\:* {
+	BEHAVIOR: url(#default#ieooui)
+}
+</STYLE>
 <![endif]-->
-<style>
+<STYLE>
 <!--
  /* Font Definitions */
  @font-face
@@ -141,7 +164,7 @@ span.GramE
 div.Section1
 	{page:Section1;}
 -->
-</style>
+</STYLE>
 <!--[if gte mso 10]>
 <style>
  /* Style Definitions */=20
@@ -158,58 +181,76 @@ div.Section1
 	font-size:10.0pt;
 	font-family:"Times New Roman";}
 </style>
-<![endif]-->
-</head>
+<![endif]--></HEAD>
+<BODY lang=3DEN-US style=3D"tab-interval: .5in" vLink=3Dpurple =
+link=3Dblue=20
+bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>just go to linuxguruz.org</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>you have plenty</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>good luck</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>hare</FONT></DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3DGaurav.Natani@formulasys.com=20
+  href=3D"mailto:Gaurav.Natani@formulasys.com">Gaurav Natani</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  =
+href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
+rg</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Wednesday, April 16, 2003 =
+12:47=20
+  PM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> simple iptables =
+firewall=20
+  configuration to practice</DIV>
+  <DIV><BR></DIV>
+  <DIV class=3DSection1>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Could any one please =
+send me some=20
+  simple <SPAN class=3DSpellE>iptables</SPAN> firewall configuration to =
+practice=20
+  with and get <SPAN class=3DGramE>started.</SPAN> I am a new comer and =
+have just=20
+  started on <SPAN =
+class=3DSpellE>iptables</SPAN>.<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">With warm=20
+  regards,<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><st1:PersonName><FONT face=3DArial size=3D2><SPAN =
 
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
-style=3D'tab-interval:.5in'>
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Gaurav=20
+  Natani</SPAN></FONT></st1:PersonName><FONT face=3DArial size=3D2><SPAN =
 
-<div class=3DSection1>
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial">.<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial; mso-no-proof: =
+yes">_______________________________________________________<BR></SPAN></=
+FONT><SPAN=20
+  style=3D"mso-spacerun: yes">&nbsp;</SPAN><o:p></o:p></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: =
+12pt"><o:p>&nbsp;</o:p></SPAN></FONT></P></DIV></BLOCKQUOTE></BODY></HTML=
+>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Could any one please send me some simple <span =
-class=3DSpellE>iptables</span>
-firewall configuration to practice with and get <span =
-class=3DGramE>started.</span>
-I am a new comer and have just started on <span =
-class=3DSpellE>iptables</span>.<o:p></o:p></span></font></p>
+------=_NextPart_000_14F5_01C3042A.F5824A40--
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>With warm regards,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><st1:PersonName><font size=3D2 face=3DArial><span
- style=3D'font-size:10.0pt;font-family:Arial'>Gaurav =
-Natani</span></font></st1:PersonName><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>.<o:p></o:p></span></font></=
-p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;mso-no-proof:yes'>_____________________________________=
-__________________<br>
-</span></font><span =
-style=3D'mso-spacerun:yes'>&nbsp;</span><o:p></o:p></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-=00
-------_=_NextPart_001_01C303E8.31988242--
 
