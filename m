@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: patch-o-matic & compiling it
-Date: Wed, 23 Apr 2003 13:08:26 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Redirect DHCP requests to DMZ?
+Date: 23 Apr 2003 14:19:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E6D65A6EE5AAD6119DE800B0D03DA0C52895C9@MS_LEU1>
-References: <3EA668ED.9000405@o2.pl>
+Message-ID: <1051100353.12295.96.camel@elendil.intranet.cartel-securite.net>
+References: <3EA66634.2020508@blinkenlichten.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EA668ED.9000405@o2.pl>
+In-Reply-To: <3EA66634.2020508@blinkenlichten.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-> I have a lame problem here I can't win with.
-> I wanted to use one of the features provided by the new path-o-matic, 
-> but I have problems compiling them into modules/kernel.
-> 
-> this is what I did:
-> make clean ( in kernel)
-> ./runme --batch extra (provided the correct kernel dir it said I can 
-> compile the kernel)
-> make config(there was no new options from POM)
-> make modules
-> make modules_install
+Le mer 23/04/2003 =E0 12:08, Carsten Maass a =E9crit :
+> Local LAN (192.168.20.*)
+>      |
+>      |
+>    Switch
+>      |
+>      |
+> Router/Firewall ---- DMZ (192.168.21.*)
+>      |
+>      |
+>      |
+>   Internet
+>
+> Everything runs smoothly, except for one thing: I am unable to
+> redirect DHCP request from the clients on the local LAN to the DHCP
+> server inside the DMZ.
 
-So, uhhm.. What goes wrong then ?
-Which kernel version ? Which pom version ? Any error messages ?
+You'll achieve this setting a DHCP Relay up. Due to what they are, DHCP
+packets cannot be routed through different IP networks (mainly because
+of destination addresses that are used).
 
+But this kind of setup is no secure. If someones breaks into your DMZ,
+he will be able to have your LAN's configuration, and even tamper it,
+acting on DHCP stuff. That's _very bad_. DMZ compromission must not
+endanger rest of network security.
 
-Rob
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
