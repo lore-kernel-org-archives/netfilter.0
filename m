@@ -1,11 +1,12 @@
-From: jeroen <jer@chess.nl>
-Subject: port forwarding fails
-Date: Wed, 11 Aug 2004 13:51:47 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Newbie in a deep trouble!!!
+Date: Wed, 11 Aug 2004 08:12:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411A0853.7010204@chess.nl>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051268@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,106 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Elvis Aaron Presley <elvisa@terra.es>, Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+>
+> First I put this:
+>
+> iptables -t nat -A PREROUTING -p tcp -d ! 172.16.0.0/16 --dport 80 -j =
+REDIRECT --to-port 3128
+>
+> Ok with this, the 10.34.x.x pcs can access to internet through the =
+proxy and can view the web pages of the 172.16.x.x pcs ... It works!!!
+>
+> Then I put this:
+>
+> iptables -t nat -A PREROUTING -p tcp -d ! 10.34.0.0/16 --dport 80 -j =
+REDIRECT --to-port 3128
+>
+> With this,  the 172.16.x.x pcs can access to internet through the =
+proxy and can view the web pages of the 10.34.x.x pcs ... It works =
+too!!!
+>
+> This commands works separately, but when I put the two at same time it =
+doesn't work.
 
-I new to this list and probably making a stupid mistake but after trying 
-(and reading the docs) for 2 days I'm desparate to get this working.
+it's because 10.34.0.0/16 matches "-d ! 172.16.0.0/16" and 172.16.0.0/16 =
+matches "-d ! 10.34.0.0/16"
 
-This is what I want :
-                                                
-|--------------|                                           
-|------------------|
-|---------|  192.168.0.33          |embedded     | 
-10.x.x.x                10.x.x.x. |host                     |
-|webcam |----------------------|router            
-|-----------------------------|                           |
-|---------|           192.168.0.13 |                     |ppp0         
-gprs                    |                           |
-                                          eth0| 
--------------|                                            
-|------------------|
+> Can anybody help me please????
 
-I want to 'transparent' reach the webcam through the grps connection 
-from the host, on the embedded box I use the rules :
-iptables -t nat -A PREROUTING -i ppp0 -p tcp -d <ppp0 ip> --dport 80 -j 
-DNAT --to 192.168.0.33:80
-iptables -A FORWARD -i ppp0 -o eth0 -p tcp -d 192.168.0.33 --dport 80 -j 
+i can try.  your PREROUTING rules should be, in order:
+
+iptables -t nat -A PREROUTING -p tcp -d 172.16.0.0/16 --dport 80 -j =
 ACCEPT
+iptables -t nat -A PREROUTING -p tcp -d 10.34.0.0/16 --dport 80 -j =
+ACCEPT
+iptables -t nat -A PREROUTING -p tcp -i ! eth0 --dport 80 -j REDIRECT =
+--to-port 3128
 
-With this setup I can see traffic, by led indication on the webcam, if I 
-request http://<ppp0 ip> from the host. Unfortunatly packets aren't 
-coming back. I tried MASQUERADING rules and SNAT but no suc6 either.
+which allows traffic to 172.16.0.0/16 and 10.34.0.0/16 to pass without =
+going through the squid proxy, and anything else received on either eth2 =
+or eth1 to get redirected to the squid cache.
 
-my embedded box settings :
-root@openembedded:~# route
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use 
-Iface
-127.0.0.1       *               255.255.255.255 UH    0      0        0 lo
-192.168.0.0     *               255.255.255.0   U     0      0        0 eth0
-10.0.0.0        *               255.0.0.0       U     0      0        0 ppp0
-default         10.7.20.6       0.0.0.0         UG    0      0        0 ppp0
-
-root@openembedded:~# ifconfig
-eth0      Link encap:Ethernet  HWaddr 00:11:22:56:42:AB
-          inet addr:192.168.0.13  Bcast:192.168.0.255  Mask:255.255.255.0
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:794 errors:1 dropped:1 overruns:0 frame:0
-          TX packets:8 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
-          RX bytes:65934 (64.3 KiB)  TX bytes:508 (508.0 B)
-          Interrupt:7 Base address:0x300
-
-lo        Link encap:Local Loopback
-          inet addr:127.0.0.1  Mask:255.0.0.0
-          UP LOOPBACK RUNNING  MTU:16436  Metric:1
-          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:0
-          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
-
-ppp0      Link encap:Point-Point Protocol
-          inet addr:10.7.20.6  P-t-P:10.6.0.1  Mask:255.255.255.255
-          UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
-          RX packets:51 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:48 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:3
-          RX bytes:3786 (3.6 KiB)  TX bytes:3642 (3.5 KiB)
-
-and finally :
-
-root@openembedded:~# iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  anywhere             192.168.0.33        tcp dpt:www
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-root@openembedded:~# iptables -L -t nat
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       tcp  --  anywhere             10.7.20.6           tcp dpt:www 
-to:192.
-168.0.33
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-
-Please let me know if this setup should work, I'm starting to doubt 
-everything including my own sanity...
-
-thanks,
-
-Jeroen
-
+-j
 
