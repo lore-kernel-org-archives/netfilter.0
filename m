@@ -1,13 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+From: Rasca <rasca-ml@triad.de>
 Subject: Re: port forwarding with one interface to trace traffic?
-Date: Thu, 22 Jan 2004 08:16:53 -0500
+Date: Thu, 22 Jan 2004 14:36:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <400FCD45.3050604@Loudoun-Fairfax.com>
-References: <400E9EB3.4070309@triad.de> <200401212207.07929.Antony@Soft-Solutions.co.uk>
+Message-ID: <400FD1E2.8090604@triad.de>
+References: <400E9EB3.4070309@triad.de> <200401212207.07929.Antony@Soft-Solutions.co.uk> <400FCD45.3050604@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401212207.07929.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <400FCD45.3050604@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Cc: netfilter@lists.netfilter.org
 
+Hi,
 
->
->3. Connect a hub (not a switch) to the printer's ethernet cable (or to the 
->Mac's ethernet cable), and plug the Linux machine running ethereal into the 
->hub, so you can sniff the packets off the wire without any NAT.
->  
->
+Jeffrey Laramie schrieb:
+> 
+>>
+>> 3. Connect a hub (not a switch) to the printer's ethernet cable (or to 
+>> the Mac's ethernet cable), and plug the Linux machine running ethereal 
+>> into the hub, so you can sniff the packets off the wire without any NAT.
+>>  
+>>
+> 
+> This is dangerously OT, but what's the difference? I always thought that 
+> the difference between a switch and a hub was simply a matter of 
+> internal plumbing that affected how the pipes were connected and had no 
+> effect on the actual tcp/ip connections. I've used them interchangeably 
+> and haven't seen a difference. Maybe someone has a link that could 
+> educate me more better! :-)
 
-Hi Antony
+A "hub" broadcasts all packets to all port. And yes - that was
+the way I choosed, cause it's more simple to setup (I found an
+old hub..) and it's working.
 
-This is dangerously OT, but what's the difference? I always thought that 
-the difference between a switch and a hub was simply a matter of 
-internal plumbing that affected how the pipes were connected and had no 
-effect on the actual tcp/ip connections. I've used them interchangeably 
-and haven't seen a difference. Maybe someone has a link that could 
-educate me more better! :-)
+thx to Antony.
 
-Jeff
+cu
+  rasca
 
+-- 
+_______________________________________________________________
+| Triad Berlin Projektgesellschaft mbH | http://www.triad.de/ |
 
 
