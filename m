@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPtables and DDclient
-Date: Fri, 27 Sep 2002 22:44:01 +0100
+From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
+Subject: RE: pptp and nat
+Date: Fri, 27 Sep 2002 17:12:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020927214402.UJBU13996.mta05-svc.ntlworld.com@there>
-References: <000801c26504$df5d3f60$0401a8c0@crazymother>
+Message-ID: <IMEDICLPAGAOCBLCCKLPMEKPEBAA.netfilter@darrelldieringer.com>
+References: <200209240346.g8O3kBl06609@brooks.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000801c26504$df5d3f60$0401a8c0@crazymother>
+In-Reply-To: <200209240346.g8O3kBl06609@brooks.nu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Lane Brooks <lane@brooks.nu>, netfilter@lists.netfilter.org
 
-On Thursday 26 September 2002 3:31 am, Marc-Andr=E9 Boulais wrote:
+Hello,
 
-> hi, I am currently looking for a way to let "ddclient" ( IP updater progr=
-am
-> ) pass through iptables. I was first looking for the ports involved with =
-it
-> but I can't seem to find any info on that.
+Others are certain to have more experince with PPTP that I do.
+However, if you believe it is a rules-related problem (as in some
+packets needed by PPTP are getting blocked), make sure you have a
+LOGging line before every DROP rule (or at the end of chains with a
+default DROP policy).
+
+There may very well be a PPTP helper module that you need, though.  I
+don't know since I haven't tried to use PPTP through netfilter myself.
+I only brought up the LOG/DROP scenario since you hadn't mentioned
+checking the logs for problems.
+
+D
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Lane Brooks
+> Sent: Monday, September 23, 2002 10:46 PM
+> To: netfilter@lists.netfilter.org
+> Subject: pptp and nat
 >
-> If you know how I could build a rule to let it pass through ( cuz right
-> now, it is blocked ) iptables. Please let me know.
+>
+>
+> I have a linux firewall/nat server that is working well
+> using iptables.  I also
+> have a pptp client on this machine (ppp0).  The internal network is
+> 192.169.0/24 on eth0 and the internet is on eth1.  NAT is
+> working fine for
+> everything except the pptp connection.  The pptp connection
+> works fine from
+> the firewall machine, but nothing on the internal network
+> can talk through it.
+>  I used to have ipchains on kernal 2.2, and internal
+> computers could talk fine
+> through the pptp connection, so I am thinking I need to add
+> something more to
+> my iptable rules.  Any ideas or help?  My routing table is
+> exactly the same as
+> that which used to work on ipchains with the older kernel,
+> so I dont think it
+> is that.
+>
+> Thanks
+> Lane Brooks
+>
+>
+>
+>
 
-I do not know what ddclient is, however you can find out what sort of packe=
-ts=20
-it uses by putting a LOGging rule at the end of your FORWARD chain, just=20
-before you throw all the remaining packets away with the default DROP polic=
-y:
-
-iptables -A FORWARD -j LOG --log-prefix "Forward block "
-
-This is assuming, of course, that you're trying to send ddclient *through* =
-
-the firewall, and not from it or to it (in which case you'd want to LOG the=
-=20
-packets in the OUTPUT or INPUT chains).
-
-Once you've seen what sort of packets it's using, you can add the appropria=
-te=20
-rules to let it through...
-
-
-Antony.
-
---=20
-
-All matter in the Universe can be placed into one of two categories:
-
-1. things which need to be fixed
-2. things which will need to be fixed once you've had a few minutes to play=
-=20
-with them
 
