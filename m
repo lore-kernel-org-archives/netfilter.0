@@ -1,10 +1,10 @@
-From: "David C. Hart" <dch@TQMcube.com>
-Subject: Is there a simple way to let Whois through?
-Date: Thu, 13 Nov 2003 14:39:03 -0500
+From: Bart Duchesne <bd@able.be>
+Subject: PPTP conntrack problems
+Date: Thu, 13 Nov 2003 21:36:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068752343.3536.92.camel@dchws.TQMcube.com>
+Message-ID: <3FB3EB3D.70107@able.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-GTobb9QmBY+qErv+EG77"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,34 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Iptables Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi,
 
---=-GTobb9QmBY+qErv+EG77
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I'm running  kernel 2.4.21 with patch-o-matic 20030922; iptables and 
+friends work fine.
+But we have 'strange', 'random' PPTP problems, we are running poptop on 
+the fw and have the conntrack pptp helpers loaded also.
 
-I could force rwhois but I don't think that's a supported netfilter
-protocol. I have some of the individual servers configured for accept. I
-thought about accepting source port 43 but not all of the whois servers
-use that port.
+Connections to the  PPTP server on the gateway don't always succeed.
+The most reoccurring error we get is a decaps_hdlc operation not 
+permitted error; if I unload the conntrack modules everything works fine.
 
-Any ideas?
-                               ---------
-            Quality Management - A Commitment to Excellence
+I have searched the archives and noticed the same behaviour I while ago, 
+has anyone seen this problem also with the 20030922 p-o-m  fixes from 
+Harald regarding PPTP.
 
---=-GTobb9QmBY+qErv+EG77
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+We also see much Message too long errors in the GRE packets; is ithis an 
+MTU problem on the carrying device or IN the tunnel ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Hope someone can turn my light on because it's getting dark in here and 
+I don't know anymore.
 
-iD8DBQA/s93Xol4OE0cpGaIRAg7KAKCHZNgxFScWXzZfSPGSO0A1x5VSugCbB1D3
-kpdtcsAJI3BBHH036GtwIEg=
-=iXNs
------END PGP SIGNATURE-----
+Bart
 
---=-GTobb9QmBY+qErv+EG77--
 
 
