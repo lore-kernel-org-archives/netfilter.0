@@ -1,10 +1,12 @@
 From: SBlaze <dagent.geo@yahoo.com>
-Subject: Counter Strike FOWARDING?
-Date: Sat, 8 Mar 2003 12:34:34 -0800 (PST)
+Subject: Re: QoS
+Date: Sat, 8 Mar 2003 12:31:27 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030308203434.17890.qmail@web40209.mail.yahoo.com>
+Message-ID: <20030308203127.56072.qmail@web40206.mail.yahoo.com>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAf4ZC/qaxCUWa8XKwAM+cHAEAAAAA@surson.com.br>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAf4ZC/qaxCUWa8XKwAM+cHAEAAAAA@surson.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,15 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-
-iptables -t nat -A PREROUTING -p TCP --dport 27015 -j DNAT --to-destination
-192.168.1.25:27015
+To: Franco Antonio Catena <facatena@surson.com.br>, 'Netfilter' <netfilter@lists.netfilter.org>
 
 
-I'm trying to route incoming attempts into my internal windows machine to host
-a Half Life Counter Strike game every now and then. This is what I come up
-with! Could everyone take a look and see if this is correct? Thanks Muchly
+--- Franco Antonio Catena <facatena@surson.com.br> wrote:
+> Hi fellows
+> 
+> 
+> Its possible to do something LIKE QoS or CBQ using IPTABLES ?? I want to
+> control the amount of Kbps per port in INBOUND and OUTBOUND directions
+> 
+> thanks
+> 
+> ---
+> Outgoing mail is certified Virus Free.
+> Checked by AVG anti-virus system (http://www.grisoft.com).
+> Version: 6.0.459 / Virus Database: 258 - Release Date: 25/2/2003
+>  
+> 
+> 
+I believe this can better help you than iptables...as iptables is just a
+firewall soloution... you are looking more for a routing soloution
+
+http://lartc.org/
 
 =====
 "No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
