@@ -1,13 +1,11 @@
-From: "Andrew E. Mileski" <andrewm@isoar.ca>
-Subject: Re: ftp
-Date: Thu, 20 May 2004 22:41:39 -0400
+From: Patrick <boysdk@hotmail.com>
+Subject: Urgent: Please help me about block port 80
+Date: Thu, 20 May 2004 16:39:04 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40AD6C63.1050106@isoar.ca>
-References: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
+Message-ID: <40AC6EA8.69A94AF4@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-azeem ahmad wrote:
-> hi all
-> i m unable to browse ftp. it says
-> --------------------------------------------------------------------------------------------------------------------------------------- 
-> 
-> an error occured opening that folder on the ftp server. make sure you 
-> have permissions to access that folder
-> details
-> 200 type set to A
-> 500 Illegal port command
-> 500 LPRT not understood
-> -------------------------------------------------------------------------------------------------------------------------------------- 
+Dear sir/madam,
 
-By any chance are you browsing with IE?
+My goal is to allow only one IP(192.168.1.10) to access my server via
+port 80 or 8080 and forward all request from port 80 to port 8080.
 
-If so, go into Tools->Internet Options->Advanced
-and check the box to enable: "Use Passive FTP (for firewall
-and DSL modem compatibility)", then click OK.
+What I do is as below.
 
-If not, ignore me ;)
+*nat
+:PREROUTING ACCEPT [1:48]
+:POSTROUTING ACCEPT [3:230]
+:OUTPUT ACCEPT [3:230]
+-A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+COMMIT
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:RH-Lokkit-0-50-INPUT - [0:0]
+-A INPUT -j RH-Lokkit-0-50-INPUT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp -s 192.168.1.10/255.255.255.255
+--dport 8080 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp -s 192.168.1.10/255.255.255.255
+--dport 80 --syn -j ACCEPT
+-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 0:1023 --syn -j REJECT
+COMMIT
 
--- 
-Andrew E. Mileski
+It seems that the port 80 and 8080 open to public after I add prerouting
+rule.  Would you mind how I could acheive my goal?  Thanks a lot.
+
+Best regards,
+Patrick
 
