@@ -1,12 +1,12 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Need help have some questions...
-Date: Sat, 23 Aug 2003 13:51:58 -0700 (PDT)
+From: Stephen Smoogen <smoogen@lanl.gov>
+Subject: Re: Blocking Kazaa
+Date: Sat, 23 Aug 2003 18:01:47 -0600 (MDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030823205158.60796.qmail@web40210.mail.yahoo.com>
-References: <20030818205223.GA3993@cannon.eng.us.uu.net>
+Message-ID: <Pine.LNX.4.44.0308231758360.27327-100000@cic-mail.lanl.gov>
+References: <20030822183848.21628.qmail@web40206.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030818205223.GA3993@cannon.eng.us.uu.net>
+In-Reply-To: <20030822183848.21628.qmail@web40206.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,50 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: nf <netfilter@lists.netfilter.org>
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: Jean-Rene Cormier <jean-rene.cormier@cipanb.ca>, netfilter@lists.netfilter.org
 
 
-Going to try to fit all my comments for this thread into one email and hope
-everyone reads. Here we go.
+Kazzaa uses 1214 for only certain traffic (talking to its supernodes).  
+We found that blocking 1214 was insufficient for stopping people from
+using Kazzaa as it uses a bunch of dynamic ports and searches of DNS
+ranges. [Blocking the DNS ranges seems to be futile as they seem to have
+changed several times.] The only thing I have heard that might be useful
+is to combine snort with iptables in that snort figures out who inside
+your network is using Kazzaa and then you block that IP address via 
+iptables. Now how you get the two to work together? That is the 64k 
+questions :(
 
-First off I would like to say a big thanks to Ralf and Ramin. They gave really
-good explanations that I needed to see why this hasn't been addressed. While I
-still would like to see this kind of functionality in iptables I can see why it
-is not.
 
-To those stressing that it would be too much on the CPU and memory I have to
-wonder how valid this is. I know it would certainly increase the load but I do
-not believe it would overload most systems.
+On Fri, 22 Aug 2003, SBlaze wrote:
 
-Ralf made some really good points. He says I should use a proxy. Ok so how do I
-go about proxying my two web sites that are hosted with apache? Honestly I'm
-not being sacrastic I really don't know. Going along with what Ramin says is
-the third level of a fully implemented firewall(the application level) am I to
-assume then that it is then to fall to a proxy(I again don't know what sort of
-proxy I need here...not sure squid is what I need) or I would really like to
-ask should it fall to apache(if so anyone know of how to define what apache
-logs?)
+>http://www.securitymetrics.com/portscan.adp
+>
+>Above is an online port scanner. It scans for Kazzaa openings(among other
+>things). It seems to think that Kazzaa is open always on 1214. As I said before
+>I am not sure as I do not use Kazzaa. If you find anything out about this I
+>will gladly write up something on my web site to show other users how to block
+>Kazzaa as it seems to come up alot.
+>
+>Thanks
+>SBlaze
+>
 
-A question to Ralf about the second lawyer of a firewall. Is a circut relay
-also known as a bridge?
+-- 
+Stephen John Smoogen            smoogen@lanl.gov
+Los Alamos National Labrador  CCN-5 Sched 5/40  PH: 5-8058
+Ta-03 SM-261  MailStop P208 DP 17U  Los Alamos, NM 87545
+-- So shines a good deed in a weary world. = Willy Wonka --
 
-Also a question to Ramin. You make note in that last post of basically dealing
-with the HTTP protocol on the HTTP application level.... are you referreing to
-web server(apache) ?
-
-Thanks to all who are helping out. I see a soloution coming about. With a
-little more help I and some others I know may get there.
-
-Thanks
-SBlaze
-
-=====
-"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
