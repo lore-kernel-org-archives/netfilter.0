@@ -1,9 +1,10 @@
-From: "per jarevez" <perj8@hotmail.com>
-Subject: Problem: NAT table POSTROUTING chain not capturing some packets...
-Date: Sat, 14 Jun 2003 06:24:30 +0000
+From: Jean-Yves Simon <lethalwp@tiscali.be>
+Subject: load balancing?
+Date: 14 Jun 2003 13:54:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea1-F160USzbAUfKRf000367f2@hotmail.com>
+Message-ID: <1055591653.2543.3.camel@little.lethalwp>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,33 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm using two internet gateways by routing policy:
-ip rule from box2 table gateway2.
-gateway2 table has default via gateway2.
-main table has default via gateway1.
-ip route flush cache of course.
+Hello,
 
-Somehow some reply packets from box2 for a host on gateway1 has managed to 
-go out gateway2 with the source address of interface on gateway1.
+I'm curious if load balancing can be done with iptables, like for
+example forwarding incoming web requests to one of the multiple web
+servers behind the firewall.
 
-I'm having trouble identifying these packets on nat table POSTROUTING chain. 
-  None of those packets have src address of box2 or src address of the 
-interface on gateway1.  However in the mangle table POSTROUTING chain, I see 
-that these packets have src address of box2.
+Or is a third party software needed?
 
-Somehow the kernel has internally masqueraded the packets after mangle table 
-POSTROUTING chain and forced these packets to skip the nat table POSTROUTING 
-chain.  How do I keep these packets from going out the wrong gateway?
 
-I'm using kernel-2.4.21-rc6 and Netfilter CVS June 3, 2003 (iptables-1.2.8) 
-and iproute-2.4.7-5
+Maybe it is this planned for the future (pkttables or don't know what
+name it will have)?
 
-_________________________________________________________________
-Protect your PC - get McAfee.com VirusScan Online  
-http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
+
+
+
+
+-- 
+Jean-Yves Simon <lethalwp@tiscali.be>
 
 
