@@ -1,15 +1,14 @@
-From: Axel Thimm <Axel.Thimm@physik.fu-berlin.de>
-Subject: Gigabit filtering
-Date: Wed, 5 Mar 2003 15:08:54 +0100
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: --sport
+Date: 05 Mar 2003 20:52:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030305140854.GG3252@puariko.nirvana>
+Message-ID: <1046893969.16606.3.camel@tux.rsn.bth.se>
+References: <ABEKJILKOKKGGDJKHKDFGEALCAAA.patrick@vikus.com>
+	 <3E66277F.3090001@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lc9FT7cWel8HagAv"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Resent-Message-Id: <200303051819.h25IJXTf005898@puariko.nirvana>
-Content-Disposition: inline
-Resent-To: netfilter@lists.netfilter.org
+In-Reply-To: <3E66277F.3090001@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +18,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Sven Schuster <schuster.sven@gmx.de>
+Cc: Patrick Ahler <patrick@vikus.com>, Netfilter <netfilter@lists.netfilter.org>
 
+On Wed, 2003-03-05 at 17:36, Sven Schuster wrote:
+> What you need is the mport-match:
+> 
+> iptables -A FORWARD -p tcp -m mport --sport 5000:5020 -m state ...
 
---lc9FT7cWel8HagAv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+mport is not needed for a simple range
 
-We would like to setup a netfilter based firewall in front of a Gigabit
-connection to the main campus backbone. Would someone on this list want to
-share his experience?
+-- 
+/Martin
 
-A duplex Gigabit NIC has nominally a throughput of 250MB/sec. Doing this for
-both directions (intern <-> extern) doubles the internal traffic bandwidth =
-to
-500MB/sec. Even PCI64/66MHz has a nominal max. throughput of 528 MB/sec, so
-this is scratching the limit.
-
-What are the solutions?
-o Dual-port NICs with zerocopy for avoiding PCI traffic (I have seen some
-  expensive ones from Intel). Can those dual-port NICs zerocopy from one po=
-rt
-  to the other? Is that supported from linux/netfilter?
-o Multiple PCI-busses with one NIC per bus?
-
-Any hardware recommendations? :)
-
-Thanks!
---=20
-Axel.Thimm@physik.fu-berlin.de
-
---lc9FT7cWel8HagAv
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+ZgT2QBVS1GOamfERArZMAJ9e6Ews6PnBUgZKSrZdZKC1EpJchQCfa9qY
-GCj260iPS3sSjfTrsYMUyJo=
-=YiYD
------END PGP SIGNATURE-----
-
---lc9FT7cWel8HagAv--
+Never argue with an idiot. They drag you down to their level, then beat you with experience.
 
