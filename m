@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: any documents on Link-Load balancing
-Date: Sun, 11 Jan 2004 14:42:56 +0000
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Packets being natted instead of redirected
+Date: Sun, 11 Jan 2004 10:01:45 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401111442.56492.Antony@Soft-Solutions.co.uk>
-References: <BAY1-DAV38fyQgeDKvP000003c0@hotmail.com>
+Message-ID: <1073833305.10191.9.camel@tarkus>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY1-DAV38fyQgeDKvP000003c0@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Friday 09 January 2004 7:19 am, san wrote:
+I have a quad interface box setup, the other day after adding a forward
+rule, packets that were going to eth3 sourced from the same ip
+subnet(A.B.C.D/24) that should of gotten redirects started to become
+natted.
+The work around was to add 
+iptables -t nat -I POSTROUTING -s A.B.C.D/24 -o eth3 -j ACCEPT
+and the packet were no longer being natted.
 
-> BlankCan anyone help me to find out the link loadbalancing howto linux
+This is a RH9 box with iptables-1.2.7a-2 running either
+kernel-2.4.20-24.9 or kernel-2.4.20-20.9. INPUT and FORWARD are default
+DROP with a masqeuaring on all 4 interfaces with exclusion
+rules on three of them.
 
-Suggest you start with http://lartc.org
 
-Antony
+I have filed a bug report with Redhat already, so this is an FYI
+for any other souls in the same boat like me.
 
--- 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Ted
 
 
