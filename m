@@ -1,13 +1,12 @@
-From: Patrick Schaaf <bof@bof.de>
-Subject: Re: iptables and their use..
-Date: Sun, 2 Jun 2002 17:00:44 +0200
+From: "Luigi Cartuccia" <luigicart@tin.it>
+Subject: sk_buff
+Date: Sun, 2 Jun 2002 17:07:15 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020602170044.D12326@oknodo.bof.de>
-References: <200206021136.51855.ve1drg@av.eastlink.ca>
+Message-ID: <001e01c20a47$2ebba380$8ad9abd4@luigicart>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001B_01C20A57.F19E2160"
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <200206021136.51855.ve1drg@av.eastlink.ca>; from ve1drg@av.eastlink.ca on Sun, Jun 02, 2002 at 11:36:51AM -0300
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,20 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ted Gervais <ve1drg@av.eastlink.ca>
-Cc: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-> So - as a general rule, what does one do?  What do people block and what do 
-> they accept??
+This is a multi-part message in MIME format.
 
-General rule: block everything, log the blocking, stare at the logs while
-doing what needs to be done, and then accept what is neccessary, and no more.
+------=_NextPart_000_001B_01C20A57.F19E2160
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-You'll learn all the common stuff in about 1-2 years.
+Hi I'm Luigi.Where I can find material on sk_buff? =20
+Thank you
 
-best regards
-  Patrick
+
+------=_NextPart_000_001B_01C20A57.F19E2160
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>Hi I'm Luigi.</FONT><FONT face=3DArial =
+size=3D2>Where I=20
+can find material on sk_buff?&nbsp; </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Thank=20
+you<BR></DIV></FONT></FONT></DIV></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_001B_01C20A57.F19E2160--
 
 
