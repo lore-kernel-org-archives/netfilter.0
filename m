@@ -1,13 +1,13 @@
-From: Christian Seberino <seberino@spawar.navy.mil>
+From: Patrick Schaaf <bof@bof.de>
 Subject: Re: how is this stuff getting thru default deny iptables firewall?....
-Date: Thu, 27 Jun 2002 00:21:44 -0700
+Date: Thu, 27 Jun 2002 09:28:54 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627002144.B13910@spawar.navy.mil>
-References: <20020622103055.B32585@spawar.navy.mil> <20020622173842.AGM19225.mta07-svc.ntlworld.com@there> <20020623001302.A949@spawar.navy.mil> <20020623095351.M5183@oknodo.bof.de>
+Message-ID: <20020627092854.B1873@oknodo.bof.de>
+References: <20020622103055.B32585@spawar.navy.mil> <20020622173842.AGM19225.mta07-svc.ntlworld.com@there> <20020623001302.A949@spawar.navy.mil> <20020623080704.YEZE2755.mta05-svc.ntlworld.com@there> <20020627001418.A13910@spawar.navy.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <20020623095351.M5183@oknodo.bof.de>; from bof@bof.de on Sun, Jun 23, 2002 at 09:53:51AM +0200
+In-Reply-To: <20020627001418.A13910@spawar.navy.mil>; from seberino@spawar.navy.mil on Thu, Jun 27, 2002 at 12:14:18AM -0700
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,56 +19,44 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick Schaaf <bof@bof.de>
+To: Christian Seberino <seberino@spawar.navy.mil>
 Cc: netfilter@lists.samba.org
 
-Patrick
+On Thu, Jun 27, 2002 at 12:14:18AM -0700, Christian Seberino wrote:
+> > Reverse nat for replying packets is automatic, therefore replies get 
+> > destination natted when they come back in.
+> 
+> This scares me.  So you are saying that there are "implicit" NAT
+> rules for "replying packets" that are immune to iptables DROP rules?!
 
-Wow, were getting into the deep nitty gritty now!...
+NO. You filter in the filter table's INPUT, OUTPUT, and FORWARD chains.
+You can filter ANY packet there.
 
+The NAT action (i.e. appropriate modification of IP addresses and ports)
+is what happens automatically for the reverse direction - and that is
+absolutely NECCESSARY for NAT to work. It's still up to you to filter
+each packet after modifications have been applied.
 
-> 	   The "nat" table is NOT consulted for "second or more"
-> 	   packet of an existing conntrack.
+> If a packet is part of an ESTABLISHED tcp connection then it
+> can by pass an "SSH only" firewall?!??
 
-I needed to sit down and get a glass of water for this one.
-This is one to lose sleep over....
+If you have an indiscriminate ESTABLISHED/ACCEPT rule, and you did permit
+the creation of the connection in the first place, then yes, that's the
+case. It's all up to your own ruleset. A packet cannot become part of
+an ESTABLISHED tcp connection if you do not permit an earlier packet
+of the same connection to pass.
 
-I thought /ALL/ packets first went thru -t nat PREROUTING
-and then -t filter and then -t nat POSTROUTING.
+Please, Christian, tone down a bit, take a walk, take a deep breath,
+and consider that we are not idiots. You don't yet know the full
+picture, and painting your horrors onto your half-understanding
+will just cause stress here, and make you progress more slowly.
 
-"of an existing conntrack" seems to be the same
-as an ESTABLISHED packet....
+Finally, please learn how to do test setups, and try out your suspicions
+before whining about them publicly. It is very hard to guess from your
+writing so far what exactly it is that you fear. If you progress by
+first testing, you can describe your test setup here in detail, and
+we can respond much more pointedly.
 
-*If I did not explicitly allow ESTABLISHED & RELATED
-packets thru FORWARD chain then how can they pass?!?*
-
-It almost seems like there is some hard coded ACCEPT
-rules implied in iptables that you can't turn off!?!???
-
-Is this correct to summarize?
-
-0. conntrack = ESTABLISHED 
-
-1. ESTABLISHED packets don't have to deal with -t nat table.
-
-2. Somehow I don't have to ACCEPT these ESTABLISHED packets
-   for them to go thru?!?!?
-
-Chris
-
-
--- 
-_______________________________________
-
-Dr. Christian Seberino
-SPAWAR Systems Center San Diego
-Code 2363
-53560 Hull Street
-San Diego, CA 92152-5001
-U.S.A.
-
-Phone: (619) 553-7940
-Fax:   (619) 553-2836
-Email: seberino@spawar.navy.mil
-_______________________________________
+thanks for listening
+  Patrick
 
