@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: exempt some source addresses from nat??
-Date: Thu, 7 Nov 2002 19:35:02 +0000
+From: "Eric Joe" <sysop@tje1.com>
+Subject: Re: I am getting same E-mail  2 time!!!
+Date: Thu, 7 Nov 2002 16:42:22 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021107193505.SLUQ27595.mta05-svc.ntlworld.com@there>
-References: <385DA3327471554CA86AACAA2BBB81302514DB@plstnexc01.corp.networkrobots.com>
+Message-ID: <65432.213.237.140.243.1036705342.squirrel@webmail.tje1.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <385DA3327471554CA86AACAA2BBB81302514DB@plstnexc01.corp.networkrobots.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +16,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: jader35@t-online.de
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 07 November 2002 12:58 am, Yogini Parkhi wrote:
 
-> Hi All,
+> Am Don, 2002-11-07 um 14.42 schrieb Sundaram Ramasamy:
 >
-> Just curious, if I have a nat rule that snats a certain network. How do I
-> exempt certain addresses from this nat rule? Do I write ACCEPT rules in the
-> POSTRUTING chain for those?
+>
+>> Hi,
+>>
+>> I am getting some email two or three times. the following message
+>> first I received on 5th,  after two days( today 7th) I am getting the
+>> same message two time.
+>>
+>
+> It was my mailserver, my apologies for that.
 
-Yes, that's a sensible way to do it.
-
-Suppose you have a rule:
-
-iptables -A POSTROUTING -t nat -s 192.168.42.0/24 -j SNAT --to 172.16.11.22
-
-But you don't want this to apply to address 192.168.42.18 (you want that to 
-pass through without being SNATted).   Simply insert this rule before the one 
-above:
-
-iptables -I POSTROUTING -t nat -s 192.168.42.18 -j ACCEPT
-
-Antony.
-
+Erik,
+No apology needed, I certainly appreciate this helpful list and the price
+is right, so I think we can be a bit tolerant of any glitches we might
+encounter.
 -- 
+Eric Joe
+Network Operations
+Journey's End Internet/Computer Connection Inc
 
-What is this talk of software 'release' ?
-Our software evolves and matures until it becomes capable of escape,
-leaving a bloody trail of designers and quality assurance people in its wake.
+
 
