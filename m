@@ -1,9 +1,11 @@
-From: julian james <julian_jp@yahoo.com>
-Subject: Can i block a range of ip address
-Date: Sun, 27 Apr 2003 06:44:04 -0700 (PDT)
+From: "Michael J. Tubby B.Sc. \(Hons\) G8TIC" <mike.tubby@thorcom.co.uk>
+Subject: Re: nat table not working with 'iptables -L nat'
+Date: Fri, 25 Apr 2003 10:25:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030427134404.74300.qmail@web13908.mail.yahoo.com>
+Message-ID: <005f01c30b0c$8e9d9170$0a90a8c0@boris>
+References: <002001c30923$1a65a440$0100a8c0@yogi>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,26 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
-
-Hi
-  If any one can tell me is there any single entry to
-block and allow a range of ip in Ipchains.
-
-eg 
-
-Network 172.16.0.0 Mask 255.255.255.224 
-Allowed Range of ip 172.16.0.1-10/27
-Denied Range op ip 172.16.0.11-30/27
-
-Thanks 
-
-Julian
+To: Stuart Clark <elmhurst@spacelink.com.au>, netfilter@lists.netfilter.org
 
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+> Hi
+> 
+> When I try and add a rule to the nat table it seems to work but when I
+> do 'iptables -L nat' I get the error 
+> 
+> 'iptables: Table does not exist (do you need to insmod?)'
+> 
+> All the other tables are there when I do 'iptables -L' but no nat table.
+> 
+> How can I get this working?
+> 
+
+try:
+
+    iptables -t nat -L
+
+to specify that you want to list the NAT table.
+
+Mike
+
+
 
