@@ -1,13 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
+From: "Sean Donner" <siegex@atozcomp.com>
 Subject: Re: iptables and wireless card in promiscuous mode
-Date: Wed, 1 Dec 2004 11:16:06 -0500
-Message-ID: <20041201161606.GA971@bender.817west.com>
+Date: Wed, 1 Dec 2004 12:14:20 -0800 (PST)
+Message-ID: <56366.67.122.205.47.1101932060.squirrel@67.122.205.47>
 References: <424BCB4EA242A1429A8AF0548E8CFF0E123999@apexexchange.ApexSoftware.Com>
 	<41ADD672.1090303@eurecom.fr>
+	<20041201161606.GA971@bender.817west.com>
+Reply-To: siegex@atozcomp.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41ADD672.1090303@eurecom.fr>
+In-Reply-To: <20041201161606.GA971@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +21,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Dec 01, 2004 at 03:34:26PM +0100, Claudio Lavecchia wrote:
-> BTW you are right, filtering at a lower layer is the most 
-> straightforward approach.
-> Can anyone tell me how to set up a simple filter using BPF that blocks 
-> all the packets coming from a given MAC address?
-> 
-> Thx a lot
+>> Can anyone tell me how to set up a simple filter using BPF that blocks
+>> all the packets coming from a given MAC address?
 
-man pages?  *we* don't need no stinking man pages...
+Out of curiosity what is this BPF you speak of? I googled for it and I
+came across "Berkeley Packet Filter" which sounds about on topic with this
+mailing list but it seems to be a FreeBSD util.  I did an slocate for it
+on my box and it found nothing but a header file.  Is this some
+non-standard util has a linux port for link layer filtering?
 
-  not ether host XX:XX:XX:XX:XX:XX
 
--j
 
---
-"Mmmm...free goo."
-        --The Simpsons
 
