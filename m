@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: NAT ICMP
-Date: Wed, 23 Jun 2004 09:36:13 +0200
+From: Krystian <optimusprime@o2.pl>
+Subject: configuration again :)
+Date: Wed, 23 Jun 2004 10:31:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002b01c458f6$33f99410$fb00010a@adm.mc.local>
-References: <D4EF10CCEB2CE742BEEA9838C590B0E8022590B0@ftrdmel2.rd.francetelecom.fr>
+Message-ID: <40D93FD5.9080901@o2.pl>
+References: <20040622115422.45768.qmail@web20027.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040622115422.45768.qmail@web20027.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> Hi, Does someone know how to NAT ICMP from a
->private Network to the internet.
->
-> I tried to add a NAT Rule on my firewall but it seems
-> that NAT is available only for UDP/TCP??
+Hi
 
-Uh ?
+I wanted to ask how to configure iptables in my envirement.
 
-How about :
+The nerwork:
 
-$IPT -A FORWARD -i <if_in> -o <if_out> -s <net_lan> -p icmp -j ACCEPT
+Modem<->Linux Router<->Internal Network
 
-$IPT -t nat -A POSTROUTING -o <if_out> -s <net_lan> -p icmp -j SNAT
-<ip_inet>
-or
-$IPT -t nat -A POSTROUTING -o <if_out> -s <net_lan> -p icmp -j MASQUERADE
+my modem has an ip address of 80.25.25.61
+my linux router has a ip address of 80.25.25.62 and a broadcast of 
+80.25.25.67.
 
+Puposes:
+I want the remaining public ip addresses (80.25.25.63-66)to be mapped 
+into couple of Internal Network computers (yes I know it's a nono to do).
+How should I configure my box?
 
-Gr,
-Rob
+Krystian
+
 
 
