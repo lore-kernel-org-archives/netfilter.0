@@ -1,9 +1,10 @@
-From: system administrator <sysadmails@yahoo.com>
-Subject: connecting to a SMTP/POP server on the internet
-Date: Wed, 16 Jul 2003 08:11:24 -0700 (PDT)
+From: juanca <juanca@sat.com.py>
+Subject: block msn
+Date: Wed, 16 Jul 2003 07:36:04 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030716151124.35828.qmail@web14507.mail.yahoo.com>
+Message-ID: <3F1538A4.9000702@sat.com.py>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,45 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi there,
+I`ve got this rulset but It doesn`t work what else do I need to add?
+All the windows machine work msn, just on linux doesn`t
+Any suggetions ?
+Thanks in advance
 
-We want to connect to a SMTP/POP server on the
-internet from our LAN with:
-                                                      
-                         
-iptables -A FORWARD -i eth0 -p tcp -j ACCEPT
-iptables -A FORWARD -i eth0 -p udp -j ACCEPT
-iptables -A FORWARD -j DROP
-iptables -t nat -o eth1 -A POSTROUTING -j MASQUERADE
-                                                      
-                         
-When we try to access from the workstation to the POP
-server we get a message: 'connection to x.com timed
-out', we can however access the mail on the firewall -
-even if the connection is slow.
-                                                      
-                         
-Please help us out ...
-                                                      
-                         
-# Our general setup:
-# RedHat 8.0 firewall with iptables installed on PII
-400MHz
-# eth0 = our LAN and eth1 = Internet
-# cat /proc/sys/net/ipv4/ip_forward => 1
-# gateway on workstation in LAN pointing to firewall
-# gateway defined for eth1 pointing to router
+iptables -A FORWARD -s 192.168.0.10 -p TCP --dport 1443:1467 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.33 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.38 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1513:1525 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 66.35.229.204 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 65.54.194.118 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.107.34 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 208.45.129.195 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
+iptables -A FORWARD -s 192.168.0.10 -d 207.46.110.11 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1863 -d 0/0 -j DROP
+iptables -A FORWARD -s 192.168.0.10 -p tcp --dport 1601:1603 -d 0/0 -j DROP
+iptables -A FORWARD -s 192.168.0.10 -d 64.4.13.0/24 -j REJECT
+iptables -A FORWARD -s 192.168.0.10 -d 64.4.0.0/24 -j REJECT
+iptables -A INPUT -p tcp -s 192.168.0.10 -d messenger.microsoft.com -j DROP
 
-Thanks in advance,
-
-Frank
-
-__________________________________
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
-http://sbc.yahoo.com
 
