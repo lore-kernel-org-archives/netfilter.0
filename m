@@ -1,13 +1,11 @@
-From: Jason <baker@cyborgworkshop.com>
-Subject: Re: chance to impress the suits
-Date: Thu, 27 Feb 2003 08:17:33 -0600 (CST)
+From: Del Winiecki <delw@wildapache.net>
+Subject: FTP problems
+Date: 27 Feb 2003 13:23:25 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.50.0302270811550.19694-100000@alfred.home.cyborgworkshop.com>
-References: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
- <200302270201.04762.netfilter@newkirk.us> <20030227134810.7728c8d5.arnt@c2i.net>
+Message-ID: <1046377411.1587.160.camel@thizzy>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030227134810.7728c8d5.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,69 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-What we have is a server that makes as many connections to an application
-as it can.   Its supposed to be a realtime app, so this is desired
-behaviour.  Unfortunatly, the app is owned by a different group that can't
-seem to get a grip on how much hardware they need. So we max them out, and
-their solution when they hit too many connections is to allow the port to
-be opened by the client (us)  but never send any data or a RST or
-anything! So my server ends up with tens of thousands of connections in
-wait and I end up running out of threads pretty quickly. So my thought
-was by putting an iptables box in the stream with iplimit and either
-redirecting connections that go over a max count to a "sorry we're busy
-page" or denying the connection all together, I can save my machine until
-they get the hardware they need. Is their perhaps a better method?  Right
-now I have to babysit my servers from 8pm to 3am and kill the route to
-their application when things get ugly.  Pretty nasty solution.
+Hi,
+Everything seems to work fine except FTP via NAT.
+The interfaces that are not natted handle ftp normally.
+When I do ftp from inside where the connection goes thru nat, I get an
+instant establisment of connection,syn,ack,syn-ack followed by a 30
+second wait...then all works normally from that point. This 30 second
+delay is constant with each new ftp connection. I have tried about
+everything in the iptables script.
+Passive ftp does the same thing.
+All the other protocols seem okay including IRC.
+I am running RedHat kernel 2.4.18-24.7.x i686, iptables version 1.2.5,
+all the latest RedHat updates.
 
--- 
-Jason Baker
-baker@cyborgworkshop.com
-www.cyborgworkshop.com
+I have loaded:
+ip_conntrack
+ip_conntrack_ftp
+ip_conntrack_irc
+ip_table_nat
+ip_nat_ftp
+ip_nat_irc
+ipt_state
+ipt_limit
+ipt_REJECT
+ipt_LOG
+ipt_unclean
+ipt_mac
+iptable_filter
+iptable_mangle
+iptable_nat
 
-On Thu, 27 Feb 2003, Arnt Karlsen wrote:
+Should the ftp connection show up in /proc/net/ip_conntrack ? It does
+NOT show in there.
+Is there a problem with the ipt_nat_ftp module?
+-Del
 
-> On Thu, 27 Feb 2003 02:01:04 -0500,
-> Joel Newkirk <netfilter@newkirk.us> wrote in message
-> <200302270201.04762.netfilter@newkirk.us>:
->
-> > On Wednesday 26 February 2003 06:57 pm, Jason wrote:
-> > >
-> > > iptables -A FORWARD -p tcp -i lan -m state --state NEW -m iplimit
-> > > --iplimit-above 1 -j REJECT
->
-> ..<snip>
->
-> > Definitely the FORWARD chain, OUTPUT is for connections from the
-> > firewalling box itself.  Make sure this appears before any ACCEPT
-> > rules in your FORWARD chain, too.  Have you tried:
-> >
-> > iptables -A FORWARD -i eth0 -p tcp --syn --dport 80 -m iplimit
-> > --iplimit-above 500 -j REJECT
-> >
-> > This is almost precisely the format of the example rule for iplimit...
-> > I noticed you used "-i lan" above - is that a typo?  You have to
-> > specify a valid interface name, which my version presumes is eth0 for
-> > traffic from the LAN.
-> >
->
-> .." -i $lan "?  AFAICT, above rule is valid if "lan" is a substitute
-> for an ip address etc, for a variable, you will want to declare it,
-> some people like CAPS, for, say, " -i $LAN ", YMMV.
->
-> ..you don't mention _why_ your suits want this.  Using un-throttled
-> 802.11 links with some _cheap_ routers that rebooted! every time
-> they got 256 simultaneous connections for a client, I started with
-> throttling, then capping connections, and ended up wrapping all his
-> isp clients in vpn/poptop tunnels.  Poptop, because some people
-> still runs Wintendo 95, and my client like this business too.
->
-> ..yup, my first client is an isp.  ;-)
->
->
+
 
