@@ -1,13 +1,13 @@
 From: Peter Schobel <pschobel@porchlight.ca>
 Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
-Date: Mon, 12 Jan 2004 15:09:13 -0500
+Date: Mon, 12 Jan 2004 15:57:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31206E3D-453B-11D8-AFEE-000393677A36@porchlight.ca>
-References: <200401111700.i0BH0oHu031652@server5.bandwidthco.com>
+Message-ID: <F678994A-4541-11D8-AFEE-000393677A36@porchlight.ca>
+References: <784D246D-453A-11D8-AFEE-000393677A36@porchlight.ca>
 Mime-Version: 1.0 (Apple Message framework v553)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401111700.i0BH0oHu031652@server5.bandwidthco.com>
+In-Reply-To: <784D246D-453A-11D8-AFEE-000393677A36@porchlight.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,150 +20,76 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I tried your rule - it didn't help but from my understanding i 
-shouldn't need rules like that since my input , output and forward 
-policies are set to default ACCEPT
+If i access the proxyhost directly on port 80 i can see the request to 
+the local host on 3128 and then i see a request from the local host to 
+the remote proxy site and everything works fine - the squid log shows 
+the access.  I'm not really sure what to do at this point i've been 
+trying any rule i can think of and i have a bunch of logging rules in 
+now to try to figure out what's going wrong but i'm not getting any 
+more information than what you see below.
+
+If i can't get this working by the end of the night, i'll probably have 
+no choice but to format reinstall and try to get back to a working 
+configuration which i really don't want to do because i have a lot of 
+software installed and configured on that machine that i will have to 
+rebuild.
 
 Peter Schobel
+~
 
-On Sunday, January 11, 2004, at 12:00  PM, Mark E. Donaldson wrote:
+On Monday, January 12, 2004, at 03:04  PM, Peter Schobel wrote:
 
-> I haven't been following all of this Peter, but it would seem you now 
-> need
-> to add a rule allow the packets to get through the FORWARD chain now 
-> that
-> they have been successfully REDIRECTED.  Try something like:
+> it appears to me as if it's redirecting to port 3128 but its not 
+> getting a reply from squid - the squid access log does not show the 
+> access at all as if it never received the packet
 >
-> $IPT -t filter -A FORWARD -i eth0 -p tcp --dport 3128 -j ACCEPT
 >
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Schobel
-> Sent: Friday, January 09, 2004 6:09 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 
-> 2.6
-> kernel
+> Jan 12 14:52:21 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 
+> DST=216.239.37.104 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47715 DF 
+> PROTO=TCP SPT=53036 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:21 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 
+> DST=10.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47715 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:24 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST= 
+> 10.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47717 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:27 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST= 
+> 10.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=47719 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:30 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST= 
+> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47721 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:33 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST= 
+> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47724 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:36 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST= 
+> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47726 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:42 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST= 
+> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47739 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
+> Jan 12 14:52:54 proxyhost IN=eth0 OUT= 
+> MAC=00:04:75:fb:a6:e1:00:d0:52:04:43:5a:08:00 SRC=64.187.35.163 DST= 
+> 10.0.0.1 LEN=44 TOS=0x00 PREC=0x00 TTL=63 ID=47743 DF PROTO=TCP 
+> SPT=53036 DPT=3128 WINDOW=8192 RES=0x00 SYN URGP=0
 >
-> ok, I removed the error line and the cat autoconf line from the 
-> config.h and
-> got iptables 1.2.9 to compile against my kernel source and headers and
-> reinstalled
->
-> if i turn on ip_forward and try to access external sites, i get 
-> forwarded
-> through to the external page without problem
->
-> if i enable the iptables rule
->
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
-> --to-port 3128
->
-> my pages just time out when i try to access external sites
->
-> but if i try to access the proxyhost directly using http, it redirects 
-> me to
-> the proxy site without problem
->
-> i get exactly the same results using this rule
->
-> iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT 
-> --to-destination
-> $LOCALHOST:3128
->
-> does anyone have any idea why traffic destined for external sites will 
-> not
-> transparently redirect to squid for me?
->
-> does anyone have any idea as to what further steps I can take to
-> troubleshoot this problem?
->
-> Thx in advance,
->
-> Peter Schobel
->
-> On Thursday, January 8, 2004, at 09:33  PM, Alistair Tonner wrote:
->
->> On January 8, 2004 03:05 pm, Peter Schobel wrote:
->>> ok, I downloaded the source ball for iptables 1.2.9, and compiled
->>> using
->>>
->>> make KERNEL_DIR=/usr/src/linux-2.6.0-1.107
->>>
->>> i got an error from config.h telling me to use the glibc version so i
->>> symlinked /usr/src/linux-2.6.0-1.107 to /usr/include/linux/config.h
->>>
->>> then i compiled successfully and installed using
->>>
->>> make install KERNEL_DIR=/usr/src/linux-2.6.0-1.107
->>>
->>> without incident
->>>
->>> i checked the timestamp on the iptables binary to make sure that it
->>> had been overwritten
->>>
->>> I rmmod'd all the iptables modules and then reloaded my iptables rule
->>>
->>> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
->>> --to-port 3128
->>>
+> On Saturday, January 10, 2004, at 12:26  AM, Alistair Tonner wrote:
 >>
->> 	Ummm ... I don't understand where the error came from.... I'm using
-> a
->> slackware based box with many upgrades
->> 	(gcc glibc binutils and modutils....) my switch from 2.4.23 to 2.6.0
->
->> required a binutils and modutils
->> 	upgrade FIRST -- I would hope that RPM dependencies are in place to
->> enforce this as it will likely
->> 	apply to your situation ... when I rebuilt iptables source it went
->> painlessly --- no error from config.h.
->>
->> 	I *DONT* like the relink .. I've a feeling this will break some
->> inportant defines....
+>> 	Have you tried LOGging the INPUT chain for both 80 and 3128?
+>> 	Or, perhaps more thorough, put a LOG rule in PREROUTING
+>> 	before the REDIRECT/DNAT rule to log what you will change,
+>> 	and since your destination is local, a LOG rule at the top of INPUT
+>> 	to catch *everything* for the interim? -- then see at what point
+>> 	the packets are actually disappearing.
 >> 	
->> 	what do you get for modprobe --version and ld -v ?
->> 	I suspect your modutils is incorrect for 2.6.0
->>
->>> lsmod gives me
->>>
->>> Module                  Size  Used by
->>> ipt_REDIRECT            2048  1
->>> iptable_nat            20140  2 ipt_REDIRECT
->>> ip_tables              15104  2 ipt_REDIRECT,iptable_nat
->>> ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
->>>
->>> iptables -t nat -L gives me
->>>
->>> Chain PREROUTING (policy ACCEPT)
->>> target     prot opt source               destination
->>> REDIRECT   tcp  --  anywhere             anywhere            tcp
->>> dpt:http redir ports 3128
->>>
->>> Chain POSTROUTING (policy ACCEPT)
->>> target     prot opt source               destination
->>>
->>> Chain OUTPUT (policy ACCEPT)
->>> target     prot opt source               destination
->>>
->>> testing it reveals that it is still not working - did i do anything
->>> wrong in the above steps? what further steps would you recommend to
->>> troubleshoot this problem?
->>>
->>> Peter Schobel
->>> ~
->>
->>
-> *****************************
-> Peter Schobel
-> Network Administrator
-> Porchlight.ca
-> Unlimited Internet
-> *****************************
-> In a world without walls or fences
-> We will have no need for gates or windows
-> *****************************
->
 >
 >
 >
