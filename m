@@ -1,12 +1,11 @@
-From: Jean Tourrilhes <jt@bougret.hpl.hp.com>
-Subject: netfilter before routing for local outgoing packets ?
-Date: Wed, 24 Sep 2003 15:55:35 -0700
+From: ashley@ideal.net.au
+Subject: inconsistant behaviour
+Date: Thu, 25 Sep 2003 14:51:38 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030924225535.GB3366@bougret.hpl.hp.com>
-Reply-To: jt@hpl.hp.com
+Message-ID: <3F72745A.2050308@ideal.net.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +15,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-	Hi,
+G'day,
 
-	After reading various documentations, I've hit a deadlock. I
-hope you guys can help me.
-	<Not suscribed to the list, please cc me>
+I've built a firewall-gateway for a Uni.
 
-	What I want to do :
-	I want to be able to route a specific *local* application
-differently from other applications. A crude simplification would be
-to route 'telnet' via eth0 and 'http' via eth1. In practice, I would
-really like the flexibility of having two set of routes.
+The initial script sets up:
 
-	I can define multiple routing tables (via 'ip route'), and set
-some rules defining which table should be used (via 'ip rule'). Those
-rules arebased on source address, dest address, TOS or
-fwmark. Netfilter allow me to set TOS or fwmark based on more or less
-what I want.
-		http://en.tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.netfilter.html
-		http://linux-ip.net/html/tools-ip-rule.html
-		http://linux-ip.net/html/adv-multi-internet.html
-		(Excellent document by the way !)
+IPTABLES=/sbin/iptables
 
-	Unfortunately, local outgoing packet don't seem to go through
-netfilter before passing through the routing table.
-		http://www.docum.org/stef.coene/qos/kptd/
+EXTIF="eth1"
+INTIF="eth0"
 
-	Did I miss something obvious ? Is there any way to use 'ip
-rule' for local outgoing traffic ? Is there any other mechanism that
-would do what I want ?
+echo "1" > /proc/sys/net/ipv4/ip_forward
 
-	Thanks...
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -N ACCT
+$IPTABLES -F ACCT
+$IPTABLES -N ALLOW
+$IPTABLES -P ALLOW DROP
+$IPTABLES -F ALLOW
 
-	Jean
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -j ACCT
+$IPTABLES -I FORWARD -d 202.129.z.y -j ACCEPT
+$IPTABLES -A FORWARD -s 203.220.a.0/22 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.220.b.0/24 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.221.c.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.220.d.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.220.e.128/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+
+When a student logs on this instruction is given:
+
+/sbin/iptables -A ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
+/sbin/iptables -A ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
+
+This works well.
+
+When a student logs off these instructions are given:
+
+/sbin/iptables -D ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
+/sbin/iptables -D ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
+
+Now this works fairly well. Less than 1% of the time it fails to remove 
+the entry from the ALLOW chain and very rearly it fails to remove from 
+the ACCT chain.
+
+Where can I look to find this error. Though rare the 1% ends up being a 
+significant number given the load is high.
+
+Also msn messagenger packets do not seam to be counted by the iptables 
+chain?? This is an observation from the help desk as students are 
+complaining they are being logged off for inactivity and they are using 
+messanger. When I hand check packets using iptables there appears to be 
+no packet count. Whe they do a download there is.
+
+I'm not an iptables guru so hints and or suggestions appreciated.
+
+thanks
+
+Ashley
+
+
 
