@@ -1,14 +1,11 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: New iptables "cookbook"
-Date: Wed, 4 Dec 2002 21:00:13 +0100
+From: "Wouter Coppens" <wouter.coppens@pandora.be>
+Subject: Performance of netfilter
+Date: Tue, 3 Dec 2002 22:43:10 +0100 (Romance Standard Time)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021204210013.0134f25c.arnt@c2i.net>
-References: <1038950722.3ded2142edaef@meth.gravital.net>
-	<1039023879.3dee3f07c1502@meth.gravital.net>
+Message-ID: <3DED256E.000009.01744@yoda>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039023879.3dee3f07c1502@meth.gravital.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed,  4 Dec 2002 10:44:39 -0700, 
-Sherman Boyd <meekrob@mitosys.com> top-posted in message 
-<1039023879.3dee3f07c1502@meth.gravital.net>:
-
-> Quoting Sherman Boyd <meekrob@mitosys.com>:
-> 
-> > Hi everyone,
-> > 
-> > I'm writing an "iptables cookbook" a Gentoo Linux specific iptables
-> > tutorial.
-> > 
-> > After working on this sucker late into the night I'm sure there are
-> > tons of errors and inconsistencies, so if you are interested please
-> > read the doc and send me an email pointing out it's flaws.  (BTW I
-> > know the GFDL is under a code
-> > listing, that will be resolved before I publish the doc)  
-> > 
-> > You can find it here:
-> > http://gentoo.mitosys.com/iptables-cookbook.xml
-> > 
-> > I'm looking for feedback on technical accuracy as well as style.  Be
-> > brutally
-> > honest, you won't hurt my feelings, but please be brief.
-> 
-> My apologies to anyone who tried to view the iptables cookbook in IE. 
-> I'm using AxKit to generate html from an xml document on the fly, IE
-> doesn't seem to like this.  I've generated a static HTML page here for
-> IE users:
-> 
-> http://gentoo.mitosys.com/iptables-cookbook.html
-> 
-> Again thanks for looking, and please let me know what you think.
-
-..booooo:  http://devnull.at/?RNEUP , or in extenso:
-http://validator.w3.org/check?uri=http%3A%2F%2Fgentoo.mitosys.com%2Fiptables-cookbook.xml
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+I can create to sets of rules that will give me the same result:=0D
+=0D
+Case 1)=0D
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT=0D
+iptables -A FORWARD -d 10.10.10.1 -p tcp -m multiport --ports 80,443,8080=
+=0D
+iptables -A FORWARD -d 10.10.10.2-p tcp -m multiport --ports 80,443,8080=0D
+iptables -A FORWARD -d 10.10.10.3-p tcp -m multiport --ports 80,443,8080=0D
+iptables -A FORWARD -d 10.10.10.4-p tcp -m multiport --ports 80,443,8080=0D
+iptables -A FORWARD -d 10.10.10.5-p tcp -m multiport --ports 80,443,8080=0D
+=2E...=0D
+iptables -A FORWARD -d 10.10.10.254 -p tcp -m multiport --ports 80,443,80=
+80=0D
+and=0D
+iptables -t nat -A PREROUTING -d 10.10.10.1 -p tcp -j DNAT --to-destinati=
+on
+192.168.0.1=0D
+iptables -t nat -A PREROUTING -d 10.10.10.2 -p tcp -j DNAT --to-destinati=
+on
+192.168.0.2=0D
+iptables -t nat -A PREROUTING -d 10.10.10.3 -p tcp -j DNAT --to-destinati=
+on
+192.168.0.3=0D
+=2E..=0D
+iptables -t nat -A PREROUTING -d 10.10.10.254 -p tcp -j DNAT
+--to-destination 192.168.0.254=0D
+=0D
+Case 2)=0D
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT=0D
+and =0D
+iptables -t nat -A PREROUTING -d 10.10.10.1 -p tcp -m multiport --dports =
+80
+443,8080 -j DNAT --to-destination 192.168.0.1=0D
+iptables -t nat -A PREROUTING -d 10.10.10.2-p tcp -m multiport --dports 8=
+0
+443,8080 -j DNAT --to-destination 192.168.0.2=0D
+iptables -t nat -A PREROUTING -d 10.10.10.3-p tcp -m multiport --dports 8=
+0
+443,8080 -j DNAT --to-destination 192.168.0.3=0D
+=2E..=0D
+iptables -t nat -A PREROUTING -d 10.10.10.254 -p tcp -m multiport --dport=
+s
+80,443,8080 -j DNAT --to-destination 192.168.0.254=0D
+=0D
+=0D
+I think both cases give the same result: only port 80, 443 and 8080 are
+allowed en natted to the corresponding server.=0D
+=0D
+I know the firewall isn't closed, but I'm only interessed in the performa=
+nce
+ The ip-addresses are fictional and will in the real world not follow up.=
+=0D
+It's just to demonstrate the 2 cases.=0D
+=0D
+Which of the 2 cases will give the best performance and why? Is one of th=
+em
+giving some overhead and why?=0D
+=0D
+Thanks in advance,=0D
+=0D
+Wouter
 
 
