@@ -1,9 +1,10 @@
-From: Patrick Noziska <pnoziska@yahoo.com>
-Subject: Newbie question: Where is ip_conntrack_h323.c ?
-Date: Fri, 20 Sep 2002 10:56:32 -0700 (PDT)
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: Internal ip exiting network on firewall external nic despight rule
+Date: Fri, 20 Sep 2002 11:37:02 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020920175632.99466.qmail@web11103.mail.yahoo.com>
+Message-ID: <000501c260d4$b650ff50$0801a8c0@s3ac>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,21 +16,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I just download and compiled iptables-1.2.7a and applieed the "extra" patch-o-matic set, but the
-primary reason I upgraded from the iptables 1.2.5 that comes with RH 7.3 was that I didn't see a
-h323 conntrack module (specifically, ip_conntrack_h323.c ) .
 
-Where is it? What did I do wrong?
+I'm not sure I understand this data that I'm getting from my firewall.
+If I understand it correctly it's saying that a machine from my local
+net is going out through my external Interface.  I have a rule which
+should drop all internal network request that appear at the external
+nic. Any help would be appreciated.
 
-Thanks
-Patrick
+RULE ####
+# remote interface, claiming to be local machines, IP spoofing, get lost
+#
+$IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
+
+CONFIG ###
+s3a-www:~ # firewall mlist
+  External Interface:  eth1
+  Internal Interface:  eth0
+  ---
+  External IP: **.**.76.66
+  ---
+  Internal Network: 192.168.1.0/24
+  Internal IP:      192.168.1.1
 
 
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
+
+LOG FILE ###
+Sep 20 04:04:01 s3a-www kernel: IN=eth1 OUT=eth1 SRC=192.168.1.105
+DST=216.99.233.76 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=61116 DF
+PROTO=TCP SPT=4380 DPT=110 WI
+NDOW=8760 RES=0x00 ACK URGP=0
+ 
+Rowan Reid
+Job Captain, 
+Systems Administrator
+STUDIO 3 ARCHITECTS
+909  982  1717
+
 
