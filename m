@@ -1,11 +1,9 @@
-From: Wenzhuo Zhang <wenzhuo@zhmail.com>
-Subject: Re: internal host can not access hotmail
-Date: Tue, 22 Feb 2005 10:55:27 +0800
-Message-ID: <421A9F1F.5080906@zhmail.com>
-References: <f7e5481105022104583d0d3b19@mail.gmail.com>
+From: "hareram" <hareram@sol.net.in>
+Subject: Specific requrement b/w usage
+Date: Tue, 22 Feb 2005 11:21:48 +0530
+Message-ID: <055201c518a2$995796b0$09603fca@southern>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <f7e5481105022104583d0d3b19@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,27 +14,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Yuwen Dai wrote:
-> Any advice to diagnose this problem?  I once thought maybe something
-> wrong with the FORWARD rules, and tried to log the blocked
-> packages. But there's no log info.
+Hi all
 
-Probably you're encoutering the Path MTU Discovery problem. There are 
-serveral solutions to this problem.
+I have some specific requirement
 
-1. Lower the MTU of the network interface of your internal host.
+I have several block of IP address
+each Block devided in to N number and give to different people or department
+I would like know the b/w consumption for the IP block
+as well as sub Block also
 
-2. Use the clamp-mss-to-pmtu feature of iptables:
-    # iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS \
-         --clamp-mss-to-pmtu
+any recomendation tools to docs will be appriciated
 
-3. Use the clamp MSS feature of rp-pppoe (e.g. -m 1412).
+hare 
 
-Wenzhuo
--- 
-Wenzhuo Zhang <wenzhuo@zhmail.com>  GnuPG Key ID 0xBA586A68
-Key fpr: 89C7 C6DE D956 F978 3F12  A8AF 5847 F840 BA58 6A68
+
 
