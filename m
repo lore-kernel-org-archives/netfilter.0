@@ -1,7 +1,8 @@
 From: seberino@spawar.navy.mil
-Subject: what protocols need UDP instead of just TCP?? DNS, IMAP, SSH, etc.?
-Date: Tue, 25 Jan 2005 16:05:50 -0800
-Message-ID: <20050126000550.GB15359@spawar.navy.mil>
+Subject: valid INPUT/OUTPUT rule piece?--> '-p tcp --tcp-flags ACK,
+	FIN FIN -j DROP', etc.
+Date: Tue, 25 Jan 2005 16:18:55 -0800
+Message-ID: <20050126001855.GC15359@spawar.navy.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
@@ -19,13 +20,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm only allowing TCP out of my firewall.
+Please explain these:
 
-What apps/protocls need UDP?
+$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,FIN FIN   -j DROP
+$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,PSH PSH   -j DROP
+$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,URG URG   -j DROP
+$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ALL     NONE  -j DROP
 
-DNS, IMAP, SSH, etc.?
+Do first 3 imply you must send ACK when you send a FIN, PSH or URG?
 
-I dunno if I need to allow UDP for anything.
+And does last mean you must set *some* TCP flag always?
 
-chris
+CS
 
