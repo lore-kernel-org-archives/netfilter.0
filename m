@@ -1,11 +1,13 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: problem with trying the example
-Date: Mon, 1 Dec 2003 01:47:03 -0000
+From: Eric Leblond <eric@regit.org>
+Subject: Re: problem with trying the example
+Date: Mon, 01 Dec 2003 09:00:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00a201c3b7ad$06b73100$cb0210ac@jz105>
+Message-ID: <1070265652.29823.3.camel@porky>
+References: <00a201c3b7ad$06b73100$cb0210ac@jz105>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-EQk1mzFWa41okmmnTwph"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00a201c3b7ad$06b73100$cb0210ac@jz105>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,32 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Jee J.Z." <jz105@york.ac.uk>
+Cc: netfilter@lists.netfilter.org
 
-SGkgYWxsLA0KDQpJIGFtIG5ldyB0byBuZXRmaWx0ZXIgYW5kIGV2ZW4gbGludXguIEkganVzdCB3
-aXNoIHRvIHRyeSB0aGUgZXhhbXBsZSBjb2RlIGluIHRoZSBtYW4gcGFnZSBvZiBsaWJpcHEgKEkg
-c2F2ZWQgaXQgYXMgdGVzdC5jIGFuZCBoYXZlIGNvbXBpbGVkIGl0IHRvIHRlc3QubykuIEJ1dCB3
-aGVuIEkgbWFrZSBpdDogI2NjIHRlc3QubyAtbyB0ZXN0LCB0aGUgZm9sbG93aW5nIGVycm9ycyBz
-aG93ZWQgdXA6DQoNCltyb290QGtpdGUxIG5ldGZpbHRlcl0jIGNjIHRlc3QubyAtbyB0ZXN0DQp0
-ZXN0Lm8oLnRleHQrMHhmKTogSW4gZnVuY3Rpb24gYGRpZSc6DQo6IHVuZGVmaW5lZCByZWZlcmVu
-Y2UgdG8gYGlwcV9wZXJyb3InDQp0ZXN0Lm8oLnRleHQrMHgxZCk6IEluIGZ1bmN0aW9uIGBkaWUn
-Og0KOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBpcHFfZGVzdHJveV9oYW5kbGUnDQp0ZXN0Lm8o
-LnRleHQrMHg0OSk6IEluIGZ1bmN0aW9uIGBtYWluJzoNCjogdW5kZWZpbmVkIHJlZmVyZW5jZSB0
-byBgaXBxX2NyZWF0ZV9oYW5kbGUnDQp0ZXN0Lm8oLnRleHQrMHg4MSk6IEluIGZ1bmN0aW9uIGBt
-YWluJzoNCjogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgaXBxX3NldF9tb2RlJw0KdGVzdC5vKC50
-ZXh0KzB4YjgpOiBJbiBmdW5jdGlvbiBgbWFpbic6DQo6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8g
-YGlwcV9yZWFkJw0KdGVzdC5vKC50ZXh0KzB4ZTQpOiBJbiBmdW5jdGlvbiBgbWFpbic6DQo6IHVu
-ZGVmaW5lZCByZWZlcmVuY2UgdG8gYGlwcV9tZXNzYWdlX3R5cGUnDQp0ZXN0Lm8oLnRleHQrMHgx
-MTYpOiBJbiBmdW5jdGlvbiBgbWFpbic6DQo6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYGlwcV9n
-ZXRfbXNnZXJyJw0KdGVzdC5vKC50ZXh0KzB4MTQxKTogSW4gZnVuY3Rpb24gYG1haW4nOg0KOiB1
-bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBpcHFfZ2V0X3BhY2tldCcNCnRlc3QubygudGV4dCsweDE4
-Yyk6IEluIGZ1bmN0aW9uIGBtYWluJzoNCjogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgaXBxX3Nl
-dF92ZXJkaWN0Jw0KdGVzdC5vKC50ZXh0KzB4MWNlKTogSW4gZnVuY3Rpb24gYG1haW4nOg0KOiB1
-bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBpcHFfc2V0X3ZlcmRpY3QnDQpjb2xsZWN0MjogbGQgcmV0
-dXJuZWQgMSBleGl0IHN0YXR1cw0KDQpJIGhhdmUgaW5zdGFsbGVkIGlwdGFibGVzLTEuMi45IGZv
-bGxvd2luZyB0aGUgaW5zdHJ1Y3Rpb25zLiBEb2VzIGl0IG1lYW4gSSBoYXZlIHRvIGxpbmsgJ3Rl
-c3Qubycgd2l0aCBhbm90aGVyIGZpbGUgKD8/Py5vIG9yID8/Py5zbyk/IFRoYW5rIHlvdSBpbiBh
-ZHZhbmNlIQ0KDQpKZWUNCg==
 
+--=-EQk1mzFWa41okmmnTwph
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Le lun 01/12/2003 =C3=A0 02:47, Jee J.Z. a =C3=A9crit :
+> Hi all,
+>=20
+> I am new to netfilter and even linux. I just wish to try the example code=
+ in the man page of libipq (I saved it as test.c and have compiled it to te=
+st.o). But when I make it: #cc test.o -o test, the following errors showed =
+up:
+>=20
+> [root@kite1 netfilter]# cc test.o -o test
+
+you need to link with the libipq library :
+=20
+	cc test.o -o test -lipq
+
+
+--=20
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
+
+--=-EQk1mzFWa41okmmnTwph
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/yvU0nxA7CdMWjzIRAgOFAKCKLF+uG7bhBFU5EwEReLRaUSkfnQCdFzJ1
+7iK2/ATd6PqLLQANHwSgb5o=
+=DBVU
+-----END PGP SIGNATURE-----
+
+--=-EQk1mzFWa41okmmnTwph--
 
