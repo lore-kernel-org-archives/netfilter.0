@@ -1,12 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [OT] Was: ESP does not hit the nat table
-Date: Mon, 2 Aug 2004 10:03:48 +0200 (CEST)
+From: "subscribe" <subscribe@kringstad.net>
+Subject: Netfilter / IPTables log anlysis
+Date: Mon, 2 Aug 2004 12:16:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0408020958300.7180-100000@blackhole.kfki.hu>
-References: <200408012328.16124.Antony@Soft-Solutions.co.uk>
+Message-ID: <ADC32223BAAA2E4BB6F9FBCF41D11633019135@picard.kringstad.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408012328.16124.Antony@Soft-Solutions.co.uk>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +16,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 1 Aug 2004, Antony Stone wrote:
+Hi lists,
+I'm looking for a good log analysis / gui for IPTables,
+I've used CheckPoint's log tracker and I wounder if there
+are some product like this for IPTables ? Since fwbuilder
+is a nice gui for iptables rules, there have to be some
+good realtime log trackers.
 
-> On Sunday 01 August 2004 8:03 pm, Jason Opperisano wrote:
->
-> > <OT>
-> >  Where is the new-found obsession with dropping packets in the NAT table
-> > coming from? </OT>
->
-> Indeed.   A few people here have commented recently that they prefer dropping
-> stuff in the PREROUTING nat table instead of waiting until it hits INPUT or
-> FORWARD, for things like spoofed packets or invalid TCP flag combinations.
-
-And those forget that conntrack has already seen the packets. Better use
-the raw table to drop malformed/spoofed packets.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
-
+---
+Trond=20
 
