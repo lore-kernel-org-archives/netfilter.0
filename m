@@ -1,12 +1,12 @@
-From: "V. Pascual" <voltaire@voltaire.servebeer.com>
-Subject: help: ip_nat_pptp
-Date: Fri, 30 May 2003 14:39:54 +0800
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Problems with NAT
+Date: Fri, 30 May 2003 16:57:23 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003f01c32676$496ca840$fe00a8c0@expi>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D6E@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_003C_01C326B9.556CE130"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,83 +16,134 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ray Leach <raymondl@knowledgefactory.co.za>, jhime@synchro.com.br
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+They are all visible by the 1 nic.. the linux box talks to them via the =
+same router that goes to the internet, this is why he has a problem.. so =
+"-o eth0" wouldn't make a difference..
 
-------=_NextPart_000_003C_01C326B9.556CE130
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I found this out when he told me this in Portugese.. ;) he he funny =
+that....
 
-Hi There,
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-I have patched my kernel (2.4.20) with ip_nat_pptp (using =
-patch-o-matic-20030107). Patch went fine and the kernel was recompiled =
-successfuly. I have tried to install the module but I have the error =
-which says;
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
-[root@ netfilter]# insmod ip_nat_pptp.o
-ip_nat_pptp.o: unresolved symbol ip_pptp_lock_Rsmp_66d9b5ea
+=20
 
-[root@ netfilter]# insmod ip_nat_mms.o
-ip_nat_mms.o: unresolved symbol ip_mms_lock_Rsmp_8d71dea1
-
-
-
-I have tried to install other modules but it works just fine(like =
-ip_nat_proto_gre)
-
-Did i missed something here when I apply the patch-o-matic? Appreciate =
-your help.
-
-TIA
-//VP.
+-----Original Message-----
+From: Ray Leach [mailto:raymondl@knowledgefactory.co.za]
+Sent: Friday, May 30, 2003 4:04 PM
+To: jhime@synchro.com.br
+Cc: 'Netfilter Mailing List'
+Subject: RE: Problems with NAT
 
 
-------=_NextPart_000_003C_01C326B9.556CE130
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2003-05-29 at 19:15, Jose Luis Hime wrote:
+> The problem is that there are LAN C, LAN D and LAN E in other 3 =
+cities,
+> also! So, the rule:
+>=20
+> -t nat -A POSTROUTING -s LAN A -d ! LAN B -j SNAT --to =
+Firewall_IP_address
+>=20
+> would work for LAN B, but not for the other LANs.
+>=20
+> All LANs are connected to the same router.
+>=20
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi There,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have patched my kernel (2.4.20) with =
-ip_nat_pptp=20
-(using patch-o-matic-20030107). Patch went fine and the kernel was =
-recompiled=20
-successfuly. I have tried to install the module but I have the error =
-which=20
-says;</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>[root@ netfilter]# insmod=20
-ip_nat_pptp.o<BR>ip_nat_pptp.o: unresolved symbol=20
-ip_pptp_lock_Rsmp_66d9b5ea</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>[root@ netfilter]# insmod=20
-ip_nat_mms.o<BR>ip_nat_mms.o: unresolved symbol=20
-ip_mms_lock_Rsmp_8d71dea1<BR></DIV>
-<DIV><BR></DIV></FONT>
-<DIV><FONT face=3DArial size=3D2>I have tried to install other modules =
-but it works=20
-just fine(like ip_nat_proto_gre)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Did i missed something here when I =
-apply the=20
-patch-o-matic? Appreciate your help.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>TIA</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>//VP.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;</DIV></FONT></BODY></HTML>
+What about adding '-o INET_IFACE', or do LAN C,D,E also connect via the
+internet interface?
 
-------=_NextPart_000_003C_01C326B9.556CE130--
-
+> Thanks again,
+> Jose Hime
+>=20
+>=20
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Ray Leach
+> Sent: Thursday, May 29, 2003 12:55 PM
+> To: Netfilter Mailing List
+> Subject: Re: Problems with NAT
+>=20
+>=20
+> On Thu, 2003-05-29 at 17:15, Jose Luis Hime wrote:
+> > Dear all:
+> >=20
+> > I have the following network:
+> >               :
+> >               :    /---------\
+> > /-------\  Leased  | Router  |  Leased  /----------\
+> > | LAN B |----------| without |----------| Internet |
+> > \-------/  Line 1  | NAT     |  Line 2  \----------/
+> >               :    \---------/
+> >               :         |
+> >               :         |
+> >               :   /----------\
+> >               :   | Firewall |      /-------\
+> >               :   | Linux    |------| LAN A |
+> >               :   | with NAT |      \-------/
+> >               :   \----------/
+> >               :
+> >    CITY "B"   :     CITY "A"
+> >=20
+> > 1. The router, the firewall and LAN A are in city "A"
+> > 2. LAN B is in another city (city "B")
+> > 3. LAN A must access the internet, LAN B must not;
+> > 4. Unfortunately my router does not support NAT;
+> > 5. Both the router and the linux firewall have real internet IP =
+addresses;
+> > 6. So:
+> >    - The linux firewall must NAT packets from LAN A to the internet;
+> >    - The linux firewall must not NAT packets from LAN A to LAN B;
+> >=20
+> > I created rules in table "filter" allowing communication between LAN =
+A and
+> > LAN B:
+> >    -t filter -A INPUT   -s LAN A -d LAN B -j ACCEPT
+> >    -t filter -A INPUT   -s LAN B -d LAN A -j ACCEPT
+> >    -t filter -A FORWARD -s LAN A -d LAN B -j ACCEPT
+> >    -t filter -A FORWARD -s LAN B -d LAN A -j ACCEPT
+> >=20
+> > After that, I created one rule in table "nat" in order to allow LAN =
+A
+> > accessing the internet:
+> >    -t nat -A POSTROUTING -s LAN A -d 0/0 -j SNAT --to =
+Firewall_IP_address
+> >=20
+> > The problem is that LAN A is making NAT to LAN B.
+> >=20
+> > Is there a way to prevent the firewall from NATing from LAN A to LAN =
+B? The
+> > problem is that both traffics (LAN A->internet and LAN A->LAN B) are =
+going
+> > through the same interface...
+> >=20
+> Sure, change your nat rule:
+>   -t nat -A POSTROUTING -s LAN A -d ! LAN B -j SNAT --to
+> Firewall_IP_address
+>=20
+> > With ipchains, after reaching the INPUT and FORWARD rules the =
+firewall
+> > would stop and would not reach the NAT rules. This behavior changed =
+in
+> > iptables and it always check both tables (filter and nat).
+> >=20
+> > Thanks in advance,
+> > Jose Hime
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
