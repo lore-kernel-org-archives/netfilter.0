@@ -1,15 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Monitoring problems...
-Date: Fri, 31 Oct 2003 07:37:20 -0500
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: iptables scripts
+Date: 31 Oct 2003 08:11:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310310737.20925.Alistair@nerdnet.ca>
-References: <DFD93DB4ABEF7243BC4F81DE17A182EF94B2@tugexch.vpn.mmsi.com> <m21xst1zh0.fsf@feanor.haverlant.org>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <1067605873.1137.62.camel@valhalla>
+References: <Pine.LNX.4.44.0310310723500.6263-100000@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <m21xst1zh0.fsf@feanor.haverlant.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0310310723500.6263-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,43 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Vincent Haverlant <vincent@haverlant.org>, Mark Webb <webb@mmspl.com.au>
-Cc: netfilter@lists.netfilter.org
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+Cc: Gilles Yue <gyue@novelgmt.intnet.mu>, iptables mailing list <netfilter@lists.netfilter.org>
 
-On October 31, 2003 05:19 am, Vincent Haverlant wrote:
-> "Mark Webb" <webb@mmspl.com.au> writes:
-> > I was asked by the powers that be to set up some monitoring of our
+On Fri, 2003-10-31 at 07:26, Robert P. J. Day wrote:
 >
-> workplaces internet traffic. Basically a breakdown of the volume used
-> and what protocol is using it.  i.e. 20% mail, 30% web, 10% ftp, etc....
->
-> Hi Mark,
->
-> You might want to have a look at ntop (http://www.ntop.org/) which looks
-> like it does exactly what you want.
->
-> Vincent.
+> for the iptables tutorial i was talking about that i'm giving on monday,
+> here's the first part of my script, just to show folks what they can do:
 
-	Mark:
-	Essentially what is happening is that although you are on a hub and can 
-technically see all the traffic for the pipe you are attached to, the box 
-does not see all that traffic as being destined for your box, thus is 
-ignoring packets NOT a) addressed to the box itself b) addressed to 
-broadcast.
+This is *totally* cool. Thank you for sharing this with the list! :)
 
-  Don't know about ntop myself, but it seems to have a number of fans on this 
-list (Hey ...look theres one now... its Vincent)
+The only thing I would add would be:
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables --table nat --flush
 
-	*shrugs* ... there are those that swear by other tools too... and difficult 
-as ethereal is ... with careful configuration and a few good scripts... 
-	
+or what ever you need. This way you can run it from the command line and
+clear out all existing rules before you write everything back in.
 
--- 
+HTH,
+C
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+
 
