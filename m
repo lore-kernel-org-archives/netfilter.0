@@ -1,12 +1,12 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Max Concurrent Session
-Date: 15 Dec 2004 15:41:42 +0100
-Message-ID: <1102796799.29423.2.camel@nostromo.bgsecm.com>
-References: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Multiple output routes
+Date: Wed, 15 Dec 2004 10:10:22 -0500
+Message-ID: <1103123422.871.11.camel@hubcap.ljm.dom>
+References: <200412151044.46362@X-Blurb>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
+In-Reply-To: <200412151044.46362@X-Blurb>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +17,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: NetFilter Users <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El vie, 10 de 12 de 2004 a las 20:11, Miguel Angel Amador L escribi=C3=B3=
-:
-> Hi All
->  I need implement a firewall that support 2000 concurrent sessions, it
-> is posible with Iptables/Netfiler ??=20
->  What need to do?
->=20
-> Thanks for all
->=20
-> regards
->  Miguel Angel Amador L.
-> =20
+On Wed, 2004-12-15 at 04:44, O-Zone wrote:
+> Hi all,
+> i want to route traffico for a specific subnet to routeA while default route 
+> for my linuxbox is routeB. Here's the diagram:
+> 
+> (internet)--[Router A]---+
+>                                     |
+>                                 [Linux BOX]----(Subnet 10.0.0.x)
+>                                     |
+> (internet)--[Router B]---+
+> 
+> RouterA and RouterB have the same subnet (i.e. RouterA lan is 192.168.0.1 and 
+> RouterB has 192.168.0.2) and LinuxBox have ONLY ONE externat iface like 
+> 192.168.0.3. While i use LinuxBOX i wanna go "out" trought 192.168.0.1 but 
+> PC's MASQ'ed in Subnet 10.0.0.x must go out throug 192.168.0.2. 
 
-In theory you should have no problems or netfilter limitations on
-that matter. What you will need it's enough memory and a powerful
-CPU. It's very important that you optimize the rules as much as
-you can, having in mind how the packets traverse the chains and
-the rules and trying that the sessions traverse the minimum number
-of rules. You should also use connection tracking so related and
-established connections are accepted with just a few rules.
+leave the default gateway of "Linux Box" set to RouterA--which will take
+care of all packets from "Linux Box" being routed out via RouterA.
 
+setup policy routing so that packets from 10.0.0.0/24 get routed out via
+RouterB:
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+  echo 200 RouterB >> /etc/iproute2/rt_tables
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+  ip rule add fwmark 0x01 table RouterB
+
+  ip route add default via 192.168.0.2 table RouterB
+
+  ip route flush cache
+
+  iptables -t mangle -A PREROUTING -i $insideIF -s 10.0.0.0/24 \
+    -j MARK --set-mark 0x01
+
+add filter and nat rules as necessary...
+
+-j
+
+--
+"I'm a well-wisher, in that I don't wish you any specific harm."
+	--The Simpsons
 
 
