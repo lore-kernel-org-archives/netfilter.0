@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Broken fwmark
-Date: Sun, 2 Jun 2002 23:39:17 +0100
+From: George Georgalis <georgw@galis.org>
+Subject: ssh connecting to wrong machine....
+Date: Sun, 2 Jun 2002 19:21:57 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206022239.g52MdJA10657@Networker.rockstone.co.uk>
-References: <Pine.LNX.4.33.0206022311320.10014-100000@shaun.sheddy.net>
+Message-ID: <20020602192157.A16556@trot.haven.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.33.0206022311320.10014-100000@shaun.sheddy.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,40 +16,57 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Sunday 02 June 2002 11:23 pm, Steve wrote:
+On a 2 interface firewall, I've set up an alias eth1:1 ($EXT_host04) to
+an IP on our T-1, then added a nat which should connect ports $TCP_OPEN
+and $UDP_OPEN to the internal IP ($LAN_host04).
 
-> I've written a small script which shows that the packets are getting
-> watermarked but the replies are losing the mark. In the example below I
-> am pinging (from another machine) an IP bound to eth2 on the machine
-> itself.
->
-> Jun  2 22:52:32 kernel: PRE SET    IN=eth2 OUT= MAC=xx SRC=1.2.3.4
-> DST=4.3.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=55  ID=28633 PROTO=ICMP TYPE=8
-> CODE=0 ID=65293 SEQ=0
-> Jun  2 22:52:32 kernel: IP SET     IN=eth2 OUT= MAC=xx SRC=1.2.3.4
-> DST=4.3.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=55  ID=28633 PROTO=ICMP TYPE=8
-> CODE=0 ID=65293 SEQ=0
-> Jun  2 22:52:32 kernel: OP UNSET   IN=     OUT=eth2    SRC=4.3.2.1
-> DST=1.2.3.4 LEN=84 TOS=0x00 PREC=0x00 TTL=255 ID=53296 PROTO=ICMP TYPE=0
-> CODE=0 ID=65293 SEQ=0
-> Jun  2 22:52:32 kernel: POST UNSET IN=     OUT=eth2    SRC=4.3.2.1
-> DST=1.2.3.4 LEN=84 TOS=0x00 PREC=0x00 TTL=255 ID=53296 PROTO=ICMP TYPE=0
-> CODE=0 ID=65293 SEQ=0
+But when I go to ssh $EXT_host04 from the internet I end up talking to
+the firewall sshd, not the sshd on $LAN_host04. Why is that? Here are my
+rules:
 
-I'm no expert on packet marking, but why should a reply packet automatically 
-pick up the mark of whatever it's a reply to ?   I mean, where would the mark 
-get applied ?
+LANIF=eth0
+EXTIF=eth1
+TCP_OPEN="22,25,53,80"
+UDP_OPEN="22,53"
 
-These 'marks' are only internal codings within netfilter - they do not exist 
-within the packet in any way, so I don't really understand how one packet's 
-mark could get transferred to a different packet.
+iptables -A INPUT -m state --state ESTABLISHED,RELATED \
+-j ACCEPT
 
-The only place your ruleset was setting a mark was in the PREROUTING chain, 
-and packets generated locally don't go through that, which is why the 
-echo-reply packets being generated on the machine are not getting marked.
+iptables -A INPUT -i $EXTIF -m state --state NEW \
+-p tcp -m multiport --dport $TCP_OPEN -j ACCEPT
+
+iptables -A INPUT -i $EXTIF -m state --state NEW \
+-p udp -m multiport --dport $UDP_OPEN -j ACCEPT
 
 
-Antony.
+iptables -A FORWARD -i $EXTIF -o $LANIF -p tcp \
+-m multiport --dport $TCP_OPEN \
+-m state --state NEW,RELATED,ESTABLISHED \
+-j ACCEPT
+
+iptables -A FORWARD -i $EXTIF -o $LANIF -p udp \
+-m multiport --dport $UDP_OPEN \
+-m state --state NEW,RELATED,ESTABLISHED \
+-j ACCEPT
+
+
+iptables -t nat -A PREROUTING -p tcp \
+-s $EXT_host04 \
+-j DNAT --to-destination $LAN_host04
+
+iptables -t nat -A POSTROUTING -o $EXTIF \
+-j MASQUERADE
+
+
+Thanks,
+// George
+
+-- 
+GEORGE GEORGALIS, System Admin/Architect    cell: 347-451-8229 
+Security Services, Web, Mail,            mailto:george@galis.org 
+File, Print, DB and DNS Servers.       http://www.galis.org/george 
+
 
