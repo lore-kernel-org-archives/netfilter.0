@@ -1,12 +1,15 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: sqlnet 8 connexion and iptables 1.2.6a
-Date: Mon, 7 Apr 2003 09:20:02 -0700
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: How to account traffic in IPTABLES?
+Date: 07 Apr 2003 18:34:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C7004@alderaan.smgtec.com>
+Message-ID: <1049733245.4867.13.camel@raylinux.internal>
+References: <20030330134802.CF9351C462B39@sm204.163.com>
+	 <3E887685.9070000@videotron.ca>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-0+ApqUUixHwm8LZqr8w7"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <3E887685.9070000@videotron.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,234 +19,128 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?St=E9phane_Klein?= <sklein@aquitaine-valley.fr>, richardo@start-global.com
-Cc: netfilter@lists.netfilter.org
-
-You need a conntrack module to enable the RELATED session tracking. =
-Otherwise, how do you suppose iptables knows to open that particular =
-port?
-
------Original Message-----
-From: St=E9phane Klein [mailto:sklein@aquitaine-valley.fr]=20
-Sent: Monday, April 07, 2003 1:24 AM
-To: 'richardo@start-global.com'
-Cc: 'netfilter@lists.netfilter.org'
-Subject: RE: sqlnet 8 connexion and iptables 1.2.6a
-
-Hi,=20
-
-Thanks for your interest and response.
-
-I looked for interesting logs last week, and i found sqlnet in working =
-like
-this:
-
-first, the client connects to the server on 1521 port, second, the =
-server
-tells client to connect to=20
-a random port. At last, the client try to connect to the server, but the
-port is not opened.
-
-I was thinking the related component could help to resolve the problem, =
-but
-it is not the case.
-Here are the logs:
-
-Apr  4 12:55:26 fw kernel: RULE 0 -- ACCEPT IN=3Deth0 OUT=3Deth0
-SRC=3D192.168.0.208 DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D127 ID=3D463 DF
-PROTO=3DTCP SPT=3D1487 DPT=3D1521 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-Apr  4 12:55:26 fw kernel: RULE 3 -- DROP IN=3Deth0 OUT=3Deth0 =
-SRC=3D192.168.0.208
-DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D1999 DF =
-PROTO=3DTCP
-SPT=3D1488 DPT=3D1089 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-Apr  4 12:55:36 fw kernel: RULE 3 -- DROP IN=3D OUT=3Deth0 =
-SRC=3D192.168.0.239
-DST=3D192.168.0.208 LEN=3D72 TOS=3D0x00 PREC=3D0xC0 TTL=3D255 ID=3D26567 =
-PROTO=3DICMP
-TYPE=3D5 CODE=3D1 GATEWAY=3DORACLE-IP [SRC=3D192.168.0.208 =
-DST=3DORACLE-IP LEN=3D44
-TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D9423 DF PROTO=3DTCP SPT=3D1488 =
-DPT=3D1089
-WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0 ]
-Apr  4 12:55:36 fw kernel: RULE 3 -- DROP IN=3Deth0 OUT=3Deth0 =
-SRC=3D192.168.0.208
-DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D9423 DF =
-PROTO=3DTCP
-SPT=3D1488 DPT=3D1089 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-Apr  4 12:55:49 fw kernel: RULE 3 -- DROP IN=3D OUT=3Deth0 =
-SRC=3D192.168.0.239
-DST=3D192.168.0.208 LEN=3D72 TOS=3D0x00 PREC=3D0xC0 TTL=3D255 ID=3D26568 =
-PROTO=3DICMP
-TYPE=3D5 CODE=3D1 GATEWAY=3DORACLE-IP [SRC=3D192.168.0.208 =
-DST=3DORACLE-IP LEN=3D44
-TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D10191 DF PROTO=3DTCP SPT=3D1488 =
-DPT=3D1089
-WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0 ]
-Apr  4 12:55:49 fw kernel: RULE 3 -- DROP IN=3Deth0 OUT=3Deth0 =
-SRC=3D192.168.0.208
-DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D10191 DF =
-PROTO=3DTCP
-SPT=3D1488 DPT=3D1089 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-
-192.168.0.239 is an ip of the firewall, 208 is the client.
-
-regards=20
-
-Stephane
-
------Message d'origine-----
-De : richardo@start-global.com [mailto:richardo@start-global.com]
-Envoy=E9 : lundi 7 avril 2003 09:58
-=C0 : St=E9phane Klein
-Objet : RE: sqlnet 8 connexion and iptables 1.2.6a
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
+--=-0+ApqUUixHwm8LZqr8w7
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Hi Stephane,
+Hi
 
-The rules below look as though they do allow RELATED and ESTABLISHED
-packets back through the firewall ... there are some logging rules, are =
-you
-getting any relevant information in the log files ?
+Create an accounting chain:
 
-Regards,
-Richard.
+IPTABLES=3D/sbin/iptables
 
-Richard Oatridge
-Head of IT, Start-global Ltd
-http://www.start-global.com
-tel :  +44 1564 779297
-email : richardo@start-global.com
+### accounting chain
+$IPTABLES -N accounting
+$IPTABLES -A accounting -i eth0 -d $IP_INT_MAIL -j RETURN
+$IPTABLES -A accounting -o eth0 -s $IP_INT_MAIL -j RETURN
+$IPTABLES -A accounting -i eth0 -d $IP_INT_WEB7 -j RETURN
+$IPTABLES -A accounting -o eth0 -s $IP_INT_WEB7 -j RETURN
+$IPTABLES -A accounting -i eth0 -d $IP_INT_WEB1 -j RETURN
+$IPTABLES -A accounting -o eth0 -s $IP_INT_WEB1 -j RETURN
+$IPTABLES -A accounting -i eth0 -d $IP_INT_WEB3 -j RETURN
+$IPTABLES -A accounting -o eth0 -s $IP_INT_WEB3 -j RETURN
+$IPTABLES -A accounting -i eth0 -d $IP_INT_WEB4 -j RETURN
+$IPTABLES -A accounting -o eth0 -s $IP_INT_WEB4 -j RETURN
+$IPTABLES -A accounting -i eth0 -d $IP_INT_ORA2 -j RETURN
+$IPTABLES -A accounting -o eth0 -s $IP_INT_ORA2 -j RETURN
+$IPTABLES -A accounting -i eth2 -s $NET_INT -d ! $NET_DMZ -j RETURN
+$IPTABLES -A accounting -o eth2 -s ! $NET_DMZ -d $NET_INT -j RETURN
+$IPTABLES -A INPUT -j accounting
+$IPTABLES -A FORWARD -j accounting
+$IPTABLES -A OUTPUT -j accounting
 
-
-|--------+----------------------------------->
-|        |          St=E9phane Klein           |
-|        |          <sklein@aquitaine-valley.|
-|        |          fr>                      |
-|        |          Sent by:                 |
-|        |          netfilter-admin@lists.net|
-|        |          filter.org               |
-|        |                                   |
-|        |                                   |
-|        |          04/04/2003 13:06         |
-|        |                                   |
-|--------+----------------------------------->
-=20
->------------------------------------------------------------------------=
----
-----------------------------------------------|
-  |
-|
-  |       To:     "'richardo@start-global.com'" =
-<richardo@start-global.com>
-|
-  |       cc:     "'netfilter@lists.netfilter.org'"
-<netfilter@lists.netfilter.org>                                         =
-|
-  |       Subject:     RE: sqlnet 8 connexion and iptables 1.2.6a
-|
-=20
->------------------------------------------------------------------------=
----
-----------------------------------------------|
+Then to see the traffic use:
+/sbin/iptables -nvL accounting
 
 
+On Mon, 2003-03-31 at 19:10, Stephane Ouellette wrote:
+> Bobo wrote:
+>=20
+> > HI
+> >
+> >      I use the iptables + squid as the gateway of one LAN,and it is ver=
+y good in fact.
+> >
+> >   Now,I would like to get the traffic accounting of each IP of the LAN.
+> >
+> >  How to get these data ? Does IPtables contain these data?
+> > =20
+> >
+>=20
+> try this one:
+>=20
+> iptables -nvL INPUT
+>=20
+> >  Are there some tools for traffic accounting of iptables?
+> > =20
+> >
+>=20
+> The iptables command itself !!!
+>=20
+> >  I could use perl and shell programing.Could I analyze the log file of =
+iptables to account?
+> > =20
+> >
+>=20
+> in Perl:
+>=20
+> open(CHAINS, "iptables -nvL INPUT|") or die "Error reading chains\n";
+>=20
+> while(<CHAINS>)
+> {
+> # read the lines one by one, matching on the text you want
+> }
+>=20
+> close(CHAINS);
+>=20
+> >  Thanks
+> >
+> >
+> >
+> >
+> >
+> > =20
+> >
+>=20
+>=20
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+(  http://www.mapnet.co.za/            )
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
 
 
-iptables -L gives me:
+--=-0+ApqUUixHwm8LZqr8w7
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-RULE_1     all  --  oracle_srv_ip        anywhere           state NEW
-RULE_2     all  --  192.168.0.41         anywhere           state NEW
-RULE_3     all  --  anywhere             anywhere
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-RULE_0     icmp --  anywhere             oracle_srv_ip      icmp type 8
-code 0 state NEW
-RULE_0     tcp  --  anywhere             oracle_srv_ip      tcp dpt:1521
-state NEW
-RULE_1     all  --  oracle_srv_ip        anywhere           state NEW
-RULE_2     all  --  192.168.0.41         anywhere           state NEW
-RULE_3     all  --  anywhere             anywhere
-ACCEPT     all  --  anywhere             anywhere           state =
-RELATED
+iD8DBQA+kah9h1fuR/Bv+ygRAjHaAJwLIIA8LMuSIblK7aMYXzImuNEoQwCffNrq
+VdZG8wDa1lRf+ktRk9U5+uk=
+=svO7
+-----END PGP SIGNATURE-----
 
-Chain OUTPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-RULE_0     icmp --  anywhere             194.250.29.100     icmp type 8
-code 0 state NEW
-RULE_0     tcp  --  anywhere             194.250.29.100     tcp dpt:1521
-state NEW
-RULE_3     all  --  anywhere             anywhere
-
-Chain RULE_0 (4 references)
-target     prot opt source               destination
-LOG        all  --  anywhere             anywhere           LOG level =
-debug
-prefix `RULE 0 -- ACCEPT '
-ACCEPT     all  --  anywhere             anywhere
-
-Chain RULE_1 (2 references)
-target     prot opt source               destination
-LOG        all  --  anywhere             anywhere           LOG level =
-info
-prefix `RULE 1 -- ACCEPT '
-ACCEPT     all  --  anywhere             anywhere
-
-Chain RULE_2 (2 references)
-target     prot opt source               destination
-LOG        all  --  anywhere             anywhere           LOG level =
-info
-prefix `RULE 2 -- ACCEPT '
-ACCEPT     all  --  anywhere             anywhere
-
-Chain RULE_3 (3 references)
-target     prot opt source               destination
-LOG        all  --  anywhere             anywhere           LOG level =
-info
-prefix `RULE 3 -- DROP '
-DROP       all  --  anywhere             anywhere
-
-
-
------Message d'origine-----
-De : richardo@start-global.com [mailto:richardo@start-global.com]
-Envoy=E9 : vendredi 4 avril 2003 13:51
-=C0 : St=E9phane Klein
-Objet : Re: sqlnet 8 connexion and iptables 1.2.6a
-
-
-
-Hi Stephane,
-
-Are you allowing RELATED and ESTABLISHED packets back through the =
-firewall
-? if not, it may solve the problem ....
-
-
-Regards,
-Richard.
-
-Richard Oatridge
-Head of IT, Start-global Ltd
-http://www.start-global.com
-tel :  +44 1564 779297
-email : richardo@start-global.com
-
-
-
-
-
+--=-0+ApqUUixHwm8LZqr8w7--
 
 
