@@ -1,8 +1,8 @@
 From: "john doe" <d_j_d@hotmail.com>
-Subject: RE: Protocol wise graphs
-Date: Fri, 21 Feb 2003 20:55:47 +0000
+Subject: RE: recommended GUI frontends for iptables?
+Date: Fri, 21 Feb 2003 21:15:13 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY2-F32SudpuoRNuzI00028d28@hotmail.com>
+Message-ID: <BAY2-F88NE1r2lvA2Jq0003a86f@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,38 +18,33 @@ Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-try this http://bwmonitor.sourceforge.net/#5
 
-or for a more generic way of graphing traffic
-try this http://people.ee.ethz.ch/~oetiker/webtools/mrtg/
 
-mrtg really works for me for a more detailed method
-of graphing protocols look at bwmonitor. espescially written for
-lan monitoring.
+try this http://bifrost.heimdalls.com/
+you need apache for this. and a small license fee that's worth while.
 
->From: Anoop S <anoop@it-om.com>
->To: Netfilter List <netfilter@lists.netfilter.org>
->Subject: RE: Protocol wise graphs
->Date: 17 Feb 2003 15:48:44 +0530
+
+
+>From: "Simpson, Doug" <dsimpson@friedmancorp.com>
+>To: "'Robert P. J. Day'" <rpjday@mindspring.com>, netfilter mailing list 
+><netfilter@lists.netfilter.org>
+>Subject: RE: recommended GUI frontends for iptables?
+>Date: Mon, 17 Feb 2003 10:48:17 -0600
 >
->On Thu, 2003-02-13 at 19:09, Khanh Tran wrote:
-> > ntop is supposed to do this well, but it was always a bit unstable for 
->me...
-> >
->Thanx for that
->but i have tried ntop and fortunately :-) it has worked very well on my
->system. however it doesnt give what i want (maybe i din look at it
->fully).
+>I have used fwbuilder.
 >
->i ll give an idea as to what i m looking to.
+>-----Original Message-----
+>From: Robert P. J. Day [mailto:rpjday@mindspring.com]
+>Sent: Monday, February 17, 2003 5:24 AM
+>To: netfilter mailing list
+>Subject: recommended GUI frontends for iptables?
 >
->---> statistics as to what ports and services are being used by a
->particular user of my LAN with amount of traffic (inbound/outbound)
->generated.
->---> auto protocol discover
 >
->sori for the language if it aint clear.
->thanx
+>
+>   which of the many GUI frontends have folks found mesh
+>nicely with the latest iptables?  is there a FAQ for this?
+>
+>rday
 
 
 _________________________________________________________________
