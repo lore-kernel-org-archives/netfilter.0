@@ -1,7 +1,7 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: Is this suitable?
-Date: Sat, 20 Nov 2004 11:19:50 -0300
-Message-ID: <E1CVW6p-0006a1-00@deer.gmane.org>
+From: =?ISO-8859-15?Q?Bj=F6rn_Schmidt?= <bj-schmidt@uni-paderborn.de>
+Subject: state: INVALID
+Date: Fri, 19 Nov 2004 23:37:37 +0100
+Message-ID: <419E75B1.3030406@uni-paderborn.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,67 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Im doing some tests in the lab, i have this idea and i want to know if this
-is suitable to do.
- 
- 
-This is the idea (not mine, customer,and the customer is always right) ,
-suppose this schema
- 
- 
-Wap server <-> GW
-SQL server _| 
+Hi,
 
+the ulogd logfile of my server shows many "INVALID state" packets. What could
+be the reason for that?
 
-My customer wants to wap server send the sql queries to GW (so the wap box
-thinks that sql server is the gw box), then gw redirect the sql request to
-the sql server, and replies then follow the same way back. 
+The server has one cardbus nic (eth0), one dsl-interface (ppp0) and, of course
+lo. The client has only eth0 and lo. The kernel version of both computers is
+2.6.10-rc2
 
-For this case WAP server is in a dmz, sql is in another dmz, and sql server
-is in the local lan (different from the dmz's). The idea to fit 2 nic's to
-the GW is discarded because the only device allowed to interconnect the
-DMZ's, the LAN and the WAN are the firewalls.
+syslogemu.log:Nov 19 20:31:52 kilobyte INPUT_INVALID IN=eth0 OUT= 
+MAC=00:d0:b7:01:ce:2a:00:04:e2:7f:90:41:08:00  SRC=192.168.0.2 DST=192.168.0.1 
+LEN=52 TOS=00 PREC=0x00 TTL=64 ID=1680 DF PROTO=TCP SPT=32899 DPT=3130 
+SEQ=4260699581 ACK=510793293 WINDOW=5080 ACK FIN URGP=0
+syslogemu.log:Nov 19 20:31:52 kilobyte OUTPUT_INVALID IN= OUT=eth0 MAC= 
+SRC=192.168.0.1 DST=192.168.0.2 LEN=80 TOS=00 PREC=0x00 TTL=255 ID=29481 
+PROTO=ICMP TYPE=3 CODE=3
+syslogemu.log:Nov 19 20:31:52 kilobyte INPUT_INVALID IN=eth0 OUT= 
+MAC=00:d0:b7:01:ce:2a:00:04:e2:7f:90:41:08:00  SRC=192.168.0.2 DST=192.168.0.1 
+LEN=52 TOS=00 PREC=0x00 TTL=64 ID=13326 DF PROTO=TCP SPT=32845 DPT=993 
+SEQ=3094163529 ACK=3641510831 WINDOW=2908 ACK FIN URGP=0
 
-So I need to do this.
+Please CC... ;)
 
-In GW using only 1 NIC, rederirect the traffic in both directions.
-
-Using mysql as an example and this addresses
-
-Wap server: 10.11.0.20
-GW: 10.12.0.10 (gw 10.12.0.1)
-SQL: 10.10.2.205
-
-Will this rules in the gw box work?
-
-(filter:INPUT and filter:FORWARD policies are DROP)
-
-ip ro add default via 10.12.0.1
-iptables -t nat -A PREROUTING -s 10.11.0.20 -d 10.12.0.10 -p tcp --dport
-3306 -j DNAT --to 10.10.2.205:3306
-iptables -t nat -A PREROUTING -s 10.10.2.205 -d 10.12.0.10 -p tcp --sport
-3306 -j DNAT --to 10.11.0.20
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -m state --state NEW -s 10.11.0.20 -d 10.12.0.10 -p tcp
---dport 3306 -j ACCEPT
-iptables -A FORWARD -m state --state NEW -s 10.10.2.205 -d 10.12.0.10 -p tcp
---sport 3306 -j ACCEPT
-
-Is this enough????
-
-I think that, as the connections will be always started from wap server, the
-second FORWARD rule will not match never, because this match will be in the
-RELATED,ESTABLISHED rule, but the main doubt is if this is correct in the
-nat table.
-
-
-Thanks in advance.
-
-Best regards
-
-
+-- 
+Greetings
+Bjoern Schmidt
 
 
