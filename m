@@ -1,9 +1,10 @@
-From: =?iso-8859-1?Q?Sven-=C5ke_Larsson?= <Sven-Ake.Larsson@hiq.se>
-Subject: (no subject)
-Date: Wed, 21 Jan 2004 18:06:03 +0100
+From: "Thhoep" <thhoep@gmx.de>
+Subject: Problem using fwmarks as routing key: "MASQUERADE: Route sent us somewhere else."
+Date: Wed, 21 Jan 2004 18:25:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31A473DBB655D21180850008C71E251A07D3D58B@mail.kebne.se>
+Message-ID: <001c01c3e043$93583cd0$1684188d@Kiste>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,119 +16,105 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'netfilter list ' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+hi,
 
-Hi all.
+my aim: to divide 100 hosts upon 6 masqueraded adsl connections to the
+internet using a linux router runnig a debian woody.
 
-I'm totally new to this list and I really tried to find an answer to my
-question in the archives but with no success, so I'm sorry if I'm repeating
-the history.
+the problem: really strange behaviour of the routing/masquerading combo,
+that changes with every tried kernel version. (described below)
 
-Yesterday I installed a new machine to create a better firewall than the one
-I have today and to get some better logging functionality. A couple of
-pieces are taken from other scipts I found and it does log stuff as I
-thought. The strange thing is that for example port 53 and 111 appers to be
-open when I do a port scan even though everything should be dropped as
-default. But when I added the line "$IPTABLES -A INPUT -p tcp -m tcp --syn
--j DROP" to the script everything except wanted ports are open, as I wanted.
-The last line should take care of everything, but it doesn't seem to work.
+presumption: some version mismatch or a bug in the kernel routing code,
+which needs a bugfix that till now is unknown to me
 
-So the question is, how come? I used the Redhat security tool to create a
-very-secure-machine script and the same thing happens.
-I also surprisingly found out that in RH9 deny doesn't work?!
+my config:
 
+masquerading is activated in "/etc/ppp/ip-up.d" using
+-----------
+iptables -t nat -A POSTROUTING -o $PPP_IFACE -j MASQUERADE
+-----------
 
-Best Regards,
-Sven
-
-
-Scrip start -------------------------
-
-#!/bin/sh
-
+routing policy is defined upon reboot:
+-----------
 echo 1 > /proc/sys/net/ipv4/ip_forward
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
 
-IPTABLES="/sbin/iptables"
+ip route flush table main
+ip route add 192.168.1.0/24 dev eth4 table main
 
-OUTSIDE=eth0
-OUTSIDE_IP=my.to.inet.adress
-INSIDE=eth2
-INSIDE_IP=to.local.network.adress
+# routing policies for adsl
+for (( i=1 ; $i<7; i++ )) ; do
+    ip route flush table dsl$i
+    ip route add 192.168.1.0/24 dev eth4 table dsl$i
+    ip rule add fwmark $i table dsl$i
+done
 
-$IPTABLES -F
-$IPTABLES -F INPUT
-$IPTABLES -F OUTPUT
-$IPTABLES -F FORWARD
-$IPTABLES -F -t mangle
-$IPTABLES -F -t nat
-$IPTABLES -X
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -P FORWARD DROP
+# dividing users
+iptables -t mangle -A PREROUTING -i eth4 -s 192.168.1.10 -j MARK --set-mark
+1
+iptables -t mangle -A PREROUTING -i eth4 -s 192.168.1.11 -j MARK --set-mark
+1
+#....
+iptables -t mangle -A PREROUTING -i eth4 -s 192.168.1.17 -j MARK --set-mark
+2
+#....  and so on
+-----------
 
-# My new rules
-$IPTABLES -N silent
-$IPTABLES -A silent -j DROP
+external default routes are added to the dsl? tables in "/etc/ppp/ip-up.d"
+using
+-----------
+ip route add $PPP_REMOTE dev $PPP_IFACE src $PPP_LOCAL table $PPP_IPPARAM
+ip route add default via $PPP_REMOTE dev $PPP_IFACE table $PPP_IPPARAM
+ip route flush cache
+-----------
 
-$IPTABLES -N tcpflags
-$IPTABLES -A tcpflags -m limit --limit 15/minute -j LOG --log-prefix
-TCPflags:
-$IPTABLES -A tcpflags -j DROP
+versions:
+kernels tried: 2.4.20 - 2.6.1
+iptables 1.2.9
+iproute iproute2-ss010824
+pppd version 2.4.1
+patches: none
 
-$IPTABLES -N firewalled
-$IPTABLES -A firewalled -m limit --limit 15/minute -j LOG --log-prefix
-Firewalled:
-$IPTABLES -A firewalled -j DROP
+PROBLEM DESCRIPTION:
 
-# Source NAT
-$IPTABLES -t nat -A POSTROUTING -o $OUTSIDE -j SNAT --to $OUTSIDE_IP
+if i do a ping from an internal host to an external host i can see with
+tcpdump, that the ping request found its way out of ppp?, a reply is coming
+in, but isn't sent out of the internal interface eth4. if i use pure
+counting netfilter rules for debugging i see, that the replies get lost
+between PREROUTING and FORWARD, so i assume they get lost while routing. a
+"route -C -n" shows a route to the external host, but no route back from the
+external to the internal. in "/var/log/kern.log" are the only
+networking-related messages:
+-----------
+kernel: request_module: failed /sbin/modprobe -- net-pf-10. error = 256
+kernel: MASQUERADE: Route sent us somewhere else.
+-----------
+net-pf-10 seems to be an alias for some ipv6 module. i don't use ipv6 and
+therefor don't have this module. so i ignored that error. that maquerading
+message could be related to my problem. formerly with an older but very
+similar configuration (i think just the iptables was linked to an older
+kernel, but version was the same) i got another message:
+-----------
+kernel: MASQUERADE: No route: Rusty's brain broke!
+-----------
+i can't interpret any of both.
 
-# Flag kombinations that shouldn't exist are dropped.
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL ALL -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL NONE -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j tcpflags
+in addition (this seems to be important): in an older configuration i didnt
+use fwmarks to select the routing tables but the inbuilt "from <ip>"
+directive of the "ip"-tool like this:
+-----------
+ip rule add from 192.168.1.10 table dsl1
+-----------
+and in this configuration the router WAS WORKING absolutely nice and exactly
+as expected. my problem only appears when i try to use fwmarks as routing
+key. (the corresponding kernal feature is enabled).
 
-# Accept ICMP's
-$IPTABLES -A INPUT -p icmp --icmp-type 0 -j ACCEPT
-$IPTABLES -A INPUT -p icmp --icmp-type 3 -j ACCEPT
-$IPTABLES -A INPUT -p icmp --icmp-type 11 -j ACCEPT
-$IPTABLES -A INPUT -p icmp --icmp-type 8 -m limit --limit 1/second -j ACCEPT
-$IPTABLES -A INPUT -p icmp -j firewalled
+please help me! i tried very hard and very long to solve this problem (over
+weeks) and if i cant solve it i have to try it with openbsd or something
+like that, out of pure desperation..
 
-$IPTABLES -A INPUT -p tcp -m tcp --dport 22  --syn -j ACCEPT
-$IPTABLES -A INPUT -p tcp -m tcp --dport 25  --syn -j ACCEPT
-$IPTABLES -A INPUT -p tcp -m tcp --dport 80  --syn -j ACCEPT
-$IPTABLES -A INPUT -p tcp -m tcp --dport 443 --syn -j ACCEPT
+with best regards,
+thomas hoeppler
 
-# Temporarly solution to get rid of 53 and 111
-# Without this one the will show up as open?!
-$IPTABLES -A INPUT -p tcp -m tcp --syn -j DROP
-
-
-# Localhost and inside machines are trustworthy
-$IPTABLES -A INPUT -i lo -j ACCEPT
-$IPTABLES -A INPUT -i $INSIDE -j ACCEPT
-$IPTABLES -A INPUT -i $INSIDE -d $INSIDE_IP -j ACCEPT
-
-# Accept established
-$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$IPTABLES -A FORWARD -i $OUTSIDE -o $INSIDE -m state --state
-RELATED,ESTABLISHED -j ACCEPT
-
-# Silently drop any SMB traffic.
-$IPTABLES -A INPUT -p udp --sport 137 --dport 137 -j silent
-$IPTABLES -A INPUT -p udp --sport 138 --dport 138 -j silent
-$IPTABLES -A INPUT -p udp --sport 139 --dport 139 -j silent
-$IPTABLES -A INPUT -p udp --sport 445 --dport 445 -j silent
-
-# Last case killer, log and drop.
-$IPTABLES -A INPUT -j firewalled
-
-------------------------- Script End
 
