@@ -1,9 +1,10 @@
-From: Silkk <crystaldrinker@yahoo.com>
-Subject: If i follow these steps should i have prbs. with iptabls
-Date: Thu, 12 Sep 2002 20:15:19 -0700 (PDT)
+From: Travis Crook <houseofcrooks@juno.com>
+Subject: Email troubles behind iptables firewall
+Date: Thu, 12 Sep 2002 09:07:47 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020913031519.10380.qmail@web40611.mail.yahoo.com>
+Message-ID: <20020912.090747.-556191.0.houseofcrooks@juno.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,139 +16,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hello,
+Hi all,
+    Sorry to post from an email address not on the 
+list but my other address never gets to the list 
+(travis @ visionsbeyond.com ).
+    I have an iptables firewall setup to route web, ftp 
+and email traffic to internal servers.  My internal 
+servers have ip addresses in the 192.168.2. range.  
+The problem I am having is that my email server is 
+being used as a spam box (not by me but by someone 
+else on the internet - not with my approval either).
 
-I was wandering if someone could go  over this and
-tell me if im did soomething wrong in these steps i
-have tryed this many times but keep 
+My question is this:  Qmail is my mail server.  It is 
+supposed to only allow relaying by certain clients.  
+As far as I know it is set up this way.  I think the 
+problem occurs because I allow 192.168.2. ip 
+addresses to relay mail (i.e. everyone behind the 
+firewall).  But every email coming in to the mail 
+server gets a 192.168.2. ip address.  Is this 
+correct?  Is there any way to pass their real ip 
+address through the firewall to the mail server?
 
-getting error wandering where im going wrong
+Any help would be greatly appreciated.  I can 
+post the firewall script, etc. if needed.
 
-Ok installed linux 7.2 it comes with iptables already
-installed iptablesv1.2.3  Now i want to install
-iptables 1.2.7 Soo here is what im 
+Thanks
 
-doing...
+Travis Crook
+Visions Beyond
 
-Re-Compile my kernel to 2.4.19 with 
-CONFIG_PACKET 
-CONFIG_NETFILTER 
-CONFIG_CONNTRACK 
-CONFIG_IP_NF_FTP 
-CONFIG_IP_NF_IRC 
-CONFIG_IP_NF_IPTABLES 
-CONFIG_IP_NF_FILTER 
-CONFIG_IP_NF_NAT 
-CONFIG_IP_NF_MATCH_STATE 
-CONFIG_IP_NF_TARGET_LOG 
-CONFIG_IP_NF_MATCH_LIMIT 
-CONFIG_IP_NF_TARGET_MASQUERADE 
-ALL built in the kernel: 
-***************************************************************************************************************************************
-Next i am going to download IPTABLES-1.2.7 and install
-them
-bzip2 -cd iptables-1.2.3.tar.bz2 | tar -xvf 
-make KERNEL_DIR=/usr/src/linux/ 
-make install KERNEL_DIR=/usr/src/linux/ 
-****************************************************************************************************************************************
-Next im going to create a script for my iptables named
-"rc.firewall" in the "/etc/rc.d/" dir. where i create
-my rules:
-then im going to 
-chown root.root /etc/rc.d/rc.firewall
-chmod u=rwx /etc/rc.d/rc.firewall
-sh /etc/rc.d/rc.firewall
-And im going to add the following line "sh
-/etc/rc.d/rc.firewall" to the end of the
-"/etc/ec.d/rc.local" file: all this is soo it will 
-
-startup everytime compouters starts..
-***************************************************************************************************************************************
-Since i have a dynamic ip address im going to install
-"PUMP" from Linux instal disc 2
-rpm -iv pump-1.1.11
-
-Then im going to create a "PUMP.CONF" file in the
-"/etc" directpory which will look like this
--------------------------------------------------------------------
-retries 3
-script /etc/rc.d/rc.pump.done
-
-device eth0 {
-     noisdomain
-}
-------------------------------------------------------------
-And then the following shell commands can be placed in
-the firewall script some point after any HARDCODED
-definitions of IPADDRESS
--------------------------------------------------------------
-if [ -f /etc/rc.d/pump.info ]; then
-     . /etc/rc.d/pump.info
- else
-
- echo "rc.firewall: dhcp is not configured."
- sh /ect/init.d/iptables panic
- exit 1 
-fi
-------------------------------------------------
-Sooo then in the "/etc/rc.d" i will create this script
---------------------------------------------------------------------------
-#!/bin/bash
-
-if [ "$1" = "down" ]; then
-    exit 0
-fi
-
-if [ "$1" = "lease" ]; then
-    echo address $3 assigned to network interface $2 >
-/dev/console
-fi
-
-/sbin/pump -i eth0 -s > /var/tmp/pump.out
-
-IPADDR=`fgrep IP: /var/tmp/pump.out | sed -e "s/.*IP:
-//"`
-NETMASK=`fgrep IP: /var/tmp/pump.out | sed -e
-"s/.*Netmask: //"`
-BROADCAST=`fgrep IP: /var/tmp/pump.out | sed -e
-"s/.*Broadcast: //"`
-NETWORK=`fgrep IP: /var/tmp/pump.out | sed -e
-"s/.*Network: //"`
-DHCP_SERVER=`fgrep IP: /var/tmp/pump.out | sed -e
-"s/.*DHCP_SERVER: //"`
-GATEWAY=`fgrep IP: /var/tmp/pump.out | sed -e
-"s/.*Gateway: //"`
-DOMAIN=`fgrep IP: /var/tmp/pump.out | sed -e
-"s/.*Domain: //"`
-
-rm /var/tmp/pump.out
-
-echo IPADDR=$IPADDR . /etc/rc.d/pump.info
-echo NETMASK=$NETMASK >> /etc/rc.d/pump.info
-echo SUBNET_BASE=$NETWORK >> /etc/rc.d/pump.info
-echo SUBNET_BROADCAST=$BROADCAST >>
-/etc/rc.d/pump.info
-echo GATEWAY=$GATEWAY >> /etc/rc.d/pump.info
-echo HOSTNAME=$HOSTNAME >> /etc/rc.d/pump.info
-echo DHCP_SERVER=$DHCP_SERVER>> /etc/rc.d/pump.info
-
-sh /etc/init.d/iptables restart
-
-exit 0
------------------------------------------------------------------------------------------
-
-What im asking is if i follow these steps  should i
-have any problems cause this is my 3 rd try with this
-i wannaknow what i am doing wrong 
-
-thanks for the help guys!!!
-
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+________________________________________________________________
+GET INTERNET ACCESS FROM JUNO!
+Juno offers FREE or PREMIUM Internet access for less!
+Join Juno today!  For your FREE software, visit:
+http://dl.www.juno.com/get/web/.
 
