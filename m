@@ -1,41 +1,57 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how to control tcp idletime
-Date: Wed, 24 Dec 2003 11:52:33 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312241152.33591.Antony@Soft-Solutions.co.uk>
-References: <E1AZ7NH-0002QI-Ss@vishnu.netfilter.org>
+From: Nilesh <niluforalways@yahoo.com>
+Subject: How do i Block Adult Sites through IPTABLE
+Date: Wed, 24 Dec 2003 04:10:49 -0800 (PST)
+Sender: redhat-list-admin@redhat.com
+Message-ID: <20031224121049.86897.qmail@web13204.mail.yahoo.com>
+Reply-To: redhat-list@redhat.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1AZ7NH-0002QI-Ss@vishnu.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/alternative; boundary="0-238730417-1072267849=:84343"
+Return-path: <redhat-list-admin@redhat.com>
+Errors-To: redhat-list-admin@redhat.com
+List-Help: <mailto:redhat-list-request@redhat.com?subject=help>
+List-Post: <mailto:redhat-list@redhat.com>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/redhat-list>,
+	<mailto:redhat-list-request@redhat.com?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/redhat-list>,
+	<mailto:redhat-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/archives/redhat-list/>
+To: redhat-list@redhat.com
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 24 December 2003 11:42 am, zhaoyao wrote:
+--0-238730417-1072267849=:84343
+Content-Type: text/plain; charset=us-ascii
 
-> netfilter=A3=AChello=A3=A1
->     when we are at ESTABLISHED, how to control idletime in tcp?
-
-http://www.netfilter.org/documentation/pomlist/pom-combined.html#tcp-wind=
-ow-tracking
-
-Antony.
-
---=20
-Most people have more than the average number of legs.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+Hello 
+ 
+How do i block Adult XXX sites through iptables 
+ 
+can any one help me 
+ 
+Thanks
+ 
 
 
+---------------------------------
+Do you Yahoo!?
+Yahoo! Photos - Get your photo on the big screen in Times Square
+--0-238730417-1072267849=:84343
+Content-Type: text/html; charset=us-ascii
+
+<DIV>Hello </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>How do i block Adult XXX sites through iptables </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>can any one help me </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks</DIV>
+<DIV>&nbsp;</DIV><p><hr SIZE=1>
+Do you Yahoo!?<br>
+Yahoo! Photos - <a href="http://us.rd.yahoo.com/evt=21486/*http://f1.pg.photos.yahoo.com/ph//spsimplenol?.file=ny_ts_splash.html">Get your photo on the big screen in Times Square</a>
+--0-238730417-1072267849=:84343--
+
+
+-- 
+redhat-list mailing list
+unsubscribe mailto:redhat-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/redhat-list
