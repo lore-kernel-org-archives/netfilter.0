@@ -1,9 +1,8 @@
-From: Michael <mutk@iprimus.com.au>
-Subject: Re: IPTables Feature set and performance.
-Date: Tue, 03 Dec 2002 09:22:27 +1000
+From: Worik <worik@noggon.co.nz>
+Subject: Compiling problem with libipq
+Date: 03 Dec 2002 13:58:24 +1300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DEBEB33.2070806@iprimus.com.au>
-References: <OE22IyhXMOYdOiQ4rYn000056cb@hotmail.com>
+Message-ID: <1038877105.16909.21.camel@stolberg>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,56 +15,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: IPtables Users <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-hard__ware wrote:
+Friends.
 
->I belive you cant Mangle Packets as well on PIX Firewall
->Such as TTL Values & MSS Clamps,
->
->here are some things on why i consider netfilter over any other product for
->now ..
->
->1) its easy to understand & it works well
->2) Completely Open Source Project
->3) Using the help from www.lartc.org QoS can be seamlessly intergrated
->
->4) Squid + Netfilter also offers more advantages like
->Speedy Web Cache & ACL Rules to Block ADs ect,
->
->5) IPTState is a good utillity for showing your Connections Through & Too
->your netfilter firewall
->
->6) IPTables Allows you to set Variables for its ip_conntrack_helpers such as
->ftp & irc like,
->the Default Port No: to track is 21 this can be changed to Many or Just One
->using sysctrl options
->
->7) Kernel Level Networking & Filtering /w Linux ..
->have you got a problem, well if your good enough you
->can make changes to your kernel / modules that will
->improve / manipulate the way your IP V4 Box works.
->
->  
->
-In addition to this, I have found one mention of throughput capabilities 
-of iptables. According to this reference :http://www.hipac.org/  (The 
-performance test links), iptables does have significant limitation of 
-throughput when large (Sequential) rulesets are used. I believe under 
-ideal circumstances, and with carefull attention paid the impact can be 
-minimised.
+I hope this is the correct list
 
-I haven't replicated the tests, and also do not know how authoritative 
-the tests are.
-If the tests results are accurate, this might help in making comparisons 
-and decision making. Does anyone have evidence to backup the findings of 
-nf-hipac peaple?
+This is very frustrating and I am sure there is a simple solution...
 
-Cheers,
-Michael
+The code...
+#include <linux/netfilter.h>
+#include <libipq/libipq.h>
+struct  ipq_handle * ph_ipq = 0;
+int
+main(int argc, char * argv[]){
+  ph_ipq = ipq_create_handle(0, PF_INET);
+  return 0;
+}
+
+Compiling....
+
+make -k 
+gcc -g -O0   -DIPT_LIB_DIR=/usr/lib    -c  ip_q_test.c -o ip_q.o 
+gcc -g -O0   -DIPT_LIB_DIR=/usr/lib    -lipq  ip_q.o -o ip_q
+ip_q.o: In function `main':
+/home/worik/Projects/project12/ip_q_test.c:6: undefined reference to
+`ipq_create_handle'
+
+Oh dear!  Use the -shared flag (?)
+
+gcc -g -O0   -DIPT_LIB_DIR=/usr/lib   -fpic -shared -c  ip_q_test.c -o
+ip_q.o 
+gcc -g -O0   -DIPT_LIB_DIR=/usr/lib   -fpic -shared -lipq  ip_q.o -o
+ip_q
+
+Running....
+This GDB was configured as "i386-linux"...
+(gdb) b main
+Breakpoint 1 at 0x773: file ip_q_test.c, line 6.
+(gdb) r
+Starting program: /home/worik/Projects/project12/ip_q 
+Breakpoint 1 at 0x80000773: file ip_q_test.c, line 6.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000001 in ?? ()
+(gdb)
+
+What have I done wrong?   Clearly there is a problem with libraries,
+probably libipq.
+
+So check for it...
+
+nm /usr/lib/libipq.a|grep ipq_create_handle
+00000218 T ipq_create_handle
+
+I do not know enough about nm to be sure, but I think this is OK.
+
+I am using debian woody with the packages  iptables and iptables-dev 
+installed.  Version 1.2.6a-5 
 
 
-
-
+Worik
 
