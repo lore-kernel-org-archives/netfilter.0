@@ -1,15 +1,14 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: =?ISO-8859-1?Q?CAN=B4T?= DO PING TO MY ROUTER WITH MY NETWORK
-	CLIENTS
-Date: Thu, 04 Sep 2003 07:52:19 +0200
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: Bandwidth Monitoring
+Date: 04 Sep 2003 12:04:08 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062654739.28246.1.camel@porky>
-References: <006201c370a8$b91ae4f0$0221a0c0@DANIEL>
-	 <3F56B111.4040603@kdtc.net>
+Message-ID: <1062657272.2760.9.camel@india.nsecure.net>
+References: <04a901c36e18$ad2d6650$2a0110ac@SAMHP> 
+	<1062401622.8490.22.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-VfUswH19p9pNAKEzvus8"
+Content-Type: multipart/alternative; boundary="=-8zZmgggOHNQzWxWugjAd"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F56B111.4040603@kdtc.net>
+In-Reply-To: <1062401622.8490.22.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,64 +18,124 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-VfUswH19p9pNAKEzvus8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+--=-8zZmgggOHNQzWxWugjAd
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Have you check that icmp_echo_ignore_all is not set in /proc/sys/net/ ?
+Hi,
 
-Le jeu 04/09/2003 =C3=A0 05:27, cc a =C3=A9crit :
-> Daniel Arjona wrote:
->=20
-> One word of possible advice.  The amount of
-> assistance/help you get is indirectly proportional
-> to the amount of caps in the subject matter.
-> (Of course, this only applies to the typical,
-> desperate posts, and not to the actual verbiage
-> that depends on caps, ie. DNAT, SNAT, POSTROUTING..
-> etc.)
->=20
-> Also, don't include your original message to
-> your current message.  It confuses the reader
-> as to what your real problem is.
->=20
-> > I tried to do ping to my router and also i do the same to the ip addres=
-s of
-> > my dns servers and the both fails.  But the server (with iptables, mail=
-,
-> > squis, and others) doit everytihng.
->=20
-> Perhaps if you could actually show us what your network
-> layout is like, someone here might be able to help.  As it
-> stands, I'm a little confused as to which IP is which.
-> Basic information I suppose would help would be your
-> router's Internal IP, your dns server ip and whatever
-> IP you believe is pertinant to this issue.
->=20
-> Furthermore, have you set up your workstations to use
-> the server as the gateway(assuming of course, that _is_
-> your original intention).
->=20
->=20
---=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
+But to use this we have to install other packages like apache, mysql
+etc. Which will not be recommended to do on a firewall machine. If
+bwacct can sniff the data from any other machine and give me the
+statistics then that works out great for me.
 
---=-VfUswH19p9pNAKEzvus8
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Regards
+Dharmendra.T
+dharmu@nsecure.net
 
-iD8DBQA/VtMTnxA7CdMWjzIRAooiAJ0TpICXJoYRC4inngVAKjoL8C6OUwCeKpsj
-PYgwC+uP5qWnOEEvg8MujPo=
-=K+xr
------END PGP SIGNATURE-----
 
---=-VfUswH19p9pNAKEzvus8--
+
+
+On Mon, 2003-09-01 at 13:03, Ray Leach wrote:
+
+    On Fri, 2003-08-29 at 12:31, Sathi wrote:
+    > Hello All,
+    > 
+    > Is there any way to findout the bandwidth used by a client(LAN user), from
+    > Linux gateway server.
+    > 
+    Have a look at bwacct. It's real easy to setup and works well.
+    www.bwacct.org
+    
+    > I have to take monthly statistics of bandwidth used by a client (LAN user).
+    > 
+    > FYI i am using CBQ for bandwidth control
+    > 
+    > Regards
+    > Sathi
+    -- 
+    --
+    Raymond Leach <raymondl@knowledgefactory.co.za>
+    Network Support Specialist
+    http://www.knowledgefactory.co.za
+    "lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+    Key fingerprint = 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+    --
+
+-- 
+This message is intended for the addressee only. It may contain
+privileged or Confidential information. If you have received this
+message in error,please notify the sender and destroy the message
+immediately.Unauthorised use or reproduction of this message is strictly
+prohibited.
+
+--=-8zZmgggOHNQzWxWugjAd
+Content-Type: text/html; charset=utf-8
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
+</HEAD>
+<BODY>
+Hi,
+<BR>
+
+<BR>
+But to use this we have to install other packages like apache, mysql etc. Which will not be recommended to do on a firewall machine. If bwacct can sniff the data from any other machine and give me the statistics then that works out great for me.
+<BR>
+
+<PRE>Regards
+Dharmendra.T
+dharmu@nsecure.net
+</PRE>
+
+<BR>
+
+<BR>
+On Mon, 2003-09-01 at 13:03, Ray Leach wrote:
+    <BLOCKQUOTE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>On Fri, 2003-08-29 at 12:31, Sathi wrote:</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; Hello All,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; Is there any way to findout the bandwidth used by a client(LAN user), from</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; Linux gateway server.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Have a look at bwacct. It's real easy to setup and works well.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>www.bwacct.org</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; I have to take monthly statistics of bandwidth used by a client (LAN user).</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; FYI i am using CBQ for bandwidth control</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; Regards</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; Sathi</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>-- </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>--</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Raymond Leach &lt;raymondl@knowledgefactory.co.za&gt;</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Network Support Specialist</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>http://www.knowledgefactory.co.za</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&quot;lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import&quot;</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Key fingerprint = 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>--</FONT></FONT></I></PRE>
+    </BLOCKQUOTE>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<PRE>-- 
+This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
+</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>
+
+--=-8zZmgggOHNQzWxWugjAd--
+
 
