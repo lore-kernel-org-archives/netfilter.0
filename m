@@ -1,14 +1,11 @@
-From: Esteban Ribicic <eribicic@UolSinectis.com>
-Subject: Re: Netmeeting and messenger ports
-Date: 17 May 2003 01:40:42 -0300
+From: Nico <nico@minet.net>
+Subject: Netfilter, IP Fragmentation, and local_out hook
+Date: 16 May 2003 23:44:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053146443.5519.6.camel@dejawu>
-References: <002d01c31958$835ecb30$f000010a@pc207pca> 
-	<200305131753.57809.carlosble@terra.es>
+Message-ID: <1053143079.9044.46.camel@portable>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200305131753.57809.carlosble@terra.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: carlosble@terra.es
-Cc: "Pedro C. Arias" <parias@sede.unr.edu.ar>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-yo use los modulos de pom (patch o matic) que estan en netfilter.org
-pareciera ser que andan.
+Hi,
 
-suerte
+I'm currently developing a routing protocol and I used netfilter (ipv4)
+for that. I placed a function on local_out hook and my routing protocol
+has to add some data to some incoming skbuff.
 
+Sometimes, i received skbuff with a size of the net device mtu, and so i
+must do some ip fragmentation after adding data for my protocol.
 
-On Tue, 2003-05-13 at 13:53, Carlos Ble wrote:
-> El Martes, 13 de Mayo de 2003 15:04, Pedro C. Arias escribi=F3:
-> > Hello, I use NAT to connect internet my internal network trougth a Fire=
-wall
-> > make with iptables, i use NAT, but when somebody external to my network
-> > send me a file messenger say "Error to receive File ...." somebody has =
-this
-> > problem ?, with netmeteeng too can't connect
-> >
-> > Help me ...
-> >
-> > Thanks
-> > Pedro
-> > Rosario - argentina
->=20
-> Hi Pedro. I think that we both can talk in spanish but let me write in
-> english to let people to correct to me if im wrong.
-> There are some problems with microsoft pptp that maybe corrected with
-> the linux pptp. Loock for it in google.
-> For netmeeting and messenger you must open some ports. One solution is
-> to do DNAT to a specified internal address. This is a example:
->=20
-> # Neetmeeting ports:
-> iptables -t nat -A PREROUTING -p tcp --dport 389 -i <interface> -j DNAT \
-> --to 192.168.0.20
-> iptables -t nat -A PREROUTING -p tcp --dport 522 -i <interface> -j DNAT \
-> --to 192.168.0.20
-> iptables -t nat -A PREROUTING -p tcp --dport 1503 -i <interface> -j DNAT =
-\
-> --to 192.168.0.20
-> iptables -t nat -A PREROUTING -p tcp --dport 1720 -i <interface> -j DNAT =
-\
-> --to 192.168.0.20
-> iptables -t nat -A PREROUTING -p tcp --dport 1731 -i <interface> -j DNAT =
-\
-> --to 192.168.0.20
->=20
-> # Messenger ports:
-> iptables -t nat -A PREROUTING -p tcp --dport xxxxx -i <interface> -j DNAT=
- \
-> --to 192.168.0.20
->=20
-> This corrects the problem for one user but the problem still when many
-> users wants to use netmeeting. Nowdays im loocking for a solution too.
->=20
-> Suerte.
+My pb is that skbuffs seem to arrive at local_out hook already
+fragmented, with an IP_DF flags set to 1 and IP_MF flags set to 0. I
+tried to dump any skbuff passing through local_out hook without altering
+them to see this fact. I tried sending packet with a ping -s 2000 for
+example.
+
+Is there a way to have non-fragmented skbuff with netfilter ? Because i
+want to handle fragmentation with my protocol...
+
+Thx in advance
+
+N. Plessis
+
+PS: sorry for my bad english...
 
 
