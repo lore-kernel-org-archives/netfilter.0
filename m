@@ -1,11 +1,13 @@
-From: Valentijn Sessink <valentyn+netfilter-users@nospam.openoffice.nl>
-Subject: more IPsec NAT troubles
-Date: Sat, 31 Jan 2004 18:52:45 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: SNAT: I'm going insane
+Date: Sat, 31 Jan 2004 12:55:05 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040131175245.GA21239@openoffice.nl>
+Message-ID: <1075571704.1907.3.camel@jasiiitosh.nexusmgmt.com>
+References: <401B5396.8080202@palaver.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <401B5396.8080202@palaver.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +18,78 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Brian Capouch <brianc@palaver.net>
+Cc: netfilter@lists.netfilter.org
 
-Hello list,
+On Sat, 2004-01-31 at 02:04, Brian Capouch wrote:
+> This ought to be the simplest thing in the world, and I have rules like 
+> this that work.  I hope someone can see something glaringly wrong with 
+> what I'm doing here:
+> 
+> I want to SNAT all traffic from an internal address (10.2.2.2) to an 
+> external one.  So I add to my rules:
+> 
+> iptables -t nat -I POSTROUTING -s 10.2.2.2 -j SNAT --to-source 
+> 206.230.187.15
+> 
+> I test and my ssh traffic is passing perfectly; I go out to machines on 
+> the net and they show me coming in from 206.230.187.15.
+> 
+> But some--BUT NOT ALL--of my UDP traffic seems to be heading out without 
+> any change.
+> 
+> A short sniff on the *output* interface shows:
+> 
+> 02:31:56.696763 10.2.2.2.4569 > blah.blah.net.4569: udp 25 (DF) [tos 
+> 0x10] 
+> 
+> 02:31:58.699259 10.2.2.2.4569 > blah.blah.net.4569: udp 25 (DF) [tos 
+> 0x10] 
+> 
+> 02:32:06.704660 10.2.2.2.4569 > blah.blah.net.4569: udp 12 (DF) [tos 0x10
+> 
+> And the packet counters (which I reset for the test) show nothing 
+> passing through:
+> 
+>      0     0 SNAT       all  --  *      eth1    10.2.2.2 
+> 0.0.0.0/0        to:206.230.187.15
+> 
+> UDP traffic going to port 5036, which is heading from this same machine 
+> to the same remote endpoint machine, gets NATted perfectly.
+> 
+> ***************************************
+> 
+> Does anyone know what I'm doing wrong?  Other similar rules in this same 
+> table seem to be doing just what they need to. . . .
+> 
+> Thanks in advance for anyone who might be able to offer a potential 
+> explanation.
+> 
+> B.
 
-As a side note, but relevant in the light of the recent IPsec/NAT
-interoperability, I found another bug in the IPsec implementation.
+That sounds bizarre! Am I correct to assume that we know the packets are
+arriving at the internal interface of the gateway because we see them
+being passed in the clear on the public interface? That's how I
+understood your e-mail.  Otherwise, I would start by making sure the
+packets were arriving in the first place.
 
-2.6 + IPsec causes problems for connections that need fragmentation. My
-setup:
+Is there any chance the unNATted packets are associated with an existing
+packet flow and thus the POSTROUTING chain is being bypassed by
+conntrack?
 
-desktop			masq'ing $router
-2.4.24+ipsec	          2.6.1
-10.x.y.25--------10.x.y.1 MASQ a.b.c.d ---> Internet
-
-Now if a packet from the Internet larger than 1444 bytes arrives (which is
-perfectly legal), $router will send the rather odd response "icmp
-a.b.c.d unreachable, need to frag (1444 bytes)". So you get the $router tell
-that $router is unreachable when a packet reaches the $router.
-
-ip_output.c says:
-
-        if (skb->len > mtu) {
-                icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
-                ret = -EMSGSIZE;
-
-So if I understand this correctly, the IPsec tunnel relies on the end to end
-MTU detection and simply drops packets when they're too large to
-encapsulate. However, in a masq'ing/IPsec combination, this won't work, as
-there is no "end to end". The fragmentation is needed for a local process
-(namely after de-masq'ing the packet when the kernel finds out it needs to
-encrypt the packet) and I think the FRAG_NEEDED is illegal here.
-
-I sent this to linux-net where it's probably more appropriate. (I hope my
-e-mail reaches the list, as anti spam measures here and there are starting
-to prevent any communication)
-
-V.
+You may wish to place log rules at every step of the packet's traversal
+through netfilter to see where the packet is being shunted.  That may
+suddenly reveal this mysterious, insanity provoking behavior.  Good luck
+- John
 -- 
-http://www.openoffice.nl/   Open Office - Linux Office Solutions
-Valentijn Sessink  valentyn+sessink@nospam.openoffice.nl
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
+
 
