@@ -1,11 +1,15 @@
-From: Adam Young <adam@vbfx.com>
-Subject: FTP Connection Tracking with FXP support.
-Date: Sun, 27 Jul 2003 01:07:01 -0400
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: problem with samba
+Date: Sun, 27 Jul 2003 01:05:25 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030727010701.5619869f.adam@vbfx.com>
+Message-ID: <200307270105.25593.Alistair@nerdnet.ca>
+References: <001501c353b1$8fa0c220$4fef5b86@stw.uniduisburg.de>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001501c353b1$8fa0c220$4fef5b86@stw.uniduisburg.de>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +20,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Sohail Ahmed Siddiqui <sohail@uni-duisburg.de>, netfilter@lists.netfilter.org
 
-	Hi List,
+On July 26, 2003 04:07 pm, Sohail Ahmed Siddiqui wrote:
+> Hi all,
+> i am new to iptables and i have a problem, i will be very greatful i fsome
+> one helps me out.
+> at my place i have a lan with 192.168.0.0/24 and in the building we have
+> 134.91.239.0. i have managed to firewall my local net and access the
+> internet with iptables but i want to share some files via samba. but my
+> samba connection is not going out. i am using
+>
+> iptables -A FORWARD -j lan -p tcp --dport 137:139
+> iptables -A FORWARD -j lan -p udp --dport 137:139
 
-	I'm currently using:
+	You would have to have appropriate ACCEPT statements in the
+	lan table --- cant tell why its not working since you haven't listed
+	the lan table.
 
-	Linux Kernel:	2.4.21
-	IP Tables:	  1.2.8
-
-	My situation is this...I've attempted to apply the ftp-fxp.patch from oldnat in
-patch-o-matic to the 2.4.21 kernel without success.  It produces a fairly
-straight forward rej file, however the way certain things are referenced and
-with the changes, I'm not sure if I should go ahead with the patch or not. 
-Especially since I haven't had any kernel module coding experience.
-
-	What I'm wondering is, is there an updated patch? or would someone be willing
-to supply me with some information about creating a new patch for fxp support?
-
-	Any help would be much appreciated, Thanks.
+>
+> but this some how doesnt seem to work.
+> i have searched the internet but some how i didnt find any thing which can
+> solve my problem. any help is welcome
+> regards
+> Sohail Ahmed Siddiqui
 
 -- 
-    Adam Young	<adam_at_vbfx_dot_com>
-    http://www.vbfx.com/
-    GPG Key - ACE3F958
 
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
