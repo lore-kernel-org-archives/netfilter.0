@@ -1,8 +1,8 @@
-From: Oli Comber <oli@niceltowers.co.uk>
-Subject: Controlling UDP RELATED match
-Date: Wed, 10 Mar 2004 14:02:21 +0000
+From: "Babar Kazmi" <BabarKazmi@Hotmail.Com>
+Subject: Re: tunneling and iptables
+Date: Wed, 10 Mar 2004 18:55:12 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078927341.21848.6.camel@fish.homewiththebitch.co.uk>
+Message-ID: <000501c406a7$59b3fed0$2f00a8c0@deamon>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,15 +18,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi list,
+ 
+Dear 
 
-Is there any way to view/control how long a UDP pseudo connection will
-be held open for by Netfilter? Or to put it another way, can I control
-how long an incomming UDP packet is considered RELATED to an outgoing
-UDP packet?
+I would just like to know if kernel can handle 2000 logical interfaces, 
+If some know can comment about this I would be thankful.
+
+Regards 
+
+Babar Kazmi
 
 
-Thanks in advance,
--Oli
+ > but with my design I will have around 2000~  tunnels created (i know 
+ > this sounds crazy).. will the kernel be able to handle this or is this 
+ > too much of an overhead .... leaving aside the start up overhead, 
+ > during the actual forwarding is there any overhead besides the extra 
+ > ip header being attached.... 
+> 
 
 
