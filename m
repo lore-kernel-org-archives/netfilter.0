@@ -1,87 +1,39 @@
-From: richard lucassen <netfilter@lucassen.org>
-Subject: iptables jump to userdefined chain and ESTABLISHED,RELATED rules
-Date: Fri, 10 Oct 2003 13:26:41 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031010132641.2591d3b5.netfilter@lucassen.org>
-Reply-To: netfilter@lucassen.org
+From: Ingo Oeser <ioe-lkml@rameria.de>
+Subject: Re: [PATCH] kfree_skb() bug in 2.4.22
+Date: Fri, 10 Oct 2003 14:53:44 +0200
+Sender: netdev-bounce@oss.sgi.com
+Message-ID: <200310101453.44353.ioe-lkml@rameria.de>
+References: <1065617075.1514.29.camel@localhost> <3F840C9C.9050704@pobox.com> <20031008064735.7373227b.davem@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB"
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-This is a multi-part message in MIME format.
-
---Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Return-path: <netdev-bounce@oss.sgi.com>
+In-Reply-To: <20031008064735.7373227b.davem@redhat.com>
+Content-Disposition: inline
+Errors-to: netdev-bounce@oss.sgi.com
+List-Id: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "David S. Miller" <davem@redhat.com>
+Cc: toby@cbcg.net, netdev@oss.sgi.com, linux-net@vger.kernel.org, linux-kernel@vger.kernel.org, coreteam@netfilter.org, netfilter@lists.netfilter.org, akpm@zip.com.au, kuznet@ms2.inr.ac.ru, pekkas@netcore.fi, jmorris@intercode.com.au, yoshfuji@linux-ipv6.org, Jeff Garzik <jgarzik@pobox.com>
 
-Hello,
+On Wednesday 08 October 2003 15:47, David S. Miller wrote:
+> On Wed, 08 Oct 2003 09:09:48 -0400
+>
+> Jeff Garzik <jgarzik@pobox.com> wrote:
+> > I would prefer that you fix your code instead, to not pass NULL to
+> > kfree_skb()...
+>
+> Absolutely, there is no valid reason to pass NULL into these
+> routines.
 
-I want all traffic on port 80 be handled by a userdefined chain
-"CH_WWW". Now my question: What is better, this way (I let the port
-80 packets jump first, then I have _two_ ESTABLISHED,RELATED rules, as
-well in the INPUT as in the CH_WWW chain):
-
-********************************************************************
-${IPT} -A INPUT -p tcp --dport 80 -j CH_WWW
-${IPT} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-[..]
-
-And an extra ESTABLISHED,RELATED in the CH_WWW:
-${IPT} -A CH_WWW -m state --state ESTABLISHED,RELATED -j ACCEPT
-${IPT} -A CH_WWW (first rule)
-[..]
-********************************************************************
-
-or this (I have _one_ ESTABLISHED,RELATED rule, and then let port 80 
-jump):
-
-********************************************************************
-${IPT} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-${IPT} -A INPUT -p tcp --dport 80 -j CH_WWW
-[..]
-
-And an extra ESTABLISHED,RELATED in the CH_WWW:
-${IPT} -A CH_WWW (first rule)
-[..]
-********************************************************************
-
-Both ways work, but I'd say the second way is the best. Am I right?
-
-Richard.
-
--- 
-___________________________________________________________________
-Recursion: see recursion
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+Would you mind __attribute_nonnull__ for these functions, if we
+enable GCC 3.3 support for this[1]?
 
 
---Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB
-Content-Type: application/pgp-signature;
- name="00000000.mimetmp"
-Content-Disposition: attachment;
- filename="00000000.mimetmp"
-Content-Transfer-Encoding: base64
+[1] Which includes editing the compiler.h and gcc3-compiler.h and so on.
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuMi4xIChHTlUv
-TGludXgpCgppRDhEQlFFL2hjTWp5Rzg1Ryt0ZVZzSVJBdWpJQUp3SkFFMytWM29LeGZXZG1GRnp0
-Q0VxYjJ6bElBQ2doSjV5ClI3V25yNVpwbWozUk5HZENZdEc0Mjh3PQo9MkxmRQotLS0tLUVORCBQ
-R1AgU0lHTkFUVVJFLS0tLS0KCg==
+Regards
 
---Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB--
+Ingo Oeser
+
+
 
