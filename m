@@ -1,9 +1,10 @@
-From: Steve Mickeler <steve@warning.ca>
-Subject: SNAT interfering with source IP of a DNAT
-Date: Tue, 4 Mar 2003 21:18:01 -0500 (EST)
+From: "George J. Jahchan, Eng." <NetFilter-Users@Compucenter.org>
+Subject: Unassigned Networks List
+Date: Wed, 5 Mar 2003 05:16:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0303042109030.29516@gypsy>
+Message-ID: <NGBBIFPIJNDPMFBPKBPGGEBDDKAA.NetFilter-Users@Compucenter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,44 +15,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-
-I've been beating my head against the table for the past couple of hours
-trying to get this working properly.
-
-I'm doing a PREROUTING DNAT that will send any traffic destined to
-10.10.10.8 and DNAT it to 192.168.32.12
-
-The DNAT works, but what keeps happening is the POSTROUTING rules further
-down the chain is changing the source IP to 192.168.32.6 instead of
-retaining the original source IP.
-
-What I need is the POSTROUTING SNAT rule to -ONLY- take place when an
-attempt to access 192.168.32.12 is established from anything else except
-the PREROUTING DNAT.
-
-here are the 2 PREROUTING and POSTROUTING entries:
-
-$IPT -t nat -A PREROUTING -d 10.10.10.8 -j DNAT --to 192.168.32.12
-
-...skip a bunch of other rules.
-
-$IPT -t nat -A POSTROUTING -s 172.17.0.0/19 -d 192.168.32.0/24 -j SNAT
---to-source 192.168.32.6
-
-Right now, when I ssh to 10.10.10.8 it changes my source IP to
-192.168.32.6 because I'm coming from 172.17.3.24, but I'd like to avoid
-that unless I'm ssh'ing to 192.168.32.12 directly.
-
-The easiest thing to do would be to avoid the POSTROUTING SNAT but its a
-requirement I have to make sure anything going to 192.168.32.0/24 gets
-nat'ed to 192.168.32.6
-
-Any ideas of how to get around this ?
-
-Thanks.
+I need to ingress/egress filter unassigned netblocks and I am having a very
+hard time finding a comprehensive list of unassigned class B and C networks.
+It is extremely time consuming to go through the different regional
+registrars to come up with such a list, not to mention putting networks back
+together to minimize the number of rules.
+IANA has good class A and D lists, B and C classes are however listed "in
+bulk" (next to useless). Searching through Google I came up empty handed.
+Does anyone have a comprehensive list they are willing to share, or links to
+sites that list these network blocks.
+TIA
 
 
