@@ -1,13 +1,13 @@
-From: "Rowan Reid" <rreid@studio3arc.com>
-Subject: RE: Linksys v. Netfilter
-Date: Mon, 24 Jun 2002 08:46:11 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: problems routing
+Date: Mon, 24 Jun 2002 16:59:35 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000d01c21b96$4407ee50$6b01a8c0@s3ac>
-References: <042c01c21a17$48128b20$0601030a@codenoevil.com>
+Message-ID: <200206241559.QAA16636@slate.rockstone.co.uk>
+References: <007101c21b95$e87a6e50$5064a8c0@optimus> <3D173EF3.71ED313B@quantum.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <042c01c21a17$48128b20$0601030a@codenoevil.com>
+In-Reply-To: <3D173EF3.71ED313B@quantum.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,26 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-To: "'David B. Bitton'" <david@codenoevil.com>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter mailing list <netfilter@lists.samba.org>
 
+On Monday 24 June 2002 4:46 pm, Karl Fischer wrote:
 
+> Tim wrote:
+> > I have a 192.168.100.0 network with my iptables box sitting at
+> > 192.168.100.12 and a mailserver at 192.168.100.10 and also with a public
+> > ip and name.
+> >
+> > I have several users who are both on the road and work in the office
+> > commonly.
+> >
+> > I want to make a rule for them so that when they request mail.cimx.com it
+> > redirects to 192.168.100.10.
+> >
+> > I tried to make the following rule:
+> > iptables -t nat -A PREROUTING -p tcp -d $MAIL_IP -j REDIRECT
+> > 192.168.100.10 but it seems to not work.
+>
+> You'll have to use DNAT for that:
+>
+> iptables -t nat -A PREROUTING -p tcp -d $MAIL_IP \
+> 	-j DNAT --to-dest 192.168.100.10
 
+Be careful that when they're in the office, on the LAN, the server will try 
+to reply direct to their machine, which doesn't go back through the firewall 
+(local address, not routed), so the reverse SNAT won't get done, and the 
+client risks sending a request to 204.192.102.210 and getting a reply from 
+192.168.100.10, which will confuse it.
 
+You'll probably need to SNAT the packets too to make sure the replies go back 
+through the firewall:
 
->Have any whitepapers been written on the subject of a Linksys Router v.
-a Netfilter implementation?
+iptables -t nat -A POSTROUTING -p tcp -d 192.168.100.10 -s 192.168.100.0/24 
+-j SNAT --to 192.168.100.12
 
-I had a client answer this one for me.  Prior he had been using a
-barracade router.  Then they set up a second office and wanted  1.) vpn
-2.) intranet 3.) client control and monitoring over everything.  Thus
-the firewall in a box option went out.. First they were using there own
-T1 with permanent IP's thus needing reasonable security. Second after
-sitting in the support queue for an hour to here a tech say I don=92t =
-know
-if we support pptp. Then here a supervisor say the same even though the
-claim is right there on their site.  Then I decided to go for the linux
-option that is very flexible completely configurable. And has excellent
-remote comfit options.
+ 
 
+Antony.
 
