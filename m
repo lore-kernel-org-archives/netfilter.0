@@ -1,13 +1,11 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: secure ftp with SSL
-Date: Mon, 16 Sep 2002 10:32:37 +0200
+From: "Lior Hammer" <lior@typo.co.il>
+Subject: Strange problem with iptables IP Masq
+Date: Mon, 16 Sep 2002 14:02:47 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209161032.37482.roy@karlsbakk.net>
-References: <754E53EEA7D3D31194E50050DAB99F6E705442@thor.id.magnus.com>
+Message-ID: <002001c25dc4$69549800$6400a8c0@hammer1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <754E53EEA7D3D31194E50050DAB99F6E705442@thor.id.magnus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +16,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rendy V <RendyV@atd.magnus.co.id>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: netfilter@lists.netfilter.org
 
-Use sftp - see http://www.openssl.org/
+Hello,
+I'm using the IP Masq script from the IP masq howto from TLDP.
+The connection sharing is fine except for one thing:
+in some of the sites (for example: http://httpd.apache.org or DynDNS.org
+members area) my browser keep's searching and searching without any result
+(or other response) or it just print few lines and that's it.
+I thought it's a problem with my browser, so i tryed to get the page
+directly with telnet.
+i got the HTTP Headers, and the first lines, and that's it, it didn't
+disconnect or somthing, just waited.
+Everything is ok when i'm trying to get this page directrly with lynx from
+the computer that shares the conection.
 
-On Monday 16 September 2002 06:21, Rendy V wrote:
-> roy,
-> yes, i have loaded ip_conntrack_ftp.
-> Is there any better idea because if i change it i have to change all my
-> application..
->
-> regards,
-> rendy
->
-> On Friday 13 September 2002 05:09, Rendy V wrote:
-> > Hi All,
-> > I have a strange problem, the problem is like this :
-> > I have an application that use secure ftp and for that reason I have
->
-> opened
->
-> > up the command port (990) with state NEW and allowed data port
-> > (20000:20049) with state ESTABLISHED, RELATED on the firewall. It fai=
-ls
-> > when it try to use data port, for authentication it working just fine=
-=2E
-> > Please see the log on the below.
-> > If I open data port 2000:20049 with state NEW it working normally but=
- I
-> > don't want to make a big hole on my firewall. I suspect that the ipta=
-bles
-> > connection tracking cannot track the relation between command port an=
-d
->
-> data
->
-> > port because it is encrypted using SSL. Is it true or is there someth=
-ing
-> > I miss here?? What should I do now??
->
-> first - have you loaded ip_conntrack_ftp?
->
-> second - I'm not sure the ip_conntrack_ftp module can understand encryp=
-ted
-> traffic. Try using sftp from openssh instead. That only uses 22/tcp.
->
-> roy
-
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
-
-Computers are like air conditioners.
-They stop working when you open Windows.
+Thank you very much for your help,
+Lior.
 
 
