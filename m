@@ -1,10 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: RE: diffrence between reject & drop ?
-Date: Tue, 1 Feb 2005 12:37:04 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10502011231150.11068-100000@darkstar.sysinfo.com>
-References: <20050201084800.4D4CE8EDCEB@smtp.sterenborg.info>
+From: Jan Du Caju <Jan.DuCaju@kuleuven.net>
+Subject: Re: Project announcement :: Firewall Admin
+Date: Tue, 1 Feb 2005 19:04:03 +0100
+Message-ID: <20050201180403.GA29966@kuleuven.net>
+References: <1106419014.14496.43.camel@debian.opentech.net>
 Mime-Version: 1.0
-In-Reply-To: <20050201084800.4D4CE8EDCEB@smtp.sterenborg.info>
+Content-Disposition: inline
+In-Reply-To: <1106419014.14496.43.camel@debian.opentech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,58 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: 'netfilter' <netfilter@lists.netfilter.org>
+To: "Vin?cius M. de Souza" <vinicius@opentech.inf.br>, netfilter@lists.netfilter.org
 
-On Tue, 1 Feb 2005, Rob Sterenborg wrote:
+Hi Vinicius,
 
-> netfilter-bounces@lists.netfilter.org wrote:
-> > What is the basic diffrence between rejecting a packet & droping a
-> > packet ? 
-> > 
-> > both denies the packet right ?
+On Sat, Jan 22, 2005 at 04:36:55PM -0200, Vin?cius M. de Souza wrote:
+> Hi members, I come here to divulge the launching of the first beta
+> version of a project who I have developed in this last month, his name
+> is Firewall Admin.
 > 
-> Yes, but REJECT notifies the sender that the packet was not accepted,
-> DROP silently discards the packet.
-> 
+> It's a tool developed in PHP to iptables netfilter rules management.  It
+> is a project that is taking a significant time of me and now I will
+> present it to you.
 
-To add a tad bit of clarity to a clear explination;
+I just found time to take a first look at it. My first impression is WOW!
+This is very valuable as we were considering to develop something 
+similar in the future for people who do not manage iptables scripts
+regularly. Now we can try to contribute. The things I like most are:
+- configurable via browser. As we do not run an apache server on 
+  servers which are protected by iptables scripts we will be uploading 
+  the rules from a config server.
+- php
+- it's for managing iptables rules. Other GUI's try to manage it all:
+  networking, ...
+- Last but not least you do not loose ground with the netfilter/iptable 
+  way of thinking. Other GUI's hide everything for you. I like to know 
+  what I'm doing.
 
-telnet to a system with a firewall that rejects telnets and the connection
-gets dropped right away with a message in the window something like
-prohibited connection or remote host closed connection
+That's for now. I'll be digging deeper into it as soon as I find more
+time.
 
-telnet to a host that has a firewal that drops packets and the telnet
-session hangs the terminal window until the telnet attempt itself times
-out and drops to the command prompt again.
+Thanks. Keep up the good work !!!
 
-Sometimes it pays to be nice, like when blocking 113 ident ports and
-placing a reject rather then a drop so sendmails will not hang endlessly
-waiting for the ident reply or the session timeout prior t attempting to
-send the e-mail.
-
-Sometimes ya want the bonehead to hang as long as they are willing to hang
-the terminal, like wiith telnets not allowed or ftp not allowed as ssh/scp
-are just plain nicer protocols to use, and that fewl on the other end has
-been banging the ports endlessly trying to bruteforce yer
-userbase/passwd's...
-
-Thanks,
-
-Ron DuFresne
 -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
-
+Kind regards,
+Jan.
+------------------------------------------------------ KULeuvenNet ----
+Jan.DuCaju@kuleuven.net         http://www.kuleuven.net/e_index.html
+K.U.Leuven                      http://www.kuleuven.ac.be/english/
+LUDIT - KULeuvenNet             http://ludit.kuleuven.be/index_en.html
+de Croylaan 52A                 3001 Leuven                     Belgium
+-----------------------------------------------------------------------
 
