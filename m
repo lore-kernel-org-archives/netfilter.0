@@ -1,11 +1,12 @@
-From: Gladson George <georgc@FARMINGDALE.EDU>
+From: Bob Keyes <bob@sinister.com>
 Subject: RE: how to filter kazaa
-Date: Sun, 25 May 2003 22:00:48 -0400
+Date: Sun, 25 May 2003 22:26:14 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2CE951F1A7DC0644A33B9F763D2029C0016FB0E3@mail.it.farmingdale.edu>
+Message-ID: <Pine.LNX.4.44.0305252224350.19802-100000@Sinister.Com>
+References: <2CE951F1A7DC0644A33B9F763D2029C0016FB0E2@mail.it.farmingdale.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <2CE951F1A7DC0644A33B9F763D2029C0016FB0E2@mail.it.farmingdale.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,42 +16,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Esteban Ribicic <eribicic@UolSinectis.com>, jaws <jaws@skyinet.net>
-Cc: kisero@uolsinectis.com.ar, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Cc: netfilter@lists.netfilter.org
 
-If you are looking to use tc take a look at the following site. Altho=
-ugh I=0D=0Ahaven't tried it myself it looks promising. =0D=0A=0D=0A=
-=0D=0Ahttp://l7-filter.sourceforge.net/=0D=0A=0D=0A=0D=0A-----Origina=
-l Message-----=0D=0AFrom: Esteban Ribicic [mailto:eribicic@UolSinecti=
-s.com] =0D=0ASent: Thursday, May 22, 2003 7:08 AM=0D=0ATo: jaws=0D=
-=0ACc: kisero@uolsinectis.com.ar; Gladson George; netfilter@lists.net=
-filter.org=0D=0ASubject: RE: how to filter kazaa=0D=0A=0D=0Aso i coul=
-d use this on the prerouting table and marks paqeuts so then=0D=0Aapp=
-lyen them a tc filter? =0D=0A=0D=0Ain that case, you've save my life!=
-=0D=0A=0D=0A=0D=0AOn Thu, 2003-05-22 at 07:10, jaws wrote:=0D=0A> but=
- filtering port 1214 will not solve the problem coz kazza can use oth=
-er =0D=0A> ports.=0D=0A> =0D=0A> At 12:58 PM 5/21/2003 -0300, eribici=
-c@sinectis.com wrote:=0D=0A> >isnt it easyer to filter ports 1214?=
-=0D=0A> >=0D=0A> > > The following rule has worked for me.=0D=0A> > >=
-=0D=0A> > > http://www.securityfocus.com/infocus/1531=0D=0A> > >=0D=
-=0A> > >=0D=0A> > > $IPTABLES -A FORWARD -p tcp -m string --string X-=
-Kazaa-Username: -j=0D=0AREJECT=0D=0A> > > --reject-with tcp-reset=
-=0D=0A> > >=0D=0A> > > $IPTABLES -A FORWARD -p tcp -m string --string=
- X-Kazaa-Network: -j=0D=0AREJECT=0D=0A> > > --reject-with tcp-reset=
-=0D=0A> > >=0D=0A> > > $IPTABLES -A FORWARD -p tcp -m string --string=
- X-Kazaa-IP: -j REJECT=0D=0A> > > --reject-with tcp-reset=0D=0A> > >=
-=0D=0A> > > $IPTABLES -A FORWARD -p tcp -m string --string X-Kazaa-Su=
-pernodeIP: -j=0D=0A-j=0D=0A> > > REJECT --reject-with tcp-reset=0D=
-=0A> > >=0D=0A> > > -----Original Message-----=0D=0A> > > From: track=
-er [mailto:jaws@skyinet.net]=0D=0A> > > Sent: Wednesday, May 21, 2003=
- 3:20 PM=0D=0A> > > To: netfilter@lists.netfilter.org=0D=0A> > > Subj=
-ect: how to filter kazaa=0D=0A> > >=0D=0A> > > Hi all,=0D=0A> > >=
-=0D=0A> > > Im new to this list and iptables. I would like to know ho=
-w to filter=0D=0Akazaa.=0D=0A> > >=0D=0A> > > Thanks.=0D=0A> > >=0D=
-=0A> > > Jaws=0D=0A> > >=0D=0A> > >=0D=0A> > >=0D=0A> >--=0D=0A> >Sld=
-s.=0D=0A> =0D=0A> =0D=0A> =0D=0A> =0D=0A> =0D=0A-- =0D=0AEsteban Ribi=
-cic <eribicic@UolSinectis.com>=0D=0A=0D=0AUOL-Sinectis - Network Oper=
-ation Center=0D=0AFlorida 537 6to - Capital Federal - Argentina=0D=
-=0A(tel directo) 54+011-4321-9107=0D=0A=0D=0A=0D=0A=
+
+All this talk of blocking kazaa seems a bit crazy to me. Don't you think
+that someone from Kazaa is reading this list? You certainly know they
+could. Each time you find a way to block kazaa they can work around your
+blocking. Instead of the arms race, how about a truce? How about detecting
+Kazaa packets and marking them as 'high throughput', and then using a
+bandwidth management algorithm to keep kazaa users happy without making
+the internet unusable for the rest of us.
+
+If you are unlucky enough to have to pay by bytes transferred, then I
+might suggest that you budget usage. I am sure that the average office
+worker doesn't use more than 300mb of Internet bandwidth a day, which I
+voracious p2p user certainly would.
+
+
+
 
