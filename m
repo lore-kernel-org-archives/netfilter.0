@@ -1,9 +1,9 @@
-From: "Moti Levy" <moti@flncs.com>
-Subject: Re: Module list....
-Date: Mon, 3 Jun 2002 12:14:40 -0400
+From: Robert La Ferla <robertlaferla@attbi.com>
+Subject: Re: H323, Netmeeting and Videoconference
+Date: Mon, 03 Jun 2002 12:12:49 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000901c20b19$db19bc20$fd6e34c6@mlevy>
-References: <02060313133003.00761@erni>
+Message-ID: <3CFB9581.8010904@attbi.com>
+References: <OF5E5101F4.F6C83E0D-ONC1256B8E.00545E62-C1256B8E.0054A228@gehag-dsk.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -16,47 +16,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ernesto Silva <silva@athenea.ort.edu.uy>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Stefan_Walther@gehag-dsk.de
+Cc: Ryan <ryan@vbnet.net>, netfilter@lists.samba.org
 
-you mean ? like this ?
-http://www.netfilter.org/documentation/pomlist/pom-summary.html
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO.htm
-l
+I'm having the same problem with 2.4.19pre9 and newnat13.  If you have 
+it working, please post how you did it.
 
------ Original Message -----
-From: "Ernesto Silva" <silva@athenea.ort.edu.uy>
-To: <netfilter@lists.samba.org>
-Sent: Monday, June 03, 2002 12:13 PM
-Subject: Module list....
+Thanks,
+Robert
 
-
-> Hi,
-> I have searched all the web (well... not all) and I couldn't find the
-> complete iptables module list, I mean nat-module, h323-module, ftp-module,
-> etc. and a basic explanation for each one.
->
-> I have 3 mounted firewalls (with ipchains) and I need to update them to
-> iptables, so I want to know what already modules exists. I know I can
-write
-> my owns, but I'm a little bit far from that by now.
->
-> Does anybody know where can I find the mentioned "module list" ???
->
-> Thanks.
-> --
-> Sr. Ernesto Silva.
-> Webmaster.
-> Universidad ORT Uruguay.
-> Cuareim 1451.
-> Montevideo.
-> Montevideo - 11100.
-> Uruguay.
->
-> silva@ort.ort.edu.uy (text only)
-> silva@athenea.ort.edu.uy
->
->
->
 
 
