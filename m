@@ -1,10 +1,8 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: how to drop MP3 and other Downloads
-Date: Tue, 12 Nov 2002 19:35:14 +0530
+From: "Preston Wade" <Preston_Wade@hilton.com>
+Subject: RE: weird login problem after implementing IPTABLES
+Date: Tue, 12 Nov 2002 11:45:09 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <017601c28a54$85cebe40$13fcc5cb@nextto>
-References: <Pine.LNX.4.44.0211120954570.4953-100000@mestre.edumed.org.br> <088301c28a44$e3aa6740$13fcc5cb@nextto> <200211121243.gACChJe29998@vulcan.rissington.net>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <0B2759D401C1D211ACA500805FFE2C3F0636776C@cmxserv3.hilton.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,54 +16,94 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-hi some one guided in the news group
+If you disable the rules are you able to login?
 
-----
-That of course was not the connbytes patch. You can find it at
-http://luxik.cdi.cz/~devik/connbytes/.
+You are using local authentication?
 
-You may need some sort of crontab to change the rules as you go. You can
-also use connbytes with the --mark to move all long lived downloads to a
-lower tc class if your doing traffic shaping.
-------
+Can you post a sanitized output of "iptables -nL"?  I find it much easier to
+look at and troubleshoot.
 
-
-what you think about this
-
-thanks
-hare
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, November 12, 2002 6:13 PM
-Subject: Re: how to drop MP3 and other Downloads
+Thanks,
+Preston
 
 
-> On Tuesday 12 November 2002 12:13 pm, hare ram wrote:
->
-> > Hi all
+
+> -----Original Message-----
+> From:	netfilter-admin@lists.netfilter.org@INTERNET@HHC  On Behalf Of
+> "Clint M. Sand" <schwack@neotrance.dyndns.org>
+> Sent:	Monday, November 11, 2002 2:07 PM
+> To:	netfilter@lists.netfilter.org
+> Subject:	Re: weird login problem after implementing IPTABLES
+> 
+> On Mon, Nov 11, 2002 at 02:39:52PM -0500, Ben Russo wrote:
+> > On Mon, 2002-11-11 at 14:15, Clint M. Sand wrote:
+> > > Greetings.
+> > >
+> > > I have a Redhat 7.1 box that acts as a main router/gateway for several
+> > > segments on my network. It is currently filtering on each interface
+> > > using ipchains. I would like to migrate these services to iptables to
+> > > take advantage of the ftp connection tracking module and other
+> stateful
+> > > matching features.
+> > >
+> > > I migrated my ruleset, hacked up the redhat init script to load my
+> > > script on boot and tried it out on the box. The script loads fine with
+> > > no errors, and all the clients on each segment work as expected, even
+> > > active ftp.
+> > >
+> > > The problem is, once the script is loaded, even though network-wise
+> > > everything is fine, i can no longer login at the console on any tty!
+> > > (ctrl+alt+f2 for example) I enter my username, and hit enter and it
+> just
+> > > goes into nevernever land. If i log out of the tty that i was in to
+> > > activate iptables, i'm also unable to log back in on that one either.
+> I
+> > > have to kill the power to the box and boot single user and switch back
+> > > to ipchains to restore the box back to production.
+> > >
+> > > I have a test box with very similar hardware which is also running rh
+> > > 7.1 and i'm not able to duplicate the problem on it. Both of these
+> boxes
+> > > use redhats "up2date" and have all the latest security and bug patches
+> > > applied.
+> > >
+> > > Anyone have any ideas on what might be causing this? I have posted all
+> > > my rules, my init script, dmesg and iptables version here:
+> > >
+> > > http://neotrance.dyndns.org/~schwack/iptables/
+> > >
+> > > ANY help would be GREATLY appreciated.
+> > >
+> > > Thanks,
+> > >
+> > > Clint
 > >
-> > i have small application here like
-> > how do the drop all downloads more than 1MB from
-> > the day time
-> > and rest of the time open for all
->
-> I don't see that netfilter can know a download is going to be more than
-> 1Mbyte before it's already seen a million bytes downloaded...
->
-> Antony.
->
-> --
->
-> There are two possible outcomes.
->
-> If the result confirms the hypothesis, then you've made a measurement.
-> If the result is contrary to the hypothesis, then you've made a discovery.
->
->  - Enrico Fermi
->
->
+> > What type of authentication methods are you using?
+> > Have you done anything to nsswitch or the pam.d config files?
+> > Did you touch the /etc/inittab file?
+> > What do you have in your .bash_profile and /etc/bashrc ?
+> >
+> > -Ben.
+> 
+> I haven't touched bashrc, nsswitch, anything in /etc/pam.d nor inittab.
+> Since i'm
+> also not the only admin, i did a diff on my test box of the defaults and
+> the ones in production to make sure. Nothing changed. I did make a small
+> change to
+> roots .bash_profile to export a few additional env variables needed for
+> ADSM. I posted the changed file as well, incase i'm just blind and
+> something about that is incorrect. Edited .bash_profile:
+> 
+> http://neotrance.dyndns.org/~schwack/iptables/
+> 
+> Thanks.
+> 
+> Clint
+> 
+> 
+> 
+> 
 
 
