@@ -1,74 +1,38 @@
-From: Oskar Andreasson <blueflux@koffein.net>
-Subject: Re: what are the possible chain policies?
-Date: Sun, 30 Mar 2003 15:03:16 +0200 (CEST)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0303301458320.19498-100000@laptop1.agatha>
-References: <Pine.LNX.4.44.0303291426440.7401-100000@dell>
+From: Bobo <boboaq@163.com>
+Subject: How to account traffic in IPTABLES?
+Date: Sun, 30 Mar 2003 21:47:52 +0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030330134802.CF9351C462B39@sm204.163.com>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0303291426440.7401-100000@dell>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi,
+ HI
 
-First of all, sorry to everyone who's tried to contact me or mailed me 
-during the last couple of months or so. Ive been tremenduously overworked 
-since around Christmas, and hence all the delays on my part. I am 
-currently trying to catch up, but I am still under heavy load so...
+      I use the iptables + squid as the gateway of one LAN,and it is very good in fact.
 
-On Sat, 29 Mar 2003, Robert P. J. Day wrote:
+   Now,I would like to get the traffic accounting of each IP of the LAN.
 
-> 
->   i was just summarizing the behavior of iptables and i'm puzzled
-> by a contardiction between the man page and oskar's tutorial.
-> 
->   regarding possible chain policies, oskar lists DROP, ACCEPT
-> and REJECT.
-> 
+  How to get these data ? Does IPtables contain these data?
 
-REJECT is not true, and I don't know where I got that one. It was fixed
-earlier today, and should be out in a week or so with the rest of the
-updates I am trying to gather up right now.
+  Are there some tools for traffic accounting of iptables?
 
->   the man page, however, suggests all of ACCEPT, DROP, QUEUE
-> or RETURN, which seems a bit odd.
+  I could use perl and shell programing.Could I analyze the log file of iptables to account?
 
-ACCEPT and DROP should work. Possibly QUEUE as well, but RETURN sounds 
-strange. RETURN should be the default policy on user created chains, but 
-what good can it do on systemspecified chains? 
+  Thanks
 
-Of course, I am only speculating here since I haven't had the time to 
-actually read the code so...
 
-> 
->   since i've only used DROP or ACCEPT until now, i'm not sure
-> what the right answer is.
-> 
->   anyone?
-> 
-> rday
-> 
-> 
-> 
-
--- 
-----
-Oskar Andreasson
-http://www.frozentux.net
-http://iptables-tutorial.frozentux.net
-http://ipsysctl-tutorial.frozentux.net
-mailto:blueflux@koffein.net
 
 
