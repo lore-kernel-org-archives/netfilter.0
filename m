@@ -1,11 +1,13 @@
-From: Rohan Almeida <arc_of_descent@gmx.net>
-Subject: conntrack ftp module usage
-Date: Mon, 30 Sep 2002 20:36:55 +0530
+From: Mike Tone <simpletone@mbox.com.au>
+Subject: whats wrong with 1.2.7 .. ?
+Date: Mon, 30 Sep 2002 11:28:45 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020930203655.57527962.arc_of_descent@gmx.net>
+Message-ID: <181eda18070e.18070e181eda@mbox.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-language: en
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +18,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-
-Hi List,
-I've loaded the ip_nat_ftp and ip_conntrack_ftp modules.
-I also have the follwing rule in my firewall:
-
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-This is on a linux box, with 2 interfaces, one public,
-one private and doing NATing
-
-Most importantly, ftp from the client's end works fine
-But when i do an `lsmod', i see that the ftp modules
-are being used.
-Is that normal?
-what is happening?
-
-Thanx,
-
---
-arc_of_descent
+what exactly is wrong with 1.2.7 ? 
+ 
+on the site it says use 1.2.7a, 1.2.7 is broken 
+.. 
+ 
+whats wrong with it ? is it worth rebuilding 
+kernels  ?? 
+---------------------------------------------------------------------
+Faxes delivered directly to any email address, new to mBox!
+Find out more http://www.mbox.com.au/fax
 
