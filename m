@@ -1,12 +1,13 @@
-From: "Aldo Lagana" <ALagana@p21.com>
-Subject: RE: track bandwith used
-Date: Wed, 30 Jun 2004 10:07:20 -0400
+From: Sheldon Hearn <sheldonh@clue.bz>
+Subject: Re: CONNMARK No chain/target/match problem
+Date: Mon, 28 Jun 2004 19:31:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5EDC9B3CC8401E4184D3B43B75A75C2B46D687@mx.p21.com>
+Message-ID: <1088443880.2781.121.camel@axl.seasidesoftware.co.za>
+References: <BA19D698-C6D3-11D8-B530-000A95D9C698@chilitech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <BA19D698-C6D3-11D8-B530-000A95D9C698@chilitech.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,102 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: Michael Eck <meck@chilitech.net>
+Cc: netfilter@lists.netfilter.org
 
-iptraf=20
+On Fri, 2004-06-25 at 20:16, Michael Eck wrote:
 
------Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Wednesday, June 30, 2004 9:41 AM
-To: netfilter
-Subject: Re: track bandwith used
+> I'm unable to get CONNMARK rules to work.  Issuing
+> # iptables -t mangle -A PREROUTING -p tcp -j CONNMARK --restore-mark
+> yields:
+> # iptables: No chain/target/match by that name
+> 
+> Now, I've loaded ip_conntrack module with
+> # modprobe ip_conntrack
+> lsmod indicates that the module is loaded
 
+You need
 
-On Wednesday 30 June 2004 2:07 pm, Peter Marshall wrote:
+1) the connmark kernel module, ipt_CONNMARK.ko, and
+2) the iptables userland library, libipt_CONNMARK.so.
 
-> Hi again,
->
-> I was also wondering if anyone knows a way to track bandwith being =
-used
-> through the firewall .......
+Connection tracking and connection marking are different things,
+although the latter is implemented as an extension to the former.
 
-Well, there are plenty of network monitoring tools which will give you =
-this=20
-sort of information as an aggregate figure for an interface, or broken =
-down=20
-by source/destination address, port number etc - iptraf is not a bad =
-start to=20
-see what can be done.
+Ciao,
+Sheldon.
 
-Other than that you can use netfilter rules to count the packets & =
-bytes, and=20
-then use a cron job to record the counts at whatever intervals you want=20
-(every minute, every hour, every day...), and then process them =
-yourself.
-
-Things I would mention if you're going to try the latter option:
-
-1. Most packets do not match against rules in the nat table, so don't =
-try=20
-counting those - the only packets which match these are the first of =
-each=20
-connection - all the rest are processed invisibly by netfilter in the=20
-background, and your rules don't see them (this is also the reason why =
-you=20
-should never set a default DROP policy on a nat table!)
-
-2. If you are using a standard -m state --state ESTABLISHED,RELATED rule =
-in=20
-your FORWARD chain, remember that nearly all packets will match that, no =
-
-matter which direction they're going through the machine, and which =
-port/s=20
-they're going to or from.   Again, most of the rules in your FORWARD =
-chain=20
-will only match the first packet of a given connection, so you won't see =
-much=20
-traffic on these rules either (although they can give you a useful =
-indication=20
-of the number of connections of that type which get created).
-
-3. The FORWARD mangle table can be a good place to put rules which will =
-see=20
-all traffic going through the system.
-
-4. For accounting purposes, you can quite readily use rules with no =
-target=20
-(eg: iptables -A FORWARD -p tcp --dport 25); these will make no =
-difference to=20
-whether the packets are ACCEPTed, DROPped, LOGged, REJECTed, or whatever =
-
-(obviously you need separate rules to do that somewhere else), but the =
-packet=20
-& byte counters from iptables -L -nvx will show you how many of that =
-type of=20
-packet were seen.   You can make the rules as specific as you like if =
-you=20
-want to count certain connections in minute detail (eg: iptables -A =
-FORWARD=20
--p tcp --dport 25 -s my.mail.ser.ver -d ISP.mail.ser.ver)
-
-5. Don't overlook the raw packet & byte counts available from ifconfig =
-if all=20
-you want to do is monitor traffic in & out of an interface.
-
-Hope this give you some ideas.
-
-Regards,
-
-Antony.
-
---=20
-"The future is already here.   It's just not evenly distributed yet."
-
- - William Gibson
-
-                                                     Please reply to the =
-list;
-                                                           please don't =
-CC me.
 
 
