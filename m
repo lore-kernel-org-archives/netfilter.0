@@ -1,9 +1,11 @@
-From: aksingh@hss.hns.com
-Subject: ip_queue.o in 2.4.26
-Date: Fri, 6 Aug 2004 10:20:40 +0530
+From: <erikbaar@gmail.com>
+Subject: Virus Attack & String Matching
+Date: Fri, 6 Aug 2004 01:09:15 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFEA93DCEA.F3DA0EF1-ON65256EE8.001A55B7@hss.hns.com>
+Message-ID: <54a712f004080523095fc37bee@mail.gmail.com>
+Reply-To: ebaar@purdue.edu
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +17,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: kernelnewbies-bounce@nl.linux.org
 
+Hello,
 
+I've recently had to setup string matching to save a sever that was
+the subject of a virus DDOS attack, two of the domains on the server
+were recieving thousands of HTTP Get requests.  After setting up a
+limit rule to slow it down and patch the kernel, I setup a filter like
+this:
 
+iptables -I INPUT -p tcp -d DEST_IP --dport -m string --string "GET
+/1.jpg" -j DROP
+iptables -I INPUT -p tcp -d DEST_IP --dport -m string --string "GET
+/get.php" -j DROP
 
+Which dropped the traffic but caused Apache to generate 408 errors for
+every connection that was made.  First question, is there a better or
+alternate way to do this?  I've read people have recommended against
+string matching before but never found a good alternative.  Second, is
+there a way I can have IP tables on a match insert a DROP rule for the
+source IP address?  I wrote a script which did this based out of -j
+LOG output but would rather have it run everything automagically.
 
-Hi,
+Regards,
 
-  I recently installed 2.4.26, I have ip_queue.c there but no ip_queue.o,
-how do I make ip_queue.o ?
-
-regards
-Amit
-*****************    HSS-Unclassified    *************
-"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
-(HSS) and is intended solely for the use of the individual to whom it is
-addressed. It may contain  privileged or confidential information and
-should not be circulated or used for any purpose other than for what it is
-intended. If you have received this message in error, please notify the
-originator immediately. If you are not the intended recipient, you are
-notified that you are strictly prohibited from using, copying, altering, or
-disclosing the contents of this message. HSS accepts no responsibility for
-loss or damage arising from the use of the information transmitted by this
-email including damage from virus."
-
+Erik
 
