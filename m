@@ -1,13 +1,12 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: RE: Help - Public Interface seems to go to sleep
-Date: Tue, 15 Apr 2003 15:14:07 -0700
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Help cofiguring new (private) subnet
+Date: Tue, 15 Apr 2003 15:18:44 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c3039c$55922b10$1001a8c0@s3ac>
-References: <85256D09.006BAD95.00@nt_domino.mrmc.mcleodhealth.org>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DB8@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <85256D09.006BAD95.00@nt_domino.mrmc.mcleodhealth.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +17,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'David Culp' <dculp@mcleodhealth.org>, netfilter@lists.netfilter.org
+To: Net Filter Mailing List <netfilter@lists.netfilter.org>
+
+Unless I am mistaken, a proper routing table entry should suffice for
+your two private networks to talk to each other.
+
+Gateway for Subnet1:
+route add -net <SN2NetAddr>/<SN2NetMask> gw <iptablesmachine_SN1_side>
+
+Gateway for Subnet2:
+route add -net <SN1NetAddr>/<SN1NetMask> gw <iptablesmachine_SN2_side>
+
+I don't think you have to do anything at all as long as the firewall is
+the gateway for both subnets.
+
+If you have iptables FORWARD table drop by default, add:
+
+iptables -a FORWARD -i <sn1_if> -o <sn2_if>
+iptables -a FORWARD -i <sn2_if> -o <sn1_if>
+
+No filtering, no problems.
 
 
->      Problem:
->           - Everything works 'most' of the time. However after no
->             activity on the public interface for a while 
-> (hours), can not connect.
->             But then later, can connect ??
->            From a tcpdump trace on eth1, the times that it 
-> will not connect shows
->            only SYN packets from the other host, no ACK from 
-> this server?
-> 
->           Have I filtered out too much traffic ?  Should I 
-> allow ICMP through the
->           public interface ? Bad ethernet card ?
-> 
-I experienced this a whiel back. The IF would just stop responding. I
-noticed when I pinged from it when logged in locally that would
-sometimes start it back up. But it was only down for maybe 5-10 mins at
-a time. I chalked the problem up to I think my power management
-settings. The system is a server so I removed the APM aspect of it from
-the kernel and I think that solved the problem.
+-----Original Message-----
+From: Ashley M. Kirchner [mailto:ashley@pcraft.com]=20
+Sent: Tuesday, April 15, 2003 2:54 PM
+To: Net Filter Mailing List
+Subject: Help cofiguring new (private) subnet
+
+
+    I'm needing some help on configuring of my current iptables script=20
+to expand onto a second subnet.  But before I posted the whole script=20
+(from iptables-save) and a map layout of the network, I thought I'd ask=20
+if there's anyone in specific that would like to help me out, or whether
+
+I should just go ahead and post the whole shebang.
+
+    The short gist of it is this:  I've used Oskar Andreasson's=20
+rc.firewall script at http://iptables-tutorial.frozentux.net/ (linked=20
+from www.iptables.com) to generate my initial firewall script between=20
+our public internet address and the internal network.  However, I've now
+
+added a third nic to the machine and configured it with a different=20
+(private) network.  With the current firewall rules, I can not see=20
+anyone on that new subnet...only those on the old one.  That's what I=20
+need fixing.  That new subnet does NOT need forwarding like the first=20
+one does, so I'm not worried about it...I do however need to see the=20
+other systems on that subnet.
+
+    There you go.  Anyone willing to help?
+
+
+
 
 
