@@ -1,74 +1,382 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ANNOUNCE] rh7.3 / rh9 / cl9 RPMS of iptables-1.2.8 and ulogd-1.0.0
-Date: Thu, 5 Jun 2003 12:41:34 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030605104134.GH18183@sunbeam.de.gnumonks.org>
+From: "John Paul" <john@pinoylinux.sytes.net>
+Subject: Re: Help: ip_pptp_*  Issue (Solved!)
+Date: Thu, 5 Jun 2003 18:38:28 +0800
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <00b301c32b4e$9d2ea870$fd00a8c0@homes>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DC3@wardrive.citadelcomputer.com.au>
+Reply-To: "John Paul" <john@pinoylinux.sytes.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/aVve/J9H4Wl5yVO"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00B0_01C32B91.A80F67A0"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
-Cc: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---/aVve/J9H4Wl5yVO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_NextPart_000_00B0_01C32B91.A80F67A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Thanks George. After 5 days of working on this, now it works like a =
+charm!=20
 
-I've finally managed to install a RedHat 7.3, RedHat 9 and Conectiva 9
-on one of my development boxes.  This provided the opportunity to build
-some 'official' iptables-1.2.8 and ulogd-1.0.0 RPM's for the respective
-distributions.
+key: <ip_nat_pptp>
 
-You can get the packages from=20
+cheers!
+  ----- Original Message -----=20
+  From: George Vieira=20
+  To: John Paul ; netfilter@lists.netfilter.org=20
+  Sent: Thursday, June 05, 2003 8:52 AM
+  Subject: RE: Help: ip_pptp_* Issue
 
-ftp://ftp.gnumonks.org/pub/rpms/redhat-7.3/RPMS/i386
-ftp://ftp.gnumonks.org/pub/rpms/redhat-9/RPMS/i386
-ftp://ftp.gnumonks.org/pub/rpms/cl-9/RPMS/i386
 
-(If you rather want to use HTTP, use http://gnumonks.org/ftp/pub as prefix)
+  Your missing the ipt_nat_pptp or whatever it is..
 
-Feel free to test those packages.  If you find them useful, we might
-think of putting them on netfiltr.org and provide RPM's for future
-iptables releases.
+  why not run the PPTP client on the firewall and all the workstations =
+route through it????
+  Thanks,
 
-Thanks,
 
-	Harald
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+  ____________________________________________
+  George Vieira
+  Citadel Computer Systems Pty LtdSystems Managergeorgev AT =
+citadelcomputer DOT com DOT au
+  Citadel Computer Systems Pty Ltd
+  Phone : +61 2 9955 2644HelpDesk: +61 2 9955 =
+2698http://www.citadelcomputer.com.au
 
---/aVve/J9H4Wl5yVO
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+  -----Original Message-----
+  From: John Paul [mailto:john@pinoylinux.sytes.net]
+  Sent: Thursday, June 05, 2003 9:54 AM
+  To: netfilter@lists.netfilter.org
+  Subject: Help: ip_pptp_* Issue
 
-iD8DBQE+3x5eXaXGVTD0i/8RAvVGAKCdZKRdHN5jzjvkSuM4+rdzZOXimgCZAS/g
-TmOb7h4cQLxS3/AWNOxZPWE=
-=ZoVW
------END PGP SIGNATURE-----
 
---/aVve/J9H4Wl5yVO--
+  Hello Folks,
+
+  My Config:
+
+  PC1 (192.168.0.20) ----> gateway(LinuxServer) <-------------------> =
+internet <--------------------> VPN Server
+  PC2 (192.168.0.21)       eth0 : 242.x.x.x
+                                      eth1 : 192.168.0.1
+
+
+  I have my private network configured as 192.168.0.0/24. PC1 and PC2 =
+can connect to the VPN Server BUT ONLY ONE AT A TIME. Is there any way =
+to configure "gateway(LinuxServer) so PC1 and PC2 can connect at the =
+same time? Is it something to do with the ip_pptp_* issue?
+
+  Appreciate any help.
+
+  TIA.
+
+
+  "lsmod"
+
+  Module                  Size  Used by    Tainted: P
+  ip_conntrack_pptp       3984   0  (unused)
+  ip_conntrack_proto_gre    6036   0  [ip_conntrack_pptp]
+  ppp_deflate             4568   0  (autoclean)
+  zlib_deflate           21624   0  (autoclean) [ppp_deflate]
+  zlib_inflate           21828   0  (autoclean) [ppp_deflate]
+  ppp_mppe               24088   0  (autoclean)
+  bsd_comp                5464   0  (autoclean)
+  ipt_LOG                 4248   5  (autoclean)
+  ipt_limit               1688   3  (autoclean)
+  ipt_state               1048   7  (autoclean)
+  iptable_mangle          2776   0  (autoclean) (unused)
+  ipt_MASQUERADE          2872   1  (autoclean)
+  ipt_REDIRECT            1368   1  (autoclean)
+  iptable_nat            30072   1  (autoclean) [ipt_MASQUERADE =
+ipt_REDIRECT]
+  ip_conntrack           41824   4  (autoclean) [ip_conntrack_pptp =
+ip_conntrack_proto_gre ipt_state ipt_MASQUERADE ipt_REDIRECT =
+iptable_nat]
+  ppp_synctty             8384   0  (unused)
+  ppp_async               9888   1
+  ppp_generic            23936   3  [ppp_deflate ppp_mppe bsd_comp =
+ppp_synctty ppp_async]
+  slhc                    6844   0  [ppp_generic]
+  3c59x                  30608   1
+  iptable_filter          2412   1  (autoclean)
+  ip_tables              18584  10  [ipt_LOG ipt_limit ipt_state =
+iptable_mangle ipt_MASQUERADE ipt_REDIRECT iptable_nat iptable_filter]
+
+
+------=_NextPart_000_00B0_01C32B91.A80F67A0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2726.2500" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#edfefc>
+<DIV><FONT face=3DArial size=3D2>Thanks George. After 5 days of working =
+on this, now=20
+it works like a charm! </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>key: &lt;ip_nat_pptp&gt;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>cheers!</FONT></DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Dgeorgev@citadelcomputer.com.au=20
+  href=3D"mailto:georgev@citadelcomputer.com.au">George Vieira</A> =
+</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
+title=3Djohn@pinoylinux.sytes.net=20
+  href=3D"mailto:john@pinoylinux.sytes.net">John Paul</A> ; <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  =
+href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
+rg</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Thursday, June 05, 2003 =
+8:52=20
+  AM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> RE: Help: ip_pptp_* =
+Issue</DIV>
+  <DIV><BR></DIV>
+  <DIV><SPAN class=3D813385100-05062003><FONT face=3DArial =
+color=3D#0000ff size=3D2>Your=20
+  missing the ipt_nat_pptp or whatever it is..</FONT></SPAN></DIV>
+  <DIV><SPAN class=3D813385100-05062003><FONT face=3DArial =
+color=3D#0000ff=20
+  size=3D2></FONT></SPAN>&nbsp;</DIV>
+  <DIV><SPAN class=3D813385100-05062003><FONT face=3DArial =
+color=3D#0000ff size=3D2>why=20
+  not run the PPTP client on the firewall and all the workstations route =
+through=20
+  it????</FONT></SPAN></DIV>
+  <DIV>
+  <P><FONT face=3DArial size=3D2><SPAN=20
+  class=3D674251008-03092002>Thanks,</SPAN></FONT></P></DIV>
+  <DIV><FONT face=3DArial size=3D2><SPAN=20
+  class=3D674251008-03092002></SPAN></FONT>&nbsp;</DIV>
+  <DIV style=3D"WIDTH: 305px; HEIGHT: 232px">
+  <MARQUEE id=3DMarquee1 style=3D"WIDTH: 220px; HEIGHT: 57px" trueSpeed=20
+  scrollAmount=3D1 scrollDelay=3D20 direction=3Ddown behavior=3Dslide =
+loop=3D1=20
+  border=3D"2"><FONT=20
+  =
+size=3D1>____________________________________________</FONT></MARQUEE><BR=
+><B><FONT=20
+  color=3D#000066 size=3D2></FONT><FONT face=3DVerdana color=3D#000066 =
+size=3D2>George=20
+  Vieira<BR></FONT></B>
+  <MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed=20
+  scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+border=3D"0"><FONT=20
+  face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
+size=3D1><B>Citadel=20
+  Computer Systems Pty Ltd</B></FONT></MARQUEE>
+  <MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed=20
+  scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+border=3D"0"><FONT=20
+  face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
+size=3D1><B>Systems=20
+  Manager</B></FONT></MARQUEE><FONT face=3DVerdana>
+  <MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 255px; HEIGHT: =
+17px"=20
+  trueSpeed scrollAmount=3D2 scrollDelay=3D5 direction=3Dright =
+behavior=3Dslide loop=3D1=20
+  width=3D300 height=3D16 border=3D"0"><FONT=20
+  face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
+size=3D1>georgev AT=20
+  citadelcomputer DOT com DOT au</FONT></MARQUEE>
+  <MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"=20
+  trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1=20
+  border=3D"0"></MARQUEE></FONT>
+  <DIV><FONT face=3D"Verdana, Verdana, Helvetica, sans-serif" =
+color=3Dblack=20
+  size=3D1>Citadel Computer Systems Pty Ltd</FONT><FONT =
+face=3DVerdana></DIV>
+  <MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"=20
+  trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
+behavior=3Dslide loop=3D1=20
+  border=3D"0"><FONT color=3Dblack size=3D1>Phone : +61 2 9955=20
+  2644</FONT></MARQUEE></FONT><FONT face=3DVerdana>
+  <MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"=20
+  trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
+behavior=3Dslide loop=3D1=20
+  border=3D"0"><FONT color=3Dblack size=3D1>HelpDesk: +61 2 9955=20
+  2698</FONT></MARQUEE></FONT>
+  <MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"=20
+  trueSpeed scrollAmount=3D4 scrollDelay=3D5 direction=3Dright =
+behavior=3Dslide loop=3D1=20
+  border=3D"0"><A href=3D"http://www.citadelcomputer.com.au/"><FONT=20
+  face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
+size=3D1><A=20
+  =
+href=3D"http://www.citadelcomputer.com.au">http://www.citadelcomputer.com=
+.au</FONT></A></MARQUEE></DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV>&nbsp;</DIV>
+  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
+face=3DTahoma=20
+  size=3D2>-----Original Message-----<BR><B>From:</B> John Paul=20
+  [mailto:john@pinoylinux.sytes.net]<BR><B>Sent:</B> Thursday, June 05, =
+2003=20
+  9:54 AM<BR><B>To:</B> <A=20
+  =
+href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
+rg</A><BR><B>Subject:</B>=20
+  Help: ip_pptp_* Issue<BR><BR></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>Hello Folks,</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2><STRONG>My =
+Config:</STRONG></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>PC1&nbsp;(192.168.0.20) ----&gt;=20
+  gateway(LinuxServer) &lt;-------------------&gt; internet=20
+  &lt;--------------------&gt; VPN Server</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>PC2=20
+  (192.168.0.21)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eth0 :=20
+  242.x.x.x</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
+
+  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;=20
+  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; eth1 :=20
+  192.168.0.1</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>I have my private network configured =
+as=20
+  192.168.0.0/24. PC1 and PC2 can connect to the VPN Server BUT ONLY ONE =
+AT A=20
+  TIME. Is there any way to configure "gateway(LinuxServer) so PC1 and =
+PC2 can=20
+  connect at the same time? Is it something to do with the ip_pptp_*=20
+  issue?</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Appreciate any help.</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>TIA.</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2><STRONG>"lsmod"</STRONG></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial=20
+  =
+size=3D2>Module&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  Size&nbsp; Used by&nbsp;&nbsp;&nbsp; Tainted:=20
+  P<BR>ip_conntrack_pptp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+3984&nbsp;&nbsp;=20
+  0&nbsp; (unused)<BR>ip_conntrack_proto_gre&nbsp;&nbsp;&nbsp; =
+6036&nbsp;&nbsp;=20
+  0&nbsp;=20
+  =
+[ip_conntrack_pptp]<BR>ppp_deflate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  4568&nbsp;&nbsp; 0&nbsp;=20
+  =
+(autoclean)<BR>zlib_deflate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;=20
+  21624&nbsp;&nbsp; 0&nbsp; (autoclean)=20
+  =
+[ppp_deflate]<BR>zlib_inflate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;=20
+  21828&nbsp;&nbsp; 0&nbsp; (autoclean)=20
+  =
+[ppp_deflate]<BR>ppp_mppe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  24088&nbsp;&nbsp; 0&nbsp;=20
+  =
+(autoclean)<BR>bsd_comp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  5464&nbsp;&nbsp; 0&nbsp;=20
+  =
+(autoclean)<BR>ipt_LOG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  4248&nbsp;&nbsp; 5&nbsp;=20
+  =
+(autoclean)<BR>ipt_limit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  1688&nbsp;&nbsp; 3&nbsp;=20
+  =
+(autoclean)<BR>ipt_state&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  1048&nbsp;&nbsp; 7&nbsp;=20
+  =
+(autoclean)<BR>iptable_mangle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;=20
+  2776&nbsp;&nbsp; 0&nbsp; (autoclean)=20
+  =
+(unused)<BR>ipt_MASQUERADE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+  2872&nbsp;&nbsp; 1&nbsp;=20
+  =
+(autoclean)<BR>ipt_REDIRECT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;=20
+  1368&nbsp;&nbsp; 1&nbsp;=20
+  =
+(autoclean)<BR>iptable_nat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;=20
+  30072&nbsp;&nbsp; 1&nbsp; (autoclean) [ipt_MASQUERADE=20
+  =
+ipt_REDIRECT]<BR>ip_conntrack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;=20
+  41824&nbsp;&nbsp; 4&nbsp; (autoclean) [ip_conntrack_pptp=20
+  ip_conntrack_proto_gre ipt_state ipt_MASQUERADE ipt_REDIRECT=20
+  =
+iptable_nat]<BR>ppp_synctty&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  8384&nbsp;&nbsp; 0&nbsp;=20
+  =
+(unused)<BR>ppp_async&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  9888&nbsp;&nbsp;=20
+  =
+1<BR>ppp_generic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;=20
+  23936&nbsp;&nbsp; 3&nbsp; [ppp_deflate ppp_mppe bsd_comp ppp_synctty=20
+  =
+ppp_async]<BR>slhc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  6844&nbsp;&nbsp; 0&nbsp;=20
+  =
+[ppp_generic]<BR>3c59x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  30608&nbsp;&nbsp;=20
+  =
+1<BR>iptable_filter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+=20
+  2412&nbsp;&nbsp; 1&nbsp;=20
+  =
+(autoclean)<BR>ip_tables&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  18584&nbsp; 10&nbsp; [ipt_LOG ipt_limit ipt_state iptable_mangle=20
+  ipt_MASQUERADE ipt_REDIRECT iptable_nat=20
+iptable_filter]<BR></FONT></DIV></BLOCKQUOTE></BODY></HTML>
+
+------=_NextPart_000_00B0_01C32B91.A80F67A0--
+
 
