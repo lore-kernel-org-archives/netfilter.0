@@ -1,11 +1,10 @@
-From: "ross" <ross@asm.org.uk>
-Subject: Loose packets
-Date: Thu, 30 May 2002 14:34:16 +0100
+From: "tirexx" <tirexx@mail.ru>
+Subject: -m state ESTABLISHED, NEW etc...
+Date: Thu, 30 May 2002 17:27:34 +0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <003601c207de$b1b68c20$1700a8c0@asm.org.uk>
+Message-ID: <004401c207e6$249c22c0$3401000a@ryanchenko>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0037_01C207E7.137AF420"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,158 +15,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+Hi all
 
-------=_NextPart_000_0037_01C207E7.137AF420
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+TCP connection flow by this scenario
+Can someone explain me where pass borders of state ESTABLISHED, NEW.
 
-Dear all
+1-> SYN
+2<- SYN ACK
+3-> ACK
+connected
+....
+4-> ACK
+5<- ACK
+....
+6-> FIN
+7<- ACK
+8<- FIN
+9-> ACK
+closed
 
-I have recently built a firewall for my home office. All seems well,
-it=92s fairly secure. One problem though, every time my Windows client
-sends a packet destined for my Linux box that is not destined for the
-Internet (say for example when I use PUTTY over SSH) PPPD dials up. I am
-pretty sure I need to set up a firewall rule to stop this, but I have
-tried several iptables rules all to no avail.
+I think so:
+1,2,3 NEW
+2,3,4,5,6,7,8,9 ESTABLISHED
+2,3,4,5,6,7,8,9 RELATED
 
-=20
-
-Any guidance is much appreciated
-
-=20
-
-Ross
-
-
-------=_NextPart_000_0037_01C207E7.137AF420
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
+i`m wrong?
 
 
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+with this rules outgoing connect work
+incomming connect not work
+this demonstrate 2,3,4,5,6,7,8,9 = ESTABLISHED
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-p.WfxFaxNum, li.WfxFaxNum, div.WfxFaxNum
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-p.WfxTime, li.WfxTime, div.WfxTime
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-p.WfxDate, li.WfxDate, div.WfxDate
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-p.WfxRecipient, li.WfxRecipient, div.WfxRecipient
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-p.WfxCompany, li.WfxCompany, div.WfxCompany
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-p.WfxSubject, li.WfxSubject, div.WfxSubject
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-p.WfxKeyword, li.WfxKeyword, div.WfxKeyword
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-p.WfxBillCode, li.WfxBillCode, div.WfxBillCode
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-span.EmailStyle25
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+iptables -A FORWARD -o eth_external -i eth_internal -p tcp -d
+x.x.x.x --dport x -j ACCEPT
+iptables -A FORWARD -i eth_external -o eth_internal -p tcp -s
+x.x.x.x --sport x -m state --state ESTABLISHED -j ACCEPT
 
-</head>
 
-<body lang=3DEN-GB link=3Dblue vlink=3Dpurple>
 
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Dear all</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I have recently built a firewall for my home office. =
-All
-seems well, it&#8217;s fairly secure. One problem though, every time my =
-Windows
-client sends a packet destined for my Linux box that is not destined for =
-the
-Internet (say for example when I use PUTTY over SSH) PPPD dials up. I am =
-pretty
-sure I need to set up a firewall rule to stop this, but I have tried =
-several
-iptables rules all to no avail.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Any guidance is much appreciated</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Ross</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0037_01C207E7.137AF420--
 
 
