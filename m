@@ -1,9 +1,11 @@
-From: mailinglists@belfin.ch
-Subject: RE: AW: default policy
-Date: Sat, 2 Nov 2002 09:18:01 +0100
+From: Naleendra@dms.lanka.net
+Subject: Re:Re: proxying along with iptables
+Date: Sat, 2 Nov 2002 14:31:23 +0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31347F3CE518D6118ACB00A0246AD0560B2405@mx.snizek.ch>
+Message-ID: <A590F7F751E6D6118C0800104B0DF37304CDA4@MAILGATE>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2824A.3A5FC1A0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,65 +16,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> > > Ziegler's book states that it should be this (it was never
-> > > put in these
-> > > words but this is what I am gathering from my reading):
-> > > iptables -t nat    -P PREROUTING  DROP
-> > > iptables -t nat    -P OUTPUT      DROP
-> > > iptables -t nat    -P POSTROUTING DROP
-> > > iptables -t mangle -P PREROUTING  DROP
-> > > iptables -t mangle -P OUTPUT      DROP
-> > > iptables -t filter -P INPUT       DROP
-> > > iptables -t filter -P OUTPUT      DROP
-> > > iptables -t filter -P FORWARD     DROP
-> 
-> I regard these policies as a very bad idea.   Definitely not 
-> something to be 
-> recommended in a book about building good firewalls.   I have 
-> heard that 
-> Ziegler's book contains some errors, but if it contains the above 
-> recommendations for default policies I consider to be a very 
-> poor text indeed.
+------_=_NextPart_001_01C2824A.3A5FC1A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-Who's Ziegler?
- 
-> > Of course you can do that. But this is multiple pleonasm. 
-> I.e. if you drop
-> > PREROUTING you don't have to drop INPUT anymore. If your 
-> DROP Policy covers
-> > every built-in chain you must write a rule for every DROPed 
-> chain to allow
-> > a certain action. Your filter becomes unclear and thus, 
-> hard to read and
-> > hard to manage.
-> 
-> Actually, it is worse than that.
-> 
-> If you are using netfilter's stateful inspection capabilities 
-> (and you should 
-> be) then setting the above policies on the nat and mangle 
-> tables will simply 
-> stop things from working.
+Hi Lists/ Anthony,
 
-The point is, you must learn how packets traverse the filter. Once you
-understand this you will know which policies you have to set DROP.
- 
-> You should never set any default policy other than ACCEPT on 
-> a nat or mangle 
-> table.
-> 
-> I sometimes think it was a bad idea even to make it possible.
+	Protocols : ftp, http, dns
 
-No, I don't think so. It's hard for beginners, yes. But once you understand
-what iptables is capable of (compared to other commercial products) you
-actually are glad that there is a product giving you control over
-everything.
-Defining the policies for every chain is such a freedom.
+	Basic requirements are: Web site caching
+				Accounting purposes for users in a Nt/2000
+user base
 
-Philipp 
+ Thanks
+
+ nal
+
+------_=_NextPart_001_01C2824A.3A5FC1A0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>Re:Re: proxying along with iptables</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi Lists/ Anthony,</FONT>
+</P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">Protocols : ftp, http, dns</FONT>
+</P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">Basic requirements are: Web site caching</FONT>
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">Accounting purposes for users in a Nt/2000 user =
+base</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;Thanks</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;nal</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2824A.3A5FC1A0--
 
