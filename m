@@ -1,13 +1,10 @@
-From: "Sood, Ashish" <asood@iPolicyNet.COM>
-Subject: Where is the file netfilter_device.h file
-Date: Mon, 16 Feb 2004 19:07:42 +0530
+From: Carlos Robles <carlos.r@quadnet.co.uk>
+Subject: Routing through Debian
+Date: Mon, 16 Feb 2004 14:40:49 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D269C7CBDF116A48982D4DC51F111BE324D483@nsezhpmail01.india.ipolicynet.com>
+Message-ID: <021A59AE3C21D649BCEA0B7802EC408A443142@quadnet_fs1.quadnet.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3F492.0D8F576A"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +14,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+Hello my name is Carlos
+This is the first time I'm emailing here and I don't know really how this
+works, I'm just going nuts with the next issue:
+I'm trying to connect from my XP office computer to my Home (XP prof)
+computer (192.168.0.4).
+In my home I have a small network made out of 5 computers, they all  connect
+to internet through a Debian 2.4 box(private 192.168.0.5, public:
+80.1.122.39) that I've configured to work as a router-firewall.
+I modified ip-tables so to let any connection coming to the router to port
+3389 to redirect it to 192.168.0.4:
+iptables -t nat -I POSTROUTING -p tcp --sport 3389 -s 192.168.0.4 -j SNAT
+--to 80.1.122.39:3389
+iptables -t nat -I PREROUTING -p tcp --dport 3389 -d 80.1.122.39 -j DNAT
+--to 192.168.0.4:3389
+Commands go well, no problems.
+But still I can't connect, is there something that I'm missing?
 
-------_=_NextPart_001_01C3F492.0D8F576A
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Thanks very much
 
-Hi,
+Carlos Robles 
+mailto txarli11@hotmail.com
 
-Can anyone help me locate the file netfilter_device.h file.=20
-
-Thanks,
-Ashish
-
-------_=_NextPart_001_01C3F492.0D8F576A
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.6944.0">
-<TITLE>Where is the file netfilter_device.h file</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Can anyone help me locate the file =
-netfilter_device.h file. </FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Thanks,</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Ashish</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C3F492.0D8F576A--
 
