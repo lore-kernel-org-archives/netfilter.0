@@ -1,73 +1,50 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Documentation for the u32 module
-Date: Mon, 17 Nov 2003 09:56:01 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031117085601.GD22919@sunbeam.de.gnumonks.org>
-References: <20031113090530.GB2301@obroa-skai.de.gnumonks.org> <Pine.LNX.4.44.0311151659500.22726-100000@sparrow>
+From: Martin Petruzzi <m.petruzzi@bluewin.ch>
+Subject: Changes in kernel >= 2.4.20 ?
+Date: Mon, 17 Nov 2003 11:06:42 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20031117110642.73ee78fc.m.petruzzi@bluewin.ch>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SO98HVl1bnMOfKZd"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0311151659500.22726-100000@sparrow>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: William Stearns <wstearns@pobox.com>
-Cc: Fabrice Marie <fabrice@netfilter.org>, ML-netfilter <netfilter@lists.netfilter.org>, ML-netfilter-devel <netfilter-devel@lists.netfilter.org>, webmaster@netfilter.org, Don Cohen <don-nfil@isis.cs3-inc.com>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hello
 
---SO98HVl1bnMOfKZd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Apparently there have been changes in kernel since 2.4.20 concerning netfilters. NAT, masqerading, forwarding or whatever it is called does not work the same as before. I have the rules as following:
 
-On Sat, Nov 15, 2003 at 05:06:38PM -0500, William Stearns wrote:
-> > Would you be willing to merge your u32 documentation with that?
->=20
-> 	Harald, I'd be honored to!
+#!/bin/bash
+/sbin/modprobe iptable_nat
+/opt/sbin/iptables -F
+/opt/sbin/iptables -X
+/opt/sbin/iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+echo 1 > /proc/sys/net/ipv4/ip_forward
+...
+and so on.
 
-;) don't exaggerate.
+This worked perfect with kernels < 2.4.20. Now I'm on 2.4.22 and NAT only works partially. The system is RH7.2. I tried the latest iptables from updates.redhat.com and also compiled the latest from netfilter.org. I had no errors at all, nor while compiling (kernel/iptables) neigther while installing or inserting the roules.
 
-> 	With the help of http://www.stearns.org/html2sgml :-), I've got=20
-> that article in sgml form, ready to go.  Fabrice, I've patched against=20
-> your 1.30 Netfilter-extensions-HOWTO.  Here are the files of interest:
->=20
-> http://www.stearns.org/patches/netfilter-extensions-HOWTO.1.31.sgml
+The behaviour is:
+- ftp works fine
+- http works partially (i.e. google works but most websites do not).
+- ssh connections do work, certain commands ok, but for example "last" hangs.
 
-ok, i've merged your patch to our CVS repository.  Will do a homepage
-update soon, so it becomes visible to the public.
+This behaviour is reproducable.
 
-> 	Cheers,
-> 	- Bill
+Latest iptables also work fine with older kernel (that's how I run it now).
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+Any idea, what the problem is? What do I need to change?
 
---SO98HVl1bnMOfKZd
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Thank you very much.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/uI0hXaXGVTD0i/8RAi/4AJsENdkPLtyUSlkzbNR77q9knqNTaACcDF8m
-cvZ4Rxn9E06CLEOvvd2odV0=
-=FGKJ
------END PGP SIGNATURE-----
-
---SO98HVl1bnMOfKZd--
+Martin
 
