@@ -1,16 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: managing another network route, can't connect to it! Pls see!
-Date: Thu, 27 Feb 2003 13:23:47 +0100
+From: "hare ram" <hareram@sol.net.in>
+Subject: Problem with string
+Date: Thu, 27 Feb 2003 19:21:08 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030227132347.03d3dc58.arnt@c2i.net>
-References: <030f01c2dd88$2f277140$0b00000a@nocpc3>
-	<20030226150447.435f450b.arnt@c2i.net>
-	<002a01c2ddfe$67e0e9a0$0b00000a@nocpc3>
-	<01ce01c2de30$be8a3400$0b00000a@nocpc3>
+Message-ID: <087d01c2de67$5461f9a0$13fcc5cb@Housecall>
+References: <20030225215326.GA30804@first.knowledge.no> <20030227123531.GA26259@first.knowledge.no>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01ce01c2de30$be8a3400$0b00000a@nocpc3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,54 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: louie miranda <lmiranda@chikka.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 27 Feb 2003 15:20:44 +0800, 
-"louie miranda" <lmiranda@chikka.com> top posted, _and_ mailed, 
-in message <01ce01c2de30$be8a3400$0b00000a@nocpc3>:
+Hi all
+i have redhat 8.0 and upgraded to latest kernel
+with the following information
+Linux inca 2.4.18-24.8.0custom #4 Thu Feb 27 14:14:50 IST 2003 i686 i686
+i386 GNU/Linux
 
-> ----- Original Message -----
-> From: "louie miranda" <lmiranda@Chikka.com>
-> To: "Arnt Karlsen" <arnt@c2i.net>; <netfilter@lists.netfilter.org>
-> Sent: Thursday, February 27, 2003 9:20 AM
-> Subject: Re: managing another network route, can't connect to it! Pls
-> see!
-> 
-> > ----- Original Message -----
-> > From: "Arnt Karlsen" <arnt@c2i.net>
-> > To: <netfilter@lists.netfilter.org>
-> > Sent: Wednesday, February 26, 2003 10:04 PM
-> > Subject: Re: managing another network route, can't connect to it!
-> > Pls see!
-> >
-> >
-> > >
-> > > ..'info ifconfig', you wanna do 'ifconfig eth1:0 192.168.129.254
-> > > up' or somesuch, on your gw.  The new boxes on that net needs to
-> > > know where to go, too.
-> > 
-> > Arnt,
-> >
-> > Hi..
-> >
-> > I already add another ip over my gw w/c is 192.168.129.50 and point
-> > the route to 10.0.0.2. On my WS there's still no response when i go
-> > to 192.168.129.x block. But i can ping 192.168.129.50 ip.
-> >
-> > What else could be possibly be missing?
-> >
+and patched with string and iptable 1.2.7a
 
-..Louie, what _was_ missing?  (I like to know whether I missed 
-something in advicing you, etc, also toss in "Solved" in the 
-subject of the thank-you message when you explain _how_ it was 
-fixed, etc, more people might need this info.)
+when i try to excute the command
+
+[root@inca extra]# iptables -I INPUT -m string --string 'cmd.exe' -j QUEUE
+iptables v1.2.7a: Couldn't load match
+`string':/usr/local/lib/iptables/libipt_string.so: cannot open shared object
+file: No such file or directory
+
+Try `iptables -h' or 'iptables --help' for more information.
+---
 
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+when i check with modprob its accepting the module
+
+what could be the problem
+
+thanks
+hare
 
 
