@@ -1,11 +1,12 @@
-From: Phil Dibowitz <phil@ipom.com>
-Subject: IP Tables State 1.3
-Date: Mon, 02 Jun 2003 23:11:48 -0700
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: iptables from cgi script
+Date: Tue, 3 Jun 2003 16:32:21 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EDC3C24.70509@ipom.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D9A@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +16,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Allan Kissack <lists@kissack.freeserve.co.uk>, netfilter@lists.netfilter.org
 
-IPTables Users,
+run a crontab which updates a file... eg.
 
-I have released IP Tables State (IPTState) 1.3. For those not familiar 
-with the project, its simply "top" for your state table. Users have 
-often said "you don't know your firewall until you can see it in real 
-time"... and that's exactly what the aim is.
-
-The new release includes dynamic width column size, DNS reverse lookups, 
-all kinds of sorting options, and much more. You can check out the 
-project here:
-
-http://www.phildev.net/iptstate/
-
-Its very small and very clean. Enjoy.
-
-(Note: I sent this once before but wasn't a member so its held for 
-moderation... so this may eventually come through again).
+#vi /etc/crontab
+*/5 * * * * root /sbin/iptables -L -v -n -x > =
+/home/httpd/html/iptablesrules.txt
 
 Thanks,
--- 
-Phil Dibowitz                             phil@ipom.com
-Freeware and Technical Pages              Insanity Palace of Metallica
-http://www.phildev.net/                   http://www.ipom.com/
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-"They that can give up essential liberty to obtain a little temporary
-safety deserve neither liberty nor safety."
-  - Benjamin Franklin, 1759
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+=20
+
+-----Original Message-----
+From: Allan Kissack [mailto:lists@kissack.freeserve.co.uk]
+Sent: Tuesday, June 03, 2003 5:28 PM
+To: George Vieira; netfilter@lists.netfilter.org
+Subject: Re: iptables from cgi script
+
+
+>----- Original Message -----
+>From: "George Vieira" <georgev@citadelcomputer.com.au>
+>To: "Allan Kissack" <lists@kissack.freeserve.co.uk>;
+<netfilter@lists.netfilter.org>
+>Sent: Monday, June 02, 2003 10:33 PM
+>Subject: RE: iptables from cgi script
+>
+
+> No your not missing anything.. But I like this idea for the fact that
+someone who wants to maliciously attack your site and also open your
+firewall if the commands can be run by other than root..
+>
+> Your only (more secure) option is to authenticate the users and allow =
+them
+to write the rules required to a file or a database and get root to read
+these and apply them in a seperate process..
+>
+>
+> or just use webmin ;) www.webmin.com
+>
+> Thanks,
+> ____________________________________________
+> George Vieira
+
+
+Thanks George,
+I already use webmin for admin, and write the rules via a command line.
+What I am looking for is a cgi script that displays the results of
+/sbin/iptables -L -n -v and allows no other iptables commands.  This web
+server is protected from the outside by the iptables and is for =
+convenient
+monitoring internally (ie dont need to go to a command line).  Do you =
+knwo
+of a way I can allow this?  The script works except for the "can't
+initialize iptables table `filter': Permission denied (you must be root)
+Perhaps iptables or your kernel needs to be upgraded."  security issue
+
+--
+Allan
 
 
 
