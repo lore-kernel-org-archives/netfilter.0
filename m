@@ -1,13 +1,12 @@
-From: "Joe Patterson" <jpatterson@asgardgroup.com>
-Subject: RE: Dynamicly Updating Rules
-Date: Thu, 27 Jun 2002 14:50:34 -0400
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: detection of the third tcp packet in a tcp connection setup
+Date: Thu, 27 Jun 2002 20:57:51 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NJEFLNJDIFFNMHDEBKMJIEIPDOAA.jpatterson@asgardgroup.com>
-References: <200206271331.09893.lee@ricis.com>
+Message-ID: <Pine.LNX.4.21.0206272051470.21019-100000@dns.toxicfilms.tv>
+References: <20020627182753.GS31466@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206271331.09893.lee@ricis.com>
+In-Reply-To: <20020627182753.GS31466@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,69 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: lee@ricis.com, netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.samba.org
 
-I came up with an interesting method for doing this recently.  I haven't
-tried it out yet, and it may or may not work for you, but the general method
-would be something like:
+> Does anyone have a good solution to catch the third (ACK) packet
+> in a tcp connection setup?
 
-$IPT -A INPUT -p tcp --tcp-flags ALL SYN,ACK -m state --state ESTABLISHED -m
-recent --name validconn --set
+# iptables -A INPUT -p tcp --tcp-flags ACK ACK -m recent --rcheck
+  --seconds 60 -j LOG --log-prefix "3rd is ack: "
 
-$IPT -A INPUT -m recent --name validconn -rcheck --seconds 20 -p tcp --dport
-113 -j REJECT --reject-with tcp-reset
+# iptables -A INPUT -p tcp -m state --state NEW --syn -m recent --set -j
+  LOG --log-prefix "1st is syn: "
 
-with rules specifically for what you want being something more like:
+Would not it work?
+First SYN packet triggers the recent module in the second rule.
+Second (your) syn/ack goes on your OUTPUT.
+Third ACK triggers the first rule.
 
-$IPT -A INPUT -p tcp --tcp-flags ALL SYN,ACK -m state --state ESTABLISHED -m
-recent --name validconn --set -p tcp --sport 22 -s $SERVER_IP
+I am not using recent, and i just made that up from the description.
 
-$IPT -A INPUT -m recent --name validconn -rcheck --seconds 20 -p tcp --dport
-113 -j ACCEPT
+But it seems reasonably.
 
-It's not exactly what you're asking for, but it's fairly close.  Whenever
-you make a tcp connection to port 22 on the server, it'll open up port 113
-from that server for the next 20 seconds.  (20 seconds was chosen randomly,
-put whatever value you want there.)
+Or does it?
 
-If you try it and it works, let me know.
+Regards,
+Maciej
 
--Joe
-
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Lee Leahu
-> Sent: Thursday, June 27, 2002 2:31 PM
-> To: netfilter@lists.samba.org
-> Subject: Dynamicly Updating Rules
->
->
-> Is there a way to dynamically add and remove rules to an iptables
-> live configuration?
->
-> For example:
->
-> I have a server and a workstion.  the workstation is locked down
-> tightly.  I would like for
-> when i ssh to a remote server, that iptables automatically opens
-> the ident port on the workstation
-> to that remote server, and after a connection is made, to
-> automatically close it back up again.
->
-> Is this possible???
->
-> --
-> Lee Leahu
-> Internet Technologies Specialist
-> RICIS, Inc.
->
-> email--> lee@ricis.com
-> voice--> 708-444-2690
-> fax--> 708-444-2697
->
->
->
->
 
 
