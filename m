@@ -1,9 +1,9 @@
-From: "Scorched" <scorched1@btinternet.com>
-Subject: Re: Multiple Port Forwarding
-Date: Fri, 20 Aug 2004 08:03:11 +0100
+From: Wilson Mak <wilson.mak@digitalview.com>
+Subject: Re: Port Forwarding with iptables
+Date: Fri, 20 Aug 2004 18:06:38 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002e01c48683$c16a6670$0400a8c0@icbmwxph>
-References: <7C9884991ADAE0479C14F10C858BCDF591E35A@alderaan.smgtec.com>
+Message-ID: <4125CD2E.7000108@digitalview.com>
+References: <412487B7.9090505@digitalview.com> <20040819112216.GN29471@metastasis.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,72 +16,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Nick Drage <nickd@metastasis.demon.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-Umm. Damn.
-Linux only... I don't think my router is linux, I don't think it has any
-standard OS, just firmware. It is a Netgear DG824M router :/ Usually only
-way to set it up is through the web-based interface accessable through
-192.168.0.1 for computers connected to the network, but I was wondering if
-there was any way to get past that.
+Nick Drage wrote:
 
-I just looked at netfilter.org and well... I see I may have the wrong
-newsgroup :s But you all seem pretty knowledgeable about the subject so
-maybe you can help me still, I'm not sure.
-
-Here's a screenshot to give you an idea..
-
-www.berzerker.net/blizzard/port_foward.gif
-
-I hope anyone is able to help :/ maybe there's some way to get around it..
-
-
------ Original Message ----- 
-From: "Daniel Chemko" <dchemko@smgtec.com>
-To: "Scorched" <scorched1@btinternet.com>; <netfilter@lists.netfilter.org>
-Sent: Friday, August 20, 2004 1:23 AM
-Subject: RE: Multiple Port Forwarding
-
-
-Scorched wrote:
-> I found this group on google looking for how to do multiple port
-> forwarding (I'm trying to setup so me and a friend can play Starcraft
-> together on the same connection [with different CD keys though, got
-> two copies of the game.. is all legit])
+>On Thu, Aug 19, 2004 at 06:57:59PM +0800, Wilson Mak wrote:
+>  
 >
-> I have exactly the same problem as this guy, so here's a copy of the
-> thread I found, that no one ever replied to to help with (I checked)
-> :/
+>>Hi all,
+>>
+>>I like to do the portforwarding with iptables(forward web traffic of an 
+>>alias IP - <ext ip> to internal web server).  Here is what I have:
+>>
+>>iptables -t nat -A PREROUTING -i eth0 -d <ext ip> -p tcp --dport 80 -j
+>>DNAT --to 10.1.0.12:80
+>>iptables -A INPUT -p tcp -i eth0 -d <ext ip> --dport 80 -m state
+>>--state NEW -j ACCEPT
+>>iptables -A FORWARD -p tcp -i eth0 -o eth1 -d <ext ip> --dport 80 -m
+>>state --state NEW -j ACCEPT
+>>
+>>However, it keep droping the packets when getting to the NAT box.
+>>
+>>Logs
+>>====
+>>(With iptables -A FORWARD -d 10.1.0.12 -j LOG; iptable -A FORWARD -j DROP)
+>>
+>>kernel: IN=eth0 OUT=eth1 SRC=202.xxx.122.xxx DST=10.1.0.12 LEN=48
+>>TOS=0x00 PREC=0x00 TTL=120 ID=6491 DF PROTO=TCP SPT=4023 DPT=80
+>>WINDOW=64240 RES=0x00 SYN URGP=0
+>>
+>>Any clues?  Did I miss something here?
+>>    
+>>
+>
+>( caveat, this is a quick email during a lunch break at work, so it's
+>all "best guess" )
+>
+>The rules in the PREROUTING table are executed before those in the
+>FORWARD table, so the packet has a destination of 10.1.0.12 when it hits
+>the FORWARD table.  So your third line should be
+>
+>iptables -A FORWARD -p tcp -i eth0 -o eth1 -d 10.1.0.12 --dport 80 -m
+>state --state NEW -j ACCEPT
+>
+>Let me know how you get on :)
+>
+>
+>  
+>
+Thanks for all who help on this issue.  I mis-type the rule here.  Yes 
+you guys are right, the rule should be: -d 10.1.0.12.  But still it 
+doesn't work.  Do I need to enable something in the kernel when using 
+Port-Forwarding?
 
-The following article described a way to accomplish it. I'm not sure if
-its fresh:
-http://www.mplug.org/phpwiki/index.php/NetfilterStarcraft
+Here are what I have now
+===================
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
 
+iptables -t nat -A PREROUTING -i eth0 -d <ext ip - an alias ip>  -p tcp 
+--dport 80 -j DNAT --to 10.1.0.12:80
+iptables -A FORWARD -p tcp -i eth0 -o eth1 -d 10.1.0.12 --dport 80 -m 
+state --state NEW -j ACCEPT
+iptables -A FORWARD -t filter -i eth1 -m state --state 
+NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -t filter -i eth0 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
 
-Me ---------|
-            |--- Firewall -- battle.net / Server
-My Friend --|
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-Each user wants to send their source port as 6112, but since only one
-guy can have that port, we have to change our source port. Ex.
+Many thanks,
+Wilson  
 
-Outgoing:
-ip-me:port-5112 -> dest:5112 >> FW >> ip-fw:port-5112 -> dest:5112
-ip-friend:port-5112 -> dest:5112 >> FW >> ip-friend:port-5113 ->
-dest:5112
-
-Return:
-dest:5112 -> ip-fw:port-5112 >> FW >> dest:5112 -> ip-me:5112
-dest:5112 -> ip-fw:port-5113 >> FW >> dest:5112 -> ip-friend:5112
-
-I can't see what's wrong with this picture unless Starcraft uses other
-messed up port assignments. If you really want to help us diagnose this,
-please run the game and list the ports that the program is using with
-the following details:
-
-protocol src_ip src_port dst_ip dst_port
-
-Please do this on the inside interface of the firewall, not the outside.
 
 
