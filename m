@@ -1,13 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: bridging firewall with Iptables
-Date: 04 Feb 2003 18:16:59 +0100
+From: "PAUL FABRICIO VILLACRESES LEON" <paulvillacreses@hotmail.com>
+Subject: (no subject)
+Date: Tue, 04 Feb 2003 20:00:46 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044379019.2771.110.camel@elendil.intranet.cartel-securite.net>
-References: <F19z0NuQWGhu25aGkVn00011cb3@hotmail.com>
+Message-ID: <F147kHAu2Xn3oQoaVGH0000ffcf@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F19z0NuQWGhu25aGkVn00011cb3@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Afshin Lamei <linux_st@hotmail.com>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: linux_st@hotmail.com
 Cc: netfilter@lists.netfilter.org
 
-Le mar 04/02/2003 =E0 12:00, Afshin Lamei a =E9crit :
-> 2 - Can I use all of the benefits of Iptables in a bridging firewall?
 
-See http://ebtables.sourceforge.net/
 
-br_nf patch allows bridged frames to be visible into Netfilter
-framework. So one can filter them. That's imho what you want.
 
-ebtables_kernel patch allows more L2 filtering at bridge level, using
-ebtables userlan utility.
 
-Use them together.
+Hi,
+I want to do both bridging and firewalling with linux. I've some questions
+about it:
+1 - When I start up bridging, I see that all my linux terminals are
+outputing the bridge trafic and I am not able to see my command prompt! so
+how can I prevent it from doing so?
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+This is because you enable debbug iptables went you compliled you kernel
+
+2 - Can I use all of the benefits of Iptables in a bridging firewall?
+
+Yes but bot all iptables's extension.
+
+thanks,
+afshin
+
+_________________________________________________________________
+MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*. 
+http://join.msn.com/?page=features/virus
 
 
