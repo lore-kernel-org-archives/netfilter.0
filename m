@@ -1,15 +1,10 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: ACK,RST getting dropped in the firewall.
-Date: Thu, 24 Jun 2004 09:36:18 -0400
+From: Scott MacKay <scottmackay@yahoo.com>
+Subject: Re: Fedora kernel + conntrack + QUEUE mangle good?
+Date: Thu, 24 Jun 2004 06:46:04 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088084177.2029.8.camel@grendel>
-References: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org>
-	 <1087990356.2064.47.camel@grendel> <200406241037.01994.gdh@acentral.co.uk>
-	 <200406241144.10450.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040624134605.47446.qmail@web13908.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406241144.10450.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,50 +15,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2004-06-24 at 06:44, Antony Stone wrote:
-> 
-> The other thing you see logged quite often for similar reasons is FIN-ACK 
-> packets - the reply FIN-ACK is regarded as optional by many systems, so 
-> netfilter often ends up logging (and dropping) the second one to come along.
+OK, more details:
 
-IMHO this is completely non-RFC. It is clearly defined (RFC 793 page 22)
-that both sides must issue a FIN/ACK and receive an ACK before the
-connection is closed.
+Existing system communicates between 2  2.4.x systems.
+ 2 userspace QUEUE targets intercept data in the
+mangle table with conntrack loaded for defragmenting.
+The userspace does some packet mangling, mainly data
+contents.
+With the 2.4.x machines, works fine.  
 
-What OS does not issue the reciprocating FIN/ACK? 
-
-> No harm done though, because the first one has done the job.
-
-Actually not quite true as both sides will enter a fin-wait state (RFC
-793 page 20) till the second FIN/ACK-ACK exchange takes place. This
-chews up a session on both ends till their timers expire. Add up enough
-of them and it can kill a busy server (seen it happen and have had to
-stop state tracking to fix it).
-
-The "problem" is that there is no requirement for the second FIN to be
-immediately issued. The remote host is free to continue to send data
-till it is finished. Sometimes this exceeds iptables's timer for the FIN
-portion of the session, thus causing the problem many of us are seeing. 
-
-Also, if you check the log entry that was posted:
-
-> Jun 23 16:42:43 javagreen kernel: New not syn:IN=eth0 OUT=
-> MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
-> DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=51601 DF 
-> PROTO=TCP SPT=80 DPT=2162 WINDOW=64574 RES=0x00 ACK URGP=0
-
-Its a 1500 byte ACK packet. So iptables is not just blocking the FIN/ACK
-exchange, it can sometimes end up blocking data transfer as well. :(
-
-I reported this "bug" back when iptables was still alpha code. At the
-time iptables would expire the session 60 seconds after the first FIN
-has been passed. I think Rusty bumped the timer up to 2 minutes. Perhaps
-its been tweaked back down again or needs to be increased to 3 minutes?
-
-HTH,
-Chris
+I loaded a machine with Fedora RC2 (2.6.5-1.358).  Put
+the userspace on without any issues.  When just
+examining the packets, passes thru fine.  The issue
+seems to be when I get a packet of around 2360 bytes. 
+Right around that size the tail end of the packet
+seems to be garbage (I hexdump the last 32 bytes of
+the packet on sender and receiver).  With 2.6.5, are
+there any known issues with conntrack and large packet
+mangling?
 
 
+
+
+
+
+
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
 
