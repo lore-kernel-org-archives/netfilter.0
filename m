@@ -1,13 +1,14 @@
-From: "Dharmendra T." <dharmu@nsecure.net>
-Subject: Re: Bridge/VPN question.
-Date: 23 Jun 2004 14:12:22 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Bandwidth Shaping requests coming from a web server
+Date: Wed, 23 Jun 2004 09:57:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087980148.7626.35.camel@dharmu.nsecure.net>
-References: <041201c45865$cb810cf0$c10da8c0@arvmobile>
+Message-ID: <200406230957.14908.Antony@Soft-Solutions.co.uk>
+References: <2a627cd2040622200675aed3eb@mail.gmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <041201c45865$cb810cf0$c10da8c0@arvmobile>
+In-Reply-To: <2a627cd2040622200675aed3eb@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +19,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Anthony R. Vallario" <avallario@tecmasters.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+On Wednesday 23 June 2004 4:06 am, Ian Holsman wrote:
 
-Are there any other rules you have defined? If no, this may work:
+> Hi.
+>
+> I would like to write a apache module which limits the speed we send
+> out the response based on some internal algorithm (like a cookie, or a
+> line in the request header, or some random number ;-)).
 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+I don't know if Apache can do this sort of thing itself, but Squid certainly 
+can (the phrase it uses for that is "delay pools").   Since you want to do 
+this for a server whcih you run, rather than your clients accessing external 
+servers, you want Squid in Accelerator Mode rather than Proxying Mode.
 
+See http://www.squid-cache.org for more info.
 
-iptables -A FORWARD -o eth0 -p tcp -m tcp -d <approved mail server>
---dport 25 -j ACCEPT
- iptables -A OUTPUT -o eth0 -p tcp -m tcp -d <approved mail server>
---dport 25 -j ACCEPT
+> also .. any tips on how to this on a BSD box?
 
-Dharmendra T.
-Linux Security and Admin,
-www.nsecure.net
+You can certainly run Squid under BSD (and you certainly can't run netfilter 
+under BSD).
 
-This message is intended for the addressee only. It may contain
-privileged or confidential information. If you have received
- this message in error, please notify the sender and destroy the message
-immediately. Unauthorised use or reproduction of 
-this message is strictly prohibited.
+Regards,
 
-On Tue, 2004-06-22 at 20:02, Anthony R. Vallario wrote:
-> I hope you all can help. Ok, here's the setup
-> 
-> 
-> Internet: eth0
-> Lan: eth1
-> Tunnel: tap0
-> Bridge: br0 (tap0<->eth1)
-> 
-> 
-> I have the firewall setup to be a gateway/router to the internet, and to the private offsite lan thru the tunnel. Everything works great, minus one thing.
-> 
-> I have FORWARD/OUTPUT rules for not letting certain traffic out to the internet. Mainly virus traffic and use of other mail servers. Only problem is they aren't working. Here are the rules:
-> 
-> 
-> iptables -A FORWARD -o eth0 -p tcp -m tcp -d <approved mail server> --dport 25 -j ACCEPT
-> iptables -A FORWARD -o eth0 -p tcp -m tcp --dport 25 -j DROP
-> iptables -A OUTPUT -o eth0 -p tcp -m tcp -d <approved mail server> --dport 25 -j ACCEPT
-> iptables -A OUTPUT -o eth0 -p tcp -m tcp --dport 25 -j DROP
-> iptables- A FORWARD -o eth0 -p tcp -m tcp --dport 445 -j DROP
-> iptables -A OUTPUT -o eth0 -p tcp -m tcp --dport 445 -j DROP
-> iptables- A FORWARD -o eth0 -p udp -m udp --dport 445 -j DROP
-> iptables -A OUTPUT -o eth0 -p udp -m udp --dport 445 -j DROP
-> 
-> Now if I take the tunnel and bridge are down(Only having eth1 NAT'D to eth0), everything works fine. I've read that iptables works at layer 3 and will not filter bridged interfaces. Well tap0 and eth1 are the bridged interfaces, not eth0. So why isn't the firewall stopping these packets? I can telnet to port 25 all day long on non-approved mail servers. 
-> 
-> 
-> Anthony R. Vallario
+Antony.
 
 -- 
+There's no such thing as bad weather - only the wrong clothes.
 
+ - Billy Connolly
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
