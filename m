@@ -1,9 +1,9 @@
 From: Michael <mutk@iprimus.com.au>
 Subject: Re: bandwidth again maybe O T
-Date: Thu, 05 Sep 2002 18:44:27 +1000
+Date: Thu, 05 Sep 2002 20:33:37 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D77196B.7090301@iprimus.com.au>
-References: <200209041908.49707@.> <200209041527.g84FRpv31480@vulcan.rissington.net> <200209051228.03102@.>
+Message-ID: <3D773301.9040109@iprimus.com.au>
+References: <200209041908.49707@.> <200209041527.g84FRpv31480@vulcan.rissington.net> <200209051228.03102@.> <3D77196B.7090301@iprimus.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,50 +19,42 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: IPtables Users <netfilter@lists.samba.org>
 
-PayalR wrote:
+Ohh toss....
 
->Hi,
->Thanks a lot for mails. Well, I think I get the general idea.
->  
->
->>However, to measure the amount of http traffic going to/from a specific IP
->>address, put a couple of rules such as this in your FORWARD chain:
->>iptables -I FORWARD -d a.b.c.d -p tcp --dport 80
->>iptables -I FORWARD -s a.b.c.d -p tcp --sport 80
->>    
->>
->
->I wanted for all protocol and not just http so I modified your rule a bit 
->like,
->iptables -I FORWARD -d 192.168.0.1 -p tcp
->iptables -I FORWARD -s 192.168.0.1 -p tcp
->
->These are the only two rules I have.
->
->I tried to test it using 
->#iptables -L FORWARD -x -v
->Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
->    pkts      bytes target     prot opt in     out     source               
->destination
->       0        0            tcp  --  any    any     localhost.localdomain  
->anywhere
->
->       0        0            tcp  --  any    any     anywhere             
->localhost.localdomain
->
->I tried pinging it few times, connecting to port 25, telnet, 80 etc. fom the 
->local machine. But the number of bytes above do not change.
->What must be wrong?
->
+My appologies, I shall clarify:
 
+If a packet originates from local processes, and is destined for a local 
+process, the INPUT chain is traversed only.
 
-Since you are pinging from localhost, I don't think the FORWARD chain is 
-traversed. The packets go straight to OUTPUT chain. If the packets came 
-from somewhere else, and are to be forwarded by the host on which 
-iptabls is running, then the packets will be seen and counted by FORWARD.
+If a packet originates from local process and is destined for non local 
+process, the OUTPUT chain is traversed only.
 
-Place the rules in the OUTPUT chain, you should see things from 
-localhost being counted..
+If the packet originates from non local process, and is destined for 
+local process, the INPUT chain is traversed.
+
+If packet originates non-local, and is destined non-local, it traverses 
+FORWARD
+
+For all, not considering any NAT or MASQ...
+
+Sorry for any confusion I might have caused.
+
+Michael wrote:
+
+> PayalR wrote:
+> <snip>
+>
+> Since you are pinging from localhost, I don't think the FORWARD chain 
+> is traversed. The packets go straight to OUTPUT chain. If the packets 
+> came from somewhere else, and are to be forwarded by the host on which 
+> iptabls is running, then the packets will be seen and counted by FORWARD.
+>
+> Place the rules in the OUTPUT chain, you should see things from 
+> localhost being counted.. 
+
+Err so long as the destination is non-local...Otherwise it will be seen 
+in INPUT chain...
+
 
 Cheers,
 Michael
