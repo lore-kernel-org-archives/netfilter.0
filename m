@@ -1,16 +1,12 @@
-From: alucard@kanux.com
-Subject: Re: forwarding on the same NIC
-Date: Tue, 11 May 2004 09:49:39 -0400 (VET)
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: DROP or REJECT
+Date: Tue, 11 May 2004 10:45:57 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1166.200.44.170.105.1084283379.squirrel@200.44.170.105>
-References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105> 
-    <200405102115.14089.Antony@Soft-Solutions.co.uk> 
-    <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>
-    <1084227992.14224.5.camel@localhost>
+Message-ID: <163801c4375e$49bb6d50$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_1635_01C43745.24670960"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084227992.14224.5.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,92 +16,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: alucard@kanux.com
 
-Hi again
+This is a multi-part message in MIME format.
 
-   I used a trace program and there are no packets going thru, and I scan
-the ports and there's no 8080 open, let me show you everything again
+------=_NextPart_000_1635_01C43745.24670960
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Here's my /etc/rc.d/rc.firewall
------
-echo "Borrando posibles reglas anteriores..."
-iptables -F
-iptables -X
+Which is better (to drop or reject packets)?  I am asking more =
+specifically for connections from the internet to my external firewall.
 
-echo "Habilitando politicas de negacion total de paquetes"
+My second question is if I have a DNS in my DMZ (contains only ip's in =
+my dmz.  internal boxes use this as their DNS.  This DNS falls back to =
+my ISP), do I have to allow both TCP and UDP connections on port 53 ?  =
+Can I not just have UDP, or does it use both ?=20
 
-iptables -P FORWARD DROP
-iptables -P INPUT DROP
-
-echo "Reglas para paquetes de entrada y salida"
-
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-iptables -A INPUT -p tcp --dport 21 -j ACCEPT
-iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-
-##internas
-iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
-iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
-iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
-
-#para el forward a la maquina compaq
-
-echo 0 > /proc/sys/net/ipv4/ip_forward
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT
---to-destination 10.73.219.77:80
-echo 1 > /proc/sys/net/ipv4/ip_forward
------
-
-Here's my nmap scan
------
-root@mail:~# nmap 10.73.219.156
-
-Starting nmap 3.48 ( http://www.insecure.org/nmap/ ) at 2004-05-11 09:42 VET
-Interesting ports on mail.aeropostal.com.ve (10.73.219.156):
-(The 1651 ports scanned but not shown below are in state: filtered)
-PORT     STATE  SERVICE
-21/tcp   closed ftp
-22/tcp   open   ssh
-25/tcp   open   smtp
-80/tcp   open   http
-143/tcp  open   imap
-3306/tcp open   mysql
-
-------
-
-As we can see, there's no 8080 port. We have to remember that the
-interface that is nat'ed' from the internet is the same one that's
-forwarding packets to 10.73.219.77. Do you think that this could be the
-reason? should I use a second card and use it to forward packets? Here's
-setup, the one I wrote on the first message
-
------
-
-- The linux box has only one NIC -and having a second one is not a
-problem- It functions as a web/mail server, and that means that I'm using
-80 and 25 already. What i'd like to do is, access another internal
-webserver from the outside getting in using another port in the nat'ed'
-linux box.
+Thank you.
 
 
--------      -----------------      ----------------
-router |<--->|Linux box      |<---->|2nd WebServer |
--------      |using web/mail |      |10.73.219.77  |
-             |10.73.219.156  |      ----------------
-             -----------------
 
--------------
 
-Thanx a lot for your time...
+Peter Marshall, BCS
+Projects Division, CARIS=20
+115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+Phone:  (506) 458-8533 (Reception)=20
+</html>
+------=_NextPart_000_1635_01C43745.24670960
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Juan
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Which is better (to drop or reject =
+packets)?&nbsp;=20
+I am asking more specifically for connections from the internet to my =
+external=20
+firewall.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>My second question is if I have a DNS =
+in my DMZ=20
+(contains only ip's in my dmz.&nbsp; internal boxes use this as their =
+DNS.&nbsp;=20
+This DNS falls back to my ISP), do I have to allow both TCP and UDP =
+connections=20
+on port 53 ?&nbsp; Can I not just have UDP, or does it use both ? =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thank you.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Peter Marshall, BCS<BR>Projects =
+Division, CARIS=20
+<BR>115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA<BR>Phone:&nbsp; =
+(506)=20
+458-8533 (Reception) <BR>&lt;/html&gt;</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_1635_01C43745.24670960--
+
 
