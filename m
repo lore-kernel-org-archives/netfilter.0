@@ -1,10 +1,11 @@
-From: Mohammad Shakir <shakirz1@yahoo.com>
-Subject: How to Block Mac Address ?
-Date: Sat, 14 Jun 2003 23:56:22 -0700 (PDT)
+From: "Moti Levy" <moti@flncs.com>
+Subject: Re: Upgrading IPTables
+Date: Sun, 15 Jun 2003 10:27:01 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030615065622.27723.qmail@web40707.mail.yahoo.com>
+Message-ID: <006601c3334a$30a0d8f0$cb01a8c0@abc12345.com>
+References: <NGBBKDHCAKEKLHOEEHDNEEKOCKAA.allynb@adsne.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-2018361082-1055660182=:27585"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,48 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: allynb@adsne.com, netfilter@lists.netfilter.org
 
---0-2018361082-1055660182=:27585
-Content-Type: text/plain; charset=us-ascii
-
-
-I want to block a mac address for this I complie this rule 
-but it is not working, any friend who can slove this problem.
-
-
-#  Flush all Rules
-/sbin/iptables --flush
-/sbin/iptables --table nat --flush
-/sbin/iptables --delete-chain
-/sbin/iptables --table nat --delete-cha
-/sbin/iptables -N MACtest
-
-#  to block this MAC Address
-/sbin/iptables -t filter -A FORWARD -j MACtest
-/sbin/iptables -A MACtest -m mac --mac-source 00:02:55:EE:65:D8 -j DROP
-
-#  for MASQUREADE
-/sbin/iptables --table nat --append POSTROUTING -s 192.168.0.0/24 --out-interface ppp0 -j MASQUERADE
-
-echo "1" > /proc/sys/net/ipv4/ip_forward
+If you're new to linux i' recommend sticking to the redhat pre made rpm's
+if you wish tolearn how to compile the kernel
+this link would be a good start for redhat 9
+http://www.redhat.com/docs/manuals/linux/RHL-9-Manual/custom-guide/ch-custom-kernel.html
+there's guides for all of redhat's versions on their site
+----- Original Message ----- 
+From: "Allyn Baskerville" <allynb@adsne.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Saturday, June 14, 2003 10:03 PM
+Subject: Upgrading IPTables
 
 
+> I've had IPTables running on RedHat for some time and would like to
+upgrade
+> it. The kernel version is 2.4.18-3. I'm fairly new to Linux, and I don't
+> know where the kernel was built. Hence, I don't know how to launch the
+> initial command:
+>
+> % make KERNEL_DIR=<<where-you-built-your-kernel>>
+>
+> I see the source under /usr/src/redhat/, and I've tried about every
+> directory that has the word 'kernel' or the kernel version in it. TIA for
+> your help. Allyn
+>
+>
+>
+>
 
-
----------------------------------
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
---0-2018361082-1055660182=:27585
-Content-Type: text/html; charset=us-ascii
-
-<P>I want to block a mac address for this I complie this rule <BR>but it is not working, any friend who can slove this problem.</P>
-<P><BR>#&nbsp; Flush all Rules<BR>/sbin/iptables --flush<BR>/sbin/iptables --table nat --flush<BR>/sbin/iptables --delete-chain<BR>/sbin/iptables --table nat --delete-cha<BR>/sbin/iptables -N MACtest</P>
-<P>#&nbsp; to block this MAC Address<BR>/sbin/iptables -t filter -A FORWARD -j MACtest<BR>/sbin/iptables -A MACtest -m mac --mac-source 00:02:55:EE:65:D8 -j DROP</P>
-<P>#&nbsp; for MASQUREADE<BR>/sbin/iptables --table nat --append POSTROUTING -s 192.168.0.0/24 --out-interface ppp0 -j MASQUERADE</P>
-<P>echo "1" &gt; /proc/sys/net/ipv4/ip_forward<BR></P>
-<DIV></DIV><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://pa.yahoo.com/*http://rd.yahoo.com/evt=1207/*http://promo.yahoo.com/sbc/">SBC Yahoo! DSL</a> - Now only $29.95 per month!
---0-2018361082-1055660182=:27585--
 
