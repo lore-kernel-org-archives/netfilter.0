@@ -1,11 +1,9 @@
-From: Michael <mutk@ozemail.com.au>
-Subject: Re: NetBIOS browsing across subnets
-Date: Fri, 05 Jul 2002 12:42:56 +1000
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: RE: NetBIOS browsing across subnets
+Date: Fri, 5 Jul 2002 11:49:50 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D2507B0.6030202@ozemail.com.au>
-References: <200FAA488DE0D41194F10010B597610D2BA23D@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA23E@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,8 +14,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Michael' <mutk@ozemail.com.au>, netfilter@lists.samba.org
+
+I'm sorry but NFS is no way a solution for this.. I've seen crashes on NFS
+servers before many times and also when one server has a problem then the
+other server goes into a panic attack.. sometimes even goes into 100%CPU as
+I've seen before.. yes upgrade NFS if youmust but I still say samba as
+master browser is the way to go as this works perfectly on my VPN
+server/firewall without a hitch..
+
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: Michael [mailto:mutk@ozemail.com.au]
+Sent: Friday, 05 July 2002 12:43 PM
 To: netfilter@lists.samba.org
+Subject: Re: NetBIOS browsing across subnets
+
 
 There generally isn't a way to do it. NetBIOS is feeble, and non 
 routeable...
