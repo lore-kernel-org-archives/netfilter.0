@@ -1,51 +1,61 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Newbie Question -forcing to pass in squid
-Date: Mon, 14 Oct 2002 10:10:25 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021014091027.ROSG459.mta02-svc.ntlworld.com@there>
-References: <1034560988.10075.15.camel@pegasus.gral.com.br>
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: Re: owner based policy routing
+Date: Mon, 14 Oct 2002 17:51:37 +0530
+Sender: lartc-admin@mailman.ds9a.nl
+Message-ID: <3DAAB6D1.2000100@inbox.lv>
+References: <Pine.LNX.4.44.0210120056220.1206-100000@u.domain.uli>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1034560988.10075.15.camel@pegasus.gral.com.br>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <lartc-admin@mailman.ds9a.nl>
+Errors-To: lartc-admin@mailman.ds9a.nl
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Julian Anastasov <ja@ssi.bg>
+Cc: LARTC <lartc@mailman.ds9a.nl>, NETFILTER <netfilter@lists.netfilter.org>
 
-On Monday 14 October 2002 3:03 am, Fl=E1vio Brito wrote:
+ok, i have tried applying the ip rule fwmark in hex but dont see any 
+difference !..
 
-> Dear Friends
->
-> I have two machines, and I trying to force all port 80 traffic to pass
-> in SQUID 3128. But when people unset proxy in browser, they bypass SQUID
-> to the Internet . I cannot put transparent proxy, because SQUID is
-> authenticating.
+The routing decission is take be4 the packets comes to OUTPUT table, if 
+thats true then it will be not possible to route **owner** as per policy 
+routing--am i right ??
+if ys then how can one achieve **owner** based policy routing in linux 
+box ??
 
-I don't see why Squid Authentication stops you from setting netfilter to do=
-=20
-transparent proxying.
+Julian Anastasov wrote:
+> 	Hello,
+> 
+> On Fri, 11 Oct 2002, Arindam Haldar wrote:
+> 
+> 
+>>50:     from all fwmark       50 lookup ispA
+> 
+> 
+> 	fwmark in ip rule is 0x50 (it is defined and printed in hex)
+> 
+> 
+>>iptables -I OUTPUT -t mangle -m owner --uid-owner <squid> -d 202.0.0.0/8
+>>  -j MARK --set-mark 50
+> 
+> 
+> 	and here 50 is 0x32 (not 0x50). Is that the problem?
+> 
+> Regards
+> 
+> --
+> Julian Anastasov <ja@ssi.bg>
+> 
+> 
+> 
 
-Anyway, to solve your problem, block access from all machines except your=20
-Squid to external TCP port 80.
 
-iptables -A FORWARD -s ! a.b.c.d -p tcp --dport 80 -o ethx -j DROP
-
-where a.b.c.d is the address of the squid machine and ethx is your external=
-=20
-interface.
-
-Antony.
-
---=20
-
-The difference between theory and practice is that
-in theory there is no difference, whereas in practice there is.
-
+_______________________________________________
+LARTC mailing list / LARTC@mailman.ds9a.nl
+http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
