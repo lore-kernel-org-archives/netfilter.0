@@ -1,8 +1,8 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: server in DMZ
-Date: Thu, 02 Sep 2004 00:21:33 -0400
+Date: Thu, 02 Sep 2004 09:13:25 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094098893.2102.165.camel@localhost>
+Message-ID: <1094130804.2573.9.camel@wolfpack.ljm.dom>
 References: <20040902025038.GA10835@tranquility.scriptkitchen.com>
 	<1094094296.1824.96.camel@wolfpack.ljm.dom>
 	<20040902031755.GA11485@tranquility.scriptkitchen.com>
@@ -24,8 +24,7 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Cc: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 On Thu, 2004-09-02 at 00:08, Payal Rathod wrote:
 > On Wed, Sep 01, 2004 at 11:54:55PM -0400, John A. Sullivan III wrote:
@@ -44,23 +43,32 @@ On Thu, 2004-09-02 at 00:08, Payal Rathod wrote:
 > But will this not forward requests from my squid proxy server too?
 > 
 > -Payal
-That's right - I keep forgetting that you are using Squid.  As I
-mentioned, I'm a little rusty on Squid configuration.  How is the
-traffic getting to Squid.  If I recall correctly, I usually do it with a
-REDIRECT.  That means there needs to be a rule to allow the traffic to
-Squid (it sounds like there already is one because access is working). 
-However, at that point, doesn't the Squid ACL list take over? If I
-recall, there is a section in the Squid configuration file where one
-specifies which addresses are allowed what access - John
+
+i think there's some confusion here...there are three rules involved in
+this scenario:
+
+(1) NAT rule that maps port 80 on the outside to port 80 on your DMZ
+server:
+
+  -A PREROUTING -d 5.6.7.8 -p tcp -m tcp --dport 80 \
+    -j DNAT --to-destination 10.10.10.3
+
+(2) FILTER rule that allows external access to server in DMZ from client
+IP:
+
+  -A FORWARD -p tcp -s 1.2.3.4 -d 10.10.10.3 --dport 80 -j ACCEPT
+
+(3) FILTER rule that allows squid proxy running directly on your
+firewall to fetch content from server in DMZ:
+
+  -A OUTPUT -p tcp -d 10.10.10.3 --dport 80 -j ACCEPT
+
+remember:  packets passing through the firewall are filtered by FORWARD,
+packets coming from the firewall are filtered by OUTPUT.
+
+-j
+
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+Jason Opperisano <opie@817west.com>
 
 
