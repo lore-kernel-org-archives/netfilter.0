@@ -1,13 +1,11 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: Question on PREROUTING and INPUT chains
-Date: Sat, 9 Nov 2002 07:32:41 -0500 (EST)
+From: "Tom Michiels" <linux@w3s.be>
+Subject: Re: `Microsoft VPN and iptables
+Date: Sat, 09 Nov 2002 13:30:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0211090730120.15561-100000@dell>
-References: <H52KD3$II79GwJU6pjw8ZNZc1oYk1taD6_z_kdUix49OEr@uol.com.br>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <WorldClient-F200211091330.AA30220011@w3s.be>
+References: <1653.10.254.2.5.1036822899.squirrel@www.nobarrier.co.za>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <H52KD3$II79GwJU6pjw8ZNZc1oYk1taD6_z_kdUix49OEr@uol.com.br>
+In-Reply-To: <1653.10.254.2.5.1036822899.squirrel@www.nobarrier.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +15,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jonathan <infomail@nobarrier.co.za>, netfilter@lists.netfilter.org
 
-On Mon, 4 Nov 2002, Carlos Fa=C4=BFanha wrote:
+Jonathan,
 
-> I have a Linux box used as NAT server and firewall. All =
+Is your IP47 protocol setup okay ? If you are using ms pptp to setup a 
+vpn connection you need to know that the initial authentication is based 
+upon communication over 1723/tcp. When the authentication is achieved 
+then communication starts over an IP protocol with number 47. Your router 
+then should be able to route this protocol. 
 
-> requests on its port 80 are forwarded to a local webserver =
+In most cases the issue is that the router is not able to forward this ip 
+packets.
 
-> inside my network. I want to block access to all services =
+check this out : http://www.impsec.org/linux/masquerade/VPN-howto/VPN-
+Masquerade.html#toc1
 
-> including http from a specific external host.
-> =
 
-> I'm using the following rule to block the host
-> =
+Grtz,
 
-> iptables -A INPUT -i $extint -s $hostip -j DROP
-> =
+Tom
+-----Original Message-----
+From: "Jonathan" <infomail@nobarrier.co.za>
+To: <netfilter@lists.netfilter.org>
+Date: Sat, 9 Nov 2002 08:21:39 +0200 (SAST)
+Subject: `Microsoft VPN and iptables
 
-> and this one to do the NAT
-> =
-
-> iptables -t nat -A PREROUTING -p tcp --dport 80 -d $extip -j =
-
-> DNAT --to $webserverip:80
-> =
-
-> The problem is that the host is blocked from accessing all =
-
-> services but http. I've already checked if there are any =
-
-> rules before that ACCEPT the request. It seems that prerouted =
-
-> packets are bypassing the INPUT chain.
-
-as i read it, filtering on INPUT is only going to be effective
-for those packets that are destined for the local host itself.
-setting up nat PREROUTING sends those incoming packets, not to
-filter/INPUT, but through the FORWARD chain.
-
-if you want to drop some outside host from getting thru to the
-internal webserver, you should add the DROP rule, not to INPUT,
-but to FORWARD.
-
-unless, of course, i'm badly mistaken.
-
-rday
+> Hi all
+> 
+> Could some help me with this or point me in the right direction.
+> 
+> I have a few microsoft machine in side my linux firewall and I need to
+> use
+> microsoft VPN to connect to a microsoft machine on the internet
+> when I double click on the icon is says " Connecting to
+> ???.???.???.???"
+> and then says "Verifing Usernamd & Password" and then times out. If I
+> dial
+> into the net and bypass the firewall I can connect.
+> Thank you
+> Jonathan X Peers
+> 
+> jonathan@nobarrer.co.za
+> 
+> 
+> 
+> ______________________________________
+> Mail has been scanned and protected by No Barrier Communications
+> www.nobarrier.co.za
 
 
