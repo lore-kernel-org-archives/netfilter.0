@@ -1,99 +1,241 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: A humble proposal
-Date: Thu, 25 Sep 2003 17:19:23 -0700
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E53@alderaan.smgtec.com>
+From: "Thomas Stian Bergheim" <bjartebe@eunet.no>
+Subject: Clients joining a host on a private LAN behind a NAT
+Date: Fri, 26 Sep 2003 05:04:47 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <000001c383da$f2ba2320$0200a8c0@knighthawk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C383EB.B642F320"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
-To: firewalldude@newkirk.us
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: netfilter@lists.netfilter.org
 
-I had a thought about this, and I see a lot of work taking this
-approach.
+This is a multi-part message in MIME format.
 
-How about this:
+------=_NextPart_000_0001_01C383EB.B642F320
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Write a jump target that applies only inside the filter table, since the
-first revision would just implement filtering control.
+Hi,
+ 
+I've asked this question before and got a few replies, nothing that made
+it work, though.
+ 
+I am behind a nat-firewall, and I want to be able to host a warcraft3
+game (this works), and have other clients on my internal network join my
+game. Right now they will see the game, but can't join it (which is
+understandable).
+ 
+I've tried a few starcraft-scripts, without much luck..
+ 
+I'm using iptables. Any ideas?
+ 
+Thanks,
+ 
+ - Thomas
+ 
 
-The module itself would be initialized by a userspace tool be adding
-rules. An example would be:
+------=_NextPart_000_0001_01C383EB.B642F320
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-iptables -I INPUT -m expire --expire-condition timer=3D6000 --expire-id
-12123124325 --source 192.168.1.1/24 -j ACCEPT
-iptables -I OUTPUT -m expire --expire-condition timer=3D6000 --expire-id
-12123124326 --destination 192.168.1.1/24 -j ACCEPT
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-Since they are inserted in these tables, they should be called before
-ESTABLISHED,RELATED is even hit.
-
-The jump determines if the packets are valid any longer. The problems
-that I can see here are:
-
-- The rule itself needs to be cleared out of the chain once it is
-expired. I could get the daemon to do some housekeeping, but it'd be
-better if the jump module could clean up its own reference. Can this be
-done?
-
-- The CONNTRACK entries for the allowed sessions are not dropped. Once
-again, it would be nice if the jump module could clean up the CONNTRACK
-entry.
-
-
------Original Message-----
-From: Joel Newkirk [mailto:firewalldude@newkirk.us]=20
-Sent: Tuesday, September 23, 2003 2:10 PM
-To: Daniel Chemko
-Cc: netfilter@lists.netfilter.org; netfilter-devel@lists.netfilter.org
-Subject: Re: A humble proposal
-
-On Tue, 2003-09-23 at 12:13, Daniel Chemko wrote:
-> I have been researching some possible extensions to the Netfilter
-> environment, and something has become very necessary for my current
-> environment. The following proposal outlines what I wish to implement.
-I
-> am wondering if anyone would find value in this. Plus, I look forward
-to
-> feedback so that I may improve my ideas.
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
 
-> Suggestion:
->=20
-> I would like to take pam_iptables and expand it beyond its simple
-> structure. Features will include:
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C383EB.B5143720">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:HyphenationZone>21</w:HyphenationZone>
+  <w:EnvelopeVis/>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EpostStil17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Vanlig tabell";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
 
-My humble suggestion would be that this should be handled in the
-stateful
-connection tracking - If a session is authenticated and certain
-connections
-are to be allowed, then the new allowed connections would be of state=20
-"related".  Really handy would be the ability to distinguish these
-particular
-'related' connections and feed them through specific chains.  I for one=20
-would NOT want to simply open the box (or network) wide for every
-authenticated=20
-connection, but would like to be able to specify a different set of
-(more=20
-permissive) rules for them once authenticated.  Perhaps patch an
-additional
-state - "PAM" or "AUTH".  Or the ability to specify a fwmark that is
-automatically implemented for RELATED traffic to the authenticated
-session,
-allowing different chains to be traversed based on the mark found.
+<body lang=3DNO-BOK link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:35.4pt'>
 
-j
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I&#8217;ve asked this
+question before and got a few replies, nothing that made it work, =
+though.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
+></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I am behind a <span
+class=3DSpellE>nat</span>-firewall, and I want to be able to host a =
+warcraft3
+game (this works), and have other clients on my internal network join my =
+game. Right
+now they will see the game, but can&#8217;t join it (which is =
+understandable).<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
+></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I&#8217;ve tried a few =
+<span
+class=3DSpellE>starcraft</span>-scripts, without much luck<span =
+class=3DGramE>..</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
+></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>I&#8217;m using <span
+class=3DSpellE>iptables</span>. <span class=3DGramE>Any =
+ideas?</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
+></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'>Thanks,<o:p></o:p></spa=
+n></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></span=
+></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial;mso-ansi-language:EN-GB;mso-no-proof:yes'><span
+style=3D'mso-spacerun:yes'>&nbsp;</span>- =
+Thomas<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+lang=3DEN-GB
+style=3D'font-size:12.0pt;mso-ansi-language:EN-GB'><o:p>&nbsp;</o:p></spa=
+n></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0001_01C383EB.B642F320--
 
 
 
