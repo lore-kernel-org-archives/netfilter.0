@@ -1,14 +1,15 @@
 From: Navneet Choudhary <navneetkc@gmail.com>
 Subject: Re: Fwd: Linux as router (Gateway Server)
-Date: Sun, 13 Feb 2005 22:34:50 +0530
-Message-ID: <1dceb01205021309043b1bb1e8@mail.gmail.com>
+Date: Sun, 13 Feb 2005 22:49:35 +0530
+Message-ID: <1dceb01205021309196098c851@mail.gmail.com>
 References: <1dceb012050211233357e23dd4@mail.gmail.com>
 	<1dceb01205021123483860fb86@mail.gmail.com>
 	<1108216901.4462.27.camel@hubcap.ljm.dom>
+	<4f3930a705021214026db11902@mail.gmail.com>
 Reply-To: Navneet Choudhary <navneetkc@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108216901.4462.27.camel@hubcap.ljm.dom>
+In-Reply-To: <4f3930a705021214026db11902@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,61 +21,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
+To: Josh Nerius <jnerius@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-> > Feb 12 09:15:33 squid (squid): Cannot open HTTP Port
+On Sat, 12 Feb 2005 16:02:58 -0600, Josh Nerius <jnerius@gmail.com> wrote:
+> >> that has nothing to do with iptables.
 > 
-> that has nothing to do with iptables.  my guess is that you are either:
+> This could have everything to do with iptables, depending on his
+> configuration. If there is a redirector being used, the connection
+> that a child redirector process makes to the squid daemon can be
+
+yes i am using SquidGuard
+
+> affected by iptables rules. The fact that it has difficulty binding to
+> the assigned port may be due to other errors related to this child
+> process communication causing the squid process to die before it
+> finishes starting.
 > 
-> (a) telling squid to listen on a port that is already in use by another process
-
-No, squid is listening on port 3128(not used by any process)
-
-> (b) trying to start squid after it's already started
-
-No, it's just started once.
-
-> (c) running squid as an unprivileged user and trying to bind to a
-> privileged port
-
-No, it's being started by root.Afterward it's owned by squid
-
-Is this stopping squid to access HTTP port?
-
-Since,  OUTPUT rule only allow user squid to access port 80 [Wild guess]
-
--A OUTPUT -o eth1 -p tcp -m tcp --sport 1024:65535 \ --dport 80
---tcp-flags SYN,RST,ACK SYN -m owner  --uid-owner squid -j ACCEPT
-
-> go read:
+> As to trying to bind to a privileged port from an unprevileged
+> account, he already stated that he's binding to the standard 3128.
 > 
->   http://www.squid-cache.org/Doc/FAQ/FAQ-11.html#ss11.23
+> >> (ps - google is your friend)
 > 
-> (ps - google is your friend)
-
-Always been our friend.
-
-> > Why my iptables rule blocking squid to open HTTP port.
+> It may do you good to keep that in mind.
 > 
-> it isn't.
+> > > > Why my iptables rule blocking squid to open HTTP port.
+> 
+> I'm currently searching for the exact information from the squid
+> documentation, but when I had a similar problem about 6 months ago, I
+> recall adding rules to the INPUT and possibly OUTPUT chains to accept
+> traffic coming from the loopback interface to/from the squid (or
+> possibly redirector) port.
 
-I think some way this problem is related to iptables rule
-Since, squid daemon won't die if i start it with no fireawall rule
-(allowing everything to pass, no blocking/restrictions)
-> -j
- 
-By the way, all my iptables rules were lifted or inspired by yours
-reply to this mailing list[posted this month itself].
+Allowing loopback[used]
+ -A INPUT -s 127.0.0.1 -j ACCEPT
+Any other rule ? possible for OUTPUT
 
-Thank you for your help & co-operation
 
-regards,
-Navneet
+> > it isn't.
+> >
+> > -j
+> 
+> Jason, please do your homework. You have a good knowledge of
+> netfilter/iptables but please leave subjects you don't understand to
+> those who do.
+> 
+> Josh Nerius
+> 
 > --
-> "It's not easy to juggle a pregnant wife and a troubled child, but
->  somehow I managed to fit in eight hours of TV a day."
->         --The Simpsons
+> Math problems? Call 1-800-[(10x)(13i)^2]-[sin(xy)/2.362x]
 > 
 >
 
