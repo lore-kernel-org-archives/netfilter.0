@@ -1,8 +1,8 @@
-From: rruegner <robowarp@gmx.de>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: pptp-conntrack-nat
-Date: Tue, 14 Sep 2004 18:18:16 +0200
+Date: Tue, 14 Sep 2004 13:31:53 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <414719C8.5030509@gmx.de>
+Message-ID: <1095183113.1895.14.camel@wolfpack.ljm.dom>
 References: <20040914161050.8788.qmail@web52403.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,28 +17,24 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: lucas baresi <lbaresi@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset=; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-no if your pptp server is on the firewall box you dont need the pptp=20
-module, openning ports is enough
-
-lucas baresi schrieb:
+On Tue, 2004-09-14 at 12:10, lucas baresi wrote:
 > Hi people.
 >=20
 > I have a dumb question, If my pptpd server and my
 > firewall netfilter are in the same box, I need the
-> module pptp-conntrack-nat?, no! it=B4s rigth?
->=20
-> Thx,
-> Lucky=20
->=20
->=20
-> 	=09
-> ______________________________________________
-> Renovamos el Correo Yahoo!: =A1100 MB GRATIS!
-> Nuevos servicios, m=E1s seguridad
-> http://correo.yahoo.es
->=20
+> module pptp-conntrack-nat?, no! it=C2=B4s rigth?
+
+no--you do not need the pptp-conntrack-nat patch.
+
+allow TCP port 1723 and IP protocol 47 (GRE) inbound and you'll be good
+to go.
+
+-j
+
+--=20
+Jason Opperisano <opie@817west.com>
+
 
