@@ -1,13 +1,15 @@
-From: "John Davey" <list@davey.net.au>
-Subject: RE: Forwarding problem, :( port redirection!
-Date: Mon, 24 Feb 2003 23:53:27 +1030
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: -m recent
+Date: Mon, 24 Feb 2003 08:59:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GNECLCLHIFNNAHMOKHDPEEEODFAA.list@davey.net.au>
-References: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
+Message-ID: <20030224135933.GP18261@ns.snowman.net>
+References: <3E2FEA1C.9030305@maximum-linux.net> <20030123191505.GL484@ns.snowman.net> <3E301172.101@maximum-linux.net> <20030123224028.GM484@ns.snowman.net> <3E309EFA.4060605@maximum-linux.net> <20030125012940.GN484@ns.snowman.net> <3E398201.3090502@maximum-linux.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J9aX9M0sKuxf6dAJ"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
+Content-Disposition: inline
+In-Reply-To: <3E398201.3090502@maximum-linux.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,92 +19,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: louie miranda <lmiranda@chikka.com>, netfilter@lists.samba.org
-Cc: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffelist@amagerkollegiet.dk>
-
-Your FORWARD rule is still wrong. It's already been DNAT'd so forward it
-to the IP thats on the box..ie 10.0.0.11
-
-panic:/# iptables -A FORWARD -i eth0 -o eth1 -p tcp -d \
-	10.0.0.11 --dport 21 -j ACCEPT
-
-Also your firewall is on panic so NONE of the rules you have listed are even
-used. When you telnet from panic to 10.0.0.11.
-
-http://www.netfilter.org/documentation/index.html#HOWTO
+To: uniplex <uniplex@maximum-linux.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
 
+--J9aX9M0sKuxf6dAJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of louie miranda
-Sent: Monday, 24 February 2003 7:02 PM
-To: netfilter@lists.samba.org
-Cc: Rasmus B=F8g Hansen
-Subject: Re: Forwarding problem, :( port redirection!
+* uniplex (uniplex@maximum-linux.net) wrote:
+> Stephen Frost wrote:
+>=20
+> >If you want to install using one of the tarballs I've created it's
+> >pretty simple.  Patch your kernel using the patch-o-matic as normal.
+> >Then uncompress/untar the tarball you downloaded and copy the
+> >ipt_recent.h and ipt_recent.c from the tarball over the ones that now
+> >exist in your Linux kernel tree (from the patch-o-matic).  You can also
+> >overwrite the libipt_recent.c that is in the extensions directory with
+> >the one from the tarball.  Then compile iptables and your kernel as you
+> >normally would.
+> >
+> >	Stephen
+>=20
+> Thanks Stephen, I got pretty much everything with it working now. I'm=20
+> having a little problem with --seconds now
+>=20
+> --seconds ! 1800 returns an error. so does --seconds \! 1800
+>=20
+> Am I doing something wrong here?
 
+Did you try ! --seconds 1800?  I havn't had a chance to go back and look
+at things, so this is just a thought. :)
 
-panic:/# iptables -t nat -A PREROUTING -i eth0 -p tcp -d
-203.190.72.108 --dport 21 -j DNAT --to 10.0.0.11:21
-panic:/# iptables -A FORWARD -i eth0 -o eth1 -p tcp -d
-203.190.72.108 --dport 21 -j ACCEPT
-panic:/# telnet 203.190.72.108 21
-Trying 203.190.72.108...
-telnet: Unable to connect to remote host: Connection refused
-panic:/# telnet 10.0.0.11 21
-Trying 10.0.0.11...
-Connected to 10.0.0.11.
-Escape character is '^]'.
-220 Dynu FTP Server (Version 1.13)
-^]
-telnet> q
-Connection closed.
-panic:/# telnet 203.190.72.108 21
-Trying 203.190.72.108...
-telnet: Unable to connect to remote host: Connection refused
-panic:/#
+	Stephen
 
-Still no success! :(
+--J9aX9M0sKuxf6dAJ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
+iD8DBQE+WiVFrzgMPqB3kigRAga1AKCNFcRLLjnQXdVb7Ue6HJNEL6V1EACeONgA
+nHnBEAVnY2zv5RT4xJDapEo=
+=Pie0
+-----END PGP SIGNATURE-----
 
---
-thanks,
-louie miranda
-
-
------ Original Message -----
-From: "Rasmus B=F8g Hansen" <moffelist@amagerkollegiet.dk>
-To: "louie miranda" <lmiranda@chikka.com>
-Cc: <netfilter@lists.samba.org>
-Sent: Monday, February 24, 2003 4:25 PM
-Subject: Re: Forwarding problem, :( port redirection!
-
-
-On Mon, 24 Feb 2003, louie miranda wrote:
-
-> Im trying just to forward simple ftp, 21 request into my internal machine.
-> Im typing this but it does not work..
-
-> iptables -t nat -A PREROUTING -i eth0 -p tcp -d 10.0.0.11 --dport 21 -j
-> DNAT --to 203.190.72.108:21
-> iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 203.190.72.108 --dport 21 -j
-> ACCEPT
-
-Are you *sure* of those IP's? 10.0.0.11 is a private IP and is unusable
-on the internet - however your rules state that 10.0.0.11 is located on
-the internet. I'm pretty sure, you need to exchange the global and local
-IP.
-
-/Rasmus
-
---
--- [ Rasmus "M=F8ffe" B=F8g Hansen ] ---------------------------------------
-Drink wet cement: Get Stoned.
-----------------------------------[ moffe at amagerkollegiet dot dk ] --
-
-
-
-
+--J9aX9M0sKuxf6dAJ--
 
