@@ -1,13 +1,10 @@
-From: Rob Verduijn <rverduij@dds.nl>
-Subject: RE: rp-l2tpd iptables and rh9 but no google
-Date: 28 Jul 2003 22:49:14 +0200
+From: "Javier Govea" <jgovea@magma.ca>
+Subject: Re: Round Robin Load Balancing
+Date: Mon, 28 Jul 2003 17:14:48 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059425353.2893.7.camel@rincewind>
-References: <200307282031.h6SKVejX019011@discmail.com>
+Message-ID: <200307282114.h6SLEmbF011519@webmail1.magma.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307282031.h6SKVejX019011@discmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,106 +14,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset=; charset="utf-8"
-To: "Aldo S. Lagana" <alagana@discmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Chris Wilson <chris@netservers.co.uk>, Javier Govea <jgovea@magma.ca>
+Cc: Daniel Chemko <dchemko@smgtec.com>, George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org, Ramin Dousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
 
-Hi there,
+Hi guys,
 
-Sorry that's not it, either that or my ISP is handing out incorrect
-subnet masks with it's dhcp server :P
+Thanx for all your suggestions, but i have bad news. The rules you guys are suggesting 
+make a lot of sense to me but they don't work. My hosts still cannot surf the net. 
 
-I saw that part of my problem fell off the last message
+This rule:
 
-Short version
-Turned on Ip forwarding
-Brought up eth1 (dhcp)
-Brought up ppp0 (also dhcp)
-Turned on masquerading
+iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ip-of-ppp0>
+
+is another form for the masquerade rule:
+
 iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
-On the gateway I can surf to www.redhat.com and www.google.com
-On the client I can only surf to www.redhat.com
-I cannot surf to www.google.com on the client
+Using either of these two rules my hosts can access internet, but i still have the 
+problem of the load balancing. Some ppp links are used more than others in situations 
+such as loading the same web page in four different browsers.
 
-maximum packetsize with ping -s =3D 1472 (on gateway)
-ping -s 1472 www.google.com
-with bigger packets I get no answer
+As soon as i add the "nth" rules to the mangle table my browsers stop working, they just 
+can contact the web servers and eventually they time out. I'm not sure if by adding any 
+rule to my mangle table the browsers stop, but at least they stop when i add your 
+suggestions to the mangle table.
 
-Maximum packetsize with ping -s on client is even smaller
-
-I've been told to check the tunnel with tcpdump, but I get no output
-when surfing to www.google.com
-
-Regards
-Rob
+Any other ideas, suggestions, tips?? all are very welcome...
+Thanx to all, i really appreacite all your time and interest....
+Xavier
 
 
-On Mon, 2003-07-28 at 22:30, Aldo S. Lagana wrote:
-> I had a funky issue that was similar and it turned out that I had the w=
-rong
-> subnet mask on my internet interface.  Coincidentally, my network also
-> started with 64. (I think) - the same as google; but because my subnet =
-mask
-> was wrong, I could not see google!
->=20
->=20
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Rob Verduijn
-> Sent: Monday, July 28, 2003 4:19 PM
-> To: netfilter@lists.netfilter.org
->=20
-> Hi again,
->=20
-> I've set my MTU on eth0 eth1 and ppp0 to 1472
-> Ive been playing around with tcpdump
-> I gave the following command
-> tcpdump -i ppp0 -w dumptcp
-> When I surf to www.redhat.com everything goes wel and I get all kinda o=
-utput
-> in my file
-> But when I surf to google I get nothing, no output whatsoever.
-> Did I give in the wrong syntax?
->=20
-> Regards
-> Rob
->=20
->=20
->=20
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Eric Leblond
-> Sent: vrijdag 18 juli 2003 21:49
-> To: netfilter@lists.netfilter.org
-> Subject: Re: rp-l2tpd iptables and rh9 but no google
->=20
->=20
-> Le ven 18/07/2003 =C3=A0 21:01, Rob Verduijn a =C3=A9crit :
-> > Hi there,
-> >
-> > I've got this curious problem with netfilter.
->=20
-> > I did
-> > echo 1 > /proc/sys/net/ipv4/ip_forward
->=20
-> >
-> > I can ping google so icmp seems to work but I can't surf the web for
-> google.
-> > Neither windows nor linux will work.
->=20
-> You may have look to the MTU, with encapsulation in L2TP you loose some
-> bytes.
-> To test try increase your ping size with the -s option.
->=20
-> If it is working with -s 1500 then try to look at tcpmss.
->=20
-> BR,
-> --
-> Eric Leblond <eric@regit.org>
->=20
->=20
->=20
->=20
->=20
-
+> 
+> Try something like this:
+> 
+> iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 0 \
+> 	-j ROUTE --oif ppp0
+> iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 1 \
+>         -j ROUTE --oif ppp1
+> ...
+> 
+> iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ip-of-ppp0>
+> iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to-source <ip-of-ppp1>
+> ...
+> 
+> Cheers, Chris.
+> -- 
+>    ___ __     _
+>  / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+> / (_ / ,\/ _/ /_ \ | NetServers.co.uk <a 
+href='http://www.netservers.co.uk'>http://www.netservers.co.uk</a> |
+> \ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+> 
+> 
+> 
 
