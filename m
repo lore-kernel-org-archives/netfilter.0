@@ -1,12 +1,14 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: port scanning
-Date: Thu, 18 Mar 2004 16:15:20 -0800 (PST)
+From: Vincent Haverlant <galadril@parinux.org>
+Subject: Re: iptables bridge filter question
+Date: Thu, 18 Mar 2004 20:28:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040319001520.73563.qmail@web61008.mail.yahoo.com>
-References: <20040318224754.5502418D76@smtp.latinmail.com>
+Message-ID: <20040318192850.GD21027@haverlant.org>
+References: <ILECICAFAJIIMPBBLMEAAELECPAA.gerryw@objectivedomain.com> <200403181524.35795.Antony@Soft-Solutions.co.uk> <200403181533.58166.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040318224754.5502418D76@smtp.latinmail.com>
+Content-Disposition: inline
+In-Reply-To: <200403181533.58166.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,97 +19,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-To: Jorge Garcia <anarkophobia@latinmail.com>, netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
+Le Thu Mar 18 15:33:58 2004, Antony Stone a =E9crit:
+| > > I have setup a bridging firewall. I want to drop packets on the ext=
+ernal
+| > > interface, which have source addresses on my internal network. Howe=
+ver,
+| > > the firewall/bridge sits between my T1 router and the rest of my LA=
+N. Is
+| > > there a way to drop the packets mentioned previously, but allow the
+| > > router? I guess a rule could be created that uses the routers mac a=
+ddress
+| > > as a match. I've been playing around with this, but I'm not getting=
+ the
+| > > result I want. I could sure use some advice on this.
+| > >
+| > > [ LAN xx.xx.xx.0/24 ]<=3D=3D>[ bridge/firewall ]<=3D=3D>[ router xx=
+.xx.xx.254/24
+| > > ]
+| >
+| > How about:
+| >
+| > iptables -A FORWARD -i $extIF -s xx.xx.xx.254 -j ACCEPT
+| > iptables -A FORWARD -i $extIF -s xx.xx.xx.0/24 -j DROP
+|=20
+| Okay, scrub that - I overlooked the significance of it being a *bridgin=
+g*=20
+| firewall :(
 
---- Jorge Garcia <anarkophobia@latinmail.com> wrote:
-> hi, i need an example of script ( please, i need the example works, becuo=
-use
-> i found a lot on internet that doesnt work) for logging and dropping port
-> scans with iptables.
-> thanx
->=20
-> http://www.latinmail.com - La forma m=E1s c=F3moda de enviar y recibir tus
-e-mails
+Well this is not altogether stupid :) provided you have the bridge-nf
+patch for a 2.4 kernel or a 2.6 kernel with bridge filtering and
+ebtables.
 
-This is what I use and it works very well. You will need to allow services(=
-if
-you have any that is.) Those rules must be placed before these lines. Also =
-of
-course you must have the device reflect your internet device.
-
-# NMAP and Connection killer
- #
- # iptables -A INPUT -p tcp -i eth0 -m state --state NEW -j LOG
- iptables -A INPUT -p tcp -i eth0 -m state --state NEW,INVALID -j DROP
- iptables -A INPUT -p tcp -i eth0 -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-
- # UDP Filters
- #
- #iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j LOG
- iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j DROP
- iptables -A INPUT -p udp -i eth0 -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-
- # ICMP Filtration
- #
- iptables -A INPUT -p icmp -i eth0 -m state --state NEW,INVALID -j DROP
- iptables -A INPUT -p icmp -i eth0 -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-
-Proof that it works?
-
-hogwarts:~# iptables -vnL
-Chain INPUT (policy ACCEPT 789K packets, 166M bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-15813 1383K LOG        tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        tcp dpt:80 LOG flags 0 level 4
- 2137  128K DROP       all  --  eth0   *       12.175.0.35          0.0.0.0=
-/0
-    0     0 ACCEPT     all  --  eth0   *       68.1.132.236         0.0.0.0=
-/0
-13676 1255K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        tcp dpt:80
- 3727  208K DROP       tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        state INVALID,NEW
- 2516 3759K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        state RELATED,ESTABLISHED
-  27M 3361M DROP       udp  --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        state INVALID,NEW
- 1543  227K ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        state RELATED,ESTABLISHED
- 1697 1426K DROP       icmp --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        state INVALID,NEW
-  133  7448 ACCEPT     icmp --  eth0   *       0.0.0.0/0            0.0.0.0=
-/0 =20
-        state RELATED,ESTABLISHED
-
-Chain FORWARD (policy ACCEPT 11M packets, 3359M bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-
-Chain OUTPUT (policy ACCEPT 1452K packets, 1121M bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-
-
-
-
-=3D=3D=3D=3D=3D
-In the absence of order there will be chaos.
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - More reliable, more storage, less spam
-http://mail.yahoo.com
+Vincent.
+--=20
+   .~.     Vincent Haverlant  -- Galadril -- #ICQ: 35695155  =20
+   /V\      MSN: vincent_msn@haverlant.org  -- http://www.haverlant.org/
+  /( )\      Parinux member: http://www.parinux.org/
+  ^^-^^       GPG: 8FEA 52C2 5C54 A201 2375  0FA5 AF2E 1881 92D0 EE84
 
