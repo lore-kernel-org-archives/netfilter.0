@@ -1,13 +1,12 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: satellite users can't connect to port forwarded services
-Date: Wed, 10 Jul 2002 08:14:11 -0400
+From: "R. Sterenborg" <rsterenborg@xs4all.nl>
+Subject: Re: PPTP behind iptables.
+Date: Wed, 10 Jul 2002 14:17:22 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020710121411.GA30886@cannon.eng.us.uu.net>
-References: <F2178nzRC1uQdfNPqvW0000bba8@hotmail.com> <20020710001332.QHQO19225.mta07-svc.ntlworld.com@there>
+Message-ID: <000d01c2280b$be98a020$153fa8c0@hslbrabantzuid.nl>
+References: <003301c22808$d56683b0$b8ea0344@DIGITALBULLETS.LAN>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020710001332.QHQO19225.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,18 +17,25 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-> > Starband satallites claim they dont support real-time protocalls
-> > like telnet,ssh,ftp and so on.
+----- Original Message ----- 
+From: "Carl Girard" <solo@digitalbullets.com>
+To: <netfilter@lists.samba.org>
+Sent: Wednesday, July 10, 2002 1:56 PM
+Subject: PPTP behind iptables.
+
+
+> I am trying to get a Window2000 Server VPN (PPTP) server behind my linux
+> firewall to work.  I have been able to forward web trafic to the internal
+> server just for testing.
 > 
-> What protocols qualify as non real-time ?
+I'm using this setup too.
+In the archives (about 2 days ago ?) I posted an article of how I do this.
+Subject : "PPTP through masquerading gateway"
 
-I think what he meant was "interactive", not "real-time".
 
-Ramin
+Rob
 
-> Antony.
+
 
