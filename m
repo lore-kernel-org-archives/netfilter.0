@@ -1,13 +1,11 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: PPTP+NAT+MASQ anyone?
-Date: Wed, 11 Dec 2002 15:31:27 +0100
+From: hanxin <hanxin@mail.sc.cninfo.net>
+Subject: How to get a user's IDLE time?
+Date: 11 Dec 2002 22:34:54 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212111531.27260.roy@karlsbakk.net>
-References: <200212091226.23888.roy@karlsbakk.net> <200212111514.55539.roy@karlsbakk.net> <1039616794.20561.83.camel@tux>
+Message-ID: <1039646098.266.8.camel@benny_mobile>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039616794.20561.83.camel@tux>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +16,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Martin Josefsson <gandalf@wlug.westbo.se>
-Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: netfilter mail list <netfilter@lists.netfilter.org>
 
-On Wednesday 11 December 2002 15:26, Martin Josefsson wrote:
-> On Wed, 2002-12-11 at 15:14, Roy Sigurd Karlsbakk wrote:
-> > Then what am I doing wrong???
-> >
-> > cd /usr/src
-> > tar xzf packed/linux-2.4.19.tar.gz
-> > ln -s linux-2.4.19 linux
-> > cd netfilter/patch-o-matic
-> > ./runme pending
-> > ./runme extra
->
-> I have no idea, you say you use p-o-m from cvs and that you apply all
-> pending patches... after doing that the pptp patch works fine here.
+Hi,
+I have a Redhat 7.2 box with kernel 2.4.18. I use iptables for NAT and
+there are 20 clients in my firewall.
+Now I want to know is there a way to get a client PC's IDLE time(the
+time that the PC doesn't send/receive packets through firewall).
 
-it does not here. see previous message for error message
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
+Thanks.
 
-Computers are like air conditioners.
-They stop working when you open Windows.
+--
+hanxin
+
+
+
+
+
 
 
