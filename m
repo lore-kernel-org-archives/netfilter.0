@@ -1,10 +1,14 @@
-From: "per jarevez" <perj8@hotmail.com>
-Subject: RE: block downloads on file type
-Date: Wed, 23 Apr 2003 23:50:25 +0000
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Hoax..
+Date: 23 Apr 2003 22:15:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea1-F3BRArVc4Iu1B600000750@hotmail.com>
+Message-ID: <1051150543.25371.64.camel@alpha.newkirk.us>
+References: <1051117353.25368.12.camel@alpha.newkirk.us>
+	 <3EA6AA92.15646.15BBD6C@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3EA6AA92.15646.15BBD6C@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,38 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: daves@xetron.com, netfilter@lists.samba.org
-Cc: netsnake@963.net
+Content-Type: text/plain; charset="us-ascii"
+To: cbaker@bbbscentralohio.org
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Wed, 2003-04-23 at 15:00, cbaker@bbbscentralohio.org wrote:
+> Hopefully, most people here already knew that this was a hoax. It 
+> obviously wasn't confidential. I have been forwarding all such spams 
+> to Spamcop. I actually saw a decrease for a while. Go to 
+> <www.spamcop.net>.
+> 
+> What is the Secret Service address? And does that accomplish 
+> anything?
+> 
+> Chris
 
-You can use Squid Cache + [content filtering ] + Apache mod_proxy + 
-RewriteMap in mod_rewrite + your own script to process requests passed to it 
-from RewriteMap + Netfilter + IPRoute2 Traffic Control (TC tool).
+Remaining off-topic just a moment longer, the US-only address for this is: (forward full email, including headers if possible)
+419.fcd@usss.treas.gov with subject "419 no loss" (Presuming you haven't lost money to this scam... :^)
 
-Or just [content filtering] + Apache mod_cache + mod_proxy + mod_rewrite + 
-Netfilter + TC Tool.
+They collect them to try to correlate and trace activity, and supposedly to crack down on US email addresses in use for this.
 
-You can also use Snort + [ snortSnaf, etc. ] + Netfilter + TC tool.
+And now, back to your regularly scheduled netfilter discussions... ;^)
 
-Or you can use hogwash + TC tool.
+j
 
-I don't know if you can do it just with Squid + IPTables as he mentioned, 
-but I'm sure you eventually gonna want to use a traffic shaper (TC tool) 
-somewhere.
-
-Just to tell ya that if you are doing it to slow down those downloads, might 
-as well post up a user policy that they are responsible for their own 
-bandwidth usage and just do IPRoute2 traffic shaper and a suitable Qdisc to 
-fair share available bandwidth among people on your network.  A lot less 
-hassle and less bugs / security problems.
-
-Good luck.
-
-_________________________________________________________________
-Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
-http://join.msn.com/?page=features/junkmail
 
 
