@@ -1,10 +1,9 @@
-From: "Philipp Stader" <me@ph1l.de>
-Subject: Masquerading HBCI Connections?
-Date: Wed, 28 Jan 2004 16:30:47 +0100
+From: "Ale Zeta" <moska_buzo@hotmail.com>
+Subject: Destination NAT
+Date: Wed, 28 Jan 2004 17:45:04 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1Alree-0003sL-1d@vishnu.netfilter.org>
+Message-ID: <Law11-F42BJHsxPCFj200039e0c@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,27 +14,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Can I address an UDP packet to more than one IP address at the same time ??
 
-does anyone have experience with masquerading/nat'ing HBCI connections? We
-enable Internet Access for Computers in our Lan via a Linux Router and the
-following statement:
+I have   iptables -t nat -A PREROUTING -i eth1 -j DNAT --to 5.6.7.8-5.6.7.10 
+  as an example, but I want to send the packets to both 7.8 and also 7.10 
+and not doing the load balancing thing....
 
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+Is it possible to do ???
 
-We have a Workstation with Chipcard Reader and tried to get our current
-balance via HBCI without sucess. We actually tried too Chipcards from
-different Banks.
-Anyone has this Setup Working? Or is masquerading HBCI traffic currently
-unsupported? We had no firewall running during our tests.
 
-I'd be happy to hear from you guys.
+From Buenos Aires, Argentina.
 
-Kind regards
 
-Phil 
+Alex.-
+
+_________________________________________________________________
+MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*. 
+http://join.msn.com/?page=features/virus
 
 
