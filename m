@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NATing out going packets
-Date: Wed, 10 Dec 2003 17:02:39 +0000
+From: Joshua Jackson <iptables@vortech.net>
+Subject: Re: PPTP Nat Module
+Date: Wed, 10 Dec 2003 13:17:46 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312101702.39572.Antony@Soft-Solutions.co.uk>
-References: <20031210094947.49b59fdf.mgale@utilitran.com>
+Message-ID: <200312101317.46696.iptables@vortech.net>
+References: <200312092139.12609.iptables@vortech.net> <3FD691D3.9060708@snapgear.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031210094947.49b59fdf.mgale@utilitran.com>
+In-Reply-To: <3FD691D3.9060708@snapgear.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +19,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Philip Craig <philipc@snapgear.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 10 December 2003 4:49 pm, Michael Gale wrote:
-
-> Hello,
+On Tuesday 09 December 2003 22:24, Philip Craig wrote:
+> Joshua Jackson wrote:
+> > My iptables firewall rules include a default policy of DROP for INPUT and
+> > FORWARD, ACCEPT for OUTPUT. The first line in the rules includes an
+> > ACCEPT for the INPUT chain for established and related connection. There
+> > is also a rule allowing any traffic for all protocols to any host which
+> > originates from the protected network on the internal interface.
 >
-> 	I have kind of a dumb question :)
->
-> Right now I have the following rule for NATing out going traffic.
->
-> $IPT -t nat -A POSTROUTING -o $EXT_FACE -s ! $EXT_IP -j SNAT --to-source
-> $EXT_IP
+> Do you an ACCEPT for the FORWARD chain for established and related
+> connections?
 
-There is no point in specifying "-s ! $EXT_IP".
-
-Either a packet has the source address $EXT_IP, or it doesn't.
-
-If it does have that address, it won't match the above rule, and will exit the 
-box with the source address $EXT_IP.
-
-If it does not have that address, it will match the above rule, and will exit 
-the box (after being SNATted) with the source address $EXT_IP.
-
-Either way the end result is exactly the same, so keep the rule simpler and 
-remove the "-s ! $EXT_IP".
-
-Antony.
-
--- 
-All matter in the Universe can be placed into one of two categories:
-
-1. Things which need to be fixed.
-2. Things which need to be fixed once you've had a few minutes to play with 
-them.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Yes, it also accepts established and related connections.
 
 
