@@ -1,8 +1,8 @@
 From: CJ East <bec365195104@geckomail.org>
 Subject: Multiple routes by uid-owner
-Date: 11 Jul 2003 11:23:07 +1000
+Date: 10 Jul 2003 17:44:33 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057886584.558.53.camel@broken>
+Message-ID: <1057822815.558.50.camel@broken>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,10 +17,6 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-
-(My apologies if this is a repeat message-- netfilter.org appeared to be 
-having some difficulties at the time of my original posting yesterday, 
-and the new post has not appeared-- I'm assuming it's been lost) 
 
 Hi, 
 
