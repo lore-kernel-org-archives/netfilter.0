@@ -1,12 +1,12 @@
 From: "Clayton Check" <clayton.check@cornettech.com>
 Subject: static IP, different gateway & dns
-Date: Wed, 23 Oct 2002 21:08:18 +0800
+Date: Wed, 23 Oct 2002 13:49:26 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00de01c27a95$56e306f0$0f01a8c0@Inspiron2100>
+Message-ID: <006301c27a57$f29f8840$0f01a8c0@Inspiron2100>
 Reply-To: "Clayton Check" <clayton.check@cornettech.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00D1_01C27AD8.4FA01110"
+	boundary="----=_NextPart_000_0060_01C27A9B.00595810"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -21,7 +21,7 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_00D1_01C27AD8.4FA01110
+------=_NextPart_000_0060_01C27A9B.00595810
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -59,7 +59,7 @@ Can iptables handle this sort of networking?
 
 
 
-------=_NextPart_000_00D1_01C27AD8.4FA01110
+------=_NextPart_000_0060_01C27A9B.00595810
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -137,6 +137,6 @@ p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
 
-------=_NextPart_000_00D1_01C27AD8.4FA01110--
+------=_NextPart_000_0060_01C27A9B.00595810--
 
 
