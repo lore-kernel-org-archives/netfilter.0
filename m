@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: David Cannings <lists@edeca.net>
 Subject: Re: iptables-pptp
-Date: Fri, 26 Mar 2004 14:34:03 +0000
+Date: Fri, 26 Mar 2004 14:37:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403261434.03285.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403261437.36292.lists@edeca.net>
 References: <1080296089.2287.20.camel@syrah>
-Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <1080296089.2287.20.camel@syrah>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,45 +21,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Friday 26 March 2004 10:14 am, Hern=E1n Alvarez wrote:
-
+On Friday 26 March 2004 10:14, Hern=E1n Alvarez wrote:
 > Hi!!
 > Here's my first mail to the list.
-
-Welcome.
-
 > I can't connect a VPN through my LAN (with a linux Redhat 7.3 or above
 > gateway) to a VPN server
-
-1. Tell us what sort of VPN this is: IPsec? PPTP? Kame? other?
-
-> Until my REDHAT was 7.2 there was no problem but when try to do with 7.=
-3
-> my error is 650
+> Until my REDHAT was 7.2 there was no problem but when try to do with
+> 7.3 my error is 650
 >
 > LAN-----------------PROXY RH73-------------VPN SERVER
 
-2. I assume you mean "Packet Filtering Netfilter Firewall" where you have=
+Some more information would help here.  Firstly, what are you using for=20
+the VPN?  It could well be the VPN software that is at fault.  What gives=20
+you the error "650", as in my experience netfilter does not produce=20
+errors like this.  When do you get the error, whilst compiling?  Running? =
 =20
-"Proxy" there?   What rules are you running?
+Transmitting data?
 
-3. Are you doing any logging (of eg: dropped packets) on the firewall whi=
-ch=20
-may suggest what's not working?   How are you testing the setup and what=20
-diagnostic information do you get?
+Your full iptables output along with specific information on your VPN will=
+=20
+help us to help you.
 
-Regards,
-
-Antony.
-
---=20
-The truth is rarely pure, and never simple.
-
- - Oscar Wilde
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+David
 
