@@ -1,13 +1,13 @@
 From: Kim Jensen <kimj@dawn.dk>
-Subject: Re: Help needed
-Date: Wed, 26 Mar 2003 13:11:10 +0100
+Subject: Re: IP TOS based routing
+Date: Wed, 26 Mar 2003 13:16:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303261311.10102.kimj@dawn.dk>
-References: <2777.192.168.35.14.1048582432.squirrel@webmail.satconet.com>
+Message-ID: <200303261316.35019.kimj@dawn.dk>
+References: <3E80187B.5030209@cs.helsinki.fi>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2777.192.168.35.14.1048582432.squirrel@webmail.satconet.com>
+In-Reply-To: <3E80187B.5030209@cs.helsinki.fi>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,20 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: steven.mugassa@mail.intafrica.com, netfilter@lists.netfilter.org
+To: Simone Leggio <simone.leggio@cs.helsinki.fi>, netfilter@lists.netfilter.org
 
-On Tuesday 25 March 2003 09:53, steven.mugassa@mail.intafrica.com wrote:
-> Hello everybody!
+On Tuesday 25 March 2003 09:51, Simone Leggio wrote:
+> Hi all,
 >
-> In our network we have a private IP that is NATed to public IP (using
-> iptables SNAT...). What I need is to confirm that this private IP is
-> really NATed to that particular public IP as I defined.
+> I have to send prioritised traffic from host A to host B.
 >
-> Is there any command in Linux that will help me to do that?
+> The priority 1 is identified by an IP TOS value of, say 46.
+> The priority 2 is identified by an IP TOS value of, say 26.
 >
-Try to run a tcpdump on your incoming and outgoing interface - then you s=
-hould=20
-what happens.
+> In my network topology, there are two possible routes from host A to
+> host B, one through host A's network interface eth0 and the other one
+> through eth1.
+>
+> I'd like to know whether it is possible, and if so how, with traffic
+> control to set filters so that packets with TOS 46 are sent to host B
+> via eth0 and packets with TOS 26 via eth1.
+>
+> Note that the destination address for all the packets is the same, what
+> I need is just to route through different interfaces to the same
+> destination.
+>
+Hi Simone,
+
+Try to use the mangle table to mark your packets which match a specific T=
+OS,=20
+and then add a second routing table with the alternative default connecti=
+on.=20
+That should work. You can find more info on:
+
+http://linux-ip.net/html/adv-multi-internet.html
+http://www.ssi.bg/~ja/nano.txt
 
 /Kim
 
