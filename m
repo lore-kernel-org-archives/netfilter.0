@@ -1,9 +1,11 @@
-From: "Netfilter.UPU" <netfilter@upu.int>
-Subject: Checkpoint VPN through Iptables
-Date: Tue, 24 Sep 2002 14:37:19 +0200
+From: "Krishna" <Krishna_shekhar@gmx.net>
+Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `': Table does not exist (do you need to insmod?) <<Help>>
+Date: Tue, 24 Sep 2002 17:24:00 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <8F31D8DF00BBD411975C00508B6D6E65F89096@hermes.upu.int>
+Message-ID: <004e01c263c1$15ed33e0$2900a8c0@spectranet.com>
+References: <00fb01c263b7$a8fe5380$2900a8c0@spectranet.com> <002b01c263be$95b3f490$2b00a8c0@dharmu> <000901c263bd$da3d1480$2900a8c0@spectranet.com> <001701c263c1$887ebb40$2b00a8c0@dharmu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,66 +17,118 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi,
+This is all what I get!
+I have made rules in /etc/sysconfig/iptables and the
+/etc/rc.d/init.d/iptables points to this file and starts it.
 
-I'm hanged with the following problem.
-I want to access our enterprise network behind a Nokia checkpoint FW-UPU
-@a.b.c.d 
-from a Windows 2k Checkpoint NG client @192.168.0.2
-behind my Linux Redhat 7.2 iptables 1.2.6a FW-HOME with eth0 @DHCP and eth1
-@192.168.0.1
+regards
+Krishna
 
-I have the following script
-
-$IPTABLES -F
-$IPTABLES -t nat -F
-$IPTABLES -t mangle -F
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -P FORWARD ACCEPT
-$IPTABLES -t nat -A POSTROUTING -s 192.168.0/24 -o eth0 -j MASQUERADE
-
-My little understanding of firewall, linux and iptables, makes me believe
-that :
-a) I've a quite secureless FW-HOME and my internal LAN is nated
-b) no matter the protocol, the src/dst ports etc, everything should pass.
-c) The checkpoint client should be able to access my enterprise VPN
-Is that right?
-
-My problem is that the client cannot access my enterprise VPN.
-I added some loging rules and it seems that
-My client uses UDP, src port 500 dst port 500.
-The FW-HOME send that to FW-UPU (prot udp, src port 500 dst port 500)
-(masquerading the IP@)
-The FW-UPU replies to FW-UPU (prot udp, src port 500 dst port 500)
-The FW-HOME replies : icmp port udp 500 unreachable
-
-I made another test before incriminating the Client
-I plugged it directly to my CableModem and it worked immediately.
-I check that it was configured correctly (IKE + Force UDP encapsulation +
-IKE over TCP)
-according to PhoneBoy http://www.phoneboy.com/faq/0141.html 
-and http://www.phoneboy.com/faq/0372.html
-After this test I concluded that the Client is operational.
-
-Another info:
-It worked with a Redhat 7.0 + ipchains
-It didn't worked with ISA
-
-So for me the problem is located somewhere on FW-HOME.
-Anybody can help, explain, advice!?!?
+Krishna Shekhar
+Network Administrator
+Wiplash Wireless
+----- Original Message -----
+From: Dharmendra.T <dharmu@nsecure.net>
+To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
+Sent: Tuesday, September 24, 2002 5:27 PM
+Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
+Table does not exist (do you need to insmod?) <<Help>>
 
 
-
-_________________________________________________________
-Birahim FALL
-Project Manager (Postal Technologie Centre)
-Universal Postal Union, PO Box, CH-3000 Bern 15 (Switzerland)
-Phone	+41 313.503.372
-Fax	+41 313.503.110
-Email	mailto:birahim.fall@upu.int
-
+> You should send us the complete error message, which table the iptables
+> could not recognize
+> DHarmu
+> ----- Original Message -----
+> From: "Krishna" <Krishna_shekhar@gmx.net>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Tuesday, September 24, 2002 5:00 PM
+> Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
+> Table does not exist (do you need to insmod?) <<Help>>
+>
+>
+> > Hi,
+> >     It gives the same error
+> >
+> >  iptables-restore v1.2.5: can't initialize iptables table `': Table does
+> not
+> > exist (do you need to insmod?)
+> > Perhaps iptables or your kernel needs to be upgraded
+> >
+> > regards
+> > Krishna
+> >
+> > Krishna Shekhar
+> > Network Administrator
+> > Wiplash Wireless
+> > ----- Original Message -----
+> > From: Dharmendra.T <dharmu@nsecure.net>
+> > To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
+> > Sent: Tuesday, September 24, 2002 5:05 PM
+> > Subject: Re: iptables-restore v1.2.5: can't initialize iptables table
+`':
+> > Table does not exist (do you need to insmod?) <<Help>>
+> >
+> >
+> > > Hi Krishna,
+> > >  Have you tried it manually?
+> > > #iptables-restore < /etc/sysconfig/iptables
+> > >
+> > >  I think the iptables could not reach to the file
+> /etc/sysconfig/iptables
+> > > Regards
+> > > Dharmu
+> > > ----- Original Message -----
+> > > From: "Krishna" <Krishna_shekhar@gmx.net>
+> > > To: <netfilter@lists.netfilter.org>
+> > > Sent: Tuesday, September 24, 2002 4:16 PM
+> > > Subject: iptables-restore v1.2.5: can't initialize iptables table `':
+> > Table
+> > > does not exist (do you need to insmod?) <<Help>>
+> > >
+> > >
+> > > > Hi,
+> > > >
+> > > > I switched from ipchains to iptables. But whenever I start iptables
+it
+> > > gives
+> > > > me this error.
+> > > >
+> > > > iptables-restore v1.2.5: can't initialize iptables table `': Table
+> does
+> > > not
+> > > > exist (do you need to insmod?)
+> > > > Perhaps iptables or your kernel needs to be upgraded.
+> > > >
+> > > > lsmod shows that
+> > > > iptable_mangle,iptable_nat,ip_conntrack,iptable_filter and iptables
+> are
+> > > > loaded.
+> > > > That means the modules for iptables has loaded also I can see that
+> > modules
+> > > > for ipchains are not loaded and that is right.
+> > > >
+> > > > The iptables file is in /etc/sysconfig/iptables
+> > > > The table goes like this
+> > > > -P INPUT DROP
+> > > > -A FORWARD -s 192.168.0.0/24 -j MASQUERADE
+> > > > .......
+> > > > ...........
+> > > > ........................
+> > > > I am using RedHAt 7.1 and kernel 2.4.2-2
+> > > > What could be the problem?
+> > > >
+> > > > regards
+> > > > Krishna
+> > > >
+> > > > Krishna Shekhar
+> > > > Network Administrator
+> > > > Wiplash Wireless
+> > > >
+> > > >
+> >
+> >
 
 
