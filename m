@@ -1,14 +1,16 @@
-From: Frank Smith <fsmith@hoovers.com>
-Subject: Re: limit match log question
-Date: Wed, 30 Apr 2003 10:39:03 -0500
+From: netfilter_user <netfilter_user@o2.pl>
+Subject: Re[6]: access to server
+Date: Wed, 30 Apr 2003 19:00:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <29940000.1051717143@hoovers-59.hoovers.com>
-References: <17030000.1051714338@hoovers-59.hoovers.com> <Pine.LNX.4.51.0304301712450.18203@dns.toxicfilms.tv>
+Message-ID: <14214146080.20030430190056@o2.pl>
+References: <5436369716.20030430004931@o2.pl>
+ <20030430044745.621e715a.arnt@c2i.net> <211627560.20030430153217@o2.pl>
+ <200304301059.48917.Alistair@nerdnet.ca>
+Reply-To: netfilter_user <netfilter_user@o2.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.51.0304301712450.18203@dns.toxicfilms.tv>
-Content-Disposition: inline
+In-Reply-To: <200304301059.48917.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +20,96 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Alistair Tonner <Alistair@nerdnet.ca>
+Cc: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
---On Wednesday, April 30, 2003 17:13:50 +0200 Maciej Soltysiak <solt@dns.toxicfilms.tv> wrote:
+Hello Alistair,
 
->> If you are using the limit match to control the number of log entries,
->> is there any way to also show the number of matches?
-> Yes,
->
-># iptables -L -nv
->
-> -v option will show the number of packets that has hit the rule.
+Wednesday, April 30, 2003, 4:59:48 PM, you wrote:
 
-Thanks for the reply, but it seems I wasn't clear on my question.  I was
-looking for a way to get the number logged, so when the log entry was
-written it would contain the number of matches that occurred during the
-log limit interval.  If the log limit interval were set to 5 seconds, and
-it got 1000 matches in that 5 seconds, the log entry would contain the
-number 1000 in it somewhere.
-   It seemed to me like a useful extension that would enable you to reduce
-log file sizes while still providing data on the frequency of events. Getting
-the counters from iptables on the command line is helpful for seeing what's
-going on right now, but doesn't help if you want data from some time in the
-past.
+AT> On April 30, 2003 09:32 am, netfilter_user wrote:
+>> Hello Arnt,
+>>
+>> Wednesday, April 30, 2003, 4:47:45 AM, you wrote:
+>>
+>> AK> On Wed, 30 Apr 2003 03:38:12 +0200,
+>> AK> netfilter_user <netfilter_user@o2.pl> wrote in message
+>>
+>> AK> <1246491441.20030430033812@o2.pl>:
+>> >> Hello Arnt,
+>> >>
+>> >> Wednesday, April 30, 2003, 3:10:30 AM, you wrote:
+>> >>
+>> >> AK> On Wed, 30 Apr 2003 00:49:31 +0200,
+>> >> AK> netfilter_user <netfilter_user@o2.pl> wrote in message
+>> >>
+>> >> AK> <5436369716.20030430004931@o2.pl>:
+>> >> >> Rule: "iptables -A FORWARD -i eth1 -p udp -m --multioport --dport
+>> >>
+>> >> AK>                                                      /\
+>> >> AK> ..is " -m --multioport " a valid match in iptables, or a correct
+>> >> AK> quote of your attempt to write  ' -m --multiport ' ?
+>> >>
+>> >> damn my wrong...it should looks like this:
+>> >> iptables -A FORWARD -i eth1 -p udp -m --multioport --dport 23073,23083
+>> >> -j ACCEPT                                   /\
+>>
+>> AK>                                               ||
+>> AK> ..lets try again: I don't find "-m --multioport" _anywhere_
+>> AK> in the docs, so, if you _actually_ try '-m --multioport' in
+>> AK> your rule set, it _should_ fail, then you'll wanna try
+>> AK> '-m --multiport', without your extra "o".  ;-)
+>>
+>> Oh yes, now i got, i was too sleepy yestorday to understand. Actualy
+>> this rule looks like this:
+>>
+>> iptables -A FORWARD -i eth1 -p udp -m --multiport --dport 23073,23083 -j
+>> ACCEPT
+>>
+>> and after run, shows no error msg. Thats mean it works but it wont
+>> helps me to achive this what i want.
+>>
+>> I repeat my msg here again:
+>>
+>> In my network, Linux machine connect Local net (eth1) with internet
+>> (ppp0). As a default all INCOMING traffic is deny. I made some rules
+>> to access SMTP, HTTP etc. but its not important now.
+>> It is necessery for nodes from local net to access server that is in
+>> Internet. The address of this server is 62.233.202.165 and listen on port
+>> 23073 and 23083.
+>>
+>> Rule: "iptables -A FORWARD -i eth1 -p udp -m --multiport --dport
+>> 23073,23083 -j ACCEPT"
+>> wont helps and i have received msg in log like this:
+>>
+>> Apr 30 02:28:41 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0
+>> SRC=192.168.1.2 DST=62.233.202.165 LEN=36 TOS=0x00 PREC=0x00 TTL=127
+>> ID=23780 PROTO=UDP SPT=1552 DPT=13073 LEN=16
+>>
 
-Frank
+AT>         From that packet it seems that you want to have --dport accept on port 13073
+AT>         NOT 23073 ... or perhaps as well as!
 
---
-Frank Smith                                             fsmith@hoovers.com
-Systems Administrator                                  Voice: 512-374-4673
-Hoover's Online                                          Fax: 512-374-4501
+
+ok, so what means a LEN (lenght ???), TOS, PREC ?
+Is SPT means source port?
+Is DPT means destination port?
+
+Another thing,
+In client program i have told that i should use port 23073 or 23083 (
+23073 is set as default).
+Is taht means that when i use rule "iptables -A FORWARD -i eth1 -p udp
+-m --multiport --dport 23073,23083 -j ACCEPT" i make able demand
+packets to go out and then server answer from 62.233.202.165:1552(SPT)
+to my blocked port 13073 (DPT) ?
+
+But if its like i suspect, shouldent help rule that i set earlyer? :
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+-- 
+Best regards,
+ mailto:netfilter_user@o2.pl
+
 
