@@ -1,13 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: newbie question - what is the iptables equivalent of a Linksys
-	"DMZ" ?
-Date: Sat, 13 Nov 2004 19:57:36 -0500
-Message-ID: <1100393855.5934.408.camel@grendel>
+From: "Bo Jacobsen" <subs@systemhouse.dk>
+Subject: Question; what is this netfilter logfile entry ?
+Date: Sun, 14 Nov 2004 03:18:46 +0100
+Message-ID: <000c01c4c9f0$4807a0d0$de0aa8c0@comp>
 References: <1100392955.4894.25.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1100392955.4894.25.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: David Williamson <nospam1@nullcutter.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Sat, 2004-11-13 at 19:42, David Williamson wrote:
->
-> When a machine behind the router was
-> going to serve as a, for example, game server (like Unreal Tournament
-> 2004), the only way I could get it to work was to put that particular IP
-> on the DMZ, which, I gather, meant that it looked like it was right on
-> the net, unprotected, unrouted, unmasqed, et cetera.  
-> 
-> Since I'm trying to understand what the Linksys box did and give the new
-> router box the same abilities, it would help if I knew what the heck
-> that feature was really called, and/or how to implement that in
-> iptables. 
+Nov 14 02:24:48 WF1-HOME kernel: DENY-OUT:.IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.2 DST=3D198.41.0.4 LEN=3D560 TOS=3D0x00 PREC=3D0xC0 =
+TTL=3D64 ID=3D3123 PROTO=3DICMP TYPE=3D3 CODE=3D3 [SRC=3D198.41.0.4 =
+DST=3D192.168.1.2 LEN=3D532 TOS=3D0x00 PREC=3D0x00 TTL=3D49 ID=3D41159 =
+PROTO=3DUDP SPT=3D53 DPT=3D51981 LEN=3D512 ]
 
-Check out the docs located here:
-http://www.netfilter.org/documentation/index.html#documentation-howto
+It looks like ICMP with an embedded DNS call  ?.
+What is it exactly, and how would a rule to allow this look like ?
 
-and do some reading on SNAT (rewrites source IP address) and DNAT
-(rewrites destination IP address). This will mimic the feature you
-describe above.
+Thanks in advance
 
-HTH,
-Chris
+Bo
+
 
 
 
