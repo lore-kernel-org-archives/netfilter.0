@@ -1,13 +1,12 @@
-From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl?= Le Mignot)
-Subject: Re: Nobody can help me ???   :(
-Date: Mon, 30 Sep 2002 18:53:27 +0200
+From: Vadim Kurland <vadim@vk.crocodile.org>
+Subject: Re: inner workings of IP tables
+Date: Mon, 30 Sep 2002 10:34:09 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <plopm3heg7o1vc.fsf@drizzt.dyndns.org>
-References: <20020930150138.43026.qmail@web40014.mail.yahoo.com>
+Message-ID: <3D988B11.2020107@vk.crocodile.org>
+References: <Pine.LNX.4.40.0209300905060.19596-100000@klepto.security.algx.lan>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020930150138.43026.qmail@web40014.mail.yahoo.com> ("Hanz
- F."'s message of "Mon, 30 Sep 2002 08:01:38 -0700 (PDT)")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Hanz F." <hanz852@yahoo.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Kevin Dwyer <Kevin.Dwyer@algx.net>
 Cc: netfilter@lists.netfilter.org
 
 
-Mon, 30 Sep 2002 08:01:38 -0700 (PDT), tu as dit : 
 
- > Thanx Gael for your useful answer, and thanx for those
- > who tried to help.
+Kevin Dwyer wrote:
 
-:)
+>>    
+>>
+>I think you're right, with the exception that the CLI in question here is
+>usually a shell (unless someone has built their own thing on top of it --
+>I'm only referring to netfilter as it is distributed freely) and usually
+>has a text editor available, which gives you the means to adequately
+>modify any ruleset without needing a graphical workstation, given you are
+>familiar with typical unix commands (which you ought to be if you are
+>going to be administering a netfilter firewall).
+>  
+>
 
- > But what is this "netfilter-powered gateway that does
- > NAT and firewalling" u are using ? and where to find
- > it ?
+I see. I meant the set of command line options for "iptables", which is 
+CLI in this case. Even someone who is very good at shell, vi etc. may 
+have no idea about relationship between chains and tables, not to 
+mention modules and their parameters. Firewall administrator thinks in 
+terms of addresses, packets and protocols, but CLI in this case exposes 
+details which are too low-level. This makes learning curve longer, which 
+increases the risk.
 
-Just an old PII-400 running a debian woody and using netfilter to share
-an ADSL connection for the other computers of the house... (and doing some
-firewalling too, to protect them).
+>So if you do use a GUI like fwbuilder for generating rules, you get the
+>advantage of a visibly clear ruleset and damage control when you're
+>partying in Hawai'i but the boss calls unexpectedly saying they need a
+>special quick fix change implemented.  This is not the case with the CP
+>GUI, as experience has shown.  It's the _option_ that I find most
+>appealing, I suppose.
+>  
+>
 
-bye
--- 
-Gael Le Mignot "Kilobug" - kilobug@freesurf.fr - http://kilobug.free.fr
-GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
-Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
+I do agree very much here. My goal is to find a fine balance between 
+high level of abstraction and ease of use of the GUI and maximum control 
+that experienced administrators want.
 
-Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
+--vk
+
+
 
