@@ -1,14 +1,11 @@
-From: Zoilo <zoilo@xs4all.nl>
-Subject: Re: iptables REDIRECT with patch-o-matic
-Date: Fri, 13 Sep 2002 16:27:21 +0200
+From: Alexey Sheshka <pulsar@bofh.homeunix.org>
+Subject: pptp + iptables
+Date: Fri, 13 Sep 2002 17:35:29 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02091316272103.05245@Lms>
-References: <02091316163300.00916@sanitarium>
-Reply-To: zoilo@xs4all.nl
+Message-ID: <20020913173529.41af8435.pulsar@bofh.homeunix.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <02091316163300.00916@sanitarium>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rohan Almeida <arc_of_descent@gmx.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Friday 13 September 2002 12:46, Rohan Almeida wrote:
-> Hi List,
->
-> Take the following command:
-> [rohan@sanitarium rohan]$ iptables -t nat -i eth0 -A PREROUTING \
-> 			--protocol tcp -s 10.0.0.0/255.255.255.0 \
-> 			-d 10.0.0.1/32 --dport www -j REDIRECT \
-> 			--to-port 800
->
-> With redhat rpms, kernel-2.4.18-5, iptables-1.2.5-3
-> the above command works fine.
->
-> Now, i downloaded iptables-1.2.7a, patch-o-matic-20020825
-> and using kernel source tree of 2.4.18
-> I applied the following patches of patch-o-matic:
-> 	base AND extra
->
-> Then i compiled the kernel.
-> Now with this patched kernel and iptables-1.2.5-3 rpm,
-> I am getting the following error when running the above command:
-> "iptables: Invalid argument"
->
-> What am i doing wrong?
->
-> If i just have to upgrade my iptables to 1.2.7a, then
-> i'm sorry for posting this :-)
+Hi !
 
-Yes, I think that will fix your problem.
+I have folowing troble.
+Then I'm connecting to pptp server (195.x.x.34)  from Windows2000 box (192.168.15.132) pptp connection dies 
+with error message : "The specified port is not connected."
+I think this is netfilter problem.
 
-When you compile and install iptables, pay attention that the default 
-installation will be in /usr/local/sbin, whereas RH defaults their 
-installation to /sbin. 
+My NAT box has :
+iptables v1.2.7a
+stock 2.4.19 kernel from ftp.kernel.org with latest patch-o-matic
+ip_conntrack_pptp ip_nat_pptp ip_conntrack_proto_gre iptable_nat    propertly loaded
 
-For this reason, don't forget to uninstall iptables-1.2.5 (rpm -e iptables), 
-or you will still be running "/sbin/iptables" (the old version). instead of 
-"/usr/local/sbin/iptables" (the new version).
+My NAT script:
 
-You may also compile iptables-1.2.7a to install in /sbin of course (see 
-Makefile).
-
-In case of doubt, run "whereis -b iptables" to get a list of all 
-iptables-binaries in your system..
-
-
--- 
-Z.
-----------------------------------------------------------
-"If all you have is a hammer, everything looks like a nail."
+#!/bin/bash
+echo 0 > /proc/sys/net/ipv4/ip_forward
+ipt=/usr/local/sbin/iptables
+$ipt -p tcp -A PREROUTING -t nat -s 192.168.15.0/24 -d 0/0 --dport 80 -j DNAT --to 212.x.x.170:3128
+$ipt -p tcp -A POSTROUTING -t nat -s 192.168.15.0/24 -d 0/0 --dport ! 80 -j SNAT --to 212.x.x.170
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
