@@ -1,17 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: TTL patch buggy?
-Date: Thu, 08 Jan 2004 09:02:06 +0100
+Subject: Re: FTP Redirect IP:Port
+Date: Thu, 08 Jan 2004 09:05:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073548926.768.15.camel@elendil.intranet.cartel-securite.net>
-References: <Pine.LNX.4.44.0401071709030.4717-100000@filer.marasystems.com>
-	 <1073502275.16972.10.camel@jasiiitosh.nexusmgmt.com>
-	 <20040107193547.GF6629@obroa-skai.de.gnumonks.org>
-	 <1073506041.16972.25.camel@jasiiitosh.nexusmgmt.com>
-	 <20040107213853.GD20346@cannon.eng.us.uu.net>
+Message-ID: <1073549109.767.19.camel@elendil.intranet.cartel-securite.net>
+References: <01a101c3d5b5$d35fe5a0$63000a0a@pooh>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040107213853.GD20346@cannon.eng.us.uu.net>
+In-Reply-To: <01a101c3d5b5$d35fe5a0$63000a0a@pooh>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,34 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>, netfilter@lists.netfilter.org
+To: John Paul <john@pinoylinux.sytes.net>
+Cc: netfilter@lists.netfilter.org
 
-Le mer 07/01/2004 =E0 22:38, Ramin Dousti a =E9crit :
-> You can hide the firewall and the internal network if you reset the
-> TTL of these packets to the max (255) and drop the outbound ICMP
-> port unreachable (in case of UDP traceroute) and ICMP echo-reply
-> (in case of ICMP traceroute).
+Le jeu 08/01/2004 =E0 08:05, John Paul a =E9crit :
+> I want to redirect FTP access from my BOX to other machine. How can i
+> make this possible?
+> external IP ---> 202.x.x.x port 21 (redirect) ---> 192.168.0.10 port21
+> I have tried:
+> iptables -A PREROUTING -p tcp -d 202.x.x.x --dport 21 -j DNAT --to
+> 192.168.0.10:21
+> this seems to be not working. what could it be?
 
-Avoiding traceroutes can't be easily done by blocking consequences, as
-they are numerous. I mean you can do a traceroute using TCP as well (see
-tcptraceroute tool), or even using applications requests on UDP, such as
-a DNS request (useful to traceroute microsoft.com DNS server), or
-anything else that can trigger a valuable target response. In thoses
-cases, you really can't block final answer as it is a valid one.
+There's a typo here : you did not specify you're working on nat table.
 
-Moreover, if blocking echo-reply is no arm, blocking ICMP errors can
-have really bad side effects. If we look a bit closer, a well configured
-firewall should not let a packet destined to a closed UDP port go
-through... Letting conntrack deal with ICMP error is to me the best
-deal.
+	iptables -t nat -A PREROUTING -p tcp -d 202.x.x.x --dport 21 \
+		-j DNAT --to 192.168.0.10:21
 
-If you really want to prevent traceroute based discoveries, you just
-should raise packets TTL so they don't expire within your network for
-normal operations. So you'll add 2, 3, maybe 4 to the TTL, but not more.
-Resetting TTL to 255 is far too much if a loop appears.
-If you want to prevent discovery based on the TTL of packets you send,
-reset TTL for outbound traffic to a default value such as 64.
+Then you have to check IP forwarding is OK and FORWARD filtering rules
+are letting this trafic go through. Finally, for FTP needs a helper, you
+have to check that ip_nat_ftp module is loaded.
 
 --=20
 http://www.netexit.com/~sid/
