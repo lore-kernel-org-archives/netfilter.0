@@ -1,12 +1,12 @@
-From: "Jamie Vuyk" <jvuyk@jacobson.co.uk>
-Subject: GRE/PPTP
-Date: Mon, 1 Sep 2003 13:02:39 +0100
+From: "Eric Constantineau" <mekanik@nerim.net>
+Subject: Re: ip_conntrack vs netstat
+Date: Tue, 2 Sep 2003 22:04:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <8EC0756327A4994298EFD721CFC7355B01B14C@jfm2.jacobson.co.uk>
+Message-ID: <007b01c3718d$795c37c0$0901a8c0@metacortex>
+References: <Pine.LNX.4.53.0308301423020.30825@apollo.rsn.bth.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jonas Lindborg <jools@apollo.nu>, netfilter@lists.netfilter.org
 
-This is a followup on an older question regarding passing through a VPN
-that I couldn't see a resolution for.  I have done a whole heap of
-searching around the net and there are conflicting opinions.  I would be
-nice to get a firm answer...
+I want to unsubscribe !
+thanks
 
-( http://lists.netfilter.org/pipermail/netfilter/2002-June/035176.html
-<http://lists.netfilter.org/pipermail/netfilter/2002-June/035176.html> )
+----- Original Message -----
+From: "Jonas Lindborg" <jools@apollo.nu>
+To: <netfilter@lists.netfilter.org>
+Sent: Saturday, August 30, 2003 2:37 PM
+Subject: ip_conntrack vs netstat
 
-=20
 
-Basically there are two aspects to my problems:
-
-1)       Does the standard kernel (RH 2.4.18) need to be patched in any
-way in order to PASS THROUGH proto 47 (GRE) to an internal server?  Im
-running a simply iptables firewall which I want to pass an external VPN
-connection through to an internal server.  As I understand if I want
-Linux to terminate the PPTP VPN I need a patch, if I want it to pass
-through I don't.  However I am having a lot of trouble getting this to
-work and I would like to know if Im on the right track.  Also note that
-the firewall is masquerading all connections.
-
-=20
-
-2)       I have setup my firewall to allow and forward the 1723 to my
-internal server.  This appears to work but the external Win2k box gets
-stuck on "verifying username and password".  This eventually times out
-with "disconnected".  A simple test was to Telnet to port 1723.
-Although there is no response as such from the server (expected) it does
-connect both internally and externally.  At what point does the 1723
-data exchange end and the "payload" as such start on the GRE protocol?
-Is GRE involved in the 'verifying username and password' stage or is
-that still TCP on 1723?
-
-=20
-
-If you could get some basic info I maybe able to troubleshoot this and
-get it operational.
-
-Cheers for you help.
-
-J
-
-=20
-
-=20
-
-=20
-
-=20
+> Hello,
+>
+> When comparing the output of /proc/net/ip_conntrack with the "netstat"
+> command, I'm seeing a few established connections in ip_conntrack that are
+> not presented by netstat.
+>
+> These are familiar connections (ssh, imap) to known hosts that could very
+> well have been done by me but not in the last 24 hrs so they should have
+> timed out a long time ago.
+>
+> "ps" shows no such processes running so this immediately raises the
+> suspicion that the machine could be compromised and connections are hidden
+> from netstat and ps.
+> But if this was the case there should be some connections to unknown hosts
+> showing in ip_conntrack as well so I should be able to rule out that
+> possibility (?).
+>
+> Now for my question:
+> Can anyone confirm that ip_conntrack can show "ghost" connections like
+> these?
+>
 
 
