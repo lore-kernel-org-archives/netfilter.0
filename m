@@ -1,11 +1,12 @@
-From: Support <support@computer-medic.us>
-Subject: setting up NAT to a internal network. {Scanned}
-Date: 22 Jul 2003 09:12:19 -0700
+From: root <vlady@cyber2000.qc.ca>
+Subject: Too long delay
+Date: Tue, 22 Jul 2003 12:33:06 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058890339.7828.25.camel@shaw-redhat9.stbernard.com>
+Message-ID: <200307221233.06581.vlady@cyber2000.qc.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,44 +17,111 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hello All, I'm new to iptables so go easy on me.
+Hello, 
+I need some hints for the following problem I have.
 
-I'm using Smoothwall OS as my router / firewall. I have two internal
-networks. I need the first network to have access to the second network
-that is NATed to the first network. The first network has default route
-to the Smoothwall router. Is there anyway to tell iptables that if the
-destination is the second network to NAT or direct the packet the
-internal router (192.168.48.1)?
+I have seted up rules for SMTP and FTP server on a firewall and they work 
+exept that I should whait 10 and more seconds before to get a responce from 
+the server.
+I tryed to log all droped packates to see if there are some packtes which are  
+related to smtp (or ftp) connection but there any.
+ 
+I have default policy DROP by default for the main chains: iptables -P INPUT 
+DROP (OUTPUT,FORWARD)
+
+The rules in question are:
+###################
+### SMTP Server ###
+###################
+
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
+--dport 25 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
+--dport 25 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
+--dport 25 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
+--dport 25 -j ACCEPT
+
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_1 --sport 25 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_2 --sport 25 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_3 --sport 25 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_4 --sport 25 
+--dport $UNPRIVPORTS -j ACCEPT
+
+and 
+###################
+### FTP Server ####
+###################
+
+#ftp
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
+--dport 21 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_2 
+--dport 21 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_3 
+--dport 21 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_4 
+--dport 21 -j ACCEPT
+
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_1 --sport 21   
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_2 --sport 21 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_3 --sport 21 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_4 --sport 21 
+--dport $UNPRIVPORTS -j ACCEPT
+
+#port mode
+iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_1 --sport 20 --dport 
+$UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_2 --sport 20 --dport 
+$UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_3 --sport 20 --dport 
+$UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp -s $LOCAL_IP_4 --sport 20 --dport 
+$UNPRIVPORTS -j ACCEPT
+
+iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
+$LOCAL_IP_1 --dport 20 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
+$LOCAL_IP_2 --dport 20 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
+$LOCAL_IP_3 --dport 20 -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp ! --syn --sport $UNPRIVPORTS -d 
+$LOCAL_IP_4 --dport 20 -j ACCEPT
+
+#passive mode
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_1 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_2 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_3 
+--dport $UNPRIVPORTS -j ACCEPT
+iptables -A INPUT -i $INTERFACE -p tcp --sport $UNPRIVPORTS -d $LOCAL_IP_4 
+--dport $UNPRIVPORTS -j ACCEPT
+
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_1 --sport 
+$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_2 --sport 
+$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_3 --sport 
+$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $INTERFACE -p tcp ! --syn -s $LOCAL_IP_4 --sport 
+$UNPRIVPORTS --dport $UNPRIVPORTS -j ACCEPT
 
 
-ISP
-|
-XXX.XXX.XXX.XXX DHCP eth1
-Smoothwall Router / Firewall
-192.168.48.98/20 eth0
-|
-|
-_______________________________________
-|First Network         		|Second Network
-|                      		|
-192.168.48.0/20			192.168.48.1/20
-Workstations			Internal Router
-GW 192.168.48.98		192.168.0.0/20
+Thanks
+Vlady 
 
 
-PS I also posted this on Smoothwalls list and was told they can't help.
-
-Please help!!
-
-Thanks, David
 
 
--- 
-This message has been scanned for viruses and
-dangerous content by www.Computer-Medic.us, and is
-believed to be clean.
-support@computer-medic.us
 
 
