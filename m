@@ -1,8 +1,8 @@
 From: "Javier Govea" <jgovea@magma.ca>
 Subject: Re: Round Robin Load Balancing
-Date: Sun, 10 Aug 2003 15:07:42 -0400 (EDT)
+Date: Sun, 10 Aug 2003 15:15:47 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308101907.h7AJ7gTV018617@webmail1.magma.ca>
+Message-ID: <200308101915.h7AJFl42018976@webmail1.magma.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,23 +19,46 @@ Content-Transfer-Encoding: 7bit
 To: Ramin Dousti <ramin@cannon.eng.us.uu.net>, Javier Govea <jgovea@magma.ca>
 Cc: netfilter@lists.netfilter.org
 
-Hi guys, sorry about this late response, i've been playing with the kernel during this
-time. Well, i tested the CONNMARK option (the rules i tested are below) for the round
-robin, but i still get the same problem, when my browser just doesn't load any webpage and
-eventually times out. 
+Hi guys, 
 
-I hacked into the iptables modules: ipt_MASQUERADE and ip_tables and put some "printk"s to
-see what was happening. The "printk"s in the ip_tables module show that the ppp links are
- chosen in a round robin fashion, which is very good. The rules I'm shoing below use
-"-j SNAT --to-source <ppp0-ip-addr>" in the NAT table. I however used  
-"-j MASQUERADE" instead because i believe this two jumps are equivalent and because i put
-some prints in the ipt_MASQUERADE module. Well the prints from the MASQUERADE module
-doesn't show anything, which means that the packets are never been masqueraded. 
+I think i sent this message twice by mistake, very sorry about that. This is the email you
+want to read, please discard the first email.
+
+And sorry about this late response, i've been playing with the kernel during this time.
+Well, i tested the CONNMARK option (the rules i tested are below) for the round robin, but
+i still get the same problem, when my browser just doesn't load any webpage and eventually
+times out. 
+
+I hacked into the iptables modules: ipt_MASQUERADE and ip_tables and I put some "printk"s
+to see what was happening. The "printk"s in the ip_tables module show that the ppp links
+are  chosen in a round robin fashion, which is very good. 
+
+The rules I'm showing below use
+
+"-j SNAT --to-source <ppp0-ip-addr>" 
+
+in the NAT table. I however used  
+
+"-j MASQUERADE" 
+
+instead because i believe this two jumps are equivalent and because i put some prints in
+the ipt_MASQUERADE module. (However if i'm wrong please correct me) Well the prints from
+the MASQUERADE module doesn't show anything, which means that the packets are never been
+masqueraded. 
 
 So my browser is timing out because the packets, if they are sent at all, they are not
 being masqueraded, so they don't know how to return.
 
-The CONNMARK
+The CONNMARK rules work fine for the round robin but packets are not masqueraded. I need
+to somehow connect this two set rules or to force the masqueraded somehow. I think
+iptables is getting mixup with all these rules and it doesn't know how to handle them. 
+
+Any ideas or suggestions?? all are very welcome..
+Thanx to all of you guys...
+Cheers
+Xavier
+
+PS Here are the last rules that i tested:
  
 > iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ppp0-ip-addr>
 > iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to-source <ppp1-ip-addr>
@@ -68,6 +91,5 @@ CONNMARK --set-mark 4
 > Haven't had the chance to test it, though.
 > 
 > Ramin
-> 
 > 
 
