@@ -1,12 +1,14 @@
-From: Justin Friel <capn_shoe@yahoo.com>
-Subject: Re: DNAT: Unable to Forward Ports, Why?
-Date: Mon, 31 May 2004 15:07:41 -0700 (PDT)
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: (no subject)
+Date: Mon, 31 May 2004 18:34:39 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040531220741.25677.qmail@web60005.mail.yahoo.com>
-References: <20040531192836.3840.qmail@web41710.mail.yahoo.com>
+Message-ID: <200406010134.i511YXeV018182@server5.bandwidthco.com>
+References: <6.0.3.0.2.20040531211546.02412c80@mx1.girotto.com.au>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040531192836.3840.qmail@web41710.mail.yahoo.com>
+In-Reply-To: <6.0.3.0.2.20040531211546.02412c80@mx1.girotto.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +19,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter lists <netfilter@lists.netfilter.org>
+To: 'Ivan' <ivan.topic@girotto.com.au>, netfilter@lists.netfilter.org
 
---- "Kevin D. White" <web_crcrawlzahoo.com> wrote:
-> Are you getting any connection attempts on the web
-> host?  Log the packets for port 80 in FORWARD and
-> INPUT, try and track the packet as it moves through
-> the tables.
+Take a look at the H323 patch and see if it suits your needs:
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-5.h
+tml#ss5.3 
 
-HmHmmmI don't seem to be getting any hits, unless I
-set up logging incorrectly. I set it up as :
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Ivan
+Sent: Monday, May 31, 2004 4:19 AM
+To: netfilter@lists.netfilter.org
+Subject: (no subject)
 
-# Log all attempts to connect to port 80
-$IPIPTI FORWARD 3 -p tctcp-dpdport0 -j LOG \  
- --log-prefix "**FORWARD CHAIN PORT 80 TCP**"
-$IPIPTI INPUT -p tctcp-dpdport0 -j LOG --log-prefix \
- 3"**INPUT CHAIN PORT 80 TCP**"
-# Forward port 80
-$IPIPTA FORWARD -d $EXT_IPIPp tctcp-dpdport0 -j ACCEPT
-$IPIPTt nanatA PRPREROUTINGp tctcp-dpdport0 \
- -d $EXT_IPIPj DNDNAT-to-destination 192.168.1.2:80
+Hi,
+I am looking for a solution to block streaming media using iptables.
+I have found that some of my users are listening to radio stations using
+internet, which has pumped up the internet bill significantly, and of course
+put a choke on my internet links.
+Does anyone know of a solution for blocking just the streaming media traffic
+from any web site, while still allowing the access to the website it self?
+
+Thanks,
+
+Ivan
 
 
-	
-		
-__________________________________
-Do you Yahoo!?
-Friends.  Fun.  Try the all-new Yahoo! Messenger.
-http://messenger.yahoo.com/ 
+
+########################################################
+This message has been scanned for viruses and dangerous content by
+MailScanner, and is believed to be clean.
+
+postmaster@bandwidthco.com
+MailScanner at bandwidthco.com is for your absolute protection.
+########################################################
+
+
+
+########################################################
+This message has been scanned for viruses and dangerous 
+content by MailScanner, and is believed to be clean.
+
+postmaster@bandwidthco.com
+MailScanner at bandwidthco.com is for your absolute protection.
+########################################################
+
 
