@@ -1,11 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset issue
-Date: Tue, 7 Dec 2004 08:22:26 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0412070821290.7834@blackhole.kfki.hu>
-References: <294d5daa0412061327651c1648@mail.gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: iptables traffic accounting...
+Date: Tue, 07 Dec 2004 09:02:57 -0500
+Message-ID: <1102428176.17387.3.camel@hubcap.ljm.dom>
+References: <200412041353.20954.linuxguru@mail.ru>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <294d5daa0412061327651c1648@mail.gmail.com>
+In-Reply-To: <200412041353.20954.linuxguru@mail.ru>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mark Moseley <moseleymark@gmail.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 6 Dec 2004, Mark Moseley wrote:
+On Sat, 2004-12-04 at 08:53, Vladimir S. Petukhov wrote:
+> sorry for my english...
+> How can I calculate total traffic from/to single process?
+> It's easy to calculate outgoing traffic using --owner rule, but what's about 
+> ingoing?
+> process may be identify by PID & uid/euid/gid...
 
-> I decided to play with ipset (2.0), but I seem to be running into an
-> issue with creating rules. I wonder if I'm missing something silly or
-> not.
->
-> When I issue the command:
->
-> ipset -N foo iphash --resize 0   (straight from the Tips page)
->
-> I get the error:
->
-> ipset v2.0: Error from kernel: Protocol not available
+i *think* the "owner-socketlookup" patch from POM allows you to use "-m
+owner" in INPUT.
 
-You have to load in at least the ip_set kernel module.
+-j
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+--
+"Ah, good ol' trustworthy beer. My love for you will never die."
+	--The Simpsons
+
 
