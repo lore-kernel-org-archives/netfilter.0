@@ -1,14 +1,11 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: iptables and SIP
-Date: Thu, 16 Dec 2004 14:48:04 +0100
-Message-ID: <20041216134803.GA10547@sunbeam.de.gnumonks.org>
-References: <498D2534FBEB784686D402666966F6162540E9@sophia.crossbeamsys.com>
+From: nitin mandolkar <nitinmandolkar@gmail.com>
+Subject: Port Forwarding Need help
+Date: Thu, 16 Dec 2004 21:26:19 +0530
+Message-ID: <1282c4c804121607563fa643e1@mail.gmail.com>
+Reply-To: nitin mandolkar <nitinmandolkar@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <498D2534FBEB784686D402666966F6162540E9@sophia.crossbeamsys.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,52 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "Zelmans, Bernard" <BZelmans@CROSSBEAMSYS.COM>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Need Help in port forwaeding.
 
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is my set up.
 
-On Tue, Dec 14, 2004 at 12:18:41PM +0100, Zelmans, Bernard wrote:
-> Is there some iptables code that supports SIP:
-> -opening the pinhole
-> -modify the IP address of the end point in the signaling so that the rtp
-> channel is opened properly
-> -closing the pinhole when the call is terminated
-> -preventing DOS attacks
+                  DSL ROUTER (WAN IP : x.x.x.x | LAN IP 192.168.5.1)
 
-No, but contributions/patches are always welcome.
+                                              |
+                                              |
+                                              |
+                 Linux Machine (eth0: 192.168.0.2 eth1: 192.168.5.12)
+                                              |
+                                              |
+                                              |
+                 Windows machine(eth1: 192.168.5.4)(IIS is running on
+                 this machine on port 80)                    
 
-As for now, I think running siproxd (including rtp proxy) is the best
-you can get.
+                From router i am forwarding the request to linux
+machine to port 80.
+                any one from out site they are able to see a test
+pages on linux
+                machine.
+              
+              i want to forward any request coming on port 80 on linux
+machine to
+               windows machine on port 80.
+  
 
-> Thanks, b
+/sbin/iptables -A PREROUTING -t nat -p tcp -s 192.168.5.1 -d
+192.168.5.12 --dport 80  -j DNAT --to-destination  192.168.5.4:80
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+I Use above iptables entry but it is not working.
 
---OXfL5xGRrasGEqWY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFBwZITXaXGVTD0i/8RAo0hAKCARZaC6qOws9/y698D60L5XlOFUQCcCMFf
-W6c2qLxr9aqJFSxzNza5A1I=
-=tB17
------END PGP SIGNATURE-----
-
---OXfL5xGRrasGEqWY--
+Nitin mandolkar.
 
