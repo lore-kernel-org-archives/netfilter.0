@@ -1,12 +1,12 @@
-From: iptables@isabeldeespana.org
-Subject: problem with iptables with forward drop  policy.
-Date: Tue, 23 Sep 2003 19:22:47 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: problem with iptables with forward drop  policy.
+Date: Tue, 23 Sep 2003 12:09:18 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030923182247.18490.qmail@servidor1.isabeldeespana.org>
-Reply-To: iptables@isabeldeespana.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E48@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,63 +16,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: iptables@isabeldeespana.org, netfilter@lists.netfilter.org
 
-I manage a network with three diferent range of IP=B4s 192.168.1.0 ,=20
-192.168.2.0 and 192.168.3.0.=20
+1. Are these subnets on the same network segment or different network
+interfaces?
 
-I have a router-firewall which connect theese internals networks.=20
+2. Are you trying to ping based on hostnames or IP's?
 
-iptables rules on the router-firewall machine are...=20
+3. INTIF/EXTIF corresponds to what network IP subnets?
 
+4. What gets dumped to the Logs? In all likelihood it will show you
+exactly what the problem is.
 
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -F INPUT
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -F OUTPUT
-$IPTABLES -P FORWARD DROP
-$IPTABLES -F FORWARD
-$IPTABLES -t nat -F=20
+The ICMP pings should work the same between Linux and Windows so I don't
+see the 'visibility' the firewall allows as the issue. I can only assume
+that your Windows machines are not configured the same way as your Linux
+machine (192.168.3.15). Could this be a subnet masking problem?
 
-
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-$IPTABLES -A FORWARD -j LOG=20
-
-
-$IPTABLES -A FORWARD -s 192.168.1.19 -j ACCEPT=20
-
-=20
-
-=20
-
-Of corse, $IPTABLES is a var which point to iptables.=20
-
-Supose that router has 192.168.1.1, 192.168.2.1 and 192.168.3.1 IP=B4s.=20
-
- From host 192.168.1.19 which is a window machine I ping to machine=20
-192.168.3.15 which is a linux machine. the result is Ok.=20
-
-If I ping from 192.168.1.19 to 192.168.3.35 which is a window machine I=20
-can=B4t get a response.=20
-
-Nevertheless, If I change the policy of forward (which is DROP by default, =
-
-see the above script) to ACCEPT:=20
-
-iptables -P FORWARD ACCEPT=20
-
-and I try pinging from 192.168.1.19 to 192.168.3.35 ( both of them are=20
-windows machine), So I get a succes response from 192.168.3.35.=20
-
-I can ping from router to every IP on every network with forward policy set=
-=20
-as DROP by default.=20
-
-Could you help me with the problem?=20
-
-
-Thanks in advance.=20
+Try tracert from 192.168.1.19 to the machines tried and see if they both
+take the paths that they should be.
 
 
