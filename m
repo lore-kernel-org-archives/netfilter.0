@@ -1,13 +1,13 @@
-From: <david@suarapembaruan.co.id>
-Subject: Re: DNS and iptables : is this rule bad ??
-Date: Sat, 29 May 2004 20:02:12 +0700 (WIT)
+From: Tony Earnshaw <tonye@billy.demon.nl>
+Subject: Re: [BUG] compile failure for linux-2.6.6
+Date: Sat, 29 May 2004 12:19:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1127.172.16.131.133.1085835732.squirrel@mail.suarapembaruan.co.id>
-References: <BAY16-F99Flatq6TnSL0003998f@hotmail.com>
+Message-ID: <1085825976.9862.136.camel@localhost>
+References: <0DFFBB11-B0DA-11D8-8EBC-0003931E0B62@gmx.li>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY16-F99Flatq6TnSL0003998f@hotmail.com>
+In-Reply-To: <0DFFBB11-B0DA-11D8-8EBC-0003931E0B62@gmx.li>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: tirixil@hotmail.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> Hello,
->
-> Here is my problem more simply explained ...
->
-> An user (IP address : 10.0.0.1) has a DNS server IP address specified i=
-n
-> his  configuration (we don't know the address, and maybe this address i=
-s
-> invalid  so we want to change it with a iptables rules).
->
-> His gateway is 10.0.0.254. The gateway has another interface at
-> 192.168.100.254 where a DNS server is launch (by named).
-> At the gateway, a iptables rule send all his DNS packets at the DNS
-> server  (192.168.100.254)
-> The rule is :
-> iptables -A PREROUTING -t nat -s 10.0.0.1 -p UDP --dport 53 -j DNAT
-> --to-destination 192.168.100.254
->
-> ** BUT ** this rule is not effective immediately, and take fews minutes
-> before to be active !!!
-> Same thing if you flush the nat table (iptables -F PREROUTING -t nat ) =
-:
-> the  last DNS is active during some minutes (sometimes immediately but
-> not  systematically)...
->
-> To easely see that : just put an invalid DNS server in the configuratio=
-n
-> of  the client, and a real one at the gateway (192.168.100.254). You
-> will see  that rules are not immediately active !!!
->
-> Is someone know why ???
->
-> Thanks.
-> -- Mark
->
-> _________________________________________________________________
-> Bloquez les fen=EAtres pop-up, c'est gratuit ! http://toolbar.msn.fr
+fre, 28.05.2004 kl. 21.05 skrev Martin Schaffner:
 
+> Currently, netfilter relies on the headers from a previous linux 
+> version being installed on the system.
+> If I try to compile netfilter from linux-2.6.6 with only the 2.6.6 
+> headers installed in /usr/include,
+> then net/ipv4/netfilter/ipt_ECN.c doesn't compile, because it uses 
+> struct ipt_ECN_info,
+> which isn't declared anywhere in the source tree of linux-2.6.6.
+> The same holds for IPT_ECN_OP_* macros.
 
+I posted more or less the same a few days ago - pointed 1.2.10 at my
+2.6.4 kernel source and everything works ;) Don't much like workarounds
+like that, though ...
+
+--Tonni
+
+-- 
+
+We make out of the quarrel with others rhetoric
+but out of the quarrel with ourselves, poetry.
+
+mail: tonye@billy.demon.nl
+http://www.billy.demon.nl
 
 
