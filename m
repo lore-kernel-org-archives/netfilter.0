@@ -1,102 +1,59 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: [netfilter-core] iptables/conntrack in enterprise environment.
-Date: Thu, 29 May 2003 10:39:53 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030529083953.GB2461@sunbeam.de.gnumonks.org>
-References: <200305290113.58552.prez@srealm.net.au>
+From: "SB CH" <chulmin2@hotmail.com>
+Subject: Re: lots of ACK/FIN filtering (DPT=80) at web server.
+Date: Thu, 29 May 2003 09:17:12 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <Sea1-F228m4ZQJXs7k40003ab30@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="H+4ONPRPur6+Ovig"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200305290113.58552.prez@srealm.net.au>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: "Preston A. Elder" <prez@srealm.net.au>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="macroman"; format="flowed"
+Content-Transfer-Encoding: base64
+To: raymondl@knowledgefactory.co.za, netfilter@lists.netfilter.org
 
-
---H+4ONPRPur6+Ovig
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, May 29, 2003 at 01:13:47AM -0400, Preston A. Elder wrote:
-
-> Hi,
->=20
-> I am in an enterprise environment and I'm having some problems with connt=
-rack=20
-> specifically.
-
-> They're running 2.4.20 kernels (mostly vanilla) with iptables 1.2.7a.
-
-Do not use 2.4.20 if you want to use connection tracking.  2.4.20
-connection tracking is totally broken due to a change introduced in the
-core kernel.
-
-Please do always use patch-o-matic from CVS.  The patch you want to
-apply for fixing this bug is 10_confirm_fix.patch
-
-Also, considering=20
-
-> echo 524280 >/proc/sys/net/ipv4/ip_conntrack_max
-
-without using a larger hash size (modprobe ip_conntrack hashsize=3Dfoo,
-wherer foo should be a prime number and in the range of 524280/2)
-
-> to be re-directed to a local port, which is achieved with the command:
-> /sbin/iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp -d <ip-range>=
-=20
-> - --destination-port 1024:65535 --to-destination <local_ip>:<local_port>
->=20
-> Every inbound connection incurs an entry in the connection tracking
-> table.  It seems, however, that we may be overloading the conntrack
-> system. =20
-
-I've seen systems with way more conntrack entries and higher bandwith.
-Using NAT however, might have a big performance impact.
-
-> The conntrack table itself very quickly grows - but it does not clean its=
-elf=20
-> up when the connection itself dissapears, instead it waits for some=20
-> pre-determined timeout value,=20
-
-With a non-broken kernel it is 2 minutes, that is TIME_WAIT of a TCP
-socket.
-
-> PreZ
-> Systems Administrator
-> Shadow Realm
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---H+4ONPRPur6+Ovig
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+1cdZXaXGVTD0i/8RAn+hAJoDYt48e8hLJDml2dhhiuatJgDXUACgqeMI
-0gSx9SBc35N7kpzHHLERRcg=
-=L5GR
------END PGP SIGNATURE-----
-
---H+4ONPRPur6+Ovig--
-
+ClRoYW5rcyBmb3IgeW91ciBraW5kIHJlcGx5LgoKPlRob3NlIGFyZSAnYnJva2VuJyBicm93c2Vy
+cyB0aGF0IGRvIG5vdCBmb2xsb3cgdGhlIGh0dHAgc3RhbmRhcmQKPnByb3Blcmx5Lgp3aGljaCBi
+cm93ZXJzPyBOZXRzY2FwZSBvciBPcGVyYT8gbW9zdGx5IHVzZSBNU0lFLCByaWdodD8KCgo+U3Rv
+cCB1c2luZyBub24tc3RhbmRhcmRzIGNvbXBsaWVudCBicm93c2Vycy4gU29tZXRpbWVzIGNoYW5n
+ZXMgdG8KPnN0YW5kYXJkcyBhcmUgbm90ICdlbmhhbmNlbWVudHMnLgpUaGVyZSBhcmUgc28gbG90
+cyBvZiBwZW9wbGUgd2hpY2ggdXNlIGRpZmZlcmVudCBicm93c2VyLCAKdGhlbiB5b3UgbWVhbiB0
+aGF0IHRoZXJlIGlzIG5vdCBhbnkgc29sdXRpb24gdG8gc29sdmUgdGhpcyBwcm9ibGVtIGF0IApp
+cHRhYmxlcyBsZXZlbD8KCiAKVGhhbmtzIGZvciB5b3VyIHJlcGx5LgoKCgpGcm9tOiBSYXkgTGVh
+Y2ggPHJheW1vbmRsQGtub3dsZWRnZWZhY3RvcnkuY28uemE+ClRvOiBOZXRmaWx0ZXIgTWFpbGlu
+ZyBMaXN0IDxuZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZz4KU3ViamVjdDogUmU6IGxvdHMg
+b2YgQUNLL0ZJTiBmaWx0ZXJpbmcgKERQVD04MCkgYXQgd2ViIHNlcnZlci4KRGF0ZTogMjkgTWF5
+IDIwMDMgMDc6MjU6MzggKzAyMDAKCkhpIHRoZXJlCgpPbiBXZWQsIDIwMDMtMDUtMjggYXQgMTA6
+NDYsIFNCIENIIHdyb3RlOgogPiBIZWxsbywgYWxsLgogPgogPiBJIGhhdmUgb3BlcmF0ZWQgbGlu
+dXggd2ViIHNlcnZlciBhbmQgZXhlY3V0ZWQgaXB0YWJsZXMgMS4yLjguCiA+CiA+IGFuZCBJIGhh
+dmUgZm91bmQgc28gbG90cyBvZiBsb2dzIGxpa2UgdGhpcyBBQ0ssRklOIGZpbHRlcmluZy4KID4g
+U3VyZWx5LCBBQ0stRklOIGlzIGEgY29ubmVjdGlvbiBjbG9zaW5nIHN0ZXAsIHNvIHRoZXJlIGlz
+IG5vIHByb2JsZW0gZm9yCiA+IGN1c3RvbWVycyBidXQgSSB3b3VsZCBsaWtlIHRvIGtub3cgd2h5
+IHRoaXMgaGFwcGVucyEhCiA+IEkgZ3Vlc3MgdGhhdCB0aGUgdGltZW91dCBvZiB0aGUgY29ubmVj
+dGlvbiB0cmFja2luZyByZWxhdGVkLgogPgpUaG9zZSBhcmUgJ2Jyb2tlbicgYnJvd3NlcnMgdGhh
+dCBkbyBub3QgZm9sbG93IHRoZSBodHRwIHN0YW5kYXJkCnByb3Blcmx5LgogPgogPiBNYXkgMjUg
+MTI6MzM6MDUgd3d3IGtlcm5lbDogSU49ZXRoMCBPVVQ9IFNSQz0yMTAuMTI2Lnh4eC54eAogPiBE
+U1Q9MjExLjEwLnh4Lnh4IExFTj00MCBUT1M9MHgwMCBQUkVDPTB4MDAgVFRMPTExOCBJRD0zMzc2
+IERGIFBST1RPPVRDUAogPiBTUFQ9MzYwOCBEUFQ9ODAgV0lORE9XPTYzNTIwIFJFUz0weDAwIEFD
+SyBGSU4gVVJHUD0wCiA+CiA+IERvIHlvdSBoYXZlIGFueSBwcm9ibGVtcyBsaWtlIG1lPwpZZXMK
+CiA+IGFuZCB3aGF0J3MgdGhlIHByb2JsZW0gYW5kIGhvdyBjYW4gSSBzb2x2ZSB0aGlzIHByb2Js
+ZW0/CiA+ClN0b3AgdXNpbmcgbm9uLXN0YW5kYXJkcyBjb21wbGllbnQgYnJvd3NlcnMuIFNvbWV0
+aW1lcyBjaGFuZ2VzIHRvCnN0YW5kYXJkcyBhcmUgbm90ICdlbmhhbmNlbWVudHMnLgoKID4KID4g
+VGhhbmtzIGluIGFkdmFuY2UgZm9yIHlvdXIga2luZCBvcGluaW9zISEKID4KID4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+ID4gP5Xsnbg/mOyekC4gP6Tripg/Pz+07IS4IOustOujjCA/rOyjvCwg6raB7ZWpLCA/keuqhSwg
+P4Tsg50g6rCAP7Trk5wKID4gaHR0cDovL3d3dy5tc24uY28ua3IvZm9ydHVuZS9kZWZhdWx0LmFz
+cAotLQotLQpSYXltb25kIExlYWNoIDxyYXltb25kbEBrbm93bGVkZ2VmYWN0b3J5LmNvLnphPgpO
+ZXR3b3JrIFN1cHBvcnQgU3BlY2lhbGlzdApodHRwOi8vd3d3Lmtub3dsZWRnZWZhY3RvcnkuY28u
+emEKImx5bnggLXNvdXJjZSBodHRwOi8vd3d3LnJjaHEuY28uemEvcmF5bW9uZGwuYXNjIHwgZ3Bn
+IC0taW1wb3J0IgpLZXkgZmluZ2VycHJpbnQgPSA3MjA5IEE2OTUgOUVFMCBFOTcxIEE5QUQgIDAw
+RUUgODc1NyBFRTQ3IEYwNkYgRkIyOAotLQo8PCBzaWduYXR1cmUuYXNjID4+CgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwrB
+9bHHIMGkurggsKHA5SC6/LijsO0gxu3Hz7DUILq4vccgvPYgwNa9wLTPtNkuIE1TTiDB9bHHL8X1
+wNogICAKaHR0cDovL3d3dy5tc24uY28ua3Ivc3RvY2svICAKCgo=
