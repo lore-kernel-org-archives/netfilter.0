@@ -1,8 +1,8 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: how to block p2p
-Date: Thu, 11 Mar 2004 08:59:53 +0000
+Date: Thu, 11 Mar 2004 09:10:19 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403110859.53154.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403110910.19979.Antony@Soft-Solutions.co.uk>
 References: <001201c40744$1f34a190$2a245cc2@cea05> <1078995674.15566.65.camel@raylinux.internal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -30,13 +30,16 @@ On Thursday 11 March 2004 9:01 am, Ray Leach wrote:
 >
 > iptables -P FORWARD DROP
 
-Great answer :)
+I would perhaps add:
+iptables -F FORWARD
+just to make sure they don't sneak through on any existing rules :)
 
 Antony.
 
 -- 
-The difference between theory and practice is that in theory there is no 
-difference, whereas in practice there is.
+The truth is rarely pure, and never simple.
+
+ - Oscar Wilde
 
                                                      Please reply to the list;
                                                            please don't CC me.
