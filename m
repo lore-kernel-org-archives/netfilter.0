@@ -1,11 +1,10 @@
-From: "James Bowling" <jbowling@alchemy.net>
-Subject: RDP and iptables ruleset
-Date: Wed, 8 Dec 2004 10:06:25 -0800
-Message-ID: <17F5DA2FB6F18744BA13C2197738727CD19AC1@alchmail.alch-la-dc.alchemy.net>
+From: Ausi <ausi@gmx.de>
+Subject: PPTP connection tracking on Mandrake 10.0 with Kernel 2.6
+Date: Wed, 08 Dec 2004 20:24:28 +0100
+Message-ID: <41B754EC.5000900@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,70 +15,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I seem to be having some issues with iptables 1.2.11 and getting RDP to
-be allowed through.  My windows box is NAT'd behind my Gentoo 2004.3
-box.  Here is my NAT Tables:
+Hi,
+I need PPTP connection tracking on my Mandrake 10.0 NAT router.
+Because there are more private VPN Clients accessing the same public VPN 
+Server.
 
-# iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
-DNAT       tcp  --  anywhere             anywhere            tcp
-dpt:3389 to:10.0.1.2:3389=20
+What I did:
+With "urpmi kernel-source" I got the Mandrake 2.6.3-19 kernel sources 
+RPM installed. Already patched for PPTP conntrack.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
-SNAT       tcp  --  anywhere             anywhere            tcp
-dpt:3389 to:10.0.1.2:3389=20
-MASQUERADE  all  --  anywhere             anywhere           =20
+I configured it including GRE and PPTP support. After compiling and 
+restarting I can modprobe "ip_conntrack_pptp" and it's getting properly 
+loaded including the module "ip_conntrack_proto_gre".
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination  =20
+But when a VPN Client now tries to connect to the VPN Server through my 
+NAT router, the router freezes immediatly.
 
+So I thought, maybe I have to recompile iptables and downloaded version 
+1.2.11 from netfilter.org.
+But when I do a make in the iptables folder I end up with this:
+> Extensions found: IPv4:addrtype IPv4:condition IPv4:dstlimit IPv4:IPMARK IPv4:mport IPv4:nth IPv4:osf IPv4:quota IPv4:random IPv4:recent IPv4:time IPv6:ah IPv6:condition IPv6:esp IPv6:frag IPv6:ipv6header IPv6:nth IPv6:hbh IPv6:dst IPv6:random IPv6:rt
+> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -fPIC -o extensions/libipt_connlimit_sh.o -c extensions/libipt_connlimit.c
+> In file included from /usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h:3,
+>                  from /usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack.h:54,
+>                  from extensions/libipt_connlimit.c:9:
+> /usr/src/linux/include/asm/byteorder.h:14: error: syntax error before "__u32"
+> /usr/src/linux/include/asm/byteorder.h:28: error: syntax error before "__u64"
+> In file included from /usr/src/linux/include/linux/byteorder/little_endian.h:11,
+>                  from /usr/src/linux/include/asm/byteorder.h:57,
+>                  from /usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h:3,
+>                  from /usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack.h:54,
+>                  from extensions/libipt_connlimit.c:9:
+> /usr/src/linux/include/linux/byteorder/swab.h:133: error: syntax error before "__u16"
+> /usr/src/linux/include/linux/byteorder/swab.h:146: error: syntax error before "__u32"
+> /usr/src/linux/include/linux/byteorder/swab.h:160: error: syntax error before "__u64"
+> make: *** [extensions/libipt_connlimit_sh.o] Fehler 1
 
-Here is my iptables rules:
-
-# iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination        =20
-ACCEPT     all  --  anywhere             anywhere           =20
-REJECT     udp  --  anywhere             anywhere            udp
-dpt:bootps reject-with icmp-port-unreachable=20
-REJECT     udp  --  anywhere             anywhere            udp
-dpt:domain reject-with icmp-port-unreachable=20
-ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ssh
-
-ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ftp
-
-ACCEPT     tcp  --  anywhere             anywhere            tcp
-dpt:ftp-data=20
-ACCEPT     tcp  --  anywhere             anywhere            tcp
-dpt:8245=20
-DROP       tcp  --  anywhere             anywhere            tcp
-dpts:0:1023=20
-DROP       udp  --  anywhere             anywhere            udp
-dpts:0:1023=20
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination        =20
-DROP       all  --  anywhere             10.0.1.0/24        =20
-ACCEPT     all  --  10.0.1.0/24          anywhere           =20
-ACCEPT     all  --  anywhere             10.0.1.0/24        =20
-ACCEPT     all  --  anywhere             anywhere            state
-RELATED,ESTABLISHED=20
-ACCEPT     all  --  anywhere             anywhere           =20
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination        =20
-
-This is just a very basic rule set as you can see.  What happens is when
-I connect with RDP it goes through to the login and then after
-authentication it just sits there and eventually times out.  Any ideas
-on what is going on?  Any help would be appreciated.
-
-
-Regards,
-James Bowling
+Now I don't know any further.
+Can anybody help?
+Here's my iptables configuration, too:
+(eth0 is the public interface to the server, eth1 is the private nic)
+> # Generated by iptables-save v1.2.9 on Wed Dec  8 21:10:06 2004
+> *filter
+> :INPUT ACCEPT [11277:2168399]
+> :FORWARD DROP [696:122385]
+> :OUTPUT ACCEPT [4197:782834]
+> [0:0] -A INPUT -i eth1 -p udp -m udp --dport 67 -j ACCEPT 
+> [3:234] -A INPUT -i eth1 -j DROP 
+> [6024:3135556] -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 
+> [56:3568] -A FORWARD -d vpn-server -i eth1 -o eth0 -p tcp -m tcp --dport 1723 -j ACCEPT 
+> COMMIT
+> # Completed on Wed Dec  8 21:10:06 2004
+> # Generated by iptables-save v1.2.9 on Wed Dec  8 21:10:06 2004
+> *nat
+> :PREROUTING ACCEPT [3345:534190]
+> :POSTROUTING ACCEPT [29:6416]
+> :OUTPUT ACCEPT [737:180585]
+> [711:174322] -A POSTROUTING -o eth0 -j MASQUERADE 
+> COMMIT
+> # Completed on Wed Dec  8 21:10:06 2004
 
