@@ -1,11 +1,12 @@
-From: "Ivan Rodriguez Aguilar" <ivan@segob.gob.mx>
-Subject: two o more NAT  + PREROUTING
-Date: 02 Apr 2003 19:03:47 -0600
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: two o more NAT  + PREROUTING
+Date: Wed, 2 Apr 2003 17:28:42 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049331827.21383.155.camel@parsifal>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C6FF6@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-gkXQwpEZYXh7QXZIyZu2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,78 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Are you sure that the computer 10.2.89.250 is setup to use IP address
+192.168.0.115 as its default router?
 
---=-gkXQwpEZYXh7QXZIyZu2
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+192.168.0.115 thinks that the message is being sent by 132.248.69.34,
+and it will take its default path in order to get there. If that is not
+through your NAT firewall's IP address setup, it will break, since the
+acknowledgement will miss the conntrack and everything else.
 
+To be sure you have it right, you can setup a 2 sided bridge. This will
+guarantee connectivity, but you will loose web server tracking of IP
+addresses.
 
-		=09
-Hello list one computer of my internal LAN has the ip
-10.2.89.250
-
-and i need to reach this ip from the internet=20
-ok my security scheme not permit  this
-however the first nat  is
-
+# Packets traveling to FW1 now go to FW2
 iptables -t nat -A PREROUTING -d 148.243.xxx.xxx -p tcp --dport 80 -j
 DNAT --to 192.168.0.115
 
+# Packets returning will go from FW2 to FW1
+iptables -t nat -A POSTROUTING -d 192.168.0.115 -p tcp --dport 80 -j
+SNAT --to 148.243.xxx.xxx (or whatever FW1's FW1->FW2 IP address is)
 
-the 192.168.0.115 is the linux box and he knows my internal  lan.
-
-for example=20
-
-telnet 10.2.89.250 80
-Trying 10.2.89.250...
-Connected to 10.2.89.250.
-Escape character is '^]'.
-get
-HTTP/1.1 400 Bad Request
-
-I get this answer so i try to make the second nat=20
-in the linux box near the internal LAN=20
-
+# Packets traveling to FW2 now go to WEBSERVER
 iptables -t nat -A PREROUTING -d 192.168.0.115 -p tcp --dport 80 -j DNAT
 --to 10.2.89.250
 
-the ip_contrack logs the follow lines=20
-when i try  to connect from internet=20
+# Packets returning will go from WEBSERVER to FW2
+iptables -t nat -A POSTROUTING -d 10.2.89.250 -p tcp --dport 80 -j SNAT
+--to 192.168.0.115 (or whatever FW2's FW2->WEBSERVER IP address is)
 
-tcp      6 104 SYN_SENT src=3D132.248.69.34 dst=3D192.168.0.115 sport=3D575=
-72
-dport=3D80 [UNREPLIED] src=3D10.2.89.250 dst=3D132.248.69.34 sport=3D80
-dport=3D57572 use=3D1=20
-tcp      6 104 SYN_SENT src=3D132.248.69.34 dst=3D192.168.0.115 sport=3D575=
-72
-dport=3D80 [UNREPLIED] src=3D10.2.89.250 dst=3D132.248.69.34 sport=3D80
-dport=3D57572 use=3D1=20
+Your System:
+A->B becomes A->C becomes A->D
 
+My system:
+A->B becomes B->C becomes C->D
 
-can somebody help me ??
-
-
-
-
-
---=20
-Ivan Rodriguez Aguilar <ivan@segob.gob.mx>
-
---=-gkXQwpEZYXh7QXZIyZu2
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+i4hywXwQp+dDlhgRAtQRAJ9/H0Fh5i2h5ytiL0U5uRKMVk06dwCcCS7x
-3o2gkW0e77wSIu1+b9pQEWc=
-=+WN7
------END PGP SIGNATURE-----
-
---=-gkXQwpEZYXh7QXZIyZu2--
 
 
