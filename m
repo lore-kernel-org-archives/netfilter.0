@@ -1,11 +1,10 @@
-From: =?ISO-8859-1?Q?Pierre-Etienne_M=E9let?=
- <melet_pierre_etienne@yahoo.fr>
-Subject: Problem with "owner"
-Date: Mon, 22 Dec 2003 22:24:49 +0100
+From: Michael Gale <michael@bluesuperman.com>
+Subject: Sharing ip_conntrack ?
+Date: Mon, 22 Dec 2003 21:19:14 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FE76121.7020605@yahoo.fr>
+Message-ID: <20031222211914.313f10b8.michael@bluesuperman.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,36 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hello,
 
-   before compiling my own iptables (I'm working with iptables 1.2.7 rpm=20
-given with Mandrake 9.1), i'd like to be sure i'm not making a mistake:
+	I have two firewalls using linux-HA so one is always master the other
+slave. The monitoring in done over a serial cable.
 
-My purpose is to allow thunderbird only to access internet through pop3:
+The slave box does not accept any network traffic until it becomes
+master except for ssh on the internal side.
 
-$IPTABLES -A INPUT -i $EXTERNAL_IF -p tcp --sport pop3 \
-        -m state --state ESTABLISHED,RELATED -j ACCEPT
+I know that /proc/net/ip_conntrack is where all the established or
+related connections are kept.
 
-$IPTABLES -A OUTPUT -o $EXTERNAL_IF -p tcp --dport pop3 \
-        -m owner --cmd-owner 'thunderbird-bin' \
-        -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+What I want to know if anyone has any idea how to keep the state on the
+second box so NO connections will be lost if a fail over occurs.
+
+I was thinking that I could use DRBD on the /proc/net directory so it
+always writes to the master slave. But I then thought it would fail
+because the kernel can not write to that directory ... but the second
+box is not doing any network traffic so....
+
+?????
 
 
-Unfortunately, "thunderbird-bin" is unable to pass the firewall.
+-- 
+Hand over the Slackware CD's and back AWAY from the computer, your geek
+rights have been revoked !!!
 
-What am i doing wrong ?
-
-Best regards.
-
---=20
-M=E9let Pierre-Etienne
-
-Pierre-Etienne.Melet@ingenieurs-supelec.org
-
-dom: 04 93 65 39 67
-mob: 06 03 67 95 44
-
+Michael Gale
+Slackware user :)
+Bluesuperman.com 
 
