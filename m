@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IP Alias with iptables
-Date: Mon, 19 Apr 2004 22:31:42 +0100
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: whether there are any packets in the ip_queue
+Date: Tue, 20 Apr 2004 01:16:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404192231.42723.Antony@Soft-Solutions.co.uk>
-References: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx> <200404191625.45747.Antony@Soft-Solutions.co.uk> <200404191612.39869.Alistair@nerdnet.ca>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <004a01c4266c$b2d7d830$68892090@grouse>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404191612.39869.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,39 +18,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 19 April 2004 5:12 pm, Alistair Tonner wrote:
+Hi all,
 
-> On April 19, 2004 03:25 pm, Antony Stone wrote:
-> >
-> > I suggest another firewall then - trying to set up a firewall with only
-> > one ethernet interface is a poor enough solution (from a security point
-> > of view) in the first place, but if there is wireless access involved as
-> > well then I would not even consider it.
->
-> 	Thanks Antony  -- again you have expressed precisely what I would have
-> said -- succinctly and clearly.
->
-> 	Aliased (stacked) interfaces ARE NOT SECURE.  Period.
+I am using libipq for userspace programming on netfilter. I am having
+problems to determine whether there are any packets in the ip_queue before I
+call the function ipq_read(). I just don't wish to call ipq_read() when
+there is no packet in the ip_queue, because I need my program to do other
+things rather than waiting for a packet arriving (after calling ipq_read(),
+the program will stop and wait for some time or until a packet coming from
+the kernel). Are there anybody on the list who has any idea about this?
 
-Indeed.   I would like to see this emphasised more in the netfilter howtos & 
-tutorials.   Multiple addresses on one interface are all very well, so long 
-as they exist within the same subnet; however anyone trying to use multiple 
-*network* addresses on one physical interface is defeating their security by 
-ignoring what the different OSI network layers mean.
-
-Even someone who thinks "I have a switch; my packets cannot be sniffed" simply 
-hasn't investigated Dug Song's (and similar) network tools sufficiently.
-
-Regards,
-
-Antony.
-
--- 
-Having been asked for a reference for this man,
-I can confirm that you will be very lucky indeed if you can get him to work 
-for you.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+BTW, may I ask whether this is the proper list to ask about netfilter/libipq
+programming, since it seems few people on the list talking about this kind
+of questions?
 
 
