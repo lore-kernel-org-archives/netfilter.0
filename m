@@ -1,9 +1,11 @@
-From: Null Device <nulldevice83@yahoo.com>
-Subject: iptables and connlimit
-Date: Fri, 7 May 2004 09:09:49 -0700 (PDT)
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: ip_queue_maxlen
+Date: Fri, 7 May 2004 17:57:31 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040507160949.71532.qmail@web41906.mail.yahoo.com>
+Message-ID: <003701c43454$6326a230$68892090@grouse>
+References: <OFF3757E9C.8AD303A0-ON65256E8D.00226C14@hss.hns.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,42 +17,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org
 
-helloo list,
+Hi Amit,
 
-i was just working with iptables and connlimit and
-facing a little bit of problem i hope u peep can help
-me out very well.
+Please check this out:
 
-pls have a look on the command that i executed after
-fresh installation of iptables from rpm.
+line 32, 53, and 72 in /usr/src/linux/net/ipv4/netfilter/ip_queue.c.
 
-[root@MDK10 firewall]# iptables -I INPUT 1 -p tcp
---syn --dport 80 -m connlimit ! --connlimit-above 2 -j
-ACCEPT
-iptables: No chain/target/match by that name.
+I'm not sure this is what you want, but hope it helps a bit.
 
-but have a look at this toooo
-
-[root@MDK10 firewall]# iptables -I INPUT 1 -p tcp
---syn --dport 80 -m connlimit -j ACCEPT
-iptables v1.2.9: You must specify `--connlimit-above'
-
-so connlimit is there and modules gets loaded ( i
-suppose, coz it shows me the error for incomplete
-parameters in the second command).
-
-any ideas where i am slipping?
-
-thx a lot in advance.
+Jee
 
 
-	
-		
-__________________________________
-Do you Yahoo!?
-Win a $20,000 Career Makeover at Yahoo! HotJobs  
-http://hotjobs.sweepstakes.yahoo.com/careermakeover 
+> hi,
+>
+>  Whats the maximum number of packets that are queued by ip_queue for the
+> user space to handle ... is it 1024 as defined in
+> /proc/sys/net/ipv4/ip_queue_maxlen ? That is a max of 1024 packets are
+> queued by the kernel, and can we change this value somehow ?
+>
+>
+> thanks
+> Amit
+>
+> "DISCLAIMER: This message is proprietary to Hughes Software Systems
+Limited
+> (HSS) and is intended solely for the use of the individual to whom it is
+> addressed. It may contain  privileged or confidential information and
+> should not be circulated or used for any purpose other than for what it is
+> intended. If you have received this message in error, please notify the
+> originator immediately. If you are not the intended recipient, you are
+> notified that you are strictly prohibited from using, copying, altering,
+or
+> disclosing the contents of this message. HSS accepts no responsibility for
+> loss or damage arising from the use of the information transmitted by this
+> email including damage from virus."
+>
+>
+>
+
 
