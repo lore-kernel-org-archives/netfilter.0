@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Help about ipfw
-Date: Wed, 15 Sep 2004 12:40:32 -0400
+From: =?iso-8859-1?q?yann=20Conan?= <yahn_ick@yahoo.fr>
+Subject: FTP +SLL + PortForwarding
+Date: Wed, 15 Sep 2004 18:44:37 +0200 (CEST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095266432.3718.9.camel@wolfpack.ljm.dom>
-References: <58812.192.168.0.100.1095265274.squirrel@192.168.0.100>
+Message-ID: <20040915164437.83457.qmail@web20928.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <58812.192.168.0.100.1095265274.squirrel@192.168.0.100>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,60 +15,68 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
-Cc: Nicolas Montauban <nicolas@lookali.com>
 
-On Wed, 2004-09-15 at 12:21, Nicolas Montauban wrote:
-> I want information about ipfw : link
+Hi all,
 
-the rules below are not IPFW rules.  they are either IPFilter, or
-OpenBSD's PF.  either way--they sure ain't netfilter...
+I'm trying to configure a iptables firewall in a
+structure in double bastion mode.
 
-> Usually i use iptables, but i must use ipfw for this night!!!
-> 
-> Please don't say me "google"
+this is the configuration:
+	internet
+	   :
+	   :
+	   :
+	FW (RH/iptables)
+	   :
+	   :
+	   :
+	DMZ/w2k/FTPS server
+	   :
+	   :
+	   :
+	FW(w2k/Isa server)
+	   :
+	   :
+	   :
+	  LAN
+	 =20
+the tranfer of the data from the FTP server must be
+protected with SSL (no SSH)
 
-google.
+for the FTP transfer I make a portForwarding with
+ip_conntrack_ftp and it works.
 
-> I have a bridge:
-> default rule are
-> 
-> pass in quick on lo0
-> pass out quick on lo0
-> 
-> pass in log level local0.alert quick on ed1 from any to any
-> pass out quick on ed1 from any to any
-> 
-> pass in log level local0.alert quick on ed2 from any to any
-> pass out quick on ed2 from any to any
-> 
-> I want allow:
-> ssh :wan to lan
-> 
-> block
-> netbios, kazaa ... : lan to wan
+but now I would like to know how I have to do to
+PortForward ftp data with SSL.
+There is a problem because iptables must find during
+the FTP connect the random client port in active  FTP
+or the random server port in passive FTP. And if it's
+encrypted with SSL it's impossible for iptables to
+find the right ports.
 
-this list covers linux netfilter and associated issues.  running another
-piece firewall code is not a related issue in my book.
+Then I would like to know if it is possible for
+iptables to read SSL or if there is a possibility to
+unencrypt in input, read the FTP connect with
+ip_conntrack_ftp and re-encrypt in output.
 
-possible sources of information:
+sorry about my english...
 
-http://marc.theaimsgroup.com/?l=freebsd-ipfw&r=1&w=2
+Best regards,
 
-http://marc.theaimsgroup.com/?l=ipfilter&r=1&w=2
+Yann
 
-http://marc.theaimsgroup.com/?l=openbsd-pf&r=1&w=2
 
-http://www.google.com/
+=09
 
-man 5 ipf.conf (or man 5 pf.conf)
+=09
+	=09
+Vous manquez d=92espace pour stocker vos mails ?=20
+Yahoo! Mail vous offre GRATUITEMENT 100 Mo !
+Cr=E9ez votre Yahoo! Mail sur http://fr.benefits.yahoo.com/
 
-nice trolling, btw...  apologies to the list for feeding...  :-(
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+Le nouveau Yahoo! Messenger est arriv=E9 ! D=E9couvrez toutes les nouveau=
+t=E9s pour dialoguer instantan=E9ment avec vos amis. A t=E9l=E9charger gr=
+atuitement sur http://fr.messenger.yahoo.com
 
