@@ -1,11 +1,11 @@
-From: =?iso-8859-1?q?Sameer=20Gurung?= <sameersworld@yahoo.co.in>
-Subject: Squid and IPTables
-Date: Tue, 25 May 2004 11:35:10 +0100 (BST)
+From: Atsushi Nakagawa <atnak@chejz.com>
+Subject: Owner match no owner question
+Date: Tue, 25 May 2004 23:05:45 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040525103510.23478.qmail@web8307.mail.in.yahoo.com>
-Reply-To: g_sameer75@yahoo.com
+Message-ID: <20040525225811.BACC.ATNAK@chejz.com>
+Reply-To: Atsushi Nakagawa <atnak@chejz.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,27 +19,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-  
+Hi,
 
- I have a LAN setup where I allow access to the web to
-only certain individuals based on their user names.
-For this squid with authentication enabled is running.
-I also want to block unwanted traffic from the NET so
-I run iptables.
- 
- The problem is I want to use both.... I've tried
-transparent proxying and it works but i cant
-authenticate users using this method.... Is there any
-other way to do it.....
+This is an excerpt from the iptables manpage under owner MATCH:
+"It is only valid in the OUTPUT chain, and even this some packets (such
+as ICMP ping responses) may have no owner, and hence never match."
 
-Any help will be appreciated
+How do I match these packets that do not have an owner?  I have a drop
+all policy where I only allow established and related packets and output
+packets of certain owners.  With this configuration, I often see ICMP
+and sometimes TCP resets as having been dropped.
+
+Thanks,
 
 
+-- 
+Atsushi Nakagawa
+<atnak@chejz.com>
+Changes are made when there is inconvenience.
 
-
-Sameer
-
-________________________________________________________________________
-Yahoo! India Matrimony: Find your partner online. http://yahoo.shaadi.com/india-matrimony/
 
