@@ -1,8 +1,8 @@
-From: =?iso-8859-1?Q?P=E4r_H=E4ggblad?= <par.haggblad@terraplay.com>
-Subject: iptables 1.2.10 and linux kernel 2.6.7 problems.
-Date: Wed, 23 Jun 2004 14:24:51 +0200
+From: "Aldo Lagana" <ALagana@p21.com>
+Subject: RE: Send local traffic to a different server.
+Date: Wed, 23 Jun 2004 11:26:01 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6BFFA187E8806C4E9740A353F715DDBDE57169@newmailer.terraplay.com>
+Message-ID: <5EDC9B3CC8401E4184D3B43B75A75C2B46D668@mx.p21.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,58 +17,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: simpsonb@hillsboroughcounty.org, netfilter@lists.netfilter.org
+
+am i wrong or can you not send traffic to another server simply with =
+netfilter/iptables rules?  Does not that require iproute2?  In other =
+words don't all of the rules assume that the NAT addresses are bound to =
+local interfaces?=20
+
+aldo
+
+-----Original Message-----
+From: Brett Simpson [mailto:simpsonb@hillsboroughcounty.org]
+Sent: Wednesday, June 23, 2004 11:12 AM
 To: netfilter@lists.netfilter.org
+Subject: Re: Send local traffic to a different server.
 
-Hi.
-I have used iptables 1.2.9 with kernel 2.4.x since a week ago.
-Now I'm using the new 2.6.7 kernel and iptables 1.2.10.=20
 
-The problem is that my firewall script does not work anymore.
-The setup is as followed:
- - Every thing in the kernel that has to do with the net filter options =
-are
-   Set to compile as modules. So I have done this in the beginning of =
-the       script:
+On Wed, 2004-06-23 at 10:00, Antony Stone wrote:
+> On Wednesday 23 June 2004 3:33 pm, Brett Simpson wrote:
+>=20
+> > On Wed, 2004-06-23 at 09:33, Antony Stone wrote:
+> > > On Wednesday 23 June 2004 3:08 pm, Brett Simpson wrote:
+> > > > I've tried a number of different PREROUTING and POSTROUTING =
+rules and
+> > > > can't seem to make this work.
+> > > >
+> > > > I have a system with a single nic (eth0). While I'm on the =
+system via a
+> > > > shell I would like to connect to 127.0.0.1:6000 and get =
+seemlessly
+> > > > translated to 207.156.7.15:80.
+> > > >
+> My rule will send packets to 207.156.7.15 with a source address of =
+127.0.0.1
+>=20
+> Not surprisingly, you don't get anything back...
+>=20
+> Try:
+>=20
+> iptables -A OUTPUT -t nat -p tcp --dport 6000 -d 127.0.0.1 -j DNAT =
+--to=20
+> 207.156.7.15:80
+> iptables -A POSTROUTING -t nat -p tcp --dport 80 -d 207.156.7.15 -s =
+127.0.0.1=20
+> -j SNAT --to a.b.c.d
+>=20
+> Where a.b.c.d is the routable address of your machine, to which reply =
+packets=20
+> can successfully return.
 
-modprobe ip_tables
-modprobe iptable_filter
-modprobe iptable_mangle
-modprobe ipt_MASQUERADE
-modprobe ipt_conntrack
-modprobe ipt_multiport
-modprobe ipt_state
-modprobe ipt_REDIRECT
-modprobe ipt_REJECT
-modprobe ipt_SAME
-modprobe ipt_LOG
-modprobe ip_conntrack
-modprobe ip_conntrack_ftp ports=3Dab,cde,fgh
-modprobe ip_conntrack_irc
-modprobe iptable_nat
-modprobe ip_nat_ftp ports=3D ab,cde,fgh
-modprobe ip_nat_irc
+Still no go. My machine is 172.27.228.145. I'm using lynx for the
+browser on my machine.
 
-I have two major problems:
+iptables -A OUTPUT -t nat -p tcp --dport 6000 -d 127.0.0.1 -j DNAT --to
+207.156.7.15:80
+iptables -A POSTROUTING -t nat -p tcp --dport 80 -d 207.156.7.15 -s
+127.0.0.1 -j SNAT --to 172.27.228.145
 
-1. modprobe ip_conntrack_ftp ports=3Dab,cde,fgh
-   modprobe ip_nat_ftp ports=3D ab,cde,fgh
-   Does not seem to work. I can't ftp to the defined ports. There is no
-   answer what so ever.
+Thanks,
+Brett
 
-2. $IPTABLES -v -A INPUT -i eth0 -p icmp -j DROP
-   Does not work. I can still ping my compu, the packets are not =
-dropped.
 
-What you have to understand is that my firewall script worked fine =
-before=20
-the kernel change and iptables change.=20
-So does anybody know anything about what has changed and can explain how
-I could redesign my script. There are of course more iptables configs in =
-the script, but everything is quiet basic, a lot of port forwarding and =
-such stuff.=20
 
-Thanks.
-
-/Per  =20
 
 
