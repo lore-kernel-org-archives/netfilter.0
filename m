@@ -1,56 +1,43 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: iptables NAT with "policy routing?"
-Date: Tue, 27 Jan 2004 02:47:01 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040127014701.GO19250@sunbeam.de.gnumonks.org>
-References: <400F7264.1080201@palaver.net>
+Subject: Re: Problem using fwmarks as routing key: "MASQUERADE: Route sent us somewhere else."
+Date: Tue, 27 Jan 2004 02:51:52 +0100
+Sender: netdev-bounce@oss.sgi.com
+Message-ID: <20040127015152.GP19250@sunbeam.de.gnumonks.org>
+References: <001c01c3e043$93583cd0$1684188d@Kiste>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Kynn+LdAwU9N+JqL"
-Return-path: <netfilter-admin@lists.netfilter.org>
+	protocol="application/pgp-signature"; boundary="FcSpk3Icpd/Pbul4"
+Return-path: <netdev-bounce@oss.sgi.com>
 Content-Disposition: inline
-In-Reply-To: <400F7264.1080201@palaver.net>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+In-Reply-To: <001c01c3e043$93583cd0$1684188d@Kiste>
+Errors-to: netdev-bounce@oss.sgi.com
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Brian Capouch <brianc@palaver.net>
-Cc: netfilter@lists.netfilter.org
+To: Thhoep <thhoep@gmx.de>
+Cc: netfilter@lists.netfilter.org, netdev@oss.sgi.com, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
 
---Kynn+LdAwU9N+JqL
+--FcSpk3Icpd/Pbul4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 22, 2004 at 01:49:08AM -0500, Brian Capouch wrote:
-> I have had to temporarily use a table-based route for one of my networks=
-=20
-> for administrative reasons, e.g.
-
-this should work just fine.
-
-> I suspect though, that this mode of routing (as opposed to using the=20
-> "regular" table via "route add default") is somehow hosing my iptables NA=
-T?
+On Wed, Jan 21, 2004 at 06:25:22PM +0100, Thhoep wrote:
+> hi,
 >=20
-> At least sniffing the egress interface now shows the traffic heading out=
-=20
-> with its NATted address of 192.168.1.10.
+> my aim: to divide 100 hosts upon 6 masqueraded adsl connections to the
+> internet using a linux router runnig a debian woody.
+>=20
+> the problem: really strange behaviour of the routing/masquerading combo,
+> that changes with every tried kernel version. (described below)
+>=20
+> presumption: some version mismatch or a bug in the kernel routing code,
+> which needs a bugfix that till now is unknown to me
 
-did you try that with a connection that was established before you
-inserted the new NAT rule (also, if you test with a ping, you need to
-stop it to be recognized as new connection).
+Please read the recent archives of the netdev list with regard to
+"Rusty's brain broke".  Also see=20
+https://bugzilla.netfilter.org/cgi-bin/bugzilla/show_bug.cgi?id=3D144
 
-LARTC mailinglist might give you some better feedback.
-
-> Thx.
-> B.
+Alexey heavily argued against us reverting that change, however :(
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -62,7 +49,7 @@ LARTC mailinglist might give you some better feedback.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---Kynn+LdAwU9N+JqL
+--FcSpk3Icpd/Pbul4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -70,10 +57,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQFAFcMVXaXGVTD0i/8RAiYcAKClJcJuG01XgYi5yW/Wu25YvqyLEwCeJHDs
-6B5XN2MPjANSSOTJAqzcOu8=
-=3CDh
+iD8DBQFAFcQ4XaXGVTD0i/8RAsKqAJ0Q9QW37doao1sqR2PoEhUH+fVqyQCgp0vM
+jwRf5NBu0ZGXvns9H02A6f4=
+=/1Gy
 -----END PGP SIGNATURE-----
 
---Kynn+LdAwU9N+JqL--
+--FcSpk3Icpd/Pbul4--
 
