@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: libipt_time.so
-Date: Wed, 4 Jun 2003 09:12:38 +1000
+From: "John Paul" <john@pinoylinux.sytes.net>
+Subject: Re: Nat problem with GRE
+Date: Wed, 4 Jun 2003 08:10:57 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA5@wardrive.citadelcomputer.com.au>
+Message-ID: <005901c32a2d$c661d0e0$fd00a8c0@homes>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D9F@wardrive.citadelcomputer.com.au>
+Reply-To: "John Paul" <john@pinoylinux.sytes.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,12 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: ffloresREMOVE_THIS@softhome.net, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: George Vieira <georgev@citadelcomputer.com.au>, Esteban <esteban@alstec.fr>, netfilter@lists.netfilter.org
 
-Time is part of the patch-o-matic modules.. you will need full source =
-for both iptables and the patch-o-matic that goes with that version.. =
-You're then better off also doing the kernel source as well..
+George, et al.
+
+I actually have the same problem. I successfully patched my kernel(2.4.20)
+with ip_pptp_conntrack (P-O-M) but after recompiling my kernel, iptables
+doesnt recognize  NAT  anymore. How could this happen?
+
+TIA
+Pol
+
+----- Original Message -----
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+To: "Esteban" <esteban@alstec.fr>; <netfilter@lists.netfilter.org>
+Sent: Wednesday, June 04, 2003 6:12 AM
+Subject: RE: Nat problem with GRE
+
+
+No offence but for the <insert large number here>th time use pptp helper in
+p-o-m.. ;)
+GRE is connectionless and also has no ports so connection tracking cannot
+map the port used to connect so it doesn't know which user behind the
+firewall to relay the packets to.
+
+So you need the patch-o-matic patch and select the PPTP helper to most
+likely fix your problem.
 
 Thanks,
 ____________________________________________
@@ -32,32 +54,38 @@ georgev@citadelcomputer.com.au
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
 
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+
+
 -----Original Message-----
-From: Francisco Ra=FAl Flores [mailto:fflores@softhome.net]
-Sent: Wednesday, June 04, 2003 7:45 AM
+From: Esteban [mailto:esteban@alstec.fr]
+Sent: Tuesday, June 03, 2003 9:35 PM
 To: netfilter@lists.netfilter.org
-Subject: libipt_time.so
+Subject: Nat problem with GRE
 
 
-I'm trying with fwbuilder, i'm running in a redhat 8 box and i need the
-libipt_time.so, (this does not come with the original iptables in my
-distribution, so i build iptables from the sources, version 2.8), every
-thing compiles fine ...at least i think so ;), but the problem is that
-the libipt_time.so doesn't get compiled...
+Hi there,
 
-Do i have to do something special in order to get this library?, is
-there some compile script somewhere?, where i could tell the compiler to
-produce the library?... Because reading the INSTALL file, all starts
-with the make stuff...
+I have some troubles to NAT GRE traffic.
+On my LAN, some users have to connect to an external PPTP server.
+The connection success for the first user who connect the PPTP server.
+But it fails for the others, when there is already a user connected to
+the server.
+I looked with tcpdump, and it seem that the GRE traffic of the second
+client is droped (TCP 1723 connection is OK)
+
+Actualy, I accept all the traffic destinated to the PPTP server (so tcp
+1723 and gre traffic may be accepted).
+
+Does anybody know what I am doing wrong ?
+
+Thank you very much.
 
 
-May some of you could helpme with this...
-
-Thank you so much!...
-
-
-
-Francisco R. Flores,
+--
+Esteban
+esteban@epita.fr
 
 
 
