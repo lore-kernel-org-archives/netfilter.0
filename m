@@ -1,12 +1,13 @@
-From: Michel Bellemare <michel.bellemare@gmail.com>
-Subject: gnutella
-Date: Thu, 21 Oct 2004 10:23:45 -0400
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Warning - no help text file could be found
+Date: Thu, 21 Oct 2004 10:28:36 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <f9a42cb404102107232273e04@mail.gmail.com>
-Reply-To: Michel Bellemare <michel.bellemare@gmail.com>
+Message-ID: <20041021142836.GA10807@bender.817west.com>
+References: <43382.200.198.41.73.1098308141.squirrel@200.198.41.73>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <43382.200.198.41.73.1098308141.squirrel@200.198.41.73>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,15 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Group <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-is there any way to log all the traffic that uses the gnutella protocol?
-i searched in the mailing list and google and found nothing.
+On Wed, Oct 20, 2004 at 06:35:41PM -0300, Eduardo Diego Fonseca da Silva wrote:
+> Hi there!
+> 
+> When I try to use POM I get the following message:
+> 
+> Warning - no help text file could be found in either
+> /usr/src/linux/net/ipv4/netfilter/Config.help
+> or /usr/src/linux/Documentation/Configure.help
+> Failed to patch copy of /usr/src/linux
+> TEST FAILED: patch NOT applied.
+> 
+> Where do I get those files?
 
-I looked to at a tcpdump capture and it never uses the same port...
+based on the information you've provided--the answer is:  42.
 
-basically i want to control the number of bytes that goes out using
-this protocol.
+how about telling us:
 
-thank you very much!
+- what version of POM you grabbed
+- what version of iptables you grabbed
+- what kernel source tree you're using
+- what sequence of events lead you to the above "error message" (a copy
+  & paste of the actual output would be nice)
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
 
