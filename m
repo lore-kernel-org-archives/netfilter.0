@@ -1,13 +1,11 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: pom error for contrack_nat_dependency
-Date: 27 Mar 2003 00:22:31 +0100
+From: pgaynor@storactive.com
+Subject: PPTP connection tracking patch
+Date: Wed, 26 Mar 2003 16:30:05 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048720950.14736.129.camel@tux.rsn.bth.se>
-References: <3E81FC2E.9080008@ucdavis.edu>
+Message-ID: <OF9D9FD05D.2ACE3451-ON88256CF6.000219D2-88256CF6.0002A4CD@storactivexd.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=_alternative 0002A4CB88256CF6_="
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E81FC2E.9080008@ucdavis.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +15,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Stephen Lawrence Jr." <slawrence@ucdavis.edu>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wed, 2003-03-26 at 20:14, Stephen Lawrence Jr. wrote:
-> I ran the following command on a fresh tar of kernel-2.4.20:
-> 
-> runme --batch base
-> 
-> and got the following:
-> 
-> Testing patch pending/12_contrack_nat_dependency.patch...
-> Failed to patch copy of /usr/src/linux
-> TEST FAILED: patch NOT applied.
+This is a multipart message in MIME format.
+--=_alternative 0002A4CB88256CF6_=
+Content-Type: text/plain; charset="US-ASCII"
 
-Known problem, it's a kernel 2.5 patch that somehow got in...
-I'm waiting for confirmation that a backport of that patch will work for
-2.4, then I'll add the one I made yesterday. It's not an important patch
-at all so just ignore it for now.
+Hi,
 
--- 
-/Martin
+   When I build a Kernel with the ip_nat_pptp and ip_nat_proto_gre I 
+recieve an
+iptables: "invalid command" when my firewall script trys to run.   This 
+error is with -j MASQUERADE.
+When I run the firewall script without these modules installed the 
+MASQUERADE target works.
+I have attempted this with both kernel 2.4.19 and 2.4.20.  I have compiled 
+the latest iptables 1.2.7a
+and i am using the latest pom.  Any help is greatly appriciated.
+
+Thanks in advance,
+
+-PaulG 
+--=_alternative 0002A4CB88256CF6_=
+Content-Type: text/html; charset="US-ASCII"
+
+
+<br><font size=2 face="sans-serif">Hi,</font>
+<br>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp;When I build a Kernel with
+the ip_nat_pptp and ip_nat_proto_gre I recieve an</font>
+<br><font size=2 face="sans-serif">iptables: &quot;invalid command&quot;
+when my firewall script trys to run. &nbsp; This error is with -j MASQUERADE.</font>
+<br><font size=2 face="sans-serif">When I run the firewall script without
+these modules installed the MASQUERADE target works.</font>
+<br><font size=2 face="sans-serif">I have attempted this with both kernel
+2.4.19 and 2.4.20. &nbsp;I have compiled the latest iptables 1.2.7a</font>
+<br><font size=2 face="sans-serif">and i am using the latest pom. &nbsp;Any
+help is greatly appriciated.</font>
+<br>
+<br><font size=2 face="sans-serif">Thanks in advance,</font>
+<br>
+<br><font size=2 face="sans-serif">-PaulG </font>
+--=_alternative 0002A4CB88256CF6_=--
 
