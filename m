@@ -1,12 +1,16 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: Re: DNAT problem
-Date: Sat, 29 May 2004 22:00:03 -0300
+From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
+Subject: OT: ISP Port filters (was: Re: DNAT problem)
+Date: Sun, 30 May 2004 09:56:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001b01c445e1$711ab3b0$0200000a@heretic>
-References: <20040529172536.6df75cca.leslie.polzer@gmx.net><000701c44592$bb254460$0200000a@heretic> <20040529180330.6ec3d567.leslie.polzer@gmx.net>
+Message-ID: <20040530095653.2514f4f4.leslie.polzer@gmx.net>
+References: <20040529172536.6df75cca.leslie.polzer@gmx.net>
+	<000701c44592$bb254460$0200000a@heretic>
+	<20040529180330.6ec3d567.leslie.polzer@gmx.net>
+	<001b01c445e1$711ab3b0$0200000a@heretic>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001b01c445e1$711ab3b0$0200000a@heretic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +21,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-to filter some ports is becoming a new "fashion" by the ISP.
+On Sat, 29 May 2004 22:00:03 -0300
+"Alexis" <alexis@tpys.com.ar> wrote:
 
-The reason is "why he will serve a webserver if i can do this and charge some
-fresh money for it"
+> to filter some ports is becoming a new "fashion" by the ISP.
+> 
+> The reason is "why he will serve a webserver if i can do this and charge some
+> fresh money for it"
+I'm really angry about this - blocking ports is one thing, but not telling
+the customer about this and thereby giving him enormous headaches when
+he tries to configure his network, another.
 
-just that
+Well, enough ranting now.
 
-
------ Original Message ----- 
-From: "Patrick Leslie Polzer" <leslie.polzer@gmx.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, May 29, 2004 1:03 PM
-Subject: Re: DNAT problem
-
-
-> On Sat, 29 May 2004 12:36:37 -0300
-> "Alexis" <alexis@tpys.com.ar> wrote:
->
-> > i think it could be
-> >
-> > - that the isp (if you're connecting to one isp trough ppp0) has a filter
-for
-> > port 80 (it seems strange)
-> Hm, possible. I just noticed 81 works, too! What crap is this?
->
-> > are you mangling some packets? what is the output for iptables -t mangle -L?
-> No rules at all, I generally try to stay away from mangling when testing:
->
->
-> ### <snip> ###
->
-> stronghold:~# iptables -t mangle -L
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
->
-> Chain INPUT (policy ACCEPT)
-> target     prot opt source               destination
->
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination
->
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
->
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination
->
-> ### </snip> ###
->
->
-> So I guess all facts are pointing at my crappy ISP...
->
-> Leslie
->
->
-
+Leslie
 
