@@ -1,11 +1,9 @@
-From: Askar <askarali@gmail.com>
-Subject: iptables + MRTG
-Date: Sat, 28 Aug 2004 16:28:27 +0500
+From: Scott MacKay <scottmackay@yahoo.com>
+Subject: patch-o-matic for 2.4.27?
+Date: Sat, 28 Aug 2004 05:23:17 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <a0f69e5040828042815b5e61e@mail.gmail.com>
-Reply-To: Askar <askarali@gmail.com>
+Message-ID: <20040828122317.2104.qmail@web13910.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,19 +15,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-hi,
+Is there a patch-o-matic release for 2.4.27?  I am
+using iptables 1.2.11 with that kernel.  nf_log seems
+to patch OK, but the 'raw' table patch fails.  Is this
+patch updated anywhere?
 
-Anyone here using MRTG with iptables? for example to check iptables -L
--nvx things graphical using mrtg... or any other statistics
-any possibility ?
+-Scott
 
-looking forward.
-regards
-AskaR
 
--- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-yer life a little easier)
+		
+_______________________________
+Do you Yahoo!?
+Win 1 of 4,000 free domain names from Yahoo! Enter now.
+http://promotions.yahoo.com/goldrush
 
