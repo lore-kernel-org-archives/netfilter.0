@@ -1,46 +1,37 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: 2.4.20-pre7: ip_conntrack: table full, dropping packet.
-Date: Mon, 21 Oct 2002 23:55:34 +0200
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20021021215534.GB3039@naboo.club.berlin.ccc.de>
-References: <20021021201644.166db824.skraw@ithnet.com>
+From: Torne Wuff <torne-netfilter@wolfpuppy.org.uk>
+Subject: MARK and ping packets
+Date: Tue, 22 Oct 2002 12:10:08 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20021022111008.GB405@wolfpuppy.org.uk>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20021021201644.166db824.skraw@ithnet.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Stephan von Krawczynski <skraw@ithnet.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Rusty Russell <rusty@rustcorp.com.au>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Mon, Oct 21, 2002 at 08:16:44PM +0200, Stephan von Krawczynski wrote:
-> Hello all,
+Hi,
 
-Hi Stephan. Don't know if you remember me, but we've met at some IN e.V.
-meetings in the past ;)
+If I use the MARK target to set a mark on an incoming ping packet, then
+the ping reply has source == destination == original ping destination,
+i.e. it sends the ping response back to itself, not to the requestor.
 
-> After several days running kernel 2.4.20-pre7 I came across the syslogged
-> message:
-> 
-> kernel: ip_conntrack: table full, dropping packet.
-> 
-> This box runs about 10 rules for destination nat. My simple question:
-> is this a bug, or a need to tune something? If it is a bug, is there a
-> later kernel that has it fixed?
+This happens with no rules in the filter table at all (other than the
+LOG statements), and only a single rule in the mangle table marking all
+packets as 0x1.
 
-it's not about the number of NAT rules, but the number of connections
-going on through your machine.
+I have no patches applied - it's a stock 2.4.19 kernel
 
-the FAQ (to be found at www.netfilter.org) describes how to raise the
-number of connection tracking table entries.
+Any ideas?
 
-> Regards,
-> Stephan
+Torne
 
--- 
-Live long and prosper
-- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
-============================================================================
-GCS/E/IT d- s-: a-- C+++ UL++++$ P+++ L++++$ E--- W- N++ o? K- w--- O- M- 
-V-- PS+ PE-- Y+ PGP++ t++ 5-- !X !R tv-- b+++ DI? !D G+ e* h+ r% y+(*)
