@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: delayed masquerading problems after openswan ipsec
-Date: Sat, 24 Jul 2004 18:14:56 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Universal Address Translation
+Date: Sat, 24 Jul 2004 19:15:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407241814.56642.Antony@Soft-Solutions.co.uk>
-References: <41021A71.5030603@gmx.at>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1090689346.2228.94.camel@anduril.intranet.cartel-securite.net>
+References: <200407242032.35573.rio@martin.mu>
+	 <1090676859.2228.62.camel@anduril.intranet.cartel-securite.net>
+	 <200407242055.51714.rio@martin.mu>
+	 <1090687880.2228.83.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <41021A71.5030603@gmx.at>
+In-Reply-To: <1090687880.2228.83.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,56 +21,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Rio Martin." <rio@martin.mu>
+Cc: netfilter@lists.netfilter.org
 
-On Saturday 24 July 2004 9:14 am, Felix Joussein wrote:
+And one thing I forgot... I didn't solve IP addresses collisions (two
+clients can have the same IP), but here are some ideas. You have to
+isolate clients one from any other.
 
-> Hello List,
->
-> I'm not new to iptables, but this problem is very strange:
->
-> I have a Linux 2.4.26 + openswan ipsec + iptables 2.11 box with a cable
-> modem to connect to the internet - so far:
-> I have one single rule in the postrouting chain:
->
-> iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
->
-> This works fine - also my IPSec tunnel is working nice.
-> But after a while - can't say how long, the connection from the lan
-> thrue the linux box get lost.
-> dmesg's Output is:
->
-> MASQUERADE: Route sent us somewhere else.
-> klips_error:ipsec_xmit_send: ip_send() failed, err=1
->
-> This message repeats as long, as  I remove the MASQ rule, and re-set it.
->
-> Has anyone an idea about this issue?
+On wired network, it's what Cisco calls Private VLAN settings : a given
+ethernet port is only allowed to speak to gateway's port. Only the
+gateway can see all ports.
 
-Does your cable modem service provider change IP addresses on you on some 
-frequent basis?
-
-Try checking ifconfig next time this happens (before and after the problem).   
-I expect you'll find that when things are working, both eth0 and ipsec0 have 
-the same IP address (acquired from the ISP by DHCP), but after the problem 
-has occurred, you'll probably see a different address on eth0, with the same 
-old one on ipsec0.
-
-The solution is probably to take the IPsec tunnel down and bring it back up 
-again when the IP address on eth0 changes - I think you can do this from a 
-script called by the DHCP client daemon.
-
-If it turns out you're not getting given a different IP address, perhaps you 
-can post the output from some diagnostics such as "route -n" or "ipsec look".
-
-Regards,
-
-Antony.
+On wireless network, you have to forbid frames bridging between clients.
+At Cisco's, they call this PSPF (Publicly Secure Packet Forwarding). If
+you use hostap[1] driver, you just have to set related sysctl entry
+(don't remember name, but it's self explanary) to 0 and you're done.
 
 -- 
-RTFM may be the appropriate reply, but please specify exactly which FM to R.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
