@@ -1,11 +1,12 @@
-From: "Matt Parlane" <matt@zevi.net>
-Subject: Multiple conditions for logging packets
-Date: Mon, 23 Sep 2002 23:06:50 +1200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: my system is under syn-flood attack
+Date: Mon, 23 Sep 2002 12:31:15 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09d001c262f1$50f418d0$0200a8c0@bart>
+Message-ID: <Pine.LNX.4.44.0209231227000.1469-100000@dns.toxicfilms.tv>
+References: <3D8ECEAF.5030202@fugmann.dhs.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3D8ECEAF.5030202@fugmann.dhs.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,26 +16,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Anders Fugmann <afu@fugmann.dhs.org>
+Cc: pat@pat.i989.net, chenlf@cibn.com, netfilter@lists.netfilter.org
 
-Hi list...
+> > http://www.samag.com/documents/s=1824/sam0201h/0201h_s1.htm
+> >
+> Please do not do as the above link suggests.
+I agree, it has been discussed some time ago, that nat table is not for
+filtering. (That is why, the REJECT target is not valid in PREROUTING)
 
-I have a simple linux machine acting as a firewall/gateway, and I'm after a
-way to specify multiple conditions for rules.  Basically I want to create a
-rule for packets which are either coming from or going to the internet - not
-packets which are both sourced and destined for the local network.  The
-reason is that I am logging the packets to MySQL using ULogD - and I really
-can't afford to be periodically removing all the records from the table
-which are only for internal traffic.
+I have once experimented with SYN floods, i wrote a script to generated
+spoofed SYN packets and flood the host. Linux 2.2 & 2.4 with syn_cookies
+turned on worked fine, so did w2k boxes and HP-UX. I belive that what is
+going on is that your hosts can not issue any connections without huge
+delays, which is rather caused by the eaten bandwith by SYN floods, not
+their connection table memory consuming habits.
 
-I haven't been able to do this so far using iptables rules.  Does anyone
-have any ideas about how this might be achieved?
+Regards,
+Maciej
 
-Many thanks in advance...
-
-Matt Parlane
-Zevi Interactive
-matt@zevi.net
 
 
