@@ -1,16 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: state: INVALID
-Date: Mon, 22 Nov 2004 08:45:22 -0500
-Message-ID: <1101131121.13662.17.camel@hubcap.ljm.dom>
-References: <419E75B1.3030406@uni-paderborn.de>
-	<1100990773.3501.9.camel@hubcap.ljm.dom>
-	<419FD0BD.6000906@uni-paderborn.de>
-	<1101061543.3501.18.camel@hubcap.ljm.dom>
-	<41A11AD5.3080401@uni-paderborn.de>
+From: "Stian B. Barmen" <stian@barmen.nu>
+Subject: Block proxy use.
+Date: Mon, 22 Nov 2004 14:49:30 +0100
+Message-ID: <1101131370.16509.24.camel@tux.it-akademiet.no>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=sha1;
+	protocol="application/x-pkcs7-signature";
+	boundary="=-ranktYa5aUCVJishSZRp"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41A11AD5.3080401@uni-paderborn.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,169 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
-Cc: bj-schmidt@uni-paderborn.de
 
-On Sun, 2004-11-21 at 17:46, Bj=C3=B6rn Schmidt wrote:
-> I changed the log rule(s) that creates "ILLEGAL_PACKET", now it creates
-> "OUTPUT_INVALID", "INPUT_INVALID" and "FORWARD_INVALID". Here is one li=
-ne
-> from the log with the new rules (client):
->=20
-> Nov 21 23:21:43 gigabyte OUTPUT_INVALID IN=3D OUT=3Deth0 MAC=3D SRC=3D1=
-92.168.1.2=20
-> DST=3D192.168.1.1 LEN=3D52 TOS=3D00 PREC=3D0x00 TTL=3D64 ID=3D23692 DF =
-PROTO=3DTCP SPT=3D32807=20
-> DPT=3D22 SEQ=3D798630945 ACK=3D685050669 WINDOW=3D1460 ACK URGP=3D0
->=20
-> The state of this packet should be ESTABLISHED, but it _is_ INVALID.
-> Perhaps there is a bug in ipsec or netfilter...
 
-it almost seems like you have an asymmetric routing situation--what i
-mean by that is that the SYN packet is reaching 192.168.1.2 without
-going through the firewall and therefore the SYN-ACK is NEW, not
-RELATED...
+--=-ranktYa5aUCVJishSZRp
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-also--you keep mentioning IPsec.  first off--i never use conntrack to
-match IPsec traffic.  second--you need to be aware that packets traverse
-the filter chains twice in a 2.6 kernel--once encrypted, and once
-decrypted.  for 2.6 IPsec rules, i use something like:
+Is there som kind of filter for netfilter that can block access to
+anonymous proxies? The problem I often face is that the most advanced
+users always can work around the firewall by using proxies.=20
 
-  # mark ipsec traffic
-  iptables -t mangle -A PREROUTING -p 50 -s $PEER -j MARK --set-mark 1
+I know that I could run a proxy myself but this is not exactly what I
+want. The best would be if there could be a filter similar to ipp2p
+which would check for a "proxy signature" and block those
+communications.=20
 
-  # allow IKE & ESP in
-  iptables -A INPUT -p udp -s $PEER --sport 500 --dport 500 -j ACCEPT
-  iptables -A INPUT -p 50 -s $PEER -j ACCEPT
+Best regards
+Stian B. Barmen
 
-  # allow decrypted packets
-  iptables -A INPUT -m mark --mark 1 -j ACCEPT
+--=-ranktYa5aUCVJishSZRp
+Content-Type: application/x-pkcs7-signature; name=smime.p7s
+Content-Disposition: attachment; filename=smime.p7s
+Content-Transfer-Encoding: base64
 
-  # allow IKE & ESP out
-  iptables -A OUTPUT -p udp -d $PEER --sport 500 --dport 500 -j ACCEPT
-  iptables -A OUTPUT -p 50 -d $PEER -j ACCEPT
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII4TCCAssw
+ggI0oAMCAQICAw0JnzANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
+d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
+YWlsIElzc3VpbmcgQ0EwHhcNMDQwOTE0MDczMDE5WhcNMDUwOTE0MDczMDE5WjBBMR8wHQYDVQQD
+ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMR4wHAYJKoZIhvcNAQkBFg9zdGlhbkBiYXJtZW4ubnUw
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgKNwEFNherNuL7XY/rAO7jR8WLrfgFvGm
+1+Yw3hYSDlfZSp5o20GxH/uAraHXw0O8LzrzuTvfNgx7jXJiR9rWWqyaF8vYv01n4dEkohGnPvoJ
+7c+EWFqJyNdl/UxWkuHYf84POwr3Pl5a9S8WUeuu3yb8ZP80yUt5tgR1peXrVKNrynTBQBO78DEy
+8FNonVjCSv3S73oUXtEo7uQnUrehkh4ByNz0sbPsx5O4uq/4NNO82bdW68NqbPShWJlsbrtr/BKK
+UEt9Xv47La8o6OVODRG1B8Oehd04+uoEtmC6whVjJFHr1hG+/3ikzqqokWqhD7EM1xjShR8fNr7+
+a61BAgMBAAGjLDAqMBoGA1UdEQQTMBGBD3N0aWFuQGJhcm1lbi5udTAMBgNVHRMBAf8EAjAAMA0G
+CSqGSIb3DQEBBAUAA4GBAL+JPkXo15KjJdwyv0gCvLpTZiNGkbfElDg2KdggEoIa6DHDjkdFiaXt
+udJh0gQGwOQ/l2jWGwLXQskzU22xoSg5fr8Pv84BMowegNaBlY9ZB2eV/71MSn07LqD6dFnvPAmo
+x1vIlFtpjGU4BB9sE1335n7LDFkFctfBCU6hyLK3MIICyzCCAjSgAwIBAgIDDQmfMA0GCSqGSIb3
+DQEBBAUAMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBM
+dGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTAeFw0wNDA5
+MTQwNzMwMTlaFw0wNTA5MTQwNzMwMTlaMEExHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBNZW1i
+ZXIxHjAcBgkqhkiG9w0BCQEWD3N0aWFuQGJhcm1lbi5udTCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAOAo3AQU2F6s24vtdj+sA7uNHxYut+AW8abX5jDeFhIOV9lKnmjbQbEf+4CtodfD
+Q7wvOvO5O982DHuNcmJH2tZarJoXy9i/TWfh0SSiEac++gntz4RYWonI12X9TFaS4dh/zg87Cvc+
+Xlr1LxZR667fJvxk/zTJS3m2BHWl5etUo2vKdMFAE7vwMTLwU2idWMJK/dLvehRe0Sju5CdSt6GS
+HgHI3PSxs+zHk7i6r/g007zZt1brw2ps9KFYmWxuu2v8EopQS31e/jstryjo5U4NEbUHw56F3Tj6
+6gS2YLrCFWMkUevWEb7/eKTOqqiRaqEPsQzXGNKFHx82vv5rrUECAwEAAaMsMCowGgYDVR0RBBMw
+EYEPc3RpYW5AYmFybWVuLm51MAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAv4k+RejX
+kqMl3DK/SAK8ulNmI0aRt8SUODYp2CASghroMcOOR0WJpe250mHSBAbA5D+XaNYbAtdCyTNTbbGh
+KDl+vw+/zgEyjB6A1oGVj1kHZ5X/vUxKfTsuoPp0We88CajHW8iUW2mMZTgEH2wTXffmfssMWQVy
+18EJTqHIsrcwggM/MIICqKADAgECAgENMA0GCSqGSIb3DQEBBQUAMIHRMQswCQYDVQQGEwJaQTEV
+MBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0
+ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQw
+IgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNv
+bmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcNMDMwNzE3MDAwMDAwWhcNMTMwNzE2MjM1OTU5WjBi
+MQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoG
+A1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EwgZ8wDQYJKoZIhvcNAQEB
+BQADgY0AMIGJAoGBAMSmPFVzVftOucqZWh5owHUEcJ3f6f+jHuy9zfVb8hp2vX8MOmHyv1HOAdTl
+UAow1wJjWiyJFXCO3cnwK4Vaqj9xVsuvPAsH5/EfkTYkKhPPK9Xzgnc9A74r/rsYPge/QIACZNen
+prufZdHFKlSFD0gEf6e20TxhBEAeZBlyYLf7AgMBAAGjgZQwgZEwEgYDVR0TAQH/BAgwBgEB/wIB
+ADBDBgNVHR8EPDA6MDigNqA0hjJodHRwOi8vY3JsLnRoYXd0ZS5jb20vVGhhd3RlUGVyc29uYWxG
+cmVlbWFpbENBLmNybDALBgNVHQ8EBAMCAQYwKQYDVR0RBCIwIKQeMBwxGjAYBgNVBAMTEVByaXZh
+dGVMYWJlbDItMTM4MA0GCSqGSIb3DQEBBQUAA4GBAEiM0VCD6gsuzA2jZqxnD3+vrL7CF6FDlpSd
+f0whuPg2H6otnzYvwPQcUCCTcDz9reFhYsPZOhl+hLGZGwDFGguCdJ4lUJRix9sncVcljd2pnDmO
+jCBPZV+V2vf3h9bGCE6u9uo05RAaWzVNd+NWIXiC3CEZNd4ksdMdRv9dX2VPMYIC5zCCAuMCAQEw
+aTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEs
+MCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JnzAJBgUrDgMC
+GgUAoIIBUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wNDExMjIx
+MzQ5MzBaMCMGCSqGSIb3DQEJBDEWBBR8FgpdMZofmXNvdJVuq6WmPGbmkjB4BgkrBgEEAYI3EAQx
+azBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQu
+MSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIDDQmfMHoGCyqG
+SIb3DQEJEAILMWugaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcg
+KFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EC
+Aw0JnzANBgkqhkiG9w0BAQEFAASCAQCKHU+x5SEN1/vhHIW0JPVsIErW9Agwcgdcuol6U00KR44K
+zv2KxCj+aGhaaPiGeXcHPgK+HFH9GLXBEBC0rDbVJ/QSNhlDh1DkK3hMHUQIxOtH4ZTvAEl0rSRX
+trGyBqdEe13Mxkwm2i89GzTPp5kgUXDukiT4gCA/Bb4rpg0AENCnOq3JP4mq52w0irQH/cdEoNY4
+vAqRhvnCOhcZHJJtP5q2nBx7L7IPCybMBA86Bj3PPIKV7ZrfkqPF32P0GfswImOrViAJLiALcE6C
+goQEBKeP9JEsM8MLcJz5JifJFLLto2zVSnHFse2NGhzV7f/v1rIA6jFD6LRXQRT2cpFdAAAAAAAA
 
-  [ your sepcific rules follow here ]
 
->  > my guess is that your rules do not match your intentions.
->=20
-> Impossible. I have this problem even with this _minimalistic_ ruleset:
->=20
-> gigabyte:~# cat firewall.tmp
-> #!/bin/sh
->=20
-> iptables  -P INPUT DROP
-> iptables  -P OUTPUT DROP
-> iptables  -P FORWARD DROP
->=20
-> iptables  -A INPUT   -m state --state ESTABLISHED,RELATED,NEW -j ACCEPT
-> iptables  -A OUTPUT  -m state --state ESTABLISHED,RELATED,NEW -j ACCEPT
-> iptables  -A FORWARD -m state --state ESTABLISHED,RELATED,NEW -j ACCEPT
->=20
-> iptables -A INPUT -m state --state INVALID -j ULOG --ulog-prefix INPUT_=
-INVALID
-> iptables -A OUTPUT -m state --state INVALID -j ULOG --ulog-prefix OUTPU=
-T_INVALID
-> iptables -A FORWARD -m state --state INVALID -j ULOG --ulog-prefix FORW=
-ARD_INVALID
->=20
-> >>Besides I forgot to mention that i only get "false INVALID" states wi=
-th
-> >>activated IPsec (esp in transport mode, kernel 2.6). With IPsec _AND_=
- iptables
-> >>it es NOT possible to establish a new tcp connection due to these "IN=
-VALID
-> >>state packets".
-> >=20
-> > uh huh...  post your rules:
-> >=20
-> > iptables -t mangle -vnxL
->=20
-> gigabyte:~# iptables -t mangle -vnxL
-> Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
-> Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
-> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
-> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
-> Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
->=20
-> > iptables -t nat -vnxL
->=20
-> gigabyte:~# iptables -t nat -vnxL
-> Chain PREROUTING (policy ACCEPT 7 packets, 1515 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
-> Chain POSTROUTING (policy ACCEPT 26 packets, 2637 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
-> Chain OUTPUT (policy ACCEPT 26 packets, 2565 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->=20
-> > iptables -vnxL
->=20
-> gigabyte:~# iptables -vnxL
-> Chain INPUT (policy DROP 0 packets, 0 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->      2460  2616788 ACCEPT     all  --  *      *       0.0.0.0/0=20
-> 0.0.0.0/0           state NEW,RELATED,ESTABLISHED
->         0        0 ULOG       all  --  *      *       0.0.0.0/0=20
-> 0.0.0.0/0           state INVALID ULOG copy_range 0 nlgroup 1 prefix=20
-> `INPUT_INVALID' queue_threshold 1
->=20
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->         0        0 ACCEPT     all  --  *      *       0.0.0.0/0=20
-> 0.0.0.0/0           state NEW,RELATED,ESTABLISHED
->         0        0 ULOG       all  --  *      *       0.0.0.0/0=20
-> 0.0.0.0/0           state INVALID ULOG copy_range 0 nlgroup 1 prefix=20
-> `FORWARD_INVALID' queue_threshold 1
->=20
-> Chain OUTPUT (policy DROP 38 packets, 2036 bytes)
->      pkts      bytes target     prot opt in     out     source=20
-> destination
->      1938   959688 ACCEPT     all  --  *      *       0.0.0.0/0=20
-> 0.0.0.0/0           state NEW,RELATED,ESTABLISHED
->        38     2036 ULOG       all  --  *      *       0.0.0.0/0=20
-> 0.0.0.0/0           state INVALID ULOG copy_range 0 nlgroup 1 prefix=20
-> `OUTPUT_INVALID' queue_threshold 1
 
-the only packet counters that are incrementing are the OUTPUT chain
-filters...  so for *some* reason--you have packets that are leaking
-through that first rule...
-
-> Hmmm, it is not possible to establish a ssh connection, but it IS
-> possible to establish a telnet connection (but it needs ~148 seconds
-> until the "skyron login:" appears).
-
-sounds like a reverse name lookup issue.
-
-can you provide a tcpdump (from 192.168.1.2) of a connection attempt?
-
--j
-
---
-"Weaseling out of things is important to learn. It's what separates
- us from the animals...except the weasel."
-	--The Simpsons
+--=-ranktYa5aUCVJishSZRp--
 
 
