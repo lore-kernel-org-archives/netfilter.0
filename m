@@ -1,10 +1,15 @@
-From: "Frederic SOSSON" <fred_sos@swing.be>
-Subject: [newbie]
-Date: Sun, 9 Mar 2003 11:53:54 +0100
+From: Athan <netfilter@miggy.org>
+Subject: Re: Rule matchup in iptables
+Date: Thu, 6 Mar 2003 13:34:33 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006901c2e62a$2d4ef780$3200a8c0@xp1700>
-Reply-To: "Frederic SOSSON" <fred_sos@swing.be>
+Message-ID: <20030306133433.GE1025@miggy.org>
+References: <20030306124758.GB23703@talika.eii.us.es>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2FkSFaIQeDFoAt0B"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20030306124758.GB23703@talika.eii.us.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,42 +19,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-
-Hi all,
-
-I'm juste a newbie in iptables ;)  My problem is, i have a linux box routing my DSL
-connection, i set these rules:
-
-iptables -A FORWARD -i ppp0 -o eth0 -j ACCEPT
-iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-iptables -A FORWARD -j LOG --log-prefix "Firewall: "
-
-== Great, i have acces to thet NET ! ==
-
-I have also a machine (192.168.0.50) in my local network running an FTP client this
-one runing an identd daemon (port 113) to access to an FTP server on the internet, i
-have added this rule
-
-iptables -t nat -A PREROUTING -p tcp --dport 113 -i ppp0 -j DNAT --to
-192.168.0.50:113
-
-But my FTP client tels me:
-
-[11:51:58] PORT 192,168,0,50,13,161
-[11:51:58] 200 PORT command successful.
-[11:51:58] LIST
-[11:52:02] 425 Can't build data connection: No route to host.
-
-Any help would be appreciate ;)
+To: Javier Miguel =?unknown-8bit?Q?Rodr=EDguez?= <javier@talika.eii.us.es>
+Cc: netfilter@lists.netfilter.org
 
 
+--2FkSFaIQeDFoAt0B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Frederic
+On Thu, Mar 06, 2003 at 01:47:58PM +0100, Javier Miguel Rodr?guez wrote:
+> VoIP) , so this is my question: Is there any way to know when a packet ma=
+tches a rule?=20
+> -j LOG is not feasible (thousands of packets per second). I want somethin=
+g like this:=20
+>=20
+> Last two hours:
+>=20
+> Rule 1: 15000 hits, 150 megabytes
+> Rule 2: 3500 hits, 34 megabytes
+> Rule 3: 9675 hits, 2 megabytes
+> ad infinitum...
 
+   iptables -nvL
 
+The -v is the important bit here, you get 'packets' and 'bytes' counters
+per rule then.  Adding -x will give exact byte numbers, rather than
+summarising to K/M/G as the number grows.
+  You can use -Z on a table to zero the counters when needed.
+
+> 	Other question? How can I test iptables rules? In ipchains I
+> could try them, but with iptables do I have to generate fake traffic?
+
+  The only mention I can find of such in the man page is:
+
+BUGS
+       Check is not implemented (yet).
+
+So I guess not.
+
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+--2FkSFaIQeDFoAt0B
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj5nTmkACgkQzbc+I5XfxKf6HgCcCavHFxThZEkYITHIDYCHwC2O
+GWsAnjxBIdgG7ycbHmbQn9NoQCR8gKre
+=69/y
+-----END PGP SIGNATURE-----
+
+--2FkSFaIQeDFoAt0B--
 
