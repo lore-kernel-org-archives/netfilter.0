@@ -1,9 +1,11 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: conntrack or nat per interface for duplicate IPs
-Date: Fri, 15 Aug 2003 23:23:22 -0700 (PDT)
+From: "Kyoungyong Lee" <leeky@icu.ac.kr>
+Subject: Writing a netfilter module..
+Date: Sun, 17 Aug 2003 15:46:28 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0308152314170.7272@xena.cft.ca.us>
+Message-ID: <02be01c3648b$49a1d440$da836bd2@kylee>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_02BB_01C364D6.B8DE6F30"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,64 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: bishop@platypus.bc.ca
 
-vtun is a daemon which establishes an IP tunnel through a TCP connection
-(among other variants).  It can be used for a VPN, in some ways like
-IPSec (FreeS/WAN), though keying and crypto are a lot less intricate. (I
-hear the IPSec guys sneering.)  As part of setting up a connection, a
-tun/tap device is allocated at each end, IP addresses are determined,
-and each end configures its device with a point-to-point link to the
-other end.  Routes, if any, are established using the other end's device
-IP address as a gateway.
+This is a multi-part message in MIME format.
 
-My goal is to set up a server, and multiple clients can connect to it at
-once, without individual prearranged addresses being assigned to the
-clients.  This means that either the daemon has to be hacked and the
-protocol augmented to negotiate the endpoint addresses, or everyone has
-to share the same pair of IP addresses.  It's not a problem if all the
-server's tunnel devices have the same address (different from its public
-IP address), but it *is* a problem for the clients.
+------=_NextPart_000_02BB_01C364D6.B8DE6F30
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
-I've been corresponding with <bishop@platypus.bc.ca>, one of the
-maintainers of vtun.  He remembers seeing a SNAT hack which can deal
-with the problem, but neither of us can figure out what it is; nor do
-repeated searches on Google reveal anything useful.  Can any of you
-help?  More specifically, the server sets up the various connections
-like this (as the clients make the connections)
+aGVsbG8sIGZvbGtzLg0KDQpJJ20gd3JpdGluZyBhIG5ldGZpbHRlciBtb2R1bGUgcHJvZ3JhbS4N
+Cg0KdGhlIHB1cnBvc2Ugb2YgdGhpcyBwcm9ncmFtIGlzIGZvcndhcmRpbmcgYSBwYWNrZXQgYWNj
+b3JkaW5nIHRvIHRoZSBpcCBhZGRyZXNzIG9yIHBvcnQgIyBvZiBpbmNvbWluZyBwYWNrZXQuDQoN
+CmZvciBleGFtcGxlLCBpZiB0aGUgcG9ydCAjIG9mIGluY29taW5nIHBhY2tldCBpcyA5OTk5LCBp
+IHdhbnQgdG8gZm9yd2FyZCB0aGlzIHBhY2tldCB0byAyMTAuMTA3Lnh4eC55eXkuDQoNCkFueXdh
+eSwgSSBob29rZWQgaW5jb21pbmcgcGFja2V0IA0KDQpidXQgYWZ0ZXIgY2hlY2tpbmcgdGhlIHBv
+cnQvaXAgYWRkciBJIGNhbm5vdCBmb3J3YXJkaW5nIGl0IGRpcmVjdGx5IHRvIHNwZWNpZmllZGwg
+aXAgYWRkcmVzcy4NCg0KaXMgdGhlcmUgYW55b25lIHdobyBrbm93IHRoZSB3YXkgaG93IHRvIGZv
+cndhcmQgcGFja2V0IGRpcmVjdGx5Pz8NCg0KVGhhbmtzIHZlcnkgbXVjaCBpbiBhZHZhbmNlLi4N
+Cg0KLWxlZWt5LQ==
 
-    ifconfig tap0 10.0.0.1 pointopoint 10.0.0.2
-    ifconfig tap1 10.0.0.1 pointopoint 10.0.0.2
-    ifconfig tap2 10.0.0.1 pointopoint 10.0.0.2
-    etc...
-    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+------=_NextPart_000_02BB_01C364D6.B8DE6F30
+Content-Type: text/html;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
-Suppose a packet emerges from tap2 with a source address of 10.0.0.2.
-It is NATted so its source address is the server's.  The replies come
-back to the server and are de-mangled so the destination becomes
-10.0.0.2, but how can it be told to route them down tap2 rather than
-tap0 or tap1?  Empirically, it does not make this judgment natively,
-picking just one of the taps arbitrarily.
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWtzX2NfNTYwMS0xOTg3Ij4NCjxNRVRBIGNvbnRlbnQ9Ik1T
+SFRNTCA2LjAwLjI4MDAuMTE3MCIgbmFtZT1HRU5FUkFUT1I+DQo8U1RZTEU+PC9TVFlMRT4NCjwv
+SEVBRD4NCjxCT0RZIGJnQ29sb3I9I2ZmZmZmZj4NCjxESVY+PEZPTlQgc2l6ZT0yPmhlbGxvLCBm
+b2xrcy48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+
+DQo8RElWPjxGT05UIHNpemU9Mj5JJ20gd3JpdGluZyBhIG5ldGZpbHRlciBtb2R1bGUgcHJvZ3Jh
+bS48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8
+RElWPjxGT05UIHNpemU9Mj50aGUgcHVycG9zZSBvZiZuYnNwO3RoaXMgcHJvZ3JhbSBpcyBmb3J3
+YXJkaW5nIGEgDQpwYWNrZXQmbmJzcDthY2NvcmRpbmcgdG8mbmJzcDt0aGUgaXAgYWRkcmVzcyBv
+ciBwb3J0ICMmbmJzcDtvZiBpbmNvbWluZyANCnBhY2tldC48L0ZPTlQ+PC9ESVY+DQo8RElWPjxG
+T05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5mb3IgZXhh
+bXBsZSwgaWYgdGhlIHBvcnQgIyBvZiBpbmNvbWluZyBwYWNrZXQgaXMgOTk5OSwgaSB3YW50IA0K
+dG8gZm9yd2FyZCB0aGlzIHBhY2tldCB0byAyMTAuMTA3Lnh4eC55eXkuPC9GT05UPjwvRElWPg0K
+PERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+
+QW55d2F5LCBJJm5ic3A7aG9va2VkIGluY29taW5nIHBhY2tldCA8L0ZPTlQ+PC9ESVY+DQo8RElW
+PjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5idXQg
+YWZ0ZXIgY2hlY2tpbmcgdGhlIHBvcnQvaXAgYWRkciBJIGNhbm5vdCBmb3J3YXJkaW5nIGl0IA0K
+ZGlyZWN0bHkgdG8gc3BlY2lmaWVkbCBpcCBhZGRyZXNzLjwvRk9OVD48L0RJVj4NCjxESVY+PEZP
+TlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPmlzIHRoZXJl
+IGFueW9uZSB3aG8ga25vdyB0aGUgd2F5IGhvdyB0byBmb3J3YXJkIHBhY2tldCANCmRpcmVjdGx5
+Pz88L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8
+RElWPjxGT05UIHNpemU9Mj5UaGFua3MgdmVyeSBtdWNoIGluIGFkdmFuY2UuLjwvRk9OVD48L0RJ
+Vj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6
+ZT0yPi1sZWVreS08L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
 
-(It's been suggested to run DHCP through the tunnel.  But the problem
-is, the DHCP client wants to set up a network config and a default route,
-not a point-to-point config.  Also at the server end, the vtun server
-daemon will have finished its job before the client's address is known,
-and the DHCP server is not in the business of configuring interfaces.
-So again there's no way to set up the point-to-point connection.)
+------=_NextPart_000_02BB_01C364D6.B8DE6F30--
 
-(Another suggestion is to use the client's public IP address on the tun/tap
-device.  The flies in this ointment are that the clients will often be
-behind similarly configured NAT boxes, so the ISP's assigned address is
-hard to determine, and 192.168.0.1 will often be assigned to several
-clients at once.  Also, the server must not use the ISP's assigned address
-on the tun/tap device, because then the packets for the enclosing TCP
-connection would be sent down the tunnel, ruining everything.)
-
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
