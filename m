@@ -1,12 +1,13 @@
-From: Chris <mlists@aon.at>
-Subject: Re: Flag SYN not necessarily state NEW?
-Date: Sat, 15 Jun 2002 16:52:03 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IP address to MAC address
+Date: Sat, 15 Jun 2002 16:37:24 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D0B5493.AA326DCB@aon.at>
-References: <000501c21415$544d0e40$7b0010ac@dynamicaccess.lan> <002001c21468$d4683a70$020aa8c0@matttm9svd8lrh>
+Message-ID: <200206151537.g5FFbPA04306@Networker.rockstone.co.uk>
+References: <001601c2113a$aa85b560$0500a8c0@escritoriomundial.com.br> <200206112040.g5BKetA21075@Networker.rockstone.co.uk> <20020611205543.GC21405@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020611205543.GC21405@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,27 +18,24 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Matthew Hellman <mhellman@raccoon.com>
-Cc: Hard__warE <hard__ware@hotmail.com>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Matthew Hellman wrote:
-> I must not be understanding what you're saying here, because you 
-> definitely need both a NEW and ESTABLISHED rule.   In fact, this should 
-> always apply and I would be rather disappointed in netfilter if there 
-> were any exceptions. Don't think you need a RELATED rule however (at 
-< least it seems to function without one). FWIW to the original poster,
-> I  log incoming NEW ssh connections and it has always worked and still 
-> does.  If I connect twice, it logs it twice. kernel version: 2.4.18, 
-> iptables version: 1.2.6a.
+On Tuesday 11 June 2002 9:55 pm, Ramin Alidousti wrote:
 
-I have to excuse my question from 8.5., it was at a time where i just
-started to play around with iptables (used ipchains before).
-My posting came very delayed to this mailing-list (more than a month),
-and in the meanwhile i can't "reproduce" this behaviour anymore. So i
-think it was just a mistake on my side (wrong logging or whatever, some
-mistake of a beginner :)).
+> If that information can be read by anybody then the wrapper program like
+> arp can be run by anybody as well ;-)
 
-		regards, Chris
+What is going on with this list these days ?
 
+This message from Tuesday (which I received as a cc: on Tuesday) has just 
+popped up in my mailbox....
 
+Headers show it got stuck on a machine calling itself 21cn.com, with 
+addresses 10.2.1.6, 10.2.0.2 and 61.140.60.248
+
+It's not as though the poster was using a non-subscribed address, either.
+
+ 
+
+Antony.
 
