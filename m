@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Nat with virtual interfaces
-Date: Thu, 27 Jun 2002 16:35:51 +0100
+Date: Thu, 27 Jun 2002 16:40:19 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206271537.g5RFbUU14917@vulcan.rissington.net>
-References: <BACC2B29B574704A8494EAD86EDBB9501C6132@stosrv-0003.lemonplanet.com>
+Message-ID: <200206271540.g5RFePU14935@vulcan.rissington.net>
+References: <BACC2B29B574704A8494EAD86EDBB9500993B2@stosrv-0003.lemonplanet.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <BACC2B29B574704A8494EAD86EDBB9501C6132@stosrv-0003.lemonplanet.com>
+In-Reply-To: <BACC2B29B574704A8494EAD86EDBB9500993B2@stosrv-0003.lemonplanet.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,27 +20,27 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 27 June 2002 2:49 pm, Mika Ullgren wrote:
+On Thursday 27 June 2002 1:49 pm, Mika Ullgren wrote:
 
-> Yes I did. Sorry I forgot to mention that... If I use DNAT exactly the
-> same thing happens as with REDIRECT.
+> Now when I connect to either http://192.168.64.59 or
+> http://192.168.64.75 I get the same DocumentRoot. But when I go to
+> http://192.168.64.75:8443 (eth0:0) i get the other DocumentRoot. So it
+> seems there is something strange in the redirection.
 >
-> Any other ideas?
+> 192.168.64.59:8443, 192.168.64.59:8443 and 192.168.64.75 goes to
+> DocumentRoot no.1
+> 192.168.64.75:8443 goes to DocumentRoot no.2
+>
+> Im completely lost. I hope you got any more ideas.
 
-Here's a bit of a daft idea, but you never know.....
+What do you get in response to:
 
-Try using DNAT to a completely different address (which you still add to eth0 
-and include in the apache httpd.conf file) ?
+iptables -L PREROUTING -t nat -v -n
 
-eg ifconfig eth0:0 172.16.64.75 netmask 255.255.255.0
-
-iptables -A PREROUTING -t nat -d 192.168.64.75 -p tcp --dport 80 -j DNAT --to 
-172.16.64.75:8080
-
-etc....
-
-I have no idea if this would work (or if it did, why it's a better idea than 
-the other things you've tried) but it's got to be worth a quick go.....
+Do the packet / byte counters show that packets are getting translated by 
+each of the four rules (in which case it would seem to be Apache that's 
+having the problem), or do you see no packets being matched by one (or more) 
+of the nat rules ?
 
  
 
