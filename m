@@ -1,11 +1,11 @@
-From: Victor Julien <victor@nk.nl>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: newbie question : ip_conntrack_ftp
-Date: Tue, 23 Mar 2004 18:16:28 +0100
+Date: Tue, 23 Mar 2004 18:22:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <406070EC.3010601@nk.nl>
+Message-ID: <1080062572.1439.183.camel@anduril.intranet.cartel-securite.net>
 References: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,36 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter List <netfilter@lists.netfilter.org>
-Cc: mkukec@public.srce.hr
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mihael Kukec <mkukec@public.srce.hr>
+Cc: netfilter@lists.netfilter.org
 
-You're probably running the 'bf24' kernel (which kame with the 
-bootdisk). If you use 'kernel-image-2.4.18-1-i686' you do have the 
-modules. So you can use 'apt-get install kernel-image-2.4.18-1-i686' (if 
-you have an i686). Beware though, you need to modify your lilo.conf 
-because of initrd (instructions will be on the screen when you install).
-
-Regards,
-Victor
-
-Mihael Kukec wrote:
-> 
-> Hello!
-> 
-> 
-> I'm using latest stable Debian, with 2.4.18 kernel. Unfortunately it does
-> not have ip_conntrack_ftp module included and I need it. Can someone give
+Le mar 23/03/2004 =E0 16:24, Mihael Kukec a =E9crit :
+> I'm using latest stable Debian, with 2.4.18 kernel. Unfortunately it do=
+es
+> not have ip_conntrack_ftp module included and I need it. Can someone gi=
+ve
 > me short instructions on that to do? Where to get source, and if there
 > are, some special instructions for compiling etc...
-> 
-> 
-> 
-> 
-> TIA
-> 
-> 
-> 
-> 
 
+Which 2.4.18 kernel ? Kernel-image-2.4.18 packages contain
+ip_conntrack_file.
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
