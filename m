@@ -1,11 +1,11 @@
-From: "Dan Searle" <dan@intrago.co.uk>
-Subject: Re: Tightening up outgoing traffic
-Date: Tue, 15 Oct 2002 15:32:13 +0100
+From: "Sean Oh" <oh@storageone.co.kr>
+Subject: Re: IP MASQ and IPROUTE2?
+Date: Tue, 15 Oct 2002 23:59:31 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009b01c27457$a7ab66c0$0800000a@wormhole>
-References: <1034686034.15446.38.camel@localhost.localdomain>
+Message-ID: <015401c2745b$777be750$f800a8c0@COMPAQ>
+References: <001101c273f5$fc2c5220$c300a8c0@COMPAQ> <01d201c27444$113613b0$6e69690a@rimas>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,30 +17,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Rimas <rmocius@auste.elnet.lt>, netfilter@lists.netfilter.org
 
-Hi,
-
->
-> I keep getting "domainname can not be found.  Please check the name and
-> try again" from my browser.  This only happens for new web sites (i.e.,
-> Yahoo works fine).  As this seems somewhat like a DNS issue, I tried
-> adding this:
->
-
-That'll be a DNS problem ;-)
-
-> iptables -A OUTPUT -p tcp --destination-port nameserver -j ACCEPT
->
-> but it didn't work.  Any ideas?  Thanks.
-
-iptables -A OUTPUT -p tcp --dport domain -j ACCEPT
-iptables -A OUTPUT -p udp --dport domain -j ACCEPT
-
-You want to use the service name "domain", not "nameserver", also I think
-domain lookups use the udp protocol also. (Don't quote me on that one :-)
-
-Dan...
-
+UmltYXMsDQoNCkkgdHJpZWQgd2hhdCB5b3Ugc2FpZCwgYnV0IEkgc3RpbCBjYW4gbm90IGFjY2Vz
+cyB0aGUgc2VydmVyIHVzaW5nIGlwIGFkZHJlc3NlcyBvZiBldGgxIGFuZCBldGgyLg0KDQotLS0t
+LSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KRnJvbTogIlJpbWFzIiA8cm1vY2l1c0BhdXN0ZS5l
+bG5ldC5sdD4NClRvOiA8bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmc+DQpDYzogIlNlYW4g
+T2giIDxvaEBzdG9yYWdlb25lLmNvLmtyPg0KU2VudDogVHVlc2RheSwgT2N0b2JlciAxNSwgMjAw
+MiA5OjExIFBNDQpTdWJqZWN0OiBSZTogSVAgTUFTUSBhbmQgSVBST1VURTI/DQoNCg0KPiBTZWFu
+LA0KPiANCj4gWW91IG5lZWQgdG8gYm90aCBldGggY2FyZHMuDQo+IExpa2UgdGhpczoNCj4gDQo+
+IGlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyAkRVhURVJOQUxfSU5URVJGQUNFXzEg
+LWogTUFTUVVFUkFERQ0KPiBpcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gJEVYVEVS
+TkFMX0lOVEVSRkFDRV8yIC1qIE1BU1FVRVJBREUNCj4gDQo+IFJpbWFzDQo+IA0KPiANCj4gDQo+
+IA0KPiAtLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tDQo+IEZyb206ICJTZWFuIE9oIiA8b2hA
+c3RvcmFnZW9uZS5jby5rcj4NCj4gVG86IDxuZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZz4N
+Cj4gU2VudDogVHVlc2RheSwgT2N0b2JlciAxNSwgMjAwMiAzOjUzIEFNDQo+IFN1YmplY3Q6IElQ
+IE1BU1EgYW5kIElQUk9VVEUyPw0KPiANCj4gDQo+ID4gSGkNCj4gPg0KPiA+IEkgYW0gaGF2aW5n
+IGEgbGl0dGxlIHByb2JsZW0gd2l0aCBJUCBNQVNRIGFuZCBJUFJPVVRFMi4NCj4gPiBJIGFtIHVz
+aW5nIFJlZEhhdCA3LjMgd2l0aCBJUFRBQkxFUy4NCj4gPg0KPiA+IEkgaGF2ZSBhIGxpbnV4IGdh
+dGV3YXkgc2VydmVyIHdpdGggMyBOSUNzLg0KPiA+IFRoZSBlbnZpcm9ubWVudCBpcyBhcyBmb2xs
+b3dzOg0KPiA+DQo+ID4NCj4gPiBMb2NhbCBOZXR3b3JrICAgICAgKy0tLS0tLS0tLS0tLSsgZXRo
+MSgyMTgueC54LjIwKSAtLT4gSVNQMQ0KPiA+ICgxOTIuMTY4LjAueCkgLS0tIHwgTGludXggU2Vy
+dmVyIHwtLS0tLS0tLQ0KPiA+ICAgICAgICAgICAgICAgICBldGgwICAgfCAgICAgICAgICAgICAg
+ICAgICAgfA0KPiA+ICAgICAgIDE5Mi4xNjguMC4xICB8ICAgICAgICAgICAgICAgICAgICB8LS0t
+LS0tLS0NCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgKy0tLS0tLS0tLS0tLS0rIGV0aDIo
+MjExLngueC4xNTUpIC0tPklTUDINCj4gPg0KPiA+DQo+ID4gVGhlIGV0aDEgYW5kIGV0aDIgYXJl
+IHRoZSBsaW5rcyB0byBpbnRlcm5ldC4gSSAgaGF2ZSAyIHByb3ZpZGVycyB0bw0KPiBJbnRlcm5l
+dA0KPiA+IGFuZCBJIHdvdWxkIGxpa2UgdG8gdXNlIGV0aDIgYXMgdGhlIGRlZmF1bHQgcm91dGUg
+dG8gaW50ZXJuZXQgZnJvbSBMb2NhbA0KPiA+IE5ldHdvcmsoMTkyLjE2OC4wLngpIGFuZCBldGgx
+IGFzIGZvciB0aGUgc2VydmVycyhETlMsIG1haWwsIHdlYikgdGhhdA0KPiBwZW9wbGUgZnJvbSBl
+eHRlcm5hbCBJbnRlcm5ldA0KPiA+IHRvIGFjY2Vzcy4gVGhlIHJlYXNvbiBiZWhpbmQgdGhhdCBp
+cyB0aGF0IHByb3ZpZGVyIElTUDIgYXJlIG5vdA0KPiA+IGFsbG93aW5nIG1lIHRvIHJ1biBzZXJ2
+ZXJzIG9uIHRoYXQgbGluaywgc28gSSBoYWQgdG8gc2V0dXAgYW5vdGhlciBsaW5rDQo+IGZvcg0K
+PiA+IHNlcnZlcnMoZXRoMSkuDQo+ID4NCj4gPiBUaGUgSVAgbWFzcXVyYWRpbmcgaXMgdXNlZCBh
+bmQgaXAgZm9yd2FyZGluZyBpcyB0dXJuZWQgb24uDQo+ID4NCj4gPiBlY2hvIDEgPiAvcHJvYy9z
+eXMvbmV0L2lwdjQvaXBfZm9yd2FyZA0KPiA+DQo+ID4gL3NiaW4vaXAgcm91dGUgYWRkIDIxMS54
+LnguMTI4IGRldiBldGgyIHNyYyAyMTEueC54LjE1NSB0YWJsZSBTSQ0KPiA+IC9zYmluL2lwIHJv
+dXRlIGFkZCBkZWZhdWx0IHZpYSAyMTEueC54LjEyOSB0YWJsZSBTSQ0KPiA+IC9zYmluL2lwIHJv
+dXRlIGFkZCAyMTgueC54LjAgZGV2IGV0aDEgc3JjIDIxOC54LnguMjAgdGFibGUgS1QNCj4gPiAv
+c2Jpbi9pcCByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgMjE4LngueC4xIHRhYmxlIEtUDQo+ID4NCj4g
+PiAvc2Jpbi9pcCByb3V0ZSBhZGQgMjExLngueC4xMjggZGV2IGV0aDIgc3JjIDIxMS54LnguMTU1
+DQo+ID4gL3NiaW4vaXAgcm91dGUgYWRkIDIxOC54LnguMCBkZXYgZXRoMSBzcmMgMjE4LngueC4y
+MA0KPiA+DQo+ID4gL3NiaW4vaXAgcm91dGUgYWRkIGRlZmF1bHQgdmlhIDIxMS54LnguMTI5DQo+
+ID4NCj4gPiAvc2Jpbi9pcCBydWxlIGFkZCBmcm9tIDIxMS54LnguMTU1IHRhYmxlIFNJDQo+ID4g
+L3NiaW4vaXAgcnVsZSBhZGQgZnJvbSAyMTgueC54LjIwIHRhYmxlIEtUDQo+ID4NCj4gPiAvc2Jp
+bi9pcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLXMgMTkyLjE2OC4wLjAvMjQgLWogTUFT
+UVVFUkFERQ0KPiA+IC9zYmluL2lwdGFibGVzIC1QIEZPUldBUkQgQUNDRVBUDQo+ID4gL3NiaW4v
+aXB0YWJsZXMgLVAgSU5QVVQgQUNDRVBUDQo+ID4gL3NiaW4vaXB0YWJsZXMgLVAgT1VUUFVUIEFD
+Q0VQVA0KPiA+DQo+ID4NCj4gPiBbcm9vdEB3d3cgcm9vdF0jIGlwIHJvdXRlIHNob3cNCj4gPiAy
+MTEueC54LjEyOCBkZXYgZXRoMiAgc2NvcGUgbGluayAgc3JjIDIxMS54LnguMTU1DQo+ID4gMjE4
+LngueC4wIGRldiBldGgxICBzY29wZSBsaW5rICBzcmMgMjE4LngueC4yMA0KPiA+IDIxMS54Lngu
+MTI4LzI1IGRldiBldGgyICBzY29wZSBsaW5rDQo+ID4gMTkyLjE2OC4wLjAvMjQgZGV2IGV0aDAg
+IHNjb3BlIGxpbmsNCj4gPiAyMTgueC54LjAvMjQgZGV2IGV0aDEgIHNjb3BlIGxpbmsNCj4gPiAx
+MjcuMC4wLjAvOCBkZXYgbG8gIHNjb3BlIGxpbmsNCj4gPiBkZWZhdWx0IHZpYSAyMTEueC54LjEy
+OSBkZXYgZXRoMg0KPiA+DQo+ID4NCj4gPiBpdCB3b3JrcyBmaW5lKCAxOTIuMTY4LjAueCBjYW4g
+YWNjZXNzIHRoZSBpbnRlcm5ldCBieSBtYXNxdWVyYWRpbmcgdmlhDQo+IGV0aDIgYW5kIGV4dGVy
+bmFsIGludGVybmV0IGNhbiBhY2Nlc3MgdGhlIGV0aDEgYW5kIGV0aDIpLg0KPiA+IEJ1dCB0aGUg
+cHJvYmxlbSBpcyB0aGF0IHRoZSBob3N0cyBpbiB0aGUgbG9jYWwgbmV0d29yayAoMTkyLjE2OC4w
+LngpIGNhbg0KPiBub3QgYWNjZXNzIDIxMS54LnguMTU1KGV0aDIpIGFuZCAyMTgueC54LjIwKGV0
+aDEpLCBldmVuIHRob3VnaCBpcCBmb3J3YXJkaW5nDQo+IGlzIHR1cm5lZCBvbi4gSXQgY2FuIG9u
+bHkgYWNjZXNzIDE5Mi4xNjguMC4xDQo+ID4NCj4gPiBDb3VsZCBzb21lb25lIHBsZWFzZSBzdWdn
+dWVzdGVkIG1lIHRoZSBzb2x1dGlvbnM/DQo+ID4NCj4gPiBUaGFua3MgaW4gYWR2YW5jZS4NCj4g
+Pg0KPiA+DQo+IA0KPiANCj4gDQo+IA==
 
 
