@@ -1,14 +1,12 @@
-From: christopher cuse <ccuse@manchotnetworks.net>
-Subject: Re: error: ip_tables.o init_module:Device or resource busy
-Date: 11 Nov 2003 08:44:47 +0100
+From: caruso bruno <b.caruso@laposte.net>
+Subject: This rule doesn't work!...
+Date: Tue, 11 Nov 2003 19:45:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068536687.1993.4.camel@drs0.manchotnetworks.net>
-References: <3FAFCFEC.8010700@fabsurplus.com> 
-	<200311101842.39637.Alistair@nerdnet.ca>
+Message-ID: <200311111945.01103.b.caruso@laposte.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311101842.39637.Alistair@nerdnet.ca>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,18 +17,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair@nerdnet.ca
-Cc: Steve <info@fabsurplus.com>, netfilter-users <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-hi steve & alistair,
+Hi
 
-you might also want to see this ...
+I have seen recently that I had many attempt connection from source address 
+127.0.0.1, source port 80. 
 
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=103177
+I had theses rules in my list:
+iptables -A INPUT -i ppp0 -s "127.0.0.0/8" -m limit --limit 30/m -j LOG 
+--log-prefix "iptable NO_ROUTABLE_ADDR "
+iptables -A INPUT -i ppp0 -s "127.0.0.0/8" -j DROP
 
-cheers
+I haven't any log in syslog just for this rule otherwise everything goes well. 
+I don't understand why theses rules doesn't work.
 
-charles
+Best regards
 
+Bruno
 
 
