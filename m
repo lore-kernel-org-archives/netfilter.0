@@ -1,14 +1,10 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Delete Precedence
-Date: Sat, 26 Jun 2004 22:11:49 -0700
+From: Pawel Pilat <poster_pl@yahoo.com>
+Subject: <SOLVED> ECN Problem : Thnx Mark E. Donaldson !
+Date: Sun, 27 Jun 2004 06:15:32 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <SERVER7reBBsQwY6YHk0000000c@server7.bandwidthco.com>
-References: <000501c45bc3$02cb1330$6635a9d5@MINKO>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <20040627131532.87899.qmail@web13425.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000501c45bc3$02cb1330$6635a9d5@MINKO>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,31 +15,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Minko Lazarov' <minko@bol.bg>, netfilter@lists.netfilter.org
-
- 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Minko Lazarov
-Sent: Saturday, June 26, 2004 2:18 PM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Delete Precedence
 
-My Border-Router is Slackware 9.1.
-Now i use Kernel 2.4.20 with patch for FTOS. With this patch  i remove
-precedence from my ISP and set normal tos.
-I wont to upgrade my kernel with 2.6.x., but can't intergrate FTOS patch.
-Can you help me?
+Hello
 
-Minko Lazarov
+lucky combination ... :)
+
+IPT <...> -j ECN --ecn-tcp-remove on incoming
+interface
+IPT <...> -p tcp --tcp-flags SYN,RST SYN -j TCPMSS  
+--clamp-mss-to-pmtu on outgoing interface
+
+and most interesting ...
+IPT <...> -j TTL --ttl-set 128 on outgoing interface
+!!! M$ rules ? :)
+
+once more - thnx to Mark
+best regards
+
+Pawel Pilat
 
 
 
-I might be wrong, but I don't believe the FTOS patch is available for the
-2.6.x kernel. It's not in the POMNG. That was a Matthew March patch. You
-might check his sight to see what is there:
-http://www.paksecured.com/patches/
 
 
+	
+		
+__________________________________
+Do you Yahoo!?
+New and Improved Yahoo! Mail - 100MB free storage!
+http://promotions.yahoo.com/new_mail 
 
