@@ -1,10 +1,13 @@
-From: "azeem ahmad" <azeem484@hotmail.com>
-Subject: RE: iptables and samba
-Date: Thu, 27 May 2004 20:56:37 +0000
+From: Jorge Davila <isaac@nicaraguarealestate.com>
+Subject: Re: Problem with nat table in iptables
+Date: Thu, 27 May 2004 15:19:42 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY15-F25EGhUOjO0L600015737@hotmail.com>
+Message-ID: <40B65B6E.2050103@nicaraguarealestate.com>
+References: <40B6322E.6050205@nicaraguarealestate.com> <200405272055.28159.Antony@Soft-Solutions.co.uk> <40B652F0.1070107@nicaraguarealestate.com> <200405272148.26466.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200405272148.26466.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,219 +17,163 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
+
+The rule than I want add to the INPUT chain is:
+
+iptables -I INPUT 2 -s 192.168.0.0/255.255.255.0 -d 64.152.73.182 -j DROP
+
+When execute the above command and then
+iptables-save
+
+and restart iptables the nat table has disappeared
+
+This the output of 
+
+iptables -L -nvx; iptables -L -t nat -nvx
 
 
+iptables -L -nvx; iptables -L -t nat -nvx
+Chain INPUT (policy DROP 158 packets, 8534 bytes)
+    pkts      bytes target     prot opt in     out     
+source               destination
+     179    12124 bad_tcp_packets  tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0
+       0        0 ACCEPT     all  --  lo     *       
+127.0.0.1            0.0.0.0/0
+       2       88 ACCEPT     all  --  *      *       
+192.168.0.0/24       0.0.0.0/0
+       0        0 ACCEPT     all  --  eth1   *       
+192.168.0.1          0.0.0.0/0
+       0        0 ACCEPT     all  --  lo     *       
+192.168.0.1          0.0.0.0/0
+      24     2612 ACCEPT     all  --  lo     *       
+216.6.48.95          0.0.0.0/0
+       0        0 ACCEPT     udp  --  eth1   *       
+0.0.0.0/0            0.0.0.0/0           udp spt:68 dpt:67
+      22     1624 ACCEPT     all  --  *      *       
+0.0.0.0/0            216.6.48.95         state RELATED,ESTABLISHED
+     149     7980 tcp_packets  tcp  --  eth0   *       
+0.0.0.0/0            0.0.0.0/0
+      12      743 udp_packets  udp  --  eth0   *       
+0.0.0.0/0            0.0.0.0/0
+       0        0 icmp_packets  icmp --  eth0   *       
+0.0.0.0/0            0.0.0.0/0
+       0        0 DROP       all  --  eth0   *       
+0.0.0.0/0            224.0.0.0/8
+       6      300 LOG        all  --  *      *       
+0.0.0.0/0            0.0.0.0/0           limit: avg 3/min burst 3 LOG 
+flags 0 level 7 prefix `IPT INPUT packet died: '
+ 
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       0        0 bad_tcp_packets  tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0
+       0        0 ACCEPT     all  --  eth0   *       
+0.0.0.0/0            0.0.0.0/0
+       0        0 ACCEPT     all  --  *      *       
+0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+       0        0 LOG        all  --  *      *       
+0.0.0.0/0            0.0.0.0/0           limit: avg 3/min burst 3 LOG 
+flags 0 level 7 prefix `IPT FORWARD packet died: '
+ 
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     
+source               destination
+      49    18380 bad_tcp_packets  tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0
+       0        0 ACCEPT     all  --  *      *       
+127.0.0.1            0.0.0.0/0
+       1       48 ACCEPT     all  --  *      *       
+192.168.0.1          0.0.0.0/0
+      51    17531 ACCEPT     all  --  *      *       
+216.6.48.95          0.0.0.0/0
+       0        0 LOG        all  --  *      *       
+0.0.0.0/0            0.0.0.0/0           limit: avg 3/min burst 3 LOG 
+flags 0 level 7 prefix `IPT OUTPUT packet died: '
+ 
+Chain allowed (8 references)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       2      120 ACCEPT     tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp flags:0x16/0x02
+       0        0 ACCEPT     tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+       0        0 DROP       tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0
+ 
+Chain bad_tcp_packets (3 references)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       0        0 REJECT     tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp flags:0x12/0x12 state NEW 
+reject-with tcp-reset
+      44     7465 LOG        tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp flags:!0x16/0x02 state NEW 
+LOG flags 0 level 4 prefix `Nuevo no syn: '
+      44     7465 DROP       tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp flags:!0x16/0x02 state NEW
+ 
+Chain icmp_packets (1 references)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       0        0 ACCEPT     icmp --  *      *       
+0.0.0.0/0            0.0.0.0/0           icmp type 8
+       0        0 ACCEPT     icmp --  *      *       
+0.0.0.0/0            0.0.0.0/0           icmp type 11
+ 
+Chain tcp_packets (1 references)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       0        0 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:22
+       0        0 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:25
+       2      120 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+       0        0 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:110
+       0        0 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:113
+       0        0 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:143
+       0        0 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:993
+       0        0 allowed    tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           tcp dpt:995
+ 
+Chain udp_packets (1 references)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       1       69 ACCEPT     udp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           udp dpt:53
+       0        0 ACCEPT     udp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           udp dpt:123
+       0        0 ACCEPT     udp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           udp dpt:2074
+       0        0 ACCEPT     udp  --  *      *       
+0.0.0.0/0            0.0.0.0/0           udp dpt:4000
+       0        0 DROP       udp  --  eth0   *       
+0.0.0.0/0            216.6.48.255        udp dpts:135:139
+       0        0 DROP       udp  --  eth0   *       
+0.0.0.0/0            255.255.255.255     udp dpts:67:68
+Chain PREROUTING (policy ACCEPT 181 packets, 12774 bytes)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       0        0 REDIRECT   tcp  --  eth1   *       
+192.168.0.0/24       0.0.0.0/0           tcp dpt:80 redir ports 3128
+ 
+Chain POSTROUTING (policy ACCEPT 1 packets, 68 bytes)
+    pkts      bytes target     prot opt in     out     
+source               destination
+       2      147 SNAT       all  --  *      eth0    
+0.0.0.0/0            0.0.0.0/0           to:216.6.48.95
+ 
+Chain OUTPUT (policy ACCEPT 33 packets, 4472 bytes)
+    pkts      bytes target     prot opt in     out     
+source               destination
 
-neither WINS nor DNS is on my network. only a caching only name server i m 
-running. and i captured the output of /var/log/messages and that is as below
-and i added rules for port udp 137,139,139 and tcp 137,138,139 mean all 
-three ports of both protocols but it doesnt seem to work
-
-------------------------------------------------------------------------------------------------------------------------------
-May 28 01:36:27 subzero kernel: IN=eth0 OUT= 
-MAC=00:b0:d0:3d:84:1f:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=192.168.0.100 LEN=60 TOS=0x00 PREC=0x00 TTL=128 ID=51870 PROTO=ICMP 
-TYPE=8 CODE=0 ID=512 SEQ=1024
-May 28 01:36:32 subzero kernel: IN=eth0 OUT= 
-MAC=00:b0:d0:3d:84:1f:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=192.168.0.100 LEN=60 TOS=0x00 PREC=0x00 TTL=128 ID=51873 PROTO=ICMP 
-TYPE=8 CODE=0 ID=512 SEQ=1280
-May 28 01:36:38 subzero kernel: IN=eth0 OUT= 
-MAC=00:b0:d0:3d:84:1f:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=192.168.0.100 LEN=60 TOS=0x00 PREC=0x00 TTL=128 ID=51878 PROTO=ICMP 
-TYPE=8 CODE=0 ID=512 SEQ=1536
-May 28 01:36:43 subzero kernel: IN=eth0 OUT= 
-MAC=00:b0:d0:3d:84:1f:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=192.168.0.100 LEN=60 TOS=0x00 PREC=0x00 TTL=128 ID=51879 PROTO=ICMP 
-TYPE=8 CODE=0 ID=512 SEQ=1792
-May 28 01:36:57 subzero kernel: IN=eth0 OUT= 
-MAC=ff:ff:ff:ff:ff:ff:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=255.255.255.255 LEN=51 TOS=0x00 PREC=0x00 TTL=128 ID=51886 PROTO=UDP 
-SPT=8167 DPT=8167 LEN=31
-May 28 01:36:59 subzero samba(pam_unix)[2284]: session closed for user azeem
-May 28 01:38:09 subzero kernel: IN=eth0 OUT= 
-MAC=ff:ff:ff:ff:ff:ff:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=255.255.255.255 LEN=81 TOS=0x00 PREC=0x00 TTL=128 ID=32 PROTO=UDP 
-SPT=8167 DPT=8167 LEN=61
-May 28 01:38:09 subzero kernel: IN=eth0 OUT= 
-MAC=ff:ff:ff:ff:ff:ff:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=255.255.255.255 LEN=45 TOS=0x00 PREC=0x00 TTL=128 ID=33 PROTO=UDP 
-SPT=8167 DPT=8167 LEN=25
-May 28 01:38:09 subzero kernel: IN=eth0 OUT= 
-MAC=ff:ff:ff:ff:ff:ff:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=255.255.255.255 LEN=45 TOS=0x00 PREC=0x00 TTL=128 ID=35 PROTO=UDP 
-SPT=8167 DPT=8167 LEN=25
-May 28 01:38:29 subzero kernel: IN=eth0 OUT= 
-MAC=ff:ff:ff:ff:ff:ff:00:07:e9:f4:4d:ce:08:00 SRC=192.168.0.2 
-DST=255.255.255.255 LEN=45 TOS=0x00 PREC=0x00 TTL=128 ID=43 PROTO=UDP 
-SPT=8167 DPT=8167 LEN=25
-May 28 01:38:59 subzero samba(pam_unix)[2552]: session opened for user must 
-by (uid=0)
-May 28 01:39:33 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=7796 DF PROTO=TCP SPT=35625 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:39:36 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=7797 DF PROTO=TCP SPT=35625 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:39:42 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=7798 DF PROTO=TCP SPT=35625 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:39:50 subzero kernel: IN=ppp0 OUT= MAC= SRC=202.124.201.161 
-DST=202.124.192.166 LEN=48 TOS=0x00 PREC=0x00 TTL=112 ID=38996 DF PROTO=TCP 
-SPT=4811 DPT=2745 WINDOW=8760 RES=0x00 SYN URGP=14133
-May 28 01:39:54 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=7799 DF PROTO=TCP SPT=35625 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:40:18 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=7800 DF PROTO=TCP SPT=35625 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:41:06 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=7801 DF PROTO=TCP SPT=35625 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:41:33 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=8465 DF PROTO=TCP SPT=35699 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:41:36 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=8466 DF PROTO=TCP SPT=35699 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:41:42 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=8467 DF PROTO=TCP SPT=35699 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:41:54 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=8468 DF PROTO=TCP SPT=35699 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:42:18 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=8469 DF PROTO=TCP SPT=35699 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
-May 28 01:42:32 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=65 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=32770 DPT=53 LEN=45
-May 28 01:43:06 subzero kernel: IN=lo OUT= 
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 
-LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=8470 DF PROTO=TCP SPT=35699 DPT=80 
-WINDOW=32767 RES=0x00 SYN URGP=0
--------------------------------------------------------------------------------------------------------------------------------------
-
-Regards
-Azeem
->From: <alexis@tpys.com.ar>
->To: "azeem ahmad" <azeem484@hotmail.com>
->CC: <netfilter@lists.netfilter.org>
->Subject: RE: iptables and samba
->Date: Thu, 27 May 2004 16:28:35 -0000
->
->it seems a name resolution issue.
->
->check if you're using WINS or DNS and make sure you're allowing those ports
->in orden to resolve the names. and it will work just fine
->
->azeem ahmad <azeem484@hotmail.com> dijo:
->
-> >
-> > no one out there could help me?
-> >
-> > >From: "azeem ahmad" <azeem484@hotmail.com>
-> > >To: netfilter@lists.netfilter.org
-> > >Subject: iptables and samba
-> > >Date: Sun, 23 May 2004 09:20:52 +0000
-> > >
-> > >hi
-> > >i m using the script below
-> > 
-> >---------------------------------------------------------------------------
->----------------------------------------------------------
-> > >iptables -F
-> > >iptables -t nat -F
-> > >iptables -P INPUT DROP
-> > >iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
-> > >iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
-> > >
-> > >iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 
->8080
-> > >#iptables -t nat -A PREROUTING -p udp --dport 80 -j REDIRECT --to-port 
->8080
-> > >
-> > >iptables -P FORWARD DROP
-> > >iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
-> > >iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
-> > >
-> > >iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> > 
-> >---------------------------------------------------------------------------
->----------------------------------------------------------
-> > >
-> > >i have two shares on samba server "Soft and linux" in these shares 
->there
-> > >are many folders. whenever i run the above script and then i open the
->share
-> > >it takes atleast 4  minutes to open the share. but it doesnt take time
-> > >while browsing inside share.
-> > >mean there is a folder on soft share like soft/adobe/acrobat/acrobat6
-> > >when i double click on soft it takes atleast 4 minutes but after that 
->when
-> > >i click on adobe then acrobat then acrobat6 it takes now time it just
->brose
-> > >them normally. same problem is with the other share named linux.
-> > >but if i dont run this script then all shares work fine with no delay
-> > >
-> > >i dont know what is the udp port 80 for but i just saw its traffic on 
->my
-> > >network in iptraf so i included it in my script
-> > >
-> > >Regards
-> > >Azeem
-> > >
-> > >_________________________________________________________________
-> > >Add photos to your e-mail with MSN 8. Get 2 months FREE*.
-> > >http://join.msn.com/?page=features/featuredemail
-> > >
-> > >
-> >
-> > _________________________________________________________________
-> > The new MSN 8: smart spam protection and 2 months FREE*
-> > http://join.msn.com/?page=features/junkmail
-> >
-> >
-> >
->
->
->
->--
->
->
->
-
-_________________________________________________________________
-Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
-http://join.msn.com/?page=features/junkmail
 
 
