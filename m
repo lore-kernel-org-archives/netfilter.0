@@ -1,13 +1,13 @@
-From: SaVaGE  <pc-secure@home.nl>
-Subject: Re: Re[2]: PREROUTING
-Date: Tue, 29 Apr 2003 15:33:53 +0200
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: H323 in new kernel
+Date: 29 Apr 2003 10:26:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304291533.53756.pc-secure@home.nl>
-References: <13955288009.20030429092330@o2.pl> <200304290949.10989.pc-secure@home.nl> <50633741.20030429145355@o2.pl>
+Message-ID: <1051626017.2805.2.camel@jasiiitosh.nexusmgmt.com>
+References: <20030429124902.32459.59220.Mailman@kashyyyk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <50633741.20030429145355@o2.pl>
+In-Reply-To: <20030429124902.32459.59220.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,65 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Op dinsdag 29 april 2003 14:53, schreef netfilter_user:
-> Hello SaVaGE,
->
-> Tuesday, April 29, 2003, 9:49:10 AM, you wrote:
->
-> S> Op dinsdag 29 april 2003 09:23, schreef netfilter_user:
-> >> Hello everyone,
-> >>
-> >> this is my problem:
-> >> My LAN is connected to Internet via Linux machine with 2 interface (
-> >> ppp0 - for internet and eth1 for local net). I need to connect from
-> >> local host, service that is running on port 23073 and 23083 UDP in
-> >> internet. For this i wrote afew rules with PREROUTING but when I sta=
-rt
-> >> script with rules below i receive:
-> >>
-> >> Bad argument `PREROUTING'
-> >> Try `iptables -h' or 'iptables --help' for more information.
-> >> Bad argument `PREROUTING'
-> >> Try `iptables -h' or 'iptables --help' for more information.
-> >>
-> >>
-> >> iptables -t nat -A PREROUTING -p udp -d 80.50.60.185 --dport 23073 -=
-j
-> >> DNAT --to-destination 192.168.1.2 iptables -t nat -A PREROUTING -p u=
-dp
-> >> -d 80.50.60.185 --dport 23083 -j DNAT --to-destination 192.168.1.2
-> >>
-> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23073 -j ACCEPT
-> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23083 -j ACCEPT
-> >>
-> >> What maybe a reason of this msg?
-> >> Im using slackware 8.1 with iptables 1.2.6a
->
-> S> This behaviour is correct NATting is done on the POSTROUTING table !=
-!!!
->
->
-> S> Pascal (PC-Secure Dutch security service)
->
-> ammm....im afraid its not correct because I have received msg like this=
-:
->
->  Bad argument `PREROUTING'
->  Try `iptables -h' or 'iptables --help' for more information.
->  Bad argument `PREROUTING'
->  Try `iptables -h' or 'iptables --help' for more information.
->
-> ...its not correct in my newbe opinion.
+I'm running RedHat 8.0 with kernel 2.4.20 and did not see H.323
+support.  I did apply the H.323 patch through patch-o-matic to 2.4.20
+with no problem and the H.323 patch is working well for me.  If you do
+not want to upgrade from RedHat 7.2, you can probably upgrade the kernel
+to 2.4.20 and use patch-o-matic.  Good luck - John
 
+On Tue, 2003-04-29 at 08:49, netfilter-request@lists.netfilter.org
+wrote:
 
-Sorry my fault wasn't wake at that time , maybe this will help::
-
-iptables  -A PREROUTING -t nat -p udp -d 80.50.60.185 --dport
-23073 -j DNAT --to 192.168.1.2:23073
-iptables  -A PREROUTING -t nat -p udp -d 80.50.60.185 --dport
-23083 -j DNAT --to 192.168.1.2:23083
-
-
-let us know if it worked for you !
+> --__--__--
+> 
+> Message: 13
+> From: MOUDARIR Mohamed <moudarir@Richbond.ma>
+> To: netfilter@lists.netfilter.org
+> Subject: H323 in new kernel
+> Date: Tue, 29 Apr 2003 10:49:42 -0000
+> 
+> Hello
+> I have redhat 7.2 with iptables 1.2.3
+> I don't success to install p-o-m to include H323 module ( support of
+> netmeeting session ) , koz compilation problems ...
+> So i want to know if H323 is builting ( pre-installed ) in new kernel
+> version ( like redhat 8.0 ) so i have not to install p-o-m.
+> Thanks
+> 
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
