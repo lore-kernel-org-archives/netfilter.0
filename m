@@ -1,12 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: IPTables State Tracking
-Date: Fri, 29 Aug 2003 20:33:39 -0400
+From: cc <cc@belfordhk.com>
+Subject: Re: I can't resolve DNS name
+Date: Sat, 30 Aug 2003 09:33:39 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4FF0E3.2070709@chrisbrenton.org>
-References: <0C7C6E1720E8D74FB52EBEF93649730A0116BF07@2k099exm01.compucom.local>
+Message-ID: <3F4FFEF3.7010405@belfordhk.com>
+References: <0afd01c36e54$67e73620$0221a0c0@DANIEL>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <0afd01c36e54$67e73620$0221a0c0@DANIEL>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,61 +17,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Josh.Berry@compucom.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Group <netfilter@lists.netfilter.org>
 
-Greetings Josh,
+Daniel Arjona wrote:
 
-Josh.Berry@compucom.com wrote:
->
-> Does IPTables track virtual state of ICMP and UDP packets? 
+> Hello:
+> 
+> I tried to configure an iptables firewall, but i can't.  I need cofigure
+> this to use FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape
+> with my Netscape Client.
+> 
+> Observations:
+> I have LRH 8.0 and iptables is in the my unique server with squid, qmail and
+> others.
+> My router is directly connected to the NIC of the server.
+> When i try to connect to any FTP Server, i recieve this message "I can't
+> resolve DNS name"
+> I can't do ping to any IP Address
 
-That it does.
+Try the following:
 
-> I know that
-> UDP and ICMP are not stateful connections, but does IPTables perform
-> pseudo-stateful tracking of these connections such as some other
-> firewalls that basically timeout UDP/ICMP connections after a specific
-> time?
+1) Ping your loopback.
+2) ping your server's Internal IP.
+3) Ping anyone one of your LAN IP.
 
-ICMP gets a bit more complex than that. You can do this for things like 
-Echo-requests, time request, subnet mask requests, etc. as the source 
-and destination remains constant. You can also predict the transport and 
-type/codes used in the response. This is referred to as traffic that is 
-part of a previously "established" session.
+4) Ping your router.  (You didn't mention if
+your router has an IP.  I'm assuming it has.)
 
-When you get into ICMP type 3's and 11's however (host unreachables, TTL 
-exceeded, etc.) you get a bit of a problem as the system transmitting 
-these packets is usually _not_ the host you sent the original packet to. 
-Usually its some router or firewall along the path of the connection. 
-Also, the packet type to some extent is unexpected (you transmitted TCP 
-or UDP and now you are getting back an ICMP packet from some 
-unidentified host).
+You didn't mention from where you were trying to connect.
 
-Both of these packet types store 28 bytes in the payload which 
-identifies the original packet that generated the error (like the TCP or 
-UDP example above). A good firewall (like iptables) can use this payload 
-information to determine if the packet should be allowed through or not.
+5) If the above pings correctly, then check if you've
+set up your routing tables correctly.  What happens
+when you enter 'route'?  What's the ip of your eth0?
 
-So these ICMP error packets are not part of the original session, but 
-they were generated because of it. For this reason it is referred to as 
-"related" traffic.
 
-So the good news is yes, iptables will easily handle established and 
-related traffic. The better news is that you have the flexibility to 
-handle them independently and do what ever you want with either.
-
-Note that when you are comparing firewalls you really have to look at 
-the vendor implementation. For example there are a number of firewalls 
-on the market that claim to be based on stateful inspection, and for 
-some protocols they actually are, but for type 3's and 11's they fall 
-back on rudimentary packet filtering (let them all in including the 
-bogus ones, or none at all).
-
-HTH,
-C
-
+I don't know if the above might help.
 
 
 
