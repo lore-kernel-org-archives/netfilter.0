@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SSH Connections Lost After 1 minute idle
-Date: Wed, 14 Jul 2004 00:11:29 +0100
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: Proofreading
+Date: Tue, 13 Jul 2004 16:19:57 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407140011.29429.Antony@Soft-Solutions.co.uk>
-References: <20040713224848.99030.qmail@web40708.mail.yahoo.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382A36@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040713224848.99030.qmail@web40708.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +15,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?=27Erik_Wikstr=F6m=27?= <eriwik@itstud.chalmers.se>, netfilter@lists.netfilter.org
+
+X...ports 6k --> at least 6100
+rpc...
+nfs
+
+shall i go on.
+
+
+####################################
+# delbert.hudson@losangeles.af.mil #
+#        61cs/scbn, 3-0182         #
+####################################
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Erik =
+Wikstr=F6m
+Sent: Tuesday, July 13, 2004 3:40 PM
 To: netfilter@lists.netfilter.org
+Subject: Proofreading
 
-On Tuesday 13 July 2004 11:48 pm, Real Cucumber wrote:
 
-> > > I've done this using IPtables and the mangle table.
-> >
-> > Please explain how you have used the mangle table to
-> > achieve this.
+Hi
 
-> --------
-> iptables -t nat -A PREROUTING -p tcp --dport
-> $WAN_SSH_PORT -i $WAN_INTERFACE -j DNAT --to
-> $INTERNAL_SERVER_IP:$INTERNAL_SERVER_SSH_PORT
-> ----------
+If you happen to feel like you've got nothing better to do or if you'd
+like to help me out (and maybe get rid of me :) then I'd appreciate any
+coments and suggestions to my script.
 
-Oh good - you mean the nat table, not the mangle table.
+My goals with the script is as follows:
++ To allow the route to get an IP via DHCP for the WAN
++ To allow local hosts to get an IP from the router
++ To allow the router to comunicate with DNS-servers
++ To allow the router to connect to HTTP-servers
++ To allow the router to conect to FTP-servers
++ To allow SSH to the router from LAN on port 22
++ To allow SSH to the router from WAN on port 2070
++ Forward SSH from WAN to a computer on LAN
++ Forward a number of other ports/services to another computer on LAN
++ Allow access to WAN from LAN
+And of cource maintain some level of security.
 
-That makes good sense, then.
+I've blocked NetBIOS-packages from leaving the LAN, is there any other
+things that I should block? The LAN consists of both Windows and Linux
+computers.
 
-Regards,
+Thanks in advance.
 
-Antony.
-
--- 
-"I don't mind that he got rich, but I do mind that he peddles himself as the 
-ultimate hacker and God's own gift to technology when his track record 
-suggests that he wouldn't know a decent design idea or a well-written hunk of 
-code if it bit him in the face. He's made his billions selling elaborately 
-sugar-coated crap that runs like a pig on [sedatives], crashes at the drop of 
-an electron, and has set the computing world back by at least a decade."
-
- - Eric S Raymond, about Bill Gates
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--
+Erik Wikstr=F6m
 
