@@ -1,13 +1,11 @@
-From: Michelle Konzack <linux4michelle@freenet.de>
-Subject: Re: ULOG:  invalid argument
-Date: Thu, 26 Feb 2004 02:40:18 +0100
+From: Glen Becker <solar04@comcast.net>
+Subject: Dynamic redirection?
+Date: 26 Feb 2004 00:42:31 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040226014018.GH27875@freenet.de>
-References: <LAW12-F18Uhyx9w8OjU000276ef@hotmail.com>
+Message-ID: <1077774151.3036.78.camel@merlin>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <LAW12-F18Uhyx9w8OjU000276ef@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +16,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Am 2004-02-19 20:46:12, schrieb T. Take:
->I cannot use "ULOG".
->
->#iptables -A INPUT -i $OUTER_PORT -s $INNER_IP -j ULOG --ulog-nlgroup 32 
->--ulog-prefix "spoofed packet "
->#iptables: Invalid argument
->
->Although I updated iptables to version 1.2.9 and installed ulogd by apt-get 
->install (Debian),  I have not used ULOG yet. And there is ipt_ULOG.o in 
->"/lib/modules/2.4.24/kernel/net/ipv4/netfilter".
->
->Did you have the same problem about ULOG?
->I hope your advises.
+Hello, I haven't been lurking here long but have tried the FAQs,
+tutorials and How-To's.  I'm an iptables novice.  I thought this would
+be simple; I hope I'm overlooking something obvious.
 
-I had he same problem...
+I have a Linux server acting as a gateway between the internet and the
+internal network, allowing only authenticated hosts internet access.  I
+have a simple FORWARD (policy DROP) ruleset into which individual hosts,
+after authentication, are inserted and allowed internet access.  As each
+host's session time expires, the corresponding ACCEPT rule is removed
+from FORWARD.  That all works well.
 
-It is NOT an iptables problem/bug !!!
+Now I would like to do something like DNAT for http connections from
+NON-authenticated hosts to a webserver on my gateway box, but still let
+authenticated hosts through.
 
-It is the ULOG Package from WOODY !!! 
+-t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 192.168.2.1
+unfortunately catches everything.
 
-It is too old. put the source from unstable 
-in your /etc/apt/sources.list like
+Is there a way to "redirect" web connections only if the packet hasn't
+already been ACCEPTed for forwarding?
 
-deb-src ftp://ftp.debian.org/debian unstable main
+For example:
+Host 192.168.2.128 is authenticated and should be allowed any internet
+connections.  http requests from all other internal hosts are sent to
+the local web server:
 
-Then make a 
+-P FORWARD DROP
+-A FORWARD -p udp --dport 53 -j ACCEPT
+-A FORWARD -p udp --sport 53 -j ACCEPT
+-A FORWARD -s 192.168.2.128 -p ALL -j ACCEPT
+-A FORWARD -d 192.168.2.128 -p ALL -j ACCEPT
+-A [something really smart like DNAT but only if the packet traverses
+this far]
 
-apt-get build-dep ulogd
+Thanks
 
-and last not least a 
+-Glen
 
-apt-get -b source ulogd
-
-It will compile automaticly and install ist.
-
-Have fun with 'iptables' and 'ulogd'
-
-Greetings
-Michelle
-
--- 
-Registered Linux-User #280138 with the Linux Counter, http://counter.li.org/ 
 
