@@ -1,10 +1,10 @@
-From: "GeorgePing" <gping@ozemail.com.au>
-Subject: ipchains port forward to a web server behind the masq'ing firewall
-Date: Wed, 19 Mar 2003 14:51:10 +1100
+From: "G. Georgiev" <ggeorgiev@videotron.ca>
+Subject: Routing / masqerading advice needed.
+Date: Tue, 18 Mar 2003 17:23:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c2edca$c8536340$35f0280a@GP2KPRO>
+Message-ID: <200303181723.41632.ggeorgiev@videotron.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,21 +16,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
 
-I am working with linux 7.3, just can not set up the port forward rule to
-re-direct external http access to the firewall (ppp0) into an internal
-network web server.
-The firewall is doing masq'ing.
+        Hello,
+
+        Have a non-standard routing / masquerading issue to which I still can 
+not imagine a solution.
+
+        The problem: I need to create several encrypted links to a remote 
+side - VPN.GALILEO.COM from a single linux machine - a gateway for a new 
+branch office. The problem comes from the fact that for every link the remote 
+side assigns me a different address. This way I end up having several
+ local interfaces (ppp0,ppp1...) with different addresses that communicate 
+to the same addres on the other end. 
+
+        However, the package (Focalpoint emulator) that I run in several 
+copies on the SAME computer behind the firewall  has to communicate with the 
+'SERVER' on the other end every copy via one and only one of those channels, 
+determined by the login name/address assigned when I create the channel, else 
+packets are discarded. The emulator uses one port to communicate to the 
+server, all emulators executing connect() to the same remote port, and of 
+cource getting an ephemerial port after the connection is accept() ed.
+
+    emulator 1 \          /-gw/ppp0 --encrypted ----\
+    emulator 2 -my net--gw/ppp1 -------------------- other end ---- SERVER
+    emulator x /         \- gw/ppp* -------------------/
 
 
-could u pls give an example?
+        So, I need to masquerade packets via those interfaces at my gw - no 
+problem, but how to route them if all they have same destination address, but 
+packets originating from different copies of the same application should use 
+different channels? 
 
-I tried   ipchains -A input -i ppp0 -p tcp  --sport 110 --dport 80:80 -j
-REDIRECT --destination 10.40.240.100/32 , but don;t think it is correct.
-Thanks for your help.
 
-George
+        In general, I have to make my gateway lie the other end that every 
+copy of the emulator runs on a different computer. How?
 
+        Any ideas appreciated, George.
 
