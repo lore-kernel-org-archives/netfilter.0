@@ -1,76 +1,53 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: New Version (1.13) of PPTP conntrack/nat helper
-Date: Wed, 24 Sep 2003 12:13:29 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030924101329.GW31401@sunbeam.de.gnumonks.org>
-References: <20030923144924.GM31401@sunbeam.de.gnumonks.org> <3F707404.5080107@able.be>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: A Humble Proposal
+Date: Wed, 24 Sep 2003 06:57:34 -0400
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1064401053.1892.5.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CuZtzLgFeSWyzOuB"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3F707404.5080107@able.be>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Wim Ceulemans <wim.ceulemans@able.be>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+	What an interesting project! Perhaps nufw and ISCS
+(http://iscs.sourceforge.net) can share some ideas.  ISCS plans to
+support the dynamic creation of iptables rules based upon LDAP, AD, NDS,
+SecureID and RADIUS in version 2.x.  It currently supports the dynamic
+creation of iptables rules based upon the fields of a user's X.509
+digital certificate.  The scripts to make this happen on the enforcement
+device are in the project CVS but we are still building the
+administrative interface.  In fact, we may be looking to hire a few
+developers to accelerate this process.  Please feel free to use the
+scripts if they are of help - John
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
+
+> I have seen some of this functionality in Checkpoint, and I think
+that> it would be immensely useful in the iptables community if it is
+adopted.
+NuFW provides these sort of things :
+  http://www.nufw.org
+Code can be considered has beta code. It works but things need to be
+done (especially a Windows Client ;-).
+With NuFW, you really filter by User (Group) and not by IP as it often
+the case.
 
 
---CuZtzLgFeSWyzOuB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Sep 23, 2003 at 06:25:40PM +0200, Wim Ceulemans wrote:
-=20
-> If I switch CONFIG_IP_NF_NAT_LOCAL off, the forwarding to a pptp server=
-=20
-> behind the firewall works.
-> If switch it on, I don't see any gre packet behind the firewall, so it=20
-> does not work.
->=20
-> However, with CONFIG_IP_NF_NAT_LOCAL on I have had two freezes (firewall=
-=20
-> completely stuck and I had to switch it on and off).
-
-So to summarize:  It works perfectly of it is OFF, but you have problems
-with DNAT and crashes, if it is ON.  That is surprising - it seems like
-the problems have just been reverting :(
-
-Did you do anything in particular when the firewall hang happened? (like
-unloading/loading a module, ...)?
-
-> Regards
-> Wim
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---CuZtzLgFeSWyzOuB
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/cW5JXaXGVTD0i/8RAtJsAJ9u9O+8+lqmeuQ9VnT6VfKzUu3gVQCfTGyy
-+9Kkm7EykwwyKaQ+Y/351Y4=
-=5sBL
------END PGP SIGNATURE-----
-
---CuZtzLgFeSWyzOuB--
 
