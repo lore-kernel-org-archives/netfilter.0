@@ -1,14 +1,13 @@
-From: Steve Turnbull <steve.turnbull@yhgfl.net>
-Subject: Re: No chain/target/match by that name
-Date: Tue, 07 Sep 2004 00:38:30 +0100
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: two negatived parameters
+Date: Tue, 07 Sep 2004 10:43:30 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413CF4F6.1020505@yhgfl.net>
-References: <413B233C.3000601@yhgfl.net>
-	<200409051351.03018.Alistair@nerdnet.ca>
+Message-ID: <413DD722.2010307@pbl.ca>
+References: <7421.1094459312@www2.gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409051351.03018.Alistair@nerdnet.ca>
+In-Reply-To: <7421.1094459312@www2.gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,113 +20,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Alistair Tonner wrote:
-> On September 5, 2004 10:31 am, Steve Turnbull wrote:
+Akolinare@gmx.net wrote:
+> Hi,
 > 
->>Hi
->>
->>Our web server is configured;
->>Debian (Woody) (No X installed)
->>Kernel 2.4.23 - configured with iptables in mind
->>iptables v1.2.6a
->>
->>When we start the firewall script, we get this message;
->>'No chain/target/match by that name'
+> I have a little question with two negatived parameters in one rule.
 > 
+> I create a rule, which should only match if source and destination are not
+> the given. I think that it is easy and try the following rule:
 > 
-> 	urmm ... try rebuilding iptables code against this kernel?
+> iptables -A FORWARD -s ! host1 -d ! host2 -j ACCEPT
 > 
-> 	I'm not sure about Debian's packages, but is it possible that the iptables 
-> code is precompiled here?
-> 
-> 
->>The firewall works however, but is constantly logging;
->>'Sep  5 16:00:52 www kernel: Input: IN=eth0 OUT=
->>MAC=00:e0:81:29:01:75:00:07:85:06:c2:e1:08:00 SRC=195.92.195.93
->>DST=195.92.38.54 LEN=302 TOS=0x00 PREC=0x00 TTL=61 ID=0 DF PROTO=UDP
->>SPT=53 DPT=32833 LEN=282'
-> 
-> 	
-> 	This looks like a reply to a DNS query.   It the state rule below didn't get 
-> accepted this looks correct.
-> 
-> 
->>Something is ammis here, and we can't ping out from the server with the
->>firewall running, also, we can't use Lynx to browse. Turn the firewall
->>off and all is well for both of these.
-> 
-> 	
-> 	You haven't included any rules here that regard ICMP -- no pings.
-> 
-> 
->>Has anybody got any ideas what is wrong? Our firewall rule is below.
->>
->>Regards
->>Steve
->>
->>
->>
->>#!/bin/sh
->>
->>
->>#
->># This is the firewall up script.
->>#
->>
->>#
->># Lets start by dropping all incoming traffic and allowing all
->># outbound traffic
->>#
->>
->>iptables -P INPUT DROP
->>iptables -P FORWARD DROP
->>iptables -P OUTPUT ACCEPT
->>
->>
->>
->># Flush any existing rules...
->>iptables -F
->>
->>
->># Allow any established connections to come on through...
->>iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->>
->>
->># This is a web server. We only require access to http ports
->># 80,21,53 and 443. New ports to allow will be added here...
->>iptables -A INPUT -p tcp --dport 80 -j ACCEPT
->>iptables -A INPUT -p tcp --dport 443 -j ACCEPT
->>
->>#ssh
->>iptables -A INPUT -p tcp --dport 22 -j ACCEPT
->>
->>#ftp
->>iptables -A INPUT -p tcp --dport 21 -j ACCEPT
->>
->>#DNS
->>iptables -A INPUT -p tcp --dport 53 -j ACCEPT
->>iptables -A INPUT -p udp --dport 53 -j ACCEPT
->>
->>
->># Allow the loopback connection...
->>iptables -A INPUT -i lo -j ACCEPT
->>
->>
->># Log stuff that doesn't match above rules...
->>iptables -A INPUT -j LOG --log-prefix="Input: "
-> 
-> 
-Turns out that it just needed some exra stuff comiling into the kernel - 
-I added all of the state options and all is well now, thanks for he help
+> But with this rule pakets from host1 to host3 (or from host2 to host3) were
+> not affected. It seems like the logical combination is OR and not AND unlike
+> the not negatived rule.
+> I think that the rule is logical right. Is it a little bug or have I
+> misunderstood something?
 
-Steve
+If src is host1 and dst is host3 you get:
+
+not true and not false = false and true = false
+
+So the rule does not match, and packets from host1 to host3 will not be 
+affected by it.  Also, note that "not host1 and not host2" is logically 
+the same thing as "not (host1 or host2)".  Which was probably the reason 
+why it looked like an or to you.  Double negations in human languages do 
+not always translate well into negations in computer languages.
 
 -- 
-Steve Turnbull
-Digital Content Developer
-YHGfL Foundation
-
-t 01724 275030
-e steve.turnbull@yhgfl.net
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
