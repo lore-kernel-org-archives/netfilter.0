@@ -1,10 +1,12 @@
-From: OTR Comm <otrcomm@isp-systems.com>
-Subject: Help!! Is this true??
-Date: Sun, 09 Jun 2002 22:46:27 -0700
+From: "Danila Octavian" <pisic@service.agress.ro>
+Subject: ...a problem
+Date: Mon, 10 Jun 2002 10:38:52 +0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D043D33.41AED997@isp-systems.com>
+Message-ID: <004201c21051$de3a18e0$130da8c0@PiSiC>
+References: <002501c20e12$cb2b54d0$130da8c0@PiSiC>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_003F_01C2106B.034BA770"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,36 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-Hello,
+This is a multi-part message in MIME format.
 
-Is it true that iptables does not support virtual interfaces for virtual
-domains?
+------=_NextPart_000_003F_01C2106B.034BA770
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-That is, I have many virtual domains setup on virtual interfaces to eth0
-(e.g. eth0:1 xyz.xyz.xyz.xyz) currently running on a system with
-ipchains.  I am thinking about converting to a new kernel with iptables,
-but I can not get iptables to work with the virtual interfaces on eth0. 
-I setup a test server to verify that iptables would work, but I can not
-access any of my test domains (i.e., web sites through Apache) when I
-have the IP for the domain tied to a virtual interface.  If I shutdown
-my iptables firewall, I can access the web sites fine.
+Hi all,
+I'm new to the mailing list ... 1 hour :-))) or so ... and I already =
+have a problem to discuss ...
+I'm in a new situation ... and I don't know how to resolve it ...=20
+I have two ISP one on leased line and one on a radio modem ... and of =
+course an internal LAN
+Currently I use two linux servers , one for each ISP ...
+You can tell me how to set up those resources on a single machine ???
 
-What's up here, anybody got any ideas and solutions?
+Thanks .
 
-I have looked all through the documentation and can not find anything
-that addresses iptables and virtual domains on virtual interfaces.
 
-Also, I can not ping any of the virtual interfaces with iptables active,
-but I can ping them if I don't have an iptables firewall active.
+------=_NextPart_000_003F_01C2106B.034BA770
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I CAN ping them and access them through Apache server if I have an
-ipchains firewall active.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi all,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm new to the mailing list ... 1 hour =
+:-))) or so=20
+... and I already have a&nbsp;problem to discuss&nbsp;...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm in a new situation ... and I don't =
+know how to=20
+resolve it ... </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I have two ISP one on leased line and =
+one on a=20
+radio modem ... and of course an internal LAN</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Currently I use two linux servers , one =
+for each=20
+ISP ...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You can tell me how to set up those =
+resources on a=20
+single machine ???</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
 
-What's the deal?  Please reply via email.
+------=_NextPart_000_003F_01C2106B.034BA770--
 
-Thanks,
-Murrah Boswell
 
