@@ -1,13 +1,12 @@
-From: Shawn <core@enodev.com>
-Subject: Re: OT: iptables-like firewall for windows?
-Date: Fri, 22 Aug 2003 16:06:39 -0500
+From: Mihamina Rakotomandimby <mrakotom@free.fr>
+Subject: uninstall/re-install iptables
+Date: Fri, 22 Aug 2003 23:28:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1061586399.18527.102.camel@localhost>
-References: <3F461A22.90300@bus.okstate.edu>
+Message-ID: <200308222328.14788.mrakotom@free.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F461A22.90300@bus.okstate.edu>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Joines <joines@bus.okstate.edu>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+Hi every body ,
+i'm running slack 9 with a 2.4.21 kernel 
+I got iptables 1.2.8 from netfilter website .
+I first removed the slack package (1.2.7a) with the appropriate tool ,
+and then a I made :
+- untar the sources of iptables
+- cd into the source directory
+- make KERNEL_DIR=/usr/src/linux
+- su 
+- make install KERNEL_DIR=/usr/src/linux 
 
-On Fri, 2003-08-22 at 08:26, Jason Joines wrote:
->   We have a completely Linux back-end environment but unfortunately
-> hundreds of windows desktops.  I'm pretty tired of all the attacks on
-> the unprotected windows boxes but don't have the authority to put up a
-> network firewall.  We protect all of our Linux servers with iptables.
-> Does anyone know of a similar tool for windows, particularly w2k?  The
-> built-in stuff seems to be virtually worthless.
+The problem is that it installed the iptables files into /usr/local .
+I dont like it to be this way .
 
-I take issue with that statement. It's /actually/ worthless!
+- There is not rules to "make uninstall" .Will it be enough to remove all the 
+copied files during the install process ?
+- what option have i got to specify to have it installed at /usr ( rather than 
+the default /usr/local )?
 
-google kerio personal firewall
+Thanks in advance for your help .
 
