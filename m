@@ -1,13 +1,12 @@
-From: Michael Gale <mgale@utilitran.com>
+From: <netfilter@drbroyles.com>
 Subject: Re: default policies for the NAT chains
-Date: Tue, 2 Dec 2003 18:29:57 -0700
+Date: Tue, 2 Dec 2003 22:21:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031202182957.02067f1f.mgale@utilitran.com>
+Message-ID: <025c01c3b94c$7eaa9f30$73593a42@drbroyles.com>
 References: <20031202180302.32601c1d.mgale@utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031202180302.32601c1d.mgale@utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,67 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "[netfilter] Mailing List" <netfilter@lists.netfilter.org>
 
-Hello,
+> So my question is do I need default policies for the NAT chains ?
 
-	Let me explain how my firewall rules work -- it most likely will help in the answer to my question.
+Michael, it is not necessary for you to specify default policies for the NAT
+table chains, as dealing with the packets when they get to the FILTER table
+chains will be sufficient.  To illustrate my point, look at figure 3b in the
+following document ...
+http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html#section3
+The arrow to the extreme left pointing up is where a packet would "enter"
+your server from the outside.  No matter which path it takes till it gets to
+the "down" arrow at the extreme right, it will pass through either the
+INPUT, OUTPUT, or FORWARD chains of the FILTER table.  Also, any packets
+destined for your server will hit the INPUT chain first, giving you the
+opportunity to deal with them.  So if you don't specifically have an accept
+rule defined in the chains of your FILTER table, then packets you haven't
+intended to ACCEPT/DROP/"whatever" will be dropped before they either exit
+or pass through your server.
 
-When the firewall starts it sets up some basic target and a large amount of user chains.
+I hope this answers your question,
+Brandon Broyles
 
-I have 24 chains -- ok not that many
-
-Here are the following chains (not all):
-
-tablerule-ext : this is a chain rule setup the filters incoming packets regardless of destination, here I weed out any unwanted packets or connections. Any matching packets are logged then drop.
-
-tablerule-extpri : this chain is only for packets destination to the heartbeat address. Here only heartbeat packets are matched and everything else dropped.
-
-tablerule-extVIP : I have one chain for every virtual IP, depending on the destination IP of the packet. will depend on what chain it is forwarded to.
-
-So the main filter table has rules that most forward packets to other chains.
-
-Any example is if a packet wants to come in, go out or be forwarded for 172.16.15.56:
-1. It goes to the tablerule-ext and checked to make sure the packet is in good standing (TCP flags, port range, from - to ...) if accept it is returned
-
-2. Then it goes to the tablerule-56 chain where it is either dropped or accept depending on the traffic I want for the .56 address.
-
-This way I can easily administer any IP address with out affecting any other connection. Since almost everything is chain based I have flush and change chain rules for block them very easily.
-
-So do I still need to have a default policy for the NAT table chains ?
-
-Michael.
-
-
-On Tue, 2 Dec 2003 18:03:02 -0700
-Michael Gale <mgale@utilitran.com> wrote:
-
-> Hello,
-> 
-> 	Ok -- I had my firewall working perfectly with a default policy in affect:
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -P FORWARD DROP
-> 
-> It was also working great for the 22 virtual IP addresses.
-> 
-> I then though about the NAT chains (PREROUTING,OUTPUT and POSTROUTING) and figured they should have a default policy as well.
-> 
-> I added that to the list and not I can not start a out going connection from the firewall.
-> 
-> So my question is do I need default policies for the NAT chains ? If so it would seem like I need some rules added twice ? 
-> 
-> Any suggestions would be appreciated :)
-> 
-> -- 
-> Michael Gale
-> Network Administrator
-> Utilitran Corporation
-> 
-
-
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
