@@ -1,16 +1,13 @@
-From: Security <security@ezsm.net>
+From: "pengjie" <bill.peng@ocamar.com>
 Subject: Re: ip_conntrack
-Date: Mon, 15 Sep 2003 19:40:18 -0400
+Date: Tue, 16 Sep 2003 09:27:44 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309151940.20342.security@ezsm.net>
+Message-ID: <001501c37bf1$bab38d90$0f640a0a@acamarpeng>
 References: <000801c378a1$f6c24360$243902c4@weatherman>
-Reply-To: security@ezsm.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0012_01C37C34.C8C2F770"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000801c378a1$f6c24360$243902c4@weatherman>
-Content-Description: clearsigned data
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
 To: Warren P <weatherman@webmail.co.za>, netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+This is a multi-part message in MIME format.
 
-Just simply remove the mod ip_conntrac and any dependices and re-apply it.
+------=_NextPart_000_0012_01C37C34.C8C2F770
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: base64
 
-**Warning** this will require you to drop iptables while you do it...which may
-not be a good option depening on your network configuration. **/Warning**
+dHJ5IHRoZSAyLjQuMjEuDQogIC0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gDQogIEZyb206
+IFdhcnJlbiBQIA0KICBUbzogbmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcgDQogIFNlbnQ6
+IEZyaWRheSwgU2VwdGVtYmVyIDEyLCAyMDAzIDQ6MTkgQU0NCiAgU3ViamVjdDogaXBfY29ubnRy
+YWNrDQoNCg0KICBoaQ0KDQogIGRvZXMgYW55b25lIGtub3cgaG93IHRvIGNsZWFyL2ZsdXNoIHRo
+ZSBpcF9jb25udHJhY2sgdGFibGUuIEV2ZXJ5IDQgdG8gNiBtb250aHMgaSBuZWVkIHRvIHJlYm9v
+dCBteSBzZXJ2ZXIgYmVjYXVzZSBpdCBkcm9wcyBwYWNrZXRzIGFuZCBjb21wbGFpbnMgdGhhdCB0
+aGUgdGFibGUgaXMgZnVsbCAuLi4NCg0KICBSZWdhcmRzLA0KICBXYXJyZW4gUA0K
 
-NH
+------=_NextPart_000_0012_01C37C34.C8C2F770
+Content-Type: text/html;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: base64
 
-On Thursday 11 September 2003 4:19 pm, Warren P wrote:
-> hi
->
-> does anyone know how to clear/flush the ip_conntrack table. Every 4 to 6
-> months i need to reboot my server because it drops packets and complains
-> that the table is full ...
->
-> Regards,
-> Warren P
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWlz
+by04ODU5LTEiIGh0dHAtZXF1aXY9Q29udGVudC1UeXBlPg0KPE1FVEEgY29udGVudD0iTVNIVE1M
+IDUuMDAuMzUxNi4yODAwIiBuYW1lPUdFTkVSQVRPUj4NCjxTVFlMRT48L1NUWUxFPg0KPC9IRUFE
+Pg0KPEJPRFkgYmdDb2xvcj0jZmZmZmZmPg0KPERJVj48Rk9OVCBmYWNlPSYjMjM0MzU7JiMyMDMw
+Nzsgc2l6ZT0yPnRyeSB0aGUgMi40LjIxLjwvRk9OVD48L0RJVj4NCjxCTE9DS1FVT1RFIA0Kc3R5
+bGU9IkJPUkRFUi1MRUZUOiAjMDAwMDAwIDJweCBzb2xpZDsgTUFSR0lOLUxFRlQ6IDVweDsgTUFS
+R0lOLVJJR0hUOiAwcHg7IFBBRERJTkctTEVGVDogNXB4OyBQQURESU5HLVJJR0hUOiAwcHgiPg0K
+ICA8RElWIHN0eWxlPSJGT05UOiA5cHQgJiMyMzQzNTsmIzIwMzA3OyI+LS0tLS0gT3JpZ2luYWwg
+TWVzc2FnZSAtLS0tLSA8L0RJVj4NCiAgPERJViBzdHlsZT0iQkFDS0dST1VORDogI2U0ZTRlNDsg
+Rk9OVDogOXB0ICYjMjM0MzU7JiMyMDMwNzs7IGZvbnQtY29sb3I6IGJsYWNrIj48Qj5Gcm9tOjwv
+Qj4gDQogIDxBIGhyZWY9Im1haWx0bzp3ZWF0aGVybWFuQHdlYm1haWwuY28uemEiIA0KICB0aXRs
+ZT13ZWF0aGVybWFuQHdlYm1haWwuY28uemE+V2FycmVuIFA8L0E+IDwvRElWPg0KICA8RElWIHN0
+eWxlPSJGT05UOiA5cHQgJiMyMzQzNTsmIzIwMzA3OyI+PEI+VG86PC9CPiA8QSANCiAgaHJlZj0i
+bWFpbHRvOm5ldGZpbHRlckBsaXN0cy5uZXRmaWx0ZXIub3JnIiANCiAgdGl0bGU9bmV0ZmlsdGVy
+QGxpc3RzLm5ldGZpbHRlci5vcmc+bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmc8L0E+IDwv
+RElWPg0KICA8RElWIHN0eWxlPSJGT05UOiA5cHQgJiMyMzQzNTsmIzIwMzA3OyI+PEI+U2VudDo8
+L0I+IEZyaWRheSwgU2VwdGVtYmVyIDEyLCAyMDAzIDQ6MTkgDQpBTTwvRElWPg0KICA8RElWIHN0
+eWxlPSJGT05UOiA5cHQgJiMyMzQzNTsmIzIwMzA3OyI+PEI+U3ViamVjdDo8L0I+IGlwX2Nvbm50
+cmFjazwvRElWPg0KICA8RElWPjxCUj48L0RJVj4NCiAgPERJVj48Rk9OVCBmYWNlPUFyaWFsIHNp
+emU9Mj5oaTwvRk9OVD48L0RJVj4NCiAgPERJVj4mbmJzcDs8L0RJVj4NCiAgPERJVj48Rk9OVCBm
+YWNlPUFyaWFsIHNpemU9Mj5kb2VzIGFueW9uZSBrbm93IGhvdyB0byBjbGVhci9mbHVzaCB0aGUg
+DQogIGlwX2Nvbm50cmFjayB0YWJsZS4gRXZlcnkgNCB0byA2IG1vbnRocyBpIG5lZWQgdG8gcmVi
+b290IG15IHNlcnZlciBiZWNhdXNlIGl0IA0KICBkcm9wcyBwYWNrZXRzIGFuZCBjb21wbGFpbnMg
+dGhhdCB0aGUgdGFibGUgaXMgZnVsbCAuLi48L0ZPTlQ+PC9ESVY+DQogIDxESVY+Jm5ic3A7PC9E
+SVY+DQogIDxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+UmVnYXJkcyw8L0ZPTlQ+PC9ESVY+
+DQogIDxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+V2FycmVuIFA8L0ZPTlQ+PC9ESVY+PC9C
+TE9DS1FVT1RFPjwvQk9EWT48L0hUTUw+DQo=
 
-iD8DBQE/Zk3jPEfiOMhBaIMRAqjlAJ4wemLaeC1n/MjvJnANCT4jDJUHgwCfdldB
-Dvk62MF2dxCx2uNilvCp13Y=
-=vmrB
------END PGP SIGNATURE-----
+------=_NextPart_000_0012_01C37C34.C8C2F770--
+
 
