@@ -1,12 +1,13 @@
-From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
-Subject: RE: MRTG and IPTABLES
-Date: Wed, 7 Jan 2004 16:46:46 +0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: MRTG and IPTABLES
+Date: Wed, 7 Jan 2004 12:57:48 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <83055D4B014C9E478D2F04624B9E82CFAE965A@noveldc.novelgmt.mu>
+Message-ID: <200401071257.48913.Antony@Soft-Solutions.co.uk>
+References: <83055D4B014C9E478D2F04624B9E82CFAE965A@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFAE965A@noveldc.novelgmt.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +18,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+On Wednesday 07 January 2004 12:46 pm, Gilles Yue wrote:
 
-Is this the way it should be in iptables?
+> Hi,
+>
+> Is this the way it should be in iptables?
+>
+> #Open SNMP Ports
+> $IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
+>
+> Have tried it, not working
 
-#Open SNMP Ports
-$IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
+Try putting in the LOGging rule which two of us have already recommended, and 
+see what traffic is getting blocked.
 
-Have tried it, not working
+This will then tell you what you need to ACCEPT.
 
-Thanks.=20
-Gy
+Regards,
 
------Original Message-----
-From: Daniel F. Chief Security Engineer -
-[mailto:danielf@supportteam.net]=20
-Sent: Wednesday, January 07, 2004 4:45 PM
-To: Gilles Yue; netfilter@lists.netfilter.org
-Subject: Re: MRTG and IPTABLES
+Antony.
 
-SNMP UDP Ports 161 and 162 MRTG typically only uses 161.=20
-
-
-Thanks
-
-On Wednesday 07 January 2004 00:54, Gilles Yue wrote:
-> MRTG cannot work properly due to iptables running.
+> -----Original Message-----
+> From: Daniel F. Chief Security Engineer -
+> [mailto:danielf@supportteam.net]
+> Sent: Wednesday, January 07, 2004 4:45 PM
+> To: Gilles Yue; netfilter@lists.netfilter.org
+> Subject: Re: MRTG and IPTABLES
+>
+> SNMP UDP Ports 161 and 162 MRTG typically only uses 161.
 >
 >
+> Thanks
 >
-> Anybody knows which port number to open to enable MRTG to work
-properly.
+> On Wednesday 07 January 2004 00:54, Gilles Yue wrote:
+> > MRTG cannot work properly due to iptables running.
+> >
+> >
+> >
+> > Anybody knows which port number to open to enable MRTG to work
 >
+> properly.
 >
->
-> Thanks.
->
->
->
-> Rgds
->
-> gy
+> > Thanks.
+> >
+> >
+> >
+> > Rgds
+> >
+> > gy
 
---=20
-Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
-The distance between nothing and infinity is always the same no matter
-how=20
-close you get to nothing.
+-- 
+I want to build a machine that will be proud of me.
+
+ - Danny Hillis, creator of The Connection Machine
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
