@@ -1,12 +1,14 @@
-From: "David Luyens" <david.luyens@skynet.be>
-Subject: ftp connection tracking
-Date: Wed, 27 Aug 2003 19:36:02 +0200
+From: Stef Coene <stef.coene@docum.org>
+Subject: Re: [LARTC] Performanace fo the Iptables Server
+Date: Wed, 27 Aug 2003 19:41:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00eb01c36cc1$b29fa240$020b0b0b@home>
+Message-ID: <200308271941.53445.stef.coene__44961.9350758896$1062302257@docum.org>
+References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall> <200308271917.00121.stef.coene@docum.org> <015d01c36cc1$11fbabe0$c2bf09ca@Housecall>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00EC_01C36CD2.76287240"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <015d01c36cc1$11fbabe0$c2bf09ca@Housecall>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +18,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
+Cc: lartc@mailman.ds9a.nl
 
-This is a multi-part message in MIME format.
+On Wednesday 27 August 2003 19:31, hare ram wrote:
+> Hi Stef
+>
+> How about Source and Desitination port, and protocol wise bytes transfer (
+> like http, ftp, icmp, udp), if i want to track.
+>
+> next limitation, if the Server goes down, the traffic will be zero, that
+> will be another Limitation
+Not true.  If you record the counters each 5 minutes, you loose max 5 minutes 
+of counters.  You can record the difference between the 2 reads and discard 
+negative values.
 
-------=_NextPart_000_00EC_01C36CD2.76287240
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+> If i send the all the traffic to Mysql, so i can get the old data to.
+>
+> may be you can correct me if, i may be wrong thinking
+>
+> correct me with the best methods to do
+If you really want it very detailed (src/dst - address/port), you indeed have 
+to log it to mysql or so.
+You can calulcate the number of updates you have to do mysql and simulate this 
+on a test box.
 
-Hi, 
- 
-When a change the portnumber of my ftp deamon, the connection tracking
-of netfilter does not work anymore.
-Is it possible to say to netfilter to look at a different port (than 21)
-for ftp connections?
- 
-David Luyens
+Stef
 
+-- 
 
-------=_NextPart_000_00EC_01C36CD2.76287240
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
-
-<META content=3D"MSHTML 6.00.2726.2500" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D858553317-27082003><FONT size=3D2>Hi, =
-</FONT></SPAN></DIV>
-<DIV><SPAN class=3D858553317-27082003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D858553317-27082003><FONT size=3D2>When a change the =
-portnumber of=20
-my ftp deamon, the connection tracking of netfilter does not work=20
-anymore.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D858553317-27082003><FONT size=3D2>Is it possible to =
-say to=20
-netfilter to look at a different port (than 21) for ftp=20
-connections?</FONT></SPAN></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV align=3Dleft><FONT size=3D2>David =
-Luyens<BR></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_00EC_01C36CD2.76287240--
-
+stef.coene@docum.org
+ "Using Linux as bandwidth manager"
+     http://www.docum.org/
+     #lartc @ irc.oftc.net
 
 
