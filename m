@@ -1,15 +1,11 @@
-From: Kenneth Porter <shiva@sewingwitch.com>
-Subject: Re: Setting TOS in POSTROUTING mangle table
-Date: Wed, 06 Oct 2004 10:21:27 -0700
+From: "Sunny Shum" <sshum@empowertechnologies.com>
+Subject: VPN question
+Date: Wed, 6 Oct 2004 12:35:57 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <EC41761633122CEB2108A37F@[10.169.6.246]>
-References: <E0E0E80CC865BFEC576183B5@[10.169.6.246]>
-	<1097078302.5214.10.camel@wolfpack.ljm.dom>
+Message-ID: <200410061936.i96Ja0rZ014727@melmac.stargate.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1097078302.5214.10.camel@wolfpack.ljm.dom>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +15,35 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---On Wednesday, October 06, 2004 11:58 AM -0400 Jason Opperisano 
-<opie@817west.com> wrote:
-
-> if the netfilter box is also the traffic shaper--set TOS in PREROUTING
-> so that that tc filters have the TOS values available to make a
-> decision.
-
-That's what I'd like to do, but...
-
-<http://www.faqs.org/docs/iptables/traversingoftables.html>
-
-Is table 3.2 wrong? PREROUTING isn't even in that table, and there's no way 
-to affect a packet before the routing decision step and after the app has 
-delivered the packet to the kernel.
-
-I have no access to the source of the typical game server binary, so I 
-can't set the TOS bits before the packets hit the kernel. (The developer of 
-the Battlefield 1942 Linux server added this feature as an option, though.)
-
+Hello,
+ 
+I am a newbie to the VPN setup.  Currently, my company has a Windows 2003
+server behind a firewall (running iptables on RedHat 9).  I need to setup
+VPN for a few executives so they can access the servers from home or on the
+road.  I did some research and came to 3 options:
+ 
+1. Run the VPN from the Windows 2003 server
+2. OpenVPN
+3. OpenSWAN or StrongSWAN
+ 
+My questions are:
+ 
+1. Is this the right place to ask questions regarding VPN, since this is
+mainly an iptables-related list?  If not, can someone direct me to a
+forum/list which will be helpful?  I really enjoy the information provide
+from this list members.
+ 
+2. If I choose option #2 or #3 above, how to set it up? I read the HOWTO
+documents, but I am not sure where I should install the server side of the
+VPN.  Do I install it on the firewall box?  Or the Windows 2003 box?
+ 
+Thanks!
+ 
+Regards,
+Sunny
+ 
+ 
+ 
