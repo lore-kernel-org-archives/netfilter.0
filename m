@@ -1,10 +1,10 @@
-From: Edmund <kdtc@netfront.net>
-Subject: icmp echo requests
-Date: Mon, 29 Sep 2003 12:32:06 +0800
+From: Sathish Net <sathishenet@yahoo.com>
+Subject: NAT help needed
+Date: Tue, 30 Sep 2003 02:32:54 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F77B5C6.1090007@netfront.net>
+Message-ID: <20030930093254.16721.qmail@web11403.mail.yahoo.com>
+Reply-To: sathishnet@hotmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,36 +16,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Group <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-Hi,
+Hello Sir,
 
-I've been monitoring the NAT router with pktstat and am a little
-perturbed to see quite a lot of icmp echo requests.  Now I've
-setup my Linux firewall to reject icmp echo requests.
+I have installed REDHAT LINUX 9.0. I want to do
+NATTING. We are having the leased line from our ISP.
+Our ISP provider has assgined 12 IP Address for our
+office use. I want to do NATTING. 
 
-Is this the right(?)/correct/valid/appropriate thing to do?
+I have installed 2 NIC in the LINUX system. eth0 and
+eth1. I assigned the eth0 to the ISP provider and eth1
+- for our LAN addres. (Internal)
 
-Furthermore (just for clarification) using tcpdump, I get incoming
-icmp echo requests, but no response from my firewall(good thing
-right?.  This means the firewall is dropping/rejecting the
-echo requests?
+Now i want to do like eth0 is for ISP provider link.
+(in that i want to nat 12 ip address like
+203.129...... .......) it should work like round robin
+in that 12 ip address.
 
+How to do ???
 
-Here is the line from the firewall script:
+Thanking you,
 
+Looking forward to a favorable response.
 
-iptables -A INPUT -i eth0 -p icmp --icmp-type 8 \
-        -j REJECT --reject-with icmp-host-unreachable
+With regards,
 
-
-
-Btw, I'm quite bothered about the pings.  It doesn't
-look right.
-
--- 
-
-
+Sathish
 
 
+
+=====
+
+ 
+
+ 
+
+ 
+
+ Sathish
+
+ 
+
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
 
