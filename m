@@ -1,17 +1,13 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: clearing dont-fragment bit
-Date: 10 Oct 2003 07:13:06 +0200
+Subject: Re: iptables help..
+Date: 10 Oct 2003 07:29:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065762785.1650.17.camel@kermit>
-References: <20031009134311.GA25685@oasis.frogfoot.net>
-	 <1065716586.5873.23.camel@kermit>
-	 <20031009165049.GA4043@oasis.frogfoot.net>
-	 <1065719570.5873.31.camel@kermit>
-	 <20031009181123.GA8403@oasis.frogfoot.net>
+Message-ID: <1065763796.1650.21.camel@kermit>
+References: <200310101245.55993.jerome@gmanmi.tv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031009181123.GA8403@oasis.frogfoot.net>
+In-Reply-To: <200310101245.55993.jerome@gmanmi.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,29 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Abraham van der Merwe <abz@frogfoot.net>
-Cc: Netfilter Discussions <netfilter@lists.netfilter.org>
+To: jerome@gmanmi.tv
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Am Don, 2003-10-09 um 20.11 schrieb Abraham van der Merwe:
-> Yes, I know, but as long as all the fragments have unique ids it shouldn'=
-t
-> matter. Also, if the packet is fragmented along the way under normal
-> circumstances (i.e. DF=3D0), then the IP-ID field would have to be increm=
-ented
-> by the router fragmenting the packet.
-True but Linux 2.4 clears the IP-ID field when sending a packet with the
-DF-Bit set. You have to manually recreate a unique IP-ID field when
-clearing the DF-Bit on the firewall. Even when the router increments
-this field all packets will have the ID of 1. When defragmenting the
-receiver does not know which fragment belongs to which packet.
-
-Linux 2.4 is the only operating system I know of that shows this
-behavior.=20
+Am Fre, 2003-10-10 um 06.45 schrieb JM:
+> i want to access the http server on "remote server x" from LAN.. without =
+going through the internet..
+> so what i did is setup DNAT on "remote server A" but somehow its not work=
+ing..=20
+>=20
+> this is my ruleset..
+>=20
+> NAT
+> -A PREROUTING -d serverA_IP -p tcp -m tcp --sport 1024:65535 --dport 81 -=
+j DNAT --to-destination serverx_IP:80
+>=20
+> FILTER
+> -A INPUT -p tcp -s LAN_IP/24 --sport 1024:65535 -d serverA_IP --dport 81 =
+-j LOG --log-prefix "INPUT packets:"
+> -A FORWARD -d  serverx_IP -p tcp -m tcp --sport 1024:65535 --dport 80 -m =
+state --state NEW -j ACCEPT
+> -A FORWARD -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -p tcp -j LOG --log-prefix "FORWARD packets:"
+>=20
+So how does it not work? What error messages do you see? Did you enable
+routing on server_A? You probably want an SNAT rule too, because
+otherwise server_X will try to answer directly to the LAN. That might
+create problems doing conntrack on server_A and your Firewall protecting
+the LAN.
 
 Cheers,
 
 Ralf
-
 --=20
 Ralf Spenneberg
 RHCE, RHCX
