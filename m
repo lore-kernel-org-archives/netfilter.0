@@ -1,14 +1,12 @@
-From: Jamie Pratt <jamie@nucdc.org>
-Subject: Re: iptables 'make' killed my box
-Date: Mon, 25 Aug 2003 16:08:12 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: iptables 'make' killed my box
+Date: Mon, 25 Aug 2003 13:27:06 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4A6CAC.4020104@nucdc.org>
-References: <80B94F2B-D734-11D7-B770-003065A0E6D8@caffeinemediainc.com>
-Reply-To: jamie@nucdc.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E3651@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <80B94F2B-D734-11D7-B770-003065A0E6D8@caffeinemediainc.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +16,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: jamie@nucdc.org, netfilter@lists.netfilter.org
 
 
+>Can anyone verify if indeed the 'make' command for netfilter "probes"=20
+>running modules?? (I would tend to think not, but...)
 
- > Scott Gaertner wrote:
-> Nathan & Jamie,
-> 
-> I reached the guy who's the normal sysadmin (who can't help today), and 
-> he thinks that it's *possible* that the make started probing kernel 
-> modules, and that's what did it.
+Considering that I usually build iptables against a kernel that isn't
+even loaded yet, I seriously doubt that the compile probes the running
+system.
 
-Can anyone verify if indeed the 'make' command for netfilter "probes" 
-running modules?? (I would tend to think not, but...)
-
-> It's a fairly vanilla Debian box... not overclocked... the only quirky 
-> module is mod_perl...
-> 
-> Anyway, I just arranged to get keys -- I'm heading over now, and I'll 
-> post a followup as soon as I can.
-> 
-> Thanks again,
-> 
-> -Scott
-
-jamie
-
-
-
+Have you reproduced the make and found it reproducible?
 
