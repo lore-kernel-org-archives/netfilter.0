@@ -1,13 +1,13 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: NAT PREROUTING chain ignored on returning traffic ??
-Date: Mon, 01 Sep 2003 17:46:43 +1000
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: http page opens very slowly
+Date: 03 Sep 2003 10:58:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F52F963.70202@snapgear.com>
-References: <3F4FA204.6010605@xs4all.nl>
+Message-ID: <1062579504.1614.27.camel@kermit>
+References: <200309030808.NAA16858@WS0005.indiatimes.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F4FA204.6010605@xs4all.nl>
+In-Reply-To: <200309030808.NAA16858@WS0005.indiatimes.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Zoilo <zoilo@xs4all.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: akshaysalkar <akshaysalkar@indiatimes.com>
+Cc: Netfilter Group <netfilter@lists.netfilter.org>
 
-Zoilo wrote:
-> So why does a returning packet not travel through the NAT PREROUTING 
-> chain, whereas a new incoming ping does travel through the NAT 
-> PREROUTING chain? Both packets have exactly the same destination, huh?
+Am Mit, 2003-09-03 um 10.23 schrieb akshaysalkar:
+> I have set up a basic firewall for a linuxbox. and blocked quite some por=
+ts.=20
+> out of which http port 80 is not blocked.
+>=20
+> when i open the page to the server. ie. the apache test page. it opens up=
+ fast.
+> however i have php-nuke also working on the server.
+> that page opens up however it takes very long to open.
+> ie. more than 3 mins. / page
+> any idea why??
+Memory? Since php-nuke is sql-based, your machine might be swapping like
+hell.
 
-The nat table is used to set up the nat mappings for a connection.
-Since the nat mappings do not change throughout the life of the
-connection, this is only done for the first packet in the connection.
-Therefore, the nat table will only see packets that have a state
-of NEW or RELATED.
+Cheers,
 
-For further evidence of this, notice that the outgoing packet in II)
-goes through the nat OUTPUT and POSTROUTING chains, but the outgoing
-packet in I) does not.
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
--- 
-Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
-SnapGear - Custom Embedded Solutions and Security Appliances
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
