@@ -1,14 +1,11 @@
-From: Thierry ITTY <thierry.itty@besancon.org>
-Subject: RE: MSN throught Linux
-Date: Mon, 06 Oct 2003 14:14:13
+From: "Jose Pascual" <jose.pascual@optivamedia.com>
+Subject: NAT problem
+Date: Mon, 6 Oct 2003 14:30:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3.0.1.16.20031006141413.16e708b4@s-net-04.besancon.org>
-References: <14C5057BC852D611BAC400E0299AA10F02043F@MAILSERV>
+Message-ID: <000001c38c05$923fb680$0f01a8c0@raul02>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <14C5057BC852D611BAC400E0299AA10F02043F@MAILSERV>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,71 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: MOUDARIR Mohamed <moudarir@Richbond.ma>, Harald Welte <laforge@netfilter.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-there are a few things you have to take care about
-- you have to install the upnp sdk v0.9 and do a minor code change
-- you have to provide a link to iptables
-read carefully igd install doc
+Hi all,
+I am new using iptables and surelly  this wil be an easy and stupid question
+but perhaps you can help me. I want to understand NAT so I am trying to do
+the following:
 
-if this is already done, then we'll have to investigate further...
+I have three computers in my LAN (192.168.1.1; 192.168.1.2 and 192.168.1.3).
+192.168.1.1 has a web server and I would like to access it through
+192.168.1.2 with NAT. For example openning my browser in 192.168.1.3 and
+connecting to 192.168.1.2   I  should see the same as if I connected to
+192.168.1.1 web server directly, so I have done the following in
+192.168.1.2:
 
-pls let me know
+ iptables -t nat -A PREROUTING -p tcp --dport 80 -j
+DNAT --to-destination 192.168.1.1
 
 
-A 09:04 06/10/2003 -0000, MOUDARIR Mohamed a =E9crit :
->Thank you, but i try linux-igd and doesn't work.
->After few seconde, upnpd stop being runing without any  reason !
->I can see 4 process of upnpd eth0 eth2, when i run it the first time.
->But stoped quickly less than one minute !
->I have no probleme compiling and installing the source ( upnp-sdk and
->linux-igd )
->
->-----Message d'origine-----
->De : Thierry ITTY [mailto:thierry.itty@besancon.org]
->Envoy=E9 : lundi 6 octobre 2003 08:40
->=C0 : Harald Welte; MOUDARIR Mohamed
->Cc : netfilter@lists.netfilter.org
->Objet : Re: MSN throught Linux
->
->
->Use linux internet gateway device (aka linux-igd) from sourceforge
->It relies on netfilter
->
->I already posted some answers on this list about msn, have a look at the
->archives
->
->I intend to write a micro (don't dare say mini) howto on msn/netfilter very
->soon
->
->hth
->
->
->A 12:43 03/10/2003 +0200, Harald Welte a =E9crit :
->>On Fri, Sep 26, 2003 at 06:48:34PM -0000, MOUDARIR Mohamed wrote:
->>> Hi
->>> Can we use MSN voice conversation behind a Linux firwall ( redhat )=20
->>
->>No.  I think they are using SIP (no idea, I haven't used windofs for 8
->>years) for which you would need a conntrack+nat helper on the linux
->>firewall.  Since nobody has written such a helper yet, it doesn't work.
->>
->>--=20
->>- Harald Welte <laforge@netfilter.org>
->http://www.netfilter.org/
->>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
->=3D
->>  "Fragmentation is like classful addressing -- an interesting early
->>   architectural error that shows how much experimentation was going
->>   on while IP was being designed."                    -- Paul Vixie
->>
->>Attachment Converted: "d:\app\net\eudora\attach\ReMSNthr"
->>
->
->
->
+ iptables -t nat -A POSTROUTING -p tcp --sport 80 -j SNAT
+--to-source 192.168.1.2
+
+However it doesn't work. Anyone can help me?
+
+Thanks
+
+Regards
+Jose Pascual
+
+
+
 
