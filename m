@@ -1,12 +1,13 @@
-From: Mario Ohnewald <mario.ohnewald@gmx.de>
-Subject: Re: NAT FROM public ip TO public ip
-Date: Fri, 07 Jan 2005 13:57:22 +0100
-Message-ID: <1105102641.5112.0.camel@linux.site>
-References: <10459.1105072608@www72.gmx.net>  <41DCE77F.4020503@go-wlan.com>
+From: Askar <askarali@gmail.com>
+Subject: Re: Target ROUTE
+Date: Fri, 7 Jan 2005 16:32:19 +0500
+Message-ID: <a0f69e50501070332637519af@mail.gmail.com>
+References: <20050105092351.2652e925@jcesar.fnde.gov.br>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41DCE77F.4020503@go-wlan.com>
+In-Reply-To: <20050105092351.2652e925@jcesar.fnde.gov.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?J=FAlio_C=E9sar_de_Magalh=E3es?= <jcesar@fnde.gov.br>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 2005-01-06 at 08:23, Igor Tsinman wrote:
-> Mario Ohnewald wrote:
+why not using MARKing feature of iptables and then route the marked
+packet via iproute2 like...
+#iptables -A PREROUTING -i eth0 -t mangle  -p tcp  --dport 995 -j MARK
+--set-mark 4
 
-> >This is a real easy question, but i will explain it in detail so that you
-> >know what i am on about ;)
-> >
-> >I have two internet boxes, both have only one nic.
-> >Box A is my root box.
-> >Box B is a ftp server (where i am not admin, but i have an ftp account).
-> >
-> >Both, Box A and B have a public ip address.
-> >You can NOT access the ftp server from the outside.
-> >ONLY Box A can connect to that ftp server (Box B).
-> >
-> >So i though i could simply nat a connection through my Box A, to Box B.
-> >If i connect from the real bad world, to my Box A, port 2121. Box A could
-> >forward/NAT that to the internal ftp box.
-> >
-> >I have tried it with this rule:
-> >$IPT -t nat -A PREROUTING -i eth0 -p tcp -d 123.123.123.123 -m helper
-> >--helper ftp-2121 -j DNAT --to-destination 123.123.123.111
-> >
-> >and
-> >
-> >modprobe ip_conntrack_ftp ports=21,2121
-> >
-> >
-> >But it looks like its not working.
-> >I did a tcpdump -i eth0 -n host 123.123.123.111
-> >
-> >
-> >And no packages where transfered to the ftp box (123.123.123.111).
-> >Any idea why? Am i going the right way at all?
-> >
-> >Thanks, Mario
-> >
-> >  
-> >
-> You have to add an additional rule:
-> $IPT -A FORWARD -p tcp -i eth1 -d 23.123.123.123 --dport 2121 -j ACCEPT
-> 
-> For this example, eth0 is external and eth1 is internal.
+this is iproute2 part
 
-I only have one network card.
+ip rule add fwmark 4 table another.out
+ip route add default via $GATEWAY dev eth0 table another.out
+ip route flush cache
 
 
+regards
 
-Cheers, Mario
+On Wed, 5 Jan 2005 09:23:51 -0200, J=FAlio C=E9sar de Magalh=E3es
+<jcesar@fnde.gov.br> wrote:
+> i need all my network trafic to any host on 995 port goes to another gate=
+way then the default. So i execute the following iptables command:
+> iptables -t mangle -A OUTPUT -p tcp --dport  995 -j ROUTE --gw x.x.x.x
+> where x.x.x.x is my another gateway .
+>=20
+> The problem  when i execute the iptables command above is this:
+> iptables: No chain/target/match by that name
+>=20
+> thanks a lot
+>=20
+> J=FAlio C=E9sar de Magalh=E3es
+> Analista de Suporte - Poliedro/FNDE
+> (61) 81177547 Bras=EDlia - DF
+>=20
+>=20
 
+
+--=20
+(after bouncing head on desk for days trying to get mine working, I'll make
+your life a little easier)
 
