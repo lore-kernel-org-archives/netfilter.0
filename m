@@ -1,13 +1,12 @@
-From: Steve Mickeler <steve@neptune.ca>
-Subject: Re: vrrp ip and netfilter
-Date: Thu, 12 Sep 2002 09:27:50 -0400 (EDT)
+From: Ionut Spirlea <ionuts@SGI.rdscv.ro>
+Subject: Re: reset /proc/net/dev
+Date: Thu, 12 Sep 2002 15:46:29 +0300 (EEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209120926210.29987-100000@triton.neptune.on.ca>
-References: <Pine.LNX.4.44.0209121113430.11946-100000@smtp.myw0rld.org>
+Message-ID: <Pine.LNX.4.44.0209121538280.16753-100000@SGI.rdscv.ro>
+References: <200209121148.g8CBmSv09962@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0209121113430.11946-100000@smtp.myw0rld.org>
+In-Reply-To: <200209121148.g8CBmSv09962@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +16,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Rodrigo Hidalgo <rodde@myw0rld.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
 
-ifconfig is an old and clunky way of doing things.
+hi,
 
-you will see the ip via the "ip" command which is part of the iproute
-utils.
+# wget http://sgi.rdscv.ro/~ionuts/C/c_dev.tar.gz
+# tar xzvf c_dev.tar.gz
+# cd c_dev
+# make
+# insmod c_dev.o
+# rmod c_dev
 
-the INPUT chain should work just fine with the vrrp ip.
+that's all
 
 
-On Thu, 12 Sep 2002, Rodrigo Hidalgo wrote:
+On Thu, 12 Sep 2002, Antony Stone wrote:
 
-> Hi all,
+> On Thursday 12 September 2002 12:43 pm, Rohan Almeida wrote:
 >
-> Just one question, i have a fw cluster using netfilter/iptablesv1.2.5
-> together with vrrpd.
+> > HI List,
+> > How do i reset the values in /proc/net/dev ?
+> > This file holds values for count of each (packet && byte),
+> > (sent && received) through all interfaces.
+> >
+> > I'm using a monitor which reads values from this
+> > file and prints out some nicely formatted output.
+> >
+> > But i need to reset the values. ie. set then to zero.
+> > Restarting the network does not do what i want.
+> > I guess a reboot should do it.
+> >
+> > Any other way?
 >
-> My question is how does a packet traverse when it is destined to the
-> internal vrrp_ip? if it is destined for eth1_real_ip then it is the input
-> chain but that can=B4t be the case with vrrp or ?... btw vrrp_ip does
-> not show with ifconfig, so netfilter might not recognise the ip as an
-> locahost ip.
+> Not that I know of.
 >
-> so:
+> Could you perhaps read the values and save them somewhere, then subtract that
+> stored value next time you read the interface, to get the difference ?
 >
-> -----Outer Net----
-> |
-> |
-> eth0 - <some ip>
-> -----FW cluster---
-> eth1 - <vrrp ip>
-> |
-> |
-> -----Inner net---
+> Antony.
 >
-> BR
+> --
 >
-> Rodrigo Hidalgo C.
+> In science, one tries to tell people
+> in such a way as to be understood by everyone
+> something that no-one ever knew before.
 >
+> In poetry, it is the exact opposite.
 >
+>  - Paul Dirac
 >
 
 
-
-[-] Steve Mickeler [ steve@neptune.ca ]
-
-[|] Todays root password is brought to you by /dev/random
-
-[+] 1024D/9AA80CDF =3D 4103 9E35 2713 D432 924F  3C2E A7B9 A0FE 9AA8 0CDF
-
+-------
+Ionut Spirlea, http://sgi.rdscv.ro/~ionuts/
+Mind like parachute  -  function only when open!
 
 
