@@ -1,10 +1,15 @@
-From: Daniel Dorau <daniel.dorau@alumni.tu-berlin.de>
-Subject: decrypted ipsec packets lost, last seen in INPUT chain
-Date: Sat, 20 Nov 2004 14:52:21 +0100
-Message-ID: <1100958740.3687.11.camel@haktar>
+From: Askar <askarali@gmail.com>
+Subject: Re: nat:REDIRECT on localhost not working in Kernel 2.6
+Date: Sun, 21 Nov 2004 00:55:54 +0500
+Message-ID: <a0f69e504112011555167d2ac@mail.gmail.com>
+References: <200411191836.07261.su@su2.info>
+	<20041119174100.GA20905@bender.817west.com>
+	<200411191903.41692.su@su2.info>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200411191903.41692.su@su2.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,44 +21,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Stephan Uhlmann <su@su2.info>
+Cc: netfilter@lists.netfilter.org
 
-Hello list,
-I have a problem with decrypted ipsec packets lost. I'm not sure if this
-is netfilter related, maybe someone has any idea.
+I have the same issue, even though I confirmed that "Device Drivers >>
+Networking Support >> Networking Options >> Network
+packet filtering >> IP: Netfilter Configuration >> [   ] Nat of local"
+has been statically compiled into the kernel (kernel v. 2.6.9 distro
+slackware 10, iptables v1.2.11)
 
-I have a local interface with both 192.168.178.2 (unencrypted) and
-192.168.202.5 assigned to it. Packets directed to the private network
-are routed to local address 192.168.202.5 which is the local ipsec
-tunnel endpoint.
-Now if I ping a machine within the VPN, a ICMP echo request is sent
-encrypted via 192.168.202.5 into the tunnel. An encrypted ICMP echo
-reply is sent back, can be seen with ethereal and in netfilter's INPUT
-chain. That echo reply is decrypted and can be seen again in ethereal
-(now decrypted) as well as in the INPUT chain.
+I'm running squid on the same box with iptables/gatway and sometime
+use this box even for browsing that why I want to redirect the
+localhsot traffic to squid.
 
-INPUT chain has policy ACCEPT and doesn't contain any rule except
-logging every packet for debugging.
+I tried with setting OUPUT policy to default ACCEPT with no luck.
 
-So, basically ipsec works as I get the echo reply decrypted to my INPUT
-chain.
-But then the packet is lost, ping itself never receives it (strace shows
--EAGAIN as result of recvmsg).
-Same for TCP connections. I can see the SYN,ACK in the INPUT chain but
-the application never gets it.
 
-Does anybody has an idea where and/or why packets can get lost after
-travelling through INPUT chain? (POLICY ACCEPT s.above)
-IP adresses and packets itself as inspected within ethereal look
-perfectly ok.
 
-Any ideas? I'm completely lost. :-/
 
-Thank you,
-Daniel
+
+On Fri, 19 Nov 2004 19:03:41 +0100, Stephan Uhlmann <su@su2.info> wrote:
+> On Friday 19 November 2004 18:41, Jason Opperisano wrote:
+> > are all kernels in question compiled with:  IP_NF_NAT_LOCAL
+> 
+> No, all kernels I tested have that option not set. They are default kernels
+> from the distributions and that option seems not to be enabled by default.
+> 
+> Strangely the option is also not set on the kernel 2.4 machine where the
+> redirect worked.
+> 
+> Anyway I guess the problem will go away if I set this option. Thank you for
+> the hint and your quick response!
+> 
+> Cheers,
+> Stephan
+> 
+> 
+> 
+
 
 -- 
-Daniel Dorau
-
-
+(after bouncing head on desk for days trying to get mine working, I'll make
+your life a little easier)
 
