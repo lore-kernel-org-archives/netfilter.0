@@ -1,8 +1,8 @@
 From: "Nigel Clarke" <nigel@forever-networks.com>
-Subject: Netfilter firewall cluster
-Date: Sat, 30 Nov 2002 10:00:09 -0800
+Subject: Security Operations Group
+Date: Sat, 30 Nov 2002 10:11:01 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BDEFKJOAPEBPJCGDAGMFMEAFCAAA.nigel@forever-networks.com>
+Message-ID: <BDEFKJOAPEBPJCGDAGMFAEAGCAAA.nigel@forever-networks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,14 +18,9 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Are there any plans to have a stateful cluster netfilter solution? In
-addition, can this solution use a software solution for failover and
-loadbalancing?
-
-The current VRRP implementation of redundancy is good, but it does not offer
-failover for VPNs.
-
-Stonesoft's failover is the only one that offers fail over for VPN devices.
-
+Are there any security operations groups for the United States? I know there
+are several
+bodies for network engineering, including NANOG and IETF. Are there any for
+security engineers and architects?
 
 
