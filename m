@@ -1,12 +1,12 @@
-From: Deshwal Chand <CDD@kampsax.co.in>
-Subject: RE: Using IPTABLES, cannot go to External Interface
-Date: Mon, 16 Jun 2003 16:21:13 +0530
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: help bootp filters
+Date: Mon, 16 Jun 2003 22:56:04 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <88116A11E9DFD411870900508BEC3831803B47@CPQ01>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019285@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C333F5.344BE8E0"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,243 +16,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: 'Cedric Blancher' <blancher@cartel-securite.fr>
-Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Yoann <yoann.juet@ifrance.com>, netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C333F5.344BE8E0
-Content-Type: text/plain;
-	charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-
-HI
-
-
-The setup is like this
-
-I have a RedHat linux with three LAN cards into it.=20
-
-eth0 =3D Public IP
-eth0:0 =3D Public IP
-eth0:0 - eth0:3 =3D Public IPs
-
-eth1 =3D Private IP (Internal Net)
-eth2 =3D DMZ IPs (Private ones)(Here I have 4 machines with DMZ IPs)
-
-DNAT	- Anything entering to eht0 (External Interface) looking for =
-eth0:0
-- eth0:3 should be DNATted to DMZ Ips.
-	- Anything entering to eth1 (Internal Interface) looking for eth0:0
-- eth0:3 should be DNATted to DMZ Ips
-	- Anything entering to eth2 (DMZ Interface) looking for eth0:0 -
-eth0:3 should be DNATted to DMZ Ips
-
-SNAT - Anything going out from (Source eth1 (Internal Net) and (DMZ =
-NET)
-Destination 0.0.0.0/0 and eth2) should be=20
-
-     - Anything from DMZ to Internal should be SNATted to DMZ_IF
-     =09
-
-SNATted --to-source eth0
-
-All the traffice from External World is able to reach to my servers in =
-the
-DMZ. I mean, if someone has to log on to the web server at eth0:0 port =
-80,
-he/she is able to do so.
-
-But, No one from INTERNAL NET is able to reach to the servers. If I =
-have a
-mchine with Internal IP Address and want to log onto the web server =
-from
-within my network, I cannot do so.
-
-If I access Yahoo.com or anyother site, I can do so from withing my =
-network
-using Internal IP Address.
-
-Hope this explains.
-
-
-
-
-
-
------Original Message-----
-From: Cedric Blancher [mailto:blancher@cartel-securite.fr]
-Sent: Monday, June 16, 2003 3:46 PM
-To: Deshwal Chand
-Cc: Netfilter (E-mail)
-Subject: Re: Using IPTABLES, cannot go to External Interface
-
-
-Le lun 16/06/2003 =E0 09:51, Deshwal Chand a =E9crit :
-> I am running a script for IPTABLES.
-> I have assigned 3 more IP addresses to my external interface.=20
-> eth0 - x.y.z.1
-> eth0:0 - x.y.z.2
-> eth0:1 - x.y.z.3
-> eth0:2 - x.y.z.4
-> I have SNATed my internal network to eth0. I can do all the things.
-> But, I cannot reach to any of IP addresses x.y.z.1 - 3.
-
-Reach them from where ? SNAT is handled through FORWARD. Local trafic =
-is
-handled though INPUT and OUTPUT. Maybe there's something to look at
-there.
-
-> Though, I can go to any host in the world, but cannot go directly to
-> eth0.
-
-Can you be a little more explicit in your setup and what you exactly
-want to do ?
-     =20
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux - Cartel =
-S=E9curit=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  =
-FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
-
-------_=_NextPart_001_01C333F5.344BE8E0
-Content-Type: text/html;
-	charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-15">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>RE: Using IPTABLES, cannot go to External Interface</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=3D2>HI</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>The setup is like this</FONT>
-</P>
-
-<P><FONT SIZE=3D2>I have a RedHat linux with three LAN cards into it. =
-</FONT>
-</P>
-
-<P><FONT SIZE=3D2>eth0 =3D Public IP</FONT>
-<BR><FONT SIZE=3D2>eth0:0 =3D Public IP</FONT>
-<BR><FONT SIZE=3D2>eth0:0 - eth0:3 =3D Public IPs</FONT>
-</P>
-
-<P><FONT SIZE=3D2>eth1 =3D Private IP (Internal Net)</FONT>
-<BR><FONT SIZE=3D2>eth2 =3D DMZ IPs (Private ones)(Here I have 4 =
-machines with DMZ IPs)</FONT>
-</P>
-
-<P><FONT SIZE=3D2>DNAT&nbsp;&nbsp;&nbsp; - Anything entering to eht0 =
-(External Interface) looking for eth0:0 - eth0:3 should be DNATted to =
-DMZ Ips.</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>- =
-Anything entering to eth1 (Internal Interface) looking for eth0:0 - =
-eth0:3 should be DNATted to DMZ Ips</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>- =
-Anything entering to eth2 (DMZ Interface) looking for eth0:0 - eth0:3 =
-should be DNATted to DMZ Ips</FONT>
-</P>
-
-<P><FONT SIZE=3D2>SNAT - Anything going out from (Source eth1 (Internal =
-Net) and (DMZ NET) Destination 0.0.0.0/0 and eth2) should be </FONT>
-</P>
-
-<P><FONT SIZE=3D2>&nbsp;&nbsp;&nbsp;&nbsp; - Anything from DMZ to =
-Internal should be SNATted to DMZ_IF</FONT>
-<BR><FONT SIZE=3D2>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; </FONT>
-</P>
-
-<P><FONT SIZE=3D2>SNATted --to-source eth0</FONT>
-</P>
-
-<P><FONT SIZE=3D2>All the traffice from External World is able to reach =
-to my servers in the DMZ. I mean, if someone has to log on to the web =
-server at eth0:0 port 80, he/she is able to do so.</FONT></P>
-
-<P><FONT SIZE=3D2>But, No one from INTERNAL NET is able to reach to the =
-servers. If I have a mchine with Internal IP Address and want to log =
-onto the web server from within my network, I cannot do so.</FONT></P>
-
-<P><FONT SIZE=3D2>If I access Yahoo.com or anyother site, I can do so =
-from withing my network using Internal IP Address.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Hope this explains.</FONT>
-</P>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-
-<P><FONT SIZE=3D2>-----Original Message-----</FONT>
-<BR><FONT SIZE=3D2>From: Cedric Blancher [<A =
-HREF=3D"mailto:blancher@cartel-securite.fr">mailto:blancher@cartel-secur=
-ite.fr</A>]</FONT>
-<BR><FONT SIZE=3D2>Sent: Monday, June 16, 2003 3:46 PM</FONT>
-<BR><FONT SIZE=3D2>To: Deshwal Chand</FONT>
-<BR><FONT SIZE=3D2>Cc: Netfilter (E-mail)</FONT>
-<BR><FONT SIZE=3D2>Subject: Re: Using IPTABLES, cannot go to External =
-Interface</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>Le lun 16/06/2003 =E0 09:51, Deshwal Chand a =E9crit =
-:</FONT>
-<BR><FONT SIZE=3D2>&gt; I am running a script for IPTABLES.</FONT>
-<BR><FONT SIZE=3D2>&gt; I have assigned 3 more IP addresses to my =
-external interface. </FONT>
-<BR><FONT SIZE=3D2>&gt; eth0 - x.y.z.1</FONT>
-<BR><FONT SIZE=3D2>&gt; eth0:0 - x.y.z.2</FONT>
-<BR><FONT SIZE=3D2>&gt; eth0:1 - x.y.z.3</FONT>
-<BR><FONT SIZE=3D2>&gt; eth0:2 - x.y.z.4</FONT>
-<BR><FONT SIZE=3D2>&gt; I have SNATed my internal network to eth0. I =
-can do all the things.</FONT>
-<BR><FONT SIZE=3D2>&gt; But, I cannot reach to any of IP addresses =
-x.y.z.1 - 3.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Reach them from where ? SNAT is handled through =
-FORWARD. Local trafic is</FONT>
-<BR><FONT SIZE=3D2>handled though INPUT and OUTPUT. Maybe there's =
-something to look at</FONT>
-<BR><FONT SIZE=3D2>there.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&gt; Though, I can go to any host in the world, but =
-cannot go directly to</FONT>
-<BR><FONT SIZE=3D2>&gt; eth0.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Can you be a little more explicit in your setup and =
-what you exactly</FONT>
-<BR><FONT SIZE=3D2>want to do ?</FONT>
-<BR><FONT SIZE=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT>
-<BR><FONT SIZE=3D2>-- </FONT>
-<BR><FONT SIZE=3D2>C=E9dric Blancher&nbsp; =
-&lt;blancher@cartel-securite.fr&gt;</FONT>
-<BR><FONT SIZE=3D2>Consultant en s=E9curit=E9 des syst=E8mes et =
-r=E9seaux - Cartel S=E9curit=E9</FONT>
-<BR><FONT SIZE=3D2>T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 =
-99</FONT>
-<BR><FONT SIZE=3D2>PGP KeyID:157E98EE&nbsp; =
-FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C333F5.344BE8E0--
+SWYgSSdtIG5vdCB3cm9uZywgSSB0aGluayB0Y3BkdW1wIHdvcmtzIG9uIGEgZGlmZmVyZW50IGxh
+eWVyIHRvIG5ldGZpbHRlciBzbyBldmVuIHRob3VnaCBpdCdzIGRyb3BwZWQgSSB0aGluayB0Y3Bk
+dW1wIHN0aWxsIHNlZXMgdGhlbS4uLi4gYnV0IEkgbWF5IGJlIHdyb25nLg0KRG9lcyBpdCBldmVu
+dHVhbGx5IGdpdmUgb3V0IERIQ1AgSVAncyBvciByZWNlaXZlcyBhbiBJUCBhZGRyZXMgb3IgZG9l
+c24ndCBpdD8gSWYgREhDUCBpc24ndCB3b3JraW5nIHRoZW4gaXQncyBwcm9iYWJseSBkcm9wcGVk
+IGJ1dCB0Y3BkdW1wcyBzdGlsbCBzZWVzIHRoZW0uLg0KIA0KSSBqdXN0IGRpZCBhIHRlc3QgZnJv
+bSB3b3JrIHRvIGhvbWUgd2hpY2ggSSdtIGRlZmlhbnRlbHkgYmxvY2tpbmggcG9ydCA2NjY1IGFu
+ZCBJIGdldCB0aGUgc2FtZSByZXN1bHRzIGJ1dCBJIGtub3cgNjY2NSBpcyBiZWluZyBkcm9wcGVk
+Li4uIHlldCBUQ1BEVU1QIGNhdGNoZXMgaXQgYmVmb3JlIG5ldGZpbHRlci4NCiANCkp1biAxNiAy
+Mjo1MjoyNCBuZXdqYWNrc3dpbmcga2VybmVsOiBJTkVUIElOPXBwcDAgT1VUPSBNQUM9IFNSQz0y
+MDMuMTExLjc5LjExNCBEU1Q9MTUwLjEwMS4xMTIuMTQ2IExFTj02MCBUT1M9MHgwMCBQUkVDPTB4
+RTAgVFRMPTUwIElEPTQ0ODQyIERGIFBST1RPPVRDUCBTUFQ9MzY5OCBEUFQ9NjY2NSBXSU5ET1c9
+NTg0MCBSRVM9MHgwMCBTWU4gVVJHUD0wIE9QVCAoMDIwNDA1ODQwNDAyMDgwQTBCMDkyNDVGMDAw
+MDAwMDAwMTAzMDMwMCkNCg0KW3Jvb3RAbmV3amFja3N3aW5nIC91c3JdIyB0Y3BkdW1wIC14IHBv
+cnQgNjY2NQ0KS2VybmVsIGZpbHRlciwgcHJvdG9jb2wgQUxMLCBkYXRhZ3JhbSBwYWNrZXQgc29j
+a2V0DQp0Y3BkdW1wOiBsaXN0ZW5pbmcgb24gYWxsIGRldmljZXMNCjIyOjUyOjI0Ljk4NDM4MCBp
+ZjEzNCA8IHdvcmsuZG9tYWluLmNvbS4zNjk4ID4gbXlob21lLmRvbWFpbi5jb20uNjY2NTogUyA2
+MTQ1MDEyMzc6NjE0NTAxMjM3KDApIHdpbiA1ODQwIDxtc3MgMTQxMixzYWNrT0ssdGltZXN0YW1w
+IDE4NTE0ODUxMSAwLG5vcCx3c2NhbGUgMD4gKERGKSBbdG9zIDB4ZTBdDQogICAgICAgICAgICAg
+ICAgICAgICAgICAgNDVlMCAwMDNjIGFmMmEgNDAwMCAzMjA2IDc2ZDggY2I2ZiA0ZjcyDQogICAg
+ICAgICAgICAgICAgICAgICAgICAgOTY2NSA3MDkyIDBlNzIgMWEwOSAyNGEwIDhiNzUgMDAwMCAw
+MDAwDQogICAgICAgICAgICAgICAgICAgICAgICAgYTAwMiAxNmQwIDA3OTUgMDAwMCAwMjA0IDA1
+ODQgMDQwMiAwODBhDQogICAgICAgICAgICAgICAgICAgICAgICAgMGIwOSAyNDVmIDAwMDAgMDAw
+MCAwMTAzIDAzMDANCg0KU28gSSB0aGluayBJIG1pZ2h0IGJlIHJpZ2h0PyBBbnlib2R5IHdhbm5h
+IHNoZWQgc29tZSBsaWdodCB3aXRoIHRoaXMgbGF5ZXIgc3R1ZmYgOykgSSdtIGNvbmZ1c2VkIG9u
+IHRoYXQgcGFydCA7UA0KDQoJLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0gDQoJRnJvbTogWW9h
+bm4gW21haWx0bzp5b2Fubi5qdWV0QGlmcmFuY2UuY29tXSANCglTZW50OiBNb24gMTYtSnVuLTAz
+IDk6MzMgUE0gDQoJVG86IG5ldGZpbHRlckBsaXN0cy5uZXRmaWx0ZXIub3JnIA0KCUNjOiANCglT
+dWJqZWN0OiBoZWxwIGJvb3RwIGZpbHRlcnMNCgkNCgkNCgkNCglIaSwNCgkgDQoJSSBleHBlcmlt
+ZW50IHRyb3VibGUgd2l0aCBuZXRmaWx0ZXIvaXB0YWJsZXMgb24gcmg5LiBJIGNvbmZpZ3VyZWQg
+YSBzZXJ2ZXIgd2l0aCB0aGUgZm9sbG93aW5nIHJ1bGVzIGp1c3QgdG8gYWNjZXB0LCBmb3IgdGhl
+IG1vbWVudCwgU1NIIHNlc3Npb25zLCBldmVyeXRoaW5nIGVsc2UgaXMgZHJvcHBlZC4NCgkgDQoJ
+JElQVEFCTEVTIC1QIElOUFVUIERST1AgICAgICANCgkkSVBUQUJMRVMgLVAgRk9SV0FSRCBEUk9Q
+ICAgDQoJJElQVEFCTEVTIC1QIE9VVFBVVCBEUk9QIA0KCSANCgkkSVBUQUJMRVMgLUEgSU5QVVQg
+LWkgJExPX0lGQUNFIC1qIEFDQ0VQVA0KCSRJUFRBQkxFUyAtQSBPVVRQVVQgLW8gJExPX0lGQUNF
+IC1qIEFDQ0VQVA0KCSANCgkkSVBUQUJMRVMgLUEgSU5QVVQgLXAgdGNwIC0tZHBvcnQgMjIgLW0g
+c3RhdGUgLS1zdGF0ZSBORVcsRVNUQUJMSVNIRUQgLWogQUNDRVBUIA0KCSRJUFRBQkxFUyAtQSBP
+VVRQVVQgLXAgdGNwIC0tc3BvcnQgMjIgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCAtaiBB
+Q0NFUFQgDQoJIA0KCSRJUFRBQkxFUyAtQSBJTlBVVCAtaiBMT0cgLS1sb2ctbGV2ZWwgd2Fybmlu
+ZyAtLWxvZy1wcmVmaXggIkRST1AgaW5wdXQgcGFja2V0IGRpZWQ6ICINCgkkSVBUQUJMRVMgLUEg
+T1VUUFVUIC1qIExPRyAtLWxvZy1sZXZlbCB3YXJuaW5nIC0tbG9nLXByZWZpeCAiRFJPUCBvdXRw
+dXQgcGFja2V0IGRpZWQ6ICIgDQoJIA0KCUl0IHdvcmtzIGZpbmUsIGV4Y2VwdGVkIGZvciBESENQ
+L0JPT1RQIHJlcXVlc3RzLiBJbiBmYWN0LCB0aGUgc2VydmVyIChzaW5nbGUgaW50ZXJmYWNlIHdp
+dGggSVAgYWRkcmVzcyAxOTIuMTY4LjIuMTEwKSBpcyBhbHNvIGEgREhDUCBzZXJ2ZXIgYW5kIHJl
+c3BvbmRzIHRvIEJPT1RQIHJlcXVlc3RzIGFzIHNob3duIGJlbG93IDoNCgkNCglbcm9vdEBwbHV0
+b24gcm9vdF0jIHRjcGR1bXAgcG9ydCA2NyBvciA2OA0KCXRjcGR1bXA6IGxpc3RlbmluZyBvbiBl
+dGgwDQoJMTc6MTA6MzAuOTI1NjA1IDAuMC4wLjAuYm9vdHBjID4gMjU1LjI1NS4yNTUuMjU1LmJv
+b3RwczogIHhpZDoweDlhNDk5NzM1IGZsYWdzOjB4ODAwMCBbfGJvb3RwXQ0KCTE3OjEwOjMxLjAw
+NTMzMCAxOTIuMTY4LjIuMS5ib290cHMgPiAyNTUuMjU1LjI1NS4yNTUuYm9vdHBjOiAgeGlkOjB4
+OWE0OTk3MzUgZmxhZ3M6MHg4MDAwIFk6MTkyLjE2OC4yLjExMCBTOjE5Mi4xNjguMi4xIGV0aGVy
+IDA6OTA6ZjU6Yzo4MDphMCBbfGJvb3RwXSBbdG9zIDB4MTBdDQoJIA0KCW5ldGZpbHRlciBsb2cg
+bWVzc2FnZXMgYXJlIHNob3cgYmVsb3cgOg0KCSANCglKdW4gMTIgMTc6Mjg6MjkgcGx1dG9uIGtl
+cm5lbDogRFJPUCBpbnB1dCBwYWNrZXQgZGllZDogSU49ZXRoMCBPVVQ9IE1BQz1mZjpmZjpmZjpm
+ZjpmZjpmZjowMDo5MDpmNTowYzo4MDphMDowODowMCBTUkM9MC4wLjAuMCBEU1Q9MjU1LjI1NS4y
+NTUuMjU1IExFTj0zMjggVE9TPTB4MDAgUFJFQz0weDAwIFRUTD0xMjggSUQ9NTU4NzcgUFJPVE89
+VURQIFNQVD02OCBEUFQ9NjcgTEVOPTMwOA0KCUp1biAxMiAxNzoyODoyOSBwbHV0b24ga2VybmVs
+OiBEUk9QIG91dHB1dCBwYWNrZXQgZGllZDogSU49IE9VVD1ldGgwIFNSQz0xOTIuMTY4LjIuMSBE
+U1Q9MTkyLjE2OC4yLjExMCBMRU49NDggVE9TPTB4MDAgUFJFQz0weDAwIFRUTD02NCBJRD0wIERG
+IFBST1RPPUlDTVAgVFlQRT04IENPREU9MCBJRD02MzcwMyBTRVE9MA0KCSANCglDYW4geW91IGV4
+cGxhaW4gbWUgd2h5IGEgQk9PVFAgcmVzcG9uc2UgaXMgc2VudCBldmVuIHRob3VnaCBzdWNoIHBh
+Y2tldHMgKHNlZW0gdG8gYmUpIGRyb3BwZWQgYnkgaXB0YWJsZXMgcnVsZXMgPw0KCSANCglNYW55
+IHRoYW5rcywNCglSZWdhcmRzLA0KCVlvYW5uLg0KDQo=
 
