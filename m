@@ -1,11 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: slow ftp
-Date: Thu, 17 Feb 2005 12:15:48 -0500
-Message-ID: <1108660548.4629.59.camel@hubcap.ljm.dom>
-References: <a0f69e505021708481c4be836@mail.gmail.com>
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: Iptables fails on -m state --state!
+Date: Thu, 17 Feb 2005 12:36:14 -0500 (EST)
+Message-ID: <49063.142.169.215.10.1108661774.squirrel@142.169.215.10>
+References: <4214DD69.50903@fastwebnet.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <a0f69e505021708481c4be836@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <4214DD69.50903@fastwebnet.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Marco <marco.nicoloso@fastwebnet.it>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 2005-02-17 at 11:48, Askar wrote:
-> hi list
-> 
-> we are running ftp "proftpd" server it takes times when a user
-> connects to ftp server however when I flush the iptables rules
-> connection doesn't takes time, iptables firewall on the same machine,
-> default policies are DROP,
-> firewall script is very straight forward
-> 
-> rules
-> .
-> .
-> # Using Connection State to By-pass Rule Checking
-> iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> .
-> .
-> .iptables -A INPUT -p tcp --dport 20:21 -m state --state NEW -j ACCEPT
-> .
-> .
-> 
-> # Load the FTP connection state helper module.
-> modprobe ip_conntrack_ftp
-> # Load the FTP NAT module.
-> modprobe ip_nat_ftp
-> 
-> any idea?
+On Thu, February 17, 2005 1:07 pm, Marco said:
+> Hi there,
+>
+> even if the corresponding module is built into the kernel and loaded,
+> iptables fails (No chain/target/match with that name, or something like
+> that).
+>
+> What can I do?
 
-you have your FTP server configured to perform IDENT lookups on the
-clients, perhaps?
+Please show us the output of :
 
-  iptables -A OUTPUT -p tcp --syn --dport 113 -j ACCEPT
+cat /proc/net/ip_tables_matches | grep state
 
--j
+And show us the rule you did input.
 
---
-"You heard me, I won't be in for the rest of the week... I told you,
- my baby beat me up... oh it is not the worst excuse I ever thought up."
-	--The Simpsons
+>
+> Thanks
+>
+> Marco Nicoloso
+>
+>
+
+Best regards,
+Samuel
 
 
