@@ -1,11 +1,13 @@
 From: "yomega" <yomega@wahooo.net>
-Subject: OK the last one: IP Accounting
-Date: Sun, 23 Jun 2002 09:35:58 +0200
+Subject: AW: AW: OK the last one: IP Accounting
+Date: Sun, 23 Jun 2002 10:23:34 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NFBBLDBMIDIOFPBNLEAJOEKCCHAA.yomega@wahooo.net>
+Message-ID: <NFBBLDBMIDIOFPBNLEAJOEKFCHAA.yomega@wahooo.net>
+References: <20020623080917.YGPZ2755.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020623080917.YGPZ2755.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,42 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.samba.org
 
-Hi List,
+Hi,
 
-sorry 4 bothering you once again :) But tonight in my nice and warm little
-bed my IP-Traffic Accounting Question Brain stood up once again :)
+thx Antony thx Patrik :o)
 
-For Example, i wanna count the Traffic of my HTTPD so its only Port 80, not
-other HTTPS Stuff or such its just an easy one :) Now my thoughts:
+Because of you: Now i'm ready to count all packages
 
-1. I Add a chain, httpd_accounting
-2. I Add a rule @ httpd_accounting on port 80, no matter if its Input or
-Ouput just this:
+*startsdancin*
 
-iptables -A httpd_accounting -p tcp --dport 80
+THANK YOU MUUUUCH :)
 
-2. At the Input Chain i add an Rule for Port 80 that Jumps to
-httpd_accounting
-
-iptables -A INPUT -p tcp --dport 80 -j httpd_accounting
-
-So my INPUT traffic is now ready 4 counting.
-
-3. Now the Output Traffic has to be counted, same thing but:
-
-iptables -A OUTPUT -p tcp --dport 80 -j httpd_accounting
-
-Now I'm finished !!?
-
-You think this is OK? Or do I count some traffic twice? And, of course, have
-i counted ALL the traffic?
-
-Thx 4 all nice ppl reading my stupid question :o)
-
-Greetz,
+Greets,
 yomega
+
+> -----Urspr=FCngliche Nachricht-----
+> Von: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org]Im Auftrag von Antony Stone
+> Gesendet: Sonntag, 23. Juni 2002 10:09
+> An: netfilter@lists.samba.org
+> Betreff: Re: AW: OK the last one: IP Accounting
+>
+>
+> On Sunday 23 June 2002 9:10 am, yomega wrote:
+>
+> > Mornin ppl :)
+> >
+> > Thx 4 all the nice answers, i think i got it now and i set up Accounting
+> > for my POP3 Server.
+> >
+> > Please take a look at this:
+>
+> You could get rid of the UDP stuff.   POP3 will never use UDP packets.
+>
+>
+>
+> Antony.
+>
+>
 
 
