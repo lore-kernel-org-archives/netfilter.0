@@ -1,12 +1,10 @@
-From: Christian Seberino <seberino@spawar.navy.mil>
-Subject: Re: these INPUT and OUTPUT rules blocking more than desired....
-Date: Tue, 01 Mar 2005 11:22:12 -0800
-Message-ID: <1109704931.1096.88.camel@seberino.spawar.navy.mil>
-References: <20050301014308.GA18177@spawar.navy.mil>
-	<1109669487.11189.2.camel@nostromo.bgsecm.com>
+From: Phani Kumar <pkumar@students.iiit.net>
+Subject: Stop ARP Broadcasting
+Date: Wed, 2 Mar 2005 01:56:07 +0530 (IST)
+Message-ID: <Pine.LNX.4.44.0503020149040.11517-100000@students.iiit.net>
+References: <200412151812.iBFIC9t0023303@students.iiit.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1109669487.11189.2.camel@nostromo.bgsecm.com>
+In-Reply-To: <200412151812.iBFIC9t0023303@students.iiit.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,87 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"
-To: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Jose
+Hello,
+      I have setup a Router with 3 interfaces as follows.
+eth0 -- External Network
+eth1 & eth2 -- Internal Network
 
-Thanks.  The port numbers you mentioned are the ones I'm using.
-(I got them from /etc/services.)  It *is* possible that
-I'm not defining my variables correctly.  I'll check that.
-Assuming INCOMING_TCP_PORTS =3D=3D INCOMING_UDP_PORTS =3D=3D OUTGOING_TCP=
-_PORTS=20
-=3D=3D OUTGOING_UDP_PORTS =3D=3D "53 80", Is there any reason
-by code snippet won't do DNS and HTTP fine? (i.e. is there anything else
-wrong?)
+I am getting unusual ARP traffic continuously  on both the interfaces.
+i.e I am getting ARP packets for every IP address in that subnet.
+How shall I restrict that packets from thos interfaces.
 
-Chris
+I used ebtables for restriciting ARP traffic.
 
-On Tue, 2005-03-01 at 01:31, Jose Maria Lopez Hernandez wrote:
-> El lun, 28-02-2005 a las 17:43 -0800, seberino@spawar.navy.mil escribi=C3=
-=B3:
-> > The snippet below was intended to *ONLY* allow types of traffic that
-> > I desired in and out of PC.  For example, I tried to only allow DNS, =
-SSH
-> > and HTTP.
-> >=20
-> > These services don't work.  It seems like they need more than /one/
-> > port opened.  Or, they need something else I'm forgetting.
-> > Any help would be greatly appreciated.....
-> >=20
->=20
-> You don't post your vars so we don't know what ports you are
-> opening...
-> But it's just:
-> DNS=3D53/tcp 53/udp
-> SSH=3D22/tcp
-> HTTP=3D80/tcp
->=20
-> >       # INPUT
-> >=20
-> >       $IPTABLES -t filter -A INPUT                      \
-> >                 -i $INTERNET_INTERFACE                  \
-> >                 -d $INTERNET_ADDRESS                    \
-> >                 -m state --state ESTABLISHED,RELATED    \
-> >                 -j ACCEPT
-> >       for PORT in $OPEN_INCOMING_TCP_PORTS; do
-> >          $IPTABLES -t filter -A INPUT                   \
-> >                    -i $INTERNET_INTERFACE               \
-> >                    -d $INTERNET_ADDRESS                 \
-> >                    -p tcp --dport $PORT                 \
-> >                    -j ACCEPT
-> >       done
-> >       for PORT in $OPEN_INCOMING_UDP_PORTS; do
-> >          $IPTABLES -t filter -A INPUT                   \
-> >                    -i $INTERNET_INTERFACE               \
-> >                    -d $INTERNET_ADDRESS                 \
-> >                    -p udp --dport $PORT                 \
-> >                    -j ACCEPT
-> >       done
-> >=20
-> >       # OUTPUT
-> >=20
-> >       $IPTABLES -t filter -A OUTPUT                     \
-> >                 -o $INTERNET_INTERFACE                  \
-> >                 -s $INTERNET_ADDRESS                    \
-> >                 -m state --state ESTABLISHED,RELATED    \
-> >                 -j ACCEPT
-> >       for PORT in $OPEN_OUTGOING_TCP_PORTS; do
-> >          $IPTABLES -t filter -A OUTPUT                  \
-> >                    -o $INTERNET_INTERFACE               \
-> >                    -s $INTERNET_ADDRESS                 \
-> >                    -p tcp --dport $PORT                 \
-> >                    -j ACCEPT
-> >       done
-> >       for PORT in $OPEN_OUTGOING_UDP_PORTS; do
-> >          $IPTABLES -t filter -A OUTPUT                  \
-> >                    -o $INTERNET_INTERFACE               \
-> >                    -s $INTERNET_ADDRESS                 \
-> >                    -p udp --dport $PORT                 \
-> >                    -j ACCEPT
-> >       done
->=20
-> Regards.
+For Eg
+ ebtables -A FORWARD -p arp -i eth1 --arp-ip-dst 172.17.3.0/24 -j 
+DROP
+
+Even then I used above rule , the packets are not dropped.
+Can anyone give me a way to stop that unusual ARP traffic from the network 
+using some rules.
+
+Thanks In Advance
+Phani Kumar
+IIIT-Hyd
+India
+
 
 
