@@ -1,11 +1,15 @@
-From: Paul Frieden <pfrieden@users.sourceforge.net>
-Subject: [Announce] PacketFlow firewall generator
-Date: Mon, 25 Nov 2002 22:57:22 -0600
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: more than 1 source ip
+Date: 26 Nov 2002 12:18:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DE2FF32.7030308@users.sourceforge.net>
+Message-ID: <1038305896.1450.7.camel@rayw.knowledgefactory.co.za>
+References: <001501c29532$a453bd50$e6353fc1@nexor.co.uk>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-o3NdRBHZ7S45tPjlrcJA"
 Return-path: <netfilter-admin@lists.netfilter.org>
+From: Raymond Leach <Ray@work>
+In-Reply-To: <001501c29532$a453bd50$e6353fc1@nexor.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,51 +19,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Dear Netfilter Users:
-
-I would like to announce the initial public release of a new tool called 
-PacketFlow.  It is a free command line XML based iptables firewall 
-generator.  I would like to invite you to download and evaluate it.
-
-The basic concept of PacketFlow is that of "security levels."*  Every 
-interface has a security level, and it indicates how much the interface 
-is trusted.  By  default connections may made from a high security 
-interface to a low security interface. By default, connections may not 
-be made from  a low security interface to a high security interface. 
-Both may be overridden with access lists.
-
-Several examples are included in the download.  These include dial-up, 
-broadband, single DMZ, and multiple DMZ examples.  These should 
-illustrate the basics of the configuration file.  There are a few 
-features that are not yet shown in the samples, but hopefully they will 
-be shown soon.
-
-PacketFlow is currently able to generate complete rule sets.  Current 
-development is focusing on better configuration validation and sanity 
-checking.  That said, the rule sets generated from a valid configuration 
-file do work well.  You are strongly encouraged to read through the 
-generated rules for yourself.
-
-PacketFlow currently does not support generating NAT rules, but I hope 
-to add that in the future.  Any recommendations on a syntax for NAT 
-rules would be appreciated.
-
-I would appreciate any feedback that you could provide.  There is a FAQ 
-on the home page listed below, and the source may be downloaded from the 
-project page.  Please submit any bugs that you find to the bug tracking 
-system on the SourceForge site.
-
-Sincerely,
-
-Paul Frieden
-
-Home page:		http://packetflowfw.sourceforge.net
-Project page:	http://sourceforge.net/projects/packetflowfw/
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-* This is very similar to the security-levels used by the PIX firewall
+--=-o3NdRBHZ7S45tPjlrcJA
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2002-11-26 at 12:00, Wasim Bashir wrote:
+> Hi,
+>=20
+> how do i select more than 1 source IP, what i want to do is allow vnc acc=
+ess
+> to an internal win2k box from 2 different ip addresses, how do you do thi=
+s,
+> at the moment i'm using :
+>=20
+> /sbin/iptables -A PREROUTING -t nat -p tcp -s <outside IP> -d <ip of my
+> machine>  --dport 5800 -j DNAT --to 10.0.0.199:5800
+>=20
+Use 2 rules?
+
+> Any help would be much appreciated.
+>=20
+> Thanks
+>=20
+> Wasim
+--=20
+
+--=-o3NdRBHZ7S45tPjlrcJA
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA940poh1fuR/Bv+ygRAiXOAKCqduphwCT+eAR09fZWL6DelIs7qwCgtYjM
+Cy/r18AGyjkWhmXdvoKo0Ps=
+=G06y
+-----END PGP SIGNATURE-----
+
+--=-o3NdRBHZ7S45tPjlrcJA--
 
 
