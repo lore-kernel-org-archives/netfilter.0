@@ -1,12 +1,10 @@
-From: Manuel Mollar Villanueva <mm@mobelt.com>
-Subject: Re: DNAT sends packed by wrong interface
-Date: Sat, 20 Nov 2004 00:52:55 +0100
-Message-ID: <419E8757.8040003@mobelt.com>
-References: <419E8210.1020504@mobelt.com>
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: Is this suitable?
+Date: Sat, 20 Nov 2004 11:19:50 -0300
+Message-ID: <E1CVW6p-0006a1-00@deer.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <419E8210.1020504@mobelt.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +15,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Sorry, I have solved my problem
-
-I have:
-
-ip rul add from 150.128.48.0/21 table 1
-
-and
-
-ip rou add default via 150.128.48.1 table 1
-
-The rule is applied, and as router 150.128.48.1 is in eth0, kernel 
-decides to send pakets via eth0 ????????
+Im doing some tests in the lab, i have this idea and i want to know if this
+is suitable to do.
+ 
+ 
+This is the idea (not mine, customer,and the customer is always right) ,
+suppose this schema
+ 
+ 
+Wap server <-> GW
+SQL server _| 
 
 
+My customer wants to wap server send the sql queries to GW (so the wap box
+thinks that sql server is the gw box), then gw redirect the sql request to
+the sql server, and replies then follow the same way back. 
 
-Manuel Mollar Villanueva wrote:
+For this case WAP server is in a dmz, sql is in another dmz, and sql server
+is in the local lan (different from the dmz's). The idea to fit 2 nic's to
+the GW is discarded because the only device allowed to interconnect the
+DMZ's, the LAN and the WAN are the firewalls.
 
-> Hi,
-> I have encountered a problem when using DNAT:
->
-> Scenario:
->
-> iptables v1.2.7a
-> Linux 2.4.20
->
-> Computer A:
->   eth0 ip 150.128.49.236/21
->   eth1 ip 10.1.1.1/24
->   iptables -t nat -A PREROUTING -d 150.128.49.236 -p tcp --dport 8080 
-> -j DNAT --to-destination 10.1.1.2:80
->
-> Computer B:
->  eth0 connected to eth1 of computer A, ip 10.1.1.2
->
-> Client C:
->  ip 213.171.249.250
->  When accessing port 8080 of A is redirected to port 80 on B,  OK
->
-> Client D:
->  ip 150.128.49.219, in the SAME NETWORK of A (eth0)
->  When connecting to A, port 8080, the configured DNAT redirects the 
-> packets to 10.1.1.2:80 , BUT PACKETS ARE SENT to interface ETH0, not 
-> to interface eth1 as expected, so , do not arrive to B.
->  The same problem occurs for any client in the network of A
->
-> Some idea?
->
-> Thanks
->
->
+So I need to do this.
+
+In GW using only 1 NIC, rederirect the traffic in both directions.
+
+Using mysql as an example and this addresses
+
+Wap server: 10.11.0.20
+GW: 10.12.0.10 (gw 10.12.0.1)
+SQL: 10.10.2.205
+
+Will this rules in the gw box work?
+
+(filter:INPUT and filter:FORWARD policies are DROP)
+
+ip ro add default via 10.12.0.1
+iptables -t nat -A PREROUTING -s 10.11.0.20 -d 10.12.0.10 -p tcp --dport
+3306 -j DNAT --to 10.10.2.205:3306
+iptables -t nat -A PREROUTING -s 10.10.2.205 -d 10.12.0.10 -p tcp --sport
+3306 -j DNAT --to 10.11.0.20
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 10.11.0.20 -d 10.12.0.10 -p tcp
+--dport 3306 -j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 10.10.2.205 -d 10.12.0.10 -p tcp
+--sport 3306 -j ACCEPT
+
+Is this enough????
+
+I think that, as the connections will be always started from wap server, the
+second FORWARD rule will not match never, because this match will be in the
+RELATED,ESTABLISHED rule, but the main doubt is if this is correct in the
+nat table.
+
+
+Thanks in advance.
+
+Best regards
+
+
 
 
