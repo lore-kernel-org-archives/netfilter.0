@@ -1,7 +1,7 @@
-From: aspenbr <aspenbr@yahoo.com.br>
-Subject: Erro for compiler
-Date: 14 Mar 2005 18:14:55 -0300
-Message-ID: <1110834895.27483.104.camel@maclinux.lotus>
+From: cmbb@dslr.net
+Subject: netfilter - DROP lists .. efficiency under DDOS?
+Date: Mon, 14 Mar 2005 16:34:45 -0500
+Message-ID: <98432234187.20050314163445@dslr.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -15,93 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Helow I am trying to install I modulate it of netfilter IPP2p and I do
-not obtain already I made diverse modifications, and without success,
-all had failed to follow placed the message that appears when I give
-to the command "make"
+I had an experience with a DDOS attack comprising some 10,000 IPs.
+Adding them individually as INPUT DROPS did not work because after 5000
+or so IPs, the box became too slow to pickup new packets from the card
+quickly enough, so we replaced one problem (flood) with another (random
+overruns on the card).
 
- make
+The traffic was about 6mbit of small packets (SYNs and tiny data
+packets). About 10,000 packets per second.
 
-gcc -O3 -Wall -DIPTABLES_VERSION=\"1.2.8\" -I/usr/include/iptables -fPIC
--c libipt_ipp2p.c
-libipt_ipp2p.c:9:22: iptables.h: No such file or directory
-libipt_ipp2p.c:78: warning: `struct ipt_entry_match' declared inside
-parameter list
-libipt_ipp2p.c:78: warning: its scope is only this definition or
-declaration, which is probably not what you want
-libipt_ipp2p.c: In function `init':
-libipt_ipp2p.c:80: dereferencing pointer to incomplete type
-libipt_ipp2p.c:82: `NFC_UNKNOWN' undeclared (first use in this function)
-libipt_ipp2p.c:82: (Each undeclared identifier is reported only once
-libipt_ipp2p.c:82: for each function it appears in.)
-libipt_ipp2p.c: At top level:
-libipt_ipp2p.c:96: warning: `struct ipt_entry_match' declared inside
-parameter list
-libipt_ipp2p.c:96: warning: `struct ipt_entry' declared inside parameter
-list
-libipt_ipp2p.c: In function `parse':
-libipt_ipp2p.c:98: dereferencing pointer to incomplete type
-libipt_ipp2p.c:103: warning: implicit declaration of function
-`exit_error'
-libipt_ipp2p.c:103: `PARAMETER_PROBLEM' undeclared (first use in this
-function)
-libipt_ipp2p.c: In function `final_check':
-libipt_ipp2p.c:395: `PARAMETER_PROBLEM' undeclared (first use in this
-function)
-libipt_ipp2p.c: At top level:
-libipt_ipp2p.c:404: warning: `struct ipt_entry_match' declared inside
-parameter list
-libipt_ipp2p.c:404: warning: `struct ipt_ip' declared inside parameter
-list
-libipt_ipp2p.c: In function `print':
-libipt_ipp2p.c:406: dereferencing pointer to incomplete type
-libipt_ipp2p.c: At top level:
-libipt_ipp2p.c:433: warning: `struct ipt_entry_match' declared inside
-parameter list
-libipt_ipp2p.c:433: warning: `struct ipt_ip' declared inside parameter
-list
-libipt_ipp2p.c: In function `save':
-libipt_ipp2p.c:435: dereferencing pointer to incomplete type
-libipt_ipp2p.c: At top level:
-libipt_ipp2p.c:462: variable `ipp2p' has initializer but incomplete type
-libipt_ipp2p.c:462: warning: excess elements in struct initializer
-libipt_ipp2p.c:462: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:463: warning: excess elements in struct initializer
-libipt_ipp2p.c:463: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:464: warning: excess elements in struct initializer
-libipt_ipp2p.c:464: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:465: warning: implicit declaration of function
-`IPT_ALIGN'
-libipt_ipp2p.c:465: warning: excess elements in struct initializer
-libipt_ipp2p.c:465: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:466: warning: excess elements in struct initializer
-libipt_ipp2p.c:466: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:467: warning: excess elements in struct initializer
-libipt_ipp2p.c:467: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:468: warning: excess elements in struct initializer
-libipt_ipp2p.c:468: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:469: warning: excess elements in struct initializer
-libipt_ipp2p.c:469: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:470: warning: excess elements in struct initializer
-libipt_ipp2p.c:470: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:471: warning: excess elements in struct initializer
-libipt_ipp2p.c:471: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:472: warning: excess elements in struct initializer
-libipt_ipp2p.c:472: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c:474: warning: excess elements in struct initializer
-libipt_ipp2p.c:474: warning: (near initialization for `ipp2p')
-libipt_ipp2p.c: In function `_init':
-libipt_ipp2p.c:480: warning: implicit declaration of function
-`register_match'
-libipt_ipp2p.c: At top level:
-libipt_ipp2p.c:462: storage size of `ipp2p' isn't known
-make: *** [libipt_ipp2p.so] Error 1
+The more DROPs, the less packets per second could be handled. Removing
+all DROPS meant all packets could be handled .. although that just
+pushed the problem onto apache.
 
+My question is this .. how many DROPS can the latest netfilter
+adequately cope with before impacting the PPS speed of the linux box?
+Would -t raw have been a much better solution here?
 
-Thank 
+My network driver was e1000.o with NAPI compiled. Kernel was latest 2.4
+smp kernel. Machine was dual xeon with 2gb of memory. Nothing else of
+consequence running on the box.
 
-
+thanks
 
 
