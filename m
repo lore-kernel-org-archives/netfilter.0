@@ -1,8 +1,8 @@
-From: Tom Elsesser <telsesser@mindspring.com>
-Subject: Port forwarding problem
-Date: Wed, 13 Nov 2002 23:29:05 -0500
+From: "=?iso-8859-1?Q?Juliano_Dapper?=" <fjdapper@terra.com.br>
+Subject: =?iso-8859-1?Q?Iptables_with_IP_Alias?=
+Date: Wed, 13 Nov 2002 01:12:17 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ut86tuo7rimkt2dc52ke1qo8boaqtt29g0@4ax.com>
+Message-ID: <H5HQ0H$9919374312372D5676DDD544D0265BEA@terra.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,61 +16,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: =?iso-8859-1?Q?netfilter?= <netfilter@lists.netfilter.org>
 
-Hi,
- I have 2 linux servers on a 20 workstation network. There is an adsl
-connection coming thru a EN5861 router which connects to one server
-(yzerman) on eth1. Eth0 on this box goes to a 48 port switch. The
-other linux box (ulysses) is going to be a webmail server, and has 1
-nic going to the switch. I have the apache server on ulysses listening
-on port 8000. The router can forward ports but only on its own subnet,
-which is the same as eth1 on yzerman. I am trying to get port 8000 to
-go thru yzerman to ulysses, but can't seem to get it right. Can
-someone take a peek at my iptables config and tell me where I went
-wrong?
-
-Thanks in advance.
-
-+++++++++++++++++
-#!/bin/sh
-
-# Turn on ipforwarding just in case
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-# Flush old rulesets
-/sbin/iptables -F
-/sbin/iptables -F -t nat
-
-# Default policies
-/sbin/iptables -P INPUT ACCEPT
-/sbin/iptables -P OUTPUT ACCEPT
-/sbin/iptables -P FORWARD DROP
-
-# Masq out eth1 (to router)
-/sbin/iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-
-# Allow packets to return
-/sbin/iptables -A FORWARD -i eth1 -m state --state RELATED,ESTABLISHED
--j ACCEPT
-
-# Allow packets out
-/sbin/iptables -A FORWARD -i eth0 -s 10.1.1.0/8 -j ACCEPT
-
-# Forward squirrelmail http request to ulysses
-/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 8000 -j
-DNAT --to 10.1.1.2
-
-# Connect to port 8000 (squirrelmail) from outside
-/sbin/iptables -A INPUT -i eth1 -d 0/0 -p tcp --dport 8000 -j ACCEPT
-
-# Connect via ssh from outside
-/sbin/iptables -A INPUT -i eth1 -d 0/0 -p tcp --dport 22 -j ACCEPT
-
-# Log to syslog
-# /sbin/iptables -A INPUT -j LOG
+What's iptables not accept rules in ip alias, eth0:0, eth0:1?=0D=0AI have=
+ a linux box with 2 ips and i have create ruls to redirect traffic to int=
+ernal machine,ex:=0D=0Aiptables -t nat -A PREROUTING -p tcp -i eth0 --dpo=
+rt 25 -j DNAT --to 192.168.0.1=0D=0Aiptables -t nat -A PREROUTING -p tcp =
+-i etho:0 --dport 80 -j DNAT --to=0D=0A192.168.0.2=0D=0Aeth0 - 200.200.20=
+0.1=0D=0Aeth0:0 - 200.200.200.2=0D=0A=0D=0ATkz...=0D=0A=0D=0A=0D=0A=0D=0A=
 
 
---=20
-Tom
 
