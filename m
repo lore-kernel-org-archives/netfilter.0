@@ -1,8 +1,8 @@
 From: Rhaoni Chiu Pereira <rhaoni@sistemica.info>
 Subject: Multi Addressing... is it possible ?
-Date: Fri, 30 Apr 2004 15:45:26 -0300
+Date: Fri, 30 Apr 2004 15:45:18 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1083350726.40929ec65f3aa@sistemica.info>
+Message-ID: <1083350718.40929ebeb4ace@sistemica.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,7 +20,7 @@ To: netfilter@lists.netfilter.org
 
 Hi List,
 
-    I must implement a few firewallrules but I'm a little bit lost. I use a
+    I mus implement a few firewallrules but I'm a little bit lost. I use a
 transparent proxy with this following rule:
 
     IPTABLES -t nat -A PREROUTING -p tcp -i eth1 -s 192.168.0.0/16 -d !
