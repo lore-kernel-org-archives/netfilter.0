@@ -1,13 +1,13 @@
 From: Frederic de Villamil <neuro@seclab.jp>
-Subject: Re: block ping  ?
-Date: Sat, 10 Apr 2004 22:50:54 +0200
+Subject: Re: is this possible ?
+Date: Sat, 10 Apr 2004 22:54:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040410205054.GA34633@jesus.seclab.jp>
-References: <006301c41f3a$19f04f00$0300000a@serverxx>
+Message-ID: <20040410205446.GB34633@jesus.seclab.jp>
+References: <006d01c41f3a$35d37030$0300000a@serverxx>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <006301c41f3a$19f04f00$0300000a@serverxx>
+In-Reply-To: <006d01c41f3a$35d37030$0300000a@serverxx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -24,17 +24,16 @@ Cc: netfilter@lists.netfilter.org
 
 On Sun, 11 Apr 2004, Syed Faisal Gillani wrote:
 
-> i am a newbie learning iptables ...
-> can u tell me the rule of blocking only ping on my nic ?
+> is it possible in iptables to FW a port traffic (eg 80) to an internal =
+> ipaddress of a webserver ?
 
 Hi,
+it's called NAT (network address translation).
 
-try this:
+iptables -t nat -A PREROUTING -p tcp -d your.external.addy --dport 80 -j DNAT --to your.local.addy:80
 
-iptables -A INPUT -p icmp --icmp-type echo-request -j DROP to block incomming pings
-
-Anyway, remember that blocking pings  is the best way to tell everyone
-"Hey dudes, I have something to protect, come in now!"
+Maybe you should have a look at
+http://netfilter.org/documentation/HOWTO//NAT-HOWTO.html
 
 regards
 Frederic
