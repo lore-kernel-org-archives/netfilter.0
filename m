@@ -1,17 +1,12 @@
-From: Sven Schuster <schuster.sven@gmx.de>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: 2 NICs on same subnet
-Date: Fri, 5 Nov 2004 15:22:19 +0100
-Message-ID: <20041105142219.GB12563@zion.homelinux.com>
+Date: Fri, 05 Nov 2004 08:47:14 -0600
+Message-ID: <418B9272.8040706@pbl.ca>
 References: <20041105123843.GB11016@zion.homelinux.com>
-	<20041105124107.GE9379@torres.ka0.zugschlus.de>
-	<20041105125421.GA12058@zion.homelinux.com>
-	<20041105130424.GF9379@torres.ka0.zugschlus.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041105130424.GF9379@torres.ka0.zugschlus.de>
+In-Reply-To: <20041105123843.GB11016@zion.homelinux.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,54 +17,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Sven Schuster wrote:
+> Hi everybody,
+> 
+> I have a problem which I'm quite sure can be resolved easily, but
+> at the moment I'm lacking the "how" :-)
+> I have a machine (RH ES 3) with two Intel e1000 cards attached to
+> a gigabit switch, each interface is assigned an IP address on the
+> same subnet (say 1.2.3.4 on eth0 and 1.2.3.5 on eth1).
+> What's happening is that if a connection to either of these addresses
+> is made, it's always received via the same interface (eth1 most of the
+> time), and the replies go out via this interface, too. But what I'd
+> like is that packets to 1.2.3.4 come in via eth0 and packets to 1.2.3.5
+> come in via eth1 and that replies from 1.2.3.4 leave via eth0, from
+> 1.2.3.5 via eth1.
+> I've already tried to resolve this issue with arptables, doing
 
---RASg3xLB4tUQ4RcS
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Probably not easilly solvable.  The thing is that both interfaces are 
+valid for sending responses out.  So the kernel will probably use the 
+first where it gets the match (not sure about exact algorithm, so it may 
+as well be the last, or random).
 
+Anyhow, said that, there are couple of things to try out.
 
-Hi Marc,
+For incomming packets, I do remember that there's kernel option to 
+instruct Linux kernel to send ARP responses from matching interface, 
+instead of interface ARP request was made on (ARP request is broadcast, 
+so both interfaces will get it, and by default Linux doesn't send from 
+"matching" interface).  This way, client will get correct MAC address, 
+and switch will send packets down the correct wire.  Might help, but on 
+the other hand it might not.
 
-On Fri, Nov 05, 2004 at 02:04:24PM +0100, Marc Haber told us:
-> What you intend to do does not make sense.
->
-> This surely is meant to be a solution to some unmentioned problem. By
-> asking about the problem, I am just trying to give a solution.
+For outgoing packets, mark packets in INPUT chain of mangle table with 
+different marks depending if source is 1.2.3.4 or 1.2.3.5.  Than you can 
+use fwmark with Linux Advanced Routing (see examples in howto, 
+http://www.lartc.org/lartc.txt, chapter 11) to route packets to eth0 or 
+eth1 depending on the fwmark.  Should work (tm).
 
-well, I know that it doesn't make much sense. This setup was made to
-"balance" the traffic coming in to the machine. I know that there's
-not much  difference between one NIC running at, say 400 Mbps, or
-two NICs running at 200 Mbps each which will also be 400 Mbps, because
-the machine can't handle more traffic (data (backups) is received via
-network from other machines and written to disks)...but as I've already
-written, this wasn't my decision...
-
-
-Sven
-
-
->
-> Greetings
-> Marc
->
-
---
-Linux zion 2.6.9-rc1-mm4 #1 Tue Sep 7 12:57:19 CEST 2004 i686 athlon i386 GNU/Linux
- 14:21:46 up 1 day, 17:49,  1 user,  load average: 0.02, 0.01, 0.00
-
---RASg3xLB4tUQ4RcS
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFBi4ybo4FAdB2PneQRAh/iAJ4wWCETZ4+VDcitOyeOsC+zZlZ0YACeOfil
-HH01VASUoX1l7sFSRecg0rc=
-=stj0
------END PGP SIGNATURE-----
-
---RASg3xLB4tUQ4RcS--
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
