@@ -1,12 +1,12 @@
-From: Tasha Smith <natasha3641@yahoo.com>
-Subject: Re: SSL and TLS not working on FIrewall machine?
-Date: Thu, 31 Oct 2002 17:16:26 -0800 (PST)
+From: "Jet" <yenjet.chan@eglobal.com.my>
+Subject: Re: ip_conntrack: table full, dropping packet.
+Date: Fri, 1 Nov 2002 10:02:37 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021101011626.66805.qmail@web40702.mail.yahoo.com>
-References: <000a01c28096$d5d4ad90$020aa8c0@winxp>
+Message-ID: <00ad01c2814a$c107c4b0$0bc8c80a@dolphin>
+References: <Pine.LNX.4.44.0210301755110.19280-100000@dns.toxicfilms.tv> <200210311225.47844.mail@vickysh.wlink.com.np>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000a01c28096$d5d4ad90$020aa8c0@winxp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,160 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: mail@vickysh.wlink.com.np, Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: netfilter@lists.samba.org
 
-Hmmm, that didnt work...i even tryed to see the default INPUT rule from DROP to
-ACCEPT just for testing and still it wont let me connect? the site im tyring to
-connect to is
-www.tdcanadatrust.com   
-and then for the SSL you have to click the orange "NOW" button on the top right
-hand corner? Something else i can try?? 
+No I guess the maximum value is 64K.
 
+Yes. It did crash my machine.
+Just FYI, I tried this before on my 64M RAM linux box.
+The default is 4K connection max.
+But I tried to increase it to 64K.
+End up when the number of connections grow to 13K (based on
+/proc/net/ip_conntrack),
+it first starts killing my other processes including klogd, syslog-ng,
+snort.
+At this time, you can see the kernel start killing the process from your
+syslog (before syslog died)
+After a while my linux box hang. And wait for reboot
+I guess this is related to OOM (out-of-memory) bug in the kernel (I'm using
+2.4.18-xfs).
 
---- Matthew Hellman <mhellman@raccoon.com> wrote:
-> just my opinion, but your script is complicated and not for the right
-> reasons.  I'm a big proponent of keeping it simple
-> 
-> > 1.>Umm i was wandering how come SSL or TSL doesnt connect to my banks
-> website
-> > from the firewall machine.
-> 
-> iptables knows nothing about SSL and TLS. You want to know why you can't
-> connect on port 443;-)
-> 
-> > # Enable broadcast echo protection
-> > echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-> >
-> <snip of sysctl parameters>
-> 
-> You might consider creating a separate file for these kernel parameters and
-> then sourcing the file from the script. Anymore, I just edit
-> /etc/sysctl.conf.  That might be a Redhat thing though, not sure. Another
-> suggestion is to keep all your INPUT, OUTPUT, and FORWARD rules together.
-> Makes the script much more readable. In some cases, I've even created a very
-> short 1 page main script that calls separate files for INPUT,OUTPUT, and
-> FORWARD.  When you want to change your INPUT rules, for instance, you don't
-> have any irrelevant clutter confusing things.
-> 
-> > # All of the bits are cleared
-> > iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-> > iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP
-> > # SYN and FIN are both set
-> > iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-> > iptables -A FORWARD -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-> > # SYN and RST are both set.
-> > iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-> > iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-> > # FIN and RST are both set
-> <snip>
-> 
-> bleh.  I would axe the above section entirely myself....has little value.
-> Aren't these are all taken care of with a default DROP policy and by only
-> allowing NEW,EST, REL?
-> 
-> > # Log Policy for first 25 ports UDP/TCP.
-> > iptables -I INPUT -i eth0 -p tcp \
-> >          --dport 0:25 -j LOG --log-prefix "PortScans to 0-25TCP: "
-> >
-> > iptables -I INPUT -i eth0 -p udp \
-> >          --dport 0:25 -j LOG --log-prefix "PortScan-to 0-25UDP: "
-> 
-> This is probably not doing what you think it is.  This will log any input on
-> eth0 with a destination port of 0 thru 25.  Not very useful.
-> 
-> > # Drop Invalid connection
-> > iptables -A INPUT -m state --state INVALID -j LOG \
-> >          --log-prefix "Invalid input: "
-> > iptables -A INPUT -m state --state INVALID -j DROP
-> <snip>
-> 
-> A lot of these INVALID packets were dropped already in earlier INPUT/FORWARD
-> rules.  So this isn't logging everything. Do keep the OUTPUT rules however.
-> 
-> > # Allow Access for DNS UDP for my ISP DNS server.
-> > if [ "$CONNECTION_TRACKING" = "1" ]; then
-> >    iptables -A OUTPUT -o eth0 -p udp \
-> >             -s $IP_INET --sport 1024:65535 \
-> >             -d 239.73.4.130 --dport 53 \
-> >             -m state --state NEW -j ACCEPT
-> > fi
-> >
-> > iptables -A OUTPUT -o eth0 -p udp \
-> >          -s $IP_INET     --sport 1024:65535 \
-> >          -d 239.73.4.130 --dport 53 -j ACCEPT
-> >
-> >
-> > if [ "$CONNECTION_TRACKING" = "1" ]; then
-> >     iptables -A OUTPUT -o eth0 -p udp \
-> >              -s $IP_INET --sport 1024:65535 \
-> >              -d 239.73.4.150 --dport 53 \
-> >              -m state --state NEW -j ACCEPT
-> > fi
-> >
-> > iptables -A OUTPUT -o eth0 -p udp \
-> >          -s $IP_INET --sport 1024:65535 \
-> >          -d 239.73.4.150 --dport 53 -j ACCEPT
-> 
-> I don't get these rules. More unecessary complication IMHO. Either take
-> advantage of connection tracking or don't. Is there some scenario where you
-> might want to quickly change from using it to not using it (testing, etc)? I
-> don't see where you've set this variable (so presumably your not using
-> connection tracking).
-> 
-> > # Allow access to remote webservers PORT 80.
-> > if [ "$CONNECTION_TRACKING" = "1" ]; then
-> >     iptables -A OUTPUT -o eth0 -p tcp \
-> >              -s $IP_INET --sport 1024:65535 \
-> >              --dport 80 -m state --state NEW -j ACCEPT
-> > fi
-> >
-> > iptables -A OUTPUT -o eth0 -p tcp \
-> >          -s $IP_INET --sport 1024:65535 \
-> >          --dport 80 -j ACCEPT
-> >
-> > iptables -A INPUT -i eth0 -p tcp ! --syn \
-> >          --sport 80 \
-> >          -d $IP_INET --dport 1024:65535 -j ACCEPT
-> >
-> > # Allow access for SSL and TLS on Port 443.
-> > if [ "$CONNECTION_TRACKING" = "1" ]; then
-> >     iptables -A OUTPUT -o eth0 -p tcp \ #<------------------
-> >              -s $IP_INET --sport 1024:65535 \
-> >              --dport 443 -m state --state NEW -j ACCEPT
-> > fi
-> >
-> > iptables -A OUTPUT -o eth0 -p tcp \
-> >          -s $IP_INET --sport 1024:65535 \   #<----------------
-> >          --dport 443 -j ACCEPT
-> >
-> > iptables -A INPUT -i eth0 -p tcp ! --syn \
-> >          --sport 443 \
-> >          -d $IP_INET --dport 1024:65535 -j ACCEPT #<-----------------
-> >
-> > iptables -A OUTPUT -o eth0 \
-> >         -p tcp -m multiport --dport 80,443 \
-> >         ! --syn -s $IP_INET --sport 1024:65535 -j ACCEPT  #<--------------
-> >
-> > iptables -A INPUT -i eth0 -p tcp -m multiport \
-> >         --sport 80,443 \
-> >        ! --syn -s $IP_INET --dport 1024:65535 -j ACCEPT  #<------------
-> 
-> umm....okay.  maybe it's a display issue , but where exactly are you putting
-> those pound signs?  In any event, for a connection-tracking based rule:
-> iptables -A OUTPUT -o $EXTIF -m state --state NEW -p tcp -m
-> multiport --dports 80,443 -j ACCEPT
-> 
-> If you don't want to use connection tracking:
-> iptables -A OUTPUT -o $EXTIF -p tcp -m multiport --dports 80,443 -j ACCEPT
-> 
-> Anything else is probably more complicated that its worth.
-> 
-> 
+.//Jet
 
+>
+> If I increase the value what negative effect does it have??? Can I
+increase it
+> to say 3276800 ???? Hope It doesnot crash my machine.
+>
+>
 
-__________________________________________________
-Do you Yahoo!?
-HotJobs - Search new jobs daily now
-http://hotjobs.yahoo.com/
 
