@@ -1,11 +1,12 @@
-From: Subhash Gopinath <subhashg@gmail.com>
-Subject: problems calling devinet_ioctl from netfilter i/p hook
-Date: Fri, 10 Dec 2004 01:33:58 -0800
-Message-ID: <81703d8a041210013334497f0a@mail.gmail.com>
-Reply-To: Subhash Gopinath <subhashg@gmail.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: NATTING for a whole network.
+Date: Fri, 10 Dec 2004 14:02:01 -0500
+Message-ID: <1102705228.3295.15.camel@localhost>
+References: <4D7EBAB4CCB6DB4AB7EE598E9ED186950474D69B@asusfl45cex08.us-fl.cards.citicorp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4D7EBAB4CCB6DB4AB7EE598E9ED186950474D69B@asusfl45cex08.us-fl.cards.citicorp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,19 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Irvin, Michael Thad" <michael.irvin@Citicorp.com>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hello all,
+On Thu, 2004-12-09 at 12:22, Irvin, Michael Thad wrote:
+> I'm kinda new at this iptables thing.  I've been running into a problem with
+> trying to NAT for a class C subnetted class A network...i.e. 10.168.1.0/24.
+> The syntax I've been using is as follows -- $ipt -t nat -A POSTROUTING -o
+> $outside -j SNAT -to-source $lan, with the variable $lan = "10.168.1.0/24".
+> Everytime I've ran the script I get the following error <iptables v.x.x.x
+> Bad IP Address.  Can anyone please help me with the proper syntax to make
+> this work?  I've tried various options such the one above, also including
+> the whole subnetmask  and playing around with different delimitation
+> options, nothing seems to work.
+<snip>
+I generally use the NETMAP patch from patch-o-matic for this.  SNAT/DNAT
+does not necessarily create a straight mapping of addresses as far as I
+know whereas NETMAP does.  In fact we use it all the time in the ISCS
+network security project (http://iscs.sourceforge.net) to resolve
+conflicting IP address space problems.  Hope this helps - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevel.com
 
-I need to set the IP address of an ethernet interface from a netfilter
-receive hook function
-(in a kernel module)....If I call devinet_ioctl() from the hook
-function....The kernel hangs reporting "Bug at skbuff.c:174"
-Looks like I cannot call the ioctl from netfilter hooks since they are
-called in an ISR...
-I tried moving the ioctl call to a tasklet , still I get the same
-error...Is there any other solution ?
-
-Thanks,
-Subhash
 
