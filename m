@@ -1,12 +1,12 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Nat with a dynamic IP
-Date: Fri, 5 Sep 2003 12:23:30 -0700
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: Special routing for incoming pop3-requests
+Date: Fri, 5 Sep 2003 21:24:34 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E3680@alderaan.smgtec.com>
+Message-ID: <Pine.LNX.4.56.0309052121450.4129@space.comunit.de>
+References: <3F58BB42.20306@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <3F58BB42.20306@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: Peter Marshall <peter.marshall@caris.com>, Thorsten Scherf <tscherf@web.de>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Kirchhoff <kirchy@gmx.de>
+Cc: netfilter@lists.netfilter.org
 
-It is to an ISP, so no beans...
+On Fri, 5 Sep 2003, Jan Kirchhoff wrote:
 
------Original Message-----
-From: Ramin Dousti [mailto:ramin@cannon.eng.us.uu.net]=20
-Sent: Friday, September 05, 2003 12:14 PM
-To: Daniel Chemko
-Cc: Peter Marshall; Thorsten Scherf; netfilter@lists.netfilter.org
-Subject: Re: Nat with a dynamic IP
+> I am new to this List and I'm not really sure if this is really an
+> iptables-issue, but I think iptables is the tool I need for this:
 
-Here is an idea, It might cost you some vlanning efforts on both the
-dhcp client and the dhcp server:
+nope, you need policy routing
 
-vconfig add eth2 10
-vconfig add eth2 11
-vconfig add eth2 12
-vconfig add eth2 13
+> How do I get to work (with iptables-rules on server1?), that all packets
+> from server1 port 110 that have a destination other than the LAN go out
+> on fw2 but all other traffic goes to fw1?
+> I need a special route based on source-ip and source-port. I do not want
+> to rewrite the destination ip (which would not help since its already
+> right) but have influence on the routing to the next gateway.
 
-dhcpcd eth2.10
-dhcpcd eth2.11
-dhcpcd eth2.12
-dhcpcd eth2.13
-=20
+have a look at http://lartc.org/howto/lartc.rpdb.html
+
+c'ya
+sven
+
+-- 
+
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
