@@ -1,8 +1,8 @@
-From: =?iso-8859-1?B?SOlsaW8gRHViZXV4?= <hdubeux@hotmail.com>
-Subject: Allow access trought a bridge
-Date: Mon, 04 Nov 2002 13:09:14 -0200
+From: "Udo Rader" <spamtrash2@vibe.ac>
+Subject: DNAT possible with the string module?
+Date: Mon, 04 Nov 2002 16:40:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F170idBhYHQnCcdAPi30000a7b4@hotmail.com>
+Message-ID: <aq64dg$4br$1@hermes.vibe.ac>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,36 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I Have a Bridge and CBQ on my net. I have to:
+hi,
 
-1 - Allow external access to some IP.
-2 - Drop the non alloed IP.
+I would like to do the following thing:
 
-I Gave an valid IP behind my bridge that i can=B4t access. This is my table:
+2 daemons listening on different ports (lets say 1234 and 2345). 
 
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -p all -s <IP> -j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j DROP
+The firewall then ideally takes all connects from clients to port 1234, 
+looks for a "magic string" (using -m string) in the packages and based 
+upon the (non)existance of the string finally decides, which daemon to 
+forward the connect to.
 
-Whith these rulesets i got what i want, for example i can ping my router bu=
-t=20
-i can=B4t ping an IP in the same range as my router tahat is behind the=20
-bridge.
+... is there a chance for this to work?
+... or any other ways to achieve this?
 
-PLZ HELP ME.
+thanks for your work!!!
 
-----------------------
-H=E9lio Dubeux Neto
-
-
-
-
-_________________________________________________________________
-MSN Hotmail, o maior webmail do Brasil. http://www.hotmail.com
-
+udo
 
