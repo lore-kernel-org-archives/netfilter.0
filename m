@@ -1,11 +1,14 @@
-From: "pengjie" <bill.peng@ocamar.com>
-Subject: h323 & nat,again
-Date: Tue, 18 May 2004 10:36:19 +0800
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: h323 & nat,again
+Date: Mon, 17 May 2004 23:14:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001101c43c80$e6c44780$0f64020a@acamarpeng>
+Message-ID: <200405172314.34383.Alistair@nerdnet.ca>
+References: <001101c43c80$e6c44780$0f64020a@acamarpeng>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001101c43c80$e6c44780$0f64020a@acamarpeng>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +19,89 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-c29ycnkgZm9yIHRoZSBodG1sIGZvcm1hdCxub3cgaSBwb3N0IGl0IGFnYWluLg0KDQppIGhhZCBy
-ZWFkIG1hbnkgZG9jdW1lbnRzIGJ1dCBpIGRpZG4ndCBmaW5kIGFuc3dlci4NCg0KaSBoYXZlIGEg
-bmV0d29yayBhcyBmb2xsb3dpbmc6DQoNCiAgICAgICAgQS0tLS0tLS0tLS0tLS0tLS0tLUI9PT09
-PT09PT09PT09PT09PT09PUMNCjE5Mi4xNjguMTEwLnggIDE5Mi4xNjguMTEwLnkgIDIwMi4xMDEu
-ay5tICAgICAyMDIuMTAxLmsubg0KDQp0aGUgQiBpcyBhIGdhdGV3YXkgZG9pbmcgTkFULiBpdCdz
-IGV0aDAgaXMgMTkyLjE2OC4xMTAueSBhbmQgZXRoMSBpcyAyMDIuMTAxLmsubS4gdGhlcmUgaXMg
-Ukg5IHJ1bm5pbmcgb24gaXQsaXQncyBrZXJuZWwgaXMgMi40LjIxLiBpIGhhdmUgcGF0aGNoZWQg
-dGhlIGgzMjMsYW5kIHJ1bm5lZCB1cCB0aGUgbW9kdWxlcyBpcF9jb25udHJhY2tfaDMyMyBhbmQg
-aXBfbmF0X2gzMjMuDQoNCnRoZSBBIGFuZCB0aGUgQyBhcmUgbmV0bWVldGluZyBjbGllbnRzLg0K
-DQppIHRlc3QgaXQgd2l0aCAyIG1ldGhvZHM6DQoNCjEpYm90aCBBIGFuZCBDIGxvZ29uIHRvIGEg
-SUxTLg0KDQpSRVNVTFRTOg0KQSBjYWxscyBDIGlzIG9rLCBhbmQgdGhleSBjYW4gY2hhdCB0byBl
-YWNoIG90aGVyLg0KDQpDIGNhbGxzIEEgaXMgZmFpbHVyZSwgaSBzZWUgdGhlIGFkZHJlc3MgY2Fs
-bGVkIGlzIHRoZSBwcml2YXRlIGFkZHJlc3Mgb2YgQS4gc28gc2V0dGluZyB1cCBpcyBmYWlsdXJl
-Lg0KDQoNClFVRVNUSU9OOiBkb2Vzbid0IHRoZSBwYXRjaCBkbyBzb21ldGhpbmcgd2hlbiBjbGll
-bnQgbG9nb24gdG8gYSBJTFM/DQoNCjIpY2FsbCBlYWNoIG90aGVyIHdpdGhvdXQgdGhlIElMUy4N
-Cg0KaSBhZGQgYSBydWxlOiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgxIC1w
-IHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgMTUwMywxNzIwIC1qIEROQVQgLS10by1kZXN0aW5h
-dGlvbiAxOTIuMTY4LjExMC54DQoNCnRoZXkgY2FsbCBlYWNoIG90aGVyIHdpdGggSVAgYWRkcmVz
-cy4gQSBjYWxscyBDIHdpdGggQydzIElQIGFzIHRoZSBkZXN0aW5hdGlvbiwgYW5kIEMgY2FsbHMg
-QSB3aXRoIGdhdGV3YXkncyB2YWxpZCBJUCBhcyB0aGUgZGVzdGluYXRpb24uDQoNClJFU1VMVFM6
-DQpBIGNhbGxzIEMgaXMgb2ssIGFuZCB0aGV5IGNhbiBjaGF0IHRvIGVhY2ggb3RoZXIuDQpDIGNh
-bGxzIEEgaXMgb2ssIGJ1dCB0aGV5IGNhbid0IGNoYXQgdG8gZWFjaCBvdGhlci4NCg0KUVVFU1RJ
-T046IGlzIHRoZSBydWxlIHJpZ2h0PyBoLjMyMyBzdHJlYW1pbmcgcG9ydCBpcyBkeW5hbWljLCBk
-b2VzIGl0IHJlc3VsdCB0aGlzIHN5bXB0b20/DQogICAgICAgICAgZXZlbiB0aG91Z2ggaSBhZGQg
-dGhlIHJ1bGUgcmlnaHQsaSB0aGluayBpdCdzIG5vIHVzZS5pdCBqdXN0IGVuYWJsZSBvbmUgY2xp
-ZW50IHRvIGdvIHRocm91Z2ggdGhlIGdhdGV3YXkuaXMgaXQ/DQoNCmFueSBoZWxwIGlzIGFwcHJl
-Y2lhdGVkLg==
+On May 17, 2004 10:36 pm, pengjie wrote:
+> sorry for the html format,now i post it again.
+>
+> i had read many documents but i didn't find answer.
+>
+> i have a network as following:
+>
+>         A------------------B====================C
+> 192.168.110.x  192.168.110.y  202.101.k.m     202.101.k.n
+>
+> the B is a gateway doing NAT. it's eth0 is 192.168.110.y and eth1 is
+> 202.101.k.m. there is RH9 running on it,it's kernel is 2.4.21. i have
+> pathched the h323,and runned up the modules ip_conntrack_h323 and
+> ip_nat_h323.
+>
+> the A and the C are netmeeting clients.
+>
+> i test it with 2 methods:
+>
+> 1)both A and C logon to a ILS.
+>
+> RESULTS:
+> A calls C is ok, and they can chat to each other.
+>
+> C calls A is failure, i see the address called is the private address of A.
+> so setting up is failure.
+>
+>
+> QUESTION: doesn't the patch do something when client logon to a ILS?
+>
+> 2)call each other without the ILS.
+>
+> i add a rule: iptables -t nat -A PREROUTING -i eth1 -p tcp -m multiport
+> --dports 1503,1720 -j DNAT --to-destination 192.168.110.x
+>
+> they call each other with IP address. A calls C with C's IP as the
+> destination, and C calls A with gateway's valid IP as the destination.
+>
+> RESULTS:
+> A calls C is ok, and they can chat to each other.
+> C calls A is ok, but they can't chat to each other.
+>
+> QUESTION: is the rule right? h.323 streaming port is dynamic, does it
+> result this symptom? even though i add the rule right,i think it's no
+> use.it just enable one client to go through the gateway.is it?
+>
+> any help is appreciated.
 
+	PREROUTING DNAT to client is only good for one session at a time.
+	Please note that MS Netmeeting uses other ports as well .. .
+	I've noted that the rules for Gnomemeeting work just fine for a couple of 
+	'local lan' firewalls that use MS netmeeting, where I've assisted in getting
+	it working.  Keep in mind that it also uses (UPNP) -- which will cause you 
+	no end of grief.  -- there is an open source upnp gateway out there that 
+	I've heard of but never worked with, it has been mentioned here, but most 
+	consider it a *GREAT GAPING* security hole in a firewall.
+
+	Consider that one of the points you raised is that the ILS connection reports 
+	the INSIDE ip address of the client to the connecting partner.  Perhaps you 
+	should arrange some method to have the *client* report its outside ip address
+	to hte ILS rather than its inside ip.  (Gnomemeeting allows for this).  The 
+	ONLY instance where I've managed to get several internal clients to be
+	accessible from outside has been using Gnomemeeting, hacking the gconf files
+	for each client to have them *listening* on different ports, and forwarding 
+	each port from the firewall.  I believe there are registry hacks to do the 
+	same in MS netmeeting, but have not researched it.  
+
+	For what it's worth I rarely use MS anymore for my personal system, but do 
+	have win boxen inside my firewall (other half, kids, game box, and in order
+	to support several dozen personal systems clients).  I use gnomemeeting 
+	through my firewall -- I've added the rules on the gnomemeeting site to my 
+	firewall for the appropriate boxes.  -- it 'just works' through 2.6.x and 
+	with the gnomemeeting rules for each of three boxes.  I've yet to have 
+	more than one connection active at a time.
+
+	As an aside ... Is *anyone* working on porting the h323 (conntrack/nat) 
+	patches to 2.6.x? -- or is this something I might like to attempt sometime 
+	in the near future??
+
+
+	Alistair Tonner 
+
+	
 
