@@ -1,11 +1,13 @@
-From: dhiraj.2.bhuyan@bt.com
-Subject: RE: redirection
-Date: Wed, 9 Apr 2003 14:10:30 +0100
+From: xchris <lyra@fastwebnet.it>
+Subject: Re: SNAT FTP - HELP ME
+Date: Wed, 9 Apr 2003 16:18:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7497DCA1C240C042B28F6657ADFD8E09250995@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <200304091618.56344.lyra@fastwebnet.it>
+References: <006801c2fe9c$ee27bc50$1c01010a@PERUCCHI>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <006801c2fe9c$ee27bc50$1c01010a@PERUCCHI>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Breno Cardoso Perucchi <brenol@omegatec.net>, netfilter@lists.netfilter.org
 
-note one thing -
+On Wednesday 09 April 2003 03:35 pm, Breno Cardoso Perucchi wrote:
+> Hello,
+>
+> This is my first mail to the list.
+> I've been trying to transport tcp 20:21 to out of my network with SNAT
+> iptables -t nat -A POSTROUTING -p tcp --dst 200.200.200.201 --dport 20:=
+21
+> -j SNAT --to-source 192.168.2.1
 
-when the client tries to connect to port 80 of x.y.z.1, the firewall in
-x.y.z.1 redirects the traffic to x.y.z.2:80
+you cannot use DNAT with ftp protocol due to the multi connection protoco=
+l.
+If you redirect port 21 you redirect only the control connection and not =
+the=20
+data connection.
 
-so the client will be receiving packets from x.y.z.2:80 - which is not what
-it is expecting. It is waiting for packets from x.y.z.1:80 - so it will no
-doubt timeout. You should be able to see the packets coming from x.y.z.2:80
-by running a sniffer on the client machine.
-
-I think Eric Joe did infact give the right solution - that x.y.z.1 will be
-working as a proxy between the client and x.y.z.2 - although you can
-question if you are achieving your "loadbalancing" by this.
-
-
-dhiraj
-
------Original Message-----
-From: xchris [mailto:lyra@fastwebnet.it]
-Sent: 08 April 2003 23:17
-To: netfilter@lists.netfilter.org
-Subject: Re: redirection
-
-
-
------ Original Message -----
-From: "Eric Joe" <sysop@tje1.com>
-
-
-> I didnt catch the fact that you need the source address. Are you tracking
-> this for a reason? You can probably have iptables log the source address.
-> This does in fact work, been using it for  about 6 months now. Let me post
-> my exact rules (IPs are obsfucated)
-
-i need it because i'm trying to do a simple load balancing between 2 local
-servers running opennap.
-(and opennap needs to know the IP address otherwise downloads dont start)
-thnak you
+Consider using sftp.
+bye
 
 xchris
 
