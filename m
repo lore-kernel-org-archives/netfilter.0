@@ -1,10 +1,14 @@
-From: Alaios <alaios@yahoo.com>
-Subject: Re: how to change the tos
-Date: Tue, 8 Feb 2005 05:54:40 -0800 (PST)
-Message-ID: <20050208135440.74798.qmail@web54701.mail.yahoo.com>
-References: <1107868209.5144.3.camel@jasiiitosh.nexusmgmt.com.nexusmgmt.com>
+From: iansolo <iansolo.netfilter@betisgroup.com>
+Subject: Re: ftp nat MAX PORTS
+Date: Tue, 08 Feb 2005 14:54:47 +0100
+Message-ID: <4208C4A7.3080208@betisgroup.com>
+References: <420100AF.1040105@betisgroup.com>
+	<bd35181c05020211473cb89b35@mail.gmail.com>
+	<4201D91A.5030500@betisgroup.com>
+	<200502081011.46026.luismnieto@gmail.com>
 Mime-Version: 1.0
-In-Reply-To: <1107868209.5144.3.camel@jasiiitosh.nexusmgmt.com.nexusmgmt.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <200502081011.46026.luismnieto@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,65 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Luis Nieto <luismnieto@gmail.com>, netfilter@lists.netfilter.org
 
-Thx .. .The only reason for me to apply the ftos patch
-is because i want to give the tos field whatever value
-i want...
-Thx again
---- "John A. Sullivan III"
-<jsullivan@opensourcedevel.com> wrote:
+Ok, but my problem is redirect all from port 9000 of external=20
+interface(of fw) to same port of ftpserver.
 
-> On Tue, 2005-02-08 at 04:46 -0800, Alaios wrote:
-> > Hi i want to apply the patch ftos in order to
-> change
-> > the tos field in ip packets...
-> > The problem is that i don't know how to do that
-> > One guy suggest me the
-> > http://www.paksecured.com/patches/
-> > but the patch is for the 2.4 kernel  but i use the
-> > 2.6.10 kernel.
-> > In addition to this i have noticed that the 2.6
-> kernel
-> > has the following option
-> > CONFIG_IP_NF_MATCH_TOS
-> > I don't know if i need to compile it as module or
-> i
-> > should insert them directly to the kernel...
-> > Afte recompiling the kernel i have run the make
-> > KERNEL_DIR=/usr/src/linux-2.6.10 but still the
-> command
-> > 
-> > iptables -t mangle -A PREROUTING -i eth0 -p tcp
-> > --dport 22 -j TOS --set-tos 15
-> > iptables v1.2.11: Bad TOS Value
-> > Any suggestion?
-> <snip>
-> I do not believe 15 is a valid value in iptables. 
-> Try
-> iptables -t mangle -A PREROUTING -i eth0 -p tcp
-> --dport 22 -j TOS -h to
-> see the valid values - John
-> -- 
-> John A. Sullivan III
-> Open Source Development Corporation
-> +1 207-985-7880
-> jsullivan@opensourcedevel.com
-> 
-> If you would like to participate in the development
-> of an open source
-> enterprise class network security management system,
-> please visit
-> http://iscs.sourceforge.net
-> 
-> 
+$IPTABLES -t nat -A PREROUTING -p tcp -d $EXT_LAN_FW --dport 9000 -j=20
+DNAT --to-destination $IP_FTPSERVER:9000
 
+But this don't work with ftp flow...
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Luis Nieto wrote:
+> El Jue 03 Feb 2005 04:56, escribi=F3:
+> $IPTABLES -t nat -A PREROUTING -p tcp -d $EXT_LAN_FW --dport 21 -j DNAT=20
+> --to-destination $IP_FTPSERVER:9000
+> =20
+> In this way, all the requirements for FTP connections that arrives to you=
+r=20
+> extern interface should be redirected to $IP_FTPSERVER:9000
+>=20
+>=20
+> ________ Information from NOD32 ________
+> This message was checked by NOD32 Antivirus System for Linux Mail Server.
+> http://www.nod32.com
+
 
