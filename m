@@ -1,14 +1,13 @@
-From: Tomasz Wrona <twr@wp.pl>
-Subject: Re: PPTP through iptables firewall
-Date: Fri, 7 Feb 2003 10:28:32 +0100
+From: purushotham.krishnappa@philips.com
+Subject: Iptables problem help required
+Date: Fri, 7 Feb 2003 14:12:31 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <832811662.20030207102832@wp.pl>
-References: <E88493086664D511A1E4000103330E82027FE05C@mail.maconomy.dk>
-Reply-To: Tomasz Wrona <twr@wp.pl>
+Message-ID: <OFE3F748F7.DD22C17D-ON65256CC6.002FBE0A-65256CC6.002F75C0@diamond.philips.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; 
+	Boundary="0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E88493086664D511A1E4000103330E82027FE05C@mail.maconomy.dk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +17,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Niels Bach <NB@maconomy.dk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-SGVsbG8sDQoNCnBpsXRlaywgNyBsdXRlZ28gMjAwMywgeW91IHdyb3RlOg0KDQpOQj4gY29ubmVj
-dGlvbnMgaW52b2x2aW5nIEdSRSBoYXMgY2hhbmdlZCBmcm9tIFVOS05PV04gdG8gR1JFLiBCdXQg
-d2l0aCB0aGlzDQpOQj4gcGF0Y2ggaXQgaXMgbm90IHBvc3NpYmxlIHRvIGNvbm5lY3QsIG5vdyB0
-aGUgd2luZG93cyBjbGllbnQgb25seSByZWFjaA0KTkI+ICJ2ZXJpZnlpbmcgdXNlcm5hbWUgYW5k
-IHBhc3N3b3JkIiBhbmQgdGhlbiB0aW1lcyBvdXQuIA0KDQpOQj4gV2l0aG91dCB0aGUgcGF0Y2gg
-aXQgaXMgcG9zc2libGUgdG8gY29ubmVjdCB0byB0aGUgc2VydmVyIG9uZSBhdCBhIHRpbWUgYW5k
-DQpOQj4gd2FpdCAxMCBtaW51dGVzIGJlZm9yZSB0aGUgbmV4dCBjb25uZWN0aW9uIGZyb20gYSBk
-aWZmZXJlbnQgbG9jYXRpb24NCg0KTkI+IFdpdGggdGhlIHBhdGNoIGl0IGlzIG5vdCBwb3NzaWJs
-ZSB0byBjb25uZWN0IGF0IGFsbC4NCg0KSSBoYWQgdGhlIHNhbWUgcHJvYmxlbS4gSSBhbHNvIHRy
-aWVkIHRvIGNvbm5lY3QgZnJvbSBleHRlcm5hbCBJUA0KbG9jYXRlZCBiZWhpbmQgZmlyZXdhbGwg
-d2l0aG91dCBhbnkgcnVsZXMuIEkgY291bGRudCBjb25uZWN0IHRvIHBwdHANCnNlcnZlciBhbHNv
-IFt3aXRoIHRpbWVvdXRdLiBUaGVuIEkgcmVjb2duaXplZCB0aGVuIHVubG9hZGluZw0KaXBfbmF0
-X3BwdHAgbW9kdWxlIGNhdXNlcyB0aGUgY29ubmVjdGlvbiBjb3VsZCBiZSBhY2hpZXZlZCBjb3Jy
-ZWN0Lg0KW090aGVyIHJlbGF0ZWQgbW9kdWxlcyBpZS4gaXBfY29ubnRyYWNrX3BwdHAsIGlwX2Nv
-bm50cmFja19wcm90b19ncmUNCmRvZXNuJ3QgaW5mbHVlbmNlIGNvbm5lY3Rpb25dLg0KDQpOQj4g
-SSBydW4gRGViaWFuIDMuMCAod29vZHkpIEtlcm5lbCAyLjQuMjAgYW5kIGlwdGFibGVzIDEuMi43
-YSB3aXRoIHRoZSBwYXRjaGVkDQpOQj4gdmVyc2lvbiBhbmQgMS4yLjZhIHdpdGggdGhlIHVucGF0
-Y2hlZCB2ZXJzaW9uIG9mIHRoZSBrZXJuZWwuDQoNCkFsc28gd29ya2luZyBvbiB0aGUgc2FtZSBz
-ZXR1cCBbK2xhdGVzdCBvZmZpY2lhbCBwYXRoLW8tbWF0aWNdLg0KDQpSZWdhcmRzLA0KdHcgICAg
-ICAgICAgICAgICAgIA0KLS0=
+--0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A
+Content-type: text/plain; charset=us-ascii
+
+
+Hi
+
+
+The requirement is like this
+
+
+              WebServer-------------------- - ----Router/Firewall---------------------------------------client
+            10.60.90.7/8            eth1                  eth0                                         192.168.10.15
+                              10.60.90.5/8                 192.168.10.5/24
+
+
+
+Router/Firewall ----->RH linux 8 using iptables
+
+client should be able to access the webserver
+With out firewall rule i am able to access webserver  from client (ip forwarding is working fine)
+
+
+I have already set iptable rule pls see the attached file
+
+
+after FW rule is enable
+
+i am not able to connect to webserver from 192.168.10.5  to 10.60.90.7    BUT i can ping 10.60.90.5
+I need clients to connect from 192.168.10.0/24  to able to connect to only port 80 on 10.161.90.7.8
+
+
+
+(See attached file: firescript.txt)
+
+
+Rgds
+Puru
+--0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A
+Content-type: text/plain; 
+	name="firescript.txt"
+Content-transfer-encoding: base64
+
+IyAoMSkgUG9saWNpZXMgKGRlZmF1bHQpDQppcHRhYmxlcyAtUCBJTlBVVCBEUk9QDQppcHRhYmxl
+cyAtUCBPVVRQVVQgRFJPUA0KaXB0YWJsZXMgLVAgRk9SV0FSRCBEUk9QDQoNCiMgKDIpIFVzZXIt
+ZGVmaW5lZCBjaGFpbiBmb3IgQUNDRVBURUQgVENQIHBhY2tldHMNCmlwdGFibGVzIC1OIG9rYXkN
+CmlwdGFibGVzIC1BIG9rYXkgLXAgVENQIC0tc3luIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgb2th
+eSAtcCBUQ1AgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0K
+aXB0YWJsZXMgLUEgb2theSAtcCBUQ1AgLWogRFJPUA0KDQojICgzKSBJTlBVVCBjaGFpbiBydWxl
+cw0KIyBSdWxlcyBmb3IgaW5jb21pbmcgcGFja2V0cyBmcm9tIExBTg0KaXB0YWJsZXMgLUEgSU5Q
+VVQgLXAgQUxMIC1pIGV0aDEgLXMgMTAuMC4wLjAvOCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElO
+UFVUIC1wIEFMTCAtaSBsbyAtcyAxMjcuMC4wLjEgLWogQUNDRVBUDQppcHRhYmxlcyAtQSBJTlBV
+VCAtcCBBTEwgLWkgbG8gLXMgMTAuNjAuOTAuNSAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVU
+IC1wIEFMTCAtaSBsbyAtcyAxOTIuMTY4LjEwLjUgLWogQUNDRVBUDQppcHRhYmxlcyAtQSBJTlBV
+VCAtcCBBTEwgLWkgZXRoMSAtZCAxMC4wLjAuMjU1IC1qIEFDQ0VQVA0KDQojIFJ1bGVzIGZvciBp
+bmNvbWluZyBwYWNrZXRzIGZyb20gdGhlIGludGVybmV0DQoNCiMgUGFja2V0cyBmb3IgZXN0YWJs
+aXNoZWQgY29ubmVjdGlvbnMNCmlwdGFibGVzIC1BIElOUFVUIC1wIEFMTCAtZCAxOTIuMTY4LjEw
+LjUgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KDQojIFRD
+UCBydWxlcw0KaXB0YWJsZXMgLUEgSU5QVVQgLXAgVENQIC1pIGV0aDAgLXMgMC8wIC0tZGVzdGlu
+YXRpb24tcG9ydCA4MCAtaiBva2F5DQoNCiMgSUNNUCBydWxlcw0KaXB0YWJsZXMgLUEgSU5QVVQg
+LXAgSUNNUCAtaSBldGgwIC1zIDAvMCAtLWljbXAtdHlwZSA4IC1qIEFDQ0VQVA0KaXB0YWJsZXMg
+LUEgSU5QVVQgLXAgSUNNUCAtaSBldGgwIC1zIDAvMCAtLWljbXAtdHlwZSAxMSAtaiBBQ0NFUFQN
+Cg0KIyAoNCkgRk9SV0FSRCBjaGFpbiBydWxlcw0KIyBBY2NlcHQgdGhlIHBhY2tldHMgd2Ugd2Fu
+dCB0byBmb3J3YXJkDQppcHRhYmxlcyAtQSBGT1JXQVJEIC1pIGV0aDEgLWogQUNDRVBUDQppcHRh
+YmxlcyAtQSBGT1JXQVJEIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBB
+Q0NFUFQNCg0KIyAoNSkgT1VUUFVUIGNoYWluIHJ1bGVzDQojIE9ObHkgb3V0cHV0IHBhY2tldHMg
+d2l0aCBsb2NhbCBhZGRyZXNzIChubyBzcG9vZmluZykNCmlwdGFibGVzIC1BIE9VVFBVVCAtcCBB
+TEwgLXMgMTI3LjAuMC4xIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgT1VUUFVUIC1wIEFMTCAtcyAx
+MC42MC45MC41IC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgT1VUUFVUIC1wIEFMTCAtcyAxOTIuMTY4
+LjEwLjUgLWogQUNDRVBUDQoNCiMgKDYpIGR5bmFtaWMgTkFUIHRvIGRvIHBvcnQgZm9yd2FyZGlu
+Zw0KaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLXAgdGNwIC1kIDE5Mi4xNjguMTAuNSAt
+LWRwb3J0IDgwIC1qIEROQVQgLS10by1kZXN0aW5hdGlvbiAxMC42MC45MC43DQo=
+
+--0__=EABBE655DFBC389A8f9e8a93df938690918cEABBE655DFBC389A--
 
 
