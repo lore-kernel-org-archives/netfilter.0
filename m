@@ -1,14 +1,11 @@
-From: test@seaconindia.com
-Subject: Re: DNAT Problem
-Date: Tue, 20 Apr 2004 10:01:31 +0530 (IST)
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Compiling ip_[conntrack|nat]_pptp
+Date: Tue, 20 Apr 2004 07:46:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1061.80.0.0.23.1082435491.squirrel@80.0.0.175>
-References: <1611.80.0.0.23.1082351242.squirrel@80.0.0.175>
-    <4083D765.7000000@newkirk.us>
+Message-ID: <20040420054614.AB314398@sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4083D765.7000000@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,82 +16,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Joel Newkirk <firewalldude@newkirk.us>
-Cc: netfilter@lists.netfilter.org
+To: 'Netfilter' <netfilter@lists.netfilter.org>
 
-Hi Joel
+Hi,
 
-> test@seaconindia.com wrote:
->
->>Hi All
->>
->>I am new to Iptables & Firewall. I have 2 servers (web & email) running
->>behind firewall. I have DNAT rule on my firewall, so any request hitting
->>on port 25, 80, 110 are DNAT to internal servers. Inturn my internal
->>servers (web & email) feel these requests were received from firewall ie
->>internal ip and can be trusted.
->>
->>I want these DNAT request to be forward with their original ip address
->> and
->>not as coming from firewall ip.
->>
->>Please advice my firewall rule is as follows :
->>
->>iptables -t nat -A PREROUTING -p tcp -i eth1 --dport 25 -j DNAT --to
->>192.168.0.175:25
->>
->>Regards
->>
->>Joel
->>
-> The way DNAT works it changes ONLY the Destination IP, not the Source
-> IP, so the packets WILL still appear to be from the original source.  If
-> you are NOT seeing them as such, then you have a SNAT rule affecting
-> them, perhaps something like:
->
-> iptables -t nat -A POSTROUTING -j MASQUERADE
-> or
-> iptables -t nat -A POSTROUTING -j SNAT --to 192.168.0.254
->
+I compiled kernel 2.4.26 with pom-ng-17042004 and applied (amongst others)
+the pptp patch.
+Everything compiles fine except for that patch.
 
-Yes I do have "iptables -t nat -A POSTROUTING -j MASQUERADE"
+When I do a "make modules_install", the last lines are :
 
-> The solution, if this is the case, is to tie the MASQUERADE or SNAT rule
-> to a particular interface:
->
-> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
->
-> And make sure that if for some reason you DO need to SNAT traffic from
-> the firewall inward (out the 'private' nic), you can restrict that
-> action to particular source IPs or networks (-s a.b.c.d) etc to ensure
-> that /only/ the traffic you need to have a different source IP will in
-> fact get one.
->
-> Note that this will prevent computers on the LAN from reaching these
-> servers at their public IPs. (client connects to public IP, which is
-> firewall, which DNATs traffic back to LAN IP of server, which tries to
-> reply directly to client awaiting reply from public IP) If you need to
-> connect to the local servers, you either need to use the local IPs, or
-> use a SNAT like:
->
-> iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -j SNAT --to
-> 192.168.0.254
->
-> This way, the ONLY traffic from the firewall to the LAN that is SNATted
-> is traffic that came from the LAN originally - in most cases, this is
-> the only SNAT that should be performed on the 'local' interface of the
-> firewall.
->
-> j
->
+if [ -r System.map ]; then /sbin/depmod -ae -F System.map  2.4.26-4; fi
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.26-4/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o
+depmod:         ip_ct_gre_keymap_add
+depmod:         ip_ct_gre_keymap_destroy
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.26-4/kernel/net/ipv4/netfilter/ip_nat_pptp.o
+depmod:         ip_ct_gre_keymap_change
 
-But Joel can you please advice me what rule set should I use on my
-firewall. I want users from outside to come in for POP & SMTP. But I want
-their request to be forwarded with their real ips and not firewall ip.
+I notice in /lib/modules/2.4.26-4/kernel/net/ipv4/netfilter that there are
+ip_conntrack_pptp.o and ip_nat_pptp.o but I don't have a
+ip_conntrack_proto_gre.o which I do have on my "old" iptables box.
 
-Thanks for your help
+Kernel config snip :
 
-Regards
+#
+# Networking options
+#
+...
+CONFIG_NET_IPGRE=m
 
-Joel
+#
+#   IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=m
+...
+CONFIG_IP_NF_PPTP=m
+# CONFIG_IP_NF_PPTP_DEBUG is not set
+...
+CONFIG_IP_NF_NAT_PPTP=m
+
+
+And that's about all I can find about GRE and PPTP in .config.
+Could somebody please tell me what I'm doing wrong ?
+
+
+Gr,
+Rob
+
 
