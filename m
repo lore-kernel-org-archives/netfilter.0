@@ -1,13 +1,12 @@
-From: seberino@spawar.navy.mil
-Subject: Re: anyone gotta iptables NAT script that works with PPPoE??
-Date: Wed, 5 Feb 2003 13:08:08 -0800
+From: "Tim Roberts" <techlists@dsslink.net>
+Subject: Bridging Firewall
+Date: Wed, 5 Feb 2003 17:01:45 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030205130808.A24285@spawar.navy.mil>
-References: <20030203172351.A2311@spawar.navy.mil> <20030204030913.GH4037@petersen-arne.com>
+Message-ID: <000c01c2cd62$2c9e82f0$8c7aad41@everity.net>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0009_01C2CD38.43A4C650"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030204030913.GH4037@petersen-arne.com>; from coryp@petersen-arne.com on Mon, Feb 03, 2003 at 07:09:14PM -0800
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,241 +16,570 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Cory Petkovsek <coryp@petersen-arne.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Cory
+This is a multi-part message in MIME format.
 
-Thanks so much for the help.
-Firewall can connect to Internet without iptables... 
-it can ping and ssh various hostnames, etc.
+------=_NextPart_000_0009_01C2CD38.43A4C650
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The only catch is getting NAT/iptables to work.
+Hi, I successfully configured (I think) a bridging firewall using Script =
+provided in David Whitmarsh's how too at =
+http://www.sparkle-cc.co.uk/firewall/firewall.html I have a few =
+questions as I am trying VERY hard to never have to see a Windows =
+XXAnything disc again.
 
-Here is my old firewall script that worked perfectly
-with static ips & 3 NICs -- 1 for internet and 2 for private lan.
-It did NAT and iptables great.  I just assumed the only change for PPPoE
-was making $INTERNET_INTERFACE be ppp0 (instead of eth2)
-and setting $INTERNET_ADDRESS to whatever PPPoE said it was.
-(This is tricky since PPPoE has an "internet address" and
-a "point to point address"... neither worked for $INTERNET_ADDRESS.)
+1.) I do not see anything other than IPTables starting up and =
+learning.......in /var/log/messages. I have unremarked kernal* to point =
+to /var/log/messages. I think the only logging being done is if a DOS =
+occurrs. Based on his script, how do I enable more or any logging that =
+will show me a little or alot of something? :)
 
-If the bug was obvious to you and you told me I would be
-eternally grateful.
+2.) I have 2 NIC's both public (which is why I choose to bridge) In this =
+script, I enabled the option to allow remote access from my LAN. However =
+I cannot even ping.....from inside the LAN ,the specified address in the =
+script to the firewall.
 
-Sincerely,
+3.) The firewall cannot ping outside the LAN (which I could care less) =
+but Im getting messages when the script runs that the machine cannot =
+lookup or resolve FQDN's specified to be blocked.=20
 
-Chris
 
+
+Any help is greatly appreciated. Below is the script after I modified =
+it.  I am using REDHat 8.0 with IPTables Bridg Util Patch.
+
+Tim Roberts
+techlists@dsslink.net
 #!/bin/sh
+#
+# rc.firewall - Initial SIMPLE IP Firewall test script for 2.4.x
+#
+# Author: David Whitmarsh
+# (c) 2001, 2002 Sparkle Computer Co ltd.
+# based on rc.firewall by Oskar Andreasson <blueflux@koffein.net>
+# parts (c) of BoingWorld.com, use at your own risk,
+# do whatever you please with
+# it as long as you don't distribute this without due credits to
+# BoingWorld.com and Sparkle Computer Co Ltd
+#
 
-# Definitions
+###########
+# Configuration options, these will speed you up getting this script to
+# work with your own setup.
 
-IPTABLES="/usr/sbin/iptables"
+#
+# your LAN's IP range and localhost IP. /24 means to only use the first =
+24=20
+# bits of the 32 bit IP adress. the same as netmask 255.255.255.0
+#
+# BR_IP is used to access the firewall accross the network
+# For maxium security don't set one up - but then you must do
+# everything directly on the firewall.
 
-LOOPBACK_INTERFACE="lo"
-PROTECTED_NETWORK_INTERFACE_0="eth0"
-PROTECTED_NETWORK_INTERFACE_1="eth1"
-INTERNET_INTERFACE="eth2"
+BR_IP=3D65.173.10.254
+BR_IFACE=3Dbr0
 
-INTERNET_ADDRESS="24.30.154.55"
-PROTECTED_SERVER_ADDRESS="192.168.1.2"
+LAN_BCAST_ADDRESS=3D65.173.13.255
+INTERNAL_ADDRESS_RANGE=3D65.173.120.0/22
 
-PROTECTED_NETWORK_0="192.168.1.0/29"
-PROTECTED_NETWORK_1="192.168.2.0/29"
-PROTECTED_NETWORK_SPACE="192.168.0.0/16"
-RESERVED_NETWORKS="                                                           \
-   0.0.0.0/8   1.0.0.0/8   2.0.0.0/8   5.0.0.0/8     7.0.0.0/8   10.0.0.0/8   \
-   23.0.0.0/8  27.0.0.0/8  31.0.0.0/8  36.0.0.0/8    37.0.0.0/8  39.0.0.0/8   \
-   41.0.0.0/8  42.0.0.0/8  58.0.0.0/8  59.0.0.0/8    60.0.0.0/8  69.0.0.0/8   \
-   70.0.0.0/8  71.0.0.0/8  72.0.0.0/8  73.0.0.0/8    74.0.0.0/8  75.0.0.0/8   \
-   76.0.0.0/8  77.0.0.0/8  78.0.0.0/8  79.0.0.0/8    80.0.0.0/8  82.0.0.0/8   \
-   83.0.0.0/8  84.0.0.0/8  85.0.0.0/8  86.0.0.0/8    87.0.0.0/8  88.0.0.0/8   \
-   89.0.0.0/8  90.0.0.0/8  91.0.0.0/8  92.0.0.0/8    93.0.0.0/8  94.0.0.0/8   \
-   95.0.0.0/8  96.0.0.0/8  97.0.0.0/8  98.0.0.0/8    99.0.0.0/8  100.0.0.0/8  \
-   101.0.0.0/8 102.0.0.0/8 103.0.0.0/8 104.0.0.0/8   105.0.0.0/8 106.0.0.0/8  \
-   107.0.0.0/8 108.0.0.0/8 109.0.0.0/8 110.0.0.0/8   111.0.0.0/8 112.0.0.0/8  \
-   113.0.0.0/8 114.0.0.0/8 115.0.0.0/8 116.0.0.0/8   117.0.0.0/8 118.0.0.0/8  \
-   119.0.0.0/8 120.0.0.0/8 121.0.0.0/8 122.0.0.0/8   123.0.0.0/8 124.0.0.0/8  \
-   125.0.0.0/8 126.0.0.0/8 127.0.0.0/8 172.16.0.0/12 197.0.0.0/8 201.0.0.0/8  \
-   217.0.0.0/8 218.0.0.0/8 219.0.0.0/8 220.0.0.0/8   221.0.0.0/8 222.0.0.0/8  \
-   223.0.0.0/8 224.0.0.0/4 240.0.0.0/5 241.0.0.0/8   242.0.0.0/8 243.0.0.0/8  \
-   244.0.0.0/8 245.0.0.0/8 246.0.0.0/8 247.0.0.0/8   248.0.0.0/8 249.0.0.0/8  \
-   250.0.0.0/8 251.0.0.0/8 252.0.0.0/8 253.0.0.0/8   254.0.0.0/8 255.0.0.0/8  "
+INET_IFACE=3D"eth1"
+LAN_IFACE=3D"eth0"
 
-CLOSED_TCP_PORTS="2049 6000:6063 20034 12345:12346 27374 27665 27444 27444    \
-                  31335 10498 12754"
-CLOSED_UDP_PORTS="2049 31337 27444 31335 10498"
+LO_IFACE=3D"lo"
+LO_IP=3D"127.0.0.1"
 
-# Initialization
+IPTABLES=3D"/sbin/iptables"
 
-$IPTABLES -t filter -F
-$IPTABLES -t mangle -F
-$IPTABLES -t nat    -F 
+#########
+# Load all required IPTables modules
+#
 
-$IPTABLES -t filter -X
-$IPTABLES -t mangle -X
-$IPTABLES -t nat    -X
+#
+# Needed to initially load modules
+#
+/sbin/depmod -a
 
-$IPTABLES -t filter -P INPUT   DROP
-$IPTABLES -t filter -P OUTPUT  DROP
-$IPTABLES -t filter -P FORWARD DROP
+#
+# Adds some iptables targets like LOG, REJECT
+#
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_REJECT
 
-# Chains
+#
+# Support for connection tracking of FTP and IRC.
+#
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_conntrack_irc
 
-$IPTABLES -t filter -N DROP_RULES
+#
+# Take down the interfaces before setting up the bridge
+#
 
-   # Inappropriate packets
+ifdown $INET_IFACE
+ifdown $LAN_IFACE
+ifconfig $INET_IFACE 0.0.0.0
+ifconfig $LAN_IFACE 0.0.0.0
 
-   $IPTABLES -t filter -A DROP_RULES -m unclean                         -j DROP
-   $IPTABLES -t filter -A DROP_RULES -m state --state INVALID           -j DROP
-   $IPTABLES -t filter -A DROP_RULES -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-   $IPTABLES -t filter -A DROP_RULES -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-   $IPTABLES -t filter -A DROP_RULES -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
-   $IPTABLES -t filter -A DROP_RULES -p tcp --tcp-flags ACK,FIN FIN     -j DROP
-   $IPTABLES -t filter -A DROP_RULES -p tcp --tcp-flags ACK,PSH PSH     -j DROP
-   $IPTABLES -t filter -A DROP_RULES -p tcp --tcp-flags ACK,URG URG     -j DROP
-   $IPTABLES -t filter -A DROP_RULES -p tcp --tcp-flags ALL     NONE    -j DROP
+# Clean up for a restart
 
-   # Closed ports
+$IPTABLES -F=20
+$IPTABLES -X
+#
+# Set default policies for the INPUT, FORWARD and OUTPUT chains
+#
 
-   for PORT in $CLOSED_TCP_PORTS; do
-      $IPTABLES -t filter -A DROP_RULES -p tcp --sport $PORT -j DROP
-      $IPTABLES -t filter -A DROP_RULES -p tcp --dport $PORT -j DROP
-   done
-   for PORT in $CLOSED_UDP_PORTS; do
-      $IPTABLES -t filter -A DROP_RULES -p udp --sport $PORT -j DROP
-      $IPTABLES -t filter -A DROP_RULES -p udp --dport $PORT -j DROP
-   done
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -P FORWARD DROP
 
-   # Reserved networks
+# Our interfaces don't have IP addresses so we have to start with the =
+mangle
+# PREROUTING table
 
-   for NETWORK in $RESERVED_NETWORKS; do
-      $IPTABLES -t filter -A DROP_RULES -s $NETWORK -j DROP
-      $IPTABLES -t filter -A DROP_RULES -d $NETWORK -j DROP
-   done
+$IPTABLES -t mangle -P PREROUTING DROP
 
-# Rules
+# Now we are pretty secure, let's start the bridge
+# This will create a new interface
 
-$IPTABLES -t filter -A INPUT  -i $LOOPBACK_INTERFACE -j ACCEPT
-$IPTABLES -t filter -A OUTPUT -o $LOOPBACK_INTERFACE -j ACCEPT
+brctl addbr $BR_IFACE
 
-$IPTABLES -t filter -A INPUT   -j DROP_RULES
-$IPTABLES -t filter -A OUTPUT  -j DROP_RULES
-$IPTABLES -t filter -A FORWARD -j DROP_RULES
+# and add the interfaces to it
+brctl addif $BR_IFACE $INET_IFACE
+brctl addif $BR_IFACE $LAN_IFACE
 
-$IPTABLES -t filter -A INPUT       -i $INTERNET_INTERFACE                     \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $INTERNET_ADDRESS                \
-          -m state --state ESTABLISHED,RELATED                                \
-          -j ACCEPT
-$IPTABLES -t filter -A OUTPUT      -o $INTERNET_INTERFACE                     \
-          -s   $INTERNET_ADDRESS        -d ! $PROTECTED_NETWORK_SPACE         \
-          -j ACCEPT
+# make us visible to the network again (optional)
+if [ "$BR_IP" !=3D "" ] ; then
+    ifconfig $BR_IFACE $BR_IP
+else
+# otherwise we must at least bring the interface up for the bridge to =
+work.
+    ifconfig $BR_IFACE up
+fi
 
-$IPTABLES -t filter -A FORWARD     -i $PROTECTED_NETWORK_INTERFACE_0          \
-          -s   $PROTECTED_NETWORK_0     -d ! $PROTECTED_NETWORK_SPACE         \
-          -j ACCEPT
-$IPTABLES -t filter -A FORWARD     -o $PROTECTED_NETWORK_INTERFACE_0          \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $PROTECTED_NETWORK_0             \
-          -j ACCEPT
+# Block obvious spoofs
 
-$IPTABLES -t filter -A FORWARD     -i $PROTECTED_NETWORK_INTERFACE_1          \
-          -s   $PROTECTED_NETWORK_1     -d ! $PROTECTED_NETWORK_SPACE         \
-          -j ACCEPT
-$IPTABLES -t filter -A FORWARD     -o $PROTECTED_NETWORK_INTERFACE_1          \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $PROTECTED_NETWORK_1             \
-          -j ACCEPT
+$IPTABLES -t mangle -A PREROUTING -s 192.168.0.0/16 -j DROP
+$IPTABLES -t mangle -A PREROUTING -s 10.0.0.0/8 -j DROP
+$IPTABLES -t mangle -A PREROUTING -s 172.16.0.0/12 -j DROP
 
-$IPTABLES -t filter -A FORWARD     -i $INTERNET_INTERFACE                     \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $PROTECTED_SERVER_ADDRESS        \
-          -p tcp --dport ssh                                                  \
-          -j ACCEPT
-$IPTABLES -t filter -A FORWARD     -o $INTERNET_INTERFACE                     \
-          -s   $PROTECTED_NETWORK_0     -d ! $PROTECTED_NETWORK_SPACE         \
-          -j ACCEPT
-$IPTABLES -t filter -A FORWARD     -o $INTERNET_INTERFACE                     \
-          -s   $PROTECTED_NETWORK_1     -d ! $PROTECTED_NETWORK_SPACE         \
-          -j ACCEPT
+# Accept internal packets on the internal i/f
+$IPTABLES -t mangle -A PREROUTING -i $LAN_IFACE -s =
+$INTERNAL_ADDRESS_RANGE -j ACCEPT
 
-$IPTABLES -t nat    -A PREROUTING  -i $INTERNET_INTERFACE                     \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $INTERNET_ADDRESS                \
-          -p tcp --dport ssh                                                  \
-          -j DNAT --to-destination $PROTECTED_SERVER_ADDRESS
-$IPTABLES -t nat    -A POSTROUTING -o $INTERNET_INTERFACE                     \
-          -s   $PROTECTED_NETWORK_0     -d ! $PROTECTED_NETWORK_SPACE         \
-          -j SNAT --to-source      $INTERNET_ADDRESS
-$IPTABLES -t nat    -A POSTROUTING -o $INTERNET_INTERFACE                     \
-          -s   $PROTECTED_NETWORK_1     -d ! $PROTECTED_NETWORK_SPACE         \
-          -j SNAT --to-source      $INTERNET_ADDRESS
+# Accept external packets on the external i/f
 
-# Kernel configuration
+$IPTABLES -t mangle -A PREROUTING -i $INET_IFACE ! -s =
+$INTERNAL_ADDRESS_RANGE -j ACCEPT
 
-echo "1" > /proc/sys/net/ipv4/ip_forward
+#
+# Accept the packets we actually want to forward
+#
 
+$IPTABLES -A FORWARD -p ALL -s $INTERNAL_ADDRESS_RANGE -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT=20
+$IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG =
+--log-level 7 --log-prefix "IPT FORWARD packet died: "
 
+#
+# Create separate chains for ICMP, TCP and UDP to traverse
+#
 
+$IPTABLES -N icmp_packets
+#
+# ICMP rules
+#
 
-On Mon, Feb 03, 2003 at 07:09:14PM -0800, Cory Petkovsek wrote:
-> Chris,
-> Did you follow the information on this page?
-> http://nekohako.xware.cx/tech/adsl-2.4.html
-> 
-> If so how far did you get?  It included information about kernel modules
-> for pppoe or a link to the roaring penguin pppoe driver as well as
-> portions of a firewall script.
-> 
-> Do you currently have full internet connectivity from the firewall with
-> no iptables rules in place (iptables -F ; iptables -t nat -F)?  Can you
-> do these three things:
-> nslookup www.google.com
-> ping www.google.com
-> lynx www.google.com
-> 
-> Cory
-> 
-> On Mon, Feb 03, 2003 at 05:23:52PM -0800, seberino@spawar.navy.mil wrote:
-> > I'm throwing up the white flag in trying
-> > to make my own firewall NAT script that
-> > works with PPPoE. 
-> > 
-> > Anyone got an iptables script they can
-> > email me that works with NAT and PPPoE??
-> > 
-> > Chris
-> > -- 
-> > _______________________________________
-> > 
-> > Dr. Christian Seberino
-> > SPAWAR Systems Center San Diego
-> > Code 2872
-> > San Diego, CA 92152-6147
-> > U.S.A.
-> > 
-> > Phone: (619) 553-9973
-> > Fax:
-> > Email: seberino@spawar.navy.mil
-> > _______________________________________
-> > 
-> > -- 
-> >   http://www.kernel-panic.org
-> >   list archives http://www.ultraviolet.org
-> >   To unsubscribe, send a message to the address shown in the list-unsubscribe
-> >   header of this message.
-> > 
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 0 -j ACCEPT	# echo =
+reply
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 3 -j ACCEPT	# dest =
+unreachable
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 5 -j ACCEPT	# =
+redirect
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT	# time =
+exceeded
+$IPTABLES -A FORWARD -p ICMP -j icmp_packets
 
--- 
-_______________________________________
+#
+# UDP ports
+#
+$IPTABLES -N udpincoming_packets
 
-Dr. Christian Seberino
-SPAWAR Systems Center San Diego
-Code 2872
-San Diego, CA 92152-6147
-U.S.A.
+$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 53 -j =
+ACCEPT	# DNS
+$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 123 -j =
+ACCEPT	# ntp
+#$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 2074 -j =
+ACCEPT	# speakfreely
+#$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 4000 -j =
+ACCEPT	#icq
 
-Phone: (619) 553-9973
-Fax:
-Email: seberino@spawar.navy.mil
-_______________________________________
+$IPTABLES -A FORWARD -p UDP -j udpincoming_packets
+
+#
+
+$IPTABLES -N tcp_packets
+
+#
+# The allowed chain for TCP connections
+#
+
+$IPTABLES -N allowed
+$IPTABLES -A allowed -p TCP --syn -j ACCEPT
+$IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j =
+ACCEPT
+$IPTABLES -A allowed -p TCP -j DROP
+
+# TCP rules
+#
+
+#
+# Bad TCP packets we don't want
+#
+
+$IPTABLES -A tcp_packets -p tcp ! --syn -m state --state NEW -j LOG =
+--log-prefix "New not syn:"
+$IPTABLES -A tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+
+$IPTABLES -A tcp_packets -p TCP -s 0/0 -d springfield.sparkle-cc.co.uk =
+--dport 80 -j allowed # smtp
+$IPTABLES -A tcp_packets -p TCP -s 0/0 -d lisa.sparkle-cc.co.uk --dport =
+6346 -j allowed # gnutella
+$IPTABLES -A tcp_packets -p TCP -s 0/0 -d springfield.sparkle-cc.co.uk =
+--dport 25 -j allowed # smtp
+
+$IPTABLES -A FORWARD -p TCP -j tcp_packets
+
+#
+# Input to the firewall itself. Leave these out if you don't want the =
+firewall
+# to be visible on the network at all.
+# Note that the PREROUTING restrictions above mean that only packets =
+form inside
+# the firewall can fulfill the source condition. So the firewall machine =
+should not be
+# visible to the internet.
+#
+
+$IPTABLES -A INPUT -p ALL -i $BR_IFACE -s $INTERNAL_ADDRESS_RANGE -d =
+$LAN_BCAST_ADDRESS -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $BR_IFACE -s $INTERNAL_ADDRESS_RANGE -d =
+$BR_IP -j ACCEPT
+
+# But you *will* need this
+
+$IPTABLES -A INPUT -p ALL -i $LO_IFACE -d $LO_IP -j ACCEPT
+
+$IPTABLES -A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG =
+--log-level 7 --log-prefix "IPT INPUT packet died: "
+
+#
+# OUTPUT chain
+#
+
+$IPTABLES -A OUTPUT -p tcp ! --syn -m state --state NEW -j LOG =
+--log-prefix "New not syn:"
+$IPTABLES -A OUTPUT -p tcp ! --syn -m state --state NEW -j DROP
+
+$IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -s $BR_IP -j ACCEPT
+$IPTABLES -A OUTPUT -m limit --limit 3/minute --limit-burst 3 -j LOG =
+--log-level 7 --log-prefix "IPT OUTPUT packet died: "
+
+------=_NextPart_000_0009_01C2CD38.43A4C650
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi, I successfully configured (I think) =
+a bridging=20
+firewall using Script provided in David Whitmarsh's how too at <A=20
+href=3D"http://www.sparkle-cc.co.uk/firewall/firewall.html">http://www.sp=
+arkle-cc.co.uk/firewall/firewall.html</A>=20
+I have a few questions as I am trying VERY hard to never have to see a =
+Windows=20
+XXAnything disc again.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>1.) I do not see anything other than =
+IPTables=20
+starting up and learning.......in /var/log/messages. I have unremarked =
+kernal*=20
+to point to /var/log/messages. I think the only logging being done is if =
+a DOS=20
+occurrs. Based on his script, how do I enable more or any logging that =
+will show=20
+me a little or alot of&nbsp;something? :)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>2.) I have 2 NIC's both public (which =
+is why I=20
+choose to bridge) In this script, I enabled the option to allow remote =
+access=20
+from my LAN. However I cannot even ping.....from inside the LAN ,the =
+specified=20
+address in the script to the firewall.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>3.) The firewall cannot ping outside =
+the LAN (which=20
+I could care less) but Im getting messages when the script runs that the =
+machine=20
+cannot lookup or resolve FQDN's specified to be blocked. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Any help is greatly appreciated. Below =
+is the=20
+script after I modified it.&nbsp; I am using REDHat 8.0 with IPTables =
+Bridg Util=20
+Patch.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Tim Roberts</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>techlists@dsslink.net</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><PRE>#!/bin/sh
+#
+# rc.firewall - Initial SIMPLE IP Firewall test script for 2.4.x
+#
+# Author: David Whitmarsh
+# (c) 2001, 2002 Sparkle Computer Co ltd.
+# based on rc.firewall by Oskar Andreasson &lt;blueflux@koffein.net&gt;
+# parts (c) of BoingWorld.com, use at your own risk,
+# do whatever you please with
+# it as long as you don't distribute this without due credits to
+# BoingWorld.com and Sparkle Computer Co Ltd
+#
+
+###########
+# Configuration options, these will speed you up getting this script to
+# work with your own setup.
+
+#
+# your LAN's IP range and localhost IP. /24 means to only use the first =
+24=20
+# bits of the 32 bit IP adress. the same as netmask 255.255.255.0
+#
+# BR_IP is used to access the firewall accross the network
+# For maxium security don't set one up - but then you must do
+# everything directly on the firewall.
+
+BR_IP=3D65.173.10.254
+BR_IFACE=3Dbr0
+
+LAN_BCAST_ADDRESS=3D65.173.13.255
+INTERNAL_ADDRESS_RANGE=3D65.173.120.0/22
+
+INET_IFACE=3D"eth1"
+LAN_IFACE=3D"eth0"
+
+LO_IFACE=3D"lo"
+LO_IP=3D"127.0.0.1"
+
+IPTABLES=3D"/sbin/iptables"
+
+#########
+# Load all required IPTables modules
+#
+
+#
+# Needed to initially load modules
+#
+/sbin/depmod -a
+
+#
+# Adds some iptables targets like LOG, REJECT
+#
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_REJECT
+
+#
+# Support for connection tracking of FTP and IRC.
+#
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_conntrack_irc
+
+#
+# Take down the interfaces before setting up the bridge
+#
+
+ifdown $INET_IFACE
+ifdown $LAN_IFACE
+ifconfig $INET_IFACE 0.0.0.0
+ifconfig $LAN_IFACE 0.0.0.0
+
+# Clean up for a restart
+
+$IPTABLES -F=20
+$IPTABLES -X
+#
+# Set default policies for the INPUT, FORWARD and OUTPUT chains
+#
+
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -P FORWARD DROP
+
+# Our interfaces don't have IP addresses so we have to start with the =
+mangle
+# PREROUTING table
+
+$IPTABLES -t mangle -P PREROUTING DROP
+
+# Now we are pretty secure, let's start the bridge
+# This will create a new interface
+
+brctl addbr $BR_IFACE
+
+# and add the interfaces to it
+brctl addif $BR_IFACE $INET_IFACE
+brctl addif $BR_IFACE $LAN_IFACE
+
+# make us visible to the network again (optional)
+if [ "$BR_IP" !=3D "" ] ; then
+    ifconfig $BR_IFACE $BR_IP
+else
+# otherwise we must at least bring the interface up for the bridge to =
+work.
+    ifconfig $BR_IFACE up
+fi
+
+# Block obvious spoofs
+
+$IPTABLES -t mangle -A PREROUTING -s 192.168.0.0/16 -j DROP
+$IPTABLES -t mangle -A PREROUTING -s 10.0.0.0/8 -j DROP
+$IPTABLES -t mangle -A PREROUTING -s 172.16.0.0/12 -j DROP
+
+# Accept internal packets on the internal i/f
+$IPTABLES -t mangle -A PREROUTING -i $LAN_IFACE -s =
+$INTERNAL_ADDRESS_RANGE -j ACCEPT
+
+# Accept external packets on the external i/f
+
+$IPTABLES -t mangle -A PREROUTING -i $INET_IFACE ! -s =
+$INTERNAL_ADDRESS_RANGE -j ACCEPT
+
+#
+# Accept the packets we actually want to forward
+#
+
+$IPTABLES -A FORWARD -p ALL -s $INTERNAL_ADDRESS_RANGE -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT=20
+$IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG =
+--log-level 7 --log-prefix "IPT FORWARD packet died: "
+
+#
+# Create separate chains for ICMP, TCP and UDP to traverse
+#
+
+$IPTABLES -N icmp_packets
+#
+# ICMP rules
+#
+
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 0 -j ACCEPT	# echo =
+reply
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 3 -j ACCEPT	# dest =
+unreachable
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 5 -j ACCEPT	# =
+redirect
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT	# time =
+exceeded
+$IPTABLES -A FORWARD -p ICMP -j icmp_packets
+
+#
+# UDP ports
+#
+$IPTABLES -N udpincoming_packets
+
+$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 53 -j =
+ACCEPT	# DNS
+$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 123 -j =
+ACCEPT	# ntp
+#$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 2074 -j =
+ACCEPT	# speakfreely
+#$IPTABLES -A udpincoming_packets -p UDP -s 0/0 --source-port 4000 -j =
+ACCEPT	#icq
+
+$IPTABLES -A FORWARD -p UDP -j udpincoming_packets
+
+#
+
+$IPTABLES -N tcp_packets
+
+#
+# The allowed chain for TCP connections
+#
+
+$IPTABLES -N allowed
+$IPTABLES -A allowed -p TCP --syn -j ACCEPT
+$IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j =
+ACCEPT
+$IPTABLES -A allowed -p TCP -j DROP
+
+# TCP rules
+#
+
+#
+# Bad TCP packets we don't want
+#
+
+$IPTABLES -A tcp_packets -p tcp ! --syn -m state --state NEW -j LOG =
+--log-prefix "New not syn:"
+$IPTABLES -A tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+
+$IPTABLES -A tcp_packets -p TCP -s 0/0 -d springfield.sparkle-cc.co.uk =
+--dport 80 -j allowed # smtp
+$IPTABLES -A tcp_packets -p TCP -s 0/0 -d lisa.sparkle-cc.co.uk --dport =
+6346 -j allowed # gnutella
+$IPTABLES -A tcp_packets -p TCP -s 0/0 -d springfield.sparkle-cc.co.uk =
+--dport 25 -j allowed # smtp
+
+$IPTABLES -A FORWARD -p TCP -j tcp_packets
+
+#
+# Input to the firewall itself. Leave these out if you don't want the =
+firewall
+# to be visible on the network at all.
+# Note that the PREROUTING restrictions above mean that only packets =
+form inside
+# the firewall can fulfill the source condition. So the firewall machine =
+should not be
+# visible to the internet.
+#
+
+$IPTABLES -A INPUT -p ALL -i $BR_IFACE -s $INTERNAL_ADDRESS_RANGE -d =
+$LAN_BCAST_ADDRESS -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $BR_IFACE -s $INTERNAL_ADDRESS_RANGE -d =
+$BR_IP -j ACCEPT
+
+# But you *will* need this
+
+$IPTABLES -A INPUT -p ALL -i $LO_IFACE -d $LO_IP -j ACCEPT
+
+$IPTABLES -A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG =
+--log-level 7 --log-prefix "IPT INPUT packet died: "
+
+#
+# OUTPUT chain
+#
+
+$IPTABLES -A OUTPUT -p tcp ! --syn -m state --state NEW -j LOG =
+--log-prefix "New not syn:"
+$IPTABLES -A OUTPUT -p tcp ! --syn -m state --state NEW -j DROP
+
+$IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -s $BR_IP -j ACCEPT
+$IPTABLES -A OUTPUT -m limit --limit 3/minute --limit-burst 3 -j LOG =
+--log-level 7 --log-prefix "IPT OUTPUT packet died: "
+</PRE></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0009_01C2CD38.43A4C650--
+
 
