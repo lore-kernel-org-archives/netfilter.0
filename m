@@ -1,10 +1,10 @@
-From: "Marco Balle" <mb@monsterserver.de>
-Subject: iptables source net and layer7
-Date: Sat, 23 Oct 2004 14:16:38 +0200
+From: "John Wells" <lists@sourceillustrated.com>
+Subject: icmp unreachable - need to frag
+Date: Sun, 24 Oct 2004 01:50:06 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200410231216.i9NCGIew025529@web01.monsterserver.de>
+Message-ID: <1865.172.16.3.2.1098597006.squirrel@172.16.3.2>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,59 +18,93 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello!
+Gentlemen,
 
-I want to mark all outgoing traffic depending on its service.
-Example:
+I'm having a perplexing problem with icmp unreachable packets.  I'm
+running TaoLinux with kernel 2.4.21 and iptables v.1.2.8.
 
-eth0 = 192.168.0.1 (local interface)
-ppp0 = 80.10.10.10 (internet 1)
-ppp1 = 80.10.10.11 (internet 2)
+I have a network setup that includes a DSL connection to the internet, and
+internal lan, and an wireless lan that can connect to the internal lan via
+a PPTP VPN (due to lack of a good ipsec client for Mac OSX).
 
-http traffic over internet 1 (ppp0) ssh traffic to interface 2 (ppp1).
+It essentially looks like this:
 
-I tried the following (routing and rules are set):
-iptables -A PREROUTING -t mangle -s 192.168.0.0/24 -p tcp --dport 80 -j MARK
---set-mark 1
-iptables -A PREROUTING -t mangle -s 192.168.0.0/24 -p tcp --dport 22 -j MARK
---set-mark 2
+All wireless clients (after authenticated with PPTP): 192.168.0.0/24
+All internal LAN clients: 172.16.0.0/16
 
-This works fine, but only for standard ports. Now I would like to use
-layer7:
+A VPN server/router sits between the wireless and internal lan, with two
+interfaces enabled...one that has a 192.168.0.1 address, and one that has
+a 172.16.3.2 address.  The router takes traffic from the wireless clients
+and masquerades it into the internal network.  If the traffic from the
+wireless clients is destined for the Internet, the packets are again
+MASQ'd on that outbound connection from the internal lan.
 
-iptables -t mangle -A PREROUTING -s 192.168.0.0/24 -m layer7 --l7proto http
--j MARK --set-mark 1
-iptables -t mangle -A PREROUTING -s 192.168.0.0/24 -m layer7 --l7proto ftp
--j MARK --set-mark 2
+This has worked for some time with only one eMac (MacOSX) connecting from
+the wireless network.  No problems whatsoever.  However, this past week, I
+added a Windows XP laptop to the mix.  It appeared, at first, to be
+working, and indeed it is for most sites.  However, accessing certain
+sites from the laptop...slashdot, wikipedia, amazon.com, cause icmp
+unreachable messages to be sent.  For example, here's an attempt to
+connect to slashdot:
 
-Do not work. An iptables -t mange -L -n -v does not show traffic on the MARK
-rules.
+[root@airport scripts]# tcpdump host slashdot.org -l
+tcpdump: listening on eth0
+09:33:24.269454 172.16.3.2.1829 > slashdot.org.http: S
+3045606506:3045606506(0)
+win 16384 <mss 860,nop,nop,sackOK> (DF)
+09:33:27.224869 172.16.3.2.1829 > slashdot.org.http: S
+3045606506:3045606506(0)
+win 16384 <mss 860,nop,nop,sackOK> (DF)
+09:33:27.332020 slashdot.org.http > 172.16.3.2.1829: S
+911608977:911608977(0) ac
+k 3045606507 win 5840 <mss 1460,nop,nop,sackOK> (DF) [tos 0x20]
+09:33:27.336360 172.16.3.2.1829 > slashdot.org.http: . ack 1 win 17200 (DF)
+09:33:27.338073 172.16.3.2.1829 > slashdot.org.http: P 1:481(480) ack 1
+win 1720
+0 (DF)
+09:33:27.457883 slashdot.org.http > 172.16.3.2.1829: . ack 481 win 6432
+(DF) [to
+s 0x20]
+09:33:28.264668 slashdot.org.http > 172.16.3.2.1829: . 1:861(860) ack 481
+win 64
+32 (DF) [tos 0x20]
+09:33:28.265251 172.16.3.2 > slashdot.org: icmp: 172.16.3.2 unreachable -
+need t
+o frag (mtu 896) [tos 0xc0]
+09:33:28.269985 slashdot.org.http > 172.16.3.2.1829: . 861:1721(860) ack
+481 win
+ 6432 (DF) [tos 0x20]
+09:33:28.270114 172.16.3.2 > slashdot.org: icmp: 172.16.3.2 unreachable -
+need t
+o frag (mtu 896) [tos 0xc0]
+09:33:31.260505 slashdot.org.http > 172.16.3.2.1829: . 1:861(860) ack 481
+win 64
+32 (DF) [tos 0x20]
+09:33:31.260820 172.16.3.2 > slashdot.org: icmp: 172.16.3.2 unreachable -
+need t
+o frag (mtu 896) [tos 0xc0]
+09:33:37.261652 slashdot.org.http > 172.16.3.2.1829: . 1:861(860) ack 481
+win 64
+32 (DF) [tos 0x20]
+09:33:37.262174 172.16.3.2 > slashdot.org: icmp: 172.16.3.2 unreachable -
+need t
+o frag (mtu 896) [tos 0xc0]
 
-But if I do this without the source rule:
+I'm no expert regarding this sort of stuff, but logic suggested that the
+problem was with the mtu somewhere on the path.  I did note that the MTU
+on the ppp0 (pptp) interface was 896, so I tried increasing this value. 
+No luck, same behavior.  This was also true if I tried to lower it.
 
-iptables -t mangle -A PREROUTING -m layer7 --l7proto http -j MARK --set-mark
-1
+I'm at a loss for what to try, and my research hasn't run across anything
+substantial.  Scrapping the XP laptop is not an option, unfortunately. 
+The eMac continues to function fine on these sites, and I haven't run
+across anything glaringly obvious on the Windows side.
 
-The traffic is marked. Sure, I can not open a website because the incoming
-traffic is also marked and will go out to ppp0, but the layer7 works.
+Is this likely a misconfiguration on my part?  Has anyone experienced
+anything similar?
 
+I appreciate any insight you can provide.
 
-Now my question:
-
-If I would like to use layer7, is there a way to use a source rule too?
-Is there an other way to mark with layer7 only the http traffic with source
-net 192.168.0.0/24?
-
-
-Kernel 2.4.27 patched with kernel-2.4-layer7-0.9.1.patch
-iptables 1.2.11 patched with iptables-layer7-0.9.1.patch
-
-
-
-
-Thanks,
-
-Marco
-
+John
 
 
