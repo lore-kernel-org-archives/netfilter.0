@@ -1,9 +1,10 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: Forwarding Problems
-Date: Thu, 6 Mar 2003 13:10:33 -0500
+From: Jonathan Humphrey <jhumphrey@codemasters.com>
+Subject: Passive FTP through IPTables DNAT
+Date: Thu, 6 Mar 2003 18:20:51 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC64EC56@EXCHANGE>
+Message-ID: <4D613EBFB75BD6118A5B00508BEEC62C0111CB53@JESS>
 Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="----_=_NextPart_001_01C2E40C.F5F94881"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,50 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Patrick Ahler' <patrick@vikus.com>, netfilter EMAIL <netfilter@lists.netfilter.org>
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-You need to make sure you set your default (-P) policies first, THEN append
-your FORWARD chain ACCEPTs.  Iptables rules are built sequentially, so you
-have to do the more generic stuff first, then do more specific 
-exceptions afterwards.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
-1 Mead Way
-Bronxville, NY 10708
+------_=_NextPart_001_01C2E40C.F5F94881
+Content-Type: text/plain; charset="iso-8859-1"
 
+Does anyone have a working script for this?
 
+I'm attempting to hide a FTP server behind a Linux IPTables firewall using
+dnat but having problems
 
------Original Message-----
-From: Patrick Ahler [mailto:patrick@vikus.com]
-Sent: Thursday, March 06, 2003 11:56 AM
-To: netfilter EMAIL
-Subject: Forwarding Problems
+thx!
 
 
-I have iptables FORWARD chain working except for one minor detail... after I
-set all the ACCEPT rules, I want to set a drop rule/policy to the FORWARD
-CHAIN as well, thus dropping all the packets I haven't accepted. The problem
-is, if I use
+**********************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the system manager.
 
-iptables -A FORWARD -j DROP
-or
-iptables -P FORWARD DROP
+This footnote also confirms that this email message has been swept by
+MIMEsweeper for the presence of computer viruses.
 
-they will drop all packets including the ones I already ACCEPTed.
-
-example (want to allow all incoming and outgoing www traffic):
-iptables -A FORWARD -p tcp -d 192.168.1.0/24 --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp -d 192.168.1.0/24 --sport 80 -j ACCEPT
-iptables -A FORWARD -p tcp -s 192.168.1.0/24 --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp -s 192.168.1.0/24 --sport 80 -j ACCEPT
-iptables -A FORWARD -j DROP
-
-Any help is greatly appreciated
+**********************************************************************
 
 
+------_=_NextPart_001_01C2E40C.F5F94881
+Content-Type: text/html; charset="iso-8859-1"
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2656.60">
+<TITLE>Passive FTP through IPTables DNAT</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=2 FACE="Arial">Does anyone have a working script for this?</FONT>
+</P>
+
+<P><FONT SIZE=2 FACE="Arial">I'm attempting to hide a FTP server behind a Linux IPTables firewall using dnat but having problems</FONT>
+</P>
+
+<P><FONT SIZE=2 FACE="Arial">thx!</FONT>
+</P>
+
+<CODE><FONT SIZE=3><BR>
+<BR>
+**********************************************************************<BR>
+This email and any files transmitted with it are confidential and<BR>
+intended solely for the use of the individual or entity to whom they<BR>
+are addressed. If you have received this email in error please notify<BR>
+the system manager.<BR>
+<BR>
+This footnote also confirms that this email message has been swept by<BR>
+MIMEsweeper for the presence of computer viruses.<BR>
+<BR>
+**********************************************************************<BR>
+</FONT></CODE>
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2E40C.F5F94881--
 
