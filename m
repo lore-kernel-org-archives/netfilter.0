@@ -1,13 +1,13 @@
-From: "Timothy J. Miller" <tj.miller@javaspotlet.com>
-Subject: DHCP Help
-Date: Sun, 14 Sep 2003 07:46:45 -0500
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: Conntrack PPTP broken in 2.4.22 ?
+Date: Mon, 15 Sep 2003 10:58:04 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <767f9555.9555767f@idirliontech.com>
+Message-ID: <3F650E9C.4060209@snapgear.com>
+References: <000301c3791d$401bc4c0$f901010a@SC2003002>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-language: en
-Content-Disposition: inline
+In-Reply-To: <000301c3791d$401bc4c0$f901010a@SC2003002>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Enrico Demarin <enricod@videotron.ca>
+Cc: netfilter@lists.netfilter.org
 
-Hoping that someone can help me with my problem. I have a small lan segemented across two families of ip's on a quad card.
+Enrico Demarin wrote:
+> I think at this point I miss the functionality of the pptp_conntrack
+> module ? When is it necessary to load it ?
 
-eth0 ->  Public IP
-eth2 -> 10.2.3.1 -> internal DHCP for laptops
-eth3 -> 10.2.1.1 -> internal static ips for servers
+The module basically performs three tasks.
 
-My problem is that my users sometimes must perform an ipconfig /renew on their laptops to get access to the outside world.  My rules at this time are not very explicit but I am trying to change that and I can't seem to figure out what the heck is going on.  My rules look like:
+1. NAT of the callid
 
-ipables -A INPUT -i $DHCP_INTERFACE -s 0.0.0.0 -d 255.255.255.255 \
-        -p udp --sport 68 --dport 67 -j ACCEPT
+This ensures that the PPTP callid is unique per client/server pair.
+This is only necessary when you have multiple clients that are NATed
+to the same source address.  Without it, the server will get confused.
 
-iptables -A INPUT -i $DHCP_INTERFACE -s $DMZ \
-        -d $DMZ -p udp --sport 68 --dport 67 -j ACCEPT
+2. Tracking of gre connections
 
-iptables -A INPUT -i $DMZ_INTERFACE -s $DMZ -d 10.2.1.1 -j ACCEPT
+The gre connections are tracked as RELATED connections, which makes
+it easy to add a rule to let them through the firewall.
 
-One last note, eth2 and eth3 are connected to a switch and I am not sure if that is going to effect this or not but thought that it may be relevent in solving my issues.
+3. NAT of gre connections
 
-Any help or direction anyone can give is greatly appreciated.
+This ensures incoming gre packets are forwarded to the correct
+internal server/client.
 
-- Tim
+Since you typically only have one internal server, this is just a
+convenience which means you don't need to add a gre DNAT rule.
+
+However this is necessary if you have multiple clients that are NATed
+to the same source address, so that the firewall knows which client
+to forward the gre packet to.
+
+NAT of gre can also be helpful for a single client.  Without it,
+packets from the server may be dropped if the client hasn't sent
+a packet recently.  This is because you typically don't have a DNAT
+rule to forward gre to the client, so the client has to send the gre
+packet first to establish the conntrack, and this conntrack will
+timeout after 30-180 seconds of inactivity.  You can workaround
+this problem by configuring PPP to send LCP echoes to keep the
+conntrack active.
+
+-- 
+Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
+SnapGear - Custom Embedded Solutions and Security Appliances
 
 
