@@ -1,14 +1,14 @@
-From: Francois Chenais <francois@chenais.net>
-Subject: Re: redirect input SYN before forward to QUEUE
-Date: Tue, 11 Jun 2002 11:20:33 +0200
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: Too scared....
+Date: 11 Jun 2002 11:39:55 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020611112033.6db3a9b8.francois@chenais.net>
-References: <20020610181923.2a0030a3.francois@chenais.net>
-	<20020610184536.354c2fac.francois@chenais.net>
+Message-ID: <1023788396.2050.21.camel@billy.demon.nl>
+References: <E17HVTU-00062d-00@pooh.kjernsmo.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-6T5k35HvvsE/pxr5BLRw"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020610184536.354c2fac.francois@chenais.net>
+In-Reply-To: <E17HVTU-00062d-00@pooh.kjernsmo.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,126 +18,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.samba.org
-
-This works fine with another ethernet card !
-
-will netfilter support eth0:0 interfaces in the future ?
-
-	Fran=E7ois
+To: Kjetil Kjernsmo <kjetil@kjernsmo.net>
+Cc: netfilter@lists.samba.org
 
 
+--=-6T5k35HvvsE/pxr5BLRw
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+man, 2002-06-10 kl. 22:07 skrev Kjetil Kjernsmo:
+
+> I hope someone can take my paw and help me through the iptables setup,=20
+> because I'm a bit scared of the possibility of locking myself out of my=20
+> box...=20
+
+Den som intet v=E5ger, intet vinner :c)
+
+Do it.=20
+
+1: Make sure that you have a cron/at job running that kills and restarts
+your firewall scripts at intervals known to you. If you only have a
+minimum of services, they are patched up to the last version and all is
+more or less safe, then a ten-minute gap now and then can't hurt until
+your routine is established;
+
+2: If you're using ssh (which you are) to get to the machine, and since
+no-one can see what you're doing, cut out ftp and use scp - which also
+goes to port 22 and is *much* safer and better;
+
+3: In your firewall script, build in a rule that only lets in your IP
+number - or, even better, if your admin machine uses Ethernet for the
+connection, your MAC number.
+
+I've done all this out of Utrecht in Holland to a slave DNS name server
+in Dortmund, Germany, including weekly scp backups and goodness knows
+what else. I had no possibility of getting to that machine, once it was
+placed, and everything worked perfectly for months - never ever went
+wrong.
+
+Just leave yourself a back door, if you need it, until you've gained the
+confidence you need.
+
+Best,
+
+Tonni
+
+Sogning
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
 
 
-On Mon, 10 Jun 2002 18:45:36 +0200
-Francois Chenais <francois@chenais.net> wrote:
 
-  | Now I have put the good rule
-  |       iptables -A FORWARD -d 192.168.0.0/255.255.255.0 -p tcp --tcp-fla=
-gs SYN SYN -j QUEUE
-  |=20
-  | A is connected on B but with his own ip addr instead of the GW_Netfilte=
-r addr.
-  | the iptables -t nat -A POSTROUTING -j MASQUERADE seems to be ignored.
-  |=20
-  | Just another (important) information
-  |=20
-  | I use GW_netfilter eth0:0 device to go on network 192.168.0.0
-  |            and the eth0:0 device on B so that=20
-  |=20
-  | A, GW and B are all on the 192.168 network but only GW and B are on the=
- 192.168 one !
-  |=20
-  | =20
-  |          192.168.76
-  |    .______________.___________________________.
-  |    |              |                           |
-  |    |              |                           |
-  |    |             eth0                        eth0=20
-  |    |              |                           |
-  |    A             GW                           B
-  |                   |                           |
-  |               eth0:0------192.168.0----------eth0:0
-  |=20
-  |=20
-  |=20
-  |    is a better schema !
-  |=20
-  |=20
-  | 		Fran=E7ois
-  |=20
-  |=20
-  |     =20
-  |=20
-  |=20
-  |=20
-  | On Mon, 10 Jun 2002 18:19:23 +0200
-  | Francois Chenais <francois@chenais.net> wrote:
-  |=20
-  |   | Hello,=20
-  |   |        =20
-  |   |=20
-  |   |=20
-  |   |              192.168.76.0                   192.168.0.0
-  |   | 	A  -------------->  GW_Netfilter --------------------> B
-  |   |                               \      /
-  |   |                                 QUEUE
-  |   |                                   \
-  |   |                                 user APP
-  |   |=20
-  |   |=20
-  |   |=20
-  |   |   In fact, I would like to redirect all SYN packet comming from A t=
-o B
-  |   |   in target QUEUE for a user space check.
-  |   |=20
-  |   |   Here what I've done but doesn't work !:-|
-  |   |=20
-  |   |   on A=20
-  |   |   -----
-  |   |       route add -net 192.168.0.0 gw GW_Netfilter netmask 255.255.25=
-5.0=20
-  |   |=20
-  |   |=20
-  |   |   on GW_Netfilter
-  |   |   ---------------
-  |   |       echo 1 > /proc/sys/net/ipv4/ip_forward
-  |   |       iptables -t nat -A POSTROUTING -j MASQUERADE
-  |   |       iptables -A FORWARD -d 192.160.0.0/255.255.255.0 -p tcp --tcp=
--flags SYN SYN -j QUEUE
-  |   |       iptables -A INPUT -d 192.160.0.0/255.255.255.0 -p tcp --tcp-f=
-lags SYN SYN -j QUEUE
-  |   |  =20
-  |   |=20
-  |   |  user APP connected on hook 1 on the ip_queue
-  |   |  ---------------------------------------------
-  |   |=20
-  |   |=20
-  |   | 	What's wrong ?
-  |   |=20
-  |   | 	Thanks a lot
-  |   |=20
-  |   | 		Fran=E7ois
-  |   |=20
-  |   | --=20
-  |   | Woody 3.0
-  |   | Linux tanna 2.4.14 #3 SMP Thu Dec 6 14:04:03 CET 2001 i686 unknown
-  |   |=20
-  |   | PGP fingerprint : 9AFA 15EC 96C9 F607 EBC1  DD41 70C5 F0E0 25A5 105B
-  |   |=20
-  |   |=20
-  |   |=20
-  |   |=20
-  |   |=20
-  |   |=20
-  |   |  =20
-  |   |=20
-  |   | 	=20
-  |   |=20
-  |   |=20
-  |=20
-  |=20
-  |=20
+--=-6T5k35HvvsE/pxr5BLRw
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9BcVr99dgUTvnuYERAg3yAJoDHErDaBFi3fSwTBxvUQMnJPZ3ZQCbBuvb
+zSC/ZJKJwDhVRG6Txc4QS08=
+=3hat
+-----END PGP SIGNATURE-----
+
+--=-6T5k35HvvsE/pxr5BLRw--
 
 
