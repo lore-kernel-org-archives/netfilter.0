@@ -1,9 +1,10 @@
-From: Aaron Clausen <maureen-taocow@alberni.net>
-Subject: Problem Compiling iptables 1.2.7a
-Date: Thu, 28 Nov 2002 09:32:19 -0800 (PST)
+From: Federico Petronio <petronio@agro.uba.ar>
+Subject: -m limit strange behavior
+Date: Thu, 28 Nov 2002 15:34:56 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0211280927570.1994-100000@ts1.alberni.net>
+Message-ID: <3DE661D0.50208@agro.uba.ar>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,76 +15,102 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have applied the patch-o-matic patches to a fresh copy of the 2.4.19
-kernel.  A few patches didn't go through, but nothing major.  I compiled the
-kernel, and that went without a hitch.  Now I go to compile the iptables
-binary and libraries and this is what I get:
+I just wrote some rules for iptables but I found that they don't work as 
+I spected.
 
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/
--DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_ah_sh.o -c
-extensions/libipt_ah.c
-ld -shared -o extensions/libipt_ah.so extensions/libipt_ah_sh.o
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/
--DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_conntrack_sh.o -c
-extensions/libipt_conntrack.c
-In file included from
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack.h:64,
-                 from extensions/libipt_conntrack.c:12:
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_talk.h:6: #error
-Only in kernel.
-In file included from
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_talk.h:9,
-                 from
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack.h:64,
-                 from extensions/libipt_conntrack.c:12:
-/usr/src/linux/include/linux/in.h:130: warning: 	N_CLASSA' redefined
-/usr/include/netinet/in.h:145: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:136: warning: 	N_CLASSB' redefined
-/usr/include/netinet/in.h:151: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:142: warning: 	N_CLASSC' redefined
-/usr/include/netinet/in.h:157: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:147: warning: 	N_CLASSD' redefined
-/usr/include/netinet/in.h:162: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:151: warning: 	N_EXPERIMENTAL' redefined
-/usr/include/netinet/in.h:165: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:152: warning: 	N_BADCLASS' redefined
-/usr/include/netinet/in.h:166: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:155: warning: 	NADDR_ANY' redefined
-/usr/include/netinet/in.h:169: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:158: warning: 	NADDR_BROADCAST' redefined
-/usr/include/netinet/in.h:171: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:161: warning: 	NADDR_NONE' redefined
-/usr/include/netinet/in.h:173: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:167: warning: 	NADDR_LOOPBACK' redefined
-/usr/include/netinet/in.h:179: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:171: warning: 	NADDR_UNSPEC_GROUP' redefined
-/usr/include/netinet/in.h:183: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:172: warning:         NADDR_ALLHOSTS_GROUP' redefined
-/usr/include/netinet/in.h:184: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:173: warning: 	NADDR_ALLRTRS_GROUP' redefined
-/usr/include/netinet/in.h:185: warning: this is the location of the previous definition
-/usr/src/linux/include/linux/in.h:174: warning:         NADDR_MAX_LOCAL_GROUP' redefined
-/usr/include/netinet/in.h:186: warning: this is the location of the previous definition
-In file included from
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack.h:65,
-                 from extensions/libipt_conntrack.c:12:
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_rsh.h:16: #error
-Only in kernel.
-make: *** [extensions/libipt_conntrack_sh.o] Error 1
+The strange behavior is that, if I use this config:
 
-Compiling iptables is getting to be a right pain.  I can't use the existing
-kernel (2.4.9) because patch-o-matic can apply barely any patches, and none
-of the ones that it does apply are ones that I need.  It is suggested I
-downgrade to 2.4.19, so I do that, and after much woe, figure that it must
-be the iptables binary and its libraries.  Following the instructions on the
-netfilter.org site doesn't get me very far.  Is there an easy way to do
-this, or does everybody have these sorts of problems?
+# Generated by iptables-save v1.2.5 on Fri Nov 22 15:40:19 2002
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
 
+-A INPUT -s 0/0 -d 0/0 -i lo -j ACCEPT
+
+#)fp SMTP Acepto conexciones desde todos los IPs
+-A INPUT -s 168.96.156.99 -d 0/0 -m limit --limit 10/minute 
+--limit-burst 5 -m tcp -p tcp --dport 25 --syn -j LOG
+-A INPUT -s 168.96.156.99 -d 0/0 -m limit --limit 10/minute 
+--limit-burst 5 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+-A INPUT -s ! 168.96.156.99 -d 0/0 -m tcp -p tcp --dport 25 -j LOG
+-A INPUT -s ! 168.96.156.99 -d 0/0 -m tcp -p tcp --dport 25 -j ACCEPT
+
+#)fp Pedidos a los DNS remotos deben pasar
+-A INPUT -s 0/0 -m tcp -p tcp --sport 53 -d 0/0 -j ACCEPT
+-A INPUT -s 0/0 -m udp -p udp --sport 53 -d 0/0 -j ACCEPT
+
+#)fp Acepto SSH
+-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --dport 22 -j ACCEPT
+
+#)fp Rejecto el resto de los UDP y TCP con SYN y logueo
+-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --syn -j LOG
+-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --syn -j REJECT
+-A INPUT -s 0/0 -d 0/0 -m udp -p udp -j LOG
+-A INPUT -s 0/0 -d 0/0 -m udp -p udp -j REJECT
+COMMIT
+
+
+the limit does not work as it should (it restrict my SMTP connections 
+before the limit is reach, it start blocking the second or third 
+connection). But if I put the ssh line just before the SMTP one, all 
+works fine (the burst work and the limit too). Do you think this is 
+normal? Could be some bug? Do I miss something?
+
+I try this several time just changing the line I told and the result was 
+always the same. The config that works is this:
+
+# Generated by iptables-save v1.2.5 on Fri Nov 22 15:40:19 2002
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+
+-A INPUT -s 0/0 -d 0/0 -i lo -j ACCEPT
+
+#)fp Acepto SSH
+-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --dport 22 -j ACCEPT
+
+#)fp SMTP Acepto conexciones desde todos los IPs
+#)fp Pruebas de limites
+-A INPUT -s 168.96.156.99 -d 0/0 -m limit --limit 10/minute 
+--limit-burst 5 -m tcp -p tcp --dport 25 --syn -j LOG --log-prefix FEDE
+-A INPUT -s 168.96.156.99 -d 0/0 -m limit --limit 10/minute 
+--limit-burst 5 -m tcp -p tcp --dport 25 --syn -j ACCEPT
+
+-A INPUT -s ! 168.96.156.99 -d 0/0 -m tcp -p tcp --dport 25 -j LOG 
+--log-prefix FEDE2
+-A INPUT -s ! 168.96.156.99 -d 0/0 -m tcp -p tcp --dport 25 -j ACCEPT
+
+#-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --dport 25 -j LOG --log-prefix FEDE2
+#-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --dport 25 -j ACCEPT
+
+#)fp Pedidos a los DNS remotos deben pasar
+-A INPUT -s 0/0 -m tcp -p tcp --sport 53 -d 0/0 -j ACCEPT
+-A INPUT -s 0/0 -m udp -p udp --sport 53 -d 0/0 -j ACCEPT
+
+#)fp Rejecto el resto de los UDP y TCP con SYN y logueo
+-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --syn -j LOG
+-A INPUT -s 0/0 -d 0/0 -m tcp -p tcp --syn -j REJECT
+-A INPUT -s 0/0 -d 0/0 -m udp -p udp -j LOG
+-A INPUT -s 0/0 -d 0/0 -m udp -p udp -j REJECT
+COMMIT
+
+The tests was done in RH 7.1 on Vmware and RH7.2 un PIII. Both systems 
+updates and with standard distro software.
+
+If you need any extra information, let me know....
+
+Thank you very much....
 -- 
-Aaron Clausen
+					Federico Petronio
+					petronio@agro.uba.ar
+					Linux User #129974
+
+---
+Unix IS user friendly. It's just selective about who its friends are.
 
 
