@@ -1,12 +1,13 @@
-From: "pigi" <pigi@pigi.org>
-Subject: Re: Tcpdump and libipq
-Date: Fri, 10 Oct 2003 11:22:58 +0200 (CEST)
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: [DNAT] Disappearing Packets
+Date: 10 Oct 2003 12:20:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <52324.212.239.118.101.1065777778.squirrel@www.frumar.it>
-Reply-To: pigi@pigi.org
+Message-ID: <1065781203.1650.106.camel@kermit>
+References: <20031010085214.GA8722@jesus.fsmpi.rwth-aachen.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031010085214.GA8722@jesus.fsmpi.rwth-aachen.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Thomas Wallrafen <mails@ranulf.de>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-> Hi,
+Hi Thomas,
 
-> Then I did an FTP session, and I have a very perplexing result:
-> There is a 1 second diff between the timestamps in the data I set and
-the ones from tcpdump, but only when the packets are outgoing.
-> For incoming packets it seems the tcpdump timestamp and the timestamp of
-packet from libipq seem the same (ofcourse there can be some microsecond
-differences). Why is it happening this way, and is there a possiblity of
-making tcpdump to save the data only after libipq has taken care of
-them?
+Am Fre, 2003-10-10 um 10.52 schrieb Thomas Wallrafen:
+> I'm currently setting up an IPtables firewall using DNAT to access our
+> Webserver (192.168.0.42) and Masquerading to allow Internet access to
+> the clients.
+>=20
+> Packets to the firewall (137.226.171.XXX) on port 80 can pass the FORWARD=
+-chain:
+> (already DNATed...)
+> Oct 10 11:47:24 wormhole kernel: IN=3Deth0 OUT=3Deth1 SRC=3D170.252.80.XX=
+X
+> DST=3D192.168.0.42 LEN=3D64 TOS=3D0x00 PREC=3D0x00 TTL=3D47 ID=3D39702 DF=
+ PROTO=3DTCP
+> SPT=3D48785 DPT=3D80 WINDOW=3D16384 RES=3D0x00 SYN URGP=3D0
 
-I'm not an expert, but also from my tests, it seems to work the way you
-explained before.
-This is a bit annoying, because every application based on pcap ( tcpdump,
-snort, iptraf ) are not ( completely ) useful for testing purpose. I have
-a firewall with an IDS running on the same machine, and set up some rule
-to block some suspicious traffic.
-The rules are working, as I can see from the iptables logs, and from
-sniffing the INSIDE side of the firewall, but if I sniff (tcpdump/iptraf)
-the OUTSIDE interface OR if I get a look in snort logs, I can notice those
-suspicious packet entering the interface.
-Unfortunally this gives me a lot of false positive alert, because the
-snort read the packets BEFORE they reach the iptables ( kernel side ). HTH
-Pigi
+Are you sure the packets get lost? What happens when you run tcpdump on
+the internal interface of the firewall?
+Can you run tcpdump on the webserver?
+Does the webserver have a default gateway set pointing to the firewall?
+Can you post your rules?
+Does the internet access for the clients work?
 
+Cheers,
 
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
+
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
