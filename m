@@ -1,13 +1,13 @@
-From: Rafael Silva =?unknown-8bit?q?Guimar=E3es?= <rafael@infomania.com.br>
-Subject: ipt_string
-Date: 6 May 2003 15:52:30 -0000
+From: Robert N Wood <rob@rnwood.co.uk>
+Subject: Re: possible to use netfilter for NETBSD
+Date: Wed, 07 May 2003 00:10:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030506155230.5014.qmail@hm06.locaweb.com.br>
+Message-ID: <3EB840D0.2040000@rnwood.co.uk>
+References: <3EB74965.F63BE8EB@gmx.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-References: 
-In-Reply-To: 
+In-Reply-To: <3EB74965.F63BE8EB@gmx.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,13 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: o5twm01@gmx.ch
+Cc: netfilter@lists.netfilter.org
+
+o5twm01@gmx.ch wrote:
+> Hello together,
+> 
+> its possible to use netfilter for a other
+> opeeration systems like NETBSD 1.6
+
+No
+http://www.ipfilter.org/
+...is probably what you are looking for
+
+> 
+> thanks
+> Maurizio
+> 
+> 
+> 
 
 
-As I obtain to add lib libipt_string in compilacao of iptables-1.2.8...=20
+-- 
+Robert Wood
+rob@rnwood.co.uk
+http://www.rnwood.co.uk/
 
-Rafael Silva Guimar=E3es
-http://www.infomania.com.br
-Tecnico support
+
 
