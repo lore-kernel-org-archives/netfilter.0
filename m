@@ -1,14 +1,13 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: Tightening up outgoing traffic
-Date: Tue, 15 Oct 2002 15:31:47 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IP MASQ and IPROUTE2?
+Date: Tue, 15 Oct 2002 16:52:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021015153147.E3805@funkyjesus.org>
-References: <1034686034.15446.38.camel@localhost.localdomain> <1034687894.8681.53.camel@Wiggum>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <200210151552.g9FFqFL23935@vulcan.rissington.net>
+References: <001101c273f5$fc2c5220$c300a8c0@COMPAQ> <01d201c27444$113613b0$6e69690a@rimas> <015401c2745b$777be750$f800a8c0@COMPAQ>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1034687894.8681.53.camel@Wiggum>; from list@laasby.com on Tue, Oct 15, 2002 at 03:18:14PM +0200
+In-Reply-To: <015401c2745b$777be750$f800a8c0@COMPAQ>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Oct 15, 2002 at 03:18:14PM +0200, Kjetil Andreas Laasby wrote:
-> Problably because yahoo.com lies in your local DNS cache or on an cache
-> server behind your firewall.
+On Tuesday 15 October 2002 3:59 pm, Sean Oh wrote:
+
+> Rimas,
 > 
-> add
-> iptables -A OUTPUT -p tcp --destination-port domain -j ACCEPT
-> iptables -A OUTPUT -p udp --destination-port domain -j ACCEPT
+> I tried what you said, but I stil can not access the server using ip
+> addresses of eth1 and eth2.
+ 
 
-Note the rules for tcp and udp here, it's worth opening both up in case your
-DNS query needs a large reply.
+1. What does a traceroute show from one of the machines which is unable to 
+contact the outside world ?
 
-> You should also open up RELATED ICMP to minimize delay for errors.
+2. Can you run ethereal or similar on either eth0 or whichever of your 
+external interfaces you expects the packets to exit from, to see whether 
+traffic is getting routed / NATted appropriately ?
 
-Seconded.
+3. Try adding a LOG rule to your FORWARD chain to see what seems to be going 
+through the firewal, and which route/s the packets are trying to take 
+(FORWARD comes after the routing decision, so you should see both in= and 
+out= interfaces shown in the log entries).
+
+Antony.
 
 -- 
-FunkyJesus System Administration Team
 
+If at first you don't succeed, destroy all the evidence that you tried.
 
