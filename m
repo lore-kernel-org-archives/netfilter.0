@@ -1,13 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Mail Through Firewall
-Date: Wed, 18 Feb 2004 16:09:22 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Instructions on how to redirect port 80 to port 8080
+Date: Wed, 18 Feb 2004 14:19:04 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077113362.2333.145.camel@raylinux.internal>
-References: <012201c3f627$18eabbe0$49caa8c0@caris.priv>
+Message-ID: <200402181419.04235.Antony@Soft-Solutions.co.uk>
+References: <9908FCB837A50642B74E2BEC198843095CC652@csrees-exchsrvb.csrees.usda.gov>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ZXFUIw8F7ENEPbcn4koa"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <012201c3f627$18eabbe0$49caa8c0@caris.priv>
+In-Reply-To: <9908FCB837A50642B74E2BEC198843095CC652@csrees-exchsrvb.csrees.usda.gov>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
+On Wednesday 18 February 2004 2:06 pm, Martinez, Michael wrote:
 
---=-ZXFUIw8F7ENEPbcn4koa
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> --> iptables -A PREROUTING -t nat -d a.b.c.d -p tcp --dport 80
+> --> -j REDIRECT --to 8080
+>
+> This isn't working. I can "telnet `hostname` 8080" and get an http
+> response, but when I do "telnet `hostname` 80" the response I get is
+> "telnet: Unable to connect to remote host: Connection refused."
 
-On Wed, 2004-02-18 at 15:57, Peter Marshall wrote:
-> Hey, I am sure this question is going to seem trivial to everyone here ..
-> but I will ask anyway.
-> I want to get outlook to work on my inside box .... I have it all set up
-> correctly, but it can't find the pop / smtp servers ...
->=20
-> I ran ethereal to see what the problem was ...
-> When I try to connect I get 3 requests
-> source 10.0.0.2
-> dest 10.0.0.255
-> Protocol NBNS
-> source and dest ports: 137
->=20
-Definitely not smtp or pop3 traffic. pop3 is port 110 and smtp is port
-25.
+Given the ruleset you've posted, I don't see how a telnet to 8080 can work, 
+since you have no INPUT rule allowing packets to that port...
 
-Port 137 is NBNS (NetBIOS name service). Your outlook client is
-broadcasting (10.0.0.255) on the local LAN, probably looking for a
-domain controller.
+Please flush the counters on your rules using "iptables -Z; iptables -Z -t 
+nat", connect to port 8080, and then tell us the output of "iptables -L -nvx; 
+iptables -L -t nat -nvx".
 
-> and I get no reply's ... ( well, I get an arp request after the 3rd try .=
-..)
-> Any ideas how to get this working ?
->=20
-> BTW, I am using IPTables
->=20
-> Thanks
-> Peter Marshall
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+> -A PREROUTING -d 199.128.238.12 -p tcp -m tcp --dport 80 -j REDIRECT
+> --to-ports 8080
 
---=-ZXFUIw8F7ENEPbcn4koa
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [417:40204]
+> :RH-Firewall-1-INPUT - [0:0]
+>
+> -A INPUT -j RH-Firewall-1-INPUT
+> -A FORWARD -j RH-Firewall-1-INPUT
+> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
+> -A RH-Firewall-1-INPUT -p icmp -m icmp any -j ACCEPT
+> -A RH-Firewall-1-INPUT -p esp -j ACCEPT
+> -A RH-Firewall-1-INPUT -p ah -j ACCEPT
+> -A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Regards,
 
-iD8DBQBAM3ISh1fuR/Bv+ygRAmVKAJ4+uUOX6sphM0BikmLzcs0qcFl3QwCdHv8b
-qi2niSE9kN64oYPts+dHrjk=
-=5PV4
------END PGP SIGNATURE-----
+Antony.
 
---=-ZXFUIw8F7ENEPbcn4koa--
+-- 
+Never write it in Perl if you can do it in Awk.
+Never do it in Awk if sed can handle it.
+Never use sed when tr can do the job.
+Never invoke tr when cat is sufficient.
+Avoid using cat whenever possible.
 
 
