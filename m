@@ -1,9 +1,10 @@
-From: Srinivas <nivas_4u@yahoo.com>
-Subject: Problem with lipq
-Date: Wed, 17 Mar 2004 12:38:16 -0800 (PST)
+From: "nicolas boussekeyt" <nicolas.boussekeyt@free.fr>
+Subject: Re: Re: Configure my firewall
+Date: Thu, 18 Mar 2004 8:42:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040317203816.31110.qmail@web11302.mail.yahoo.com>
+Message-ID: <20040318074052.C8ED4C165@postfix3-2.free.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,45 +16,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Nick Taylor <nickt@lightlink.com>
+Cc: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi,
+Yes, it's a problem ?
 
-while browsing for help finall I found your talks
-about libipq. So, I wish you could help me...
-my problem is that....
+>Well, I don't know how this worm spreads, so I can't help with firewall
+>design, but it seems to me that you might want the LOG rules before the
+>DROP rules, no?
+>
+>On Wed, 17 Mar 2004, nicolas boussekeyt wrote:
+>
+>> Date: Wed, 17 Mar 2004 10:37:42 +0100
+>> From: nicolas boussekeyt <nicolas.boussekeyt@free.fr>
+>> To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+>> Subject: Configure my firewall
+>>
+>> Hi, I want filter my firewall for raleka worm.
+>>
+>> Actually, i have used :
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j DROP
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j LOG
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 135 -j DROP
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 135 -j LOG
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 6667 -j DROP
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 6667 -j LOG
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 6667 -j DROP
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 6667 -j LOG
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 32767 -j DROP
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 32767 -j LOG
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 32767 -j DROP
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 32767 -j LOG
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 32768 -j DROP
+>> iptables -A FORWARD -p tcp -i $EXTIF --dport 32768 -j LOG
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 32768 -j DROP
+>> iptables -A FORWARD -p udp -i $EXTIF --dport 32768 -j LOG
+>>
+>> But the worm is back.
+>>
+>> Can you give me information.
+>>
+>>
+>>
+>>
 
-When I compile my code like
-gcc <filename> 
 
-I am getting following error :
-
-/tmp/ccb2U3Gs.o(.text+0x20b): In function
-`strip_packet':
-: undefined reference to `ipq_set_verdict'
-/tmp/ccb2U3Gs.o(.text+0x252): In function
-`strip_packet':
-: undefined reference to `ipq_set_verdict'
-/tmp/ccb2U3Gs.o(.text+0xb9d): In function `run':
-: undefined reference to `ipq_create_handle'
-/tmp/ccb2U3Gs.o(.text+0xbda): In function `run':
-: undefined reference to `ipq_set_mode'
-
-and when I compile with option,
-gcc <filename> -lipq
-
-it says 
-/usr/bin/ld : cannot find -lipq
-
-I am using libipq.h library.. Please help me...
-
-Thanks in advance.
-
-Srinivas
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - More reliable, more storage, less spam
-http://mail.yahoo.com
 
