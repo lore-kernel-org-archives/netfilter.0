@@ -1,11 +1,10 @@
-From: Chris Lowth <chris@lowth.com>
-Subject: How to block Kazaa with IPTables
-Date: Fri, 29 Aug 2003 10:11:55 +0100
+From: "wangz" <easyit@163.com>
+Subject: what is the meaning of iptable's underflow point?
+Date: Fri, 29 Aug 2003 17:59:47 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308291011.55478.chris@lowth.com>
-Reply-To: chris@lowth.com
+Message-ID: <002901c36e14$47f6e530$5700000a@wangz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,21 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter User maillist <netfilter@lists.netfilter.org>
 
-The "p2pwall" project has released a "user mode" add-in for IPTables that 
-blocks Kazaa. Recent Kazaas use random ports and encrypted traffic in an 
-attempt to "break through" firewalls. P2PWall solves these problems for the 
-current Kazaa versions.
+SGksIGV2ZXJ5b25lDQpJIGFtIG5vdyByZWFkaW5nIHRoZSBzb3VyY2UgY29kZSBvZiBuZXRmaWx0
+ZXIuIFdoZW4gaXQgY29tZXMgdG8gaXB0YWJsZSwgSSBhbSBjb25mdXNlZCBieSB0aGUgaXB0X3Rh
+YmxlX2luZm8ncyB1bmRlcmZsb3cgZGF0YSBtZW1iZXIuIEl0IHNlZW1zIHRoYXQgaXB0YWJsZSBw
+cm92aWRlIGEgbWV0aG9kIHRvIGp1bXAgZnJvbSBvbmUgcnVsZSB0byBhbm90aGVyLCBhbmQganVt
+cCBiYWNrIHRvIHRoZSBvcmlnaW5hbCBvbmUsIGp1c3QgbGlrZSBhIHN0YWNrLiBXaGlsZSB0aGUg
+dW5kZXJmbG93IGlzIGFsd2F5cyB0aGUgbGFzdCBvbmUsIG9yIHRoZSBidXR0b20gb2YgdGhlIHN0
+YWNrLiBTb21lIG9uZSB0b2xkIG1lIHRoYXQgdW5kZXJmbG93IG1hcmtzIHRoZSBsYXN0IG9mIHRo
+ZSBydWxlcyBvZiB0aGUgY29ycmVzcG9uZGluZyBob29rLCBJIHRoaW5rIGl0IGNhbiBkbyBtb3Jl
+LiBmb3IgZXhhbXBsZSwgY2xlYW5uaW5nIHVwLg0KDQpCdXQgd2hhdCBpcyB0aGlzIG1lbWJlcidz
+IHN1cHBvc2VkIHVzZT8gVGhhbmsgeW91Lg0KDQoNCg0KIA==
 
-P2PWall currently uses the "QUEUE" target of iptables to pass packets to the 
-daemon for verification. A future enhancement is planned to bring the logic 
-into iptables as kernel "match module".
-
-http://www.lowth.com/p2pwall
-
-Chris
--- 
-From Chris Lowth
-chris@lowth.com
 
