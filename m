@@ -1,9 +1,11 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: Iptables don't understand network address
-Date: Tue, 9 Jul 2002 16:10:29 +1000
+From: "R. Sterenborg" <rsterenborg@xs4all.nl>
+Subject: Re: PPTP through masquerading gateway
+Date: Tue, 9 Jul 2002 08:17:07 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA281@JUPITER>
+Message-ID: <002601c22710$40e49f40$0401000a@win2k>
+References: <000401c226d9$5cc37fb0$6b01a8c0@s3ac>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,78 +17,63 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Jean-Michel CARICAND' <CARICAND.Jean-Michel@wanadoo.fr>, netfilter@lists.samba.org
-
-I have the exact same setup and the only difference is that I have /24
-netmask and not /23.
-Does your INPUT rules have any byte count???
-
-As below, works for me..?? I'm using 1.2.5 iptables at the moment..
-
-[root@firewall /root]# iptables -I INPUT 1 -i eth0 -s 10.10.0.69 -p icmp -j
-DROP
-[root@firewall /root]# iptables -L INPUT -v -n -x 
-Chain INPUT (policy DROP 86 packets, 4835 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination         
-      15      840 DROP       icmp --  eth0   *       10.10.0.69
-0.0.0.0/0   
-
-
-
-c:\>ping 10.10.0.254
-
-Pinging 10.10.0.254 with 32 bytes of data:
-
-Request timed out.
-Request timed out.
-Request timed out.
-Request timed out.
-
-Ping statistics for 10.10.0.254:
-    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
-Approximate round trip times in milli-seconds:
-    Minimum = 0ms, Maximum =  0ms, Average =  0ms
-
-thanks,
-George Vieira
-Systems Manager
-Citadel Computer Systems P/L
-http://www.citadelcomputer.com.au
-
-
-
------Original Message-----
-From: Jean-Michel CARICAND [mailto:CARICAND.Jean-Michel@wanadoo.fr]
-Sent: Tuesday, 09 July 2002 5:03 PM
 To: netfilter@lists.samba.org
-Subject: Iptables don't understand network address 
 
+----- Original Message -----
+From: "Rowan Reid" <rreid@studio3arc.com>
+Subject: RE: PPTP through masquerading gateway
 
-I have a local network with 10.0.2.0 address and 255.255.254.0 netmask. 
- 
-My firewall have IP 10.0.2.130 on eth0. 
-My station have IP 10.0.2.2.
+> I'm using 2.4.18 I know not designed for the patch, My FS only
+> Works with 2.4.18. Someone told me the 2.4.17rev2 Patch works
+> With 2.4.18 it doesn't unless you use
+>
+> patch -p1 < netfilter-pptp-2.4.17-rev2.patch
+>
+Uhm. well, I don't use ReiserFS, I use ext3.
+I can't help you with that.
+A patch that's working voor 2.4.17 could also be working for 2.4.18, but I
+don't know.
+At work I have a test setup and I'll try it there.
 
-I configure my firewall for drop the ping from the station with 1 rules :
+> Correct me if I'm wrong doesn't the INSTALL file say you
+> Need a 2.4.4 kernel in order for it to work.
+>
+No, it says :
+PROBLEMS YOU MAY ENCOUNTER:
 
-# iptables -A INPUT -i eth0 -s 10.0.2.2 -p icmp -j DROP 
+1) This package requires a 2.4.4 kernel, *or above*.
 
-When I ping the firewall from my station (ping 10.0.2.130) , I receive an
-response from the serveur 
+> > cd /usr/src/iptables-1.2.6a
+> > make KERNEL_DIR=/usr/src/linux
+> > make install KERNEL_DIR=/usr/src/linux
+>
+> Interesting you did this after compiling the kernel.
+>
+Hmm, I've thought about doing it before compiling the kernel, but the
+iptables compilation process might be using things from the kernel (you have
+to mention a KERNEL_DIR yourself or use the default one in Makefile).
+Mind you again ; I'm not a C programmer so I can't read all that and that
+means I might have it all wrong.
+Anyway, I thought it couldn't hurt to compile the kernel first ; it's
+patched already so that shouldn't be the problem.
+And I have a working setup :o)
 
-Why ?
- 
-What is the problem ? My netmask ?
- 
-If i modify my netmask to 255.0.0.0 on firewall and my station, the ping
-doesn't work. Normal !
- 
-Iptables don't understand network address not in class A, B or C 
- 
-HELP ME !!!
+> bles-tutorial.
+>
+Heheh, yeah. Wasn't sure myself so I looked it up before posting ;o]
 
+> I used the same commands to test it. I will try the order you used.
+> Thanks for taking the time though.
+> What I'm trying most desperatly not to do is have to revert back to ext2
+> and a 2.4.17 kernel.
+>
+I'll try kernel 2.4.18 for you and let you know if it works for me.
+Besides, if 2.4.18 failes, maybe you could switch to ext3 which is also
+journalling ? (I don't know the cons and pros between the 2 so I'm not going
+to talk about that. Just wanted to mention it.)
 
+Good luck !
+
+Rob
 
 
