@@ -1,10 +1,13 @@
-From: joe@princerupertlibrary.ca
-Subject: 1 webserver NATd, 2nd won't work
-Date: Tue, 21 Oct 2003 10:14:11 -0700 (PDT)
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: Dropping SYN with FIN flag set
+Date: Tue, 21 Oct 2003 13:51:27 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310211011580.16322-100000@orca.princerupertlibrary.ca>
+Message-ID: <3F95721F.2050905@Loudoun-Fairfax.com>
+References: <NDBBKABJBJCIJNAELLKEEEDOJDAA.jimm@simutronics.com> <1066754393.1557.29.camel@valhalla>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1066754393.1557.29.camel@valhalla>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,53 +17,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello Everyone:
-I am trying to get our second webserver NAT'd behind our firewall but I'm 
-stuck and hoping someone can point out what I'm doing wrong.
-I was able to get it working outside the firewall, but I want it inside if 
-possible.
+Chris Brenton wrote:
 
-I will be using pseudonyms for the machines and public IP addresses
-The two web servers are:
-NAME		INTERNAL IP ADDRESS	PUBLIC IP ADDRESS
+>Here is what I do:
+>
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL SYN,ACK -j LOG
+>--log-prefix " SYNACK "
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL SYN,ACK -j REJECT
+>--reject-with icmp-host-unreachable
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL SYN,FIN -j LOG
+>--log-prefix " SYNFINSCAN "
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL SYN,FIN -j REJECT
+>--reject-with icmp-host-unreachable
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL FIN -j LOG
+>--log-prefix " FINSCAN "
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL FIN -j REJECT
+>--reject-with icmp-host-unreachable
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL NONE -j LOG
+>--log-prefix " NULLSCAN "
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL NONE -j REJECT
+>--reject-with icmp-host-unreachable
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL FIN,PSH,URG -j LOG
+>--log-prefix " NMAPXMAS "
+>iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL FIN,PSH,URG -j REJECT
+>--reject-with icmp-host-unreachable
+>  
+>
 
-marge.prl.ca 	192.168.0.244		8.8.8.149
-homer.prl.ca	192.168.0.211		8.8.8.148
+Hey Chris -
 
-The firewall (also the nameserver of our prl.ca domain) is bart.prl.ca and 
-is 8.8.8.149
+I've taken a rudimentary stab at these kinds of rules with mixed success 
+and your post brings up a couple of questions:
 
-I have successfully NAT'd the first web server marge with the following instructions:
-#Open ports on Marge
-#First the regular port 80
-/sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
-/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 192.168.0.244:80
-#
+Here are the rules I'm using now:
 
-But when I try to NAT homer with the following commands I can NOT find the page outside of 
-our network.  
-#Opening a route to Homer
-/sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
-/sbin/iptables -t nat -A PREROUTING -d homer.prl.ca -p tcp --dport 80 -j DNAT --to 192.168.0.211:80
+# Chain to trap bad packets before they enter the system.
+$iptables -A Bad_Packet -p tcp -m state --state INVALID -j LOG 
+--log-level debug
+$iptables -A Bad_Packet -p tcp -m state --state INVALID -j DROP
+$iptables -A Bad_Packet -p tcp --tcp-flags SYN,ACK SYN,ACK -m state 
+--state NEW
+$iptables -A Bad_Packet -p tcp ! --syn -m state --state NEW -j LOG 
+--log-level
+$iptables -A Bad_Packet -p tcp ! --syn -m state --state NEW -j DROP
 
-OR
-#Opening a route to PRL's webserver
-#Using the same format as what's working for dynix
-/sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
-/sbin/iptables -t nat -A PREROUTING -d 8.8.8.148 -p tcp --dport 80 -j DNAT --to 192.168.0.211:80
+1.  These obviously are different from your rules. Are these rules 
+useful or should I just replace them with rules similar to yours?
 
-Can anybody tell me what I'm doing wrong? 
+2.  I tried applying rules like these with -p all and I ended up 
+trapping all kinds of local ICMP traffic and broke lots of things. 
+Should I have these kinds of stateful rules for other protocols or 
+doesn't that matter?
 
-Many thanks and well-wishes to you,
-Joe Zelwietro
-Prince Rupert Library
-
-
-
-
+Jeff
 
 
