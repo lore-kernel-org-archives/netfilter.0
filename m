@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Voice IP
-Date: Tue, 28 Oct 2003 08:51:10 +1100
+From: Lists <lists@nyc.rr.com>
+Subject: Firewall suggestions needed
+Date: 27 Oct 2003 19:12:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C5B2@wardrive.citadelcomputer.com.au>
+Message-ID: <1067299953.20617.3.camel@bluedevil2>
+References: <FDAFEC98D318F74CA26B5A26F2B4965227C54E@exchange.jfctechnologies.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <FDAFEC98D318F74CA26B5A26F2B4965227C54E@exchange.jfctechnologies.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,103 +18,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Manuel Tato <madness@adinet.com.uy>, netfilter@lists.netfilter.org
-
-I have this working at home using these rules...
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
 
-        if [ $H323 ]; then
-                $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport =
-389    -j DNAT --to 192.168.1.1        # H323
-                $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport =
-522    -j DNAT --to 192.168.1.1        # H323
-                $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport =
-1503   -j DNAT --to 192.168.1.1        # H323
-                $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport =
-1720   -j DNAT --to 192.168.1.1        # H323
-                $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport =
-1731   -j DNAT --to 192.168.1.1        # H323
-                $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport =
-8080   -j DNAT --to 192.168.1.1        # H323
-                $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport =
-1469   -j DNAT --to 192.168.1.1        # H323aud
-        fi
+Is there a firewall program that reads and writes firewall rules using
+iptables?  By this I mean that it uses the rules stored in netfilter,
+and doesn't first store rules in its own memory and then translate those
+into iptables commands.  This would allow it to see any rule changes
+made by external programs that run iptables commands.
 
-What I did notice is that I couldn't get people to call me unless I was =
-in a meeting call or something (soz, it's been months since I've used =
-netmeeting ;) )...
+Thanks for your help.
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+Apologies if this is a duplicate.
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
 
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
-
-> -----Original Message-----
-> From: Manuel Tato [mailto:madness@adinet.com.uy]
-> Sent: Tuesday, 28 October 2003 8:35 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Voice IP
->=20
->=20
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->=20
->=20
-> Hi, i'm configuring a firewall/router with a static ip ADSL=20
-> and a voice
-> IP gateway.
-> The voiceip gw es in configured at 192.168.1.40.
-> With this script i can make calls, but i cant recive any.
->=20
-> - ---------------------------------------------------
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->=20
-> modprobe ip_conntrack_h323
-> modprobe ip_nat_h323
->=20
-> iptables -A INPUT -j ACCEPT
-> iptables -A FORWARD -j ACCEPT
-> iptables -A OUTPUT -j ACCEPT
->=20
-> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
->=20
-> iptables -t nat -A PREROUTING -p tcp --dport 1726:1789 -i eth1 -j DNAT
-> - --to 192.168.1.40:1726:1789
-> iptables -A FORWARD -i eth1 -p tcp -d 192.168.1.40 --dport=20
-> 1726:1789 -j
-> ACCEPT
-> iptables -t nat -A PREROUTING -p udp --dport 1726:1789 -i eth1 -j DNAT
-> - --to 192.168.1.40:1726:1789
-> iptables -A FORWARD -i eth1 -p udp -d 192.168.1.40 --dport =20
-> 1726:1789 -j
-> ACCEPT
-> - -----------------------------------------------------
->=20
-> Any idea?
-> i'm blocking ports?
-> i need any other module??
-> thanks in advance
-> thanks a lot...
->=20
->=20
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.2.2 (MingW32)
-> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
->=20
-> iD8DBQE/nY98W/G6GKzQKp4RAndEAJ4pYh04AZuTc/f8MQ8Ae6RB/GpRFgCgkaCg
-> SwAh5HHLSdd0rj68FzTPdXY=3D
-> =3DRcOK
-> -----END PGP SIGNATURE-----
->=20
->=20
->=20
->=20
 
