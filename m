@@ -1,7 +1,7 @@
 From: Nilesh <niluforalways@yahoo.com>
 Subject: IPsec through NAT Mode
-Date: Mon, 22 Nov 2004 02:41:57 -0800 (PST)
-Message-ID: <20041122104157.58409.qmail@web50505.mail.yahoo.com>
+Date: Mon, 22 Nov 2004 02:48:00 -0800 (PST)
+Message-ID: <20041122104800.99801.qmail@web50506.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -16,7 +16,7 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: iptables <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 Hello All, 
 
@@ -57,10 +57,11 @@ Thanks in advance
 Nilesh,
 
 
+		
+__________________________________ 
+Do you Yahoo!? 
+Meet the all-new My Yahoo! - Try it today! 
+http://my.yahoo.com 
+ 
 
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
