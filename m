@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Need help with rate-limiting NTTP traffic
-Date: Thu, 1 Apr 2004 17:38:32 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: I thought ssh is port #22 ?!!
+Date: Thu, 1 Apr 2004 09:20:55 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404011738.32254.Antony@Soft-Solutions.co.uk>
-References: <20040331165409.0d498074@daneel.volumen.net> <200404010916.58286.Antony@Soft-Solutions.co.uk> <20040401092414.6b7b43f7@daneel.volumen.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF567928A@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040401092414.6b7b43f7@daneel.volumen.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,60 +17,87 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: "Martinez, Michael" <MMARTINEZ@CSREES.USDA.GOV>, cldavis@speakeasy.net, netfilter@lists.netfilter.org
+Cc: Fajar Priyanto <fajarpri@arinet.org>
+
+Unfortunately I have the "privilage" of maintaining a customer TCP
+protocol which cans you if your source and destination ports aren't as
+specified by their fcked up protocol!!
+
+-----Original Message-----
+From: Martinez, Michael [mailto:MMARTINEZ@CSREES.USDA.GOV]=20
+Sent: Thursday, April 01, 2004 7:14 AM
+To: cldavis@speakeasy.net; netfilter@lists.netfilter.org
+Cc: Fajar Priyanto
+Subject: RE: I thought ssh is port #22 ?!!
+
+
+Port 32873 is the return port on the ssh client.
+
+Here's how it works. The server listens on port 22. The client opens a
+connection to the server, and tells the server which return port to use.
+If you do "netstat -an" you will see the server talking on port 22, and
+the client talking on some high numbered port like 32873. The high
+number port used is random. It will change from one session to the next.
+
+This is true not just for ssh - it is true for most tcp applications.
+
+Michael Martinez
+Unix System Administrator
+
+-----Original Message-----
+From: cldavis@speakeasy.net [mailto:cldavis@speakeasy.net]=20
+Sent: Wednesday, March 31, 2004 9:10 PM
 To: netfilter@lists.netfilter.org
+Cc: Fajar Priyanto
+Subject: Re: I thought ssh is port #22 ?!!
 
-On Thursday 01 April 2004 5:24 pm, Shane Hickey wrote:
+You should edit sshd_config with the port command and set it to 22.  If
+the directive is not present, I've had some versions of ssh listen on
+everything, others only 22. =20
 
-> Antony Stone said:
->:
-> > What are you using as your NNTP server?   If it's INN, I'm pretty sure
-> > that has its own rate-limiting mechanism as a configuration parameter,
-> > and you'd be better off doing rate limiting in the application itself
-> > if it's at all possible.
->
-> 	I'm not serving NNTP, I'm just constantly connected to an NNTP server
-> using Pan.
+You may also want to use the PermitRootLogin no directive to disable
+root logins and use a regular user account to log in and then su to root
+if need be.
 
-Ah, okay, yes - I had assumed you meant you were running a server, not a 
-client.
+As far as the firewall, you may want to setup your firewall to drop all
+packets except packets sent to needed services.
 
-> There aren't any bandwidth controls in Pan, that I could see
+Hope that helps
+Chris
+> -----Original Message-----
+> From: Fajar Priyanto [mailto:fajarpri@arinet.org]
+> Sent: Thursday, April 1, 2004 01:32 AM
+> To: netfilter@lists.netfilter.org
+> Subject: I thought ssh is port #22 ?!!
+>=20
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>=20
+> Hi guys,
+> I'm not really sure about this. I thought ssh is made in port #22?=20
+> When I made a ssh session into my server, /var/log/messages showed=20
+> this: Apr  1 09:20:20 server2 sshd[2711]: Accepted password for root=20
+> from 192.168.0.234 port 32873 ssh2
+>=20
+> Why did it use port #32873?
+> Is there something wrong with my ssh or firewall?
+> TIA,
+> - --
+> Fajar Priyanto | Reg'd Linux User #327841 | http://linux.arinet.org
+> 08:31:42 up 36 min, Mandrake Linux release 9.2 (FiveStar) for i586=20
+> public key: https://www.arinet.org/fajar-pub.key
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.2.3 (GNU/Linux)
+>=20
+> iD8DBQFAa3EYkp5CsIXuxqURAluBAKCNiyg8+KXYDu/JuZghSVMXvfrjMgCdG7O2
+> Bb4SQcbOiAqALl1o9yQ5H1k=3D
+> =3D4uUZ
+> -----END PGP SIGNATURE-----
+>=20
+>=20
+>=20
 
-Doesn't surprise me - I wouldn't necessarily expect that in a client.
 
-> and it will happily stomp over all my other traffic.  It was extremely easy
-> to limit only my nntp traffic (that is, traffic coming into my network with
-> a source port of 119) in Dummynet.  Can anyone offer ideas with tc and
-> netfilter?
-
-Maybe someone else here can tell you how to do it (I'm not sufficiently 
-familiar with tc to tell you, although I expect it's possible), however one 
-thing puzzles me about your requirement:
-
-If you're using a client, and it's generating enough traffic to swamp your 
-("fat") upstream connection, then surely that's because there's a lot of 
-traffic in the newsgroups which you've subscribed to?   If you use a traffic 
-control mechanism to throttle the available bandwidth, you will surely end up 
-losing postings because you can't suck them down fast enough before they 
-expire (if you could, then your current usage would not be consuming so much 
-bandwidth)?
-
-Therefore I don't see how you can maintain access to the newsgroups which are 
-creating all this traffic, at the same time as throttling down your 
-connection to consume less bandwidth....
-
-Just my 2 units of currency....
-
-Regards,
-
-Antony.
-
--- 
-The truth is rarely pure, and never simple.
-
- - Oscar Wilde
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
