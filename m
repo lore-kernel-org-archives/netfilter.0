@@ -1,11 +1,13 @@
-From: <iptables@kilsgaard.dk>
-Subject: NAT, ports and iptables
-Date: Sun, 2 Jun 2002 03:53:34 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: NAT, ports and iptables
+Date: Sun, 2 Jun 2002 09:21:06 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000101c209d8$5183e720$6401a8c0@GKXP>
+Message-ID: <200206020821.g528L8A27004@Networker.rockstone.co.uk>
+References: <000101c209d8$5183e720$6401a8c0@GKXP>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <000101c209d8$5183e720$6401a8c0@GKXP>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,69 +20,30 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
+On Sunday 02 June 2002 2:53 am, iptables@kilsgaard.dk wrote:
 
-I am quite new to LINUX and Iptables,  i have worked some with FreeBSD
-and ipfw, but now i am werry confused by the way iptable handles the
-roules.
+> 	I would like to open some ports (80,21,22.).
+> 	And then i would like to translate a port to a local Ip
+> address, so i can access a PC on my local LAN from the internet.
+> Is the rules i have made okay, or is there an better way to do the
+> trick.
+>
+> Is there a place where there is a description of iptables and its
+> possibilities?
 
-I hope that some of you can help me.
+You want:
 
-I have made the script listed below, from pieces found on the internet,
-and it also works fine, with NAT and no ports are open out to the
-internet.
+http://www.netfilter.org/documentation
 
-But can anyone tell men how i can open for ports, so they can bee
-accessed from the internet.
-	I would like joust to open some ports (80,21,22.).
-	And then i would linke to translate a port to an local Ip
-address, so i can access a PC on my local LAN from the internet.
-Is the rules i have made okay, or is there an better way to doo the
-trick.
+specifically
 
-Is there a place where there is a description of iptables and its
-posibilities?
+http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO.html
 
-Thanks (and sorry for by bad english)
+and maybe also
 
-/Graves Kilsgaard
+http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO.html
+http://www.netfilter.org/documentation/HOWTO/networking-concepts-HOWTO.html
 
 
-Here is my script:
---------------------------------------------------------------------
-#!/bin/bash
-
-# Variables
-FWCMD="/sbin/iptables"
-FWSAVE="/sbin/iptables"
-
-OUTIP="***.***.***.***"
-OUTEth='eth1'
-
-#Flush all rules
-$FWCMD -t nat -F
-$FWCMD -F
-$FWCMD -X block
-
-#Stopping service
-/etc/rc.d/init.d/iptables stop
-
-#Enable nat
-$FWCMD -t nat -A POSTROUTING -o $OUTEth -j SNAT --to-source $OUTIP
-
-#Setting rules
-$FWCMD -N block
-$FWCMD -A INPUT -j block
-$FWCMD -A FORWARD -j block
-$FWCMD -A block -m state --state RELATED,ESTABLISHED -j ACCEPT
-$FWCMD -A block -i ! eth1 -m state --state NEW -j ACCEPT
-$FWCMD -A block -j DROP
-
-#Saving rules
-/etc/rc.d/init.d/iptables save
-#Starting service
-/etc/rc.d/init.d/iptables start
-
---------------------------------------------------------------------
-
-
+Antony.
 
