@@ -1,12 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: H323 and Traffic Control
-Date: Fri, 25 Oct 2002 15:35:51 +0200 (CEST)
+From: Berndt Sevcik <berndt.sevcik@tgm.ac.at>
+Subject: Performance Problems with iptables
+Date: 25 Oct 2002 16:03:38 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0210251532110.24794-100000@blackhole.kfki.hu>
-References: <64227.193.110.152.118.1035531216.squirrel@munshine.famillemetivier.net>
+Message-ID: <1035554619.24039.28.camel@ITS-Sevcik>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <64227.193.110.152.118.1035531216.squirrel@munshine.famillemetivier.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +15,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: yves@famillemetivier.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Fri, 25 Oct 2002 yves@famillemetivier.net wrote:
+Hello!
 
-> But I have a problem with traffic control :
-> I want to give highest priority to real time traffic, like h323.
->
-> I was expecting that h323 netfilter module should mark all h323 traffic,
-> including RTP and RTCP UDP packets, but it seems that it only marks
-> packets from known ports (those explicitely declared in iptables) and
-> not UDP related packets.
+I am using a combination of iproute2 (source based routing) and iptables
+(NAT Iptables Version 1.2.6a-5). The problem is that I have big
+performance problems. The maximum download speed per user is about 5kb.
+We can only use our existing line to the ISP by about 20%, and thats not
+an ISP problem.
 
-You can mark the related stream by using the helper matching from
-patch-o-matic. In the case of h323, you can match the H.225 and H.245
-channels by the following command-fragments:
+Need help!
 
-iptables .... -m helper --helper H.225 ...
-iptables .... -m helper --helper H.245 ...
+IPRoute Config:
+ip rule add from 10.0.0.0/8 table chello1
+ip route add feault via 192.168.158.101 table chello1
 
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+ip rule add from 193.170.8.133 table chello1
+ip rule add from 193.170.8.134 table chello1
+ip route flush cash
+
+NAT Config:
+iptables -t nat -A POSTROUTING -p ip -s 10.0.0.0/8 -j SNAT --to
+212.17.100.114
+iptables -t nat -A POSTROUTING -p ip -s 193.170.8.133 -j SNAT --to
+212.17.100.115
+iptables -t nat -A POSTROUTING -p ip -s 193.170.8.133 -j SNAT --to
+212.17.100.116
+
+Thanks
+Berndt
+
+--=20
+Diese Message wurde erstellt mit freundlicher Unterst=FCtzung
+eines freilaufenden Pinguins aus artgerechter Freilandhaltung.
+Sie ist garantiert frei von Microsoftschen Viren.
+
+-----------------------------------------
+TGM - Die Schule der Technik
+IT-Service
+A-1200 Wien, Wexstr. 19-23
+Tel. +43(1)33126/316 Fax: +43(1)33126/154
+E-Mail: berndt.sevcik@tgm.ac.at
+-----------------------------------------
 
 
