@@ -1,8 +1,8 @@
 From: Jeff Gordon <jeff.gordon@wellnow.com>
-Subject: Re: Can I add a module to a prebuilt kernel?
-Date: Thu, 3 Jun 2004 17:01:33 -0400
+Subject: Best defense for syn-floods...?
+Date: Thu, 3 Jun 2004 17:16:50 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040603210133.GN24398@wellnow.com>
+Message-ID: <20040603211650.GO24398@wellnow.com>
 References: <20040602190641.GQ18797@wellnow.com> <Pine.LNX.4.33.0406030949440.10743-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,58 +19,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-(Thanks, Joseph.:-)  
+Now that I've got ipt_recent installed and running, I'd be grateful for
+comments or rule samples that could work best to ameliorate syn-floods.
+(The site I'm working on has been the target of moderate-to-large-sized
+syn-floods for a few months now, ongoing.)
 
-So I obtained the iptables-1.2.9 source package and compiled it.
+I've been using this approach:
 
-On 'make install', however I found libipt_recent.so was NOT placed into
-the loadable modules directory...!
+-N syn-flood
+-A syn-flood -m limit --limit 6/s --limit-burst 10 -j RETURN
+-A syn-flood -j LOG --log-prefix "SYN-FLOOD: "
+-A syn-flood -j DROP
 
-I don't know if that has something to do with its being a RedHat
-system, or if it's something omitted from iptables' own config or
-Makefile.  Either way -- I moved it there manually, and things appear
-to be working as intended, now. :-)
+-A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Thanks kindly to the several folks who offered thoughts and assistance
-on this.  I'll come back in a separate message with a question about
-using either '--limit' or '-m recent' to address SYN floods.
+-A INPUT -i eth0 -p tcp --syn -j syn-flood
 
- -- Jeff --
+...and, on the high-traffic site involved, have had occasions when the
+machine became unreachable, the server load too high.
 
-On Thu, Jun 03, 2004 at 09:52:26AM +0200, Jozsef Kadlecsik wrote:
-> On Wed, 2 Jun 2004, Jeff Gordon wrote:
-> 
-> > > Jeff Gordon wrote:
-> > > > I'm running a RH ES 3 system, and it appears _support_ for ipt_recent
-> > > > is included in the kernel but libipt_recent.so is nowhere to be found.
-> > > > Kernel source for the prebuilt kernel in the distribution is available.
-> > >
-> > > In general, if a kernel feature is built into the kernel there is no
-> > > appropriate module file. Because the functionality is in the kernel.
-> >
-> >  - If I do 'modprobe ipt_recent' and then 'lsmod |grep ip',
-> >    I see 'ipt_recent' at the top of listing.
-> >
-> >  - However, if I then add a rule with '-m recent' in it,
-> >    iptables complains it can't find libipt_recent.so.
-> 
-> That's the iptables shared library for recent match, which is missing from
-> your systems. In other words the iptables binary lacks the recent match
-> support and thus you cannot use the feature available in the kernel.
-> 
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
-> 
-> 
-> 
+Someone suggested ipt_recent could handle this matter more accurately. 
+I found a rule on the web that someone was using, and tried that a few
+minutes ago, with this approach:
+
+-N syn-flood
+-A syn-flood -j LOG --log-prefix "SYN-FLOOD: "
+-A syn-flood -j DROP
+
+-A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+-A INPUT -i eth0 -p tcp --syn -m recent --hitcount 10 --update \
+   --seconds 60 -j syn-flood
+
+...but very soon _no one_ could get a server connection, with that.
+
+My 'mental model' of how ipt_recent is working must not be correct --
+at least, I don't understand why the '--limit' ruleset seems to allow
+normal traffic under most conditions but the '-m recent' rule kept
+normal users from getting in, just a few minutes ago.
+
+If anyone knows what I'm missing in my understanding of this, or has a
+ruleset that works well to ameliorate syn-flooding, please let me know.
+
+Thanks kindly,
 
 -- 
 
