@@ -1,11 +1,13 @@
-From: Adharsh Praveen R <adarsh@multitech.co.in>
-Subject: HELP PPTP CONNTRACK MULTIPLE CLIENTS
-Date: Thu, 05 Dec 2002 18:40:34 +0530
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: RE: connection problem
+Date: 05 Dec 2002 15:35:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DEF504A.F4099ACE@multitech.co.in>
+Message-ID: <1039095334.308.3.camel@bigblue>
+References: <BDEFKJOAPEBPJCGDAGMFOEICCAAA.nigel@forever-networks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <BDEFKJOAPEBPJCGDAGMFOEICCAAA.nigel@forever-networks.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,89 +18,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Nigel Clarke <nigel@forever-networks.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hai 
+On Thu, 2002-12-05 at 16:56, Nigel Clarke wrote:
+> Paulo,
+> 
+> >I have a problem where a router reboots every evening. I do not have
+> >control of this router.
+> 
+> For this, you might want to see if the janitors unplug the router to use the
+> outlet in the evening.
+> Seriously.
+> 
+> As far as the issue with IPTABLES....this might be an issue with the ARP
+> cache on the firewall. What kind of
+> network card are you using? What kernel version?
+> 
+> I've had problem like this on some 2.2 kernel implementations with old
+> network cards. I'd have to "ifconfig eth* down/up"
+> for the interface to work.
 
-I am trying to get PPTP conntrack to work, but with no luck.
+I will look at that , the old network card, but the funny thing is that
+I have to change the IP address on the card to another and then back to
+the original for it to work.
 
-I tried with POM's pptp-conntrack-nat.patch (by Harald).
+> 
+> ;-)
+> 
+> --
+> Nigel Clarke                 Forever Networks
+> Network Security Engineer    www.forever-networks.com
+> 
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Paulo Andre
+> Sent: Wednesday, December 04, 2002 10:56 PM
+> To: netfilter
+> Subject: connection problem
+> 
+> 
+> I have a problem where a router reboots every evening. I do not have
+> control of this router.
+> The problem is with iptables, as soons as the router reboots I lose the
+> connection even when the router has come up afterwards.
+> I then have to take the interface down, reload the firewall script, then
+> reconfigure the interface and reapply the firewall script again so that
+> I can see the router again.
+> 
+> Can anyone tell me why this happens, the interface is a aliased
+> interface, if that makes a difference.
+> 
+> Thanks
+> 
+> Paulo
+> 
+> 
+> 
+> 
 
-Every time I try to apply the patch it fails.
 
-Finally some how I managed to apply the patch on my 2.4.18 kernel. I
-
-use iptables-1.2.6a.
-
-I have my PPTP server (192.168.1.219) internal to my LAN (eth0) and
-clients in a different network.
-
-I have a linux box where I applied the patch with IP address on one
-interface
-
-eth0  as 192.168.1.76 and another interface eth1  as 192.168.9.10.
-
-I have two clients (Win 95) with their IP address as 192.168.9.1 and
-other's
-
-as 192.168.9.2.
-
-The default gateway for these clients is set to 192.168.9.10.
-
-I added a simple rule in my Linux box
-
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-From clients I am able to ping the other networks. ( I am able to ping
-192.168.1.219).
-
-When I tried to establish a pptp connection from 192.168.9.1 to
-192.168.1.219.
-
-The connection got established and client logged into the network.
-
-The problem aroused here. when I tried from the second client
-192.168.9.2 to
-
-establish a pptp connection it failed. At any instant only one
-connection is getting
-
-established.
-
-So thought the patch is no good so I downloaded a patch from
-
-http://www.impsec.org/linux/masquerade/ip_masq_vpn.html
-
-which is netfilter-pptp-2.4.17-rev2.patch.
-
-when I tried to apply this patch it applied cleanly.
-
-Now I tried the above mentioned setup again.
-
-Again its the same case. I am not able to connect the second client.
-
-At any instant only one client is getting connected.
-
-I am caught in this loop.
-
-I saw a patch in December's list from Philip.
-
-I would like to know the steps involved in getting PPTP conntrack work.
-
-Which patch I should apply first, is it the one from netfilter.org
-pptp-conntrack-nat.patch?
-
-When can I apply the patch given by philip?
-
-What are the iptable rules I should add?
-
-please guide me. I want to connect multiple PPTP clients.
-
-Please explain the steps involved in this as I am a new to iptables /
-conntrack.
-
-Thanks in advance.
-
-regards,
-adharsh.
 
