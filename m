@@ -1,12 +1,13 @@
-From: "Stefan Bosnjakovic" <sb@digital-vitamins.com>
-Subject: cannot compile extensions/libipt_ECN.c
-Date: Mon, 9 Feb 2004 18:13:28 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Major NAT Problem
+Date: Wed, 11 Feb 2004 00:05:22 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAPCp1YAf+Yku8TNzXRFUK5MKAAAAQAAAApakBm76La0OUjD2MrlZa8QEAAAAA@digital-vitamins.com>
-Reply-To: <sb@digital-vitamins.com>
+Message-ID: <200402110005.22448.Antony@Soft-Solutions.co.uk>
+References: <Sea2-F19kyCKDkb9pPF00000901@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Sea2-F19kyCKDkb9pPF00000901@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,35 +20,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi list,
+On Friday 06 February 2004 2:54 am, Ted Erickson wrote:
 
-when I try to compile the user-land applications of iptables 1.2.6a,
-it stops at extensions/libipt_ECN.c with the following message:
-extensions/libipt_ECN.c: In function `parse':
-extensions/libipt_ECN.c:51: `IPT_ECN_OP_REMOVE' undeclared (first use in
-this function)
-extensions/libipt_ECN.c:51: (Each undeclared identifier is reported only
-once
-extensions/libipt_ECN.c:51: for each function it appears in.)
-extensions/libipt_ECN.c: In function `print':
-extensions/libipt_ECN.c:82: `IPT_ECN_OP_REMOVE' undeclared (first use in
-this function)
-extensions/libipt_ECN.c:83: warning: unreachable code at beginning of switch
-statement
-extensions/libipt_ECN.c: In function `save':
-extensions/libipt_ECN.c:99: `IPT_ECN_OP_REMOVE' undeclared (first use in
-this function)
-extensions/libipt_ECN.c:100: warning: unreachable code at beginning of
-switch statement
-make: *** [extensions/libipt_ECN.o] Error 1
+> I can surf the
+> internet just fine on my local network machine but I have ONE BIG
+> PROBLEM!!! I can't view a handfull of websites.  If I take the linux box
+> out of the picture and throw a cheap Linksys Router on the same DSL
+> connection I can see all the web sites i want.
 
-any idea what include file I'm missing?
+Investigate "clamp MTSS to MTU", discussed many times in the past on this 
+mailing list.
 
-In #include <linux/netfilter_ipv4/ipt_ECN.h
-I can find a couple of IPT_ECN_OP_SET... there - but no IPT_ECN_OP_REMOVE.
+Antony.
 
-I tried kernel 2.4.5 and 2.4.24 fyi ...
+-- 
+Perfection in design is achieved not when there is nothing left to add, but 
+rather when there is nothing left to take away.
 
-Cheers, Stefan !
+ - Antoine de Saint-Exupery
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
