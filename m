@@ -1,10 +1,12 @@
-From: Larry LeBlanc <leblanc@inmotiontechnology.com>
-Subject: RTSP/NAT query
-Date: Fri, 05 Nov 2004 16:09:14 -0800
-Message-ID: <418C162A.7060707@inmotiontechnology.com>
+From: Krystian <optimusprime@o2.pl>
+Subject: Re: connection limit for UDP
+Date: Sat, 06 Nov 2004 09:30:17 +0100
+Message-ID: <418C8B99.3050401@o2.pl>
+References: <4187E5DF.6040509@o2.pl> <20041104081226.GA16468@kuleuven.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20041104081226.GA16468@kuleuven.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Jan Du Caju <Jan.DuCaju@kuleuven.net>
+Cc: Netfilter ML <netfilter@lists.netfilter.org>
 
-Hello,
+Jan Du Caju wrote:
 
-I'm trying to determine whether or not I need the rtsp_conntrack module.
-I seem to be able to run RTSP through a masquerading gateway without it;
-is this just a fluke or are there specific scenarios that rtsp_conntrack
-is intended to address? (eg simultaneous users, etc). My testing to date
-has been to use Real Player 10 to play video clips off of the Real
-Networks website using UDP as the underlying transport. I'm using
-iptables 1.2.10 and the following nat/conntrack modules are in place:
+>On Tue, Nov 02, 2004 at 08:54:07PM +0100, Krystian wrote:
+>  
+>
+>>Hi
+>>
+>>I there a way to limit connections one host can make to another host 
+>>("dstlimit" like), but for UDP?
+>>
+>>I know UDP doesnt have FIN... but I thought since do connection can be 
+>>assumed closed after some time of innactivity i ...
+>>
+>>is there a way? :)
+>>    
+>>
+>
+>I once posted (february 2003 ) udplimit (a shameless copy of iplimit of 
+>Gerd Knorr ;-) I never got any reaction except from the people who also 
+>needed it at that time. By the way iplimit 's current name is connlimit. 
+>If you can't find it in the archives I can mail it.
+>
+>Greetz,
+>Jan.
+>------------------------------------------------------ KULeuvenNet ----
+>Jan.DuCaju@kuleuven.net			        http://www.KULeuven.Net
+>Katholieke Universiteit Leuven               http://kuleuven.be/english
+>LUDIT - KULeuvenNet				    http://www.ludit.be
+>-----------------------------------------------------------------------
+>  
+>
+Please post it :)
+or send it through mail :)
 
-iptables
-iptable_nat
-ip_nat_proto_gre
-ip_nat_pptp
-ip_conntrack
-ip_conntrack_pptp
-ip_conntrack_proto_gre
-ip_conntrack_mms
-
-Thanks,
-
-Larry
-
-
-
+Thanx
+Krystian
 
