@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Packet forwarding.
-Date: Wed, 7 Apr 2004 21:30:11 +0100
+Subject: Re: Logging default drop
+Date: Wed, 7 Apr 2004 21:34:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404072130.11689.Antony@Soft-Solutions.co.uk>
-References: <1081357206.4074339639b86@mail.tscnet.net> <200404071837.29160.Antony@Soft-Solutions.co.uk> <1081368257.40745ec12d828@mail.tscnet.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200404072134.30328.Antony@Soft-Solutions.co.uk>
+References: <000501c41cdf$076300b0$0464a8c0@stu>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1081368257.40745ec12d828@mail.tscnet.net>
+In-Reply-To: <000501c41cdf$076300b0$0464a8c0@stu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,22 +21,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 07 April 2004 9:04 pm, bdameron@tscnet.net wrote:
+On Wednesday 07 April 2004 9:29 pm, Stuart Lamble wrote:
 
-> I found an easier way to do this. xinetd can do port redirect. Worked
-> perfectly. Thanks for your help.
+> Hi All
+>
+> Can you LOG a default policy of DROP?
 
-You're welcome.
-
-Please call back again when you want to set up a secure firewall.
+Yes.   Add the LOG rule as the last one in the chain.
 
 Regards,
 
 Antony.
 
 -- 
-If you can't find an Open Source solution for it, then it isn't a real 
-problem.
+Perfection in design is achieved not when there is nothing left to add, but 
+rather when there is nothing left to take away.
+
+ - Antoine de Saint-Exupery
 
                                                      Please reply to the list;
                                                            please don't CC me.
