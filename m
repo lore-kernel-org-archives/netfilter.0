@@ -1,12 +1,12 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: DNS question
-Date: Thu, 6 Feb 2003 17:05:48 +0100 (CET)
+From: "mpboden" <mpboden@surfcity.net>
+Subject: I wanted to say thanks publicly...
+Date: Thu, 6 Feb 2003 16:19:59 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0302061700530.18403@dns.toxicfilms.tv>
-References: <211E94403B74D211878A0008C71C74DC60DD2E@ip216-50-5-162.z5-50-216.customer.algx.net>
+Message-ID: <003001c2ce3e$a67561c0$483918ac@C1006818>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002D_01C2CDFB.983B3E60"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <211E94403B74D211878A0008C71C74DC60DD2E@ip216-50-5-162.z5-50-216.customer.algx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Reed Wiedower <rwiedower@peyser.com>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> I'm having some trouble with DNS queries making it through the filters...if
-> I allow connections out to use udp port 53, that should allow clients inside
-> the firewall to query external dns servers for information, correct? Do I
-> need to open any other ports? (Of course, I have "related, established"
-> open, so I assume the DNS server response will work properly). Am I missing
-> somthing?
-If a dns query via udp fails (or it has over 512 bytes, and the Trunacated
-bit set), the resolver is obligated to commit the query via tcp.
+This is a multi-part message in MIME format.
 
-In order to have dns queries working with external DNS servers, the
-clients must be able to send tcp and udp with dport 53 to the servers,
-and the replies must get back, e.g. using the state mechanism.
+------=_NextPart_000_002D_01C2CDFB.983B3E60
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-If you have a DNS server in your network and want to allow dns queries to
-your server you need to allow both tcp and udp with dport 53 to your DNS.
+I posted a question yesterday regarding my iptables rules and how i =
+could access my ftp server from the LAN but not from the WAN. Well, Joel =
+Newkirk quickly responded with a long and detailed private message that =
+solved the problem. So I just wanted to pass on my thanks to Joel =
+publicly on the mailinig list for spending the time explaining thing to =
+me. I really appreciate the help and am more than grateful.
 
-Also, TCP is used for zone transfers.
+Have a great day!
 
-If you fail to solve your problem, try tcpdumping the traffic on the
-firewall, you will know what is being send, what is being block.
+Mike
 
-Regards,
-Maciej Soltysiak
+------=_NextPart_000_002D_01C2CDFB.983B3E60
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3502.4856" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>I posted a question yesterday regarding =
+my iptables=20
+rules and how i could access my ftp server from the LAN but not from the =
+WAN.=20
+Well, Joel Newkirk quickly responded with a long and detailed private =
+message=20
+that solved the problem. So I just wanted to pass on my thanks to Joel =
+publicly=20
+on the mailinig list for spending the time explaining thing to me. I =
+really=20
+appreciate the help and am more than grateful.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Have a great day!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial =
+size=3D2>Mike</FONT></DIV></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_002D_01C2CDFB.983B3E60--
 
 
