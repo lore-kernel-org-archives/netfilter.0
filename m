@@ -1,12 +1,14 @@
-From: "Patty O'Furniture" <throwaway8306@tradersdata.com>
-Subject: Re: *****SPAM***** p-o-m for kernel]
-Date: Wed, 23 Oct 2002 12:32:25 -0400 (EDT)
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: IPTables Query
+Date: Wed, 23 Oct 2002 11:26:36 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210231632.g9NGWS325697@vela.tradersdata.com>
-References: <005b01c27a3f$91cc2a40$0814a8c0@yy>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPCECJDEAA.stewart.thompson@shaw.ca>
+References: <OF4C23D8BB.4F323586-ON65256C5B.002C3B86-65256C5B.002CA6D5@lntinfotech.com>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005b01c27a3f$91cc2a40$0814a8c0@yy>
+In-reply-to: <OF4C23D8BB.4F323586-ON65256C5B.002C3B86-65256C5B.002CA6D5@lntinfotech.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +18,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: amyyang@w-ibeda.com
+Content-Type: text/plain; charset="us-ascii"
+To: harish.k@lntinfotech.com
 Cc: netfilter@lists.netfilter.org
 
-On 23 Oct, Amy wrote:
-| sorry for I post this on the list.And say sorry to Erick. [...]
-| 
-| Regards,
-| Amy
-| 
-| 
-| ----- Original Message ----- 
-| From: "Erik Leupold" <spam@cs-el.sytes.net>
-| To: <amyyang@w-ibeda.com>
-| Sent: Wednesday, October 23, 2002 7:43 AM
-| Subject: [Fwd: *****SPAM***** p-o-m for kernel]
-| 
-| 
-| > your mail is rated as spam
-| > 
-| > -- 
-| > Erik Leupold <spam@cs-el.sytes.net>
-| > 
+HI Harish:
 
-Amy,
+	Perhaps I should have asked for more facts. I assumed,
+perhaps incorrectly, that you wanted to forward the DNS request
+across the Internet It is my understanding that your IP fell within
+the private Class B IP range of  172.16.0.0  -  172.31.255.255.
+It is also my understanding that routers on the Internet drop IP's
+that fall into established private IP ranges. If I am wrong on this
+point, someone please correct me.
 
-If you look at the link below, you'll see how your original post
-appears in the archive. 
+Stu..........
 
-https://lists.netfilter.org/pipermail/netfilter/2002-October/039425.html
 
-Mail filters will be processing what you see above, and not what you
-think you wrote. You would probably be better off posting in plain text
-without the encoding. Honestly I don't know how to do that when you're
-using a different character set (GB2312). I especially know nothing
-about how to do it with Outlook Express.  But most likely, Erik's spam
-filters consider *anything* encoded to be obfuscated spam, or possibly
-it took exception to some "bad" words embedded in the encoding.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
+harish.k@lntinfotech.com
+Sent: October 23, 2002 1:08 AM
+To: stewart.thompson@shaw.ca
+Cc: netfilter@lists.netfilter.org
+Subject: RE: IPTables Query
 
-Although if either of the above is correct one could argue:
+Hi Stewart,
 
-1. That filter is brain-dead, and
-2. Auto-responding to (suspected) spam is ill-advised, and
-3. It is as ill-conceived as vacation msgs responding to list msgs [*],
+I have a Checkpoint firewall sitting in front of me. It's IP Add is
+172.25.8.1. This machine does the NAT and filter functions.
+It is in turn connected to a router thru another interface and to the
+Internet.
+The IP Add 172.25.8.125 *has* permission to pass thru, but the IP
+172.25.8.130 does not. So locally generated packets destined for
+DNS servers need to have the source IP of 172.25.8.125.
 
-there's little you can do other than avoiding the encoding.  Or you
-could just choose to ignore it.
+Rgds
+--
+---------------------------------------------------------------
+Harish K                             <harish.k@lntinfotech.com>
+Systems Engineer                            Tel - 91-22-6948065
+Don't drink and drive. You might hit a bump and spill your beer
+---------------------------------------------------------------
 
-[*] At least it didn't go back to the list.
 
--- 
-Email address is a temporary one that will only work for a couple of days.
-Spammers' unrelenting address harvesting forces me to this... reluctantly.
+
+
+Stewart Thompson <stewart.thompson@shaw.ca>
+10/23/2002 01:30 PM
+Please respond to stewart.thompson
+
+        To:     harish.k@lntinfotech.com, netfilter@lists.netfilter.org
+        cc:
+        Subject:        RE: IPTables Query
+
+
+Hi:
+
+                 This isn't really practical. Most routers will drop
+packets
+from private ranges. So your request won't make it to it's destination
+Anyway. Netfilter will make sure the request gets back to the right
+Machine. Why do you need this?
+
+
+Stu..........
 
 
 
