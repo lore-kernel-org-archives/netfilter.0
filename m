@@ -1,13 +1,12 @@
-From: "Nathan Cassano" <nathan@cjhunter.com>
-Subject: RE: Real Audio support yet?
-Date: Wed, 10 Jul 2002 08:22:34 -0700
+From: "Mark Ayad" <mark@javamark.com>
+Subject: Re: Destination NAT Onto the Same Network Problem
+Date: Wed, 10 Jul 2002 17:29:26 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <57b501c22825$9ddb6f60$2901a8c0@amos>
-References: <011001c22804$19b29770$010010ac@routed>
+Message-ID: <005801c22826$9490efb0$0300a8c0@W2KP01>
+References: <001601c22819$406b6a30$0300a8c0@W2KP01> <200207101422.g6AEMi812683@vulcan.rissington.net> <273150000.1026311894@wookie.shorewall.net> <200207101457.g6AEvw812845@vulcan.rissington.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <011001c22804$19b29770$010010ac@routed>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,37 +17,61 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'alex' <alexnewnham@yahoo.com>, netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, Tom Eastep <teastep@shorewall.net>, netfilter@lists.samba.org
+
+Antony
+
+I gave
+
+$IPTABLES -t nat -A PREROUTING -d a.b.c.d -p tcp --dport 80 -j DNAT --to
+192.168.0.3
+
+a whirl but no joy, although the onnection request tqkes muck longer to time
+out ?
+
+So we have
+
+[198.168.0.3] make a request on [198.168.0.1] the gateway  which is MASQ to
+[a.b.d.c]  the ext IP of the firewall. The DNS lookup returns [a.b.d.c]
+which is Postrouted DNAT mapped to [198.168.0.3]
+
+Am I right I thinking that the source address is that of the gateway
+[198.168.0.1] , which is why I get no response ?
+
+echo "   clearing any existing rules and setting default policy.."
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+
+$IPTABLES -A INPUT -p tcp --syn --destination-port 80 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --syn -j DROP
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
+
+$IPTABLES -t nat -A PREROUTING -p tcp -i eth0 --dport 80 -j
+DNAT --to-destination 192.168.0.3:80
+
+$IPTABLES -t nat -A PREROUTING -d a.b.c.d -p tcp --dport 80 -j DNAT --to
+192.168.0.3
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+
+echo -e "\nrc.firewall-2.4 v$FWVER done.\n"
+
+Where where a.b.c.d is the ext IP of the firewall.
+
+Still won't connect from an IP request on 192.168.0.3 ?
+
+It requires a rule simply to act as a loopback but first going by the
+external ip to obtain the external dns IP which is a.b.c.d.
 
 
-Read Audio does not need to be supported as it's protocol works just
-fine over NAT. I believe you are thinking about an old ipchains helper
-module that was used back when the Real Audio protocol wouldn't work
-over NAT. 
-
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org] On Behalf Of alex
-Sent: Wednesday, July 10, 2002 4:23 AM
-To: netfilter@lists.samba.org
-Subject: Real Audio support yet?
-
-Hi folks
-
-Have just done a quick search for streaming real audio support for
-iptables.
-It doesn't look like it's supported yet - is this still the case? If
-not, a
-link or 2 would be much appreciated!
-
-This would be to provide streaming support to a PC behing an iptables
-NATed
-firewall.
-
-
-thanks
-
-alex
 
 
 
