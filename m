@@ -1,11 +1,11 @@
-From: "Imran Alvi" <imranalvi@hamdard.net.pk>
-Subject: port blocking
-Date: Wed, 28 May 2003 13:43:51 +0500
+From: Thierry ITTY <thierry.itty@besancon.org>
+Subject: squid + masquerade/nat + pptp problem
+Date: Wed, 28 May 2003 14:53:33
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c324f5$43d536e0$0100a8c0@NE>
+Message-ID: <3.0.1.16.20030528145333.260f500e@s-net-04.besancon.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C3251F.2C9A7600"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,51 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello
 
-------=_NextPart_000_0005_01C3251F.2C9A7600
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have a linux machine which does various things for my corporate users :
+- running squid and squidGuard with ncsa auth for http/https/ftp outgoing
+traffic=20
+- running xinetd to redirect some incoming traffic to private ip servers
+- running iptables to do some snat/dnat on some outgoing traffic that can't
+be masqueraded (proprietary protocols)
+- running iptables to do general masquerading for a few users
 
-Hi,
-I want some help on iptables, i have one ick with one priamry and one =
-secondry ip and i want secondry interface to hear all requests except =
-www (80) requests, Note:=20
-i have primary interface running for transparent proxy.
-Plz help me in this regard it will be very gr8ful of u.
+this machine has a single nic with several vlans, some vlans have aliases
+to handle several IPs
 
-Regards
-Imran Alvi
-------=_NextPart_000_0005_01C3251F.2C9A7600
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+thought not simple, it works fine
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I want some help on iptables, i have =
-one ick with=20
-one priamry and one secondry ip and i want secondry interface to hear =
-all=20
-requests except www (80) requests, Note: </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>i have primary interface running for =
-transparent=20
-proxy.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Plz help me in this regard it will be =
-very gr8ful=20
-of u.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Regards</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Imran Alvi</FONT></DIV></BODY></HTML>
+now I added a PoPToP server on it and things are going bad :
+- when pptpd runs, people on one of the internal vlans can hardly sign-on,
+whereas people on the other vlans have no problems. squid just doesn't ask
+for authentification, then the client browser just can't connect to any
+external site. sometimes after relaunching the browser several times the
+client can get the signon box and gains access to the outer world again,
+but often he doesn't get it and can't go out.
+- when the pptp traffic goes throught the masqueraded interface (only one
+is masqueraded among all) it's very hard to sign-on, there are very often
+LCP time-out errors (on the poptop side) and error 678 on the windows side,
+whereas when the pptp traffic only goes throught non masqueraded interfaces
+there are no access problems (actually I start the pptpd daemon so it
+listens only on one ip). Nevertheless, the first problem above happens
+whatever interface the pptp traffic goes throught.
 
-------=_NextPart_000_0005_01C3251F.2C9A7600--
+I understand quite well that my iptables rules should get refined to solve
+the second problem, to ensure outgoing pptp traffic doesn't get nated or
+masqueraded or something like that. anyway I can get it solved by using
+another interface for a while.=20
+What I really can't understand is why and how having pptpd running can
+compromise squid's ncas authentification. and really it does : if a stop
+pptpd for say a hour, then anybody gets auth'd at the first try and can
+connect to any site, and as soon as i restart it, i get calls from people
+who don't receive their signon box and get blocked.
 
+Any idea how I could investigate such a problem, before i give up and put
+another machine beside with just pptpd ?
+
+tia
+			- * - * - * - * - * - * -
+Bien s=FBr que je suis perfectionniste !
+Mais ne pourrais-je pas l'=EAtre mieux ?
+	Thierry ITTY
+eMail : Thierry.Itty@Besancon.org		FRANCE
 
