@@ -1,15 +1,12 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: PPTP+NAT+MASQ anyone?
-Date: 11 Dec 2002 15:26:34 +0100
+From: bernard <bernard@gers.net>
+Subject: hostname forwarding
+Date: Wed, 11 Dec 2002 15:05:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039616794.20561.83.camel@tux>
-References: <200212091226.23888.roy@karlsbakk.net>
-	<200212111249.53924.roy@karlsbakk.net> <1039615426.20573.80.camel@tux> 
-	<200212111514.55539.roy@karlsbakk.net>
+Message-ID: <p04330105ba1cf39a28eb@[80.9.157.3]>
+References: <FD8F124A387AD6119F7900A0D218B32154A614@hslex01.hslbz.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200212111514.55539.roy@karlsbakk.net>
+In-Reply-To: <FD8F124A387AD6119F7900A0D218B32154A614@hslex01.hslbz.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,27 +16,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wed, 2002-12-11 at 15:14, Roy Sigurd Karlsbakk wrote:
+I'm using iptables to redirect external requests depending on their 
+port/protocol like this :
 
-> Then what am I doing wrong???
-> 
-> cd /usr/src
-> tar xzf packed/linux-2.4.19.tar.gz
-> ln -s linux-2.4.19 linux
-> cd netfilter/patch-o-matic
-> ./runme pending
-> ./runme extra
+	hostname A:80 -> public ip -> iptables -> 192.168.1.1:80
+	hostname B:80 -> public ip -> iptables -> 192.168.1.1:80
 
-I have no idea, you say you use p-o-m from cvs and that you apply all
-pending patches... after doing that the pptp patch works fine here.
+It works pretty well, thanks to iptables :-)
 
--- 
-/Martin
+Now I want to redirect on a hostname basis on different private ip's 
+like this :
 
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+	hostname A:80 -> public ip -> iptables -> 192.168.1.1:80
+	hostname B:80 -> public ip -> iptables -> 192.168.1.2:80
+
+Does anyone know a solution ?
+
+Thanks for your help.
+
+Bernard
 
