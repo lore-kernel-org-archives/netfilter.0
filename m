@@ -1,13 +1,10 @@
-From: Craig Davison <cd@securityfocus.com>
-Subject: Re: Blocking downloads
-Date: Wed, 5 Feb 2003 11:16:04 -0700
+From: "Curca Claudiu" <rapandulex@msn.com>
+Subject: IpTables question...
+Date: Mon, 03 Feb 2003 08:47:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030205181604.GA25714@securityfocus.com>
-References: <D007132BBC42D5118FD20002A52844414BCF58@ASC01>
+Message-ID: <F9VYbb0fBGr4zL748kF00020127@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <D007132BBC42D5118FD20002A52844414BCF58@ASC01>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ASC - Ronald Roeleveld <r.roeleveld@ascinternational.nl>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, Feb 05, 2003 at 05:01:43PM +0100, ASC - Ronald Roeleveld wrote:
-> What I want is that clients cannot, let's say with Internet Explorer or
-> Mozzila, download files from the internet, but can browse the internet.
+I'm using RedHat Linux 8.0 on an PIII - Coppermine 750 MHz. I used Iptables 
+for NAT  networking at my home (5 PC's + 1 Server).
+The server is used as a gateway and dns server. My question is:
 
-Use a web proxy like Squid to block certain Content-types.
-You could limit users to text/plain, text/html and image/*.
+Is there any way I could limit the transfer rate of the inside computers to 
+the internet?
+For example I want 192.168.3.5 to have a limit of 5 KB/s transfer rate.
 
-I think the configuration directive you want is req_mime_type, but I could 
-be wrong:
-http://squid.visolve.com/squid24s1/access_controls.htm
+Please help me!!
 
--- 
-Craig Davison
-Symantec Corporation
-+1 (403) 213-3939 ext. 228
+_________________________________________________________________
+STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
+
 
