@@ -1,14 +1,13 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: How to flush the connection state if conntrack is build in the
-	kernel
-Date: Sun, 16 Jan 2005 21:54:59 -0500
-Message-ID: <876ef97a05011618543ebe32c5@mail.gmail.com>
-References: <002301c4fc24$916e8ca0$aa0ba8c0@l7.com.tw>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+From: ASHISH <ashishis@gmail.com>
+Subject: Re: ever block *outgoing* packets on your firewall?
+Date: Mon, 17 Jan 2005 09:56:02 +0530
+Message-ID: <558224e3050116202613e66b65@mail.gmail.com>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F0198DD@pxtvjoexd01.pxt.primeexalia.com>
+Reply-To: ASHISH <ashishis@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <002301c4fc24$916e8ca0$aa0ba8c0@l7.com.tw>
+In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F0198DD@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,19 +18,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Vincent <cs83152@csie.chu.edu.tw>
-Cc: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Mon, 17 Jan 2005 07:38:54 +0800, Vincent <cs83152@csie.chu.edu.tw> wrote:
-> If I build the iptables connection tracking into kernel. How can I flush
-> the connection state clean.
+It will have no effect on tcp traffic, but it can be a real mess with
+udp traffic.
 
-Without ctnetlink from patch-o-matic in the kernel, you can't. Install
-ctnetlink from patch-o-matic and you will be able to write a program
-that can delete individual conntrack records with netlink messages.
 
--- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+On Sat, 15 Jan 2005 21:12:04 -0800, Gary W. Smith <gary@primeexalia.com> wr=
+ote:
+> It's also key to stopping many of the code red and sql slammer type virus=
+es.  If SQL outgoing ports would have been closed on most firewalls that wo=
+uld have slowed it down quickly.
+>=20
+> Gary
+>=20
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-bounces@lis=
+ts.netfilter.org] On Behalf Of Jose Maria Lopez
+> Sent: Saturday, January 15, 2005 2:20 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: ever block *outgoing* packets on your firewall?
+>=20
+> El vie, 14 de 01 de 2005 a las 21:02, seberino@spawar.navy.mil escribi=F3=
+:
+> > I'm wondering if it is ever necessary to block
+> > *outgoing* packets at your firewall.
+> >
+> > As long as you block /incoming/ carefully no hacker
+> > on the Internet can send spam through a node on
+> > your network or anything nasty like that right?
+> >
+> > (I'm wondering for a wifi hotspot if any nastiness
+> > will happen if I don't block outgoing.  I block
+> > virtually all incoming except ssh.)
+> >
+> > CS
+>=20
+> You *really* need to block outgoing traffic at your firewall.
+> Think about spyware, malware and the like. They can be sending
+> your company data to their owners. And users can use firewall-piercing
+> and proxies to bypass your network rules if you let them do whatever
+> they want.
+>=20
+> --
+> Jose Maria Lopez Hernandez
+> Director Tecnico de bgSEC
+> jkerouac@bgsec.com
+> bgSEC Seguridad y Consultoria de Sistemas Informaticos
+> http://www.bgsec.com
+> ESPA=D1A
+>=20
+> The only people for me are the mad ones -- the ones who are mad to live,
+> mad to talk, mad to be saved, desirous of everything at the same time,
+> the ones who never yawn or say a commonplace thing, but burn, burn, burn
+> like fabulous yellow Roman candles.
+>                 -- Jack Kerouac, "On the Road"
+>=20
+>=20
+
+
+--=20
+cheers
+Ashish
 
