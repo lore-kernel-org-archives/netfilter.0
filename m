@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ip aliasing considered harmful?
-Date: Mon, 10 Jan 2005 08:38:55 -0500
-Message-ID: <1105364334.12623.5.camel@hubcap.ljm.dom>
-References: <BAY101-F28F59D9C013C228CBEAFC8DF970@phx.gbl>
+From: "Fabiano Reis" <silos.reis@ig.com.br>
+Subject: RE: bandwidth monitoring
+Date: Mon, 10 Jan 2005 11:45:06 -0200
+Message-ID: <E1Cnztg-0003YX-00@deer.gmane.org>
+References: <200501061128.04741.patrick.leduc@novipro.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY101-F28F59D9C013C228CBEAFC8DF970@phx.gbl>
+In-Reply-To: <200501061128.04741.patrick.leduc@novipro.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+To: patrick.leduc@novipro.com, netfilter@lists.netfilter.org
+
+I=B4m acctualy using hotsanic to make this.=20
+
+http://hotsanic.sourceforge.net/
+
+it have features to monitore other things as well...
+
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
+patrick.leduc@novipro.com
+Sent: Thursday, January 06, 2005 2:28 PM
 To: netfilter@lists.netfilter.org
+Subject: bandwidth monitoring
 
-On Mon, 2005-01-10 at 01:46, Curby . wrote:
-> I've currently got two Internet-facing IP addresses on my gateway using a 
-> single interface.  I have them configured as eth0:0 and eth0:1, but I've 
-> read several times on this list that doing it this way (I think it's called 
-> aliasing?) is not recommended.  IIRC the recommended alternative was to use 
-> the ip command to handle it.
+Hello
 
-that is correct.
+Does somebody know a program for monitoring bandwidth by ip? I have one=20
+internet interface and I must monitor many ips adresses on this =
+interface. I
 
-> Why is that alternative preferable?  The only thing I can see now is that 
-> I'd have to double the number of iptables rules in some cases to take care 
-> of eth0:0 and eth0:1 instead of just eth0. 
+tried Ipac-ng and, I worked a lot to do this config but it seems not =
+working
 
-that's why 'ip addr add w.x.y.z dev eth0' is preferable--it doesn't
-delude you into thinking you have multiple interfaces, because you
-don't.  try and add a rule for eth0:0 and let us know how it goes.
+this way.
 
-> If i use ip, can I simply point 
-> all rules to eth0 instead of eth0 and eth0:1?
+thanx
 
-yes--as eth0 is the only actual interface in this example.  eth0:0 and
-eth0:1 are a figment of your imagination perpetuated by the use of the
-ifconfig command.
-
-> Lastly, are there any downsides at all for doing it with ip? 
-
-no.
-
-> For example, 
-> eventually I'll want to SNAT and DNAT packets based on whether they're 
-> related to one Internet-facing IP or another, and I just want to make sure 
-> that would still be possible.  Thanks!
-
-yes.  the only distinguishing feature of the packet is the IP--the only
-interface involved here is eth0.
-
--j
-
---
-"If something is to hard to do, then it's not worth doing."
-	--The Simpsons
 
 
