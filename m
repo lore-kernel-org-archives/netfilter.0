@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: silly question, how to block all outgoing traffic?
-Date: Fri, 6 Jun 2003 08:16:19 +1000
+Subject: RE: Port forwarding
+Date: Fri, 6 Jun 2003 09:08:57 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DDB@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019263@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,21 +17,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: calvin <calvinproject@ihug.com.au>, netfilter@lists.netfilter.org
+To: Dhyanesh Ramaiya <dhyanesh@intafrica.com>, netfilter@lists.netfilter.org
 
-Please refer to the iptables tutorials to get a better idea of the =
-chains and how a packet traverses it.
+PREROUTING only works for packets passing through the firewall and not =
+FOR the firewall to itself. There is no NAT for an incoming connection =
+on it's local process as it's ALREADY there at the service not a packet =
+that's coming in. if you know what I mean.
 
-INPUT and OUTPUT are only used by the firewall and not for forwarding =
-packets. So in other words, if C1 or C2 sends a packet through G1 or G2, =
-both G1 and G2 packets will not pass through those 2 chains.
+If you had multiple IPs which were NATted to an internal server then you =
+can NAT the OUTPUT chain but not when the destination IP is the firewall =
+itself..
 
-What you want is FORWARD.
+One sneaky what of doing it is to put a /etc/hosts file of the internal =
+machine.. eg.
 
-ie.(rule below drops everything C1 is trying to get out via eth1.
---G1--
-iptables -A FORWARD -i eth0 -o eth1 -s 137.112.220.166 -j DROP
+192.168.0.1           www.yourdomain.com
 
+When you browse the name it'll go directly to the internal machine. But =
+remember to use names not IPs..
+Outsiders get NATed and the firewall browses by the internal machine.
 
 Thanks,
 ____________________________________________
@@ -41,20 +45,40 @@ georgev@citadelcomputer.com.au
 
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
-
+=20
 
 -----Original Message-----
-From: calvin [mailto:calvinproject@ihug.com.au]
-Sent: Thursday, June 05, 2003 6:28 PM
+From: Dhyanesh Ramaiya [mailto:dhyanesh@intafrica.com]
+Sent: Thursday, June 05, 2003 7:49 PM
 To: netfilter@lists.netfilter.org
-Subject: silly question, how to block all outgoing traffic?
+Subject: Port forwarding
 
 
+Dear all,
 
-case2:   iptables -A output -s 137.112.220.165 -j DROP
+I have a linux router (Redhat 9.0) with iptables 1.2.7a-2. I have setup =
+port
+forwarding rules as below to allow SMTP and POP3 to a machine on the
+internal network.
 
-case3:   iptables -A input -i 137.112.220.165 -s 137.112.220.165 -j DROP
+iptables -t nat -A PREROUTING -j DNAT -p tcp -d <public_ip> --dport 110 =
+--to
+<private_ip>:110
+iptables -t nat -A PREROUTING -j DNAT -p tcp -d <public_ip> --dport 25 =
+--to
+<private_ip>:25
 
-case4: iptables -A output -s ! 137.112.220.165 -j ACCEPT
+What happens, is that when I try to telnet port 25 or 110 from the =
+router
+itself, it doesn't connect and gives the error "Connection refused".
+However, from any other machine on the network it connects. Thinking =
+that
+some firewall rules might be blocking the connection, the default policy =
+of
+all chains is set to accept.
+
+Dhyanesh Ramaiya
+dhyanesh@intafrica.com
+
 
 
