@@ -1,46 +1,67 @@
-From: "Steven Mugassa" <steven.mugassa@intafrica.com>
-Subject: help needed-VPN
-Date: Tue, 27 May 2003 12:39:33 +0300
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000101c32433$e1c08b10$0223a8c0@satconet.com>
+From: Cedric Blancher <blancher=cPThYx3uDionEikN29/hQkZa+K1vlBrA@public.gmane.org>
+Subject: RE: transparent tcp proxy
+Date: 27 May 2003 12:49:15 +0200
+Sender: ebtables-user-admin=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+Message-ID: <1054032554.681.103.camel@elendil.intranet.cartel-securite.net>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A019241@wardrive.citadelcomputer.com.au>
+	 <1053938722.17259.6.camel@stilmant>
+	 <1054024461.694.31.camel@elendil.intranet.cartel-securite.net>
+	 <1054028975.18150.65.camel@stilmant>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <ebtables-user-admin@lists.sourceforge.net>
+In-Reply-To: <1054028975.18150.65.camel@stilmant>
+Errors-To: ebtables-user-admin@lists.sourceforge.net
+List-Help: <mailto:ebtables-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:ebtables-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ebtables-user>,
+	<mailto:ebtables-user-request@lists.sourceforge.net?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: owner-cipe-l@inka.de, cipe-l@inka.de
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ebtables-user>,
+	<mailto:ebtables-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=ebtables-user>
+Content-Type: text/plain; charset="iso-8859-1"
+To: ml-netfilter=LO0MmcUbMwyzQB+pC5nmwQ@public.gmane.org
+Cc: netfilter=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org, ebtables-user=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+
+Le mar 27/05/2003 =E0 11:49, Michael Stilmant a =E9crit :
+> On Tue, 2003-05-27 at 10:34, Cedric Blancher wrote:
+> > What about a layer 2 SNAT on OUTPUT chain from B to A for filtered
+> > packets ?
+> > ebtables can achieve this.
+> Well, I'll look in this solution. Thanks ...  so you say it's possible
+> to make a filter in ebtables where I can say for all frame for ip:A por=
+t
+> X from port Y replace MAC with the #C value ?
+
+Not directly, because ebtables cannot match TCP fields. But it must be
+possible using fwmark propagation.
+
+	iptables -t mangle -A OUTPUT -p tcp --sport Y -d A --dport X \
+		-j MARK --set-mark 0x01
+
+Then, you SNAT in POSTROUTING using ebtables marked packets :
+
+	ebtables -t nat -A POSTROUTING -m mark_m --mark 0x01 \
+		-j snat --to-source C_MAC
+
+I must admit I did not tried this, but I do think it should work, as
+long as output interface is a bridge (if not, packet won't go through
+ebtables framework). You didn't get any other answer for this on
+ebtables-user list ?
 
 
+I Cc ebtables-user, so one can confirm what I said below ;)
 
-Hello,
-
-I'm trying to implement VPN of two remote LANs(LAN A & LAN B) using CIPE (on
-RedHat 9.0). I have tried to follow instructions from "CIPE-How to" from
-tldp.org and it seems to work (the machines on the two LANs can ping &
-traceroute each other using the internal IP addresses)
-
-However i have one more requirement which i need advice on how to do it:-
--One of the machines(call it machine X) in LAN B is not using CIPE gateway
-as its gateway( it is going to the internet using another gateway, which is
-also in the same LAN). This machine don't need to access machines in LAN A,
-but machine in LAN A need to access this machine. Since this machine is
-using another gateway(not CIPE gateway), then the classical CIPE-based VPN
-implementation will not allow it to be accessible by remote LAN.
-
--My question is, what modifications (routings, or SNAT/DNAT, ...) can i do
-to allow machine in remote LAN A to access that machine X (in LAN B)?
-
-Thanks,
-Steven
+--=20
+C=E9dric Blancher  <blancher=cPThYx3uDionEikN29/hQkZa+K1vlBrA@public.gmane.org>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
 
-
+-------------------------------------------------------
+This SF.net email is sponsored by: ObjectStore.
+If flattening out C++ or Java code to make your application fit in a
+relational database is painful, don't do it! Check out ObjectStore.
+Now part of Progress Software. http://www.objectstore.net/sourceforge
