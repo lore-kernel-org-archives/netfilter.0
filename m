@@ -1,13 +1,12 @@
-From: Shawn <core@enodev.com>
-Subject: RE: Routing Public IPs over NAT Address Space
-Date: 14 Jul 2003 15:49:43 -0500
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: SNAT kills local stuff?
+Date: Tue, 15 Jul 2003 08:00:21 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058215783.24180.128.camel@localhost>
-References: <200307142037.h6EKbDjk022585@discmail.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF10@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307142037.h6EKbDjk022585@discmail.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Aldo S. Lagana" <alagana@discmail.com>
-Cc: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+To: David Busby <busby@pnts.com>, netfilter@lists.netfilter.org
 
-1. I'm not the asker. Are you responding to my response?
-2. Soap box: 90% of documentation fails to live up to it's purpose. With
-such an overwhelming topic, it can be difficult to get over the first
-learning hump. Some folks are willing at least to try and help, even if
-only to give pointers to documentation, and it's counter productive to
-rag on those people.
+"iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -j SNAT --to =
+$EXTERNAL_IP"
+Probably because you ignore the -o eth1 on the second line.
 
-On Mon, 2003-07-14 at 15:35, Aldo S. Lagana wrote:
-> Read the Tutorial - anyone who configures a firewall and doesn't know the
-> firewalling technology that he/she is implementing is asking for problems,
-> to say the least.
-> 
-> Google iptables tutorial and spend some time understanding it.
-> 
-> Soap box: 90% of the questions posed to this group are answered in the
-> tutorial.  It would make this list much less chatty to hear a lot less
-> questions about people's 'unique' setups...
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
 
