@@ -1,13 +1,8 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Using NAT to relay traffic
-Date: Thu, 24 Mar 2005 10:03:18 -0600
-Message-ID: <4242E4C6.6050305@riverviewtech.net>
-References: <42420275.7030909@vsahost.com> <42420BC0.6030700@riverviewtech.net>
-	<4242CE01.5090105@vsahost.com>
-Reply-To: gtaylor@riverviewtech.net
+From: Hans Wong <hansyywong@yahoo.com>
+Subject: IPtable STRING match memory leakage problem in Redhat AS3 ??
+Date: Wed, 23 Mar 2005 17:59:38 -0800 (PST)
+Message-ID: <20050324015938.76256.qmail@web52405.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <4242CE01.5090105@vsahost.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +13,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jared Cook <jared@vsahost.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-You are welcome.  I'm glad that I could help.  :)
+Hi all,
+ 
+Does anyone encounter memory leakage problem of  
+using IPtable STRING match extension? When I  
+enable this extension,  the memory of the system 
+drops 4k in every couple seconds when DROPping 
+the matched package.  
+Appreciated of any idea? Thanks! 
+ 
+Best Regards
+ 
+Hans 
+ 
 
-I do ask a favor, have a good day for me as I was up WAY too late working on things.  Now where did I put my sleeping bag at work???
 
-
-
-Grant. . . .
-
-Jared Cook wrote:
-
-> Thanks.  The SNAT piece indeed was the part I was missing.  It all works 
-> great now.
-
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
