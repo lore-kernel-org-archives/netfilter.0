@@ -1,9 +1,11 @@
-From: chrispatch@intrstar.net
-Subject: RE: netfilter digest, Vol 1 #1396 - 14 msgs
-Date: Wed, 17 Dec 2003 12:54:55 -0500
+From: "Cristiano Soares" <stillnick@terra.com.br>
+Subject: help...
+Date: Sun, 14 Dec 2003 20:30:18 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <86A0DA300AA5A447BA587B1715BDF7F960507B@exchange.nt.intrstar.net>
+Message-ID: <000801c3c291$db2de390$6400a8c0@stillnickcomp1>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C3C281.16D23330"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,48 +16,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
->On our Cisco we used a pool of public IP's for our users to NAT through.
->I've found a comparable configuration to do the same with iptables:
->
->iptables -t nat -p all -A POSTROUTING -s 10.0.0.0/8 -o eth0 -j SNAT --to
->x.x.x.x - y.y.y.y
->
->With this in place, outbound connections have a source address picked in a
->round-robin fashion from the pool which is basically what we want in order
->to not overload a single public IP. However, we now have an issue with
->some websites that have security measures in place to reject users
->connecting via a different IP for each transaction subsequent to logging
->in.
->
->For example, if my initial connection to http://secure.foo.com comes from
->xxx.xxx.xxx.4, the server will reject my next transaction if it comes from
->xxx.xxx.xxx.5.
->
->Somehow the Cisco NAT was able to address this with what I'm guessing was
->some kind of translation tracking procedure (either that or perhaps magic
->fairy dust) making subsequent connections to a site from a particular user
->come from the same IP.
->
->My question is, is there a way to configure iptables to do the same? If
->not, in your opinion how many users can we expect to successfully NAT to
->one public IP?
+This is a multi-part message in MIME format.
 
-I have successfully NAT'ed 200-300 PC's to one ip in schools before, with no
-problems.
-Since you have multiple public IP addresses, try this
-iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -j SNAT --to-source 1.1.1.1
-iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -j SNAT --to-source 1.1.1.2
-iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -j SNAT --to-source 1.1.1.3
-iptables -t nat -A POSTROUTING -s 10.0.3.0/24 -j SNAT --to-source 1.1.1.4
+------=_NextPart_000_0005_01C3C281.16D23330
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This way all connections from the same host get NAT'ed to the same source,
-but you are doing rudimentary balancing across your available public IP
-addresses.
+Hi, i would like to know if u guys could help me with a simple problem =
+that im having trying to set up a network server. I have DSL conection =
+and im sharing it with a network. I had set up the DHCPD server, all the =
+DHCP clients in my network can receive an IP from the server, but they =
+cant browse. I know that there as some lines that i have to set up to =
+make de server allow the clients to browser normaly. and i also know =
+that it has something to do with iptables, and maskarading. Please, i =
+need help doing this. I have MSN and ICQ if anyone would like to help =
+me. I have SSH server running also. please, please, i need help. Thanks =
+a lot.
 
+MSN: stillnick@hotmail.com
+ICQ #: 3794264
+
+Ass.: Cristian Soares
+
+------=_NextPart_000_0005_01C3C281.16D23330
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2730.1700" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi, i would like to know if u guys =
+could help me=20
+with a simple problem that im having trying to set up a network server. =
+I have=20
+DSL conection and im sharing it with a network. I had set up the DHCPD =
+server,=20
+all the DHCP clients in my network can receive an IP from the server, =
+but they=20
+cant browse. I know that there as some lines that i have to set up to =
+make de=20
+server allow the clients to browser normaly. and i also know that it has =
+
+something to do with iptables, and maskarading. Please, i need help =
+doing this.=20
+I have MSN and ICQ if anyone would like to help me. I have SSH server =
+running=20
+also. please, please, i need help. Thanks a lot.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>MSN: <A=20
+href=3D"mailto:stillnick@hotmail.com">stillnick@hotmail.com</A></FONT></D=
+IV>
+<DIV><FONT face=3DArial size=3D2>ICQ #: 3794264</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Ass.: Cristian =
+Soares</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0005_01C3C281.16D23330--
 
 
 
