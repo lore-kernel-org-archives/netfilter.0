@@ -1,17 +1,13 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: Vijay - port 25 to be blocked (nfcan: addressed to exclusive
-	sender for this address)
-Date: Tue, 28 Dec 2004 13:05:43 -0500
-Message-ID: <20041228180543.GA30059@salty>
-References: <200412281624.iBSGOEHc027426@gourmet.spamgourmet.com>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: ASHISH <ashishis@gmail.com>
+Subject: Re: Vijay - port 25 to be blocked
+Date: Wed, 29 Dec 2004 00:49:58 +0530
+Message-ID: <558224e3041228111947e5b9de@mail.gmail.com>
+References: <544398739307937211@unknownmsgid>
+Reply-To: ASHISH <ashishis@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200412281624.iBSGOEHc027426@gourmet.spamgourmet.com> (from
-	+nfcan+jimlaur+38cfe066fc.vijay#calsoftinc.com@spamgourmet.com
-	on Tue, Dec 28, 2004 at 11:22:46 -0500)
+In-Reply-To: <544398739307937211@unknownmsgid>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,10 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Vijay Kumar <vijay@calsoftinc.com>, netfilter@lists.netfilter.org
 
-On 2004.12.28 11:22, Vijay Kumar - vijay@calsoftinc.com wrote:
+Infact the rule that you have written makes no sense as any packet in
+input chain with dport as 25 is meant for your machine's SMTP server.
+So if your rule is translated in plain english, it would loook like
+
+"Deny access to all IP addresses other than <ip addr of mail server>
+to the mail server running on my machine".
+
+If you are writing this rule to your gateway, just write in it's
+FORWARD chain. If you are writing this rule for you company's SMTP
+server (if all mail in calsoft is  forwarded to  smtp.calsoftinc.com
+and this server in turn forwards it to respective mail servers on net)
+then put it in that machine's output chain.
+
+
+On Tue, 28 Dec 2004 21:52:46 +0530, Vijay Kumar <vijay@calsoftinc.com> wrote:
 > Hi,
 > 
 > I want to allow my internal network to only connect to some specific email
@@ -37,27 +47,17 @@ On 2004.12.28 11:22, Vijay Kumar - vijay@calsoftinc.com wrote:
 > REJECT
 > 
 > This does not seem to block the port 25 traffic. Where am I going wrong?
-
-The INPUT rules only apply to packets destined for the firewall computer.
-Try this in FORWARD instead.
-
-Another thing, a default drop policy might be simpler to administer.
-Then only specifically allowed packets would be forwarded.
-This approach more closely matches your intention, stated above.
-Also, the approach above is hard to extend to multiple mail servers.
-
-If you do this though, it is a good idea to log unexpected dropped
-packets and analyze them to see what is being blocked.
-
 > 
 > Kindly help.
 > 
 > Regards,
 > Vijay Kumar
->
+> 
+
+
 -- 
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+cheers
+Ashish
+KReSIT
+IIT Bombay
 
