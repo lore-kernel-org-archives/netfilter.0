@@ -1,12 +1,14 @@
-From: kate <kate7234@yahoo.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: services for predetermined IP addresses
-Date: Fri, 15 Oct 2004 13:40:52 -0700 (PDT)
+Date: Fri, 15 Oct 2004 17:03:33 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041015204052.94397.qmail@web21526.mail.yahoo.com>
+Message-ID: <20041015210333.GA8316@bender.817west.com>
 References: <20041015202858.GA8079@bender.817west.com>
+	<20041015204052.94397.qmail@web21526.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041015202858.GA8079@bender.817west.com>
+Content-Disposition: inline
+In-Reply-To: <20041015204052.94397.qmail@web21526.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +20,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-
---- Jason Opperisano <opie@817west.com> wrote:
-
-> On Fri, Oct 15, 2004 at 01:14:13PM -0700, kate
-> wrote:
-> > so the drop-all would be..?
-> > 
-> > iptables -A INPUT -p TCP -i eth0 -s 0/0 -j DROP
-> > 
-> > or did I just invent my own thing here?
-> > tia
-> > Kate
+On Fri, Oct 15, 2004 at 01:40:52PM -0700, kate wrote:
+> Last question-
+> I have this at the top of my script, We should be good
+> to go with this right ?
 > 
-> well--the standard way would be to set the policy of
-> the built-in chain
-> to DROP; i.e.,
+> #(1) Policies (default)
+> iptables -P INPUT DROP
+> iptables -P OUTPUT DROP
+> iptables -P FORWARD DROP
+
+yes--we're good to go...
+
+> or do we need something below part 3
 > 
->   iptables -P INPUT DROP
+> iptables -A INPUT -p TCP -i eth0 -s 123.45.1.1
+> --destination-port 21 -j okay # userA
+> iptables -A INPUT -p TCP -i eth0 -s 123.45.0.0/16
+> --destination-port 22 -j okay  #users A - Z
 > 
-> the same can be achieved by making the last rule in
-> the chain a drop
-> rule, like
-> 
->   iptables -A INPUT -j DROP
-> 
-> but that gets messy if you want to append rules "on
-> the fly" so the
-> policy method is preferred.
+> like ?
+> iptables -A INPUT -j DROP
 
-Last question-
-I have this at the top of my script, We should be good
-to go with this right ?
+this would be redundant with "-P INPUT DROP" although it's worth noting
+that this last rule would catch all the traffic, and the INPUT policy
+counters would forever remain at zero.
 
-#(1) Policies (default)
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+i personally like to make my last rule some sort of logging rule--so in
+the event i'm blocking something i shouldn't--i have a record of what it
+looks like...i think my current iteration of the "log everything that's
+about to be dropped by the chain policy" rule looks something like:
 
-or do we need something below part 3
+iptables -A INPUT -m limit --limit 1/sec --limit-burst 3 \
+  -j LOG --log-level 4 --log-prefix "FW DROP INPUT: "
 
-iptables -A INPUT -p TCP -i eth0 -s 123.45.1.1
---destination-port 21 -j okay # userA
-iptables -A INPUT -p TCP -i eth0 -s 123.45.0.0/16
---destination-port 22 -j okay  #users A - Z
+-j
 
-like ?
-iptables -A INPUT -j DROP
-
-many thanks for all your help. At least the LAN works!
-Kate
-
-
-		
-_______________________________
-Do you Yahoo!?
-Declare Yourself - Register online to vote today!
-http://vote.yahoo.com
+-- 
+Jason Opperisano <opie@817west.com>
 
