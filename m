@@ -1,11 +1,11 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: Re: [OT] Was: ESP does not hit the nat table
-Date: Thu, 5 Aug 2004 12:36:01 +0800
+From: =?iso-8859-1?q?Sameer=20Gurung?= <sameersworld@yahoo.co.in>
+Subject: Blocking IMs
+Date: Thu, 5 Aug 2004 07:07:38 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00f201c47aa5$b6157ab0$0100a8c0@newlife>
-References: <D5C9032B2B09C64EA2409D6214E91AC9051228@asimail2.alphanumeric.com> <200408040949.39972.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040805060738.87455.qmail@web8308.mail.in.yahoo.com>
+Reply-To: g_sameer75@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,24 +17,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: firewall <netfilter@lists.netfilter.org>
+
+IS there a way i can block yahoo chat and instant
+messenger and msn from only specific clients from the
+network..... the clients get their ip address from a
+dhcp server.... 
+Any help would be appreciated
+
+=====
 
 
-Did you patch the kernel using NAT-T patch ? And 
-did you turn on the nat_traversal ?
-
-It happens to my system too where I have
-nat-t patch, but nat_traversal is disabled (default) in 
-freeswan configuration, then I put in a rule like this :-
-
-     iptables -t nat -I PREROUTING -p esp
-
-When I list the rule, I can't see any packet going thru' it.
-
-Regards.
-
-
-
-
-
+________________________________________________________________________
+Yahoo! India Matrimony: Find your life partner online
+Go to: http://yahoo.shaadi.com/india-matrimony
 
