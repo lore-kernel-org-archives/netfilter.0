@@ -1,34 +1,79 @@
-From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Subject: Re: DNAT problem /  question
-Date: Fri, 18 Jun 2004 18:45:08 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040618184508.23c93ae6.leslie.polzer@gmx.net>
-References: <519AD2BA94FC6E4DB5DE078B2E37CB10A76BA5@PDBEX01E.pdb.fsc.net>
-	<200406181706.28684.Antony@Soft-Solutions.co.uk>
+From: David Ford <david+challenge-response@blue-labs.org>
+Subject: Re: Iptables-1.2.9/10 compile failure with linux 2.6.7 headers
+Date: Fri, 18 Jun 2004 12:39:54 -0400
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <40D31ADA.3080204@blue-labs.org>
+References: <200406181611.37890.andrew@walrond.org> <40D313DC.7000202@blue-labs.org> <200406181721.47968.andrew@walrond.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406181706.28684.Antony@Soft-Solutions.co.uk>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/mixed;
+ boundary="------------080805040507060109060808"
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S265351AbUFRQjq@vger.kernel.org>
+In-Reply-To: <200406181721.47968.andrew@walrond.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Andrew Walrond <andrew@walrond.org>
+Cc: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2004 17:06:28 +0100
-Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+This is a multi-part message in MIME format.
+--------------080805040507060109060808
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> You have specified an inappropriate combination of address and netmask with 
-> 172.25.239.220/27 - the address 220 is not the base address of a /27 range, 
-> and it is possible (I am not certain) that this combination is confusing 
-> netfilter.
-I don't think this is a problem. They'll be masked out anyway.
+The current linux libc headers package is much more frequently updated 
+and closely matches released kernels.  LLH is a sanitized linux headers 
+package and is currently based on 2.6.6 headers.
 
-Leslie
+Yes you can build iptables on 2.6.6 for a 2.6.7 kernel.  I have built 
+iptables once or twice a year and built kernels once or twice a week.  
+Iptables continues to work fine.
 
+David
+
+Andrew Walrond wrote:
+
+>Hi David,
+>
+>On Friday 18 Jun 2004 17:10, David Ford wrote:
+>  
+>
+>>Iptables should be using linux-libc-headers headers instead of kernel
+>>headers.
+>>    
+>>
+>
+>Is this acquired knowledge, or new Netfilter policy?
+>How dependant are the iptables tools on the specifc kernel running?
+>
+>Ie
+>Can I build iptables for use on 2.6.7 kernel with 2.6.6 linux-libc-headers? 
+>(probably)
+>
+>But could I build iptables for 2.6.7 kernel with 2.4.20 linux-libc-headers? 
+>(probably not?)
+>
+>The INSTALL file states specifically to use 
+>KERNEL_DIR=<<where-you-built-your-kernel>>
+>
+>Andrew
+>  
+>
+
+--------------080805040507060109060808
+Content-Type: text/x-vcard; charset=utf-8;
+ name="david+challenge-response.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="david+challenge-response.vcf"
+
+begin:vcard
+fn:David Ford
+n:Ford;David
+email;internet:david@blue-labs.org
+title:Industrial Geek
+tel;home:Ask please
+tel;cell:(203) 650-3611
+x-mozilla-html:TRUE
+version:2.1
+end:vcard
+
+
+--------------080805040507060109060808--
