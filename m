@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Blocking forwarding of packets in WLAN
-Date: 14 Oct 2004 23:39:27 +0200
+Subject: Re: Upper limit of users for iptables firewall
+Date: 14 Oct 2004 23:39:31 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097778384.21962.8.camel@nostromo.bgsecm.com>
-References: <000501c4b1f4$89506360$db0a11ac@eurecom.fr>
+Message-ID: <1097778582.21962.11.camel@nostromo.bgsecm.com>
+References: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000501c4b1f4$89506360$db0a11ac@eurecom.fr>
+In-Reply-To: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,42 +20,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El jue, 14 de 10 de 2004 a las 15:48, Claudio Lavecchia escribi=C3=B3:
->  Hello you ppl,=20
+El jue, 14 de 10 de 2004 a las 09:46, ads nat escribi=C3=B3:
+> Hi,
+> My Redhat linux 9.0 gateway server is with iptables
+> firewall. I am defining security rules based on mac
+> address of 400 users.
+> My server configure is=20
+> 1) Intel Pentium IV 2.4 Ghz processor.
+> 2) 512 MB DD RAM
+> 3) 40 GB hard disc.
 >=20
-> I am a real newbie to iptables/ipchains/netfilter issues, so please if =
-any
-> of you can help me, please consider my illetteracy.=20
-> I have a really simple question for which I did not find an answer brow=
-sing
-> the website.=20
+> Will it be able to server request of 400 users?
+> I am doubtfull about performance of iptables firewall
+> for this load but want to avoid commercial firewall.
 >=20
-> If I understood correctly there are no C APIs to iptables and this lead=
-s me
-> to troubles: I am writing a linux daemon that monitors network traffic =
-and
-> does something when some conditions occur. I work with mobile ad-hoc
-> networks where each node acts as a relay for other nodes traffic, so th=
-e
-> background are WLANs.=20
-> I need to write a C function that blocks forwarding of packets that com=
-e
-> from a given node of the network, identified by its MAC address.=20
+> Has anybody used Iptables firewall for this user
+> traffic or more than this.
+> Please guide me for same.
 >=20
-> Prototype for my function is then:=20
+> Thanks for support.
 >=20
-> void block_forwarding(char * MAC_address);=20
 >=20
-> Is this feasible someway using iptables? Can anyone give me a precise h=
-int
-> on how to do that? I would be truly grateful if someone could help me.=20
->=20
-> Thanks=20
->=20
-> Claudio=20
+> slow fireawll Can someone give ideaWhat=20
 
-Check libiptc and libipq, they should help for your job, and they
-have some documentation you can use.
+With that kind of machine in my opinion you shouldn't have
+any problems to serve 400 users, but it depends on the
+bandwidth they are using.
 
 --=20
 Jose Maria Lopez Hernandez
