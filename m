@@ -1,11 +1,13 @@
-From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Subject: marking in output mangle with route lookup
-Date: 13 Jul 2003 09:39:38 +0200
+From: Emanoil Kotsev <emanuel@abc.at>
+Subject: question: how to compile iptables for different libc version?
+Date: Sun, 13 Jul 2003 15:53:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058081978.1379.6.camel@drs0.manchotnetworks.net>
+Message-ID: <200307131553.27946.emanuel@abc.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,47 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-hello all,
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-i posted this to the lartc forum, and received no response, so i am hopeful
-that someone here can advise.
+Time ago I asked how could I compile  iptables linked to different libc
 
-i have come accross a curious issue:
+The situation:
+I have to compile a kernel with iptables on machine A that uses libc-2.3.1.=
+so=20
+for machine B using libc-2.2.5.so
+iptables needs to be linked to libc6.so -> libc-2.2.5.so=20
+what should I do to link iptables the right way?
+=2D ---
+In addition
+on Mach.B I can just copy the compiled stuff and hope it'll run, so there i=
+s=20
+no way to do anything on this machine exept copying.
+but I can export via nfs anything to machine A
+kernel 2.4.20
+iptables 1.2.8
 
-+----------------------+            +---------------+
-| eth1   192.168.1.1   |------------| 192.168.1.250 |
-| eth1:1 192.168.1.101 |            |               |
-+----------------------+            +---------------+
+Thanks for any ideas
 
+=2D --=20
+//----------------------
+||
+|| Emanoil Kotsev      =20
+||
+|| tel. 0043 1 9253175
+||
+\\--- penguin friendly--
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-iptables --append OUTPUT --table mangle --jump MARK --set-mark 0x2
-ip rule add fwmark 0x2 table 2
-ip route add 192.168.1.0/24 dev eth1 src 192.168.1.101 table 2
-ip route flush cache
-
-
-telnet 192.168.1.250 ; and tcpdump gives src ip address as 192.168.1.1
-
-
-ip rule add to 192.168.1.250 table 2
-ip route flush cache
-
-
-telnet 192.168.1.250 ; and tcpdump gives src ip address as 192.168.1.101
-
-
-
-are there issues concerning the marking of OUTPUT packets generated on
-the local box that i should be aware of?
-
-
-many, many thanks
-
-charles
-
-
+iD8DBQE/EWRVMdng4VCsE9oRAoDbAKDCDsC1eRkYca49l3RFxxUgrXrOMACdG1lx
+PlyANOl0PX4GQzx9IMR/9yU=3D
+=3DWRW2
+=2D----END PGP SIGNATURE-----
 
 
