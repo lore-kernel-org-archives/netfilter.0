@@ -1,11 +1,13 @@
 From: "Preston A. Elder" <prez@srealm.net.au>
-Subject: iptables/conntrack in enterprise environment.
-Date: Thu, 29 May 2003 01:13:47 -0400
+Subject: Re: [netfilter-core] iptables/conntrack in enterprise environment.
+Date: Thu, 29 May 2003 08:09:52 -0400
 Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200305290113.58552.prez@srealm.net.au>
+Message-ID: <200305290810.16531.prez@srealm.net.au>
+References: <200305290113.58552.prez@srealm.net.au> <20030529083953.GB2461@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <20030529083953.GB2461@sunbeam.de.gnumonks.org>
 Content-Description: clearsigned data
 Content-Disposition: inline
 Errors-To: netfilter-devel-admin@lists.netfilter.org
@@ -18,126 +20,95 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
+To: Harald Welte <laforge@netfilter.org>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
 
 =2D----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-Hi,
+On Thursday 29 May 2003 04:39 am, Harald Welte wrote:
+> On Thu, May 29, 2003 at 01:13:47AM -0400, Preston A. Elder wrote:
+> > Hi,
+> >
+> > I am in an enterprise environment and I'm having some problems with
+> > conntrack specifically.
+> >
+> > They're running 2.4.20 kernels (mostly vanilla) with iptables 1.2.7a.
+>
+> Do not use 2.4.20 if you want to use connection tracking.  2.4.20
+> connection tracking is totally broken due to a change introduced in the
+> core kernel.
+>
+> Please do always use patch-o-matic from CVS.  The patch you want to
+> apply for fixing this bug is 10_confirm_fix.patch
+This patch was applied already.  Infact, I'm using Gentoo (but using the=20
+'vanilla' kernel from gentoo, so its not got every patch under the sun), an=
+d=20
+I specifically picked out and applied the followint patches:
+018_gcc31-compile-optimizations
+021_ecc-20020904
+701_iptables-20_iptables-proc
+702_iptables-24_conntrack-nosysctl
+722_iptables-tcplimit
+724_iptables-u32
+741_iptables-ip_conntrack_find
+742_iptables-ip_ct_refresh_optimization
+744_iptables-03_ip_conntrack_proto_tcp-lockfix
+747_iptables-06_ftp-conntrack-msg-fix
+748_iptables-07_ECN-tcpchecksum-littleendian-fix
+752_iptables-10_confirm_fix
+753_iptables-10_local-nat-expectfn
+759_iptables-24_conntrack-modify-after-free-fix
+760_iptables-25_ip_tables-comment-fix
+766_iptables-33_ipqueue_memoryleak
+764_iptables-31_nat_parse_fix
+770_iptables-ip_conntrack-timeouts
+900_quick-fixes
+902_minor_fixes
 
-I am in an enterprise environment and I'm having some problems with conntra=
-ck=20
-specifically.
+Please let me know if you think one is missing I should try.
 
-We have a system that acts as a router, however any new inbound connection =
-for=20
-any machine behind this router is re-directed to a specific port on the loc=
-al=20
-machine, where an application responds as if it were the system behind the=
+> Also, considering
+>
+> > echo 524280 >/proc/sys/net/ipv4/ip_conntrack_max
+>
+> without using a larger hash size (modprobe ip_conntrack hashsize=3Dfoo,
+> wherer foo should be a prime number and in the range of 524280/2)
+I'll try this and report back.
+
+> > to be re-directed to a local port, which is achieved with the command:
+> > /sbin/iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp -d <ip-range>
+> > - --destination-port 1024:65535 --to-destination <local_ip>:<local_port>
+> >
+> > Every inbound connection incurs an entry in the connection tracking
+> > table.  It seems, however, that we may be overloading the conntrack
+> > system.
+>
+> I've seen systems with way more conntrack entries and higher bandwith.
+> Using NAT however, might have a big performance impact.
+Well, this system itself isn't doing 'nat', however, by implication, the ab=
+ove=20
+rule makes every connection nat'd.
+
+> > The conntrack table itself very quickly grows - but it does not clean
+> > itself up when the connection itself dissapears, instead it waits for
+> > some pre-determined timeout value,
+>
+> With a non-broken kernel it is 2 minutes, that is TIME_WAIT of a TCP
+> socket.
+That was not my point.  My point was, for up to 5 days later, the system st=
+ill=20
+has entries in the conntrack table (listed as 'ESTABLISHED'), which have be=
+en=20
+dead and gone for a long time, conntrack does not realise that connection i=
+s=20
+utterly closed, and it should drop its conntrack entry.  I'm not as worried=
 =20
-router.  These systems experience some very high volumes of traffic=20
-(sustaining over 30mbit of traffic).  Heres a breakdown of TCP socket=20
-connections by status at one particular point in time:
-ESTABLISHED : 1363
-LAST_ACK    : 27
-TIME_WAIT   : 616
-=46IN_WAIT2   : 8
-=46IN_WAIT1   : 140
-SYN_RECV    : 6188
-CLOSE_WAIT  : 365
-LISTEN      : 3
-CLOSING     : 5
-
-We have multiple systems performing this task (essentially for load balanci=
-ng=20
-and to remove a single point of faulure).  The systems are dual 1ghz pentiu=
-m=20
-3's, with 1-2gb of ram, so they're not shy systems.  They're running 2.4.20=
-=20
-kernels (mostly vanilla) with iptables 1.2.7a.
-
-Here are some system limits I am tweaking (ie. the commands to do the=20
-tweaking):
-echo 1 >/proc/sys/net/ip_forward
-echo 524280 >/proc/sys/fs/file-max
-echo 524280 >/proc/sys/net/ipv4/ip_conntrack_max
-echo 65535 >/proc/sys/net/ipv4/ip_queue_maxlen
-echo 65535 >/proc/sys/net/ipv4/tcp_max_syn_backlog
-#     NONE    EST     SYN_S   SYN_R   FIN_W   TIME_W  CLOSE   CLOSE_W LAST_=
-A =20
-LISTEN
-echo "1800    21600   120     60      30      30      10      30      30   =
-  =20
-120     " > /proc/sys/net/ipv4/ip_conntrack_tcp_timeouts
-ulimit -H -n 524280
-ulimit -S -n 524280
-iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS=20
-=2D --clamp-mss-to-pmt
-
-
-Because every new connection to one of the systems 'behind' these systems n=
-eed=20
-to be re-directed to a local port, which is achieved with the command:
-/sbin/iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp -d <ip-range>=20
-=2D --destination-port 1024:65535 --to-destination <local_ip>:<local_port>
-
-Every inbound connection incurs an entry in the connection tracking table. =
- It=20
-seems, however, that we may be overloading the conntrack system.  I can=20
-telnet to a different port listening on a secondary (internal) interface (b=
-ut=20
-the same application), that bypasses the above rule, and get an immediate=20
-connection, however establishing a connection 'to' a server behind this=20
-router can take a number of seconds, and sometimes may never establish. =20
-Whats more connecting directly to the port everything else is being=20
-re-directed to via. the 'public' interface itself can take some time (thoug=
-h=20
-not as long as connecting 'to' a system behind this box).
-
-The conntrack table itself very quickly grows - but it does not clean itsel=
-f=20
-up when the connection itself dissapears, instead it waits for some=20
-pre-determined timeout value, which means even though, as shown above, the=
-=20
-number of connections in-progress (one way or another) is about 8000=20
-connections, the conntrack table is absolutely huge (hundreds of thousands =
-of=20
-entries), and as time goes on, the larger it gets.  To try to combat this,=
-=20
-I've reduced the biggest timer (how long an established connection stays in=
-=20
-conntrack) from 5 days to 6 hours (all the connections we have are, and=20
-should be, short lived, so that is plenty of time).  This helps a bit,=20
-however I'm still at a loss to try to understand why conntrack does not cle=
-an=20
-itself up when the connection gets closed.
-
-Of course, seeing how big the conntrack table is, itself, impacts the syste=
-m=20
-dramatically.  The 'wc -l /proc/net/ip_conntrack' command takes a long time=
-=20
-to run, and brings the 'active' processing to its knees while doing this.=20
-=2D From all appearances, it appears conntrack is hamstringing us.  It appe=
-ars it=20
-is not able to properly handle large-traffic systems, especially where=20
-essentially every connection going through the system is nat'd.
-
-I'd appreciate ANY help or thoughts on how to remedy this issue, as I have=
-=20
-said, this is in use in an enterprise environment (which of course, means I=
-=20
-cannot divulge the purpose of the application I mentioned earlier (however=
-=20
-all you really need to know is the application does not really know (or car=
-e)=20
-weather the connection to it is nat'd, and just uses it as a standard socke=
-t=20
-connection), however I can give details on the system/kernel/netfilter=20
-configuration as necessary, just let me know what further information you=20
-require).
-
-I thank you in advance, and apologise for mailing all 3 lists, however I=20
-figured someone on ONE of these lists would have an idea or a suggestion.
+about the lower-value timeouts, but as I said, I saw ALOT of established=20
+connections hanging around in the conntrack table (making the conntrack tab=
+le=20
+about 200,000 entries long, give or take), most of which were entries for=20
+connections already closed.
 
 =2D --=20
 PreZ
@@ -152,9 +123,9 @@ http://www.srealm.net.au
 =2D----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE+1ZcVKFp14D8AGEQRAh4jAJ9mhilrpVsDvakS03re/HsT1jcXcwCcDqFT
-nHqa0y2UPb9s5JgRsGIhP8o=3D
-=3DbmA5
+iD8DBQE+1finKFp14D8AGEQRAmT5AJ48csFfxVIMJQykL5mhG7VQzx/79wCgjmQ1
+drFKsTbUeJ8F0EEicWgBosQ=3D
+=3DQWoJ
 =2D----END PGP SIGNATURE-----
 
 
