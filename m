@@ -1,12 +1,12 @@
 From: Michael Barry <mbarry@cs.umass.edu>
-Subject: (no subject)
-Date: Sun, 19 Sep 2004 18:54:34 +0000
+Subject: Static Internal to public IP mapping, and ARP difficulties
+Date: Sun, 19 Sep 2004 18:56:50 +0000
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095620074.3098.1.camel@jabbera-laptop>
+Message-ID: <1095620211.3098.4.camel@jabbera-laptop>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="=-ZyVRwleTm+F23Xx+hI/A"
+	boundary="=-e/nyQc0CMbHBYjNT3U3C"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,9 +20,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 
---=-ZyVRwleTm+F23Xx+hI/A
+--=-e/nyQc0CMbHBYjNT3U3C
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
+
+Sorry for the DUPE, but I forgot a subject line in my last message. I am
+sort of frazled trying to figure this out.
+
 
 I have a bunch of public IP addresses, for example, in the range
 192.168.1.100-192.168.1.104.=20
@@ -72,18 +76,18 @@ O1mycJQtyUpCFRXEp8EWAKDPxWTPlx5Ii9DaWadahV4b9LRe4A=3D=3D
 =3Dqjmb
 -----END PGP PUBLIC KEY BLOCK-----
 
---=-ZyVRwleTm+F23Xx+hI/A
+--=-e/nyQc0CMbHBYjNT3U3C
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQBBTdXp2RmjnnrC8gsRAoWOAJ4z4oXQ3xanQhiHvCBxz5fbeNcW3ACdEW1K
-jLJwJ555YD5BPmGRgNu6Hf0=
-=tpdN
+iD8DBQBBTdZx2RmjnnrC8gsRAqU/AJ9NSIvYZZq2uhnT4vDS1R9YuTtdxgCggHCD
+HNHcYCVQKp367PE6P3jHD9c=
+=408n
 -----END PGP SIGNATURE-----
 
---=-ZyVRwleTm+F23Xx+hI/A--
+--=-e/nyQc0CMbHBYjNT3U3C--
 
 
