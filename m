@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Reject Mac-Address
-Date: 01 Aug 2003 09:52:49 +0200
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: IPTables & Squid
+Date: Fri, 01 Aug 2003 18:10:59 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059724368.1178.9.camel@elendil.intranet.cartel-securite.net>
-References: <20030801002000.123eca91.leonardo@nextwave.com.br>
+Message-ID: <3F2A2093.8020200@snapgear.com>
+References: <5.1.0.14.2.20030801094250.02f127f0@mail.saipan.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030801002000.123eca91.leonardo@nextwave.com.br>
+In-Reply-To: <5.1.0.14.2.20030801094250.02f127f0@mail.saipan.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Leonardo Pires <leonardo@nextwave.com.br>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Daniel Camacho <dcamacho@saipan.com>
 Cc: netfilter@lists.netfilter.org
 
-Le ven 01/08/2003 =E0 05:20, Leonardo Pires a =E9crit :
-> I have the following scenario:
-> internet--router---firewall---router---clients
-> I have the mac_address of all clients, and I need to reject some
-> clients in the firewall  using the mac_address, someone know how can I
-> do  it ?
+Daniel Camacho wrote:
+ > I'm new to this list and to IPtables. I recently installed a transparent
+ > proxy using Squid and IPtables. On one computer, I installed IPtables and
+ > forward all port 80 requests to the Squid server, which is running on a
+ > separate server. On that same computer I want to be able to filter certain
+ > connections from using the Squid. I know I can do this with Squid, but I
+ > want to know how to do it with IPtables. Does anyone know how may I go
+ > about doing this? Thanks.
 
-You will do source MAC address based filtering. Use mac match :
+Do you want to just pass these connections through directly instead of
+forwarding them to the Squid server, or do you want to drop them completely?
 
-cbr@elendil:~$ iptables -m mac --help
-iptables v1.2.7a
-[...]
-MAC v1.2.7a options:
- --mac-source [!] XX:XX:XX:XX:XX:XX
-                                Match source MAC address
+If you just want to pass them through, you need to stop them reaching the
+DNAT rule.  You have already done this for the squid server itself, but
+that method only allows you to pass through one IP address.  A more general
+method is to add ACCEPT rules for each address (just repeat the first
+rule for each address to pass through):
 
-Suppose you want to deny access to a host considering its MAC address :
+# start up filter rules for traffic redirection to Squid
+iptables -t nat -A PREROUTING -i eth0 -s 192.168.0.1 -p tcp --dport 80 -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to 192.168.0.1:3128
 
-	iptables -A FORWARD -m mac --mac-source $FORBIDEN_MAC -j DROP
+If you want to drop the connections, then you need to put DROP or REJECT
+rules in the FORWARD chain of the filter table.  Make sure you put them
+before the rules ACCEPTing traffic from each subnet.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+-- 
+Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
+SnapGear - Custom Embedded Solutions and Security Appliances
+
 
