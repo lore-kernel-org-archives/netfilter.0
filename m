@@ -1,12 +1,11 @@
-From: manisha s <cdac_manisha@yahoo.com>
-Subject: Re: Iptables command failed
-Date: Thu, 8 Apr 2004 04:58:19 -0700 (PDT)
+From: "shantanu sharma" <ssharma_02@iiita.ac.in>
+Subject: mangling a packet
+Date: Thu, 8 Apr 2004 11:15:25 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040408115819.8901.qmail@web61004.mail.yahoo.com>
-References: <001801c41d43$99a8b000$1202a8c0@admin>
+Message-ID: <46653.172.31.1.1.1081403125.squirrel@mail.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001801c41d43$99a8b000$1202a8c0@admin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+we are supposed to capture a dns packet at the firewall and mangle  it
+appropriately
+as the querry packet passes through the firewall DNAT'ing(destination nat)
+takes place  now when the rply packet comes back we QUEUE it using the
+forward chain of the filter table before the reverse SNAT automatically
+takes place ,after mangling the packet using the IPQ library in checksum
+of UDP and IP gets disturbed .We recalculated the checksum but due to
+reverse S NATing  it again gets disturbed and the packets get disturbed at
+the recieving end
+please tell us how do we correct the checksum filed of UDP and IP after
+the reverse S NAT takes place or do we need to queue the packets using
+some other chain of someother table
 
-Thanks for ur help....
-i again recompiled the kernel with netfilter support
-and the iptables is now working fine....
-i think i did not copied the newly kernel image to the
-boot dir  so that the problem remained....
-
-anyway
-thanks once again for ur time
-
-
---- Rob Sterenborg <rob@sterenborg.info> wrote:
-> > I have downloaded iptables-1.2.9 from
-> netfilter.org and
-> > installed using  make and make install commands
-> after
-> > compiling the kernel with network packet filtering
-> > (replaces ipchains) option having value yes
-> 
-> Did you patch the kernel with a new Patch-O-Matic
-> (also from the Netfilter
-> website) before you configured/compiled it ?
-> I suppose iptables-1.2.9 requires symbols not yet in
-> an unpatched kernel.
-> 
-> > > iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
-> > >
-> > > i got the following error
-> > >
-> > >
->
-/lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o:
-> > > unresolved symbol
-> nf_register_sockopt_Rsmp_f5985dce
-> 
-> 
-> Gr,
-> Rob
-> 
-> 
+regards,
+shantanu sharma
 
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Small Business $15K Web Design Giveaway 
-http://promotions.yahoo.com/design_giveaway/
+-- 
+Shantanu Sharma
+B Tech student,
+Indian Institute Of Information Technology,Allahabad
+ALTERNATIVE MAIL:sharma_shantanu@rediffmail.com
 
