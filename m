@@ -1,14 +1,11 @@
-From: rruegner <robert@ruegner.org>
-Subject: Re: virus scanning with iptables
-Date: Fri, 10 Sep 2004 17:54:21 +0200
+From: Javier Sanchez <sjllera@ya.com>
+Subject: kernel 2.6 ipsec and DNAT
+Date: Mon, 13 Sep 2004 11:48:30 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4141CE2D.2020506@ruegner.org>
-References: <01CEA3A5B8B2D511890F0002A5870AEC02CE644C@exchange.admin.slc.edu>
-	<4141C983.5050409@lanl.gov>
+Message-ID: <1095068909.27900.953.camel@cluster>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4141C983.5050409@lanl.gov>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +15,26 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Stephen J Smoogen <smoogen@lanl.gov>
-Cc: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org, Khanh Tran <khanh@slc.edu>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
-better way would be to use apache2 , mod_clamd, and squid / frox
-or use dansgurdian, or some comercial Produkt
-This would do the job for http/ftp...clamd also works with amavis-new
-for antispam and antivirus to smtp.
-Regards
-Stephen J Smoogen schrieb:
-> Khanh Tran wrote:
-> 
->> How about port scanning clients behind from the firewall?  Suggestions?
->> I'm thinking of something that could be scripted to append an iptables
->> rule to block the MAC address of the offending client, then notify me.
->> Am I looking at an NMAP plugin possibly?
->>
-> 
-> You would probably want to have something like SNORT tied into iptables. 
->  Have something like SNORT look for certain alerts and then when it 
-> finds them it sends a 'signal' to a daemon on the firewall that inserts 
-> a DROP rule for that IP address in a 'dynamic chain'.
-> 
+
+
+Hi all, 
+
+i have recently discovered on the list that more people is suffering the
+nat problem with ipsec vpn tunnels on 2.6.x kernels, does anyone know if
+its fixed on 2.6.8.1 ??
+
+The unique way i found to bypass the nat problem is using a proxy server
+(squid), not the best solution but for now im able to surf the web .-)
+
+Best regards
+
+
+-- 
+GPG Key id: 0x0EF8926E
+GPG: Server - gpg.rediris.es
+
+
 
