@@ -1,12 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Redirect local OUTPUT attempt
-Date: Fri, 28 Jan 2005 10:33:50 -0500
-Message-ID: <20050128153350.GA14470@bender.817west.com>
-References: <200501281250.08563.tommy@svearike.sytes.net>
+From: Alaios <alaios@yahoo.com>
+Subject: ftos patch
+Date: Fri, 28 Jan 2005 07:50:08 -0800 (PST)
+Message-ID: <20050128155009.99786.qmail@web54702.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200501281250.08563.tommy@svearike.sytes.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +18,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Jan 28, 2005 at 12:50:08PM +0100, Tommy W wrote:
-> I have a rather easy question , I hope !
-> I'm trying to make a local connection attempt (specific port) to be redirected 
-> to (local computer, different port)
-> When configuring my gateway (another case and another computer)
-> I can use
-> iptables -t nat -I PREROUTING -s $IP -d $IP2 -p tcp -m tcp --dport 3434 -j 
-> --to-destination $IP3:$PORT
-> 
-> that works perfectly, but it's not working now.. I guess it's because it's a 
-> local connection (!?) as opposed to nat ,as it is in the gateway 
-> configuration.
-> What am I missing ?
-> 
-> I want 192.168.0.8:25 to be redirected to localhost:2525 basically.. (but only 
-> locally)
+Hi i want to know in advance if the followin patch
+would allow me to set whatever tos field i want or f.e
+0x28
+0x40
+0x48
+0x52
+0x30
+etc
+Thx
 
-to modify the destination of locally-generated packets--you need to
-modify the OUTPUT chain of the NAT table.  also--your kernel needs to be
-compiled with:
+4.1 ftos patch 
 
-  CONFIG_IP_NF_NAT_LOCAL=y
 
-and don't try and use 127.0.0.1--use:
+This patch by Matthew G. Marsh <mgm@paktronix.com>
+adds a new target that allows you to set the TOS of
+packets to an arbitrary value.
 
-  iptables -t nat -I OUTPUT -p tcp -d 192.168.0.8 --dport 25 \
-    -j DNAT --to-destination 192.168.0.8:2525
+ 
 
--j
+For example, if you want to set the TOS of all the
+outgoing packets to be 15, you can do as follows :
 
---
-"Ah, beer, my one weakness. My achilles heel, if you will."
-        --The Simpsons
+ 
+
+# iptables -t mangle -A OUTPUT -j FTOS --set-ftos 15
+
+# iptables -t mangle --list
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination  
+      
+FTOS       all  --  anywhere             anywhere     
+     TOS set 0x0f 
+
+ 
+
+Supported options for the FTOS target are :
+
+ 
+
+--set-ftos value
+
+-> Set TOS field in packet header to value. This value
+can be in decimal (ex: 32) or in hex (ex: 0x20)
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
