@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: conf scenario.
-Date: Mon, 3 May 2004 23:28:46 +0100
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: ICMP logging question
+Date: Mon, 03 May 2004 21:03:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405032328.46938.Antony@Soft-Solutions.co.uk>
-References: <4096AE99.5070705@o2.pl> <200405032156.34614.Antony@Soft-Solutions.co.uk> <4096C11D.5000709@vcxz.co.uk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1083632597.2068.194.camel@grendel>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4096C11D.5000709@vcxz.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,65 +18,41 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 03 May 2004 11:01 pm, Jon Colverson wrote:
+Greets all,
 
-> Antony Stone wrote:
-> > On Monday 03 May 2004 9:42 pm, Krystian wrote:
-> >>i need some help on how to configure this scenario in iptables:
-> >>
-> >>[adsl modem/router]-----[eth1-linux box-eth0]-----[network]
-> >>
-> >>question: how to configure "linux box's" iptables to forward and
-> >>masquarade traffic from most users and bridge traffic for couple
-> >>"public" users.
->
-> I don't believe that any iptables configuration is necessary for the
-> machines with public IPs. The Linux box will need a public IP on the
-> same subnet as them and will need to have IP forwarding turned on (echo
-> 1 > /proc/sys/net/ipv4/ip_forward). The boxes with public IPs will need
-> to have the Linux box as their default gateway and it should all just work.
+I have a question regarding some ICMP packets I've recorded. Here is the
+iptables log entry:
 
-This does require a bit of fiddling about with the routing tables to make sure 
-the gateway machine knows which interface to find various public IPs on.   
-However, it can be done with the right netmasks.
+May  2 13:07:45 gw1 kernel:  DROP_INPUT  IN=eth0 OUT=
+MAC=00:e0:29:85:f0:b0:00:00:0c:84:63:04:08:00 SRC=143.248.4.1
+DST=64.179.20.65 LEN=56 TOS=0x00 PREC=0xC0 TTL=236 ID=18683 PRO
+TO=ICMP TYPE=11 CODE=0 [SRC=64.179.20.65 DST=200.223.0.232 LEN=40
+TOS=0x00 PREC=0x00 TTL=0 ID=15436 PROTO=TCP INCOMPLETE [8 bytes] ]
 
-> If you can't spare a public IP for the Linux box, can you just connect
-> the ADSL modem/router, the Linux box, and the clients all to the same
-> Ethernet? This is the setup I use. In that case the clients with public
-> IPs would be able to see the ADSL modem/router directly (and would
-> simply use that as their default gateway).
+and here is the Snort decode:
 
-The problem with that is that you are then exposing the public IP servers 
-directly to the Internet without the benefit of the firewall :(
+[**] ICMP Time-To-Live Exceeded in Transit (Undefined Code!) [**]
+05/02-13:07:45.122521 143.248.4.1 -> 64.179.20.65
+ICMP TTL:236 TOS:0xC0 ID:18683 IpLen:20 DgmLen:56
+Type:11  Code:0  TTL EXCEEDED IN TRANSIT
+00 00 00 00 45 00 00 28 3C 4C 00 00 00 06 5F C9  ....E..(<L...._.
+40 B3 14 41 C8 DF 00 E8 1C 75 1A AE 1D E1 7F A8  @..A.....u......
 
-> > Add a third interface card eth2, bridge eth1 and eth2 as br0, and then
-> > route between br0 and eth0.
-> >
-> > If you have hosts on your network which need public IPs then they have to
-> > be on a separate subnet from your normal clients anyway.
->
-> I don't think this is necessary. The public IP clients are obviously on
-> a different IP subnet, but they can happily share the Ethernet with the
-> NATed clients.
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 
-Ugh :)   I object to the use of the word "happily".   It'll work, sure, but 
-it's not a nice networking setup (ie: don't blame me when there's a problem 
-and debugging turns up some crazy results...)
+My question is regarding the decode of the alleged TCP packet (I say
+alleged as it was spoofed. I think this is a covert zombie communication
+channel) that generated the ICMP error. 
 
-Besides, what happened to the security model where you make sure that any 
-publicly-accessibly server which happens to get compromised can't do any 
-damage to your internal network?
+What exactly does "incomplete" mean? Does this simply mean that only 8
+bytes of the 20 were present for decoding? If so, why do only certain
+type 11's get labeled as "incomplete"?
 
-Regards,
+iptables used to decode the original source and destination ports as
+part of the log entry. Has this feature gone away?
 
-Antony.
+Thanks in advance for any help,
+Chris
 
--- 
-Having been asked for a reference for this man,
-I can confirm that you will be very lucky indeed if you can get him to work 
-for you.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
