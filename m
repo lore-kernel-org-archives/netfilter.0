@@ -1,13 +1,14 @@
-From: Askar Ali Khan <askarali@gmail.com>
-Subject: Re: how to redirect certain IPs to specific url
-Date: Wed, 30 Jun 2004 14:13:44 +0500
+From: Evgeni Vachkov <evgeni.vachkov@investis.com>
+Subject: Re: ip_conntrack_tcp Errors - backing a patch
+Date: 30 Jun 2004 10:25:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <a0f69e5040630021311b0555d@mail.gmail.com>
-References: <a0f69e504063000446f514e22@mail.gmail.com> <200406300931.16812.Antony@Soft-Solutions.co.uk>
+Message-ID: <1088587533.13926.332.camel@spudgun.dhcp.internal>
+References: <1088423237.13933.127.camel@spudgun.dhcp.internal>
+	 <40E00F6A.2010604@bofh.bg>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406300931.16812.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <40E00F6A.2010604@bofh.bg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,71 +21,42 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-thanks im learn lot of things from your contribution to iptables
-mailing lists :)
+On Mon, 2004-06-28 at 13:30, Dimitar Katerinski wrote:
+> > Is that a problem with conntrack and its tunning or I am missing some
+> > patch? ...Or perhaps it is some other problem with other parts of the
+> > kernel? 
+> It seems to me that you have applied the tcp window tracking patch from pom-ng.
+> The problem is that the client and the server have done the first step of the
+> three way handshake, and are in sync, but the firewall for some reason is not.
+> So it drops the SYN/ACK, and thus forcing the client to retransmit its SYN and
+> initiate a new session (as descibed in the source code of the patch)
+> 
+> My advice is if you have applied this patch, to remove it, and test the load on the
+> firewall again.
+> > 
+
+I would like to remove the patch, but unfortunately the person who
+compiled last time didnt leave the code.
+
+So....
+
+Would it be possible to compile the relevent modules only (is it
+conntrack only?) from scratch and to insmod them into the kernel?
+
+Or there are parts of the kernel that I would need to recompile?
+
+In any case, what code do I need to download and compile and where do I
+find the relevant instructions?
+
+In ideal situation I'd like to have a few versions of the conntrack (and
+other related?) and be able to insmod them on the fly. 
+
+Also can I just rmmod the conntrack module or I need to unload iptables
+and all the rest before I can insmod the new ones? 
 
 
-On Wed, 30 Jun 2004 09:31:16 +0100, Antony Stone
-<antony@soft-solutions.co.uk> wrote:
-> 
-> On Wednesday 30 June 2004 8:44 am, Askar Ali Khan wrote:
-> 
-> > hi
-> > got a very simple question, i want to redirect certain IPs(clients)
-> > request to a specific URL (ip)?
-> 
-> So long as you keep in mind two things:
-> 
-> 1. An IP address is not the same thing as a URL (firstly, a server on one IP
-> address may handle many different domains' websites, secondly a big domain
-> such as Amazon, Microsoft, Yahoo may resolve to multiple IP addresses,
-> thirdly an IP address (even if unique to a domain) cannot specify a path or
-> filename which would follow the first / after the domain in a URL).
-> 
-> 2. Netfilter works at OSI layers 3/4 (IP addresses and TCP/UDP port numbers),
-> whereas HTTP works at layer 7 (URLs, hyperlinks and meaningful content).
-> 
-> Provided both the above are acceptable, and what you want to do is to redirect
-> certain source IP addresses when accessing TCP port 80 to a different
-> destination address, then you can do this:
-> 
-> iptables -A PREROUTING -t nat -p tcp --dport 80 -s a.b.c.d -j DNAT --to
-> w.x.y.z
+Many thanks,
+Evgeni
 
-may i have to replace w.x.y.z with the IP of domain or simply
-www.abc.com will work?
 
-> 
-> where a.b.c.d is the IP address of the client you want to redirect and w.x.y.z
-> is where you want them redirected to.   If you want to do it only when they
-> try to access a specific destination address (so other destinations are not
-> redirected), simply add a "-d p.q.r.s" into the rule above, where p.q.r.s is
-> the destination address you want them not to be able to reach.
-> 
-> If this is not what you want, and you do indeed need to do stuff at OSI layer
-> 7, working on HTTP rather than TCP and IP, you should probably look into
-> http://www.squid-cache.org
-
-we have firewall it redirect traffic to cache server running "squid"
-:) may i put this rule on firewall machine or the cache server ?
-
-> 
-> > and also later on how to Flush the specific rule from the the chain as
-> > -A will append it on the bottom, how  i will delete it ?
-> 
-> Repeat the rule but with -D instead of -A
-> 
-> Regards,
-> 
-> Antony.
-> 
-> --
-> There's no such thing as bad weather - only the wrong clothes.
-> 
->  - Billy Connolly
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
->
 
