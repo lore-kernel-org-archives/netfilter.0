@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: http forwarding
-Date: Thu, 14 Nov 2002 20:11:52 -0500
+Subject: Re: ICMP question
+Date: Thu, 14 Nov 2002 20:59:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211142011.52029.netfilter@newkirk.us>
-References: <cld7tugoh1bo72ihi68e98j7sh2a19kqn4@4ax.com>
+Message-ID: <200211142059.43778.netfilter@newkirk.us>
+References: <NABBIDJPNCAGKGOFGHBFOELFPIAA.luba@assist.com.gt>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <cld7tugoh1bo72ihi68e98j7sh2a19kqn4@4ax.com>
+In-Reply-To: <NABBIDJPNCAGKGOFGHBFOELFPIAA.luba@assist.com.gt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +19,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: tom@acalgrinding.dyndns.org, netfilter@lists.netfilter.org
+To: Luis Fernando Barrera <luba@assist.com.gt>, netfilter@lists.netfilter.org
 
-On Thursday 14 November 2002 09:59 am, Tom Elsesser wrote:
+On Thursday 14 November 2002 01:28 pm, Luis Fernando Barrera wrote:
 
-> trying to forward http request to ulysses. The router and eth1 are on
-> a 10.10.10.0 subnet, while the rest of the network is on a 10.1.1.0
-> subnet. The router cannot directly route the http requests from the
-> outside to ulysses, so I am trying to forward them from yzerman, but
-> it is not working as the connection times out if I try to connect from
+> iptables -A FORWARD -p ICMP -s 192.168.1.37 -m state --state
+> NEW,ESTABLISHED -j ACCEPT
+> iptables -A FORWARD -p ICMP -d 192.168.1.37 -m state --state ESTABLISHE=
+D -j
+> ACCEPT
+>
+> I've been experiencing the problem that with this set of rules, suddenl=
+y,
+> the PC in the LAN cannot "ping" any hosts in the Internet. To solve the
+> problem
 
-> /sbin/iptables -P FORWARD DROP
+> iptables -A FORWARD -p ICMP -s 192.168.1.37 -j ACCEPT
+> iptables -A FORWARD -p ICMP -d 192.168.1.37 -j ACCEPT
+>
+> These are the same rules, except that don't track the state of the
+> connections...
+>
+> Could someone tell me what is the risk asociated to NOT to track the
+> connections?
 
-> /sbin/iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+For the first rule just use the second version (without state match), but=
+ for=20
+the second rule you want state as it will prevent any ICMP connections=20
+originating anywhere else from being forwarded to that IP, assuming other=
+=20
+rules and policy don't ACCEPT it.  (and assuming you don't want that...) =
+ The=20
+new pair would then allow any ICMP through that came FROM 192.168.1.37, a=
+nd=20
+prevent any ICMP from going TO 192.168.1.37 UNLESS it is part of an=20
+established connection, IE a response to a ping that was ACCEPTed by the=20
+first rule.
 
-> /sbin/iptables -A FORWARD -i eth1 -m state --state RELATED,ESTABLISHED
-> -j ACCEPT
+Using the state matches can help you tighten things up considerably, and =
+also=20
+considerably reduce the number of rules you need to explicitly define.  Y=
+ou=20
+can allow a local machine out only to port 80 and 53, nothing back to it =
+at=20
+all, then accept ESTABLISHED/RELATED both ways and everything will work,=20
+because the responses back to the local machine, and even ICMP messages=20
+related to the connection, are matched based on state.
 
-> /sbin/iptables -A FORWARD -i eth0 -s 10.1.1.0/8 -j ACCEPT
+> One more question... Is it true that when you specify the ICMP protocol=
+,
+> iptables only
+> applies the rule to the type 0?
 
-> /sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT
-> --to 10.1.1.2
+Nope, unless it's a bug in a version other than 1.2.5, I just tested.  (P=
+ing=20
+my ISP's DNS, nothing, added ICMP rule with no type specified, 18.2ms)
 
-> /sbin/iptables -A INPUT -i eth1 -d 0/0 -p tcp --dport 80 -j ACCEPT
-
-Everything looked good up to here.  This rule needs to be in the FORWARD=20
-chain.  Once you've DNATted in PREROUTING, it's not coming to this machin=
-e,=20
-it's being forwarded to another.
+> thanks in advance
+>
+> Luis Fernando Barrera
+> luba@assist.com.gt
 
 j
 
