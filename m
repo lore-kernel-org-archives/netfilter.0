@@ -1,12 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Iptables rules comparation
-Date: 30 Oct 2004 23:00:13 +0200
-Message-ID: <1099080736.22637.16.camel@nostromo.bgsecm.com>
-References: <000d01c4baa2$35a17ae0$023ca8c0@cfg.onat.gov.cu>
+Subject: Re: ftp connection tracking on multiple ports
+Date: 30 Oct 2004 23:00:23 +0200
+Message-ID: <1099080894.22637.21.camel@nostromo.bgsecm.com>
+References: <BC372EA70AC7724B9DE983CBA6D1D7E5126E37@ws03-exchange.iconos.be>
+	<1403218a04102804107389b75e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000d01c4baa2$35a17ae0$023ca8c0@cfg.onat.gov.cu>
+In-Reply-To: <1403218a04102804107389b75e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +19,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-El lun, 25 de 10 de 2004 a las 16:52, J.R. Barreras escribi=C3=B3:
-> Hi all!
-> How can I do compare iptables rule sets produced by different scripts?
-> Any tools? Ideas?
->=20
-> Waiting for yours reply, thanks in advance...
->=20
-> Best wishes!
-> Barreras
+El jue, 28 de 10 de 2004 a las 13:10, Mohamed Eldesoky escribi=C3=B3:
+> I don't use natting, do I still need that helper ???
 
-The best thing you can do it's run each of the scripts and
-do some firewall stressing to the firewall. You can use the
-following tools to check your firewall rules:
-
-nmap: Check opened/closed ports and combinations of attacks to them
-hping2: Check the ICMP configuration of the firewall and do some attacks
- to it.
-nessus: See what attacks the firewall it's blocking or not.
-
-As you can see you can use any tool that helps you to check the
-firewall, it's like doing penetration testing on your own firewall.
-This way you can find what script works better and blocks/accepts
-the packets you want.
-
-Another good idea it's to check the scripts by hand if you know
-iptables syntax. I would advise you this it's the best way to
-check the firewall, and see what rules you are using.
+You just need the ip_conntrack_ftp.o helper.
 
 --=20
 Jose Maria Lopez Hernandez
