@@ -1,10 +1,11 @@
-From: "Vojin Urosevic" <vojin@urosevic.com>
-Subject: GUI!
-Date: Sat, 26 Apr 2003 20:24:23 +0300
+From: "pengjie" <bill@acamar.com.cn>
+Subject: about ip_conntrack_count!
+Date: Sun, 27 Apr 2003 14:32:56 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAyK03TV+7yUykNpWsyDyYIsKAAAAQAAAAhf+75toHuUaFNA3+BByQ4wEAAAAA@urosevic.com>
+Message-ID: <000801c30c86$d7042570$02020a0a@acamarpeng>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C30CC9.E50A6790"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,21 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there,
+This is a multi-part message in MIME format.
 
-Is anybody out there working on a GUI management tool for netfilter?
-Something like what the Watchguard folks have developed for their range
-of Firewalls. 
+------=_NextPart_000_0005_01C30CC9.E50A6790
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-Features like drag and drop rules for VPN and a GUI real time connection
-monitoring from external to internal interface and vice versa.
+aGVsbG8sYWxsIQ0KSSBoYXZlIGV4cGVyaW1lbnRlZCBvbiB0aGUgaXBfY29ubnRyYWNrLkJ1dCBJ
+IGZvdW5kIGEgaW50ZXJlc3RpbmcgdGhpbmc6IEkgc2V0IHRoZSBoYXNoc2l6ZSAyMCwgdGhlbiB0
+aGUgaXBfY29ubnRyYWNrX21heCBzaG91bGQgYmUgMTYwLCBleGFjdGx5IGl0J3MgMTYwIGluIC9w
+cm9jL3N5cy9uZXQvaXB2NC9pcF9jb25udHJhY2tfbWF4LkluIHRoZSBoZWFkZXIgb2YgZnVuY3Rp
+b24gaW5pdF9jb25udHJhY2soKSBJIHByaW50ayB0aGUgaXBfY29ubnRyYWNrX2NvdW50LiBOb3cs
+IHRoaXMgcHJpbnRpbmcgdmFsdWUgbWF5IGdyZWF0IHRoYW4gaXBfY29ubnRyYWNrX21heCgxNjAp
+IG9jY2FzaW9uYWx5LkhvdyBjYW4gdGhpcyBvY2N1cj8NCldobyBjYW4gaGVscCBtZT8gVGhhbmtz
+IQ0KQmVzdCByZWdhcmRzIQ0KDQpCaWxsLg0K
 
-Regards,
+------=_NextPart_000_0005_01C30CC9.E50A6790
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-vu
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
+MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNS4w
+MC4yOTIwLjAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8Qk9E
+WSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5oZWxsbyxhbGwhPC9GT05UPjwv
+RElWPg0KPERJVj48Rk9OVCBzaXplPTI+SSBoYXZlIGV4cGVyaW1lbnRlZCBvbiB0aGUgaXBfY29u
+bnRyYWNrLkJ1dCBJIGZvdW5kIGEgDQppbnRlcmVzdGluZyB0aGluZzogSSBzZXQgdGhlIGhhc2hz
+aXplIDIwLCB0aGVuIHRoZSBpcF9jb25udHJhY2tfbWF4IHNob3VsZCBiZSANCjE2MCwgZXhhY3Rs
+eSBpdCdzIDE2MCBpbiAvcHJvYy9zeXMvbmV0L2lwdjQvaXBfY29ubnRyYWNrX21heC5JbiB0aGUg
+aGVhZGVyIG9mIA0KZnVuY3Rpb24gaW5pdF9jb25udHJhY2soKSBJIHByaW50ayB0aGUgaXBfY29u
+bnRyYWNrX2NvdW50LiBOb3csIHRoaXMgcHJpbnRpbmcgDQp2YWx1ZSBtYXkgZ3JlYXQgdGhhbiBp
+cF9jb25udHJhY2tfbWF4KDE2MCkgb2NjYXNpb25hbHkuSG93IGNhbiB0aGlzIA0Kb2NjdXI/PC9G
+T05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+V2hvIGNhbiBoZWxwIG1lPyBUaGFua3MhPC9G
+T05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+QmVzdCByZWdhcmRzITwvRk9OVD48L0RJVj4N
+CjxESVY+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5CaWxsLjwvRk9OVD48L0RJVj48
+L0JPRFk+PC9IVE1MPg0K
 
+------=_NextPart_000_0005_01C30CC9.E50A6790--
 
 
