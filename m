@@ -1,9 +1,10 @@
-From: Mika Rantonen <Mika.Rantonen@vtt.fi>
-Subject: unresolved symbols and depmod
-Date: Tue, 12 Aug 2003 14:57:52 +0300
+From: Kevin Quinn <quinn@preg.org>
+Subject: >13MB netfilter forward CRASH
+Date: Tue, 12 Aug 2003 11:15:53 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4.3.2.7.2.20030812145009.00d70580@elemail.ele.vtt.fi>
+Message-ID: <3F3904A9.10008@preg.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,30 +16,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all!
+Greetings.  I am not subscribed to the list yet, so please respond to my 
+email address.  if this get's hairier, I'll get on the list.
 
-I have a following kind of problem. I have laptop with Red Had 7.3 and 
-kernel 2.4.20. In addition I have install mipv6 of HUT which uses 
-netfilter- functions and this works fine. Then I try to install AODV6-uu ad 
-hoc routing daemon which also uses same functions and I get following errors:
+I am having the exact same issue Marcel de Boer posted about last month. 
+  I have a WiFi and ethernet network in the house.  traffic from them is 
+forwarded along by a central linux box (redhat9) that also is connected 
+to the internet via a cable modem.  I am running NAT internally to run 
+off the one ip address my ISP provides.  I do plenty of filtering on the 
+internet interface, but forward along anything from the inside.
 
-depmod: *** Unresolved symbols in /lib/modules/2.4.20/aodv/kaodv6.o
-depmod: nf_unregister_hook_RFfeda11ee
-depmod: dev_get_by_name_Re225cd47
-depmod: nf_register_hook_R4bd477f0
-depmod: netdev_finish_unregister_Rbc1e4da8
-make: *** [install] Error 1
+I have transferred files via FTP from the internet to the linux box as 
+large as 6GB.  when I try to FTP from a machine behind the linux box, 
+the transfer goes fine until ~13MB then the linux box HANGS!
 
-Has anyone some kind of clue, how this problem can be solve? AODV6_uu works 
-fine if mipv6 is not installed.
+I do get some messages, but they happen periodically earlier in the 
+transfer as well.
 
-Best regards,
+kernel: skb_p80211_to_ether: OTHER frame too large (1536 > 1500)
+kernel: skb_p80211_to_ether: DIXII frame too large (1528 > 1500)
 
-Mika Rantonen
-Research Scientist
-VTT Electronics
+
+the same has happened from multiple boxen.  any lowly windoze box I can 
+find can bring my linux box to an absolute halt.  ouch.
+
+if it would help, I can test this with no iptables rules, but I can't 
+imagine a different result.
+
+so, did Marcel find the answer or maybe someone has other clues?
+
+k
+-- 
+Kevin Lee Quinn
+Technical Facilitator
 
 
