@@ -1,13 +1,13 @@
-From: "Mehmet AK" <mehmet.ak@kolayyol.net>
-Subject: Re: ip/snat + port/dnat
-Date: Sat, 8 May 2004 12:21:09 +0300
+From: Krystian <optimusprime@o2.pl>
+Subject: Re: Bandwidth Monitor
+Date: Sat, 08 May 2004 12:23:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ad01c434dd$f6236cb0$0b07f83e@homelanda4abry>
-References: <Pine.LNX.4.44.0405072300190.16707-100000@dns.media-lab.com.pl> <200405081006.35368.Antony@Soft-Solutions.co.uk>
-Reply-To: "Mehmet AK" <mehmet.ak@kolayyol.net>
+Message-ID: <409CB521.60703@o2.pl>
+References: <006001c434da$7c6400e0$36b4fea9@SABNANIS>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <006001c434da$7c6400e0$36b4fea9@SABNANIS>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Harry <hari76@omantel.net.om>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-if you want to use an other port for SMTP you can try this
+Harry wrote:
 
-iptables -t nat -I  FORWARD -p all --dport 25 -j DROP
-iptables -t nat -I PREROUTING -i eth0 -p tcp -s 192.168.0.1/24 --dport 25 -j
-REDIRECT --to-port  4567
+> Hi All,
+> I have a DSL connection which has a bandwidth capacity of 3GB a 
+> month...having said that I have 16 machines hooked up on the network 
+> with a linux server, is there a away to capture/monitor the total 
+> consumption of bandwidth utilised per machine or server basis.This is 
+> complicated as I have squid also for caching.....did a lot of reserch 
+> there were some scripts for iptables but I cant figure out how to use 
+> it ?Has anyone used something like this B4?Help is really appreciated.
+>  
+> Regards
+>  
+> Harry
+>  
+> "In all this world, there is only you
+> When all else ceases, there is only you" 
+> -- to my MASTER!
+>     Harish
+> harish@sabnanis.com <mailto:harish@sabnanis.com>
+> harish.sabnani@cyberhutoman.com <mailto:harish.sabnani@cyberhutoman.com>
 
-but you have to setup your email server port 4567
+Hi
 
-best regards
+there r couple things u can do:
+1.  every rule in iptables counts bytes of data which went through it. u 
+can look at the counters by using command:
+iptables -L -v
+or maybe more specific for FORWARD chain: iptables -L FORWARD -v
 
+u can place a specific counter for one host:
+/sbin/iptables -A FORWARD -j ACCEPT -i eth0 -m state --state ESTABLISHED 
+-d 192.168.0.19 --set-counters 0 0
 
------ Original Message -----=20
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, May 08, 2004 12:06 PM
-Subject: Re: ip/snat + port/dnat
+2. use specialized netfilter addons (patch-o-matic) for counting and 
+possibly doing what ever u want with leechers. the ones u can use are 
+from BASE repository: QUOTA and from EXTRA repository connbytes. the web 
+site is of course www.iptabless.org
 
-
-On Friday 07 May 2004 10:09 pm, R=F3=BFa=F1ski Sergiusz wrote:
-
-> I need dissable routing to smtp servers, and enable smtp on non-standard
-> port. Like this:
->
-> -p tcp -s 192.168/16 -dport 25 -j DENY
-
-iptables -A FORWARD -p tcp -s 192.168.0.0/16 --dport 25 -j DROP
-
-> -p tcp -s 192.168/16 --dport 2525 -j TARGET_LIKE_SNAT --to
-$ext_if --to-port
-> 25
-
-iptables -A POSTROUTING -t nat -p tcp --dport 2525 -j SNAT --to $extIF:25
-
-> don't change destination ip.
-> possible?
-
-Is that what you wanted?
-
-Antony.
-
---=20
-In science, one tries to tell people
-in such a way as to be understood by everyone
-something that no-one ever knew before.
-
-In poetry, it is the exact opposite.
-
- - Paul Dirac
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-
+GL & HF :)
 
