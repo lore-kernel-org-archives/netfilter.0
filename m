@@ -1,11 +1,15 @@
-From: <peter.gehle@sbgit.com>
-Subject: Re-5: Still having problems with forwarding
-Date: 15 Mar 2004 10:44:51 UT
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: Review of firewall script
+Date: Tue, 16 Mar 2004 12:54:20 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DIIE.000000E900002A78@sbgit.com>
+Message-ID: <20040316015420.GE26800@samad.com.au>
+References: <20040315231838.GB26800@samad.com.au> <200403152335.29942.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Dnvf+KcI+0MByPWJ"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200403152335.29942.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,63 +19,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
-> > > Since i have made some changes i don't get an connection to my VPN Server,
-> > > it seems that iptables don't forwards the vpn tunnel to my internet vpn
-> > > server.
+--Dnvf+KcI+0MByPWJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Now i have changed my script for the VPN connection like this:
-// $LAN_IP = Is my internal LAN IP of my Firewall
+On Mon, Mar 15, 2004 at 11:35:29PM +0000, Antony Stone wrote:
+> On Monday 15 March 2004 11:18 pm, Alexander Samad wrote:
+>=20
+> > Hi
+> >
+> > I have attached my firewall script, basically creates a DB of rules,
+> > also creates a default set of rules.
+> >
+> > Any comments ?
+>=20
+> It's long, it's complicated, and it contains some regexes which I don't e=
+ven=20
+> want to think about.
+>=20
+> If you get some problems, by all means post the output of "iptables -L -n=
+vx;=20
+> iptables -L -t nat -nvx" and tell us what the problems are, but I think t=
+his=20
+> script is in such a nonstandard form that not many people here are going =
+to=20
+> spend the time looking through it and trying to see if there are any secu=
+rity=20
+> holes.
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1723 -j DNAT --to-destination 192.168.1.2
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1723 -j LOG --log-prefix "VPN 1723 prerouting "
+Yeah true, it builds a db and you can run the script against the db to
+build the tables.  Usually use it on new box to create a default DB of
+rules and then play from there, normal sequence
 
-iptables -t nat -A POSTROUTING -o eth1 -p tcp --dport 1723 -j SNAT --to-source $LAN_IP
-iptables -t nat -A POSTROUTING -o eth1 -p tcp --dport 1723 -j LOG --log-prefix "VPN 1723 postouting "
-
-iptables -A FORWARD -i eth0 -m state --state NEW -p tcp -d 192.168.1.2 --dport 1723 -j ACCEPT
-iptables -A FORWARD -i eth0 -m state --state NEW -p tcp -d 192.168.1.2 LOG --log-prefix "VPN 1723 forward "
-
-
-iptables -t nat -A PREROUTING -i eth0 -p 47 -j DNAT --to-destination 192.168.1.2
-iptables -t nat -A PREROUTING -i eth0 -p 47 -j LOG --log-prefix "VPN GRE forward "
-
-iptables -t nat -A POSTROUTING -o eth1 -p 47 -j SNAT --to-source $LAN_IP
-iptables -t nat -A POSTROUTING -o eth1 -p 47 -j LOG --log-prefix "VPN GRE forward "
-
-iptables -A FORWARD -i eth0 -m state --state NEW -p 47 -d 192.168.1.2 -j ACCEPT
-iptables -A FORWARD -i eth0 -m state --state NEW -p 47 -d 192.168.1.2 -j LOG --log-prefix "VPN GRE forward "
-
-
-iptables -t nat -A PREROUTING -i eth0 -p 37 -j DNAT --to-destination 192.168.1.2
-iptables -t nat -A PREROUTING -i eth0 -p 37 -j LOG --log-prefix "VPN 37 forward "
-
-iptables -t nat -A POSTROUTING -o eth1 -p 37 -j SNAT --to-source $LAN_IP
-iptables -t nat -A POSTROUTING -o eth1 -p 37 -j LOG --log-prefix "VPN 37 forward "
-
-iptables -A FORWARD -i eth0 -m state --state NEW -p 37 -d 192.168.1.2 -j ACCEPT
-iptables -A FORWARD -i eth0 -m state --state NEW -p 37 -d 192.168.1.2 -j LOG --log-prefix "VPN 37 forward "
-
-The logging works, this stay in the syslog after i tried to connect:605  Mar 15 10:37:54 fw-sbg kernel: VPN 1723 PREROUTINGIN=eth0 OUT= MAC=00:10:4b:3e:5f:4a:00:a0:57:05:70:c9:08:00 SRC=217.229.106.108 DST=10.0.0.2 LEN=48 TOS=0x00 PREC=0x00 TTL=125 ID=46158 DF PROTO=TCP SPT=2919 DPT=1723 WINDOW=65535 RES=0x00 SYN URGP=0
-
-
-With this script i get connected to the VPN Server (i see it at the vpn server) but the server can't answer
-to my client? 
-Whats wrong?
-
-Thanx Peter
+makefirewall makeall
+makefirewall setsecurity
+makefirewall showtables | less
 
 
+>=20
+> That's my opinion, anyhow....   (happy for someone else to show I'm wrong)
+>=20
+> Regards,
+>=20
+> Antony.
+>=20
+> --=20
+> If at first you don't succeed, destroy all the evidence that you tried.
+>=20
+>                                                      Please reply to the =
+list;
+>                                                            please don't C=
+C me.
+>=20
+>=20
+>=20
 
+--Dnvf+KcI+0MByPWJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
+iD8DBQFAVl5LkZz88chpJ2MRAglkAKDGQU9TqnAMmITsjBXitiKjW+sSQQCg8gxd
+XVfuGDohfA2tUkwXvtsM/5A=
+=ok/E
+-----END PGP SIGNATURE-----
 
-
-
-To: Antony@Soft-Solutions.co.uk
-Cc: netfilter@lists.netfilter.org
-
+--Dnvf+KcI+0MByPWJ--
 
