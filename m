@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Performace problems with NAT
-Date: Fri, 25 Oct 2002 15:46:23 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: H323 and Traffic Control
+Date: 25 Oct 2002 17:08:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210251446.g9PEkUe06183@vulcan.rissington.net>
-References: <1035554190.24028.19.camel@ITS-Sevcik>
+Message-ID: <1035558500.8847.6.camel@elendil>
+References: <H4JC9N$8B17FEF3457390EDE1EF6BC9A0A4266D@laposte.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1035554190.24028.19.camel@ITS-Sevcik>
+In-Reply-To: <H4JC9N$8B17FEF3457390EDE1EF6BC9A0A4266D@laposte.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "yves.metivier" <yves.metivier@laposte.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Friday 25 October 2002 2:56 pm, Berndt Sevcik wrote:
+Le ven 25/10/2002 =E0 13:36, yves.metivier a =E9crit :
+> I was expecting that h323 netfilter module should mark all=20
+> h323 traffic, including RTP and RTCP UDP packets, but it seems=20
+> that it only marks packets from known ports (those explicitely=20
+> declared in iptables), and not UDP related packets.
 
-> I am using a combination of source based routing with iproute2 and nat
-> (iptables 1.2.6a-5). The problem I cant use the full performance of our
-> line. We have a 10MBit line and i can only use about 2MBit, and not a
-> fault of our ISP.
+H323 module's goal is to declare what kind of packets are expected by
+H323 flows to have them given the RELATED state. And that's all.
 
-Okay, knowing that your line is 10Mbit adds some more information.
+If you want to mark thoses packets, then you'll have to do it yourself.
+The main Netfilter distribution does not provide matches to do it well,
+but you'll find helper pacth in submitted section of iptables 1.2.7a
+patch-o-matic. This patch creates a new match called helper that allows
+you to spot packets that are handled by a specific conntrack module. I
+didn't tried what you want to do, but I think this can do the trick :
 
-1. How do you know the problem is not with your ISP ?   Can you download at 
-10Mbit under any circumstances ?
+	iptables -t mangle -A PREROUTING -m helper --helper h323 \
+		-j MARK --set-mark 0x01
+=20
+> Is my analyse right?
 
-2. What makes you think is it NAT which is causing the performance problem ?  
-Does the problem go away if you do not use NAT ?
+Nope ;)
+Conntrack is something particular in Netfilter. It gives state to
+packets, and then, it's up to you to use this state value to achieve
+what you want to do.
 
-3. How busy is your box (what load average does uptime show) ?
-
-4. Are you getting any kernellogging messages about conntrack table full etc ?
-
-5. What speed CPU / how much memory is in the netfilter machine ?
-
-Antony.
-
--- 
-
-This is not a rehearsal.
-This is Real Life.
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
