@@ -1,11 +1,14 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Performance isues related to a large number of iptables rules
-Date: Thu, 13 Jan 2005 18:31:57 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10501131821210.22559-100000@darkstar.sysinfo.com>
-References: <41E6FA0E.2060707@intellitree.com>
+From: "Jorge Agrelo" <jagrelo@novadevices.com>
+Subject: Re: Limit module accept negation?
+Date: Thu, 13 Jan 2005 19:08:53 -0500
+Message-ID: <41E6C745.7555.2118F01@localhost>
+References: <41E2E0CB.18071.252B3E2C@localhost>
+Reply-To: jagrelo@novadevices.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E6FA0E.2060707@intellitree.com>
+In-reply-to: <30044.142.169.215.10.1105539632.squirrel@142.169.215.10>
+Content-description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,86 +19,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: henry <info@intellitree.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Samuel Jean <sj-netfilter@cookinglinux.org>
 Cc: netfilter@lists.netfilter.org
 
+Hi Samuel
 
-Conventional firewalling, places rules in a number of places, not just the
-firewall, for one, most folks seem to have forgotten the term 'screening
-router' these days.  This is the place to put rules that do things like
-place anti-spoofing rules, rules for traffic that should always not be
-allowed to pass <i.e. filtering out windows related protocols and ports,
-etc>.  ingress and egress filters can also be placed here.
+Yes, I want to limit (drop) as soon as we receive more than 1/s packet
+regardless of the source address?, Is there any other way to do that without using
+limit match with negation?
 
-There's another problem with large rulesets beisde preformance issues,
-they get to be overtly complex and hard to follow and change.  Breaking up
-the rules upon a screening router<s>.  Additionally, there's no reason a
-site needs merely one firewall, the DMZ can have a seperate firewall for
-those servers and services open to the public that should not hit the
-internal network <or these systems can have specific host based firewalls
-to address their specific needs and services>.  behind the screening
-router and or main firewall <which can be a sub-screening router> subnet
-or switch specific  firewalls can deal with traffic specific to those
-systems housed therein.
+Regards
+ 
+On 12 Jan 2005 at 9:20, Samuel Jean wrote:
 
-Having worked at a few places that managed firewalls for the corporate 500
-world, we found that overtly large rulesets tended to turn a firewall into
-merely an open routed env...and often was the result of a failure to
-properly assess the sites security policy structurally.  In otherwords the
-policy was often far too fluid to get a handle on ahd seemed to change
-weekly or bi-weekly.
-
-Thanks,
-
-Ron DuFresne
-
-On Thu, 13 Jan 2005, henry wrote:
-
-> I am curious what is the maximum number of iptable rules that can be 
-> installed in a config before performance starts to be a problem. I have 
-> looked into the possibility of using firewall rules to block "bad" 
-> networks, but I have been told by most people that I have asked that 
-> this is bad idea.
+> On Mon, January 10, 2005 8:08 pm, Jorge Agrelo said:
+> > Can I replace this two rules
+> >
+> > iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 4 -j
+> > ACCEPT
+> > iptables -A INPUT -p tcp --syn -j DROP
+> >
+> > For only this one? (Using negation)
+> >
+> > iptables -A INPUT -p tcp --syn -m limit ! --limit 1/s --limit-burst 4 -j
+> > DROP
 > 
-> Here are my thoughts. If a packet matches the 3rd rule, does it matter 
-> if there are 100,000 rules below it? 1,000,000 rules below it? If it 
-> doesn't, then does the number of allowable rules really have to do with 
-> how intelligently the rules are written, and more specifically, in what 
-> order?
+> Unfortunately, you can't without a bit of hacking.
+> If it happens you would, just grab ipt_limit.c and search for:
 > 
-> For ban lists, if for example we wanted to allow everyone access to port 
-> 80, except a list of bad networks, we would obviously have to put a rule 
-> to allow all connections on port 80 bellow our reject rules, otherwise 
-> iptbales would never get to the ban rules. So lets say that we have 
-> 50,000 rules, 99% of them being reject rules, with a rule to allow port 
-> 80 to all hosts at the bottom, and a rule to allow RELATED,ESTABLISHED 
-> packets at the top. When a host connects to us on port 80, iptables will 
-> have to go though all 50,000 rules (assuming this host doesn't match one 
-> of the reject rules) until it gets to the last one and decides to allow 
-> the packet. But then, subsequent packets will have a state of 
-> ESTABLISHED, and so they will match the first rule. In this case, only 
-> the first packet of most sessions will the firewall have to do a lot of 
-> work. Does this make any sense?
+> /* We're underlimit */
 > 
-> It seems to me, that for a reasonably powerful box, processing a large 
-> number of rules on what would become a small total percentage of packets 
-> shouldn't be a problem. Does anyone know what the real numbers are, and 
-> what numbers are feasible and what numbers aren't?
+> Change the return codes so it returns 0 when 'underlimit', otherwise, 1.
+> Am sorry if this is straigh, I am at work.
+> Note that this won't add '!' support but just doesn't match unless it
+> bursts the limit.
+> 
+> By the way, do you want to limit as soon as you receive more than 1/s packet
+> regardless of the source address?
+> 
+> >
+> > Thanks in advanced
+> 
+> HTH,
+> 
+> Samuel
+> 
 > 
 
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
 
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
 
 
