@@ -1,13 +1,13 @@
 From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: DNAT/SNAT & existing connections
-Date: Fri, 18 Jul 2003 09:59:48 -0400
+Subject: Re: [FTP large file problem]
+Date: Fri, 18 Jul 2003 10:09:44 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030718135948.GA880@cannon.eng.us.uu.net>
-References: <20030717122907.GA30482@cannon.eng.us.uu.net> <20030718010931.55307.qmail@web13101.mail.yahoo.com>
+Message-ID: <20030718140944.GB880@cannon.eng.us.uu.net>
+References: <410HgRNvd6128S02.1058536049@uwdvg002.cms.usa.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20030718010931.55307.qmail@web13101.mail.yahoo.com>
+In-Reply-To: <410HgRNvd6128S02.1058536049@uwdvg002.cms.usa.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +19,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Stephen Bylo <stephenbylo@yahoo.com.sg>
-Cc: Ramin Dousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
+To: Curtis Call <curtiscall@usa.net>
+Cc: Marcel de Boer <marceldb@luon.net>, netfilter@lists.netfilter.org
 
-On Fri, Jul 18, 2003 at 09:09:31AM +0800, Stephen Bylo wrote:
+On Fri, Jul 18, 2003 at 07:47:29AM -0600, Curtis Call wrote:
 
-> Hi!
-> 
-> I have now found what I'm looking for!
->  eg.:  http://mosquitonet.stanford.edu/mip/
-> Mobile IP creates a tunnel from R through A to (2).
-> That's what I need.  I don't really need a NAT.
+> Are you explicitly allowing fragments through?  When a packet is fragmented
+> only the first fragment contains the TCP/UDP header.  So if you're only
+> permitting based on that header the fragments won't make it.
 
-Good. When you installed/setup the package and have a
-good understanding as to how it serves your needs,
-send a brief explanation as to how it works. I'm
-very much interested in knowing what it can do in
-your situation to solve your problem.
+Are you sure about this? Doesn't defrag occure on the fw by default? Specially
+when you do nat it cannot work without this logic? And I don't recall any
+mention of "let fragments through" in the howto's or alike.
 
 Ramin
-
-
-> 
-> Thanx for the help,
-> Steve
 
