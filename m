@@ -1,11 +1,11 @@
-From: Dieter Raith <raith@rus.uni-stuttgart.de>
-Subject: netfilter and cipe
-Date: Thu, 13 Feb 2003 18:09:44 +0100
+From: Pablo Allietti <pablo@lacnic.net>
+Subject: snat,dnat anything
+Date: Thu, 13 Feb 2003 18:56:15 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E4BD158.8080705@rus.uni-stuttgart.de>
+Message-ID: <20030213155615.GB20004@omega.lacnic.net.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,45 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I installed CIPE 1.54 on two Linux systems.
-One running 2.2.19 the other 2.4.18
-The UDP tunnel connection has problems.
-The log on 2.4.18 shows the following entries:
-
-Feb 13 17:40:42 sysrai kernel: ip_finish_output: bad owned skb = 
-da0aaca0: POST_ROUTING
-Feb 13 17:40:42 sysrai kernel: skb: pf=2 (owned) dev=eth0 len=132
-Feb 13 17:40:42 sysrai kernel: PROTO=17 129.69.3.3:4444 129.69.90.9:4444 
-L=132 S=0x00 I=9147 F=0x0000 T=255
+hi people i need your help again!
 
 
-I have traced that down to netfilter.c where this messages is generated.
-It does not tell me anything and I do not find information about it.
+have a Network 200.40.227.66/255.255.255.240
 
-On both systems the following device is created (inet addr and P-t-P of 
-course flipped)
+i assign ips via DHCP and all machines connect to the server with
+iptables as gateway 200.40.227.66 but i have one problem.
 
-cipcb0    Link encap:IPIP Tunnel  HWaddr
-           inet addr:172.16.100.2  P-t-P:172.16.100.1  Mask:255.255.255.255
-           UP POINTOPOINT RUNNING NOARP  MTU:1442  Metric:1
-           RX packets:234 errors:2 dropped:0 overruns:0 frame:2
-           TX packets:329 errors:0 dropped:0 overruns:0 carrier:0
-           collisions:0 txqueuelen:100
+All machine go outside with the .66 IP
 
+I need this if my machine get via dhcp 200.40.227.71 go outside with .71
+indiferent how is the gateway ip.
 
-Before I go into further details within CIPE I hope to get some 
-information on the above kernel messages
+.71 go outside .71
+.75 go outside .75
 
+and all the same form, i test with snat and dnat but nothing when i put
+snat 77 to 77 the conecction dead.
 
+If any help me please????
 
+ Thanks in advance.
 
--- 
-Dieter Raith 					Phone:	++49-711-685-4516
-Computing Center University of Stuttgart	Fax:	++49-711-682-357
-Allmandring 30 					E-Mail:	raith@rus.uni-stuttgart.de
-70550 Stuttgart, Germany
+Pablo
+
 
 
