@@ -1,8 +1,8 @@
 From: "John Black" <black@arbbs.net>
-Subject: Thanks
-Date: Fri, 20 Feb 2004 14:12:32 -0600
+Subject: SNAT question
+Date: Fri, 20 Feb 2004 14:15:23 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40366a30.5299.0@arbbs.net>
+Message-ID: <40366adb.53af.0@arbbs.net>
 Reply-To: black@arbbs.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,7 +19,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I want to send a Big Thank You to everyone who helped me.
+Everything works, when i do the lazy way and go to the web page www.whatismyipaddress.com.
+
+
+but my question is when i went to the MS chat room, it was showing me the 192.168.x.x
+ipaddress.
+
+why is this?
 
 john
 
