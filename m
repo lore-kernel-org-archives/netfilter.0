@@ -1,12 +1,13 @@
-From: "Carlos Fernandez Sanz" <cfs-netfilter@nisupu.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Routing problem
-Date: Sat, 14 Feb 2004 16:19:31 +0100
+Date: Sat, 14 Feb 2004 15:38:32 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003a01c3f30d$f21c9630$1530a8c0@HUSH>
-References: <002c01c3f247$9d3ee350$1530a8c0@HUSH> <200402131712.44158.Antony@Soft-Solutions.co.uk> <000a01c3f2d6$677d1680$1530a8c0@HUSH> <200402140909.20468.Antony@Soft-Solutions.co.uk>
+Message-ID: <200402141538.32855.Antony@Soft-Solutions.co.uk>
+References: <002c01c3f247$9d3ee350$1530a8c0@HUSH> <200402140909.20468.Antony@Soft-Solutions.co.uk> <003a01c3f30d$f21c9630$1530a8c0@HUSH>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <003a01c3f30d$f21c9630$1530a8c0@HUSH>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +18,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-(sorry, the first time it went out incomplete)
+On Saturday 14 February 2004 3:19 pm, Carlos Fernandez Sanz wrote:
 
-> > The link between the carrier and the linux box happens using WAN
-addresses,
-> > ie. 172.x.y.1 (them) <--> 172.x.y.99 (us). All traffic is exchanged
-using
-> > those two addresses - they just won't route traffic not being routed
-from
-> > 172.x.y.99.
+> > What (exactly) do you mean by "It also has our first public address"?  
+> > Is that public IP assigned to one of your router's interfaces?   If it
+> > is,
 >
-> Oh, so when you say "WAN address", you actually mean another private
-address
-> (172.x.x.1), not the public address you've been assigned as part of your
-> pool?
+> Actually I don't have it *assigned*, because the interface where packets
+> come from internet has 172.x.y.99... so when anything comes to our first
+> public address, I DNAT it to the router private address. I guess I could
+> 'ip addr add' the IP instead of doing this.
 
-Exactly. WAN is the term the carrier uses for this.
+> > then simply connect the machine needing the second public IP address on it
+> > to that interface,
 >
-> I think I understand now - you're talking about the router addresses which
-can
-> talk to each other, not the source addresses of the packets being
-routed...
+> How? By connecting the router interface, the second machine, and the
+> carrier gateway to the same switch/hub?
 
-Exactly. Those are always public IP addresses.
+No, the router (external I/F) is connected to the carrier gateway (these are 
+talking to each other ising 172.x.y.z).   Leave these as they are and connect 
+nothing else to them.
 
-> > The route also has 192.168.21.1 on another NIC, which is connected to
-our
-> > own LAN. It also has our first public address - so traffic we generate
-to
-> > internet uses this public address, and traffic coming from internet goes
-to
-> > this public address. (being routed through the 172.x.y.z) addresses.
->
-> What (exactly) do you mean by "It also has our first public address"?   Is
-> that public IP assigned to one of your router's interfaces?   If it is,
+Assign public IP number 1 as a second address to the router's internal 
+interface (alongside 192.168.21.1), and assign public IP number 2 to the 
+machine which is causing all the trouble.   That machine is already connected 
+to your internal hub/switch, so therefore it can talk to the router, using 
+public IP number 1 as its default gateway address.
 
-Actually I don't have it *assigned*, because the interface where packets
-come from internet has 172.x.y.99... so when anything comes to our first
-public address, I DNAT it to the router private address. I guess I could 'ip
-addr add' the IP instead of doing this.
-then
-> simply connect the machine needing the second public IP address on it to
-that
-> interface,
+Hope this is clear now.
 
-How? By connecting the router interface, the second machine, and the carrier
-gateway to the same switch/hub? I'm not sure that would do, remember that
-packets to the internet must come from the router using the 172.x.y.99
-address...so the second machine and the carrier gateway can't talk to each
-other directly.
+Why didn't the user requiring secure access to the system just use a VPN?
 
+Antony.
 
-Carlos.
+-- 
+My New Year's resolution is not to make any resolutions I can't keep.
+
+I'm wondering whether I've failed already.
 
 
