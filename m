@@ -1,13 +1,13 @@
-From: Jim Garrison <jhg@acm.org>
-Subject: Re: newnat16/h323-nat-conntrack on 2.4.18 kernel - pom problems?
-Date: Wed, 25 Dec 2002 16:19:20 -0600
+From: Hauser Marcel <marcel_hauser@gmx.ch>
+Subject: Re: firewall failover / cluster
+Date: Thu, 26 Dec 2002 00:41:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E0A2EE8.30805@acm.org>
-References: <3E0A188E.3070805@acm.org>
+Message-ID: <3E0A4242.1050300@gmx.ch>
+References: <Pine.LNX.4.44.0212192006170.6773-100000@laptop1.agatha> 	<3E028951.8090800@gmx.ch> <1040356150.2255.81.camel@doctor>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E0A188E.3070805@acm.org>
+In-Reply-To: <1040356150.2255.81.camel@doctor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: clarke@craftedpackets.net
 
-Oops! I'm on 2.4.18 -- Is there any way to apply these
-patches on 2.4.18, or do I need to move up?
+Clarke wrote:
+>>hi all
+>>
+>>What are you guys using in order to provide a fault toleranced iptables 
+>>firewall (master / slave ?)
+>>
+>>Cheers Marcel
+>>
+> VRRP
 
-Jim Garrison wrote:
-> Trying to apply h323-nat-conntrack to RedHat 2.4.19 kernel,
-> but z-newnat16 won't apply and thus h323-nat-conntrack
-> also fails.  Is there a trick to getting h323-nat-conntrack
-> working on 2.4.19?
+Which implementation/daemon of the Protocol ?
 
--- 
-Jim Garrison (jhg@acm.org)
-PGP Keys at http://www.jhmg.net RSA 0x04B73B7F DH 0x70738D88
+How about the "outside" of the firewall ? (Public IP's and NAT for 
+instance?)
+
+Is everyone else on this list using VRRP too ? ;) or what else are you 
+guys using to make an iptables firewall redundant ?
+
+Cheers Marcel
+
 
 
