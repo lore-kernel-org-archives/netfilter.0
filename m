@@ -1,16 +1,14 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: STATELESS
-Date: 16 Sep 2003 15:54:08 +0200
+From: Jamie Pratt <jamie@nucdc.org>
+Subject: Re: destinations interface must be eth0?
+Date: Tue, 16 Sep 2003 10:14:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063720447.31093.166.camel@raylinux.internal>
-References: <02ba01c37c46$bb7a5f60$798014ac@matthew>
-	 <200309161256.15286.gdh@acentral.co.uk>
-	 <1063716386.31093.160.camel@raylinux.internal>
-	 <20030916131153.GA16559@cannon.eng.us.uu.net>
+Message-ID: <3F671AAF.90207@nucdc.org>
+References: <1063637259.2318.3.camel@dod-secure.e-masi.com>
+Reply-To: jamie@nucdc.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-mqnMN/FNkgT2bgDsV98B"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030916131153.GA16559@cannon.eng.us.uu.net>
+In-Reply-To: <1063637259.2318.3.camel@dod-secure.e-masi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,55 +18,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+
+Hi.
+
+Jim Burnett wrote:
+
+<snip>
+
+ > #2
+> iptables -v -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNA
+> T--to                  192.168.1.56:80
+> This wont work because the destination IP is on eth1
+> 
+
+...did you try using -i eth1 instead of -i eth0 in the above command?
 
 
---=-mqnMN/FNkgT2bgDsV98B
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> I didnt see this in the documentation and it took my 5 days to figure it
+> out....
+> 
+> Tested on 6 machines, redhat 9, slackware 9, Latest gentoo build from
+> stage 1. Various brand nic cards. Various compiled kernels. 2.4.18 -
+> 2.4.22
+> 
+> -Jim
+> 
+> 
 
-On Tue, 2003-09-16 at 15:11, Ramin Dousti wrote:
-> On Tue, Sep 16, 2003 at 02:46:27PM +0200, Ray Leach wrote:
->=20
-> > >=20
-> > > Don't load the ip_conntrack module, and / or don't use any iptables r=
-ules that=20
-> > > use "-m state"  in the arguments :)
-> > Yeah, connection tracking automagically implies state inspection.
->=20
-> OK. Thanks for the informative comments but can you lay out the steps to
-> prevent stateful inspection? For example, how to unload "ip_conntrack" an=
-d
-> to prevent it from being reloaded again?
->=20
-Personally, I would re-compile the kernel without connection tracking
-support.
+regards,
+jamie
 
-> Thanks again.
->=20
-> Ramin
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+> 
+> 
+> 
+> 
 
---=-mqnMN/FNkgT2bgDsV98B
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
-
-iD8DBQA/ZxX/h1fuR/Bv+ygRAvD1AJ4q9W+9LHJ4wByB0iCpoglzaOM+JgCeIslU
-61ojBtDACOvvaAOJtXL4lsg=
-=qxwf
------END PGP SIGNATURE-----
-
---=-mqnMN/FNkgT2bgDsV98B--
 
 
