@@ -1,11 +1,14 @@
-From: "Ravi Verma" <ravi.verma@telecommand.com>
-Subject: Iptables ACCEPT and DROP
-Date: Fri, 16 Apr 2004 10:56:17 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables ACCEPT and DROP
+Date: Fri, 16 Apr 2004 19:08:26 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c423dc$1e471a10$8101a8c0@TELECOMME9F58X>
+Message-ID: <200404161908.26028.Antony@Soft-Solutions.co.uk>
+References: <000401c423dc$1e471a10$8101a8c0@TELECOMME9F58X>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000401c423dc$1e471a10$8101a8c0@TELECOMME9F58X>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +21,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear Friends:
+On Friday 16 April 2004 6:56 pm, Ravi Verma wrote:
 
-I have observe a behavior of iptables which I need to understand.
+> The following command will allows the machine to connect to
+> 216.155.193.168.
+>
+> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
+> ACCEPT
+>
+> Now when I issue
+> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
+> DROP
+>
+> And
+>
+> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport
+> 5050 -j REJECT
+>
+> Still, it allows connection to 216.155.193.168 on port 5050.
+>
+> How does this work? It seems -j DROP is not opposite of -j ACCEPT. How
+> can stop this?
 
-216.155.193.168 is the IP address of Yahoo's messenger site and it
-listens on port 5050.
+"-A" means append - in other words, "add on to the end of my ruleset".
 
-The following command will allows the machine to connect to
-216.155.193.168.
+You have not said that you have flushed the OUTPUT chain (with "iptables -F 
+OUTPUT") between adding the ACCEPT rule and applying more rules after it, so 
+I think you still have the ACCEPT rule in your chain, and that is the first 
+one the packets see.
 
-iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
-ACCEPT
+Try "iptables -L OUTPUT -nvx" and see what rules you have, and in what order.
 
-After that, I see output like following:
+Regards,
 
-#telnet 216.155.193.168 5050
-Trying 216.155.193.168...
-Connected to 216.155.193.168.
-Escape character is '^]'.
+Antony.
 
-Now when I issue
-iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
-DROP And iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport
-5050 -j REJECT
+-- 
+"Black holes are where God divided by zero."
 
-Still, it allows connection to 216.155.193.168 on port 5050.
+ - Steven Wright
 
-How does this work? It seems -j DROP is not opposite of -j ACCEPT. How
-can stop this?
-
-Kind regards.
-
-Ravi Verma
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
