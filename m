@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NAT in a special case
-Date: Sat, 10 Apr 2004 00:10:00 +0100
+From: "Manikandan" <mani@manikandan.org>
+Subject: RE: Multiple PPTP clients behind iptables.
+Date: Sat, 10 Apr 2004 10:23:30 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404100010.00795.Antony@Soft-Solutions.co.uk>
-References: <40768F74.2050005@fammed.med.uoc.gr>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <GHEILNONPACCGBGKBEKKIEBKCFAA.mani@manikandan.org>
+References: <BC9C1881.6F2F%luke@westaironline.com>
+Reply-To: <manikandan@manikandan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40768F74.2050005@fammed.med.uoc.gr>
+In-Reply-To: <BC9C1881.6F2F%luke@westaironline.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,96 +19,102 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter list <netfilter@lists.netfilter.org>
+Cc: Luke Deryckx <luke@westaironline.com>
 
-On Friday 09 April 2004 12:56 pm, Dimitris Kounalakis wrote:
+When I try to apply the patch, using netfilter CVS I am getting an error
+like
 
-> Hello,
->
-> I need a special case and I am not sure it can exist with NAT (SNAT or
-> DNAT)
->
-> I have two lan networks with IP range : 10.10.1.1/24 and 10.10.2.1/24.
-> The connection between then is done with a linux machine with two
-> ethernet cards.
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+Testing patch submitted/03_2.4.21.patch...
+Failed to patch copy of /usr/src/linux-2.4.20-8/
+TEST FAILED: patch NOT applied.
 
-So far, so good.   (Except you should specify the network ranges without a 
-host address part - they should be 10.10.1.0/24 and 10.10.2.0/24).
+[Press enter to continue]
 
-> The first network has a mix of computer and VoIp devices and and the
-> second only computers.
-
-Okay.
-
-> In the second network a pptp vpn server providing internet access (the
-> first nat) is in action and selected computers from both networks are
-> connected and take a 192.168.0.1/24 address in a virtual interface and
-> have Internet access.
-
-"selected computers from *both* networks are connected..."
-
-I understand.
-
-> I want to give access to the internet to some VoIP and other hardware
-> that can not use the pptp vpn server in the first network (10.10.1.1/24).
-
-VoIP over PPTP using NAT....   eek :)
-
-> I have the idea to configure the linux machine to connect to the pptp
-> vpn server
-
-Might be possible (I don't know, I've never used PPTP, I prefer IPsec)
-
-> and then have it acting as a NAT machine for the machines in
-> the first network (10.10.1.1/24) using the same IP address range.
-
-Why do you need it to do NAT?
-
-You said above that machines from both networks currently connect to the PPTP 
-server, therefore it must be happy with both 10.10.1.0/24 and 10.10.2.0/24 
-client addresses?
-
-Also, if the linux machine connects to the PPTP server, it will connect using 
-its 10.10.2.1 address (I think this is the one connected to the network with 
-the PPTP server in it, yes?), and it then simply depends on how the PPTP 
-server regards this connection - whether it will accept packets from any 
-address other than 10.10.2.1 through the link, or whether it has to be that 
-source address because that's the machine which connected?
-
-> In other words, the linux machine has to simply route ip traffic to the
-> ethernet interface with destination the subnet 10.10.2.1/24 and acting
-> as NAT if the destination is the internet.
-
-Well, if you're just saying that you want it to route traffic, and NAT only 
-some of it, then that's easy enough, sure.
-
-> Is that possible? Do you know where I can find an examlple close to that
-> to start with ?
-
-How about this?
-
-iptables -A POSTROUTING -t nat -s 10.10.1.0/24 -d ! 10.10.2.0/24 -j SNAT --to 
-10.10.2.1
-
-That will not affect packets from 1010.1.0/24 to 10.10.2.0/24, but packets 
-from 10.10.1.0/24 to anywhere else will get source NATted to 10.10.2.1
-
-I think that's what you asked for?
-
-Let me know if I've misundestood - I'm not quite sure what PPTP will be 
-expecting, so I may not have answered your question.
+What could be wrong?
 
 Regards,
+Manikandan
 
-Antony.
+ -----Original Message-----
+From: 	Luke Deryckx [mailto:luke@westaironline.com]
+Sent:	Friday, April 09, 2004 9:38 PM
+To:	manikandan@manikandan.org
+Cc:	Netfilter list
+Subject:	Re: Multiple PPTP clients behind iptables.
 
--- 
-Perfection in design is achieved not when there is nothing left to add, but 
-rather when there is nothing left to take away.
+This patch worked very nicely for me as well. Keep in mind you also need to
+recompile iptables after you've patched your kernel.
 
- - Antoine de Saint-Exupery
+Cheers
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+
+
+On 4/9/04 8:55 AM, "Alexis" <alexis@tpys.com.ar> wrote:
+
+> yes, you need the pptp patch
+>
+> ive been in the same situation, and applying the patch made it work just
+> fine.-
+>
+> see
+>
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-5.h
+tm
+> l#ss5.6
+>
+> ----- Original Message -----
+> From: "Manikandan" <mani@manikandan.org>
+> To: "Netfilter" <netfilter@lists.netfilter.org>
+> Sent: Friday, April 09, 2004 12:08 PM
+> Subject: Multiple PPTP clients behind iptables.
+>
+>
+>> Dear friends,
+>>
+>> As I am getting more confused about VPN masq., request your help on
+>> this.
+>>
+>> My local LAN is 10.35.0.0/24
+>> My Linux box running red hat linux 9.0 with kernel 2.4.20-8. acting as
+the
+>> gateway for my LAN to Internet.
+>>
+>> I need to allow my LAN clients to access Microsoft windows VPN (Windows
+> 2000
+>> Adv. Server) using PPTP over Internet.
+>> I am not able to make more than one connection to the VPN server as my
+LAN
+>> outgoing traffic to Internet is getting SNAT to single public IP.
+>>
+>>
+>> I read few guides and howtos to configure my firewall to allow multiple
+> PPTP
+>> sessions. But still I couldn't get through.
+>>
+>> Do I need to patch my kernel? What support do I need to enable this
+> multiple
+>> PPTP traffic.
+>>
+>> Request your views and help on this.
+>>
+>>
+>> Have a nice day
+>>
+>> Regards,
+>> Manikandan.
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>
+
+
 
 
