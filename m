@@ -1,12 +1,12 @@
-From: Leonid Veytser <veytser@cs.bu.edu>
-Subject: libipq with RAW sockets
-Date: Sun, 16 Nov 2003 16:34:27 -0500 (EST)
+From: "Pavel V. Yanchenko" <balrog@msmu.eu.org>
+Subject: Caching of rules in PRE(POST)ROUTING chains?
+Date: Sat, 15 Nov 2003 11:07:35 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.SOL.4.20.0311161628520.17534-100000@csa.bu.edu>
-References: <Pine.SOL.4.20.0311071828040.14674-100000@csa.bu.edu>
+Message-ID: <1072098477.20031115110735@msmu.eu.org>
+Reply-To: balrog@msmu.eu.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.SOL.4.20.0311071828040.14674-100000@csa.bu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hello.
 
-I am using netfilter's libipq to process packets at user space. Then
-depending on what packets I recieved, I need to create
-"response" packets. I need to construct all the headers myself, so I
-decided to user SOCK_RAW sockets. 
+As far as I understand, rules in PRE- and POSTROUTING chains are
+cached? Because when I delete a rule with SNAT target for ip
+192.168.10.10 this address's packets are still SNATed for several
+minutes. The same thing happens for rules in PREROUTING chains.
+Is it possible to disable this feature? Maybe there is some file in
+/proc where cached rules are listed?
 
-But, whenever I open a raw socket: 
-  sock = socket(AF_INET,SOCK_RAW,255)
-I get the following error from libipq:
-  Failed to receive netlink message: Bad address
+Thanks in advance.
 
-Is it that I can't use raw sockets together with netlink sockets?
-If that is the case, what else can I do to create my own packets with all
-headers?
-
-Thanks.
+-- 
+Best regards,
+ Pavel                          mailto:balrog@msmu.eu.org
 
 
