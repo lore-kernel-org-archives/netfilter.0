@@ -1,12 +1,14 @@
-From: "Patrick Ahler" <patrick@vikus.com>
-Subject: Network config review
-Date: Thu, 29 Jul 2004 17:25:17 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Re: iptables help
+Date: Thu, 29 Jul 2004 22:20:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <810BC538117E9F4E9BB152E0C100DF1F18F4A6@farmer.vikus.net>
+Message-ID: <200407292220.39022.Antony@Soft-Solutions.co.uk>
+References: <Pine.LNX.4.44.0407291026030.2121-100000@ivanhoe.pcraft.com> <200407291928.48974.Antony@Soft-Solutions.co.uk> <410966F6.3020206@pcraft.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <410966F6.3020206@pcraft.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +21,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a few questions about my current setup; if anyone would be so
-kind to take a look and let me know if there are any issues with the
-configuration. Thanks!
+On Thursday 29 July 2004 10:07 pm, Ashley M. Kirchner wrote:
 
-My current network setup (a.b.c.  Refers to public ip's, X=3D any #
-between 3 and 62)
--------------
-| Internet |
-------------- (ISP gateway) a.b.c.1  255.255.255.192
-     |
-     |
-     |
--------------------- eth0 a.b.c.2  255.255.255.192
-| gateway/firewall |
--------------------- eth1 192.168.1.2  255.255.255.0
-     |    =20
-     |
-     |
--------------------- (192.168.1.X) 255.255.255.0=20
-| Internal Machines | =20
---------------------
-    =20
-NAT
-iptables -t nat -A PREROUTING -d a.b.c.X -i eth0 -j DNAT
---to-destination 192.168.1.X
-iptables -t nat -A POSTROUTING -s 192.168.1.X -o eth0 -j SNAT
---to-source a.b.c.X
+> Antony Stone wrote:
+> >>>iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 80 -j REJECT
+> >
+> >"-I" will insert the rule at the top of the FORWARD chain, and therefore
+> >guarantees that these packet will be REJECTed, no matter other rules
+> > follow in your ruleset.
+>
+>     Thanks for the explanation.  So I'm testing this out now, and I
+> inserted:
+>
+> iptables -I FORWARD -s 66.218.75.184 -d 192.168.1.253 -p tcp --dport 80
+> -j REJECT
+>
+>     66.218.75.184 == mail.yahoo.com (or login.yahoo.akadns.net, or
+> l1.login.vip.scd.yahoo.com according to iptables -L), however that
+> machine (.253) can still reach that address just fine.  What am I missing?
 
+You're missing the fact that 192.168.1.253 connects to 66.218.75.184 on 
+destination port 80, not the other way round.
 
-Routing tables (sample)
-Destination		GW		Genmask		Iface
-a.b.c.X	       * 	  255.255.255.255	  UH	 eth1 (??eth0??)
-a.b.c.0	       * 	  255.255.255.192	  U	 eth0
-192.168.1.0	       * 	  255.255.255.0	  U	 eth1
-127.0.0.0		 *	  255.0.0.0		  U	 lo
-Default	    a.b.c.1   0.0.0.0		  UG	 eth0
+Try reversing the source & destination addresses in your rule and see if that 
+does what you wanted.
 
-(??Do I need to add any of the routes below??)
-192.168.1.0	 192.168.1.2  255.255.255.0     UG   eth1
-a.b.c.0	   a.b.c.2    255.255.255.0     UG   eth0=20
-192.168.1.2  	 *	  255.255.255.255   UH	 eth1 (??eth1??)
-192.168.1.X  	 *	  255.255.255.255   UH	 eth1 (??eth1??)
-a.b.c.2	       * 	  255.255.255.255	  UH	 eth1 (??eth0??)
+Regards,
 
+Antony.
 
+-- 
+If builders made buildings the way programmers write programs, then the first 
+woodpecker to come along would destroy civilisation.
 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-Patrick Ahler
-Systems Administrator
-Vikus Corporation=20
 
