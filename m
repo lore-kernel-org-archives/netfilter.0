@@ -1,12 +1,13 @@
-From: "Zander" <zander@subatomic.org.uk>
-Subject: Re: ssh
-Date: Wed, 15 Jan 2003 12:09:55 -0000
+From: Filip Sneppe <filip.sneppe@cronos.be>
+Subject: Re: connection tracking and keepalive
+Date: 15 Jan 2003 13:44:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <012101c2bc8f$04264f80$96ae6f83@classics.cam.ac.uk>
-References: <20ED00AA0BC135449469D6EF0AE79C971046@ozlan.fcdomain.net>
+Message-ID: <1042634640.923.27.camel@xbox>
+References: <F32yuH5stQqOPsNtP3U00008bbd@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F32yuH5stQqOPsNtP3U00008bbd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Simpson, Doug" <dsimpson@friedmancorp.com>, netfilter@lists.netfilter.org
+To: SB CH <chulmin2@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
+Hi,
 
-> whoops - forgot this is a dual homed computer and I am opening the eth0 to
-> the outside world for ssh.
-> I did find this -
-> iptables -A INPUT -p tcp --syn --destination-port 22 -j ACCEPT
-> iptables -A INPUT -p tcp --syn -j DROP
-> this confuses me because of the "DROP" and the "--syn"
-> Thanks,
-> Doug
->
-> -----Original Message-----
-> From: Simpson, Doug
-> Sent: Tuesday, January 14, 2003 1:59 PM
-> To: 'netfilter@lists.netfilter.org'
-> Subject: ssh
->
->
-> I have acomputer I want to ssh to from the internet.  What is the IPTABLES
-> command to open this port?
-> Thanks,
-> Doug
->
+On Wed, 2003-01-15 at 12:37, SB CH wrote:
+> Hello,
+> 
+> Does connection tracking has a relation with the keepalive config at 
+> httpd.conf?
 
-if you're opening ssh to the machine itself then:
+No, not really.
 
-/sbin/iptables -A INPUT -p tcp -i eth0 -d <eth0 IP address> --dport 22 -j
-ACCEPT
-/sbin/iptables -A OUTPUT -p all -o eth0 -m state --state
-RELATED,ESTABLISHED -j ACCEPT
+> 
+> I would like that connection tracking has a relation with keepalive or not?
 
-if for a host behind the firewall:
+Connection tracking is more related to TCP states. Obviously with
+keepalives off, every request requires a new TCP connection, so
+indirectly they are related through the TCP states.
 
-/sbin/iptables -A FORWARD -p tcp -i eth0 -o ethx -d <ssh server
-ipaddress> --dport 22 -j ACCEPT
-/sbin/iptables -A FORWARD -p all -m state --state RELATED,ESTABLISHED -j
-ACCEPT
+> and how much memory size is required to execute connection tracking ?
 
-some of those interface settings aren't compulsary like in the forward chain
-but I like to put them in. I would suggest them though for the INPUT and
-OUTPUT chains as you have more than one interface. Oh and maybe set the
-default policy of all to DROP.
+384 bytes per connection (may be slightly different depending on
+your kernelversion - see /proc/slabinfo, ip_conntrack entry) +
+a couple of bytes per hash (I think 8 bytes) * hashsize (determined
+when ip_conntrack is loaded)
 
-HTH
+Regards,
+Filip
 
-Zz
 
 
