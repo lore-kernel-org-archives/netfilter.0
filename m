@@ -1,14 +1,14 @@
 From: Willi Dyck <wdyck@gmx.net>
-Subject: Re: iptables and ftp
-Date: Sat, 22 Feb 2003 00:51:33 +0100
+Subject: Re: Ip Forwarding
+Date: Sat, 22 Feb 2003 01:28:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030221235133.GC412@tekilla.homeip.net>
-References: <023001c2daaf$cd19fe80$020010ac@romio>
+Message-ID: <20030222002813.GG412@tekilla.homeip.net>
+References: <000901c2da03$67ff3210$0200a8c0@grandaddy>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <023001c2daaf$cd19fe80$020010ac@romio>
+In-Reply-To: <000901c2da03$67ff3210$0200a8c0@grandaddy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,27 +20,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Roman Gavrilov <romio@netvision.net.il>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sat, Feb 22, 2003 at 10:20:11PM +0200, Roman Gavrilov wrote:
-> Hello,
-> 
-> My question is about ftp and ftp data connections.
-> I know this subject has been heavily discussed but still ...
-> 
-> I set up my firewall to allow connections to 21 and 20 ports.
->  I also allowed connections to high ports from outside from port 20.
-> and of course I enabled all established and related connections.
+On Fri, Feb 21, 2003 at 06:46:03PM -0500, William Olbrys wrote:
+> Is it possible to just forward the IP addresses?
 
-Have you loaded 'ip_nat_ftp' and 'ip_conntrack_ftp' ?
+Yes.
 
-Regards,
+> That way my iptables/gateway box WONT change the ips and JUST act like
+> a firewall? Using SNAT and DNAT is too complicated with windows.
 
-Willi
+Please provide more detailed information, so we can help.
+
+Regards
 
 -- 
-the three great virtues of a programmer:
-laziness, impatience and hubris.
-        Lary Wall
+Willi Dyck
 
