@@ -1,20 +1,15 @@
-From: richard lucassen <netfilter@lucassen.org>
-Subject: Re: iptables jump to userdefined chain and ESTABLISHED,RELATED
- rules
-Date: Sun, 12 Oct 2003 23:40:49 +0200
+From: Herman <Herman@AerospaceSoftware.com>
+Subject: Re: Port forwarding doesn't work.
+Date: Sun, 12 Oct 2003 16:04:06 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031012234049.587cadaa.netfilter@lucassen.org>
-References: <20031010132641.2591d3b5.netfilter@lucassen.org>
-	<1065889564.1268.11.camel@elendil.intranet.cartel-securite.net>
-	<20031011194527.17273de9.netfilter@lucassen.org>
-	<20031012111620.GB571@pcw.home.local>
-	<20031012195331.409596fc.netfilter@lucassen.org>
-	<1065984839.4919.59.camel@elendil.intranet.cartel-securite.net>
-Reply-To: reply2@lucassen.org
+Message-ID: <200310121604.06545.Herman@AerospaceSoftware.com>
+References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310121411.00898.Herman@AerospaceSoftware.com> <1065994862.3562.10.camel@Marvin>
+Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1065984839.4919.59.camel@elendil.intranet.cartel-securite.net>
+In-Reply-To: <1065994862.3562.10.camel@Marvin>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -25,61 +20,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Gerd Zemella <gzemella@gmx.net>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, 12 Oct 2003 20:54:00 +0200
-Cedric Blancher <blancher@cartel-securite.fr> wrote:
 
-> Not working for SSH.
-> 
-> In fact, it should work. A TCP SYN flaged as NEW will be sent to
-> CH_SSH chain, then be accepted by CH_SSH rule that allows NEW packets.
-> Then further packets are going by. They are ESTABLISHED.
-> 
-> They match first rule so they are sent to CH_SSH chain. They do not
-> match the rule, for thieses packets are not NEW. So they hit end of
-> user chain and are returned to FORWARD chain, rule 2. They match rule
-> 2 and then get accepted.
+Well, here goes:
+iptables -t nat -I PREROUTING  -d 192.168.10.100 -j DNAT --to 192.168.10.245
+iptables: Target problem
 
-Yes, sorry, you're right, but I forgot to mention that I have a cleanup
-rule at the end of the CH_SSH:
+At least, now the error message changed and the only difference from before is 
+the -I instead of -A.
 
-$IPT -A CH_SSH -j DROP
- 
-> If it does not work as your's, then you have a drop all rule at the
-> end of CH_SSH chain (I suppose) that prevents packet from returning
-> from user chain (CH_SSH here) to calling chain (FORWARD here).
+So, with -A, I get Invalid Argument, and with -I, I get Target Problem.  Both 
+cases don't work and the rule doesn't get added.
 
-You got it right ;-)
+Can anybody give me a clue?
 
-> To me, the best way to handle this is :
-> 
-> # ESTABLISHED and RELATED packets are accepted anyway
-> # We accept them first as they are most treated packets
-> $IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> 
-> # Then we care of each proto.
-> $IPT -A FORWARD -p tcp --dport 22 -j CH_SSH
-> [...]
-> $IPT -A CH_SSH -m state --state NEW -s 1.2.3.4 -j ACCEPT
-> 
-> Case 3 works because you enforce ESTABLISHED,RELATED accept in your
-> use chain.
-> 
-> I really do think that 1st case is the best way to handle, as it
-> implies less rules evaluation for each packet.
-
-Ok, thanks a lot, it's much clearer now :)
-
-R.
-
+Cheers,
 -- 
-___________________________________________________________________
-Recursion: see recursion
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+Herman Oosthuysen 
+B.Eng(E), MIEEE
+Aerospace Software Ltd.
+Ph: 1.403.241-8773, Cell: 1.403.852-5545, Fx: 1.403.241-8841
+Herman@AerospaceSoftware.com, http://www.AerospaceSoftware.com
 
