@@ -1,11 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: providing partial access to iptables for non root user
-Date: Mon, 21 Feb 2005 09:29:17 -0500
-Message-ID: <1108996157.5516.14.camel@hubcap.ljm.dom>
-References: <4219C6F1.2070500@juergens.name>
+From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Subject: Multi source/destination ip address
+Date: Mon, 21 Feb 2005 15:33:19 +0100
+Message-ID: <200502211533.19645.marcin.giedz@eulerhermes.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <4219C6F1.2070500@juergens.name>
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,49 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 2005-02-21 at 06:33, Michael J=C3=BCrgens wrote:
-> Hi,
->=20
-> I=C2=B4m looking for a solution to provide a non root user write access=
- to a=20
-> chain.
->=20
-> In this special case I have to provide the a mechanism to block some ip=
-=20
-> adresses to connect to http.
-> But this should be done by a non root user. The non root user should no=
-t=20
-> change any other rule.
->=20
-> Any ideas?
+Hello...
 
-use sudo?
+Today I have stopped on next problem. I've just want to block almost all 
+connection on 80 port in my router with destination list's addresses. 
+"Almost" because some connection are forwarded to another router in my LAN. 
+So this is the rule:
 
-Host_Alias      LOCALHOST =3D thishostname
+iptables -A FORWARD -p tcp -port 80 -d ! 192.168.131.0/24 && 192.168.110.0/24 
+-j  DROP
 
-User_Alias	U_HTTP	=3D youruser
+But it doesn't work.... in iptables spec. -d is only connect with single 
+address not list. I found also iprange extension but it doesn't suit me. Is 
+it possible to have list destination/source addresses in iptables rule?
 
-Cmnd_Alias	C_HTTP	=3D /sbin/iptables -A blockhttp -s * -j DROP
-
-U_HTTP		LOCALHOST =3D C_HTTP
-
-...or if is this is scripted:
-
-U_HTTP		LOCALHOST =3D NOPASSWD: C_HTTP
-
-obviously--there's opportunity for abuse here--but it's the best i've
-come up with.  if you front-end this with a script, it will allow you to
-scrub/check/validate the input much more extensively (which is what i
-actually do).
-
--j
-
---
-"Oh look at me! I'm making people happy! I'm the magical man from
- Happyland, in a gumdrop house on Lollipop Lane!"
-	--The Simpsons
-
+Thanks,
+Marcin
 
