@@ -1,16 +1,15 @@
-From: Tom Marshall <tommy@home.tig-grr.com>
-Subject: Re: RTSP netfilter patch for 2.4.18
-Date: Thu, 30 Sep 2004 12:25:45 -0700
+From: Jiann-Ming Su <sujiannming@gmail.com>
+Subject: Re: ip_conntrack_max vs ip_conntrack
+Date: Thu, 30 Sep 2004 18:48:16 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040930192545.GA25254@home.tig-grr.com>
-References: <20040928235104.GA21363@home.tig-grr.com>
-	<415A612C.2030205@mrv.com>
+Message-ID: <561dc3260409301548488b387e@mail.gmail.com>
+References: <561dc32604092710524f3a8b5b@mail.gmail.com>
+	<1096311443.1079.11.camel@nostromo.bgsecm.com>
+Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <415A612C.2030205@mrv.com>
+In-Reply-To: <1096311443.1079.11.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,51 +19,25 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Yaron Presente <ypresente@mrv.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
+On 27 Sep 2004 20:57:24 +0200, Jose Maria Lopez <jkerouac@bgsec.com> wrote:
+> 
+> For the limit match look at:
+> iptables -m limit --help
+> 
+> 
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There's some good info on what I was looking for at the end of this section:
 
-> >Does the patch apply cleanly?  If it does, it should work okay.
-> >=20
-> >
-> No, unfortunately it doesn't. I had a problem with the modifications in=
-=20
-> netfilter_ipv4/ip_conntrack.h .
-> The patch tries to insert exp_rtsp_info and ct_rtsp_info into the union=
-=20
-> ip_conntrack_expect_help,
-> which does not exist in my 2.4.18 source.
-> Looking at the ftp 2.4.18 patch as a reference, I see that a ct_ftp_info=
-=20
-> does exist, but in a different context in the header file.
-> an exp_ftp_info structure, however, is not defined at all.
-> Any ideas?
+http://www.iptables.org/documentation/HOWTO//packet-filtering-HOWTO-7.html#ss7.3
 
-I will try to get a patch to you within a few days.  However, I will not be
-able to test it except to verify that the kernel builds.  If you can use a
-later kernel, that would be best.
-
---=20
-To use violence is to already be defeated.
-        -- Chinese proverb
-
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAkFcXbkACgkQFMm9uvwPXW6eNACgjzlSJCrwqfSDiTvrRcjIlKnT
-OpwAnR+c8n2l827HBLBMKg9B76Ed/Hc+
-=q/r2
------END PGP SIGNATURE-----
-
---T4sUOijqQbZv57TR--
+Does the limit option work on a per connection basis?  Or, does one
+attacker's syn flood cause everybody to be limited as well?
+-- 
+Jiann-Ming Su
+"I have to decide between two equally frightening options.  
+                                            If I wanted to do that,
+I'd vote." --Duckman
 
