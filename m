@@ -1,54 +1,50 @@
-From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl_Le_Mignot?=)
-Subject: Re: Call for testing: patch-o-matic-ng
-Date: Tue, 23 Dec 2003 14:13:15 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <plopm3zndjoexg.fsf@drizzt.kilobug.org>
-References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: SMTP Routing Based On Recipient
+Date: Tue, 23 Dec 2003 13:14:06 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200312231314.06746.Antony@Soft-Solutions.co.uk>
+References: <1072121282.10935.12.camel@localhost.localdomain> <1072179452.2184.286.camel@grendel> <1072184455.708.2.camel@localhost.localdomain>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20031221122445.GC5058@obroa-skai.de.gnumonks.org> (Harald
- Welte's message of "Sun, 21 Dec 2003 13:24:45 +0100")
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1072184455.708.2.camel@localhost.localdomain>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Harald Welte <laforge@netfilter.org>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+On Tuesday 23 December 2003 1:00 pm, Adam Ellis wrote:
 
-Hello,
+> On Tue, 2003-12-23 at 06:37, Chris Brenton wrote:
+> >
+> > A couple of other options:
+> > I use a combination of Sendmail, ClamAV, MimeDefang and Spamassassin to
+> > clean up all inbound e-mail before passing it off to my mail server. You
+> > can find a great tutorial on setting this up here:
+> > http://www.rudolphtire.com/mimedefang-howto/
+>
+> Chris and everyone else in this thread,
+>
+> Thanks for the information.  I think you all have me going in the right
+> direction now!
 
-I've tested pom-ng on 2.6.0  with USAGI patch, the patch-o-matic seems
-to work, but the kernel doesn't compile (I put nearly all patches, and
-select M in the kernel config wherever it was possible):
+I recommend http://www.mailscanner.info for a similar setup - it uses sendmail 
+or exim, and provides a wonderfully configurable wrapper around any of 15 
+different antivirus engines (including the free ClamAV), and SpamAssassin.
 
-  CC      net/core/netfilter.o
-net/core/netfilter.c: In function `nf_log_register':
-net/core/netfilter.c:760: warning: implicit declaration of function `br_write_lock_bh'
-net/core/netfilter.c:760: error: `BR_NETPROTO_LOCK' undeclared (first use in this function)
-net/core/netfilter.c:760: error: (Each undeclared identifier is reported only once
-net/core/netfilter.c:760: error: for each function it appears in.)
-net/core/netfilter.c:765: warning: implicit declaration of function `br_write_unlock_bh'
-net/core/netfilter.c: In function `nf_log_unregister':
-net/core/netfilter.c:770: error: `BR_NETPROTO_LOCK' undeclared (first use in this function)
-make[3]: *** [net/core/netfilter.o] Error 1
-
-
-I think maybe some patches doesn't work with 2.6, would it possible to
-add a way to select patch that works with 2.6 ? like ./runme extra-2.6
-or such ?
+Antony.
 
 -- 
-Gael Le Mignot "Kilobug" - kilobug@nerim.net - http://kilobug.free.fr
-GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
-Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
+RTFM may be the appropriate reply, but please specify exactly which FM to R.
 
-Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
