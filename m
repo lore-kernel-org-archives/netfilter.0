@@ -1,9 +1,11 @@
-From: "Reckhard, Tobias" <tobias.reckhard@secunet.com>
-Subject: RE: portfw on iptables 2.4 kernel problem.
-Date: Thu, 12 Dec 2002 09:09:42 +0100
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: QoS using HTB and SFQ ...
+Date: 12 Dec 2002 11:17:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <96C102324EF9D411A49500306E06C8D1021AE462@eketsv02.cubis.de>
+Message-ID: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Jj6DsR/+8jCi4MyqRWtP"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,25 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Following up to myself...
 
-> Then that's where our impression differs. I have thought up 
-> to now that
-> INPUT is hit before PREROUTING before FORWARD before 
-> POSTROUTING before
-> OUTPUT. And that a packet may stop being processed between 
-> PREROUTING and
-> FORWARD as well as between POSTROUTING and OUTPUT.
-> 
-> I may check the one NATing firewall I have running.. later.
+--=-Jj6DsR/+8jCi4MyqRWtP
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I just did check that machine and you're right, I was wrong. So INPUT and
-OUTPUT rules shouldn't be required in the case we're discussing.
+Hi
 
-Cheers,
-Tobias
+Does anyone have any experience (good or bad) with using htb and sfq to
+do QoS using 2.4.20 kernels?
+
+I compiled the kernel, installed the image, but tc tells me that htb is
+an unknown qdisc. I checked that I did select htb in the QoS section.
+
+Any ideas?
+
+Ray
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
+
+--=-Jj6DsR/+8jCi4MyqRWtP
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9+FQOh1fuR/Bv+ygRAoS3AKCo8wSiYip4TkJlrjLulc49y9HOhQCfXVrj
+i8om1OzCpweoSNEZi5nfYXc=
+=6DN+
+-----END PGP SIGNATURE-----
+
+--=-Jj6DsR/+8jCi4MyqRWtP--
+
 
