@@ -1,12 +1,13 @@
-From: "bino_oetomo" <bino@indoakses-online.com>
-Subject: Re: CISCO VPN clients behind firewall
-Date: Wed, 5 May 2004 08:34:15 +0700
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: ICMP logging question
+Date: Wed, 05 May 2004 13:09:10 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <011901c43241$13d1dc00$0300a8c0@indoakses2>
-References: <00f101c43236$e54f0380$0300a8c0@indoakses2> <200405050153.18201.Antony@Soft-Solutions.co.uk>
+Message-ID: <40985AD6.8070101@snapgear.com>
+References: <1083632597.2068.194.camel@grendel>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1083632597.2068.194.camel@grendel>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Chris Brenton <cbrenton@chrisbrenton.org>
+Cc: netfilter@lists.netfilter.org
 
-Dear Antony
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, May 05, 2004 7:53 AM
-Subject: Re: CISCO VPN clients behind firewall
-
-
-> As far as I know, Cisco VPNs use IPsec - no problem there for netfilter 
-> (although maybe problems if you're using transport mode and doing nat).
+Chris Brenton wrote:
+> Greets all,
 > 
+> I have a question regarding some ICMP packets I've recorded. Here is the
+> iptables log entry:
+> 
+> May  2 13:07:45 gw1 kernel:  DROP_INPUT  IN=eth0 OUT=
+> MAC=00:e0:29:85:f0:b0:00:00:0c:84:63:04:08:00 SRC=143.248.4.1
+> DST=64.179.20.65 LEN=56 TOS=0x00 PREC=0xC0 TTL=236 ID=18683 PRO
+> TO=ICMP TYPE=11 CODE=0 [SRC=64.179.20.65 DST=200.223.0.232 LEN=40
+> TOS=0x00 PREC=0x00 TTL=0 ID=15436 PROTO=TCP INCOMPLETE [8 bytes] ]
+> 
+> and here is the Snort decode:
+> 
+> [**] ICMP Time-To-Live Exceeded in Transit (Undefined Code!) [**]
+> 05/02-13:07:45.122521 143.248.4.1 -> 64.179.20.65
+> ICMP TTL:236 TOS:0xC0 ID:18683 IpLen:20 DgmLen:56
+> Type:11  Code:0  TTL EXCEEDED IN TRANSIT
+> 00 00 00 00 45 00 00 28 3C 4C 00 00 00 06 5F C9  ....E..(<L...._.
+> 40 B3 14 41 C8 DF 00 E8 1C 75 1A AE 1D E1 7F A8  @..A.....u......
+> 
+> =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+> 
+> My question is regarding the decode of the alleged TCP packet (I say
+> alleged as it was spoofed. I think this is a covert zombie communication
+> channel) that generated the ICMP error. 
 
-Yes, actualy it's "behind nat" rather then just "behind firewall"
+Given that there's only 56 bytes in the ICMP packet, and 40 bytes in the
+original TCP packet, all of which are headers, that packet by itself
+would be a very low bandwidth covert channel.  What makes you think it is?
 
+> What exactly does "incomplete" mean? Does this simply mean that only 8
+> bytes of the 20 were present for decoding? If so, why do only certain
+> type 11's get labeled as "incomplete"?
 
-Sincerely
--bino-
+It means that only 8 bytes of the TCP header are present.  It only
+happens for type 11's that are not including the full header.  Whether
+or not the full header is included is dependent on the router
+generating the ICMP message.
 
+> iptables used to decode the original source and destination ports as
+> part of the log entry. Has this feature gone away?
+
+No, the feature is still there, but it only prints out the ports when
+it has a full TCP header.  While it would be possible to print the
+ports from just the first 8 bytes of the TCP header, iptables never
+has AFAIK.  From the snort decode, it looks like the source port is
+7285 and the destination port is 6830.
+
+-- 
+Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
 
 
