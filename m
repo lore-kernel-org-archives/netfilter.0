@@ -1,13 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Can netfilter do this?
-Date: Thu, 25 Mar 2004 14:33:38 +0200
+From: "/\\. /\\/\\annini" <mannini@email.it>
+Subject: Iptables, NAT and Netmeeting
+Date: Thu, 25 Mar 2004 14:58:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080218017.2388.125.camel@raylinux.internal>
-References: <4062C994.5000506@rochester.rr.com>
+Message-ID: <01c701c41271$8a4f6540$0100a8c0@landia>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-RuNQeyhQ1kvak/bnxZhO"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4062C994.5000506@rochester.rr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi, i have to use netmeeting from a LAN computer under a Linux box with
+iptables and NAT.
 
---=-RuNQeyhQ1kvak/bnxZhO
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I'm using a 2.4.22 Kernel and i read i need the ip_conntrack_h323 and
+ip_nat_h323 modules.
 
-On Thu, 2004-03-25 at 13:59, Joe Mott wrote:
-> I have been searching the archived lists without any success to have the=20
-> following question answered:
->=20
-> Is netfilter capable of knowing when someone is crafting SMTP (or FTP or=20
-> HTTP or ...) packets that violate RFC rules to exploit a vulnerability=20
-> in some server?
+My question are:
 
-As the other replies say, the short answer is no.
+- how can i get that modules? or the source and compile?
+- next version of kernel or next RedHat distribution already contains that
+modules?
 
-You can do some filtering using the netfilter POM patches, like string
-matching, TOS, TCP flags.
+Thanks
 
-Regards
+                /\lessandro
 
-Ray
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-RuNQeyhQ1kvak/bnxZhO
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBAYtGhh1fuR/Bv+ygRAqocAJ93Cq3Hd2fQkuqUuuJAiXqFU4M6hgCgrp0r
-4dFEcOmqy29ioyST5LebpIM=
-=xXtC
------END PGP SIGNATURE-----
-
---=-RuNQeyhQ1kvak/bnxZhO--
 
 
