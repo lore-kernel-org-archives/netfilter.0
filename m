@@ -1,12 +1,13 @@
-From: "Didier Hung Wan Luk" <DidierH@frci.net>
-Subject: RE: Iptables rules...
-Date: Mon, 9 Sep 2002 08:06:08 +0400
+From: PayalR <payal@hotpop.com>
+Subject: Re: bandwidth again maybe O T
+Date: Mon, 9 Sep 2002 12:01:29 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39778BFB9C25BA429794B15B50AEC78104E968@server-dcms>
+Message-ID: <3698.28577754578$1031553424@news.gmane.org>
+References: <FLEKIPPLAEDMJMOOBBDPGEKBCNAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPGEKBCNAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,80 +18,99 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Thanks :-))
+Hi,
+=09Thanks a lot for the mails. I am late to reply cos' my connection was =
+down=20
+for 4 days.
+Well, I put the rules like
+ptables -I FORWARD -d 192.168.0.1 -p tcp
+iptables -I FORWARD -s 192.168.0.1 -p tcp
 
-Didier Hung Wan Luk
-FRCI, Sibotie House
-L'Anse Courtois
-Pailles
-Tel: 230-2869636
-Fax: 230-2869629
+Yes, I can see the logs by,
+iptables -v -L
+But there is nothing in FORWARD chain. The input and output chains are fi=
+lled=20
+up.
+What is the problem?
+Thanks a lot and bye.
+-Payal
 
-
------Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]=20
-Sent: Saturday, September 07, 2002 2:37 PM
-To: Netfilter Mailing List
-Subject: Re: Iptables rules...
-
-On Saturday 07 September 2002 10:39 am, Didier Hung Wan Luk wrote:
-
-> Hi All,
+On Thursday 05 September 2002 01:24 pm, Stewart Thompson wrote:
+> Hi:
+>
+> =09If the connections were to the local machine, they
+> Wouldn't show up in the Forward Chain, but in the input chain.
+> Did you check all the counters? Iptables -v -L.
+>
+> Stu.........
 >
 >
-> I am new to firewall/iptables can someone help me to clear up some =
-concepts
-> about firewalling?
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of PayalR
+> Sent: September 5, 2002 12:13 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: bandwidth again maybe O T
 >
-> If my default rule for the input chain of my external interface is =
-DROP
-> need I again specify to DROP packets in the INPUT chain of my external
-> interface?
-
-There is only one INPUT chain.   The rules and the default policy apply =
-to=20
-all interfaces.
-
-> #My Default rule
-> iptables -P INPUT DROP
+> Hi,
+> Thanks a lot for mails. Well, I think I get the general idea.
 >
-> #Drop all attempts on my ext. interface trough port 6000:6063
+> > However, to measure the amount of http traffic going to/from a specif=
+ic
+> > IP address, put a couple of rules such as this in your FORWARD chain:
+> > iptables -I FORWARD -d a.b.c.d -p tcp --dport 80
+> > iptables -I FORWARD -s a.b.c.d -p tcp --sport 80
 >
-> iptables -A INPUT -i ppp0 -p tcp --dport 6000:6063 -j DROP
+> I wanted for all protocol and not just http so I modified your rule a b=
+it
+> like,
+> iptables -I FORWARD -d 192.168.0.1 -p tcp
+> iptables -I FORWARD -s 192.168.0.1 -p tcp
 >
-> If I am right I think that I need not include a rule again saying to =
-drop
-> packets to my 6000;6063 ports since I do not have a rule saying to =
-accept
-> connections on these ports...
-
-If you have a default DROP policy, then you should not (normally) need =
-to=20
-specify any DROP rules.   If you do not have a rule ACCEPTing certain=20
-packets, then they will be DROPped by default.   That is what the policy =
-is=20
-for.
-
-For example:
-
-iptables -P INPUT DROP
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-
-will drop SMTP traffic on port 25, because there is no rule ACCEPTing =
-it.
-
-These rules will also drop POP3, IMAP, FTP, IDENT.......   everything =
-except=20
-HTTP.
-
-Antony.
-
---=20
-
-90% of network problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
-
+> These are the only two rules I have.
+>
+> I tried to test it using
+> #iptables -L FORWARD -x -v
+> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+>     pkts      bytes target     prot opt in     out     source
+> destination
+>        0        0            tcp  --  any    any     localhost.localdom=
+ain
+> anywhere
+>
+>        0        0            tcp  --  any    any     anywhere
+> localhost.localdomain
+>
+> I tried pinging it few times, connecting to port 25, telnet, 80 etc. fo=
+m
+> the local machine. But the number of bytes above do not change.
+> What must be wrong?
+> Thanks a lot in advance and bye.
+> -Payal
+>
+> > You might want to run this command in a cron job every day (or perhap=
+s
+>
+> more
+>
+> > frequently) and then you can calculate daily traffic patterns through=
+out
+> > a month etc.
+> >
+> > You can reset the counters with
+> >
+> > iptables -Z FORWARD
+> >
+> > If you combine the -Z option with the earlier command, you will find =
+out
+> > the values of the counters and then they will be (atomically) reset t=
+o
+>
+> zero
+>
+> > so you can start counting a new day from zero.
+> >
+> > Antony.
 
