@@ -1,10 +1,9 @@
-From: "Administrador de Red" <admin@gecyt.cu>
-Subject: what rule I should has for permit access to mail server
-Date: Fri, 29 Nov 2002 05:30:01 -0500
+From: "Afshin Lamei" <linux_st@hotmail.com>
+Subject: find useful documents
+Date: Fri, 29 Nov 2002 18:56:23 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <web-100039@gecyt.cu>
+Message-ID: <F37By3d1iKMC5KJJ6fb00019f14@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,48 +14,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi Friends.
+Hi all,
+I have begun to work with firewalls recently and I have to work with linux's 
+netfilter. So, I'v some basic questions about it. We (my coworkers in 
+University of Tehran and I) have decided to  the linux's firewall to have it 
+make our
 
-I need a help very fast.
-
-I has two server linux, the first has some service www,DNS=20
-primary, squid and gateway too, the second server is mail=20
-server, DNS secondary, then I want to permit access to=20
-server mail from my gateway, I write the folowing rules=20
-but is=B4nt working with the Outlook Express.
-
-I can access to internet very well, i test with the ping=20
-to www.yahoo.com and the gateway response, but with=20
-Outloook Express I can access to mail server, port 25 and=20
-port 110.
-
-*nat
-:PREROUTING ACCEPT [0:65535]
-:POSTROUTING ACCEPT [0:65535]
-:OUTPUT ACCEPT [0:65535]
-[0:0] -A PREROUTING -i eth0 -p tcp -m tcp --dport 25 -j=20
-DNAT --to-destination ip_true:25=20
-[0:0] -A PREROUTING -i eth0 -p tcp -m tcp --dport 110 -j=20
-DNAT --to-destination ip_true:110=20
-[0:65535] -A POSTROUTING -o eth0 -j SNAT --to-source=20
-ip_gateway_true=20
-COMMIT
-
-
-someone could Help me. please.
-thanks very well.
-
-Thomas
+1 - Is it needed to remove the current iptables module, if I decide to use a 
+newer version ?
+2 - Where is a basic hands on document about it, so I can learn to  manage 
+my firewall from core (i mean installation, rule management ...)
+, and basically learn how to handle it.
+thank you,
+--Afshin
 
 
 
 
-Estamos en Calle 20 Numero 4110 % 41 y 47,
-Miramar, Playa, Ciudad Habana, Cuba.
-Telf:537(203-01-60) y (202-79-20)
-Fax: 537(204-96-64)
-Visitenos en: http://www.gecyt.cu
+
+
+
+_________________________________________________________________
+Add photos to your messages with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
+
 
