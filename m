@@ -1,12 +1,13 @@
-From: "Alejandro Cabrera Obed" <sisdis@tournet.com.ar>
-Subject: iptables for ADSL
-Date: Fri, 21 Nov 2003 16:25:06 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables for ADSL
+Date: Fri, 21 Nov 2003 19:29:28 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02b601c3b065$30bf3a50$0200a8c0@ale>
-Reply-To: "Alejandro Cabrera Obed" <sisdis@tournet.com.ar>
+Message-ID: <200311211929.hALJTXj29569@agate.rockstone.co.uk>
+References: <02b601c3b065$30bf3a50$0200a8c0@ale>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <02b601c3b065$30bf3a50$0200a8c0@ale>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,17 +20,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-Hi people !!!
+On Friday 21 November 2003 7:25 pm, Alejandro Cabrera Obed wrote:
 
-I have a basic doubt: I want to connect my Linux with iptables to Intrenet
-via ADSL. Just one question:
+> Hi people !!!
+>
+> I have a basic doubt: I want to connect my Linux with iptables to Intrenet
+> via ADSL. Just one question:
+>
+> Do I have to set
+> echo "1" > /proc/sys/net/ipv4/ip_dynadrr
+> in order to work with dynamic addresses asigned by my ISP ????
 
-Do I have to set
-echo "1" > /proc/sys/net/ipv4/ip_dynadrr
-in order to work with dynamic addresses asigned by my ISP ????
+I have a dynamic IP cable modem connection and I've never done this.
 
-Thanks a lot
+Antony.
 
-Ale
+-- 
 
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
