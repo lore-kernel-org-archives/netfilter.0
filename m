@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Snmp alg
-Date: Fri, 11 Feb 2005 09:59:00 -0500
-Message-ID: <20050211145900.GA2300@bender.817west.com>
-References: <9D598A34672DF24F89FF4F851A4161950AA48057@i2km08-ukbr.domain1.systemhost.net>
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: ip_conntrack limit && stateless firewalls
+Date: Fri, 11 Feb 2005 09:55:36 -0500
+Message-ID: <876ef97a05021106551fb5dacb@mail.gmail.com>
+References: <Pine.CYG.4.62.0502110943440.2348@MI340a.chem.mathsci.usna.edu>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <9D598A34672DF24F89FF4F851A4161950AA48057@i2km08-ukbr.domain1.systemhost.net>
+In-Reply-To: <Pine.CYG.4.62.0502110943440.2348@MI340a.chem.mathsci.usna.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +19,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Feb 11, 2005 at 02:03:03PM -0000, pablo.1.munoz@bt.com wrote:
-> That's what I though, but it is not being translated.
+On Fri, 11 Feb 2005 09:49:40 -0500, Kevin Van Workum <vanw@usna.edu> wrote:
+> I'm having a problem with my firewall where packets are being dropped due
+> to the ip_conntrack limit. I could up the limit, but my users need 30k+
+> connections simultaneously and with the minimum overhead. And I only have
+> 1 firewall box. So I'd like to disable or by-pass ip_conntrack some how to
+> avoid dropped packets and reduce over head. How can I do this, and more
+> importantly, would it be helpful.
 
-not to be silly, but you *did* load the module, right?
+You can use the NOTRACK target on the traffic that is causing the
+problem (which will disable using ip_conntrack on that traffic), or
+you can decompile conntrack altogether. The latter would basically
+make the firewall stateless. man iptables for more info on using
+NOTRACK.
 
-> The thing is: I'm doing a DNAT Prerouting to reach the server, because
-> originally the trap is going to my linux box. Then I have to do a SNAT
-> Postrouting to change the source Ip Address of the Network Element that
-> generates the trap, one by one.
-
-and yet ppl still think i'm being stupid when i say what a bad idea this
-is...
-
-> So, Which NAT the "ip_nat_snmp_basic" module is going to translate in
-> the packet payload?
-
-i don't know.
-
-> Anyway I can see the ip_nat_snmp_basic.ko as compiled in the netfilter
-> kernel, so I though that it was going to work.
-
-if it's not doing what you need it to--you could probably still use it
-as the base for what you need though.
-
--j
-
---
-"I'm better than dirt. Well, most kinds of dirt... not that fancy
- store-bought dirt... that stuff's loaded with nutrients, I... I
- can't compete with that stuff."
-        --The Simpsons
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
