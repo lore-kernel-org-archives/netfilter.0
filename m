@@ -1,12 +1,11 @@
-From: "Britt Tabor" <btabor@edgeaccess.net>
-Subject: Policy, why is it doing that
-Date: Thu, 16 Oct 2003 11:37:22 -0400
+From: Madhuri Patwardhan <madhuri@cc.iitb.ac.in>
+Subject: rerouting after postrouting in NAT table
+Date: Fri, 17 Oct 2003 13:05:01 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BDF3100EBB9E3A47B84F816A10D9A4E5A8E5@eai-exchange.edgeaccess.net>
+Message-ID: <3F8F9BA5.1090502@cc.iitb.ac.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,61 +15,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
 
-	I have a linux (slackware) box that I am running iptables on. I have =
-masq. on and I have only one entry in the table. I currently have the =
-policy for FORWARD set to ACCEPT. Here's the problem, if I set the =
-policy to DROP it drops everything. No rules are looked at before =
-dropping it just drops everything. Here is a list of my iptables.
+Hi,
 
-bash-2.05# iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination        =20
+I would like to choose the appropriate routing table using the packet 
+source address which is altered by the NAT table post-routing chain.
+Is it possible? I have given the detailed scenerio below.
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination        =20
-ACCEPT     all  --  anywhere             anywhere          =20
+This is what I have:
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination        =20
-bash-2.05# iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
+I have a linux box with connections to two WAN links.
+We are doing load balancing using Ultra monkey software. The same linux 
+box also works as a Linux director and directs the packets to real 
+servers. The real servers have private IP's. It is similar to the 
+example given on the ultramonkey site: 
+http://www.ultramonkey.org/2.0.1/topologies/lb-eg.html
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination        =20
-MASQUERADE  all  --  anywhere             anywhere          =20
+On the Linux Director box (which has two WAN links), masquerading for 
+the real server's private IP's happens with the following command.
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+/sbin/iptables -t nat -A POSTROUTING -j MASQUERADE -s 192.168.6.0/24
+(as given in the example on ultramonkey site, which is mentioned above)
 
-with this everything is fine but as you can tell there is no real =
-security, because I ACCEPT all. However, if I set the policy on FORWARD =
-to DROP everything gets dropped regardless of rule entries. Previously I =
-used ipchains, when a packet came in it would traverse the rule entries =
-in the FORWARD list and if it didn't match anything it would apply the =
-policy. With iptables it seems to be doing just the opposite. When =
-packets come in it applys the policy first.???
+So, in the POSTROUTING chain the source address gets changed to one of 
+the WAN links public IP.
 
-Is this the case?=20
+I would like to route the reply packets on the same WAN link on which 
+the query came.
+
+For example:
+
+I have two WAN links whose IP ranges are 203.199.51.0/24(WAN link X) and 
+203.197.74.128/25 (WAN link Y).
+
+A packet comes on WAN link X destined to a address 203.199.51.159, which 
+is a virtual IP of the Linux Director on the Linux box.
+
+This packet is handed over to the real server which generates reply and 
+sends the packet back to Linux Director. The Linux Director changes the 
+source IP to 203.199.51.159 as per the iptables masqurade rule mentioned 
+above in the NAT tables post-routing chain.
+
+I have created two routing tables one with a default route of WAN link X 
+and the other with a default route of WAN link Y. Depending on the 
+source address, in this case 203.199.51.159 I would like it to choose 
+the appropriate routing table and hence WAN link X.
+
+Is this possible? What I am wondering is since it is in the post routing 
+chain that the source address is changed, is it possible that rerouting 
+will happen again and the appropriate default route will be chosen after 
+postrouting chain is traversed?
 
 
+If any part needs better explaination please let me know. I would really 
+appreciate any pointers/clues.
 
 
-=A0
-=A0
-Britt Tabor
-Edge Access, Inc.
-btabor@edgeaccess.net
-http://www.edgeaccess.net
-813.594.6142 Voice
-813.249.1126 Fax
-=A0
-=A0
-=A0
+Thanks in advance.
+
+Madhuri
 
 
