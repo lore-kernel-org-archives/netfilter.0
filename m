@@ -1,11 +1,13 @@
-From: Jaume Ambatlle Pena <jambatlle@menta.net>
-Subject: (no subject)
-Date: Sat, 01 Jun 2002 20:33:24 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: (no subject)
+Date: Sat, 1 Jun 2002 19:51:19 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <5.1.0.14.0.20020601203122.009f8c70@pop3.menta.net>
+Message-ID: <200206011851.g51IpLA13772@Networker.rockstone.co.uk>
+References: <5.1.0.14.0.20020601203122.009f8c70@pop3.menta.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <5.1.0.14.0.20020601203122.009f8c70@pop3.menta.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,23 +17,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi,
+On Saturday 01 June 2002 7:33 pm, Jaume Ambatlle Pena wrote:
 
-I've a problem with iptables, I don't know what happens in my PC but=20
-firewall logs are being printed in tty instead off in /var/log/messages*
-Anybody could help me with this?? Thanks
+> Hi,
+>
+> I've a problem with iptables, I don't know what happens in my PC but
+> firewall logs are being printed in tty instead off in /var/log/messages*
+> Anybody could help me with this?? Thanks
 
-----------------------------------------------------------------------------=
------------------------------------------
-Jaume Ambatlle Pena
+What did you specify for --log-level in the rule with -j LOG ?
 
-Ocurra lo que ocurra, a=FAn en el d=EDa m=E1s borrascoso las horas y el=
- tiempo pasan.
-(Shakespeare, William)
-----------------------------------------------------------------------------=
------------------------------------------
-
+Antony.
 
