@@ -1,9 +1,9 @@
-From: "Alejandro Kurchis" <sisdis@tournet.com.ar>
-Subject: Add modules to iptables
-Date: Thu, 27 May 2004 15:31:39 -0300
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: ftp
+Date: Thu, 27 May 2004 15:46:40 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00a801c44418$d9f6f1c0$0200a8c0@ale>
-Reply-To: "Alejandro Kurchis" <sisdis@tournet.com.ar>
+Message-ID: <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
+References: <20040527164327.6B8A1DBD@sterenborg.info> <119801c44414$60dc9500$49caa8c0@caris.priv> <200405271906.54858.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,22 +17,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi folks !!!
+hmm .. i suppose that is right as well ....
 
-I have Red Hat 9 with Iptables 1.2.7. In iptables, I have all the default
-modules (ip_nat_irc, ip_nat_ftp, etc....) that came with this version af
-iptables.
+Any thoughts on my last question ?
 
-If I want to add extra modules like ip_conntrack_h323, ip_string or any
-other.....Do I have to re-compile iptables or is there any easy way to do
-that ??? How can I do this pease ??? I'm not an expert so I like the simple
-way....
+Thanks again,
+Peter
 
-Special thanks,
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, May 27, 2004 3:06 PM
+Subject: Re: ftp
 
-Alejandro
+
+On Thursday 27 May 2004 6:59 pm, Peter Marshall wrote:
+
+> I actually don't need the dnat as I have internet routable ip's in my dmz
+> .... Thank you for the info.  My question now is, will your rule take care
+> of both passive and active ftp ?  I would prefer to just use active .. but
+> I know many clients would have their own issues .. grr .. stupid ftp ....
+
+ip_conntrack_ftp does handle both passive and active ftp.
+
+Obviously if you're not doing DNAT then you don't need the ip_nat_ftp module
+either.
+
+Regards,
+
+Antony.
+
+-- 
+Software development can be quick, high quality, or low cost.
+
+The customer gets to pick any two out of three.
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
 
 
 
