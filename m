@@ -1,12 +1,12 @@
-From: Sagara Wijetunga <sagaralists@yahoo.com>
-Subject: Re: Is this firewall good enough?
-Date: Wed, 9 Jun 2004 01:36:12 -0700 (PDT)
+From: Rakotomandimby Mihamina <rktmb.list@wanadoo.fr>
+Subject: port scan identification
+Date: Wed, 09 Jun 2004 11:33:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040609083612.4209.qmail@web14711.mail.yahoo.com>
-References: <40C5D53A.9060407@linuxmail.org>
+Message-ID: <40C6D987.9050805@wanadoo.fr>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40C5D53A.9060407@linuxmail.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,56 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
---- Feizhou <feizhou@linuxmail.org> wrote:
-> Antony Stone wrote:
-> > How do you recommend dealing with reply packets
-> instead?
-> 
-> I would create multiple chains
-> 
-> iptables -N tcp_packets and so on.
-> 
-> So to avoid loading the connection tracking module,
-> I would put rules to 
-> handle return packets in the proper chain.
-> 
-> eg: iptables -A tcp_packets -p tcp --sport
-> 1024:65535 --dport 80 -j ACCEPT
-> 
-Do we have to worry at all on --sport? Our concern is
-our server ports only, isn't it?
+Hello
 
-Don't we have to include --syn in above rule?
+I try to set correctly up my firewall ans would need your help on one
+thing :
 
-How do we accept udp connection requests on a given
-destination port(ie. equivalent to --syn)?
+I have this rule :
+[...]
+iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST \
+-j LOG --log-level debug --log-prefix 'p_scan_: '
+[...]
 
-> Then i put tcp/udp/icmp packets to the proper chain
-> 
-> eg: iptables -A INPUT -p tcp -j tcp_packets
-> 
-> You could make a catch all for return packets like:
-> 
-> iptables -A INPUT -p tcp ! --syn -j ACCEPT
-> 
-Can we consider it is either ESTABLISHED or RELATED
-any packet other than --syn packet receiving on INPUT
-chain?  Or how do we write rule/s equivalent to
-ESTABLISHED and RELATED?
+and i see this when i tail the output file :
 
-Appreciate your comment on this issue.
+[...]
+Jun  8 22:52:32 milina kernel: p_scan_: IN=ppp0 OUT= MAC=
+SRC=81.220.171.201 DST=81.248.95.56 LEN=40 TOS=0x00 PREC=0x00 TTL=54
+ID=45424 PROTO=TCP SPT=4391 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
+[...]
 
-Sagara
+Well . According to me, a port scan is the action to scan _all_ the
+ports ... why is the port scan identified as only scaning the 80th port
+? I mean, a port scan should not be on one port only ... isn't it ?
 
-
-	
-		
-__________________________________
-Do you Yahoo!?
-Friends.  Fun.  Try the all-new Yahoo! Messenger.
-http://messenger.yahoo.com/ 
+-- 
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
