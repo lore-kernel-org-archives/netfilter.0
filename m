@@ -1,11 +1,13 @@
-From: Daniel Fenert <daniel@rotfl.linux.krakow.pl>
-Subject: Limiting number of connections
-Date: Sat, 4 Jan 2003 01:47:51 +0100
+From: Alex McCubbin <alexm@chancery.com>
+Subject: Re: Limiting number of connections
+Date: 03 Jan 2003 17:06:30 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030104004751.GA3308@fenert.net>
+Message-ID: <1041642389.18529.127.camel@l-alexm-1.chancery.com>
+References: <20030104004751.GA3308@fenert.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20030104004751.GA3308@fenert.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Daniel Fenert <daniel@rotfl.linux.krakow.pl>
+Cc: netfilter@lists.netfilter.org
 
-Is there a simple way to limit number of connection coming from particular
-client (ip address or subnet)?
-I've searched through archive, and found only some patch to CVS version
-of netfilter (it was year 2000)...
+I presume this is exactly what you are asking?
 
-I've got problem with a few clients, they' are able to make 200+
-connections on 128Kbit connection (according to /proc/net/ip_conntrack)
+From... patch-o-matic/base/iplimit.patch.help 
 
-I thought about it today for a few minutes, and came with the idea:
-1) Parse /proc/net/ip_conntrack and get clients with more than xxx
-   connections
-2) Setup rule to DROP NEW,RELATED to force them to close some connections
-3) wait a minute, go to 1) checking additionally number of connections
-   for blocked IP's. If number drops below xxx, delete rule DROP NEW,...
-This is ugly, but possibly will work.
+Author: Gerd Knorr <kraxel@bytesex.org>
+Status: ItWorksForMe[tm]
 
-I hope that  there's better way to do it?
+This adds CONFIG_IP_NF_MATCH_IPLIMIT match allows you to restrict the
+number of parallel TCP connections to a server per client IP address
+(or address block).
 
--- 
-Daniel Fenert                 --==> daniel@fenert.net <==--
-==-P o w e r e d--b y--S l a c k w a r e-=-ICQ #37739641-==
-Is not that the nature of men and women -- that the pleasure is in the learning
-of each other?        -- Natira, the High Priestess of Yonada, stardate 5476.3.
+Examples:
+
+# allow 2 telnet connections per client host
+iptables -p tcp --syn --dport 23 -m iplimit --iplimit-above 2 -j REJECT
+
+# you can also match the other way around:
+iptables -p tcp --syn --dport 23 -m iplimit ! --iplimit-above 2 -j
+ACCEPT
+
+# limit the nr of parallel http requests to 16 per class C sized
+# network (24 bit netmask)
+iptables -p tcp --syn --dport 80 -m iplimit --iplimit-above 16		\
+	--iplimit-mask 24 -j REJECT
+
+Good luck - Alex.
+
+On Fri, 2003-01-03 at 16:47, Daniel Fenert wrote:
+> Is there a simple way to limit number of connection coming from particular
+> client (ip address or subnet)?
+> I've searched through archive, and found only some patch to CVS version
+> of netfilter (it was year 2000)...
+> 
+> I've got problem with a few clients, they' are able to make 200+
+> connections on 128Kbit connection (according to /proc/net/ip_conntrack)
+> 
+> I thought about it today for a few minutes, and came with the idea:
+> 1) Parse /proc/net/ip_conntrack and get clients with more than xxx
+>    connections
+> 2) Setup rule to DROP NEW,RELATED to force them to close some connections
+> 3) wait a minute, go to 1) checking additionally number of connections
+>    for blocked IP's. If number drops below xxx, delete rule DROP NEW,...
+> This is ugly, but possibly will work.
+> 
+> I hope that  there's better way to do it?
+
 
