@@ -1,11 +1,11 @@
-From: slists@sezampro.yu
-Subject: struct iptc_handle ?
-Date: Tue, 23 Sep 2003 20:31:38 +0200
+From: a.ranu@ugrad.unimelb.edu.au
+Subject: keeping track of ack no
+Date: Wed, 24 Sep 2003 13:37:13 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F70918A.5050904@sezampro.yu>
+Message-ID: <200309240337.h8O3bD5r001841@cassius.its.unimelb.edu.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,16 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+hi,
 
-Where is "struct iptc_handle" declared ? I've only find "typedef struct 
-iptc_handle *iptc_handle_t;" in libiptc.h
-but no "struct iptc_handle" declaration...
+i am writing a module that clamps the tcp receiver window size... 
+i need to be able to tell when slow start ends, but at the receiver... so 
+i need to be able to keep track of when 3 duplicate acknowledgements 
+are sent out by the receiver...
 
-Regards,
+what info in the kernel do i access to do this...
+skb->h.th->ack???
+
+i need to know asap and any help will be greatly appreciated...
+thanks
+
+Asmeet.
+
+-- 
+a.ranu@ugrad.unimelb.edu.au
 
 
+-----End of forwarded message from a.ranu@ugrad.unimelb.edu.au -----
+
+-- 
+a.ranu@ugrad.unimelb.edu.au
 
