@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: blocking ports outbound
-Date: Wed, 12 Mar 2003 16:45:29 +0100
+From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
+Subject: iptables2.spec
+Date: Wed, 12 Mar 2003 17:56:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019C41@hslex01.hslbz.local>
-References: <3E6F268A.1060807@connectingyou.com.au>
+Message-ID: <5.2.0.9.2.20030312175449.01f864c0@172.26.0.8>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E6F268A.1060807@connectingyou.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +15,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> I would like to know the rule to block ports outbound.
-> 
-> I am trying to block port 3128 my squid/proxy port.
+I downloaded netfilter code from cvs.
+I discover it cames with a iptables2.spec.
+I tried to use it in order to create an iptables rpm, but I couldn't!!.
+How can I use it?
+rpm -ba iptables2.spec doesn't run for me.
 
-Soo, ehm, you want to prevent outbound packets from squid ?
-If you don't want that squid is sending packets, then why start squid at
-all.
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
 
-Well, if that's what you really want to :
-iptables -A OUTPUT -p tcp --sport 3128 -j REJECT --reject-with tcp-reset
-or simply
-iptables -A OUTPUT -p tcp --sport 3128 -j DROP
-
-
-Or don't you want users from the outside (internet) to connect ?
-
-# Drops everything by default
-iptables -P INPUT DROP
-
-# Accepts anything coming in on your LAN interface,
-# but you may want something more secure.
-iptables -A INPUT -i <if_lan> -j ACCEPT
-
-
-Rob
 
 
