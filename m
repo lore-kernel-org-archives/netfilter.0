@@ -1,39 +1,27 @@
-From: Henrik Nordstrom <hno@marasystems.com>
+From: Dax Kelson <dax@gurulabs.com>
 Subject: Re: port-based filtering of ESP packets with in-kernel IPsec?
-Date: Wed, 30 Jul 2003 21:10:10 +0200 (CEST)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0307302108370.14762-100000@filer.marasystems.com>
-References: <Pine.LNX.4.44.0307301124150.22684-100000@localhost>
+Date: 30 Jul 2003 14:37:02 -0600
+Sender: netdev-bounce@oss.sgi.com
+Message-ID: <1059597421.3284.7.camel@mentor.gurulabs.com>
+References: <1059540296.16545.305.camel@k7.localnet>
+	 <20030730142411.GD4553@sunbeam.de.gnumonks.org>
+	 <1059576701.4586.20.camel@simulacron>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0307301124150.22684-100000@localhost>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Chris Wilson <chris@netservers.co.uk>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Return-path: <netdev-bounce@oss.sgi.com>
+In-Reply-To: <1059576701.4586.20.camel@simulacron>
+Errors-to: netdev-bounce@oss.sgi.com
+List-Id: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Andreas Jellinghaus <aj@dungeon.inka.de>
+Cc: Harald Welte <laforge@netfilter.org>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, netdev@oss.sgi.com
 
-On Wed, 30 Jul 2003, Chris Wilson wrote:
+On Wed, 2003-07-30 at 08:51, Andreas Jellinghaus wrote:
+> [netfilter]
+> incoming encrypted packets are seen as ESP/AH in INPUT
+> and then as decrypted packet in INPUT or FORWARD.
 
-> Logically, it makes sense to me that the packet should pass through the 
-> whole of Netfilter _again_ after it's been decapsulated, similarly to what 
-> now happens with FreeS/WAN (but presumably without an ipsec0 interface 
-> being involved). Or, maybe it should be decapsulated before routing (and 
-> hence visible unencrypted in FORWARD, INPUT and OUTPUT).
-
-It needs to pass routing first unless something has changed drastically 
-in the 2.6 IP networking code, or else the kernel won't know if the 
-ipsec packet is to be decapsulated or routed.
-
-Regards
-Henrik
+Just to clarify, the packets will travel INPUT *twice* (once as ESP and
+then in the clear)?
 
 
