@@ -1,14 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Re-2: connection to vpn Server (pptp) behind iptables FW
-Date: Fri, 12 Mar 2004 14:20:26 +0200
+From: Rakotomandimby Mihamina <rktmb.list@wanadoo.fr>
+Subject: I submit you my rules, to have your opinions.
+Date: Fri, 12 Mar 2004 13:36:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079094025.15566.90.camel@raylinux.internal>
-References: <DIIE.000000F200002A31@sbgit.com>
-	 <1079092896.2722.17.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <4051AEC2.30100@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-KaX4YSi4Rx0PYTLZM1po"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1079092896.2722.17.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+Hi everybody.
+I made several searches over the internet to build my firewall rules.
+Here they are :
+http://stko.dyndns.info/scripts/ipt
+My configuration is ( for the moment )
+a single box i use as Personnal web server, FTP server and Icecast 
+stream server.
+I also have a sendmail server running on it (needed by the portal of my 
+site to notify members ... )
+I try to "sort" the different kinds of attacks (i dont know if 'im doing 
+it right .. ) and DROP everything that would "eat" the bandwidth.
+I dont IRC nor P2P.
 
---=-KaX4YSi4Rx0PYTLZM1po
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+I would like you , if you would too :-) , to tell me if my set of rules 
+is OK , if i should change something, or if there is a dumbass mistake 
+on it. The goal is of course getting the _closest_ to the 100% secure ...
 
-On Fri, 2004-03-12 at 14:01, Cedric Blancher wrote:
-> Le ven 12/03/2004 =E0 11:34, peter.gehle@sbgit.com a =E9crit : =20
-> > > Micro$oft has a 'technote' on this in their technet section on the
-> > > website. AFAIR you need to allow protocol 37 to be forwarded between =
-the
-> > > two.
-> > I have added a rule that forwards the protocol 37, but it still not wor=
-ks?
->=20
-> PPTP relies on a slightly modified GRE tunnel, which protocol _47_, not
-> 37.
-
-Yup, you are correct. My mistake. I found the info at Technet in their
-document entitled 'VPN servers and firewall configuration'
-
-> cbr@anduril:~$ grep gre /etc/protocols
-> gre     47      GRE             # General Routing Encapsulation
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-KaX4YSi4Rx0PYTLZM1po
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBAUasJh1fuR/Bv+ygRArPoAJ9ZwXhmoAB9qYBNXI5ZfBnEoitNbgCdHJ0w
-6Y8xU84kWgCugZW4e2rYR9E=
-=OM6H
------END PGP SIGNATURE-----
-
---=-KaX4YSi4Rx0PYTLZM1po--
-
+Thank you in advance.
+-- 
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
