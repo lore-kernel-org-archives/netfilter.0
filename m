@@ -1,12 +1,13 @@
-From: Nuitari <nuitari@balthasar.nuitari.net>
-Subject: Re: Problem with counting
-Date: Sun, 6 Oct 2002 19:47:39 -0400 (EDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Fw: Yahoo Messenger
+Date: Sun, 6 Oct 2002 18:43:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210061945580.17224-100000@balthasar.nuitari.net>
-References: <200210061657.g96GvTL13237@vulcan.rissington.net>
+Message-ID: <200210061743.g96HhwL13290@vulcan.rissington.net>
+References: <001701c26d5e$28e75d80$7cfcc5cb@humanpc>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210061657.g96GvTL13237@vulcan.rissington.net>
+In-Reply-To: <001701c26d5e$28e75d80$7cfcc5cb@humanpc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Sun, 6 Oct 2002, Antony Stone wrote:
+On Sunday 06 October 2002 6:31 pm, HareRam wrote:
 
-> On Sunday 06 October 2002 5:40 pm, Antony Stone wrote:
-> 
-> > On Sunday 06 October 2002 11:21 pm, Nuitari wrote:
-> > > On Sat, 5 Oct 2002, Antony Stone wrote:
-> > > > Show us the rest of your rules.
-> > >
-> > > iptables -P FORWARD ACCEPT
+> anyn help will be appriciated
+>
+> thanks
+> hare
+> ----- Original Message -----
+> From: "HareRam" <hareram@sol.net.in>
+> To: "Antony Stone" <Antony@Soft-Solutions.co.uk>; "Netfilter"
+> <netfilter@lists.netfilter.org>
+> Sent: Sunday, October 06, 2002 4:55 PM
+> Subject: Re: Yahoo Messenger
+>
+> > Hi all
 > >
-> > Ugh :-(   Horrible.
-> 
-> PS: I forgot to mention in my previous reply that by the time I got to the 
-> bottom of your ruleset, I hadn't seen a single DROP or REJECT rule, therefore 
-> your "Firewall" is not blocking anything :-)
-> 
-> With a default ACCEPT policy explicitly set on the FORWARD chain, and without 
-> changing the implicit default ACCEPT policy on the INPUT and OUTPUT chains, 
-> your netfilter rules are not actually doing anything at all, except for the 
-> address translation :-)
-> 
-> Antony.
-> 
-> 
+> > i have developped some front end to user to login and log out
+> > using Visual c++ and i want to count how many minutes he is online
+> > and how many minutes he has reamaining.
+> > all the things are working fine....
+> >
+> > all users have static IP and ARP table is binded to specific user PC MAC
+> > when the user looged in, iam replacing the  FORWARD rules with  ACCEPT
+> > when he logged out iam replacing the same FORWARD Rules wiht DROP
+> >
+> > the problems after this is.
+> >
+> > 1. after Dropping the Forward Rules, still he able to browse the existing
+> > site which he is browsing
+> >     but he is not getting any new sites, so i feel he is able to get the
+> > existing connection data.
 
-I know that I need to change it, but it still doesn't solve the counting 
-problem.
+This is because there is an entry in the connection tracking table, and as 
+slong as that is there the connection will be allowed by your ESTABLISHED 
+rule - you would have to put the DROP rules in front of that in your FORWARD 
+chain to cut off any current connections.
 
-Btw, I didn't get your previous reply, can you cc it to me ?
+> > 2. when he connect to Yahoo Messenger, he is not disconnecting, his
+> > connection is continueing
 
+I have no idea how Yahoo Messenger works.   I am not the person to answer 
+this question.
 
+Antony.
+
+-- 
+
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
