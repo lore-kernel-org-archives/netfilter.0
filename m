@@ -1,10 +1,13 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Request for knowledge update regarding mark and connmark
-Date: Wed, 6 Apr 2005 19:25:21 +0200
-Message-ID: <20050406172521.GB12284@torres.l21.ma.zugschlus.de>
+From: Jiann-Ming Su <sujiannming@gmail.com>
+Subject: Re: How to elegantly handle two ISPs on a single box?
+Date: Wed, 6 Apr 2005 14:49:49 -0400
+Message-ID: <561dc3260504061149310337e0@mail.gmail.com>
+References: <20050406171730.GA12284@torres.l21.ma.zugschlus.de>
+Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20050406171730.GA12284@torres.l21.ma.zugschlus.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +19,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Apr 6, 2005 1:17 PM, Marc Haber <mh+netfilter@zugschlus.de> wrote:
+> Is there a more elegant way to do it? Did I miss any docs?
+> 
 
-I haven't been following netfilter development for a while. My
-production boxes are Debian woody and thus do not have very current
-netfilter, but sometimes I snoop into later versions trying to see
-what's cooking.
+You should take a look at dynamic routing.  Zebra provides such service.
 
-I am currently a little bit confused by the appearance of connmark.
-The mechanism looks suspiciously similiar to the normal packet mark
-mechanism, but is applied to entire connections. How do I use this? Is
-it like allowing and denying connections? Do I put a mark on the
-connection at the initial packet and the appropriate match will match
-on all packets bearing this connection mark? What will packets do that
-belong to a RELATED connection? Do they also have the connection mark
-of the main connection?
+  http://www.zebra.org/
 
-Are there any docs, examples, best-current-practice descriptions about
-when to use packet marking and when connection marking?
-
-Additionally, I have always been very reluctant with marking since the
-numeric mark seems so prone to collide when packet marking is used
-for different purposes. I would like to hear how other people handle
-this, maybe even look at some rulesets using marking.
-
-Thanks for enlightening.
-
-Greetings
-Marc
-
+There's a debian package for zebra.
 -- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
-
+Jiann-Ming Su
+"I have to decide between two equally frightening options. 
+ If I wanted to do that, I'd vote." --Duckman
 
