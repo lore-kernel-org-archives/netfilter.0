@@ -1,14 +1,14 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: NAT authentication
-Date: Thu, 17 Apr 2003 21:56:33 +0800
+From: Kim Jensen <kimj@dawn.dk>
+Subject: Re: newbie question about port blocking
+Date: Thu, 17 Apr 2003 16:22:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030417135633.GC1518@floyd>
-References: <OE539Bbw2oj1l489Ypx0002dde3@hotmail.com>
-Reply-To: kluivert@tm.net.my
+Message-ID: <200304171622.51239.kimj@dawn.dk>
+References: <003901c304e8$24b56fa0$2d64a8c0@murrahboy>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <003901c304e8$24b56fa0$2d64a8c0@murrahboy>
 Content-Disposition: inline
-In-Reply-To: <OE539Bbw2oj1l489Ypx0002dde3@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: kenn murrah <kenn@thebytebusiness.com>, netfilter@lists.netfilter.org
 
-On Tue, Apr 15, 2003 at 05:51:14PM +0800, William spoke thusly:
+Hi Kenn,
 
->   1. When user want to connect to Internet by NAT.
+A simple setup will be something like this:
 
-What outgoing user services will be used ?
+iptables -i lo -j ACCEPT
+iptables -p tcp --dport 80 -j ACCEPT
+iptables -j DROP
 
->   2. A prompt will show up to authenticate the users by RADIUS to a windows 
->   2000 server.   
+If you are using a transparent proxy, ala Squid, you may have to add some more 
+rules.
 
-If you are using it for plain http/https/ftp sessions, then I would suggest
-plugging in a transparent proxy (eg: Squid), and have that perform the OOB
-authentication to your RADIUS daemon.
+/Kim
 
-Otherwise, if you need it for generic outgoing services, I think it might
-be possible to plug in a SOCKS5 server with authentication to your Win2K
-RADIUS daemon.
+On Thursday 17 April 2003 15:49, kenn murrah wrote:
+> Sorry for the elementary nature of this question ... I've just installed
+> linux and have a transparent proxy working using iptables ... but my goal
+> is to block ALL non-http traffic in both directions ... that is, i want to
+> allow web access but no instant messenging, no ftp, etc.
+>
+> is there a simple line or two that i can add to iptables?  please feel free
+> to tell me to RTFM, but the tutorial i just downloaded is 151 pages, and i
+> admit that i'm looking for a fast solution this morning ... (i'll study the
+> manual on the way home tonight on the train -- i promise!)
+>
+> can anyone help me out?  all advice MOST appreciated.
 
->   3. If the user is authenticated, NAT is done, and packet send to Internet.
-
-See above, this won't touch iptables (except for the transparent proxying
-most probably).
-
-Another, probably less secure method would be to have the user authenticate
-itself to some web server (Apache, checking your Win2K RADIUS db), if
-successful have your gateway add in the appropriate rules. Otherwise just
-ignore it. This means interfacing between the web server, radius + your
-gateway.
-
--- 
-"any nation that wants to control its borders can do so." 
-		- Tommy Franks; Mexicans && Columbia Drug War ?
 
