@@ -1,13 +1,10 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: problem with ./runme in --batch mode. -- current p-o-m
-Date: Sat, 11 Jan 2003 00:38:07 +0100
+From: Reed Wiedower <rwiedower@peyser.com>
+Subject: RE: problem with FORWARD chain
+Date: Fri, 10 Jan 2003 18:39:42 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030111003807.276f2728.arnt@c2i.net>
-References: <200301092244.09844.Alistair@nerdnet.ca>
+Message-ID: <211E94403B74D211878A0008C71C74DC60DCD6@ip216-50-5-162.z5-50-216.customer.algx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200301092244.09844.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +15,81 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Thu, 9 Jan 2003 22:44:09 -0500, 
-Alistair Tonner <Alistair@nerdnet.ca> wrote in message 
-<200301092244.09844.Alistair@nerdnet.ca>:
+(Forgot this info in last post!)
 
-> 
-> 	Hi folks:
-> 	
-> 	Its too late at night, and I shouldn't be mucking with scripts.
-> 	... I realize now that my previous email was in error ... and 
-> now realize what is actually happening when passing a long list to
-> ./runme ... its just disconcerting to see patches that I don't want in
-> the "already applied" list that ./runme spits up when running in batch
-> mode ... I can now see that the $EXCLUDED are copied to $SEEN and
-> listed in already applied list because of that ... 
-> 
->    perhaps we could put a *bypassed* tag in there so that others don't
->    get as confused as I..... 
+I'm running the 2.4.19 kernel on a debian box with the bridging/firewall
+patch from bridging.sourceforge.net (version 0.0.7) and the latest version
+of iptables.
 
-..on finishing a batch run, it would be nice finding 
-a batch run log somewhere, to ease my confusion some, 
-on what works and not.
+A sample output from iptables -L -vx would be:
 
-..does anyone run p-o-m from rpmbuild at all?
+Chain INPUT (policy ACCEPT 20403 packets, 27177359 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination
+
+Chain OUTPUT (policy ACCEPT 12188 packets, 786022 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination
+
+The few other people (who also don't get the FORWARD chain to properly show
+the counters) are still able to activate and implement rules, although as
+you can see, my policy should drop everything, and yet I'm still able to use
+the bridge.
+
+eol,
+
+Reed
 
 
+reed wiedower
+reed.wiedower@peyser.com
+peyser.com
+202.638.3730x115
+
+
+
+| -----Original Message-----
+| From: Reed Wiedower 
+| Sent: Friday, January 10, 2003 6:11 PM
+| To: 'netfilter@lists.netfilter.org'
+| Subject: problem with FORWARD chain
+| 
+| 
+| I'm setting up a simple bridge firewall, and I've managed to get the
+| bridging working properly. However, every time I attempt to create a
+| firewall rule to prevent packets from traversing the FORWARD 
+| chain, I notice
+| that, at least according to "iptables -L -vX", no packets are 
+| going across
+| that particular chain. Any idea why this might be happening? 
+| I can implement
+| rules on both the INPUT and OUTPUT chains and they work as 
+| expected, but for
+| some reason nothing will display on the FORWARD chain.
+| 
+| The bridging folks seem to think that it's an issue with 
+| iptables, not with
+| the bridging code. Thanks in advance if anyone has seen this 
+| or knows how to
+| deal with it.
+| 
+| 
+| eol,
+| 
+| Reed
+| 
+| 
+| reed wiedower
+| reed.wiedower@peyser.com
+| peyser.com
+| 202.638.3730x115
+| 
+| 
 
