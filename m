@@ -1,13 +1,11 @@
-From: "Saeed Zamani" <szamani@concept.ae>
-Subject: RE: Need help on NAT
-Date: Wed, 11 Feb 2004 00:04:32 +0330
+From: Frank Gruellich <frank@home.manuelm.org>
+Subject: netfilter meets iproute in distributed routers
+Date: Tue, 10 Feb 2004 22:02:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c3f015$54460400$3c23d9d5@Zamani>
-References: <1076414843.4028c97b900c7@www.realdealz.ch>
+Message-ID: <20040210210203.GZ17644@home.manuelm.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1076414843.4028c97b900c7@www.realdealz.ch>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +16,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Fabian Hartmann' <realdeal@realdealz.ch>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Hello,
 
-   Thank you all for alternative solutions. Good help for me.
-Thanks,
-Saeed Zamani.
------Original Message-----
-From: Fabian Hartmann [mailto:realdeal@realdealz.ch] 
-Sent: Tuesday, February 10, 2004 3:37 PM
-To: Saeed Zamani
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Need help on NAT
+I am trying to do some weird routing.  This is my (simplified[1]) setup:
 
+                    ,---.
+                    | S |
+                    `-+-'
+                      | .1.0/24
+      ,---. .3.0/24 ,-+-.
+ 0/0--+ A +---------+ B +--0/0
+      `---'         `---'
 
-hi Saeed
-There is an iptables patch called "nth" which allows you to match every
-Nth packet encountered. 
-That includes load-balancing such as you desire like every 4 received
-packet, 
-SNAT first to the ip of ISP1, the other three to the ip of ISP2.
+Well, we moved to the new IPv2 last year... just kiddin, all nets are
+subnets of 192.168.0.0/16.  Box A and B masq the internal nets to their
+IP# given from the (different) ISPs.  S has .1.1 and runs several
+services reachable via B and, by default, uses B as its gateway to 0/0.
 
-i. e.:  iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
-             --every 4 --packet 0 -j SNAT --to-source $ISP1
-        iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
-             --every 4 --packet 1 -j SNAT --to-source $ISP2
-        iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
-             --every 4 --packet 2 -j SNAT --to-source $ISP2
-        iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
-             --every 4 --packet 2 -j SNAT --to-source $ISP2
+Sometimes somebody connects to box A on a specific port $P, which I DNAT
+to S.  (Every connect to box B to this port will be refused.)  The
+problem arises, when I try to catch the answer to route it to A.  I
+thought about using -j MARK of -t mangle and a special routing table (as
+described in the LARTC, chapter 11).
 
-have a look at this
-http://cvs.netfilter.org/patch-o-matic-ng/nth/help?rev=1.2
+Okay, let's say I would use
 
-It is available in the netfilter patch-o-matic base repository
+ # iptables -t mangle -A PREROUTING -p tcp -s 192.168.1.1 \
+ > --sport $P --dport 1024:65535 -m state --state RELATED,ESTABLISHED \
+ > -j MARK --set-mark 1
 
----
-Fabian Hartmann
+on box B.  Replys to the connect will match, get the mark and will be
+routed the right way to box A.  Now let's assume, S itself opens a
+connection to the net.  It happens it uses $P as local port[2].  The
+first packet would be -m state --state NEW and will not match the above
+rule.  But any further will and will be routed a completely different
+way[3].  If I omit the -m state every connections opened by S from $P
+will be marked and routed via B (that would be acceptable, but is
+somehow ugly).
 
-realdeal@realdealz.ch
-www.realdealz.ch
+Cool thing would be, if a packet is matched by the rule any subsequent
+packets would match, too.  The -j DNAT works this way, AFAIK, but I
+found nothing next to the -j MARK in the docs[4].  Then, similar to the
+shown rule, I could accept all new connections and mark any remaining.
+More cool thing would be, if I could use the conntrack of box A in a
+rule on box B... well lets stay realistic.
 
+Any hints, how I could do the trick?
 
-
+Thanks in advance and sorry for my poor english,
+ regards, Frank.
+===footnotes===
+[1] The whole setup can be found at
+<URL:http://manuelm.clug.de/~frank/network/topologie.png> (48KB).  Box A
+is loki + hydra, box B is morpheus.
+[2] Is this possible when a service runs at this port?
+[3] Would this work?
+[4]
+<URL:http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TABLE.MARKMATCH>
+-- 
+Sigmentation fault
 
