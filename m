@@ -1,9 +1,10 @@
-From: "Stephen Jones" <sljones8@hotmail.com>
-Subject: tcp-MSS target extensions Patch
-Date: Sun, 16 May 2004 09:28:24 +0000
+From: "VDMB mail" <conradw@vdmb.com.au>
+Subject: Netfilter Denies everything, even --Policy ACCEPT
+Date: Sun, 16 May 2004 15:27:07 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY1-F39s3nJQHd4Kkc00018f2c@hotmail.com>
+Message-ID: <KIEKJEOOGJONEKMFNHLHCELLCHAA.conradw@vdmb.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,61 +15,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello All,
 
-I am having difficulty locating and applying the tcp-MSS patch as described=
-=20
-here:
+Hi,
 
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-4.=
-html#ss4.7
+IPTABLES is blocking all network traffic, whilst all connections work fine
+without it.
 
-I have run through both the patch-o-matic-20031219 and the=20
-patch-o-matic-ng-20040302 against an iptables 1.2.9 and  2.4.25 kernel=20
-sources.  The option to apply the patch does not appear as I run through th=
-e=20
-./runme extra or ./rume userspace  scripts for either patch-o-matics.
+Setup : Redhat 8 / 2.4.18-27.8.0  with HP Raid driver patch. (I hope this is
+not a cause of the problem.)
 
-I am in desperate need to implement:
+IPtables version v1.2.8
 
-iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS=20
---clamp-mss-to-pmtu
+Without iptables, i.e. stopping the service  '/etc/init.d/iptables stop'
+everything works and communicates fine. Ping anything on my network, and the
+loopback interface just nicely.
 
-with a pptp client I have installed on a gateway device. =20
-(http://pptpclient.sourceforge.net/  <-- main page, and see these for the=20
-problem I am tryting to solve: =20
-http://pptpclient.sourceforge.net/howto-diagnosis.phtml#connections_freeze =
+When starting the service '/etc/init.d/iptables start' any form of network
+communication is totally blocked, even with the following (BUT VERY OPEN)
+script;
 
-and finally     http://lartc.org/howto/lartc.cookbook.mtu-mss.html)
+iptables --flush
+iptables --policy INPUT ACCEPT
+iptables --policy OUTPUT ACCEPT
 
-The kernel config has these options set:
+iptables -A INPUT -j LOG
+iptables -A OUTPUT -j LOG
 
-CONFIG_IP_NF_MATCH_TCPMSS=3Dy
-CONFIG_IP_NF_TARGET_TCPMSS=3Dy
+Have checked services with chkconf, iptables is running, as well as echo, in
+fact most things are, although there is no ipchains present(thus no clash).
+Have checked ps -aux, syslogd, klogd and xinetd are all running.
 
-Both the kernel and iptables appear to compile without complaints.
+Output from 'iptables -L' is;
 
-I get an "unknown arg `--clamp-mss-to-pmtu'  gripe from the recompiled=20
-iptables when I enter the full command as specified above.
+Chain INPUT(policy ACCEPT)
+LOG 	all -- anywhere 	anywhere 	LOG level debug prefix 'Trace INPUT: '
+Chain FORWARD(policy DROP)
+Chain OUTPUT (policy ACCEPT)
+LOG 	all -- anywhere 	anywhere 	LOG level debug prefix 'Trace OUTPUT: '
 
-The only "hits" I could find using tcp-MSS on a google hunt were to a post =
+Output from ping (for any ip address) is;
+ping 127.0.0.1
+ping: sendmsg: Operation not permitted
 
-on the netfilter list from October of 1999, and a reference to the patch on=
-=20
-the samba cvs, but it was a dead link...
+Nothing appears in either /var/log/messages or /var/log/kernel (from
+syslog.conf  kern.*    /var/log/kernel ). This is the worst part. I can't
+see anything happening anywhere. I have a Samba server running, and it is
+logging the same sendmsg error for the netbios port(137).
 
-A nudge in the right direction would be greatly appreciated!  Thanks for=20
-your time!
+I have searched for hours to solve this, and there appears to be something
+stopping packets at the iptables level, as without iptables installed, there
+is clear connections everywhere. Even rebooting the machine made no
+difference, as much as I expected.
 
-SJ
+Being a novice, with a few years experience, I have always been able to get
+things solved with stuff on the net. This one has really got me beat.
 
-_________________________________________________________________
-MSN Toolbar provides one-click access to Hotmail from any Web page =96 FREE=
-=20
-download! http://toolbar.msn.click-url.com/go/onm00200413ave/direct/01/
+Thanks in advance,
+Conrad
+---
+This email has been checked by a virus scanner, although the end reciever is
+responsible for their own scanning and checking of email and attachments.
+Outgoing mail is certified Virus Free by Virus scanner.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.668 / Virus Database: 430 - Release Date: 24/04/2004
 
 
