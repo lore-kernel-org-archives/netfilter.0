@@ -1,13 +1,13 @@
 From: "Joe Patterson" <jpatterson@asgardgroup.com>
-Subject: RE: bridging with iptables (was no subject)
-Date: Sun, 30 Jun 2002 00:01:34 -0400
+Subject: RE: eth0, eth1, eth2 ??
+Date: Sun, 30 Jun 2002 00:11:54 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NJEFLNJDIFFNMHDEBKMJGEJGDOAA.jpatterson@asgardgroup.com>
-References: <1025308208.860.9.camel@tux>
+Message-ID: <NJEFLNJDIFFNMHDEBKMJMEJGDOAA.jpatterson@asgardgroup.com>
+References: <20020629152209.RMMB4119.mta06-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1025308208.860.9.camel@tux>
+In-Reply-To: <20020629152209.RMMB4119.mta06-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,67 +18,71 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Martin Josefsson <gandalf@wlug.westbo.se>, Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: Netfilter <netfilter@lists.samba.org>
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, iptables <netfilter@lists.samba.org>
 
-or, (note that I have not actually tried this, but I think that it would
-*probably* work) use a gre tunnel over ipsec, and then add the gre tunnel to
-the bridge group.  Actually, I have done this, but on cisco's instead of on
-linux boxes (and when you put the commands into the cisco, it lets you know
-in no uncertain terms that you are entering into unsupported territory)
+or they other way is to use the most excellent mii-tool.
 
-and the really cool thing about this is, not only can you do wierd routing
-and filtering, but you can get the advantages of ipsec encryption and
-authentication for unroutable non-ip protocols.
-
-but you're right, this is getting really off-topic now....  But, to bring it
-somewhat back onto topic...
-
-Does anyone know how netfilter deals with non-ip protocols?  If you've got
-your linux box set up as, for example, an ipx router, and you've got
-iptables loaded with default drop rules in your forward chain, do the ipx
-packets get through?  My suspicion is that they do, but I'm not sure.  My
-suspicion is that netfilter only gets involved when a packet is of type
-IP...  But the fact that netfilter can be hooked into a bridging stack makes
-me wonder...
+run `mii-tool -w`, and then start plugging and unplugging cables.  You will
+find it most informative.  :)
 
 -Joe
 
 > -----Original Message-----
 > From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Martin Josefsson
-> Sent: Friday, June 28, 2002 7:50 PM
-> To: Antony Stone
-> Cc: Netfilter
-> Subject: Re: bridging with iptables (was no subject)
+> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
+> Sent: Saturday, June 29, 2002 11:22 AM
+> To: iptables
+> Subject: Re: eth0, eth1, eth2 ??
 >
 >
-> On Sat, 2002-06-29 at 00:53, Antony Stone wrote:
+> On Saturday 29 June 2002 7:21 pm, Tim wrote:
 >
-> > > Yes, look at the bridge-netfilter project:
-> > > http://bridge.sourceforge.net/
+> > Hi everyone,
 > >
-> > Hmmm.   Good.
-> >
-> > I know this is getting a bit off-topic now, but does anyone
-> know if you can
-> > combine bridging with IPsec ?   ie have two bits of the same
-> network address
-> > range bridged across a VPN link ?
-> >
-> > I've only ever set up IPsec links with a routing table pointing to the
-> > 'other' network across the VPN link...
+> > On my firewall box, as mentioned previously, I have
+> > three NICs. On PCI slot 1: video card; PCI slot 2: 1st NIC; PCI
+> slot 3: 2nd
+> > NIC; PCI slot 4: 3rd NIC. Now, eth0 would be the 1st NIC  on slot 2 ? Is
+> > this correct ? I need to confirm this in order to know which
+> NIC Iam going
+> > to plug into on the firewall box from the router [location of
+> eth0, eth1,
+> > eth2], the LAN, and the DMZ and also write rules for the
+> different chains.
 >
-> Use bridge + CIPE for that.
+> You'll have to plug in some cables and find out :-)
 >
-> I've never used it but I've heard that it works fine, it's not IPsec but
-> another encrypted VPN.
+> The order in which your NICs get allocated as eth0, eth1, eth2
+> depends mainly
+> on what chipset they are (the kernel will initialise chipsets in
+> a certain
+> order, so if your NICs have different chipsets this is what will
+> determine
+> which gets called eth0, which eth1 etc), alternatively on what
+> order you load
+> modular drivers (if that's the way you compiled your kernel), but it also
+> depends signiicantly on your motherboard / Bios - generally you
+> will find the
+> NICs get initialised in order from one end of the PCI bus towards
+> the other
+> (but until you try, you don't know which end it starts from), but
+> even this
+> sensible sequencing is not actually guaranteed.
 >
-> --
-> /Martin
+> I suggest the way to do it is to allocate an address in your LAN range to
+> eth0, and an address in your DMZ range to eth1, ping something on
+> your LAN
+> from the firewall, and then just plug each of the three NICs into
+> your LAN
+> switch in turn.   Once you've worked out which is eth0, do the
+> same thing for
+> eth1 (this will almost certainly be the NIC in the middle), and
+> then you know
+> the other one is eth2.
 >
-> Never argue with an idiot. They drag you down to their level, then beat
-> you with experience.
+>
+>
+> Antony.
 >
 >
 >
