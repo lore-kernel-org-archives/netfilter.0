@@ -1,11 +1,12 @@
-From: skydive <skydive@megamail.pt>
-Subject: http acces
-Date: Thu, 20 Nov 2003 21:47:02 +0000
+From: Nick <fenderflames@yahoo.com>
+Subject: Re: FORWARD question
+Date: Thu, 20 Nov 2003 14:18:37 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069364822.3fbd3656723b4@roma-hme1>
+Message-ID: <20031120221837.10412.qmail@web40803.mail.yahoo.com>
+References: <200311202051.hAKKp8723558@onyx.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200311202051.hAKKp8723558@onyx.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,51 +16,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi all
+Anthony, first of all thanks for your answer :-) If
+you don't mind I would like to clarify a few things. 
 
-i have been experienced a problem since i'm trying to
-access my web server from my lan through my internet ip.
-=20
-i have no problems doing DNAT, from those who access my
-web page form the outside:
+I know the router 'remembers' things about packets, I
+just don't know how much he remembers.That's where I
+am right now.
 
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80
--j DNAT --to 192.168.0.1:80
+I do use connection traccking, and I guess I use it
+correctly.(Earlier I had posted only a part of my
+script) I also have only one public IP, the FW machine
+sends FTP requests to the FTP server on 192.168.0.12.
 
-this is solving the problem
+The only open port on the external NIC of the FW
+machine is 21. 
 
-let's say my web page has the following address
-www.example.org, and that it is host  [like it is ;)) ]
-in one machine on my lan with the following IP:
+My complete forward rules are those:
 
-192.168.0.1
+$IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -m state --state
+ESTABLISHED,RELATED -j ACCEPT
 
-when i write www.example.org on my web browser, it just
- hits eth1 on my gateway/firewall and stucks there.
-maybe i'm missing something on my prerouting rules, or
-maybe my small brain just can't reach it :)
+$IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
+$FTPSRV --dport 21 -m state --state NEW -j ACCEPT
 
-the way i see it, when i put www.example.org on my web
-browser, i send i request to my gateway, and it was
-supposed to take it back to my lan, where the site is
-hosted.
+$IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
+$FTPSRV --dport 20 -j ACCEPT
 
-not working though...
+$IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
+$FTPSRV --dport 1024:65535 --sport 1024:65535 -j
+ACCEPT
 
-can somebody please help with these missing rules?! or
-is it just something else i'm missing?
+$IPTABLES -t nat -A PREROUTING -p tcp -d $INET_IP -i
+ppp0 --dport 21 -j DNAT --to $FTPSRV
 
-thanks to those who took the time to ride all this
-garbage and i'm greatfull even if you are not able to
-help whatever your reason is ;)))
+$IPTABLES -t nat -A POSTROUTING -o ppp0 -s
+$LAN_IP_RANGE -j MASQUERADE 
 
-[][] * * *
-skydive!
+$INET_IP= public IP
+$LAN_IFACE=internal NIC of the FW server
 
--------------------------------------------------
-Email Enviado utilizando o servi=E7o MegaMail
+I use NEW when I forward to port 21 because I figured 
+the first FTP request will be new. Am I right ?
 
+If I understand correctly, the router will pick up FTP
+related traffic coming from the internet through ports
+1024:65535 and forward it only to the FTP server
+because I do PREROUTING to my FTP server ? 
+
+Does the router say: 'this packet that came through
+port 1025 ist FTP related and I will FORWARD it only
+to the FTP server(because that's what PREROUTING tells
+me) and this packet coming through port 1026 is for
+client x.x.x.x (for which there is no PREROUTING) and
+I will send it to only him' ?
+
+If that's so, great :-) Thanks again for your help
+
+__________________________________
+Do you Yahoo!?
+Free Pop-Up Blocker - Get it now
+http://companion.yahoo.com/
 
