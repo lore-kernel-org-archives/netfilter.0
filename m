@@ -1,53 +1,61 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPSEC and other non tcp/udp/icmp blocking
-Date: Mon, 14 Oct 2002 19:50:19 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021014185021.NXFH27697.mta05-svc.ntlworld.com@there>
-References: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz> <200210141917.40231.fabrice-marie-sec@ifrance.com>
+From: Julian Anastasov <ja@ssi.bg>
+Subject: Re: owner based policy routing
+Date: Tue, 15 Oct 2002 00:37:04 +0000 (GMT)
+Sender: lartc-admin@mailman.ds9a.nl
+Message-ID: <Pine.LNX.4.44.0210150010160.1285-100000@u.domain.uli>
+References: <3DAAB6D1.2000100@inbox.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210141917.40231.fabrice-marie-sec@ifrance.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <lartc-admin@mailman.ds9a.nl>
+In-Reply-To: <3DAAB6D1.2000100@inbox.lv>
+Errors-To: lartc-admin@mailman.ds9a.nl
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Arindam Haldar <arindamhaldar@inbox.lv>
+Cc: LARTC <lartc@mailman.ds9a.nl>, NETFILTER <netfilter@lists.netfilter.org>
 
-On Monday 14 October 2002 12:17 pm, Fabrice MARIE wrote:
 
-> Hello Cyberdude,
->
-> On Saturday 12 October 2002 04:45, Mitesh P Choksi wrote:
-> > Dear All,
-> > How does netfilter work with other protocols apart tcp/udp/icmp?
-> > I am trying to either block or account IPSec traffic.
-> > Regards,
-> > Cyberdude Murli
-> > The Earth
->
-> to block ipsec (IIRC):
-> # iptables -A FORWARD -p 50 -j DROP
-> # iptables -A FORWARD -p 51 -j DROP
-> # iptables -A FORWARD -p tcp --dport 500 -j DROP
+	Hello,
 
-Close, but not quite....   IKE uses UDP port 500, not TCP port 500.
+On Mon, 14 Oct 2002, Arindam Haldar wrote:
 
-Also, it uses port 500 for both source and destination, so if you wanted to 
-be more specific you could be:
+> ok, i have tried applying the ip rule fwmark in hex but dont see any
+> difference !..
 
-iptables -A FORWARD -p udp --sport 500 --dport 500 -j DROP
+	It is already in hex, use something like:
 
-Antony.
+ip rule ... fwmark 50
 
--- 
+iptables ... --set-mark 0x50
 
-I vote "no" to this proposal to form a committee to investigate whether we 
-should or should not hold a ballot on whether to vote yet.
+> The routing decission is take be4 the packets comes to OUTPUT table, if
 
+	Right
+
+> thats true then it will be not possible to route **owner** as per policy
+> routing--am i right ??
+
+	The sockets select route and when localout selects different
+ISP may be the source should be changed too.
+
+> if ys then how can one achieve **owner** based policy routing in linux
+> box ??
+
+	This is something that others should comment. NF is
+supposed to do everything :)
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+
+_______________________________________________
+LARTC mailing list / LARTC@mailman.ds9a.nl
+http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
