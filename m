@@ -1,13 +1,12 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: Ethernet port redirection
-Date: Fri, 7 Jan 2005 16:05:13 +0500
-Message-ID: <a0f69e5050107030534f7a516@mail.gmail.com>
-References: <000d01c4f33a$5ac1f590$eaab9385@gagan>
-Reply-To: Askar <askarali@gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: [Fwd: Server machines behind Firewall]
+Date: Fri, 7 Jan 2005 10:27:55 -0500
+Message-ID: <20050107152755.GA49@bender.817west.com>
+References: <41DEA59E.F63D5C97@ita.org.mo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000d01c4f33a$5ac1f590$eaab9385@gagan>
+Content-Disposition: inline
+In-Reply-To: <41DEA59E.F63D5C97@ita.org.mo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,59 +18,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Navneet <navneetkc@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-make user squid is configured for transparent proxying "interception" 
-    * httpd_accel_host virtual
-    * httpd_accel_port 80
-    * httpd_accel_with_proxy on
-    * httpd_accel_uses_host_header on
+On Fri, Jan 07, 2005 at 11:07:10PM +0800, edwardspl@ita.org.mo wrote:
+> > EXT_IF="eth0"
+> > INT_IF="eth1"
+> > SRV1="10.1.1.10"
+> >
+> > iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 80 \
+> > ? -j DNAT --to-destination $SRV1
+> 
+> I want to know why needn't to define the original IP ( Public IP ) ?
+> eg :
+> 
+> iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -s 202.175.xxx.xxx --dport
+> 80 \
+> ? -j DNAT --to-destination 192.168.xxx.xxx
 
-regards
+you can; if the original, public IP is different from the firewall's
+external IP.  if you want specify the original DESTINATION of the
+packet, you would use "-d" not "-s" like so:
 
+  iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -d $PUB_IP \
+    --dport 80 -j DNAT --to-destination $SRV1
 
+> Sorry, what useful about the following function ( command line ) ?
+> 
+> > iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d $SRV1 \
+> > ? --dport 80 -j ACCEPT
 
-On Wed, 5 Jan 2005 20:52:06 +0530, Navneet <navneetkc@gmail.com> wrote:
-> Hi,
-> 
-> Now, pease check this out :-
-> I was trying to run squid in transparent mode(Transparent Proxying) ?
-> 
-> System details:
-> RedHat Linux 9
-> eth0 133.147.171.169/8 [Internal NIC]
-> eth1 172.21.133/14        [External NIC]
-> 
-> All http request get REDIRECTED to squid  at eth0(Internal).It should work
-> as Gateway by means of eth1(External).
-> 
-> i've done this:
-> 1.Enabled IP forwarding
-> #echo "1" >/proc/sys/net/ipv4/ip_forward
-> 2.iptables (Netfilter) PORT REDIRECTION:
-> #iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-> REDIRECT --to-port 3128
-> 
-> Port not getting REDIRECTED as per above iptables rule?.
-> Why it so?
-> 
-> Thanks
-> 
-> Regards,
-> Navneet
-> 
-> "Learning Linux"
-> 
-> Reference:
-> http://www.ibiblio.org/pub/Linux/docs/HOWTO/TransparentProxy
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-> http://www.iptablesrocks.org/
-> 
-> 
+um--it allows the packet through the FORWARD chain of the filter table.
+remember--you're trying to build a firewall here.
 
+> In additional, if I want to setup a NAT ( 192.168.101.0/24 ) with a Server
+> machines ( 192.168.100.1 ) behind Firewall...
+> So, is there more than one sample ( nat scripts ) for reference ?
 
--- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-your life a little easier)
+go read everything linked from the netfilter home page in the docs
+section:
+
+  http://netfilter.org/documentation/index.html
+
+-j
+
+--
+"Dear Mr. President, there are too many states nowadays, please
+ eliminate three. I am not a crackpot."
+        --The Simpsons
 
