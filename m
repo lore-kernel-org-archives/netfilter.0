@@ -1,11 +1,11 @@
-From: Jae-Young Kim <jaykim@cs.purdue.edu>
-Subject: maximum number of packets NF_STOLEN by netfilter
-Date: Thu, 1 May 2003 20:06:23 -0500
+From: "Zhang, Peng" <pzhang@hsph.harvard.edu>
+Subject: using nfs server
+Date: 01 May 2003 21:52:04 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030502010623.GA11447@punch.cs.purdue.edu>
+Message-ID: <1051840324.19244.81.camel@sph184-76.harvard.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +16,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi,
 
+I want some help from you since I do have no experience about iptables.
+The situation is that we have a cluster, which has ip called IP_MAIN. We
+also have a inside node whose ip is 192.168.0.2. I setup nfs server on
+the 192.168.0.2 and the /etc/exports is /aaa IP_CLIENT(rw)
+I set up IP masquerade on IP_MAIN so that the inside node can access
+outside network. (I tested it and it is OK) and then I add some iptables
+rules in IP_MAIN:
+iptables -A PREROUTING -t nat -p tcp -d IP_MAIN --dport 2049 -j DNAT
+--to 192.168.0.2:2049
+iptables -A PREROUTING -t nat -p udp -d IP_MAIN --dport 2049 -j DNAT
+--to 192.168.0.2:2049
+iptables -t nat -I POSTROUTING -s 192.168.0.2 -p tcp --sport 2049 -j
+SNAT --to IP_MAIN
+iptables -t nat -I POSTROUTING -s 192.168.0.2 -p udp --sport 2049 -j
+SNAT --to IP_MAIN
+Now it doesn't work and I really don't know what's wrong. Need I also
+create /aaa on in IP_MAIN which is the directory I want to share in the
+192.168.0.2 and need I also open the nfs service on IP_MAIN?
 
-Hi, I'm developing a kernel module using netfilter to enforce intentional
-delay on every packet outgoing.
+Thank you for your help!
 
-My algorithm is simple; if a packet's destination IP and TCP/UDP port
-numbers are matched, my LOCAL_OUT hook module steals the packet and
-returns NF_STOLEN, and then keeps the sk_buff pointer for some delay
-time and then release the packet via ip_send().
+-- 
+Best wishes,
+Peng
 
-I'm currently debugging the module in UDP sendto() function.
+*******************************
+Peng Zhang
+Department of Biostatistics
+Harvard School of Public Health
+655 Huntington Avenue
+Boston, Massachusetts 02115
+*******************************
 
-My problem is that the maximum number of packets that can be sustained
-by my kernel module is only about 50. The strange thing is that
-if the number of held packets reaches to the number, the sendto() 
-function is blocked and no more packet comes into LOCAL_OUT hook.
-Only when the number is decreased, the blocking is released.
+I believe I can fly
+I believe I can touch the sky
 
-It is quite sure that the Linux UDP stack blocks the sendto() function.
-Is there any limitation of number of allocated sk_buffs in UDP stack?
-If that kind of thing exist, how can I check it and how can I increase
-the maximum number?
-
-I'm using Linux kernel 2.4.17 with the netfilter. Any comments will be
-welcomed. Thanks in advance.
-
-- Jay
 
