@@ -1,56 +1,69 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: Good logfileviewer or analyser?
-Date: Wed, 28 Jan 2004 09:19:06 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075277946.16315.1.camel@porky>
-References: <40176ED9.4040607@epost.de>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Patchomatic Snapshot Packages
+Date: Wed, 28 Jan 2004 09:20:33 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040128082033.GK11761@sunbeam.de.gnumonks.org>
+References: <004c01c3e56b$58dc7490$db00a8c0@W2RZ8L4S02>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ryxcC3qb+ZSuPt6pqklH"
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40176ED9.4040607@epost.de>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cW0eHRJ76X8TDo3d"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <004c01c3e56b$58dc7490$db00a8c0@W2RZ8L4S02>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Nicole Haehnel <nicole.haehnel@epost.de>
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Jim Gifford <jim@jg555.com>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
 
---=-ryxcC3qb+ZSuPt6pqklH
-Content-Type: text/plain; charset=UTF-8
+--cW0eHRJ76X8TDo3d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Le mer 28/01/2004 =C3=A0 09:12, Nicole Haehnel a =C3=A9crit :
-> Hi,
->=20
-> I'm searching a logfileviewer or analyser for iptables
-> to view the output on a web server.
+On Tue, Jan 27, 2004 at 10:52:50PM -0800, Jim Gifford wrote:
+> I just noticed since Jan 11th, there have not been any snapshots of
+> patch-o-matic. Is this being discontinued??
 
-You can use ulog and see logs with ulog-php :
-	http://home.regit.org/ulogd-php.html
+no, there seems to be a problem with the script generating them.  I
+definitely updated that script when I reorganized the layout of the CVS
+tree, but there still seems to be a problem with it.
 
-BR,
+thank you for letting us know.
+
+I'll investigate.
+
+> Jim Gifford
+
 --=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
---=-ryxcC3qb+ZSuPt6pqklH
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
+--cW0eHRJ76X8TDo3d
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQBAF3B5nxA7CdMWjzIRAmABAJ9wxr6i+ZMjifC2F1IZWGBXv64nrwCeIIZW
-6H2TqAqE1mY5Ih9S3jZTwk4=
-=1Ilz
+iD8DBQFAF3DRXaXGVTD0i/8RAkBlAJ9/3F54JA4HNEogZc8bzpojIM3ubgCfXx70
+sjweTcA+zLiXtkDBGmiLtYc=
+=wNKU
 -----END PGP SIGNATURE-----
 
---=-ryxcC3qb+ZSuPt6pqklH--
+--cW0eHRJ76X8TDo3d--
 
