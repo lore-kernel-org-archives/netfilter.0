@@ -1,11 +1,13 @@
-From: "Bo Jacobsen" <subs@systemhouse.dk>
-Subject: Problem seperating FTP & ms-streaming traffic
-Date: Sun, 14 Mar 2004 22:49:41 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Problem seperating FTP & ms-streaming traffic
+Date: Sun, 14 Mar 2004 22:21:55 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c40a0e$450f0a50$de0aa8c0@comp>
+Message-ID: <200403142221.55622.Antony@Soft-Solutions.co.uk>
+References: <000d01c40a0e$450f0a50$de0aa8c0@comp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000d01c40a0e$450f0a50$de0aa8c0@comp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +20,32 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a problem allowing forwarding of passive internal ftp traffic =
-and, at the
-same time disallowing ms-streaming (port 1755).
+On Sunday 14 March 2004 9:49 pm, Bo Jacobsen wrote:
 
-Whenever I allow the passive ftp, it also allows ms-streaming going =
-through.
+> I have a problem allowing forwarding of passive internal ftp traffic and,
+> at the same time disallowing ms-streaming (port 1755).
+>
+> Whenever I allow the passive ftp, it also allows ms-streaming going
+> through.
+>
+> My rules are:
+>
+> iptables -A FORWARD -m state --state NEW,ESTABLISHED -s local_lan --sport
+> highports --dport ftp -j ACCEPT
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -s local_lan
+> --sport highports --dport highports -j ACCEPT
 
-My rules are:
+Those cannot be all of your rules.
 
-iptables -A FORWARD -m state --state NEW,ESTABLISHED -s local_lan =
---sport highports --dport ftp -j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -s local_lan =
---sport highports --dport highports -j ACCEPT
+Show us the rest of the rules and we might be able to suggest something.
 
-ms-streaming is a highport (1024:) but as there are no NEW in the second =
-rule, it should
-not apply to new ms-streaming connections.
+Antony.
 
+-- 
+Normal people think "If it ain't broke, don't fix it".
+Engineers think "If it ain't broke, it doesn't have enough features yet".
 
-Any idears=20
-
-Bo Jacobsen
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
