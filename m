@@ -1,11 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: excellent rule archive
-Date: Mon, 22 Dec 2003 07:37:42 -0500
+From: "Jan Kaastrup" <jka@protego.dk>
+Subject: PPTP and NAT
+Date: Mon, 22 Dec 2003 13:52:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1072096662.2076.323.camel@grendel>
+Message-ID: <005801c3c88a$7d599210$2d64a8c0@pcjka>
+References: <20031222104912.GH5058@obroa-skai.de.gnumonks.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031222104912.GH5058@obroa-skai.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>
 
-Greets all,
+Hi
+Are there anybody who has tried to connect with more than one client to
+a poptop VPN server, where the clients come from the same global
+ipadress? (doing SNAT)
 
-I figure Bill is too shy to point out all the excellent work he's done,
-but I thought list members would find it interesting. ;-)
+There seems to be a problem when i do that.
+I have solved the problem by putting another virtuel Ipaddress on the
+Poptop server and then make the client connect to each individuel
+Ipaddress, but it would really be nice if i could use the same.
 
-Check out Bill's firebrick project:
-http://www.stearns.org/firebricks/
-
-Firebrick is a set of independent modules that are designed to plug-in
-to an iptables firewall. Some of the cooler modules:
-
-* Filter legal but unallocated source IPs (common in spoof attacks)
-* Identify probing based on inbound scan patters as well as outbound
-unreachables
-* Check/record/drop odd packet sizes (like non-terminal fragments
-smaller than 512 bytes).
-* Filter out all loose and strict source route packets
-* When suspicious patterns are detected, drop and log all traffic from
-that IP for 30 seconds
-* Log SSH traffic using non-stand ports (other than 22/TCP)
-* Record internal servers by monitoring outbound SYN/ACKs
-
-There are others, but you get the idea. IMHO there are some extremely
-useful tweaks up there that people can use.
-
-HTH,
-C
-
+Does anyone now where the problem is - on the poptop servers firewall
+running iptables? or on the clients firewall (also running iptables)? . 
  
+Maybe it is the protocol that doesn't allow it, but I am not sure?
+
+Thanks a lot
+
+Regards
+Jan K
 
 
