@@ -1,11 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: NAT question
-Date: Fri, 11 Mar 2005 10:13:01 -0500
-Message-ID: <1110553981.4767.28.camel@hubcap.ljm.dom>
-References: <200503111356.j2BDuTHV004706@mail1.firstbhph.com>
+From: "Justin Piszcz" <jpiszcz@servervault.com>
+Subject: RE: NAT question
+Date: Fri, 11 Mar 2005 10:15:37 -0500
+Message-ID: <F8B974E70BDE1745ABB27AF04788FA000235AB@mail1.dulles.sv.int>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503111356.j2BDuTHV004706@mail1.firstbhph.com>
+Content-Transfer-Encoding: quoted-printable
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +16,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+
+It is either that or what I took from this thread is that he wants the
+actual public IP's behind his main machine.
+
+
+Router ----------> MAINBOX (public ip#1) ---------> BOX1 (public ip#2)
+                                         ---------> BOX2 (public ip#3)
+
+Is this the case?
+
+If so, it is possible but I have not personally tried it myself using an
+arp daemon so you basically send/forward the traffic to the other hosts.
+
+Check the networking options and help in the kernel configuration for
+more information.
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jason
+Opperisano
+Sent: Friday, March 11, 2005 10:13 AM
 To: netfilter@lists.netfilter.org
+Subject: Re: NAT question
 
 On Fri, 2005-03-11 at 08:56, Dimitri Yioulos wrote:
 > >> Hello, all.
-> >>  
-> >> I've recently set up iptables-1.2.8-12.3 on a CentOS 3.4 (RHEL AS 3) box.
-> >> Among other things, I've created a DMZ where my Web and mail servers
+> >> =20
+> >> I've recently set up iptables-1.2.8-12.3 on a CentOS 3.4 (RHEL AS
+3) box.
+> >> Among other things, I've created a DMZ where my Web and mail
+servers
 > >>live.
-> >> My problem is that my Web and mail servers identify themselves with the
+> >> My problem is that my Web and mail servers identify themselves with
+the
 > >> NAT
-> >> ip address that I've assigned   Here's my NAT rule: 
-> >> 
-> >>  IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source 
-> >> $INET_IP 
-> >> 
-> >> How can I get these two servers to identify themselves by their own ip
+> >> ip address that I've assigned   Here's my NAT rule:=20
+> >>=20
+> >>  IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source=20
+> >> $INET_IP=20
+> >>=20
+> >> How can I get these two servers to identify themselves by their own
+ip
 > >> addresses and still provide NAT for my users?
-> 
-> >specify the source address so that only packets from the inside network
+>=20
+> >specify the source address so that only packets from the inside
+network
 > >match the SNAT rule:
-> 
+>=20
 > >  iptables -t nat -A POSTROUTING -o $INET_IFACE -s $INSIDE_NET \
 > >    -j SNAT --to-source $INET_IP
-> 
-> 
+>=20
+>=20
 > Thanks to all for your replies!
-> 
-> I was hopeful about applying the above rule.  Internet connectivity is fine;
+>=20
+> I was hopeful about applying the above rule.  Internet connectivity is
+fine;
 > inbound mail is fine; outbound mail seems not to make it (if the list
-> receives this, it's because I rolled back to the original rule).  Does that
+> receives this, it's because I rolled back to the original rule).  Does
+that
 > make any sense?
-> 
+>=20
 > Dimitri
 
 are your web and mail servers NAT-ed as well?  it was unclear from your
@@ -89,5 +118,6 @@ HTH...   any sorry for misleading before.
 "Do you want to change your name to Homer Junior? The kids can call
  you Hoju!"
 	--The Simpsons
+
 
 
