@@ -1,7 +1,7 @@
-From: Luigi Corsello <mlreader@lucomp.net>
-Subject: Unicast packets to multiple destinations  -only-
-Date: Thu, 18 Nov 2004 10:48:35 +0100
-Message-ID: <419C6FF3.9070908@lucomp.net>
+From: Mattia Martinello <liste@mattiamartinello.com>
+Subject: Transparent gateway
+Date: Thu, 18 Nov 2004 11:56:34 +0100
+Message-ID: <419C7FE2.8060002@mattiamartinello.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,30 +18,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Netfilter ML <netfilter@lists.netfilter.org>
 
-Hi all,
+Hi,
 
-I got 3 IPs in one interface (ip addr add, not aliasing), and wanted to 
-only allow unicast packets to any of them (and/or their subnet in one 
-case, to allow broadcasts for the local net).
-Aim: no broadcasts, no multicast, spoofing prevention?.
+I'm using a netfilter gateway between my LAN and the server on the DMZ.
+This gateway makes a DNAT from 192.168.1.* to the external IP of the 
+server on the DMZ.
+Then, if I call http://[my external IP], the gateway makes a DNAT to 
+http://192.168.20.x (the internal DMZ IP of the server), through the 
+192.168.20.254 interface.
 
-You can't have multiple -d in rules. My quick solution was 3 tables
-(this is a sample):
+The problem is that when I call Apache on the server, Apache thinks that 
+I am 192.168.20.254, not 192.168.1.x.
+So, in the access logs the connection is made from the DMZ interface of 
+the gateway and not from the real IP address of the client.
+This make me some real problems about client autentication.
 
-iptables -N ta
-iptables -N tb
-iptables -N tc
+How I can I get my gateway transparent and solve this problem to let 
+Apache to write the correct IP address of the client in the logs?
 
-iptables -A tc -d ! $ip3 -j DROP
-iptables -A tb -d ! $ip2 -j tc
-iptables -A ta -d ! $ip1 -j tb
-
-iptables -A INPUT -j ta
-
-It works, much junk stays out.  All services work.
- From the list point of view, is this insane(a) stupid(b) or clever(c)? 
-and why?
-
-Cheers,
-/lc
+Thank you very much
+Bye
+Mattia.
 
