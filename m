@@ -1,12 +1,12 @@
-From: Bill Chappell <bill.chappell@critical.com>
-Subject: Re: Isolate a legacy machine
-Date: Thu, 16 Oct 2003 23:52:59 -0400
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: samba and iptables
+Date: Fri, 17 Oct 2003 11:55:11 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F8F679B.A8980DF4@critical.com>
-References: <B4B08E56FC7A304EB88DC4B97043921816EFBE@hqmail03.mpr.org>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8D53@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,85 +17,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-I will take a stab at this, with the expectation that
-if I do not understand the configuration needed,
-people will be kind.
-
-2 machines can have the same IP address (your 10.2.1.100)
-so long as there will be no confusion when another machine
-sends a packet to 10.2.1.100 as to which box is meant.
-
-Your "sneakernet" failover would definitely be do-able in
-this case.
-
-I have the sense that this will not exactly be the case.
-
-I just wiped out some thoughts on using MASQUERADE to
-hide the true IP address of the legacy box and DNAT
-to send traffic to the legacy box that is addressed 
-to the box that is doing the MASQUERADE-ing of outgoing 
-traffic from the legacy box because it falls apart when
-the box doing the MASQUERADE-ing can see both the legacy
-box and the proxy/firewall box at the same time.
-??? which box gets the traffic for 10.2.1.100 ??? 
-
-My last thought, which fits here, is that the above
-might work if you did it twice - hid the real IP address
-of both the legacy and the proxy/firewall boxes behind
-2 different IP addresses so no one box would see both
-the legacy and the proxy/firewall at the same time at
-the same IP address.
-This might be on the right path to a solution.
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
 
-(I use DNAT in -t nat PREROUTING to force all DNS traffic 
-to a specific DNS server, if that helps with part of
-your question.)
+Greetings!
+I still can't seem to make samba and iptables work properly.
+
+First connection - I need to turn iptables off
+Succeeding connections - I can turn iptables on
+
+I have done this already:
+$IPTABLES -A INPUT -p tcp -s 190.200.5.51 --dport 137:139 -j ACCEPT
+$IPTABLES -A INPUT -p udp -s 190.200.5.51 --dport 137:139 -j ACCEPT
+$IPTABLES -A INPUT -p tcp -s 190.200.5.51 --dport 445 -j ACCEPT
+
+It's being blocked in the 1st attempt so I need to turn iptables off to =
+make it work.
+Based on "iptables -nvL" the 3 lines above produce accepted packets.
+Now what else do I need to add to make the 1st transaction to work?
+
+By the way, I have 2 network cards. How do I know which one is being =
+used by samba?
+
+Please help me. Thanks.
 
 
-If you do not need the telnet and ftp functionality
-of the legacy box when it is acting as your sneakernet
-failover, and assuming that the time to change the
-IP address of the legacy machine is included in acceptable
-downtime, and assuming that MPR is not replete with
-extra boxes, Garrison Keillor's popularity notwithstanding,
-I would just put the legacy machine at a
-different IP address for normal use and change its IP
-address as part of the sneakernet failover process.
-
-Hope this helps.
-
-Bill Chappell
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
 
 
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
 
-"Ringer, Torleiv" wrote:
-> 
-> Hi there,
-> 
-> I am not exactly sure how this needs to be done...
-> 
-> I have a legacy machine that I need to isolate from our LAN. Network access to this machine will be limited to port forwarding of telnet, and a limited FTP access that will only be initiated locally on a proxy machine (which will also run the iptables).
-> 
-> Let's say that the legacy machine currently has address 10.2.1.100, and I would like my proxy/firewall to have the same address. I will be unplugging the legacy machine from the LAN, then assigning the proxy/firewall the same IP.
-> 
-> Can I isolate the 100 machine from the LAN, and keep the same IP? I need to do this for failover, so that if the proxy box goes down, I can just unplug the 100 machine from the proxy/firewall, and plug it back into the LAN. I would also be unplugging the proxy/firewall from the LAN at this point.
-> 
-> Can I port forward telnet from the LAN (eth0) side to the legacy (eth1) side where both the proxy machine and the legacy machine have the same IP but are isolated from each other? Is this impossible?
-> 
-> Torleiv Ringer
-> IT Support
-> Minnesota Public Radio
-> http://www.mpr.org
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
-
-
-
--- 
-William Chappell,     Software Engineer,     Critical Technologies, Inc.
-Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY
-13501
-315-793-0248  x148  < bill.chappell@critical.com >  www.critical.com
 
