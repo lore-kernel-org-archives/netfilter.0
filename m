@@ -1,10 +1,9 @@
-From: Dean Anderson <dean@av8.com>
-Subject: Re: (no subject)
-Date: Mon, 7 Feb 2005 00:24:17 -0500 (EST)
-Message-ID: <Pine.LNX.4.44.0502070009450.13062-100000@localhost.localdomain>
-References: <Pine.LNX.4.44.0502062232200.13062-100000@localhost.localdomain>
+From: Paolo Rossi <paolo_76@inwind.it>
+Subject: SNAT multicast packet
+Date: Mon, 07 Feb 2005 09:46:10 +0100
+Message-ID: <42072AD2.4090509@inwind.it>
 Mime-Version: 1.0
-In-Reply-To: <Pine.LNX.4.44.0502062232200.13062-100000@localhost.localdomain>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,172 +14,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Dean Anderson <dean@av8.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Ok, I fixed the openwrt problem. Turned out they had some of their own 
-netfilter patches. I turned those off, and used only the patch-o-matic-ng
-patchs, and things worked.
-
-These patches were distributed by openwrt to be applied against the 
-linksys kernel:  The first one is pretty substantial.
-
-wc 100-revert_netfilter.patch 
-   5834   22128  179845 100-revert_netfilter.patch
-wc 110-conntrack_setting.patch 
-     20      67     715 110-conntrack_setting.patch
-
-I'm not sure what the openwrt folks and/or linksys was thinking with
-these...  They worked on earlier versions of the linksys kernel... I
-suspect a distribution/versioning problem caused by the netfilter group.  
-There is very little documentation on the netfilter site about how the
-netfilter kernel modules should get updated. 
-
-Clearly, someone was very confused with these patches. It might be that
-linksys was confused earlier, and the openwrt folks were taking that out
-with their patches. Or maybe it is the other way around.  I don't know. It
-sure left me confused, and wondering wtf.
-
-Seems like there should be a better way to distribute kernel modules.  I 
-didn't intend to become a netfilter internals expert.
-
-		--Dean
-
-On Sun, 6 Feb 2005, Dean Anderson wrote:
-
-> I'm trying to build openWRT (www.openwrt.org) using a new kernel from 
-> linksys.  The kernel claims that it is 2.4.20, but it seems to have some 
-> modifications, preventing netfilter from applying patches.
-> 
-> I want to run iptables 1.2.11, and need (of course) the matching kernel
-> modules.  Is there is "complete file" (ie non-patch) distribution of the
-> netfilter kernel modules?  I couldn't find one on the ftp.netfilter.org 
-> site, nor on the website.
-> 
-> Thanks
-> 
-> 		--Dean
-> 
-> #ignore whitespace in patches
-> /mnt1/openWRT.20050205/buildroot/build_mipsel/staging_dir/bin/sed -i -e 
-> "s,\-p1,\-l \-p1," 
-> /mnt1/openWRT.20050205/buildroot/build_mipsel/patch-o-matic-ng-20050206/runme
-> touch 
-> /mnt1/openWRT.20050205/buildroot/build_mipsel/patch-o-matic-ng-20050206/.unpacked
-> /mnt1/openWRT.20050205/buildroot/sources/patch-kernel.sh 
-> /mnt1/openWRT.20050205/buildroot/build_mipsel/WRT54G_3_01_3_0922/release/src/linux/linux 
-> /mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches
-> 
-> Applying 
-> /mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches/100-revert_netfilter.patch 
-> using plaintext: 
-> patching file include/linux/netfilter_ipv4/ip_conntrack.h
-> Hunk #1 FAILED at 45.
-> Hunk #2 FAILED at 77.
-> Hunk #3 succeeded at 261 (offset 3 lines).
-> 2 out of 3 hunks FAILED -- saving rejects to file 
-> include/linux/netfilter_ipv4/ip_conntrack.h.rej
-> patching file include/linux/netfilter_ipv4/ip_conntrack_h323.h
-> patching file include/linux/netfilter_ipv4/ip_conntrack_mms.h
-> patching file include/linux/netfilter_ipv4/ip_conntrack_pptp.h
-> patching file include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h
-> Reversed (or previously applied) patch detected!  Assume -R? [n] 
-> Apply anyway? [n] 
-> Skipping patch.
-> 1 out of 1 hunk ignored -- saving rejects to file 
-> include/linux/netfilter_ipv4/ip_conntrack_proto_gre.h.rej
-> patching file include/linux/netfilter_ipv4/ip_conntrack_tftp.h
-> patching file include/linux/netfilter_ipv4/ip_conntrack_tuple.h
-> patching file include/linux/netfilter_ipv4/ip_nat_pptp.h
-> patching file include/linux/netfilter_ipv4/ip_pool.h
-> patching file include/linux/netfilter_ipv4/ipt_pool.h
-> patching file net/ipv4/netfilter/Config.in
-> Hunk #1 FAILED at 7.
-> Hunk #2 succeeded at 18 (offset 1 line).
-> Hunk #4 FAILED at 56.
-> Hunk #5 succeeded at 75 (offset 8 lines).
-> 2 out of 6 hunks FAILED -- saving rejects to file 
-> net/ipv4/netfilter/Config.in.rej
-> patching file net/ipv4/netfilter/Makefile
-> Hunk #1 FAILED at 31.
-> Hunk #2 succeeded at 63 (offset 5 lines).
-> Hunk #4 succeeded at 94 (offset 5 lines).
-> 1 out of 4 hunks FAILED -- saving rejects to file 
-> net/ipv4/netfilter/Makefile.rej
-> patching file net/ipv4/netfilter/ip_conntrack_core.c
-> patching file net/ipv4/netfilter/ip_conntrack_ftp.c
-> patching file net/ipv4/netfilter/ip_conntrack_h323.c
-> patching file net/ipv4/netfilter/ip_conntrack_mms.c
-> patching file net/ipv4/netfilter/ip_conntrack_pptp.c
-> Reversed (or previously applied) patch detected!  Assume -R? [n] 
-> Apply anyway? [n] 
-> Skipping patch.
-> 1 out of 1 hunk ignored -- saving rejects to file 
-> net/ipv4/netfilter/ip_conntrack_pptp.c.rej
-> patching file net/ipv4/netfilter/ip_conntrack_pptp_priv.h
-> patching file net/ipv4/netfilter/ip_conntrack_proto_gre.c
-> Reversed (or previously applied) patch detected!  Assume -R? [n] 
-> Apply anyway? [n] 
-> Skipping patch.
-> 1 out of 1 hunk ignored -- saving rejects to file 
-> net/ipv4/netfilter/ip_conntrack_proto_gre.c.rej
-> patching file net/ipv4/netfilter/ip_conntrack_proto_tcp.c
-> Hunk #3 FAILED at 186.
-> Hunk #4 succeeded at 210 (offset 7 lines).
-> 1 out of 4 hunks FAILED -- saving rejects to file 
-> net/ipv4/netfilter/ip_conntrack_proto_tcp.c.rej
-> patching file net/ipv4/netfilter/ip_conntrack_proto_udp.c
-> patching file net/ipv4/netfilter/ip_conntrack_standalone.c
-> patching file net/ipv4/netfilter/ip_conntrack_tftp.c
-> patching file net/ipv4/netfilter/ip_nat_core.c
-> patching file net/ipv4/netfilter/ip_nat_h323.c
-> patching file net/ipv4/netfilter/ip_nat_helper.c
-> Hunk #8 FAILED at 208.
-> 1 out of 8 hunks FAILED -- saving rejects to file 
-> net/ipv4/netfilter/ip_nat_helper.c.rej
-> patching file net/ipv4/netfilter/ip_nat_mms.c
-> patching file net/ipv4/netfilter/ip_nat_pptp.c
-> Reversed (or previously applied) patch detected!  Assume -R? [n] 
-> Apply anyway? [n] 
-> Skipping patch.
-> 1 out of 1 hunk ignored -- saving rejects to file 
-> net/ipv4/netfilter/ip_nat_pptp.c.rej
-> patching file net/ipv4/netfilter/ip_nat_proto_gre.c
-> Reversed (or previously applied) patch detected!  Assume -R? [n] 
-> Apply anyway? [n] 
-> Skipping patch.
-> 1 out of 1 hunk ignored -- saving rejects to file 
-> net/ipv4/netfilter/ip_nat_proto_gre.c.rej
-> patching file net/ipv4/netfilter/ip_nat_standalone.c
-> patching file net/ipv4/netfilter/ip_nat_tftp.c
-> patching file net/ipv4/netfilter/ip_pool.c
-> patching file net/ipv4/netfilter/ip_tables.c
-> patching file net/ipv4/netfilter/ipchains_core.c
-> patching file net/ipv4/netfilter/ipfwadm_core.c
-> patching file net/ipv4/netfilter/ipt_ECN.c
-> patching file net/ipv4/netfilter/ipt_LOG.c
-> patching file net/ipv4/netfilter/ipt_REJECT.c
-> patching file net/ipv4/netfilter/ipt_ULOG.c
-> patching file net/ipv4/netfilter/ipt_multiport.c
-> patching file net/ipv4/netfilter/ipt_pool.c
-> patching file net/ipv6/mcast.c
-> patching file include/linux/ppp-comp.h
-> Patch failed!  Please fix 
-> /mnt1/openWRT.20050205/buildroot/sources/openwrt/kernel/netfilter/patches/100-revert_netfilter.patch!
-> make: *** 
-> [/mnt1/openWRT.20050205/buildroot/build_mipsel/WRT54G_3_01_3_0922/release/src/linux/linux/.nf-patched] 
-> Error 1
-> 
-> 
-> 
-
--- 
-Av8 Internet   Prepared to pay a premium for better service?
-www.av8.net         faster, more reliable, better service
-617 344 9000   
+Hi all,
 
 
+I have a trouble with netfilter. I need to perform a SNAT to outgoing multicast packet. Multicast packet come from 
+private network and i can't annunce this private source network in my routing domain. Because my network manage 
+multicast traffic with PIM-SM protocol and PIM perform RPF (reverse path forwarding), the clients can't see the 
+multicast traffic. I've read that netfilter don't support multicast SNAT, why?
 
+Is there someone can hel me?
+
+
+Thanks
+
+
+Best wishes
+
+
+Paolo
 
