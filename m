@@ -1,14 +1,19 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: conntrack idle timeout
-Date: Tue, 25 Feb 2003 22:42:06 -0500
+From: Jason <baker@cyborgworkshop.com>
+Subject: Re: chance to impress the suits
+Date: Fri, 28 Feb 2003 20:04:44 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302252242.06586.netfilter@newkirk.us>
-References: <3E5C2FE4.3010007@slamb.org>
-Reply-To: netfilter@newkirk.us
+Message-ID: <Pine.LNX.4.50.0302282003460.20817-100000@alfred.home.cyborgworkshop.com>
+References: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
+ <200302270201.04762.netfilter@newkirk.us> <20030227134810.7728c8d5.arnt@c2i.net>
+ <Pine.LNX.4.50.0302270811550.19694-100000@alfred.home.cyborgworkshop.com>
+ <20030228014041.7394bcfa.arnt@c2i.net>
+ <Pine.LNX.4.50.0302271518100.19962-100000@alfred.home.cyborgworkshop.com>
+ <20030228173420.1a1bdc11.arnt@c2i.net>
+ <Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.com>
+ <20030228202435.62be6828.arnt@c2i.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E5C2FE4.3010007@slamb.org>
+In-Reply-To: <20030228202435.62be6828.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +23,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Scott Lamb <slamb@slamb.org>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Arnt Karlsen <arnt@c2i.net>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 25 February 2003 10:09 pm, Scott Lamb wrote:
-> Is there a way to control the time it takes for an idle, established
-> TCP session to be purged from conntrack's state tables? I'm looking
-> for the something like "ipchains -M -S". I saw at
-> <http://www.syrlug.org/contrib/ipmasq.html> that there is no iptables
-> equivalent, but I'm hoping it's changed since then. Maybe there's a
-> sysctl or something?
+> ..an idea: limit the number of connections to a level the authorized
+> dos attack app _can_ handle, and to reject or reset rather than
+> dropping connections?
 
-/proc/sys/net/ipv4/netfilter/ip_ct_tcp_timeout_established does this, if=20
-you have tcp-window-tracking from patch-o-matic installed.  However, the=20
-default timeout apparently is 5 days, so I doubt this is the source of=20
-the problem.
-
-j
-
-> The problem I'm experiencing is pretty simple. I leave ssh sessions
-> open for a while (possibly several hours). I come back to them and get
-> a "Connection reset by peer" error and have to open a new session.
-> Back when I used ipchains, "iptables -M -S 86400 10 60" or similar
-> solved the problem for me.
->
-> Thanks,
-> Scott Lamb
-
+That is what I hope to do with the iptables box running iplimit.  Except
+instead of rejecting the connections Im going to redirect users to a
+static page that just pretty much says "we're busy try again"
 
