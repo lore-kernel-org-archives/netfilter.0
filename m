@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Path to configure stateless DNAT with iptables ?
-Date: Wed, 2 Oct 2002 22:10:05 +0100
+From: Bob Keyes <bob@sinister.com>
+Subject: assymetrical routing, iptables problem.
+Date: Wed, 2 Oct 2002 22:15:09 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021002211008.SCLE28874.mta06-svc.ntlworld.com@there>
-References: <20021002203429.512C2681B4@engenho.terra.com.br>
+Message-ID: <Pine.BSO.4.33L0.0210022200040.16901-100000@sinister.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021002203429.512C2681B4@engenho.terra.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +14,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wednesday 02 October 2002 9:34 pm, Rodrigo Senra wrote:
 
->  I need to do DNAT changing destination to a single
->  ip-address for every non-marked packet.
+Hello All,
+due to some unfortunate issues in dealing with Network Solutions, I have a
+machine that cannot have its address changed, though it has moved. While I
+am trying to rectify this, I am attempting to use iptables to redirect
+that traffic to the machine's new home.
 
-Sounds easy enough...
+Routers on both sides are linux. Router 'A' is on the old network,
+designated here as 1.1.1.1, and the computer 'B' is on 2.2.2.2, the new
+network. The new network has teh ability to send out packets with any
+source address, i.e. the ISP does not do IP source filtering. Also, I only
+need to have http functioning here, but I need to have it working on both
+addresses on the A and B networks. Apache is listening on port 8000 as
+well as 80.
 
->  I mark the packets in mangle table, I DNAT in nat table...
->  that would suffice but I need it to be stateless instead of
->  stateful! Tolerating conntrack overhead (in my case) is too
->  expensive.
 
-Why do you say that ?
 
-1. What overhead is connection tracking adding to simple stateless DNAT ?
+on A:
 
-2. How do you propose to handle SNAT of reply packets if you turn off 
-connection tracking (is the overhead of this acceptable) ?
+# iptables -t nat -A PREROUTING -d 1.1.1.1 -p tcp --destination-port 80 \
+  -j DNAT --to-destination 2.2.2.2:8000
 
-3. What sort of machine do you have and what volume of packets are you trying 
-to shovel through it ?
+Redirects packets destined for 1.1.1.1 port 80 to 2.2.2.2 port 8000. This
+is a way to 'tag' the packets (I opted against using any TCP options, as
+routers/firewalls along the way may play with said options).
 
->  The question is...how can I disable conntrack for DNAT ?
+on B:
 
-Well, you can simply disable connection tracking, but that will affect more 
-than just DNAT...
+# iptables -t nat -A POSTROUTING -s 2.2.2.2 -p tcp --source-port 8000 -j \
+  SNAT --to-source 1.1.1.1:80
 
->  (a) there is a secret switch ? (not very likely ;o)
+This translates the source back to it's proper address for the right
+packets and sends it out.
 
-Yes - the switch is whether you say Yes or No to the question "Connection 
-Tracking ?" when you comple your kernel :-)
+The problem is, the latter half of this doesn't work. What I really want
+is SNAT in OUTPUT, as I believe that POSTROUTING won't touch packets that
+originate on the local machine. Of course I could stick another linux
+system inbetween the web server B and the T1 router, but I'd rather not
+waste the space/electricity/time.
 
-I'm intrigued as to what you are doing and why you think connection tracking 
-is generating too much overhead on your machine to be acceptable.
+Any bright ideas?
 
-Antony.
-
--- 
-
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
 
