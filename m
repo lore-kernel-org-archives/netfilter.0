@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: opening a port..
-Date: Thu, 9 Jan 2003 11:35:15 +0100
+From: Upma Gandhi <upma@networkprograms.com>
+Subject: Re: marking all h323 packets with some TOS
+Date: Thu, 09 Jan 2003 17:13:09 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019AA4@hslex01.hslbz.local>
-References: <1042105878.487.40.camel@nirvana>
+Message-ID: <3E1D604D.18388311@networkprograms.com>
+References: <3E1D2F29.6443D681@networkprograms.com> <1042101858.26554.125.camel@rayw.knowledgefactory.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1042105878.487.40.camel@nirvana>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +17,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: raymondl@knowledgefactory.co.za, netfilter <netfilter@lists.netfilter.org>
 
+Hello Raymond,
+       Thanks for your help.
+Modules are not missing and they are compiled also.
+But one doubt , in ip_conntarck_in function of ip_conntrack_core.c file.
+        When it lokks for ct-helper, it's address is 0, means that helper are
+not register.
+       But I've compiled h323& rtc helper, as I'm very new to
+iptables/netfilter, I don't have any idea what does this means ?
 
-> ok heres my current script, yes its inefficient, but thats 
-> not the major problem.. 4662 port :/ I relise that theres 
-> more ports available for edonkey to use, but opening ONE port 
-> would be a start.
-> 
-> i added "iptables -A FORWARD -m state --state 
-> RELATED,ESTABLISHED -j ACCEPT" without anything happening...
-> 
+Regards
+Upma
 
-<snip>
+Raymond Leach wrote:
 
-> iptables -A FORWARD -o eth1 -p udp --dport 4665 -j ACCEPT 
-> iptables -A FORWARD -o eth0 -p udp --dport 4665 -j ACCEPT 
-> iptables -A FORWARD -o eth0 -p udp --sport 4665 -j ACCEPT 
-> iptables -A FORWARD -o eth1 -p udp --sport 4665 -j ACCEPT 
-> iptables -A FORWARD -o eth1 -p tcp --sport 4665 -j ACCEPT 
-> iptables -A FORWARD -o eth0 -p tcp --sport 4665 -j ACCEPT
-> 
-
-Okay, let's leave these rules alone for a moment.
-*IS* your eDonkey server running/listening. If you do a netstat -an *on
-the machine that's supposed to be running eDonkey* (you don't need
-netcat to do this) then it must report one (or more) ports belonging to
-eDonkey as listening .
-If not, you can try whatever you want but it won't work ; you will never
-connect, not even local. Forwarding is not going to help you then and
-AFAIK you can't test if forwarding is working (which doesn't say it's
-impossible ; I just don't know how).
-
-Besides, going back to the ruleset, I don't see an "echo 1 >
-/proc/sys/net/ipv4/ip_forward". You may have setup the rules correctly
-but it's not going to forward anything untill you did the above "echo".
-
-
-Rob
+> Sounds like it doesn't understand the -j FTOS. Maybe a missing module or
+> not compiled into the kernel?
+>
+> On Thu, 2003-01-09 at 10:13, Upma Gandhi wrote:
+> > Hello All,
+> >          I have a following setup
+> >
+> > Internet <-> Router with netfilter configure <-> LAN(192.9.201.0/24)
+> >
+> > lets supopose eth0 is LAN side Interface and
+> > eth1 is WAN side interface.
+> >
+> > what I want to do is "Mark all h323 packets with some tos value".
+> > for which my iptables  command seems to be like this-
+> >      iptables -t mangle -A FORWARD -o eth0 -d 192.9.201.0/24 -p tcp -m
+> > rtp -j FTOS --set-ftos 0xb8.
+> >
+> > but it's giving an error message -
+> > iptable: No chain/target/match by tha rule.
+> >
+> > Can anybody help me out.
+> >
+> > Thanks & Regards
+> > Upma
+> >
+> --
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> (  Raymond Leach                       )
+>  ) Knowledge Factory                  (
+> (                                      )
+>  ) Tel: +27 11 445 8100               (
+> (  Fax: +27 11 445 8101                )
+>  )                                    (
+> (  http://www.knowledgefactory.co.za/  )
+>  ) http://www.saptg.co.za/            (
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    o                                o
+>     o                              o
+>         .--.                  .--.
+>        | o_o|                |o_o |
+>        | \_:|                |:_/ |
+>       / /   \\              //   \ \
+>      ( |     |)            (|     | )
+>      /`\_   _/'\          /'\_   _/`\
+>      \___)=(___/          \___)=(___/
+>
+>   ------------------------------------------------------------------------
+>                        Name: signature.asc
+>    signature.asc       Type: application/pgp-signature
+>                 Description: This is a digitally signed message part
 
 
