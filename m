@@ -1,10 +1,11 @@
-From: Piotrek Kaczmarek <kaczorek@k.daleka.net>
-Subject: conntrack error
-Date: Fri, 11 Feb 2005 11:55:19 +0100
-Message-ID: <20050211105519.GA14110@daleka.net>
+From: Mayank Jain <majanx@gmail.com>
+Subject: Access computer behind firewall from outside
+Date: Fri, 11 Feb 2005 12:21:55 +0100
+Message-ID: <cf793486050211032163a15db1@mail.gmail.com>
+Reply-To: Mayank Jain <majanx@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-I encountered the following situation - when there are around 20000 connections
-"cat /proc/net/ip_conntrack" doesn't display all connections and outputs
-"cat: No space left on device" error. If I patch kernel with POM and 'nth' module
-(only patch, don't load the module) the same happens around 17000 connections.
-It happenes both with 2.6.9 and 2.6.10 kernels.
+Hi
+I am relatively new to iptables and i have querry. 
+I want to access my Fedora 3 home machine , which is behind a red hat
+7.3 firewall running iptables, from computer at work place. i want to
+be able to access at work some files i have on my home computer. i
+have a DSL connection, so iam practically always online. i have one
+public ipaddress at the firewall end. inside of the firewall, i use
+private ipaddresses. there are 10 other computers in the network but i
+just need access to my one computer.
+how cud i get around to doing that? does the solution depend on the
+type of service i want to access, like for ex. ftp, http, file
+sharing?
+also, i wud like to know which file shud one edit to add iptable rules.
 
-Why is it so? Is this matter of memory limit or something else?
-
-Thank you in advantage,
-
--- 
-Piotrek Kaczmarek
+thank you,
+Mayank.
 
