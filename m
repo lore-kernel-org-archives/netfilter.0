@@ -1,13 +1,13 @@
-From: <dummy1@gazeta.pl>
-Subject: Re: Masquerade stopped working?!?!
-Date: Sun, 03 Aug 2003 20:12:02 +0200
+From: "Ian McBeth" <imcbeth@telus.net>
+Subject: forwarding based on hostname
+Date: Sun, 3 Aug 2003 14:09:40 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059934343831.ew5.dummy1@gazeta.pl>
-References: <200308031332.12304.Alistair@nerdnet.ca>
+Message-ID: <000001c359fb$2c7c68c0$8c01a8c0@blackice3>
+References: <FDEMKKNJDLAJDPNDPCDDKEDINFAA.georgev@citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200308031332.12304.Alistair@nerdnet.ca>
+In-Reply-To: <FDEMKKNJDLAJDPNDPCDDKEDINFAA.georgev@citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> > box. I have done logging:
-> > iptables -A FORWARD -o eth0 -j LOG
-> > and the results are like this:
-> > IN=eth1 OUT=eth0 SRC=10.1.1.14 DST=212.77.100.101 LEN=60 
-TOS=0x00
-> > PREC=0x00 TTL=63 ID=24078 DF PROTO=TCP SPT=32777 DPT=80 
-WINDOW=2144
-> > RES=0x00 SYN URGP=0
-> > I have added logging incoming packets:
-> > iptables -A INPUT -i eth0 -j LOG
-> > and... silence. No packet are coming back.
-> 
-> If the packets LEFT via the FORWARD chain, they should come BACK 
-through the
->  FORWARD chain (if nat is working).  if you used -A to add the 
-logging rule in
-> the FORWARD chain
->         it is the last rule in the chain.
->  try
->         iptables -I FORWARD 1 -o eth0 -j LOG --log-prefix 
-Forward_out:
->  iptables -I FORWARD 1 -i eth0 -j LOG --log-prefix Forward_in:
-> 
->  (unnnnhhh someone doublecheck the syntax on that for me .. I'm 
-half asleep)
-> 
->  to catch packets in BOTH directions on the FORWARD chain.
+Hello
 
-You are right so I correct logging rules using your tips, but logs 
-still say that packets are going in one direction:
-Forward_out:IN=eth1 OUT=eth0 SRC=10.1.1.14 DST=212.126.20.69 LEN=48 
-TOS=0x00 PREC=0x00 TTL=127 ID=4252 DF PROTO=TCP SPT=1116 DPT=80 
-WINDOW=16384 RES=0x00 SYN URGP=0
-and no logs with prefix Forward_in: :-(
+I have an issue where I have forwarded the ports to an internal mail
+server.  Based off ip it works but when you get the hostname in there it
+seems to get lost.  No error is given just hangs and outlook says the
+connection was interrupted.
 
+Using cat /proc/net/ip_conntrack it does not even appear to be
+connecting.
 
+Any help would be great as I am kind of new at iptables NAT
+configurations.
+
+Thanx
+
+Ian McBeth
+
+p.s. I have not really looked to deeply into this but can you forward
+based off hostnames to your internal network?
+
+e.g.
+mail.domainname.net --> NAT --> 192.168.0.x
 
 
 
