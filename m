@@ -1,11 +1,12 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: Re: HUP
-Date: Thu, 17 Mar 2005 14:24:53 +0200
-Message-ID: <42397715.1030309@eccotours.dyndns.org>
-References: <200503171203.j2HC3ENW024507@smtp26.wxs.nl>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: ARP traffic on a large-ish network
+Date: Thu, 17 Mar 2005 10:24:38 -0500
+Message-ID: <1111073077.19251.12.camel@hubcap.ljm.dom>
+References: <42B3C34A03A8FC4BB0A80082CE8993F31C1C25@onstopnt.onestop.com>
+	<423939F6.3070108@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503171203.j2HC3ENW024507@smtp26.wxs.nl>
+In-Reply-To: <423939F6.3070108@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Sietse van Zanen wrote:
-> Then indeed ip_conntrack must have a faulty connection in a bucket
-> somewhere. You might be able to get rid of it by flushing your tables
-> (reloading the firewall). Or rmmod the iptables modules.
-> 
-> I wouldn't worry too much about it though. It's probably the M$ client
-> behaving badly, not sending FINs correctly, or something like that. Many M$
-> clients are known to not close their connections correctly. It could
-> ofcourse also be a network hick-up, causing the client to forcably
-> disconnect but never closing the connection on TCP/IP level.
-> 
-> A reboot or reloading of the ip_conntrack module should fix it. Again, don't
-> worry too much about it. Better make sure your Terminal Services are
-> configured with idle session time-out limits etc.
+On Thu, 2005-03-17 at 03:04, Grant Taylor wrote:
+> You *might* try inserting a Linux router in the network between your Cisco and all your clients.  The main things this router would do is run the ARPDaemon which implements a LARGE ARP cache in user space.  Thus hopefully you could configure it to hold most if not all of your client's MAC addresses in it's internal tables thus reducing the need to ARP.  The Linux kernel's internal ARP cache maxs out at around 256 entries.  I don't know if this would work at all as all references to ARP Daemon I've seen are early 2.4 but support for it is still suppose to be in the kernel.  I just looked and it is included in 2.6.11 under "Networking Options".  Let me know if you try this and what you find out as I've got a network with about 2048 potential hosts on it that I'm considering using this on.
 
-HI Sietse
+VLAN it and route it before that "potential" becomes "reality."
 
-A big thanks for this. Suppose im been a bit looney about this.
+line-wrapping your messages would be a nice touch as well.
 
-Suppose I should wait for the TTL to kick in (Wonder why its so high though)
-192.168.10.100,3389                            tcp     ESTABLISHED 
-70:09:29
+-j
 
-Thanks again.
-
-Brent Clark
-
+--
+"If I had known there were loose women in Las Vegas, I would never
+ have let you go."
+	--The Simpsons
 
 
