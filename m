@@ -1,9 +1,9 @@
-From: "Luis Nieto" <luismnieto@gmail.com>
-Subject: VoIP through IPTABLES y IPROUTE
-Date: Fri, 18 Feb 2005 11:57:29 -0300
-Message-ID: <002a01c515ca$2ae7d260$0700a8c0@sistema2>
+From: Mohammad Khan <mkhan@lextranet.com>
+Subject: Let me understand *RETURN*
+Date: Fri, 18 Feb 2005 11:15:58 -0500
+Message-ID: <1108743358.9509.12.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,28 +14,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'netfilter' <netfilter@lists.netfilter.org>
+
+I have couple of chains and rules for filter table
+
+-N TCP_IN
+-N TCP_OUT
+-N UDP_IN
+-N UDP_OUT
+-N ICMP_IN
+-N ICMP_OUT
+
+-N P1_IN
+-N P1_OUT
+-N P2_IN
+-N P2_OUT
+
+-A FORWARD -d IP_OF_P1 -j P1_IN
+-A FORWARD -s IP_OF_P1 -j P1_OUT
+
+-A FORWARD -d IP_OF_P1 -j P1_IN
+-A FORWARD -s IP_OF_P1 -j P1_OUT
+-A FORWARD -j LOG --log-prefix "NOT_FORWARDED "
+-A FORWARD -j DROP
+
+-A P1_IN -t TCP -j TCP_IN
+-A P1_IN -t UDP -j UDP_IN
+-A P1_IN -t ICMP -j ICMP_IN
+-A P1_IN -j RETURN
+
+-A TCP_IN -t TCP --dport 80 -J ACCPET
+-A TCP_IN -j RETURN
+
+For any tcp packet that going to P1 and don't have destination port 80: 
+
+returned to P1_IN chain from TCP_IN chain, then after
+returned to FORWARD chain from P1_IN, and finally
+dropping the packet after kept log.
+
+Am I right?
+
+MOhammad
 
 
-I have a Firewall in a debian woddymade with iptables and iproute2 since =
-I have routed two internet lines ADSL and cablemodem. I had to re direct =
-ports and I have not got any problems, ports 80, 23, 5493,4899. The =
-problem is that i have installed a VolP device so I had to re direct all =
-ports of  Volp  sevices (1719:1748) and I have been required =
-12000:12002, the connection with 1719 works successfully  but to =
-register the Volp device I need the 1720 port and I can not make the =
-connection, any ideas to help me, please?  help would be appreciated !!! =
-Thanks,
 
-Espa=F1ol:  =20
-Tengo un Firewall en un debian woddy realizado con iptables y iproute ya =
-que routeo entre dos lineas de internet ADSL y cablemodem. He tenido que =
-redireccionar puertos antes y no he tenido problemas ya que he =
-redirecionado puerto como el 80, 23, 5493, 4899. El problema se me =
-presenta ya que han instalado un equipo de VoIP y tengo quw =
-redicrecionar todos los puertos de VoIP 1719:1748 y me pidieron el =
-12000:12002, la conexion con 1719 se realiza correctamente pero para =
-registrar el equipo nesecito el puerto 1720 y no puedo lograr la =
-conexion alguien ha tenido este problema o algo parecido? Gracias por su =
-tiempo
+
