@@ -1,15 +1,13 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: [netfilter-core] Re: [ANNOUNCE] netfilter.org systems downtime
-Date: Fri, 22 Aug 2003 19:54:42 +0200
+From: Jean-Rene Cormier <jean-rene.cormier@cipanb.ca>
+Subject: Re: Blocking Kazaa
+Date: 22 Aug 2003 14:32:40 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030822175442.GK11901@sunbeam.de.gnumonks.org>
-References: <20030822144105.GE11901@sunbeam.de.gnumonks.org> <3F4633AE.8010801@trama.com>
+Message-ID: <1061573560.17418.27.camel@forbidden.cipanb.ca>
+References: <20030822172349.57139.qmail@web40203.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="w+ok4pmHMnU+ibn4"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3F4633AE.8010801@trama.com>
+In-Reply-To: <20030822172349.57139.qmail@web40203.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Herbert G. Fischer" <herbert@trama.com>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: netfilter@lists.netfilter.org
+
+I haven't checked the source ports but I doubt after all they did to get
+around firewalls that they would put fixed source ports. Though I'll
+check it out, you never know.
+
+Jean-Rene Cormier
 
 
---w+ok4pmHMnU+ibn4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 2003-08-22 at 14:23, SBlaze wrote:
+> I don't know much about Kazzaa I never used it...but you said you checked the
+> connection ports right? What about source ports. Check both the source and the
+> destination port(s) and see if you see any consistencies. Sometimes you don't
+> need to block ALL ports just the ones that initiate a connection.
+> 
+> Hope this helps
+> SBlaze
+> 
+> --- Jean-Rene Cormier <jean-rene.cormier@cipanb.ca> wrote:
+> > Anybody know a way of blocking Kazaa? I've tried the string matching way
+> > but it doesn't seem to work. I tried logging all connections from  my
+> > windows desktop so I could see to which port it connects and it connects
+> > to so many different port that you basically need to block ports 1000 to
+> > 4000 but after that it connects to port 80 which obviously I can't
+> > block. I installed ethereal on the windows desktop to check which string
+> > I could filter but couldn't find anything useful.
+> > 
+> > Anybody have an idea what can be done? I'm thinking another option would
+> > be to block the IP of the servers but there seem to be quite a list...
+> > that's if it doesn't just try some random IPs...
+> > 
+> > Jean-Rene Cormier
+> > 
+> > 
+> 
+> 
+> =====
+> "Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
+> 
+> __________________________________
+> Do you Yahoo!?
+> Yahoo! SiteBuilder - Free, easy-to-use web site design software
+> http://sitebuilder.yahoo.com
 
-On Fri, Aug 22, 2003 at 12:15:58PM -0300, Herbert G. Fischer wrote:
-> I'm very sorry...
-
-> Yesterday I was doing a new firewall and I found no netfilter.org mirror
-> working. Not even netfilter.samba.org was working correctly... lots of 40=
-4s.
-
-http://netfilter.gnumonks.org is always up-to-date.
-
-> I also never heard of a workshop that worked 24 hours during some=20
-> days... Maybe some SMS cellphone warnings could monitor some systems...
-
-I was aware of the downtime.  The problem was just that I'd rather meet
-with the coreteam to discuss further develeopment (which is a once-every
-two year opportunity) than fixing a broken server.
-
-> This problem have something to do with hardware related problems ???=20
-> Power breakdown ???
-
-no.
-
-> Indeed... if you need some help... here I'm
-
-thanks, we're fine now.
-
-> Herbert
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---w+ok4pmHMnU+ibn4
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/RljiXaXGVTD0i/8RAqvDAJ4wwWIkIA5T0UkDbgi7U4c2FJdc0gCfflKU
-+GKGFTFxLurEqfXSdiZrIUg=
-=fbO/
------END PGP SIGNATURE-----
-
---w+ok4pmHMnU+ibn4--
 
