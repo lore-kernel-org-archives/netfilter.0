@@ -1,14 +1,11 @@
-From: Ola Nilsson <ola@fam-nilsson.org>
-Subject: Re: IPSec through my firewall
-Date: Wed, 16 Feb 2005 19:08:31 +0100
-Message-ID: <87k6p8gyxs.fsf@helmut.nilsson.homedns.org>
-References: <200502151715.j1FHFtfO029324@pepsi.fishpuppy.com>
-	<200502160129.26423.rowdy@com> <4213200C.9060108@hotpop.com>
-	<87r7jgwu3x.fsf@helmut.nilsson.homedns.org>
-	<20050216145936.25916.qmail@mail.norac.net>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: site not seen through squid
+Date: Wed, 16 Feb 2005 13:19:43 -0500
+Message-ID: <20050216181943.GA24001@bender.817west.com>
+References: <20050216155116.GA3520@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
-In-Reply-To: <20050216145936.25916.qmail@mail.norac.net> (Jean Caron's
-	message of "Wed, 16 Feb 2005 09:59:36 -0500")
+Content-Disposition: inline
+In-Reply-To: <20050216155116.GA3520@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,42 +18,40 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jean Caron <caronj@norac.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-"Jean Caron" <caronj@norac.net> writes:
-> Ola, Your problem is directly related to NAT. You can not use NAT. ESP
-> will not establish any security association if the source or
-> destination address have been modified, which is exactly what NAT does
-> to your packets. In order for this to work, you need to encapsulate
-> your ESP (IPsec) traffic within either UDP or TCP. NAT-Traversal does
-> this. Different vendors implement this using different ports.protocol,
-> but essentially they are encapsulating the orignal packets, hiding the
-> info from NAT. The iptable rules above are exactly what you'd need if
-> the tunnel was terminating ON the firewall. But to terminate it PAST
-> the firewall, unless you use public addresses everywhere (no NAT), you
-> will need to encapsulate, and define approriate (additional) rules on
-> your firewall fot the NAT-T port used. Hope this helps,
-> Jean
+On Wed, Feb 16, 2005 at 10:51:16AM -0500, Payal Rathod wrote:
+> Hi,
+> My friend has a sharepoint (don't know what it is) server in her DMZ 
+> at 10.10.10.3.  She can access that server from outside world by 
+> giving its public IP in browser. She cannot access it via her squid 
+> proxy inside the LAN. But when she removes proxy settings and gives,
+> iptables -I FORWARD -s 192.168.10.7 -j ACCEPT
+> she can access it. When I say access here it means that in all cases 
+> she can see IIS page but it is giving authorization failed from 
+> inside LAN. When she removes proxy settings and gives iptables rule 
+> above she is presented with a username-password box which is not seen 
+> via squid internally.
+> Strangely if I am on the squid/gateway/firewall machine and still 
+> using proxy I can see the authorization box.  Can someone give us 
+> both some hints to proceed?
 
-Right. I went back to Ethereal to have another look. It seems to
-report the inner most protocol it can decode (in the view I posted
-initially). Looking at the packet in detail gives this:
+my guess is that your friend is using transparent redirection to the
+squid proxy and not explicit proxying (i.e. configuring the proxy in the
+web browser).  HTTP AUTH does not work through a transparent proxy.
+easiest solution would be to bypass the transparent redirect for
+requests to the sharepoint server by adding an ACCEPT rule prior to the
+REDIRECT:
 
-Frame 275 (160 bytes on wire, 160 bytes captured)
-Linux cooked capture
-Internet Protocol, Src Addr: 102.168.3.249 (192.168.3.249). Dst Addr: 1.2.3.4 (1.2.3.4)
-user Datagram Protocol, Src Port: 4500 (4500), Dst Port: 4500 (4500)
-UDP Encapsulation of IPsec Packets
-Encapsulating Security Payload
+  iptables -t nat -A PREROUTING -i $INT_IF -d 10.10.10.3 --dport 80 \
+    -j ACCEPT
 
-So, you're right it is encapsulated in some form. Also, colleagues
-using e.g. D-Link routers have no problems connecting. So the traffic
-should NAT OK. I will now try the patch-o-matic dropped-table to try
-to understand we the packets get dropped instead of NATed (as
-suggested by Samuel Jean).
+  iptables -t nat -A PREROUTING -i $INT_IF --dport 80 \
+    -j REDIRECT --to-port 3128
 
--- 
-/Ola Nilsson
+-j
 
+--
+"Operator! Give me the number for 911!"
+        --The Simpsons
 
