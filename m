@@ -1,10 +1,13 @@
-From: Jason Cook <jg0327@yahoo.com>
-Subject: Re: Port Redirection with iptables (Log information)
-Date: Wed, 17 Dec 2003 07:45:14 -0800 (PST)
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: quickie - exclamation point with multiport
+Date: Wed, 17 Dec 2003 17:18:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031217154514.19655.qmail@web41105.mail.yahoo.com>
+Message-ID: <1071677893.904.16.camel@elendil.intranet.cartel-securite.net>
+References: <FDB52A0429DFD31196FB0008C7D972D50EA57C60@OST_EXCH_USR5>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FDB52A0429DFD31196FB0008C7D972D50EA57C60@OST_EXCH_USR5>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,129 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Knight, Steve" <Steve.Knight@bskyb.com>
+Cc: netfilter@lists.netfilter.org
 
+Le mer 17/12/2003 =E0 11:00, Knight, Steve a =E9crit :
+> Aha - that would explain why I was confused ....
 
-The information from the lines that do the logging
-finally showed up, but I can't make heads or tails of
-them.
+My fault. Sorry about this. Thanks Laurence for correction.
 
-I'm getting a lot of lines that look like:
-Dec 17 09:37:27 redpen kernel: NET: 61 messages
-suppressed.
-Dec 17 09:37:27 redpen kernel: Neighbour table
-overflow.
+Nervertheless, multiport match does not seem to support inversion
+either.
 
-But the number of messages keeps changing.
-And quite a few lines that look like...
+cbr@elendil:~$ sudo iptables -A INPUT -p tcp -m multiport  \
+		! --sports 22,23 -j ACCEPT
+cbr@elendil:~$ sudo iptables -L INPUT -vn
+Chain INPUT (policy ACCEPT 33337 packets, 19M bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination                                                              =
+                  =20
+   30  3897 ACCEPT     tcp  --  *      *       0.0.0.0/0          =20
+0.0.0.0/0        multiport sports 22,23
 
-Dec 17 09:37:30 redpen kernel: Iptables Error:IN=eth1
-OUT= MAC=00:10:5a:26:ee:31:00:e0:b8:54:98:b0:08:00
-SRC=10.10.0.252 DST=10.10.0.1 LEN=48 TOS=0x00
-PREC=0x00 TTL=128 ID=1958 DF PROTO=TCP SPT=1068 DPT=80
-WINDOW=16384 RES=0x00 SYN URGP=0 
+A SSH session is running and I can see counter get up.
 
-Thanks in advance...
-Jason
+You can still use the userchain trick to get what you want to do, with
+multiport match ;)
 
---- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> From: Antony Stone <Antony@Soft-Solutions.co.uk>
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Port Redirection with iptables
-> Date: Tue, 16 Dec 2003 16:25:16 +0000
-> 
-> On Tuesday 16 December 2003 3:21 pm, Jason Cook
-> wrote:
-> 
-> > I am trying to install Linux as a firewall and
-> caching
-> > server with iptables and Linux.  I
-> > need to do this transparently.
-> >
-> > I installed Red Hat Linux 9.  Ran all of the
-> updates
-> > nice and smooth.  Turned on ip forwarding.
-> > Configured Squid...and tested it by specifying the
-> > servers ip address and port 3128 from the
-> > browser.  Works great.  Here the options I had
-> changed
-> > in the config file.
-> >
-> > http_port 3128
-> > http_access deny to_localhost
-> > acl our_networks src 10.0.0.0/8
-> > http_access allow our_networks
-> > httpd_accel_host virtual
-> > httpd_accel_port 80
-> > httpd_accel_with_proxy on
-> > httpd_accel_uses_host_header on
-> 
-> I'm puzzled by this combination - are you trying to
-> set up Squid as a caching 
-> proxy, or as an accelerator (or both)?
-> 
-> You do not need the acceleration options turned on
-> to operate Squid as a 
-> transparent proxy (and it is not generally
-> recommended that you operate a 
-> single instance of Squid in both modes
-> simultaneously - you can do it, but 
-> it's recommended to use two instances of Squid
-> instead).
-> 
-> > For iptables I used
-> > iptables -t nat -A PREROUTING -i eth1 -p tcp
-> --dport
-> > 80 -j REDIRECT --to-port 3128
-> >
-> > I then try to browse the internet from a client
-> > through the firewall and nothing.
-> >
-> > When I run iptables -t nat -nv -L
-> >
-> > Chain PREROUTING (policy ACCEPT 31254 packets,
-> 3971K
-> > bytes)
-> >  pkts bytes target     prot opt in     out    
-> source
-> >              destination
-> >     0     0 REDIRECT   tcp  --  eth1   *
-> > 0.0.0.0/0            0.0.0.0/0          tcp dpt:80
-> > redir ports 3128
-> >
-> > PREROUTING is accepting packets...but none are
-> > processes by the redirect rule.
-> 
-> I assume that eth1 is your internal LAN interface,
-> so that's where the packets 
-> will be coming from.   Can you try adding some LOG
-> rules so we can see where 
-> the packets are really going?
-> 
-> iptables -I PREROUTING -t nat -p tcp --dport 80 -j
-> LOG
-> iptables -I INPUT -p tcp --dport 80 -j LOG
-> iptables -I FORWARD -p tcp --dport 80 -j LOG
-> 
-> Antony.
-> 
-> -- 
-> There are only 10 types of people in the world:
-> those who understand binary notation,
-> and those who don't.
-> 
->                                                     
-> Please reply to the list;
->                                                     
->       please don't CC me.
-> 
-> 
-
-
-__________________________________
-Do you Yahoo!?
-New Yahoo! Photos - easier uploading and sharing.
-http://photos.yahoo.com/
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
