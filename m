@@ -1,13 +1,13 @@
-From: "Rowan Reid" <rreid@studio3arc.com>
-Subject: RE: PPTP through masquerading gateway
-Date: Mon, 8 Jul 2002 16:44:10 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Deleting Connection Tracking information
+Date: Tue, 9 Jul 2002 00:50:51 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000401c226d9$5cc37fb0$6b01a8c0@s3ac>
-References: <001c01c226cf$3bc72d70$0401000a@win2k>
+Message-ID: <20020708235054.PKTV16050.mta01-svc.ntlworld.com@there>
+References: <AE696B0F5B44A348B8D18E40F976D9571BA92E@mailsrv.etagon.com> <200207081143.g68Bh6806571@vulcan.rissington.net> <20020708233153.GB30970@aaricia.hemmet.chalmers.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001c01c226cf$3bc72d70$0401000a@win2k>
+In-Reply-To: <20020708233153.GB30970@aaricia.hemmet.chalmers.se>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,85 +17,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-To: "'R. Sterenborg'" <rsterenborg@xs4all.nl>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.samba.org>
 
+On Tuesday 09 July 2002 12:31 am, Joakim Axelsson wrote:
 
+> 2002-07-08 12:43:01+0100, Antony Stone <Antony@Soft-Solutions.co.uk> ->
+>
+> > If you are talking about TCP, then I do not believe this assumption is
+> > valid, because only the very first packet of a connection contains the
+> > SYN flag, and only the second packet contains the SYN/ACK, which are the
+> > first two steps of the TCP three-way handshake.   Without those the
+> > connection tracking system won't set up an ESTABLISHED connection, and
+> > the automatic NAT rules won't apply.
+>
+> That is not true. I suggest reading some old mails in the archive and
+> documents. Conntrack's state of NEW is NOT the same things as a TCP with
+> SYN-flag. The FIRST packet is sees in a flow is marked state NEW.
 
-> I used :
-> - kernel 2.4.17 (Because the patch is for *that* kernel. I'm=20
-> no hacker so I'm not going to try it on another kernel...).
-> - the PPTP kernel patch from=20
-> http://www.impsec.org/linux/masquerade/ip_masq_vpn.html.
-> - iptables-1.2.6a.
-> - the default gcc from RH-7.3 (2.96, I know, I know...)
+Okay, let's think about this a little further...
 
-I'm using 2.4.18 I know not designed for the patch, My FS only=20
-Works with 2.4.18. Someone told me the 2.4.17rev2 Patch works
-With 2.4.18 it doesn't unless you use
+Suppose I have two netfilter boxes sitting side by side with identical rules 
+on them, including NAT, identical addresses on the interfaces (suppose for 
+the time being I've arranged to have identical MACs on the ethernet cards as 
+well) and identical routing tables.
 
-patch =96p1 < netfilter-pptp-2.4.17-rev2.patch
+One box is plugged into my network, client on one side, server on the other - 
+the other netfilter box is switched on but disconnected from the network.
 
+After a bit of traffic has flowed, the netfilter box has some conntracking 
+table entries, and the client and server have an established connection (or 
+maybe several).
 
->=20
-> Untar the kernel source to /usr/src/linux.
-> Untar the patch to /usr/src.
-> Untar iptables to /usr/src/iptables-1.2.6a
->=20
-> cd /usr/src
-> patch =96p0 < netfilter-pptp-2.4.17-rev2.patch
->=20
-> cd /usr/src/iptables-1.2.6a
-> make pending-patches KERNEL_DIR=3D/usr/src/linux
+Suddenly I decide to pull out the network cables from netfilter box 1 and 
+connect them to netfilter box 2 instead.
 
-Correct me if I'm wrong doesn't the INSTALL file say you=20
-Need a 2.4.4 kernel in order for it to work.
+Are you saying that the first packet to flow between the client and server 
+through this second netfilter machine, which has no connection tracking table 
+on it yet, will cause a NEW entry to be placed in the connection tracking 
+table, and that the reply packet will cause that entry to become ESTABLISHED, 
+and that the NAT rules will work ?
 
->=20
-> If all went well go ahead and configure your kernel.
-> cd /usr/src/linux
-> make xconfig (or whatever you like to use)
->=20
-> Check all (networking) options that apply.
-> There are two new options in the kernel config :
-> - Networking options -> IP: Netfilter Configuration -> PPTP=20
-> protocol support
-> - Networking options -> IP: Netfilter Configuration -> PPTP=20
-> verbose debug Make sure you check the first. If you want=20
+Even though both of these packets are just mid-connection ACK packets with no 
+SYN flags in them ?
 
-When I patched or seudo patched it I the pptp option did show up.
+If this is true, what stops us having high-availability automatic-failover 
+netfilter machines ?
 
+ 
 
-> cd /usr/src/iptables-1.2.6a
-> make KERNEL_DIR=3D/usr/src/linux
-> make install KERNEL_DIR=3D/usr/src/linux
-
-Interesting you did this after compiling the kernel.
-
-
->=20
-> Reboot and make sure to boot the new kernel.
->=20
-> Now for the forwarding rules.
-> I'm taking values from this post. Since it's not mentioned, I=20
-> take eth0 as the LAN NIC.=20
-> http://www.netfilter.org/documentation/tutorials/blueflux/ipta
-bles-tutorial.
-
-
-
->iptables -A FORWARD -p tcp -i ppp0 -o eth0 -d 10.1.1.15 --dport 1723 -j
-ACCEPT iptables -A FORWARD -p 47 -i ppp0 -o eth0 -d 10.1.1.15 -j ACCEPT
-
->iptables -t nat -A PREROUTING -p tcp -i ppp0 -d <external-ip> --dport
-1723 -j DNAT --to 10.1.1.15:1723 iptables -t nat -A PREROUTING -p 47 -i
-ppp0 -d >>><external-ip> -j DNAT --to 10.1.1.15
-
-I used the same commands to test it. I will try the order you used.
-Thanks for taking the time though.
-What I'm trying most desperatly not to do is have to revert back to ext2
-and a 2.4.17 kernel.
-
-
-
+Antony.
 
