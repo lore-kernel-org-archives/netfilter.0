@@ -1,11 +1,13 @@
-From: Jeff Bonner <lunar@comcast.net>
-Subject: Performance tuning w/kernel SYSCTL options
-Date: Wed, 05 Jun 2002 11:15:49 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: fragment.c
+Date: Wed, 5 Jun 2002 16:19:46 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <00cd01c20ca3$dffd57c0$0200a8c0@JEFF>
+Message-ID: <200206051519.g55FJsA28810@vulcan.rissington.net>
+References: <3CEF4F3E0000C1ED@ims3c.cp.tin.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <3CEF4F3E0000C1ED@ims3c.cp.tin.it>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,25 +18,29 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-I have the following in my iptables script, but commented out for now
-because I'm not sure if they're necessary or useful:
+On Wednesday 05 June 2002 4:07 pm, luigicart@tin.it wrote:
 
-# echo 30  > /proc/sys/net/ipv4/tcp_fin_timeout         # Reduce dead
-sockets?
-# echo 180 > /proc/sys/net/ipv4/tcp_keepalive_intvl     # Is this even
-needed?
+> Hi I'm Luigi.I have a question:
+> which are the differences between fragment.c file in linux-2.4.3 and
+> linux-2.4.7? Thank you
 
-I've read some of the documentation on these (and many other SYSCTL
-items), but honestly, some is above my head.  What might be the
-appropriate values, if any, to use for a 1.5Mbps down/128Kbps up
-cablemodem connection, on a 486/66 with Debian Woody, serving 3
-NAT/masq'd machines?
+Hi Luigi.
 
-Thanks in advance,
+I don't think you'll find anyone on this list who can answer your question.   
+For one thing, the kernels you ask about are both quite old (12 - 15 months 
+ago).
 
-Jeff Bonner
+Have you tried:
+
+ - looking at the changelog files for kernels 2.4.4, 2.4.5, 2.4.6, 2.4.7 ?
+
+ - looking in the patches from 2.4.3-2.4.4 etc to see if ip_fragment.c 
+appears in any of them ?
+
+ - doing a diff between the ip_fragment.c in 2.4.3 and the one in 2.4.7 ?
 
 
+Antony.
 
