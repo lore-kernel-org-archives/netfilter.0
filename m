@@ -1,8 +1,8 @@
-From: Palmer Sample <lsample@massconfusion.com>
-Subject: Help: iptables INPUT/OUTPUT packet statistics (no INPUT packets?)
-Date: Mon, 18 Nov 2002 21:01:07 -0800 (PST)
+From: David Reta <DavidR@Narus.com>
+Subject: New to IP Tables
+Date: Wed, 13 Nov 2002 16:14:33 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0211182050510.2228-100000@www.massconfusion.com>
+Message-ID: <580E532D9F7A9B4BAE8A130848E0DDA702A0B74F@franklin.narus.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,66 +14,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
+	I just started using IP Tables and have a question. I was not able
+to find the answer in any of the docs I've read so far.
+I have a machine that I am using as a router and running Ip Tables on it.
+Here is a list of my tables.
 
-Hi all,
+[root@qa-gate root]# iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
 
-I'm running iptables 1.2.5 on a RedHat 7.2 box, and am trying to use MRTG 
-to graph some statistics about the firewall.  My original thought was to 
-record the INPUT and OUTPUT packets and go from there.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http 
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ftp-data
 
-My problem is that I don't seem to have any INPUT packets!  I recently 
-zeroed out the statistics, and see plenty of OUTPUT packets accumulating 
-but nothing on the INPUT side.
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ftp 
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain 
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:26 
+DROP       tcp  --  anywhere             anywhere           
 
-This is a single box with one interface (eth0), not connected to a 
-network behind it (I'm using iptables to prevent access to pretty much 
-anything but ssh on eth0)
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
 
-iptables -A INPUT -p tcp -s localhost -j ACCEPT
-iptables -A INPUT -p udp -s localhost -j ACCEPT
-iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -p tcp -j REJECT
-iptables -A INPUT -p udp -j REJECT
-iptables -A INPUT -j ACCEPT
+Chain test (0 references)
+target     prot opt source               destination
 
-Display of stats since I zeroed them:
+I am not able to pass any data through the router. Here is the scenario, I
+want to access a Web Site which is on the other side of the router. The way
+that I interpret this is that the packet will get passed to the first chain
+which is
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
+and be let through, yet this is not happening. All tcp traffic is being
+blocked which is defined by my 6th rule. I guess I am not understanding
+this, but I would think that the packet would match the first rule and be
+passed through and the following chains would be ignored. My logic is
+probably wrong.
 
-# iptables -nvxL | grep Chain
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-Chain OUTPUT (policy ACCEPT 8574 packets, 1796431 bytes)
+Thanks,
+David
 
-Any ideas / questions / suggestions?
-
-Also - on a side note (i know this isn't the MRTG mailing list, but I 
-think this applies to either/or):  Is there any way I could gather 
-statistics for a certain port (e.g. 22 for ssh, 80 for www if I open up 
-web services) - without bloating my already suffering syslog with packet 
-debug info?  I like the idea of the chain packet list - that's easy enough 
-to grok out)
-
-Please reply to this email address; I have not yet subscribed to the 
-netfilter list.
-
-Thanks!
--Palmer Sample
-
--- 
-"A man is but the product of his thoughts; what he thinks, he becomes."
- - Mohandas Gandhi 
-
-"I'm on the Zoloft to keep from killing y'all."
- -Mike Tyson
---
-
-Palmer Sample
-[e] lsample@massconfusion.com
 
 
