@@ -1,12 +1,12 @@
-From: Zoup <Zoup@zoup.org>
-Subject: Iptables HowTo ?
-Date: Wed, 8 Oct 2003 08:19:16 -0800
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Iptables HowTo ?
+Date: Wed, 8 Oct 2003 15:06:33 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310080818.24341.Zoup@zoup.org>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C460@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,18 +17,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Zoup <Zoup@zoup.org>, netfilter@lists.netfilter.org
 
-hi guys , 
-im looking forward for a complex howto , i read which rusty Russell wrote , 
-its great ! :) but as he say is not enough ... and i think its a little out 
-dated ! 
-
-can you help me ? 
-or experience is the best teacher ? :) 
-
-
--- 
-Those who do not do politics will be done in by politics ! :)
-
+PiBjYW4geW91IGhlbHAgbWUgPyANCj4gb3IgZXhwZXJpZW5jZSBpcyB0aGUgYmVzdCB0ZWFjaGVy
+ID8gOikgDQo+IA0KZXhwZXJpZW5jZSBpcyB0aGUgYmVzdCB0ZWFjaGVyLi4uIEZpbmQgYSBwcm9i
+bGVtIGFuZCB0aGVuIGZpbmQgYSBzb2x1dGlvbiwgdGhhdCdzIGhvdyBJIHN0YXJ0ZWQuLg0KDQpJ
+ZiB5b3VyIHN1YnNjcmliZWQgdG8gdGhlIGxpc3QgdGhlbiB0cnkgYW5zd2VyaW5nIGEgZmV3IHF1
+ZXN0aW9ucyBhbmQgaWYgeW91IGNhbid0IHRoZW4gdGhhdCdzIHdoZXJlIHRoZSBsZWFybmluZyBz
+dGFydHMgYnkgZmluZGluZyBvdXQgaG93IHRvIGRvIGl0Li4NCg0KVGhhbmtzLA0KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkdlb3JnZSBWaWVpcmENClN5c3Rl
+bXMgTWFuYWdlcg0KZ2VvcmdldkBjaXRhZGVsY29tcHV0ZXIuY29tLmF1DQoNCkNpdGFkZWwgQ29t
+cHV0ZXIgU3lzdGVtcyBQdHkgTHRkDQpodHRwOi8vd3d3LmNpdGFkZWxjb21wdXRlci5jb20uYXUN
+Cg==
 
