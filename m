@@ -1,10 +1,9 @@
-From: Michael Martinez <mmartinez@csrees.usda.gov>
-Subject: I'm having difficulty making port redirection work
-Date: 30 Jun 2003 15:37:00 -0400
+From: bt spawn <thejiggse@yahoo.com>
+Subject: Compiling iptables 1.2.8 make error
+Date: Mon, 30 Jun 2003 12:50:43 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057001820.1133.40.camel@localhost.localdomain>
+Message-ID: <20030630195043.56362.qmail@web13205.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,40 +15,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all -
+Hello All:
 
-I've used ipchains before, but I'm brand new to iptables, and I'm having
-difficulty getting port redirection to work.
+Any help on this issue would be greatly appreciated. 
+I have installed the 2.4.19-11 kernel and iptables
+1.2.8 on four systems with no errors.  On the fifth
+machine I decided to install patch-o-matic before
+installing iptables 1.2.8.  I have no idea if that
+caused the problem I am having, but when I try to
+compile iptables for this particular system I get the
+error listed below:
 
-Here's what I want to do: I've got a Redhat 8.0 box running iptables
-1.2.6a2. I've got a web application listening on port 8888 (on the eth0
-interface) and  I'd like any web traffic coming in on port 80, to be
-redirected to port 8888.
+cc -O2 -Wall -Wunused -I/usr/src/linux/include
+-Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o
+extensions/libipt_condition_sh.o -c
+extensions/libipt_condition.c
+extensions/libipt_condition.c: In function `parse':
+extensions/libipt_condition.c:49: `CONDITION_NAME_LEN'
+undeclared (first use in this function)
+extensions/libipt_condition.c:49: (Each undeclared
+identifier is reported only once
+extensions/libipt_condition.c:49: for each function it
+appears in.)
+make: *** [extensions/libipt_condition_sh.o] Error 1
 
-In ipchains, this is handled with the following line in
-/etc/sysconfig/ipchains:
 
--A input -d 192.73.224.127 80 -p tcp -j REDIRECT 8888
+Any ideas?
 
-I am using the following lines at the beginning of
-/etc/sysconfig/iptables, but it does not work. I'm getting no messages
-in /var/log/messages, and I don't know of any place where iptables is
-logging anything:
+Best Regards,
 
-*nat
--A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8888
-COMMIT
+James 
 
-How do I troubleshoot and fix this?
 
-thank you -
-
--- 
-Michael Martinez
-Linux System Administrator
-Marlaw Systems Technology Inc.
-CSREES/ISTM/USDA
-mmartinez@csrees.usda.gov
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
