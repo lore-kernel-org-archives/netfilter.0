@@ -1,9 +1,13 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: HTTP Port-forwarding
-Date: Mon, 28 Feb 2005 17:09:17 -0800
-Message-ID: <4223C0BD.1080804@wildcash.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: missing pages
+Date: Tue, 8 Feb 2005 11:21:46 +0100
+Message-ID: <20050208102146.GD28609@obroa-skai.de.gnumonks.org>
+References: <1107843925.3397.3.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0/kgSOzhNoDC5T3a"
+Content-Disposition: inline
+In-Reply-To: <1107843925.3397.3.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,50 +18,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Hi,
-
-I have these rules below to enable:
-
-a) http port-forwarding in requests
-b) masquerading rules for http replies.
-
-It does seem to work OK but is very slow. After hours of looking I think
-the problem as to why it is so slow may be in my Iptables rules.
-
-Can you see a double up or something that may cause a problem ?
-Or would you say it all looks fine and my problem is elsewhere ?
-
-Thank you ..
-
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -P FORWARD DROP
-
-# http requests:
-# Port-Forwarding setup
-$IPTABLES -t nat -A PREROUTING -i $ETH0 -p tcp --dport 80 -d 
-66.xxx.xx.100 -j DNAT --to 192.168.0.10:80
-
-# http replies:
-# ENABLE NAT
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-# NAT Forwarding Setup
-$IPTABLES --table nat --append POSTROUTING --out-interface $ETH0 -j 
-MASQUERADE
-$IPTABLES -A FORWARD -i $ETH1 -j ACCEPT
-$IPTABLES -A FORWARD -i $ETH0 -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+To: Brandon <Jodious33@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
 
+--0/kgSOzhNoDC5T3a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 08, 2005 at 06:25:25AM +0000, Brandon wrote:
+> i really hate to bother, but i am having trouble finding a very
+> important patch file.  I'm in dire need of the random patch to add to my
+> POM compile.  I tried accessing it and received a file not found error.
+> If you could tell me the new address, or better yet send it to me i
+> would be in your debt.  the page that i couldn't bring up was as follows
 
--- 
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.300 / Virus Database: 266.5.1 - Release Date: 27/02/2005
+Those .patch files are not to be used without patch-o-matic!!!
 
+You have to download the latest patch-o-matic-ng package and follow the
+README instructions
+(ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/)
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--0/kgSOzhNoDC5T3a
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCCJK5XaXGVTD0i/8RAu0gAJ9kHsKXMmk8Iu8ho0K8gWQW1yUM0QCgp5J0
+jconz9giYaYhc46HEozGKA4=
+=sgYy
+-----END PGP SIGNATURE-----
+
+--0/kgSOzhNoDC5T3a--
 
