@@ -1,9 +1,9 @@
-From: "Jim Fleming" <JimFleming@ameritech.net>
-Subject: Re: RPM for Latest Version?
-Date: Sun, 22 Sep 2002 11:19:09 -0500
+From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
+Subject: Re: A Proper Syntax For iptables?
+Date: Sun, 22 Sep 2002 18:46:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0cdc01c26253$c8723250$c6b22543@repligate>
-References: <OFA7403E7D.AEDAABDC-ON88256C3C.0053EBB0-88256C3C.005481CC@deepwoods.com>
+Message-ID: <003901c26257$8a993b50$026410ac@honor>
+References: <OF999C1019.C1FE4849-ON88256C3C.004F0D1E-88256C3C.0051EED6@deepwoods.com> <0cc601c2624c$ad4b8780$c6b22543@repligate>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,25 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, caogdin@deepwoods.com
+To: Jim Fleming <JimFleming@ameritech.net>, netfilter@lists.netfilter.org, caogdin@deepwoods.com
 
------ Original Message ----- 
-From: caogdin@deepwoods.com 
-To: netfilter@lists.netfilter.org 
-Sent: Sunday, September 22, 2002 10:23 AM
-Subject: RPM for Latest Version?
+From: "Jim Fleming" <JimFleming@ameritech.net>
 
-Does anybody have (or know where I can get) v1.2.7a (and future updated versions) in RPM format?
-===
+> ----- Original Message -----
+> From: caogdin@deepwoods.com
+> Like many other novices in this list, I've struggled with understanding
+iptables for several months.
+> ===
+>
+> It might help if you separate NetFilter from iptables...
+>
+> http://ipv8.dyn.ee/INFO/Papers/NetFilter/
 
-Are you using NetFilter on Linux ?
-http://www.netfilter.org/
+i dont think that any strange ipv4++ (aka ipv5 or whatever nonsense came out
+of your mind) might help someone who is not even familiar with the basics of
+netfilter..
 
+i would suggest the tutorials and howto's at http://www.netfilter.org
 
-
-C@t
-Vote Early and Often...
-http://www.kvtek.com/ddnsservices.asp
-
+--
+mailto: sascha.reissner@toxicnet.de  -  http://www.fo0bar.org
+contaminating the internet since 2001
 
 
