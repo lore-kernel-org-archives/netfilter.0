@@ -1,12 +1,12 @@
 From: Eric Joe <sysop@ns2.tje1.com>
-Subject: Re: redirection
-Date: Thu, 10 Apr 2003 13:45:20 -0400 (EDT)
+Subject: Re: Redirection - considerations
+Date: Thu, 10 Apr 2003 13:47:51 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304101343180.15216-100000@ns2.tje1.com>
-References: <200304081810.57248.christian@cernuschi.com>
+Message-ID: <Pine.LNX.4.44.0304101345350.15216-100000@ns2.tje1.com>
+References: <200304091305.45463.christian@cernuschi.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304081810.57248.christian@cernuschi.com>
+In-Reply-To: <200304091305.45463.christian@cernuschi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,34 +21,37 @@ Content-Transfer-Encoding: 7bit
 To: Christian Cernuschi <christian@cernuschi.com>
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 8 Apr 2003, Christian Cernuschi wrote:
+On Wed, 9 Apr 2003, Christian Cernuschi wrote:
 
-> i'd like to do this:
+> it think it's impossible! (keeping the source address... of course)
 > 
-> i have 2 pc  
-> x.y.z.1
-> x.y.z.2
+> an example
 > 
-> i would like to redirect connection on port 80 of x.y.z.1 to port 80 of 
-> x.y.z.2
+> A - Client starting connection
+> B - Server reached by A
+> C - Destination Server
 > 
-> i tried with DNAT but when someone tries to connect it goes in timeout?
+> 
+> 
+> A calls B
+> B sends packets to C with source address A
+> C tries to respond to A!!! 
+> A doesn't know C (then drops packet)
+> 
+> am i right?
 > 
 
+Didnt you already ask this question and got several answers from several 
+people? It is *NOT* immpossible. See for yourself
+
+http://www.tje1.com
 
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d x.y.z.1 -j 
-DNAT --to x.y.z.2:80
-
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to x.y.z.1
-
-
-
-We are doing the *exact* thing you want to do everyday with the above 2 
-lines. 
+The site you will arrive at is forwarded from the real www server
 
 
 Eric
+
 
 
 
