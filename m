@@ -1,13 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Why would anyone want to SNAT a remote connection to the
-	external ip address?
-Date: Mon, 7 Mar 2005 09:04:55 +0000
-Message-ID: <200503070904.56038.gdh@acentral.co.uk>
-References: <20050307014917.28759.qmail@web30505.mail.mud.yahoo.com>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: iprange and mac-source
+Date: Mon, 7 Mar 2005 11:56:59 +0200
+Message-ID: <1403218a05030701565d761565@mail.gmail.com>
+References: <fad9d4840503061538754118e6@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050307014917.28759.qmail@web30505.mail.mud.yahoo.com>
-Content-Disposition: inline
+In-Reply-To: <fad9d4840503061538754118e6@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,37 +18,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Kenneth Kalmer <kenneth.kalmer@gmail.com>, netfilter <netfilter@lists.netfilter.org>
 
-On Monday 07 March 2005 01:49, P Moyst wrote:
-> Hi
+You wrote:
+$IPTABLES -A VERIFYMAC -i $LANPORT -m iprange --src-range
+192.168.10.31-192.168.10.40 -m mac --mac-source 00:02:e3:55:85:f5 -j
+RETURN
 
-Hello Mr. Moyst! That's not something I get the chance to say in public very 
-often =)
+This doesn't seem like every user can have multiple MACs !!!
 
 
-> $iptables -t nat -A POSTROUTING -o eth1 -j SNAT
-> --to-source $external_ip
->
-> where... eth1 is the interface on the linux box for
-> the internal network and eth0 is the interface for the
-> internet.
->
-> What is the reason for this?
 
-As with any more complex network, there are always ways and reasons for weird 
-stuff like this...
+On Mon, 7 Mar 2005 01:38:46 +0200, Kenneth Kalmer
+<kenneth.kalmer@gmail.com> wrote:
+> Guys
+> 
+> I'm having some difficulty getting the following rules to work:
+> 
+> These chains are used in both the INPUT and FORWARD chains of the filter table:
+> 
+> # Log/Drop chain for ip/mac address mismatches
+> $IPTABLES -N ADDRESSMISMATCH 2> /dev/null
+> $IPTABLES -F ADDRESSMISMATCH
+> $IPTABLES -A ADDRESSMISMATCH -j LOG --log-level $LOG_LEVEL -m limit
+> --limit $LTIME --log-prefix "Firewall (IP/MAC mismatch) "
+> $IPTABLES -A ADDRESSMISMATCH -p tcp -j $TCP_RESPOND
+> $IPTABLES -A ADDRESSMISMATCH -p udp -j $UDP_RESPOND
+> $IPTABLES -A ADDRESSMISMATCH -j DROP
+> 
+> # Now verify all MAC/IP combos
+> $IPTABLES -N VERIFYMAC 2> /dev/null
+> $IPTABLES -F VERIFYMAC
+> $IPTABLES -A VERIFYMAC -i $LANPORT -m iprange --src-range
+> 192.168.10.1-192.168.10.10 -m mac --mac-source 00:0b:6a:a0:0a:7f -j
+> RETURN
+> $IPTABLES -A VERIFYMAC -i $LANPORT -m iprange --src-range
+> 192.168.10.31-192.168.10.40 -m mac --mac-source 00:02:e3:55:85:f5 -j
+> RETURN
+> $IPTABLES -A VERIFYMAC -j ADDRESSMISMATCH
+> 
+> Every single packet traverses the chain all the way down to
+> ADDRESSMISMATCH, no packets match...
+> 
+> The scenario is that each user can have multiple MAC addresses
+> (laptops, pda's & pc's). The DHCP will always issue the same range to
+> the same MAC addresses, each user get's their own pool own 10 IP's.
+> 
+> I'm trying to avoid matching 10 ip's to each MAC address. I'm under
+> the impression that this will adversely affect performance. We already
+> have 80 users on the network, 800 possible ip's and already 110 mac
+> addresses. The VERIFYMAC chain above will get too big or is this not a
+> problem.
+> 
+> Is the one-to-one match the only solution, or am I missing the plot here?
+> 
+> Thanks in advance!
+> 
+> --
+> 
+> Kenneth Kalmer
+> kenneth.kalmer@gmail.com
+> http://opensourcery.blogspot.com
+> 
+> 
 
-e.g. the iptables machine might be doing IP-Masq on one interface, but require 
-anything going out on eth1 to have the source address rewritten to a 
-completely different IP address (one perhaps which will get routed 
-differently on the inbound return-path by another router)... 
 
-Or more simply perhaps if this rewriting was not done, then the return-address 
-would be that of the iptables machine which may not be desirable :)
-
-A general question gets a general answer =)
-
-Cheers,
-Gavin.
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
