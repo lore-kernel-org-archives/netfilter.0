@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Help: Iptables rules
-Date: Thu, 15 Jan 2004 01:41:45 +0000
+From: Dobersberger Dieter <dieter@dobersberger.at>
+Subject: Re: kernel 2.6 IPsec and netfilter
+Date: Thu, 15 Jan 2004 04:06:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401150141.45528.Antony@Soft-Solutions.co.uk>
-References: <OFE1656F2A.7FFED69B-ON88256E1C.000829BB-88256E1C.00088CCC@statsus.com>
+Message-ID: <1805309765.20040115040658@redbox.org>
+References: <912065890.20040114195124@redbox.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OFE1656F2A.7FFED69B-ON88256E1C.000829BB-88256E1C.00088CCC@statsus.com>
+In-Reply-To: <912065890.20040114195124@redbox.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,26 +20,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 15 January 2004 1:33 am, Minh Cao wrote:
+Wednesday, January 14, 2004, 7:51:24 PM, Dobersberger Dieter wrote:
+> I have set up an in-kernel IPsec Tunnel with Linux 2.6.0 and want to
+> filter traffic going through this tunnel.
 
-> Antony,
->
-> Thanks for your help !
-> This machine already placed behind the checkpoint firewall.
-> All I need is NATing to work, but firewall protection.
+Hi All !
 
-CheckPoint Firewalls can do NAT as well :)   I assume you are using netfilter 
-for NAT so that you don't need a more expensive licence for your CheckPoint 
-product (since that is licenced by the number of protected IP addresses)?
+Valentijn Sessink has posted a solution to my problem to the list:
 
-Antony.
+Subject: port based filtering and IPsec linux 2.6
+Date: Wed, 14 Jan 2004 21:41:34 +0100
+https://lists.netfilter.org/pipermail/netfilter/2004-January/049775.html
 
--- 
-Most people are aware that the Universe is big.
+thanks for your help Valentijn !
 
- - Paul Davies, Professor of Theoretical Physics
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+best regards,
+Dieter
 
 
