@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
 Subject: Re: how to log dropped packet
-Date: 28 Sep 2004 16:30:51 +0200
+Date: 28 Sep 2004 16:27:44 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096381850.28905.40.camel@nostromo.bgsecm.com>
-References: <web-6413785@infinito.it>  <41597366.3010108@pbl.ca>
+Message-ID: <1096376449.25284.30.camel@nostromo.bgsecm.com>
+References: <web-6413785@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41597366.3010108@pbl.ca>
+In-Reply-To: <web-6413785@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +20,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mar, 28 de 09 de 2004 a las 16:21, Aleksandar Milivojevic escribi=C3=B3=
-:
-> Use the LOG target.
+El mar, 28 de 09 de 2004 a las 12:12, hamals@infinito.it escribi=C3=B3:
+> hello
 >=20
-> However, if this is your firewall host toward Internet, are you sure yo=
-u=20
-> want to log *everything* that is dropped?  There are so many worms and=20
-> automatic scanning tools out there that your logs will get *huge* with=20
-> nothing but crap very fast.  This is especially true for Windows=20
-> specific TCP and UDP ports.  Anything that might be interesting will ge=
-t=20
-> completely lost in all that noise.
+> I wrote all my firewall rules, and now I would like to log=20
+> all packet that will be dropped by my policy rule..
+>=20
+> ..how can I do it?
+>=20
+> what kind of rules do I need?..and where have I to write=20
+> them?
+>=20
+> thanks
 
-He could use the -m limit match to limit the number of logs
-he is having. It's interesting to do so for ports like
-445 and so.
+Just add at the end of your rules a rule like this:
+
+iptables -A INPUT/OUTPUT/FORWARD -j LOG
+
+with all the options you want to have. Then let the
+default policy (DROP I suppose) act.
+
 --=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
