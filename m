@@ -1,12 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Server machines behind Firewall
-Date: Thu, 6 Jan 2005 11:35:55 -0500
-Message-ID: <20050106163555.GA28547@bender.817west.com>
-References: <41DC1258.78D37B1D@ita.org.mo>
+Subject: Re: input filter
+Date: Thu, 6 Jan 2005 11:08:06 -0500
+Message-ID: <20050106160806.GA28410@bender.817west.com>
+References: <41DC212C.4050106@hotpop.com>
+	<20050105223043.94871.qmail@web53908.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <41DC1258.78D37B1D@ita.org.mo>
+In-Reply-To: <20050105223043.94871.qmail@web53908.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +20,45 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thu, Jan 06, 2005 at 12:14:16AM +0800, edwardspl@ita.org.mo wrote:
-> Dear All,
+On Wed, Jan 05, 2005 at 02:30:43PM -0800, Bhasker Allam wrote:
+> There are a few situations that I can think of:
 > 
-> Is there a sample ( nat scripts ) for the title ?
+> - A spurious host/hosts sending garbage packets. If I
+> know either source IP/subnet or mac address I can put
+> in a filter and drop all the packets from spurious
+> souces with minimal effort. Why should I spend cycles
+> doing the route lookup ?
 
-EXT_IF="eth0"
-INT_IF="eth1"
-SRV1="10.1.1.10"
+-t mangle PREROUTING is an acceptable place to do "first things first"
+filtering/packet scrubbing.  it's where i do things like anti-spoofing
+rules and invalid TCP flag combo rules.
 
-iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 80 \
-  -j DNAT --to-destination $SRV1
+> - I could do policy based routing. That is, I want
+> packets from interface X or subnet S to go out on
+> interface Y all the rest go via the normal routing
+> path. From what I read this is not possible now.
 
-iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d $SRV1 \
-  --dport 80 -j ACCEPT
+whatcha been reading?  it's certainly possible:
 
-rinse, repeat.
+  http://lartc.org/howto/lartc.rpdb.html
+
+> - If I use my linux box a router I could have policies
+> on different interface to do different things. For
+> example, I might not want packets arriving from
+> certain sources to reach certain destinations. It does
+> not matter whether I am forwarding or not. You could
+> say I could put that in the output filter, but my
+> argument why should I have go through route lookup if
+> I don't have to ?
+
+you're starting to toe the line as to what should go in your normal
+filter rules here--but that's just IMHO.
 
 -j
 
 --
-"Ooh, they used nylon rope this time. It feels smooth against my skin,
- almost sensuous."
+"Beer. Now there's a temporary solution."
         --The Simpsons
 
