@@ -1,11 +1,13 @@
-From: =?iso-8859-1?q?Luis=20GUSTAVO?= <lgpcf@yahoo.com.br>
-Subject: UPnp
-Date: Wed, 9 Jun 2004 18:09:21 -0300 (ART)
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: UPnp
+Date: Wed, 9 Jun 2004 23:19:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040609210921.50070.qmail@web50202.mail.yahoo.com>
+Message-ID: <20040609211901.7034A106D@sterenborg.info>
+References: <20040609210921.50070.qmail@web50202.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040609210921.50070.qmail@web50202.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +20,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+> How can i add Upnp in my router (linux slackware 9.1), for my 
+> clients make audio and video conference using msn messenger.
+
+Searching on Google (http://www.google.com/search?q=linux+upnp), the top url
+reads :
+
+http://linux-igd.sourceforge.net/
+
+I guess that's where you want to go.
 
 
-How can i add Upnp in my router (linux slackware 9.1),
-for my clients make audio and video conference using
-msn messenger.
+Gr,
+Rob
 
-
-thank you
-
-
-=====
-
-Luis GUSTAVO         lgpcf@yahoo.com.br
-+55 (21) 9891-3560    
----------------------------------------------------------------------------------
- 
-
-
-
-
-
-
-
-
-______________________________________________________________________
-
-Yahoo! Messenger - Fale com seus amigos online. Instale agora! 
-http://br.download.yahoo.com/messenger/
 
