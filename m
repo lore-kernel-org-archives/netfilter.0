@@ -1,14 +1,13 @@
-From: Bishop <bishop@pacbell.net>
-Subject: Iptables tutorial
-Date: Mon, 07 Oct 2002 12:22:01 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: netfilter and IIS5
+Date: Mon, 7 Oct 2002 20:13:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001101c26e36$d017b860$b6a97942@pacbell>
-References: <001201c26e28$be880e50$3dd6a483@CBOOK>
- <20021007191229.HKAQ28874.mta06-svc.ntlworld.com@there>
-Reply-To: Bishop <bishop@pacbell.net>
+Message-ID: <20021007191346.HLSC28874.mta06-svc.ntlworld.com@there>
+References: <AF435BB1224A4C4888B58C546728EE3229AA@s2.valiant.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <AF435BB1224A4C4888B58C546728EE3229AA@s2.valiant.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,17 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hello all,
+On Monday 07 October 2002 5:21 pm, Keith R. Weiner wrote:
 
-        I'm a newbie to the linux world. I download red hat 8.. I notice to
-setup a firewall you have to use iptables. Does anyone know a good site or
-url that I may take a look at. I need something simple that I could
-understand, since I'm a newbie , something like "firewall for dums" ....
+> Excuse me if this is a newbie question.
+>
+> I am running IIS on Windows 2000 behind the DMZ.  The first linux box is
+> using the old ipchains.  The second box is using netfilter.  From within
+> the DMZ, I can access it.  From the outside world, it is not accessible. 
+> Other services are, but not IIS.
 
-Thank you all for your help.
+Tell us your firewall rules and show us your network configuration.
 
+Antony.
 
+-- 
 
+What is this talk of software 'release' ?
+Our software evolves and matures until it becomes capable of escape,
+leaving a bloody trail of designers and quality assurance people in its wake.
 
