@@ -1,13 +1,10 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: OT - rule based system for a fire wall
-Date: Fri, 15 Oct 2004 12:20:15 -0400
+From: kate <kate7234@yahoo.com>
+Subject: static IP to dynamic IP
+Date: Fri, 15 Oct 2004 10:44:56 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097857214.2746.28.camel@localhost>
-References: <Pine.LNX.4.56.0410151216210.2188@pali.cps.cmich.edu>
+Message-ID: <20041015174456.20376.qmail@web21523.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.56.0410151216210.2188@pali.cps.cmich.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +15,93 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Ishwar Rattan <ishwar@pali.cps.cmich.edu>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Fri, 2004-10-15 at 12:16, Ishwar Rattan wrote:
-> It is a little off-topic but some one here may
-> know something about.
-> 
-> I have seen an idea being floated:
-> 
-> - A firewall uses a set of rules to filter packets (a fact)
-> 
-> - Proposal: possibility of desigaingn a rule based system
->   (call it rule-system) that will insert correct rules in the
->   firewall (sounds ambiguous)
-> 
-> - Is there such a thing out there? if the propser won't
->   part with any more details, what kind of gusses can be
->   made?
-> 
->   1. Rule-system can interact with a user and then insert
->      rules in the firewall -- I think this has already been
->      accomplished??
-> 
->   2. Rule-system could look at logged information (firewall
->      logs) and come up with better/new rules?
-> 
->   3. Is there any other facet/issue that I am missing here..
-> 
-> It still bugs me to think of a rule-system that will insert
-> rules into another rule based system :-|
-> 
-> Any feedback will be appreciated.
-> 
-> -ishwar
-I'm not entirely sure I understand you.  Are you looking for something
-that will dynamically change a running rule set based upon events or a
-user interface to alter an existing rule set?
+Hi, I am trying to modify a fw script that would work
+for my small lan, except I need to change references
+of static IP and SNAT. to eth0 and MASQUERADE, - but
+when I run the script it gives me Bad argument `eth0'
 
-There are some very good rule configurators available such as fwbuild
-(http://www.fwbuilder.org), shorewall (http://www.shorewall.net) and
-several other that have been recommended on this list.  For a policy
-rather than rules based approach, take a look at ISCS
-(http://iscs.sourceforge.net).  Hope this helps - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-Financially sustainable open source development
-http://www.opensourcedevel.com
+The script is below, with my notes on changes I've
+made so far. Any help greatly appreciated.
 
+#(1) Policies (default) - modified with notation
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+# (2) User defined chain for ACCEPTed TCP packets
+iptables -N okay
+iptables -A okay -p TCP --syn -j ACCEPT
+iptables -A okay -p TCP -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+iptables -A okay -p TCP -j DROP
+
+# (3) INPUT chain rules
+
+# Rules for incoming packets from LAN
+iptables -A INPUT -p ALL -i eth1 -s 192.168.0.0/16 -j
+ACCEPT
+iptables -A INPUT -p ALL -i lo -s 127.0.0.1 -j ACCEPT
+iptables -A INPUT -p ALL -i lo -s 192.168.1.1 -j
+ACCEPT
+iptables -A INPUT -p ALL -i lo -s -i eth0 -j ACCEPT
+## WAS -> ... 123.45.67.89 -j ACCEPT
+iptables -A INPUT -p ALL -i eth1 -d 192.168.0.255 -j
+ACCEPT
+
+# Rules for incoming packets from Internet
+# Packets for established connections
+iptables -A INPUT -p ALL -d -i eth0 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+## WAS - > ... -d 123.45.67.89 -m...
+
+# TCP Rules (edit as services needed)
+iptables -A INPUT -p TCP -i eth0 -s 0/0
+--destination-port 21 -j okay
+iptables -A INPUT -p TCP -i eth0 -s 0/0
+--destination-port 22 -j okay
+iptables -A INPUT -p TCP -i eth0 -s 0/0
+--destination-port 80 -j okay
+iptables -A INPUT -p TCP -i eth0 -s 0/0
+--destination-port 443 -j okay
+
+# UDP Rules
+# iptables -A INPUT -p UDP -i eth0 -s 0/0
+--destination-port 53 -j okay
+# iptables -A INPUT -p UDP -i eth0 -s 0/0
+--destination-port 2074 -j okay
+
+# ICMP rules
+iptables -A INPUT -p ICMP -i eth0 -s 0/0 --icmp-type 8
+-j ACCEPT
+iptables -A INPUT -p ICMP -i eth0 -s 0/0 --icmp-type
+11 -j ACCEPT
+
+# (4) FORWARD chain rules
+# Accept the packets we want to forward
+iptables -A FORWARD -i eth1 -j ACCEPT
+iptables -A FORWARD -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+
+# (5) OUTPUT chain rules
+# Only output packets with local addresses (no
+spoofing)
+iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
+iptables -A OUTPUT -p ALL -s 192.168.1.1 -j ACCEPT
+iptables -A OUTPUT -p ALL -s -i eth0 -j ACCEPT
+## WAS -> ... 123.45.67.89 -j ACCEPT
+
+# (6) POSTROUTING chain rules
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+## was -> ... -j SNAT --to-source 123.45.67.89
+
+
+
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail Address AutoComplete - You start. We finish.
+http://promotions.yahoo.com/new_mail 
 
