@@ -1,13 +1,12 @@
-From: Sasa Stupar <sasa@stupar.homelinux.net>
-Subject: Re: What's this?
-Date: Wed, 22 Dec 2004 19:59:27 +0100
-Message-ID: <DDE6B56CBB24978E4A1CE74D@[192.168.10.245]>
-References: <B8AA56031371696C3C526854@[192.168.10.245]>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: web server behind firewall
+Date: Wed, 22 Dec 2004 14:26:26 -0500
+Message-ID: <1103743586.6473.0.camel@hubcap.ljm.dom>
+References: <1103737938.17922.55.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <B8AA56031371696C3C526854@[192.168.10.245]>
-Content-Disposition: inline
+In-Reply-To: <1103737938.17922.55.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Ups, my mistake - wrong ML.
+On Wed, 2004-12-22 at 12:52, Mohammad Khan wrote:
+> Hello List:
+> 
+> I would like to setup a web server behind my firewall.
+> Where can I get more documentation/tutorials/How-to?
+> 
+> Thanks in advance.
+> 
+> Mohammad
 
-Sorry.
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
---On 22. december 2004 19:57 +0100 Sasa Stupar <sasa@stupar.homelinux.net> 
-wrote:
+would be a good start.
 
-> Hi!
->
-> I have found following lines in my mail log:
-> ----------
-> Dec 22 18:10:13 xmail imap[29555]: SQUAT failed to open index file
-> Dec 22 18:10:13 xmail imap[29555]: SQUAT failed
-> ----------
-> I am running FC3+Sendmail+Cyrus-imapd.
->
-> What is SQUAT? I don't remember setting this up.
->
-> Sasa
->
+-j
 
-
-
+--
+"I hope I didn't brain my damage."
+	--The Simpsons
 
 
