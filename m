@@ -1,9 +1,10 @@
-From: Wichert Akkerman <wichert@wiggy.net>
-Subject: 2.6 DNAT does not work?
-Date: Wed, 9 Jun 2004 23:26:06 +0200
+From: Andrew Baumann <andrewb@cse.unsw.edu.au>
+Subject: masquerading before ipsec (2.6)
+Date: Wed, 9 Jun 2004 16:53:57 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040609212606.GB9192@wiggy.net>
+Message-ID: <200406091653.57763.andrewb@cse.unsw.edu.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,23 +17,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm having some problem getting DNAT to work on machines running 2.6
-kernels. I tried both 2.6.2 and 2.6.6 and the show the same behaviour.
-I am using this iptables rule:L
+Hi,
 
-iptables -t nat -A PREROUTING -p tcp -d 194.109.254.66 --dport 8000 \
-	-j DNAT --to-destination 192.168.1.50:443
+I have a gateway box with a VPN tunnel to a secure network. This box is also 
+connected to a local LAN with private IPs. I would like the gateway to 
+masquerade traffic from the local LAN destined for the secure network across 
+the VPN tunnel.
 
-The destination is reachable from the router. But when I try to connect
-to 194.109.254.66:8000 a icmp port unreachable is returned and no
-connection attempt to 192.168.1.50 is made.
+The way the VPN setup seems to work in 2.6 is that there is only one external 
+interface (ppp0 in this case), but that interface has two IPs, one on the 
+internet and one on the secure network (which is tunneled). The routes and 
+VPN on the gateway box work correctly, and I've done a basic masquerading 
+setup:
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+however, the machines on the LAN can only access the internet, not the VPN 
+tunnel. Watching the log, packets destined for the secure network get sent 
+out on the external interface with the internet IP. I tried adding a rule to 
+use SNAT to force them to the secure IP, but this doesn't work (I guess 
+whatever changes the IP encrypts the packet).
 
-Wichert.
+Observing test packets from the gateway traverse the chains, I see that 
+traffic destined for the secure network always has the source IP address of 
+the tunnel, and traffic destined for the internet always has the internet 
+source IP.
 
--- 
-Wichert Akkerman <wichert@wiggy.net>    It is simple to make things.
-http://www.wiggy.net/                   It is hard to make things simple.
+Somewhere there must be a routing decision that says to encrypt traffic 
+destined for the secure network, and use the different source IP, but it 
+seems that this happens before the packet hits iptables. I think I need a way 
+to take a masqueraded packet from the POSTROUTING chain and feed it into the 
+VPN.
+
+Can anyone tell me if what I'm trying to do is even possible? And if so what 
+I'm doing wrong?
+
+thanks in advance,
+Andrew
 
