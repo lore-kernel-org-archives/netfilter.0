@@ -1,8 +1,8 @@
 From: "Bewerbungsadresse@web.de" <bewerbungsadresse@web.de>
 Subject: IP-Range and Subnetmask
-Date: Wed, 05 Nov 2003 22:20:58 +0100
+Date: Wed, 05 Nov 2003 22:21:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FA969BA.3090908@web.de>
+Message-ID: <3FA969CC.8010401@web.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
