@@ -1,7 +1,7 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: providing partial access to iptables for non root user
-Date: Mon, 21 Feb 2005 08:38:44 -0500
-Message-ID: <1108993123.2238.90.camel@grendel>
+Date: Mon, 21 Feb 2005 09:29:17 -0500
+Message-ID: <1108996157.5516.14.camel@hubcap.ljm.dom>
 References: <4219C6F1.2070500@juergens.name>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -16,40 +16,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Michael =?ISO-8859-1?Q?J=FCrgens?= <netfilter@juergens.name>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@lists.netfilter.org
 
-On Mon, 2005-02-21 at 06:33, Michael J=FCrgens wrote:
+On Mon, 2005-02-21 at 06:33, Michael J=C3=BCrgens wrote:
+> Hi,
 >=20
-> I=B4m looking for a solution to provide a non root user write access to=
- a=20
+> I=C2=B4m looking for a solution to provide a non root user write access=
+ to a=20
 > chain.
-
-I've written up some stuff using sudo in order to create an auditing
-trail. You can read about it here:
-
-http://www.loganalysis.org/sections/parsing/application-specific/firewall=
--logging.html#iptables
-
-> his special case I have to provide the a mechanism to block some ip=20
+>=20
+> In this special case I have to provide the a mechanism to block some ip=
+=20
 > adresses to connect to http.
 > But this should be done by a non root user. The non root user should no=
 t=20
 > change any other rule.
+>=20
+> Any ideas?
 
-The problem is you can not set permissions to different iptables
-switches. So granting a person access to the binary implies they will be
-able to do pretty much anything they want.
+use sudo?
 
-You might be able to create a front end that accepts just an IP address,
-and then the back end fills out the rest of the command, but you would
-need really good data scrubbing to ensure that only IP addresses are
-accepted, not command line switches. You would also need to ensure that
-the user does not have direct access to the binary.
+Host_Alias      LOCALHOST =3D thishostname
 
-HTH,
-Chris
+User_Alias	U_HTTP	=3D youruser
 
+Cmnd_Alias	C_HTTP	=3D /sbin/iptables -A blockhttp -s * -j DROP
+
+U_HTTP		LOCALHOST =3D C_HTTP
+
+...or if is this is scripted:
+
+U_HTTP		LOCALHOST =3D NOPASSWD: C_HTTP
+
+obviously--there's opportunity for abuse here--but it's the best i've
+come up with.  if you front-end this with a script, it will allow you to
+scrub/check/validate the input much more extensively (which is what i
+actually do).
+
+-j
+
+--
+"Oh look at me! I'm making people happy! I'm the magical man from
+ Happyland, in a gumdrop house on Lollipop Lane!"
+	--The Simpsons
 
 
