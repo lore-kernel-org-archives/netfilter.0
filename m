@@ -1,13 +1,13 @@
 From: Michal Kepien <lordpopcorn@poczta.onet.pl>
-Subject: Re: Firewall setup at boot - trouble with setting up the LOG target
-Date: Sat, 05 Jul 2003 09:30:41 +0200
+Subject: Re: Firewall Setup on RH 9
+Date: Sat, 05 Jul 2003 09:30:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <n7vcgvs39brkp00l6atko40tdbbdld4sro@4ax.com>
-References: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com> <200307041112.58290.Alistair@nerdnet.ca> <sgubgvg6n5ckac25g8qs1d678vgrl0ro24@4ax.com> <200307042233.46558.Alistair@nerdnet.ca>
+Message-ID: <0gvcgvc3jjvjmlog4a49p0lgosd9g9702c@4ax.com>
+References: <016201c33fa7$5c755eb0$660210ac@christo> <n6tbgvkvn94tuq3f8m01d5rah2n97tgnol@4ax.com> <1057383324.2821.34.camel@alpha.newkirk.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307042233.46558.Alistair@nerdnet.ca>
+In-Reply-To: <1057383324.2821.34.camel@alpha.newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +18,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair@nerdnet.ca
+To: Joel Newkirk <netfilter@newkirk.us>
 Cc: netfilter@lists.netfilter.org
 
->	KERNEL_DIR=3D/xxx/xxxx/xxx ./configure --prefix=3D/
->	                        ^^^^^^^^^^^^ being wherever your kernel source =
-code=20
->hides.=09
+>As I suspected from your misconception about forwarded traffic, you're=20
+>an ipchains veteran... ;^)
 
-You mean the source code dir (e.g. /usr/src/linux-2.4.19) or the
-config file (e.g. /usr/src/linux-2.4.19/.config)?
+Wow, thanks for the 'veteran' part :D Actually, I'm quite a newbie up
+here, but you're right, I _was_ using ipchains as I was quite unaware
+that it isn't the up-to-date tool to administer IP MASQ. However, the
+scheme I included in the previous post was taken from the Linux IP
+Masquerade HOWTO:
 
->	personally I have all my networking delayed until after I'm multiuser
->	-- and then only the inside stuff gets started...=20
->	*after* the box is up and stable I start the internet cruft and=20
->	the firewall...=20
+http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/IP-=
+Masquerade-HOWTO.html#RC.FIREWALL-2.4.X-STRONGER
 
-You mean you start the firewall manually (i.e. it is not started
-automatically at boot time)?
+(quite long, sorry :)
 
->	Simple expedience says that you should turn off forwarding
->	very early in your startup scripts and then turn it on at the *end*
->	of the firewall script.
+>With iptables FORWARD traffic never touches the INPUT or OUTPUT chains,
+>those are explicitly for INPUT and OUTPUT to and from the box itself.
 
-OK, I did it but what does it change? :)
+I'm using the configuration I presented in the post and it works OK.
+However, if you know an easier way to achieve the same goal, please
+let me know :)
+
+Below I attach my conception of packet traffic - it is taken from the
+Linux IPCHAINS HOWTO, so it may be _not_ up-to-date. If the way
+packets are treated changed in iptables, please tell me how.
+
+|        ----------------------------------------------------------------
+|        |            ACCEPT/                              lo interface |
+|        v           REDIRECT                  _______                  |
+|--> C --> S --> ______ --> D --> ~~~~~~~~ -->|forward|----> _______ -->=20
+|    h     a    |input |    e    {Routing }   |Chain  |     |output =
+|ACCEPT
+|    e     n    |Chain |    m    {Decision}   |_______| --->|Chain  |
+|    c     i    |______|    a     ~~~~~~~~        |     | ->|_______|
+|    k     t       |        s       |             |     | |     |   =20
+|    s     y       |        q       |             v     | |     |   =20
+|    u     |       v        e       v            DENY/  | |     v   =20
+|    m     |     DENY/      r   Local Process   REJECT  | |   DENY/
+|    |     v    REJECT      a       |                   | |  REJECT
+|    |   DENY               d       --------------------- |=20
+|    v                      e -----------------------------
+|   DENY                             =20
+
+(i had to include pipes at the left to cheat line wrapping)
 
 Michal Kepien
 
