@@ -1,9 +1,8 @@
-From: Claudio Lavecchia <Claudio.Lavecchia@eurecom.fr>
-Subject: iptables and wireless card in promiscuous mode
-Date: Tue, 30 Nov 2004 13:53:35 +0100
-Message-ID: <41AC6D4F.7000001@eurecom.fr>
+From: Nick <nlai@yahoo.com>
+Subject: iptables for port forwarding
+Date: Mon, 29 Nov 2004 16:51:54 -0800 (PST)
+Message-ID: <20041130005154.6978.qmail@web11204.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,35 +14,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello People,
+Hi,
 
-I have a little question:
+I want to do something relatively simple, but have not been able to
+figure out from the manual or playing with it how to achieve what I
+want.
 
-I have two laptops that have 802.11 wireless cards. I am developing some 
-application that essentially perform sniffing functions using wireless 
-cards in promiscuous mode. To test my code, I need those two laptops not 
-to "see" each other (--> I do not want the wireless card of laptop A, 
-which is operating in promiscuous mode to process packets coming from 
-laptop B) and I tought to do it using iptables. so on laptop A i added 
-the following rule:
+I have a server which I can only connect to via port 80, due to a
+firewall.  I want to connect to VNC on the server, and connect to it
+via a VNC client my laptop.  VNC server only wants to run on port 5900.
+ I'm not running an HTTP server on 80, so no prob there.  I want to
+forward packets  coming into the server on port 80 to the VNC on 5900.
 
-iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_B -j DROP
+I tried doing this:
+/sbin/iptables -A FORWARD -p tcp --dport 80 -j ACCEPT 
+/sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth0 -j DNAT
+--to 127.0.0.1:5900 
 
-and on laptop B I added the rule:
+But the VNC client hangs for a while before timing out when I try to
+connect to it.
 
-iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_A -j DROP
+Ideas on how to achieve the desired result?
 
-I just executed my first tests and the feeling  I got is that, for 
-example, the wlan card of  laptop B still passes through the packet 
-coming from laptop A.
+Thanks,
 
-Can anyone confirm  this analysis? If I am right, can anyone give me a 
-hint to possibly workaround this?
+Nick
 
-Thank you very much
 
-Claudio
+	
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - You care about security. So do we. 
+http://promotions.yahoo.com/new_mail
 
