@@ -1,10 +1,9 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: firewall rules for subinterfaces
-Date: Fri, 15 Oct 2004 15:06:59 +0300
+Date: Fri, 15 Oct 2004 08:20:00 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <3063e504101505062bc7c26c@mail.gmail.com>
+Message-ID: <416FCE80.9090801@pbl.ca>
 References: <20041015035535.GA19170@clifford.headnut.org>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,17 +17,10 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-The -i is for interfaces only, not ip aliases. Try
-
-iptables -A INPUT -p icmp -i eth0 -d 192.168.1.1 -j DENY
-iptables -A INPUT -p icmp -i eth0 -d 192.168.2.1 -j ACCEPT
-
-And, I don't thing there is such a thing called DENY unless You -N it.
-
-On Thu, 14 Oct 2004 23:55:35 -0400, Chris Verges <squirrel@headnut.org> wrote:
+Chris Verges wrote:
 > Hey,
 > 
 > Is there a way to add firewall rules for subinterfaces?  I'm
@@ -40,24 +32,21 @@ On Thu, 14 Oct 2004 23:55:35 -0400, Chris Verges <squirrel@headnut.org> wrote:
 > 
 >   iptables -A INPUT -p icmp -i eth0:0 -j DENY
 >   iptables -A INPUT -p icmp -i eth0:1 -j ACCEPT
-> 
-> When I try to do this at the command line, iptables spits back
-> an error about how colons (:) are not allowed in the interface
-> name.  That brings up the interesting question of how to do this
-> whole thing ...
-> 
-> Any advice or insight is greatly appreciated!
-> 
-> Thanks,
-> 
-> chris
-> --
-> http://headnut.org
-> squirrel@headnut.org
-> 
-> 
 
+Nope you can't do that.  There's no point in doing it.  Just as you 
+added virtual interfaces to your firewall box, so can any node on your 
+network, effectively bypassing such firewall rules.  If you have a need 
+for such rules, than you really have a need for two separate physical 
+networks (otherwise, you are implementing security by obscurity, which 
+doesn't really work).
+
+If all you wanted to do is to force clients to use specific IP address 
+on your firewall box, then do it by specifying destination IP address 
+("-i eth0 -d 192.168.1.1 -j DROP" and "-i eth0 -d 192.168.2.1 -j 
+ACCEPT").  BTW, dropping all ICMP traffic might not be a good idea.
 
 -- 
-Bla bla
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
