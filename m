@@ -1,12 +1,13 @@
-From: Ola Nilsson <ola@fam-nilsson.org>
-Subject: Re: IPSec through my firewall
-Date: Wed, 16 Feb 2005 13:46:10 +0100
-Message-ID: <87r7jgwu3x.fsf@helmut.nilsson.homedns.org>
-References: <200502151715.j1FHFtfO029324@pepsi.fishpuppy.com>
-	<200502160129.26423.rowdy@com> <4213200C.9060108@hotpop.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Dropping network "noise"
+Date: Wed, 16 Feb 2005 08:28:31 -0500
+Message-ID: <1108560511.4832.18.camel@hubcap.ljm.dom>
+References: <200502130928.41225.e-boogie@yandex.ru>
+	<20050215161520.GA19496@bender.817west.com>
+	<200502161034.50448.e-boogie@yandex.ru>
 Mime-Version: 1.0
-In-Reply-To: <4213200C.9060108@hotpop.com> (Georgi Alexandrov's message of
-	"Wed, 16 Feb 2005 12:27:24 +0200")
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <200502161034.50448.e-boogie@yandex.ru>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +19,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Georgi Alexandrov <tehlists@hotpop.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Georgi Alexandrov <tehlists@hotpop.com> writes:
+On Wed, 2005-02-16 at 02:34, Mikhail Zotov wrote:
+> >   -m pkttype --pkt-type broadcast -j DROP
+> >   -m pkttype --pkt-type multicast -j DROP
+> > 
+> > -j
+> 
+> Great.  Thanks a lot for the idea.  These rules call another question:
+> Are broadcast/multicast messages used in Linux/UNIX or other than
+> windoops networks?  If so, will not these rules break anything?
+> I haven't seen such rules in any iptables guides/scripts available in
+> the Internet.
 
-> rowdy wrote:
->> I added rules like the following (but to user chains that I then
->> added to the input, output and forward chains) to solve my hassles
->> (clipped from the freeswan link above):
->> # allow IPsec
->>#
->># IKE negotiations
->>iptables -I INPUT  -p udp --sport 500 --dport 500 -j ACCEPT
->>iptables -I OUTPUT -p udp --sport 500 --dport 500 -j ACCEPT
->># ESP encryption and authentication
->>iptables -I INPUT  -p 50 -j ACCEPT
->>iptables -I OUTPUT -p 50 -j ACCEPT
->>
-..snip
-> that's more than pointless as he has INPUT, OUTPUT and FORWARD
-> policies set to ACCEPT and no other rules.
+i usually put rules like this at the end of chains; before the log rule,
+as part of a "no_log" chain, to keep the noise out of the logs.  so if
+you needed to allow certain broadcast or multicast traffic, you would do
+it before these rules.  on a dedicated firewall machine, the only thing
+i can think of would be if the machine is a DHCP server or client (or
+both)--though the broadcast part of that conversation *should* be at the
+BPF level and not require firewall rules.
 
-Even so, I'm thankfull for any suggestions. 
+-j
 
-So, going back to my initial question; How can I go about finding out
-where my packets are droped? Since it's most likelly not because of
-any netfilter rule entry, who else can decide that a packet can not be
-NATed?
-
--- 
-/Ola Nilsson
+--
+"Lisa, Vampires are make-believe, like elves, gremlins, and eskimos."
+	--The Simpsons
 
 
