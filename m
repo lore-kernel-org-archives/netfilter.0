@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Home web server using front firewall
-Date: Wed, 17 Dec 2003 22:48:49 +0000
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: RE: quickie - exclamation point with multiport
+Date: Thu, 18 Dec 2003 08:50:22 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312172248.50303.Antony@Soft-Solutions.co.uk>
-References: <HFEBJMKNPOCPPMGFHDMCAEJBCDAA.esanz@minorplanetusa.com>
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57C6F@OST_EXCH_USR5>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HFEBJMKNPOCPPMGFHDMCAEJBCDAA.esanz@minorplanetusa.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,71 +16,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Wednesday 17 December 2003 9:30 pm, Erick Sanz wrote:
+Cedric
 
-> Antony,
->
-> This are the entries I had to add to make it work:
->
-> iptables -P INPUT   DROP
-> iptables -P OUTPUT  DROP
-> iptables -P FORWARD DROP
->
-> iptables -t nat -A PREROUTING -p tcp -d 172.16.1.33 --dport 80 \
-> 	-j DNAT --to 10.10.1.240
->
-> iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
->
-> iptables -A INPUT -i eth0 -p tcp -d 172.16.1.33 --dport 80 -m state \
-> 	--state NEW,ESTABLISHED,RELATED -j ACCEPT
->
-> iptables -A INPUT -i eth1 -p tcp -s 10.10.1.240 --sport 80 -m state \
-> 	--state ESTABLISHED,RELATED -j ACCEPT
+I will head off to create a user-chain then :D thanks for your research!
 
-Packets being routed through a firewall from one side to the other do not go 
-through the INPUT chain.
+And thanks to all others who contributed their wisdom :D
 
-The only packets which go through rules in the INPUT chain are those addressed 
-to the firewall itself, and not being routed any further.
+Thanks and mulled wine to all
 
-I do not believe you need the above two rules in the INPUT chain.
+steve
 
-> I have read the FAQ on forwarding; however, I can still not understand
-> the 3 forwarding statements needed; one of them is for input on eth0
-> (172.16.1.33) to 10.10.1.240.  The other one is for data received from
-> eth1 (10.10.1.240); however, I don't understand the third forward (can't
-> be taken out as it won't work then)... I see the difference as -i to
-> -o ... Is there a newby explanation on why?
+-----Original Message-----
+From: Cedric Blancher [mailto:blancher@cartel-securite.fr]=20
+Sent: 17 December 2003 4.18
+To: Knight, Steve
+Cc: netfilter@lists.netfilter.org
+Subject: RE: quickie - exclamation point with multiport
 
-You need to understand the difference between putting a rule in the INPUT 
-chain (which is for packets addressed to the firewall itself), compared to 
-specifying -i in a rule in the FORWARD chain (which is for packets being 
-routed through the firewall, where you want to specify which interface they 
-entered the machine through).
 
-Here's a suggestion:
+Le mer 17/12/2003 =E0 11:00, Knight, Steve a =E9crit :
+> Aha - that would explain why I was confused ....
 
-Allow your firewall to pass some of the traffic that you want (now that you've 
-got it working), and then type:
+My fault. Sorry about this. Thanks Laurence for correction.
 
-iptables -L -n -v -x
+Nervertheless, multiport match does not seem to support inversion
+either.
 
-You will see each of the rules in the INPUT, FORWARD and OUTPUT rules, with 
-byte and packet counts at the beginning.
+cbr@elendil:~$ sudo iptables -A INPUT -p tcp -m multiport  \
+		! --sports 22,23 -j ACCEPT
+cbr@elendil:~$ sudo iptables -L INPUT -vn
+Chain INPUT (policy ACCEPT 33337 packets, 19M bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination
 
-Any rule which has a zero packet / byte count has not seen any traffic, and is 
-therefore not contributing to your firewall working.
+   30  3897 ACCEPT     tcp  --  *      *       0.0.0.0/0          =20
+0.0.0.0/0        multiport sports 22,23
 
-Hopefully this helps to explain things a bit more so you understand what is 
-needed and what is not.
+A SSH session is running and I can see counter get up.
 
-Antony.
+You can still use the userchain trick to get what you want to do, with
+multiport match ;)
 
--- 
-This is not a rehearsal.
-This is Real Life.
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
+
+
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is=20
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce,=20
+distribute, store, retransmit, use or disclose its contents to anyone.
+=20
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
