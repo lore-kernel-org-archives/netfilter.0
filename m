@@ -1,14 +1,13 @@
-From: Fabrice MARIE <fabrice@celestix.com>
-Subject: Re: ftp server issue, trying to DL 1.2.7a
-Date: Fri, 6 Sep 2002 09:50:37 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: transparent proxy whith DNAT
+Date: Wed, 4 Sep 2002 21:11:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209060950.37416.fabrice@celestix.com>
-References: <NEENJAPFEAIEMGMNIGFLGEKNCCAA.rwideman@austin.rr.com>
-Reply-To: fabrice@celestix.com
+Message-ID: <20020904201109.CJIO290.mta02-svc.ntlworld.com@there>
+References: <14C5057BC852D611BAC400E0299AA10FC938@MAILSERV>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NEENJAPFEAIEMGMNIGFLGEKNCCAA.rwideman@austin.rr.com>
+In-Reply-To: <14C5057BC852D611BAC400E0299AA10FC938@MAILSERV>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rob <rwideman@austin.rr.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Friday 06 September 2002 02:30, Rob wrote:
-> I got passed it....DLed on win2k and burned to cdr.
-> After extracting patch-o-matic/2.4.19/1.2.7a...i am running the
-> patch-o-matic script and:
-> # ./runme pending KERNEL_DIR=/usr/src/linux
-> ERROR: Invalid option KERNEL_DIR=/usr/src/linux
-> [...]
-> Any thoughts?
+On Wednesday 04 September 2002 6:43 pm, MOUDARIR Mohamed wrote:
 
-Sure,
+> I get a proxy error when i try to get to web from a pc in my private lan
 
-try
-# KERNEL_DIR=/usr/src/linux ./runme pending
-or
-# export KERNEL_DIR=/usr/src/linux; ./runme pending
+Reply packets come back to the client from the wrong address.   The client 
+(browser) doesn't like this so it gives you an error.
 
-Bash isn't quite like make and in your command example it will try
-to feed KERNEL_DIR=/usr/src/linux to ./runme and not take it as an
-env variable like it should (-:
+Here's why:
 
-Have a nice day,
+1. Internal client sends http request to external address.
+2. Firewall translates external address to internal address and sends packet 
+to server.
+3. Server responds and sends reply back to source address of the request.
+4. Source address is on local network, therefore reply goes direct from 
+server to client without going through firewall.
+5. No reverse NAT occurs, so client gets reply from a different address than 
+it sent the request to.
 
-Fabrice.
---
-Fabrice MARIE
-Senior R&D Engineer
-Celestix Networks
-http://www.celestix.com/
+Easiest and best solution is to place web server in DMZ network so that it 
+never gets a request from a local client.
 
-"Silly hacker, root is for administrators"
-       -Unknown
+Antony.
+
+-- 
+
+Most people are aware that the Universe is big.
+
+ - Paul Davies, Professor of Theoretical Physics
+
 
