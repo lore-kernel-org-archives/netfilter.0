@@ -1,12 +1,13 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: some body hacked my system
-Date: Tue, 8 Oct 2002 22:01:59 +0200 (CEST)
+From: Payal <payal@hotpop.com>
+Subject: Re: measure traffic
+Date: Wed, 9 Oct 2002 00:26:12 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210082051320.23598-100000@dns.toxicfilms.tv>
-References: <001e01c26edc$73aca530$8c01a8c0@sundaram>
+Message-ID: <20021008185612.GB1359@localhost.localdomain>
+References: <200210080025.26576@.> <20021007201735.LIPN459.mta02-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001e01c26edc$73aca530$8c01a8c0@sundaram>
+Content-Disposition: inline
+In-Reply-To: <20021007201735.LIPN459.mta02-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Sundaram Ramasamy <sun@percipia.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> wc3.part01.rar.gz  wc3.part07.rar.gz  wc3.part13.rar.gz  wc3.part19.rar.gz
-> wc3.part02.rar.gz  wc3.part08.rar.gz  wc3.part14.rar.gz  wc3.part20.rar.gz
-> wc3.part03.rar.gz  wc3.part09.rar.gz  wc3.part15.rar.gz  wc3.part21.rar.gz
-> wc3.part04.rar.gz  wc3.part10.rar.gz  wc3.part16.rar.gz
-> wc3.part05.rar.gz  wc3.part11.rar.gz  wc3.part17.rar.gz
-> wc3.part06.rar.gz  wc3.part12.rar.gz  wc3.part18.rar.gz
->
-> Is anybody knows what this file used for?
-Of course. The famous, War Craft III.
-
-> How will i block this IP Address in my firewall?
-iptables -A INPUT -s <ip> -j DROP
-
-> How will i check what else he did on my machine?
-Well, maybe i did not get it right, be it looks as if someone is making
-a Warez site out of your machine. The easiest way evil people exploit it
-is that they use world writeable anonymous ftp servers. Check it.
-
-If it is an intrusion, go and browse the logs, look in .bash.history,
-suspicious users, processes, mc's history, again: logs. look for deleted
-parts in the logs.
-
-And download, compile and run: chkrootkit. Which looks for rootkits and
-trojans in you binaries.
-
-Good luck,
-Maciej Soltysiak
-
-
+Hi,
+Thanks a lot all for the mail.
+Well, I was thining more on lines of traffic every hour/day/week/month
+etc. Cos' then I can challenge the server farm guys that their stats are
+wrong.
+Well, about ipac-ng I heard it has some problems with iptables 1.2.5 and
+kernel 2.4.x. Does it work properly with these two?
+Thanks a lot and bye.
+-Payal
+On Mon, Oct 07, 2002 at 09:17:33PM +0100, Antony Stone wrote:
+> On Monday 07 October 2002 7:58 pm, PayalR wrote:
+> 
+> > Hi,
+> > I have a small urgent problem. As I told you all before, I have my single
+> > Linux box at a server farm where I have to pay per Mb of data transmitted.
+> > I have a doubt that those guys there are cheating me. They are taking more
+> > money than actual data transmitted. Can I use iptables to log all incoming
+> > and outgoing data and see total incoming/outgoing data in a day/week/month?
+> 
+> Why not just use the byte counters in ifconfig ?
+> 
+> eg: ifconfig eth1
+> 
+> eth1      Link encap:Ethernet  HWaddr 00:02:2D:05:3F:8D
+>           inet addr:192.168.44.101  Bcast:192.168.44.255  Mask:255.255.255.0
+>           UP BROADCAST NOTRAILERS RUNNING  MTU:1500  Metric:1
+>           RX packets:1930 errors:0 dropped:0 overruns:0 frame:0
+>           TX packets:1950 errors:0 dropped:0 overruns:0 carrier:0
+>           collisions:0 txqueuelen:100
+>           RX bytes:912045 (890.6 Kb)  TX bytes:265386 (259.1 Kb)
+>           Interrupt:9 Base address:0x100
+> 
+> So this machine I'm on now has received 912045 bytes and sent 265386 bytes 
+> since the interface was initialised....
+> 
+> Antony.
+> 
+> -- 
+> 
+> The difference between theory and practice is that
+> in theory there is no difference, whereas in practice there is.
 
