@@ -1,11 +1,13 @@
 From: Del Winiecki <delw@wildapache.net>
-Subject: iptables-save display
-Date: 14 Feb 2003 14:41:45 -0700
+Subject: Re: iptables-save display
+Date: 14 Feb 2003 15:45:05 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045258905.17449.93.camel@r1>
+Message-ID: <1045262705.2394.35.camel@r1>
+References: <1045258905.17449.93.camel@r1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1045258905.17449.93.camel@r1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +20,11 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-First, Many thanks to Joel Newkirk, much appreciated. it works like a
-champ.
+I found the problem...its in the RedHat iptables script I chose.  I
+wrote my own init script and it works normally, as does the latest from
+RedHat
 
-I have a concern. When I display using iptables-save I see that though I
-only have one POSTROUTING statement, there are about 22 of them
-displayed, all exactly the same. I've tried all kinds of things, but
-they always come back each load. Is this a bug with iptables-save or
-could all those redundant statements actually be in the kernel tables?
-
--Del W.
-
+Regards,
+Del
 
 
