@@ -1,12 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ULOG: invalid argument
-Date: Fri, 5 Mar 2004 11:01:18 +0100 (CET)
+From: Carsten Maass <cm@blinkenlichten.de>
+Subject: Re: INET_IFACE: Secure to allow traffic from 192.168.x.0/24?
+Date: Fri, 05 Mar 2004 12:28:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0403051059070.6328-100000@blackhole.kfki.hu>
-References: <BAY15-F22EuZFkTEPcO000027e1@hotmail.com>
+Message-ID: <40486470.2030700@blinkenlichten.de>
+References: <40472125.4000608@blinkenlichten.de> <200403050129.54915.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F22EuZFkTEPcO000027e1@hotmail.com>
+In-Reply-To: <200403050129.54915.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "T. Take" <t_takejp@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Fri, 5 Mar 2004, T. Take wrote:
+Antony Stone wrote:
+>>
+>>recently i connected together two internal networks over an IPSec-tunnel:
+>>
+>>(Localnet A)---(Gateway A)==IPSec==(Gateway B)---(Localnet B)
+> 
+> 
+> How did you set up IPsec?   Using FreeS/WAN and Linux kernel 2.4.x?   Using 
+> the new built-in IPsec in kernel 2.6.x?   Some other method?   It makes a big 
+> difference to what you can filter, and how netfilter sees the packets.
+> 
+> Also, do you have one machine at each end of the link which is both running 
+> netfilter and acting as the IPsec gateway, or do you have two different 
+> machines, one doing netfilter, and one doing IPsec?
 
-> Thank you for replying to me, and I'm sorry that I'm late fo answer to you.
->
-> As you explained to me, I have made the version of ulogd up to 1.02.
-> # apt-get build-dep ulogd
-> # .....
-> # apt-get -b source ulogd
->
-> But, I cannot use target "ULOG".
-> # iptables: Invalid argment (the same error)
+Sorry, i should have bin more specific. Both gateways are Linux boxen 
+with kernel 2.4.24, using the KAME IPSec-backport from kernel 2.6 in 
+tunnel-mode. Both running netfilter on Debian stable with the 
+ipsec-tools and racoon coming from testing:
 
-Please make sure there is no iptables binary from your distribution which
-precedes in PATH the iptables binary installed from source.
+kernel-source-2.4.24          2.4.24-3
+iptables                      1.2.6a-5
+ipsec-tools                   0.2.2-8
+racoon                        0.2.2-8
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+>>Now i am unsure which iptables-rules i should apply to the external
+>>interfaces of the gateways to match the traffic between the Localnets
+>>without opening up a security hole. Is it sufficient to simply apply
+>>some general rules like:
+>>
+>>$IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.a.0/24 -j ACCEPT
+>>$IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.b.0/24 -j ACCEPT
+>>
+>>or would this approach be vulnerable to some kind of IP-spoofing attack?
+> 
+> 
+> If you are using FreeS/WAN and Linux 2.4.x you can filter real packets going 
+> to & from the "ipsecN" interfaces, and you can filter ESP packets going in 
+> and out of the "ethN" interfaces.   Tell us the details and I'll suggest 
+> something more specific if I can.
 
+Yes, from a filtering point of view the ipsecN devices of FreeS/WAN were 
+neat, but no avail. Tcpdump on Gateway B shows the packets as follows
+
+ping from 192.168.4.1 (Localnet B) to 192.168.1.1 (Localnet A):
+
+12:08:11.404522 82.82.82.82 > 83.83.83.83: ESP(spi=0x00d7fe71,seq=0x14) (DF)
+12:08:11.456654 83.83.83.83 > 82.82.82.82: ESP(spi=0x07e27fbb,seq=0x14)
+12:08:11.456654 192.168.1.1 > 192.168.4.1: icmp: echo reply
+
+
+Thanks for sharing your experience,
+Carsten.
 
