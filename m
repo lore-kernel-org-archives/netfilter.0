@@ -1,15 +1,12 @@
-From: Fabrice MARIE <fabrice@netfilter.org>
-Subject: Re: length match problem
-Date: Thu, 9 Jan 2003 10:39:44 +0800
+From: Vincent Lim <vincent.lim@nestac.com>
+Subject: Re: patching iptables - how?
+Date: Thu, 09 Jan 2003 10:11:44 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301091039.44259.fabrice@netfilter.org>
-References: <3E1CA2BF.6050707@boh.de>
-Reply-To: fabrice@netfilter.org
+Message-ID: <3E1CDA60.D0512E54@nestac.com>
+References: <20030108221616.1503.qmail@web12706.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E1CA2BF.6050707@boh.de>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,37 +17,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jackfritt <jackfritt@boh.de>
+To: Mladen Meduric <mladen_meduric@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
+Mladen Meduric wrote:
+> 
+> Hi all,
+> 
+> just joined the list.
+> Pretty new to linux/iptables (on SuSE8.0). I'm trying to patch from 1.2.5
+> to 1.2.6a and then to 1.2.7a.
 
-Hello Joerg,
+Why not just use 1.2.7a instead?
+Anyway, the patch command should be like this:
+# cd /path/to/iptables/source
+# patch -p1 < /path/to/patch
 
-On Thursday 09 January 2003 06:14, Jackfritt wrote:
-> Ok I have the following problem.
-> iptables -A OUTPUT -o ppp0 -p tcp -m length --length :40 -j MARK --set-mark 10
-> That should mark all ACK's or not ?
-> When I try to do this I get the error:
-> iptables: Invalid argument
-> [...]
-> So now my question is what am I doin wrong ?
+Do this for all remaining patches.
 
-Typically when the only error message from iptables
-is 'Invalid Argument', the actual error message would
-be most of the time in the kernel log.
-i.e. If I run your command above, it tells me
+> Do have all patches. Tried "patch" command, but I seem can't figure it out
+> properly. Would someone explain how to do this in couple of steps, please?
+> Also, from reading other articles, after patching up or reinstalling
+> iptables from scratch, is it necessary to recompile the kernel?
 
-# dmesg
-MARK: can only be called from "mangle" table, not "filter"
+In most cases (AFAIK), no. If you're using the same kernel during the
+compilation (of iptables), iptables will reference whatever libraries
+that exist for the current kernel. If you decide to switch kernels, you
+probably might need to recompile iptables as certain libraries might
+have underwent a significant tweak/hack/modification and might render
+iptables in-operable.
 
-So, you should be using a -t mangle in front..
-
-Have a nice day,
-
-Fabrice.
---
-Fabrice MARIE
-
-"Silly hacker, root is for administrators"
-       -Unknown
+-- 
+Vincent Lim
+Software Engineer
+NESTAC Solution Sdn Bhd
+vincent.lim@nestac.com | +(6012) 659-6609
 
