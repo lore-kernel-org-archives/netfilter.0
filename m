@@ -1,12 +1,13 @@
-From: cees-bart <ceesb@cs.kun.nl>
-Subject: Re: "iptables: Invalid argument" with kernel 2.4.20
-Date: Tue, 17 Dec 2002 10:55:33 +0100 (CET)
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination Unreachable)
+Date: Tue, 17 Dec 2002 16:11:41 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0212171053280.17546-100000@flex.cs.kun.nl>
-References: <200212161435.06101.netfilter@newkirk.us>
+Message-ID: <025b01c2a5b8$e2e7c200$13fcc5cb@nextto>
+References: <000a01c2a57f$e7a44f90$0501020a@compname3>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200212161435.06101.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +17,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: freedom <freedom10@idemation.com>, 'Marcello Scacchetti' <marcello.scacchetti@nextrem.it>, netfilter@lists.netfilter.org
 
-On Mon, 16 Dec 2002, Joel Newkirk wrote:
+hi
 
-> On Monday 16 December 2002 11:25 am, cees-bart wrote:
-> > hi all,
-> 
-> > -A OUTPUT -d MYMACHINE -p udp -m udp --dport 27960 -j DNAT \
-> >                            --to-destination OTHERMACHINE:30000
-> 
-> > this setup works fine on kernel 2.4.19 with iptables 1.2.6a.
+yes you can patch up the kernel with new version
+but there is no Latest rpm availbale for 1.2.7a
+
+ you need to use only 1.2.6a latest RPM with Redhat 8.0
+----- Original Message -----
+From: "freedom" <freedom10@idemation.com>
+To: "'Marcello Scacchetti'" <marcello.scacchetti@nextrem.it>;
+<netfilter@lists.netfilter.org>
+Sent: Tuesday, December 17, 2002 9:23 AM
+Subject: RE: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination
+Unreachable)
+
+
+> Marcello,
+>
+> Sure...
+>
+> Is it possible to use IPTables version 1.2.7a with Redhat 7.3?  RH 7.3
+> comes with a different version by default and I wanted to upgrade to
+> 1.2.7a.  Is it possible?
+>
+> Also, do you know if any RPMs exist for IPTables version 1.2.7a and RH
+> 7.3?
+>
+> Thanks!
+> Kameron
+>
+> > -----Original Message-----
+> > From: netfilter-admin@lists.netfilter.org [mailto:netfilter-
+> > admin@lists.netfilter.org] On Behalf Of Marcello Scacchetti
+> > Sent: Monday, December 16, 2002 7:18 AM
+> > To: netfilter@lists.netfilter.org
+> > Subject: Re: ICMP Destination Unreachable
 > >
-> > BUT, the last rule (OUTPUT) fails with message "iptables: Invalid
-> > argument" when running under 2.4.20.
-> 
-> Have you tried manually creating the rule, or are you restoring from a 
-> save made with the earlier version?  
-
-i tried both, and i found my mistake:
-
-i forgot to enable CONFIG_IP_NF_NAT_LOCAL in the kernel.
-sorry for the trouble.
-
-bye,
-cees-bart
+> > Hi Kameron,
+> > can you be a little more verbose?
+> > What does "run" means? Unable to set rules? Unable to run iptables
+> > command? Unable to make rules work?
+> >
+> > Marcello
+> >
+> > Il ven, 2002-12-06 alle 16:09, Kameron ha scritto:
+> > > Hello Gurus,
+> > >
+> > > I have a couple of quick questions...
+> > >
+> > > 1) Does anybody know of any reason why I couldn't run IPTables
+> 1.2.7a
+> > > with RH7.3.
+> > >
+> > > 2) Are there any .rpm's for IPTables 1.2.7.a available?  I attempted
+> to
+> > > compile my own, but didn't have any luck.
+> > >
+> > > Thanks!
+> > > Kameron
+> > --
+> > Marcello Scacchetti <marcello.scacchetti@nextrem.it>
+> >
+>
+>
+>
+>
 
 
