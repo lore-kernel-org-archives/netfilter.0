@@ -1,8 +1,9 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: External IP addresses on internal network
-Date: Tue, 26 Aug 2003 11:57:08 -0400
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: Broken ftp through iptables
+Date: Tue, 26 Aug 2003 12:59:32 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4B8354.7040903@Loudoun-Fairfax.com>
+Message-ID: <035b01c36beb$09b417f0$49caa8c0@caris.priv>
+References: <000701c36be5$b629a050$6901a8c0@Station13>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,26 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Landon Chelf <landonc@starrobbins.com>, netfilter@lists.netfilter.org
 
-Hi all,
+If you want to use passive ftp you have to allow stuff destined to port 21
+and you also have to allow ( for the commands) traffic to come in on some
+port that you don't get to pick.  The way to to this without actually
+opening a whole bunch of ports is like this
 
-I recently updated my configuration by modifying one of my filter INPUT 
-rules to specify source IPs coming in from the LAN:
+From inside network going out and on forward chain
+    -p tcp --dport  21 -j ACCEPT
+    -p tcp -m state --state RELATED - j ACCEPT
 
-iptables -t filter -A INPUT -p all -i $LAN_Interface -s $LAN_IP_Range -j 
-Lan-Host
+FROM outside network back in on the Forward chain
+   -p tcp -m state --state ESTABLISHED -j ACCEPT
 
-Packets not meeting this condition (among others) are logged and 
-dropped. The intent is to catch any internal packets coming from an 
-external IP address. No sooner did I load this rule when I started 
-logging packets with an AOL IP address coming from the LAN interface 
-going to port 53. I have a small LAN with only a handful of PCs which I 
-configured myself, so I'm a bit puzzled.
 
-Have I configured this wrong? Several users connect to AOL through the 
-firewall so that's a possible cause, but I don't know why an AOL program 
-would spoof IPs. Thoughts?
+If you want to do Active ftp .... well .... trust me, you dont want to do
+this :)
+
+
+----- Original Message -----
+From: "Landon Chelf" <landonc@starrobbins.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, August 26, 2003 12:21 PM
+Subject: Broken ftp through iptables
+
+
+> Hello,
+>
+> I've ran into a recent problem both on rh8 and rh9 using iptables.  I've
+> setup my firewall to drop everything incomming and forward and am only
+> allowing certain ports to be open.  I've opened ftp (port 21 tcp) and I
+> can connect via FTP from one machine and authenticate, but when I issue
+> my first command like "ls" for instance the connection locks up and
+> won't do anything.  Is there a way to fix this?
+>
+> Landon
+>
+>
 
 
