@@ -1,12 +1,12 @@
-From: Ilguiz Latypov <ilguiz@nit.ca>
-Subject: Re: [REPOST] PPTP+NAT+MASQ anyone?
-Date: Mon, 23 Dec 2002 12:02:47 -0500 (EST)
+From: Christophe ROSENKRANZ <christophe.rosenkranz@ubizen.com>
+Subject: iptables with msn messenger
+Date: Thu, 19 Dec 2002 12:12:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0212231149540.19524-100000@localhost.localdomain>
-References: <200212231415.09766.roy@karlsbakk.net>
+Message-ID: <3E01A991.27A8EDFC@ubizen.com>
+Reply-To: christophe.rosenkranz@lu.ubizen.com
 Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms9AABAB3E9557AB06B5AC9030"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200212231415.09766.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,118 +16,96 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+This is a cryptographically signed message in MIME format.
+
+--------------ms9AABAB3E9557AB06B5AC9030
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
+Hi,
 
-Are you using the CVS repository from netfilter.org or some package based
-on it?  The code from CVS worked fine for me.  The runme script should
-print a message
+I have a probrem to configurate my iptables with msn messenger.
 
-   Examining kernel in /usr/src/Pol/linux-2.4.20
+        Windows-------->Linux----------->Internet
+    ( Msnmessenger)    (IPtables)
+                                     (Nat)
 
-The PPTP kernel patch from CVS
+The vocal communication doesn't work. Please send me an email if you
+have the answer.
 
-  http://cvs.netfilter.org/cgi-bin/cvsweb/netfilter/patch-o-matic/extra/
-
-fails to rewrite the replies from the remote PPTP server.  Check the
-netfilter-devel thread with the fix offered by Philip Craig,
-
-http://lists.netfilter.org/pipermail/netfilter-devel/2002-November/009902.html
-http://lists.netfilter.org/pipermail/netfilter-devel/2002-December/009913.html
-
-I've uploaded the cumulative PPTP patch against Linux 2.4.20 to
-
-http://sourceforge.net/tracker/index.php?func=detail&aid=654010&group_id=44827&atid=441005
-
+Best regards
 --
-Ilguiz Latypov
-Net Integration Technologies, Inc
+Christophe ROSENKRANZ
+Security Analyst, Ubizen Luxembourg
+Ubizen - 18 rue Robert Stuemper - L2557 Luxembourg - Luxembourg
+T: +352 26 31 58 60
+F: +352 26 31 58 69
+Ubizen    We Secure e-Business    http://www.ubizen.com
 
-tel. +1 (514) 281 9191 x 117
 
-On Mon, 23 Dec 2002, Roy Sigurd Karlsbakk wrote:
+--------------ms9AABAB3E9557AB06B5AC9030
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-> hi all
->
-> still trying to patch up my kernel to allow for PPTP NATing, but patch-o-matic
-> simply fails. This is with kernel 2.4.20 (from kernel.org) and latest
-> patch-o-matic from cvs.
->
-> Can someone _please_ help me here? I'm doing exactly as the doc says!
->
-> # pwd
-> /usr/src
-> # mkdir Pom
-> # tar xjf packed/linux-2.4.20.tar.bz2 -C Pom
-> ./runme pending
-> Testing... ip_conntrack_protocol_destroy.patch NOT APPLIED (6 rejects out of 6
-> hunks)
-> Testing... remove_no_version.patch NOT APPLIED (4 rejects out of 4 hunks)
-> Testing... newnat-udp-helper.patch NOT APPLIED (8 rejects out of 8 hunks)
->
-> # KERNEL_DIR=/usr/src/Pom/linux-2.4.20 ./runme base
-> ...
-> Testing... IPV4OPTSSTRIP.patch NOT APPLIED ( 1 missing files)
-> Testing... NETLINK.patch NOT APPLIED ( 2 missing files)
-> Testing... NETMAP.patch NOT APPLIED ( 1 missing files)
-> Testing... REJECT.patch.ipv6 NOT APPLIED ( 1 missing files)
-> Testing... SAME.patch NOT APPLIED ( 2 missing files)
-> Testing... TTL.patch NOT APPLIED ( 2 missing files)
-> Testing... ahesp6.patch.ipv6 NOT APPLIED ( 4 missing files)
-> Testing... frag6.patch.ipv6 NOT APPLIED ( 2 missing files)
-> Testing... fuzzy.patch NOT APPLIED ( 2 missing files)
-> Testing... iplimit.patch NOT APPLIED ( 2 missing files)
-> Testing... ipt_unclean-ubit.patch NOT APPLIED (1 rejects out of 1 hunks)
-> Testing... ipv4options.patch NOT APPLIED ( 2 missing files)
-> Testing... ipv6header.patch.ipv6 NOT APPLIED ( 2 missing files)
-> Testing... mport.patch NOT APPLIED ( 2 missing files)
-> Testing... nth.patch NOT APPLIED ( 2 missing files)
-> Testing... opts6.patch.ipv6 NOT APPLIED ( 3 missing files)
-> Testing... pool.patch NOT APPLIED ( 5 missing files)
-> Testing... psd.patch NOT APPLIED ( 2 missing files)
-> Testing... quota.patch NOT APPLIED ( 2 missing files)
-> Testing... random.patch NOT APPLIED ( 2 missing files)
-> Testing... realm.patch NOT APPLIED ( 2 missing files)
-> Testing... route6.patch.ipv6 NOT APPLIED ( 2 missing files)
-> Testing... time.patch NOT APPLIED ( 2 missing files)
->
-> # KERNEL_DIR=/usr/src/Pom/linux-2.4.20 ./runme extra
-> ...
-> Testing... CONNMARK.patch NOT APPLIED ( 4 missing files)
-> Testing... ROUTE.patch NOT APPLIED ( 2 missing files)
-> Testing... amanda-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-> Testing... condition.patch NOT APPLIED ( 2 missing files)
-> Testing... eggdrop-conntrack.patch NOT APPLIED ( 1 missing files)
-> Testing... h323-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-> Testing... ip_conntrack-timeouts.patch NOT APPLIED ( 1 missing files)
-> Testing... ip_tables-proc.patch NOT APPLIED (5 rejects out of 5 hunks)
-> Testing... ipt_TARPIT.patch NOT APPLIED ( 1 missing files)
-> Testing... mms-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-> Testing... nfnetlink-ctnetlink-0.11.patch NOT APPLIED ( 4 missing files)
-> Testing... pptp-conntrack-nat.patch NOT APPLIED ( 8 missing files)
-> Testing... quake3-conntrack.patch NOT APPLIED ( 3 missing files)
-> Testing... recent.patch NOT APPLIED ( 2 missing files)
-> Testing... rsh.patch NOT APPLIED ( 2 missing files)
-> Testing... string.patch NOT APPLIED ( 2 missing files)
-> Testing... talk-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-> Testing... tcp-window-tracking.patch NOT APPLIED (29 rejects out of 32 hunks)
-> Testing... tftp-conntrack-nat.patch NOT APPLIED ( 3 missing files)
->
->
->
-> --
-> Roy Sigurd Karlsbakk, Datavaktmester
-> ProntoTV AS - http://www.pronto.tv/
-> Tel: +47 9801 3356
->
-> Computers are like air conditioners.
-> They stop working when you open Windows.
->
->
->
->
+MIILhwYJKoZIhvcNAQcCoIILeDCCC3QCAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3DQEHAaCC
+CbQwggK4MIICIaADAgECAgsBAAAAAADx6eVv9TANBgkqhkiG9w0BAQUFADBdMQswCQYDVQQG
+EwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTETMBEGA1UECxMKQ2xhc3MgMiBDQTEe
+MBwGA1UEAxMVR2xvYmFsU2lnbiBDbGFzcyAyIENBMB4XDTAyMTIwNDE0MTQwNVoXDTAzMTIw
+NDE0MTQwNVowXjELMAkGA1UEBhMCTFUxHjAcBgNVBAMTFUNocmlzdG9waGUgUm9zZW5rcmFu
+ejEvMC0GCSqGSIb3DQEJARYgY2hyaXN0b3BoZS5yb3NlbmtyYW56QHViaXplbi5jb20wgZ8w
+DQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMqVBp83IOPr4DtjtM+1S/7iqLrqGpmy7RHrT7II
+YsMcUipzqmvPQ6EX3TBk/95119dc8Vj4mwbDiN0dyDYLFuBviyyR+6e0cU3YjpIKb24NCy9v
+D0r+OSDK3NHM0FHgIAfUVKo47/rRY+VWWSr3U3GVzs2z+/GxH2IGi26zPt3LAgMBAAGjfTB7
+MBEGCWCGSAGG+EIBAQQEAwIFoDAOBgNVHQ8BAf8EBAMCBPAwHwYDVR0jBBgwFoAUEW7XkWDL
+BuRXAFeonIC9djPlWVEwNQYDVR0fBC4wLDAqoCigJoYkaHR0cDovL2NybC5nbG9iYWxzaWdu
+Lm5ldC9jbGFzczIuY3JsMA0GCSqGSIb3DQEBBQUAA4GBALNLoWBUK8jDzn/wADqp9432EB11
+fZWuUACUxM7zm1MNi20wuIoOYY6rikNmAoWinPEBNVLkVwHmdtnTm6Sa6xdgCSNdk35WTTvf
+zwXXiEBUNDj16xZovcQ5AZ5K/Go4qqKIAlL+AfKKGj9DTI8YPp1dQi4NOP6gYShPX8iZweQH
+MIIDRDCCAiygAwIBAgILAgAAAAAA1ni6ouYwDQYJKoZIhvcNAQEEBQAwbTELMAkGA1UEBhMC
+QkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExGzAZBgNVBAsTElByaW1hcnkgQ2xhc3Mg
+MiBDQTEmMCQGA1UEAxMdR2xvYmFsU2lnbiBQcmltYXJ5IENsYXNzIDIgQ0EwHhcNOTkwMTI4
+MTIwMDAxWhcNMDQwMTI4MTIwMDAwWjBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFs
+U2lnbiBudi1zYTETMBEGA1UECxMKQ2xhc3MgMiBDQTEeMBwGA1UEAxMVR2xvYmFsU2lnbiBD
+bGFzcyAyIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYUVsPk8dJYHdRFI7jnXV1
+HsmFDn9MAxkZdqTueiv8gwYDx5wWmr6OThEKQH+sMonTwXn8+UTRh1PP29O7LV8pufq6EftU
+otvG0+a1wIgvtU4Ch9zLmxl59r/dNHreM4Va6DJ1z0NhRQ3jyIc7RxCh5d8tbAcGR/lO2Pv2
+hJ4MwwIDAQABo3kwdzAOBgNVHQ8BAf8EBAMCAAYwHQYDVR0OBBYEFBFu15FgywbkVwBXqJyA
+vXYz5VlRMB8GA1UdIwQYMBaAFHznsrEs3rGna+l2DOGj/U5sx7n2MBEGCWCGSAGG+EIBAQQE
+AwIABjASBgNVHRMBAf8ECDAGAQH/AgEAMA0GCSqGSIb3DQEBBAUAA4IBAQAEQx7kusCkHmwk
+AznLQh+pLDMM7/wbB0inbke3CLVauJWxLSXOAnaScG7ajhDH/B3JMq2KVSHZx1YE9/Jv0OJ7
+wZVF5sl3HzVMEAfycwJMD3BA+DwbprAiIpd0nfO+YfmO4FQWNGpvlEh8rgUF+lf49Jh01JP1
+7BCZTGO36ekRYdHUSNCyI6IRvKg4GA0QOPxbxd6jYjLKdvAG2W4MNsFAJodHUS+c+F5ivfYy
+NowUpkdi+l3FotpZGVDSYB2/RBJPPdF0wdd842Zc7kULCakc34gkEN52IHzNFN2NWrNWviCc
+3Ax2Wr+CUvzyvBYzRFYH0xU2qldBvdGFkHGww9xzMIIDrDCCApSgAwIBAgILAgAAAAAA1ni4
+jY0wDQYJKoZIhvcNAQEEBQAwVzELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24g
+bnYtc2ExEDAOBgNVBAsTB1Jvb3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAe
+Fw05OTAxMjgxMjAwMDBaFw0wOTAxMjgxMjAwMDBaMG0xCzAJBgNVBAYTAkJFMRkwFwYDVQQK
+ExBHbG9iYWxTaWduIG52LXNhMRswGQYDVQQLExJQcmltYXJ5IENsYXNzIDIgQ0ExJjAkBgNV
+BAMTHUdsb2JhbFNpZ24gUHJpbWFyeSBDbGFzcyAyIENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAkoz+7/RFjhdBbvzYvyFvqwadUsEsAJ0/joW4f0qPvaBjKspJJ65agvR0
+4lWS/8LRqnmitvrVnYIET8ayxl5jpzq62O7rim+ftrsoQcAi+05IGgaS17/Xz7nZvThPOw1E
+blVB/vwJ29i/844h8egStfYTpdPGTJMisAL/7h0MxKhrT3VoVujcKBJQ96gknS4kOfsJBd7l
+o2RJIdBofnEwkbFg4Dn0UPh6TZgAa3x5uk7OSuK6Nh23xTYVlZxkQupfxLr1QAW+4TpZvYSn
+GbjeTVNQzgfR0lHT7w2BbObnbctdfD98zOxPgycl/3BQ9oNZdYQGZlgs3omNAKZJ+aVDdwID
+AQABo2MwYTAOBgNVHQ8BAf8EBAMCAAYwHQYDVR0OBBYEFHznsrEs3rGna+l2DOGj/U5sx7n2
+MB8GA1UdIwQYMBaAFGB7ZhpFDZfKiVAvfQTNNKj//P1LMA8GA1UdEwEB/wQFMAMBAf8wDQYJ
+KoZIhvcNAQEEBQADggEBAGPdWc6KeaqYnU7FiWQ3foqTZy8Q6m8nw413bfJcVpQZGmlgMEZd
+j/JtRTyONZd8L7hR4uiJvYjPJxwINFyIwWgk25GF5M/7+0ON6CUBG8QO9wBCSIYfJAhYWoyN
+8mtHLGiRsWlC/Q2NySbmkoamZG6Sxc4+PH1x4yOkq8fVqKnfgqc76IbVw08Y40TQ4NzzxWgu
+/qUvBYTIfkdCU2uHSv4y/14+cIy3qBXMF8L/RuzQ7C20bhIoqflA6evUZpdTqWlVwKmqsi7N
+0Wn0vvi7fGnuVKbbnvtapj7+mu+UUUt17tjU4ZrxAlYTiQ6nQouWi4UMG4W+Jq6rppm8IvFz
+30IxggGbMIIBlwIBATBsMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMRMwEQYDVQQLEwpDbGFzcyAyIENBMR4wHAYDVQQDExVHbG9iYWxTaWduIENsYXNzIDIg
+Q0ECCwEAAAAAAPHp5W/1MAkGBSsOAwIaBQCggYYwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEH
+ATAcBgkqhkiG9w0BCQUxDxcNMDIxMjE5MTExMjE4WjAjBgkqhkiG9w0BCQQxFgQU+4W6n46n
+bwfINlFLZ72JRLRLvwUwJwYJKoZIhvcNAQkPMRowGDAHBgUrDgMCBzANBggqhkiG9w0DAgIB
+KDANBgkqhkiG9w0BAQEFAASBgMMvMnz9tHS/OmghToceKGNAqpOWE96sn10aMkT2H/6FMwp5
+3tI9tgTFgaQ/8FWn9jAS/YHwcWsDCNJ7CfWBqi6I7PgD26oYNpskBzD03jxyR7/I0wjmRuts
+DG0VFwJItty/55jHGuKQwqF7QQhXMYoRkXPo+Yns8pNifoQZRbbo
+--------------ms9AABAB3E9557AB06B5AC9030--
 
 
