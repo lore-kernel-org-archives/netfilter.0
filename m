@@ -1,14 +1,13 @@
-From: I.S.Kuten <i.kuten@sam-solutions.net>
-Subject: Re: fake ping reply
-Date: Thu, 4 Sep 2003 20:10:00 +0300
+From: Wim Ceulemans <wim.ceulemans@able.be>
+Subject: Re: GRE/PPTP Pass-through problems
+Date: Thu, 04 Sep 2003 18:04:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904201000.40c0e6a4.i.kuten@sam-solutions.net>
-References: <20030902165026.2edc8dfd.i.kuten@sam-solutions.net>
-	<20030904162444.GB31513@cannon.eng.us.uu.net>
+Message-ID: <3F576277.5060501@able.be>
+References: <8EC0756327A4994298EFD721CFC7355B01B14C@jfm2.jacobson.co.uk> <3F572CC1.4010907@able.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------010009050103090704060009"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030904162444.GB31513@cannon.eng.us.uu.net>
+In-Reply-To: <3F572CC1.4010907@able.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +17,589 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Wim Ceulemans <wim.ceulemans@able.be>
+Cc: Jamie Vuyk <jvuyk@jacobson.co.uk>, netfilter@lists.netfilter.org
 
-On Thu, 4 Sep 2003 12:24:44 -0400
-Ramin Dousti <ramin@cannon.eng.us.uu.net> wrote:
+This is a multi-part message in MIME format...
 
-> On Tue, Sep 02, 2003 at 04:50:26PM +0300, I.S.Kuten wrote:
-> 
-> > Hello ,
-> > 
-> > i wanted to setup iptables , when someone pings my box , echo-reply
-> > would come from other machine then mine .
-> 
-> A very strange question. When the client sends you a echo-request, it
-> expects to receive echo-reply from the same IP address. If some other
-> IP address sends the echo-reply, it will simply get dropped by the OS
-> on the client, as there is no match for this bogus packet...
-> 
-> Now, what do you want to achieve with this? Fool the client that his
-> ping, pinged someone else??
-> 
+--------------010009050103090704060009
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I'd like to archive 
+Hi
 
-when i receive ping from say 192.168.0.1 , i send ping to another ip 192.168.0.2 receive echo-reply 
-and send echo-reply back to 192.168.0.1 with same type
-(ping i mean icmp with some type)
+I made a dump with tcpdump about the problem with pptp connections to a 
+windows server behind an iptables
+firewall that stops working after a few minutes. What I did was make a 
+connection to the pptp server through
+the linux box and then start a ping to the pptp server. Connection 
+started 17:58:12 and stopped on 18:00:12,
+exactly 2 minutes after connecting? Any explanation for this?
 
+My setup as explained below: kernel 2.4.22 and the latest pom snapshot 
+(patch-o-matic-20030831) with iptables 1.2.8
+Attached is the tcpdump log.
+
+Regards
+Wim
 
 
-sorry 
-> > i wanted to setup iptables , when someone pings my box , echo-reply
-> > would come from other machine then mine .
-this is not quite correct what i wanted
 
 
-> If you feel unconfortable with someone pinging you, just drop them...
-> 
-> Ramin
-> 
+Wim Ceulemans wrote:
 
-> > 
-> > I've tried to play with PREROUTING & POSTROUTING chains but had no success .
-> > 
-> > Anyone has solution ?
-> > 
-> > 
-> 
+> Hi
+>
+> I had the same problems with GRE not passing through to a server 
+> behind the firewall.
+> I then used kernel 2.4.22 and the latest pom snapshot 
+> (patch-o-matic-20030831) with iptables 1.2.8
+> and gre passed through.
+>
+> However, after testing I notice now that although PPTP connections to 
+> a win2000 server behind the
+> firewall work, that the connection is not reliable. After 3 to 4 
+> minutes the connection is closed for
+> some unknown reason and people have to re-establish the connection.
+>
+> Anyone experiencing this problem also?
+>
+> Regards
+> Wim
+>
+> Jamie Vuyk wrote:
+>
+>> Hello,
+>>
+>> I hope this will be a simple post that can lay to rest what a lot of
+>> people appear to be having trouble with.  I have read a massive amount
+>> of posts all over the web and there seems to be much confusion in this
+>> simple matter.
+>>
+>>
+>>
+>> Basically there are two aspects to my problems:
+>>
+>> 1)       Does the standard kernel (RH 2.4.18) need to be patched in any
+>> way in order to PASS THROUGH proto 47 (GRE) to an internal server?  Im
+>> running a simply iptables firewall which I want to pass an external PPTP
+>> VPN connection through to an internal server.  It is most important to
+>> note that the firewall is masquerading all connections which I think is
+>> where the confusion lies.  As I understand if I want Linux to terminate
+>> the PPTP VPN I need a patch, if I want it to pass through I don't.
+>> However I am having a lot of trouble getting this to work and I would
+>> like to know if Im on the right track.
+>>
+>>
+>>
+>> 2)     Given that I don't have to patch anything and it all should "just
+>> work"... I have setup my firewall to allow and forward the 1723 to my
+>> internal server.  This appears to work but the external Win2k box gets
+>> stuck on "verifying username and password".  This eventually times out
+>> with "disconnected".  A simple test was to Telnet to port 1723.
+>> Although there is no response as such from the server (expected) it does
+>> connect with a blank screen both internally and externally suggesting
+>> the forwarding is working ok.  At what point does the 1723 data exchange
+>> end and the "payload" as such start on the GRE protocol?  Is GRE
+>> involved in the 'verifying username and password' stage or is that still
+>> TCP on 1723?  Just so you are aware I have the rest of the firewall
+>> fully operational with various port forwards etc that work fine.  It is
+>> essentially only the VPN's that are giving me grief.
+>>
+>>
+>>
+>> If you could get some basic info I maybe able to troubleshoot this and
+>> get it operational.
+>>
+>> Cheers in advance for you help.
+>>
+>> J
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>  
+>>
+>
+>
+
+
+-- 
+Wim Ceulemans
+R&D Engineer
+
+Secure Internet Communication with aXs Guard
+
+Able NV
+Leuvensesteenweg 282 - B-3190 Boortmeerbeek - Belgium
+Phone: + 32 15 50.44.00 - Fax: + 32 15 50.44.09
+E-mail: wim.ceulemans@able.be
+
+
+--
+Security check on this e-mail has been done by aXs GUARD
+(http://www.axsguard.com)
+
+
+--------------010009050103090704060009
+Content-Type: text/plain;
+ name="t"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="t"
+
+17:58:12.883750 195.0.83.117.1075 > 192.168.254.2.1723: S 2652455773:2652455773(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+17:58:12.884248 192.168.254.2.1723 > 195.0.83.117.1075: S 736585963:736585963(0) ack 2652455774 win 64240 <mss 1360,nop,nop,sackOK> (DF)
+17:58:12.937805 195.0.83.117.1075 > 192.168.254.2.1723: P 1:157(156) ack 1 win 65280: pptp CTRL_MSGTYPE=SCCRQ PROTO_VER(1.0) [|pptp] (DF)
+17:58:12.938236 192.168.254.2.1723 > 195.0.83.117.1075: P 1:157(156) ack 157 win 64084: pptp CTRL_MSGTYPE=SCCRP PROTO_VER(1.0) [|pptp] (DF)
+17:58:12.997886 195.0.83.117.1075 > 192.168.254.2.1723: P 157:325(168) ack 157 win 65124: pptp CTRL_MSGTYPE=OCRQ CALL_ID(38015) [|pptp] (DF)
+17:58:12.999780 192.168.254.2.1723 > 195.0.83.117.1075: P 157:189(32) ack 325 win 63916: pptp CTRL_MSGTYPE=OCRP CALL_ID(17382) [|pptp] (DF)
+17:58:13.063734 195.0.83.117.1075 > 192.168.254.2.1723: P 325:349(24) ack 189 win 65092: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(17382) [|pptp] (DF)
+17:58:13.084646 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:0 ppp: Conf-Req(0), MRU=1400, Magic-Num=55e242d5, PFC, ACFC, Vend-Ext
+17:58:13.094500 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:0 A:0 ppp: Conf-Req(0), Auth-Prot CHAP/MSCHAPv2, Magic-Num=47556200, Vend-Ext
+17:58:13.094554 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:1 ppp: Conf-Nak(0), MRU=1500
+17:58:13.144662 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:1 A:1 ppp: Conf-Rej(0), MRRU=1614, End-Disc Local
+17:58:13.145338 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:2 A:1 ppp: Conf-Req(1), Auth-Prot CHAP/MSCHAPv2, Magic-Num=47556200, Vend-Ext
+17:58:13.147647 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:2 ppp: Conf-Req(1), MRU=1400, Magic-Num=55e242d5, PFC, ACFC, Vend-Ext
+17:58:13.148150 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:3 A:2 ppp: Conf-Nak(1), MRU=1500
+17:58:13.172462 192.168.254.2.1723 > 195.0.83.117.1075: . ack 349 win 63892 (DF)
+17:58:13.192730 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:3 A:3 ppp: Conf-Ack(1), Auth-Prot CHAP/MSCHAPv2, Magic-Num=47556200, Vend-Ext
+17:58:13.195616 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:4 ppp: Conf-Req(2), MRU=1500, Magic-Num=55e242d5, PFC, ACFC, Vend-Ext
+17:58:13.196257 192.168.254.2.1723 > 195.0.83.117.1075: P 189:213(24) ack 349 win 63892: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(1075) [|pptp] (DF)
+17:58:13.197153 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:4 A:4 ppp: Conf-Ack(2), MRU=1500, Magic-Num=55e242d5, Vend-Ext
+17:58:13.197189 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:5 ppp: Chal(0), Value=c25a6fd94f24755251e39de4c3126000, Name=\000\000\000\000\000\031\000\000
+17:58:13.240750 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:5 ppp
+17:58:13.243795 195.0.83.117.1075 > 192.168.254.2.1723: P 349:373(24) ack 189 win 65092: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(17382) [|pptp] (DF)
+17:58:13.243947 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:5 ppp: Ident(3), Magic-Num=55e242d5
+17:58:13.246755 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:6 ppp: Ident(4), Magic-Num=55e242d5
+17:58:13.249667 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:7 ppp: Resp(0), Value=c5a40cd5b056eeff5e54e7a0396fb800000000000019000000686f7374203139352e302e38332e31313700000011000000, Name=1723
+17:58:13.263945 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:6 A:7 ppp: Succ(0), Msg=S=BBCC431A7E\000\000\000\000\000\000\031\000\000\000host 195.0.83.117\000\000\000
+17:58:13.263999 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:7 ppp: 
+17:58:13.312617 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:8 A:7 ppp: 
+17:58:13.321861 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:8 A:8 ppp: 
+17:58:13.321924 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:9 ppp: Conf-Req(3), MPPC
+17:58:13.322008 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:10 ppp: Conf-Req(4), IP-Addr=192.168.1.50
+17:58:13.360735 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:9 A:8 ppp: Conf-Req(5), MPPC
+17:58:13.361300 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:11 A:9 ppp: Conf-Nak(5), MPPC
+17:58:13.363679 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:10 ppp: Conf-Req(6), IP-Addr=0.0.0.0, Pri-DNS=0.0.0.0, Pri-NBNS=0.0.0.0, unknown-0
+17:58:13.364230 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:12 A:10 ppp: Conf-Nak(6), IP-Addr=192.168.1.58, Pri-DNS=192.168.1.2, unknown-0
+17:58:13.372752 192.168.254.2.1723 > 195.0.83.117.1075: . ack 373 win 63868 (DF)
+17:58:13.372710 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:11 A:10 ppp: Conf-Nak(3), MPPC
+17:58:13.373281 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:13 A:11 ppp: Conf-Req(5), MPPC
+17:58:13.375639 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:12 ppp: Conf-Ack(4), IP-Addr=192.168.1.50
+17:58:13.412746 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:12 [|gre]
+17:58:13.420685 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:13 ppp
+17:58:13.441749 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:13 ppp: Conf-Req(7), MPPC
+17:58:13.442252 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:14 A:13 ppp: Conf-Ack(7), MPPC
+17:58:13.444757 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:14 ppp: Conf-Req(8), IP-Addr=192.168.1.58, Pri-DNS=192.168.1.2, Pri-NBNS=192.168.0.0, unknown-0
+17:58:13.446064 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:15 A:14 ppp: Conf-Ack(8), IP-Addr=192.168.1.58, Pri-DNS=192.168.1.2, unknown-0
+17:58:13.447635 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:15 ppp: Conf-Ack(5), MPPC
+17:58:13.539655 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:15 [|gre]
+17:58:13.570645 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:15 ppp
+17:58:13.591628 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:16 ppp: 
+17:58:13.627807 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:17 ppp: 
+17:58:13.630708 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:18 ppp: 
+17:58:13.635207 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:16 A:18 ppp: 
+17:58:13.645707 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:19 ppp: 
+17:58:13.656324 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:17 A:19 ppp: 
+17:58:13.771663 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:17 ppp
+17:58:14.494677 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:20 ppp: 
+17:58:14.594465 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:20 [|gre]
+17:58:14.975086 192.168.254.2.1723 > 195.0.83.117.1075: P 189:213(24) ack 373 win 63868: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(1075) [|pptp] (DF)
+17:58:16.324753 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:21 ppp: 
+17:58:16.325488 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:18 A:21 ppp: 
+17:58:16.462668 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:18 ppp
+17:58:16.615796 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:22 ppp: 
+17:58:16.707547 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:22 [|gre]
+17:58:17.132470 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:19 ppp: 
+17:58:17.182745 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:23 A:19 ppp: 
+17:58:17.184233 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:20 A:23 ppp: 
+17:58:17.233803 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:24 A:20 ppp: 
+17:58:17.234935 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:21 A:24 ppp: 
+17:58:17.236770 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:25 ppp: 
+17:58:17.238064 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:22 A:25 ppp: 
+17:58:17.323717 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:26 A:22 ppp: 
+17:58:17.324239 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:23 A:26 ppp: 
+17:58:17.380741 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:23 ppp
+17:58:17.704821 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:27 ppp: 
+17:58:17.706712 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:24 A:27 ppp: 
+17:58:17.842744 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:24 ppp
+17:58:18.325760 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:28 ppp: 
+17:58:18.326489 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:25 A:28 ppp: 
+17:58:18.460686 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:25 ppp
+17:58:18.580231 192.168.254.2.1723 > 195.0.83.117.1075: P 189:213(24) ack 373 win 63868: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(1075) [|pptp] (DF)
+17:58:19.333745 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:29 ppp: 
+17:58:19.334444 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:26 A:29 ppp: 
+17:58:19.480755 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:26 ppp
+17:58:19.624810 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:30 ppp: 
+17:58:19.721827 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:30 [|gre]
+17:58:20.332808 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:31 ppp: 
+17:58:20.333481 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:27 A:31 ppp: 
+17:58:20.473711 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:27 ppp
+17:58:20.722814 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:32 ppp: 
+17:58:20.738260 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:28 A:32 ppp: 
+17:58:20.785902 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:33 A:28 ppp: 
+17:58:20.791888 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:34 ppp: 
+17:58:20.813369 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:34 [|gre]
+17:58:21.346818 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:35 ppp: 
+17:58:21.347467 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:29 A:35 ppp: 
+17:58:21.481738 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:29 ppp
+17:58:22.285880 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:36 ppp: 
+17:58:22.342820 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:37 ppp: 
+17:58:22.343394 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:30 A:37 ppp: 
+17:58:22.480765 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:30 ppp
+17:58:23.344855 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:38 ppp: 
+17:58:23.345593 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:31 A:38 ppp: 
+17:58:23.479795 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:31 ppp
+17:58:23.785944 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:39 ppp: 
+17:58:23.877819 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:39 [|gre]
+17:58:24.346853 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:40 ppp: 
+17:58:24.347550 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:32 A:40 ppp: 
+17:58:24.490788 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:32 ppp
+17:58:25.285905 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:41 ppp: 
+17:58:25.342885 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:42 ppp: 
+17:58:25.343446 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:33 A:42 ppp: 
+17:58:25.480844 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:33 ppp
+17:58:25.774887 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:43 ppp: 
+17:58:25.776318 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:34 A:43 ppp: 
+17:58:25.790583 192.168.254.2.1723 > 195.0.83.117.1075: P 189:213(24) ack 373 win 63868: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(1075) [|pptp] (DF)
+17:58:25.918818 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:34 ppp
+17:58:26.353859 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:44 ppp: 
+17:58:26.354527 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:35 A:44 ppp: 
+17:58:26.491845 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:35 ppp
+17:58:27.271868 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:45 ppp: 
+17:58:27.352844 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:46 ppp: 
+17:58:27.353651 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:36 A:46 ppp: 
+17:58:27.490856 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:36 ppp
+17:58:28.363919 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:47 ppp: 
+17:58:28.364877 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:37 A:47 ppp: 
+17:58:28.501814 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:37 ppp
+17:58:29.276325 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:38 ppp: 
+17:58:29.323961 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:48 A:38 ppp: 
+17:58:29.325207 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:39 A:48 ppp: 
+17:58:29.362896 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:49 ppp: 
+17:58:29.363448 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:40 A:49 ppp: 
+17:58:29.410897 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:40 ppp
+17:58:30.361904 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:50 ppp: 
+17:58:30.362632 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:41 A:50 ppp: 
+17:58:30.499858 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:41 ppp
+17:58:30.811975 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:51 ppp: 
+17:58:30.907873 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:51 [|gre]
+17:58:31.360918 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:52 ppp: 
+17:58:31.361610 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:42 A:52 ppp: 
+17:58:31.501931 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:42 ppp
+17:58:32.371950 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:53 ppp: 
+17:58:32.372648 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:43 A:53 ppp: 
+17:58:32.509904 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:43 ppp
+17:58:32.821301 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:44 ppp: 
+17:58:32.872944 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:54 A:44 ppp: 
+17:58:32.874007 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:45 A:54 ppp: 
+17:58:32.920968 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:55 A:45 ppp: 
+17:58:32.921919 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:46 A:55 ppp: 
+17:58:33.058970 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:46 ppp
+17:58:33.373955 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:56 ppp: 
+17:58:33.374722 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:47 A:56 ppp: 
+17:58:33.508888 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:47 ppp
+17:58:34.372982 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:57 ppp: 
+17:58:34.373735 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:48 A:57 ppp: 
+17:58:34.510974 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:48 ppp
+17:58:35.371984 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:58 ppp: 
+17:58:35.372687 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:49 A:58 ppp: 
+17:58:35.509936 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:49 ppp
+17:58:36.371058 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:59 ppp: 
+17:58:36.371681 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:50 A:59 ppp: 
+17:58:36.508979 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:50 ppp
+17:58:37.373015 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:60 ppp: 
+17:58:37.373697 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:51 A:60 ppp: 
+17:58:37.510936 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:51 ppp
+17:58:38.372017 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:61 ppp: 
+17:58:38.372756 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:52 A:61 ppp: 
+17:58:38.510158 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:52 ppp
+17:58:39.380023 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:62 ppp: 
+17:58:39.380781 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:53 A:62 ppp: 
+17:58:39.529993 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:53 ppp
+17:58:40.211336 192.168.254.2.1723 > 195.0.83.117.1075: P 189:213(24) ack 373 win 63868: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(1075) [|pptp] (DF)
+17:58:40.382070 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:63 ppp: 
+17:58:40.382730 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:54 A:63 ppp: 
+17:58:40.520039 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:54 ppp
+17:58:41.390074 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:64 ppp: 
+17:58:41.390754 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:55 A:64 ppp: 
+17:58:41.528255 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:55 ppp
+17:58:42.392068 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:65 ppp: 
+17:58:42.474505 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:56 A:65 ppp: 
+17:58:42.608080 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:56 ppp
+17:58:43.391077 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:66 ppp: 
+17:58:43.391803 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:57 A:66 ppp: 
+17:58:43.529062 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:57 ppp
+17:58:44.390094 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:67 ppp: 
+17:58:44.390753 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:58 A:67 ppp: 
+17:58:44.528101 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:58 ppp
+17:58:45.392109 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:68 ppp: 
+17:58:45.392777 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:59 A:68 ppp: 
+17:58:45.527111 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:59 ppp
+17:58:46.400216 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:69 ppp: 
+17:58:46.401287 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:60 A:69 ppp: 
+17:58:46.538108 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:60 ppp
+17:58:47.402188 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:70 ppp: 
+17:58:47.402938 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:61 A:70 ppp: 
+17:58:47.537135 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:61 ppp
+17:58:48.401184 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:71 ppp: 
+17:58:48.401918 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:62 A:71 ppp: 
+17:58:48.644247 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:62 ppp
+17:58:49.400195 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:72 ppp: 
+17:58:49.400869 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:63 A:72 ppp: 
+17:58:49.538120 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:63 ppp
+17:58:50.402172 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:73 ppp: 
+17:58:50.402959 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:64 A:73 ppp: 
+17:58:50.537164 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:64 ppp
+17:58:51.401199 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:74 ppp: 
+17:58:51.401851 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:65 A:74 ppp: 
+17:58:51.536197 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:65 ppp
+17:58:52.409218 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:75 ppp: 
+17:58:52.409925 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:66 A:75 ppp: 
+17:58:52.556174 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:66 ppp
+17:58:53.411252 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:76 ppp: 
+17:58:53.412024 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:67 A:76 ppp: 
+17:58:53.546185 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:67 ppp
+17:58:54.419225 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:77 ppp: 
+17:58:54.419914 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:68 A:77 ppp: 
+17:58:54.557193 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:68 ppp
+17:58:55.421284 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:78 ppp: 
+17:58:55.421977 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:69 A:78 ppp: 
+17:58:55.547281 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:79 A:69 ppp: 
+17:58:55.643439 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:79 [|gre]
+17:58:56.420286 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:80 ppp: 
+17:58:56.421013 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:70 A:80 ppp: 
+17:58:56.555252 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:70 ppp
+17:58:57.419307 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:81 ppp: 
+17:58:57.420044 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:71 A:81 ppp: 
+17:58:57.557226 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:71 ppp
+17:58:58.418312 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:82 ppp: 
+17:58:58.419024 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:72 A:82 ppp: 
+17:58:58.556274 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:72 ppp
+17:58:59.429342 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:83 ppp: 
+17:58:59.430077 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:73 A:83 ppp: 
+17:58:59.567248 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:73 ppp
+17:59:00.428348 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:84 ppp: 
+17:59:00.429068 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:74 A:84 ppp: 
+17:59:00.566321 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:74 ppp
+17:59:01.430310 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:85 ppp: 
+17:59:01.430995 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:75 A:85 ppp: 
+17:59:01.565378 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:75 ppp
+17:59:02.429370 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:86 ppp: 
+17:59:02.430057 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:76 A:86 ppp: 
+17:59:02.567368 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:76 ppp
+17:59:02.864100 192.168.254.2 > 195.0.83.117: gre [KSv1] ID:947f S:77 ppp: 
+17:59:02.999362 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:77 ppp
+17:59:03.428355 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:87 ppp: 
+17:59:03.429112 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:78 A:87 ppp: 
+17:59:03.566334 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:78 ppp
+17:59:04.427397 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:88 ppp: 
+17:59:04.428098 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:79 A:88 ppp: 
+17:59:04.568345 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:79 ppp
+17:59:05.438439 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:89 ppp: 
+17:59:05.439124 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:80 A:89 ppp: 
+17:59:05.567392 195.0.83.117 > 192.168.254.2: gre [KSAv1] ID:43e6 S:90 A:80 ppp: 
+17:59:05.667830 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:90 [|gre]
+17:59:06.440446 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:91 ppp: 
+17:59:06.441163 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:81 A:91 ppp: 
+17:59:06.575366 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:81 ppp
+17:59:07.448412 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:92 ppp: 
+17:59:07.449097 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:82 A:92 ppp: 
+17:59:07.595411 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:82 ppp
+17:59:08.447458 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:93 ppp: 
+17:59:08.448222 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:83 A:93 ppp: 
+17:59:08.585425 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:83 ppp
+17:59:09.052714 192.168.254.2.1723 > 195.0.83.117.1075: P 189:213(24) ack 373 win 63868: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(1075) [|pptp] (DF)
+17:59:09.446460 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:94 ppp: 
+17:59:09.447138 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:84 A:94 ppp: 
+17:59:09.584400 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:84 ppp
+17:59:10.448494 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:95 ppp: 
+17:59:10.449184 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:85 A:95 ppp: 
+17:59:10.586475 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:85 ppp
+17:59:11.447503 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:96 ppp: 
+17:59:11.448187 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:86 A:96 ppp: 
+17:59:11.585411 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:86 ppp
+17:59:12.455512 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:97 ppp: 
+17:59:12.456204 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:87 A:97 ppp: 
+17:59:12.596471 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:87 ppp
+17:59:12.935535 195.0.83.117.1075 > 192.168.254.2.1723: P 373:389(16) ack 189 win 65092: pptp CTRL_MSGTYPE=ECHORQ [|pptp] (DF)
+17:59:12.935844 192.168.254.2.1723 > 195.0.83.117.1075: P 213:249(36) ack 389 win 63852: pptp CTRL_MSGTYPE=ECHORQ [|pptp] (DF)
+17:59:12.986523 195.0.83.117.1075 > 192.168.254.2.1723: . ack 189 win 65092 <nop,nop,sack sack 1 {213:249} > (DF)
+17:59:13.457513 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:98 ppp: 
+17:59:13.458212 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:88 A:98 ppp: 
+17:59:13.595500 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:88 ppp
+17:59:14.465571 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:99 ppp: 
+17:59:14.466263 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:89 A:99 ppp: 
+17:59:14.606532 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:89 ppp
+17:59:15.467568 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:100 ppp: 
+17:59:15.468272 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:90 A:100 ppp: 
+17:59:15.605483 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:90 ppp
+17:59:16.466585 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:101 ppp: 
+17:59:16.467342 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:91 A:101 ppp: 
+17:59:16.604498 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:91 ppp
+17:59:17.465574 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:102 ppp: 
+17:59:17.466277 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:92 A:102 ppp: 
+17:59:17.603554 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:92 ppp
+17:59:18.476568 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:103 ppp: 
+17:59:18.477305 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:93 A:103 ppp: 
+17:59:18.623568 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:93 ppp
+17:59:19.478632 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:104 ppp: 
+17:59:19.479402 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:94 A:104 ppp: 
+17:59:19.613571 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:94 ppp
+17:59:20.474609 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:105 ppp: 
+17:59:20.475323 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:95 A:105 ppp: 
+17:59:20.612602 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:95 ppp
+17:59:21.476618 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:106 ppp: 
+17:59:21.477343 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:96 A:106 ppp: 
+17:59:21.614592 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:96 ppp
+17:59:22.475642 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:107 ppp: 
+17:59:22.476351 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:97 A:107 ppp: 
+17:59:22.613643 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:97 ppp
+17:59:23.474682 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:108 ppp: 
+17:59:23.475493 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:98 A:108 ppp: 
+17:59:23.612661 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:98 ppp
+17:59:24.476660 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:109 ppp: 
+17:59:24.477385 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:99 A:109 ppp: 
+17:59:24.614656 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:99 ppp
+17:59:25.484687 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:110 ppp: 
+17:59:25.485465 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:100 A:110 ppp: 
+17:59:25.622634 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:100 ppp
+17:59:26.486726 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:111 ppp: 
+17:59:26.487438 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:101 A:111 ppp: 
+17:59:26.624679 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:101 ppp
+17:59:27.494700 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:112 ppp: 
+17:59:27.495470 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:102 A:112 ppp: 
+17:59:27.632684 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:102 ppp
+17:59:28.493750 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:113 ppp: 
+17:59:28.494496 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:103 A:113 ppp: 
+17:59:28.631658 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:103 ppp
+17:59:29.495731 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:114 ppp: 
+17:59:29.496430 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:104 A:114 ppp: 
+17:59:29.630724 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:104 ppp
+17:59:30.494764 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:115 ppp: 
+17:59:30.495453 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:105 A:115 ppp: 
+17:59:30.632712 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:105 ppp
+17:59:31.505786 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:116 ppp: 
+17:59:31.506515 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:106 A:116 ppp: 
+17:59:31.640758 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:106 ppp
+17:59:32.504787 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:117 ppp: 
+17:59:32.505469 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:107 A:117 ppp: 
+17:59:32.642738 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:107 ppp
+17:59:33.503766 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:118 ppp: 
+17:59:33.504543 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:108 A:118 ppp: 
+17:59:33.641743 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:108 ppp
+17:59:34.505804 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:119 ppp: 
+17:59:34.506455 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:109 A:119 ppp: 
+17:59:34.682804 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:109 ppp
+17:59:35.504808 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:120 ppp: 
+17:59:35.505487 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:110 A:120 ppp: 
+17:59:36.503800 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:121 ppp: 
+17:59:36.504459 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:111 A:121 ppp: 
+17:59:36.641774 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:111 ppp
+17:59:37.502863 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:122 ppp: 
+17:59:37.503526 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:112 A:122 ppp: 
+17:59:37.640876 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:112 ppp
+17:59:38.513868 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:123 ppp: 
+17:59:38.514564 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:113 A:123 ppp: 
+17:59:38.660804 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:113 ppp
+17:59:39.512868 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:124 ppp: 
+17:59:39.513543 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:114 A:124 ppp: 
+17:59:39.650934 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:114 ppp
+17:59:40.523892 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:125 ppp: 
+17:59:40.524495 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:115 A:125 ppp: 
+17:59:40.562928 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:126 ppp: 
+17:59:40.617976 192.168.254.2 > 195.0.83.117: gre [KAv1] ID:947f A:126 [|gre]
+17:59:40.661897 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:115 ppp
+17:59:41.522868 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:127 ppp: 
+17:59:41.535160 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:116 A:127 ppp: 
+17:59:41.690869 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:116 ppp
+17:59:42.521940 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:128 ppp: 
+17:59:42.522659 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:117 A:128 ppp: 
+17:59:42.659906 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:117 ppp
+17:59:43.523899 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:129 ppp: 
+17:59:43.524460 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:118 A:129 ppp: 
+17:59:43.661900 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:118 ppp
+17:59:44.522981 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:130 ppp: 
+17:59:44.523739 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:119 A:130 ppp: 
+17:59:44.660956 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:119 ppp
+17:59:45.534420 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:131 ppp: 
+17:59:45.535975 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:120 A:131 ppp: 
+17:59:45.759936 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:120 ppp
+17:59:46.533001 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:132 ppp: 
+17:59:46.533592 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:121 A:132 ppp: 
+17:59:46.670909 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:121 ppp
+17:59:47.531988 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:133 ppp: 
+17:59:47.532637 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:122 A:133 ppp: 
+17:59:47.669993 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:122 ppp
+17:59:48.543019 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:134 ppp: 
+17:59:48.543692 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:123 A:134 ppp: 
+17:59:48.684001 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:123 ppp
+17:59:49.545052 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:135 ppp: 
+17:59:49.545658 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:124 A:135 ppp: 
+17:59:49.680276 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:124 ppp
+17:59:50.532072 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:136 ppp: 
+17:59:50.532759 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:125 A:136 ppp: 
+17:59:50.670047 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:125 ppp
+17:59:51.543071 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:137 ppp: 
+17:59:51.544564 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:126 A:137 ppp: 
+17:59:51.690033 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:126 ppp
+17:59:52.542088 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:138 ppp: 
+17:59:52.542780 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:127 A:138 ppp: 
+17:59:52.680015 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:127 ppp
+17:59:53.553042 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:139 ppp: 
+17:59:53.553716 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:128 A:139 ppp: 
+17:59:53.691061 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:128 ppp
+17:59:54.552062 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:140 ppp: 
+17:59:54.552674 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:129 A:140 ppp: 
+17:59:54.690193 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:129 ppp
+17:59:55.551085 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:141 ppp: 
+17:59:55.551680 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:130 A:141 ppp: 
+17:59:55.689205 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:130 ppp
+17:59:56.550083 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:142 ppp: 
+17:59:56.550731 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:131 A:142 ppp: 
+17:59:56.691097 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:131 ppp
+17:59:57.552133 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:143 ppp: 
+17:59:57.552723 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:132 A:143 ppp: 
+17:59:57.687113 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:132 ppp
+17:59:58.560166 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:144 ppp: 
+17:59:58.560869 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:133 A:144 ppp: 
+17:59:58.698096 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:133 ppp
+17:59:59.562166 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:145 ppp: 
+17:59:59.562829 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:134 A:145 ppp: 
+17:59:59.697152 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:134 ppp
+18:00:00.561207 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:146 ppp: 
+18:00:00.561903 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:135 A:146 ppp: 
+18:00:00.699160 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:135 ppp
+18:00:01.560161 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:147 ppp: 
+18:00:01.560929 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:136 A:147 ppp: 
+18:00:01.698155 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:136 ppp
+18:00:02.562231 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:148 ppp: 
+18:00:02.562967 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:137 A:148 ppp: 
+18:00:02.697180 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:137 ppp
+18:00:03.561232 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:149 ppp: 
+18:00:03.562025 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:138 A:149 ppp: 
+18:00:03.699173 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:138 ppp
+18:00:04.569240 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:150 ppp: 
+18:00:04.569981 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:139 A:150 ppp: 
+18:00:04.719205 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:139 ppp
+18:00:05.568259 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:151 ppp: 
+18:00:05.568972 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:140 A:151 ppp: 
+18:00:05.709241 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:140 ppp
+18:00:06.570295 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:152 ppp: 
+18:00:06.571088 192.168.254.2 > 195.0.83.117: gre [KSAv1] ID:947f S:141 A:152 ppp: 
+18:00:06.708230 195.0.83.117 > 192.168.254.2: gre [KAv1] ID:43e6 A:141 ppp
+18:00:07.569307 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:153 ppp: 
+18:00:12.660334 195.0.83.117 > 192.168.254.2: gre [KSv1] ID:43e6 S:154 ppp: 
+18:00:12.939344 195.0.83.117.1075 > 192.168.254.2.1723: P 389:405(16) ack 189 win 65092: pptp CTRL_MSGTYPE=ECHORQ [|pptp] (DF)
+18:00:12.939662 192.168.254.2.1723 > 195.0.83.117.1075: R 736586152:736586152(0) win 0
+
+--------------010009050103090704060009--
 
