@@ -1,104 +1,74 @@
-From: aksingh@hss.hns.com
-Subject: Re: libnet 1.1.2.1 installation
-Date: Wed, 5 May 2004 19:21:33 +0530
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF6C629AAD.12D29306-ON65256E8B.004AD7D8@hss.hns.com>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: IPSec - IPTables issues
+Date: Wed, 05 May 2004 09:47:22 -0500
+Sender: linux-net-owner@vger.kernel.org
+Message-ID: <4098FE7A.8070707@pbl.ca>
+References: <20040502155538.GD515@schottelius.org> <4096317F.8020609@eurodev.net> <20040504211557.GA236@schottelius.org>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Jee J.Z." <jz105@york.ac.uk>
-Cc: netfilter@lists.netfilter.org
+Return-path: <linux-net-owner@vger.kernel.org>
+In-Reply-To: <20040504211557.GA236@schottelius.org>
+List-Id: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Nico Schottelius <nico-linux-net@schottelius.org>
+Cc: Pablo Neira <pablo@eurodev.net>, netfilter@lists.netfilter.org, gregor-net@paasch.name, linux-net@vger.kernel.org
 
+Nico Schottelius wrote:
+> I'll compare what freeswan did with what Linux 2.6 does now:
+> 
+> Freeswan has virtual devices (ipsec*), through which the unencrypted
+> packets come into the system. So you can add these firewall lines:
+> 
+> - allow AH, ESP, UDP/500, deny rest on eth0
+> - allow IPs/networks, etc. on ipsec0
+> 
+> With Linux 2.6 I don't have virtual devices. This means that my IPSec
+> packets enter the physical device twice:
+> 
+> 1. esp encrypted packet enters
+> 2. Linux decrypts it
+> 3. Linux sends the unencrypted packets through the same device again
+> 
+> The problem with that is, that
+> 
+> - allow AH, ESP, UDP/500, deny rest on eth0
+> 
+> will deny the _content_ of my encrypted packages (step three is broken).
 
+Haven't worked much with IPSec (at least not over firewall).  Are you 
+sure that IPSec packets will go through Netfilter twice (once encrypted, 
+and than once again unencrypted)?
 
+Anyhow, if I assume that what you wrote is correct (and it is how Linux 
+kernel handles packets), I still don't see need for virtual devices.
 
+If above is what really happens, the proper way to do what you want to 
+do is (IMHO):
 
-Hi Jee,
+   - allow hosts/networks on eth0 (in Netfilter part of kernel)
+   - setup IPSec policies so that traffic from allowed hosts/networks is 
+required to be encrypted (in IPSec part of kernel)
 
-Thanks Jee, Yes I did that in the afternoon its working fine for me too,
-though havent been able to setup the man pages, dunno if thats possible,
-help is in form of htmls, but cant I do something to get help on functions
-like normal manpages, for eg: man libnet_write ? ...
+This way, you will get an equivalent configuration (you accept traffic 
+only from defined set of hosts/networks, and require that traffic to be 
+encrypted).  If you want to limit traffic to say only HTTP, than you 
+would allow it if it is: from host/network and (AH or ESP or UDP/500 or 
+HTTP).
 
-newaz, other more imp doubts  :
+So you get:
 
-1) the queue handler for ipv4 in libipq is ip_queue kernel module, this
-uses netlink sockets for user space/ kernel space communication .... can we
-change sock options for this socket, like the socket buffer and all,
-because under high load conditions a small buffer may result in packet
-drops, is this possible with ip_queue ?
+1. Linux requires packets from defined hosts/networks to be encrypted. 
+If packets is not encrypted, Linux rejects it because of IPSec policy
+2. Packet goes through Netfilter encrypted (accepted since it is AH, 
+ESP, or UDP/500 and from allowed src IP)
+3. Linux decrypts it
+4. Packet goes through Netfilter again (accepted because it is HTTP and 
+allowed src IP)
 
-2) any way of installing libipq, without compiling ip_tables, i have
-iptables-1.1.1-2, but guess dont have libipq, no libipq.h in
-/usr/local/include ?
+I'm not familiar with kernel internals, so I don't know if steps 1 and 2 
+are actually inverted (doesn't change anything).
 
-regards,
-Amit
-
-
-
-
-"Jee J.Z." <jz105@york.ac.uk> on 05/05/2004 07:11:29 PM
-
-To:    Amit Kumar Singh/HSS@HSS
-cc:    <libnet@securityfocus.com>
-
-Subject:    Re: libnet 1.1.2.1 installation
-
-
-Hi Amit,
-
-1. $tar xvfz libnet-1.1.2.1.tar.gz
-2. Enter the decompressed directory:
-    $./configure
-3. $make
-4. $make install
-
-I've tried libnet and it works well. If I remember correctly, then it
-should
-work.
-
-Jee
-
-> hi,
->
->  How do I install libnet-1.1.2.1 on my redhat linux box (2.4.2-2) ?. I
-have
-> downloaded the tar file libnet-1.1.2.1.tar.gz from
-> http://www.packetfactory.net/libnet/dist/
->
-> thanks,
-> Amit
->
-> "DISCLAIMER: This message is proprietary to Hughes Software Systems
-Limited
-> (HSS) and is intended solely for the use of the individual to whom it is
-> addressed. It may contain  privileged or confidential information and
-> should not be circulated or used for any purpose other than for what it
-is
-> intended. If you have received this message in error, please notify the
-> originator immediately. If you are not the intended recipient, you are
-> notified that you are strictly prohibited from using, copying, altering,
-or
-> disclosing the contents of this message. HSS accepts no responsibility
-for
-> loss or damage arising from the use of the information transmitted by
-this
-> email including damage from virus."
->
->
-
-
-
-
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
