@@ -1,8 +1,13 @@
-From: Hans Wong <hansyywong@yahoo.com>
-Subject: IPtable STRING match memory leakage problem in Redhat AS3 ??
-Date: Wed, 23 Mar 2005 17:59:38 -0800 (PST)
-Message-ID: <20050324015938.76256.qmail@web52405.mail.yahoo.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: REDIRECT vs. DNAT (Was: HELP! Transparent Proxy using
+	bridging...)
+Date: Thu, 24 Mar 2005 10:08:58 -0600
+Message-ID: <4242E61A.3050308@riverviewtech.net>
+References: <20050324122642.GA12171@ikkoku.ath.cx>
+Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050324122642.GA12171@ikkoku.ath.cx>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,26 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Toby <tobia.conforto@linux.it>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
- 
-Does anyone encounter memory leakage problem of  
-using IPtable STRING match extension? When I  
-enable this extension,  the memory of the system 
-drops 4k in every couple seconds when DROPping 
-the matched package.  
-Appreciated of any idea? Thanks! 
- 
-Best Regards
- 
-Hans 
- 
+Yes, REDIRECT redirects traffic passing through the system to it's self, but it does not give you an option to send the traffic any where else.  If you want to send the traffic passing through the system to a different one on the LAN or where ever you need something other than redirect.  DNAT will send the packets to the other system but appear as if it is still coming from the original client system, thus SNAT makes the traffic appear to the system that you are sending the traffic to as if it is coming from the system that is doing the redirection.  The reason the traffic has to appear as if it is coming from the system doing the redirection is b/c the traffic must travel the same path (host IPs) in reverse as to not confuse the client system with the response coming from a different IP than the request was sent too.
 
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+
+Grant. . . .
+
+Toby wrote:
+
+> Jason Opperisano wrote:
+> 
+>>REDIRECT is a whole different beast from DNAT.
+> 
+> 
+> As in?
+> 
+> Doesn't REDIRECT just do a DNAT to the machine's own address?
+> 
+> 
+> Toby
+> 
+
+
