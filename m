@@ -1,8 +1,8 @@
 From: Michael <mutk@ozemail.com.au>
 Subject: Re: IP Traffic Accounting
-Date: Mon, 24 Jun 2002 22:27:41 +1000
+Date: Mon, 24 Jun 2002 22:27:32 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D17103D.5060400@ozemail.com.au>
+Message-ID: <3D171034.501@ozemail.com.au>
 References: <NFBBLDBMIDIOFPBNLEAJCEIOCHAA.yomega@wahooo.net> <20020623225040.A26831@tiger.csl.uiuc.edu> <3D16B131.4090202@ozemail.com.au> <200206241033.LAA14840@slate.rockstone.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,6 +18,7 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: IPtables Users <netfilter@lists.samba.org>
+Cc: Antony Stone <Antony@Soft-Solutions.co.uk>
 
 Antony Stone wrote:
 
