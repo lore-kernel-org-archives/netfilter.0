@@ -1,13 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: iptables and wifi access point
-Date: 28 Jul 2003 08:41:04 +0200
+From: "Santhosh, H." <SANTHOSH@timken.com>
+Subject: RE: Basic firewalling
+Date: Mon, 28 Jul 2003 14:12:13 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059374464.837.5.camel@elendil.intranet.cartel-securite.net>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au>
+Message-ID: <334618035904D611BBFE00306E12110C018107DE@terhemail01.corp.timken.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +14,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: Jason <arnjuka@optonline.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'hare ram' <hareram@sol.net.in>, netfilter@lists.netfilter.org
 
-Le lun 28/07/2003 =E0 00:04, George Vieira a =E9crit :
-> 1. Security =3D Forget WEP (or even 128bit WEP.. it sucks.). Use IPSEC
-> tunnels over wifi.
+Hi
+It is  both the case
+	The external PC and Internal PC are in the same Place but  I assume
+external PC Over Internet and Internal PC at my  Place for lab testing
+purpose
 
-It's better than nothing. I would say "do not have your secrity rely on
-WEP". WEP sucks, that's a fact, but it introduces an authentication
-scheme (i.e. have the right key to access network) that frightens most
-of script kiddies.
 
-> 3. DO NOT USE MAC FILTERING... Wifi can easily be spoofed mac
-> addresses hence the reason for number 1 above.
+		Regards
+		Santhosh.H
 
-Same than above. Yes, you can abuse easily this kind of security
-setting, but it does not mean you do not have to use it. And you forgot
-to mention BSSID broadcast disabling in beacon frames.
 
-You have security features in WiFi that are not efficient enough to
-bouild your security on top of them. But using them can make 90%
-wardrivers to skip your AP just because they're activated.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+-----Original Message-----
+From: hare ram [mailto:hareram@sol.net.in]
+Sent: Sunday, July 27, 2003 12:07 PM
+To: Santhosh, H.; netfilter@lists.netfilter.org
+Subject: Re: Basic firewalling
+
+
+Hi Santhosh
+
+The setup was not clear, what exactly you want to achive
+
+case 1
+
+Is this external PC and Internal PC are in the same Place ?
+
+case 2
+
+or external PC Over Internet and Internal PC at your Place ?
+
+
+hare
+----- Original Message -----
+From: "Santhosh, H." <SANTHOSH@timken.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Saturday, July 26, 2003 6:55 PM
+Subject: Basic firewalling
+
+
+> Hi
+> Please help me with the below setup
+>
+> External pc1<-------->(eth1)Server(eth0)<------>Internal pc1
+>
+> 1. What is the cmd to route data from internal pc1 to external pc1 through
+> the server using iptables or route cmd
+> 2. What should be the gateway value in Internal & external pc
+> 3. How do I make the iptables make it permanent so that after reboot also
+> those rules should remain
+>
+> Thanks in advance
+>
+>
+>
+> Regards
+> Santhosh.H
+>
+>
+
+
+**********************************************************************
+This message and any attachments are intended for the 
+individual or entity named above. If you are not the intended
+recipient, please do not forward, copy, print, use or disclose this 
+communication to others; also please notify the sender by 
+replying to this message, and then delete it from your system. 
+
+The Timken Company
+**********************************************************************
+
 
