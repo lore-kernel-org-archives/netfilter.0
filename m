@@ -1,12 +1,10 @@
-From: "Gaby Schilders" <G.Schilders@ibfd.org>
-Subject: RE: DNAT +2 uplinks +route=GO
-Date: Fri, 17 Oct 2003 12:02:44 +0200
+From: "Farmer, Joseph - DFI" <Joseph.Farmer@dfi.state.wi.us>
+Subject: Fedora and Recent Module
+Date: Thu, 16 Oct 2003 10:08:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E129603B@ibfdmail.ibfd.oin>
+Message-ID: <35A63C29D445834BA42FE172EC30EB3C189ED8@dfiemlp1.dfi.state.wi.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,84 +15,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter list <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I'm sorry for replying to myself, but I've finally figured out what =
-caused the problem with single path default route and two uplinks: =
-rp_filter.
+     The three beta releases of Fedora core (distribution formerly known as
+Redhat) have 
+had a problem with the recent module.  They ship with 1.2.8 but attempting
+to load the 
+recent module results in an error message because it cannot load
+libipt_recent.so.  
+Is there a way to patch the iptables that ships with Fedora so recent works?
+Could 
+I just drop this file from Mandrake's 1.2.8 in the appropriate directory?
+Will the 
+"patch-o-matic" system do this and, if so, is there a FAQ on how to do this?
+     Sorry for the noise.  I've trolled the list archives and didn't see
+this mentioned.
+Bug has been filed against Fedora.
 
-So basically I suffered from the standard ailment of so many before: =
-forgot to read the fine print in the manual.
-
-I'll propose to put a mention of this in the Linux advanced routing & tc =
-howto to the writers.
-
-Gaby Schilders
-IBFD network admin
-
------Original Message-----
-From: Gaby Schilders=20
-Sent: donderdag 16 oktober 2003 19:31
-To: netfilter list
-Subject: DNAT +2 uplinks +route=3DGO
-
-
-The lowdown:
-
-Repeat situation description:
-- 2 uplinks with own public address space
-- 1 internal network with private address space
-
-Goal: do DNAT through address in both public ranges, converging on =
-internal hosts:
-ExtIP1 > IntIP1
-ExtIP2 > IntIP1
-
-Everything is done in iptables, nothing was changed in the standard =
-route/rules setup.
-
-Trick used:
-iptables -t nat -A PREROUTING -i $ExtNet1 -p tcp -d =
-$ExtAddress1InternalHost \
--j DNAT --to-destination $IntAddressInternalHost
-
-iptables -t nat -A PREROUTING -i $ExtNet2 -p tcp -d =
-$ExtAddress2InternalHost \
--j DNAT --to-destination $IntAddressInternalHost
-
-This part is easy and works. The return path is the problem.
-
-Solution:
-
-iptables -t mangel -A POSTROUTING -s $IntNet/IntMask -m conntrack \
---ctorigdst $ExtAddressRange1/ExtAddressRange1Mask \
---ctstate ESTABLISHED,RELATED
--j ROUTE --gw GWExtNet1 --oif IFExtNet1 --continue
-
-iptables -t mangel -A POSTROUTING -s $IntNet/IntMask -m conntrack \
---ctorigdst $ExtAddressRange2/ExtAddressRange2Mask \
---ctstate ESTABLISHED,RELATED
--j ROUTE --gw GWExtNet2 --oif IFExtNet2 --continue
-
-Caveats:
-To get routing working, you _must_ have Equal-cost-multipath routing =
-enabled in the kernel and you must set up a multipath route over both =
-links. If someone can explain to me why I would be very thankfull. =
-Simply adding another default route with different metric won't work.
-
-You need a recent p-o-m and iptables to use the --continue. You _need_ =
-the --continue or UnDNATting will not be performed (you jump out on the =
--j ROUTE).
-
-If you want even more flexibility, you can use the other suggested =
-route: instead of -j ROUTE, use -j MARK x where x is different for each =
-uplink to match. You can then proceed to use iproute2+tc and 'rules' =
-based on fwmark to do even more funky stuff.
-
-Thanks for all the help and suggestions, I hope this helps some other =
-poor schmuck who is at a loss.
-
-Gaby Schilders
-IBFD network admin
-
+Thanks. 
 
