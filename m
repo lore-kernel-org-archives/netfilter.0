@@ -1,18 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Fwd: Linux as router (Gateway Server)
-Date: Mon, 14 Feb 2005 17:15:10 -0500
-Message-ID: <1108419310.4338.4.camel@hubcap.ljm.dom>
-References: <1dceb012050211233357e23dd4@mail.gmail.com>
-	<1dceb01205021123483860fb86@mail.gmail.com>
-	<1108216901.4462.27.camel@hubcap.ljm.dom>
-	<4f3930a705021214026db11902@mail.gmail.com>
-	<420EB7C3.7040303@hotpop.com>
-	<4f3930a70502121833627af1bd@mail.gmail.com>
-	<420F4010.7050609@hotpop.com>
-	<4f3930a705021313382ed454fe@mail.gmail.com>
+From: Mohammad Khan <mkhan@lextranet.com>
+Subject: Re: net2phone rules
+Date: Mon, 14 Feb 2005 17:16:07 -0500
+Message-ID: <1108419367.13080.18.camel@localhost.localdomain>
+References: <55503955141a.55141a555039@vsnl.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4f3930a705021313382ed454fe@mail.gmail.com>
+In-Reply-To: <55503955141a.55141a555039@vsnl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,31 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: varun_saa@vsnl.net, netfilter@lists.netfilter.org
 
-On Sun, 2005-02-13 at 16:38, Josh Nerius wrote:
-> Navneet,
+On Tue, 2005-02-08 at 01:01, varun_saa@vsnl.net wrote:
+> Hello,
+>       I want my firewall to allow Net2phone.
 > 
-> I had the same issue you are experiencing while using SquidGuard some
-> time back. The resolution was playing with accepting traffic from and
-> to 127.0.0.1. I honestly don't remember the exact rules as it was some
-> time ago I dealt with this issue, but a minor amount of
-> experimentation should prove to solve the issue. I'm currently digging
-> through old configs etc and will let you know if/when I find the exact
-> rules I put in place to resolve the issue.
+> A visit to http://web.net2phone.com/consumer/commcenter/helpfirewall.asp
+> states that you need to open up at least three ports:
+> tcp 80 - tcp 6800 - udp 6801.
 > 
-> I hope everything works out for you.
+> One should use INPUT or FORWARD rule ?
 
-didn't someone in this thread already point out that his rules don't
-include:
+Depends on where is your net2phone client.
+If it is *NOT* on your firewall, use FORWARD
 
-  iptables -A INPUT -i lo -j ACCEPT
-  iptables -A OUTPUT -o lo -j ACCEPT
+I visited the net2phone link, your forward rules should be
 
--j
+# Following two rules would allow log in,
+# maintaining online status, and instant messaging
+-A FORWARD -s internal_ne_ips -d relay.net2phone.com -p tcp --dport 80
+-m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -s relay.net2phone -p tcp --sport 80 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
 
---
-"Asleep at the switch?  I wasn't asleep, I was drunk!"
-	--The Simpsons
+# Following two rules would allow voice packets to go out
+-A FORWARD -s internal_net_ips tcp --sport 6800 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -s internal_net_ips -p udp --sport 6801 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+
+# Following two rules would allow voice packets to get in 
+-A FORWARD -d external_ip tcp --dport 6800 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -d external_ip -p udp --dport 6801 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+
+
+Above rules can be made more restrictive !
+
+
+Enjoy firewalling.
+
+Mohammad
+
+
+-- 
+"Mad cow? You'd be mad too, if someone was trying to eat you."
 
 
