@@ -1,11 +1,13 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Packet dumping or mirroring
-Date: Wed, 18 Feb 2004 13:54:36 -0700
+From: William Stearns <wstearns@pobox.com>
+Subject: Re: Packet dumping or mirroring
+Date: Wed, 18 Feb 2004 16:07:53 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040218135436.309837c7@mgalepc.utilitran.com>
+Message-ID: <Pine.LNX.4.44.0402181605270.3252-100000@sparrow>
+References: <20040218135436.309837c7@mgalepc.utilitran.com>
+Reply-To: William Stearns <wstearns@pobox.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040218135436.309837c7@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,62 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Michael Gale <michael.gale@utilitran.com>
+Cc: ML-netfilter <netfilter@lists.netfilter.org>, William Stearns <wstearns@pobox.com>
 
-Hello,
+Good afternoon, Michael,
 
-	I have a question, well more of a idea ... let me know what you think. This is
-not only a netfilter question but would require netfilter to work so ...
+On Wed, 18 Feb 2004, Michael Gale wrote:
 
-I use a program called Ntop to monitor network traffic ... I have it running all
-the time and dump the data nightly to a mysql DB via a PHP script and then reset
-the stats. 
+> So I have the following idea / solution involving iptables :)
+> 
+> Solution 1:
+> First you create a "tmpfs" .. for example in your NTOP home directory call it
+> tmp (/home/ntop/tmp). Now make this directory a RAM drive that gets mount
+> everytime we boot up, about 50MB (maybe).
+> 
+> Now we create a module for iptables to send a copy of every packet on every
+> interface to the RAM drive or dummy device.
+> 
+> What do you think ... I do not believe there is a way to do this now :(
 
-This allows me to provide data on a day, week and month bases, anyways ... from
-my understanding most programs like Ntop have a issue with keeping up with
-traffic that is faster then 100MB HD.
+	You seem to be describing ulogd:
+http://www.stearns.org/doc/iptables-ulog.current.html
+	(with pointers to other relevant sites).  You'd instruct ulogd to 
+save its files to a ramdisk as opposed to a physical disk.
+	Cheers,
+	- Bill
 
-So anything 10MB FD and slower is ok, but anything over that limit ntop can not
-keep up with the flow so your monitoring stats do not reflect the actually
-amount. 
+---------------------------------------------------------------------------
+	"Me spell chucker work grate.  Need grandma chicken."
+	-- yakkoj@netscape.net
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
-Now I supposed I could switch programs and try IPFM or something but there out
-sucks. 
-
-So I have the following idea / solution involving iptables :)
-
-Solution 1:
-First you create a "tmpfs" .. for example in your NTOP home directory call it
-tmp (/home/ntop/tmp). Now make this directory a RAM drive that gets mount
-everytime we boot up, about 50MB (maybe).
-
-or 
-
-Solution 2:
-
-Create a new deice, like a dummy network.
-
-Now we create a module for iptables to send a copy of every packet on every
-interface to the RAM drive or dummy device.
-
-I think a RAM drive is better, so if we have a firewall box with two interfaces
-we could have iptables send a copy of every packet in raw form to the RAM drive.
-Each packet or group of packets could be labelled by interface plus time
-timestamp plus transaction ID or checksum ? You could have different mod levels
-like only dump packet headers or whole packets ?
-
-This would insure that not network packets are lost and the monitor could keep
-up.
-
-We could not have our monitoring program (ntop for example) read the packets in
-the RAM drive every <not sure> and provide reporting stats. This would also
-allow us to save funny looking packets for investigating.
-
-What do you think ... I do not believe there is a way to do this now :(
-
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
