@@ -1,11 +1,10 @@
-From: Andrew <ast.000@sympatico.ca>
-Subject: using iptables to redirect services to another machine
-Date: Wed, 09 Jul 2003 23:23:25 -0400
+From: "Bewerbungsadresse@web.de" <bewerbungsadresse@web.de>
+Subject: Multiple Port Forwarding
+Date: Fri, 11 Jul 2003 01:30:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <beim5r$vig$1@main.gmane.org>
-Reply-To: ast.000@sympatico.ca
+Message-ID: <3F0DF6F8.4030103@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,24 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I would like to know if the following is possible to do with iptables 
-and if so, how.
+hi guys
 
-Can I use iptables to set up a machine to act as a proxy? I want any 
-incoming traffic on particular ports to be forwarded to another machine 
-on different ports. The proxy machine wouldn't be acting as a gateway or 
-hiding private IP space or anything like that.
+sorry for this possibly "bad title"
 
-I've been playing with this myself for some time but my knowledge of 
-iptables seems to be severely lacking.
+but i=B4ve got a question regarding port forwarding and iptables
+(i hope this question hasn=B4t been asked so much *gg)
 
-Some specific information I would like to know is do I need two 
-interfaces on the proxy machine and what the routing table might look like.
+is it possible to forward one port on the firewall to different clients?
 
-Andrew
+e.g.
 
+Internet -> Request to Firewall Port 4162
+
+Rule: Forward all traffic on port to host:
+
+a) 192.168.0.1:4162
+b) 192.168.0.2:4162
+c) 192.168.0.3:4162
+
+???????
+
+background: P2P for example should be possible on _all_ clients
+it=B4s really just for information, cause i hate P2P ;)
+
+it would be very kind, if you could help me or give any hints, where i=20
+can find more information (google is not very helpful in this way)
+
+thx
+micha
 
 
