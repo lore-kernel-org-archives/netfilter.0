@@ -1,13 +1,14 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Speed Issues through NAT Firewall
-Date: Tue, 9 Jul 2002 13:38:58 -0400
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: Re: Redhat 7.2 Kernel
+Date: Tue, 9 Jul 2002 19:41:09 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020709173858.GY25368@cannon.eng.us.uu.net>
-References: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com>
+Message-ID: <02070919410901.02824@Lms>
+References: <Pine.LNX.4.44.0207091015020.4405-100000@e33.eng.roonetworks.com>
+Reply-To: jan.humme@xs4all.nl
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com>
+In-Reply-To: <Pine.LNX.4.44.0207091015020.4405-100000@e33.eng.roonetworks.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,24 +19,46 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Travis Crook <travis@visionsbeyond.com>
-Cc: netfilter@lists.samba.org
+To: Matthias Kattanek <mattes@mykmk.com>, "R. Sterenborg" <rsterenborg@xs4all.nl>, "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
+Cc: "Iptables-User-list (E-mail)" <netfilter@lists.samba.org>
 
-On Tue, Jul 09, 2002 at 11:29:49AM -0600, Travis Crook wrote:
+On Tuesday 09 July 2002 19:20, Matthias Kattanek wrote:
+> On Tue, 9 Jul 2002, R. Sterenborg wrote:
+> > ----- Original Message -----
+> > From: "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
+> > Subject: Redhat 7.2 Kernel
+> >
+> > > Does the default install kernel of RH7.2 have iptable support already
+> > > compiled in it?
+> >
+> > Yes it does.
+>
+> Nope, that is not exactly true.
+> All RedHat 7.x distribution with a 2.4.x kernel offer iptables as a
+> module. (same as ipchains)
+>
+> By default RH distries have ipchains activated. So in case you attempt
+> e.g. 'iptables -L' you will encounter an error message.
+>
+> no worries. easiest way around is to rename /etc/sysconfig/ipchains
+> to /etc/sysconfig/ipchains.notinuse. Then reboot the box and run
+> 'iptables' and it will autoload the respective module.
+>
+> mattes
 
-> Hello,
->     I currently have two firewalls running.  Both on Mandrake 8.1 running iptables.  I currently have two internet connections (one is a DSL line at 1Mb, the other is straight from an ISP at 2.5 Mb).  I can get 700Kb speeds through the firewall on the DSL line (which is about as fast as it ever is) but I only get about 500Kb speeds through the firewall on the ISP line.  Shouldn't I be able to get at least 2Mb speeds through this firewall? 
+I prefer to use:
 
-How do you measure the throughput?
+#chkconfig ipchains --level 2345 off.
+#chkconfig iptables --level 2345 on.
 
-Ramin
-PS. Line breaks are good things.
+because it stops the ipchains script from being run at all (which is what you 
+really want).
 
+If you mv /etc/sysconfig/ipchains, then /etc/init.d/ipchains will still be 
+run, but exit because /etc/sysconfig/ipchains is missing.
 
-> 
-> Thanks
-> 
-> Travis Crook
-> Visions Beyond
+In any case, /etc/init.d/iptables uses lsmod to find out if ipchains is 
+running, and exits should this be the case.
+
+Jan Humme.
 
