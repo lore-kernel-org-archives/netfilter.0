@@ -1,11 +1,11 @@
-From: "Mark Steele" <msteele@inet-technologies.com>
-Subject: ipt_string, udp, dns problem...
-Date: Sun, 22 Sep 2002 05:34:24 -0400 (EDT)
+From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
+Subject: Re: Setting and Routing on the TOS Source (SRC) and Destination (DST) Bits
+Date: Sun, 22 Sep 2002 12:25:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1292.24.200.104.128.1032687264.squirrel@www.funio.com>
-Reply-To: msteele@inet-technologies.com
+Message-ID: <004801c26222$7229fe40$026410ac@honor>
+References: <Pine.LNX.4.44.0209202140330.2337-100000@laptop1.agatha> <20020921215923.PLBQ27185.mta03-svc.ntlworld.com@there> <0a9401c261c4$bc771400$c6b22543@repligate> <20020922082118.EQR13996.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,58 +17,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
 
-Hi there,
+> By the way, I was not advocating IPv6 per se - I was simply commenting on
+the
+> confusion which would ensure if this thing called IPv8 became at all well
+> known in the time between IPv4, which we all use now, and IPv6, which
+we're
+> all supposed to be using sometime soon.
 
-I have a quick question regarding the iptables string module.
+Antony, dont care..
 
-I'm currently under siege from a DOS attack which is aimed
-at my name server. I believe the culprit is spoofing
-his IP address, and sending DNS requests to various
-recursive name servers for a domain which used to be
-hosted in my servers. To block this, I am trying to use
-a string match to drop the packets like so:
+Jim Flemming was known for abusing this list as a propagate medium for his -
+what he calls - IPv8 and IPv16 theories.
 
-/usr/sbin/iptables -I INPUT -j DROP -p udp -s 0.0.0.0/0 -m \
-string --string "militaire.org" --dport 53
+He used to reply with total off-topic stuff mentioning his theories..
 
-I have noticed however, that this hasn't had much of a significant
-effect, as my name server is still receiving the requests.
+i thought he one day left the list and we used to be quite happy but it
+seems like he thought it would be smart to return.
 
-using "tcpdump udp dst port 53 -s 2000" I see:
+just try to not get into deeper discussions with him about that stuff and he
+will calm down, too.
 
-17:56:39.071676 193.252.19.74.50963 > 66.199.166.5.53:  36126 A?
-www.militaire.org. (35) (DF)
-
-And the requests are getting through to my
-name server. Any ideas on what I might
-be doing wrong?
-
-Here are the details:
-kernel 2.4.19
-iptables v1.2.7a
-glibc 2.2.3
-(Slackware 8.1)
-
-Kernel options (on)
-ip_tables
-iptable_filter
-ip_conntrack
-ipt_state
-ipt_LOG
-ipt_string
-
-
-Regards,
-
-
--- 
-Mark Steele
-Vice president recherche et developpement
-Inet Technologies Inc.
-
-
+Sascha.
+--
+mailto:sascha.reissner@toxicnet.de  -  http://www.fo0bar.org  -
+contaminatiung the internet since 2001
 
 
