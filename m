@@ -1,13 +1,10 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: VPN
-Date: Wed, 30 Jun 2004 12:52:57 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: track bandwith used
+Date: Wed, 30 Jun 2004 18:55:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088614376.7260.45.camel@localhost>
-References: <1088613167.1173.66.camel@pauloric.intranet>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <E1BfiMm-0003iK-GU@vishnu.netfilter.org>
+Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088613167.1173.66.camel@pauloric.intranet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +14,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: "paulobruck1@bol.com.br" <paulobruck1@bol.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2004-06-30 at 12:34, paulobruck1@bol.com.br wrote:
-> Hi guys
-> 
-> I would like to know what do you suggest in terms of IPSEC.
-> I used to deal with freeswan  and I looking another solution.
-> 
-> I've already listen about openvpn, openswan and raccon.
-> 
-> What do you suggest in terms of this tools.
-> 
-> I intend to use IPSEC w/ linux  accessing another linux + iptables +
-> IPCSEC and allow connections from micro$oft machines as road warriors.
-> 
-> distro: debian
-> 
-> 
-> any suggestion??
-I've been reasonably happy with both openswan and strongswan
-(http://www.strongswan.org).  openvpn looks very interesting although
-non-standard.  I have not tried it.  I have not used racoon.
+On Wednesday 30 June 2004 2:07 pm, Peter Marshall wrote:
 
-I believe fwbuilder (http://www.fwbuilder.org) provides a GUI interface
-to setting up *swan.  ISCS (http://iscs.sourceforge.net) provides a GUI
-front end to automatically create and distribute VPN, firewall, NAT and
-routing rules without stepping on each other and, for your road
-warriors, allows extended user authentication to be used throughout the
-WAN without having to reassign internal IP addresses but it has not yet
-released code.
+> Hi again,
+>
+> I was also wondering if anyone knows a way to track bandwith being used
+> through the firewall .......
 
-Hope this helps - John
+Well, there are plenty of network monitoring tools which will give you this 
+sort of information as an aggregate figure for an interface, or broken down 
+by source/destination address, port number etc - iptraf is not a bad start to 
+see what can be done.
+
+Other than that you can use netfilter rules to count the packets & bytes, and 
+then use a cron job to record the counts at whatever intervals you want 
+(every minute, every hour, every day...), and then process them yourself.
+
+Things I would mention if you're going to try the latter option:
+
+1. Most packets do not match against rules in the nat table, so don't try 
+counting those - the only packets which match these are the first of each 
+connection - all the rest are processed invisibly by netfilter in the 
+background, and your rules don't see them (this is also the reason why you 
+should never set a default DROP policy on a nat table!)
+
+2. If you are using a standard -m state --state ESTABLISHED,RELATED rule in 
+your FORWARD chain, remember that nearly all packets will match that, no 
+matter which direction they're going through the machine, and which port/s 
+they're going to or from.   Again, most of the rules in your FORWARD chain 
+will only match the first packet of a given connection, so you won't see much 
+traffic on these rules either (although they can give you a useful indication 
+of the number of connections of that type which get created).
+
+3. The FORWARD mangle table can be a good place to put rules which will see 
+all traffic going through the system.
+
+4. For accounting purposes, you can quite readily use rules with no target 
+(eg: iptables -A FORWARD -p tcp --dport 25); these will make no difference to 
+whether the packets are ACCEPTed, DROPped, LOGged, REJECTed, or whatever 
+(obviously you need separate rules to do that somewhere else), but the packet 
+& byte counters from iptables -L -nvx will show you how many of that type of 
+packet were seen.   You can make the rules as specific as you like if you 
+want to count certain connections in minute detail (eg: iptables -A FORWARD 
+-p tcp --dport 25 -s my.mail.ser.ver -d ISP.mail.ser.ver)
+
+5. Don't overlook the raw packet & byte counts available from ifconfig if all 
+you want to do is monitor traffic in & out of an interface.
+
+Hope this give you some ideas.
+
+Regards,
+
+Antony.
 
 -- 
-Open Source Development Corporation
-Financially sustainable open source development
-http://www.opensourcedevelopmentcorp.com
+"The future is already here.   It's just not evenly distributed yet."
+
+ - William Gibson
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
+
 
 
