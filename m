@@ -1,50 +1,43 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: NEW vs INVALID
-Date: 01 Oct 2002 10:49:14 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033462154.878.17.camel@elendil>
-References: <m2elbb4w7h.fsf@pcwi1068.uni-muenster.de> 
-	<3D98620B.2070707@fugmann.dhs.org>
+From: Roberto Nibali <ratz@tac.ch>
+Subject: Re: [PATCH] flow statistic match
+Date: Tue, 01 Oct 2002 10:53:51 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <3D99629F.1020204@tac.ch>
+References: <Pine.LNX.4.44L.0209172337160.10390-102000@hunger.screamingdaemon.com> <20020918215958.GE10465@oknodo.bof.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D98620B.2070707@fugmann.dhs.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Anders Fugmann <afu@fugmann.dhs.org>
-Cc: Jens =?ISO-8859-1?Q?Lechtenb=F6rger?= <lechten@wi.uni-muenster.de>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Patrick Schaaf <bof@bof.de>
+Cc: Jay Schulist <jschlst@linux-sna.org>, Harald Welte <laforge@gnumonks.org>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Le lun 30/09/2002 =E0 16:39, Anders Fugmann a =E9crit :
-> Anyhow, AFAIK, the INVALID target only matches  ackets which are=20
-> malformed. a SYN-FIN packets is not malformed as such. (But yes, SYN-FI=
-N=20
-> is an illegal combination, and should be dropped, though this is not th=
-e=20
-> purpose of the INVALID match (IMHO, this can easily be done using=20
-> standard netfilter rules).
+Hi.
 
-By the way, I was wondering why --syn was "only" equivalent to :
-	--tcp-flags SYN,ACK,RST SYN
+> As a proposal out of the blue, what about calling it "ctvolume", instead?
 
-And not to :
-	--tcp-flags SYN,ACK,RST,FIN SYN
+Why :)
 
-I know it is definitly easy to filter according to such criterias, but I
-was just wondering if there were a good reason why --syn should match
-such packets (maybe should have asked netfilter-devel).
+> Would it be possible, in the near future, to use a "ctnetlink" interface
+> to get at the final counters when a conntrack is destroyed? :-)
 
---=20
-C=E9dric Blancher
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Roman has done something like that already for our company, the patch (not the 
+final version, but enough to have a glance at it) can be fetched at:
+
+http://www.drugphish.ch/patches/roman/slog-kernel-2.4.18.diff
+
+Cheers,
+Roberto Nibali, ratz
+
+-- 
+echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' | dc
+
 
