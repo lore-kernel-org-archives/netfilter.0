@@ -1,13 +1,13 @@
-From: "John Paul" <john@pinoylinux.sytes.net>
-Subject: Re: FTP Redirect IP:Port (solved)
-Date: Thu, 8 Jan 2004 17:06:42 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: MRTG and IPTABLES
+Date: Thu, 8 Jan 2004 09:27:05 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01ef01c3d5c6$c8428770$63000a0a@pooh>
-References: <01a101c3d5b5$d35fe5a0$63000a0a@pooh> <1073549109.767.19.camel@elendil.intranet.cartel-securite.net>
-Reply-To: "John Paul" <john@pinoylinux.sytes.net>
+Message-ID: <200401080927.05649.Antony@Soft-Solutions.co.uk>
+References: <83055D4B014C9E478D2F04624B9E82CFAE9660@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFAE9660@noveldc.novelgmt.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-YES!. it was typo error indeed!
+On Thursday 08 January 2004 6:47 am, Gilles Yue wrote:
 
-iptables -t nat -A PREROUTING -p tcp -d 202.x.x.x --dport 21 -j DNAT --to
-192.168.0.10:21
+> Dear sir,
+>
+> Have tried your commands below but when I run my iptables script,
+>
+> I get "command not found" and it points to the line
+>
+> $SNMP_POLLER_IP="xxx.xxx.xxx.xxx"
 
-Thanks.
+There should be no $ at the beginning of this line.
 
------ Original Message -----
-From: "Cedric Blancher" <blancher@cartel-securite.fr>
-To: "John Paul" <john@pinoylinux.sytes.net>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Thursday, January 08, 2004 4:05 PM
-Subject: Re: FTP Redirect IP:Port
+Shell scripts use $ when referencing a variable, not when defining it or 
+assigning to it.   This is different from Perl.
 
+Antony.
 
-Le jeu 08/01/2004 =E0 08:05, John Paul a =E9crit :
-> I want to redirect FTP access from my BOX to other machine. How can i
-> make this possible?
-> external IP ---> 202.x.x.x port 21 (redirect) ---> 192.168.0.10 port21
-> I have tried:
-> iptables -A PREROUTING -p tcp -d 202.x.x.x --dport 21 -j DNAT --to
-> 192.168.0.10:21
-> this seems to be not working. what could it be?
+-- 
+My New Year's resolution is not to make any resolutions I can't keep.
 
-There's a typo here : you did not specify you're working on nat table.
+I'm wondering whether I've failed already.
 
-iptables -t nat -A PREROUTING -p tcp -d 202.x.x.x --dport 21 \
--j DNAT --to 192.168.0.10:21
-
-Then you have to check IP forwarding is OK and FORWARD filtering rules
-are letting this trafic go through. Finally, for FTP needs a helper, you
-have to check that ip_nat_ftp module is loaded.
-
---
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
