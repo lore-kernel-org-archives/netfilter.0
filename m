@@ -1,10 +1,8 @@
-From: =?ISO-8859-1?Q?Fr=E9d=E9ric_Gonzatti?= <fred99@libertysurf.fr>
-Subject: Replace a private IP adresse of my WAN firewall interface by a public
- IP
-Date: Sat, 24 Jul 2004 03:27:51 +0200
+From: "Joel n.solanki" <zealous@bonbon.net>
+Subject: make: *** [extensions/libipt_ROUTE_sh.o] Error 1
+Date: 24 Jul 2004 09:26:29 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4101BB17.7070404@libertysurf.fr>
-Reply-To: fred99@libertysurf.fr
+Message-ID: <1090641389.1939.10.camel@joel.d2visp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,37 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all,
+Dear all,
 
-I've got a big problem with my firewall which have three ethernet cards.
-eth0 : 172.16.2.1/255.255.255.0 ---->LAN
-eth1: 192.168.2.1/255.255.255.0----->DMZ
-eth2: 192.168.3.1/255.255.255.0-----> WAN
+My system is Redhat 9.0
+I have compiled kernel 2.4.21 from kernel.org for IMQ support.
+I downloaded imq2-20030616.tar and installed imq in the kernel.
+Now my kernel can detect imq device.
 
-This firewall is connected to a router which have Wan IP 192.168.3.254 
-and a public IP for WAN : 62.160.X.X/255.255.255.255
-This configurations is working !!!
+modprobe imq then it gets listed in lsmod (modules)
+so i dont think kernel is the problem. so imq is working properly from
+kernel.
+Now installing iptables-1.2.9 its giving me following error
 
-I have tried to replace the Wan IP of my firewall by a public IP : 
-62.160.X.Y
-# ifconfig eth2 62.160.X.Y netmask 255.255.255.248
-# route add default gw 62.160.X.Z (which is new Ip of the router (WAN 
-and LAN interfaces of the router are the same)
+make: *** [extensions/libipt_ROUTE_sh.o] Error 1
 
-I can access to the internet from my firewall but unfortunately not from 
-my LAN. My iptables script is the same as the one which is working with 
-private IP.
-Because I can't access to the ineternet from my LAN but only from the 
-firewall I think it's perhaps a route problem, but I'm not sure.
-So now I come back to my old configuration until I ask why it was not 
-working.
-Have you got any idea please ?
+I have patched iptables-1.2.9-imq1.diff to iptables directory.
+now when installing ...
 
-Thanks
+make KERNEL_DIR=/usr/src/linux-2.4.21
 
-Fred99
+by applying this command i got the error make: ***
+[extensions/libipt_ROUTE_sh.o] Error 1
+
+So any body has solved this problem.
+I dont think this is imq related problem.
+
+Any ideas / Clues
+
+Regards,
+Joel n.solanki
+
 
 
