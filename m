@@ -1,14 +1,12 @@
-From: "Rio Martin." <rio@martin.mu>
-Subject: Re: Iptables as auth ?
-Date: Thu, 17 Jul 2003 14:47:26 +0700
+From: Mogens Valentin <monz@danbbs.dk>
+Subject: Microsoft clients logon
+Date: Thu, 17 Jul 2003 10:08:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307171447.26226.rio@martin.mu>
-References: <200307151738.53777.rio@martin.mu> <20030715135821.GA24604@cannon.eng.us.uu.net>
+Message-ID: <3F165979.B35B4411@danbbs.dk>
+Reply-To: monz@danbbs.dk
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030715135821.GA24604@cannon.eng.us.uu.net>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,35 +17,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Tuesday 15 July 2003 20:58, Ramin Dousti wrote:
-> On Tue, Jul 15, 2003 at 05:38:53PM +0700, Rio Martin. wrote:
-> What is the exact packet flow (for both the initial flow and the RADIUS
-> packet exchange) that you were expacting? How does an application which is
-> only smart enough for its own protocol integrate the RADIUS auth? Or how
-> can you trigger a RADIUS auth from the firewall to the actual user/client
-> that is generating the traffic?
-> What you want is only to accomplish by installing client software on all
-> the client machines... which is not a part of netfilter framework.
-> Ramin
+After rewriting an ipchains firewall to iptables, I've got problems
+having M$ clients logon to an w2k server; that is,  I do not administer
+that server, so it actually might not be my firewalling.
 
-okay i describe again what i want:
-                        
-INTERNET ----> Linux NAT Gateway + RADIUS ----> PC Client 1, 2, 3.. 100
+The w2k server is on a dedicated internal serversegment, clients are on
+three other segments. Problem clients are winxp.
+It takes a looong tme to logon (I'm told upto nearly half an hour),
+other traffic no problem; it' only the login procedure.
 
-Users in PC Client 1 .. 100 must authenticate with RADIUS before its traffic 
-goes to Internet. I dont know how its going to work, but what i have in my 
-mind for now is RADIUS must cooperate with somekind of daemon that should 
-execute iptables to perform NAT to client IP.
+So far, I forward M$ related tcp/udp ports 137:139, 445, 135, ldap,
+kerberos in both directions between server and client segments.
+Tcpdump shows traffic on these ports in both directions, leading me to
+believe it should work.
 
-Regards,
-Rio Martin.
-
-
+Port 135 is "DCE endpoint resolution", which is an rpc service, and
+AFAIK very basic for M$ networking.
+Googling for DCE endpoint resolution reveals that others have  had
+problems here. What I found didn't really tell if those writing about it
+really understood what's going on, neither what kind of firewall were
+used.
 
 -- 
-There is a great discovery still to be made in Literature: that of
-paying literary men by the quantity they do NOT write.
+Kind regards / venlig hilsen,
+Mogens Valentin, Mr Dev
 
+IT Networking, Security, Server Setup
+www.danbbs.dk/~monz   mrdev@danbbs.dk
 
