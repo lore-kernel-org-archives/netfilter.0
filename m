@@ -1,12 +1,12 @@
-From: Maxim Berlin <mak@rtsnet.ru>
-Subject: port forwarding
-Date: Thu, 5 Dec 2002 23:56:27 +0300
+From: James Morris <jmorris@intercode.com.au>
+Subject: Re: [SECURITY] Local Netfilter / IPTables IP Queue PID Wrap Flaw
+Date: Fri, 6 Dec 2002 10:48:49 +1100 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <285598680.20021205235627@rtsnet.ru>
-Reply-To: Maxim Berlin <mak@rtsnet.ru>
+Message-ID: <Mutt.LNX.4.44.0212061047250.11132-100000@blackbird.intercode.com.au>
+References: <Pine.LNX.4.44.0212041127550.1841-100000@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0212041127550.1841-100000@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +16,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
-Hello all,
+On Wed, 4 Dec 2002, Maciej Soltysiak wrote:
 
-Players at my office asks me to give them access to outside counterstrike
-server, UDP 21705. unfortunatelly, i am brand new in iptables, so i've
-read the docs and started make rules, but they does not work.
-Then i've tried simple
-root@woody~/iptables>cat 1.sh
-#!/bin/sh
-echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -v -F -t nat
-iptables -v -F
-iptables -v -A FORWARD -p tcp --dport 205 -j ACCEPT
-iptables -v -t nat -A PREROUTING -p tcp --dport 205 -j DNAT --to-destination 172.17.32.12:25
+> > ..url to a fix patch, anyone?
+> http://marc.theaimsgroup.com/?l=linux-kernel&m=103884408631368&w=2
+> 
 
-, then telnet to woody:205 and there is no refusal and no answer.
+The ext3 fix is apparently still being worked on, the latest patch from 
+Andrew Morton is at 
+http://marc.theaimsgroup.com/?l=ext2-devel&m=103897994905702&w=2
 
-root@woody~/iptables>cat /proc/net/ip_conntrack
-[...]
-tcp      6 118 SYN_SENT src=172.17.32.5 dst=172.17.144.110 sport=2020 dport=205 [UNREPLIED] src=172.17.32.12 dst=172.17.32.5 sport=25 dport=2020 use=1
 
-Can someone please tell me, what i am doing wrong? why [UNREPLIED]?
-should i create rule to pass packets back from 172.17.32.5 to client?
 
-p.s. iptables v1.2.6a, kernel 2.4.18
+- James
+-- 
+James Morris
+<jmorris@intercode.com.au>
 
-Best wishes,
- Maxim                          mailto:mak@rtsnet.ru
 
 
