@@ -1,11 +1,13 @@
-From: "AndreLSM" <a.news@terra.com.br>
-Subject: Fw: I think iptables is not alowing me to connect
-Date: Sat, 21 Sep 2002 14:28:53 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Fw: I think iptables is not alowing me to connect
+Date: Sat, 21 Sep 2002 18:49:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c26194$5c7068c0$2101a8c0@aerowillys>
+Message-ID: <20020921174936.JRUS13996.mta05-svc.ntlworld.com@there>
+References: <000901c26194$5c7068c0$2101a8c0@aerowillys>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000901c26194$5c7068c0$2101a8c0@aerowillys>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,50 +17,97 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="johab"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-CgoKCj4gPgo+ID4gPiBTb3JyeSBJIHdhcyBub3QgdmVyeSBjbGVhciwKPiA+ID4KPiA+ID4gQWN0
-dWFseSBJIHJlbW92ZWQgYWxsIGlwdGFibGVzIHJ1bGVzIHdpdGg6Cj4gPiA+IGlwdGFibGVzIC1G
-Cj4gPiA+IGlwdGFibGVzIC1YCj4gPiA+IGlwdGFibGVzIC1aCj4gPgo+ID4gSGF2ZSB5b3UgcmVt
-b3ZlZCB5b3VyIG5hdCBydWxlcyAoZWcgU05BVCBpbiB0aGUgUE9TVFJPVVRJTkcgY2hhaW4pIGFz
-CndlbGwKPiA/CgogU2luY2UgYSBjaGFuZ2VkIGFsbCBydWxlcyBhbmQgaGFkIHNldCB0aGUgcG9s
-aWN5IHRvIEFDQ0VQVCBmb3IgaW5wdXQsb3V0cHV0CiBhbmQgZm9yd2FyZCBJIGRpZCBub3Qga25v
-dyBJIGhhZCB0byBtYWtlIGFueSBjaGFuZ2VzIHRvIFNOQVQuCiBNeSBydWxlIHdhczoKIGlwdGFi
-bGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyBldGgxIC1qIFNOQVQgLS10byBldGgxCgo+ID4K
-PiA+ID4gYnV0IGFkc2wgc3RpbGwgaGFuZ3MgYW5kIGRvZXMgbm90IGNvbm5lY3QuCj4gPiA+IEJl
-Zm9yZSAgSSBzdGFydGVkIHRlc3RpbmcgaXB0YWJsZXMgaXQgdXNlZCB0byBjb25uZWN0IHF1aWNr
-bHkuCj4gPiA+IE15IG5ldHdvcmsgaXMgbGlrZSB0aGlzOgo+ID4gPiBvbiBldGgwOiAgY29ubmVj
-dGlvbiB0byBhbm90aGVyIGNvbXB1dGVyLCBpcCAxOTIuMTY4LjAuMSB0aGlzIGlzIG9rCj4gPiA+
-IG9uIGV0aDE6IGNvbm5lY3Rpb24gdG8gdGhlIGFkc2wgbW9kZW0uIEkga25vdyB0aGF0IHRoaXMg
-ZGV2aWNlIGNhbiBub3QKPiBiZQo+ID4gPiBpbml0aWFsaXplZCBvbiB0aGUgYm9vdGluZyBwcm9j
-ZXNzCj4gPgo+ID4gV2hhdCBkbyB5b3UgbWVhbiBieSB0aGlzIGxhc3QgY29tbWVudCA/Cj4gPgo+
-Cj4KIFRoaXMgbGFzdCBjb21tZW50IEkgcmVhZCBpbiB0aGUgcHBwb2UgcmVhZG1lLCB0aGUgZGV2
-aWNlICB0aGF0IGNvbm5lY3RzIHRvCiB0aGUgbW9kZW0gY2FutHQgYmUgY29uZmlndXJlZCBkdXJp
-bmcgYm9vdCB0aW1lLgoKPiA+ID4gYW5kIEkgdGhvdWdodCB0aGF0IG1heWJlIGlwdGFibGVzIHdh
-cyBpbml0aWFsaXppbmcgaXQsIGJ1dCBJIHJlbW92ZWQKYWxsCj4gPiA+IHJ1bGVzIGFuZCBzdG9w
-cGVkIHJ1bm5pbmcgdGhlIHJjLmZpcmV3YWxsIGZpbGUuIFRoaXMgb25lIGhhcyBkeW5hbWljCmlw
-Lgo+ID4KPgo+ID4gQXJlIHlvdSBnZXR0aW5nIGEgdmFsaWQgSVAgYWRkcmVzcyBmb3IgdGhpcyBp
-bnRlcmZhY2UgZnJvbSB5b3VyIElTUCA/Cj4KCiBTaW5jZSBJtG0gbm90IGNvbm5lY3RpbmcgdG8g
-bXkgSVNQIEkgYW0gbm90IGdldHRpbmcgYW55IGlwcyBhdCBhbGwsIGJ1dCBJCiB3YXMgYmVmb3Jl
-Lgo+Cgo+ID4gPiBJIGtub3cgdGhhdCBib3RoIG5ldHdvcmsgYWRhcHRlcnMgYXJlIHdvcmtpbmcg
-ZmluZSwgc28gaXS0cyBub3QKaGFyZHdhcmUKPiA+ID4gcHJvYmxlbS4KPiA+Cj4KPiA+IENhbiB5
-b3UgY29ubmVjdCB0byB0aGUgSW50ZXJuZXQgZnJvbSB0aGUgRmlyZXdhbGwgbWFjaGluZSBpdHNl
-bGYgKG5ldmVyCj4gbWluZAo+ID4gdGhlIGludGVybmFsIG1hY2hpbmVzIG9uIHlvdXIgbmV0d29y
-ayBmb3Igbm93KSA/Cj4KIFRoYXS0cyB0aGUgcHJvYmxlbSwgaXS0cyB0aGUgZmlyZXdhbGwgbWFj
-aGluZSB0aGF0IGRvZXMgbm90IGNvbm5lY3QgbGlrZSBpdAogdXNlZCB0byBkby4KCj4KPiA+IElm
-IHlvdSBjYW4sIHRoZW4gdGVsbCB1cyB3aGV0aGVyIHlvdSBoYXZlIGEgU05BVCBydWxlIGluIHlv
-dXIKUE9TVFJPVVRJTkcKPiA+IGNoYWluIHRvIGFsbG93IGludGVybmFsIG1hY2hpbmVzIHRvIGNv
-bm5lY3Qgb3V0IGFzIHdlbGwuCj4gPgo+ID4gSWYgeW91IGNhbm5vdCBjb25uZWN0IGZyb20gdGhl
-IEZpcmV3YWxsIG1hY2hpbmUsIHRoZW4gaXQgaXMgbm90IGEKPiBuZXRmaWx0ZXIKPiA+IHByb2Js
-ZW0uICAgQ2hlY2sgdGhlIGhhcmR3YXJlIGFuZCB0aGUgaW50ZXJmYWNlIGNvbmZpZ3VyYXRpb24u
-ICAgV2h5IGRvCj4geW91Cj4gPiBzYXkgImJvdGggbmV0d29yayBhZGFwdGVycyBhcmUgd29ya2lu
-ZyBmaW5lIiA/ICAgSG93IGRvIHlvdSBrbm93ID8KV2hhdAo+ID4gaGF2ZSB5b3UgdGVzdGVkID8K
-PgogSSBrbm93IGJvb3RoIGNhcmRzIGFyZSBvayBiZWNhdXNlIHRoZXkgd29yayBmaW5lIGluIHdp
-bmRvd3MgeHAKcHJvZmVzc2lvbmFsLgogSWYgaXS0cyBjb25maWd1cmF0aW9uIHByb2JsZW0gdGhl
-biBJIGFtIGNvbmZ1c2VkIGJlY2F1c2UgSSBkaWQgbm90IGNoYW5nZQogYW55IGNvbmZpZ3VyYXRp
-b24sIGFuZCBJIG1haWxlZCB0aGUgbGlzdCBhc2tpbmcgaGVscCBiZWNhdXNlIEkgdGhvdWdodCB0
-aGF0CiBtYXliZSBpdCB3YXMgaXB0YWJsZXMgdGhhdCB3YXMgc29tZWhvdyBibG9ja2luZyB0aGUg
-Y29tdW5pY2F0aW9uIHdpdGggbXkKIElTUC4gSWYgaXS0cyBub3QgdGhpcyB0aGUgY2FzZSB0aGVu
-IEkgaGF2ZSBubyBtb3JlIGlkZWFzIG9uIGhvZSB0byBzb2x2ZQp0aGUKIHByb2JsZW0uCgo+ID4g
-QW50b255Lgo+ID4KIEFMU00KCgoKCg==
+On Saturday 21 September 2002 6:28 pm, AndreLSM wrote:
+
+> > > > Sorry I was not very clear,
+> > > >
+> > > > Actualy I removed all iptables rules with:
+> > > > iptables -F
+> > > > iptables -X
+> > > > iptables -Z
+> > >
+> > > Have you removed your nat rules (eg SNAT in the POSTROUTING chain) as
+> > > well ?
+>
+> Since a changed all rules and had set the policy to ACCEPT for input,
+> output and forward I did not know I had to make any changes to SNAT.
+> My rule was:
+> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to eth1
+
+Well first of all this rule looks wrong to me.   You shouold have an IP=20
+address after the --to, not an interface name.   If you want the address to=
+=20
+be detected automatically you should be using the MASQUERADE target instead=
+=20
+of the SNAT target:
+
+iptables -A POSTROUTING -t nat -o eth1 -j MASQUERADE
+
+You should be aware that the command iptables -F will only flush the rules =
+
+from the default 'filter' tables - it will not flush any rules you may have=
+=20
+in your nat or mangle tables.
+
+To find out whether you still have any rules operating on your system, type:
+
+iptables -L -n -v -t filter
+iptables -L -n -v -t nat
+iptables -L -n -v -t mangle
+
+(That last one may result in an error saying the 'mangle' table is not=20
+recognised if you did compile kernel support for it.   Don't worry about=20
+that.)
+
+To really flush all the rules from your system you should do:
+
+iptables -F
+iptables -F -t nat
+and if you have compiled support for the mangle table
+iptables -F -t mangle
+
+> > > > eth1: connection to the adsl modem. I know that this device can
+> > > > not be initialized on the booting process
+> > >
+> > > What do you mean by this last comment ?
+>
+>  This last comment I read in the pppoe readme, the device  that connects =
+to
+>  the modem can=B4t be configured during boot time.
+
+Okay, so what do you get in response to the command
+
+ifconfig
+
+on your system ?
+
+> > > > and I thought that maybe iptables was initializing it, but I removed
+> > > > all rules and stopped running the rc.firewall file. This one has
+> > > > dynamic ip.
+
+iptables does not initialise interfaces.   Nor does it create a dial-up=20
+connection (if that is what you are using ?)
+
+iptables is simply a filtering mechanism to block packets which would=20
+otherwise be allowed through, or to change packets which are already going =
+
+through.
+
+If you cannot connect to your ISP when you haveno netfilter rules in place =
+
+then netfilter is not the problem.
+
+Antony.
+
+--=20
+
+All matter in the Universe can be placed into one of two categories:
+
+1. things which need to be fixed
+2. things which will need to be fixed once you've had a few minutes to play=
+=20
+with them
+
