@@ -1,15 +1,12 @@
-From: Athan <netfilter@miggy.org>
+From: Rob Sterenborg <rsterenborg@xs4all.nl>
 Subject: Re: Dynamic Deny rule
-Date: Sat, 4 Jan 2003 21:46:07 +0000
+Date: Sun, 05 Jan 2003 00:10:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030104214607.GD16581@miggy.org>
-References: <000101c2b405$a39f7dd0$0501a8c0@underworld> <Pine.LNX.4.44.0301041051010.25229-100000@firefox.malibyte.net>
+Message-ID: <3E1769DC.2060008@xs4all.nl>
+References: <000101c2b405$a39f7dd0$0501a8c0@underworld> <Pine.LNX.4.44.0301041051010.25229-100000@firefox.malibyte.net> <20030104214607.GD16581@miggy.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RYJh/3oyKhIjGcML"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0301041051010.25229-100000@firefox.malibyte.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,69 +16,101 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Bob Sully <rcs@malibyte.net>
-Cc: Mark Ryan <markryan@cfl.rr.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Athan wrote:
+> On Sat, Jan 04, 2003 at 10:53:16AM -0800, Bob Sully wrote:
+> 
+>>Here's the excerpt from my script:
+>>
+>>  # Refuse any connections to/from problem sites.
+> 
+> [snip]
+> 
+>>  if [ -f /etc/firewall/firewall.banned ]; then
+>>     while read BANNED; do
+>>         iptables -A INPUT -i $EXTERNAL_INTERFACE -s $BANNED -j DROP
+>>         iptables -A INPUT -i $EXTERNAL_INTERFACE -d $BANNED -j DROP
+>>         iptables -A OUTPUT -o $EXTERNAL_INTERFACE -s $BANNED -j DROP
+>>         iptables -A OUTPUT -o $EXTERNAL_INTERFACE -d $BANNED -j DROP
+>>     done < /etc/firewall/firewall.banned
+>>  fi
 
---RYJh/3oyKhIjGcML
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This way you'd have to reload the complete INPUT and OUTPUT rules over 
+and over which is something I wouldn't do.
 
-On Sat, Jan 04, 2003 at 10:53:16AM -0800, Bob Sully wrote:
-> Here's the excerpt from my script:
->=20
->   # Refuse any connections to/from problem sites.
-[snip]
->=20
->   if [ -f /etc/firewall/firewall.banned ]; then
->      while read BANNED; do
->          iptables -A INPUT -i $EXTERNAL_INTERFACE -s $BANNED -j DROP
->          iptables -A INPUT -i $EXTERNAL_INTERFACE -d $BANNED -j DROP
->          iptables -A OUTPUT -o $EXTERNAL_INTERFACE -s $BANNED -j DROP
->          iptables -A OUTPUT -o $EXTERNAL_INTERFACE -d $BANNED -j DROP
->      done < /etc/firewall/firewall.banned
->   fi
+If you *are* going to use iptables for this, how about creating user 
+BAN_IN and BAN_OUT chains.
+Then let cron start a script every 5 minutes that clears the BAN chains 
+and refills them with the values from the /etc/firewall/firewall.banned 
+file.
 
-  Given it reads the entire file each time, wouldn't you want to put
-some sort of flush in there first?  Of course that's going to get rid of
-all rules.  Just if you run this every time you're going to end up with
-some entries in a lot of times.
+Something like this (I didn't test this..) :
 
-  How about having the actual INPUT/OUTPUT chains jump to a userdefined
-one at the end and you put these rules in that user-defined chain?  That
-way you can flush *that* entire chain each time before adding the
-current bans.
+-----------
 
-  Of course if you use a decent FTPd it's easy to ban by IP anyway, i.e.
-proftpd:
+#!/bin/bash
 
-        <Directory *>
-                <Limit ALL>
-                        Deny from 62.80.132.
-                        Deny from .CXXXII.adsl.multi.fi
-                </Limit>
-        </Directory>
+EXT_IF="eth0"
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+# If a chain doesn't exist, "iptables -L" will output an error.
+# Let's not display these errors..
 
---RYJh/3oyKhIjGcML
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+IN=`iptables -L BAN_IN 2>&1|grep Chain|awk '{print $2}'`
+OUT=`iptables -L BAN_OUT 2>&1|grep Chain|awk '{print $2}'`
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+if [ -f /etc/firewall/firewall.banned ]; then
 
-iEYEARECAAYFAj4XVh8ACgkQzbc+I5XfxKc7agCfUnEirkSNAEAIMvxphNLhEu4q
-9JAAnjosoXMaRPOxi/3CIcnJrX5aOA0G
-=mquJ
------END PGP SIGNATURE-----
+   # Check to see if user chains exist ;
+   # If they do : clear them.
+   # If they don't : create and redirect the packets from the
+   #   INPUT and OUTPUT chains to the BAN chains first.
 
---RYJh/3oyKhIjGcML--
+   if [ -n "$IN" ] ; then
+     iptables -F BAN_IN
+   else
+     iptables -N BAN_IN
+     iptables -I INPUT 1 -j BAN_IN
+   fi
+   if [ -n "$OUT" ] ; then
+     iptables -F BAN_OUT
+   else
+     iptables -N BAN_OUT
+     iptables -I OUTPUT 1 -j BAN_OUT
+   fi
+
+   # Fill BAN chains.
+   # Slightly modified from above...
+
+   while read BAN_IP; do
+     iptables -A BAN_IN -i $EXT_IF -s $BAN_IP -j DROP
+     iptables -A BAN_OUT -o $EXT_IF -d $BAN_IP -j DROP
+   done < /etc/firewall/firewall.banned
+
+else
+
+   # The ban file doesn't exist ; we don't need the chains.
+   # Get rid of the BAN redirects in the INPUT and OUTPUT chains
+   #   if we have them.
+
+   L_IN=`iptables -L INPUT --line-numbers|grep BAN_IN|awk '{print $1}'`
+   L_OUT=`iptables -L OUTPUT --line-numbers|grep BAN_OUT| \
+            awk '{print $1}'`
+   [ -n "$IN" ] && iptables -D INPUT $L_IN
+   [ -n "$OUT" ] && iptables -D OUTPUT $L_OUT
+
+   # Clear and get rid of the BAN chains if we have them.
+
+   if [ -n "$IN" ] ; then
+     iptables -F BAN_IN
+     iptables -X BAN_IN
+   fi
+   if [ -n "$OUT" ] ; then
+     iptables -F BAN_OUT
+     iptables -X BAN_OUT
+   fi
+
+fi
+
 
