@@ -1,11 +1,11 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: remove old conntrack entries
-Date: 04 Feb 2005 21:12:06 +0100
-Message-ID: <1107547924.24666.8.camel@nostromo.bgsecm.com>
-References: <0140CEDD3075ED428813B1F2A659081212C7FE@p001ex02.porta.local>
+Subject: Re: IDS better than hardcore iptables rules?
+Date: 04 Feb 2005 21:18:52 +0100
+Message-ID: <1107548324.24310.11.camel@nostromo.bgsecm.com>
+References: <20050203230355.GA31433@spawar.navy.mil>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-cKXIWev+NghC8z4B32cY"
-In-Reply-To: <0140CEDD3075ED428813B1F2A659081212C7FE@p001ex02.porta.local>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20050203230355.GA31433@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +16,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "Baake, Matthias" <m.baake@porta.de>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-
---=-cKXIWev+NghC8z4B32cY
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-El vie, 04 de 02 de 2005 a las 09:30, Baake, Matthias escribi=C3=B3:
-> Hi,
+El vie, 04 de 02 de 2005 a las 00:03, seberino@spawar.navy.mil escribi=C3=
+=B3:
+> Many people on this list including Jason O. are masters
+> at creating very detailed careful iptables rules that
+> DROP packets that have anything peculiar about them.
 >=20
-> i'm having problems with my conntrack table. A few days ago i scanned a=
- subnet, thru the problem iptable box, which is not existing. Now about 4=
- days after that scan these connections are still in the connection track=
-ing. how do i remove them,=20
-> or where is the mistake with the configuration at all?
+> (e.g. FIN without ACK, etc.)
 >=20
-> Sorry for the poor english.
+> My iptables script just filters based on port
+> number and protocol.  I was wondering if instead
+> of diving into TCP education to duplicate the
+> fine work Jason and others have done,
+> if an IDS (Intrusion Detection System)
+> like Snort would serve the same purpose???
 >=20
-> Best regards
+> I assume Snort **ALSO** knows what TCP flag combos
+> typically signify a port scan and other nasties?
+>=20
+> Chris
+>=20
+> --
+> _______________________________________
+>=20
+> Christian Seberino, Ph.D.
+> SPAWAR Systems Center San Diego
+> Code 2872
+> 49258 Mills Street, Room 158
+> San Diego, CA 92152-5385
+> U.S.A.
+>=20
+> Phone: (619) 553-9973
+> Fax  : (619) 553-6521
+> Email: seberino@spawar.navy.mil
+> _______________________________________
 
-Included in our GPL bastion-firewall firewall it's the script
-I attach to this message. It does just what you want.
+
+Your problem it's dead easy to solve. You *need*
+a firewall and *also* an IDS/IPS. Don't try to
+substitute one thing with the other, they are
+different thing and both are useful.
+
+Regards.
+
 --=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
@@ -52,126 +75,5 @@ mad to talk, mad to be saved, desirous of everything at the same time,
 the ones who never yawn or say a commonplace thing, but burn, burn, burn
 like fabulous yellow Roman candles.
                 -- Jack Kerouac, "On the Road"
-
---=-cKXIWev+NghC8z4B32cY
-Content-Disposition: attachment; filename=bsf_clearconntrack
-Content-Type: text/x-sh; name=bsf_clearconntrack; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-#!/bin/bash
-
-
-#########################################################################
-## bastion-firewall GPL (www.bgsec.com)                                 #
-#########################################################################
-## Este archivo es parte de la version GPL de bastion-firewall, un      #
-## firewall completo basado en Netfilter e iptables y desarrollado por  #
-## bgSEC (www.bgsec.com). La licencia de bastion-firewall se            #
-## encuentra en el archivo: /etc/bastion-firewall/LICENCIA.txt          #
-##                                                                      #
-## bastion-firewall es copyright de Jose Maria Lopez Hernandez          #
-## (jkerouac@bgsec.com) y bgSEC (www.bgsec.com)                         #
-#########################################################################
-
-
-# Quitar todas las conexiones de la tabla de conntrack para una
-# determinada IP o borrar la tabla completamente.
-
-# Forma de usarlo: bsf_clearconntrack [-a] [IP]
-
-# Comprobamos que se ha tecleado bien el comando
-if [ "$#" != "1" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-    echo 
-    echo " Ayuda de bsf_clearconntrack:"
-    echo "   bsf_clearconntrack direccionip (xxx.xxx.xxx.xxx)"
-    echo "   bsf_clearconntrack -a : Borra todas las entradas de la tabla" 
-    echo "   bsf_clearconntrack [-h] [--help]: Muestra esta ayuda" 
-    echo " Borrar todas la conexiones TCP de la tabla de conntrack para una"
-    echo " direccion IP o borrar la tabla completamente. Se cortan las"
-    echo " sesiones mandando un RST."
-    echo " ES TOTALMENTE NORMAL QUE APAREZCAN ERRORES INDICANDO QUE SE HA"
-    echo " TERMINADO hping2. SE LO EJECUTA Y LUEGO SE LO MATA PARA NO TENER"
-    echo " QUE ESPERAR LAS RESPUESTAS A LOS RESET."
-    echo " SOLO SIRVE PARA TCP."
-    echo
-    echo " Licencia de bastion-firewall en /etc/bastion-firewall/LICENCIA.txt"
-    echo 
-    exit 1
-fi
-
-if [ "$MYTAIL" = "" ]; then
-   source /etc/bastion-firewall/firewall.conf
-   source /usr/lib/bastion-firewall/bsf/functions.bsf
-fi
-
-
-
-# Puede cambiar la ubicacion de estos
-CONNTRACKFILE=/proc/net/ip_conntrack
-HPING2=$(which hping2 2>/dev/null)
-
-
-if [ "$HPING2" = "" ]; then
-    echo 
-    echo " Error: Este programa necesita hping2 para funcionar"
-    echo
-fi
-
-RESETIP=$1
-DIDIT=0
-
-if [ "$RESETIP" = "-a" ]; then
-  $MYCAT $CONNTRACKFILE|$MYGREP -E "^tcp .{10,25}ESTABLISHED"| \
-   while read TMPCONN ; do
-     echo $TMPCONN
-  
-     # Sacamos los datos de cada conexion
-     SRCIP=$(echo $TMPCONN|$MYCUT -d '=' -f 2|$MYCUT -d ' ' -f 1)
-     DSTIP=$(echo $TMPCONN|$MYCUT -d '=' -f 3|$MYCUT -d ' ' -f 1)
-     SRCPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 4|$MYCUT -d ' ' -f 1)
-     DSTPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 5|$MYCUT -d ' ' -f 1)
-
-     # Mandamos el reset a la IP de destino y al puerto de destino, como si
-     # fueramos la conexion verdadera
-     echo hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n
-     hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-
-     # Mandamos tambien el reset al lado contrario
-     echo hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n
-     hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-  done
-else
-  $MYCAT $CONNTRACKFILE|$MYGREP -E "^tcp .{10,25}ESTABLISHED src=$RESETIP"| \
-   while read TMPCONN ; do
-     echo $TMPCONN
-  
-     # Sacamos los datos de cada conexion
-     SRCIP=$(echo $TMPCONN|$MYCUT -d '=' -f 2|$MYCUT -d ' ' -f 1)
-     DSTIP=$(echo $TMPCONN|$MYCUT -d '=' -f 3|$MYCUT -d ' ' -f 1)
-     SRCPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 4|$MYCUT -d ' ' -f 1)
-     DSTPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 5|$MYCUT -d ' ' -f 1)
-
-     # Mandamos el reset a la IP de destino y al puerto de destino, como si
-     # fueramos la conexion verdadera
-     echo hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n
-     hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-
-     # Mandamos tambien el reset al lado contrario
-     echo hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n
-     hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-  done
-fi
-
-# bsf_clearconntrack end
-
---=-cKXIWev+NghC8z4B32cY--
 
 
