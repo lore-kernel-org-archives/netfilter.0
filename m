@@ -1,15 +1,12 @@
-From: Jack Bowling <jbinpg@shaw.ca>
-Subject: Re: Help with invalid argument
-Date: Sat, 06 Jul 2002 12:57:54 -0700
+From: Patrick Petermair <captain.nuke@gmx.at>
+Subject: Url not found ....
+Date: Sat, 6 Jul 2002 22:58:42 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <0GYU000BWFGLMP@l-daemon>
-References: <0GYU00921BGS9X@l-daemon>
- <EPEHIDPIPEBFNAHLCHPGIEMHCEAA.dennis@core-enterprises.com>
-Reply-To: Jack Bowling <jbinpg@shaw.ca>
+Message-ID: <200207062258.42170.captain.nuke@gmx.at>
+Reply-To: captain.nuke@gmx.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <EPEHIDPIPEBFNAHLCHPGIEMHCEAA.dennis@core-enterprises.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,25 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-** Reply to message from Dennis Cardinale <dennis@core-enterprises.com> on Sat, 06 Jul 2002 15:20:24 -0400
+Hi!
+
+I've installed a firewall/gateway with RedHat 7.3 and iptables. I've set =
+up=20
+masquerading for my internal lan and some basic firewall rules.
+Everything works fine (icq, ftp, http,...) but there is ONE homepage whic=
+h I=20
+cannot acces (a friend of mine can).
+
+http://stud4.tuwien.ac.at/-e9625216/html/projects.html
+
+When I try to access this page with client in my lan all I get is "not fo=
+und -=20
+The requested URL [...] was not found on this server."
+After taking a look in my firewall log I found this entry:
+
+Jul  6 22:45:11 wormhole kernel: IN=3Dppp0 OUT=3D MAC=3D SRC=3D193.170.75=
+=2E21=20
+DST=3D213.225.44.140 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D57 ID=3D46360 =
+DF PROTO=3DTCP=20
+SPT=3D80 DPT=3D36827 WINDOW=3D32768 RES=3D0x00 ACK FIN URGP=3D0
+
+And if you try to ping stu4.tuwien.ac.at you'll find out, that the IP is=20
+193.170.75.21 - so the answer from the server gets dropped at my firewall=
+=2E
+
+So the big question is WHY? All homepages I tried so far are working, but=
+ not=20
+this one, so I doubt that it's a problem with the firewall rules.....
+
+Any hints/comments?
+
+Regards,
+Patrick
+
+--=20
+http://www.petermair.com
 
 
-> Thanks for the help, Jack.  Everything is working fine now.
-> 
-> In regard to the last message, I'll rephrase the question:
-> 
-> If the netfilter userspace tools that now occupy /sbin are compiled from
-> current netfilter CVS source tree, will they still execute properly when
-> called from within the framework of the prior kernel (before pomming it)?
-> 
-> You do not need to answer the question.  As soon as I have time, I'll reboot
-> the old kernel and try it myself.
-<snip>
 
-I'll answer anyway: some of the modules may work but if any of them have been recoded in any way, then you run the risk of the modules not working, or even worse, not working such that it may leave you vulnerable somehow if it really breaks. It is always wise to recompile the kernel with the same version of netfilter code as your userspace iptables modules.
-
-jb
 
