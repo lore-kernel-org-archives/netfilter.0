@@ -1,9 +1,10 @@
-From: YoursForEver <timebandi@yahoo.com>
-Subject: IP TABELS problems!
-Date: Thu, 9 May 2002 17:03:43 -0700 (PDT)
+From: =?euc-kr?q?=B3=E7=B1=E2=20=BD=C5?= <blacksmile22@yahoo.co.kr>
+Subject: Question!
+Date: Sat, 11 May 2002 11:34:57 +0900 (JST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020510000343.37372.qmail@web11606.mail.yahoo.com>
+Message-ID: <20020511023457.66611.qmail@web12703.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,30 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="euc-kr"
 To: netfilter@lists.samba.org
 
-Hi
-
-I use this script
-http://www.linuxguruz.org/iptables/scripts/rc.firewall_023.txt
-for my box as a firewall/router for my windows
-computer. And i have problems with MIRC/IRC. I tried
-all the options in the local info in the mirc options
-with no results. If o choose Lookup method Normal i
-can DCC CHAT/SEND to people inside my LAN but not with
-those outside! If i choose i can Lookup method Server
-i can DCC CHAT/SEND to people outside the LAN but not
-inside! I tried to add and remove the ip_nat_irc and
-ip_conntrack_irc without no better results! Anyone who
-might be able to help me and tell what's wrong?? I
-have set MIRC to use ports 1400-1500 for DCC.
-
-Thanks in advance ...
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Shopping - Mother's Day is May 12th!
-http://shopping.yahoo.com
-
+RGVhciwgUnVzdHkgUnVzc2VsbC4KSSdtIHNvcnJ5LiBJIGRvbid0IHNwZWNrIEVuZ2xpc2guCgpJ
+IGFtIG5vdCB1bmRlcnN0YW5kLgpJIHdhbnQgdG8gdGhhdCB5b3UgZXhwYXRpYXRlIG9uIG1lIGFi
+b3V0IGZvbGxvdwpzZW50ZW5jZS4KCih3aGljaCB3b3VsZCBsZWF2ZSBhbGwgYnV0IHRoZSBoYXJk
+aWVzdCBzb3Vscwpjb25mdXNlZCwgcGFyYW5vaWQgYW5kIHNlZWtpbmcgaGVhdnkgd2VhcG9ucnkp
+CgpTb3VyY2Ugb2YgYWJvdmUgc2VudGVuY2UgaXMgMS5JbnRyb2R1Y3Rpb24gb2YgTGludXgKMi40
+IFBhY2tldCBGaWx0ZXJpbmcgSE9XVE8uCgpOb3csIEkgdHJhbnNsYXRlIExpbnV4IDIuNCBQYWNr
+ZXQgRmlsdGVyaW5nIEhPV1RPLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCrbHILTZuKUgs6ohILH0wu/H0SC+xrnZ
+xbgguLi16bHiIC0gvt/IxCEgvsa52cW4Cmh0dHA6Ly9hdmF0YXIueWFob28uY28ua3IvCrW/v7W7
+88C4t84gvbGw1CC56L/stMIgLSC+38jEISC56L/yxc0KaHR0cDovL2tyLmVkdWNhdGlvbi55YWhv
+by5jb20vCgo=
