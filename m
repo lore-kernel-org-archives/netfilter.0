@@ -1,13 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: IPTABLES syntax problem.
-Date: Tue, 23 Dec 2003 09:00:29 -0500
+Date: Tue, 23 Dec 2003 15:57:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FE84A7D.801@Loudoun-Fairfax.com>
-References: <20031223114701.977.qmail@web60405.mail.yahoo.com>
+Message-ID: <1072191475.816.129.camel@elendil.intranet.cartel-securite.net>
+References: <20031223135629.38614.qmail@web60402.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031223114701.977.qmail@web60405.mail.yahoo.com>
+In-Reply-To: <20031223135629.38614.qmail@web60402.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,54 +17,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: ads nat <adsnat@yahoo.com>
+Cc: Chris Brenton <cbrenton@chrisbrenton.org>, netfilter@lists.netfilter.org
 
-Holy Moly, all the smart people are here today! I can see ads nat is in 
-good hands so I'm going to keep my mouth shut for once. ;-)
+Le mar 23/12/2003 =E0 14:56, ads nat a =E9crit :
+> Is it not allowed?
 
-ads nat wrote:
+When a file is iptables-save generated, it's better not modifying it by
+hand. Update your running ruleset then issue an
 
->Hi,
->I am trying to setup IPTABLES rules. I am newbe to
->this.
->
->One of the rule in filter table is 
->#######
->-A INPUT -p tcp ! --syn -m state --state NEW -j LOG
->--log-prefix "New not syn:"
->#############
->
->I am getting following error :
->
->
->[root@allweb root]# /etc/init.d/iptables restart
->Flushing all current rules and user defined chains:   
->    [  OK  ]
->Clearing all current rules and user defined chains:   
->    [  OK  ]
->Applying iptables firewall rules: iptables-restore
->v1.2.6a: Unknown arg `--syn'
->Try `iptables-restore -h' or 'iptables-restore --help'
->for more information.
->
->I am using /etc/init.d/iptables restart to apply
->iptables rules.
->
->I think I have used proper syntax "--syn" from Oskar
->Anderson IPTABLES tutorials.
->
->Looking for support.
->Thanks
->
->__________________________________
->Do you Yahoo!?
->Protect your identity with Yahoo! Mail AddressGuard
->http://antispam.yahoo.com/whatsnewfree
->
->
->  
->
+	iptables-save > iptables
 
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
