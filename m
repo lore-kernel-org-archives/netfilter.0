@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: NAT, ICMP and MTU issues
-Date: Fri, 19 Sep 2003 18:19:17 +0200
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: PREROUTING
+Date: Fri, 19 Sep 2003 09:48:29 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063988356.5012.69.camel@elendil.intranet.cartel-securite.net>
-References: <1063986116.28941.41.camel@angua.localnet>
+Message-ID: <Pine.LNX.4.53.0309190941520.25583@simba.math.ucla.edu>
+References: <200309191748.19695.woksy@ether.net1.nerim.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063986116.28941.41.camel@angua.localnet>
+In-Reply-To: <200309191748.19695.woksy@ether.net1.nerim.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Nigel Metheringham <Nigel.Metheringham@dev.InTechnology.co.uk>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mickael DILY <woksy@ether.net1.nerim.net>
 Cc: netfilter@lists.netfilter.org
 
-Le ven 19/09/2003 =E0 17:41, Nigel Metheringham a =E9crit :
-> What appears to be happening is that everything works while packets are
-> short, however when long packets come in they bounce off the lower MTU
-> interface, and the returned ICMP packet is not getting back to the
-> originator in a sane form.   So the connection freezes.
-> Having looked closer at this I find there is an ICMP dest unreach packe=
-t
-> emitted from my box back to the originator.  However inside the packet
-> the SNAT has been undone, but the DNAT is still in place.
+On Fri, 19 Sep 2003, Mickael DILY wrote:
+> I would like to add the following line to my firewall
+> iptables -A PREROUTING -t mangle -p tcp --sport ssh -j TOS --set-tos\
+> Minimize-Delay
+> iptables -A PREROUTING -t mangle -p tcp --sport ftp -j TOS --set-tos\
+> Minimize-Delay
+> iptables -A PREROUTING -t mangle -p tcp --sport ftp -j TOS --set-tos\
+> Maximize-Throughput
 
+I thought you could set only one type of service on a packet.  Did you
+perhaps mean "--sport http" in the middle line?  Though given the bloated
+advertisement-crammed web pages we often see, maybe "Maximize-Throughput"
+would be more appropriate (just joking; each advt. needs a separate
+connection and so "Minimize-Delay" is what you want.)
 
-Just a 0.02e quick thought...
-You're facing a situation a bit like routing LANs through a PPPoE link.
-Solution is to clamp TCPMSS down to correct value when routing them.
+> When i do this, nothing tells me if it is good or bad. I presume it is good.
+> But, when i list my iptables, i see nothing in the rule PREROUTING.
+> I think it is not normal. Where do i bug  ?
 
-iptables -t mangle -A FORWARD -p tcp --syn -j TCPMSS --clamp-mss-to-pmtu
+Did you actually list the mangle table with all the special arguments?
+E.g. "iptables -t mangle -L -v".
 
-This sets TCPMSS to MTU-40, so 1410 for your IPSEC link.
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
+Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
