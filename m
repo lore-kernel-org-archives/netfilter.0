@@ -1,8 +1,8 @@
 From: "Syed Faisal Gillani" <faisal@clickonlinenetworks.com>
-Subject: block ping  ?
-Date: Sun, 11 Apr 2004 01:26:27 +0500
+Subject: is this possible ?
+Date: Sun, 11 Apr 2004 01:27:14 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006301c41f3a$19f04f00$0300000a@serverxx>
+Message-ID: <006d01c41f3a$35d37030$0300000a@serverxx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,8 +18,8 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-i am a newbie learning iptables ...
-can u tell me the rule of blocking only ping on my nic ?
+is it possible in iptables to FW a port traffic (eg 80) to an internal =
+ipaddress of a webserver ?
 
 Syed Faisal Gillani
 ClickOnline Networks
