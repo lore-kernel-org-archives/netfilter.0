@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipconntract
-Date: Wed, 16 Oct 2002 20:29:00 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: Establish new connection.
+Date: Mon, 16 Oct 2000 13:14:08 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021016192906.HTVK459.mta02-svc.ntlworld.com@there>
-References: <Pine.LNX.4.40.0210161441120.11823-100000@klepto.security.algx.lan>
+Message-ID: <000401c037ad$a4675840$6601a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.40.0210161441120.11823-100000@klepto.security.algx.lan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: 'iptables-list' <netfilter@lists.samba.org>
 
-On Wednesday 16 October 2002 7:41 pm, Kevin Dwyer wrote:
 
-> On Wed, 16 Oct 2002, alex leeken transmitted the following:
-> > How can i delete all state enteries
-> > from state table?
->
-> rm /proc/net/ip_conntrack
->
-> ;)
 
-I trust the ;) above means you know that this won't work, of course ?
 
-Antony.
 
--- 
+I'm writing a small script to parse through my logs and filter nodes
+trying to establish new connections to filtered ports.  Below is a
+typical entry what part of that log entry tells me that this person is
+trying to establish a new connection.
 
-Having been asked to provide a reference for this man,
-I can confidently state that you will be very lucky indeed
-if you can get him to work for you.
+
+Oct 16 05:42:57 s3a-www kernel: IN=eth1 OUT=
+MAC=00:04:75:b1:3d:6c:00:60:49:01:5a:de:08:00 SRC=216.99.233.253
+DST=**.**.76.66 LEN=72 TOS=0x00 PREC=0x00 TTL=241 ID=8598 DF PROTO=UDP
+SPT=53 DPT=1592 L
+EN=52
+ 
+Rowan Reid
+Job Captain, 
+Systems Administrator
+STUDIO 3 ARCHITECTS
+909  982  1717
+
 
