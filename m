@@ -1,10 +1,9 @@
-From: David Cary Hart <DCH@TQMcube.com>
-Subject: Netfiler on RBL
-Date: Thu, 15 Jul 2004 13:03:33 -0400
+From: Real Cucumber <monkcucumber@yahoo.com>
+Subject: Help with ICMP Ruls
+Date: Thu, 15 Jul 2004 10:03:23 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1089911013.7343.1.camel@dchws.tqmcube.com>
+Message-ID: <20040715170323.24191.qmail@web40707.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,19 +15,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Jul 15 10:56:03 mail postfix/smtpd[18286]: connect from
-lakshmi.netfilter.org[62.128.28.23]
-Jul 15 10:56:03 mail postfix/smtpd[18286]: NOQUEUE: reject: RCPT from
-lakshmi.netfilter.org[62.128.28.23]: 554 Service unavailable; Client
-host [62.128.28.23] blocked using bl.spamcop.net; Blocked - see
-http://www.spamcop.net/bl.shtml?62.128.28.23;
+I'm trying to determine the best practice for allowing
+the required ICMP messages to ensure stable
+networking, while at the same time not allowing pings
+or other unnecessary parts.
 
--- 
-                            David Cary Hart
-                                                         Hart's PGP key:
-            http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x58A60BB1
+The server these rules are going to be added on is
+just a packet forwarding firewall using fedora2 and
+iptables, and it for now just forwards incoming SSH
+packets to an Internal server.  So far SSH connections
+are working fine though, but I've had much feedback
+suggestions I enable ICMP.
+
+The internal SSH server is not blocking ICMP.
+
+The fedora box in front of it is not allowing ICMP at
+all (for Input, Output, and Forward).
+
+What I'd like to know is what are the recommended
+allowed ICMP messages for me to set on the Fedora box?
+
+Shoudl I just allow all ICMP to be forwarded or just
+the four basic control/status messages (source quench,
+parameter problem, incoming destination unreachable,
+outgoing destination unreachable of subtype
+fragmentation).
+
+Also do I need to allow those in all 3 chains or just
+the forward since it does not allow direct connections
+to it anyhow?
 
 
+
+
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
 
