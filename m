@@ -1,12 +1,11 @@
-From: Frank Smith <fsmith@hoovers.com>
-Subject: limit match log question
-Date: Wed, 30 Apr 2003 09:52:18 -0500
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: iprange match processing overhead
+Date: 30 Apr 2003 10:46:42 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <17030000.1051714338@hoovers-59.hoovers.com>
+Message-ID: <1051714001.3448.3.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-If you are using the limit match to control the number of log entries, is
-there any way to also show the number of matches?  Something like syslog's
-ability to combine repeated events into 'last message repeated 2318 times'.
-   For example, if I limit logging of a match to 1 per 5 seconds to avoid
-log flooding, I can't easily tell if I'm dropping 1 packet per 5 seconds
-or 1000.  Or is there some option or patch to do this that I just haven't
-noticed?
+We've done some initial testing of the iprange patch and are thrilled
+with it.  However, is it any more processing intensive to use an iprange
+match than to use the standard source or destination match, i.e., -s
+rather than -m iprange --iprange --src/dst-range? Thanks- John
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
-Frank
-
-
---
-Frank Smith                                             fsmith@hoovers.com
-Systems Administrator                                  Voice: 512-374-4673
-Hoover's Online                                          Fax: 512-374-4501
 
