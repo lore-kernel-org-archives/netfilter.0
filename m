@@ -1,12 +1,13 @@
-From: "Shannon J. Field" <shannon.field@backbonesecurity.com>
-Subject: U32 trouble
-Date: Thu, 17 Jun 2004 16:56:58 -0400
+From: "B. McAninch" <bmcaninch@penson.com>
+Subject: Re: Redundant netfilter gateway
+Date: Thu, 17 Jun 2004 16:02:57 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4807CA09ACACCF4BBDACF1EF2455D8B3AB8DD4@bbserver3.backbonesecurity.com>
+Message-ID: <1087506177.30435.27.camel@wslinux-fractal.penson.com>
+References: <810BC538117E9F4E9BB152E0C100DF1F0F46C5@farmer.vikus.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <810BC538117E9F4E9BB152E0C100DF1F0F46C5@farmer.vikus.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Patrick Ahler <patrick@vikus.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Check out KeepAliveD (keepalived.sourceforge.net)- it uses VRRP for
+failover. It does not, however, provide /stateful/ firewall failover. 
+IIRC, work is (was) being done for Netfilter's own state syncing.
 
-I've been playing around with the u32 extention, and I have come across =
-a problem. I was trying to block an http get request, for example GET =
-/search*/ where search is a wild card.=20
+On Thu, 2004-06-17 at 15:52, Patrick Ahler wrote:
+> I am looking for info on creating a redundant gateway/firewall. I
+> currently have my network setup with 1 working iptables gateway/firewall
+> and 1 backup gateway. If the first gateway goes down, I change the IP's
+> and spoof the MAC addresses (I change the external MAC address because
+> my internal network is masqueraded through the gateway and just
+> switching the external IP messes with the arp tables on the router...
+> That's a whole other issue though) on the backup gateway and it takes
+> over. This is not redundancy and is dirty. Does anyone have any
+> suggestions on how to do this better?
+> 
+> Patrick Ahler
+> Systems Administrator
+> Vikus Corporation 
 
-Now if I did: iptables -A OUTPUT -m u32 --u32 "0>>22&0x3C@12>>26&0x3C@ =
-0=3D0x47455420 && 0>>22&0x3C@12>>26&0x3C@ 4=3D0x2F736561 && =
-0>>22&0x3C@12>>26&0x3C@ 8&0xFFFFFF00=3D0x72636800 && =
-0>>22&0x3C@12>>26&0x3C@ 10&0xFFFF=3D0x2F20" -j REJECT
-
-
-I get this error: iptables v1.2.9: u32: at char 106 error reading number
-
-which points at the 8 in this part: "8&0xFFFFFF00=3D0x72636800"
-
-Now from what I have read, I see no reason this shouldn't work.  I tried =
-a similar looking line in William Stearns tutorial: iptables -m u32 =
---u32 "12&0xFFFFFF00=3D0xC0A80F00"
-
-Which gives the same error: iptables v1.2.9: u32: at char 3 error =
-reading number.
-
-What is the problem here? Is it me, or my version of the u32 module? I =
-am running iptables2.9, and used POM 20031219 to patch the kernel with =
-the u32 module.
-
-Thanks for your help.
--Shannon
+-- 
+Bryan McAninch
+Network Security Engineer
+Penson Financial Services, Inc.
 
