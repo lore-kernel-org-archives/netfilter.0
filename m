@@ -1,8 +1,8 @@
 From: "Shazad Malik" <smalik@vistawiz.com>
-Subject: ip_conntrack (1011 buckets, 8088 max)???
-Date: Thu, 30 May 2002 23:00:23 -0400 (EDT)
+Subject: Anyone with vpn and iptable strange error message??
+Date: Thu, 30 May 2002 23:10:54 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <2974.24.168.132.35.1022814023.squirrel@mail.vistawiz.com>
+Message-ID: <2995.24.168.132.35.1022814654.squirrel@mail.vistawiz.com>
 Reply-To: smalik@vistawiz.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -21,14 +21,19 @@ To: netfilter@lists.samba.org
 
 Hi all,
 
-I have a question which may have been asked before but I will ask it anyway!
-When I start iptables I get the following messages:
+I have iptables and freeswan VPN working in my lab but a very interesting
+thing is happening and not sure if someone else has seen this:
 
-ip_conntrack (1011 buckets, 8088 max)
+When I start my ipsec client from my windows2000 to my iptables servers
+which is running NAT too works perfectly fine.  It's when i logoff my ipsec
+connection then I get this error message on my iptables logs which start to
+drop all packets in  both directions! This is the message I get:
 
-What exactly does bucket mean? and does the 8088 max mean that concurrent
-8088 stateful connection at one time!  Can this value be increased and how
-is this vlaue determined?
+ip_conntack: table full, dropping packets
+
+Then whether I stop and restart iptables, i keep getting this message until
+I reboot the server!  Now, thats very strange! ANyone with any ideas.  When
+I start my iptables it does show me: ip_conntrack (1011 buckets, 8088 max)!
 
 Cheers
 hallian
