@@ -1,13 +1,12 @@
-From: Andre Correa <andre.correa@pobox.com>
-Subject: Re: Official IMQ support
-Date: Mon, 12 Apr 2004 11:35:48 -0300
+From: <cron@odi.com.br>
+Subject: Limit Bandwith
+Date: Mon, 12 Apr 2004 08:13:26 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <407AA944.6000604@pobox.com>
-References: <20040408162803.3624.39959.Mailman@vishnu.netfilter.org> <1081447150.10056.60.camel@linux.local>
+Message-ID: <00e801c420a0$b4ea32c0$a8db13ac@gesej.ciasc.gov.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00E5_01C42066.07C0B7C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1081447150.10056.60.camel@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +16,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: peter@empoweringsolutions.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_00E5_01C42066.07C0B7C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hello All,
+
+I=B4m new to iptables and also to the list.
+
+I have a linux box with 1 mb internet connection with is the host for =
+some sites and some email and=20
+is also the gateway to 5 pcs with fake ip adress just to provide acess =
+to the internet.
+
+Nat is woking  fine but would be very nice to limit the bandwith to the =
+lan. I have no clue where to start.=20
+Perhaps someone could anser some questions?
+
+Does iptables limit bandwith?
+
+Any good howto about iptables/bandwith?
 
 
-Hi Peter, I'm one of the guys who are trying to keep IMQ alive. I can 
-tell you that IMQ is stable in lots of scenarios and there are lots of 
-people using it, but it still needs some work, that is ongoning now, 
-before we really tell it is reliable.
+Tks
 
-We are still working on this issues:
+Angelo
+------=_NextPart_000_00E5_01C42066.07C0B7C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-- Locally generated traffic that may crash the systems
-- To make IMQ work as kernel module in 2.6.x kernels
-- Updating IMQ iptables patch for 2.6.x kernels
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello All,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I=B4m new to iptables and also to the=20
+list.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have a linux box with 1 mb internet =
+connection=20
+with is the host for some sites and some email and </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>is also the gateway to 5 pcs with fake =
+ip adress=20
+just to provide acess to the internet.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Nat is woking </FONT>&nbsp;<FONT =
+face=3DArial=20
+size=3D2>fine but would be very nice to limit the bandwith to the lan. I =
+have no=20
+clue where to start. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Perhaps someone could anser some=20
+questions?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Does iptables limit =
+bandwith?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Any good howto about=20
+iptables/bandwith?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Tks</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Angelo</FONT></DIV></BODY></HTML>
 
-Feel free to joing our discussion list and to visit our site.
-
-later
-
-Andre
-
-
-peter frischknecht wrote:
-> Is there any chance that we will get IMQ incorporated in future releases of netfilter/kernel?
-> 
-> The development was picked up again (it was unmaintained).
-> You can see it here:
-> www.linuximq.net
-> 
-> They have patches for 2.4 and 2.6 kernels.
-> 
-> IMQ, for those who don't already know, IMQ allows for NATting AND providing Bandwidth Control up/downstream.  It Creates an Intermediate Queueing Device that can be used to do the QoS stuff, while the regular Ethernet adapter can perform the NAT.
-> 
-> I have been using IMQ for a very long time (Network with 500 users), and I can vouch for its stability.  It keeps me from having 2 daisy-chained routers on site.
-> 
-> Flames or comments are welcome...C'mon, anybody else out there uses IMQ?
-> 
-> Have a great day,
-> 
-> Peter Frischknecht
-> 
-> 
-> 
+------=_NextPart_000_00E5_01C42066.07C0B7C0--
 
 
