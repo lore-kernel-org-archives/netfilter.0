@@ -1,11 +1,10 @@
-From: "Olexandr O. Galay" <root@e-mail.te.ua>
-Subject: ipt_connlimit trouble
-Date: Fri, 30 Jan 2004 21:30:06 +0200
+From: "Jago Pearce" <jago25_98@hotmail.com>
+Subject: Apps that try to do net-to-nat
+Date: Fri, 30 Jan 2004 20:11:44 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <172429746234.20040130213006@e-mail.te.ua>
-Reply-To: "Olexandr O. Galay" <root@e-mail.te.ua>
+Message-ID: <Sea2-F35RQt5fZPNZYM00007124@hotmail.com>
+Reply-To: jago25_98@catholic.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,34 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi everybody!
 
-I have error trying to install ipt_connlimit module.
-What i do:
-1. download and unpack 2.4.24 to /usr/src/linux
-2. download and unpack patch-o-matic-20031219
-3. do ./runme base/connlimit.patch in pom directory (and received
-patch applied answer)
-4. compile and install kernel with all options of iptables sets to M (module)
-5. download/compile/install iptables 1.2.9
+I'm behind NAT at work and I need to connect to home, which is also behind 
+NAT.
 
-so, now when i trying to # modprobe ipt_connlimit i get:
-[root@test /]# modprobe ipt_connlimit
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o: unresolved symbol ip_conntrack_find_get
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o: insmod /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o failed
-/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o: insmod ipt_connlimit failed
+What programs have tried to get past the NAT problem? I heard that mnet, the 
+p2p program uses a ticketing system to pass messages. Any other programs 
+that have attempted to do nat-to-nat and done so successfully? In particular 
+- VoIP?
 
-another modules loads and works success.
+-----
+Thank you for your time. (Please Type "REPLY:" in subject field if you wish 
+to highlight your response, thx).  jago25_98@catholic.org is just my email 
+provider of choice, that's all; I agree with thier policies over email.
 
-maybe anybody helps me?
-
---
-  Olexandr O. Galay
-  System Administrator
-  mailto:root@e-mail.te.ua
-  ICQ: 29292281
+_________________________________________________________________
+Use MSN Messenger to send music and pics to your friends 
+http://www.msn.co.uk/messenger
 
 
