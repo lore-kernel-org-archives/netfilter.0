@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
+From: Moritz Gartenmeister <moritz@uplink-verein.ch>
 Subject: Re: iptables dnat, ebtables, mark
-Date: Wed, 10 Nov 2004 10:56:43 -0500
-Message-ID: <20041110155643.GA19707@bender.817west.com>
+Date: Wed, 10 Nov 2004 17:16:10 +0100
+Message-ID: <41923ECA.9030005@uplink-verein.ch>
 References: <419236F6.4060306@uplink-verein.ch>
+	<20041110155643.GA19707@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <419236F6.4060306@uplink-verein.ch>
+In-Reply-To: <20041110155643.GA19707@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,73 +18,82 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, Nov 10, 2004 at 04:42:46PM +0100, Moritz Gartenmeister wrote:
-> hi
-> 
-> my idea:
-> i know the mac-adress from a compromised computer in my lan. i want to 
-> redirect all the traffic from
-> this computer to a webserver (to show up a page with e.g. "bad guy! you got 
-> a virus").
-> 
-> my system:
-> debian testing 2.6.7
-> iptables
-> ebtables
-> bridge-code
-> 
-> my solution so far:
-> ebtables -t nat -A PREROUTING -s $MAC -j mark --set-mark 8 --mark-target 
-> CONTINUE
-> there are no other rules in this chain.
-> some more rules in -A FORWARD all with -s macadress, but not the one above.
-> 
-> is the only rule in prerouting nat.
-> iptables -t nat -A PREROUTING -m mark --mark 0x8 -j DNAT --to-destination 
-> $IP-WWW
-> 
-> is the first role in the mangle chain.
-> iptables -t mangle -A PREROUTING -m mark --mark 0x8 -j ACCEPT
 
-are you filtering packets in MANGLE?
 
-> one check rule in mangl POSTROUTING
-> iptables -t mangle -A POSTROUTING -m -mark --makr 0x8 -j LOG --log-prefix 
-> IPT_MARK
+Jason Opperisano wrote:
+> On Wed, Nov 10, 2004 at 04:42:46PM +0100, Moritz Gartenmeister wrote:
+>=20
 
-are you getting logs out of this rule?  if so--do the src/dst IP's look
-like they should?
+>>is the first role in the mangle chain.
+>>iptables -t mangle -A PREROUTING -m mark --mark 0x8 -j ACCEPT
+>=20
+>=20
+> are you filtering packets in MANGLE?
 
-> my problem:
-> the user can access the webserver and only this server, but the user is not 
-> redirected to the
-> web-server, if he tries to access e.g. www.google.com. he only get an 
-> error-message.
-> 
-> my observation:
-> number of packets differ...
-> ebtables 213 packets
-> prerouting mangle 200 packets
-> prerouting nat 118 packets
-> postrouting mangle 93 packets
-> 
-> any explanations? the number should be at least the same. i don't 
-> understand this. the filter-rules
-> seem to work properly...
+yes i do, but i don't drop packets, except malformed packets (like: if th=
+e packet is coming from=20
+inside, then it must have an ip from the private net 172.17.0.0/16, else =
+drop).
 
-i think you need to describe the relative locations of the client,
-bridge, and web server.
+and i use mark to classify packets:
+mark 2 for all p2p-packets
+mark 3 for all http-packets
+and so on... (none with 8)
 
-it sounds like it could be a routing problem.
+this marks are used later for tc.
 
--j
+>=20
+>>one check rule in mangl POSTROUTING
+>>iptables -t mangle -A POSTROUTING -m -mark --makr 0x8 -j LOG --log-pref=
+ix=20
+>>IPT_MARK
+>=20
+>=20
+> are you getting logs out of this rule?  if so--do the src/dst IP's look
+> like they should?
 
---
-"I've always wondered if there was a god. And now I know there is --
- and it's me."
-        --The Simpsons
+yes they do. but i think, that not all packets are dnatted, although they=
+ are correctly marked.
+
+>>my observation:
+>>number of packets differ...
+>>ebtables 213 packets
+>>prerouting mangle 200 packets
+
+this numbers should be the same, because there is no rule between.
+
+>>prerouting nat 118 packets
+>>postrouting mangle 93 packets
+>>
+>>any explanations? the number should be at least the same. i don't=20
+>>understand this. the filter-rules
+>>seem to work properly...
+>=20
+>=20
+> i think you need to describe the relative locations of the client,
+> bridge, and web server.
+
+users -- filter-server -- switch -- gw
+                              |
+                              |
+                          webserver
+
+
+
+> it sounds like it could be a routing problem.
+
+hm... this is the only connection, which is routed. the rest of the traff=
+ic is just marked and=20
+shaped with tc.
+
+moritz
+--=20
+Uplink student association
+Moritz Gartenmeister
+B=FClachstrasse 1 F
+8057 Z=FCrich
+Switzerland
 
