@@ -1,8 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
+From: Juan Hernandez <alucard@kanux.com>
 Subject: Re: Help need :) How to delete all rules in chain ?
-Date: Tue, 28 Sep 2004 11:57:24 -0400
+Date: Tue, 28 Sep 2004 15:26:21 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096387044.2330.54.camel@wolfpack.ljm.dom>
+Message-ID: <1096399581.1940.0.camel@alucard.kanux.com>
 References: <1096400937.3163.134.camel@alkaloid.netup.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,6 +20,7 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+iptables -F
 On Tue, 2004-09-28 at 15:48, Abylai Ospan wrote:
 > Hello, all !
 > 
@@ -32,19 +33,14 @@ On Tue, 2004-09-28 at 15:48, Abylai Ospan wrote:
 > remove all identical rules in one chain ?
 > 
 > wbr, Abylai
-
-AFAIK, there is no way to make "-D" delete multiple, identical rules. 
-if you have that rule in there multiple times, hit <up-arrow><enter> a
-few times until you get:
-
-  iptables: Bad rule (does a matching rule exist in that chain?)
-
-if you use a script to flush/reload rules, you normally won't run into
-this situation.
-
--j
-
+> 
 -- 
-Jason Opperisano <opie@817west.com>
+
+Juan Hernandez, RHCE SCSA
+.knxTech C.A.
+CC Los Chaguaramos, Ofc 16-10B      |  Tel: (58) 212-6624745
+Los Chaguaramos, Caracas-Venezuela  |  Mobile: (58) 412-5821882
+
+Programmin' Python is like sugar... Sweet ;)
 
 
