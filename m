@@ -1,12 +1,12 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Is it possible to Jam windows network neighbour?
-Date: Tue, 24 Aug 2004 09:09:58 -0400
+From: "ArioS" <christian@wanxp.net>
+Subject: Re: bridge + transparent proxy
+Date: Tue, 24 Aug 2004 20:13:39 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512C0@asimail2.alphanumeric.com>
+Message-ID: <002201c489dc$2c8f8470$fd14a8c0@wanxpr3yianevq>
+References: <D5C9032B2B09C64EA2409D6214E91AC90512BF@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +17,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> > a firewall can only filter traffic that passes through it.  if your
-> > clients are all sitting on a LAN together, there is no way for an
-> > upstream firewall to keep them from communicating with each other.
+i tried it and it seems not work.... :)
+i`m googling and found this site http://ebtables.sourceforge.net/
+has anyone tried this before ? maybe can share ur experience :)
+
+
+Regards,
+
+
+Kristian
+----- Original Message -----
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, August 24, 2004 7:28 PM
+Subject: RE: bridge + transparent proxy
+
+
+> hi all , i`m running linux kernel 2.4.20 with bridge installed (2 eth)..
+the
+> bridge works nice and i can block any traffic that i want
+> the problem is i can`t do tranparent proxy , i tried using
 >
-> Not quite true, sort of, but we're into Firewall / IPS ( Intrusion
-> Prevention System ) territory here.  "Snort" *might* be able to deny
-> traffic on the network, failing that you're probably looking at
-> commercial software.
+> iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT --to $myproxy:3128
+>
+> and it didn`t work... my bridge didn`t get any incoming traffic from
+client
+> to port 80 or 3128....
+> is it because bridge only run in layer 1 or something else ? sorry for my
+> dumb question :)
+> any idea ?
+>
+> Regards,
+>
+>
+> Kristian
 
-good point.  something along the lines of setting up a snort box (with =
-flexresp) on a SPAN port and watching for TCP 139/445 traffic and =
-resetting the connections?  i played around with this awhile back, and i =
-noticed that the snort box generally loses the race in the race =
-condition, but it does effectively keep the hosts from communicating.  =
-not pretty, but effective enough.
+try:  http://en.tldp.org/HOWTO/TransparentProxy-7.html
 
-need more coffee...
+and for what it's worth--bridges are layer 2.
 
 -j
+
+
 
