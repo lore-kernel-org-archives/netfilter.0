@@ -1,12 +1,14 @@
-From: Chaman Rana <chaman@newwavecomputing.com>
-Subject: Problem while connecting to internal FTP server behind firewall from
- external client.
-Date: Fri, 13 Aug 2004 14:11:28 +0530
+From: Henning Schmiedehausen <hps@intermeta.de>
+Subject: RE: Netfilter meets PBR - I'm starting to tear my hairs out...
+Date: Fri, 13 Aug 2004 09:15:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF42F6A95C.5880B2A4-ON65256EEF.002F51C0-65256EEF.00307DB8@newwavecomputing.com>
+Message-ID: <1092381307.2797.69.camel@forge.intermeta.de>
+References: <D5C9032B2B09C64EA2409D6214E91AC90641DA@asimail2.alphanumeric.com>
+Reply-To: hps@intermeta.de
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=_alternative 00307DA565256EEF_="
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90641DA@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,262 +18,192 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <Jopperisano@alphanumeric.com>
+Cc: netfilter@lists.netfilter.org
 
-This is a multipart message in MIME format.
---=_alternative 00307DA565256EEF_=
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Hi Jason,
 
-HI,
+thanks for the quick answer. After some more googling (basically: After
+I knew what to look for), I found that this is a FAQ. 
 
-I am running FTP server in Windows 2003 and is perfectly working fine with =
+I reverted the change between 2.4.22 and 2.4.23 in ipt_MASQUERADE.c and
+now it works for me again like expected. I was just confused that the
+2.4.22 Fedora Kernel has this patch but then again this is the strange
+RedHat / Fedora "we will not change our kernel version" policy.
 
-other windows and Linux clients within the internal LAN. But I am not able =
+Thanks for the suggestions. Unfortunately, I cannot use the mangle
+solution because my firewall setup is completely sealed and controlled
+by fwbuilder which does not support this. Patching the module is
+actually easier because I can install a patched RPM on this box and be
+done. :-)
 
-to connect to this Server from external client(Linux).=20
-Let me describe about my network. I am running Linux firewall on gateway=20
-server. Windows FTP server is one of the internal LAN host. I have done=20
-nating to access the FTP server from external client. I am getting "227=20
-entering passive mode" and after a while it times out. But I am able to=20
-see the directory and cd the desired directory. I am including=20
-configuration. I would be very thankful if anybody can help me.
-Thanks in advance!!!!!!!!!!
+	Regards
+		Henning
 
-root@abc root]# ftp 61.35.215.23
-Connected to 61.35.215.23 (61.35.215.23).
-220-Microsoft FTP Service
-220 This is New Wave Test site
-Name (61.35.215.23:root): administrator
-331 Password required for administrator.
-Password:
-230-You are welcome to this site if ur authorized else just get out of=20
-this place
-230 User administrator logged in.
-Remote system type is Windows=5FNT.
-ftp> cd cham
-250 CWD command successful.
-ftp> dir
-227 Entering Passive Mode (192,168,1,98,10,58).
-receive aborted
-waiting for remote to finish abort
-ftp> pwd
-257 "/cham" is current directory.
-ftp> cd ..
-250 CWD command successful.
-ftp> cd Sun=5FSolaris
-250 CWD command successful.
-ftp> pwd
-257 "/Sun=5FSolaris" is current directory.
-ftp> dir
-227 Entering Passive Mode (192,168,1,98,10,5).
-ftp: connect: Connection timed out
+On Fri, 2004-08-13 at 06:46, Jason Opperisano wrote:
+> i think this is a known issue that appeared in 2.4.23--check out:
+> 
+> http://lists.netfilter.org/pipermail/netfilter-devel/2004-January/013687.html
+> 
+> for more details...
+> 
+> and here:
+> 
+> http://seclists.org/lists/linux-kernel/2004/Jan/2211.html
+> 
+> for an apparent fix: using MARK in mangle, and fwmark in your ip rules.
+> 
+> HTH...
+> 
+> -j
+> 
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org on behalf of Henning Schmiedehausen
+> Sent: Thu 8/12/2004 6:33 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Netfilter meets PBR - I'm starting to tear my hairs out...
+>  
+> Hi,
+> 
+> I have a question concerning the interaction between iptables and
+> iproute2. I seem to miss some crucial point in the concepts... Let me
+> explain:
+> 
+> I have a router with four interfaces:
+> 
+> 
+> ppp0  - 	DSL uplink with dynamic IP address
+> eth0  - 	regular uplink with fixed IP address
+> eth1  -		network with official ip addresses
+> eth2  -		network with private addresses and official
+>                 addreses
+> 
+> The idea is now that everything that has an official ip address
+> is routed through the eth0 link (the addresses are from the range of
+> this ISP) and the private addresses are NATed and routed through ppp0.
+> 
+> for illustration:
+> 
+> ppp0:	dynamic
+> eth0:	100.100.100.1/30
+> eth1:	100.100.101.1/24
+> eth2:	100.100.102.1/24
+> 	192.168.8.1/24
+> 
+> This is a regular Fedora Core 1 box with all updates installed. It
+> reports itself as
+> 
+> Linux router 2.4.22-1.2199.nptl #1 Wed Aug 4 12:21:48 EDT 2004 i686 i686 i386 GNU/Linux
+> 
+> I use iptables-1.2.9-1.0 and iproute-2.4.7-13.2 as delivered by the Fedora Project.
+> 
+> I did the following thing with /sbin/iproute
+> 
+> # /sbin/ip route show
+> <DSL Provider Address> dev ppp0  proto kernel  scope link  src <dynamic DSL address>
+> 
+> 100.100.100.1/30 dev eth0  scope link
+> 100.100.101.1/24 dev eth1  scope link
+> 100.100.102.1/24 dev eth2  scope link
+> 192.168.8.0/24 dev eth2  proto kernel  scope link  src 192.168.8.1
+> 127.0.0.0/8 dev lo  scope link
+> default via 100.100.100.2 dev eth0
+> 
+> Now I added PBR:
+> 
+> echo "200 VLAN2" >> /etc/iproute2/rt_tables
+> 
+> /sbin/ip route add default dev ppp0 table VLAN2
+> /sbin/ip rule add from 192.168.8.0/24 table VLAN2
+> 
+> which seems to work:
+> 
+> /sbin/ip route list table VLAN2
+> default dev ppp0  scope link
+> 
+> /sbin/ip rule list
+> 0:      from all lookup local
+> 32765:  from 192.168.8.0/24 lookup VLAN2
+> 32766:  from all lookup main
+> 32767:  from all lookup default
+> 
+> When I ping from a host attached to eth2:
+> 
+> # tcpdump -i eth0
+> 100.100.102.2 > internet_host: icmp: echo request
+> internet_host > 100.100.102.2: icmp: echo reply
+> 100.100.102.2 > internet_host: icmp: echo request
+> internet_host > 100.100.102.2: icmp: echo reply
+> 
+> # tcpdump -i ppp0
+> 192.168.8.2 > internet_host: icmp: echo request
+> 192.168.8.2 > internet_host: icmp: echo request
+> 
+> (obviously no answer yet)
+> 
+> Now I add masquerading:
+> 
+> /sbin/iptables  -t nat -A POSTROUTING -o ppp0  -s 192.168.8.0/24 -j MASQUERADE
+> /sbin/iptables  -t nat -A POSTROUTING -j ACCEPT
+> 
+> After this, there is silence on ppp0. No more packets pass through the
+> link.
+> 
+> Instead, the kernel starts to spit out:
+> 
+> Aug 12 12:19:36 router kernel: MASQUERADE: Route sent us somewhere else.
+> Aug 12 12:19:41 router kernel: NET: 4 messages suppressed.
+> Aug 12 12:19:41 router kernel: MASQUERADE: Route sent us somewhere else.
+> Aug 12 12:19:46 router kernel: NET: 4 messages suppressed.
+> Aug 12 12:19:46 router kernel: MASQUERADE: Route sent us somewhere else.
+> Aug 12 12:19:51 router kernel: NET: 4 messages suppressed.
+> Aug 12 12:19:51 router kernel: MASQUERADE: Route sent us somewhere else.
+> Aug 12 12:19:56 router kernel: NET: 4 messages suppressed.
+> Aug 12 12:19:56 router kernel: MASQUERADE: Route sent us somewhere else.
+> 
+> The fun thing now is, that if I flush the chain again and do
+> 
+> /sbin/iptables  -t nat -A POSTROUTING -o ppp0 -s 192.168.8.0/24 -j SNAT --to-source=<dynamic DSL address>
+> /sbin/iptables  -t nat -A POSTROUTING -j ACCEPT
+> 
+> then the PBR works. I see the packets going out the ppp0 link:
+> 
+> # tcpdump -i ppp0
+> <dynamic dsl address> > internet_host: icmp: echo request
+> internet_host > <dynamic dsl address>: icmp: echo reply
+> <dynamic dsl address> > internet_host: icmp: echo request
+> internet_host > <dynamic dsl address>: icmp: echo reply
+> 
+> Unfortunately I cannot use this in production, because the link will
+> have to go up and down and I cannot rewrite the configuration scripts
+> (which use masquerade).
+> 
+> So, what am I doing wrong? As far as I can understand, the MASQUERADE
+> target is equal to the SNAT target, except that it takes the ip address
+> for NATing from the interface and tears down the connections if the
+> interface loses its link. Or not? Or have I simply stumbled over a well
+> known bug in the RedHat kernel (which seems to be 2.4.22 + lots of
+> patches from post-2.4.22)? Or am I just missing some concept that I need
+> to add to my tables?
+> 
+> I'd appreciate Cc'ing me as I am not a regular subscriber to this list.
+> 
+> 	Regards
+> 		Henning
+-- 
+Dipl.-Inf. (Univ.) Henning P. Schmiedehausen          INTERMETA GmbH
+hps@intermeta.de        +49 9131 50 654 0   http://www.intermeta.de/
+ 
+RedHat Certified Engineer -- Jakarta Turbine Development  -- hero for hire
+   Linux, Java, perl, Solaris -- Consulting, Training, Development
 
+"Fighting for one's political stand is an honorable action, but re-
+ fusing to acknowledge that there might be weaknesses in one's
+ position - in order to identify them so that they can be remedied -
+ is a large enough problem with the Open Source movement that it
+ deserves to be on this list of the top five problems."
+                       --Michelle Levesque, "Fundamental Issues with
+                                    Open Source Software Development"
 
-
-receive aborted
-waiting for remote to finish abort
-425 Can't open data connection.
-500 '=F2ABOR': command not understood
-ftp> ls
-200 PORT command successful.
-150 Opening ASCII mode data connection for /bin/ls.
-ftp: connect: Connection timed out
-
-
-FIREWALL RULE=20
-
-#!/bin/sh
-
-#Initializing variables
-
-EXTDEV=3Deth2
-EXTIP=3D"61.35.215.23"
-EXTBASE=3D"61.35.215.1"
-EXTBCAST=3D"61.35.215.255"
-EXTGATE=3D"61.35.215.1"
-INTNET=3D"61.35.215.0/24"
-
-INTDEV=3Deth0
-INTIP=3D"192.168.1.58"
-INTBASE=3D"192.168.1.0"
-INTBCAST=3D"192.168.1.255"
-INTNET=3D"192.168.1.0/24"
-
-IPT=3D/sbin/iptables
-LOGOPT=3D"--log-level=3D3 -m limit --limit 3/minute --limit-burst 3"
-SYNOPT=3D"-m limit --limit 5/second --limit-burst 10"
-
-#Clearing all the existing firewall rules
-if [ ! -x $IPTABLES ]
-then
-die "Firewall: Can't execute $IPTABLES"
-fi
-$IPT -P INPUT DROP # Set default policy to drop
-$IPT -P OUTPUT DROP # Set default policy to DROP
-$IPT -P FORWARD DROP # Set default policy to drop
-$IPT -F #Flush all chains
-$IPT -X #delete all chains
-
-for table in filter nat mangle
-do
-$IPT -t $table -F #Delete the table's rule
-$IPT -t $table -X #Delete the table's chains
-$IPT -t $table -Z #Delete the table's counters
-done
-
-$IPT -t nat -A PREROUTING -i eth2 -p tcp -d 61.35.215.23 --dport 21 -j=20
-DNAT --to-destination 192.168.1.98
-$IPT -A FORWARD -j ACCEPT
-$IPT -A INPUT -j ACCEPT
-$IPT -A INPUT -p tcp --syn -d 192.168.1.98 --dport 21 -j ACCEPT
-$IPT -A OUTPUT -j ACCEPT
-
-Regards,
-Cham=20
-
-
-
-
-Thanking You,
-
-Warm Regards,
-Chaman Rana
-
-"Don't limit your challenges - challenge your limits"
-
---=_alternative 00307DA565256EEF_=
-Content-Type: text/html; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-
-<table width=3D100% align=3Dcenter>
-<tr valign=3Dtop>
-<td width=3D100% bgcolor=3Dwhite>
-<table width=3D100%>
-<tr>
-<td width=3D100% bgcolor=3Dwhite><font size=3D2>HI,</font>
-<table width=3D100% align=3Dcenter>
-<tr>
-<td width=3D100% bgcolor=3Dwhite>
-<table width=3D100%>
-<tr valign=3Dtop>
-<td width=3D100% bgcolor=3D#cfd9ff><font size=3D2 face=3D"Verdana">I am run=
-ning
-FTP server in Windows 2003 and is perfectly working fine with other windows
-and Linux clients within the internal LAN. But I am not able to connect
-to this Server from external client(Linux). <br>
-Let me describe about my network. I am running Linux firewall on gateway
-server. Windows FTP server is one of the internal LAN host. I have done
-nating to access the FTP server from external client. I am getting &quot;227
-entering passive mode&quot; and after a while it times out. But I am able
-to see the directory and cd the desired directory. I am including configura=
-tion.
-I would be very thankful if anybody can help me.<br>
-Thanks in advance!!!!!!!!!!<br>
-<br>
-root@abc root]# ftp 61.35.215.23<br>
-Connected to 61.35.215.23 (61.35.215.23).<br>
-220-Microsoft FTP Service<br>
-220 This is New Wave Test site<br>
-Name (61.35.215.23:root): administrator<br>
-331 Password required for administrator.<br>
-Password:<br>
-230-You are welcome to this site if ur authorized else just get out of
-this place<br>
-230 User administrator logged in.<br>
-Remote system type is Windows=5FNT.<br>
-ftp&gt; cd cham<br>
-250 CWD command successful.<br>
-ftp&gt; dir<br>
-227 Entering Passive Mode (192,168,1,98,10,58).<br>
-receive aborted<br>
-waiting for remote to finish abort<br>
-ftp&gt; pwd<br>
-257 &quot;/cham&quot; is current directory.<br>
-ftp&gt; cd ..<br>
-250 CWD command successful.<br>
-ftp&gt; cd Sun=5FSolaris<br>
-250 CWD command successful.<br>
-ftp&gt; pwd<br>
-257 &quot;/Sun=5FSolaris&quot; is current directory.<br>
-ftp&gt; dir<br>
-227 Entering Passive Mode (192,168,1,98,10,5).<br>
-ftp: connect: Connection timed out<br>
-<br>
-<br>
-<br>
-receive aborted<br>
-waiting for remote to finish abort<br>
-425 Can't open data connection.<br>
-500 '=F2ABOR': command not understood<br>
-ftp&gt; ls<br>
-200 PORT command successful.<br>
-150 Opening ASCII mode data connection for /bin/ls.<br>
-ftp: connect: Connection timed out<br>
-<br>
-<b><br>
-FIREWALL RULE</b> <br>
-<br>
-#!/bin/sh<br>
-<br>
-#Initializing variables<br>
-<br>
-EXTDEV=3Deth2<br>
-EXTIP=3D&quot;61.35.215.23&quot;<br>
-EXTBASE=3D&quot;61.35.215.1&quot;<br>
-EXTBCAST=3D&quot;61.35.215.255&quot;<br>
-EXTGATE=3D&quot;61.35.215.1&quot;<br>
-INTNET=3D&quot;61.35.215.0/24&quot;<br>
-<br>
-INTDEV=3Deth0<br>
-INTIP=3D&quot;192.168.1.58&quot;<br>
-INTBASE=3D&quot;192.168.1.0&quot;<br>
-INTBCAST=3D&quot;192.168.1.255&quot;<br>
-INTNET=3D&quot;192.168.1.0/24&quot;<br>
-<br>
-IPT=3D/sbin/iptables<br>
-LOGOPT=3D&quot;--log-level=3D3 -m limit --limit 3/minute --limit-burst 3&qu=
-ot;<br>
-SYNOPT=3D&quot;-m limit --limit 5/second --limit-burst 10&quot;<br>
-<br>
-#Clearing all the existing firewall rules<br>
-if [ ! -x $IPTABLES ]<br>
-then<br>
-die &quot;Firewall: Can't execute $IPTABLES&quot;<br>
-fi<br>
-$IPT -P INPUT DROP # Set default policy to drop<br>
-$IPT -P OUTPUT DROP # Set default policy to DROP<br>
-$IPT -P FORWARD DROP # Set default policy to drop<br>
-$IPT -F #Flush all chains<br>
-$IPT -X #delete all chains<br>
-<br>
-for table in filter nat mangle<br>
-do<br>
-$IPT -t $table -F #Delete the table's rule<br>
-$IPT -t $table -X #Delete the table's chains<br>
-$IPT -t $table -Z #Delete the table's counters<br>
-done<br>
-<br>
-$IPT -t nat -A PREROUTING -i eth2 -p tcp -d 61.35.215.23 --dport 21 -j
-DNAT --to-destination 192.168.1.98<br>
-$IPT -A FORWARD -j ACCEPT<br>
-$IPT -A INPUT -j ACCEPT<br>
-$IPT -A INPUT -p tcp --syn -d 192.168.1.98 --dport 21 -j ACCEPT<br>
-$IPT -A OUTPUT -j ACCEPT<br>
-<br>
-Regards,<br>
-Cham</font><font size=3D3> </font></table>
-<br></table>
-<br></table>
-<br></table>
-<br>
-<br><font size=3D2 face=3D"sans-serif">Thanking You,<br>
-<br>
-Warm Regards,<br>
-Chaman Rana<br>
-<br>
-&quot;Don't limit your challenges - challenge your limits&quot;<br>
-</font>
---=_alternative 00307DA565256EEF_=--
 
