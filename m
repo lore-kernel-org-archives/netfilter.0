@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: PPTP - more connections from a  NATed LAN to LAN behind PPTP Linux box doesn't work
-Date: Tue, 27 Jan 2004 02:54:14 +0100
+Subject: Re: per-connection byte counts
+Date: Tue, 27 Jan 2004 02:56:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040127015414.GQ19250@sunbeam.de.gnumonks.org>
-References: <0807917940AEF54F9A0C3096A0ED03AB40EDD0@gatc-ex1.gatc.com>
+Message-ID: <20040127015645.GR19250@sunbeam.de.gnumonks.org>
+References: <20040118140903.GA3351@glympton.airtime.co.uk> <1074522469.27665.7.camel@xeon.office.eurotux.com> <20040120221259.GA4354@glympton.airtime.co.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kJZGYML2m3vFaueA"
+	protocol="application/pgp-signature"; boundary="MdJ3p2aQbVp3YFXz"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <0807917940AEF54F9A0C3096A0ED03AB40EDD0@gatc-ex1.gatc.com>
+In-Reply-To: <20040120221259.GA4354@glympton.airtime.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +19,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Unzeitig Lumir <lumir.unzeitig@gatc.com>
-Cc: netfilter@lists.netfilter.org
+To: wysiwyg@sunbeam.gnumonks.org, netfilter@lists.netfilter.org
 
 
---kJZGYML2m3vFaueA
+--MdJ3p2aQbVp3YFXz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 21, 2004 at 03:47:25PM +0100, Unzeitig Lumir wrote:
-> Hi,
-> I applied the PPTP patch and it solved what I needed. (=3Dmore connections
-> from NATed LAN behind Linux box to a PPTP server) - it's OK.
-> But oposit direction (=3Dmore connections from NATed LAN behind a PPTP
-> server to theLAN which is behind PPTP Linux box) works only for 1 PPTP
-> client. It stays in verification process and ends by error.
+On Tue, Jan 20, 2004 at 10:12:59PM +0000, Adam Rice wrote:
+> Quoting Nuno Miguel Pais Fernandes (npf@eurotux.com):
+> > Try http://luxik.cdi.cz/~devik/connbytes/
+> >=20
+> > It works very well....
+>=20
+> Thanks, that's exactly what I wanted! Pity it seems to be unmaintained. S=
+till,
+> it's simple enough that that shouldn't matter for the time being.
 
-Sorry, I have no idea what you are talking about.  Please describe more
-detailed what exactly you want to do.  Please try to use more precise
-terms (no idea what 'theLAN' and your 'pptp linux box' should mean).
+erm, connbytes is even in patch-o-matic...
 
-> Thanks
-> Lumir Unzeitig
+> Adam
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -53,7 +51,7 @@ terms (no idea what 'theLAN' and your 'pptp linux box' should mean).
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---kJZGYML2m3vFaueA
+--MdJ3p2aQbVp3YFXz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -61,10 +59,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQFAFcTGXaXGVTD0i/8RAuGnAKCCKOcERAXymM44oCfaIp6IkrW1/wCgnRr9
-RDCNDCV8D/Atzzp4TaESBWM=
-=uy2q
+iD8DBQFAFcVdXaXGVTD0i/8RAigKAJ97NBbaleRm8vkLmtDQzxTmdMWd5wCfZTne
+gnIEGp1P05HQ5oOFBXpE5D0=
+=/F2z
 -----END PGP SIGNATURE-----
 
---kJZGYML2m3vFaueA--
+--MdJ3p2aQbVp3YFXz--
 
