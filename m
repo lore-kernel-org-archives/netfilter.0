@@ -1,13 +1,14 @@
-From: Florian Boelstler <euphoria@web.de>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: traceroute
-Date: Thu, 01 Jul 2004 00:36:18 +0200
+Date: Wed, 30 Jun 2004 23:39:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E34062.90505@web.de>
-References: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv> <200406301429.14248.Antony@Soft-Solutions.co.uk> <40E334EC.1080606@web.de> <200406302252.10870.Antony@Soft-Solutions.co.uk>
+Message-ID: <200406302339.02075.Antony@Soft-Solutions.co.uk>
+References: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv> <200406302252.10870.Antony@Soft-Solutions.co.uk> <40E34062.90505@web.de>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406302252.10870.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <40E34062.90505@web.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wednesday 30 June 2004 11:36 pm, Florian Boelstler wrote:
 
-Hi,
+> Hi,
+>
+> Antony Stone wrote:
+> > Tell us how you handle NEW packets leaving the machine.
+>
+> Well, I just realized by looking at your reply that I only have set:
+>
+> $IPTABLES -A OUTPUT -p ICMP --icmp-type echo-request -j ACCEPT
+>
+> Which of the icmp-type displayed "iptables -p icmp -h" do I need to make
+> traceroute work?
+>
+> By looking at other posts in this thread I've learned that traceroutes
+> are done with echo-requests. Is this true for Linux 2.6.6 ?
 
-Antony Stone wrote:
-> Tell us how you handle NEW packets leaving the machine.
+No, that's true for Windows systems.   Unix machines (Linux included) uses 
+high-port numbered UDP packets.
 
-Well, I just realized by looking at your reply that I only have set:
+Therefore you need to allow UDP packets to leave your machine for you to be 
+able to run traceroute from it.
 
-$IPTABLES -A OUTPUT -p ICMP --icmp-type echo-request -j ACCEPT
+Regards,
 
-Which of the icmp-type displayed "iptables -p icmp -h" do I need to make
-traceroute work?
+Antony.
 
-By looking at other posts in this thread I've learned that traceroutes
-are done with echo-requests. Is this true for Linux 2.6.6 ?
+-- 
+There's no such thing as bad weather - only the wrong clothes.
 
-Thanks,
+ - Billy Connolly
 
-  Florian
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-
-
-...............................
-
-Someone on the net said:
-G'Kar: 2 hours ago my government declared war on the Centari Republic
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
-
-iD8DBQFA40BiwT2gPfZm6tURAkaLAJ4zRVtBrVbhxVgcPuCs/ZiGVvX1TACdGJOU
-eKewKcpjQbMlyTtm9omcJZ8=
-=qjuX
------END PGP SIGNATURE-----
 
