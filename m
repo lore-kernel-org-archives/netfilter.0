@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Strange ip_conntrack values
-Date: Sun, 18 Jul 2004 16:17:52 +0100
+From: adderek <adderek@polbox.com>
+Subject: Re: Problem: ISA card & iptables (2.4.26) - disappearing packets
+Date: Sat, 17 Jul 2004 16:47:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407181617.52652.Antony@Soft-Solutions.co.uk>
-References: <ef83df6b040718033163810a15@mail.gmail.com> <200407181313.47640.Antony@Soft-Solutions.co.uk> <ef83df6b04071806565f854eb6@mail.gmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <40F93C01.5020107@polbox.com>
+References: <40F8D503.3040608@polbox.com> <200407180939.37668.Antony@Soft-Solutions.co.uk> <40F8E16B.2020808@polbox.com> <200407181140.35100.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ef83df6b04071806565f854eb6@mail.gmail.com>
+In-Reply-To: <200407181140.35100.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,71 +17,130 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sunday 18 July 2004 2:56 pm, John wrote:
+I have removed all cards except those three network cards and graphic card.
 
-> > Tcpdump is a good packet sniffer but it does not show the data in a
-> > user-friendly format.
->
-> ok I've made another tcpdump for ethereal and it's ok;
 
-Good.   Sounds like the last time you just redirected console output from 
-tcpdump; this time you've actually made it save a file.
+10.0.0.2 (BNC terminal):
 
-> I've checked and I get a lot of this scheme :
->
-> No.     Time        Source                Destination           Protocol
-> Info 10 0.004569    24.33.232.227         mydomain         TCP
-> 1488 > http [SYN] Seq=0 Ack=0 Win=64240 Len=0 MSS=1460
->      11 0.004626    mydomain         24.33.232.227         TCP
-> http > 1488 [SYN, ACK] Seq=0 Ack=1 Win=5840 Len=0 MSS=1460
->     255 0.162181    24.33.232.227         mydomain         TCP
-> 1488 > http [ACK] Seq=1 Ack=1 Win=64240 Len=0
->     258 0.165191    24.33.232.227         mydomain         TCP
-> 1488 > http [FIN, ACK] Seq=1 Ack=1 Win=64240 Len=0
->     259 0.165313    mydomain         24.33.232.227         TCP
-> http > 1488 [FIN, ACK] Seq=1 Ack=2 Win=5840 Len=0
->     385 0.311935    24.33.232.227         mydomain         TCP
-> 1488 > http [ACK] Seq=2 Ack=2 Win=64240 Len=0
->
-> (this is the whole tcp stream)
+1)    exec(`ping 10.0.0.1`)
 
-Good.   That to me looks like a good TCP sequence, however there is one packet 
-missing - the ACK response from "mydomain" to 24.33.232.227 in response to 
-the FIN-ACK sent by 24.33.232.227 in packet number 1488.   Until this missing 
-response is seen by netfilter, it will regard that connection as being in the 
-TIME_WAIT state, however this will expire after 2 minutes.
+result:
+     100% packet loss
 
-> for others I get the complete http exchange : get ...
 
-I can't explain why there isn't any more interesting data in the HTTP part of 
-the above communication, however that's pretty irrelevant for TCP/IP.
+2)    exec(`ping google.com`)
 
-> is it normal ?
+result:
+     100% packet loss
 
-Is it normal to see an HTTP connection with no data being transferred?   No, I 
-wouldn't have thought so, but then I'm no expert on M$ IIS-5.1, which is what 
-that web server is running.
 
-> Ethereal is brand new for me so if you have some good tips to help me
-> find some interesting information ... thanks a lot
+------------------------------------------------------------
+10.0.1.2 (RJ45 terminal):
 
-The help system is pretty good; other than that there's documentation at 
-http://www.ethereal.com   You probably won't find ethereal.org or 
-ethereal.net quite so useful :)
+1)    exec(`ping 10.0.1.1`)
 
-Regards,
+result:
+     0% packet loss
 
-Antony.
 
--- 
-GIT/E d- s+:--(-) a+ C++++$(---) UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) 
-o? w--(---) O !M V+++(--) !PS !PE Y+ PGP+> t- !tv@ b+++ DI++ D--- e+++(*) h++ 
-5? !X- !R K--? G-
+2)    exec(`ping google.com`)
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+result:
+     0% packet loss
 
+
+-------------------------------------------------------------
+
+10.0.0.1 (BNC router, ISA@eth0 PCI@eth1 internet@eth2):
+
+3)    exec(`iptables -t filter -L -v -n`)
+
+result:    Chain INPUT (policy DROP 89 packets, 11837 bytes)
+      pkts bytes target     prot opt in     out     source destination
+      2041  175K ACCEPT     all  --  eth1   *       0.0.0.0/0 0.0.0.0/0
+        31  2340            all  --  eth0   *       0.0.0.0/0 0.0.0.0/0
+
+     Chain FORWARD (policy ACCEPT 107 packets, 6663 bytes)
+      pkts bytes target     prot opt in     out     source destination
+
+     Chain OUTPUT (policy ACCEPT 1040 packets, 96388 bytes)
+      pkts bytes target     prot opt in     out     source destination
+      1178  162K ACCEPT     all  --  *      eth1    0.0.0.0/0 0.0.0.0/0
+         0     0 ACCEPT     all  --  *      eth0    0.0.0.0/0 0.0.0.0/0
+
+4)    exec(`ping 10.0.0.2`)
+
+result:
+     0% packet loss
+
+
+conclusion:
+iptables is catching incoming bytes and statistics are rising from both 
+interfaces.
+I don't understand why packets are not forwarded.
+ping replies goes only when requesting from 'PCI network'.
+ping requests from 'ISA network' are ignored.
+I've forgotten about '-j ACCEPT' in INPUT from eth0 :)
+
+and now : strange thing:
+
+
+5)
+on router I've executed:
+     exec(`iptables -t filter -I INPUT -i eth2 -j DROP`)
+     exec(`iptables -P INPUT ACCEPT`)
+
+and then on BNC terminal:
+     exec(`ping 10.0.0.1`)
+     and the result.....
+result:    0% packet loss !!!
+and
+     exec(`ping google.com`)
+result:    100% packet loss
+
+conclusion:
+packets are forwarded only internally trough ISA card.
+however PCI card is forwarded to the internet.
+Interface eth0 acts like it is something else (like packets are incoming 
+from some non existing card).
+But data can be send to this interface (cause `ping 10.0.0.2 on router 
+always works).
+
+
+
+6)    exec(`iptables -t filter -L -v -n`)
+
+result:    Chain INPUT (policy ACCEPT 4 packets, 240 bytes)
+      pkts bytes target     prot opt in     out     source destination
+        10  1512 DROP       all  --  eth2   *       0.0.0.0/0 0.0.0.0/0
+      3317  287K ACCEPT     all  --  eth1   *       0.0.0.0/0 0.0.0.0/0
+        48  3989            all  --  eth0   *       0.0.0.0/0 0.0.0.0/0
+
+     Chain FORWARD (policy ACCEPT 196 packets, 11439 bytes)
+      pkts bytes target     prot opt in     out     source destination
+
+     Chain OUTPUT (policy ACCEPT 1085 packets, 99644 bytes)
+      pkts bytes target     prot opt in     out     source destination
+      2546  313K ACCEPT     all  --  *      eth1    0.0.0.0/0 0.0.0.0/0
+         4   240 ACCEPT     all  --  *      eth0    0.0.0.0/0 0.0.0.0/0
+
+
+After few more researches I've managed that kernet even don't try 
+forwarding my packets:
+
+Chain FORWARD (policy ACCEPT 29 packets, 1512 bytes)
+  pkts bytes target     prot opt in     out
+    51  2364 ACCEPT     all  --  eth1   *
+     0     0 ACCEPT     all  --  eth0   *
+     0     0 ACCEPT     all  --  *      eth0
+    63 20975 ACCEPT     all  --  *      eth1
+
+(table shown above was created after making some `ping google.com` from 
+both subnetworks)
+
+
+What now?
 
