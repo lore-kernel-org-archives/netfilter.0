@@ -1,12 +1,10 @@
-From: diadicic@optonline.net
-Subject: Re: port Forwarding
-Date: Tue, 16 Nov 2004 12:01:50 -0500
-Message-ID: <4919c7490274.4902744919c7@optonline.net>
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: vpn problem
+Date: Tue, 16 Nov 2004 14:29:51 -0400
+Message-ID: <047701c4cc0a$431ab6e0$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,100 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Cool=2C I ll give that a try=2E
+Hello everyone.
 
-Sorry about the typo in the SNAT statment
+I am getting the following in my logs (scrolls faster than I can read) when
+ever anyone trys to do windows file transfers over my vpn.  The vpn is ipsec
+and it is a constant connection between our office and our sister office.
+My vpn server is in our dmz between 2 firewalls.  The remote vpnserver is
+installed on their internal firewall.  When a client on the remote side goes
+to copy a file using windows networking to a server on my side, it works,
+however I get the messages below ... Please help.  I am not sure why I am
+getting this.  It looks like the reply is getting blocked, however, as my
+rules show below, I allow established and related connections.
 
-Thanks again=2E
+Nov 16 13:59:16 radium kernel: FORWARD REJECT IN=eth1 OUT=eth0 SRC=x.x.x.33
+DST=192.168.200.3 LEN=576 TOS=0x00 PREC=0xC0 TTL=63 ID=12528 PROTO=ICMP
+TYPE=3 CODE=4 [SRC=192.168.200.3 DST=192.168.127.15 LEN=1500 TOS=0x00
+PREC=0x00 TTL=126 ID=19304 DF PROTO=TCP SPT=445 DPT=1915 WINDOW=64968
+RES=0x00 ACK URGP=0 ] MTU=1443
 
------ Original Message -----
-From=3A Jason Opperisano =3Copie=40817west=2Ecom=3E
-Date=3A Tuesday=2C November 16=2C 2004 11=3A48 am
-Subject=3A Re=3A port Forwarding
+$IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -A FORWARD -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-=3E On Tue=2C 2004-11-16 at 11=3A44=2C diadicic=40optonline=2Enet wrote=3A=
+$IPT -A FORWARD -s 192.168.127.0/24 -i eth1 -j vpn-int
+$IPT -A vpn-int -d 192.168.200.3 -p tcp --dport 139 -j ACCEPT
+        $IPT -A vpn-int -d 192.168.200.3 -p tcp --dport 445 -j ACCEPT
+        $IPT -A vpn-int -d 192.168.200.3 -p udp --dport 138 -j ACCEPT
+        $IPT -A vpn-int -j LOG --log-prefix " REJECT: vpn-int "
+        $IPT -A vpn-int -j REJECT
 
-=3E =3E Can someone help me understand this=3F
-=3E =3E =
 
-=3E =3E   I have a firewall setup up with two nic=27s in it=2E
-=3E =3E =
+192.168.127.0/24 is the remote network
+192.168.200.0/21 is my local network.
+x.x.x.33 is the internet IP of my vpn server.
 
-=3E =3E                1 eth0 24=2E190=2Ex=2Ex  which is my Internet conn=
-ection
-=3E =3E                2 eth1 172=2E16=2E12=2E165 which is a local area n=
-etwork=2E
-=3E =3E =
+Thanks for the help,
+Peter
 
-=3E =3E               I have a web server at 172=2E16=2E12=2E160  =93I ho=
-pe thats =
-
-=3E clear=94=3E =
-
-=3E =3E     Now if I port forward this way it will not work=2E
-=3E =3E =
-
-=3E =3E              =93iptables -A PREROUTING -i eth0 -t nat -p tcp =96d=
-port =
-
-=3E 80 -j DNAT =96to =
-
-=3E =3E                 172=2E16=2E12=2E160=3A80=94
-=3E =3E                =93iptables -A FORWARD -p tcp -d 172=2E16=2E12=2E1=
-60 =
-
-=3E =96dport 80 -i eth0 -o eth1 =
-
-=3E =3E                  -j ACCEPT=94
-=3E =3E =
-
-=3E =3E =
-
-=3E =3E But if I do it this way It will work=3A
-=3E =3E =
-
-=3E =3E                  =93iptables -t nat  -A PREROUTING -p tcp =96dpor=
-t 80 =
-
-=3E -d 24=2E190=2Ex=2Ex -i eth0 -j   =
-
-=3E =3E                    DNAT --to-destination 172=2E16=2E12=2E160  =
-
-=3E 172=2E16=2E12=2E160=94=3E =
-
-=3E =3E                    =93iptables -A POSTROUTING -p tcp =96dport 80 =
--d =
-
-=3E 172=2E16=2E12=2E160 -j SNAT -o    =
-
-=3E =3E                      eth1 =96to-source 172=2E16=2E12=2E165=94
-=3E =3E =
-
-=3E =3E =
-
-=3E =3E Could anyone please explain why the first way did not work=2C all=
- =
-
-=3E the directions I read claim that is how to port forward=2E
-=3E =
-
-=3E because the default gateway of 172=2E16=2E12=2E160 is not 172=2E16=2E=
-12=2E165=3F
-=3E =
-
-=3E -j
-=3E =
-
-=3E --
-=3E =22Oh=2C so they have internet on computers now!=22
-=3E 	--The Simpsons
-=3E =
-
-=3E =
-
-=3E 
 
 
