@@ -1,11 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Ralf Spenneberg <lists@spenneberg.org>
 Subject: Re: iptables related
-Date: Mon, 8 Dec 2003 19:28:28 +0000
+Date: 08 Dec 2003 20:29:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312081928.28282.Antony@Soft-Solutions.co.uk>
+Message-ID: <1070911779.28792.32.camel@kermit>
 References: <20031208191947.GA1603@msservices>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20031208191947.GA1603@msservices>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,40 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jeffrin <jeffrin@gamebox.net>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Monday 08 December 2003 7:19 pm, Jeffrin wrote:
-
+Am Mon, 2003-12-08 um 20.19 schrieb Jeffrin:
 > hello all,
->
+>=20
 > iptables -A INPUT -sport 80 -j ACCEPT
->
+>=20
 > shows error ...
->
+>=20
 >  msservices:~# iptables -A INPUT --sport 80 -j ACCEPT
 > iptables v1.2.9: Unknown arg `--sport'
-> Try `iptables -h' or 'iptables --help' for more information.
->
-> please help me ...
+You need to specify the protocol: -p tcp or -p udp
 
-You must specify whether you're talking about a TCP source port, or a UDP one.
+Cheers,
 
-iptables -A INPUT -p tcp --sport 80 -j ACCEPT
-or
-iptables -A INPUT -p udp --sport 80 -j ACCEPT
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-will work.
-
-Antony.
-
--- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
-
- - Philip Hands
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Book: VPN mit Linux
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
