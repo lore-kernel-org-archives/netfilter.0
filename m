@@ -1,13 +1,14 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: LAN accessing DMZ
-Date: Sun, 18 Jul 2004 12:58:30 -0400
+Date: Sun, 18 Jul 2004 18:12:31 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040718165830.GA30303@tranquility.scriptkitchen.com>
-References: <f51b72bc040718062373640612@mail.gmail.com> <200407181610.52327.Antony@Soft-Solutions.co.uk> <20040718162409.GA30107@tranquility.scriptkitchen.com> <200407181739.05377.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407181812.31070.Antony@Soft-Solutions.co.uk>
+References: <f51b72bc040718062373640612@mail.gmail.com> <200407181739.05377.Antony@Soft-Solutions.co.uk> <20040718165830.GA30303@tranquility.scriptkitchen.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200407181739.05377.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040718165830.GA30303@tranquility.scriptkitchen.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +19,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Sun, Jul 18, 2004 at 05:39:05PM +0100, Antony Stone wrote:
-> This one:
-> > > > $IPTABLES -A FORWARD -d 10.10.10.2 -p tcp --dport 25 -j ACCEPT
+On Sunday 18 July 2004 5:58 pm, Payal Rathod wrote:
 
-I have pasted my FORWARD rules at, (they are small and simple),
-http://payal.staticky.com/fw1.txt
+> I have pasted my FORWARD rules at, (they are small and simple),
+> http://payal.staticky.com/fw1.txt
+>
+> It is still very confusing. Forget port 25 for a moment. I have never
+> mentioned port 10000, the webmin port at all. Still I can access it
+> from my LAN machine? HOW? Afterall the FORWARD policy is DROP. It should
+> DROP what it cannot find.
 
-> > > > $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > > > $IPTABLES -A FORWARD -s 192.168.0.0/16 -p tcp --dport 3128 -j ACCEPT
-> > > > $IPTABLES -A FORWARD -s 192.168.0.0/16 -p tcp --dport 53 -j ACCEPT
-> > > > $IPTABLES -A FORWARD -s 192.168.0.0/16 -p udp --dport 53 -j ACCEPT
-> 
-> These rules do not say "but only to the Internet", therefore they allow 
-> packets to the DMZ as well.
+I do not see how TCP port 10000 should be accessible from the Internet either 
+(which is what I believe you were asking about - allowing access to the DMZ 
+from the Internet, but not from the LAN?)
 
-It is still very confusing. Forget port 25 for a moment. I have never 
-mentioned port 10000, the webmin port at all. Still I can access it
-from my LAN machine? HOW? Afterall the FORWARD policy is DROP. It should
-DROP what it cannot find.
-If I do a specific DROP like 
-$IPTABLES -A FORWARD -s 192.168.0.0/16 -p tcp --dport 10000 -j DROP 
-the packets are dropped, but not otherwise.
+Please post the output of "iptables -L -nvx; iptables -L -t nat -nvx".   Post 
+it on the website if you prefer (the formatting is probably easier to read 
+there anyway).   Please also post the IP addresses of the machine you are 
+connecting from, and the machine you are connecting to, on TCP port 10000.
 
-What must be wrong?
+Regards,
 
-With warm regards,
--Payal
+Antony.
+
+-- 
+The words "e pluribus unum" on the Great Seal of the United States are from a 
+poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
+dressing.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
