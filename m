@@ -1,31 +1,40 @@
-From: "Patrick Ahler" <patrick@vikus.com>
-Subject: patch-o-matic compile
-Date: Tue, 1 Apr 2003 11:35:24 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ABEKJILKOKKGGDJKHKDFKEHCCAAA.patrick@vikus.com>
+From: Bart De Schuymer <bdschuym@pandora.be>
+Subject: Re: iptables - bridge - physin
+Date: Tue, 1 Apr 2003 18:30:10 +0200
+Sender: bridge-admin@math.leidenuniv.nl
+Message-ID: <200304011830.10528.bdschuym@pandora.be>
+References: <D3DD55FDB74AD511BA51005004163680176597@orion.ibh.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <bridge-admin@math.leidenuniv.nl>
+In-Reply-To: <D3DD55FDB74AD511BA51005004163680176597@orion.ibh.de>
+Errors-To: bridge-admin@math.leidenuniv.nl
+List-Unsubscribe: <http://www.math.leidenuniv.nl/mailman/listinfo/bridge>,
+	<mailto:bridge-request@math.leidenuniv.nl?subject=unsubscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Post: <mailto:bridge@math.leidenuniv.nl>
+List-Help: <mailto:bridge-request@math.leidenuniv.nl?subject=help>
+List-Subscribe: <http://www.math.leidenuniv.nl/mailman/listinfo/bridge>,
+	<mailto:bridge-request@math.leidenuniv.nl?subject=subscribe>
+List-Archive: <http://www.math.leidenuniv.nl/pipermail/bridge/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter EMAIL <netfilter@lists.netfilter.org>
+To: Jochen Vogel <jvogel@it-sec.de>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'bridge@math.leidenuniv.nl'" <bridge@math.leidenuniv.nl>
 
-Hi, I just patched my kernel for h323 and string. Now it says that I'm ready
-to compile. Being a bit of a linux newbie, only been using since august, I'm
-a bit confused on what to do next. If someone could give some kind of
-specific step by step procedure that'd be great. I've re-compiled once
-before, but had problems.
+On Tuesday 01 April 2003 12:18, Jochen Vogel wrote:
+> hi all,
+>
+> i compiled iptables and teh bridge patch.
+> all is working fine. but in my old iptables script i configured many rules
+> with -i and -o.
+> in the logs i can see, that iptables use as IN and OUT the bridge and have
+> an additional entry for PHYSIN.
+> is there an option to use the PHYSIN?
 
-Thanks, Patrick
+In the 2.4 patch you can just use -i and -o, for the 2.5 standard kernel, you 
+need to use the ipt_physdev module (the kernel module is in the standard 2.5 
+kernel, the userspace module is in the iptables CVS (standard make is 
+enough)).
 
-
-
-
+-- 
+cheers,
+Bart
