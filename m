@@ -1,10 +1,14 @@
-From: "K. H. Braun" <kbraun@dgrunt.sneakernet.com>
-Subject: TARPIT error - What am I doing wrong?
-Date: Tue, 30 Mar 2004 15:12:39 -0500 (EST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Adding a flag to a packet
+Date: Tue, 30 Mar 2004 21:24:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.58.0403301500440.1698@dgrunt.sneakernet.com>
+Message-ID: <200403302124.18451.Antony@Soft-Solutions.co.uk>
+References: <20040328155231.32b07799@darna.vectec.net> <200403301253.18383.Antony@Soft-Solutions.co.uk> <20040330160158.2e247c46@darna.vectec.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040330160158.2e247c46@darna.vectec.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,65 +18,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tuesday 30 March 2004 9:01 pm, Cody Harris wrote:
 
-Hi Folks
+> On Tue, 30 Mar 2004 12:53:18 +0100, Antony Stone wrote:
+>
+> > > If we've covered the NAT table, what's the mangle table?
+> >
+> > The mangle table is aptly named, and allows you to fiddle about with bits
+> > of the packets headers which most people wouldn't even think of changing
+> > - things like the TTL (Time To Live) field, the TOS (Type Of Service)
+> > field, and for MARKing packets (which doesn't actually change the packet,
+> > but allows netfilter to carry a special marker around with the packet
+> > during further processing).
+>
+> Is it possible, with the mangling table, to edit the packet to have a
+> special flag?
 
-I am trying to get TARPIT to work. I am using linux kernel 2.4.24 with the
-below listed POM patches applied and iptables-1.2.9.
+Yes..... sort of...
 
-Whenever I try to use TARPIT as a target I get the following error
-message (showing a simple test case):
+> So that when it hits another firewall that's setup correctly,
+> it sends it to a pre-configured ip? Example:
 
-root@dgrunt:/etc/rc.d# iptables -A FORWARD -j TARPIT
-iptables: Invalid argument
+No.   Not with MARK, anyway.
 
-I get the same error if I change just one target to TARPIT in an otherwise
-working script.
+I said "sort of" because the MARK value is not actually part of the packet 
+(not even part of the header) - it's just something that netfilter associates 
+with the packet whilst it's wandering around the machine which MARKed it.   
+As soon as the packet leaves the machine, the MARK disappears.
 
-This is AFTER re-compiling the kernel AND the user-space tools.
+> On my internet network, the ip range is 192.168.0.0 to 255. If a computer
+> sent a packet to 192.168.1.5, the computer used the gateway, slapped a flag
+> on it, sent it to 1.2.3.4, the firewall there saw the flag, changed the ip
+> on it to 192.168.1.5 coming from 192.168.0.6. When the computer sent a
+> response, it just reversed the process.
 
-Can someone tell me what sort of bone-headed thing I am doing wrong?
+Sorry, I don't quite follow what you're suggesting here.   Let me quote it 
+back to you with some questions inserted:
 
+> On my internet network, the ip range is 192.168.0.0 to 255. If a computer
 
-Thanks
--- Ken --
+A computer where?
 
+> sent a packet to 192.168.1.5,
 
+You do recognise that a 192.168.x.y address is not routable across the 
+Internet, yes?   It might go one or two hops, but will pertty soon get 
+dropped.
 
-Welcome to Rusty's Patch-o-matic!
+> the computer used the gateway, slapped a flag
+> on it, sent it to 1.2.3.4,
 
-Kernel:    /usr/src/linux
-Userspace: /usr/local/src/Security/Iptables-POM
+Now that *is* a routable address, but I think you only gave it as an example - 
+where are you suggesting that this destination might be?   Across a local 
+network which you have total control of, or somewhere around the Internet?
 
-Each patch is a new feature: many have minimal impact, some do not.
-Almost every one has bugs, so I don't recommend applying them all!
--------------------------------------------------------
-Already applied: submitted/01_2.4.19
-                 submitted/02_2.4.20
-                 submitted/03_2.4.21
-                 submitted/04_2.4.22
-                 submitted/05_2.4.23
-                 submitted/61-remove-memsets
-                 submitted/64_masquerade-sameip-noflush
-                 submitted/69_amanda-helpers
-                 submitted/70_expect-evict-order
-                 submitted/72_recent_procfs_fix
-                 submitted/74_listhelp
-                 submitted/75_selective_cleanup
-                 submitted/76_conntrack_bucket_sysctl
-                 submitted/88_ip_queue-maxlen
-                 submitted/90_fw_compat_local-nullbinding
-                 pending/40_nf-log
-                 pending/40_nf-log-ipv6
-                 pending/59_ip_nat_h-unused-var
-                 pending/60_ecn_raw_unclone
-                 extra/ipt_TARPIT
+> the firewall there saw the flag, changed the ip
 
------------------------------------------------------------------
-No more patches to apply! Q to Quit or ? for options [Q/a/r/b/?] q
+Which IP?   Source or destination (or both)?
+
+> on it to 192.168.1.5 coming from 192.168.0.6.
+
+Who's 192.168.0.6?   The real sender?   A fake?   Why choose this address?
+
+> When the computer sent a response, it just reversed the process.
+
+I've chosen the sig on this email especially for you this time :)
+
+Regards,
+
+Antony.
+
+-- 
+90% of networking problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
