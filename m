@@ -1,10 +1,10 @@
-From: Jaroslav Knespl <jaroslav@knespl.cz>
-Subject: ACCEPT ESTABLISHED doesn't work
-Date: Thu, 09 May 2002 14:44:11 +0200
+From: patrick conlin <patrick@wechsler.com>
+Subject: simple nat dilemma
+Date: Thu, 09 May 2002 13:33:40 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CDA6F1B.8020302@knespl.cz>
+Message-ID: <B9002B34.C58%patrick@wechsler.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,42 +15,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi all,
+Hello everyone,
 
-I use following rules (not only :-) in my fw script:
+Let me preface this by saying that I am seriously disappointed by my failure
+to figure out what I'm doing wrong here, and any admonitions I receive from
+ramin for being an idiot will be appreciated. I've been using ipchains for a
+over a year for simple packet filtering and am now setting up a simple nat
+gateway with iptables, but can't get it to work.
 
+I'm trying to get the nat machine (bulgakov) to make zamyatin look and feel
+like 207.224.76.204 for all external activity, inbound and outbound.
+Eventually I'll be trying to make olesha look and feel like 207.224.76.202,
+but one step at a time.
 
-$IPTABLES -A INPUT -i $INTERNAL -m state --state INVALID -j DROP
-$IPTABLES -A INPUT -i $INTERNAL -m state --state RELATED,ESTABLISHED -j 
-ACCEPT
+It's the classic setup:
 
-but when I try to connect to w98 using smbmount or smbclient it still 
-drops returning packets. I think that they should be ESTABLISHED packets 
-and should be accepted. Can you help me to find, where is a problem?
+bulgakov
+eth0: 207.224.76.201
+eth1: 10.1.1.1
 
-Relevant syslog message:
+zamyatin
+eth0: 10.1.1.107
 
-May  9 13:22:02 fw kernel: Rule21:IN=eth0 OUT= 
-MAC=00:02:1b:f1:50:26:00:50:fc:50:24:6c:08:00 SRC=192.168.1.72 
-DST=192.168.1.2 LEN=90 TOS=0x00 PREC=0x00 TTL=128 ID=39856 PROTO=UDP 
-SPT=137 DPT=32784 LEN=70
+I've got a 1 in /proc/sys/net/ipv4/ip_forward
 
-where 192.168.1.2 is linuxbox from where I am trying to connect w98 
-computer with ip 192.168.1.72 and Rule21 is the last rule in the INPUT 
-table:
+As an aside, when I set up
 
- $IPTABLES -A INPUT -j LOG --log-prefix="Rule21:"
+# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-Default policy of INPUT table is DROP
+Everything works great, for what it's worth (obviously not useful for
+inbound connections). I am able to connect to the outside world and do
+whatever I want (ping, traceroute, ftp, www, whatever) and It looks like the
+connection is coming from 207.224.76.201. Of course, that's not what I'm
+trying to do so I flush the chain, follow trusty rusty, and add the
+following:
 
-I am using Debian woody with 2.4.18 kernel and iptables v1.2.5
+# iptables -t nat -A POSTROUTING -o eth0 -s 10.1.1.107 -j SNAT --to-source
+207.224.76.204
 
-ucar
+No dice. I think the packets must be getting nat'd on the way out, but the
+return packects aren't getting sent to the right place, so I add:
 
+# iptables -t nat -A PREROUTING -d 207.224.76.204 -j DNAT --to-destination
+10.1.1.107
 
+Still nothing. I think maybe I need some explicit action on my FORWARD
+chain, so I add:
 
+# iptables -t filter -A FORWARD -s 10.1.1.107 -j ACCEPT
+
+And
+
+# iptables -t filter -A FORWARD -d 207.224.76.204 -j ACCEPT
+
+Alas, still no love. So, a plea for help to those more fluent. I know I must
+be missing something obvious.
+
+Thanks!
+
+patrick
 
 
