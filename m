@@ -1,13 +1,12 @@
-From: Bob Balsover <balsover@pacbell.net>
-Subject: RE: netfilter digest, Vol 1 #513 - 12 msgs
-Date: Tue, 07 Jan 2003 17:01:30 -0800
+From: "blkcore" <netfilter@blackcore.net>
+Subject: Re: 2.4.20 - ntfilter (owner) problems
+Date: Tue, 7 Jan 2003 17:26:49 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c2b6b1$7c18c560$0301a8c0@BOBSDESK>
-References: <20030107220901.9462.47110.Mailman@kashyyyk>
+Message-ID: <009701c2b6b5$04580b90$0200a8c0@void>
+References: <006301c2b61f$9f88cfa0$0200a8c0@void> <200301071852.00836.tscherf@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20030107220901.9462.47110.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,77 +19,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+You don't need a -j target to use the owner module, I use it for bandwidth
+byte/counter logging, but heres some output for you to read.
 
-Message: 9
-Date: Tue, 7 Jan 2003 21:13:34 +0100
-From: Harald Welte <laforge@netfilter.org>
-To: Netfilter Development Mailinglist
-<netfilter-devel@lists.netfilter.org>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>,
-	Netfilter Announcement List
-<netfilter-announce@lists.netfilter.org>
-Subject: [ANNOUNCE] New netfilter/iptables patch-o-matic release
-Reply-To: coreteam@netfilter.org
+[root@scsi1 root]# uname -r
+2.4.20-grsec
+[root@scsi1 root]# iptables -I OUTPUT -m owner --uid-owner root -j ACCEPT
+iptables: Target problem
 
+laptop:~# uname -r
+2.4.19
+laptop:~# iptables -I OUTPUT -m owner --uid-owner root
+laptop:~# iptables -I OUTPUT -m owner --uid-owner root -j ACCEPT
+laptop:~#
 
---KMIs29sPfC/9Gbii
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-While patch-o-matic-20030107 is announced on the home page, it is not
-listed on the download page...
-
-
-
-------------------------------------------
-Good news, Everyone! (TM)
-
-The netfilter core team announces a new release of the netfilter
-patch-o-matic suite:
-
-	patch-o-matic-20030107
-
-This release contains the most up-to-date bugfixes and new features
-for=20
-the netfilter/iptables subsystem of the 2.4.x Linux kernel.
-
-The patches are devided into several repositories.  Which ones are to be
-used, depends on how conservative or adventurous the user is ;)
-
-'submitted':
-	Patches which have been submitted for kernel inclusion, most of
-	them have already appeared in 2.4.20.  It's really recommended
-	to always apply those
-
-'pending':
-	Patches currently pending for kernel inclusion.  They will
-	almost certainly appear in the next official kernel release.
-
-'base':
-	New features which are self-contained enough so it's sure they
-	don't clash with each other.  Those are safe in the way that
-they
-	don't harm already existing functionality.  Playing with them
-	might discover one or the other remaining bug... you've been
-	warned.
-
-'extra':
-	New features which might cause other patches from 'extra' to
-	clash with each other.  Most interestingly, you will find here
-	conntrack/nat helpers for H.323, PPTP, talk/ntalk, rsh, tftp,
-	mms and amanda.
+----- Original Message -----
+From: "Thorsten Scherf" <tscherf@web.de>
+To: "blkcore" <netfilter@blackcore.net>; <netfilter@lists.netfilter.org>
+Sent: Tuesday, January 07, 2003 3:19 PM
+Subject: Re: 2.4.20 - ntfilter (owner) problems
 
 
-Read more about the individual patches of this new patch-o-matic release
-at: http://www.netfilter.org/documentation/pomlist/pom-summary.html
+> I recently compiled 2.4.20 with netfilter support, with the owner module
+> (-m owner), and after several attempts of trying to use it (worked for
+> 2.4.18), it gives an error.
+>
+> [root@scsi1 slinksi]# iptables -I OUTPUT -m owner --uid-owner root
+> iptables: Target problem
 
-The new patch-o-matic release including a cryptographic GPG signature
-is available for download at
-
-	http://www.netfilter.org/downloads.html#pom-20030107
+Where is your target?! Is see no one!
 
 
-Enjoy,
-	Harald (for the netfilter core team)
 
 
