@@ -1,13 +1,11 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Firehol DROPping INVALID
-Date: Mon, 07 Jun 2004 10:15:31 -0500
+From: Pieter van Leuven <p.vanleuven@aramiska.net>
+Subject: pptp-natting problems with kernel 2.4.2[56] and patch-o-matic.
+Date: Mon, 7 Jun 2004 17:19:26 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C48693.5070404@pbl.ca>
-References: <20040605201739.GA3481@hindley.uklinux.net> <200406061511.59730.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040607151926.GA3260@vanleuven.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406061511.59730.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,94 +15,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> On Saturday 05 June 2004 9:17 pm, Mark Hindley wrote:
-> 
-> 
->>Hi,
->>
->>I have asked this on the Firehol lists, but got no response. Hope you
->>can help.
-> 
-> 
-> I know nothing about (have never heard of) firehol, however here's my 
-> observation on the rule you've quoted.
-> 
-> 
->>iptables -A OUTPUT -m state --state INVALID -j DROP
->>
->>Although the comment says this is recommended in the Netfilter HOWTO, I
->>cannot find it.
-> 
-> 
-> It seems like a rather strange rule to have, to me.   Why would you expect 
-> your own machine to be generating invalid packets (and therefore go to the 
-> bother of writing a firewall rule to drop them)?
+Hi,
 
-Interesting.  Just last night I installed new Linux-based firewall 
-(Fedora Core 2 bundled iptables, stock Fedora Core 2 build of 
-kernel-2.6.5).  I wrote firewall rules by hand, and observed exactly the 
-same behaviour.
+Currently busy with building a kernel + modules for customers. 
+These customers want to connect from multiple clients to multiple
+pptp-servers. Without the pptp patch-o-matic this works of course
+for one client to one server. 
 
-For the initial config, I used simplified set of rules that put 
-restrictions only on WAN side, LAN was left unrestricted.  The rules 
-looked something like this (recreating from memory) (eth0 is LAN, eth1 
-is WAN):
+After patching the kernel and activating the debug option I got the 
+following output: 
 
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
-#
-#   Anything invalid should be dropped and logged prompto
-#
--A INPUT -m state --state INVALID -j LOG --log-prefix "INVALID INPUT "
--A INPUT -m state --state INVALID -j DROP
--A OUTPUT -m state --state INVALID -j LOG --log-prefix "INVALID OUTPUT "
--A OUTPUT -m state --state INVALID -j DROP
--A FORWARD -m state --state INVALID -j LOG --log-prefix "INVALID FORWARD "
--A FORWARD -m state --state INVALID -j DROP
-#
-#   Allow already established connections
-#
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-#
-#   Local network is unrestricted, as well as local host
-#
--A INPUT -i eth0 -s 192.168.0.0/24 -m state --state NEW -j ACCEPT
--A FORWARD -i eth0 -s 192.168.0.0/24 -m state --state NEW -j ACCEPT
--A OUTPUT -m state --state NEW -j ACCEPT
-#
-#   Log everything else
-#
--A INPUT -j LOG --log-prefix "INPUT "
--A OUTPUT -j LOG --log-prefix "OUTPUT "
--A FORWARD -j LOG --log-prefix "FORWARD "
-*nat
-:PREROUTING ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -o eth1 -s 192.168.0.0/24 -j MASQUERADE
+ip_nat_pptp.c:init: ip_nat_pptp.c: registering NAT helper
+ip_nat_pptp version 1.5 loaded
+ip_conntrack_pptp.c:conntrack_pptp_help: ctinfo = 2, skipping
+ip_nat_pptp.c:tcp_help: entering
+ip_nat_pptp.c:tcp_help: Not touching dir ORIG at hook PREROUTING
+ip_nat_pptp.c:tcp_help: entering
+ip_nat_pptp.c:tcp_help: pptp packet too short
+ip_conntrack_pptp.c:conntrack_pptp_help: RST/FIN received, timeouting GRE
+ip_conntrack_pptp.c:conntrack_pptp_help: no full PPTP header, can't track
+ip_nat_pptp.c:tcp_help: entering
+ip_nat_pptp.c:tcp_help: pptp packet too short
+ip_nat_pptp.c:tcp_help: entering
+ip_nat_pptp.c:tcp_help: Not touching dir REPLY at hook POSTROUTING
 
-After applying these rules, I got bunch of invalid packets in output 
-chain.  When I get back home I can look and post exact logs (and recheck 
-that above rules are exactly what I have on the firewall).  From memory, 
-source IP was firewall LAN interface (192.168.0.f), destination IP was 
-Windows box on LAN (192.168.0.w).  They were ICMP unreachables for 
-packet that originated from Windows box (192.168.0.w) to outside DNS 
-server (142.something), if I remember correctly.
+The pptp tunnel couldn't be setup. (Ended in an error code 789)
 
-I've never seen this before.  I've spent an hour trying to find error or 
-typo, and trying different things, but couldn't get rid of those invalid 
-packets in output chain.
+Can someone indicate what went wrong with setting up with this 
+pptp-session? And how this can be solved?
 
+The relevant used iptables filter rules are:
+
+iptables -A FORWARD -i eth0 -i -m state --state NEW -j ACCEPT
+iptables -A FORWARD -i eth1 -i -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source <PUBLIC-ADDRESS>
+
+(eth0 is interface on the LAN-side, eth1 is the interface on internet side)
+
+Used software:
+   linux-2.4.25 and linux 2.4.26
+   patch-o-matic-ng-20040602 and 20040603
+   iptables-1.2.10-20040602
+
+pptp-client: W2K-professional server
+pptp-server: cisco PIX 501
+
+Regards,
+   Pieter
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Pieter van Leuven - Aramiska, Broadband Reality - Network Service Engineer
+http://www.aramiska.com/, t: +31 (0)499 365 478; m: +31 (0)6 5249 7305
+De Waal 40, P.O. Box 989, 5600 AZ Eindhoven, The Netherlands
+
+
 
