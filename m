@@ -1,11 +1,13 @@
-From: "Vernon A. Fort" <vfort@provident-solutions.com>
-Subject: Access to Internal server via public address
-Date: 10 Dec 2003 13:33:17 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: mangle + TCP Flags
+Date: Wed, 10 Dec 2003 19:38:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071084797.6081.35.camel@cosby>
+Message-ID: <200312101938.29329.Antony@Soft-Solutions.co.uk>
+References: <20031210151934.65780e26.jm.nfilter@laposte.net> <002701c3bf53$62b81d90$0e25fe0a@southpark.ae.poznan.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <002701c3bf53$62b81d90$0e25fe0a@southpark.ae.poznan.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +20,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Anyone,
+On Wednesday 10 December 2003 7:25 pm, Maciej Soltysiak wrote:
 
-  The Problem:  I have an alias public address DNAT'ed to and internal
-address - normal and working
+> [Oops, sorry there for incomplete mail :)]
+> Hi,
+>
+> > I think to something like that:
+> > iptables -t mangle -A INPUT -j TCPFLAG --set-flags FIN,URG
+>
+> There is no such module. It would be possible to do that.
+> If a module like this existed it would be a great way to violate the
+> protocol and cause antisocial behaviour of your tcp stack.
 
-  What i need is to access this server using the PUBLIC address from an
-internal workstation.  What I have:
+There are plenty of ways to do that already - I don't think one more would 
+hurt....   :)
 
-	INTNIC = eth1
-	EXTNIC = eth0
+Enough people think that un-decrementing the TTL field, or DROPping packets 
+without sending back RST or ICMP, is a bad enough violation of the protocol 
+(both of these are easily possible with netfilter as it is).
 
-	INTERNALNET = 192.168.20.0/24
+Antony.
 
-	FIREALLIP = 1.2.3.4
-	DNATADDR = 1.2.3.5
+-- 
+Perfection in design is achieved not when there is nothing left to add, but 
+rather when there is nothing left to take away.
 
-  /sbin/iptables -I FORWARD -p tcp -i eth0 -o eth1 -d 192.168.20.0/24
---dport 22 -j ACCEPT
-  /sbin/iptables -t nat -A PREROUTING -p tcp -d 1.2.3.5 -s !
-192.168.20.0/24 --dport 22 -j DNAT 192.168.20.22:22
+ - Antoine de Saint-Exupery
 
-  I also have a SNAT for masquerading everyting going out
-
-	/sbin/iptables -t nat -A POSTROUTING -s 192.168.20.0/24 -o eth0 -j SNAT
---to-source 1.2.3.4
-
-  I have searched for a solutions longer than I care to admit.  Can
-anyone give me an example on how to allow an internal ip address access
-to another internal address via the DNAT'ed public address.
-
-Vernon Fort
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
