@@ -1,12 +1,13 @@
 From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: questions about chain traversal, new ascii diagram
-Date: Thu, 06 Jan 2005 21:12:12 -0500
-Message-ID: <1105063932.7100.75.camel@localhost>
-References: <BAY101-F23030A22FC86C1A88C1F93DF930@phx.gbl>
+Subject: Re: Guaranteeing bandwidth through netfilter-based router?
+Date: Thu, 06 Jan 2005 21:25:16 -0500
+Message-ID: <1105064717.7100.78.camel@localhost>
+References: <132A17DB-6023-11D9-BC93-000A95CFE5AA@latencyzero.com>
+	<20050106222649.GA26877@acentral.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY101-F23030A22FC86C1A88C1F93DF930@phx.gbl>
+In-Reply-To: <20050106222649.GA26877@acentral.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Curby ." <kirbysdl@hotmail.com>
+To: Gavin Hamill <gdh@acentral.co.uk>
 Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-On Thu, 2005-01-06 at 19:20 +0000, Curby . wrote:
-> ----Original Message Follows----
-> >http://joerg.fruehbrodt.bei.t-online.de/pics/abb3_netfilter_ablaufdiagramm.jpg
-> >
-> >What about the mangle decisions, do you also want to include them :D?
+On Thu, 2005-01-06 at 22:26 +0000, Gavin Hamill wrote:
+> On Thu, Jan 06, 2005 at 12:39:34PM -0800, Rick Mann wrote:
+> > Hi. I have a netfilter-based router set up on Fedora Core 2 that's 
+> > working very well. However, one of the things I run behind it is a VoIP 
+> > box, and sometimes voice quality suffers if other hosts are consuming 
+> > bandwidth.
+> > 
+> > Is there a way to give priority to UDP traffic to/from a particular 
+> > host, without permanently reserving bandwidth for it?
 > 
-> It looks reasonable, but if this is true then the article I mentioned was 
-> wrong.  Perhaps there should be a disclaimer by the link on the netfilter 
-> documentation page?
+> You're on the wrong list :)
 > 
-> Does anyone know the answers to my other questions? Specifically, is it due 
-> to style or technical reasons that people don't filter traffic in 
-> PREROUTING, and instead put the same rules in both FORWARD and INPUT?
+> http://lartc.org/
 > 
-> I think you were probably just being facetious, but I wouldn't mind knowing 
-> when the mangle chains come into play.  If we have to jump to them 
-> explicitly though, then I'll just RTFM. =)
-<snip>
-While it is not a good idea to put filtering rules in the nat table, it
-is very common to put them in the PREROUTING chain of the mangle table.
-In the ISCS network security management project
-(http://iscs.sourceforge.net), we place all the "junk" filters in the
-mangle table.
-
-There are other targets that are only appropriate in the mangle table,
-e.g., marking a packet (particularly useful with 2.6 ipsec traffic) or
-changing TOS.
+> http://lartc.org/wondershaper/
+> 
+> Good luck! :D
+> 
+> Cheers,
+> Gavin.
+> 
+> 
+Not really, there are pertinent elements of netfilter.  Linux will to
+some rudimentary traffic shaping based upon the TOS bits.  One can
+change those in the mangle table.  Set the VoIP packets as best as you
+can identify them with TOS of minimize-delay - John
 -- 
 John A. Sullivan III
 Open Source Development Corporation
 +1 207-985-7880
 jsullivan@opensourcedevel.com
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
 
 
