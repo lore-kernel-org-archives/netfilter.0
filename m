@@ -1,10 +1,11 @@
-From: "David B. Bitton" <david@codenoevil.com>
-Subject: Linksys v. Netfilter
-Date: Sat, 22 Jun 2002 14:04:41 -0400
+From: "Joe de Vera Jr." <jhoedv@we-amuse.com>
+Subject: Re: Iptables Problem on DNS Server
+Date: Sun, 23 Jun 2002 02:26:40 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <042c01c21a17$48128b20$0601030a@codenoevil.com>
+Message-ID: <000601c21a98$162eeb40$6500a8c0@systemsadmin>
+References: <20020622173606.02EE74692@lists.samba.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -18,14 +19,49 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Have any whitepapers been written on the subject of a Linksys Router v. a
-Netfilter implementation?
---
 
-David B. Bitton
-david@codenoevil.com
-www.codenoevil.com
+--__--__--
+Message: 2
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Organization: Software Solutions
+To: <netfilter@lists.samba.org>
+Subject: Re: Iptables Problem on DNS Server
+Date: Sat, 22 Jun 2002 14:39:14 +0100
 
-Code Made Fresh DailyT
+On Sunday 23 June 2002 5:36 am, Joe de Vera Jr. wrote:
+
+> > On Sunday 23 June 2002 5:01 am, Joe de Vera Jr. wrote:
+> > > here's my ruleset in my machine... seen anything wrong or lacking
+here?
+> > > just to remind you guys my problem is that.. when my firewall is
+running
+> > > my DNS don't work... thanks!
+> >
+> > Can we just clarify that last bit ?
+> >
+> > Do you mean that your firewall cannot resolve names by contacting an
+> > external
+> > DNS server, or that you are running DNS on your firewall, and other
+> > machines cannot contact *it* as a DNS server ?
+>
+> yep,, i'm running DNS on that machine also.. an that exactly my client
+> can't resolve from it.. so all the DNS record on that server can't
+function
+> due to this problem.. so i force not to run a firewall for a meantime...
+
+Okay - the answer is simple, then.   You have no rule allowing udp packets
+into the machine on port 53.
+
+
+
+Antony.
+
+
+oic... so now how will i going to add that udp packets allow to my ruleset?
+what parameter that i supposed to put on my iptables command...
+
+thanks in advance...
+
+joe
 
 
