@@ -1,14 +1,14 @@
 From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Fighting back
-Date: Fri, 17 Jan 2003 20:41:32 -0500
+Subject: Re: strange problem.
+Date: Fri, 17 Jan 2003 20:45:02 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301172041.32136.Alistair@nerdnet.ca>
-References: <20030117192237.66443.qmail@web40206.mail.yahoo.com> <002501c2be7f$fad767a0$6301a8c0@VAIO> <1042817187.516.3.camel@ranjeet-linux-1>
+Message-ID: <200301172045.02921.Alistair@nerdnet.ca>
+References: <D98357A0-2A49-11D7-A5F4-0003934AB744@mail.arc.nasa.gov>
 Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1042817187.516.3.camel@ranjeet-linux-1>
+In-Reply-To: <D98357A0-2A49-11D7-A5F4-0003934AB744@mail.arc.nasa.gov>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,135 +19,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ranjeet Shetye <ranjeet.shetye2@zultys.com>, Linux <linux@usermail.com>
-Cc: netfilter@lists.netfilter.org
+To: "Michael P. Ryan" <mryan@mail.arc.nasa.gov>, netfilter@lists.netfilter.org
 
 
-=09I'm inclined to agree with these folks ... I would rather think
-=09that TARPIT would be more to appropos what you would like ...=20
-=09further it would at least make that scan a longish one ...=20
-=09although I suppose that would depend on the scanning software=20
-=09being used..... as well as the true skill level of the scanner.  Keep
-=09in mind that althought there are a lot of script kiddies out there,=20
-=09there are still some folks with more skill than good graces or=20
-=09brains, and they will manage to do something with what ever you
-=09give them ... (Gotta love DROP ... )=20
+
+=09Why would it show as open in netstat? .. .there is no *service*
+=09listening on that port.   The prerouting will simply mangle the
+=09packet so that it gets routed to the destination ... You are not openi=
+ng
+=09a port on the firewall, you are telling the firewall to take packets t=
+hat=20
+=09show up at that port and ip and punt them around the corner ....
 
 =09Alistair
 
 
-On January 17, 2003 10:26 am, Ranjeet Shetye wrote:
-> if a spammer locates 2 people with MIRROR on, and sends spam to A while
-> spoofing's B's address as source, you've got disaster on hand.
+On January 17, 2003 01:31 pm, Michael P. Ryan wrote:
+> Hi,
 >
-> if you really piss off an intelligent spammer (is there such a thing ?)=
-,
-> he/she might set you up by spoofing your IP to N other MIRROR sites,
-> effectively forcing you to execute a DDoS on yourself.
+>   On redhat 7.3 iptables 1.2.5, all needed modules appear to be loaded
+> correctly.
 >
-> Be careful what you wish for :D
+> I have the box setup to nat and that works like a charm, but run into
+> problems when I try to port forward to the internal network. Here is
+> what I run, all pretty text book from what I can tell:
 >
-> Ranjeet.
+> $IPTABLES -P INPUT ACCEPT
+> $IPTABLES -F INPUT
+> $IPTABLES -P OUTPUT ACCEPT
+> $IPTABLES -F OUTPUT
+> $IPTABLES -P FORWARD DROP
+> $IPTABLES -F FORWARD
+> $IPTABLES -t nat -F
 >
-> On Sat, 2003-01-18 at 00:27, Linux wrote:
-> > That's a very good point.
-> >
-> > Hmmm... More thinking needed.
-> >
-> > Linux_303
-> >
-> >
-> > ----- Original Message -----
-> > From: "SBlaze" <dagent.geo@yahoo.com>
-> > To: "Linux" <linux@usermail.com>
-> > Sent: Friday, January 17, 2003 12:22 PM
-> > Subject: Re: Fighting back
-> >
-> > > I think its safe to say we would all like to give a little back to
-> > > those
-> >
-> > who
-> >
-> > > repeatedly bombard us with useless scans... What you want to do can
-> > > "theoretically" be done with the MIRROR jump. Should it be done?
-> > > Probably
-> >
-> > not.
-> >
-> > > Once an attacker learns they are in a sence scaning themselves.... =
-they
-> >
-> > can
-> >
-> > > easily go about some sort of spoofing method in which the SRC IP is=
- a
-> >
-> > target as
-> >
-> > > opposed to himself. You could easily find yourself a man in the mid=
-dle
-> > > of
-> >
-> > a DOS
-> >
-> > > attack against someone.
-> > >
-> > > I wouldn't do this... but hey it's up to you
-> > >
-> > > SBlaze
-> > >
-> > > --- Linux <linux@usermail.com> wrote:
-> > > > Hello all,
-> > > >
-> > > > I feel that rpc and netbois scans to my network from the outside =
-are
-> > > > an obvious attempt to see what I have open, and I'm sure all of y=
-ou
-> > > > would
-> >
-> > agree.
-> >
-> > > >  Because I run NFS only via my internal network, there are no
-> > > > machines
-> >
-> > that
-> >
-> > > > would connect via my external interface.  I am going to institute=
- a
-> > > > rule
-> >
-> > that
-> >
-> > > > will cause a person scanning on ports 32770:32789 and 137 to redi=
-rect
-> >
-> > and
-> >
-> > > > scan the ports on the src IP address.  In essence, anyone scannin=
-g
-> > > > me,
-> >
-> > will
-> >
-> > > > be basically scanning themselves.
-> > > >
-> > > > All I am asking is for some input to this and whether it is a goo=
-d
-> > > > idea
-> >
-> > or
-> >
-> > > > not.
-> > > >
-> > > > Thank you,
-> > > >
-> > > > Linux_303
-> > >
-> > > =3D=3D=3D=3D=3D
-> > > "No touchy NO TOUCHY! Emperor Kuzko -=3DEmperor's New Groove=3D-"
-> > >
-> > > __________________________________________________
-> > > Do you Yahoo!?
-> > > Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-> > > http://mailplus.yahoo.com
+> # Portfw section
+> $IPTABLES -A FORWARD -i eth0 -o eth1 -p tcp --dport 23 -m state --state
+> NEW,ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A PREROUTING -t  nat -p tcp -d my.external.ip --dport 23 -j
+> DNAT --to 192.168.0.6:23
+> #
+>
+>
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG
+> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
 
