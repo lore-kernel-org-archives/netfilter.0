@@ -1,13 +1,10 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Help Required
-Date: Sat, 19 Jul 2003 19:07:22 +1000
+From: "Zeeshan Pervez" <zeeshan.pervez@niit.edu.pk>
+Subject: Help Regarding iptables
+Date: Fri, 18 Jul 2003 19:35:04 +0600 (PKST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDEMKKNJDLAJDPNDPCDDCEBLNFAA.georgev@citadelcomputer.com.au>
-References: <20030717124033.M28975@vfmindia.biz>
+Message-ID: <4759.202.125.153.158.1058535304.squirrel@intranet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030717124033.M28975@vfmindia.biz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +15,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sridhar Murthy <sridhar@vfmindia.biz>, netfilter@lists.netfilter.org
-
-Don't use that GUI then..
-
-Try www.webmin.com as it probably has a better GUI or learn to script it
-yourself.. It's the best way.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Sridhar Murthy
-Sent: Thursday, July 17, 2003 10:47 PM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Help Required
 
+hello there
+sir
+ i have established a virtual network using vmware.
+i want to do packet filtering based on their content . can i achieve this
+by iptables. pls help me in detail steps as i amquite new in linux
 
-Hi all,
-
-I require help in configuring firewall on Redhat 8.0 system my setup
-  is as follows:
-
-
+Regards
+Zeeshan Pervez
+National University of Sciences and Technology (Pakistan)
 
