@@ -1,15 +1,12 @@
-From: Stephen Frost <sfrost@snowman.net>
-Subject: Re: ftp hammer rule help
-Date: Mon, 30 Sep 2002 23:16:22 -0400
+From: "Hanz F." <hanz852@yahoo.com>
+Subject: Re: Block/Accept by MAC Address
+Date: Mon, 30 Sep 2002 23:15:47 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021001031622.GG8948@ns>
-References: <007201c268f5$abec1fd0$6501a8c0@adm2hsmw3cesp7>
+Message-ID: <20021001061547.95787.qmail@web40007.mail.yahoo.com>
+References: <003a01c268ea$d98408a0$e951ea43@W2RZ8L4S02>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5gxpn/Q6ypwruk0T"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <007201c268f5$abec1fd0$6501a8c0@adm2hsmw3cesp7>
+In-Reply-To: <003a01c268ea$d98408a0$e951ea43@W2RZ8L4S02>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,50 +16,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Adam De Paolis <adepaolis@rogers.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jim Gifford <maillist@jg555.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
+
+Your situation is similar to mine, and this is what I
+did :
+
+******************************************
+#eth0 has the IP 192.168.3.133 which is connected 
+#to the internet.
+
+iptables -t nat -P POSTROUTING DROP
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to
+192.168.3.133
 
 
---5gxpn/Q6ypwruk0T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+iptbales -P INPUT DROP
+iptbales -P FORWARD DROP
+iptbales -P OUTPUT ACCEPT
 
-* Adam De Paolis (adepaolis@rogers.com) wrote:
-> I am trying to create a rule which will prevent users from hammering my f=
-tp site when its busy. A rule which say will drop userlogin if their is 3 a=
-ttempts in 1 minute.
->=20
-> I believe the match recent rule is what I need to get working but I don't=
- have it working.  This is what I have so far (thanks to stephen frost, but=
- it doesnt seem to work.=20
->=20
-> The firewall machine is my ftp server, both are on the same computer:
->=20
-> iptables -A FORWARD -m recent --name ftpconn --rcheck --seconds 60 --hitc=
-ount 3 -j DROP
-> iptables -A FORWARD -p tcp -d aa.bb.cc.dd/32 --dport 21 -m recent --name =
-ftpconn --set -j DRO
+#list here all your clients who are allowed to hace
+#access
 
-Can you say what does happen..?  Also, cat /proc/net/ipt_recent/ftpconn
-and see what's there.  It also looks like maybe you have it set up
-incorrectly in the second rule, you want to ACCEPT there until they
-reach the limit which is in the first rule, and then they'll be dropped
-there.
+iptables -A INPUT -p all -s client -m mac --mac-source
+client's mac -j ACCEPT
+iptables -A FORWARD -p all -s client -m mac
+--mac-source client's mac -j ACCEPT
 
-	Stephen
+#then block anyone else
+iptables -A INPUT -p all -s 0/0 -j DROP
+iptables -A FORWARD -p all -s 0/0 -j DROP
 
---5gxpn/Q6ypwruk0T
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+************************************************
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+U can also allow all people and block the buy u want
+but in this case he may change his network card and
+will be able to have access again.
 
-iD8DBQE9mROGrzgMPqB3kigRAg0uAJ9FKszQfWmoCqgVXDRVmInJzHhzkwCfRgq0
-Yv5jaS1zRfq+J0/eCOYdCbY=
-=E8w9
------END PGP SIGNATURE-----
+The problem here (and with every iptables rule) that
+ur clients will not be able to use some internet
+applications like ICQ, IRC,yahoo messenger ,...... and
+that's what I am looking for.
+Some guys here have informed me that it's posiible to
+use IRC and FTP by using related modules, but it seems
+there's no modules to other applications.
 
---5gxpn/Q6ypwruk0T--
+
+
+
+
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
 
