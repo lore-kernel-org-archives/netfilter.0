@@ -1,13 +1,11 @@
-From: "Patrick Ahler" <patrick@vikus.com>
-Subject: RE: passive mode ftp
-Date: Fri, 23 May 2003 08:12:51 -0400
+From: tr-huso <tr-huso@online.no>
+Subject: How to set up
+Date: Fri, 23 May 2003 15:37:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ABEKJILKOKKGGDJKHKDFMEODCBAA.patrick@vikus.com>
-References: <1053684294.1787.6.camel@raylinux.internal>
+Message-ID: <3ECE5AE3@epostleser.online.no>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1053684294.1787.6.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,62 +16,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ray Leach <raymondl@knowledgefactory.co.za>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-http://slacksite.com/other/ftp.html
+Hi group.
 
-Read the article above... about active vs. passive ftp.
+I'm new to this group, so here is my setup:
+A linux box (Red Hat 7.3) that is connected to the www and also works as a 
+router for the rest of the network. It also runs an Apache webserver, and will 
+also run a proftpd ftp-server soon. 
+A Windows XP machine that is used for anything else, connectes to the internet 
+through the linux. Thanks to Samba the windows machine has some network 
+directories on the linux box.
 
-Also, most ftp servers allow you to specify which ports to use for passive
-ftp, that way you would only have to open those.
+Now I want to secure this thing, and I also want to log what's happening on 
+the linux-box.
 
--Patrick
+I've read a few articles on iptables, and read a few newsgroup-posts related 
+to the topic.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Ray Leach
-Sent: Friday, May 23, 2003 6:05 AM
-To: Netfilter Mailing List
-Subject: Re: passive mode ftp
+I've also seen a few scripts that I might use, if someone can point out which 
+one to use, I'm more than happy...
 
+yours,
 
-On Fri, 2003-05-23 at 10:56, Eric Constantineau wrote:
-> Hi !
->
-> I want to be able to use passive ftp under my firewall...
->
-> Right now passive mode does not function because I allow only packets
-> WITH port 21 as a destination OR source.  When in normal mode, packets
-> from the ftp server have 21 for the source port and the packets from the
-> client have 21 for the destination port so it works.  But, entering
-> passive mode, the destination and source ports are not 21, so my
-> firewall blocks.
->
-> Using a ftp client such as leechftp, cuteftp, wsftp is okay, but using
-> the browser (iexplore) does not because it use passive mode.
->
-> I don't want to open too much my ports, it would mean that someone could
-> use those ports to get access to inside networks...  But I want to be
-> able to use passive mode, some users do not want to use ftp client
-> software, or are not even able to install them...
->
-> Is there a specific range of ports that all passive ftp use ?
-No, passive mode uses random ports from 1024 upwards.
-
-You could use a web proxy like squid. You can force squid to always use
-active mode.
-
-Alternatively, you could use the state inspection of iptables and the
-ftp connection tracking module to configure passive ftp.
-
->
-> Thanks for helping me
->
-> Eric
->
->
->
->
+Trond
 
 
 
