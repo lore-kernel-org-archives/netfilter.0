@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPTables counters
-Date: Tue, 9 Jul 2002 15:03:38 +0100
+From: James Sneeringer <james+netfilter@vincentsystems.com>
+Subject: tcp/udp ports (was: Re: HTTP Port forwarding issues)
+Date: Tue, 9 Jul 2002 09:15:22 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207091403.g69E3h809398@vulcan.rissington.net>
-References: <DEFBF1A79446684593DB6374EA131C2D6BDC16@titan.ecitele.com>
+Message-ID: <20020709141522.GA798@valjean.si.ocslink.com>
+References: <40fb01c226c7$5014e810$2901a8c0@amos> <02070911523900.05759@Lms>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <DEFBF1A79446684593DB6374EA131C2D6BDC16@titan.ecitele.com>
+Content-Disposition: inline
+In-Reply-To: <02070911523900.05759@Lms>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,41 +18,22 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-On Tuesday 09 July 2002 2:41 pm, Dotan Lior wrote:
+On Tue, Jul 09, 2002 at 11:52:39AM +0200, Jan Humme wrote:
+| Of course, HTTP runs over TCP, but who can explain why in /etc/services:
+| http		80/tcp		www www-http	# WorldWideWeb HTTP
+| http		80/udp		www www-http	# HyperText Transfer Protocol
 
-> Hello,
->
-> So far it works well, However when I inspect the NAT table with "iptables
-> -L -t nat -v -n -x", the bytes counter shows extremely low values. I've
-> transfer a 200Kb file via FTP on the windows client, but the counter was
-> less than 100 bytes. It seems as if only the first packet of a connection
-> is listed.
+The IANA frequently allocates the same port for both protocols.  Take a
+look at RFC 1700.  You'll see that most services have both TCP and UDP
+ports reserved, even though most probably use only one of them.
 
-That is correct.   Only the first packet goes through the listed NAT rules - 
-the others go directly via the connection tracking table and not through the 
-rules (for efficiency).
+| Ports and port numbers are different for TCP and UDP, right?
 
-> Is there a way to see the real bytes count? Also I would to know the number
-> of bytes that traveled on both ways (from the client and to the client), is
-> that also possible using iptables?
+Correct.  Look at ports 512, 513, and 514 in /etc/services.
 
-Yes, simply look at the filter table (ie the default one) instead of the NAT 
-table.
+-James
 
-*All* packets pass through your filtering rules (that's why you need the 
-rules for ESTABLISHED and RELATED packets), so just use
-
-iptables -L -n -v -x without the -t nat option.
-
-Remember you can create rules without targets if you want to see the 
-packet/byte counters for them without doing anything else:
-
-eg iptables -A FORWARD -i eth0
-iptables -A FORWARD -i eth1
-
- 
-
-Antony.
 
