@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: what do the contents of /proc/net/ip_tables_names mean?
-Date: Thu, 24 Oct 2002 19:30:06 -0400 (EDT)
+From: "Andrew Smith" <nfml@k1k2.com>
+Subject: Re: How to bind 2 WAN 1 LAN ?
+Date: Fri, 25 Oct 2002 09:53:21 +1000 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210241927030.3938-100000@localhost.localdomain>
-References: <20021024211932.XLJJ17202.mta01-svc.ntlworld.com@there>
+Message-ID: <35481.192.168.7.14.1035503601.squirrel@iw.k1k2.com>
+References: <200210240957.g9O9vcL04037@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021024211932.XLJJ17202.mta01-svc.ntlworld.com@there>
+In-Reply-To: <200210240957.g9O9vcL04037@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,46 +17,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-On Thu, 24 Oct 2002, Antony Stone wrote:
-
-> On Thursday 24 October 2002 7:44 pm, Robert P. J. Day wrote:
+> On Thursday 24 October 2002 6:25 am, ?? wrote:
 > 
-> >   in looking through the system script for iptables under red hat 8.0,
-> > i notice the occasional reference to the file
-> > /proc/net/ip_tables_names, which contains, one per line, the names
-> > of one of more of the possible netfilter tables (filter, nat
-> > and/or mangle).
-> >
-> >   what does it mean for a table to have its name in this file?
+>> Dear all...
+>>
+>> I'm a Chinese and I don't think that my English is well .
 > 
-> It means that this particular netfilter system supports rules in those tables.
+> Don't worry.   I'm sure it will get better :-)
 > 
-> If you compile netfilter without mangle table support and then try to add 
-> rules to the mangle table, you will get errors.
+>> I have a Linux server (Turbo Linux7.0 in kernel 2.4.9-3) to be my NAT
+>> server .
+>> I have make it running iptables-1.2.2-6 .
+>> It have 3 NIC(Network interface Card) eth0.eth1.eth2 .
+>> I have 1 LAN and 2 WAN interface they are 192.168.1.0/255.255.255.0
+>> and 2 ADSL (one of my ADSL is pppoe another one is static IP) .
+>> Now I want to bind thy all in my NAT server .
+>> I rty to cut my LAN to 4 part are 192.168.1.0/255.255.255.192 &
+>> 192.168.1.64/255.255.255.192 & 192.168.1.128/255.255.255.192 &
+>> 192.168.1.192/255.255.255.192 .
+>>
+>> That I wish the preceding 3 part go out and in with the pppoe ADSL
+>> (ppp0) and the final part go through with static IP(because they are
+>> my servers) .
 > 
-> By reading this file you can find out which tables are supported on a given 
-> machine.
+> You need to use iproute2 to set up source-based policy routing.
+> 
+> Netfilter will not change the routing of your packets for you,
+> therefore it  will not help you do what you want.
+> 
+> Iproute2 will let you set up a more complicated routing table than the 
+> standard 'route' command, and then netfilter will happily process the
+> packets  as they go through.
+> 
+> Antony.
 
-not quite.  as i see it, that a table name is in that file means nothing
-more than that it's currently being *required* by your rule set.  in
-my case, when i looked, all that was in there was "filter".  but i
-did a quick modprobe and added the module for nat, and suddenly nat
-was in that file as well. 
+Actually, it depends on the ISPs or who supplies the WANs
+If there is no egress filtering on one or both of the WAN connections
+then you do not NEED to use iproute2 you can just route all outgoing
+data out one of the connections.
 
-so, if all your table support is modular, it looks like that file
-will represent just those modules that had to be loaded for your
-rule set.  if you're not mangling, it won't show mangle since that
-module never needed to be loaded.
+e.g. I have 2 ADSL ISPs (one DHCP and one static) but I route all my
+traffic out of only one of them (DHCP at the moment) since my ISP's do
+not do any egress filtering
 
-what i *don't* know is what that file will show if your table 
-support is compiled directly into the kernel.  and that's what
-i'm asking here.  anyone know?
+typical in Australia to NOT have egress filtering
+typical in USA to HAVE egress filtering
 
-rday
+egress filtering - use google to look it up
+basically: only allow source IP's to match the IP addresses supplied
+ in the connection - drop all outgoing traffic that doesn't have the
+ expected source IP addresses
+
+-- 
+-Cheers
+-Andrew
+
+MS ... if only he hadn't been hang gliding!
 
 
