@@ -1,11 +1,14 @@
-From: gypsy <gypsy@iswest.com>
-Subject: Asking again: string match fails to find anything
-Date: Tue, 20 Jul 2004 06:56:52 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: FAQ 3.13, but on the same box
+Date: Tue, 20 Jul 2004 14:55:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40FD24A4.CD697B16@iswest.com>
+Message-ID: <200407201455.30326.Antony@Soft-Solutions.co.uk>
+References: <20040718173200.GC718@always.joy.eth.net> <200407191056.54823.Antony@Soft-Solutions.co.uk> <20040720134219.GK676@always.joy.eth.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040720134219.GK676@always.joy.eth.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +19,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Facts:
-iptables 1.2.9 built against kernel v 2.4.25 or .26 depending on which
-computer.
-kernel 2.4.26
-os fingerprinting only works on the internal interface,  not eth1.
-"tcpdump -n -i eth1 -w /tmp/dump" clearly shows the text I am attempting
-to match.
-I have a test bed with very little traffic so that using a string match
-will not bog down.
-Repeats on 3 different computers all running Slackware 9.1.
-Several other POM / POM-NG modules are installed.
-When I "make modules", the only issue with ipt_string is:
-in function `search_sublinear':
-:55: warning: subscript has type `char'
-:80: warning: subscript has type `char'
-(referring to needle and haystack)
+On Tuesday 20 July 2004 2:42 pm, Joshua N Pritikin wrote:
 
-Problem:
-No matter what text is in $STRING, iptables fails to see the match.
+> This solution seems to work (below).  I wonder if this should be added
+> to the various FAQs?  ;-)
 
-iptables -I INPUT -m string --string $STRING -j LOG
+That's a good idea.   The reason it's not in the FAQs already is probably 
+because there was no owner match in netfilter when the FAQs were written...
 
-"iptables -nvL | grep STRING" has zeros in the counters.
+Regards,
 
-Example:
-Replace $STRING with "oreilly".  From a remote computer run "lynx
-http://myurl/oreilly" and variants until at least 30 pages have been
-displayed to be certain that at least one packet is not so fragmented
-that "oreilly" isn't there (see also Facts above).  On the "myurl"
-computer iptables counters are zero.
+Antony.
 
-QUESTION:
-How can I find out why the string match fails to find the intended
-text?  (Later on I may ask how to fix that...)
+-- 
+Your work is both good and original.  Unfortunately the parts that are good 
+aren't original, and the parts that are original aren't good.
 
-gypsy
+ - Samuel Johnson
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
