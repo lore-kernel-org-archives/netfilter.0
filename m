@@ -1,12 +1,13 @@
-From: Henrik Nordstrom <hno@marasystems.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: more about martians
-Date: Thu, 22 Apr 2004 09:54:31 +0200 (CEST)
+Date: Thu, 22 Apr 2004 10:35:36 +0200
 Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0404220943170.1524-100000@filer.marasystems.com>
-References: <20040422033242.86850.qmail@web40706.mail.yahoo.com>
+Message-ID: <1082622936.1826.7.camel@anduril.intranet.cartel-securite.net>
+References: <Pine.LNX.4.44.0404220943170.1524-100000@filer.marasystems.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20040422033242.86850.qmail@web40706.mail.yahoo.com>
+In-Reply-To: <Pine.LNX.4.44.0404220943170.1524-100000@filer.marasystems.com>
 Errors-To: netfilter-devel-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter-devel@lists.netfilter.org>
@@ -16,52 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: udo <udovdh@yahoo.com>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: udo <udovdh@yahoo.com>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-On Wed, 21 Apr 2004, udo wrote:
+Le jeu 22/04/2004 =E0 09:54, Henrik Nordstrom a =E9crit :
+> Or simply run SSH on port 2222, nat to this port and firewall any direc=
+t=20
+> access to port 2222 with a "-j REJECT --reject-with tcp-reset" to make =
+it=20
+> look like port 2222 is not used.
 
-> I only want to offer ssh to the outside world (lan and
-> wan) on port 22 while still being able to run sshd at
-> non-root privs.
-> Say port 2222 for non-root reasons but port 2222 must
-> not interfere and best not be visible to the outside
-> world.
+And REDIRECT ?
 
-Then set up a private IP alias (on the lo interface if you like, does not
-matter), firewall all access to that IP just in case and NAT the SSH
-sessions to this IP, not 127.X.
-
-Or simply run SSH on port 2222, nat to this port and firewall any direct 
-access to port 2222 with a "-j REJECT --reject-with tcp-reset" to make it 
-look like port 2222 is not used.
-
-> > The loopback addresses (127.X/8) are handled very
-> > special.
-> 
-> I found out.
-> Why?
-
-Because it is considered a security violation if these is accessed from 
-outside the box.
-
-> It's just another interface.
-
-lo is just another interface, and you can give any IP addresses to it.
-
-127.X is not just another IP. It is the loopback IP address range defined 
-by IP as not reachable outside the box. And when you ask iptables to NAT 
-sessions to this IP you make the TCP/IP stack very upset thinking that 
-someone is trying to abuse your server. As iptables runs outside of the 
-TCP/IP stack it looks to your TCP/IP stack as if the sending station did 
-attempt to send packets addressed to 127.0.0.1.
-
-It is not lo that is hidden from the outside world, it is the 127.X IP 
-addresses.
-
-Regards
-Henrik
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
