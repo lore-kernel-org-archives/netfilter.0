@@ -1,13 +1,11 @@
-From: Chris Straessle <sacrelege@swissonline.ch>
-Subject: Re: Problemas with ULOG
-Date: Thu, 21 Nov 2002 23:47:37 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: Best way to put a quota on masquaraded connections.
+Date: Thu, 21 Nov 2002 15:49:57 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DDD6289.9090905@swissonline.ch>
-References: <NEBBKLENIBMGHGCLGBPIGEPBCCAA.security@e-gim.es>
+Message-ID: <000401c291b8$b3276a70$6601a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NEBBKLENIBMGHGCLGBPIGEPBCCAA.security@e-gim.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: E-GIM Security <security@e-gim.es>
-Cc: netfilter@lists.netfilter.org
-
-E-GIM Security wrote:
-> 	Hi,
-
-hi,
-
-> 	 If I try use ULOG target, for example: iptables -A INPUT -s 192.168.0=
-=2E1 -p
-> tcp -j ULOG --log-prfix "test", the command fails and say "Bad argumen
-> 'test'". Why? What it not work?
-
-hmm.. i think this is a typo. replace --log-prfix
-                                 with  --ulog-prefix.
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-> 	Thanks
 
-i hope it works now.
 
->=20
-> Jos=E9 Antonio Garc=EDa Garc=EDa
-> Jefe Departamento Desarrollo
->=20
-> GIM - IT Deusto	+34 952700010
-> 	+34 952700670
-> C/ Merecillas, 54. Bajo	+34 952702928
-> 29200 Antequera (M=E1laga)* security@e-gim.es
-> ESPA=D1A		http://www.e-gim.es
->=20
+I have a linux Firewall, with about 20 Masq clients. I'm noticing that
+between streaming audio/video and ftp downloads users are maxing out the
+connection 500K T1. I would like to put a 128K limit per connection (
+I'm assuming only 4 concorrent connections) with a total of 10
+connections at a time. To add to that list I'm also hosting a website
+for which I would like to reserve 128K. So in short I would like to 1.)
+prioritize my connections a.webserver b. e-mail trnasmitions
+c.web/ftp/streaming
+How do I even start .
 
-bye,
-chris
-
---=20
------------------------------------------------------------------------
-Chris Straessle			  http://raptor.homeunix.net/
-Alias: sacrelege		  email: sacrelege@swissonline.ch
------------------------------------------------------------------------
+ 
+Rowan Reid
+Job Captain, 
+Systems Administrator
+STUDIO 3 ARCHITECTS
+909  982  1717
 
 
