@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: NAT doesn't work (only a fraction of the forwarded packets
-	reach the postrouting chain)
-Date: Sun, 13 Mar 2005 15:16:35 -0500
-Message-ID: <1110744995.16492.6.camel@hubcap.ljm.dom>
-References: <Pine.GSO.4.62.0503131105020.8331@shaka.acc.umu.se>
+From: Jeff Simmons <jsimmons@goblin.punk.net>
+Subject: Questions on state
+Date: Sun, 13 Mar 2005 16:23:42 -0800
+Message-ID: <200503131623.42711.jsimmons@goblin.punk.net>
+Reply-To: jsimmons@goblin.punk.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <Pine.GSO.4.62.0503131105020.8331@shaka.acc.umu.se>
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,45 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 2005-03-13 at 05:11, M=C3=A5rten Segerkvist wrote:
-> I tried to log the packets reaching POSTROUTING with
->=20
-> > iptables -t nat -A POSTROUTING -j log
->=20
-> but none of them showed up in the syslog; that's a minor? problem thoug=
-h.
+Sorry to bother anyone, but I'm new to iptables, and I'm debugging a working 
+production machine, so I can't really test things too much. :-(
 
-fixating on what does/doesn't get logged in NAT POSTROUTING is
-counter-productive to the task at hand.  if you wish to log POSTROUTING
-packets for the purposes of troubleshooting, please do it in MANGLE:
+Is a connection ONLY added to the state table when the first packet matches a 
+rule that contains the --state NEW directive, or can it happen in some other 
+way?
 
-  iptables -t mangle -A POSTROUTING -j LOG --log-prefix "POSTROUTED: "
+When --state INVALID is matched, is it done only on the source and destination 
+addresses and ports, or is something else also involved?
 
-> I'd be most grateful for any suggestions!
+Are NAT 'states' available for examination anywhere, like 
+/proc/net/ip_conntrack?
 
-the wire never lies:
+Thanks for any assistance.
 
-run:
-  tcpdump -n -nn -p -i wlan0 icmp
+-- 
+Jeff Simmons                                   jsimmons@goblin.punk.net
+     Simmons Consulting - Network Engineering, Administration, Security
 
-and ping something.
-
-run:
-  tcpdump -n -nn -p -i eth0 icmp
-
-and ping something.
-
-from looking at the counters, it looks like the packets are making it
-out of the gateway, but not making it back to it for whatever reason...
-
--j
-
---
-"Dear Mr. President, there are too many states nowadays, please
- eliminate three. I am not a crackpot."
-	--The Simpsons
-
+"You guys, I don't hear any noise. Are you sure you're doing it right?"
+	-- My Life With The Thrill Kill Kult
 
