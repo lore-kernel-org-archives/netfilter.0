@@ -1,13 +1,14 @@
-From: "George Gao" <ggao@nortelnetworks.com>
-Subject: How to differentiate packets generated locally or received from t
-	he network using the NF_IP_PRE_ROUTING filter
-Date: Mon, 5 Apr 2004 15:02:03 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: rules don't work!
+Date: Tue, 6 Apr 2004 00:26:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2F1FC1DEA077D5119FAD00508BCFD6D20BBB0110@zsc3c030.us.nortel.com>
+Message-ID: <200404060026.40046.Antony@Soft-Solutions.co.uk>
+References: <40720D9A.6030001@tin.it>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C41B59.A0951C64"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40720D9A.6030001@tin.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +18,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Tuesday 06 April 2004 2:53 am, Gianni Pucciani wrote:
 
-------_=_NextPart_001_01C41B59.A0951C64
-Content-Type: text/plain
+> Hi all,
+> I'm new to the use of iptable. I set this script for my home
+> workstation, but when I apply these rules anything stop functioning.
+> Can anyone give me some help?
 
-Hi there,
-     I'm working on the sample Netfilter driver to put something together
-for a prototype. I ran into a problem which I wish you can help me out. When
-I set my input filter hook number to NF_IP_PRE_ROUTING, I saw local
-generated IP multicast/Broadcast packets and inbound packets from network.
-Is there any way to differentiate a local IP Multicast or IP brocast from an
-inbound mal-formed packet with the exact same content? Thanks much in
-advance!
-Cheers!
-George 
+Please correct the clock on your PC, and wait a little while for a reply 
+before posting the same (long) question twice.
 
-------_=_NextPart_001_01C41B59.A0951C64
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+Thanks.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2656.31">
-<TITLE>How to differentiate packets generated locally or received from =
-the network using the NF_IP_PRE_ROUTING filter</TITLE>
-</HEAD>
-<BODY>
+Antony.
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi there,</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp; I'm working =
-on the sample Netfilter driver to put something together for a =
-prototype. I ran into a problem which I wish you can help me out. When =
-I set my input filter hook number to NF_IP_PRE_ROUTING, I saw local =
-generated IP multicast/Broadcast packets and inbound packets from =
-network. Is there any way to differentiate a local IP Multicast or IP =
-brocast from an inbound mal-formed packet with the exact same content? =
-Thanks much in advance!</FONT></P>
+-- 
+The lottery is a tax for people who can't do maths.
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Cheers!</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">George </FONT>
-</P>
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C41B59.A0951C64--
 
