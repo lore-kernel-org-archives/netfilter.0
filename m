@@ -1,16 +1,11 @@
-From: Michael Gale <mgale@utilitran.com>
-Subject: Re: Can I have DES / 3 DES VPN with IPtables Kernal kernel version
- 2. 4.20 with IPSEC installed
-Date: Thu, 18 Dec 2003 08:17:16 -0700
+From: <linuxmail@ntlworld.com>
+Subject: Issues route advanced routing + masq in  2.6
+Date: Thu, 18 Dec 2003 16:40:18 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031218081716.237df907.mgale@utilitran.com>
-References: <A44765C986F8D411995B00B0D0795F4B1E9A1B17@hhtnt002>
-	<1071759272.1883.4.camel@jasiiitosh.nexusmgmt.com>
-	<20031218081126.7719e90c.mgale@utilitran.com>
+Message-ID: <20031218164037.LEZJ19387.mta05-svc.ntlworld.com@[10.137.100.64]>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031218081126.7719e90c.mgale@utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,61 +18,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I've been running my current network configuration for over a year on the 2.4.xx kernels without any issue. I've recently been using 2.6.0-test11 and without any configuration changes I'm having issues with advanced routing combined with masquerading.
 
-Sorry my mistake only DES has been proven to be crackable. At this moment no one has officially cracked 3DES.
+To reproduce the problem here is a simplified breakdown of my configuration.
 
-Michael.
+eth0 : Internal Network
+eth1 : ADSL modem
+eth2 : Cable modem
 
+The default route for all traffic is the ADSL modem but certain protocols/machines route across the cable modem. The cable modem only has a single publish IP (bound to eth1) and, therefore, it is necessary to NAT.
 
-On Thu, 18 Dec 2003 08:11:26 -0700
-Michael Gale <mgale@utilitran.com> wrote:
+So....
 
-> Hello,
-> 
-> 	You should seriously consider Super FreeS/Wan ... it supports more then DES and 3DES which are out dated and I believe it has been proven. 
-> 
-> Michael.
-> 
-> 
-> 
-> On Thu, 18 Dec 2003 09:54:32 -0500
-> "John A. Sullivan III" <john.sullivan@nexusmgmt.com> wrote:
-> 
-> > On Thu, 2003-12-18 at 07:58, Laxmi_Narsaiah wrote:
-> > > Hi,
-> > > 
-> > > Can I have DES / 3 DES VPN with IPtables Kernal kernel version 2.4.20
-> > > with IPSEC installed, please let me know.
-> > > 
-> > <snip>
-> > 	We do this all the time with FreeS/WAN.  In fact, we are developing a
-> > GUI front end to managed combined firewall and VPN security for large,
-> > complex implementations.  You can find training slide shows on using
-> > iptables, FreeS/WAN, iproute2 and DHCP at http://iscs.sourceforge.net -
-> > Good luck
-> > -- 
-> > John A. Sullivan III
-> > Chief Technology Officer
-> > Nexus Management
-> > +1 207-985-7880
-> > john.sullivan@nexusmgmt.com
-> > ---
-> > If you are interested in helping to develop a GPL enterprise class
-> > VPN/Firewall/Security device management console, please visit
-> > http://iscs.sourceforge.net 
-> > 
-> > 
-> 
-> 
-> -- 
-> Michael Gale
-> Network Administrator
-> Utilitran Corporation
-> 
+iptables -A POSTROUTING -s internal_pc_ip -d ! LOCALNET -o eth1 -t nat -j MASQUERADE
+
+ip rule add from internal_pc_ip table cm prio 1000
+
+ip route add default via eth1_ip dev eth1 table cm
+
+----
+
+This works fine on the 2.4.22 kernel but in 2.6 traffic destined for the cable modem generates a "MASQUERADE: Route sent us somewhere else." error.
+
+Apologies if I've missed something but any held in diagnosing the problem would be appreciated.
+
+Steve.
+
+-----------------------------------------
+Email provided by http://www.ntlhome.com/
 
 
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
