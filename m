@@ -1,14 +1,14 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: newbie question
-Date: Thu, 8 Apr 2004 08:32:58 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: LOG one particular IP traffic
+Date: Thu, 8 Apr 2004 13:36:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404080832.58198.JALaramie@Loudoun-Fairfax.com>
-References: <004601c41d60$9bf1af70$aa47aacb@hacker> <200404081302.49038.Antony@Soft-Solutions.co.uk>
+Message-ID: <200404081336.00759.Antony@Soft-Solutions.co.uk>
+References: <002d01c41d58$16614ee0$da0da8c0@pisic>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404081302.49038.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <002d01c41d58$16614ee0$da0da8c0@pisic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,15 +21,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hey Antony,
+On Thursday 08 April 2004 11:55 am, Danila Octavian wrote:
 
-I just wanted to take a minute to say 'Thanks' for all the time you put in 
-answering questions on this list. You probably help 10-15 people a day and 
-while many thank you for your help, I want to say thanks for those of us who 
-just listen in. I know that at least once a week I read one of your postings 
-and think 'hmmm, I didn't know that'. Those postings get printed and added to 
-my netfilter reference folder. You are a valuable asset to the list and I 
-appreciate your effort. Thanks from all of us.
+> Hello,
+>
+> This is my first post to the list after many months, but i'm running out of
+> time with my problem.
 
-Jeff
+It's your second posting.
+
+Try the suggestion I made in response to your first question and let us know 
+if there are any problems.
+
+http://lists.netfilter.org/pipermail/netfilter/2004-April/051883.html
+
+Regards,
+
+Antony.
+
+-- 
+I don't know, maybe if we all waited then cosmic rays would write all our 
+software for us. Of course it might take a while.
+
+ - Ron Minnich, Los Alamos National Laboratory
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
