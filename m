@@ -1,11 +1,14 @@
-From: "IT Clown" <iptables@mailbox.co.za>
-Subject: client on local network
-Date: Sun, 28 Mar 2004 10:31:01 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: client on local network
+Date: Sun, 28 Mar 2004 09:48:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <web-269277793@mail01.infosat.net>
+Message-ID: <200403280948.45991.Antony@Soft-Solutions.co.uk>
+References: <web-269277793@mail01.infosat.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <web-269277793@mail01.infosat.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +21,58 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+On Sunday 28 March 2004 9:31 am, IT Clown wrote:
 
-i have setup a local network users iptables as follow to
-access webpages:
+> Hi
+>
+> i have setup a local network users iptables as follow to
+> access webpages:
+>
+> :INPUT DROP [0:0]
+>
+> -A INPUT -i eth0 -p tcp -m multiport --sport 80,8080 -j ACCEPT
 
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
--A INPUT -i lo -j ACCEPT
--A OUTPUT -o lo -j ACCEPT
--A INPUT -i eth0 -p tcp -m multiport --sport 80,8080 -j
-ACCEPT
--A INPUT -i eth0 -p tcp --sport 53 -j ACCEPT
--A OUTPUT -o eth0 -p tcp -m multiport --dport 80,8080 -j
-ACCEPT
--A OUTPUT -o eth0 -p udp --dport 53 -j ACCEPT
-COMMIT
+Let's just look at the above two rules I have extracted from your ruleset.
 
-I would like to know the way i set it up is it correct or
-is there a better way.The client can browse.
+The first says "default policy is to drop all incoming packets" (good idea).
 
-What i dont really understand is the sport and the dport.
-When i say: -A INPUT -i eth0 -p tcp -m multiport --sport
-80,8080 -j ACCEPT. Does that mean any ip external and port
-80,8080 from external?
+The second says "accept all TCP packets coming in through eth0 from any 
+address to any service providing the source port is 80 or 8080" (not such a 
+good idea).
 
--A OUTPUT -o eth0 -p tcp -m multiport --dport 80,8080 -j
-ACCEPT. The output and dport is that arguemant for the
-network client to go out onto port 80,8080?
+This will allow anything to connect to anything it can find (or run a port 
+scan etc) so long as the remote system uses source port 80 or 8080.
 
-The rules i have here i did with trile and error.
+> I would like to know the way i set it up is it correct or is there a better
+> way.The client can browse.
 
-Regards
-__________________________________________________________________________
-http://www.webmail.co.za/dialup Webmail ISP - Cool Connection, Cool Price
+I really would recommend you do what was suggested to you on Friday by David 
+Cannings:
+
+> There are three things I would suggest.  The first is reading two
+> tutorials on http://www.netfilter.org/documentation/index.html -
+> specifically the "packet filtering HOWTO" and the "NAT HOWTO".
+>
+> The second is Oskar's excellent iptables tutorial, at
+> http://iptables-tutorial.frozentux.net/iptables-tutorial.html.
+>
+> The third is taking a while to work out what ports the services you
+> mention work on.  A basic feel for how TCP/IP connections work would help
+> too.  The knowledge that in most cases a client chooses a port >1024 and
+> connects to the service port should suffice.  People on the list could
+> easily list the ports you need to allow or deny but you'll learn a
+> tremendous amount by spending 10 minutes working it out.
+
+Regards,
+
+Antony.
+
+-- 
+The first fifty percent of an engineering project takes ninety percent of the 
+time, and the remaining fifty percent takes another ninety percent of the 
+time.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
