@@ -1,9 +1,7 @@
-From: "Marius Mertens" <marius.mertens@gmx.de>
-Subject: Re: Packets that should have been DNATted appearing in INPUT table
-Date: Thu, 6 Jan 2005 17:49:04 +0100
-Message-ID: <008001c4f40f$a6fde380$4206a8c0@loki>
-References: <000901c4f350$7b3d1370$4206a8c0@loki>
-	<20050106155557.GA28339@bender.817west.com>
+From: Patrich =?ISO-8859-1?Q?Bj=F6rklund?= <patrich@as8-6-1.pe.g.bonet.se>
+Subject: Re: bandwidth monitoring
+Date: Fri, 07 Jan 2005 06:48:42 +0100
+Message-ID: <1105076924.29832.3.camel@vhost.sourceforge.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,48 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday, January 06, 2005 4:55 PM,
-Jason Opperisano wrote:
+Hi, there. I dont really know if you just wanna know what ips gets
+to/through your interfaces? I have a prog called tcpick. It show like
+this:
 
-> does your DNAT work or not?
+root # tcpick -i eth0 -C
+Starting tcpick 0.1.19
+tcpick: listening on eth0
+SYN-SENT       192.168.0.2:45190 > 217.215.148.17:pop3
+SYN-RECEIVED   192.168.0.2:45190 > 217.215.148.17:pop3
+ESTABLISHED    192.168.0.2:45190 > 217.215.148.17:pop3
+FIN-WAIT-1     192.168.0.2:45190 > 217.215.148.17:pop3
+FIN-WAIT-2     192.168.0.2:45190 > 217.215.148.17:pop3
 
-Thats what I find most weird: For about 95% of the packets it indeed does 
-work, but some of the packets seem to be ignored by the DNAT rule added to 
-PREROUTING. The relevant parts of iptables' rules list output are:
+>Hello
+>
+>Does somebody know a program for monitoring bandwidth by ip? I have
+>one 
+>internet interface and I must monitor many ips adresses on this
+>interface. I 
+>tried Ipac-ng and, I worked a lot to do this config but it seems not
+>working 
+>this way.
+>
+>thanx
 
-Chain INPUT (policy ACCEPT 1 packets, 40 bytes)
- pkts bytes target     prot opt in     out     source 
-destination
-  178 17537 ACCEPT     all  --  lo     any     anywhere             anywhere
- 1012 63664 DROP       tcp  --  ppp0   any     anywhere             anywhere 
-tcp dpt:4664
-[...]
 
-and
 
-Chain PREROUTING (policy ACCEPT 333K packets, 17M bytes)
- pkts bytes target     prot opt in     out     source 
-destination
-26615 1336K DNAT       tcp  --  ppp0   any     anywhere             anywhere 
-tcp dpt:4664 to:192.168.6.10
-[...]
+------------------------------
 
-So from the users point of view I would not have even noticed it, as 
-applications work as expected. So the user would say, my DNAT does work. But 
-looking at the packet counters I would like to understand what is happening, 
-because my aim was to have every single packet going to specific ports being 
-redirected to another box. As already mentioned, I believe the packet 
-counter of the above drop rule should be zero, because all packets matching 
-this rule should already have matched DNAT in PREROUTING and therefore never 
-enter INPUT. From that point of view (at least for some packets) I have to 
-say, that DNAT does not work.
-
-If there is more information I can provide to narrow down the problem, 
-please let me know. And thanks again for your help,
-
-Marius 
 
 
