@@ -1,13 +1,14 @@
-From: "Joe Patterson" <jpatterson@asgardgroup.com>
-Subject: RE: eth0, eth1, eth2 ??
-Date: Sun, 30 Jun 2002 00:11:54 -0400
+From: Jack Bowling <jbinpg@shaw.ca>
+Subject: Re: simple, but not for me.
+Date: Sat, 29 Jun 2002 22:25:42 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NJEFLNJDIFFNMHDEBKMJMEJGDOAA.jpatterson@asgardgroup.com>
-References: <20020629152209.RMMB4119.mta06-svc.ntlworld.com@there>
+Message-ID: <0GYI00CJJ72YLS@l-daemon>
+References: <00a701c21feb$30bea010$0200a8c0@SILVERBEAST>
+Reply-To: Jack Bowling <jbinpg@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020629152209.RMMB4119.mta06-svc.ntlworld.com@there>
+In-Reply-To: <00a701c21feb$30bea010$0200a8c0@SILVERBEAST>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,74 +18,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, iptables <netfilter@lists.samba.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-or they other way is to use the most excellent mii-tool.
+** Reply to message from outspoken <outspoken@gru.net> on Sun, 30 Jun 2002 00:04:09 -0400
 
-run `mii-tool -w`, and then start plugging and unplugging cables.  You will
-find it most informative.  :)
 
--Joe
+> ok, ill lay out a simple plan of what i need done. of course ive tried a lot of the options listed in this listeserv, and cant seem to get them working properly. also read some howtos and other various things but just came seem to get things working. there was one post that i thought was going to be helpful recently, but all they talked about was how its a security risk and they should really look into a dmz. well i cant right now since i don't have another ethernet card so please someone post simple iptables examples for me to use. =)
+> 
+> 
+> i have a machine = 192.168.0.8 which is behind the firewall = 192.168.0.1
+> what i need to do is have 192.168.0.8 be visible to the public for web serving, ssh, mysql.
+> that is all.
+> 
+> my nat setup currently works fine with 3 machines behind the firewall.
+> 
+> modules loaded:
+<snip>
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
-> Sent: Saturday, June 29, 2002 11:22 AM
-> To: iptables
-> Subject: Re: eth0, eth1, eth2 ??
->
->
-> On Saturday 29 June 2002 7:21 pm, Tim wrote:
->
-> > Hi everyone,
-> >
-> > On my firewall box, as mentioned previously, I have
-> > three NICs. On PCI slot 1: video card; PCI slot 2: 1st NIC; PCI
-> slot 3: 2nd
-> > NIC; PCI slot 4: 3rd NIC. Now, eth0 would be the 1st NIC  on slot 2 ? Is
-> > this correct ? I need to confirm this in order to know which
-> NIC Iam going
-> > to plug into on the firewall box from the router [location of
-> eth0, eth1,
-> > eth2], the LAN, and the DMZ and also write rules for the
-> different chains.
->
-> You'll have to plug in some cables and find out :-)
->
-> The order in which your NICs get allocated as eth0, eth1, eth2
-> depends mainly
-> on what chipset they are (the kernel will initialise chipsets in
-> a certain
-> order, so if your NICs have different chipsets this is what will
-> determine
-> which gets called eth0, which eth1 etc), alternatively on what
-> order you load
-> modular drivers (if that's the way you compiled your kernel), but it also
-> depends signiicantly on your motherboard / Bios - generally you
-> will find the
-> NICs get initialised in order from one end of the PCI bus towards
-> the other
-> (but until you try, you don't know which end it starts from), but
-> even this
-> sensible sequencing is not actually guaranteed.
->
-> I suggest the way to do it is to allocate an address in your LAN range to
-> eth0, and an address in your DMZ range to eth1, ping something on
-> your LAN
-> from the firewall, and then just plug each of the three NICs into
-> your LAN
-> switch in turn.   Once you've worked out which is eth0, do the
-> same thing for
-> eth1 (this will almost certainly be the NIC in the middle), and
-> then you know
-> the other one is eth2.
->
->
->
-> Antony.
->
->
->
+Just an aside - we are not likely to be much help unless you post your whole ruleset. We do not know your default chain policies for one which will determine a lot.
 
+jb
 
