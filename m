@@ -1,8 +1,8 @@
-From: "Ji Zhang" <jz105@ohm.york.ac.uk>
+From: "Jee J.Z." <jz105@york.ac.uk>
 Subject: continuity of nat after nat rules deleted
-Date: Tue, 13 Apr 2004 14:53:31 +0100
+Date: Tue, 13 Apr 2004 14:54:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b601c4215e$b4ca8470$68892090@grouse>
+Message-ID: <00d001c4215e$de0ec990$68892090@grouse>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,6 +17,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
 
 Hi all,
 
