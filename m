@@ -1,11 +1,13 @@
 From: Christian Seberino <seberino@spawar.navy.mil>
-Subject: iptables -F & iptables -X good enough *for all* tables/chains?
-Date: Mon, 24 Jun 2002 11:41:08 -0700
+Subject: Default DROP policy for mangle and nat in iptables necessary/wise?
+Date: Mon, 24 Jun 2002 11:45:15 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020624114108.A3305@spawar.navy.mil>
+Message-ID: <20020624114515.A3324@spawar.navy.mil>
+References: <20020624114108.A3305@spawar.navy.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
+In-Reply-To: <20020624114108.A3305@spawar.navy.mil>; from seberino@spawar.navy.mil on Mon, Jun 24, 2002 at 11:41:08AM -0700
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,25 +21,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-iptables -F
-iptables -X
+Linux Firewalls book assigns a default drop policy
+to mangle and nat tables.
 
-These simple 2 lines seem good enough to
-nuke *all* rules and *all* user defined chains.....
+I could not get DROP policy to work on these
+tables and I am skeptical this serves any useful
+purpose anyway since packets must all traverse
+filter table anyway.
 
-Yet, in print (like Linux Firewalls book) I often
-see people wanting to apply -F and -X to 
-*every single table one by one*
-
-(e.g. iptables -t nat    -F
-      iptables -t filter -F
-      iptables -t mangle -F
- etc.)
-
-Am I missing something? My simple 2 lines above
-seem good enough to do the trick.
+Is the author of Linux Firewalls on drugs or is
+this really useful somehow?? (assuming you can
+get it to work)
 
 Chris
+
 -- 
 _______________________________________
 
