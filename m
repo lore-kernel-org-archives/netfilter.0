@@ -1,13 +1,13 @@
-From: Claudio Lavecchia <Claudio.Lavecchia@eurecom.fr>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: iptables and wireless card in promiscuous mode
-Date: Wed, 01 Dec 2004 13:12:39 +0100
-Message-ID: <41ADB537.6040603@eurecom.fr>
+Date: Wed, 01 Dec 2004 08:31:26 -0500
+Message-ID: <1101907886.3251.18.camel@hubcap.ljm.dom>
 References: <41AC6D4F.7000001@eurecom.fr>
-	<200411301821.23588.Alistair@nerdnet.ca>
+	<200411301821.23588.Alistair@nerdnet.ca> <41ADB537.6040603@eurecom.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200411301821.23588.Alistair@nerdnet.ca>
+In-Reply-To: <41ADB537.6040603@eurecom.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,86 +18,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alistair Tonner <Alistair@nerdnet.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Well,
-
-In fact  I really wanted my WLAN card set in promiscuous mode to drop 
-all the packets coming from the other laptop, this means that I wanted a 
-filter BEFORE the promiscuos mode filter.
-And by the way: how do I cancel a rule from the PREROUTING chain?
-If I do the standard way, I get:
-
-~ # iptables -D PREROUTING 1
-iptables: No chain/target/match by that name
-
-Thx
-
-Claudio
-
-
-Alistair Tonner wrote:
-
-> see inlined:
+On Wed, 2004-12-01 at 07:12, Claudio Lavecchia wrote:
+> Well,
 > 
->On November 30, 2004 07:53 am, Claudio Lavecchia wrote:
->  
->
->>Hello People,
->>
->>I have a little question:
->>
->>I have two laptops that have 802.11 wireless cards. I am developing some
->>application that essentially perform sniffing functions using wireless
->>cards in promiscuous mode. To test my code, I need those two laptops not
->>to "see" each other (--> I do not want the wireless card of laptop A,
->>which is operating in promiscuous mode to process packets coming from
->>laptop B) and I tought to do it using iptables. so on laptop A i added
->>the following rule:
->>
->>iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_B -j DROP
->>
->>and on laptop B I added the rule:
->>
->>iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_A -j DROP
->>
->>I just executed my first tests and the feeling  I got is that, for
->>example, the wlan card of  laptop B still passes through the packet
->>coming from laptop A.
->>
->>Can anyone confirm  this analysis? If I am right, can anyone give me a
->>hint to possibly workaround this?
->>    
->>
->
-> Urrm.  
-> You are likely doing the filtering in the wrong pipe.  These rules will only 
->drop packets that are destined for the IP of the host they are on.  You 
->PROBABLY are trying to drop *all* traffic from the other laptop.  Iptables 
->can do this at the IP layer, however you will STILL be able to see the 
->traffic across that card (from the other laptop) with any decent sniffer 
->program since ip sniffers work below the IP layer, before iptables gets the 
->packet to filter.  Most decent network sniffers, however, can do mac address 
->filtering on input.
->
-> If you would like to have the traffic dropped anyway, there are better places 
->to put these rules, even though many are strongly against filtering anywhere 
->but in the filter table (including myself) the following would get the 
->traffic off your iptables radar:
->
->iptables -A PREROUTING -t mangle -m mac --mac-source MAC_ADDRESS_LAPTOP_A -j \  
->DROP
->
-> Although in truth I'm not sure that this is wise, it might serve your 
->purposes.
->
-> Alistair Tonner
-> RSO HP Unix support 
->
->
->  
->
+> In fact  I really wanted my WLAN card set in promiscuous mode to drop 
+> all the packets coming from the other laptop, this means that I wanted a 
+> filter BEFORE the promiscuos mode filter.
+
+if that makes sense to you, or anyone else on this list--more power to
+you.
+
+> And by the way: how do I cancel a rule from the PREROUTING chain?
+> If I do the standard way, I get:
+> 
+> ~ # iptables -D PREROUTING 1
+> iptables: No chain/target/match by that name
+
+first--you need to specify a chain (here you also need to specify a
+table, as filter has no PREROUTING chain).  second--you need to specify
+the whole rule.
+
+a rule added with the command:
+
+  iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 80 \
+    -j DNAT --to-destination $WEB_SRV
+
+must be deleted with the command:
+
+  iptables -t nat -D PREROUTING -i $EXT_IF -p tcp --dport 80 \
+    -j DNAT --to-destination $WEB_SRV
+
+the other option would be to flush that chain and just add back the
+rules you want to keep (if any), as is often done in scripts:
+
+  iptables -t nat -F PREROUTING
+
+  iptables -t nat -A PREROUTING ...
+
+and lastly--you could:
+
+  iptables-save > ipt.out
+  vi ipt.out [delete rule(s) you don't want any more]
+  iptables-restore ipt.out
+
+-j
+
+--
+"I'm having the best day of my life, and I owe it all to not going
+ to Church!"
+	--The Simpsons
 
 
