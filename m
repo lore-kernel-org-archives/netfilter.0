@@ -1,11 +1,13 @@
-From: Thomas Martens <checky.real@gmx.net>
-Subject: problem with ip_connlimit modul
-Date: Mon, 23 Feb 2004 16:56:53 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: [OT] Re: advantage and disadvantage between iptables and ISAServer?
+Date: Wed, 25 Feb 2004 16:07:58 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040223165653.6434be53@tangle>
+Message-ID: <200402251607.58278.Antony@Soft-Solutions.co.uk>
+References: <Sea1-F121KV8iOFQeYm0000bd96@hotmail.com> <20040225084959.471bb675@mgalepc.utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040225084959.471bb675@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +20,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi!
+On Wednesday 25 February 2004 3:49 pm, Michael Gale wrote:
 
-I try to compile the new 2.4.25 kernel with patch-o-matic-20031219 and I've a little problem.
+> I will give Microsoft this ... they make a nice user friendly desktop
+> OS that my mom can use.
 
-All iptables works fine, but just the ipt_connlimit module makes trouble, when I try to compile it.
+Apple arguably do a better one.
 
-Here's my output:
+Antony.
 
+-- 
+There are two possible outcomes:
 
-gcc -D__KERNEL__ -I/usr/src/linux-2.4.25/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpreferred-stack-boundary=2 -march=athlon -DMODULE -DMODVERSIONS -include /usr/src/linux-2.4.25/include/linux/modversions.h  -nostdinc -iwithprefix include -DKBUILD_BASENAME=ipt_connlimit  -c -o ipt_connlimit.o ipt_connlimit.c
-ipt_connlimit.c: In function `init':
-ipt_connlimit.c:219: `ip_conntrack_module' undeclared (first use in this function)
-ipt_connlimit.c:219: (Each undeclared identifier is reported only once
-ipt_connlimit.c:219: for each function it appears in.)
-ipt_connlimit.c:220: warning: value computed is not used
-ipt_connlimit.c: In function `fini':
-ipt_connlimit.c:227: `ip_conntrack_module' undeclared (first use in this function)
-ipt_connlimit.c:228: warning: value computed is not used
-make[2]: *** [ipt_connlimit.o] Error 1
-make[2]: Leaving directory `/usr/src/linux-2.4.25/net/ipv4/netfilter'
-make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.4.25/net'
-make: *** [_mod_net] Error 2
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
 
+ - Enrico Fermi
 
-Can anybody help? I think I've to rename something in ipt_connlimit.c, but I don't know that....
-Thanks in advance.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-Best regards,
-Thomas
 
