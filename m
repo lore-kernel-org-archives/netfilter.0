@@ -1,12 +1,12 @@
 From: Oskar Andreasson <blueflux@koffein.net>
-Subject: Re: Active mode FTP
-Date: Sat, 7 Sep 2002 12:59:46 +0200 (CEST)
+Subject: Re: ip_conntrack_ftp and ip_nat_ftp modules unused
+Date: Sat, 7 Sep 2002 13:05:43 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209071256400.2411-100000@laptop1.agatha>
-References: <20020906121914.5da2babe.kribba@online.no>
+Message-ID: <Pine.LNX.4.44.0209071302380.2411-100000@laptop1.agatha>
+References: <1031358907.3d7949bb350b0@webmail3.webfluxation.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020906121914.5da2babe.kribba@online.no>
+In-Reply-To: <1031358907.3d7949bb350b0@webmail3.webfluxation.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Kristian F. Hansen" <kribba@online.no>
+To: Marcel Hauser <marcel_hauser@gmx.ch>
 Cc: netfilter@lists.netfilter.org
 
-On Fri, 6 Sep 2002, Kristian F. Hansen wrote:
+On Sat, 7 Sep 2002, Marcel Hauser wrote:
 
-> Some weeks ago i tried to get help here with my problem, but still there
-> is no solution to this problem so here i go again.
+> Hi 
 > 
-> I have a NAT/Gateway box connected to the internet. Behind that box i've
-> got 3 computers. When i try to use actice mode ftp (client side) behind
-> the NAT box it doesn't work, only passive mode seems to work. But, from
-> the NAT box i can use client side active ftp. This is quite annyoing and
-> i would preciate any help....my iptables script can be found at:
+> I'am just wondering:
+> 
+> #lsmod
+>  
+> Module                  Size  Used by
+> ipt_REJECT              3200   1  (autoclean)
+> ipt_multiport            928   3  (autoclean)
+> ipt_LOG                 3696   3  (autoclean)
+> ipt_state                832  12  (autoclean)
+> ip_nat_irc              2752   0  (autoclean) (unused)
+> ip_conntrack_irc        2928   0  (autoclean) (unused)
+> ip_nat_ftp              3296   0  (autoclean) (unused)
+> iptable_nat            16112   3  (autoclean) [ip_nat_irc ip_nat_ftp]
+> ip_conntrack_ftp        3632   0  (autoclean) (unused)
+> ip_conntrack           15568   4  (autoclean) [ipt_state ip_nat_irc 
+> ip_conntrack_irc ip_nat_ftp iptable_nat ip_conntrack_ftp]
+> iptable_filter          1936   1  (autoclean)
+> ip_tables              11584   8  [ipt_REJECT ipt_multiport ipt_LOG ipt_state 
+> iptable_nat iptable_filter]
+> 
+> is it normal that ip_conntrack_ftp and ip_nat_ftp are unused ??
 
-Have you loaded the ip_conntrack_ftp and ip_nat_ftp modules? They are 
-necessary for the conntrack engine to be able to understand which 
-connections are related or not to the FTP control session.
+Yes, no other modules are using them, but they may still be used by 
+conntrack or nat to understand what is related to other connections. In 
+other words, the unused flag presented by lsmod has nothing to do with the 
+fact that it may be used for something, such as connection tracking or 
+anything else.
 
 > 
-> folk.uio.no/kristfh/firewallScript.txt
+> Thanks
 > 
-> 
-> 
-> 
-> ------------------
-> 
-> 
-> Mvh
-> Kristian F. Hansen
-> 
-> 
-> ------------------
+> Marcel
 > 
 > 
 > 
@@ -60,6 +67,5 @@ Oskar Andreasson
 http://iptables-tutorial.haringstad.com
 http://people.unix-fu.org/andreasson/
 mailto:blueflux@koffein.net
-
 
 
