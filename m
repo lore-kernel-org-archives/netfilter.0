@@ -1,8 +1,9 @@
-From: Guilherme Cesar Soares Ruppert <ruppert@las.ic.unicamp.br>
-Subject: How to drop ping silently??
-Date: Thu, 27 Jan 2005 10:14:47 -0200 (BRST)
-Message-ID: <Pine.LNX.4.61.0501270958520.18509@quasar.las.ic.unicamp.br>
+From: "Pablo Vila" <pvila@adinet.com.uy>
+Subject: HEEEEEEEEEELP!!!! with ip_conntrack: table full, dropping packet.
+Date: Wed, 26 Jan 2005 19:54:30 -0200
+Message-ID: <000301c503f1$9dbe6730$0b00a8c0@leeloo>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,31 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
+I have the this problem, i have compiled and installed ok a new kernel 
+(2.6.10)
 
-When I filter echo requests (pings) in the OUTPUT chain, the ping program 
-says "sendmsg: Operation not permitted".
+ kernel: printk: 55 messages suppressed.
+ kernel: ip_conntrack: table full, dropping packet.
 
-% iptables -A OUTPUT -p icmp --icmp-type echo-request -j DROP
-% ping 10.1.1.2
-PING 10.1.1.2 (10.1.1.2) 56(84) bytes of data.
-ping: sendmsg: Operation not permitted
-ping: sendmsg: Operation not permitted
-...
+and this message repeats a lot, but i never have this problem with kernel 
+2.6.9-1-686, i have to compile a new one becouse i need suport for a new 
+device scsi i have installed. but i can't fix this message and i don't know 
+what is the problem.
+Some info:
+Proc: Celeron 333 Mhz
+Mem: 256 Mb
+if you need more info ask me!, thx to all!!!...
 
-Is there any whay to drop these packet silently, without let the ping know 
-that he was blocked. I am programamming an application and I need this 
-behavior. I want that ping believes that his packets were sent, but in 
-fact, they were dropped.
+PS: Sorry my English
+                                           Pablo <===
 
-Is it necessary to write a netfilter module to do that? Or is that 
-impossible to do in the netfilter architecture?
+-------------------------------------------
+  Pablo Francisco Vila Silveira     CX5CM
+     email: pvila@montevideo.com.uy
+            pvila@adinet.com.uy
+       sms: 94338237@sms.bellsouth.com.uy
+   Montevideo, Uruguay, America del Sur
+------------------------------------------- 
 
-Tks
-
-Guilherme Ruppert
 
 
