@@ -1,11 +1,14 @@
-From: debritoa@frcu.utn.edu.ar
-Subject: Sparc question
-Date: Fri, 25 Jul 2003 10:54:25 +0000
+From: leolistas@solucoesip.net
+Subject: Re: Problems with LOGS in iptables (Help Please)
+Date: Fri, 25 Jul 2003 17:33:42 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059130465.3f210c61ae555@webmail.frcu.utn.edu.ar>
+Message-ID: <1059165222.3f219426e5e1f@www.solucoesip.net>
+References: <OFF4AC81DF.42A2B9F1-ONC1256D6C.00400FCC@carm.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OFF4AC81DF.42A2B9F1-ONC1256D6C.00400FCC@carm.es>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +19,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Francisco Garcia Guillen <Paco.Garcia@carm.es>
+Cc: netfilter@lists.netfilter.org
 
-Hi all, i am using iptables (1.2.8) + iproute on Slackware 8.0 working fine, 
-marking packet based in destination port and network and selecting the 
-appropriate route with this marks (i have two links, a 256Kb frame relay and a 
-512Kb ADSL).  
-Now i change the machine for a Sun Enterprise 250 (with Debian 3.0r1) and 
-iptables works fine (the packets are marked) but iproute don't send them by 
-the correct interface (only use the default gateway, ppp0). I compile from 
-source the kernel (2.4.19, 2.4.20, 2.4.21) with the last patch-o-matic and 
-several versions of iproute.  
- 
-Any idea?.  
- 
-Thanks. 
- 
+
+
+   Try to take off the spaces from your log-prefix string. I've had 
+problems with this. Try replacing:
+
+--log-prefix "RULE 0 --ACCEPT "
+by
+--log-prefix "RULE0_ACCEPT" 
+
+   It should work.
+
+
+   Sincerily,
+   Leonardo Rodrigues
+
+Citando Francisco Garcia Guillen <Paco.Garcia@carm.es>:
+
+> Hi all,
+> 
+> The rules of iptables work fine but I can't obtain log messages from
+> iptables.
+> 
+> With fwbuilder I mark all rules with LOG option.
+> 
+> The generated script has this flag: "-j LOG --log-level 6 --log-prefix
+> "RULE 0 --ACCEPT " --log-tcp-sequence --log-tcp-options
+> --log-ip-options"
+> with each rule
+> The klogd is running
+> The syslogd is running
+> The syslog.conf is correctly configured
+>  ... but the logs not appear in /var/log/messages file
 
 
 
