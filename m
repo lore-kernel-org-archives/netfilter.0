@@ -1,44 +1,90 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+From: Harald Welte <laforge@netfilter.org>
 Subject: Re: TTL patch buggy?
-Date: Wed, 7 Jan 2004 15:36:24 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040107203624.GA20346@cannon.eng.us.uu.net>
+Date: Wed, 7 Jan 2004 20:35:47 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040107193547.GF6629@obroa-skai.de.gnumonks.org>
 References: <Pine.LNX.4.44.0401071709030.4717-100000@filer.marasystems.com> <1073502275.16972.10.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qftxBdZWiueWNAVY"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
 In-Reply-To: <1073502275.16972.10.camel@jasiiitosh.nexusmgmt.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Cc: Henrik Nordstrom <hno@marasystems.com>, netfilter@lists.netfilter.org, Harald Welte <laforge@netfilter.org>, netfilter-devel@lists.netfilter.org
+Cc: Henrik Nordstrom <hno@marasystems.com>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+
+
+--qftxBdZWiueWNAVY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 On Wed, Jan 07, 2004 at 02:04:36PM -0500, John A. Sullivan III wrote:
+> Thank you very much but could you please explain this a bit more.  Oskar
+> Andreasson's tutorial explicitly mentions doing this, i.e., incrementing
+> TTL and we thought it was a good idea.  We certainly want to change our
+> ways if this is dangerous.  Here is the excerpt from the tutorial:
 
-> 
-> Thank you very much but could you please explain this a bit more.
+Well, as indicated in my last emai:
 
-The whole TTL concept is meant to deal with the routing loops. Just
-imagine what happens if there is a routing loop between your gateway
-and the ISP's upstream router. The packets would be bouncing back and
-forth forever (until your gateway is rebooted) and the throughput
-of your bandwidth would drop to +-zerro.
+1) it is dangerous to increment the TTL
+2) still, there are vallid uses.
 
-Now if you anticipate no routing loop (which is extremely unlikely
-in the current architecture of how the ISP's do business) you should
-be fine. However, these routing loops could happen when people start
-mixing the TTL-increments with MIRROR:
+In gerneral, incrementing packets heading towards your internal network
+shouldn't be a problem.  If people want to hide their internal network
+structure from traceroute, they have two options:
 
-http://www.netfilter.org/security/2001-08-22-mirror.html
+a) drop all packets that have a ttl < number_of_hops_in_internal_net
+b) increment the TTL by number_of_hops_in_internal_net
 
-Ramin
+Both ways make sure that the TTL never expires on a router in the
+internal network.
+
+Where 'a' would interrupt traffic, and 'b' would make sure traffic
+passes.
+
+Also, sometimes ISP's try to detect if you are running a router/gateway
+behind your DSL line by checking for well-known TTL values.  In this
+case, setting the TTL=20
+
+The most dangerous cases of incrementing the TTL are:
+
+a) incrementing the TTL of transit traffic (not close to sender or
+receiver)
+b) incrementing the TTL of multicast traffic
+> John A. Sullivan III
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--qftxBdZWiueWNAVY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE//F+SXaXGVTD0i/8RAoUOAJ0Qo84JquplWo5CxYj+Ti+0bWPbswCfdj4o
+GDBaBUaG21QND4eI28axJPQ=
+=c1gr
+-----END PGP SIGNATURE-----
+
+--qftxBdZWiueWNAVY--
 
