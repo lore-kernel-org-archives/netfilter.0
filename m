@@ -1,14 +1,13 @@
-From: "Olexandr O. Galay" <root@e-mail.te.ua>
-Subject: Re: Need urgent help on NAT/load sharing
-Date: Fri, 6 Feb 2004 09:51:31 +0200
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Strange traffic from a user ...
+Date: Tue, 10 Feb 2004 11:30:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <111148915000.20040206095131@e-mail.te.ua>
-References: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
-Reply-To: "Olexandr O. Galay" <root@e-mail.te.ua>
+Message-ID: <1076405419.2266.0.camel@raylinux.internal>
+References: <1075970665.5355.5.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-gtTngjqOKPNnQZF48zCl"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
+In-Reply-To: <1075970665.5355.5.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hello, Saeed!
-
-Replying to your letter:
-
-S> Hi all,
-S>    I am new to list and have a basic nat question on Redhat Linux 9. I
-S> have to translate my local IP ( 192.168.1.0/24 ) to two different public
-S> IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
-S> example for every 4 received packet, one have to translate to IPE1 and
-S> other three to IPE2. I need this for load balacing the internet traffic
-S> between two isp. At the end, it is excellent if there is an option that
-S> If one the ISP gateway is dead, all packets have to translate to other
-S> public IP. Please help me. 
-S> Thanks, 
-S> Saeed Zamani, 
-S> Technical Manager, 
-S> Concept FZ LLC. 
-I think, you can balance when you are connecting to another ports
-So, if you are connecting to port 80, you can NAT packets to IPE1, and
-another packets to IPE2
-
-iptables -t nat -A POSTROUTING -p tcp --dport 80 -j SNAT
---to-destination ipe1.ip.address
-iptables -t nat -A POSTROUTING -j SNAT --to-destination
-ipe2.ip.address
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
+--=-gtTngjqOKPNnQZF48zCl
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Best Regards, Saeed!
+On Thu, 2004-02-05 at 10:44, Ray Leach wrote:
+> Hi all
+>=20
+> Can someone tell me what this is?
+>=20
+<snip>
+> The destinations appear to be dialup ip addresses. Maybe a worm or
+> spyware?
+>=20
+Or Kazaa ....
 
-Friday, February 6, 2004, 9:49
+> Regards
+>=20
+> Ray
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-Olexandr O. Galay
-mailto:root@e-mail.te.ua
-http://www.macros.org.ua
-ICQ: 29292281
+--=-gtTngjqOKPNnQZF48zCl
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQBAKKSrh1fuR/Bv+ygRAj77AKCZBN2N8v04Kzfn7Qm6SNzJlR2ptQCfb2BX
+AtTRMrxQcfn+YY5vEVyCj9M=
+=mxKA
+-----END PGP SIGNATURE-----
+
+--=-gtTngjqOKPNnQZF48zCl--
 
 
