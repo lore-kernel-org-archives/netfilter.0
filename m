@@ -1,10 +1,12 @@
-From: "Javier Govea" <jgovea@magma.ca>
-Subject: RE: Round Robin Load Balancing
-Date: Thu, 31 Jul 2003 10:48:53 -0400 (EDT)
+From: manish <manishsoft@yahoo.com>
+Subject: Re: help with wireless routing
+Date: Thu, 31 Jul 2003 08:33:42 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307311448.h6VEmrpq018899@webmail2.magma.ca>
+Message-ID: <20030731153342.51145.qmail@web13708.mail.yahoo.com>
+References: <3F287001.6E47AC4B@optonline.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F287001.6E47AC4B@optonline.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,128 +18,144 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Jason <arnjuka@optonline.net>, netfilter@lists.netfilter.org
 
-Hi guys,
+You are trying to build up a Mixed network: wired,
+wireless and Internet.
+Just look a simple example.
 
-Well I tried to use the "nth" patch in the mangle table in both the FORWARD and PREROUTING
-chains and still no success. My browser still cannot surf internet, it just waits and
-eventually times out. The rules i tested are below, please correct them if they are wrong.
+                Internet
+		   |
+		   |     E
+		   |   /
+		   | /		   
+      A------------C- - - - -F   Wireless
+      | \_      _/ | \
+Wired |	  \____/   |   \
+      |	 _/    \_  |     G
+      |	/	 \ |
+      B------------D 
 
-Any more suggestions??? any other ideas????
+The box C has 3 network connections:
 
-Many thanks to all of you guys...
-Xavier
-PS. I tried th following 3 sets rules:
+eth0 - dsl
+eth1 - wired network
+wlan0 - wifi network
 
-1. This rule:
-iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ppp0-ip-addr>
-...
+What IP Address You are assigning to hosts? You have 2
+possible solutions:
 
-together with this one (i tested this rule in both chains FORWARD and PREROUTING):
+   1) Split up network in 2 subnets: for example  
+      192.168.1.0/24 and 192.168.2.0/24.This solution 
+      is quickly but is not scalable if you are using 
+      Internet IP addresses coz you have to drop too 
+      many IPs.
 
-iptables -t mangle -A FORWARD -m nth --every 4 --packet 0 -p --syn -j ROUTE --oif ppp0
-...
+   2) Enable Proxy Arp feature to C for all 2 
+      interfaces. Network parameters (net address and 
+      netmask) are the same for Wireless and Wired,
+      but with proxy-arp enabled you can choose which 
+      IPs are on Wired and which on Wireless.
 
-2. This rule:
-iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ppp0-ip-addr>
-...
+ Now we will see solution 2
+ 
+For example: Consider you have Internet public subnet
+x.y.z.0/24. 
+Interface are:
 
-together with this one (i tested this rule in both chains FORWARD and PREROUTING):
+1) ifconfig eth0 x.y.z.C netmask 255.255.255.255(to
+Internet)
+2) ifconfig eth1 x.y.z.C netmask
+255.255.255.255(Wired)
+1) ifconfig eth2 x.y.z.C netmask
+255.255.255.255(Wireless)
 
-iptables -t mangle -A FORWARD -m nth --every 4 --packet 0 -m state --state new  -j ROUTE
---oif ppp0
-...
+static routes on eth0:
+       1. route add IPGW dev eth0
+       2. route add default gw IPGW
 
-3.And this rule
+This route stands for addressing all Internet requests
+to your Default GW: as you notice, first you have to
+tell Linux where is the router, then let default
+requesting through it.
 
-iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ppp0-ip-addr>
-...
+  static routes on eth1:
+	1. route add x.y.z.A dev eth0
+	2. route add x.y.z.B dev eth0
+	3. route add x.y.z.D dev eth0
+  Hosts A, B, and D on the Wired Network
 
-together with this one (i tested this rule in both chains FORWARD and PREROUTING):
+static routes on eth2:
+	1. route add x.y.z.E dev eth2
+	2. route add x.y.z.F dev eth2
+	3. route add x.y.z.G dev eth2
+  Hosts E, F and G on the Wireless Network
 
-iptables -t mangle -A FORWARD -m nth --every 4 --packet 0 -m state -p tcp --syn --state
-new  -j ROUTE --oif ppp0
-...
+Note that flexibility is very high, but you have to
+manually set each host or later you can make runtime
+script.
+
+Other than that you have to do some more juggling-
+You just need to check some forwarding setting like:
+Ip forwarding file: file "/etc/sysctl.conf", line
+"net.ipv4.ip_forfard = 0" must be
+"net.ipv4_forward = 1" so that you can forward packets
+to all interfaces.
+proxy_arp = 1
+ip_forward should be 1.
+
+First make things working then we will see Security.
+
+hope help
+
+Manish                         
 
 
 
-On Jul 29, "George Vieira" <georgev@citadelcomputer.com.au> wrote:
+
+
+
+--- Jason <arnjuka@optonline.net> wrote:
+> I'm setting up a wireless access point for my local
+> community.  I have
+> an external cantenna that I'm building for it. It's
+> running redhat9 and
+> a netgear card that has the prism2 chipset and the
+> hostap driver
+> installed.
 > 
-> probably because you should be doing that on the SYN packet ONLY.. not on any packet
-because it'll send 1 connection across multiple interfaces...
+> The box has 3 network connections:
 > 
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
+> eth0 - dsl
+> eth1 - wired network
+> wlan0 - wifi network
 > 
-> Citadel Computer Systems Pty Ltd
-> <a href='http://www.citadelcomputer.com.au'>http://www.citadelcomputer.com.au</a>
->  
+> I need to route traffic between the three
+> connections.  The internet
+> iface will have a dynamic ip address from a dsl
+> provider.  The other two
+> will only have private ips.  I was reading the Linux
+> Wifi Access Point
+> howto and they say to setup zebra and ospfd.  I've
+> tried this and it
+> desn't seem to work.
 > 
-> -----Original Message-----
-> From: Javier Govea [mailto:jgovea@magma.ca]
-> Sent: Tuesday, July 29, 2003 7:15 AM
-> To: Chris Wilson; Javier Govea
-> Cc: Daniel Chemko; George Vieira; netfilter@lists.netfilter.org; Ramin
-> Dousti; netfilter@lists.netfilter.org
-> Subject: Re: Round Robin Load Balancing
+> Whats the best way to route traffic between these
+> all 3 ifaces.  What
+> should I use for security.
 > 
+> If anyone has an examples, or good docs for me to
+> read, please point me
+> in the right direction.
 > 
-> Hi guys,
-> 
-> Thanx for all your suggestions, but i have bad news. The rules you guys are suggesting 
-> make a lot of sense to me but they don't work. My hosts still cannot surf the net. 
-> 
-> This rule:
-> 
-> iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ip-of-ppp0>
-> 
-> is another form for the masquerade rule:
-> 
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> 
-> Using either of these two rules my hosts can access internet, but i still have the 
-> problem of the load balancing. Some ppp links are used more than others in situations 
-> such as loading the same web page in four different browsers.
-> 
-> As soon as i add the "nth" rules to the mangle table my browsers stop working, they just 
-> can contact the web servers and eventually they time out. I'm not sure if by adding any 
-> rule to my mangle table the browsers stop, but at least they stop when i add your 
-> suggestions to the mangle table.
-> 
-> Any other ideas, suggestions, tips?? all are very welcome...
-> Thanx to all, i really appreacite all your time and interest....
-> Xavier
+> - jason
 > 
 > 
-> > 
-> > Try something like this:
-> > 
-> > iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 0 \
-> > 	-j ROUTE --oif ppp0
-> > iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 1 \
-> >         -j ROUTE --oif ppp1
-> > ...
-> > 
-> > iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ip-of-ppp0>
-> > iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to-source <ip-of-ppp1>
-> > ...
-> > 
-> > Cheers, Chris.
-> > -- 
-> >    ___ __     _
-> >  / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-> > / (_ / ,\/ _/ /_ \ | NetServers.co.uk <a 
-> href='<a href='http://www.netservers.co.uk&#39;&gt;<a
-href='http://www.netservers.co.uk&lt;/a&gt;'>http://www.netservers.co.uk</a></a>'>http://www.netservers.co.uk'><a
-href='http://www.netservers.co.uk&lt;/a&gt;'>http://www.netservers.co.uk</a></a></a> |
-> > \ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
-> > 
-> > 
-> > 
 > 
-> 
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
