@@ -1,11 +1,13 @@
-From: tiberiu <tiberiu@ipip.ro>
-Subject: change tos
-Date: 30 Jan 2004 10:22:43 +0200
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Iptables ssh outgoing problem
+Date: Fri, 30 Jan 2004 09:19:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075450963.23350.1.camel@ns.ipip.ro>
+Message-ID: <20040130081911.A0E181B8D7@smtp.ttp.nl>
+References: <PJEOLDHINDKCFPBDLONJCECKCAAA.chamindar@sad.gov.lk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <PJEOLDHINDKCFPBDLONJCECKCAAA.chamindar@sad.gov.lk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,10 +20,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+> Fire wall with iptables two Ethernet for LAN and wan. I can 
+> do ssh from the fire wall but from the LAN workstations it is 
+> not possible. I use ssh client software for windows. do I 
+> need to set firewall ip and port at ssh client if so which port.
+> 
+> $IPTABLES -A FORWARD -p tcp  -s 192.168.145.23  -d
+> **.***.***.***  --destination-port 22  -m state --state NEW -j ACCEPT
 
-Is there a way to change the TOS to whatever value?
-I heard something about fulltos but I could not find it.
-Thanx
+Is it your intention to let the Windows boxes connect to only 1 IP ?
+This rule only let's the initial connection through. Do you also have a
+rule like this one (which I would place [almost] in top of your other
+rules) :
+
+$IPTABLES -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+And have you turned on IP forwarding ?
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+> This is the command. Do I need to put at the beginning of the 
+> forward table?
+
+Unless some other rule is preventing you from reaching this one, no :
+you can but don't *need* to.
+
+
+Gr,
+Rob
 
 
