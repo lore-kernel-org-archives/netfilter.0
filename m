@@ -1,11 +1,13 @@
-From: "jgalvez@webpipe.net" <jgalvez@webpipe.net>
-Subject: A secure router, by MAC address
-Date: Wed, 20 Oct 2004 12:46:06 -0600
+From: Lopsch <lopsch@lopsch.com>
+Subject: Re: semi OT: default route
+Date: Wed, 20 Oct 2004 20:53:17 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1098297965.5686.9.camel@6-allhosts>
+Message-ID: <4176B41D.7000208@lopsch.com>
+References: <7C9884991ADAE0479C14F10C858BCDF591E388@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E388@alderaan.smgtec.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,38 +17,48 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter-Mailinglist <netfilter@lists.netfilter.org>
 
-I am trying to setup a router, that forwards traffic from one interface
-for only a specific set of MAC addresses.
+Daniel Chemko schrieb:
+>routed might help here. Right?
+>Can anyone with 2 ISP setup please check the load balance thing?
+>I vaguely remember seeing something about multiple default routes
+>in early chapters of TCP/IP Illustrated Vol. 1 (I am not at all sure).
 
-Users on eth1 side will use a static IP address with a known MAC
-address. DHCP will be running on eth1 for rogue users. If the source IP
-is 10.0.0.0/8 all port 80 traffic needs to be redirected to localhost
-port 80. ONLY traffic from a listed IP and MAC should be allowed to be
-forwarded out.
+Quote from LARTC-Howto Chapter 4:
 
-I need some recommendation on how to accomplish this.  If you could
-point me to a similar example or something I can figure it out . The
-more specific the better.  I have a few of my notes and attempts below.
+4.2.2. Load balancing
 
-TIA
--Josh
+The second question is how to balance traffic going out over the two 
+providers. This is actually not hard if you already have set up split 
+access as above.
 
-eth0:
- -Allow all traffic, in and out
-eth1:
- -Allow all DHCP traffic - something like below
-  #iptables -I INPUT -i eth1 -p udp --dport 67:68 --sport 67:68 \
-  -j ACCEPT
- -Allow all incoming traffic by source IP and MAC address
-  #iptables -A PREROUTING -i eth1 -t mangle -m mac \
-  --source 208.5.x.242 --mac-source 00:30:65:0e:91:d6 -j ACCEPT
- -Redirect all port 80 traffic from 10.0.0.0/8 to localhost:80
- -Drop all other incoming traffic
-  #iptables -A PREROUTING -i eth1 -t mangle -j DROP
+Instead of choosing one of the two providers as your default route, you 
+now set up the default route to be a multipath route. In the default 
+kernel this will balance routes over the two providers. It is done as 
+follows (once more building on the example in the section on split-access):
 
+ip route add default scope global nexthop via $P1 dev $IF1 weight 1 \
+nexthop via $P2 dev $IF2 weight 1
 	
+
+This will balance the routes over both providers. The weight parameters 
+can be tweaked to favor one provider over the other.
+
+Note that balancing will not be perfect, as it is route based, and 
+routes are cached. This means that routes to often-used sites will 
+always be over the same provider.
+
+Furthermore, if you really want to do this, you probably also want to 
+look at Julian Anastasov's patches at http://www.ssi.bg/~ja/#routes , 
+Julian's route patch page. They will make things nicer to work with.
+
+Explaining the variables:
+$Pi ist the IP of the Provider Gateway to which the interface $IFi is 
+connected.
+
+I think a combination of IPTables and IPRoute2 will get best effects 
+like described before.
 
 
