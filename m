@@ -1,11 +1,13 @@
-From: Julio Cesar Ody <julioody@bol.com.br>
-Subject: FTP client behind a gateway
-Date: Tue, 29 Oct 2002 09:51:18 -0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DHCRELAY through IPTABLES Firewall
+Date: Tue, 29 Oct 2002 13:03:17 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DBE7636.6060301@bol.com.br>
+Message-ID: <200210291303.g9TD3Ne10065@vulcan.rissington.net>
+References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <20021029091525.CVFB9836.mta01-svc.ntlworld.com@there> <004201c27f3d$20c88520$8f33e40f@lsmith5953>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <004201c27f3d$20c88520$8f33e40f@lsmith5953>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,17 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello. I don't know if anybody else faced this problem, but when I'm 
-behind a gateway (using iptables to perform NAT), I can connect to any 
-FTP server (using the client machines behind the gate) but when I 
-request a directory listing by using the "ls" command, it refuses to 
-enter passive mode. The same doesn't happen when I do it with the 
-gateway machine. Any solutions or ideas ? Thanks again.
+On Tuesday 29 October 2002 11:20 am, bigman@monster-solutions.net wrote:
 
+> below is what gets logged when using DHCRELAY. It looks like it will work
+> but then I never see the request from the 192.168.2.69 (firewall) hit the
+> DHCP server which I am running a sniffer on. I must be making this harder
+> then it should be. Can you provide me with the steps to get DHCRELAY
+> working across different subnets. I really appreciate all of the help.
+>
+> Oct 29 07:13:12 firewall kernel: IN=eth2 OUT=
+> MAC=ff:ff:ff:ff:ff:ff:08:00:09:f1:b2:ba:08:00 SRC=0.0.0.0
+> DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=128 ID=8523 PROTO=UDP
+> SPT=68 DPT=67 LEN=308
 
-Julio Cesar Ody
+Packet comes in on eth2 with broadcast destination IP and MAC adresses, 
+source IP address = 0.0.0.0
 
+> Oct 29 07:13:12 firewall kernel: IN= OUT=eth2 SRC=192.168.2.69
+> DST=192.168.1.70 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=67
+> DPT=67 LEN=308
+
+The the firewall sends a packet from its own IP address 192.168.2.69 to the 
+DHCP server 192.168.1.70 on *eth2* !!!
+
+Why ?
+
+> Oct 29 07:13:27 firewall kernel: IN=eth2 OUT=
+> MAC=ff:ff:ff:ff:ff:ff:08:00:09:f1:b2:ba:08:00 SRC=0.0.0.0
+> DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=128 ID=8537 PROTO=UDP
+> SPT=68 DPT=67 LEN=308
+
+DHCP client hasn't had an answer within 15 seconds so it asks again.
+
+> Oct 29 07:13:27 firewall kernel: IN= OUT=eth2 SRC=192.168.2.69
+> DST=192.168.1.70 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=67
+> DPT=67 LEN=308
+
+Firewall sends the request to 192.168.1.70 out of the wrong interface again.
+
+Antony.
+
+-- 
+
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
