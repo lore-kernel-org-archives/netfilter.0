@@ -1,10 +1,10 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: Packet mangle issues with retransmissions
-Date: Wed, 16 Feb 2005 14:04:27 -0800 (PST)
-Message-ID: <20050216220427.80297.qmail@web30202.mail.mud.yahoo.com>
-References: <420BDAC8.3080300@eurodev.net>
+From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: Suggestions for some patch-o-matic extensions (comment, ipp2p,
+ random, etc...)
+Date: Wed, 16 Feb 2005 23:19:41 +0100
+Message-ID: <4213C6FD.5080705@arcoscom.com>
 Mime-Version: 1.0
-In-Reply-To: <420BDAC8.3080300@eurodev.net>
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,57 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hiyas,
-   Working under 2.4.x (at least 2.4.20 from RH9) I
-think I have an issue that I am starting to unravel
-with regards to TCP and packet mangling.  I am not
-sure if this is something fixed or more of a 'don't do
-that'...
-In mangling a TCP packet (POSTROUTING), I adjust the
-size of the packet, reducing the overall length as I
-mangle the contents.
-This normally works all happy skipper like.  A big
-issue comes in, though, on retransmission.  If the
-system decided it needs to resend the packet, I get
-something nasty happening.
-   Looking at the packet contents on resent via
-ethereal, I see the initial portion of the packet
-containing my changes, but then the system seems to
-fill the contents back up to the full MTU!  That would
-be fine, except it retains my packet alteration.
+In some extensions, I detected that before I apply patch-o-matic (last=20
+source package) without problems, i can compile kernel and kernel=20
+modules fine.
 
-I would think the problem I am seeing is 1 of 2
-things.
-First, maybe skbuff dataspace comes from the tcp
-buffer's allocation.  this would mean any mangling
-performed on a packet affects the actual real buffer,
-not some memory copy.
-Secondly, if it is a private space, then it would seem
-that the resend mechanism tries to insure the packet
-is full, so adds on to fill to MTU, not memcpying over
-anything it *thinks* is already sent.
-Either way, it seems bad becase a POSTROUING packet
-mangling will see it's mangled data on a tcp retrasmit
-which I am not sure is intended.
-So I guess my questions, for those who are
-enlightened...
-1.  is skbuff data private or can it point into some
-tcp structure's allocated space?
-2.  Could this be something fixed already (and no, I
-canot go to 2.6 just yet)
-3.  Is there a way to tell skbuff that the data is
-'dirty', namely that it should try and reackage the
-whole thing on retransmit?
-Thanks for any info!!
+But when I try to compile iptables, i have a common error with some=20
+extensions:
+    error: near initialization for `<struct_name>.<struct_member>'
 
-Scott
+Some of these extensions are:
+    * comment
+    * ipp2p
+    * random (IPv6)
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Thinking about it, I had applied successfully these extensions over=20
+1.2.11 iptables version, but with 1.3.0, seems that some structure=20
+declaration has been changed and these modules don't compile without a=20
+manual user modification of the sources.
+
+The "manual modification" should be an explicit member initialization in=20
+the struct, but some modules need more revision.
+
+Here is the warning exposed.
+
+Good Luck
+
+
+--
+    Samuel D=EDaz Garc=EDa
+     Director Gerente
+ArcosCom Wireless, S.L.L.
+
+mailto:samueldg@arcoscom.com
+http://www.arcoscom.com
+
+M=F3vil: 651 93 72 48
+Tlfn.: 956 70 13 15
+Fax:   956 70 34 83
 
