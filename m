@@ -1,11 +1,9 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Tools for creation of iptables
-Date: Mon, 14 Mar 2005 14:57:26 -0500 (EST)
-Message-ID: <Pine.LNX.4.60.0503141454100.7042@darkstar.sysinfo.com>
-References: <EFORWARD1B-SEFLCBTQ00001395@eforward1.name-services.com>
-	<1110821783.10432.24.camel@jasiiitosh.nexusmgmt.com>
+From: aspenbr <aspenbr@yahoo.com.br>
+Subject: Erro for compiler
+Date: 14 Mar 2005 18:14:55 -0300
+Message-ID: <1110834895.27483.104.camel@maclinux.lotus>
 Mime-Version: 1.0
-In-Reply-To: <1110821783.10432.24.camel@jasiiitosh.nexusmgmt.com>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,61 +14,94 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: NetFilter <netfilter@lists.netfilter.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Helow I am trying to install I modulate it of netfilter IPP2p and I do
+not obtain already I made diverse modifications, and without success,
+all had failed to follow placed the message that appears when I give
+to the command "make"
 
-On Mon, 14 Mar 2005, John A. Sullivan III wrote:
+ make
 
-> On Mon, 2005-03-14 at 17:40 +0100, Seferovic Edvin wrote:
->> Hi list,
->>
->> are there some tools for creation of iptables rules that you could refer me
->> to. I would appreciate it when you could write an opinion to the tool you
->> maybe use.
-> <snip>
-> Some of my team have used fwbuilder (http://www.fwbuilder.org) in the
-> past with great success.  There was recently a post about a new tool,
-> http://firewalladmin.sf.net - I subsequently read some impressive
-> reviews.  I believe this product is very granular and is specifically a
-> rule configurator.
+gcc -O3 -Wall -DIPTABLES_VERSION=\"1.2.8\" -I/usr/include/iptables -fPIC
+-c libipt_ipp2p.c
+libipt_ipp2p.c:9:22: iptables.h: No such file or directory
+libipt_ipp2p.c:78: warning: `struct ipt_entry_match' declared inside
+parameter list
+libipt_ipp2p.c:78: warning: its scope is only this definition or
+declaration, which is probably not what you want
+libipt_ipp2p.c: In function `init':
+libipt_ipp2p.c:80: dereferencing pointer to incomplete type
+libipt_ipp2p.c:82: `NFC_UNKNOWN' undeclared (first use in this function)
+libipt_ipp2p.c:82: (Each undeclared identifier is reported only once
+libipt_ipp2p.c:82: for each function it appears in.)
+libipt_ipp2p.c: At top level:
+libipt_ipp2p.c:96: warning: `struct ipt_entry_match' declared inside
+parameter list
+libipt_ipp2p.c:96: warning: `struct ipt_entry' declared inside parameter
+list
+libipt_ipp2p.c: In function `parse':
+libipt_ipp2p.c:98: dereferencing pointer to incomplete type
+libipt_ipp2p.c:103: warning: implicit declaration of function
+`exit_error'
+libipt_ipp2p.c:103: `PARAMETER_PROBLEM' undeclared (first use in this
+function)
+libipt_ipp2p.c: In function `final_check':
+libipt_ipp2p.c:395: `PARAMETER_PROBLEM' undeclared (first use in this
+function)
+libipt_ipp2p.c: At top level:
+libipt_ipp2p.c:404: warning: `struct ipt_entry_match' declared inside
+parameter list
+libipt_ipp2p.c:404: warning: `struct ipt_ip' declared inside parameter
+list
+libipt_ipp2p.c: In function `print':
+libipt_ipp2p.c:406: dereferencing pointer to incomplete type
+libipt_ipp2p.c: At top level:
+libipt_ipp2p.c:433: warning: `struct ipt_entry_match' declared inside
+parameter list
+libipt_ipp2p.c:433: warning: `struct ipt_ip' declared inside parameter
+list
+libipt_ipp2p.c: In function `save':
+libipt_ipp2p.c:435: dereferencing pointer to incomplete type
+libipt_ipp2p.c: At top level:
+libipt_ipp2p.c:462: variable `ipp2p' has initializer but incomplete type
+libipt_ipp2p.c:462: warning: excess elements in struct initializer
+libipt_ipp2p.c:462: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:463: warning: excess elements in struct initializer
+libipt_ipp2p.c:463: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:464: warning: excess elements in struct initializer
+libipt_ipp2p.c:464: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:465: warning: implicit declaration of function
+`IPT_ALIGN'
+libipt_ipp2p.c:465: warning: excess elements in struct initializer
+libipt_ipp2p.c:465: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:466: warning: excess elements in struct initializer
+libipt_ipp2p.c:466: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:467: warning: excess elements in struct initializer
+libipt_ipp2p.c:467: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:468: warning: excess elements in struct initializer
+libipt_ipp2p.c:468: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:469: warning: excess elements in struct initializer
+libipt_ipp2p.c:469: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:470: warning: excess elements in struct initializer
+libipt_ipp2p.c:470: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:471: warning: excess elements in struct initializer
+libipt_ipp2p.c:471: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:472: warning: excess elements in struct initializer
+libipt_ipp2p.c:472: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c:474: warning: excess elements in struct initializer
+libipt_ipp2p.c:474: warning: (near initialization for `ipp2p')
+libipt_ipp2p.c: In function `_init':
+libipt_ipp2p.c:480: warning: implicit declaration of function
+`register_match'
+libipt_ipp2p.c: At top level:
+libipt_ipp2p.c:462: storage size of `ipp2p' isn't known
+make: *** [libipt_ipp2p.so] Error 1
 
 
-I have not looked at this tool, but need to add that n my looking at a 
-number of them not long ago, not only was the main issue with most that 
-they were built to use redhat as a base under them and filaed to run 
-properly under other dists, but that many require a webserver or other 
-toys like mysql and  such to maintain the rules for a site.  YMMV...
+Thank 
 
 
-We advise that folks learn iptables from the commandline/file, become 
-intimate with the base of your perimiter protection, make iptables your 
-friend.
 
-Thanks,
-
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                         -Tom Robins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCNeyvst+vzJSwZikRApNvAJ4kDyciXOfgGgbSp6cDKispL0OVUwCfRT5a
-PFBSBozT8mIVPmWrwAD40z0=
-=JfB4
------END PGP SIGNATURE-----
 
