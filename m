@@ -1,12 +1,15 @@
-From: Jason Baker <baker@cyborgworkshop.com>
+From: Fabrice MARIE <fabrice-marie-sec@ifrance.com>
 Subject: Re: Time based rule change.
-Date: Tue, 22 Oct 2002 16:11:48 -0500 (CDT)
+Date: Wed, 23 Oct 2002 09:36:39 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210221610290.31966-100000@alfred.home.cyborgworkshop.com>
-References: <38899.192.168.7.14.1035331090.squirrel@iw.k1k2.com>
+Message-ID: <200210230936.39643.fabrice-marie-sec@ifrance.com>
+References: <7415BAE16406EA438981D4A98DE0AE357F6CAD@phexch01.silverline.com> <38899.192.168.7.14.1035331090.squirrel@iw.k1k2.com>
+Reply-To: fabrice-marie-sec@ifrance.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <38899.192.168.7.14.1035331090.squirrel@iw.k1k2.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,18 +19,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andrew Smith <nfml@k1k2.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Andrew Smith <nfml@k1k2.com>, netfilter@lists.netfilter.org
 
-Im pretty sure I read something about this being a feature in the latest
-p-o-m.   You can allow a rule to match if the time is XX:XX-XX:XX.  Yeah,
-Time of Day support is in at least the latest iptables.
+On Wednesday 23 October 2002 07:58, Andrew Smith wrote:
+> > HI,
+> >     Is there any netfilter extension which allows time based changing
+> >     of iptables rules. This is because sometimes you need to open up
+> >     some ports for a fixed period of time and then you forget to remove
+> >     the rule. A time based rule will automatically delete itself. I
+> >     realise the security implications, but do they exist ?
+> Actually, if such a beast existed I would guess it would work
+> differently.
+> The Rule would always exist with time attributes and two targets ...
+> one for when it is available and one for when it isn't.
+> Anyone want to write one? :-) :-)
 
-                 Jason
-         www.cyborgworkshop.com
-...and the geek shall inherit the earth...
+Hello,
 
+actually, you can already use the time match from patch-o-matic to do the
+way you explain it. It's just that it's a standard match in the sense that
+you can use only one target with it, but it's enough if you want to do the way you explain:
+ - if time match then jump somewhere
+ - else jump somewhere else...
 
+Have a nice day,
+
+Fabrice.
+--
+Fabrice MARIE
+
+"Silly hacker, root is for administrators"
+       -Unknown
 
