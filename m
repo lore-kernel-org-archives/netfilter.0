@@ -1,12 +1,11 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: gateway without nat
-Date: Thu, 7 Oct 2004 19:28:26 +0200
+Date: Thu, 07 Oct 2004 19:33:36 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a0410071028b497f60@mail.gmail.com>
+Message-ID: <1097170416.2564.20.camel@anduril.intranet.cartel-securite.net>
 References: <200410071631.58038.lcml@pixel.it>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <200410071631.58038.lcml@pixel.it>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,35 +17,28 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: lcml@pixel.it, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: lcml@pixel.it
+Cc: netfilter@lists.netfilter.org
 
-Bridge ??
+Le jeu 07/10/2004 =E0 16:31, Lucio a =E9crit :
+> The problem is that I don't know how to make the kernel route packets b=
+etween=20
+> the DMZ and WAN NICs without using a SNAT rule: can anyone help me plea=
+se?
 
+Maybe I don't get your point there, but to simply route packets, you
+just have to do :
 
-On Thu, 7 Oct 2004 16:31:58 +0200, Lucio <lcml@pixel.it> wrote:
-> Hello everybody.
-> 
-> I need to setup a linux firewall with iptables with 3 NICs (LAN, WAN, DMZ).
-> The LAN/WAN routing is no problem because I'm going to use NAT and a couple
-> of rules to filter out the packets; so is the LAN/DMZ routing. However the
-> computers that make up the DMZ are already in place (with an old firewall
-> that's being substituted by the linux box), and they are already configured
-> with their respective public ip addresses. What I need is a gateway for the
-> DMZ that doesn't translate those public ip addresses, because I cannot modify
-> the configurations of the computers in the DMZ to make them become
-> 192.168.whatever.youwant.
-> The problem is that I don't know how to make the kernel route packets between
-> the DMZ and WAN NICs without using a SNAT rule: can anyone help me please?
-> 
-> Thanks in advance,
-> Lucio.
-> 
-> 
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+
+And then set FORWARD chain rules accordingly to traffic you want to
+allow. And that's it.
 
 
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
