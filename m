@@ -1,12 +1,14 @@
-From: "david" <david@suarapembaruan.co.id>
-Subject: blocking all traffic in port 137/137
-Date: Wed, 16 Jun 2004 15:47:19 +0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: blocking all traffic in port 137/137
+Date: Wed, 16 Jun 2004 09:52:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <011701c4537e$891361b0$858310ac@suarapembaruan.com>
-References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108> <1087322336.2054.12.camel@localhost> <1846.64.2.245.108.1087324894.squirrel@64.2.245.108> <200406152004.45544.Antony@Soft-Solutions.co.uk>
+Message-ID: <200406160952.36284.Antony@Soft-Solutions.co.uk>
+References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108> <200406152004.45544.Antony@Soft-Solutions.co.uk> <011701c4537e$891361b0$858310ac@suarapembaruan.com>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <011701c4537e$891361b0$858310ac@suarapembaruan.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,22 +21,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear all,
-When i look at "IPTRAF", i see lot of broadcast traffic that using port 137
-and 138, how to make rules that can block all traffic in port 137 and 138, i
-already try to use this rules but its no works...
+On Wednesday 16 June 2004 9:47 am, david wrote:
 
-iptables -A INPUT -p tcp --dport 137 DROP
-iptables -A OUTPUT -p tcp --dport 137 DROP
-iptables -A INPUT -p udp --dport 137 DROP
-iptables -A OUTPUT -p udp --dport 137 DROP
-iptables -A INPUT -p tcp --dport 138 DROP
-iptables -A OUTPUT -p tcp --dport 138 DROP
-iptables -A INPUT -p udp --dport 138 DROP
-iptables -A OUTPUT -p udp --dport 138 DROP
-iptables -A INPUT -p icmp DROP
+> Dear all,
+> When i look at "IPTRAF", i see lot of broadcast traffic that using port 137
+> and 138,
 
-Thank's
-David Kandou
+You must have Windows machines on your network, then - that's how Microsoft 
+networking works - using broadcasts on the local subnet.
+
+> how to make rules that can block all traffic in port 137 and 138,
+
+Why bother?   It's broadcast traffic - it's not going anywhere (through a 
+router), and if your firewall doesn't listen on those ports, nothing's going 
+to happen anyway.
+
+Regards,
+
+Antony.
+
+-- 
+"The future is already here.   It's just not evenly distributed yet."
+
+ - William Gibson
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
