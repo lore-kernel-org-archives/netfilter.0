@@ -1,12 +1,13 @@
-From: Erdal Mutlu <emutlu@fonts.de>
-Subject: Re: more than 1 source ip
-Date: Tue, 26 Nov 2002 11:53:11 +0100 (CET)
+From: Iva "Cabric" Cabric <ivac@gnjilux.srk.fer.hr>
+Subject: Re: ULOG with -m state
+Date: Tue, 26 Nov 2002 12:34:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0211261151460.5751-100000@bhows40003.fonts.de>
-References: <001501c29532$a453bd50$e6353fc1@nexor.co.uk>
+Message-ID: <20021126113434.GC9457@gnjilux.srk.fer.hr>
+References: <20021122155352.GA5665@gnjilux.srk.fer.hr> <200211241945.38762.netfilter@newkirk.us>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001501c29532$a453bd50$e6353fc1@nexor.co.uk>
+Content-Disposition: inline
+In-Reply-To: <200211241945.38762.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Wasim Bashir <wasim.bashir@nexor.co.uk>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: Joel Newkirk <netfilter@newkirk.us>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 26 Nov 2002, Wasim Bashir wrote:
+More update,....
+I have put new iptables version (1.2.7a-7 from Debian), and no
+change:
 
-> Hi,
->
-> how do i select more than 1 source IP, what i want to do is allow vnc access
-> to an internal win2k box from 2 different ip addresses, how do you do this,
-> at the moment i'm using :
->
-> /sbin/iptables -A PREROUTING -t nat -p tcp -s <outside IP> -d <ip of my
-> machine>  --dport 5800 -j DNAT --to 10.0.0.199:5800
->
-> Any help would be much appreciated.
->
-> Thanks
->
-> Wasim
->
->
->
->
+$ iptables -A INPUT -j ULOG -p tcp -m state --state NEW
+iptables v1.2.7a: You must specify `--state'
+Try `iptables -h' or 'iptables --help' for more information.
 
-Hi,
+also it looks that ULOG is not working at all:
 
-just add one more rule as above.
+Chain INPUT (policy ACCEPT 128K packets, 77M bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+ 5065  374K ACCEPT     all  --  *      *       xxx.xxx.xxx.xxx/19     xxx.xxx.xxx.xxx    
+    0     0 ACCEPT     all  --  *      *       xxx.xxx.xxx.xxx/18     xxx.xxx.xxx.xxx    
+ 4022  338K ULOG       all  --  *      *       0.0.0.0/0            0.0.0.0/0          ULOG copy_range 0 nlgroup 1 prefix `INPUT:DROP' queue_threshold 1 
+12630 1061K ULOG       all  --  *      *       0.0.0.0/0            0.0.0.0/0          ULOG copy_range 0 nlgroup 1 prefix `INPUT:DROP' queue_threshold 50 
+12630 1061K DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0          
 
-Like this:
+kernel is matching packets but ulogd doesnt produce any output in log
+files. I have tried to strace ulogd but it just waits in "recvfrom(6,",
+and according to lsof descriptor 6 is:
 
-/sbin/iptables -A PREROUTING -t nat -p tcp -s <outside IP 1> -d <ip of my
- machine>  --dport 5800 -j DNAT --to 10.0.0.199:5800
-/sbin/iptables -A PREROUTING -t nat -p tcp -s <outside IP 2> -d <ip of my
- machine>  --dport 5800 -j DNAT --to 10.0.0.199:5800
+ulogd   21070 root    6u  sock    0,0         322745 can't identify protocol
 
-Erdal Mutlu
+Any help appreciated.
 
-
-
+-- 
+@
 
