@@ -1,14 +1,12 @@
-From: "Ed Street" <blacknet@simplyaquatics.com>
-Subject: RE: hosts.deny
-Date: Sun, 7 Jul 2002 22:35:12 -0400
+From: "Tim" <twr@bellsouth.net>
+Subject: Re: forwarding (continued)
+Date: Sun, 7 Jul 2002 23:40:37 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001a01c22628$16002210$0a01a8c0@ed>
-References: <20020708023340.LDMV2755.mta05-svc.ntlworld.com@there>
-Reply-To: <blacknet@simplyaquatics.com>
+Message-ID: <001201c2264a$ce154110$2002d6d1@nebuchadnezza>
+References: <004b01c2263b$9812cc90$1606d6d1@nebuchadnezza> <20020708020553.MITF4119.mta06-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020708023340.LDMV2755.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,102 +17,67 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: iptables-list <netfilter@lists.samba.org>
 
-Hello,
 
-Sure will.  Should have some free time this week to work on it.
+I'm pinging from INTERNAL = 192.168.1.4 and DMZ = 172.16.1.3 each one of
+these machines has their own respective default gateway which are INTERNAL =
+192.168.1.11 and DMZ = 172.16.1.1
 
-Ed
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: "iptables-list" <netfilter@lists.samba.org>
+Sent: Sunday, July 07, 2002 7:05 PM
+Subject: Re: forwarding (continued)
 
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
-Sent: Sunday, July 07, 2002 10:34 PM
-To: netfilter@lists.samba.org
-Subject: Re: hosts.deny
 
-On Monday 08 July 2002 3:27 am, Ed Street wrote:
-
-> Hello,
+> On Monday 08 July 2002 5:54 am, Tim wrote:
 >
-> Well a few short lines of code would do that with no problem.
-
-Sounds good.   Could you post the code to the list so that people can
-see how 
-it can be done ?   It might be useful for a few different
-applications...
-
-Thanks,
-
-Antony.
-
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
-> Sent: Sunday, July 07, 2002 8:12 PM
-> To: netfilter@lists.samba.org
-> Subject: Re: hosts.deny
->
-> On Monday 08 July 2002 1:01 am, Ed Street wrote:
-> > Hello,
+> > Antony,
 > >
-> > Dns lookups.
+> > INTERNAL IP = 192.168.1.0/24  -- range 1 thru 11
+> > DMZ IP = 172.16.1.0/24 -- range 1 thru 5
+> >
+> > The reason I believe I know it is not forwarding....is that when I ping
+> > from the DMZ I get a "request time out"
 >
-> Well, yes, obviously the way to resolve hostnames to IP addresses is
-by
-> DNS
-> lookups :-)
+> In fact I am fairly sure this is a routing problem.
 >
-> What I meant was, how does your script cope when you want to block
-> something
-> like, say, www.microsoft.com, and the DNS lookup returns 6 different
-IP
-> addresses, from two different class C ranges (which is what I just got
-> by
-> doing a dig on the name) ?
+> The routing table on your firewall looks a little odd - what are the
+actual
+> IP addresses on its interfaces ?
+
+Yes, I agree the routing table looks a little odd in the sense (from my
+perspective) that there are only two interfaces that have a default gateway.
+I had configured from the network configuration front-end for all to have
+default gateways. The actual ipaddresses on the firewall box are .... eth0 =
+192.168.2.1/eth1 = 172.16.1.1/eth2 = 192.168.1.11.
+
 >
-> > Note some cases the /netmask is somewhat overkill.  I felt
-> > better safe than sorry, incase they have a block of ip's.
->
-> I'd have thought it unlikely that a hostname would resolve to multiple
-> contiguous IPs.   If a company has enough load that they're running
-> multiple
-> servers, they're probably doing it on multiple feeds as well, which
-will
-> have
-> widely differing IP addresses.....
+> Also, what are the routing tables on the machine you're pinging from, and
+the
+> machine you're pinging to ?
+
+Does this mean that the default gateways (the NICs on the firewall box) are
+not enough to route the packet through?
+I just added a route to box 192.168.1.4 (an NT box INTERNAL) "route add -p
+172.168.1.0 mask 255.255.255.0 192.168.1.11", and a route to box 172.16.1.5
+(another NT box in the DMZ)  "route add -p 192.168.1.0 mask 255.255.255.0
+172.16.1.1", to no avail....this can't be the answer.
+
+
+> My guess at the moment is the machine being pinged doesn't have a route to
+> reply by.
+
+Each one of the machine has a default gateway (the NICs on the firewall box)
+specified in the ip configuration.
+I believe this to be true, but I believe the answer is in the firewall box
+and the configuration of the rules.
+
 >
 >
 >
 > Antony.
 >
-> > -----Original Message-----
-> > From: netfilter-admin@lists.samba.org
-> > [mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
-> > Sent: Sunday, July 07, 2002 7:57 PM
-> > To: netfilter@lists.samba.org
-> > Subject: Re: hosts.deny
-> >
-> > On Monday 08 July 2002 12:48 am, Ed Street wrote:
-> > > Hello,
-> > >
-> > > Sure attached is the hosts.trashcan file I am currenly testing.
-> >
-> > Interesting.   How does your script handle resolving machine names
-to
->
-> IP
->
-> > addresses (as shown in several examples in your trashcan file) when
->
-> one
->
-> > name
-> > corresponds to several IPs ?
-> >
-> >
-> >
-> > Antony.
 
 
