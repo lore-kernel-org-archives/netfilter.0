@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Jeffrin <jeffrin@gamebox.net>
 Subject: Re: iptables related
-Date: Mon, 8 Dec 2003 19:42:21 +0000
+Date: Tue, 9 Dec 2003 01:14:34 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312081942.21166.Antony@Soft-Solutions.co.uk>
-References: <20031208191947.GA1603@msservices> <200312081435.00136.JALaramie@Loudoun-Fairfax.com>
+Message-ID: <20031208194434.GA1780@msservices>
+References: <20031208191947.GA1603@msservices> <200312081928.28282.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312081435.00136.JALaramie@Loudoun-Fairfax.com>
+Content-Disposition: inline
+In-Reply-To: <200312081928.28282.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +18,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 08 December 2003 7:35 pm, Jeffrey Laramie wrote:
+hello ,
 
-> On Monday 08 December 2003 14:19, Jeffrin wrote:
-> > hello all,
-> >
-> > iptables -A INPUT -sport 80 -j ACCEPT
-> >
-> > shows error ...
-> >
-> >  msservices:~# iptables -A INPUT --sport 80 -j ACCEPT
-> > iptables v1.2.9: Unknown arg `--sport'
-> > Try `iptables -h' or 'iptables --help' for more information.
-> >
-> > please help me ...
->
-> There are 2 dashes before sport:  --sport 80
+iptables -P INPUT DROP
+iptables -A INPUT -p tcp --sport 80 -j ACCEPT
 
-2 dashes and a protocol :)
-
-Antony.
-
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Iam not able to ping. why ?
 
 
