@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: PPTP connection tracking and Poptop on same box
-Date: Mon, 19 Jan 2004 00:03:32 +0000
+From: "bino-psn" <bino@indoakses-online.com>
+Subject: Re: per-connection byte counts
+Date: Mon, 19 Jan 2004 07:14:08 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401190003.32170.Antony@Soft-Solutions.co.uk>
-References: <739652C2AFA4834AAB5986A215F68CEC4977@svr1.home.compsup.net>
+Message-ID: <000e01c3de21$28bf0440$0300a8c0@indoaksesbno>
+References: <20040118140903.GA3351@glympton.airtime.co.uk> <16394.59800.443846.342711@fisica.ufpr.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <739652C2AFA4834AAB5986A215F68CEC4977@svr1.home.compsup.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,34 +19,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 18 January 2004 11:47 pm, Carl Farrington wrote:
+For me, I will pu another netfilter-box at the same eth backbone as the
+user.
+Put this interface in promiscuous mode.
+and ...... i thing you can check http://ipaudit.sourceforge.net
 
-> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+Sincerely
+-bino-
+----- Original Message -----
+From: "Carlos Carvalho" <carlos@fisica.ufpr.br>
+To: "Adam Rice" <adamrice@ntlworld.com>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Monday, January 19, 2004 3:16 AM
+Subject: Re: per-connection byte counts
+
+
+> Adam Rice (adamrice@ntlworld.com) wrote on 18 January 2004 14:09:
+>  >I'd like to be able to get per-connection byte-counts from the kernel,
+so I
+>  >can create a sort of top program showing what processes and users are
+>  >currently using the network and how much. Since I want this to be
+something I
+>  >can keep running all the time, I don't want to do it by snooping the
+>  >interface. Is there some way to do this with netfilter? Sadly
+>  >/proc/net/ip_conntrack doesn't appear to provide this information.
 >
-> > On Sunday 18 January 2004 11:00 pm, Carl Farrington wrote:
-> > > Does anybody know if there is a workaround for this problem? As soon
-> > > as I insmod ip_nat_pptp , poptop cannot accept any incoming pptp
-> > > connections.
+> iftop and iptraf give statistics per interface, per machine and per
+> traffic type plus other interesting info. That's all that can be
+> obtained from a firewall since you cannot retrieve user info from
+> another machine. The performance impact is usually negligible.
 >
-> > Why do you want to use both of these on the same box?
-
-> Well, I want to do both. I am putting together a router/gateway box. It
-> performs NAT for all the workstations on the private side of the box
-> (hence the need for ip_nat_pptp since some workstations need to contact
-> outside pptp servers), and also allows access from the outside when
-> users are roaming (hence the need for poptop).
+> If you want to run the monitor in a multi-user system where users are
+> logged in you can associate the network connections with processes and
+> users but I don't know a program that does it. This is a "me too"...
 >
-> Astaro Security Linux (www.astaro.com) is one product which achieves
-> this without problem using poptop, as is win2k rras.
-
-In that case your simplest solution might be to ask Astaro how they've done 
-it.   Their products are based on Linux / netfilter etc, so should be fully 
-GPL.
-
-Antony
-
--- 
-The difference between theory and practice is that in theory there is no 
-difference, whereas in practice there is.
+>
 
 
