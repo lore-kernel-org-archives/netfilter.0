@@ -1,13 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: [OT] Little TCP/IP question
-Date: Sun, 22 Aug 2004 18:58:27 -0400
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: displaying connections recognized by the conn.-tracking module possible?
+Date: Sun, 22 Aug 2004 22:10:09 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1093215507.1659.5.camel@grendel>
-References: <112010952.20040823004437@op.pl>
+Message-ID: <20040823021009.GA7531@tranquility.scriptkitchen.com>
+References: <200408211759.50531.shirai@kawo1.rwth-aachen.de> <200408221816.53845.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <112010952.20040823004437@op.pl>
+Content-Disposition: inline
+In-Reply-To: <200408221816.53845.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +18,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Marcin Sura <slacklist@op.pl>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, 2004-08-22 at 18:44, Marcin Sura wrote:
->
->   What is the TCP/IP algorithm that control usage of bandwidth by sessions
->   (flows?)?
+On Sun, Aug 22, 2004 at 06:16:53PM +0100, Antony Stone wrote:
+> > nat) I mean perhaps a similar output than "netstat -t" does, when showing
+> > all current tcp-connections on a host. Or perhaps is this listed somewhere
+> > in the /proc filesystem?
+> 
+> cat /proc/net/ip_conntrack
 
-This is going to vary based on the window size. Its not surprising that
-the first session is getting more bandwidth as its had more time to
-negotiate a larger window size and a smaller inter-packet gap. Its also
-not surprising that this changes over time due to the latency caused by
-the line being saturated.
+On my Mandrake 10.0 machine I get,
+# cat /proc/net/ip_conntrack
+cat: /proc/net/ip_conntrack: No such file or directory
 
-If you want to even this out, your best bet would be to implement some
-QoS. Not sure its so far off that its really worth it though.
-
-HTH,
-Chris
-
-
-
+-Payal
 
