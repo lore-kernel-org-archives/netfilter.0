@@ -1,13 +1,11 @@
-From: "Stephan Kessler" <stephankessler@gmx.de>
-Subject: RE: Server can't send :-/
-Date: Wed, 3 Sep 2003 16:09:00 +0200
+From: Brian Capouch <brianc@palaver.net>
+Subject: iptable_nat and Linksys VPN box?
+Date: Wed, 03 Sep 2003 09:39:21 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006801c37224$ef009dd0$0000fea9@kessler.local>
-References: <1062596599.18242.19.camel@kermit>
+Message-ID: <3F55FD19.7080804@palaver.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1062596599.18242.19.camel@kermit>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +15,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Ralf Spenneberg' <lists@spenneberg.org>
-Cc: 'Netfilter' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> I suspect your machine is warpy.yomeganet.biz. The last input 
-> rule drops all incoming tcp-traffic. You a just accepting 
-> traffic going to 22,80,21,20,etc. Since I do not actually 
-> understand your ruleset, you just might want to insert the 
-> following rule before this DROP rule 
-> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> 
+I use "just in time" NAT at the edge router in my network to provide 
+public addresses for my clients.  Most of them have outbound (SNAT) only.
 
+I have a new client who has a Linksys NAT appliance in his office, and 
+he claims he needs "public IP on the interface and public IP to the 
+router" in order to make it work.
 
-Thx thats it!
+I've never had to deal with one of these before, and I wonder if someone 
+who knows about them might point me in the right direction.
 
-Greetings,
-Stephan
+Thanks.
+
+B.
 
 
