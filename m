@@ -1,13 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Monitoring problems...
-Date: 31 Oct 2003 05:27:29 -0500
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: "selective" connection tracking?
+Date: Fri, 31 Oct 2003 10:10:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067596048.1137.3.camel@valhalla>
-References: <DFD93DB4ABEF7243BC4F81DE17A182EF94B2@tugexch.vpn.mmsi.com>
+Message-ID: <1067591422.812.13.camel@elendil.intranet.cartel-securite.net>
+References: <3F9EA786.5060401@otaku42.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <DFD93DB4ABEF7243BC4F81DE17A182EF94B2@tugexch.vpn.mmsi.com>
+In-Reply-To: <3F9EA786.5060401@otaku42.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Mark Webb <webb@mmspl.com.au>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Michael Renzmann <mrenzmann@otaku42.de>
 Cc: netfilter@lists.netfilter.org
 
-On Wed, 2003-10-29 at 17:52, Mark Webb wrote:
->
-> I was asked by the powers that be to set up some monitoring of our
-> workplaces internet traffic. Basically a breakdown of the volume used
-> and what protocol is using it.  i.e. 20% mail, 30% web, 10% ftp,
-> etc....
+Le mar 28/10/2003 =E0 18:29, Michael Renzmann a =E9crit :
+> Is it possible to use connection tracking only for specified=20
+> connections, but not for all? Or would it be possible to "disable"=20
+> connection tracking for connections that go through the forward chain,=20
+> and using it only for connections that from/to the machine itself?
 
-I would use ntop for this. Its specifically designed for this type of
-activity and creates pretty pie charts with lots of colors. ;-)
+With stock Netfilter/iptables, it is not possible. Once ip_conntrack is
+loaded, every packet is evaluated against connection tracking and is
+given a state.
 
-http://www.ntop.org/
+However, you can use raw table that is available in patch-o-matic. This
+will imply iptables and kernel compilation. raw table is prior to
+conntrack subsystem and allows you to choose wether a packet has to go
+through conntrack or not, using NOTRACK target :
 
-> On the box I have iptables running using the following:
-> 
-> iptables -A INPUT -j LOG --log-level 7 --log-prefix '[MONITOR]'
->
-> Now all this seems to be working (sort of).   If I compare the log to
-> a tcpdump output the log is only capturing about 5%.
+	iptables -t raw -A PREROUTING -d 1.2.3.4 -p tcp --dport 80 \
+		-j NOTRACK
 
-Try:
-iptables -A FORWARD -j LOG --log-level 7 --log-prefix '[MONITOR]'
+Then, you can match them afterwards using UNTRACK state :
 
-but as I said, I would use ntop.
+	iptables -A FORWARD -m state --state UNTRACKED -j ACCEPT
 
-HTH,
-C
+Note that if you do not conntrack a connection, you loose all conntrack
+capabilities such as ICMP errors handling, helpers and NAT (as
+Netfilter's NAT relies on conntrack).
 
+See http://www.netfilter.org/documentation/pomlist/pom-base.html#raw for
+more details (examples are excerpts from this page).
 
+I also like raw table TRACE target that allows full debugging as traced
+packets will get logged for any rule they meet.
+
+> As far as I could find out: when starting to use stateful inspection=20
+> features connection tracking is loaded (as module), which then is=20
+> applied to ALL the connections that are comming into / going out of the=
+=20
+> machine and are passed through it (where the machine acts as router). I=
+s=20
+> that correct?
+
+Correct, unless using raw table.
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
