@@ -1,12 +1,12 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: RE: Mangling problem
-Date: Wed, 21 May 2003 07:02:17 -0700 (PDT)
+From: Joel  <joel@telecorp.com.br>
+Subject: redirect ROUTE
+Date: Wed, 21 May 2003 11:31:52 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030521140217.69906.qmail@web13904.mail.yahoo.com>
-References: <06f501c31f9c$9f34e930$7035a8c0@hoeschen>
+Message-ID: <200305211131.52661.joel@telecorp.com.br>
+Reply-To: joel@telecorp.com.br
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <06f501c31f9c$9f34e930$7035a8c0@hoeschen>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +17,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-My believe too.  iptables is not a promiscious app; it
-handles packets which come in/go out of the device. 
-You see the broadcast because it is 'intended' for
-Computer B (and any other computer).  
-The only way B would get it is if Computer A
-transmitted the packets to computer B (either directly
-or because B was a router).
+Hi,
 
-One question:  How does computer A get the video? 
-internal capture or is the data being sent to it? 
+My situation is:=20
+A:=20
+LINK with ip 200.x.x.x
+and
+internal ip: 192.168.1.254
+B:
+ADSL router with ip 192.168.200.1
+and
+internal ip: 192.168.1.8
+router default: 192.168.200.254
 
--Scott
+I need redirect port 80 to 192.168.1.8.
+I am making NAT:
+bimap xl0 192.168.1.8/32 -> 200.x.x.x/32
 
---- Chris Hoeschen <chris.hoeschen@primevest.com>
-wrote:
-> I maybe wrong but I don't believe netfilter will
-> process any packets not
-> intended for that box.  TCPDump will see it as in a
-> hubbed environment
-> all nodes receive all packets but only those that
-> are destined for that
-> box will netfilter process.
-> 
+My problem is that the route default is not for A. =20
+With router default to A its OK.
 
+Then I tried this :
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+# iptables -A PREROUTING -i eth0 -t mangle -p tcp --dport 80 -j MARK=20
+--set-mark 1
+our
+# iptables -A POSTROUTING -o eth0 -t mangle -p tcp --sport 80 -j MARK=20
+--set-mark 1
+our
+# iptables -A POSTROUTING -p tcp -t mangle -s 192.168.1.8 --sport 80 -j R=
+OUTE=20
+--gw 192.168.1.254
+
+nothing work with out router default to A.
+
+# cat /etc/iproute2/rt_tables
+#
+# reserved values
+#
+255     local
+254     main
+253     default
+0       unspec
+#
+# local
+#
+#1      inr.ruhep
+201 www.out
+---------------------------------------------------------
+[root@joel /root]# ip route list table www.out
+default via 192.168.1.254 dev eth0
+--------------------------------------------------------
+[root@joel /root]# /sbin/ip route add default via 192.168.1.254 dev eth0 =
+table=20
+wwwl.out
+-----------------------------------------------------
+# ip rule ls
+0:      from all lookup local
+32765:  from all fwmark        1 lookup www.out
+32766:  from all lookup main
+32767:  from all lookup default
+
+------------------------------------------------------
+
+Thanks,
+
+Joel
+
 
