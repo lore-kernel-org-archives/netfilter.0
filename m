@@ -1,12 +1,14 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: More neqbie questions
-Date: Mon, 2 Aug 2004 14:16:11 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Maxium concurrent connections with IPTables
+Date: Mon, 2 Aug 2004 20:01:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051221@asimail2.alphanumeric.com>
+Message-ID: <200408022001.49637.Antony@Soft-Solutions.co.uk>
+References: <564DE4477544D411AD2C00508BDF0B6A22073275@usahm018.exmi01.exch.eds.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <564DE4477544D411AD2C00508BDF0B6A22073275@usahm018.exmi01.exch.eds.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +19,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Ellis <eellis@mail.co.gilchrist.fl.us>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> # DNS
-> $IPT -A INPUT -i $INT -p udp --dport 53 -j ACCEPT
+On Monday 02 August 2004 7:15 pm, Small, Jim wrote:
 
-is this machine a caching DNS server?
+> I'm curious, what is the maximum number of concurrent connections possible
+> with IPTables using connection tracking for udp and for tcp?  (using latest
+> 2.4 kernel and 2.6 kernel)
 
-> ### OUTPUT chain
-> # The only thing doing output on this box are proxy
-> # servers, and the occasional SSH and HTTP for
-> # testing.
-> # SQUID proxy, and local HTTP requests.
-> $IPT -A OUTPUT -p tcp --dport 80 -j ACCEPT
->
-> # SSH
-> $IPT -A OUTPUT -p tcp --dport 22 -j ACCEPT
->
-> ### FORWARD chain
->
-> $IPT -A OUTPUT -p tcp --dport 80 -j ACCEPT
->
->
-> # SSH
->
-> $IPT -A OUTPUT -p tcp --dport 22 -j ACCEPT
+Depends on the amount of memory in your machine, and the setting of 
+/proc/sys/net/ipv4/ip_conntrack/max
 
-if the answer to my previous question was "yes," you're going to need:
+Each connection uses about 300 bytes (see output of dmesg for the exact size 
+for your particular system), therefore a system with 1Gbyte RAM could support 
+about 3.5 million connections.
 
-	$IPT -A OUTPUT -p udp --dport 53 -j ACCEPT
+> I'm currently taking a Cisco firewall class and they're claiming that PIX
+> which supports 500,000 concurrent connections with the appliance version
+> and 1,000,000 with the blade version vastly exceeds the capabilities of all
+> general purpose O/S'.
 
-if not--you're going to need:
+I've never tested a fierwall with >256Mbytes RAM, and I'd be hard pushed to 
+think of a way to effectively test >1 million connections too (sure, you 
+could use a Windows machine infected with a worm, but that would test 
+half-open connections with nothing on the other end, not real connections 
+passing data).
 
-	$IPT -A FORWARD -i $INT -p udp --dport 53 -j ACCEPT
+Regards,
 
-> # Accept anything else that's been established
->
-> $IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
+Antony.
 
-might i also recommend:
+-- 
+90% of networking problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
 
-	$IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-	$IPT -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-(normally i put these as the first rule in each chain rather than the =
-last)
-
-another common piece that is absent, that is probably causing your squid =
-redirect to fail:
-
-	$IPT -A INPUT -i lo -j ACCEPT
-	$IPT -A OUTPUT -o lo -j ACCEPT
-
--j
 
