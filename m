@@ -1,11 +1,14 @@
-From: Daniel Lopes <lopsch@lopsch.com>
-Subject: Re: some web sites need more than port 80?....
-Date: Sun, 06 Mar 2005 18:33:09 +0100
-Message-ID: <422B3ED5.9040207@lopsch.com>
-References: <20050306164509.GA15342@spawar.navy.mil>
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: availability of ROUTE target
+Date: Sun, 6 Mar 2005 12:45:08 -0500
+Message-ID: <876ef97a05030609454e917567@mail.gmail.com>
+References: <Pine.LNX.4.61.0503060105470.9386@forty-thieves.cis.upenn.edu>
+	<876ef97a05030609126e4aa085@mail.gmail.com>
+	<Pine.LNX.4.61.0503061233100.9386@forty-thieves.cis.upenn.edu>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050306164509.GA15342@spawar.navy.mil>
+In-Reply-To: <Pine.LNX.4.61.0503061233100.9386@forty-thieves.cis.upenn.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Yun Mao <maoy+netfilter@cis.upenn.edu>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-seberino@spawar.navy.mil schrieb:
-> I locked down my laptop with a firewall script to only
-> allow port 80.
+On Sun, 6 Mar 2005 12:34:41 -0500 (EST), Yun Mao
+<maoy+netfilter@cis.upenn.edu> wrote:
+> Thanks for the info. I only found this URL,
 > 
-> I noticed that only the text gets downloaded from ucsd.edu.
+> http://www.netfilter.org/patch-o-matic/pom-extra.html
 > 
-> It seems that the graphics from ucsd.edu could not get
+> which illustrates how to use ROUTE target and author's email address, but
+> I still can't find the patch.
 > 
-> through my firewall.
-> 
-> 
-> Do webs sites now send JPEGs in parallel with the text
-> on a different port or something?
-> 
-> 
-> chris
-> 
-> 
+> http://www.netfilter.org/patch-o-matic/ appears to be almost empty.
 
-Take a look at the source code of the page. Perhaps it references the 
-images from another webserver running on another port.
+Yeah, you want patch-o-matic-ng, sorry. Patch-o-matic is pretty dead.
+Here's the link for the latest pom-ng:
+
+http://netfilter.org/downloads.html#pomng-20050130
+
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
