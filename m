@@ -1,14 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: invalid ip
-Date: Thu, 04 Sep 2003 12:21:02 -0400
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: More H.323 questions
+Date: Thu, 4 Sep 2003 12:26:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F57666E.5020807@Loudoun-Fairfax.com>
-References: <20030903045614.51138.qmail@web80604.mail.yahoo.com>
+Message-ID: <20030904162628.GC31513@cannon.eng.us.uu.net>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A019314@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------050405010302080509040203"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030903045614.51138.qmail@web80604.mail.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A019314@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: m j <mj_engin@yahoo.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: George Vieira <georgev@citadelcomputer.com.au>
 Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------050405010302080509040203
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Way to go, George. If someone could FAQ this...
 
+On Thu, Sep 04, 2003 at 11:50:55AM +1000, George Vieira wrote:
 
-
-m j wrote:
-
-> hello
-> please help me
-> i need an invalid ip addrss i dont know means of  invalid ip
-
-An invalid IP address is an IP address that doesn't work. I think what 
-you are looking for is a local IP address that can only be used for 
-inside your LAN. Any address that begins with 192.168.0 should work. Try 
-using 192.168.0.1
-
-Jeff
-
---------------050405010302080509040203
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-<br>
-<br>
-m j wrote:<br>
-<blockquote type="cite"
- cite="mid20030903045614.51138.qmail@web80604.mail.yahoo.com">
-  <div>
-  <div>hello</div>
-  <div>please help me</div>
-  <div>i need an invalid ip addrss i dont know means of&nbsp; invalid ip</div>
-  </div>
-</blockquote>
-An invalid IP address is an IP address that doesn't work. I think what
-you are looking for is a local IP address that can only be used for
-inside your LAN. Any address that begins with 192.168.0 should work.
-Try using 192.168.0.1<br>
-<br>
-Jeff<br>
-</body>
-</html>
-
---------------050405010302080509040203--
-
+> Ramin, chill out. It was off the top of my head and I remembered there were 2 modules that needed loading.
+> The user only needs to check his docs for this and confirm he has 2 modules loaded if they were compiled as modules.
+> 
+> I've answered this exactly the same way once before and even then a user replied to me personally and said "I only had one loaded" whether or not the spelling of the module name was correct or not.. the point was more that there needs to be 2 modules for it to work..
+> 
+> Hence, I've connected home to my H323 machine just to confirm my finding and I was right...
+> 
+>         /sbin/insmod ip_conntrack_h323 >/dev/null 2>&1
+>         /sbin/insmod ip_nat_h323 >/dev/null 2>&1
+> 
+> And for the archives, I've added my rules.. Now lets see how many vague questions we're going to get asking the exact same problem/request to get working...
+> 
+>        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 389    -j DNAT --to 192.168.1.1        # H323
+>        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 522    -j DNAT --to 192.168.1.1        # H323
+>        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1503   -j DNAT --to 192.168.1.1        # H323
+>        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1720   -j DNAT --to 192.168.1.1        # H323
+>        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1731   -j DNAT --to 192.168.1.1        # H323
+>        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 8080   -j DNAT --to 192.168.1.1        # H323
+>        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1469   -j DNAT --to 192.168.1.1        # H323audio?
 
