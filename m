@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Transparent proxy question
-Date: Mon, 15 Mar 2004 09:07:28 +0000
+From: <netfilter@sbgit.com>
+Subject: Re-2: Still having problems with forwarding
+Date: 15 Mar 2004 09:14:05 UT
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403150907.28211.Antony@Soft-Solutions.co.uk>
-References: <40556EE6.6040809@stupar.homelinux.net>
+Message-ID: <DIIE.000000FC00002A63@sbgit.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40556EE6.6040809@stupar.homelinux.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +16,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter-List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 15 March 2004 8:52 am, Sasa Stupar wrote:
+ 
+> 1. Can you be more specific about exactly what problems you are having - 
+> what 
+> does work, what does not work, how are you testing it?
 
-> Hi!
->
-> I have configure a transparent proxy and it is working fine. But now all
-> requests to squid came from my nat box and I can't use my MAC acl
-> anymore. Is there any option to provide to squid who is connecting and
-> not the nat box which is used for transparency?
+Since i have made some changes i don't get an connection to my VPN Server,
+it seems that iptables don't forwards the vpn tunnel to my internet vpn server.
 
-If you really mean MAC address based ACL, then no, you cannot use this to 
-identify clients any more, because all the packets will be coming from the 
-netfilter machine, so that is the only MAC address your proxy will know 
-about.
+i can't send any pings to the internet? 
 
-If you actually mean source IP address based ACL, then you need to check your 
-SNAT rule in the POSTROUTING chain of netfilter - make sure it is only 
-applied to your external interface, not the interface where your proxy server 
-is connected.
+also i can't connect to my Terminalserver.
 
-If you have a more complicated network setup than I am assuming, please supply 
-a description or a diagram.
+I think the whole forwading don't works?
 
-Regards,
+> 2. Is it possible that you can simplify your ruleset by removing rules 
+> which 
+> are nice to have, but have nothing to do with this problem (eg: the 
+> rate-limited DROP rules, and the TCP flag matches), so that it is easier to 
+> 
+> know what to focus on, and what is unimportant?
 
-Antony.
+I think i have to write a complete new firewall script, but at first i will try
+to get all working what i need. 
 
--- 
-There's no such thing as bad weather - only the wrong clothes.
+Thanks Peter
 
- - Billy Connolly
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+To: Antony@Soft-Solutions.co.uk
+Cc: netfilter@lists.netfilter.org
 
 
