@@ -1,11 +1,22 @@
-From: c0g <c0g@wp.pl>
-Subject: "ip_conntrack_core: Frag of proto 17." error and memory leak?
-Date: Mon, 15 Sep 2003 18:43:31 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: FORWARD rules
+Date: Mon, 15 Sep 2003 19:34:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F65EC33.2060906@wp.pl>
+Message-ID: <1063647262.766.39.camel@elendil.intranet.cartel-securite.net>
+References: <20030910175253.GA2752@linux.local>
+	 <1063260568.26703.1.camel@risingsun.penguindia.com>
+	 <20030912100957.GA3360@linux.local>
+	 <1063363533.879.52.camel@elendil.intranet.cartel-securite.net>
+	 <20030912163656.19b9fb66.arnt@c2i.net>
+	 <1063378301.888.66.camel@elendil.intranet.cartel-securite.net>
+	 <20030912201425.25ca0ab4.arnt@c2i.net> <20030913022658.GD1667@linux.local>
+	 <20030913084256.73dc4a3d.arnt@c2i.net>
+	 <1063612582.928.17.camel@elendil.intranet.cartel-securite.net>
+	 <20030915183205.2f109f6f.arnt@c2i.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030915183205.2f109f6f.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,58 +26,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Arnt Karlsen <arnt@c2i.net>
+Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Le lun 15/09/2003 =E0 18:32, Arnt Karlsen a =E9crit :
+> ..me too, ;-)  I ofcourse meant we "weren't too clear on what=20
+> we meant to say"...  ;-)
 
-Hi,
-I'm getting this error, my kern.log is flooded, it is logged many
-hundred of thousands times. I read in ip_conntrack_core.c it should
-"never happen" (so it's kind of assertion). Why does this assertion fail?
+We are now, that's the important point :)
 
-I'm using 2.4.22 kernel with CVS p-o-m 20030907. I'm using only
-following major netfilter patches:
-
-TCPLAG.patch
-ipt_REJECT-fake-source.patch
-raw.patch
-
-and some minor:
-
-39_ip_conntrack-proc.patch
-40_nf-log.patch
-54_ip_nat-macro-args.patch
-58-ip_conntrack-macro-args.patch
-59_ip_nat_h-unused-var.patch
-60_nat_tftp-remove-warning.patch
-61-remove-memsets.patch
-63_getorigdst-tuple-zero.patch
-74_nat-range-fix.patch
-ip_ct_refresh_optimization.patch
-
-I made rule that blocks fragments, but it doesn't stop messages (perhaps
-because the check is performed before rules are evaluated).
-
-Also, I suppose there is big kernel memory leak that happen about 12-24
-hours after boot. It eats up to 40 MB of RAM memory in few seconds. If
-someone is interested I made some graphs of vmstat (excel) at
-http://ng.pl/~jp/vmstat-n5/
-Could it be caused by failed "Frag of proto" assertion?
-
-Is there someone who had this problem? And solved it?
-Please give me some pointers what should I do.
-
-- --
-c0g@wp.pl
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQE/ZewzPqmVt5WhbA8RAq3HAJ9Ahvz19BQNE4MXhLxzCyIuE4fqCwCfUwaw
-eEhLSl0iX7j9KZr8kfsPIZ8=
-=AiO4
------END PGP SIGNATURE-----
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
