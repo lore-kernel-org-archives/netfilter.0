@@ -1,11 +1,11 @@
-From: John Sage <jsage@finchhaven.com>
-Subject: re: -m state --state
-Date: Mon, 16 Jun 2003 16:34:14 -0700
+From: =?iso-8859-1?q?Alpha=20Technologies?= <alphaside@yahoo.com>
+Subject: ip_conntrack_core.c read not locked
+Date: Mon, 16 Jun 2003 18:38:47 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030616233414.GC7125@tweedle.finchhaven.net>
+Message-ID: <20030617013847.10524.qmail@web13306.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +16,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-From man 8 iptables, and the Linux 2.4 Packet Filtering HOWTO:
+Hello,
 
-"--state [state]
-Where state is a comma separated list of the connection states
-to match..."
+I have compiled the kernel 2.4.21 and 2.4.20 but in
+both i get this messanges when insert the conntrack
+modules:
 
-"Specifying `-m state' allows an additional `--state' option, which is
-a comma-separated list of states to match (the `!'  flag indicates not
-to match those states).  These states are..."
+ASSERT ip_conntrack_core.c:629 &ip_conntrack_lock not
+readlocked
 
+Also, when i use h323 mmodule.. and everything is
+going well... but if I remove the ip_nat_h323 module
+the systems goes down with kernel panic.
 
-Is this comma-separated list creating a series of AND's or OR's?
+Thanks for your help.
 
-Thus -m state --state INVALID,NEW is
+Att,
 
-INVALID AND NEW
+Pablo Tamayo
 
-or
-
-INVALID OR NEW?
-
-
-Somehow, OR seems to make more sense..
-
-
-- John
--- 
-"Obviously, we do not want to leave zombies around."
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
