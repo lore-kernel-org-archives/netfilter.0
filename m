@@ -1,75 +1,236 @@
-From: Tom Marshall <tommy@home.tig-grr.com>
-Subject: Re: Experimental RTSP modules
-Date: Sat, 24 May 2003 07:30:23 -0700
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030524143023.GA31579@home.tig-grr.com>
-References: <20030406033532.GA23082@home.tig-grr.com> <20030523195843.GQ3077@sunbeam.de.gnumonks.org>
+From: <netfilter@drbroyles.com>
+Subject: Rules are followed inconsistently in firewall
+Date: Sat, 24 May 2003 10:44:37 -0400
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <003101c32203$02956fa0$73593a42@drbroyles.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030523195843.GQ3077@sunbeam.de.gnumonks.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002E_01C321E1.791BF760"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Harald Welte <laforge@netfilter.org>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_NextPart_000_002E_01C321E1.791BF760
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 23, 2003 at 09:58:43PM +0200, Harald Welte wrote:
-> On Sat, Apr 05, 2003 at 07:35:32PM -0800, Tom Marshall wrote:
-> > Please note this is an experimental module.  It works for me.  It may w=
-ork
-> > for you, it may panic your kernel, or it may just sit there using ram.
->=20
-> great news. If you could convert it to patch-o-matic format, I'm happy
-> to include it!
+Hello,
+    I run a small network in my home where I am trying to have the brunt =
+of the network firewalling handled by a single Linux 8.0 server.  I have =
+a DSL internet connection in which I have the use of 5 static IPs.  =
+Since I have few client machines using this connection, I decided to =
+allow each machine to have a separate IP.  I am using iptables 1.2.7a =
+and a 2.4.19 kernel compiled with bridging and the hooks to pass packets =
+through iptables so that I can have a central point to apply firewalling =
+rules.  I believe this arrangement is referred to as a bridging router.  =
+I have a default chain specified that DROPs various incoming UDP, TCP, & =
+ICMP echo-requests.  The problem I am experiencing is that sometimes =
+some of these specified packets are DROPed and sometimes they are not.
+    My method of testing I am using is the website at =
+http://www.dslreports.com/scan.  They have a scanning tool that =
+"attacks" your IP and notifies you of general vulnerabilities and =
+concerns.  Even though I have those rules in place, I get results that =
+say some of my UDP ports are open, even though they should be blocked.  =
+But I'll run the scan again and get a perfect result with no open UDP =
+ports.  Every time I run the scan, I'm told that my IP is not pingable =
+so I know that at least one of the rules is working, but the others only =
+work sporadically.
 
-Thank you.
+Below is the 'iptables -nL --line-numbers' output of that default =
+chain...
 
-I am interested in getting the module into the mainline kernel.  I believe
-this is where the majority of users are.  I have not and will not use p-o-m=
-.=20
-I will convert the patch to use kernel coding standards if someone would
-sponsor the change to the 2.4 kernel, but any changes necessary to use p-o-m
-will need to be done by someone else because I have zero interest.
+Chain default (3 references)
+num  target     prot opt source               destination
+1    DROP       icmp --  0.0.0.0/0            <internal net>      icmp =
+type 8
+2    DROP       tcp  --  0.0.0.0/0            <internal net>    tcp =
+flags:0x16/0x02
+3    DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:13
+4    DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:37
+5    DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:123
+6    DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:135
+7    DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:137
+8    DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:138
+9    DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:161
+10   DROP       udp  --  0.0.0.0/0            <internal net>    udp =
+dpt:162
+11   DROP       tcp  --  0.0.0.0/0            <internal net>    tcp =
+dpt:135
+12   DROP       tcp  --  0.0.0.0/0            <internal net>    tcp =
+dpt:139
+13   DROP       tcp  --  0.0.0.0/0            <internal net>    tcp =
+dpt:445
 
-> >  * Handle multiple SETUP messages in a single packet.
-> >  * Un-mangle client_port on return trip.
->=20
-> Any progress so far?
+    There are no ACCEPT rules occurring before the default chain is =
+called, so the various UDP & TCP packets are still in the filter by the =
+time they reach their respective DROP rules.
+    Are these packets just going through too quickly for iptables to =
+drop them?  If you can shed any light on this, please let me know.
 
-Well, no feedback so far at all so I have left the code alone for the
-moment.  I'm sure you are familiar with the phenomenon.  ;-)
+Brandon
 
---=20
-Football combines the two worst features of American life.
-It is violence punctuated by committee meetings.
-        -- George F. Will
+------=_NextPart_000_002E_01C321E1.791BF760
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3502.5390" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I run a small =
+network in my home=20
+where I am trying to have the brunt of the network firewalling handled =
+by a=20
+single Linux 8.0 server.&nbsp; I have a DSL internet connection in which =
+I have=20
+the use of 5 static IPs.&nbsp; Since I have few client machines using =
+this=20
+connection, I decided to allow each machine to have a separate IP.&nbsp; =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+</FONT><FONT face=3DArial size=3D2>I am using iptables 1.2.7a and a =
+2.4.19 kernel=20
+compiled with bridging and the hooks to pass packets through iptables so =
+that I=20
+can have a central point to apply firewalling rules.&nbsp; I believe =
+this=20
+arrangement is referred to as a bridging router.&nbsp; I have a default =
+chain=20
+specified that DROPs various incoming UDP, TCP, &amp; ICMP =
+echo-requests.&nbsp;=20
+The problem I am experiencing is that sometimes some of these specified =
+packets=20
+are DROPed and sometimes they are not.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; My method of testing =
+I am using=20
+is the website at <A=20
+href=3D"http://www.dslreports.com/scan">http://www.dslreports.com/scan</A=
+>.&nbsp;=20
+They have a scanning tool that "attacks" your IP and notifies you of =
+general=20
+vulnerabilities and concerns.&nbsp; Even though I have those rules in =
+place, I=20
+get results that say some of my UDP ports are open, even though they =
+should be=20
+blocked.&nbsp; But I'll run the scan again and get a perfect result with =
+no open=20
+UDP ports.&nbsp; Every time I run the scan, I'm told that my IP is not =
+pingable=20
+so I know that at least one of the rules is working, but the others only =
+work=20
+sporadically.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Below is the 'iptables -nL =
+--line-numbers' output=20
+of that default chain...</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Chain default (3 =
+references)<BR>num&nbsp;=20
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination<BR>1&nbsp;&nbsp;&nbsp; =
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; icmp=20
+--&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&lt;internal=20
+net&gt;&nbsp; &nbsp;&nbsp;&nbsp; icmp type 8<BR>2&nbsp;&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; tcp=20
+flags:0x16/0x02<BR>3&nbsp;&nbsp;&nbsp; =
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp dpt:13<BR>4&nbsp;&nbsp;&nbsp; =
 
-iEYEARECAAYFAj7Pgf8ACgkQFMm9uvwPXW5lrwCeLV6ldy6BPZsy52oaFPsStHJF
-rhcAn1yRgye0gBPOoiALyDFG8eqVQ3pL
-=i13C
------END PGP SIGNATURE-----
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp dpt:37<BR>5&nbsp;&nbsp;&nbsp; =
 
---T4sUOijqQbZv57TR--
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp =
+dpt:123<BR>6&nbsp;&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp =
+dpt:135<BR>7&nbsp;&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp =
+dpt:137<BR>8&nbsp;&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp =
+dpt:138<BR>9&nbsp;&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp dpt:161<BR>10&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; udp dpt:162<BR>11&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; tcp dpt:135<BR>12&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; tcp dpt:139<BR>13&nbsp;&nbsp;=20
+DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;=20
+0.0.0.0/0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;=20
+&lt;internal net&gt;&nbsp;&nbsp;&nbsp; tcp dpt:445</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; There are no ACCEPT =
+rules=20
+occurring before the default chain is called, so the various UDP &amp; =
+TCP=20
+packets are still in the filter by the time they reach their respective =
+DROP=20
+rules.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Are these packets =
+just going=20
+through too quickly for iptables to drop them?&nbsp; If you can shed any =
+light=20
+on this, please let me know.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Brandon</DIV></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_002E_01C321E1.791BF760--
+
 
