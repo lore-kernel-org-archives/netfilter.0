@@ -1,12 +1,10 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Mirror for Argentina.
-Date: Thu, 13 Nov 2003 10:20:05 +0100 (CET)
+From: "Rajesh B. V." <rajeshbv@intotoinc.com>
+Subject: Problem with MASQUERADE of L2TP packets
+Date: Thu, 13 Nov 2003 16:28:44 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0311131012110.18835@dns.toxicfilms.tv>
-References: <005a01c3a93c$8e6a9f30$fe01000a@estacion2>
+Message-ID: <5.1.0.14.0.20031113162745.01ae15e8@172.16.1.10>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005a01c3a93c$8e6a9f30$fe01000a@estacion2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +14,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Maira Vykus <maira@vykus.com.ar>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, webmaster@netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi All,
 
-> I want to create a mirror for Argentina. I want to know if that is possible.
-> Who do i have to email? And what do i have to do?
-Sure it is possible :)
-Just find a host or two (if you want to seperate ftp and www)
-Create a directory for the mirror, and then use rsync to update.
-Personally I use cron and this script:
+I am facing a problem in sending traffic through L2TP tunnel using Linux 
+iptables MASQUERADE feature.
+SG1 in following setup is having iptables with MASQUERADE. The rule is:
 
-#!/bin/sh
-echo "www rsync started" | mail -s "www rsync start" solt@dns.toxicfilms.tv
-rsync -avz rsync.netfilter.org::www /var/www/netfilter/www
-echo "www rsync stopped" | mail -s "www rsync stopp" solt@dns.toxicfilms.tv
+# iptables -t nat -A POSTROUTING -j MASQUERADE -o ppp0
 
-I set up cron to run it every hour. But you can do this daily, not hourly
-if you wish.
+Test set-up:
 
-Having set up your rsync cron job. You can prepare a virtualhost
-in apache, or whatever web server you are using, with
-www.ar.netfilter.org.
+192.168.1.82 192.168.1.254
+LAN PC ----------------- SG 1 ( LAC Mode ) --------------- SG2 ( LNS Mode )
+172.16.3.83 172.16.3.73
+6.6.6.7 ---- l2tp tunnel ---- 6.6.6.6
 
-When it's done, just ask Harald (or the webmaster) to add your server IP
-to netfilter.org DNS zone.
+After estabilshing the L2TP tunnel, when we issue ping from LAN PC 
+(192.168.1.82) to LNS IP address (6.6.6.6) we observe the packets sent out 
+by SG1 having strange Source IP in both inner and outer IP header.
+# ping 6.6.6.6 (from 192.168.1.82)
 
-The similar goes for ftp.
-This is the way I made www.pl.netfilter.org and ftp.pl.netfilter.org.
+Problem:
+The outer IP header is having the source IP as 6.7.1.254 (last two octets 
+of PPP IP + last two octets of ethernet IP).
+And the inner IP header (PPP) is having source as 6.6.6.7 instead of 
+192.168.1.82 (actual packet originator).
 
+If i disable the iptables rule with MASQUERADE then the traffic is going fine.
 
-What is the current list of Netfilter Mirrors?
+Can anyone suggest, what is the mistake in configuration or is it the 
+problem with L2TP itself ?
 
 Regards,
-Maciej
+--Rajesh
 
 
