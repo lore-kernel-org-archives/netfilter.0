@@ -1,13 +1,13 @@
-From: Michael Atighetchi <matighet@bbn.com>
-Subject: Re: CERT Vulnerability Note VU#539363
-Date: Mon, 28 Oct 2002 17:25:01 -0500
+From: "Andrew Smith" <nfml@k1k2.com>
+Subject: Re: Rules for blocking Email from libero.it domain
+Date: Tue, 29 Oct 2002 10:17:10 +1100 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021028222501.GK26387@bbn.com>
-References: <000601c27ece$da3a6ce0$3864a8c0@discmail.com>
+Message-ID: <42647.192.168.7.14.1035847030.squirrel@iw.k1k2.com>
+References: <200210281507.g9SF70e08704@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000601c27ece$da3a6ce0$3864a8c0@discmail.com>
+In-Reply-To: <200210281507.g9SF70e08704@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Aldo S. Lagana" <alagana@discmail.com>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-TCP SYN cookies might offer some protection against this. It is
-implemented in the 2.4 series Linux kernels.
+> On Monday 28 October 2002 2:04 pm, Sundaram Ramasamy wrote:
+> 
+>> Hi,
+>>
+>> I want to block all incoming mail from the libero.it domain.
+> 
+> Configure your mail server to reject it.
+> 
+> Netfilter is not the right answer to this question.
+> 
+> Antony.
 
-Michael
+Actually, that depends on the reason.
+If the problem is that you keep getting large arounts of email
+from libero.it then I think you may have to use the firewall.
+I'm only guessing, but when I view my maillog it always
+seems to know the size of each email that has been blocked,
+so I presume I am actually getting the email then it is
+being rejected (unless the sendmail protocol passes this
+value across and that is what is being displayed?)
+I've never actually looked into it though.
+Usefull if someone knows for sure (otherwise I'll get around
+to it one day and actually test it to be sure :-)
 
-
-On Mon, Oct 28, 2002 at 05:10:40PM -0500, Aldo S. Lagana wrote:
-> http://www.kb.cert.org/vuls/id/539363
-> 
-> I haven't seen any reference to this in the list - sorry for the spam if
-> it has been discussed - anybody have an idea?
-> 
-> All the linux vendors listed so far have no response - RedHat and SuSE.
-> NetBSD and OpenBSD claim invulnerable.
-> 
-> 
+However, as suggested before, you need to block all the smtp
+servers for liberato.it - not just one of them.
 
 -- 
-matighet@bbn.com   BBN Technologies
+-Cheers
+-Andrew
+
+MS ... if only he hadn't been hang gliding!
+
 
