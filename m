@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Controlling UDP RELATED match
-Date: Wed, 10 Mar 2004 15:24:31 +0100
+From: Richard Bellamy <richard.bellamy@virgin.net>
+Subject: Re: Being selective about traffic and interfaces
+Date: Wed, 10 Mar 2004 18:18:11 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078928671.2757.116.camel@anduril.intranet.cartel-securite.net>
-References: <1078927341.21848.6.camel@fish.homewiththebitch.co.uk>
+Message-ID: <20040310181811.GB3003@virgin.net>
+References: <20040308150758.GB16848@virgin.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1078927341.21848.6.camel@fish.homewiththebitch.co.uk>
+Content-Disposition: inline
+In-Reply-To: <20040308150758.GB16848@virgin.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Oli Comber <oli@niceltowers.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Le mer 10/03/2004 =E0 15:02, Oli Comber a =E9crit :
-> Is there any way to view/control how long a UDP pseudo connection will
-> be held open for by Netfilter? Or to put it another way, can I control
-> how long an incomming UDP packet is considered RELATED to an outgoing
-> UDP packet?
+Thanks to all who responded.
 
-Have a look at H323 conntrack helper that handle UDP connections, or ask
-devel mailing list.
+Unfortunatley I still cannot get this working.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Does anyone know if the ROUTE target works under 2.6?
+
+Richard
+
+On Mon, Mar 08, 2004 at 03:07:59PM +0000, Richard Bellamy wrote:
+> Hi
+> 
+> I have just set up an ecrypted connection (with OpenVPN) between my laptop and router currently all traffic goes down the vpn. I would like to allow ssh traffic to bypass the vpn.
+> 
+> The situation is this:
+> 
+> Router:							Laptop:
+> 192.168.0.1 - tun0					192.168.0.2 - tun0
+> 	|							|
+> 10.44.10.1 - eth0					10.44.10.2 - eth0
+> 	|							|
+> 	---------------------------------------------------------
+> 
+> The default route on the laptop is set to 192.168.0.1 so all traffic is automatically sent encrypted. I need to be able to send everything but ssh down the vpn(with the possibility for https later on). I beleive that this would have to happen before routing took place. OpenVPN is on udp/5000.
+> 
+> I would be very grateful for any assistance.
+> 
+> Richard 
+> 
 
