@@ -1,14 +1,14 @@
-From: Evgeni Vachkov <evgeni.vachkov@investis.com>
-Subject: Re: ip_conntrack_tcp Errors - backing a patch
-Date: 30 Jun 2004 10:25:33 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: how to redirect certain IPs to specific url
+Date: Wed, 30 Jun 2004 10:34:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088587533.13926.332.camel@spudgun.dhcp.internal>
-References: <1088423237.13933.127.camel@spudgun.dhcp.internal>
-	 <40E00F6A.2010604@bofh.bg>
+Message-ID: <200406301034.44072.Antony@Soft-Solutions.co.uk>
+References: <a0f69e504063000446f514e22@mail.gmail.com> <200406300931.16812.Antony@Soft-Solutions.co.uk> <a0f69e5040630021311b0555d@mail.gmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40E00F6A.2010604@bofh.bg>
+In-Reply-To: <a0f69e5040630021311b0555d@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,42 +21,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-06-28 at 13:30, Dimitar Katerinski wrote:
-> > Is that a problem with conntrack and its tunning or I am missing some
-> > patch? ...Or perhaps it is some other problem with other parts of the
-> > kernel? 
-> It seems to me that you have applied the tcp window tracking patch from pom-ng.
-> The problem is that the client and the server have done the first step of the
-> three way handshake, and are in sync, but the firewall for some reason is not.
-> So it drops the SYN/ACK, and thus forcing the client to retransmit its SYN and
-> initiate a new session (as descibed in the source code of the patch)
-> 
-> My advice is if you have applied this patch, to remove it, and test the load on the
-> firewall again.
-> > 
+On Wednesday 30 June 2004 10:13 am, Askar Ali Khan wrote:
 
-I would like to remove the patch, but unfortunately the person who
-compiled last time didnt leave the code.
+> > iptables -A PREROUTING -t nat -p tcp --dport 80 -s a.b.c.d -j DNAT --to
+> > w.x.y.z
+>
+> may i have to replace w.x.y.z with the IP of domain or simply
+> www.abc.com will work?
 
-So....
+You can use www.abc.com, but you must remember that www.abc.com will be 
+resolved to an IP address *at the time you enter the rule*, and the rule will 
+then exist on your firewall with that IP address while the firewall is 
+running.
 
-Would it be possible to compile the relevent modules only (is it
-conntrack only?) from scratch and to insmod them into the kernel?
+Therefore if www.abc.com always resolves to one IP address, it makes no 
+difference whether you enter the rule by IP or name.
 
-Or there are parts of the kernel that I would need to recompile?
+If www.abc.com resolves to one IP address, but that address changes, your 
+firewall wil continue to use the old IP address until you change it.
 
-In any case, what code do I need to download and compile and where do I
-find the relevant instructions?
+If www.abc.com resolves to more than one IP address, only one will get entered 
+into the rule if you specify the name (and you would need to use multiple 
+rules if you specify by IP), and therefore only some of the packets sent to 
+ww.abc.com would match the rule.
 
-In ideal situation I'd like to have a few versions of the conntrack (and
-other related?) and be able to insmod them on the fly. 
+> > If this is not what you want, and you do indeed need to do stuff at OSI
+> > layer 7, working on HTTP rather than TCP and IP, you should probably look
+> > into http://www.squid-cache.org
+>
+> we have firewall it redirect traffic to cache server running "squid"
+>
+> :) may i put this rule on firewall machine or the cache server ?
 
-Also can I just rmmod the conntrack module or I need to unload iptables
-and all the rest before I can insmod the new ones? 
+If you want to use netfilter rules, put them on the firewall.   If you want to 
+do URL redirection and perhaps regular expression matching, or you want to 
+make sure that www.abc.com always works in a rule, then use Squid (because 
+that will do a DNS lookup of www.abc.com every time it sees it in a URL).
 
+Regards,
 
-Many thanks,
-Evgeni
+Antony.
 
+-- 
+There are only 10 types of people in the world:
+those who understand binary notation,
+and those who don't.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
