@@ -1,10 +1,9 @@
-From: Torben Nielsen <m@l4l.dk>
-Subject: problem with "-m owner" in kernel 2.4.20
-Date: Thu, 05 Dec 2002 19:45:51 +0100
+From: lists brk <brk_lists@yahoo.com>
+Subject: Deleting iptable-extended rule
+Date: Wed, 4 Dec 2002 14:57:54 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7a7vuu078d02e40u64231r4vpfgrvespap@4ax.com>
+Message-ID: <20021204225754.87915.qmail@web41308.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,66 +14,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
+Cc: brk_lists@yahoo.com
 
-Can anyone tell why the below shown line fails when running kernel =
-version 2.4.20 but not when
-running  kernel 2.4.19.
+Hi!
 
-/usr/local/sbin/iptables -A OUTPUT -o eth0 -m owner --uid-owner root -j =
-ACCEPT
-iptables: Invalid argument
+I am using iptables-1.2.7a. I have extended iptables
+to do a coustom matching operation. The extension
+works fine when I use it while adding new rules,
+something like
+iptables -A INPUT -m coustom --ip-id -j DROP.=20
 
+I am able to delete the rule using the rule number,
+but I am not able to remove it using the rule specifed
+above but with -D option, something like
+iptables -D INPUT -m coustom --ip-id -j DROP
 
-Regards=20
+The error I get is:
+iptables: Bad rule (does a matching rule exist in that
+chain?)
 
-Torben
+I tried to debug it and found that iptables fails at
 
+mptr =3D matchmask + sizeof(STRUCT_ENTRY);
+	if (IPT_MATCH_ITERATE(a, match_different, a->elems,
+b->elems, &mptr))
+	  return 0;
 
+in is_same() found in file libiptc/libip4tc.c
 
-+ SafeConfig
-+ trap '' 1 2 3 13 15
-+ trap 0
-+ set +e
-+ ClearAllTables
-+ /usr/local/sbin/iptables -P INPUT DROP
-+ /usr/local/sbin/iptables -P OUTPUT DROP
-+ /usr/local/sbin/iptables -P FORWARD DROP
-+ /usr/local/sbin/iptables -t filter -F
-+ /usr/local/sbin/iptables -t filter -X
-+ /usr/local/sbin/iptables -t nat -F
-+ /usr/local/sbin/iptables -t nat -X
-+ /usr/local/sbin/iptables -t mangle -F
-+ /usr/local/sbin/iptables -t mangle -X
-+ echo 'The netfilter rules and counters were reset at'
-+ date
-+ /usr/local/sbin/iptables -A INPUT -i eth0 -j ACCEPT
-+ /usr/local/sbin/iptables -A INPUT -i lo -j ACCEPT
-+ /usr/local/sbin/iptables -A INPUT -j LOG --log-prefix 'Bad input =
-packet: '
-+ /usr/local/sbin/iptables -A OUTPUT -o lo -j ACCEPT
-+ /usr/local/sbin/iptables -A OUTPUT -o eth0 -m state --state =
-ESTABLISHED,RELATED -j ACCEPT
-+ /usr/local/sbin/iptables -A OUTPUT -o eth0 -m state --state INVALID -j =
-DROP
-+ /usr/local/sbin/iptables -A OUTPUT -o eth0 -m owner --uid-owner root -j=
- ACCEPT
-    iptables: Invalid argument
-+ /usr/local/sbin/iptables -A OUTPUT -o eth0 -p tcp --dport 6000:6019 -m =
-owner --uid-owner tn -j
-ACCEPT
-iptables: Invalid argument
-+ /usr/local/sbin/iptables -A OUTPUT -j LOG --log-prefix 'Bad output =
-packet: '
-+ /usr/local/sbin/iptables -A FORWARD -j LOG --log-prefix 'Bad forward =
-packet: '
-+ logger -s -p user.crit 'Error setting up packet filtering: using safe =
-configuration'
-root: Error setting up packet filtering: using safe configuration
-+ exit 1
+Any ideas why this might be happening??
+
+Thanks,
+brk
 
 
-
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus =96 Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
