@@ -1,12 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: udp port forwarding from internal network to internet
-Date: Thu, 27 Jan 2005 10:20:28 -0500
-Message-ID: <1106839228.5784.40.camel@hubcap.ljm.dom>
-References: <20050127151743.84393.qmail@web30903.mail.mud.yahoo.com>
+From: mohammad Mahbubur rahman <mahbub71@yahoo.com>
+Subject: ip6_queue
+Date: Thu, 27 Jan 2005 09:14:05 -0800 (PST)
+Message-ID: <20050127171405.10731.qmail@web52302.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050127151743.84393.qmail@web30903.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +14,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-On Thu, 2005-01-27 at 10:17, Kevin Van Workum wrote:
-> > > What IP does my app connect to, the internal IP of
-> > my
-> > > server with the internet connection?
-> > 
-> > nope--the IP of the server on the internet.
-> 
-> How does the machine on the internal network know to
-> go through my firewall server to make the connection?
-> Is there any configuration required on the internal
-> machine running the app?
+Hi,
+I am new in linux.I download the iptables-1.2.11 from
+the web. I install it in linux 1.4.20-8 kernel. I have
+the ip_queue modules installed on the machine. But
+ip6_queue is not there. I found the ip6_queue.c file
+in the /net/ipv6/netfilter directory. But i dont know
+why it is not compiled.
 
-normally--the default gateway of the internal machine would be the
-internal IP of the firewall.  if this is not the case--you will need to
-make a change to your internal routing to make sure these packets get
-routed to the firewall.
+Can anybody suggest me how i can build the ip6_queue
+module. I am totaly new in linux stuff. Thanks in
+advance.
 
--j
+Mahbub
 
---
-"Lisa, if you don't like your job you don't strike. You just go in
- there every day and do it really half-assed. That's  the American way."
-	--The Simpsons
 
+	=09
+__________________________________=20
+Do you Yahoo!?=20
+All your favorites on one personal page =96 Try My Yahoo!
+http://my.yahoo.com=20
 
