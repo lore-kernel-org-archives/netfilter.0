@@ -1,8 +1,8 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
+From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
-Date: Fri, 31 Oct 2003 11:36:52 +1100
+Date: Thu, 30 Oct 2003 16:57:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AC99@wardrive.citadelcomputer.com.au>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E96@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,23 +17,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Tarek W." <ticallion@hotpop.com>, netfilter@lists.netfilter.org
+To: George Vieira <georgev@citadelcomputer.com.au>, "Tarek W." <ticallion@hotpop.com>, netfilter@lists.netfilter.org
 
-that's interesting..(off that URL) "I've been using iptables since RHL =
-7.0, a bit before that"
+Way to jump on the guys back! Especially after he went through the
+horror that was -Redhat 7.0-!
 
-RedHat 7.0 came with 2.2 kernel... how you get iptables compilable on =
-it?? ;)
+Speaking of nostalgia, I'm finally decommissioning my home firewall
+which I built on top of Redhat 7.1 when rh7.1 was brand new. It used to
+be 7.0, but for obvious reasons, I did not stick with that particular
+version. Anyways, I'm combining the firewall and the file server to
+conserve heat if you can believe it. Reboots: 3 (I really love Linux).
+Running 4 PC's from my apartment really gets warm after a while!
 
-Thanks,
-____________________________________________
-George Vieira=20
+PS: Please no gratuitous no server software on the firewall jokes! I am
+hurting enough as it is.
 
-> -----Original Message-----
-> From: Tarek W. [mailto:ticallion@hotpop.com]
-> Sent: Friday, 31 October 2003 11:08 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: thoughts on a newbie tutorial i'll be giving shortly
->=20
->=20
 
