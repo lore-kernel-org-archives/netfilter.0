@@ -1,14 +1,10 @@
-From: Ludo Stellingwerff <ludo@protactive.nl>
-Subject: Re: Some more IPSec - IPTables issues?
-Date: Thu, 27 May 2004 13:06:52 +0200
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: RE: iptables and samba
+Date: Thu, 27 May 2004 15:40:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1085656011.3861.84.camel@laptop.stwerff.xs4all.nl>
-References: <1085648121.3864.58.camel@laptop.stwerff.xs4all.nl>
-	 <20040527102635.GA18523@alldas.org>
+Message-ID: <BAY15-F10BvW8XADQQW000127bc@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040527102635.GA18523@alldas.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +14,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Stefan Wagner <sw@alldas.org>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
-
-On Thu, 2004-05-27 at 12:26, Stefan Wagner wrote:
-> Hi,
-> 
-> > I need this functionality to be able to create a VPN-tunnel between to
-> > networks, one of which is behind a dynamic IP-address. I have a working
-> > solution by (dirty)-hacking Racoon, but that hack is unmaintainable.
-> 
-> What solution is that ?
-> 
-> Cheers,
-
-When Racoon would receive a request for a policy that existed to a
-different gateway, Racoon blocked the request. The Error message was
-that it would need to nest policies.
-I changed the test in racoon to detect this situation and start an
-external script. A bit like the routing-scripts in FreeSWan.
-
-This script would have the new remote ipsec-gateway as a parameter, and
-reset the policy to this new adres. The result is an ipsec-tunnel
-between two gateway's but with one end dynamic.
-
-But this is a really dirty trick, because I reset the complete network
-to catch this new connection. (including new firewall rules, SPD
-policies and a racoon restart:( )
-
-Unmaintainable!
-
-The problem is that an Ipsec tunnel with an dynamic gateway is undefined
-in the standard.
-Instead I would like to use one end as a roadwarrior host, masquerading
-the remote network. This will leave me with a uni-directional tunnel,
-but that is good enough for me. 
-
-Trouble is the way ipsec and SNAT function at this moment. It doesn't
-yet work. 
-
-I thought of 3 different solutions:
-
-1 Using the userland QUEUE target after the SNAT and reinject the
-packages before the IPSEC-filter. Sounds like a possible workaround.
-
-2 The Freeswan virtual devices solution, but most people seem to agree
-that that's not a clean design.
-
-3 Allowing SNAT in the PREROUTING chain, too. That way I should be able
-to SNAT before IPSEC.
-
-Any more suggestions?
-
-Greetings,
-
-Ludo.
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
+no one out there could help me?
+
+>From: "azeem ahmad" <azeem484@hotmail.com>
+>To: netfilter@lists.netfilter.org
+>Subject: iptables and samba
+>Date: Sun, 23 May 2004 09:20:52 +0000
+>
+>hi
+>i m using the script below
+>-------------------------------------------------------------------------------------------------------------------------------------
+>iptables -F
+>iptables -t nat -F
+>iptables -P INPUT DROP
+>iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
+>iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
+>iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
+>iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
+>iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
+>iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
+>iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
+>
+>iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+>#iptables -t nat -A PREROUTING -p udp --dport 80 -j REDIRECT --to-port 8080
+>
+>iptables -P FORWARD DROP
+>iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
+>iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
+>
+>iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+>-------------------------------------------------------------------------------------------------------------------------------------
+>
+>i have two shares on samba server "Soft and linux" in these shares there 
+>are many folders. whenever i run the above script and then i open the share 
+>it takes atleast 4  minutes to open the share. but it doesnt take time 
+>while browsing inside share.
+>mean there is a folder on soft share like soft/adobe/acrobat/acrobat6
+>when i double click on soft it takes atleast 4 minutes but after that when 
+>i click on adobe then acrobat then acrobat6 it takes now time it just brose 
+>them normally. same problem is with the other share named linux.
+>but if i dont run this script then all shares work fine with no delay
+>
+>i dont know what is the udp port 80 for but i just saw its traffic on my 
+>network in iptraf so i included it in my script
+>
+>Regards
+>Azeem
+>
+>_________________________________________________________________
+>Add photos to your e-mail with MSN 8. Get 2 months FREE*. 
+>http://join.msn.com/?page=features/featuredemail
+>
+>
+
+_________________________________________________________________
+The new MSN 8: smart spam protection and 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
 
