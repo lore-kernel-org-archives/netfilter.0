@@ -1,12 +1,10 @@
 From: <skmail@mcewen.wcnet.org>
-Subject: (no subject)
-Date: Mon, 17 Jun 2002 11:46:20 -0400 (EDT)
+Subject: string patch-o-matic patch compile problem
+Date: Mon, 17 Jun 2002 11:53:13 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206171138510.29840-100000@mcewen.wcnet.org>
-References: <01f701c215ed$fca7c100$9300a8c0@edapter.com>
+Message-ID: <Pine.LNX.4.33.0206171151260.8743-100000@mcewen.wcnet.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <01f701c215ed$fca7c100$9300a8c0@edapter.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -73,6 +71,8 @@ make[2]: Leaving directory `/usr/src/linux/net/ipv4/netfilter'
 make[1]: *** [_subdir_ipv4/netfilter] Error 2
 make[1]: Leaving directory `/usr/src/linux/net'
 make: *** [_dir_net] Error 2
+
+
 
 
 
