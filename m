@@ -1,13 +1,12 @@
-From: Atilla <theatilla@gmail.com>
-Subject: Re: Weird behaviour when compiling iptables
-Date: Tue, 25 Jan 2005 16:24:32 +0200
-Message-ID: <b53c932d05012506247bd8ed@mail.gmail.com>
-References: <b53c932d0501240507143cd370@mail.gmail.com>
-Reply-To: Atilla <theatilla@gmail.com>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: Customizing LOG output
+Date: 26 Jan 2005 14:29:28 +0100
+Message-ID: <1106737096.24810.14.camel@nostromo.bgsecm.com>
+References: <20050126015350.47754CD9F8@ws1-2a.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <b53c932d0501240507143cd370@mail.gmail.com>
+In-Reply-To: <20050126015350.47754CD9F8@ws1-2a.us4.outblaze.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Ok, I got some progress (i think). I got the 2.6.10 kernel, and
-compiled it and replaced the old one with it. With and without
-patching the kernel and the iptables source i get the same thing:
-"Making dependencies, please wait..." and it stays there. CPU usage is
-100%, with make forking to cpp0 and cc processes all the time - at
-least that's what i got from what TOP shows. I ran STRACE on this -
-it's a loooong sequence of things i don't understand but at least i
-know it doesn't hang - ot loops continuously doing something.
+El mi=C3=A9, 26 de 01 de 2005 a las 02:53, Josh Larocque escribi=C3=B3:
+> Thanks Samuel, I'll give it a shot!
 
-Now - I'm doing this on a Pentium II 400mhz machine with 128RAM and
-1GB swap. The ram usage is VERY low when doing this. I don't know how
-much the process should take but I left it yesterday for hours and it
-was still doing the same thing. A kernel compile, for example, takes
-it like 1/2 an hour.  Oh - and iptables 1.3.0 does the same thing -
-"making dependencies, please wait... " - i thought it might do some
-difference - it didn't.  So i'm stuck at this point. Apparently i did
-something to the system, but i can't figure out what. I haven't been
-changing any important things like compilers and libraries and the
-such, that's for sure.
+You can also give a try to ULOG, it logs to databases,
+plain files, syslog formats, etc. It could be a lot
+easier to modify ULOG than the iptables o Netfilter code.
 
-I'm kind of new to all this but I figure I'm way too stuck on this
-one. Any further clues are highly appreciated.
+Regards.
+
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
 
