@@ -1,9 +1,11 @@
-From: Javier Govea <jgovea@magma.ca>
-Subject: RE: iptables kernel space
-Date: Sun, 20 Jul 2003 20:14:42 -0400 (EDT)
+From: "pengjie" <bill@acamar.com.cn>
+Subject: Re: Confusion about QUEUE and NETLINK
+Date: Mon, 21 Jul 2003 09:31:28 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307210014.h6L0Eggh022782@webmail2.magma.ca>
+Message-ID: <000701c34f27$ce9d25b0$0f640a0a@acamarpeng>
+References: <000201c34e29$44671da0$0200a8c0@basti79>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,49 +17,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Sebastian <netfilter@basti79.de>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-thank you for your advice but you are talking about the userspace iptables. The kernel
-space iptables is in /lib/modules/2.4.20-8/kernel/net/ipv4/netfilter. Buy anyway before i
-compile the iptables in kernel space i'm deleting all iptables: the one in
-/usr/sbin/iptables and the one in the kernel space...
+SSB0aGluayBORVRMSU5LIGlzIHRoZSBtZWNoYW5pc20gY29tbXVuaWNhdGlvbiBiZXR3ZWVuIHVz
+ZXJzcGFjZSBhbmQga2VybmVsIHNwYWNlLiBpcHF1ZXVlIGlzIGFuIGFwcGxpY2F0aW9uIGJhc2Vk
+IG9uIGl0LiBpbiBhbiBvdGhlciB3b3JkcywgaXBxdWV1ZSB1c2VzIE5FVExJTksgdG8gZGVsaXZl
+ciBwYWNrZXRzIGJldHdlZW4gdXNlciBzcGFjZSBhbmQga2VybmVsIHNwYWNlLg0KDQoNCi0tLS0t
+IE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gDQpGcm9tOiAiU2ViYXN0aWFuIiA8bmV0ZmlsdGVyQGJh
+c3RpNzkuZGU+DQpUbzogIk5ldGZpbHRlciBNYWlsaW5nbGlzdCIgPG5ldGZpbHRlckBsaXN0cy5u
+ZXRmaWx0ZXIub3JnPg0KU2VudDogU3VuZGF5LCBKdWx5IDIwLCAyMDAzIDM6MDkgQU0NClN1Ympl
+Y3Q6IENvbmZ1c2lvbiBhYm91dCBRVUVVRSBhbmQgTkVUTElOSw0KDQoNCj4gSGkgbGlzdC4uLg0K
+PiANCj4gSSdtIGJ5IG5vdyBhIGxpdHRsZSBjb25mdXNlZCBhYm91dCBRVUVVRSBhbmQgTkVUTElO
+SyB0YXJnZXRzLg0KPiBCb3RoIGFyZSBmb3IgcXVldWluZyB0byB1c2Vyc3BhY2UgaWYgSSB1ZGVy
+c3RhbmQgaXQgY29ycmVjdGx5LiBCdXQgd2hlcmUNCj4gaXMgdGhlIGRpZmZyZW5jZSBiZXR3ZWVu
+IHRob3NlIHR3bz8gQXJlIHRoZXkgdXNlZCBmb3IgZGlmZnJlbnQgcHVycG9zZQ0KPiBvciBpcyBq
+dXN0IHRoZSB1c2Vyc3BhY2UgaW50ZXJmYWNlIGRpZmZyZW50Pw0KPiANCj4gQWRkaXRpb25hbHkg
+aSd2ZSBmb3VuZCB0d28gb3B0aW9ucyBpbiBrZXJuZWwgLmNvbmZpZyBmaWxlIHdoaWNoIGFyZSBu
+b3QNCj4gZG9jdW1lbnRlZCB1bmRlciBEb2N1bWVudGF0aW9uL0NvbmZpZ3VyZS5oZWxwOg0KPiBD
+T05GSUdfSVBfTkZfTkVUTElOSw0KPiBDT05GSUdfSVBfTkZfTkVUTElOS19DT05OVFJBQ0sNCj4g
+V2hhdCBpcyB0aGVpcmUgcHVycG9zZT8NCj4gDQo+IFRoYW5rcyBmb3IgYW55IGFuc3dlcnMuDQo+
+IA0KPiBHcmVldHMNCj4gU2ViYXN0aWFuLg0KPiANCj4gDQo+IA0K
 
-i'm positive sure that i'm not running two versions...
-
-thank you for you advice....any other ideas?????
-
-thanx
-X
-
-
-On Jul 21, "George Vieira" <georgev@citadelcomputer.com.au> wrote:
-> 
-> Make sure you don't have 2 versions running. I fell into this trap once with RedHat
-where there was a binary in /usr/sbin/iptables and my compiled on it in prefix default of
-/usr/local/sbin/iptables.
-> 
-> check your versions.... just letting you know.
-> 
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
-> 
-> Citadel Computer Systems Pty Ltd
-> <a href='http://www.citadelcomputer.com.au'>http://www.citadelcomputer.com.au</a>
-> 
-> Phone   : +61 2 9955 2644
-> HelpDesk: +61 2 9955 2698
->  
-> 
-> -----Original Message-----
-> From: Javier Govea [mailto:jgovea@magma.ca]
-> Sent: Monday, July 21, 2003 6:29 AM
-> To: netfilter@lists.netfilter.org
-> Subject: iptables kernel space
-> 
-> 
-> 
 
