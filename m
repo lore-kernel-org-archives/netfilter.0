@@ -1,12 +1,13 @@
-From: "rupesh kumar kumar" <rupesh_533@rediffmail.com>
-Subject: I am not able to set ttl value
-Date: 29 Nov 2004 03:42:20 -0000
-Message-ID: <20041129034220.14450.qmail@mailweb34.rediffmail.com>
-Reply-To: rupesh kumar kumar <rupesh_533@rediffmail.com>
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: Re: I am not able to set ttl value
+Date: Mon, 29 Nov 2004 10:39:58 +0200
+Message-ID: <3063e5041129003957ecdcda@mail.gmail.com>
+References: <20041129034220.14450.qmail@mailweb34.rediffmail.com>
+Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20041129034220.14450.qmail@mailweb34.rediffmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,9 +19,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: rupesh kumar kumar <rupesh_533@rediffmail.com>
+Cc: netfilter@lists.netfilter.org
 
-  =0AHi,=0A=0A   I am woking on iptables,NAT.I am not able to set  the ttl =
-value.=0Awhen i am giving like this it is not working out=0A=0A=0Aiptables =
--t mangle -A PREROUTING -i eth0 -j TTL --ttl-set 64=0A=0APlease Help me=0A=
-=0ABye=0ARegards=0ARupesh
+Check www.netfilter.org and take the patch-o-matic or patch-o-matic-ng
+
+
+On 29 Nov 2004 03:42:20 -0000, rupesh kumar kumar
+<rupesh_533@rediffmail.com> wrote:
+> 
+> Hi,
+> 
+>    I am woking on iptables,NAT.I am not able to set  the ttl value.
+> when i am giving like this it is not working out
+> 
+> iptables -t mangle -A PREROUTING -i eth0 -j TTL --ttl-set 64
+> 
+> Please Help me
+> 
+> Bye
+> Regards
+> Rupesh
+> 
+
+
+-- 
+Bla bla
+
