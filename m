@@ -1,79 +1,46 @@
-From: Andreas Jellinghaus <aj@dungeon.inka.de>
-Subject: Re: port-based filtering of ESP packets with in-kernel IPsec?
-Date: 30 Jul 2003 16:51:41 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <1059576701.4586.20.camel__49480.113053187$1059749587@simulacron>
-References: <1059540296.16545.305.camel@k7.localnet>
-	 <20030730142411.GD4553@sunbeam.de.gnumonks.org>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: SSL Question
+Date: 01 Aug 2003 16:51:00 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1059749459.4007.6.camel@elendil.intranet.cartel-securite.net>
+References: <20030729224958.57764.qmail@web41303.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20030730142411.GD4553@sunbeam.de.gnumonks.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030729224958.57764.qmail@web41303.mail.yahoo.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
-To: Harald Welte <laforge@netfilter.org>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, netdev@oss.sgi.com
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: nakisawame <nakisawame@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Le mer 30/07/2003 =E0 00:49, nakisawame a =E9crit :
+> I am wondering if this will work... We are using NAT,
+> and I currently have 2 different webservers that we
+> need to put SSL on.
+> Each webserver has a different external DNS entry (I
+> am using 55.55.55.56 and 55.55.55.57 as examples).
+> Each actual webserver is on its own internal IP
+> address (192.158.0.14 and 192.168.0.15, respectively).
+> Can I do something like this:
+> iptables -t nat -A PREROUTING -p tcp -d 55.55.55.56
+> --dport https -j DNAT --to 192.168.0.14:443
+> iptables -t nat -A PREROUTING -p tcp -d 55.55.55.57
+> --dport https -j DNAT --to 192.168.0.15:443
+> Does this work? If it doesn't, how do I do this? This
+> is driving me nuts!
 
-if you are using ipsec from kernel 2.6.* there is no "ipsec0"
-interface, and thus using netfilter isn't as easy as it was with
-freeswan.
+Yes it will work, as long as your webservers are correctly configure to
+handle external DNS name and according certificate.
 
-three ways to solve the problem, only tried the first one so far:
-1.) configure ipsec in tunnel mode, add your tunnel ip to 
-    the outgoing interface, change the default route to
-    set the source ip to the tunnel ip.
-note: there is no routing step after encapsulating a packet
-with ipsec, there was one with freeswan, so this is different.
-
-2.) set a fwmark on an esp packet, it should be there after
-    unpacking/decryption. didn't try this one.
-
-3.) do not use the build in tunneling. use an explicit ipip tunnel.
-	that way you have the interface, can use it in netfilter,
-	can route into it, and the interface will set the right
-	source address.
-
-[netfilter]
-incoming encrypted packets are seen as ESP/AH in INPUT
-and then as decrypted packet in INPUT or FORWARD.
-
-outgoing packets are only seen as ESP in OUTPUT.
-
-> > Since ESP packets that reach the mangle INPUT chain are destined for a
-> > local process, why not unencapsulate them just before that point?  
-
-INPUT only means the ESP will be decrypted/unecapsulated.
-after that the decrypted packet will show up in INPUT or FORWARD.
-
-> no. My preferred solution was something like adding a netfilter hook to
-> the xfrm4 engine, exactly after decapsulation / decryption of one layer,
-> i.e.  after xfrm_type.input was called. 
->
-> iptables could then register the INPUT chain (or probably even a
-> seperate POSTXFRM chain) in order to filter on the respective packets.
-
-you can already filter incoming packets. The problem is you
-don't know if they came in that way they look now, or if they
-came in via ESP packets and got decrypted.
-
-maybe decryption/unencapsulating could leave a mark on the
-packet, so we know packets without that mark came in without
-ipsec and are bad / attempts to access resources without ipsec?
-(maybe fwmark works on that. or an explicit ipip tunnel, so you
-have "ipip0" or something as incoming interface).
-
-> Any comments are appreciated.
-
-Regards, Andreas
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
