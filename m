@@ -1,8 +1,8 @@
-From: "ads nat" <adsnat@hotmail.com>
-Subject: Re: Setting up default policy to 'DROP' problem
-Date: Tue, 03 Feb 2004 21:23:04 +0530
+From: ip tables <iptables_help@yahoo.com>
+Subject: natting issue-URGENT---i need help badly
+Date: Tue, 3 Feb 2004 08:17:51 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY8-F85bbBiq2wXaJp00069846@hotmail.com>
+Message-ID: <20040203161751.6693.qmail@web20725.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,88 +14,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: JALaramie@Loudoun-Fairfax.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-I realy appretiat your support and feelings to help others.
+Dear group,
 
-With your support I have succedded in setting up default policy drop for=20
-INPUT, OUTPUT and FORWARD. Will post rules soon.
+I have a machine with 2 NICs one having the IP
+10.2.240.19(eth2) and one 192.168.128.4(eth1). I use
+redhat 9.0(2.4.20-8) with the built in iptables
+V1.2.7a.
+Yes i have a eth0 also.
+I have the following rules. My idea is to permit only
+http on port 80 and nrpc on port 1352. With this setup
+after making the POSTROUTING default policy to ACCEPT
+i could telnet to both the ports 1352 and 80. But when
+i try to connect to the Domino server via a Lotus
+notes client it fails. I would prefer to have the
+POSTROUTING to DROP by default also. I'm confused.
+Help me. Thanks for your time.
 
-I know I have taken long time to understand this technology. But I can not =
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+iptables -t nat --policy PREROUTING DROP
+iptables -t nat --policy OUTPUT DROP
+iptables -t nat --policy POSTROUTING ACCEPT
+iptables -t nat -A POSTROUTING -o eth2 -j SNAT
+--to-source 10.2.240.19
+iptables -t nat -A PREROUTING -i eth2 -p tcp --sport
+1:65535 -d 10.2.240.19 \
+--dport 80 -j DNAT --to-destination 192.168.128.5
+iptables -t nat -A PREROUTING -i eth2 -p tcp --sport
+1:65535 -d 10.2.240.19 \
+--dport 1352 -j DNAT --to-destination 192.168.128.5
+iptables -t nat -A PREROUTING -i eth2 -p udp --sport
+1:65535 -d 10.2.240.19 \
+--dport 1352 -j DNAT --to-destination 192.168.128.5
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport
+1:65535 -d 192.168.128.5 \
+--dport 80 -m state --state NEW -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport
+1:65535 \
+-d 192.168.128.5 --dport 1352 -m state --state NEW -j
+ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p udp --sport
+1:65535 \
+-d 192.168.128.5 --dport 1352 -m state --state NEW -j
+ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp -m state \
+--state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp -m state \
+--state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p udp -m state \
+--state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p udp -m state \
+--state RELATED,ESTABLISHED -j ACCEPT
 
-rush until I get my fundas clear.
-Once again Thanks for support.
 
-
->From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
->To: netfilter@lists.netfilter.org
->Subject: Re: Setting up default policy to 'DROP' problem
->Date: Tue, 03 Feb 2004 08:49:39 -0500
->
->ads nat wrote:
->
->>I have setup DMZ firewall as per Oskar Anderson tutorial on Netfilter.org=
-=20
->>site.
->>
->>When I set up default policy to drop for INPUT, OUTPUT and FORWARD chains=
-=20
->>as mentioned in the tutorial my connection drops.
->>I am attaching my iptables rules listing.
->>Is there anything wrong in the IPtable rules.
->>When I setup default to ACCEPT everything works fine.
->>Help appreciated.
->>Thanks
->>
->
->I've responded to your postings before, so I was hoping someone new might =
-
->give this a shot. I know that you've been trying for months to get this=20
->configured, but you're having problems with the basics and you've still go=
-t=20
->a long way to go. Oskar's tutorial is a great place to start, but you may =
-
->want to try reading some other documentation to see if it helps you. You=20
->may also want to look at using a tool like shorewall to help you create=20
->rules.
->
->That said, I'll do what I can to help you. Try using: iptables -L -n -v -x=
-=20
-> > /var/log/iptables.report. Open up iptables.report in a text editor and =
-
->turn off word wrap so you can see one rule on each line. When I review=20
->rules I make the font really small and print the ruleset out 'landscape'=20
->oriented so I can see a whole rule printed out on a line.
->
->Look at the number of packets hitting each rule. I think you'll be=20
->surprised where the packets are going. Remember that the rules are=20
->transversed from top to bottom in each ruleset. As soon as a packet matche=
-s=20
->a rule it stops (except logging) and doesn't go to the next rule in the=20
->chain. Try starting out with a new script and only a couple rules. Test th=
-e=20
->configuration and then use iptables -L -n -v -x again to see if the packet=
-s=20
->are going where you think they should. For more details you can also add=20
->logging rules then check /var/log/messages to see the packet flow in more =
-
->detail. Once you have the basic routing working you can add the filtering =
-
->rules back in. If you have problems post your new rules back to the list s=
-o=20
->we can see what you've done.
->
->Good Luck
->
->Jeff
->
->
-
-_________________________________________________________________
-Gifts for Him & Her. Valentine=92s Day.  http://go.msnserver.com/IN/42197.a=
-sp=20
-At MSN Shopping.
-
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
 
