@@ -1,13 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Squid start problem
-Date: Wed, 19 Nov 2003 08:55:19 +0000
+From: Martin Petruzzi <m.petruzzi@bluewin.ch>
+Subject: Re: Changes in kernel >= 2.4.20 ? -> YES
+Date: Wed, 19 Nov 2003 11:50:41 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311190855.hAJ8tOj23697@agate.rockstone.co.uk>
-References: <093501c3ae65$4b0737c0$7700000a@lawrencewin2k>
+Message-ID: <20031119115041.38aee642.m.petruzzi@bluewin.ch>
+References: <20031117110642.73ee78fc.m.petruzzi@bluewin.ch>
+	<200311180419.hAI4JvD1013995@server5.bandwidthco.com>
+	<20031118182238.7b493120.m.petruzzi@bluewin.ch>
+	<200311182043.18773.Alistair@nerdnet.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <093501c3ae65$4b0737c0$7700000a@lawrencewin2k>
+In-Reply-To: <200311182043.18773.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +21,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: Alistair@nerdnet.ca
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 19 November 2003 6:20 am, Lawrence Tang wrote:
+On Tue, 18 Nov 2003 20:43:18 -0500
+Alistair Tonner <Alistair@nerdnet.ca> wrote:
 
-> Hi,
->
->     I had just finish install RH9.0 and try to activate the SQUID. When I
-> activate the service, it showing the following message. Please advice.
-> Thanks in advance.
->
-> squid failed. The error was: init_cache_dir /var/spool/squid...
-> /etc/init.d/squid: line 162: 2098 Aborted $SQUID -z -F -D 2>/dev/null
->
-> Starting squid: /etc/init.d/squid: line 162: 2099 Aborted $SQUID
-> $SQUID_OPTS 2>/dev/null
->
-> [FAILED]
+> > For other Alcatel users reading this, put:
+> > mtu 1430
+> > mru 1430
+> > ...into /etc/ppp/options
+> 
+> 	Doing this works, but you are forcing yourself to a certain size which 
+> 	1) might be smaller than optimal, 
+> 	2) could change one night unexpectedly.
+> 
+> 	Personally I trust the clamp mss to mtu ... it works.
+> 	(for what its worth .. my MTU is somewhat larger than that...
+> 	on a GVC DSL modem to ALCATEL DsLAM)
 
-I recommend you ask this question on the Squid mailing list, not the 
-Netfilter one - there are likely to be more people there who can answer it :)
+Is there a way to find out what DSLAM device my provider has or even better what mtu it uses?
 
-By the way, if you do post the question there, include any further details 
-which get output in your syslog or squid.log files too.
+I guess/claim that the support people of my provider don't know that and it would cost me a fortune to confirm this suspect. But if I'm right, you say with the clamp rule the problem is solved (seems to by dynamic then) and I don't need to know at all? Any idea why this was no problem with kernels < 2.4.20 (only wondering, not a need to know)?
 
-Antony.
+By the way, I found the number 1430 a couple of times in different other maillists to be the size always working with the Alcatel Speedtouch USB, I have no idea about a technical background of exactly that size.
 
--- 
-
-"I'm doing a (free) operating system (just a hobby, won't be big and 
-professional like gnu) for 386(486) AT clones.
-
-It is NOT portable , and it probably never will support anything other than 
-AT-harddisks, as that's all I have :-(."
-
- - Excerpt from posting to comp.os.minix by Linus Torvalds, 25 Aug 1991
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Martin
 
