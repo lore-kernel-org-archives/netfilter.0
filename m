@@ -1,11 +1,12 @@
-From: Tim Evans <tkevans@tkevans.com>
-Subject: Resend: MASQUERADE: Route sent us somewhere else.
-Date: Mon, 4 Apr 2005 17:55:54 -0400 (EDT)
-Message-ID: <200504042155.j34LtsGK005020@osprey.tkevans.com>
-Reply-To: Tim Evans <tkevans@tkevans.com>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: GRE over two NATs
+Date: Tue, 05 Apr 2005 01:36:49 +0200
+Message-ID: <4251CF91.2030509@lopsch.com>
+References: <20050404190444.GA22407@epsilon.rdc.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-MD5: Kl2nZap6ufh81iqlxdR86g==
+In-Reply-To: <20050404190444.GA22407@epsilon.rdc.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,73 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I'm resending this, as this normally vocal list has been unfortunately silent.
+Mariusz Kruk schrieb:
+> I have a router with 4 interfaces on which I prepared a "IMQ without IM=
+Q
+> setup". Long story short - every packet that traverses the router is
+> first pushed through a tunnel set up between 127.0.0.2 and 127.0.0.3.
+> Therefore I can easily shape the trafic for all interfaces.
+>=20
+> It looks like this (one interface only for simplicity):
+>=20
+> localnet --- eth3 --- localend <---------> remoteend --- eth0 --- world
+>=20
+> Where localnet is of course my local network, eth3 is a local interface=
+,
+> localend is a "local" end of the tunnel, and so on.
+> I use NAT and therefore I have to NAT every packet twice, since... I
+> don't exactly remember what was the exact reason but it had something t=
+o
+> do with connection tracking. Anyway, my 192.168.0.0/16 local addresses
+> are first mapped 1-to-1 to 172.16.0.0/16 addresses and finally all are
+> mapped to my public IP.
+> Everything runs well except GRE.
+> My users complained that they can't connect to their VPNs over PPTP.
+> PPTP uses GRE, so I started to log packets in various tables.
+> I found that for a GRE packet generated in localnet it goes like this:
+> eth3, mangle/prerouting, mangle/forward, filter/forward, mangle/postrou=
+ting,
+> nat/postrouting, localend.
+> Then the packet gets in the box again from the remoteend end of the
+> tunnel and, surprisingly to me, gets logged at mangle/prerouting and
+> nat/prerouting(!).
+>=20
+> Why is it so?
+> I won't be attaching my setup here since it is generated from a script
+> and has quite a few hundred rules (yes, I know it's not veryeffective,
+> but I wanted to have a vanilla kernel, and it's kind of a
+> proof-of-concept), but there is no rule that should filter such packets=
+.
+> There is no rule in nat/prerouting table that applies to those packets.
+> I have completely no idea. :-(
 
-------------- Begin Forwarded Message -------------
-
-X-POP3-Rcpt: tkevans@tkevans.com
-Date: Sun, 3 Apr 2005 09:39:28 -0400 (EDT)
-From: Tim Evans <tkevans@tkevans.com>
-To: netfilter@lists.netfilter.org
-Content-MD5: nQ1B8/s75ZlYfpSmzC5wHg==
-X-Spam-Score: -2.6 (--)
-Subject: MASQUERADE: Route sent us somewhere else.
-X-Spam-Checker-Version: SpamAssassin 2.64 (2004-01-11) on osprey.tkevans.com
-X-Spam-Level: 
-X-Spam-Status: No, hits=0.0 required=5.0 tests=none autolearn=no version=2.64
-
-Since upgrading to RedHat Enterprise Version 4, I've been having goofy routing 
-problems and iptables has been logging this message regularly:
-
-Apr  3 04:15:01 kestrel kernel: MASQUERADE: Route sent us somewhere else.
-
-My immediate ISP is Comcast, but my main domain is hosted at another ISP.
-
-By "goofy routing problems," I mean I have trouble accessing my *own domain* at 
-my ISP for POP-ing down e-mail and *all* other connections.  There are periods 
-of anywhere from a few minutes to an hour or longer where all connections to the 
-domain simply time out.  At the same time, I *can* connect to other domains, 
-including others that belong to me on the same ISP.
-
-During these incidents, traceroutes to my main domain hang at the very first hop 
-(Comcast's first router); if I run a traceroute to any other site in a different 
-window at the very same time, it proceeds all the way to its destination 
-virtually instantly.
-
-The above error consistently corresponds with a cron job that runs fetchmail to 
-POP my e-mail down from the ISP.
-
-I have the following lines in my iptables script that reference masquerading:
-
-/sbin/modprobe ipt_MASQUERADE
-/sbin/iptables -t nat -A POSTROUTING -o $INET_IFACE -j MASQUERADE
-
-I have not changed the iptables script since upgrading to RHEL 4; I did not see 
-any such problems with RHEL 3.
-
-What's doubly goofy about these problems is they're intermittent.  After a spell 
-of being unable to connect (again, ranging from just a few minutes to an hour or 
-more), it'll suddenly begin working.
-
-And, to repeat, this only affects my primary domain; no other connections to any 
-other domain I try see these failures. 
---
-Tim Evans, TKEvans.com, Inc.	|    5 Chestnut Court
-tkevans@tkevans.com		|    Owings Mills, MD 21117
-http://www.tkevans.com/		|    443-394-3864
-http://www.come-here.com/News/	|    
-
-
-------------- End Forwarded Message -------------
-
-
-Tim Evans, TKEvans.com, Inc.	|    5 Chestnut Court
-tkevans@tkevans.com		|    Owings Mills, MD 21117
-http://www.tkevans.com/		|    443-394-3864
-http://www.come-here.com/News/	|    
-
+I don=B4t really understand your setup so far but for GRE to work behind=20
+NAT you need connection tracking modules because afaik there=B4s nothing=20
+like NAT-T for GRE like for IPSec. I hope I=B4m not totally telling you=20
+nonsense. For PPTP and GRE there are conntrack modules in POM-NG.
 
