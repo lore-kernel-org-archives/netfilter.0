@@ -1,10 +1,14 @@
-From: "sword" <gbj@glc.cn.net>
-Subject: about N-to-N NAT
-Date: Fri, 30 May 2003 18:9:30 +0800
+From: "Jose Luis Hime" <jhime@synchro.com.br>
+Subject: RE: Problems with NAT - it worked !
+Date: Fri, 30 May 2003 08:33:31 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E19Lgpn-0004We-00@kashyyyk.netfilter.org>
-Reply-To: gbj@glc.cn.net
+Message-ID: <001901c3269f$4c78da30$010319ac@jhime>
+References: <001a01c3264f$15bf0d20$fd0aa8c0@winxp>
+Reply-To: <jhime@synchro.com.br>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001a01c3264f$15bf0d20$fd0aa8c0@winxp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,45 +18,117 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+To: 'Matt Hellman' <netfilter@taxandfinance.com>, jhime@synchro.com.br, 'George Vieira' <georgev@citadelcomputer.com.au>, 'Ray Leach' <raymondl@knowledgefactory.co.za>, 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
 
-hello,everyone,I setup a iptables firewall box.and I have a LAN inside the firewall,and have serveral public address outside.
-firewall is worked at  route mode ,what I want to do is,transfer the source IP address of the packet from inside to outside to different ones,did someone do same thing?  iptables can do it? 
+This tip worked perfectly! I will do the command:
 
-begin 600 FACE-6.GIF
-M1TE&.#EA(``@`/?8`/______S/__F?__9O__,___`/_,___,S/_,F?_,9O_,
-M,__,`/^9__^9S/^9F?^99O^9,_^9`/]F__]FS/]FF?]F9O]F,_]F`/\S__\S
-MS/\SF?\S9O\S,_\S`/\`__\`S/\`F?\`9O\`,_\``,S__\S_S,S_F<S_9LS_
-M,\S_`,S,_\S,S,S,F<S,9LS,,\S,`,R9_\R9S,R9F<R99LR9,\R9`,QF_\QF
-MS,QFF<QF9LQF,\QF`,PS_\PSS,PSF<PS9LPS,\PS`,P`_\P`S,P`F<P`9LP`
-M,\P``)G__YG_S)G_F9G_9IG_,YG_`)G,_YG,S)G,F9G,9IG,,YG,`)F9_YF9
-MS)F9F9F99IF9,YF9`)EF_YEFS)EFF9EF9IEF,YEF`)DS_YDSS)DSF9DS9IDS
-M,YDS`)D`_YD`S)D`F9D`9ID`,YD``&;__V;_S&;_F6;_9F;_,V;_`&;,_V;,
-MS&;,F6;,9F;,,V;,`&:9_V:9S&:9F6:99F:9,V:9`&9F_V9FS&9FF69F9F9F
-M,V9F`&8S_V8SS&8SF68S9F8S,V8S`&8`_V8`S&8`F68`9F8`,V8``#/__S/_
-MS#/_F3/_9C/_,S/_`#/,_S/,S#/,F3/,9C/,,S/,`#.9_S.9S#.9F3.99C.9
-M,S.9`#-F_S-FS#-FF3-F9C-F,S-F`#,S_S,SS#,SF3,S9C,S,S,S`#,`_S,`
-MS#,`F3,`9C,`,S,```#__P#_S`#_F0#_9@#_,P#_``#,_P#,S`#,F0#,9@#,
-M,P#,``"9_P"9S`"9F0"99@"9,P"9``!F_P!FS`!FF0!F9@!F,P!F```S_P`S
-MS``SF0`S9@`S,P`S````_P``S```F0``9@``,P```/___P``````````````
-M````````````````````````````````````````````````````````````
-M````````````````````````````````````````````````````````````
-M`````````````````````"'_"TY%5%-#05!%,BXP`P$````A^00%'@#8`"P`
-M````(``@```(_P`!`$A4IJ#!@P@3'A3($(#"AP8?&21HL"%%B`HOSDHH$./#
-M1!O+/-IXL6!)D0=/HB09,B1$C1-GM00YRPO(1RH/SBPXZY&7&5YF@4PT8\8L
-M!#-`FDPHM&>BD0BB!DWT,VJ9J$AMHD0X<I;1HUC#BL5J--$UB0BI`HU:U,O8
-MMST[IOUI4Z;7&6.+XHTJ5*Y.O8#S(D+D].<LAF:O&=R+P.8C1(R10M;+UII%
-MK52C$ETQBT58O5Y"NT60J.'`I"(9VVPU6G-1%C6QEK9XP&9KI$7%)LJ:F;3I
-M@0>21GY+^NULVKF)*Y?]>R#1Y6%WZVXN?7GUZLRI#Q>;-)'WL<=_/TB'3CR\
-M::+;R9O_7>8V6YO>U49OWK#,>/*:Z9MN_Q:H>]_Z,735?^4%:)%4ZAEXH%38
-M3:<@8KHU"."#`DE(6GSQ4>@<?A?J%Q``(?D$!1X`V``L"``)`!0`!P``"#8`
-ML0D4B`#!P(,(!\Z:E;#AP$0)9S@\.*.BQ1D&)U8DB.UB1(L'O6#S(G)C2)$B
-*#Q;,B'`ERX``.\
-`
-end
+-t nat -A POSTROUTING -s LAN-A -d LAN-B -j ACCEPT
+
+to every known destination.
+
+Just to finish, I've heard from many people that using SNAT could cause
+problems and I better using MASQUERADING...
+
+Is that true ? The NAT how-to says the opposite...
+
+Well, thanks to everyone, specially to George Vieira. I hope he could
+finally finish his job after I stopped bothering him!
+
+Jose Hime
 
 
+-----Original Message-----
+From: Matt Hellman [mailto:netfilter@taxandfinance.com]
+Sent: Thursday, May 29, 2003 10:59 PM
+To: jhime@synchro.com.br; 'George Vieira'; 'Ray Leach'; 'Netfilter
+Mailing List'
+Subject: RE: Problems with NAT
+
+
+never tried it, but why couldn't you just add ACCEPT rules in PREROUTING
+[before the NAT rule] for each LAN not_to_be_natted?
+
+-t nat -A POSTROUTING -s LAN A -d LAN B -j ACCEPT
+-t nat -A POSTROUTING -s LAN A -d LAN C -j ACCEPT
+-t nat -A POSTROUTING -s LAN A -d 0/0 -j SNAT --to Firewall_IP_address
+
+
+>-----Original Message-----
+>From: netfilter-admin@lists.netfilter.org 
+>[mailto:netfilter-admin@lists.netfilter.org] 
+>Sent: Thursday, May 29, 2003 6:03 PM
+>To: 'George Vieira'; jhime@synchro.com.br; 'Ray Leach'; 
+>'Netfilter Mailing List'
+>Subject: RE: Problems with NAT
+>
+>
+>The addresses are the following:
+>
+>LAN A: 172.25.0.0 / 255.255.0.0
+>LAN B: 172.28.0.0 / 255.255.0.0
+>LAN C: 10.0.0.0 / 255.0.0.0
+>LAN D: 159.254.172.0 / 255.255.255.0
+>LAN E: 164.137.0.0 / 255.255.0.0
+>
+>LANs A and B are from the company I work for.
+>LANs C, D and E are from custommers of ours.
+>
+>Thanks,
+>Jose Hime
+>
+>-----Original Message-----
+>From: George Vieira [mailto:georgev@citadelcomputer.com.au]
+>Sent: Thursday, May 29, 2003 7:09 PM
+>To: jhime@synchro.com.br; Ray Leach; Netfilter Mailing List
+>Subject: RE: Problems with NAT
+>
+>
+>What is the IP ranges for the other networks? Are they the 
+>same subnet or different ones?
+>Ned more info so we can determine the needs..
+>
+>PS: Nice drawing ;P
+>
+>Thanks,
+>____________________________________________
+>George Vieira
+>Systems Manager
+>georgev@citadelcomputer.com.au
+>
+>Citadel Computer Systems Pty Ltd
+>http://www.citadelcomputer.com.au
+>
+>Phone   : +61 2 9955 2644
+>HelpDesk: +61 2 9955 2698
+> 
+>
+>-----Original Message-----
+>From: Jose Luis Hime [mailto:jhime@synchro.com.br]
+>Sent: Friday, May 30, 2003 3:15 AM
+>To: 'Ray Leach'; 'Netfilter Mailing List'
+>Subject: RE: Problems with NAT
+>
+>
+>The problem is that there are LAN C, LAN D and LAN E in other 3 cities,
+>also! So, the rule:
+>
+>-t nat -A POSTROUTING -s LAN A -d ! LAN B -j SNAT --to 
+>Firewall_IP_address
+>
+>would work for LAN B, but not for the other LANs.
+>
+>All LANs are connected to the same router.
+>
+>Thanks again,
+>Jose Hime
+>
+>
+>-----Original Message-----
+>From: netfilter-admin@lists.netfilter.org
+>[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Ray Leach
+>Sent: Thursday, May 29, 2003 12:55 PM
+>To: Netfilter Mailing List
+>Subject: Re: Problems with NAT
+>
 
