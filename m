@@ -1,14 +1,15 @@
-From: "Ed Street" <blacknet@simplyaquatics.com>
-Subject: RE: hosts.deny
-Date: Sun, 7 Jul 2002 19:49:06 -0400
+From: Jack Bowling <jbinpg@shaw.ca>
+Subject: Re: hosts.deny
+Date: Sun, 07 Jul 2002 16:51:15 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <007301c22610$e152fe00$0a01a8c0@ed>
-References: <20020707234348.PCUD19225.mta07-svc.ntlworld.com@there>
-Reply-To: <blacknet@simplyaquatics.com>
+Message-ID: <0GYW00K53KXH59@l-daemon>
+References: <EPEHIDPIPEBFNAHLCHPGAEMPCEAA.dennis@core-enterprises.com>
+ <20020707230435.FXCG2755.mta05-svc.ntlworld.com@there>
+Reply-To: Jack Bowling <jbinpg@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020707234348.PCUD19225.mta07-svc.ntlworld.com@there>
+In-Reply-To: <20020707230435.FXCG2755.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,38 +19,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
-
-Hello,
-
-This is most commonly seen in spam mail.
-
-Ed
-
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
-Sent: Sunday, July 07, 2002 7:44 PM
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 To: netfilter@lists.samba.org
-Subject: Re: hosts.deny
 
-On Monday 08 July 2002 12:36 am, George Vieira wrote:
+** Reply to message from Antony Stone <Antony@Soft-Solutions.co.uk> on Mon, 08 Jul 2002 00:04:34 +0100
 
-> spoofed as in local IP coming in from the internet..
 
-I call that ingress filtering.
+> On Sunday 07 July 2002 11:54 pm, Dennis Cardinale wrote:
+> 
+> > When running a netfilter firewall, is there any reason to continue using
+> > the hosts.deny and hosts.allow files, or is this just superfluous?
+> 
+> hosts.allow can still be useful to specify a command to run when a connection 
+> comes in (eg to provide some special logging ?), but these files don't add 
+> any security to a decently configured netfilter setup.
 
-I regard spoofing as an incoming connection with a plausible but false
-source 
-address, typically used on Denial of Service attacks, either to disguise
-the 
-true source of the attack, and/or to cause an active IDS to block access
-to 
-networks you really don't want to block.
+Beg to differ. /etc/hosts.deny allows access tuning of services that are set wide open on the firewall, ssh being a prime example.
 
- 
+jb
 
-Antony.
-
+-- 
+Jack Bowling
+mailto: jbinpg@shaw.ca
 
