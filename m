@@ -1,11 +1,13 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: RST packets
-Date: Wed, 11 Aug 2004 18:00:38 -0300
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: Netfilter vs commercial
+Date: Wed, 11 Aug 2004 16:31:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <024c01c47fe6$40e03e60$49caa8c0@caris.priv>
+Message-ID: <411A902B.4090008@pbl.ca>
+References: <BAY4-F16p4k1Cz5WqET0000e7bd@hotmail.com> <200408091803.51995.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200408091803.51995.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,39 +17,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I am having a problem now where I am getting RST packets being blocked from
-my internal network heading out to the external network.  It looks like RST
-packets are used to stop a TCP connection when there is a problem.
+Antony Stone wrote:
+> (or is someone simply living under the illusion that if something 
+> goes wrong with their FW-1 firewall, they can sue Check Point, haha) ?
 
-The setup is like this:
-I have a web box in my dmz that people connect to.  A mod-jk connection is
-made through my firewall, and the responses are allowed back with the
-standard ESTABLISHED,RELATED allow on the Forward chain.
+You'd be suprised how many managers live under that illusion.  Many of 
+them being quite intelligent otherwise ;-)
 
-I guess I was wondering why I was getting a bunch of RST packets and also,
-why the firewall was blocking them.  Would they not be part of the
-ESTABLISED-RELATED chain ?
-
-Here are the relevant rules.
-$IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-$IPT -A FORWARD -s $WEB_BOX_IP -I eth1 -j web-int
-$IPT -A web-int -d 192.168.202.168 -p tcp --dport 8009:8020 -j ACCEPT
-
-I do have a chain for int-web ... which is used to connect to a webserver
-running on it ..(and it rejects everything else).  This is the chain that
-the RST packet is making it too and is then getting rejected.  However, I
-did not think that the packet should reach this chain as it is related (or
-establised) to the web-int connection ...
-
-Any suggestions would be greatly appreciated.  My network set up is a DMZ
-between two firewalls.  The web box is in the DMZ.  The "int" in my chains
-is my internal network.  the internal network is separated form the DMZ by a
-firewall.
-
-Peter Marshall
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
