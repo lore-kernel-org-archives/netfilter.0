@@ -1,11 +1,14 @@
-From: Kevin White <ml-kevin@kevbo.org>
-Subject: Can't get pom-ng to batch apply one patch
-Date: Tue, 20 Jul 2004 15:05:58 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: again problem with alias / virtual interface
+Date: Tue, 20 Jul 2004 20:09:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40FD6D16.1000004@kevbo.org>
+Message-ID: <200407202009.33758.Antony@Soft-Solutions.co.uk>
+References: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108> <40FC2286.3070005@pbl.ca> <007d01c46dae$0a45f330$eb53623e@x>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <007d01c46dae$0a45f330$eb53623e@x>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,55 +18,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm trying to automatically build a kernel.  As such, I need to 
-automatically apply pom patches, and I can't get it to work.
+On Monday 19 July 2004 5:30 pm, Marco Strullato wrote:
 
-I'm using patch-o-matic-ng-20040621.  For kicks, I'm trying to apply the 
-"first" patch in the base suite, 04_linux-2.4.26-helper_reassign.patch.
+> I've tried with just eth1 but the rule is not applied, or it seems not to
+> be applied
 
-That patch does apply if I run:
+Do you mean "it does not show up when I list the rules afterwards", or do you 
+mean "the rule gets entered in the list, but it does not do what I want"?
 
-./runme base
+> I've seen that using virtual interfaes is deprecated so I tryed to set
+> multilple ip with iproute.
+> If I set network interfaces only with iproute and not with ifconfig,
+> network configuration seems to be absent.
 
-and say "Y" to it.  But I can't get this to work:
+What makes you say this?   If you try adding the extra addresses with "ip addr 
+add a.b.c.d dev eth0" etc, what do you get afterwards when you try "ip addr 
+show"?
 
-./runme --batch updates/04_linux-2.4.26-helper_reassign.patch
+> If I set network with ifconfig and not with iproute, network configuration
+> seems ok
 
-First, on an unmodified runme, this code causes my patch to be skipped:
+We are not saying there is anything wrong as such, or won't work, with using 
+ifconfig - you just aren't allowed to use the ":" in the interface name in 
+the netfilter rules.
 
-for my $rep (@repositories) {
+> So I can't to use iproute (to set interfaces) and iptables becacuse network
+> configuration is absent.
 
-         PATCHLET: for my $plname (@patchlets) {
-                 my $patchlet = $session->{patchlets}->{$plname};
-                 next PATCHLET unless defined $patchlet
+How are you checking this?
 
-The $session hash doesn't have a patch called 
-"updates/04_linux-2.4.26-helper_reassign.patch", but I have to refer to 
-the patch by that name to get past all of the prior checks for .info 
-files and such.
+Also, did you try the following?
 
-So, I hacked this in there:
+On Monday 19 July 2004 8:14 pm, Antony Stone wrote:
 
-             $plname =~ s/.*\///;
-             print "looking at $plname\n";
+> I suggest you test these additional addresses with something like this:
+>
+> iptables -A INPUT -p icmp -i eth1 -d 82.186.92.90 -j ACCEPT
+> iptables -A INPUT -p icmp -i eth1 -d 82.186.92.93 -j ACCEPT
+> iptables -A INPUT -p icmp -i eth1 -j ACCEPT
+>
+> Then ping 82.186.92.90 from a machine connected to eth1; then ping
+> 82.186.92.93 from a machine connected to eth1; then use "iptables -L INPUT
+> -nvx" to check the packet / byte counts for the above three rules.
+>
+> You should get non-zero packet counts for the first two rules; hopefully
+> zero packets for the third rule.
+>
+> Also check from a machine directly connected on eth1 that you get the same
+> MAC address for both the above addresses in response to an "arp -an".
 
-before the my $patchlet line, and it causes it to match, but then, the 
-patch won't actually apply:
+Regards,
 
-cannot apply (1 rejects out of 1 hunks)
-cannot apply (41 rejects out of 43 hunks)
-ERROR (41 rejects out of 43 hunks)
-apply_dependency: unable to apply dependent 02_linux-2.4.24.patch
------------------------------------------------------------------
+Antony.
 
-Which wouldn't happen if I just ran runme and picked this patch.
+-- 
+What makes you think I know what I'm talking about?
+I just have more O'Reilly books than most people.
 
-So, help!  How to people batch apply specific patches?
-
-Kevin
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
