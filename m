@@ -1,17 +1,17 @@
-From: Matevz <matevz@sloweb.net>
-Subject: Re: Mail Server Behind IPTABLES
-Date: 01 Sep 2004 20:12:45 +0200
+From: Mike <1100100@gmail.com>
+Subject: Re: Policy Misunderstanding: RTFM Guidance Requested.
+Date: Wed, 1 Sep 2004 14:12:56 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094062361.5456.35.camel@matevz.net>
+Message-ID: <8ca4228204090111127401567b@mail.gmail.com>
 References: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
-	<200409011050.44393.Alistair@nerdnet.ca>
-	<1094054540.5456.16.camel@matevz.net>
-	<200409011227.32394.Alistair@nerdnet.ca>
-Reply-To: matevz@sloweb.net
+	<200409011044.27158.Alistair@nerdnet.ca>
+	<8ca4228204090109202271a1da@mail.gmail.com>
+	<200409011253.52931.Alistair@nerdnet.ca>
+Reply-To: Mike <1100100@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409011227.32394.Alistair@nerdnet.ca>
+In-Reply-To: <200409011253.52931.Alistair@nerdnet.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,114 +22,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair Tonner <Alistair@nerdnet.ca>
+To: Alistair Tonner <alistair@nerdnet.ca>
 Cc: netfilter@lists.netfilter.org
 
-Na 1094056052, 2004-09-01 ob 18:27, je Alistair Tonner napisal(a):
-> 	CC;ed the list for consistency.
-> 
-> 	See inline below
-> 
-> On September 1, 2004 12:02 pm, Matevz wrote:
-> > Na 1094050244, 2004-09-01 ob 16:50, je Alistair Tonner napisal(a):
-> > > On August 31, 2004 09:01 pm, Ajen Diwakar wrote:
-> > > > Hi All
-> > > >
-> > > > I am new to IPTABLES usage. I have linux(RH) 9.0.
-> > > > The external IP address eth1 is 202.62.x.x
-> > > > The internal ip address is 10.0.0.4
-> > > >
-> > > > My mail server IP address is 10.0.0.10
-> > > >
-> > > > How do I setup my iptables so that the mail to my record get transfred
-> > > > to the mail server.
-> > > >
-> > > > Any assistance will be appreciated.
-> > >
-> > > 	iptables -t nat -A PREROUTING -p TCP -i {internet device} -d 202.62.x.x 
-> > > \ --dport 25 -j DNAT -to 10.0.0.10
-> > >
-> > > 	iptables -A FORWARD -p TCP -i {internet device} -d 10.0.0.10 --dport 25 
-> > > \ -j ACCEPT
-> > >
-> > > 	(assuming FORWARD -P DROP )
-> > >
-> > >
-> > > 	Alistair Tonner
-> >
-> > Hi,
-> >
-> > I using this for a while and i have a problem.
-> > For connctions from outside works just fine, but if i want to access
-> > from my LAN dont work.
-> 
-> 	Because your LAN clients attempt to connect to [publlc IP of mailserver], get 
-> connected by reroute through firewall.  Mailserver see's connection from 
-> [LANIP] of client and replies *direct* to [LANIP] client.  Client knows NOT 
-> of LANIP of mailserver and does not consider the connection valid.
-> 
-> 	iptables -I PREROUTING -p TCP -i [LAN device] -d [PUBLIC IP mailserver]  \ 
-> --dport 25 -j DNAT -to 10.0.0.10
-> 	iptables -A FORWARD -p TCP -i [LAN device] -d 10.0.0.10 -s [LAN SEGMENT]   \ 
-> --dport 25  -j ACCEPT
-> 	iptables -I POSTROUTING -p TCP -i [LAN device] -d 10.0.0.10 -s [LAN SEGMENT]\
->  --dport 25 -j SNAT -to 10.0.0.4
-> 
-> 	This makes the connection at the mailserver think your firewall is 
-> connecting.  Weird, but NOW the replies from the mailserver go back through 
-> the firewall, and the client will accept the connection as valid.
-> 
-> 	A slightly better way to do this is split DNS that tells the clients on the 
-> LAN to use the LAN ip of the mailserver.  -- a different topic.
-> 
-> 	Possibly you want to do the same for port 110 from inside the LAN/??
-> 
-> 
-> >
-> > I have also tried without -i.
-> >
-> > And i was tried this with adding one new rule so it was like -i [eth
-> > witch is conncted to LAN]
-> >
-> > In all cases sharing of internet connction stops working.
-> 
-> 	iptables -P FORWARD DROP
-> 	
-> 	iptables -A FORWARD -s [LAN_SEGMENT] -i [LAN_DEVICE] -d 0.0.0.0 -j ACCEPT
-> 	iptables -A FORWARD -d [LAN_SEGMENT] -m state --state RELATED,ESTABLISHED  \
-> -j ACCEPT
-> 
-> 	
-> 	iptables -A POSTROUTING  -o [INTERNET_DEVICE] -j MASQUERADE 
-> 	or
-> 	iptables -A POSTROUTING -o [INTERNET_DEVICE] -j SNAT -to [internet address]
-> 
-> 
-> 	keep in mind that you might want to review the ORDER in which the rules 
-> load .... it can be critical as to what gets processed when
-> 
-> iptables -Lnvx 
-> iptables -Lnvx -t nat
-> iptables -Lnvx -t mangle.
-> 
-> 
-> 
-> 	Alistair Tonner
+> Better to let things through the mangle and nat tables, and do filtering in
+> the filter table.  There have been folks who like to drop things in the
+> mangle and nat tables, but setting actual DROP policies makes life very
+> difficult.
 
-Thank you for ansver, but i think i will give up on this.
+This seems like sound advice after what I've been through.  Maybe the
+folks in The Matrix can bend the laws of physics with relative ease,
+but for myself, I can barely achieve 'dude' status.  I think I'll
+ACCEPT mangle and nat, and get some sleep tonight.  :-)
 
-iptables -I POSTROUTING -p tcp -i eth0 -d 192.168.2.1 --dport 25 -j SNAT
--to 192.168.2.2
+>         There is no definition of the SOURCE that you want to drop ICMP echorequests
+> from.  Thus this rule drops all ping echorequests.
+>         iptables -t filter -A INPUT -p icmp -i [internet pipe device] -icmp-type \
+> echo-request -j DROP
+>         will allow your LAN users to ping the box, but prevent pings from the
+> internet from getting in.
 
-than i get this:
+Oh I see.  By stating specifically the internet-facing device, you
+make it possible for LAN clients to ping the box through the gateway
+NIC - eth1, while the rule blocks all the other echo requests.
 
-Bad argument `192.168.2.2'
+>         Really and truely -- Oskar's tutorials are great and easy to read... and even
+> the sample firewalls there are decent enough to start with for a newbie.
+> 
+I definitely feel more secure about working on my firewall knowing
+that this reference material is around.  It's packed.
 
+Thanks again, Alistair.
+It's great to have your assistance.
 
-
--- 
-Lep pozdrav,
-Matevz
-matevz@sloweb.net
-
+Mike
 
