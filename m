@@ -1,17 +1,13 @@
-From: "David C. Hart" <DCH@TQMcube.com>
-Subject: Re: IP Spoofing
-Date: Wed, 05 Nov 2003 15:57:53 -0500
+From: "Regalado, Ron" <Ron.Regalado@mci.com>
+Subject: TARPIT Documentation?
+Date: Wed, 05 Nov 2003 20:39:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068065872.1494.40.camel@main.tqmcube.com>
-References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>
-	 <200311051951.hA5Jpdr13332@agate.rockstone.co.uk>
-	 <1068062902.1494.25.camel@main.tqmcube.com>
-	 <3FA95D0C.5080306@Loudoun-Fairfax.com>
-Reply-To: IPTables Mailing List <netfilter@lists.netfilter.org>
+Message-ID: <E26ABBCB14D369428125D23DF8BE94E503310E85@DGEXCH06.mcilink.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-9PEJ+PBwByWyw1jEVqPw"
+Content-Type: multipart/alternative;
+ boundary="Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FA95D0C.5080306@Loudoun-Fairfax.com>
+Content-return: allowed
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,40 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Cc: Iptables Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+--Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)
+Content-type: text/plain; CHARSET=us-ascii
+
+Are there step by step instructions anywhere on setting up the TARPIT module
+for iptables?  I have tried recompiling the kernel and the iptables source..
+No luck..
+ 
+
+Thanks,
+
+Ron
 
 
---=-9PEJ+PBwByWyw1jEVqPw
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2003-11-05 at 15:26, Jeffrey Laramie wrote:
-> >
-> In this setup the packets from the LAN have to enter from eth0 as Antony=20
-> indicates. Eth1 would have to be the external interface. Keep in mind=20
-> that these rules only affect traffic to and from the firewall host=20
-> itself. Traffic between the LAN and the internet is handled on the=20
-> FORWARD chain.
->=20
-I just did a slap-the-head-"duh". We're not configured that way. Our
-server, which also runs IPTables is fed from the router as a DMZ. The
-clients are connected to the same router, a couple by a hub to the
-uplink. Hmm.
+ 
+
+ 
+
+--Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)
+Content-type: text/html; CHARSET=us-ascii
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
 
 
---=-9PEJ+PBwByWyw1jEVqPw
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+<META content="MSHTML 6.00.2800.1264" name=GENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=Arial><FONT size=2>A<SPAN class=781503620-05112003>re there step 
+by step instructions anywhere on setting up the TARPIT module for 
+iptables?&nbsp; I have tried recompiling the kernel and the iptables 
+source..&nbsp; No luck..</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<P><SPAN class=781503620-05112003></SPAN><FONT face=Arial size=2><SPAN 
+class=781503620-05112003>Thanks,</SPAN></FONT></P>
+<P><FONT size=2>R<SPAN class=781503620-05112003>on</SPAN></FONT><BR><BR></P>
+<P>&nbsp;</P>
+<DIV>&nbsp;</DIV></BODY></HTML>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQA/qWRQol4OE0cpGaIRAoxnAJ9nF/WYgXgHX5cLP8TFifJc67IGrACffmZb
-TVPK4HCuWzJ8corss6oST8w=
-=W8JQ
------END PGP SIGNATURE-----
-
---=-9PEJ+PBwByWyw1jEVqPw--
-
+--Boundary_(ID_fEn5EHOvLDiBvRSkUlJCOA)--
 
