@@ -1,14 +1,12 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
+From: "Don Woodruff" <donw@minglewood.net>
 Subject: RE: Can't forward Win2k VPN through NAT
-Date: Fri, 06 Sep 2002 14:13:34 -0700
+Date: Fri, 6 Sep 2002 16:24:54 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPMENECNAA.stewart.thompson@shaw.ca>
-References: <200209061422.g86EMQv02254@vulcan.rissington.net>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <6BED17A9718E204F812CBBAF3B102E2AC000@babylon.metropolis.minglewood.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209061422.g86EMQv02254@vulcan.rissington.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +17,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi Antony:
+>=20
+> I agree that PPTP is an independent standard, and not a M$-developed
+> protocol, however I consider it to be by far an inferior way to set up
+a
+> VPN
+> than IPsec, and therefore I disapprove of Win2k for having provided
+users
+> with PPTP and not IPsec.
+>=20
+> Also, I believe that PPTP has significantly greater problems than
+IPsec
+> with
+> NAT.   Basically IPsec in transport mode does not work through NAT at
+all,
+> but IPsec in tunnel mode works without any need for helpers etc.   As
+far
+> as
+> I'm aware, there are limitations on the number of concurrent PPTP
+sessions
+> you can maintain through a single NAT device (because of the address
+> information embedded in PPTP, not because of anything to do with the
+> device),
+> whereas there is no such limitation with IPsec in tunnel mode.
 
-	Off the top of your head, do you know what the first
-Version of iptables that pptp_conntrack_nat was implemented?
 
-Stu..........
+Agreed -- IPSEC is better. Again -- it is the protocol that is lacking.
+=20
+> > As a business-owner, my new focus is "whatever provides the greatest
+> > profit margin coupled with the most satisfactory experience for the
+> > customer".
+>=20
+> I'm afraid here again I'm going to use Microsoft as an example that
+these
+> two
+> objectives can easily turn out to be mutually exclusive (or at least,
+> competing rivals).
 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: September 6, 2002 7:22 AM
-To: Netfilter mailinglist
-Subject: Re: Can't forward Win2k VPN through NAT
-
-On Friday 06 September 2002 1:42 pm, Roy Sigurd Karlsbakk wrote:
-
-> hi all
->
-> I have this fw as sketched below. What I want, is to enable win2k VPN
-> connection NATed into 192.168.144.24.
->
-> Can someone help me here? It just doesn't work ...
-
-You;re right.   It doesn't work.
-
-PPTP doesn't like being NATted, because it embeds addressing information
-inside the protocol.
-
-You need to load the pptp helper module in netfilter to stand any chance of
-getting this going.   Look for pptp_conntrack_nat.
-
-I think the sig on your email was highly appropriate to the situation,
-however:
-
-"Computers are like air conditioners.
-They stop working when you open Windows."
-
-Antony.
-
---
-
-You can spend the whole of your life trying to be popular,
-but at the end of the day the size of the crowd at your funeral
-will be largely dictated by the weather.
-
- - Frank Skinner
+Hmmm, I'd have to say that this is more the reseller/consultant's fault
+than MS'. The biggest contributor to the aforementioned conflict is the
+VAR/reseller who sells one line of solutions (more often than not
+Windows, since it is easy and requires minimal technical expertise),
+rather than the vendor. If I made a crappy car that everybody loved and
+bought in droves, what impetus would I have to improve it? People
+continue to buy cars, despite the fact that it is highly likely that the
+car & oil merchants have kept innovation to a minimum in order to sell
+more units. Unfortunately there is no open-source auto manufacturer :)
 
 
