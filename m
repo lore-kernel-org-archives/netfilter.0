@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: How to drop arps when protocol addrs of sender = target
-Date: Thu, 11 Sep 2003 14:14:46 +0200
+From: ads nat <adsnat@yahoo.com>
+Subject: iptables installation problem.
+Date: Thu, 11 Sep 2003 06:05:28 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063282486.990.4.camel@elendil.intranet.cartel-securite.net>
-References: <3F5F598A.3080609@nist.gov>
+Message-ID: <20030911130528.41619.qmail@web20709.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative; boundary="0-171147239-1063285528=:41386"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F5F598A.3080609@nist.gov>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Chris Schanzle <nospam@nist.gov>
-Cc: netfilter@lists.netfilter.org, schanzle@nist.gov
+To: netfilter@lists.netfilter.org
 
-Le mer 10/09/2003 =E0 19:04, Chris Schanzle a =E9crit :
-> I have a need to not respond to arps where the protocol address of the=20
-> sender is the same as the target, which is the case when Windows client=
-s=20
-> try to ARP for the manually-configured address it is about to use.
+--0-171147239-1063285528=:41386
+Content-Type: text/plain; charset=us-ascii
 
-It is not easy to achieve as you would need a specific match extensions
-for that compares protocole source and destination addresses for
-arptables or ebtables (iptables does not filter ARP). I wanted to write
-something like this to spot wierd ARP stuff, but I do not have the time
-for now. However, enhancing ebtables arp match is quite an easy thing. I
-did not look at arptables, but it must be easy too.
+Hi,
+I have Linux server REDHAT 8.0 installed with iptables v1.2.6a. I have upgrade it to 
+v 1.2.8 by installing 1.2.8. But when I check iptables -V. It shows 1.2.6a version. Do i have to delete iptable file before installing 1.2.8?
+Thanks. 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--0-171147239-1063285528=:41386
+Content-Type: text/html; charset=us-ascii
+
+<DIV>Hi,</DIV>
+<DIV>I have Linux server REDHAT 8.0 installed with iptables v1.2.6a. I have upgrade it to&nbsp;</DIV>
+<DIV>v 1.2.8 by installing 1.2.8. But when I check iptables -V. It shows 1.2.6a version. Do i have to delete iptable file before installing 1.2.8?</DIV>
+<DIV>Thanks. </DIV><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
+--0-171147239-1063285528=:41386--
 
