@@ -1,11 +1,9 @@
-From: "s" <xperience@interia.pl>
-Subject: NAT PPPOE & MTU problems
-Date: Thu, 29 May 2003 14:36:47 +0200
+From: Cory Visi <merlin@phear.lwz.org>
+Subject: Static compile issues
+Date: Tue, 27 May 2003 07:42:15 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c325de$f89fde60$1800a8c0@ckznak.pl>
+Message-ID: <Pine.LNX.4.30.0305270725050.7597-100000@phear.lwz.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C325EF.BB9AC640"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,84 +14,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+I am using a 2.4.20 kernel with pom-20030107 and iptables v1.2.7a. From
+pom-20030107, I have installed all the pending patches and all the base
+patches. In addition, I have installed the following extra patches:
 
-------=_NextPart_000_0005_01C325EF.BB9AC640
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+ipt-amanda-conntrack-nat
+ipt-eggdrop-conntrack-nat
+ipt-proc
+ipt-mms-conntrack-net
+ipt-pptp-conntrack-net
+ipt-quake3-conntrack-net
+ipt-rsh-conntrack-net
+ipt-tftp-conntrack-net
 
-I've got a problem with NAT connections on PPPOE.
-My box is connected to internet via DSL, and I have some computers =
-behind NAT.=20
-I changed MTU on internal interfaces to 1492 and configured iptables =
-with:
+The patch names are not official or anything. I just split them up and
+called them that. Hopefully, the name is clear enough to you to recognize
+an "extra" patch. Please let me know if this is confusing.
 
-iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS =
---clamp-mss-to-pmtu
+The problem is, when I compile the kernel statically and enable all the
+iptables options, I cannot do NAT. Any iptables line that specifies a
+chain in the nat table causes an Invalid Argument:
 
-also I have squid cache installed for local workstations.
-When I surfing net without squid everything works fine, no timeouts or =
-something. Is good.
-But when I use squid as a cache sometimes when squid uses POST method =
-with huge amount of parameters, connection hangs. On tcpdump I see that =
-one packet is repeated few times (5) and I got timeout message.
-What's wrong ? Repeated packet has 1492 bytes lenght. But there's no =
-answer from www server.
+# iptables -t nat -A POSTROUTING -o $EXTERNAL -s $INTERNAL_NETWORK -j SNAT
+--to-source $EXTERNAL_IP
+Invalid argument
 
-Pozdraviam
-Przemyslaw Borkowski
-------=_NextPart_000_0005_01C325EF.BB9AC640
-Content-Type: text/html;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Another interesting thing to point out, is that I also compiled this
+kernel with modules and experienced the same problem. I was, however, able
+to fix it by disabling the IPv4 netfilter option for "NAT of local
+connections". For the module kernel, disabling this option fixes the
+problem. For the staticly compiled kernel, disabling this option has no
+effect-- the error persists.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>I've got a problem with NAT connections =
-on=20
-PPPOE.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>My box is connected to internet via =
-DSL, and I have=20
-some computers behind NAT. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I changed MTU on internal interfaces to =
-1492 and=20
-configured iptables with:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -p tcp -m tcp =
---tcp-flags=20
-SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu<BR></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>also I have squid cache installed for =
-local=20
-workstations.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>When I surfing net without squid =
-everything works=20
-fine, no timeouts or something. Is good.</FONT></DIV>
-<DIV><FONT face=3DArial><FONT size=3D2>But when I use squid as a cache =
-sometimes=20
-when squid uses POST method with huge amount of parameters, connection =
-hangs. On=20
-tcpdump I see that one packet is repeated few times (5) and I got =
-timeout=20
-message.</FONT></FONT></DIV>
-<DIV><FONT face=3DArial><FONT size=3D2>What's wrong ? Repeated packet =
-has 1492 bytes=20
-lenght. But there's no answer from www server.</FONT></FONT></DIV>
-<DIV><FONT face=3DArial><FONT size=3D2></FONT></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial><FONT =
-size=3D2><FONT>Pozdraviam</FONT></FONT></FONT></DIV>
-<DIV><FONT face=3DArial><FONT size=3D2><FONT>Przemyslaw=20
-Borkowski</DIV></FONT></FONT></FONT></BODY></HTML>
+Anyone have any ideas?
+Please CC me directly if you respond to the list, since I am not
+subscribed (yet).
 
-------=_NextPart_000_0005_01C325EF.BB9AC640--
-
+Thank you,
+Cory Visi
 
 
