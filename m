@@ -1,14 +1,13 @@
-From: Guillaume Morin <guillaume@morinfr.org>
-Subject: Re: State Match Question
-Date: Thu, 6 Jun 2002 22:17:22 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Forward rule can't specify destination address?
+Date: Thu, 6 Jun 2002 21:18:10 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020606201722.GD612@morinfr.org>
-References: <5.1.0.14.0.20020606152834.02c4d128@mailhost.csca.ryerson.ca>
+Message-ID: <200206062018.g56KIBA03225@Networker.rockstone.co.uk>
+References: <Pine.LNX.4.33.0206061501450.2909-100000@mcewen.wcnet.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <5.1.0.14.0.20020606152834.02c4d128@mailhost.csca.ryerson.ca>
+In-Reply-To: <Pine.LNX.4.33.0206061501450.2909-100000@mcewen.wcnet.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,42 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Paul Dunphy <pdunphy@research.ryerson.ca>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Hi Paul,
+On Thursday 06 June 2002 8:10 pm, skmail@mcewen.wcnet.org wrote:
 
-Dans un message du 06 jun =E0 15:44, Paul Dunphy =E9crivait :
-> Could some kind soul please explain to me (or point me to information=20
-> about) what the difference is between filtering on state ESTABLISHED in=20
-> iptables and filtering on ! --syn? In other words, what's the difference =
+> Hi all-
+>
+> I have a linux box with 1 network card connected the internet with 7
+> internet IP's, and 1 network card and internal ip.  I'm trying to forward
+> a port from one of the internet ip's aliased to it across the firewall to
+> internal.  Here's the forward rule that I use:
+>
+> $IPTB -A FORWARD -d 1.2.3.4 -p tcp --dport 3389 -j ACCEPT
+>
+> When I connect to the specified IP address it doesn't work.  If I take the
+> destination IP out it works fine.  Any ideas as to why it won't work with
+> the destination IP?
 
-> between saying
->=20
-> iptables -A FORWARD -p tcp -m state --state ESTABLISHED -j ACCEPT
->=20
-> and saying,
->=20
-> iptables -A FORWARD -p tcp ! --syn -j ACCEPT
+Presumably you are doing DNAT at the same time.   Is 1.2.3.4 the original 
+destination address before translation, or the real destination address of 
+the translated packet ?
 
-In the first rule, you let only pass valid TCP packets correponding to a
-established connection e.g a ack packet during the connection, a syn/ack
-packet during the TCP handshake, a fin/ack at the end of a connection.
+PREROUTING happens before FORWARDing.
 
-The second let every non SYN packet pass. That includes the packets
-which are matched by the first rule of course. But invalid packets in
-the sense of the connection state (a syn/ack packet without a previoous
-syn packet) and packets with nasty flags (NULL, XMAS...) will pass.
-That is bad. Always use the state and avoid matching yourself the TCP
-flags. Matching both can be interesting e.g -m state --state NEW --syn.
 
-HTH.
-
---=20
-Guillaume Morin <guillaume@morinfr.org>
-
-      A friend in need is a friend indeed. A friend who bleeds is better.
-         My friend confessed, she passed the test. We will never sever.
-                                   (Placebo)
+Antony.
 
