@@ -1,12 +1,12 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: Granularity of ipq_read timeout
-Date: Tue, 18 Mar 2003 11:00:01 -0800 (PST)
+From: "Greg Dickinson" <gdickinson@logistasolutions.com>
+Subject: Re: Static NATting
+Date: Tue, 18 Mar 2003 13:06:34 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030318190001.94973.qmail@web13907.mail.yahoo.com>
-References: <se770789.071@logistasolutions.com>
+Message-ID: <se7719e7.063@logistasolutions.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <se770789.071@logistasolutions.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +17,76 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: steve@warning.ca
+Cc: netfilter@lists.netfilter.org
 
-Hello all,
-I was curious, is the granularity of the ipq_read()
-timeout field really down to the microsecond level?
+OK - I did that (can't believe I missed that...) :-/
 
-I am running on linux (RH, but with the 2.4.20 kernel
-so I could patch for bridge + iptables) and seem to be
-having a problem with small timeout values.
+However, now I have something else weird happening.  I can successfully =
+ping out to hosts that are on my "public" network (our /26 net that the =
+ISP gives us.)  However, I can't seem to get past the router, and the =
+tracert looks weird:
 
-If i use something like:
+C:\>tracert -d 207.157.9.151
 
-gettimeofday(&starttime,&null_tx);
-status=ipq_read(qh,buffer,BUFFER_SIZE,timeout);
-gettimeofday(&endtime,&null_tx);
+Tracing route to 207.157.9.151 over a maximum of 30 hops
 
-I notice that my delta from the endtime-startime is
-larger than the timeout value.  Can ipq_read()
-actually timeout on the single digit microsecond
-level?
+  1    <1 ms    <1 ms    <1 ms  10.227.1.1
+  2     1 ms     1 ms     1 ms  10.200.227.1
+  3     3 ms     3 ms     3 ms  10.1.2.41
+  4     4 ms     4 ms     4 ms  207.157.9.151
 
--Scott
+I never see either interface that is in the firewall/NAT box.  It goes =
+straight from the router that is at the core (10.1.2.41) to the "public" =
+address on our subnet.  Weird.
+
+>>> Steve Mickeler <steve@warning.ca> 03/18/03 12:59PM >>>
 
 
+On Tue, 18 Mar 2003, Greg Dickinson wrote:
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
-http://platinum.yahoo.com
+> Hello all,
+>
+> This question will undoubtedly get me branded as a n00b :-) but I am =
+about to go insane trying to figure this out.  Am I doing something wrong?
+>
+> Here's the scenario:
+>
+> I have a RedHat 8 (Kernel 2.4-18) firewall that I am going to run squid =
+on, as well as do some static NATting for some of the administrative PC's =
+here.  I have configured the Cisco router to direct all the traffic from =
+the affected /24 subnet to the linux box, and I am trying to do a 1-to-1 =
+NAT so we can do things like Terminal Services, etc. across the internet.  =
+I am using the following commands (the addresses are for my PC)
+>
+> iptables -t nat -A POSTROUTING -s 10.227.101.4 -j SNAT --to 207.157.9.<so=
+mething>
+> iptables -t nat -A PREROUTING -s 207.157.9.<something> -j DNAT --to =
+10.227.101.4
+
+Change the -s to -d on the PREROUTING rule.
+
+iptables -t nat -A PREROUTING -d 207.157.9.X -j DNAT --to 10.227.101.4
+iptables -t nat -A POSTROUTING -s 10.227.101.4 -j SNAT --to 207.157.9.X
+
+>
+> And all the traffic summarily dies at the firewall :-)
+>
+> I have aliased the 207.157.9.<something> address to the eth1 interface =
+of the firewall.  What simple, obvious thing have I missed?
+>
+> TIA,
+>
+> --Greg
+>
+>
+>
+> Gregory B. Dickinson, CNE CCNA
+> Systems Engineer
+> Logista Solutions
+> (205) 231-5602
+> (tQ =3D 2b|!2b)
+>
+>
+
 
