@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Squid with iptables
-Date: Fri, 5 Mar 2004 01:25:10 +0000
+Subject: Re: INET_IFACE: Secure to allow traffic from 192.168.x.0/24?
+Date: Fri, 5 Mar 2004 01:29:54 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403050125.10374.Antony@Soft-Solutions.co.uk>
-References: <20040304095859.4b996ae6@mgalepc.utilitran.com>
+Message-ID: <200403050129.54915.Antony@Soft-Solutions.co.uk>
+References: <40472125.4000608@blinkenlichten.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040304095859.4b996ae6@mgalepc.utilitran.com>
+In-Reply-To: <40472125.4000608@blinkenlichten.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,41 +20,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 04 March 2004 4:58 pm, Michael Gale wrote:
+On Thursday 04 March 2004 12:29 pm, Carsten Maass wrote:
 
-> Hello,
+> Dear List,
 >
-> 	I have recent installed squid on my firewall box to act as a proxy server
-> for HTTP, HTTPS, and considering FTP.
+> recently i connected together two internal networks over an IPSec-tunnel:
 >
-> I have added in iptable rules for squid redirecting 80 to 3128 and 443 to
-> 3128 but I have a question. My default --policy is DROP ... so in order for
-> squid to work I need to allow outbound 80 traffic and not forwarded 80
-> traffic like before .. but if I want squid to also allow ftp should I not
-> just allow the process ID of squid to make outbound connections ?
+> (Localnet A)---(Gateway A)==IPSec==(Gateway B)---(Localnet B)
 
-If you are running squid in transparent proxying mode (which it sounds as 
-though you are, with the "redirect port 80 to 3128" rule), then you cannot 
-use it to proxy ftp.
+How did you set up IPsec?   Using FreeS/WAN and Linux kernel 2.4.x?   Using 
+the new built-in IPsec in kernel 2.6.x?   Some other method?   It makes a big 
+difference to what you can filter, and how netfilter sees the packets.
 
-Squid is not an ftp proxy (read the Squid home page).   However, browsers 
-which are *configured to use an http proxy server* will send their ftp 
-requests over http, and therefore browser ftp requests can be handled by the 
-proxy.
+Also, do you have one machine at each end of the link which is both running 
+netfilter and acting as the IPsec gateway, or do you have two different 
+machines, one doing netfilter, and one doing IPsec?
 
-I know this sounds confusing, but it's a trick of the browser, that if it is 
-configured to use a proxy (ie: the whole setup is not working in transparent 
-mode), it will send ftp requests over http, and the proxy will generate the 
-outgoing ftp request.   If the browser is not specifically configured to use 
-a proxy server, then it sends its ftp requests by ftp, for which you need an 
-ftp proxy (such as frox).
+> Now i am unsure which iptables-rules i should apply to the external
+> interfaces of the gateways to match the traffic between the Localnets
+> without opening up a security hole. Is it sufficient to simply apply
+> some general rules like:
+>
+> $IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.a.0/24 -j ACCEPT
+> $IPTABLES -A FORWARD -i $INET_IFACE -s 192.168.b.0/24 -j ACCEPT
+>
+> or would this approach be vulnerable to some kind of IP-spoofing attack?
+
+If you are using FreeS/WAN and Linux 2.4.x you can filter real packets going 
+to & from the "ipsecN" interfaces, and you can filter ESP packets going in 
+and out of the "ethN" interfaces.   Tell us the details and I'll suggest 
+something more specific if I can.
 
 Regards,
 
 Antony.
 
 -- 
-Ramdisk is not an installation procedure.
+Having been asked for a reference for this man,
+I can confirm that you will be very lucky indeed if you can get him to work 
+for you.
 
                                                      Please reply to the list;
                                                            please don't CC me.
