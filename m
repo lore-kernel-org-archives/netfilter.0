@@ -1,14 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
+From: Stephan Uhlmann <su@su2.info>
 Subject: Re: nat:REDIRECT on localhost not working in Kernel 2.6
-Date: Fri, 19 Nov 2004 12:54:06 -0500
-Message-ID: <20041119175406.GA20966@bender.817west.com>
+Date: Fri, 19 Nov 2004 19:03:41 +0100
+Message-ID: <200411191903.41692.su@su2.info>
 References: <200411191836.07261.su@su2.info>
 	<20041119174100.GA20905@bender.817west.com>
-	<4f3930a704111909551b7e4d85@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1369447.TrVClQBVJh";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4f3930a704111909551b7e4d85@mail.gmail.com>
+In-Reply-To: <20041119174100.GA20905@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +20,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-On Fri, Nov 19, 2004 at 11:55:21AM -0600, Josh Nerius wrote:
-> I'll second what Jason said here.
-> 
-> I've had the same issue in the past and resolved it by enabling option
-> Jason mentioned.
-> 
-> This can also be found in menuconfig here:
-> 
-> Device Drivers >> Networking Support >> Networking Options >> Network
-> packet filtering >> IP: Netfilter Configuration >> [   ] Nat of local
-> connections.
+--nextPart1369447.TrVClQBVJh
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-i just booted up a SuSE 9.2 machine (kernel 2.6.8-24), and it does not
-have IP_NF_NAT_LOCAL set in its config.
+On Friday 19 November 2004 18:41, Jason Opperisano wrote:
+> are all kernels in question compiled with:  IP_NF_NAT_LOCAL
 
--j
+No, all kernels I tested have that option not set. They are default kernels=
+=20
+from the distributions and that option seems not to be enabled by default.
 
---
-"When will I learn? The answer to life's problems aren't at the bottom
- of a bottle, they're on TV!"
-        --The Simpsons
+Strangely the option is also not set on the kernel 2.4 machine where the=20
+redirect worked.
+
+Anyway I guess the problem will go away if I set this option. Thank you for=
+=20
+the hint and your quick response!
+
+
+Cheers,
+Stephan
+
+--nextPart1369447.TrVClQBVJh
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQBBnjV90TAeRPnvmyERAr6MAJ4jKodwKQaOUNU4XVhSj43sAtLIiACeOuzK
+P5JCjxG+fCJja8aCz40C4vo=
+=ay7v
+-----END PGP SIGNATURE-----
+
+--nextPart1369447.TrVClQBVJh--
 
