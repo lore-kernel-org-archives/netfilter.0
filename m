@@ -1,13 +1,14 @@
-From: g38@rdsbv.ro
-Subject: Re: (no subject)
-Date: Sat, 08 Jun 2002 16:53:38 +00300 (EEST)
+From: "Shazad Malik" <smalik@vistawiz.com>
+Subject: FIXED PROBLEM!!! Re: My findings on H323 ..... feedback welcome
+Date: Sat, 8 Jun 2002 11:48:53 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023544418.3d020c6276261@mail.rdsbv.ro>
-References: <1023528718.3d01cf0e162e2@mail.rdsbv.ro> <200206080948.g589maA32732@Networker.rockstone.co.uk> <1023539066.3d01f77a5ffd4@mail.rdsbv.ro> <200206081246.g58CkhA10328@Networker.rockstone.co.uk>
+Message-ID: <2033.24.168.132.35.1023551333.squirrel@mail.vistawiz.com>
+References: <1608.24.168.132.35.1023490906.squirrel@mail.vistawiz.com>
+Reply-To: smalik@vistawiz.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206081246.g58CkhA10328@Networker.rockstone.co.uk>
+In-Reply-To: <1608.24.168.132.35.1023490906.squirrel@mail.vistawiz.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,99 +18,98 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; q="1.0"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+To: smalik@vistawiz.com
 Cc: netfilter@lists.samba.org
 
-eth0 - 193.231.237.x
-eth1 - used to route 80.96.x.0/24
-eth2 - used to masquerade 192.168.10.0/24
+everyone,
 
-theoretically that would be the ip setup; however, I have another 193.231.237.x2 ip which I'd like to use especially because the two 193.231.237.x`s ips are in different cbq classes
+I'm glad to state that I have been able to get H323 working and what a
+pain! I will write the instructions on how I implemented it and I used the
+snapshot which If I do iptables -v, shows me 1.2.7!
 
-Quoting Antony Stone <Antony@Soft-Solutions.co.uk>:
+cheers,
+shazad!
+PS: finally, had a good night sleep!
 
-> On Saturday 08 June 2002 3:54 pm, g38@rdsbv.ro wrote:
-> 
-> > eth0 - connects to the internet
-> > eth1 - internal network with private ip addresses
-> > eth2 - internal network with routable ip's
-> 
-> Okay - I understand that.   I very much hope you mean that you have a public
-> 
-> IP on eth0, and your ISP has given you another batch of IP addresses to go on
-> 
-> the machines on eth2, and the ISP is routing these to you via the address on
-> 
-> eth0 ?
+> everyone,
+>
+> I have working my ass on trying to get this thing working....... and
+> this is what I have conculded.
+>
+> Scenario 1:
+> kernel: 2.4.18, iptables: 1.2.6a:
+>
+> H323 will not work.  I installed a new kernel and a good .config file
+> and selected the patches but the nat, h323 does not work. NO MATTER
+> WHAT YOU DO IT WILL NOT WORK!
+>
+> Scenario 2:
+> kernel: 2.4.18, iptables: iptables--20020605 (latest snapshot) I felt
+> there is no harm!
+>
+> Well, I had huge success with it!  When I added the patched and checked
+> my .config file, all the entries were present as I expected. I thought
+> I was done till I had to to a "make  KERNEL=/usr/src/linux"
+>
+> This is the error message I'm getting:
+>
+> ========================================
+> Extensions found: IPv4:connmark IPv4:CONNMARK IPv4:ipv4options
+> IPv4:IPV4OPTSSTRIP IPv4:mport IPv4:nth IPv4:quota IPv4:random IPv4:time
+> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -
+> DIPTABLES_VERSION=\"1.2.7\"  -fPIC -o extensions/libipt_conntrack_sh.o
+> -c extensions/libipt_conntrack.c
+> ld -shared -o extensions/libipt_conntrack.so
+> extensions/libipt_conntrack_sh.o
+> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -
+> DIPTABLES_VERSION=\"1.2.7\"  -fPIC -o extensions/libipt_mark_sh.o -c
+> extensions/libipt_mark.c
+> extensions/libipt_mark.c: In function `parse':
+> extensions/libipt_mark.c:67: structure has no member named `bit_op'
+> extensions/libipt_mark.c:67: `IPT_MARK_BIT_OP_NONE' undeclared (first
+> use in this function)
+> extensions/libipt_mark.c:67: (Each undeclared identifier is reported
+> only once
+> extensions/libipt_mark.c:67: for each function it appears in.)
+> extensions/libipt_mark.c:77: structure has no member named `bit_op'
+> extensions/libipt_mark.c:77: `IPT_MARK_BIT_OP_OR' undeclared (first use
+> in this function)
+> extensions/libipt_mark.c:86: structure has no member named `bit_op'
+> extensions/libipt_mark.c:86: `IPT_MARK_BIT_OP_AND' undeclared (first
+> use in this function)
+> extensions/libipt_mark.c: In function `print':
+> extensions/libipt_mark.c:113: structure has no member named `bit_op'
+> extensions/libipt_mark.c:113: `IPT_MARK_BIT_OP_AND' undeclared (first
+> use in this function)
+> extensions/libipt_mark.c:116: structure has no member named `bit_op'
+> extensions/libipt_mark.c:116: `IPT_MARK_BIT_OP_OR' undeclared (first
+> use in this function)
+> extensions/libipt_mark.c: In function `save':
+> extensions/libipt_mark.c:131: structure has no member named `bit_op'
+> extensions/libipt_mark.c:133: `IPT_MARK_BIT_OP_AND' undeclared (first
+> use in this function)
+> extensions/libipt_mark.c:135: break statement not within loop or switch
+> extensions/libipt_mark.c:136: `IPT_MARK_BIT_OP_OR' undeclared (first
+> use in this function)
+> extensions/libipt_mark.c:138: break statement not within loop or switch
+> extensions/libipt_mark.c:139: `IPT_MARK_BIT_OP_NONE' undeclared (first
+> use in this function)
+> extensions/libipt_mark.c:141: break statement not within loop or switch
+> make: *** [extensions/libipt_mark_sh.o] Error 1
+>
+>
+>
+> --
+> Shazad Malik
+> work: (845)623-2161
+> fax: (845) 623-1154
 
-yes
 
-> It would not be a good setup if you were trying to put a public IP on eth0 
-> which is from the same subnet as the routable IPs on eth2.   It's possible to
-> 
-> do this, but a lot more technically challenging...
+-- 
+Shazad Malik
+work: (845)623-2161
+fax: (845) 623-1154
 
-3 eth`s for 3 different subnets
-
-> > What I want to do - eth0 has a routable ip and masquerades the internal
-> > network which enters eth1
-> 
-> Okay, no problem.
-
-good :-)
-
-> > (or eth2, I haven't plug in the cable yet :D);
-> 
-> Don't understand.   If eth2 has routable IPs (by which I assume you mean IP
-> 
-> addresses which have been assigned to you, not ones from the ranges 10.x.y.z,
-> 
-> 172.16.a.b, 192.168.c.d), then why would you want to masquerade them behind
-> 
-> eth0 ?
-> 
-> > eth0:1 will route the network with valid internet ip addresses which
-> > enters eth2 to the internet
-> 
-> No, I do not understand what you mean by this.   What are you trying to use
-> 
-> eth0:1 for ?
-
-eth0 - 193.231.237.x routes the subnet 80.69.x.0/24 which enters the router via eth1
-eth0:1 would route 192.168.10.0/24 which enters the router via eth2
-basically that's the idea which I have in mind ... why an alias on eth0 ? ip`s for the eth0 are in different cbq classes at my ISP
-
-> > (speaking of which, I assume I must input rules
-> > for eth0:1's ip address too, but in the iptables syntax is it allowed to
-> > refer to the alias as eth0:1 or I must use only its ip?)
-> 
-> You cannot use the name "eth0:1" in netfilter rules.   It doesn't like the 
-> colon.   You can, however, use "eth0", which is the real interface these 
-> packets are coming in on, and/or you can use the destination IP address, 
-> which will identify where they were headed.
-> 
-> So iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT will allow SSH 
-> packets which are sent to the address you've put on eth0:1 (it will also 
-> allow packets sent to the address you've put on eth0, eth0:2, etc...)
-> 
-> iptables -A INPUT -i eth0 -d a.b.c.d -p tcp --dport 22 -j ACCEPT will allow
-> 
-> SSH packets coming in on eth0, eth:1, eth0:2 etc provided the destination 
-> address is a.b.c.d
-> 
-> Hope this explains how you can work with eth0:1 and netfilter rules.
-> 
-> Give us some more detail on the actual addresses you intend to put on eth0,
-> 
-> eth1 and eth2, and the subnets attached to these interfaces (you can 
-> obfuscate any public IPs you've been given so long as it's still possible to
-> 
-> tell one subnet from the others), and we might be able to help some more.
-> 
-> .
-> 
-> Antony.
-> 
 
 
