@@ -1,12 +1,13 @@
-From: "Alexis" <alexis@attla.net.ar>
-Subject: Re: nat on multihomed server
-Date: Sat, 24 Jan 2004 11:44:10 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IPTABLES + IPROUTE2
+Date: Sat, 24 Jan 2004 14:54:00 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001301c3e288$8710f150$0200000a@heretic>
-References: <1164.203.131.168.150.1074915322.squirrel@www.localgovernance.net.ph>
+Message-ID: <200401241454.00973.Antony@Soft-Solutions.co.uk>
+References: <EHENIKBEJAMHPLPJOJBPIEDNDIAA.lucho@galix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <EHENIKBEJAMHPLPJOJBPIEDNDIAA.lucho@galix.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,57 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-if your webserver is your firewall box, DNAT is not necessary.
+On Saturday 24 January 2004 12:57 pm, L.Malinov wrote:
 
-just the input rule is enough.
-
-
-eg
-
-eth1 isp1
-eth2 isp2
-
-iptables -P INPUT DROP
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A INPUT -m state --state NEW -p --dport 80 -j ACCEPT
-
-and thats it
-
-
------ Original Message ----- 
-From: "Sandy T. Santos" <sandy@bulacan.gov.ph>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, January 24, 2004 12:35 AM
-Subject: nat on multihomed server
-
-
-> our campany has two internet links from different isp's. we then use both
-> of these to host the company's webserver. what i want is that the
-> webserver maybe accessible by coming from my isp1 link or my isp2 link. i
-> know that i need to set up my dns to have two ip addresses that points to
-> my linux box and then DNAT that connection towards my webserver. what i
-> don't know is what's the iptables script gonna look like for the SNAT
-> reply. how would i be able to determine that the request that came in to
-> my webserver originated from my isp1 or isp2 link  so that the reply would
-> be SNAT'ed to that interface?
+> Hi Antony,
 >
-> should i just make two SNAT  that replies to the request irregardless of
-> the destination address? ex. iptables -t nat -A POSTROUTING -s 192.168.x.2
-> --sport 80 -j SNAT --to-ip (ip facing isp1) and  iptables -t nat -A
-> POSTROUTING -s 192.168.x.2 --sport 80 -j SNAT --to-ip (ip facing isp2)
->
-> other suggestions are welcome.
->
-> -- 
-> Sandy T. Santos <sandy@bulacan.gov.ph>
-> Provincial Information Technology Office
-> Provincial Government of Bulacan
-> Malolos, Philippines
->
->
->
+> In my situation is not possible to set router1 as a default route because
+> the machine acts as a mail server as well and the mail needs to go through
+> router1.
 
+Okay then - in that case I suggest you use iproute2 to route all TCP port 80 
+packets via router2, all TCP port 25 packets via router1, and decide what you 
+want to do with everything else such as DNS.   I don't see that there should 
+be any need to MARK packets - just route based on the destination port 
+number.
+
+see http://lartc.org for more details of iproute2 and what it can do.
+
+Regards,
+
+Antony.
+
+-- 
+Wanted: telepath.   You know where to apply.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
