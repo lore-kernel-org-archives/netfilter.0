@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Instructions on how to redirect port 80 to port 8080
-Date: Wed, 18 Feb 2004 14:19:04 +0000
+From: Sascha Pollok <netfilter@pollok.net>
+Subject: Problems with SNAT and packets not NATed
+Date: Wed, 18 Feb 2004 15:33:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402181419.04235.Antony@Soft-Solutions.co.uk>
-References: <9908FCB837A50642B74E2BEC198843095CC652@csrees-exchsrvb.csrees.usda.gov>
+Message-ID: <E1AtSm8-0007py-00@mail-out1.iphh.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <9908FCB837A50642B74E2BEC198843095CC652@csrees-exchsrvb.csrees.usda.gov>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +15,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wednesday 18 February 2004 2:06 pm, Martinez, Michael wrote:
+Dear folks,
 
-> --> iptables -A PREROUTING -t nat -d a.b.c.d -p tcp --dport 80
-> --> -j REDIRECT --to 8080
->
-> This isn't working. I can "telnet `hostname` 8080" and get an http
-> response, but when I do "telnet `hostname` 80" the response I get is
-> "telnet: Unable to connect to remote host: Connection refused."
+I have just subscribed because we ran into a problem that
+many people we asked were not able to solve. I hope that this
+is the right place for asking. Please bear with me if it's not.
 
-Given the ruleset you've posted, I don't see how a telnet to 8080 can work, 
-since you have no INPUT rule allowing packets to that port...
+We have a latest Debian running a 2.4.24 kernel. Pretty straight
+forward, absolutely nothing special about it. The box is
+routing between two NICs (inner and outer LAN). Internal is
+private IP-addresses, external is a public one. We configured
+an overload-nat like this:
 
-Please flush the counters on your rules using "iptables -Z; iptables -Z -t 
-nat", connect to port 8080, and then tell us the output of "iptables -L -nvx; 
-iptables -L -t nat -nvx".
+  iptables -A POSTROUTING -s 192.168.100.0/24 -o eth0 -j SNAT --to x.x.x.1
 
-> -A PREROUTING -d 199.128.238.12 -p tcp -m tcp --dport 80 -j REDIRECT
-> --to-ports 8080
+Nothing more. We have flushed all other queues. This has been
+working on many boxes we have set up.
 
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [417:40204]
-> :RH-Firewall-1-INPUT - [0:0]
->
-> -A INPUT -j RH-Firewall-1-INPUT
-> -A FORWARD -j RH-Firewall-1-INPUT
-> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
-> -A RH-Firewall-1-INPUT -p icmp -m icmp any -j ACCEPT
-> -A RH-Firewall-1-INPUT -p esp -j ACCEPT
-> -A RH-Firewall-1-INPUT -p ah -j ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j
-> ACCEPT
-> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+Today, we ran into the problem that *some* of the packets
+travelling from internal eth1 to eth0 (outside) do not
+get NATed although the rule is in there. Apparently these
+are mostly ICMP packets (like ping) but also others like
+UDP/53 (DNS) do not get NATed. This is really strange
+because we did tests like:
 
-Regards,
+  - Reboot Linux-Router
+  - Linux-Client (192.168.100.5) can not ping
+  - Windows-Client (192.168.100.6) can ping
+  - Linux-Client can suddenly ping, too.
 
-Antony.
+When the boxes are not able to ping, it is just because
+the appropriate packets don't get NATed and end up at
+the ISPs router since they have RFC1918 addresses in the
+source field.
 
--- 
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
+Making a long question short: why do some packets get NATed
+and others don't?
+
+Please tell me if you need any additional information to
+evaluate. This might be obvious but we did not find
+anything.
+
+Thanks a lot.
+
+Cheers!
+Sascha
 
 
