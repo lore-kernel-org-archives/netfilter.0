@@ -1,12 +1,11 @@
-From: =?ISO-8859-1?Q?Antonio_P=E9rez?= <aperlu@telefonica.net>
-Subject: Re: nat/masquerade with kernel 2.6.x
-Date: Sat, 11 Dec 2004 15:18:13 +0100
-Message-ID: <41BB01A5.5000406@telefonica.net>
-References: <41BAEBD4.8080401@alu.umh.es> <20041211133145.GA3027@utanet.at>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset question
+Date: Sat, 11 Dec 2004 17:39:35 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0412111736360.16780@blackhole.kfki.hu>
+References: <1102718857.3550.27.camel@hammer.internal.platinumtel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041211133145.GA3027@utanet.at>
+In-Reply-To: <1102718857.3550.27.camel@hammer.internal.platinumtel.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,87 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Andreas Grabner <andi@vnc.at>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Brett Oster <boster@loadsys.com>
 Cc: netfilter@lists.netfilter.org
 
-Andreas Grabner wrote:
+Hi,
 
->Hi
->
->On Sat, Dec 11, 2004 at 01:45:08PM +0100, Antonio P=E9rez wrote:
-> =20
->
->>   iptables --table nat --append POSTROUTING --out-interface=20
->>$ifc_internet -j MASQUERADE
->>the hosts of the internal network can do ping to internet, and this is=20
->>normal, but they can not open any web or conection the msn , they
->>only can do ping. This is very stranger. I try the kernels=20
->>2.6.7,2.6.7,2.6.8 and 2.6.9 and they do no work.
->>   =20
->>
->You can ping so NAT and routing seems to work.
->Are there any other rules in the FORWARD chain?=20
->
-><try>
->maybe you should check if DNS is working?
-></try>
->
-> =20
->
->>Can somebody help me, please?
->>   =20
->>
->send more Info e.g. output of=20
->iptables -L -nvx
->iptables -t nat -nvx
->
-> =20
->
->>Sorry for my bad english.
->>   =20
->>
->me too ;-)
->
->
->Andreas Grabner
->
->
-> =20
->
-I know that the dns is working because when I do "ping www.google.es"=20
-from  internal host  this  work.
-There are not other rules in the FORWARD chain, look:
+On Fri, 10 Dec 2004, Brett Oster wrote:
 
-    Chain INPUT (policy ACCEPT 2 packets, 100 bytes)
-        pkts      bytes target     prot opt in     out    =20
-source               destination
+> I'm looking for a way to make my iptables rules more manageable, and so
+> I am attempting to use ipset.  However, I am not sure if it does what I
+> am trying to do.   I have many subnets that need to be SNATed
+> differently depending upon their destination.  As a test, I made two
+> iphash sets and loaded in one of my sets of sources and one set of
+> destinations.  However, when I try to apply the iptables rule, I get the
+> error:
+>
+> iptables v1.3.0: Unknown arg `destination'
+>
+> I am running 2.6.9 with the most current iptables, pom, and ipset from
+> Jozsef Kadlecsik's website
+> (http://people.netfilter.org/kadlec/ipset/install.html)
 
-    Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-        pkts      bytes target     prot opt in     out    =20
-source               destination
+You are using the old ipset binary. From the URL above you can donwnload
+ipset 2.0. Do you have two binaries installed at different locations
+and the old one is found according to your PATH settings?
 
-    Chain OUTPUT (policy ACCEPT 5958 packets, 2480411 bytes)
-        pkts      bytes target     prot opt in     out    =20
-source               destination
-
-and if i do iptables -t nat -L -nvx, then:
-
-    Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
-        pkts      bytes target     prot opt in     out    =20
-source               destination
-
-    Chain POSTROUTING (policy ACCEPT 1 packets, 60 bytes)
-        pkts      bytes target     prot opt in     out    =20
-source               destination
-           0        0 MASQUERADE  all  --  *      eth1   =20
-0.0.0.0/0            0.0.0.0/0
-
-    Chain OUTPUT (policy ACCEPT 1 packets, 60 bytes)
-        pkts      bytes target     prot opt in     out    =20
-source               destination
-
-And this is all, :)
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
