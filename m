@@ -1,13 +1,11 @@
-From: Thilo Schulz <arny@ats.s.bawue.de>
-Subject: Re: ToS and Windows
-Date: Sun, 25 Jul 2004 11:35:22 +0200
+From: Victor Julien <victor@nk.nl>
+Subject: [ANNOUNCE]Vuurmuur 0.5.46 released (initial public release)
+Date: Sun, 25 Jul 2004 13:16:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407251135.30281.arny@ats.s.bawue.de>
-References: <1090735278.4548.10.camel@rivendell.home.local>
+Message-ID: <200407251316.37259.victor@nk.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090735278.4548.10.camel@rivendell.home.local>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,34 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi people, please forgive me for sending you this spam. I've been talking 
+about my project a few times before on this list so I thought you would like 
+to know it's finally released.
 
-On Sunday 25 July 2004 08:01, Florin Andrei wrote:
-> I'm using "-j TOS --set-tos" with apparently good results. I manage to
-> control the ToS on the packets sent by a Linux box to a couple Windows
-> boxes.
-> The problem is that the packets sent back by the Windows machines do not
-> have ToS set. How do i set ToS on Windows?
-> One of the Win systems is Win2K, the other is WinXP.
+---
 
-I don't know whether this is possible at all under windows.
-Though you can set the TOS bits on the linux computer using iptables and th=
-e=20
-mangle table.
+Vuurmuur is a middle-end/front-end for netfilter/iptables aimed at 
+system-administrators who need a decent firewall, but don't have netfilter 
+specific knowledge. It is distributed under the terms of the GNU GPL. This is 
+the first public release.
 
-=2D --=20
-Thilo Schulz
+What makes Vuurmuur different from the numerous other iptables frontends, is 
+it's scalability, and most of all, the real-time feedback. Logs can be viewed 
+in real-time, using colours for easy interpretation. Also, the current 
+connections can be viewed in real-time. Filtering possibilities make it easy 
+to monitor specific hosts or services. The scalability makes it very easy to 
+handle more than two or three interfaces and networks.
 
-My public PGP key is available at http://home.bawue.de/~arny/public_key.asc
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+Because the administrator must define hosts, groups, networks, zones, services 
+and interfaces, which must also be given a name, confusion such as with 
+ipaddresses and portnumbers is prevented. These names are also reflected in 
+the log and the connections monitor. A service is a container of portranges, 
+so for complex services like Samba and Nfs, creating rules is especially 
+easy. Also, portforwarding is very simple.
 
-iD8DBQFBA37fZx4hBtWQhl4RAg9XAKDZjURfS7WyfjdUmJlMSkYqhF15NQCgw0L/
-xSYNex0tDDqBDycDfC6lCYQ=3D
-=3DlnVD
-=2D----END PGP SIGNATURE-----
+Vuurmuur is currently of beta quality. It runs very well, but there certainly 
+will be bugs and ommisions. Users are encouraged to try the software, and 
+report their findings to the vuurmuur-users mailinglist. Developers willing 
+to contribute are very welcome. The todo-list is always expanding! See 
+http://vuurmuur.sourceforge.net/ for details (and screenshots).
 
