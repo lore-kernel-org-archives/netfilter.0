@@ -1,14 +1,13 @@
-From: "Arif Mahmood" <arif786@rogers.com>
-Subject: RE: Upgrade Iptables...
-Date: Mon, 16 Sep 2002 15:23:41 -0400
+From: Michael Atighetchi <matighet@bbn.com>
+Subject: Re: Continuous attempt to connect to UDP port 2002
+Date: Mon, 16 Sep 2002 15:47:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001101c25db6$90e19890$3a00a8c0@am>
-References: <000901c25d82$4b822ff0$d201a8c0@hornet>
-Reply-To: <arif786@rogers.com>
+Message-ID: <20020916194729.GQ3540@bbn.com>
+References: <20020916191539.UFQI14766.mta05-svc.ntlworld.com@there> <001201c25db7$ed643180$3a00a8c0@am>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000901c25d82$4b822ff0$d201a8c0@hornet>
+Content-Disposition: inline
+In-Reply-To: <001201c25db7$ed643180$3a00a8c0@am>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,45 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Arif Mahmood <arif786@rogers.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi Raj, 
+Check out the CERT Advisory CA-2002-27 also.
 
-How do I do the  patch-o-matic, I mean if you send me the steps to do
-patch-o-matic on RedHat 7.3.  I couldn't find the  patch-o-matic
-documentations.
-
-I'm new to Linux and trying to learn as much as can with the help of you
-guys....
-
-Thanks and Best Regards,
-Arif
- 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Raj
-Wurttemberg
-Sent: Monday, September 16, 2002 9:09 AM
-To: 'Didier Hung Wan Luk'; 'Netfilter Mailing List'
-Subject: RE: Upgrade Iptables...
+Michael
 
 
-> I have redhat 7.3 with kernel linux-2.4.18-10 and I want to use 
-> iptables 1.2.7a.
+On Mon, Sep 16, 2002 at 03:33:25PM -0400, Arif Mahmood wrote:
+> Hi,
 > 
-> When I compile iptables do I need to recompile my kernel to use the 
-> 1.2.7a version of iptables?
+> Is any one have used the "Shorewall" the link is
+> http://www.shorewall.net/.
+> I'm thinking to use that but before I wet my feet I want to know your
+> suggestions on this.
+> 
+> Thanks and Best Regards,
+> 
+> Arif
+>  
+> 
 
-Hello Didier,
-
-You will want to apply the patch-o-matic to your kernel and then
-recompile your kernel prior to compiling and using the 1.2.7a version of
-iptables. I could be wrong, but I do not think that the default RedHat
-kernel has all of the necessary iptables modules.
-
-/*Raj*/
-
-
-
+-- 
+matighet@bbn.com   BBN Technologies
 
