@@ -1,14 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: web server in DMZ
-Date: Tue, 28 Sep 2004 11:03:39 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: ip alias
+Date: Tue, 28 Sep 2004 10:17:13 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096383819.2330.50.camel@wolfpack.ljm.dom>
-References: <web-6416739@infinito.it>
-	<1096381048.2330.47.camel@wolfpack.ljm.dom> <web-6491079@infinito.it>
+Message-ID: <41598079.2020000@pbl.ca>
+References: <41596898.178.36a5.6993354@arbbs.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-6491079@infinito.it>
+In-Reply-To: <41596898.178.36a5.6993354@arbbs.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +17,44 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
 
-On Tue, 2004-09-28 at 10:44, hamals@infinito.it wrote:
-> well I think this is a very good solution, but I can't 
-> understand the following:
-> 
-> hosts in my LAN go in internet with a snat using x.x.x.50 
-> ip address, and everythings is working; my web server is 
-> accessible from outside, then why my inside hosts can't 
-> access to him (with x.x.x.50 IP)? my hosts should see my 
-> web server like any web server on the net....right?
-> what is wrong in this concept?
+John Black wrote:
+> eth0 161.31.31.22 
+> eth0:0 161.31.31.23 (i hope)
+> eth1 192.168.1.1
 
-routing.  there's nothing "wrong" with the concept; it's just that when
-you want to alter how normal routing works, you need to understand it in
-order to break it.
+So, eth0 is your external interface with two IP addresses assigned to 
+it, and eth1 is interface to your local network?  Don't hope if the 
+interface has an address assigned.  Check it with "ifconfig" or "ip 
+address show".
 
--j
+Access to the Internet from the firewall box will work out of the box. 
+Linux will use address of eth0 for all packets that are to leave the box 
+out of eth0.
+
+To allow hosts on your local network to access the internet, you need to 
+enable forwarding and define simple NAT rule:
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/16 -j SNAT 
+--to-source 161.31.31.23
+
+If you wanted to allow access *from* the Internet to one of the hosts on 
+your local network (that doesn't have public IP address), than you would 
+use DNAT target.
+
+> this is how it was shown in the double nat howto.  so i was
+> trying to take that and make it work for a signle.
+
+Howtos are nice, but having an understanding on how things work should 
+be priority.  Otherwise you end up with configuration that you have no 
+idea what it is doing.  And that is a very bad thing, especially when 
+building an firewall.
 
 -- 
-Jason Opperisano <opie@817west.com>
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
