@@ -1,11 +1,11 @@
-From: Eric Leblond <eric@regit.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Broadcast
-Date: Mon, 01 Mar 2004 14:37:57 +0100
+Date: Mon, 1 Mar 2004 13:37:58 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078148276.20266.21.camel@tech004.alphalink.fr>
+Message-ID: <200403011337.58132.Antony@Soft-Solutions.co.uk>
 References: <200403011009.55740.igor@garant.koenig.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-/pRgJ0jfr4ZiegBBfI+R"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <200403011009.55740.igor@garant.koenig.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,41 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: =?koi8-r?Q?=E9=C7=CF=D2=D8_=F0=CF=D0=CF=D7?= <igor@garant.koenig.ru>
-Cc: Netfilter-List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: Netfilter-List <netfilter@lists.netfilter.org>
 
+On Monday 01 March 2004 8:09 am, =D0=98=D0=B3=D0=BE=D1=80=D1=8C =D0=9F=D0=
+=BE=D0=BF=D0=BE=D0=B2 wrote:
 
---=-/pRgJ0jfr4ZiegBBfI+R
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Le lun 01/03/2004 =C3=A0 09:09, =D0=98=D0=B3=D0=BE=D1=80=D1=8C =D0=9F=D0=BE=
-=D0=BF=D0=BE=D0=B2 a =C3=A9crit :
-> 	I have a question, if my iface receive a broadcast packet in what chain =
-it=20
+> I have a question, if my iface receive a broadcast packet in what chain=
+ it
 > will go in INPUT or FORWARD?
 
-As a broadcast packet is a packet internal to a network, it don't have
-to go through a router, so it will go on INPUT chain.
+INPUT.
 
-BR,
+Broadcasts do not get routed - they are (obviously) restricted to one sub=
+net.
+
+Antony.
+
 --=20
-Eric Leblond
-NuFW, Now User Filtering Works (http://www.nufw.org)
+If builders made buildings the way programmers write programs, then the f=
+irst=20
+woodpecker to come along would destroy civilisation.
 
---=-/pRgJ0jfr4ZiegBBfI+R
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBAQzyznxA7CdMWjzIRAglCAJ4ho9KKX4/153fkNMwBVhlfyN7EOwCcC3Sg
-yo5HICQ/90sQ2K7h/w/Go20=
-=Ss+3
------END PGP SIGNATURE-----
-
---=-/pRgJ0jfr4ZiegBBfI+R--
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
 
 
