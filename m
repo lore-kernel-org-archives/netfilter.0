@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPSec passthrough with iptables
-Date: Wed, 16 Oct 2002 09:41:25 +0100
+From: Carles Xavier Munyoz =?iso-8859-1?q?Bald=F3?= <carles@descom.es>
+Subject: Problems with patch-o-matic (submitted).
+Date: Wed, 16 Oct 2002 10:40:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021016084128.RZEN292.mta03-svc.ntlworld.com@there>
-References: <B9D1A7D2.3DF9%george@mattandgeorge.com> <5.1.0.14.2.20021015233540.03a36008@secure.hyperbolic.net>
+Message-ID: <200210161040.18815.carles@descom.es>
+Reply-To: carles@descom.es
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.2.20021015233540.03a36008@secure.hyperbolic.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +16,101 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 16 October 2002 4:45 am, David A Golden wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Just to muddy the waters, through experimentation, I have found that using
-> Checkpoint SecuRemote (on windows) behind a Linux netfilter firewall, I can
-> achieve an IPSEC connection using just:
->
-> iptables -A FORWARD -s $INTERNAL_NET -j ACCEPT
-> iptables -A FORWARD -d $INTERNAL_NET -m state --state ESTABLISHED,RELATED \
->          -j ACCEPT
->
-> I.e. explicit per-protocol forwarding seems unnecessary.  (Though you might
-> want to be explicit for security/control reasons.)
+Hi,
+I'm having problems when I use the patch-o-matic system to patch the=20
+kernel-2.4.19 source.=20
 
-Well, quite.
+I have obtained the last netfilter directory from the CVS repository usin=
+g the=20
+procedure explained in the Netfilter Extensions HowTo.=20
+When I run the command:
+=2E/runme --batch submitted/
+from the patch-o-matic directory all patches apply fine except the=20
+submitted/newnat-assertfix.patch and=20
+submitted/newnat-changeexpect-lockfix.patch
 
-We suggested some rules which would allow IPsec through your firewall, but 
-which would at least block a few other protocols.   We also weren't sure 
-whether you were initiating the IPsec connection from the inside or the 
-outside of your firewall (it's clearly the inside, if the above rules work).
+[...]
+Testing... newnat-assertfix.patch NOT APPLIED (7 rejects out of 7 hunks)
+The submitted/newnat-assertfix patch:
+   Author: Martin Josefsson
+   Status: Submitted to the kernel at 2.4.20-pre10 time
 
-If you prefer to allow *every* protocol out of your network, then this 
-includes IPsec, so you don't need to do anything specific.
+   This patch fixes some erroneously-printed ASSERT statements when
+   netfilter debugging was switched on.  Please note that the running cod=
+e
+   was never wrong, just the debug macros ;)
 
-Good that you have things working - now to consider how secure you want it...
+Testing patch submitted/newnat-assertfix.patch...
+Failed to patch copy of /usr/src/linux
+TEST FAILED: patch NOT applied.
+[...]
+Testing... newnat-changeexpect-lockfix.patch NOT APPLIED (2 rejects out o=
+f 2=20
+hunks)
+The submitted/newnat-changeexpect-lockfix patch:
+   Author: Martin Josefsson
+   Status: Submitted to the kernel at 2.4.20-pre10 time
 
-Antony.
+   This patch fixes a locking bug in ip_conntrack_change_expect() of newn=
+at.
 
--- 
+Testing patch submitted/newnat-changeexpect-lockfix.patch...
+Failed to patch copy of /usr/src/linux
+TEST FAILED: patch NOT applied.
+[...]
 
-Anything that improbable is effectively impossible.
 
- - Murray Gell-Mann, Nobel Prizewinner in Physics
+If I run again the command:
+=2E/runme submitted/
+now arise problems with  the patch=20
+submitted/ip_conntrack_protocol_destroy.patch, but this patch has been=20
+applied well in the previous run.
+[...]
+Testing... ip_conntrack_protocol_destroy.patch NOT APPLIED (6 rejects out=
+ of 6=20
+hunks)
+The submitted/ip_conntrack_protocol_destroy patch:
+   Author: Harald Welte <laforge@gnumonks.org>
+   Status: Pending for kernel inclusion
+
+   This adds support for ip_conntrack_protocol_unregister(), needed if
+   layer four protocol helpers (GRE, ...) are implemented as modules.
+
+- -----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
+Testing patch submitted/ip_conntrack_protocol_destroy.patch...
+Failed to patch copy of /usr/src/linux
+TEST FAILED: patch NOT applied.
+[...]
+
+but the fault patches (submitted/newnat-assertfix.patch,=20
+submitted/newnat-changeexpect-lockfix.patch) in the first run apply now w=
+ell.
+
+Am I doing something wrong ?
+Is there any problem in the current patch-o-matic version ?
+
+Greetings.
+- ---
+Carles Xavier Munyoz Bald=F3
+carles@descom.es
+Descom Consulting
+Telf: +34 965861024
+Fax: +34 965861024
+http://www.descom.es/
+- ---
+-----BEGIN PGP SIGNATURE-----
+Version: PGP 6.5.8
+
+iQA/AwUBPa0l7zvYAf7VZNaaEQL9CQCguQxiDoeCT97Z87iErftChtB/vQsAoMMm
++PCvKHIbK57tOFKmfl8VSmvT
+=3DctbB
+-----END PGP SIGNATURE-----
+
 
