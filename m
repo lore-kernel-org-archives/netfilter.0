@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: (no subject)
-Date: Tue, 29 Jun 2004 15:37:47 +0100
+From: boka <boka@sto-procent.art.pl>
+Subject: How to upgrade iptables
+Date: Tue, 29 Jun 2004 16:44:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406291537.47416.Antony@Soft-Solutions.co.uk>
-References: <1B5A52EE434FEB48AA4803AD84BD3FC30552E8@goliath.tngnet.net>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <40E18057.5060807@sto-procent.art.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1B5A52EE434FEB48AA4803AD84BD3FC30552E8@goliath.tngnet.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +15,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 29 June 2004 3:25 pm, Richard Gutery wrote:
+Hi !
 
-> Thanks Anthony that fixed it up. Actually, looking at your suggestion makes
-> sense.
->
-> btw: is there a 'Good' iptables tutorial site around. I've looked at lots
-> of sites but nothing that really jumped out and made good sense.
+After sucessfully build of new version of iptables, i have checked if 
+the rules are ok to new version. My previous version was 1.2.10.
 
-http://iptables-tutorial.frozentux.net is generally regarded as the best one.
+root@qw:~/iptables/sources/iptables-1.2.11# ./iptables -L
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+iptables: target `standard' v1.2.10 (I'm v1.2.11).
 
-Regards,
+i dont know what to do next - there is no upgrade procedure in source docs.
 
-Antony.
-
--- 
-Your work is both good and original.  Unfortunately the parts that are good 
-aren't original, and the parts that are original aren't good.
-
- - Samuel Johnson
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+greetz
+boka
 
