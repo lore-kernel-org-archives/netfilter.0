@@ -1,33 +1,105 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: How to flush the connection state in the linux
-Date: Mon, 27 Dec 2004 05:41:07 -0500
-Message-ID: <cqoos3$4ga$1@sea.gmane.org>
-References: <000b01c4ebe5$64dab730$aa0ba8c0@l7.com.tw>
+From: Donato Diaz <donatodd@itcsoluciones.com>
+Subject: NAT Server, SMP box or Single CPU box?
+Date: Mon, 27 Dec 2004 10:12:34 -0300
+Message-ID: <41D00A42.5080305@itcsoluciones.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Return-path: <netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=sha1; boundary="------------ms080202040503080509090108"
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-Errors-To: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> Does any one know how to flush the connection state in the linux (Not
-> flush iptables rule -F).
-> I used transparent mode in the linux (use brctl to bridge eth & eth1).
-> When I tried to use iptables to drop some specified packet and it was
-> fail.
-> So I doubt there are some established connection state exist in the
-> linux to pass these
-> Forbidden connections.
+This is a cryptographically signed message in MIME format.
 
-ifdown, then ifup?  Brutal, but it should work.
+--------------ms080202040503080509090108
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+I have read in different lists that some people are having problem doing 
+NAT with SMP Servers, due to the way the kernel manage conntrack with 
+both CPUs.
+NAT runs slower on Server SMP with two CPUs?
+Is it better a Server with one faster CPU than a server with two CPUs?
+I need to buy a NAT Server for +1500 users. I would like to know if an 
+SMP Server with two CPUs is the best choice.
+
+Any help would be really appreciated.
+Thanks all,
+Donato.
+
+--------------ms080202040503080509090108
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIIAjCC
+A/0wggNmoAMCAQICAQEwDQYJKoZIhvcNAQEEBQAwgaYxCzAJBgNVBAYTAkFSMRAwDgYDVQQI
+EwdNZW5kb3phMRAwDgYDVQQHEwdNZW5kb3phMRYwFAYDVQQKEw1JVENTb2x1Y2lvbmVzMRAw
+DgYDVQQLEwdEZXZMYWJzMR4wHAYDVQQDExV3d3cuaXRjc29sdWNpb25lcy5jb20xKTAnBgkq
+hkiG9w0BCQEWGmRvbmF0b2RkQGl0Y3NvbHVjaW9uZXMuY29tMB4XDTA0MTIyMTE1MjIxOVoX
+DTE0MTIxOTE1MjIxOVowgasxCzAJBgNVBAYTAkFSMRAwDgYDVQQIEwdNZW5kb3phMRAwDgYD
+VQQHEwdNZW5kb3phMRYwFAYDVQQKEw1JVENTb2x1Y2lvbmVzMRAwDgYDVQQLEwdEZXZMYWJz
+MSMwIQYDVQQDFBpkb25hdG9kZEBpdGNzb2x1Y2lvbmVzLmNvbTEpMCcGCSqGSIb3DQEJARYa
+ZG9uYXRvZGRAaXRjc29sdWNpb25lcy5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGB
+AJq8Ddr0xnDArQRO8fXnncB1wKvs5r3jpZQorT4YZIURvBhIrMauJTjpWOjXT+92F3n2NNSU
+uYOFnkGFJq/LAsqiLBfkz+r9yW+ri5YGIzzpQR3L2SgAwSMDsXk825p7lzTDpeVITUk98omm
+yyOupmH4IgzgixAAdiwW4OWzCveVAgMBAAGjggEyMIIBLjAJBgNVHRMEAjAAMCwGCWCGSAGG
++EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZpY2F0ZTAdBgNVHQ4EFgQU3203EyuP
+bOJnzRFiaFimnZq/CngwgdMGA1UdIwSByzCByIAUOkLOBPx+WZb5i5rUxIAoX/RI3iShgayk
+gakwgaYxCzAJBgNVBAYTAkFSMRAwDgYDVQQIEwdNZW5kb3phMRAwDgYDVQQHEwdNZW5kb3ph
+MRYwFAYDVQQKEw1JVENTb2x1Y2lvbmVzMRAwDgYDVQQLEwdEZXZMYWJzMR4wHAYDVQQDExV3
+d3cuaXRjc29sdWNpb25lcy5jb20xKTAnBgkqhkiG9w0BCQEWGmRvbmF0b2RkQGl0Y3NvbHVj
+aW9uZXMuY29tggEAMA0GCSqGSIb3DQEBBAUAA4GBABiBl9LO3ScCHvMU9mHwb05LdqOowfnr
+QONpQgKdTAe23LarNjFYj5zzo3KPay3bcY50kBVoIUMOsoIBHyBECqfowQsqvy5k3C/i6maA
+zxtt4Vp1hOCuydJls5AFHzKxbVDect0JUJWjaGbAfmCWPEPNqRpcwfzjGGVwCB9pMiYYMIID
+/TCCA2agAwIBAgIBATANBgkqhkiG9w0BAQQFADCBpjELMAkGA1UEBhMCQVIxEDAOBgNVBAgT
+B01lbmRvemExEDAOBgNVBAcTB01lbmRvemExFjAUBgNVBAoTDUlUQ1NvbHVjaW9uZXMxEDAO
+BgNVBAsTB0RldkxhYnMxHjAcBgNVBAMTFXd3dy5pdGNzb2x1Y2lvbmVzLmNvbTEpMCcGCSqG
+SIb3DQEJARYaZG9uYXRvZGRAaXRjc29sdWNpb25lcy5jb20wHhcNMDQxMjIxMTUyMjE5WhcN
+MTQxMjE5MTUyMjE5WjCBqzELMAkGA1UEBhMCQVIxEDAOBgNVBAgTB01lbmRvemExEDAOBgNV
+BAcTB01lbmRvemExFjAUBgNVBAoTDUlUQ1NvbHVjaW9uZXMxEDAOBgNVBAsTB0RldkxhYnMx
+IzAhBgNVBAMUGmRvbmF0b2RkQGl0Y3NvbHVjaW9uZXMuY29tMSkwJwYJKoZIhvcNAQkBFhpk
+b25hdG9kZEBpdGNzb2x1Y2lvbmVzLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA
+mrwN2vTGcMCtBE7x9eedwHXAq+zmveOllCitPhhkhRG8GEisxq4lOOlY6NdP73YXefY01JS5
+g4WeQYUmr8sCyqIsF+TP6v3Jb6uLlgYjPOlBHcvZKADBIwOxeTzbmnuXNMOl5UhNST3yiabL
+I66mYfgiDOCLEAB2LBbg5bMK95UCAwEAAaOCATIwggEuMAkGA1UdEwQCMAAwLAYJYIZIAYb4
+QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBTfbTcTK49s
+4mfNEWJoWKadmr8KeDCB0wYDVR0jBIHLMIHIgBQ6Qs4E/H5ZlvmLmtTEgChf9EjeJKGBrKSB
+qTCBpjELMAkGA1UEBhMCQVIxEDAOBgNVBAgTB01lbmRvemExEDAOBgNVBAcTB01lbmRvemEx
+FjAUBgNVBAoTDUlUQ1NvbHVjaW9uZXMxEDAOBgNVBAsTB0RldkxhYnMxHjAcBgNVBAMTFXd3
+dy5pdGNzb2x1Y2lvbmVzLmNvbTEpMCcGCSqGSIb3DQEJARYaZG9uYXRvZGRAaXRjc29sdWNp
+b25lcy5jb22CAQAwDQYJKoZIhvcNAQEEBQADgYEAGIGX0s7dJwIe8xT2YfBvTkt2o6jB+etA
+42lCAp1MB7bctqs2MViPnPOjco9rLdtxjnSQFWghQw6yggEfIEQKp+jBCyq/LmTcL+LqZoDP
+G23hWnWE4K7J0mWzkAUfMrFtUN5y3QlQlaNoZsB+YJY8Q82pGlzB/OMYZXAIH2kyJhgxggOK
+MIIDhgIBATCBrDCBpjELMAkGA1UEBhMCQVIxEDAOBgNVBAgTB01lbmRvemExEDAOBgNVBAcT
+B01lbmRvemExFjAUBgNVBAoTDUlUQ1NvbHVjaW9uZXMxEDAOBgNVBAsTB0RldkxhYnMxHjAc
+BgNVBAMTFXd3dy5pdGNzb2x1Y2lvbmVzLmNvbTEpMCcGCSqGSIb3DQEJARYaZG9uYXRvZGRA
+aXRjc29sdWNpb25lcy5jb20CAQEwCQYFKw4DAhoFAKCCAjMwGAYJKoZIhvcNAQkDMQsGCSqG
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDQxMjI3MTMxMjM0WjAjBgkqhkiG9w0BCQQxFgQU
+OrmRVQ9+IFwleI3RDyWX31/mVJMwUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0DBzAOBggq
+hkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwgb0G
+CSsGAQQBgjcQBDGBrzCBrDCBpjELMAkGA1UEBhMCQVIxEDAOBgNVBAgTB01lbmRvemExEDAO
+BgNVBAcTB01lbmRvemExFjAUBgNVBAoTDUlUQ1NvbHVjaW9uZXMxEDAOBgNVBAsTB0Rldkxh
+YnMxHjAcBgNVBAMTFXd3dy5pdGNzb2x1Y2lvbmVzLmNvbTEpMCcGCSqGSIb3DQEJARYaZG9u
+YXRvZGRAaXRjc29sdWNpb25lcy5jb20CAQEwgb8GCyqGSIb3DQEJEAILMYGvoIGsMIGmMQsw
+CQYDVQQGEwJBUjEQMA4GA1UECBMHTWVuZG96YTEQMA4GA1UEBxMHTWVuZG96YTEWMBQGA1UE
+ChMNSVRDU29sdWNpb25lczEQMA4GA1UECxMHRGV2TGFiczEeMBwGA1UEAxMVd3d3Lml0Y3Nv
+bHVjaW9uZXMuY29tMSkwJwYJKoZIhvcNAQkBFhpkb25hdG9kZEBpdGNzb2x1Y2lvbmVzLmNv
+bQIBATANBgkqhkiG9w0BAQEFAASBgGh6lc85PL5l2dqWBszoYUBTEXOL++a0M7z9XAYa6ilO
+TlLBfD5hRFC9X2x8aNaP4b31vwF7hfVBP16Hvsk21KgurQc9u/3kzOMqekqbz0CCZEmfUi1u
+kyydt56yg4afz3klMYPAEaCxOv2icVJxqkFtbcOogJO4jloOG/haAt0zAAAAAAAA
+--------------ms080202040503080509090108--
 
 
