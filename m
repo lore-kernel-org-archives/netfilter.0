@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: top level rules
-Date: Mon, 12 May 2003 15:07:26 +0200
+From: "Gautham Thavva" <gautham.thavva@lycos.com>
+Subject: TFTP ..unable to track...
+Date: Mon, 12 May 2003 10:37:16 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E6D65A6EE5AAD6119DE800B0D03DA0C528965C@MS_LEU1>
-References: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com>
+Message-ID: <LONLKONDBJILJAAA@mailcity.com>
+Reply-To: gautham.thavva@lycos.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com>
+Content-Language: en
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter EMAIL' <netfilter@lists.netfilter.org>
-
-> Is there any way to insert a new rule at the top of a table...
-
-iptables -I INPUT 1 ...
-
-See : man iptables.
+To: netfilter@lists.netfilter.org
 
 
-Gr,
-Rob
+I have a linux firewall (using iptables 1.2.6a). This machine is running a TFTP client. I am unable to track the TFTP sessions.
 
+I have built the tftp.patch, the netfilter tracking module for tftp by Magnus Boden. I have not been able to track the sessions.
+
+The TFTP Read Request goes to the destination port 69 at the server side. The packets at the INPUT side to the firewall is at a port for which I have no prior knowledge.
+
+Please can someone suggest a way to filter in only the tftp packets.
+
+with regards,
+Gautham Thavva
+
+
+
+
+____________________________________________________________
+Get advanced SPAM filtering on Webmail or POP Mail ... Get Lycos Mail!
+http://login.mail.lycos.com/r/referral?aid=27005
 
