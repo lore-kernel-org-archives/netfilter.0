@@ -1,12 +1,14 @@
-From: Naleendra@dms.lanka.net
-Subject: a word about logging ...
-Date: Tue, 10 Sep 2002 20:31:40 +0600
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: mangle tables.
+Date: Tue, 10 Sep 2002 13:18:11 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6029A399F5BFD6118BB200104B0DF37302763F@mailgate.dms.lanka.net>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPOEDGCOAA.stewart.thompson@shaw.ca>
+References: <3D7DEDDA.2080404@fugmann.dhs.org>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C258D6.C6E6B810"
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <3D7DEDDA.2080404@fugmann.dhs.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,61 +18,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Anders Fugmann <afu@fugmann.dhs.org>
+Cc: Antony Stone <antony@soft-solutions.co.uk>, netfilter@lists.samba.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Hi Anders:
 
-------_=_NextPart_001_01C258D6.C6E6B810
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	Not a bad diagram for ASCII. :) I am going to have to
+save that one. Antony's advice is always sound. There may be
+some differences in the latest releases, but I think it will be more
+to do with the tables available, and what you can do with them.
+I think the traversal order would be the same. I believe there have
+been new tables added that aren't in say the 1.24 version I am
+running. (Jump in if you have any different info Antony)
+	As Antony suggested, a bunch of Logging Rules in all the
+Tables and checking the /var/log/messages (on Redhat anyway)
+would show the order it went through the tables. Alternately, you
+could look at the source code, or talk to someone who is familiar
+with it. Which isn't me, and maybe not Antony. Most of us don't
+need to get down to that level.  As a general rule I have done fine
+using RPM installs. It sounds like you are going to be digging
+into things a lot more. Good luck and let us know how you make
+out.
+
+Regards,
+
+Stu......
 
 
- Hi Lists,
 
- 	I am working on a Redhat 2.4.18 / iptables 1.2.6a box. I need to
-know where the logging is kept. Not the ones in /var/log/messages. That is
-good to figure out whether the actual rule set is in order or not. What I
-need to know is , for example if a telnetting condition is breached how can
-I know where the log is kept to know that an unauthorised attempt has been
-made? Do I have to do any addditional configs? If so what ?
+-----Original Message-----
+From: Anders Fugmann [mailto:afu@fugmann.dhs.org]
+Sent: September 10, 2002 6:04 AM
+To: stewart.thompson@shaw.ca
+Cc: Antony Stone; netfilter@lists.samba.org
+Subject: Re: mangle tables.
 
- - nal
+Thanks.
 
-------_=_NextPart_001_01C258D6.C6E6B810
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+This makes alot of sence.
+To sum up, tables are traversed in the following mannor:
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>a word about logging ...</TITLE>
-</HEAD>
-<BODY>
-<BR>
+             [Packet enters the machine]
+                          |
+                    mangle-prerouting
+                    /              \
+   <To the machine itself>  <To be forwarded> [Locally gen. packet]
+                   |                |                 |
+             mangle-input     mangle-forward    mangel-output
+                   |                |                 |
+             filter-input     filter-forward    filter-output
+                   |                \                 /
+       [next level of the OSI]       mangle-postrouting
+|
+                                 [packet leaves the machine]
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;Hi Lists,</FONT>
-</P>
+Legend:
+[]: Event.
+<>: Case (if).
+| : Connector.
 
-<P><FONT SIZE=3D2 =
-FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am working =
-on a Redhat 2.4.18 / iptables 1.2.6a box. I need to know where the =
-logging is kept. Not the ones in /var/log/messages. That is good to =
-figure out whether the actual rule set is in order or not. What I need =
-to know is , for example if a telnetting condition is breached how can =
-I know where the log is kept to know that an unauthorised attempt has =
-been made? Do I have to do any addditional configs? If so what =
-?</FONT></P>
+(mangle tables intentionally left out)
+So there is no doubt that mangle-forward is traversed _before_
+filter-forward.
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;- nal</FONT>
-</P>
+Thanks again for clarifying.
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C258D6.C6E6B810--
+Regards
+Anders Fugmann
+
 
