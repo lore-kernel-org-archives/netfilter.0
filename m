@@ -1,11 +1,13 @@
-From: Richard Bown <richard.bown@blueyonder.co.uk>
-Subject: kernel2.6.2-3 + iptables/shorewall
-Date: Thu, 19 Feb 2004 14:48:57 +0000
+From: Alexis <alexis@attla.net.ar>
+Subject: Re: netfilter question
+Date: Thu, 19 Feb 2004 11:51:49 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077202137.4302.12.camel@gb7tf.org.uk>
+Message-ID: <1077202309.1578.10.camel@pepelui.baicom>
+References: <4034c46c.4a64.0@arbbs.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4034c46c.4a64.0@arbbs.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+To: black@arbbs.net
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi
-having a real headach with this
-Running kernel-2.6.2-3mdk patched for win4lin
-iptables 1.2.9-5mdk
-shorewall 1.4.8-3mdk
-modules loaded are :-
-ipt_TOS 2240 0 - Live 0xe197f000
-ipt_REJECT 6464 0 - Live 0xe198e000
-ipt_LOG 5312 0 - Live 0xe198b000
-ipt_state 1728 2 - Live 0xe1985000
-ipt_multiport 1856 0 - Live 0xe1983000
-ipt_conntrack 2304 0 - Live 0xe1981000
-iptable_filter 2624 1 - Live 0xe1932000
-iptable_mangle 2624 0 - Live 0xe18d2000
-iptable_nat 23116 1 ipt_MASQUERADE, Live 0xe18c3000
-ip_conntrack 31120 4 ipt_MASQUERADE,ipt_state,ipt_conntrack,iptable_nat,
-Live 0xe1963000
-ip_tables 16704 10
-ipt_MASQUERADE,ipt_TOS,ipt_REJECT,ipt_LOG,ipt_state,ipt_multiport,ipt_conntrack,iptable_filter,iptable_mangle,iptable_nat, Live 0xe1952000
+On Thu, 2004-02-19 at 11:13, John Black wrote:
+> >
+> >Okay, so that rule is going to hide your 192.168.0.0/24 >network behind the
+> public address of the firewall for all >packets going to addresses in the range
+> 161.x.x.x/21 (ie 8 >Class C's in size).
+> 8 Class C's?
+
+if 24 bits define a mask that is considered as Class C
+
+24-21 = 3 
+2 power 3 = 8 
+
+so, its 8 /24 or 8 Class C networks.
 
 
-now in the 2.4 series kernels if I remember right you could turn /off
-IPV4 forwarding, I hav'nt found this at all in the config file on a
-2.6.2 kernel.
-So as you guys are more at the iptables end, is anyone successfully
-getting MASQ,& DNAT functional with a 2.6.2 kernel, and maybe on a
-mandrake system :)
 
-Thanks
-Richard
+> 
+> >How are you testing this and deciding it doesn't work?
+> im testing it with my windows machine going to the msn chat rooms, because i
+> know i will show you what ip address you are coming from.  is there a better
+> way to check it.
+
+www.whatsmyipaddress.com is a lazy but effective way :)
+
+or just simply log or sniff output packets
+
+
+> >(By the way, why are you only translating packets which are >going to (presumably)
+> your ISP?   What about packets going >anywhere else on the Internet?).
+> 
+> I thought that translated all of the packets?  How is it only translating packets
+> to the ISP?
+> 
+
+this assumption is because you're saying 161.x.x.x/21  as destination,
+all other destinations that doesnt belong to 161.x.x.x to
+161.x.x+8.x+255 will be not nat'ed
+
+
+
+
+> john
+> http://www.arbbs.net/
 -- 
-Richard Bown <richard.bown@blueyonder.co.uk>
+Alexis <alexis@attla.net.ar>
 
 
