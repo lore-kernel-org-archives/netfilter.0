@@ -1,15 +1,13 @@
-From: zynkx <skydive@megamail.pt>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: (no subject)
-Date: Wed, 26 Nov 2003 20:55:02 +0000
+Date: Wed, 26 Nov 2003 16:31:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069880102.3fc513260c677@paris-hme1>
-References: <1069853846.3fc4ac966be15@paris-hme1>
- <20031126151015.GB4486@cannon.eng.us.uu.net>
- <200311261417.22501.Antony@Soft-Solutions.co.uk>
+Message-ID: <3FC51BC8.1000403@Loudoun-Fairfax.com>
+References: <1069853846.3fc4ac966be15@paris-hme1> <20031126151015.GB4486@cannon.eng.us.uu.net> <200311261417.22501.Antony@Soft-Solutions.co.uk> <1069880102.3fc513260c677@paris-hme1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200311261417.22501.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <1069880102.3fc513260c677@paris-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,91 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-hi again Antony:
+zynkx wrote:
 
-you just said it all. no use for me to add not even=20
-one line to what you just wrotte :))
-
-now if anyone has got those masks i would appreciate=20
-it :))
-
-tanx again and sorry for this mess ;)))
-
-
-
- [][][][]
-
-
-
-
-C=F3pia Antony Stone <Antony@Soft-Solutions.co.uk>:
-
-> On Wednesday 26 November 2003 3:10 pm, Ramin
-> Dousti wrote:
+>hi again Antony:
 >
-> {MX DNS records snipped}
-> >
-> > I don't know what you're asking but these are
-> the mx records
-> > for yahoo and hotmail. Like the following
-> which is the mx for
-> > megamail.pt
-> >
-> > mx.vodafone.pt. 86400   A     =20
-> 212.18.167.163
+>you just said it all. no use for me to add not even 
+>one line to what you just wrotte :))
 >
-> I suspect (although one can never be sure) that
-> this person is not looking for
-> the IPs of the inbound mail servers for Yahoo &
-> Hotmail, but wants to know
-> from which IPs mail from those domains will be
-> sent.
+>now if anyone has got those masks i would appreciate 
+>it :))
 >
-> I guess this simply because of the word
-> "prerouting" in the question - it
-> implies to me packets coming in to the
-> netfilter machine, rather than those
-> leaving it and going to the MX systems.
+>tanx again and sorry for this mess ;)))
+>  
 >
-> Any further information from zynkx would be
-> useful :)
->
-> Antony.
->
-> > On Wed, Nov 26, 2003 at 01:37:26PM +0000,
-> zynkx wrote:
-> > > yahoo and hotmail ip ranges? does anyone
-> knows this ip
-> > > ranges? need to allow them in my smtp
-> prerouting
-> > > rulez  :))
-> > >
-> > > danke !
->
-> --
-> Anyone that's normal doesn't really achieve
-> much.
->
->  - Mark Blair, Australian rocket engineer
->
->                                               =20
->      Please reply to the list;
->                                               =20
->            please don't CC me.
->
->
->=20
 
+zynkx:
 
+If your mail server is running qmail, then your best bet is to read the 
+qmail documentation and learn how to apply filters for the mail server. 
+If you do use iptables, you will need to create a FORWARD rule to allow 
+mail from each of the smtp servers that Ramin listed. Since any message 
+from a Yahoo or Hotmail account will be sent from one of those servers 
+you don't *have* to know every ip range that they've been assigned. The 
+only problem doing it this way is if they change smtp server IPs you'll 
+need to change your rules. I would do this with qmail if I were you.
 
-unix is user friendly. it's just selective when=20
-choosing=20
-friends.
+Antony:
 
--------------------------------------------------
-Email Enviado utilizando o servi=E7o MegaMail
+It sounds like you have the "We're behind schedule and you got to get 
+this done before the holidays blues!"
+
+Jeff
+
 
 
