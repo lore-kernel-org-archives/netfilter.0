@@ -1,14 +1,10 @@
-From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Subject: Re: PREROUTING with ULOG in what order: conn, mangle, imq, nat
-Date: 15 Jul 2003 18:43:05 +0200
+From: Daniel 'NebuchadnezzaR' Dehennin <nebuchadnezzar@nerim.net>
+Subject: unapplied patch-o-matic patches
+Date: Tue, 15 Jul 2003 18:46:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058287385.1488.2.camel@drs0.manchotnetworks.net>
-References: <1058281866.21853.66.camel@drs0.manchotnetworks.net> 
-	<20030715154000.GC24604@cannon.eng.us.uu.net>
+Message-ID: <87k7aj7n7b.fsf@zion.matrix>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030715154000.GC24604@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,49 +15,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi Ramin,
+Hello,
 
-Thanks for the clarification -- I had thought that it was done in "nat"
+I test the patch-o-matic 20030714, some patch don't apply to my kernel
+2.4.21, is there a way to know why a patch did not apply ?
+I'm thinking about :
+-  extra/tcp-window-tracking
+-  pending/49_ip-conntrack-expect-drop-refcnt
+-  pending/40_nf-log-ipv6
+-  pending/40_nf-log
+-  pending/28_mirror-fixes
+-  submitted/24_conntrack-nosysctl
 
-Cheers
+The list come from a pom in reverse mode, the
+submitted/24_conntrack-nosysctl was apply cleanly in a ./runme base,
+and with a ./runme extra (for a look ;-)) the pom doen't see this
+applied patch, and then the patch fail.
 
-Charles
+Have you any recommendations for snapshot pom ?
 
-
-On Tue, 2003-07-15 at 17:40, Ramin Dousti wrote:
-> On Tue, Jul 15, 2003 at 05:11:05PM +0200, lartc@manchotnetworks.net wrote:
-> 
-> [snip...]
-> 
-> > where does de-natting occur?
-> > 
-> > i thought it was: 
-> 
-> Your thought is correct. ULOG sees the packets after the conntrack.
-> tcpdump sees the packets before the conntrack.
-> And de-natting occurs at the conntrack:
-> 
-> > WIRE -- > PREROUTING [ conntrack --> mangle --> imq --> nat ] ...
->   ^^^^                    ^^^^^^^      ^^^^^^
-> tcpdump                  de-natting     ULOG
-> 
-> 
-> Take a look at "Table 3-3. Forwarded packets" in Oscar's tutorial.
-> The order of mangle/nat is reverse for incoming and outgoing...
-> 
-> Ramin
-> 
-> > if i am capturing at mangle, should not the snat address be there?
-> > 
-> > Many Many Many Thanks!!
-> > 
-> > Charles
-> > 
-> > 
-> > 
-> > 
-
+Thanks.
+-- 
+Daniel 'NebuchadnezzaR' Dehennin
 
 
