@@ -1,11 +1,12 @@
-From: Michael Eck <meck@chilitech.net>
-Subject: CONNMARK No chain/target/match problem
-Date: Fri, 25 Jun 2004 14:16:05 -0400
+From: "Steve Wakelin" <steve@wcsl.net>
+Subject: Iptables and uplink bonding
+Date: Sat, 26 Jun 2004 00:15:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BA19D698-C6D3-11D8-B530-000A95D9C698@chilitech.net>
-Mime-Version: 1.0 (Apple Message framework v618)
-Content-Type: multipart/signed; micalg=sha1; boundary=Apple-Mail-2-358501011; protocol="application/pkcs7-signature"
+Message-ID: <267354A234DF4D46AA6AE56E1240BEF0A486@tv.wcslnet.net>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,93 +16,181 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
---Apple-Mail-2-358501011
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=US-ASCII;
-	format=flowed
+Kernel 2.4.26
+Iptables 1.2.11
+Nth patch
+Route patch
 
-Greetings,
-I'm unable to get CONNMARK rules to work.  Issuing
-# iptables -t mangle -A PREROUTING -p tcp -j CONNMARK --restore-mark
-yields:
-# iptables: No chain/target/match by that name
+I am trying to configure a machine that will allow per packet load
+balancing to effectively double the throughput of an FTP connection.
 
-Now, I've loaded ip_conntrack module with
-# modprobe ip_conntrack
-lsmod indicates that the module is loaded
+I have managed to get FTP connectivity to the destination server from
+the load balancing machine but gtrellm only shows 15Kbs maximum
+throughput.
 
-I'm running Debian 3.0, with a 2.4.24 Kernel that has 
-CONFIG_IP_NF_CONNTRACK=m, CONFIG_IP_NF_MATCH_CONNTRACK=m, 
-iptables-1.2.11, bridging and ebtables, and, from what I've read
-all of the other relevant modules.
-The kernel and iptables are patched with patch-o-matic-ng-20040621 
-(pending).
+I cannot connect from the client machine even though I can ping the
+destination server.
 
-My ultimate goal is to build a bandwidth management box with ipp2p.  
-All of the other features seem to work (HTB and ipp2p).
+Test environment
 
-What does it seem like I'm missing?
+2 RHL FC1 Servers with CBQ on outgoing interface to limit to 256Kbs to
+simulate ADSL modem/routers (G1 and G2)
 
-----
-Michael Eck
-Chilitech Internet Solutions
-Network Operations Center
-570-323-2166
-http://www.chilitech.net
---Apple-Mail-2-358501011
-Content-Transfer-Encoding: base64
-Content-Type: application/pkcs7-signature;
-	name=smime.p7s
-Content-Disposition: attachment;
-	filename=smime.p7s
+1 XP Client machine (C1)
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIGGDCCAtEw
-ggI6oAMCAQICAwwg8TANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
-d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
-YWlsIElzc3VpbmcgQ0EwHhcNMDQwNDE0MTgwNDI4WhcNMDUwNDE0MTgwNDI4WjBEMR8wHQYDVQQD
-ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMSEwHwYJKoZIhvcNAQkBFhJtZWNrQGNoaWxpdGVjaC5u
-ZXQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCI16OJTyBPkRKO3WxdV9aNkxPuVA4
-koiHX8FFdagvXD+H1ahkouGix0yGQFeoJQvOzg5glF5Uo6gNX/1bDkj0rLtFrIAB1yUECXdMXbp5
-RW89mwZMkFILWs+ieQEC4YthOjw2dsLnnYnz06NgxGVWjl+h5LLRy4iX2rPeNKnJubf87H9j+e68
-Wy52vJ3ak7JBhYBXasGdnRqA/pTTDkC5hGVl4Cdecic6Kii/1VzU4ydflLrW76hQ5wWeLDGMzZG0
-f8lfafe/G7hCSCggplk3ifu9sdb93t02iZJgDfzuSYVp2e9sKJd4d5grj0lNgCZ/MM9cip7Qy+7m
-5eUOD0IPAgMBAAGjLzAtMB0GA1UdEQQWMBSBEm1lY2tAY2hpbGl0ZWNoLm5ldDAMBgNVHRMBAf8E
-AjAAMA0GCSqGSIb3DQEBBAUAA4GBAGXU08rSAqR06cN+y5h5KJLi+3HQ4uS5koGPYxjW6imhMrzr
-i133du6bf7DXGHtnmRV4im/B2bgDxVPWIdnQy7QwFkf6ZSJ/yNIQbKFO0y2oKopad4LGz5PtPFv+
-pdWlYN6iX+DmrxXB3IM92m2xOjy8xPIxGfRYXIJikIuGjmvRMIIDPzCCAqigAwIBAgIBDTANBgkq
-hkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UE
-BxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UECxMfQ2VydGlm
-aWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVt
-YWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0aGF3dGUuY29tMB4XDTAz
-MDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVowYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0
-ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
-bCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1
-BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAKMNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fx
-H5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTXp6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wID
-AQABo4GUMIGRMBIGA1UdEwEB/wQIMAYBAf8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2Ny
-bC50aGF3dGUuY29tL1RoYXd0ZVBlcnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkG
-A1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOB
-gQBIjNFQg+oLLswNo2asZw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZ
-foSxmRsAxRoLgnSeJVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4
-gtwhGTXeJLHTHUb/XV9lTzGCAucwggLjAgEBMGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRo
-YXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVl
-bWFpbCBJc3N1aW5nIENBAgMMIPEwCQYFKw4DAhoFAKCCAVMwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMDQwNjI1MTgxNjA2WjAjBgkqhkiG9w0BCQQxFgQUr802DBV0
-C0WssRdyYK4nmwyfyncweAYJKwYBBAGCNxAEMWswaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMc
-VGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZy
-ZWVtYWlsIElzc3VpbmcgQ0ECAwwg8TB6BgsqhkiG9w0BCRACCzFroGkwYjELMAkGA1UEBhMCWkEx
-JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
-ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAgMMIPEwDQYJKoZIhvcNAQEBBQAEggEAop51B8ih
-4he+BTsgQmrcUTons19G8i/GDriqKmFzqyOX6lF85MmAslsEZJCUNF6zs0JCOF4vk9XH0mhfoedA
-md0YlxJwWYmk4GKL6ZNyP+U0ib+MmJdFMX6A2f00p07UQAgNI/g78MhF7Ioh2HWDKdnGrS+Fw3bL
-BXM+hkE92CrMv+oGabP+zSsZil7/qKGo4IYYhtV2ByKJMO48bUg79dXm1lllXV6RkGUEwFZYGXxq
-cUcjoFnMi/fl7uQ/QgZ0xoTn+USC/DYBksYEPbrNQ+LHOGY7czo3rjCZboJY78L4S8qmxz2knYXb
-HlwPeQpGB2WrCH8AlxQTLKqO1PBtZgAAAAAAAA==
+1 Loadbalance server (LB)
 
---Apple-Mail-2-358501011--
+1 Destination FTP RHL FC1 - FTP
+
+Addressing
+
+C1 10.15.1.5/24 gw 10.15.1.1
+G1 Internal: 192.168.253.2/30 External: 192.168.2.220/24 - No NAT
+G2 Internal: 192.168.252.2/30 External: 192.168.2.221/24 - No NAT
+
+LB Internal 10.15.1.1/24
+   Ext1: 192.168.253.1/30
+   Ext2: 192.168.252.2/30
+
+FTP: 192.168.2.2/24
+
+I have attempted to SNAT all the packets leaving eth1 and eth2 to
+192.168.2.220
+
+Current IPtables configuration
+
+Table: mangle
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination        =20
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
+ROUTE      all  --  anywhere            !10.15.1.0/24        every 2th
+packet #0 ROUTE gw:192.168.253.2=20
+ROUTE      all  --  anywhere            !10.15.1.0/24        every 2th
+packet #1 ROUTE gw:192.168.252.2=20
+
+Table: nat
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
+SNAT       all  --  10.0.0.0/8           anywhere
+to:192.168.2.220=20
+SNAT       all  --  10.0.0.0/8           anywhere
+to:192.168.2.220=20
+SNAT       all  --  192.168.253.0/30     anywhere
+to:192.168.2.220=20
+SNAT       all  --  192.168.253.0/30     anywhere
+to:192.168.2.220=20
+SNAT       all  --  192.168.252.0/30     anywhere
+to:192.168.2.220=20
+SNAT       all  --  192.168.252.0/30     anywhere
+to:192.168.2.220=20
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+
+Table: filter
+Chain INPUT (policy DROP)
+target     prot opt source               destination        =20
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED=20
+ACCEPT     all  --  anywhere             anywhere           =20
+ACCEPT     tcp  --  anywhere             10.15.1.0           tcp dpt:ssh
+state NEW=20
+ACCEPT     tcp  --  anywhere             192.168.253.1       tcp dpt:ssh
+state NEW=20
+ACCEPT     tcp  --  anywhere             192.168.252.1       tcp dpt:ssh
+state NEW=20
+ACCEPT     all  --  10.0.0.0/8           anywhere            state NEW=20
+ACCEPT     all  --  192.168.253.0/30     anywhere            state NEW=20
+ACCEPT     all  --  192.168.252.0/30     anywhere            state NEW=20
+RULE_2     icmp --  anywhere             anywhere            state NEW=20
+RULE_3     all  --  anywhere             anywhere           =20
+
+Chain FORWARD (policy DROP)
+target     prot opt source               destination        =20
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED=20
+ACCEPT     all  --  10.0.0.0/8           anywhere            state NEW=20
+ACCEPT     all  --  192.168.253.0/30     anywhere            state NEW=20
+ACCEPT     all  --  192.168.252.0/30     anywhere            state NEW=20
+RULE_2     icmp --  anywhere             anywhere            state NEW=20
+RULE_3     all  --  anywhere             anywhere           =20
+
+Chain OUTPUT (policy DROP)
+target     prot opt source               destination        =20
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED=20
+ACCEPT     all  --  anywhere             anywhere           =20
+ACCEPT     tcp  --  anywhere             10.15.1.0           tcp dpt:ssh
+state NEW=20
+ACCEPT     tcp  --  anywhere             192.168.253.1       tcp dpt:ssh
+state NEW=20
+ACCEPT     tcp  --  anywhere             192.168.252.1       tcp dpt:ssh
+state NEW=20
+ACCEPT     all  --  10.0.0.0/8           anywhere            state NEW=20
+ACCEPT     all  --  192.168.253.0/30     anywhere            state NEW=20
+ACCEPT     all  --  192.168.252.0/30     anywhere            state NEW=20
+RULE_2     icmp --  anywhere             anywhere            state NEW=20
+RULE_3     all  --  anywhere             anywhere           =20
+
+Chain RULE_2 (3 references)
+target     prot opt source               destination        =20
+LOG        all  --  anywhere             anywhere            LOG level
+info prefix `RULE 2 -- ACCEPT '=20
+ACCEPT     all  --  anywhere             anywhere           =20
+
+Chain RULE_3 (3 references)
+target     prot opt source               destination        =20
+LOG        all  --  anywhere             anywhere            LOG level
+info prefix `RULE 3 -- DENY '=20
+ACCEPT     all  --  anywhere             anywhere
+
+Current output of ip route
+
+192.168.252.0/30 dev eth2  scope link=20
+192.168.253.0/30 dev eth1  scope link=20
+10.15.1.0/24 dev eth0  scope link=20
+169.254.0.0/16 dev eth2  scope link=20
+127.0.0.0/8 dev lo  scope link=20
+default=20
+	nexthop via 192.168.253.2  dev eth1 weight 1
+	nexthop via 192.168.252.2  dev eth2 weight 1
+
+I have tried using MARK to mark the packets with
+The nth subsystem and have created the necessary ip routing tables but
+unable to get any joy.
+
+Therefore
+
+1. Has anyone done this?
+2. Is this the right approach?
+3. Has anyone managed to get MARK scenario working with nth?  If so
+could you point me to an example?
+
+I have Googled for hours, even though many people have discussed I am
+yet to see a working example.
+
+When the configuration is finalized I wish to extend to potentially 4
+ADSL connections so that we can stream live multimedia to our server on
+the internet.
+
+TIA
+
+Regards
+
+/Steve
 
 
