@@ -1,13 +1,10 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: iptables -A OUTPUT --set-mark , routing
-Date: Thu, 22 Jul 2004 12:09:15 +0200
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: Disconnection from the server
+Date: Thu, 22 Jul 2004 08:14:18 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3063e504072203097839f9b1@mail.gmail.com>
-References: <40FE316C.50109@belkam.com>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382A67@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40FE316C.50109@belkam.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +15,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Ashutosh' <ashutosh@teneoris.com>, netfilter@lists.netfilter.org
+
+anything bad that happens to any connection to/from any aol anything is
+super okay with me.
+
+
+####################################
+# delbert.hudson@losangeles.af.mil #
+#        61cs/scbn, 3-0182         #
+####################################
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Ashutosh
+Sent: Wednesday, July 21, 2004 11:37 PM
 To: netfilter@lists.netfilter.org
+Subject: Disconnection from the server
 
-First, for marks, use hexa numbers, like --set-mark 0x80 and .. fwmark 0x80
 
-I don;t know what proto static nexthop is, i dont use them :)
-Make sure you did an ip route flush cache
 
-On Wed, 21 Jul 2004 14:03:40 +0500, Dmitry Melekhov <dm@belkam.com> wrote:
-> Hello!
-> 
-> I need to route traffic to specific port from localhost to specific gateway.
-> 
-> I'm testing this on icmp.
-> 
-> I wrote rules:
-> 
-> iptables -t mangle -A OUTPUT -p icmp -j MARK --set-mark 80
-> ip rule add prio 221 table 221 fwmark 80
-> ip route add default table 221 proto static  nexthop via 192.168.22.221
-> dev eth0
-> 
-> Then I try to ping something from different subnet:
-> 
-> ping 10.1.1.1
-> connect: Network is unreachable
-> 
-> If I add rule
-> iptables -t mangle -A PREROUTING -p icmp -j MARK --set-mark 80
-> 
-> Then I can successefully ping 10.1.1.1 from another host (my host is
-> default gw for it, it's address is 192.168.22.229).
-> 
-> Hmmm.
-> 
-> How can I route marked packets from localhost?
-> 
-> ping 10.1.1.1
-> PING 10.1.1.1 (10.1.1.1) from 192.168.22.254 : 56(84) bytes of data.
->  From 192.168.22.229: icmp_seq=1 Redirect Host(New nexthop: 192.168.22.221)
-> 
->
+Hello guys,
+
+I am just playing around with the AOL Instant messenger whose direct 
+connections( such as Voice Chat).. fail behind a NAT What I observed is 
+that everytime I modify a part of the packet.. i get immediately 
+disconnected from the AOl Server.. I suspect that there could be a 
+checksum in the packets ( I am working on the version 5.5.3599).
+
+Any pointers on this will be appreciated
+
+Regards
+Ashutosh
 
