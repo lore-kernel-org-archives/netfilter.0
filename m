@@ -1,9 +1,8 @@
-From: "John Black" <black@arbbs.net>
-Subject: Re: netfilter question
-Date: Thu, 19 Feb 2004 08:13:00 -0600
+From: Richard Bown <richard.bown@blueyonder.co.uk>
+Subject: kernel2.6.2-3 + iptables/shorewall
+Date: Thu, 19 Feb 2004 14:48:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4034c46c.4a64.0@arbbs.net>
-Reply-To: black@arbbs.net
+Message-ID: <1077202137.4302.12.camel@gb7tf.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,26 +16,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'netfilter' <netfilter@lists.netfilter.org>
+
+Hi
+having a real headach with this
+Running kernel-2.6.2-3mdk patched for win4lin
+iptables 1.2.9-5mdk
+shorewall 1.4.8-3mdk
+modules loaded are :-
+ipt_TOS 2240 0 - Live 0xe197f000
+ipt_REJECT 6464 0 - Live 0xe198e000
+ipt_LOG 5312 0 - Live 0xe198b000
+ipt_state 1728 2 - Live 0xe1985000
+ipt_multiport 1856 0 - Live 0xe1983000
+ipt_conntrack 2304 0 - Live 0xe1981000
+iptable_filter 2624 1 - Live 0xe1932000
+iptable_mangle 2624 0 - Live 0xe18d2000
+iptable_nat 23116 1 ipt_MASQUERADE, Live 0xe18c3000
+ip_conntrack 31120 4 ipt_MASQUERADE,ipt_state,ipt_conntrack,iptable_nat,
+Live 0xe1963000
+ip_tables 16704 10
+ipt_MASQUERADE,ipt_TOS,ipt_REJECT,ipt_LOG,ipt_state,ipt_multiport,ipt_conntrack,iptable_filter,iptable_mangle,iptable_nat, Live 0xe1952000
 
 
->
->Okay, so that rule is going to hide your 192.168.0.0/24 >network behind the
-public address of the firewall for all >packets going to addresses in the range
-161.x.x.x/21 (ie 8 >Class C's in size).
-8 Class C's?
+now in the 2.4 series kernels if I remember right you could turn /off
+IPV4 forwarding, I hav'nt found this at all in the config file on a
+2.6.2 kernel.
+So as you guys are more at the iptables end, is anyone successfully
+getting MASQ,& DNAT functional with a 2.6.2 kernel, and maybe on a
+mandrake system :)
 
->How are you testing this and deciding it doesn't work?
-im testing it with my windows machine going to the msn chat rooms, because i
-know i will show you what ip address you are coming from.  is there a better
-way to check it.
+Thanks
+Richard
+-- 
+Richard Bown <richard.bown@blueyonder.co.uk>
 
->(By the way, why are you only translating packets which are >going to (presumably)
-your ISP?   What about packets going >anywhere else on the Internet?).
-
-I thought that translated all of the packets?  How is it only translating packets
-to the ISP?
-
-john
-http://www.arbbs.net/
 
