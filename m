@@ -1,12 +1,12 @@
-From: Oskar Andreasson <blueflux@koffein.net>
-Subject: Re: how many chains are part of the mangle table?
-Date: Thu, 10 Oct 2002 08:41:18 +0200 (CEST)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: curious about address specification and port specification
+Date: Thu, 10 Oct 2002 05:16:03 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210100838560.1673-100000@laptop1.agatha>
-References: <Pine.LNX.4.44.0210091834470.17861-100000@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0210100513560.20979-100000@localhost.localdomain>
+References: <000401c27014$5783fdc0$026410ac@honor>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210091834470.17861-100000@localhost.localdomain>
+In-Reply-To: <000401c27014$5783fdc0$026410ac@honor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-This is on the TODO list actually, but I haven't gotten around to fix it. 
-If you look at http://www.frozentux.net/presentations/ I know one of the 
-presentations there "contain" the mangle-5-hook patch (at least info about 
-it=)). 
+On Thu, 10 Oct 2002, Sascha Reissner wrote:
 
-I will fix that problem up and have a new version out in a couple of days.
+> From: "Robert P. J. Day" <rpjday@mindspring.com>
+> 
+> > just the other day, i was at a local LUG meeting and a guy was giving a
+> > quick tutorial on iptables and displayed a sample rule file that contained
+> > the rule:
+> >
+> >   iptables -A FORWARD --destination 172.16.0.2 --destination-port 25  \
+> > --jump ACCEPT
+> >
+> >   doesn't this represent an example of what i was asking about?  a
+> > reference to a port with no reference to protocol.
+> 
+> well, a flipchart, whiteboard or video beamer presentation wont spit out any
+> error messages...
+> 
+> a real computer will do, and it will tell you that --destination-port is an
+> invalid parameter in that case..
+> 
+> because you dont specify any protocol ;)
+> 
+> iptables v1.2.6a: Unknown arg `--destination-port'
+> Try `iptables -h' or 'iptables --help' for more information.
 
-On Wed, 9 Oct 2002, Robert P. J. Day wrote:
+apparently, it was my misunderstanding.  i thought the presenter was
+displaying the contents of his *actual* rules file, when he had just
+lashed together a sample file for the purposes of the talk without 
+actually testing the file.  argh.  so, yes, the rule in question is
+in fact invalid.
 
-> On Wed, 9 Oct 2002, Antony Stone wrote:
-> 
-> > You might want to check the latest version of Oskar's tutorial at 
-> > http://iptables-tutorial.frozentux.net and see if he talks about all five 
-> > chains having mangle hooks now ?
-> 
-> nope.  that's the version i've been reading, actually.
-> 
-> rday
-> 
-> 
-> 
+i have *got* to stop taking people at their word. :-)  thanks for all
+your patience, i think i have a pretty good handle on all this now.
 
--- 
-----
-Oskar Andreasson
-http://www.frozentux.net
-http://iptables-tutorial.frozentux.net
-http://ipsysctl-tutorial.frozentux.net
-mailto:blueflux@koffein.net
+rday
 
 
