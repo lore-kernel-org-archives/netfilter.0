@@ -1,13 +1,15 @@
-From: Feizhou <feizhou@linuxmail.org>
-Subject: Re: Rule Set Size vs Performance Follow-up
-Date: Fri, 30 Jul 2004 00:46:31 +0800
+From: Alejandro Flores <alejandro.flores@triforsec.com.br>
+Subject: Re: Blocking IP
+Date: Thu, 29 Jul 2004 13:57:51 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <410929E7.5040708@linuxmail.org>
-References: <1091113691.9879.9.camel@dchws.tqmcube.com>
+Message-ID: <1091120271.14984.1.camel@aflores>
+References: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de>
+	 <001601c47565$8e0ba110$858310ac@suarapembaruan.com>
+	 <1091103519.13650.6.camel@aflores>  <4109066F.50300@pbl.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1091113691.9879.9.camel@dchws.tqmcube.com>
+In-Reply-To: <4109066F.50300@pbl.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +19,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: NetFilter List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Cc: netfilter@lists.netfilter.org
 
-David Cary Hart wrote:
-> The issue was a large number of dpt 80 rules that are added by a script
-> from Snort exploits.
-> 
-> The suggested solution was to move these to a new chain so that only
-> packets destined for httpd would have to traverse several hundred
-> (hopefully temporary) rules.
-> 
-> Not only does this make logical sense but I notice a definite
-> improvement in DNS (which is the most apparent performance issue).
+	Hello,
 
-You'd probably also want to make sure you don't use any connection 
-tracking rules and therefore not load the conntrack module. In my case, 
-dns queries took seconds (as opposed to milliseconds) to get an answer 
-back from the dnscache.
+> Although solution with sendmail is cleaner and more polite (the offender 
+> gets the error why he/she is refused, and you are blocking only email), 
+> I don't think that somebody who is not noticing that he/she is spitting 
+> out viruses in such a high rate is going to notice and/or care about it.
+
+	Well, you can just drop their packets or you can reject and tell them
+why. The decision is yours! :-)
+
+Regards,
+Alejandro Flores
 
