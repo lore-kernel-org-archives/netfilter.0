@@ -1,13 +1,13 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: [DNAT] Disappearing Packets
-Date: 10 Oct 2003 12:20:03 +0200
+From: richard lucassen <netfilter@lucassen.org>
+Subject: iptables jump to userdefined chain and ESTABLISHED,RELATED rules
+Date: Fri, 10 Oct 2003 13:26:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065781203.1650.106.camel@kermit>
-References: <20031010085214.GA8722@jesus.fsmpi.rwth-aachen.de>
+Message-ID: <20031010132641.2591d3b5.netfilter@lucassen.org>
+Reply-To: netfilter@lucassen.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+ boundary="Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031010085214.GA8722@jesus.fsmpi.rwth-aachen.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +17,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Thomas Wallrafen <mails@ranulf.de>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi Thomas,
+This is a multi-part message in MIME format.
 
-Am Fre, 2003-10-10 um 10.52 schrieb Thomas Wallrafen:
-> I'm currently setting up an IPtables firewall using DNAT to access our
-> Webserver (192.168.0.42) and Masquerading to allow Internet access to
-> the clients.
->=20
-> Packets to the firewall (137.226.171.XXX) on port 80 can pass the FORWARD=
--chain:
-> (already DNATed...)
-> Oct 10 11:47:24 wormhole kernel: IN=3Deth0 OUT=3Deth1 SRC=3D170.252.80.XX=
-X
-> DST=3D192.168.0.42 LEN=3D64 TOS=3D0x00 PREC=3D0x00 TTL=3D47 ID=3D39702 DF=
- PROTO=3DTCP
-> SPT=3D48785 DPT=3D80 WINDOW=3D16384 RES=3D0x00 SYN URGP=3D0
+--Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Are you sure the packets get lost? What happens when you run tcpdump on
-the internal interface of the firewall?
-Can you run tcpdump on the webserver?
-Does the webserver have a default gateway set pointing to the firewall?
-Can you post your rules?
-Does the internet access for the clients work?
+Hello,
 
-Cheers,
+I want all traffic on port 80 be handled by a userdefined chain
+"CH_WWW". Now my question: What is better, this way (I let the port
+80 packets jump first, then I have _two_ ESTABLISHED,RELATED rules, as
+well in the INPUT as in the CH_WWW chain):
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+********************************************************************
+${IPT} -A INPUT -p tcp --dport 80 -j CH_WWW
+${IPT} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+[..]
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+And an extra ESTABLISHED,RELATED in the CH_WWW:
+${IPT} -A CH_WWW -m state --state ESTABLISHED,RELATED -j ACCEPT
+${IPT} -A CH_WWW (first rule)
+[..]
+********************************************************************
+
+or this (I have _one_ ESTABLISHED,RELATED rule, and then let port 80 
+jump):
+
+********************************************************************
+${IPT} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+${IPT} -A INPUT -p tcp --dport 80 -j CH_WWW
+[..]
+
+And an extra ESTABLISHED,RELATED in the CH_WWW:
+${IPT} -A CH_WWW (first rule)
+[..]
+********************************************************************
+
+Both ways work, but I'd say the second way is the best. Am I right?
+
+Richard.
+
+-- 
+___________________________________________________________________
+Recursion: see recursion
+
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
+| Public key and email address:                                    |
+| http://www.lucassen.org/mail-pubkey.html                         |
++------------------------------------------------------------------+
+
+
+--Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB
+Content-Type: application/pgp-signature;
+ name="00000000.mimetmp"
+Content-Disposition: attachment;
+ filename="00000000.mimetmp"
+Content-Transfer-Encoding: base64
+
+LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuMi4xIChHTlUv
+TGludXgpCgppRDhEQlFFL2hjTWp5Rzg1Ryt0ZVZzSVJBdWpJQUp3SkFFMytWM29LeGZXZG1GRnp0
+Q0VxYjJ6bElBQ2doSjV5ClI3V25yNVpwbWozUk5HZENZdEc0Mjh3PQo9MkxmRQotLS0tLUVORCBQ
+R1AgU0lHTkFUVVJFLS0tLS0KCg==
+
+--Multipart=_Fri__10_Oct_2003_13_26_41_+0200_G+DxLsakYyA/s4JB--
 
