@@ -1,14 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Firewall setup at boot - trouble with setting up the LOG target
-Date: Fri, 4 Jul 2003 02:42:17 +0200
+From: Daniel Bidwell <bidwell@andrews.edu>
+Subject: Re: GUI to configure IPTables rules
+Date: 03 Jul 2003 23:40:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030704024217.5e231e71.arnt@c2i.net>
-References: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com>
-	<tcp8gvc03vldjthtabk4s3ii2pv96a7is9@4ax.com>
+Message-ID: <1057290039.813.0.camel@samwise>
+References: <008701c341a6$49bee650$05001aac@breton1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <tcp8gvc03vldjthtabk4s3ii2pv96a7is9@4ax.com>
+In-Reply-To: <008701c341a6$49bee650$05001aac@breton1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,35 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Garcia Ruiz <gar_ruiz@teleline.es>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 03 Jul 2003 19:20:36 +0200, 
-Michal Kepien <lordpopcorn@poczta.onet.pl> wrote in message 
-<tcp8gvc03vldjthtabk4s3ii2pv96a7is9@4ax.com>:
-
-> >Just a blank stab at it, but does syslog have to be started to use
-> >the LOG functionality?
+On Thu, 2003-07-03 at 17:01, Garcia Ruiz wrote:
+> Hello everybody,
 > 
-> Perhaps, but to say the truth, it doesn't mean much to me - I'm a kind
-> of a newbie here :) So, could you say where should I put the firewall
-> setup script and _how_ can I do it?
+> Could someone suggest me a GUI tool to configure IPTables rules? Is there
+> any tool that is also able to configure freeswan VPNs?
 > 
-> And, by the way, where can I learn something about the Linux boot
-> sequence? I don't understand all these rcX.d directories, the init.d
-> dir - what's this all for?! This is beyond the scope of this list, so
-> could you support me with some links or anything? I've searched Google
-> but found nothing worth interest.
+Take a look at fwbuilder.sourceforge.net
+
+> Thanks
 > 
-
-
-..not even in http://tldp.org/ ???
-
-
+> Juan
+> 
+> 
 -- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+Daniel R. Bidwell	|	bidwell@andrews.edu
+Andrews University	|	Information Technology Services
+If two always agree, one of them is unnecessary
+"Friends don't let friends do DOS"
+"In theory, theory and practice are the same.
+In practice, however, they are not."
 
 
