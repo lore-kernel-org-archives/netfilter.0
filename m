@@ -1,12 +1,11 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Fwd: Linux as router (Gateway Server)
-Date: Sat, 12 Feb 2005 09:01:42 -0500
-Message-ID: <1108216901.4462.27.camel@hubcap.ljm.dom>
-References: <1dceb012050211233357e23dd4@mail.gmail.com>
-	<1dceb01205021123483860fb86@mail.gmail.com>
+Subject: Re: clampmss only partially working on 2.6 kernelmode pppoe?
+Date: Sat, 12 Feb 2005 09:08:41 -0500
+Message-ID: <1108217321.4462.34.camel@hubcap.ljm.dom>
+References: <afcf620205021122413dd5dd6d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1dceb01205021123483860fb86@mail.gmail.com>
+In-Reply-To: <afcf620205021122413dd5dd6d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,50 +19,42 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 2005-02-12 at 02:48, Navneet Choudhary wrote:
-> hi list,
+On Sat, 2005-02-12 at 01:41, Joris wrote:
+> Hi,
 > 
-> i require further co-operation from yours side.
 > 
-> Squid Server is serving as Proxy server, Gateway & Firewall
+> I have linux 2.6.11-rc2 masquerading a pppoe connection (mtu: 1492)
+> trough the kernel mode pppoe implementation.
 > 
-> Problem:
-> Squid daemon dies at startup.
+> I loaded the ipt_tcpmss and ipt_TCPMSS (what's the difference?) kernel
+> modules, and have the following iptables rule running:
+> iptables -I FORWARD -o ppp0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
+> --clamp-mss-to-pmtu
 > 
-> Here is log output of  /var/log/messages
+> Most internet hosts seem to be ok, but (don't laugh, it's for a family
+> member's fade-out only!) hotmail still is a pita. (to be specific:
+> after logging in, the inbox page served by
+> by18fd.bay18.hotmail.msn.com never gets trough). Some hotmail submit
 > 
-> Feb 12 09:15:25 squid squid[3652]: Squid Parent: child process 3654 started
-> Feb 12 09:15:25 squid (squid): Cannot open HTTP Port
-> Feb 12 09:15:29 squid squid[3720]: Squid Parent: child process 3722
-> exited due to signal 6
-> Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385 started
-> Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385
-> exited with status 1
-> Feb 12 09:15:33 squid (squid): Cannot open HTTP Port
+> 
+> Has someone experienced something similar?
+> 
+> Is there a more precise test method (eg, sending a packet of a certain
+> size to a certain host or something, or is there something specific I
+> could look for in a network dump?)
 
-that has nothing to do with iptables.  my guess is that you are either:
+tcpdump the external interface of the firewall for icmp type 3 code 4
+packets.
 
-(a) telling squid to listen on a port that is already in use by another
-process
-(b) trying to start squid after it's already started
-(c) running squid as an unprivileged user and trying to bind to a
-privileged port
-
-go read:
-
-  http://www.squid-cache.org/Doc/FAQ/FAQ-11.html#ss11.23
-
-(ps - google is your friend)
-
-> Why my iptables rule blocking squid to open HTTP port.
-
-it isn't.
+keep in mind that "--clamp-mss-to-pmtu" relies on the fact that PMTU
+discovery works along the path of your communication--this is not always
+a valid assumption these days.
 
 -j
 
 --
-"It's not easy to juggle a pregnant wife and a troubled child, but
- somehow I managed to fit in eight hours of TV a day."
+"Okay, retrace your steps. Woke up, fought with Marge, ate Guatemalan
+ insanity peppers, then I... Oh..."
 	--The Simpsons
 
 
