@@ -1,14 +1,17 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: logs
-Date: Fri, 9 Apr 2004 18:26:44 -0400
+From: giorgio.zarrelli@mammaitalia.com
+Subject: Re: opening connection for Tomcat
+Date: Fri, 9 Apr 2004 08:56:27 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404091826.45635.JALaramie@Loudoun-Fairfax.com>
-References: <BAY15-F33bYKb2X5YqE00065cb9@hotmail.com>
+Message-ID: <54466.212.17.209.220.1081493787.squirrel@www.zarrelli.org>
+References: <40756C19.3010606@tin.it>
+    <1081446600.2453.63.camel@katala.sterenborg.info>
+    <4075B24D.1020601@tin.it>
+    <200404082253.44301.Antony@Soft-Solutions.co.uk>
+    <407642A3.1040700@tin.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F33bYKb2X5YqE00065cb9@hotmail.com>
-Content-Disposition: inline
+In-Reply-To: <407642A3.1040700@tin.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,16 +22,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Gianni Pucciani <gp.puccio@tin.it>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Friday 09 April 2004 18:07, azeem ahmad wrote:
-> hi alll
-> i want to check the logs of iptables to check who is passing throught my
-> machine. so plz tell me where r its logs and how can i check them
-> regards
-> Azeem
+Hi,
 
-Iptables uses syslog which writes to /var/log/messages file by default.
+> Well, I'm not a firewall guru, but I think that 0.0.0.0 address is often
+> used to indicate "every address", isn't it?
 
-Jeff
+Yes, it is.
+
+E' una convenzione utilizzata.
+
+Ciao
+
+Giorgio Zarrelli
 
