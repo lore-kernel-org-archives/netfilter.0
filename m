@@ -1,9 +1,11 @@
-From: "subramoni padmanabhan" <smoni77@hotmail.com>
-Subject: question about iptables
-Date: Thu, 27 Feb 2003 19:23:33 -0500
+From: =?iso-8859-1?Q?Johan_Fredrik_=D8hman?= <johanfo@ohman.no>
+Subject: REJECT  in PREROUTING
+Date: Wed, 26 Feb 2003 23:18:19 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY2-F97bJeQvFFleSI00046a04@hotmail.com>
+Message-ID: <000001c2dde4$f79479a0$f767f081@shuttle>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C2DDED.5958E1A0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,33 +16,114 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+This is a multi-part message in MIME format.
 
-   I have a question about the use of iptables. I am working on a project in 
-which I have to capture packets. Does iptables allow non-obtrusive packet 
-capture? For example, if there is a router between A and B and when I send a 
-packet from A to B, the router is supposed to make a copy of the packet 
-going through it and send that copy to another node, say C without altering 
-the packet going to B. So in effect the packet becomes two at the router and 
-one goes to C and the original one goes to B. Is there provision in iptables 
-to do such a thing? Also, can I capture packets based on the data fields 
-inside the packet rather than on the fields in the packet header? If so, 
-please let me know how. Any response would be greatly appreciated. Thanks.
+------=_NextPart_000_0001_01C2DDED.5958E1A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Subramoni Padmanabhan
-G-126, 700 woodland avenue
-Lexington, Kentucky 40508
-Phone : 859 323 9405
+Sorry if this question has been asked before, but:
+
+=20
+
+Is there any good reasons, technically or political, to disallow the =
+REJECT
+target in the PREROUTING table?
+
+=20
+
+Thanks
+
+=20
+
+JF=D8
 
 
+------=_NextPart_000_0001_01C2DDED.5958E1A0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
 
 
-_________________________________________________________________
-Tired of spam? Get advanced junk mail protection with MSN 8. 
-http://join.msn.com/?page=features/junkmail
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Sorry if this question has been asked before, =
+but:</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Is there any good reasons, technically or political, =
+to disallow
+the REJECT target in the PREROUTING table?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>JF=D8</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0001_01C2DDED.5958E1A0--
 
 
