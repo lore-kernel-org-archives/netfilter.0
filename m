@@ -1,13 +1,18 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Anybody heard about UP&P ?
-Date: Sat, 21 Feb 2004 20:13:43 +0200
+From: Andreas Meyer <anmeyer@gmx.net>
+Subject: Re: Re[2]: strange connetions to exodus.net
+Date: Sat, 21 Feb 2004 19:26:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077387223.25167.37.camel@raylinux.internal>
-References: <4035B3BC.6030901@randodetente.org>
+Message-ID: <20040221192607.6c24d4f2.anmeyer@gmx.net>
+References: <20040221122547.1cb9a3eb.anmeyer@gmx.net>
+	<1077377146.5329.8.camel@tarkus>
+	<20040221170951.6d7ddfae.anmeyer@gmx.net>
+	<200402211136.22220.JALaramie@Loudoun-Fairfax.com>
+	<20040221181940.7dc7d439.anmeyer@gmx.net>
+	<96993686.20040221150628@attla.net.ar>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-bHKLwwnLzh4Nxd3YA+VH"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4035B3BC.6030901@randodetente.org>
+In-Reply-To: <96993686.20040221150628@attla.net.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +22,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Alexis <alexis@attla.net.ar> wrote:
 
---=-bHKLwwnLzh4Nxd3YA+VH
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+> Now we see.
+> 
+> Like you said, if this is your webserver, some site inside your
+> webserver are using ads in this destination
+> 
+> exodus are only the dns for this addresses, but you are connecting to servedby.advertising.com
+> 
+> and, in your schema, where is 192.168.20.60?
 
-On Fri, 2004-02-20 at 09:14, Marc Recht=E9 wrote:
-> To enable remote assistance from Internet of a WinXP PC on a LAN using=20
-> NAT one must have a UP&P NAT compatible router.
->=20
-Errr ... no! UPnP is a way for a network device to tell other network
-devices who ask what port a specific service is on.
++------------+   +-----------------+   +----------------------+
+|WKS         |   |DMZ 192.168.1.75 |   |Gateway 192.168.20.210|
+|192.168.1.3 |-->|    192.168.20.60|-->|                      |
+|with Opera  |   |with Squid etc.  |   +----------------------+
++------------+   +-----------------+
 
-Remote assistance uses port 3389 IIRC ...
+But! I think I found the answer to my problem. I think
+Opera is the one who is causing this request. As soon
+as I use for example Firebird there are no such requestes.
 
-> Can Netfilter act as such a router, and if so do you have an idea of the=20
-> chain to apply ?
->=20
-No.
+Ooooh, I have to watch this furthermore.
 
-> Thanks for your help
->=20
-> Marc.
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+Thank you all for your patience!
 
---=-bHKLwwnLzh4Nxd3YA+VH
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBAN5/Xh1fuR/Bv+ygRAh7LAKCXTCESfjfNBKpaSLL1wXPSqa+zDgCeM/+h
-MiPFX0dBzssjT3qB/4xg0m0=
-=iGwD
------END PGP SIGNATURE-----
-
---=-bHKLwwnLzh4Nxd3YA+VH--
+-- 
+   Andreas Meyer   | http://www.anup.de
+                   | http://homeservice.anup.de/andreas
 
 
