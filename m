@@ -1,19 +1,11 @@
-From: Dan Barron <dbarron@ddive.com>
-Subject: Re: RTSP & RTP w/ Darwin Thru iptables
-Date: Thu, 22 Jul 2004 23:24:18 -0700
+From: Julien <dyna@tri-oxyde.org>
+Subject: routing mail on a different gateway
+Date: Fri, 23 Jul 2004 10:25:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6.0.0.22.0.20040722182406.039b10a0@arctictern.ddive.com>
-References: <6.0.0.22.0.20040721132755.037c5bb8@arctictern.ddive.com>
- <200407221502.41890.Alistair@nerdnet.ca>
- <6.0.0.22.0.20040722165744.0394d0c8@arctictern.ddive.com>
- <200407222109.32494.Alistair@nerdnet.ca>
+Message-ID: <4100CB67.5060507@tri-oxyde.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407222109.32494.Alistair@nerdnet.ca>
-References: <6.0.0.22.0.20040721132755.037c5bb8@arctictern.ddive.com>
- <200407221502.41890.Alistair@nerdnet.ca>
- <6.0.0.22.0.20040722165744.0394d0c8@arctictern.ddive.com>
- <200407222109.32494.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,50 +15,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Alistair Tonner <Alistair@nerdnet.ca>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Thanks again for your insights.  It looks like it is working now.
+Good Morning,
 
-For those who are interested - here's the current set of relevant rules 
-that seem to be working.
+I have a linux box with two dsl modems on it (connection is done via=20
+pppoe), I'm trying to route default traffic on the primary connection=20
+(ppp0) and mail traffic on another one (ppp1).
 
-# All coming out of DMZ or LAN and all with established connections on any 
-interface
-$IPTABLES -A FORWARD -i $DMZ_IFACE -j ACCEPT
-$IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+This traffic should be able to come from the localhost or the lan via NAT=
+.
 
-# Forward to RTSP in DMZ STREAMING SERVER
-$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p tcp -d $DMZ_STREAMING 
---dport 554 -j ACCEPT
-$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p tcp -d $DMZ_STREAMING 
---dport 7070 -j ACCEPT
-$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p udp -d $DMZ_STREAMING 
---dport 554 -j ACCEPT
-$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p udp -d $DMZ_STREAMING 
---dport 7070 -j ACCEPT
-$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -p udp -d $DMZ_STREAMING 
---dport 6970:6999 -j ACCEPT
+I run Slackware 9.1 (Kernel 2.4.22), recompiled with necessary options=20
+for using iproute2.
 
-# DNAT to QTSS Server
-$IPTABLES -t nat -A PREROUTING --dst $INET_IP -p tcp --dport 554 -j DNAT 
---to-destination $DMZ_STREAMING:554
-$IPTABLES -t nat -A PREROUTING --dst $INET_IP -p tcp --dport 7070 -j DNAT 
---to-destination $DMZ_STREAMING:7070
-$IPTABLES -t nat -A PREROUTING --dst $INET_IP -p udp --dport 554 -j DNAT 
---to-destination $DMZ_STREAMING:554
-$IPTABLES -t nat -A PREROUTING --dst $INET_IP -p udp --dport 7070 -j DNAT 
---to-destination $DMZ_STREAMING:7070
-$IPTABLES -t nat -A PREROUTING --dst $INET_IP -p udp --dport 6970:6999 -j 
-DNAT --to-destination $DMZ_STREAMING:6970-6999
+According to the advanced routing howto, I did the following :
 
-# SNAT - Anything heading out the Public interface gets the public IP
-$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
+iptables =E2=88=92A PREROUTING =E2=88=92i eth0 =E2=88=92t mangle =E2=88=92=
+p tcp =E2=88=92=E2=88=92dport 25 =E2=88=92j MARK=20
+=E2=88=92=E2=88=92set=E2=88=92mark 1
+iptables =E2=88=92A PREROUTING =E2=88=92i lo =E2=88=92t mangle =E2=88=92p=
+ tcp =E2=88=92=E2=88=92dport 25 =E2=88=92j MARK=20
+=E2=88=92=E2=88=92set=E2=88=92mark 1
 
-A working streamed sample can be seen at http://darwin.dswllc.com/sample.html.
+I'm not sure whether "lo" is needed.
 
-Dan Barron
+echo 201 mail.out >> /etc/iproute2/rt_tables
+ip rule add fwmark 1 table mail.out
+
+/sbin/ip route add default via [Second's ISP Gateway] dev ppp1 table=20
+mail.out
+
+I get no error message, and ip rule ls and ip route show params where=20
+recorded.
+
+But if I do telnet somemail.server.com 25, I get a timeout and no data=20
+is sent via ppp1 (seen using ifconfig ppp1 or tcpdump -i ppp1).
+
+I can't figure what can be wrong nor where I should start looking for.
+I also looked in the ip-cref doc and found nothing that could help me.
+
+Feel free to ask me on any point I would have forgotten.
+
+Do you have an idea in order to solve this problem ?
+
+Thanks, in advance !
+
+Julien.
 
 
