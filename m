@@ -1,10 +1,9 @@
-From: Duane Cloud <cloud@cray.com>
-Subject: Question about dynamically updating SNAT rules
-Date: Mon, 11 Nov 2002 14:33:34 -0600 (CST)
+From: Dax Kelson <dax@gurulabs.com>
+Subject: DNATd server behind fw with two ISPs
+Date: Mon, 11 Nov 2002 18:33:53 -0700 (MST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211112033.gABKXYn04151@kumo.us.cray.com>
+Message-ID: <Pine.LNX.4.44.0211111815010.1971-100000@mooru.gurulabs.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,67 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hello,
 
-I'm working on a project which is attempting to cut a TCP connection
-into 2 parts.  The following represents my "intended behavior":
+Consider the following:
+                 ________
+(ISP1)=====eth0:| 2.4.18 |
+		|Firewall|:eth2=====(WWW/DNS server @ 10.3.2.1)
+(ISP2)=====eth1:|__NAT___|
 
-  Connection request's source:       SA/SP
-  Connection request's destination:  DA/DP
+On the firewall there are these DNAT rules:
 
-I've got a REDIRECT rule which sends connection requests to a program
-running on a Linux box, so when the request comes in, the connection
-that gets established (from the Linux box's perspective) is:
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d REAL.IP.FROM.ISP1 --dport
+25 -j DNAT --to 10.3.2.1:25
 
-  Local address/port                 IA/IP
-  Foreign address/port               SA/SP
+iptables -t nat -A PREROUTING -i eth1 -p tcp -d REAL.IP.FROM.ISP2 --dport
+25 -j DNAT --to 10.3.2.1:25
 
-The IA/IP is where my program is executing...
+Question:
 
-This program then executes a system call to obtain the DA/DP, opens
-another socket, enters an iptables rule to do SNAT so that DA/DP sees
-packets with the original requestor's SA/SP, and then does a connect()
-to DA/DP.
+What sort of SNAT and/or policy routing can I do so that the responses
+from the internal 10.3.2.1 server are SNATed to and leave the appropriate
+external interface on the firewall (the appropriate interface would be the 
+external interface that the oonnection orginated from).
 
-From SA's perspective, the connection looks like:
+TIA,
+Dax
 
-  Local address/port                 SA/SP
-  Foreign address/port               DA/DP
-
-From DA's perspective, the connection looks like:
-
-  Local address/port                 DA/DP
-  Foreign address/port               SA/SP
-
-But from the Linux box's perspective, in between these to hosts, it
-is really 2 connections:
-
-  Local address/port                 IA/IP
-  Foreign address/port               SA/SP
-
-  Local address/port                 xA/xP
-  Foreign address/port               DA/DP
-
-Where "xA/xP" is the address/port bound to the newly created socket,
-and is intended to be translated to SA/SP.
-
-For the most part, this all works...But on occassions the iptables
-rule gets added but the connect() goes out to lunch.  The connection
-from the Linux box's perspective stays in SYN_SENT, but tcpdump shows
-no traffic going out the target interface.
-
-I'm wondering if there is a better way to handle this or whether
-dynamically adding rules is the only way to accomplish it.  And if
-so, if there are any know problems when executing "iptables -t nat ..."
-on the fly.
-
-Any help/information/etc would be greatly appreciated.  If there is
-another method for asking questions or obtaining information, please
-direct me as appropriate.
-
-Thank you,
-Duane Cloud
 
