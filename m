@@ -1,11 +1,16 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Help debugging iptables firewall....
-Date: Tue, 25 Jan 2005 09:46:20 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F01991D@pxtvjoexd01.pxt.primeexalia.com>
+From: "jdf [zionarea.org]" <zionarea@free.fr>
+Subject: Re: about iprange
+Date: Tue, 25 Jan 2005 18:51:28 +0100
+Message-ID: <1106675488.41f6872079085@imp6-q.free.fr>
+References: <1106251621.41f00f65147cb@imp6-q.free.fr>
+	<1106252952.5024.25.camel@hubcap.ljm.dom>
+	<1106335800.41f15838d9d26@imp6-q.free.fr>
+	<1106660735.41f64d7f087a7@imp5-q.free.fr>
+	<1106671920.5306.50.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <1106671920.5306.50.camel@jasiiitosh.nexusmgmt.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +22,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Greg Cope <gregcope@gmail.com>, netfilter@lists.netfilter.org
+To: Netfilter users list <netfilter@lists.netfilter.org>
 
-Are you getting the connection coming back?  Try
+Selon "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>:
 
-$IPTABLES -A FORWARD -o $DMZ_IFACE -o $LAN_IFACE -j ACCEPT
+> On Tue, 2005-01-25 at 14:45 +0100, jdf [zionarea.org] wrote:
+> > Using network addresses like 192.168.0/8 is well, but it's not granul=
+ar
+> > enough: just because we cannot provide all the addresses if they don'=
+t
+> > follow this contiguous rule.
+> >
+> > So I'm finally wondering about iprange. Most of linux distributions, =
+with
+> > the ones I know, don't provide iprange for the kernel. Are there any
+> > performance or security issue behind this behavior ? Or is it simply =
+a
+> > 'bad' choice of those distributors ? But maybe it's simply due to the
+> > kernel version. It appears 2.6.x provide this option at default; but =
+if
+> > I remember well 2.4.x didn't.
+> >
+> I had asked this same question as we considered enabling iprange rule
+> creation for the ISCS network security management project
+> (http://iscs.sourceforge.net).  We were told by the patch's creator tha=
+t
+> there is virtually no additional overhead compared to a subnet match
+> (assuming I understood him correctly!).
+>
+> We found we needed to accommodate solutions both ways within ISCS, i.e.=
+,
+> if a gateway supports iprange, we write iptables rules with ranges.  If
+> not, we use the logic found in SubnetCreator
+> (http://subnetcreator.sourceforge.net) to break the range into subnets
+> and then create rules for the resultant subnets.  Hope this helps - Joh=
+n
 
-And see if it makes any difference.  Forward works in both directions.
-We typically allow established,related to return the path that it came
-from.  You might need to do the same.
+This helps. I'll have a look at those addresses too.
+Thank you.
 
+> --
+> John A. Sullivan III
+> Open Source Development Corporation
+> +1 207-985-7880
+> jsullivan@opensourcedevel.com
+>
+> Financially sustainable open source development
+> http://www.opensourcedevel.com
+>
+>
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Greg Cope
-Sent: Tuesday, January 25, 2005 9:25 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Help debugging iptables firewall....
-
-Hi Gary,
-
-Pinholes?  If you mean specific IP to specific IP:PORT on specfic
-interfaces then yes.
-
-DB is an oracle listener (port 1521)
-
-I have these:
-
-# for ssh to db server from webserver
-$IPTABLES -A FORWARD -p tcp --dport 22 -i $DMZ_IFACE -s $DMZ_EDGE_IP
--o $LAN_IFACE -d $TROT_IP -j ACCEPT
-
-$IPTABLES -A FORWARD -p tcp --dport 1521 -i $DMZ_IFACE -s $DMZ_EDGE_IP
--o $LAN_IFACE -d $TROT_IP -j ACCEPT
-
-I added 2 of your examples one before one after, and only see:
-
-Jan 25 17:21:43 gateway kernel: Oracle 1521 [tcp] before: IN=3Deth1
-OUT=3Deth2 SRC=3D192.168.254.3 DST=3D192.168.0.5 LEN=3D60 TOS=3D0x00 =
-PREC=3D0x00
-TTL=3D63 ID=3D30447 DF PROTO=3DTCP SPT=3D32907 DPT=3D1521 WINDOW=3D5840 =
-RES=3D0x00
-SYN URGP=3D0
-
-Which would imply that the rule is ok and the packets goes through -
-but why I am not getting a connection?
-
-Thanks,
-
-Greg
 
 
