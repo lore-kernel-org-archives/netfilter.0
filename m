@@ -1,13 +1,10 @@
-From: LazCorp <lazcorp@mail.bg>
-Subject: ipt_TTL
-Date: Sat, 21 Feb 2004 00:14:46 +0000
+From: Dino Dragovic <dragovic@gfos.hr>
+Subject: vpn and pptp
+Date: Fri, 20 Feb 2004 17:17:37 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402210014.46664.lazcorp@mail.bg>
-Reply-To: lazcorp@mail.bg
+Message-ID: <Pine.LNX.4.58.0402201702020.23080@most.gfos.hr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +14,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 Hi,
-i'm using slackware 9.1
-I'ts have sommting different betwen slackware 9.1 and other Unix/Linux  
-operation systems?
-I try to install patch-o-matick with new kernel (2.4.22 - original of slack9.1 
-CD's) 
-patch-o-matic-20031219.tar.bz2
-./runme --batch base/TTL
-everything across fine..
-after that i compile the kernel..reboot END..
-$iptables -t mangle -A PREROUTING -i eth0 -j TTL --ttl-set 64
-iptables: No chain/target/match by that name
-:(
 
-$locate TTL
-/usr/lib/iptables/libipt_TTL.so
-/usr/src/linux-2.4.22/net/ipv4/netfilter/ipt_TTL.c
-/usr/src/linux-2.4.22/net/ipv4/netfilter/ipt_TTL.o
-/usr/src/linux-2.4.22/net/ipv4/netfilter/.ipt_TTL.o.flags
-/usr/src/linux-2.4.22/include/linux/netfilter_ipv4/ipt_TTL.h
-/usr/local/lib/iptables/libipt_TTL.so
+I have linux Debian (2.4.24 kernel) firewall with nat and iptables.On my
+private network there is MS w2000 pptp server. I can connect to it using pptp
+from Internet (PPTP) but from only one client at the time.Is it
+possible and how to connect through firewall several clients
+simultaneously to vpn server? Iptables verison is 1.2.6a-5
+When I try to connect while there is already one connection I get
+"Verifying username and password" until connection times out.
 
-any idea?
-and sorry for my bad english..
+tx
 
 
 
