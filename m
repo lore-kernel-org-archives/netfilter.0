@@ -1,14 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: arptables
-Date: 22 Nov 2002 11:18:10 +0100
+From: Wasim Bashir <wasim.bashir@nexor.co.uk>
+Subject: RE: FTP Forwarding
+Date: Fri, 22 Nov 2002 10:37:21 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037960290.8909.1.camel@elendil.intranet.cartel-securite.net>
-References: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
-	 <047701c28f97$895afb30$ac01a8c0@monday>
+Message-ID: <001d01c29213$23cdd0c0$e6353fc1@nexor.co.uk>
+References: <FLEKIPPLAEDMJMOOBBDPGEOBDIAA.stewart.thompson@shaw.ca>
+Reply-To: "wasim.bashir" <wasim.bashir@nexor.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <047701c28f97$895afb30$ac01a8c0@monday>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPGEOBDIAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +18,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Toshihiro Sonoda <toshihiro@jp.fujitsu.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "stewart.thompson" <stewart.thompson@shaw.ca>, 'Bantam' <netfilter@end.yorks.com>, 'netfilter' <netfilter@lists.netfilter.org>
 
-Le mar 19/11/2002 =E0 07:47, Toshihiro Sonoda a =E9crit :
-> I can find the arp_filter.c and arp_tables.c in "net/ipv4/netfilter/" o=
-f kernel tree (2.4.18).
-> But, I can not find the document about how to use the arp filtering.
-> How can I use the arp filtering in linux.
+Hi,
 
-Akaik, there's still no userland tool to configure ARP filtering into
-kernel (aka arptables tool) and associated library.
+neither ip_nat_ftp and ip_conntrack_ftp are loaded, how do i load these ?
 
-So the first step would be implementing kernel/userland interface...
+I'm using redhat 8.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Regards,
+
+Wasim
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Stewart
+Thompson
+Sent: 22 November 2002 10:32
+To: Bantam; netfilter
+Subject: RE: FTP Forwarding
+
+
+Wasim:
+
+	If you do an lsmod, does it show  that
+ip_nat_ftp and ip_conntrack_ftp are loaded?
+They are required to make ftp work through nat.
+Also what Linux Distro and Iptables are you using?
+
+Stu.........
+
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Bantam
+Sent: November 22, 2002 2:08 AM
+To: netfilter
+Subject: FTP Forwarding
+
+Hi,
+
+I've been trying to forward port 21 to an ftp server on another machine, IP
+address  10.0.0.199.
+
+eth1 - external (connected to the net)
+eth0 - internal
+
+/sbin/iptables -A FORWARD -p tcp -i eth1 --dport 21 -j ACCEPT
+/sbin/iptables -A PREROUTING -t nat -p tcp -i eth1 --dport 21 -j DNAT --to
+10.0.0.199:21
+
+but can't get it to work..
+
+any ideas ?
+
+Thanks
+
+Wasim
+
+
+
+
 
