@@ -1,15 +1,14 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Re: Problem with Transparent Proxy and 2.6 IPSec
-Date: Wed, 17 Mar 2004 21:59:30 +1100
+From: Alexandre Strube <surak@surak.eti.br>
+Subject: Re: Ip tables is not startting up FC1
+Date: Tue, 16 Mar 2004 12:46:26 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040317105930.GC17776@samad.com.au>
-References: <20040317033707.GA9494@cube.ecbaldwin.net>
+Message-ID: <1079451986.6656.7.camel@casa>
+References: <2577.128.59.176.161.1079019761.squirrel@sojourn.dyndns.org>
+Reply-To: surak@surak.eti.br
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f0KYrhQ4vYSV2aJu"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040317033707.GA9494@cube.ecbaldwin.net>
+In-Reply-To: <2577.128.59.176.161.1079019761.squirrel@sojourn.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,176 +18,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Fedora-list <fedora-list@redhat.com>
+Cc: netfilter@lists.netfilter.org
 
+Em Qui, 2004-03-11 =E0s 12:42, Technical escreveu:
+> When I reboot my box, iptables does not run.
 
---f0KYrhQ4vYSV2aJu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> if I service iptables start|stop iptables get start it.  I checked
+> chkconfig and iptables is on on run level 3 and 5.  what could be wrong;
+> which log can look into to see why ipatabels is not launching on reboot?
 
-Hi
+This is a fedora-specific bug. I've already spoke about it here, no one
+heard. They kept asking me about generic solutions, none worked.
 
-There is a problem with NAT + IPSEC on the same box running the native
-stack.  There is a thread in devel that covers this.  There are also
-some patches that will work with 2.6.3, but do not apply the
-ip_route_me_hrader patch by herbert Xu (to fix the mangle taple hooks)
-as this causes a loop(this patch is in 2.6.4).
+--=20
+[]s
 
-Alex
+Alexandre Ganso=20
+500 FOUR vermelha - Diretor Steel Goose Moto Group
 
-On Tue, Mar 16, 2004 at 08:37:07PM -0700, Carl Baldwin wrote:
-> Hello,
->=20
-> I am new to this list but not new to iptables.  I have used iptables for
-> several years and have had much success with it.  I want to present the
-> problem that I have and request comments on how I might resolve it.
->=20
-> I have been using a transparent proxy with squid and smtp for about a
-> year.  It has worked fine and I've been very happy with it.
->=20
-> The problem came when I dumped freeswan and gave ipsec in linux 2.6.4 a
-> try.  This ipsec has been, for the most part, more reliable and easier
-> to understand for me.
->=20
-> I first ran into a problem that has already been discussed on this list
-> (or maybe netfilter-devel?).  This problem is with transport mode in
-> ipsec.  So, I switched to tunnel mode.  For more on that problem do a
-> search on the list archives.
->=20
-> In tunnel mode, as you may know from previous postings, iptables sees
-> each packet twice.  First, as an esp packet.  Second, as the
-> de-encapsulated version of the packet.  This is good, I think, although
-> I would like a way to know that a packet was authenticated or encrypted
-> prior to its de-encapsulation.  However, that is the subject of a future
-> posting.
->=20
-> Anyway, most rules work for me.  I can SNAT these packets out onto the
-> global network, all my INPUT rules seem to work and things are generally
-> happy.  However, my transparent proxies do not work.  Does anyone know
-> why?
->=20
-> SOME INTERESTING OBSERVATIONS
->=20
-> Here is something that I observed running tcpdump on the two hosts at
-> the end of the tunnel.  This is part of the dump when trying to telnet
-> from cube to host mail --- names changed to protect the innocent --- on
-> port 25.  The nat box is called nat and the source machine is called
-> cube.  Here is the dump on the nat box side:
->=20
-> 18:44:43.825043 cube > nat: ESP(spi=3D0x00000201,seq=3D0x532b) (DF) [tos =
-0x10]
-> 18:44:43.825043 cube.39869 > mail.smtp: S 1307041850:1307041850(0) win 58=
-40 <mss 1460,sackOK,timestamp 118540183 0,nop,wscale 0> (DF) [tos 0x10]
-> 18:44:43.825292 mail > cube: ESP(spi=3D0x00000301,seq=3D0x54ca) (DF)
-> 18:44:46.824219 cube > nat: ESP(spi=3D0x00000201,seq=3D0x532f) (DF) [tos =
-0x10]
-> 18:44:46.824219 cube.39869 > mail.smtp: S 1307041850:1307041850(0) win 58=
-40 <mss 1460,sackOK,timestamp 118543184 0,nop,wscale 0> (DF) [tos 0x10]
->=20
-> Here, I see the request to mail.smtp encapsulated in esp and then
-> de-encapsulated.  Then I see a mail > cube esp packet.  Then another
-> cube > nat packet.
->=20
-> On cube I see the following.
->=20
-> 18:44:43.823985 mail > cube.39869: ESP(spi=3D0x00000301,seq=3D0xc06c) (DF)
-> 18:44:43.823985 nat.smtp > cube.39869: S 4174872998:4174872998(0) ack 130=
-7041851 win 5792 <mss 1460,sackOK,timestamp 186145512 118540183,nop,wscale =
-0> (DF)
-> 18:44:46.823183 mail > cube.39869: ESP(spi=3D0x00000301,seq=3D0xc06d) (DF)
-> 18:44:46.823183 nat.smtp > cube.39869: S 4174872998:4174872998(0) ack 130=
-7041851 win 5792 <mss 1460,sackOK,timestamp 186148512 118540183,nop,wscale =
-0> (DF)
->=20
-> It looks to me like a response is being sent.  So, I'm not sure where
-> things might be breaking down.
->=20
-> MISC INFO ABOUT MY SETUP
->=20
-> I run a debian testing machine as my NAT and proxy.  Both the proxy and t=
-he
-> firewall are on the same machine because this is my home machine and I'm =
-just
-> playing around with this stuff at the moment.  My other linux machines
-> communicate with this box through an ipsec tunnel.  Network analysis with
-> tcpdump comfirms this.  Currently, I have one windows machine that is all=
-owed
-> to talk to this linux machine without ipsec.  This machine can still use =
-the
-> transparent proxies without a problem.
->=20
-> # This shows the version of iptables that I am running.
-> nat:~> dpkg -l iptables
-> Desired=3DUnknown/Install/Remove/Purge/Hold
-> | Status=3DNot/Installed/Config-files/Unpacked/Failed-config/Half-install=
-ed
-> |/ Err?=3D(none)/Hold/Reinst-required/X=3Dboth-problems (Status,Err: uppe=
-rcase=3Dbad)
-> ||/ Name       Version   Description
-> +++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> ii  iptables   1.2.9-5   Linux kernel 2.4+ iptables administration tools
->=20
-> # Info on my kernel.  (I have tried all of the 2.6.x stable releases)
-> nat:~> uname -a
-> Linux nat 2.6.4 #1 Sun Mar 14 14:54:23 MST 2004 i686 GNU/Linux
->=20
-> # Here are the relavant iptables rules (iptables-save format.)
-> #   NOTE eth0 goes to the global internet, eth1 to my local net.
->=20
-> # Generated by iptables-save v1.2.9 on Tue Mar 16 10:51:20 2004
-> *nat
-> :PREROUTING ACCEPT [88:22304]
-> :POSTROUTING ACCEPT [98:14092]
-> :OUTPUT ACCEPT [139:17757]
-> -A PREROUTING -i eth1 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
-> -A PREROUTING -i eth1 -p tcp -m tcp --dport 25 -j REDIRECT --to-ports 25
-> -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.1.2
-> COMMIT
->=20
-> # Generated by iptables-save v1.2.9 on Tue Mar 16 10:51:20 2004
-> *filter
-> :INPUT DROP [72:21276]
-> :FORWARD DROP [0:0]
-> :OUTPUT ACCEPT [9217:2302627]
-> -A INPUT -p ah -j ACCEPT
-> -A INPUT -p esp -j ACCEPT
-> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-> -A INPUT -i eth1 -p tcp -m tcp --dport 8080 -j ACCEPT
-> -A FORWARD -i eth1 -o eth0 -j ACCEPT
-> -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-> COMMIT
->=20
-> OTHER INTERESTING ASIDES
->=20
-> Just as an aside, most of you are used to seeing this done with squid
-> but some may not be used to seeing it done with smtp.  It works great
-> and I love it.  Only my border machine needs to know about special rules
-> for routing certain mail (like routing mail to aol for instance).  My
-> desktop and laptop think they are delivering MX direct.
->=20
-> Thanks for taking the time to read this.
-> Carl Baldwin
-
-
-
---f0KYrhQ4vYSV2aJu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAWC+SkZz88chpJ2MRApTMAJ0dw20L9lHLM1blSOpVIYZk4JsQPQCguKqF
-FkACbX9pJI3KFUM9CHnlj4w=
-=ettN
------END PGP SIGNATURE-----
-
---f0KYrhQ4vYSV2aJu--
 
