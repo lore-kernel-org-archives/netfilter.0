@@ -1,11 +1,12 @@
-From: "Landon Chelf" <landonc@starrobbins.com>
-Subject: Multi NIC Gateway and HostAP Box
-Date: Fri, 15 Aug 2003 14:32:59 -0400
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: Need help have some questions...
+Date: Fri, 15 Aug 2003 15:09:42 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006b01c3635b$a7d0ab30$6901a8c0@Station13>
+Message-ID: <20030815220942.21924.qmail@web40208.mail.yahoo.com>
+References: <1060941756.1712.21.camel@kermit>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1060941756.1712.21.camel@kermit>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,53 +16,121 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: Ralf Spenneberg <lists@spenneberg.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+Just as I suspected. This is not good news for what I would like to do. Why=
+ is
+it that iptables does not allow "fowarding" on the imput line? Is it becuase
+the filter table is not capable of this?
 
-I've been working on getting HostAP up an running on my redhat 9 box.  I
-can see my access point from other wireless clients but I can't seem to
-get inet access through hostap.  I know it has something to do with
-iptables and I'm not an iptables guru or anything.  
+I have been able to succesfully PREROUTE the service I wanted with a redire=
+ct
+line. However this is only HALF the implimentation I need...
 
-Ok here is my setup:
-Eth0 = Internet
-Eth1 = Private Net1
-Wlan0 = Access Point
+Given the fact that matches are almost always useless in PREROUTING. Since =
+only
+the first packet is examined(I'm fairly certain that what I need to check f=
+or
+is not in that first packet). I would like to propose a question to the
+netfilter community(seeing as I am at a complete loss for a soloution here).
 
-I can access the internet locally fine but I can't access it from the
-wireless clients.  Below is what I currently have as my iptables setup.
-Thanx to anyone who can help me get this up.
+How can I sepperate requests to a machine by a matched string? Once this is
+done how can I then direct certain requests one way and certain request ano=
+ther
+way(doesn't need to be another IP but does need to be another port)?
 
-*filter
+I will post what I have been testing with and perhaps everyone else out the=
+re
+can help me build and actually bring about a soloution.
 
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT ACCEPT [0:0]
+#iptables -A INPUT -p tcp -m string --string ".exe" -j LOG --log-prefix "CO=
+DE
+RED "
+#iptables -A INPUT -p tcp -m string --string ".exe" -j REJECT --reject-with
+tcp-reset
 
-# Accept all traffic from the loopback interface.
--A INPUT -i lo -j ACCEPT
+In the begining I tested these lines. The desired effect was nice! I could =
+both
+log and reject connections. The downside to this is it causes kernel panics.
+NOT ACCEPTABLE!
 
-# Accept legitimate responses to traffic we generate.
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+# Works
+#iptables -t nat -A PREROUTING -p tcp --dport 81 -j REDIRECT --to-ports 80
+# Does not work!
+#iptables -t nat -A PREROUTING -p tcp --dport 81 -m string --string "exe" -j
+REDIRECT --to-ports 80
 
-# Allow inbound DNS requests from the wireless network.
--A INPUT -s 0/0 -p udp --dport 53 -j ACCEPT
--A INPUT -s 0/0 -p tcp --dport 53 -j ACCEPT
+Keeping in mind that these rules are for complete testing and not pratical =
+use,
+I used them to see if the REDIRECT worked and it does. However the string
+matching does not.(Leading me to believe what I need to match is not in the
+first packet.)
 
-# Allow inbound DHCP from the Local wireless network
--A INPUT -i wlan0 -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+Someone out there must know a way to work around this and it would be most
+handy for more than just me if this technique could be implimented.
 
-# Allow all traffic from the LAN to be forwarded to the WLAN. 
--A FORWARD -i eth0 -o wlan0 -j ACCEPT
 
-# Forward all legitimate responses to forwarded traffic.
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+Thanks so much to Ralf Spenneberg for answering the first mail. I hope othe=
+rs
+and him can help me resolve this issue. IT'S PLAUGING MY THOUGHTS!!!!
 
-------------------------------------------------
+SBlaze
 
-Sincerely,
-Landon
 
+
+--- Ralf Spenneberg <lists@spenneberg.org> wrote:
+> Hi,
+>=20
+> Am Fre, 2003-08-15 um 11.29 schrieb SBlaze:
+> > I've been toying around with the idea of redirecting unwanted traffic to
+> the
+> > discard surface. I'm having trouble understanding some concepts though.
+> Could
+> > anyone please explain this in more detail or perhaps suggest a way to
+> > accomplish this.
+> >=20
+> > On the filter tables using IMPUT there is no way to change or alter the
+> > destination of packets and cause them to be sent to another port?
+> No. You cannot change the source or destination in the filter table. Use
+> the nat table for this. In the nat table you can change the source
+> (POSTROUTING) and the destination (PREROUTING, OUTPUT)
+>=20
+> >=20
+> > Using the POSTROUTING chain in the nat table is impoosible to effective=
+ly
+> > filter traffic via specific matches due to the fact that POSTROUTED pac=
+kets
+> are
+> > sort of "lumped together" for lack of a better way to explain it?
+> You want the PREROUTING chain since you want to redirect (change the
+> destination).
+>=20
+> And yes, when using NAT you only see the first packet of each connection
+> in the nat table. All other packets are automatically natted
+> identically.
+>=20
+> Cheers,
+>=20
+> Ralf
+> --=20
+> Ralf Spenneberg
+> RHCE, RHCX
+>=20
+> Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+> IPsec-Howto				     http://www.ipsec-howto.org
+> Honeynet Project Mirror:                     http://honeynet.spenneberg.o=
+rg
+
+
+=3D=3D=3D=3D=3D
+"Winky is not knowing how sir, winky is not knowing how?" -=3DWinky / Harry=
+ Potter and the Goblet of Fire=3D-"
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
