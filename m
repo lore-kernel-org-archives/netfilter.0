@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Want to do NAT for internal machines
-Date: Sat, 1 Jun 2002 21:59:38 +0100
+From: "Chris Nuernberger" <christopher.nuernberger@colorado.edu>
+Subject: Tracking user bandwidth
+Date: Sat, 1 Jun 2002 15:29:11 -0600
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206012059.g51KxdA20995@Networker.rockstone.co.uk>
-References: <ENEBKGGOKDOEALIKAJMBOEDGCHAA.neil@JAMMConsulting.com>
+Message-ID: <CCEDLJGFOELOPJOLAJHFEEHLNDAA.christopher.nuernberger@colorado.edu>
+Reply-To: <christopher.nuernberger@colorado.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <ENEBKGGOKDOEALIKAJMBOEDGCHAA.neil@JAMMConsulting.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,25 +17,10 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: Netfilter <netfilter@lists.samba.org>
 
-On Saturday 01 June 2002 9:54 pm, Neil Aggarwal wrote:
+Hey, I am new to the netfilter stuff, and I was just wondering how I could
+track the amount of traffic coming from various computers on my LAN to see
+who is using the most bandwidth, etc?  Chris
 
-> Antony:
->
-> It did not work.
-
-Can you be more specific ?
-
-1. What did you try ?
-2. Did any packets get across the firewall to the destination machine ?
-3. Did the destination machine send any packets back again ?
-4. What is the routing table on the destination machine ?
-5. What shows up in the connection tracking table on the firewall ?
-
-Some, or more, of the above the information would help to figure out what's 
-going on.
-
-
-Antony.
 
