@@ -1,11 +1,12 @@
-From: Shri Shrikumar <shri@urbyte.com>
-Subject: Help setting up a firewall on a machine
-Date: 15 May 2003 12:35:17 +0100
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: Kazaa Ports
+Date: Tue, 9 Sep 2003 11:25:14 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052998517.1355.61.camel@VISHNU.INTERNAL>
+Message-ID: <20030909182514.9346.qmail@web40203.mail.yahoo.com>
+References: <3F5DDAF7.1030602@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-d0eP0tNqMhbhZq7SC7e2"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F5DDAF7.1030602@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,69 +16,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>, jimbo jones <jdvuyk_crap@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
 
---=-d0eP0tNqMhbhZq7SC7e2
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+--- Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
+> 
+> 
+> jimbo jones wrote:
+> 
+> >
+> > Have you fiddled with the firewall settings in Kazaa that supposedly 
+> > let you change the outgoing port to anything you like.
+> 
+> 
+> I don't know if Kazaa Lite has that option, but I'll look for it. We did 
+> set the maximum number of connections to 10 with the hopes that it would 
+> be happy with the ports I'd already opened. Unfortunately it appears to 
+> use source ports in sequence and doesn't reuse them, so all I did was 
+> delay the problem a few minutes.
+> 
+> > I have heard in cases that you can change this to, say, port 80 and 
+> > suddenly everything goes (web port and all).  However I have exactly 
+> > the same setup with exactly the same issue and this option didnt work 
+> > for me.  But maybe it will for someone else.
+> 
+> 
+> I posted an article a couple of days ago about this very issue: the 
+> ability of some programs to use commonly open ports for other types of 
+> connections and the ramifications this has on firewalling. Now we're on 
+> the other side of the fence viewing this as a "feature" rather than a 
+> threat. Of course if Kazaa didn't behave this way in the first place we 
+> wouldn't need to use other ports. Still the irony of the situation isn't 
+> lost on me.
+> 
+> >   Would also like to get this solved.
+> >
+> > Suggestions appreciated.
+> >
+> > Cheers
+> >
+> 
+> Ditto. SBlaze had an idea to use DNAT in PREROUTING, but I don't think 
+> that will work here. I can't predict which ports would need to be natted 
+> and if I nat every port it'll break all the other services. Something 
+> tells me the developers of Kazaa Lite just aren't too concerned about 
+> the security of our proprietary information ;-)
+> 
+> Jeff
+> 
+> 
+I still say all that should be needed is finding out what the ports are....
+more over what are the minimum ports needed to maintain the service.
 
-Hi,
+Find that out and you may or may not be able to DNAT to the destination you
+need. Depending on what services you offer already(ie kazzaa may need port 80
+but you are running apache elsewhere).
 
-I am just configuring a machine and would like to setup a firewall on it
-using iptables. I am keen on setting up properly on the first go since I
-dont want to be left with a machine that I cant ssh into.
+SBlaze
 
-The machine has just one nic eth0 which is connected to the net. There
-is not NAT or MASQ to be done
+=====
+"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
 
-Here is what I have so far.
-
-/sbin/iptables -N block
-/sbin/iptables -A block -p ICMP -j ACCEPT
-/sbin/iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
-/sbin/iptables -A block -j DROP
-
-/sbin/iptables -A INPUT -j block
-/sbin/iptables -A FORWARD -j block
-
-What rules do I need to add to the block chain to allow any new
-connections from machine to the outside world ? would it just be
-
-/sbin/iptables -A block -m state --state NEW -o eth0 -j ACCEPT
-
-I am also going to be hosting a site, so the following rule will be
-added as well,
-
-/sbin/iptables -I block -p tcp --dport 80 -j ACCEPT
-
-
-Do these rules sound about right ?
-
-
-Thanks and regards,
-
-
-
-Shri
---=20
-------------------------------------------------------------------------
-Shri Shrikumar       U R Byte Solutions           Tel:   0845 644 4745
-I.T. Consultant	     Edinburgh, Scotland          Mob:   0773 980 3499
-                     Web: www.urbyte.com          Email: shri@urbyte.com
-
---=-d0eP0tNqMhbhZq7SC7e2
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+w3t1BqoC2HdbEIcRApZxAKCcnsgYPOQ84En/AqImyYSbFEApGwCgv+0+
-8xT/clAh8Ajd5sqAOj23KRg=
-=wcDU
------END PGP SIGNATURE-----
-
---=-d0eP0tNqMhbhZq7SC7e2--
-
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
