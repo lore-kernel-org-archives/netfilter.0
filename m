@@ -1,11 +1,12 @@
-From: xavier renaut <list.netfilter=W+vduneg5OqcvWdFBKKxig@public.gmane.org>
-Subject: nat, filter, and mangle order
-Date: Tue, 8 Jul 2003 15:44:24 -0400
-Sender: netfilter-admin=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-Message-ID: <20030708194424.GD17630@natch.8d.com>
+From: Ruprecht Helms <rhelms@mayn.de>
+Subject: [Fwd: [suse-security] iptables rules for HTML Form Protocol Attack]
+Date: 10 Jul 2003 10:33:56 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1057826036.4367.1.camel@linux.local>
+Reply-To: rhelms@mayn.de
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+To: netfilter@lists.netfilter.org
 
+Possible here a better list for responses.
+How is to write a rule for that problem by hand.
 
-Hello,
+Regards,
+Ruprecht
 
-here is the scheme for the filter table :
+-----Forwarded Message-----
 
+> From: Muammer Arslan <Muammer.Arslan@experteach.de>
+> To: suse-security@suse.com
+> Subject: [suse-security] iptables rules for HTML Form Protocol Attack
+> Date: 10 Jul 2003 10:14:34 +0200
+> 
+> Hi All,
+> 
+> Last days I often see below messages in Apache log files:
+> 1.1.1.1         - - [09/Jul/2003:17:32:00+0200] "POST http://11.1.106.18:25/ HTTP/1.1" 200 475 "-" "-"
+>  
+> I suspect some kind of HTML protocol attack and want to stop this. Can I 
+> do it somehow with IP-Tables as it is already installed on the server or 
+> do you have any other ideas? I use SuSE 8.1 and SuSEfirewall2 with SuSEfirewall2-custom rules.
+>  
+> Thanks for your replies.
+>  
+> 
+> Muammer
 
-
-                          _____
-Incoming                 /     \         Outgoing
-       -->[Routing ]--->|FORWARD|------->
-          [Decision]     \_____/        ^
-               |                        |
-               v                       ____
-              ___                     /    \
-             /   \                   |OUTPUT|
-            |INPUT|                   \____/
-             \___/                      ^
-               |                        |
-                ----> Local Process ----
-
-
-in which order are processed the nat, filter, mangle for the OUPUT chain
-for example ?
-
-if i generate a packet locally, will it hit the nat or the filter table
-first ? (in the OUTPUT context)
-
-thanks
-
-
--- 
-xavier
 
