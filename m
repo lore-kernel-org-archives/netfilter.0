@@ -1,14 +1,13 @@
-From: Axel Heinrici <heinrici76@gmx.de>
-Subject: Re: ftp connection tracking
-Date: Tue, 29 Jul 2003 15:58:31 +0200
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: set RELATED?
+Date: Tue, 29 Jul 2003 10:00:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307291558.31734.heinrici76@gmx.de>
-References: <200307291322.04698.heinrici76@gmx.de> <3F266E03.7050106@corp.lcom.net>
+Message-ID: <20030729140034.GA19385@cannon.eng.us.uu.net>
+References: <000801c3531c$9b1fad40$3eac18ac@geosxp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F266E03.7050106@corp.lcom.net>
 Content-Disposition: inline
+In-Reply-To: <000801c3531c$9b1fad40$3eac18ac@geosxp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: George <george@xorgate.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi
+On Fri, Jul 25, 2003 at 08:21:21PM -0600, George wrote:
 
-On Tuesday 29 July 2003 14:52, Andrew J. Meader wrote:
-> Hi,
->
-> I just ran into this just yesterday. I was forgetting to load
-> ip_conntrack_ftp in my iptables init script. For grins, here is a
-> snip from my init script:
+> Is there currently a way for iptables to force another packet stream conntrack entry to be RELATED without having to look inside of the packet data?
+> 
+> For example:  If a 10.0.0.2 client behind an iptables firewall were to send an IMCP echo to 10.20.30.1, could a rule be set up so that after the firewall see this packet, all udp packets sent to dport=45678 would be DNATed to 10.0.0.2?
+> 
+> The designated RELATED stream would in general then be just like any other conntrack entry.
+> 
+> My guess is that this would require a generic force-related module.
 
-That is not the problem. The module is loaded. But the module doesn't 
-track FTP-connections on non-standard ports. So FTP-connections to 
-theses servers are not "allowed" by the "iptables .... -m --state 
-RELATED,ESTABLISHED ...."-stuff.
+Let me see if I understood you well. You want something like this:
 
->
-> # Firewall Modules ~ assuming modularized kernel
->     /sbin/modprobe ip_tables
->     /sbin/modprobe iptable_nat
->     /sbin/modprobe ip_conntrack
->     /sbin/modprobe ip_conntrack_ftp
->
-> YMMV - your modules may vary :)
+if (the firewall sees this traffic) then
+    apply that rule
+fi
 
-greetings 
-	Axel
+I don't think we have something like this but I think this is very
+helpful. Specially if the IF-test could pass some parameters to the
+THEN-body. You might want to take this to the devel mailing list.
 
+Ramin
 
