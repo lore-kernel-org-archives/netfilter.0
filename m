@@ -1,11 +1,13 @@
-From: Madhuri Patwardhan <madhuri@cc.iitb.ac.in>
-Subject: rerouting after postrouting in NAT table
-Date: Fri, 17 Oct 2003 13:05:01 +0530
+From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
+Subject: Basic NAT Configuration on 2 NIC
+Date: Fri, 17 Oct 2003 16:23:36 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F8F9BA5.1090502@cc.iitb.ac.in>
+Message-ID: <83055D4B014C9E478D2F04624B9E82CFD47D@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C394A9.7CC97B0E"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,67 +17,165 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-Hi,
+------_=_NextPart_001_01C394A9.7CC97B0E
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I would like to choose the appropriate routing table using the packet 
-source address which is altered by the NAT table post-routing chain.
-Is it possible? I have given the detailed scenerio below.
+Dear all,
 
-This is what I have:
+=20
 
-I have a linux box with connections to two WAN links.
-We are doing load balancing using Ultra monkey software. The same linux 
-box also works as a Linux director and directs the packets to real 
-servers. The real servers have private IP's. It is similar to the 
-example given on the ultramonkey site: 
-http://www.ultramonkey.org/2.0.1/topologies/lb-eg.html
+            Does anyone know where can I get some information on basic
+NAT configuration with 2 NIC.?
 
-On the Linux Director box (which has two WAN links), masquerading for 
-the real server's private IP's happens with the following command.
+=20
 
-/sbin/iptables -t nat -A POSTROUTING -j MASQUERADE -s 192.168.6.0/24
-(as given in the example on ultramonkey site, which is mentioned above)
+            1 NIC (eth0) is with a local IP address and the second NIC
+(eth1) with an internet IP Address.
 
-So, in the POSTROUTING chain the source address gets changed to one of 
-the WAN links public IP.
+=20
 
-I would like to route the reply packets on the same WAN link on which 
-the query came.
+=20
 
-For example:
+Thanks
 
-I have two WAN links whose IP ranges are 203.199.51.0/24(WAN link X) and 
-203.197.74.128/25 (WAN link Y).
+gy
 
-A packet comes on WAN link X destined to a address 203.199.51.159, which 
-is a virtual IP of the Linux Director on the Linux box.
+=20
 
-This packet is handed over to the real server which generates reply and 
-sends the packet back to Linux Director. The Linux Director changes the 
-source IP to 203.199.51.159 as per the iptables masqurade rule mentioned 
-above in the NAT tables post-routing chain.
+=20
 
-I have created two routing tables one with a default route of WAN link X 
-and the other with a default route of WAN link Y. Depending on the 
-source address, in this case 203.199.51.159 I would like it to choose 
-the appropriate routing table and hence WAN link X.
+=20
 
-Is this possible? What I am wondering is since it is in the post routing 
-chain that the source address is changed, is it possible that rerouting 
-will happen again and the appropriate default route will be chosen after 
-postrouting chain is traversed?
+  _____ =20
+
+=20
 
 
-If any part needs better explaination please let me know. I would really 
-appreciate any pointers/clues.
+------_=_NextPart_001_01C394A9.7CC97B0E
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+<html>
 
-Thanks in advance.
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
 
-Madhuri
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Dear all,</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; Does
+anyone know where can I get some </span></font><font size=3D2 =
+face=3DArial><span
+ style=3D'font-size:10.0pt;font-family:Arial'>info</span></font><font =
+size=3D2
+face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'>rmation =
+on basic
+NAT configuration with 2 NIC.?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; 1
+NIC (eth0) is with a local IP address and the second NIC (eth1) with an
+internet IP Address.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>gy</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<div class=3DMsoNormal align=3Dcenter style=3D'text-align:center'><font =
+size=3D3
+face=3D"Times New Roman"><span style=3D'font-size:12.0pt'>
+
+<hr size=3D2 width=3D"100%" align=3Dcenter>
+
+</span></font></div>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+=00
+------_=_NextPart_001_01C394A9.7CC97B0E--
 
