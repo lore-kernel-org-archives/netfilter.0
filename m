@@ -1,12 +1,14 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Port Forwarding with iptables
-Date: Thu, 19 Aug 2004 07:13:32 -0400
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: Re: Port Forwarding with iptables
+Date: Thu, 19 Aug 2004 14:15:20 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512A8@asimail2.alphanumeric.com>
+Message-ID: <3063e5040819041560cd7e6c@mail.gmail.com>
+References: <412487B7.9090505@digitalview.com>
+Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <412487B7.9090505@digitalview.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,33 +21,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-PiBIaSBhbGwsDQo+DQo+IEkgbGlrZSB0byBkbyB0aGUgcG9ydGZvcndhcmRpbmcgd2l0aCBpcHRh
-Ymxlcyhmb3J3YXJkIHdlYiB0cmFmZmljIG9mIGFuDQo+IGFsaWFzIElQIC0gPGV4dCBpcD4gdG8g
-aW50ZXJuYWwgd2ViIHNlcnZlcikuICBIZXJlIGlzIHdoYXQgSSBoYXZlOg0KPg0KPiBpcHRhYmxl
-cyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgwIC1kIDxleHQgaXA+IC1wIHRjcCAtLWRwb3J0
-IDgwIC1qDQo+IEROQVQgLS10byAxMC4xLjAuMTI6ODANCg0Kb2sNCg0KPiBpcHRhYmxlcyAtQSBJ
-TlBVVCAtcCB0Y3AgLWkgZXRoMCAtZCA8ZXh0IGlwPiAtLWRwb3J0IDgwIC1tIHN0YXRlDQo+IC0t
-c3RhdGUgTkVXIC1qIEFDQ0VQVA0KDQp1bS0tbm9wZS4gIHRoZSBwYWNrZXRzIGFyZSBnb2luZyB0
-byBiZSBGT1JXQVJELWVkLS10aGV5IHdpbGwgbmV2ZXIgYmUgc2VlbiBieSB0aGUgSU5QVVQgY2hh
-aW4uDQoNCj4gaXB0YWJsZXMgLUEgRk9SV0FSRCAtcCB0Y3AgLWkgZXRoMCAtbyBldGgxIC1kIDxl
-eHQgaXA+IC0tZHBvcnQgODAgLW0NCj4gc3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUDQoNCmht
-bS4uLmxldCdzIGhvbGQgb2ZmIG9uIHRoaXMgZm9yIGEgc2VjLi4uDQoNCj4gSG93ZXZlciwgaXQg
-a2VlcCBkcm9waW5nIHRoZSBwYWNrZXRzIHdoZW4gZ2V0dGluZyB0byB0aGUgTkFUIGJveC4NCj4N
-Cj4gTG9ncw0KPiA9PT09DQo+IChXaXRoIGlwdGFibGVzIC1BIEZPUldBUkQgLWQgMTAuMS4wLjEy
-IC1qIExPRzsgaXB0YWJsZSAtQSBGT1JXQVJEIC1qIERST1ApDQo+DQo+IGtlcm5lbDogSU49ZXRo
-MCBPVVQ9ZXRoMSBTUkM9MjAyLnh4eC4xMjIueHh4IERTVD0xMC4xLjAuMTIgTEVOPTQ4DQo+IFRP
-Uz0weDAwIFBSRUM9MHgwMCBUVEw9MTIwIElEPTY0OTEgREYgUFJPVE89VENQIFNQVD00MDIzIERQ
-VD04MA0KPiBXSU5ET1c9NjQyNDAgUkVTPTB4MDAgU1lOIFVSR1A9MA0KPg0KPiBBbnkgY2x1ZXM/
-ICBEaWQgSSBtaXNzIHNvbWV0aGluZyBoZXJlPw0KDQp5ZWFoLS1yZWFkIHRoYXQgbG9nIGVudHJ5
-LiAgbm93IGxvb2sgYXQgeW91ciBGT1JXQVJEIHJ1bGUuICBub3cgcmVhZCB0aGF0IGxvZyBlbnRy
-eSBhZ2Fpbi4gIGdvdCBpdD8NCg0Kbm8/ICBvay4uLiAgbG9vayBhdCB0aGUgIi1kIDxleHQgaXA+
-IiBpbiB0aGUgcnVsZSBhbmQgdGhlICJEU1Q9MTAuMS4wLjEyIiBpbiB0aGUgbG9nIGVudHJ5Lg0K
-DQpETkFUIGhhcHBlbnMgaW4gUFJFUk9VVElORzsgYXMgaW4sICJiZWZvcmUgcm91dGluZyItLXNv
-IGFueSBGT1JXQVJEIHJ1bGVzIHdpbGwgc2VlIHRoZSBETkFULWVkIGFkZHJlc3MsIG5vdCB0aGUg
-b3JpZ2luYWwgZGVzdCBJUC4gIHRyeToNCg0KICBpcHRhYmxlcyAtQSBGT1JXQVJEIC1wIHRjcCAt
-aSBldGgwIC1vIGV0aDEgLWQgMTAuMS4wLjEyIFwNCiAgICAtLWRwb3J0IDgwIC1tIHN0YXRlIC0t
-c3RhdGUgTkVXIC1qIEFDQ0VQVA0KDQpob3BlZnVsbHkgeW91IGFsc28gc29tZXRoaW5nIGFsb25n
-IHRoZSBsaW5lcyBvZiB0aGlzIHNvbWV3aGVyZSBhcyB3ZWxsOg0KDQogIGlwdGFibGVzIC1BIEZP
-UldBUkQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KDQot
-ag0K
+On Thu, 19 Aug 2004 18:57:59 +0800, Wilson Mak
+<wilson.mak@digitalview.com> wrote:
+> Hi all,
+> 
+> I like to do the portforwarding with iptables(forward web traffic of an
+> alias IP - <ext ip> to internal web server).  Here is what I have:
+> 
+> iptables -t nat -A PREROUTING -i eth0 -d <ext ip> -p tcp --dport 80 -j
+> DNAT --to 10.1.0.12:80
+> iptables -A INPUT -p tcp -i eth0 -d <ext ip> --dport 80 -m state
+> --state NEW -j ACCEPT
+> iptables -A FORWARD -p tcp -i eth0 -o eth1 -d <ext ip> --dport 80 -m
+> state --state NEW -j ACCEPT
+Take a look at -d param
+
+
+
+> However, it keep droping the packets when getting to the NAT box.
+> 
+> Logs
+> ====
+> (With iptables -A FORWARD -d 10.1.0.12 -j LOG; iptable -A FORWARD -j DROP)
+> 
+> kernel: IN=eth0 OUT=eth1 SRC=202.xxx.122.xxx DST=10.1.0.12 LEN=48
+> TOS=0x00 PREC=0x00 TTL=120 ID=6491 DF PROTO=TCP SPT=4023 DPT=80
+> WINDOW=64240 RES=0x00 SYN URGP=0
+Now look at DST,
+
+Q: Do they match? :)
+
+ 
+> Any clues?  Did I miss something here?
+> 
+> Thanks,
+> Wilson
+> 
+> 
+
+
+-- 
+Bla bla
 
