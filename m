@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ACK,RST getting dropped in the firewall.
-Date: Thu, 24 Jun 2004 11:44:10 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: SV: iptables 1.2.10 and linux kernel 2.6.7 problems.
+Date: Thu, 24 Jun 2004 14:23:52 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406241144.10450.Antony@Soft-Solutions.co.uk>
-References: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org> <1087990356.2064.47.camel@grendel> <200406241037.01994.gdh@acentral.co.uk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <Pine.LNX.4.33.0406241421130.8190-100000@blackhole.kfki.hu>
+References: <6BFFA187E8806C4E9740A353F715DDBDE5718E@newmailer.terraplay.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406241037.01994.gdh@acentral.co.uk>
+In-Reply-To: <6BFFA187E8806C4E9740A353F715DDBDE5718E@newmailer.terraplay.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: =?iso-8859-1?Q?P=E4r_H=E4ggblad?= <par.haggblad@terraplay.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 24 June 2004 10:37 am, Gavin Hamill wrote:
+On Thu, 24 Jun 2004, [iso-8859-1] P=E4r H=E4ggblad wrote:
 
-> On Wednesday 23 June 2004 12:32, Chris Brenton wrote:
-> > Seen this a lot. When ever I record a trace it ends up being the
-> > following:
-> >
-> > There is obviously data getting blocked (based on the packet size) but
-> > I've never had a user complaint.
->
-> Just wanted to add a 'me too' - I've asked on-list a couple of times about
-> this but never really got an answer. Neither the server nor clients seem to
-> be any the worse off for it, but it's obviously incorrect, and it'd be nice
-> to be able to nail it =)
->
-> Any takers? Antony? :)
+> > > Now I'm using the new 2.6.7 kernel and iptables 1.2.10. > > You
+> did compile iptables 1.2.10 using the 2.6.7 source code, didn't you?
+> Yes of cource. There was however a compiling error which made me to
+> look in this mailing list and pointed me to a patch that I used to get
+> it to compile. This patch:
+> http://lists.netfilter.org/pipermail/netfilter/2004-June/053639.html
 
-Hi guys - did somebody call :) ?
+I can't download the patch to check it (host could not be found) but I
+suspect that cause the problem. Please use the
+08_linux-2.6.7-user_attr.patch from patch-o-matic-ng instead.
 
-Yes, I would agree with the above - blocking RST-ACK does no harm whatever, 
-and is often an accidental consequence of using stateful firewalls - they see 
-the RST packet (and pass it on), then drop the details from the connection 
-tracking table, so by the time the RST-ACK comes along in response, the 
-firewall thinks "this isn't part of any established connection, so I'm going 
-to drop it" (and maybe log it too if you are logging dropped packets).
-
-Either way, the connection gets dropped as required, and both ends are happy, 
-because the end which sent the RST has said bye-bye anyway, and the end which 
-recieved it has taken the hint and gone quiet too.
-
-The other thing you see logged quite often for similar reasons is FIN-ACK 
-packets - the reply FIN-ACK is regarded as optional by many systems, so 
-netfilter often ends up logging (and dropping) the second one to come along.   
-No harm done though, because the first one has done the job.
-
-Regards,
-
-Antony.
-
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
-
- - William H Gates III
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
