@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: zynkx <skydive@megamail.pt>
 Subject: Re: (no subject)
-Date: Wed, 26 Nov 2003 20:48:49 +0000
+Date: Wed, 26 Nov 2003 20:55:02 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311262048.49827.Antony@Soft-Solutions.co.uk>
-References: <1069853846.3fc4ac966be15@paris-hme1> <20031126151015.GB4486@cannon.eng.us.uu.net> <1069879109.3fc50f45e7331@paris-hme1>
+Message-ID: <1069880102.3fc513260c677@paris-hme1>
+References: <1069853846.3fc4ac966be15@paris-hme1>
+ <20031126151015.GB4486@cannon.eng.us.uu.net>
+ <200311261417.22501.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1069879109.3fc50f45e7331@paris-hme1>
+In-reply-to: <200311261417.22501.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +19,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 26 November 2003 8:38 pm, zynkx wrote:
+hi again Antony:
 
-> hi Ramin and tanx for your trouble ;))
+you just said it all. no use for me to add not even=20
+one line to what you just wrotte :))
+
+now if anyone has got those masks i would appreciate=20
+it :))
+
+tanx again and sorry for this mess ;)))
+
+
+
+ [][][][]
+
+
+
+
+C=F3pia Antony Stone <Antony@Soft-Solutions.co.uk>:
+
+> On Wednesday 26 November 2003 3:10 pm, Ramin
+> Dousti wrote:
 >
-> what i am looking for is the adresses from hotmail and
-> yahoo from wich smtp connections may come from :)
+> {MX DNS records snipped}
+> >
+> > I don't know what you're asking but these are
+> the mx records
+> > for yahoo and hotmail. Like the following
+> which is the mx for
+> > megamail.pt
+> >
+> > mx.vodafone.pt. 86400   A     =20
+> 212.18.167.163
 >
-> i have a smtp running and i need to allow traffic
-> coming from these two, (hotmail and yahoo).
+> I suspect (although one can never be sure) that
+> this person is not looking for
+> the IPs of the inbound mail servers for Yahoo &
+> Hotmail, but wants to know
+> from which IPs mail from those domains will be
+> sent.
+>
+> I guess this simply because of the word
+> "prerouting" in the question - it
+> implies to me packets coming in to the
+> netfilter machine, rather than those
+> leaving it and going to the MX systems.
+>
+> Any further information from zynkx would be
+> useful :)
+>
+> Antony.
+>
+> > On Wed, Nov 26, 2003 at 01:37:26PM +0000,
+> zynkx wrote:
+> > > yahoo and hotmail ip ranges? does anyone
+> knows this ip
+> > > ranges? need to allow them in my smtp
+> prerouting
+> > > rulez  :))
+> > >
+> > > danke !
+>
+> --
+> Anyone that's normal doesn't really achieve
+> much.
+>
+>  - Mark Blair, Australian rocket engineer
+>
+>                                               =20
+>      Please reply to the list;
+>                                               =20
+>            please don't CC me.
+>
+>
+>=20
 
-I'm not quite sure why you want to accept email only from Hotmail and Yahoo, 
-and from nowhere else (a lot of people I know do the exact opposite!), 
-however I still think an easier solution to your erquirement is to accept all 
-email through your firewall, and then accept only mail from Hotmail / Yahoo 
-on your mail server - because that can select based on the sender's address, 
-without needing to know the IPs of their mail servers (which may change one 
-day without you knowing).
 
-Antony.
 
--- 
-If at first you don't succeed, destroy all the evidence that you tried.
+unix is user friendly. it's just selective when=20
+choosing=20
+friends.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+-------------------------------------------------
+Email Enviado utilizando o servi=E7o MegaMail
 
 
