@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: DNAT
-Date: Tue, 9 Sep 2003 08:48:50 +1000
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: Kazaa Ports
+Date: Mon, 08 Sep 2003 18:47:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C275@wardrive.citadelcomputer.com.au>
+Message-ID: <3F5D06F6.20408@Loudoun-Fairfax.com>
+References: <20030908210228.48729.qmail@web40201.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20030908210228.48729.qmail@web40201.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,64 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Nejc Skoberne <nejc.skoberne@guest.arnes.si>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-This is a typical problem which gets asked over and over again. If you =
-think about it carefully, you'll understand why this doesn't work.
+Thanks for answering
 
-Explained:
+>Assuming that you are running the Kazza on a Internal windows machine the
+>POSTROUTING should handle all of the out going of the Kazza Client...
+>  
+>
 
-1. Your internal tries to access the server on it's external address.
-2. The firewall DNATs it changing it's external address to the internal =
-server address.
-3. The packet arrives at the destination of 192.168.1.1
-4. The Server responses to the SYN and "sends it back to 192.168.1.X =
-DIRECTLY"
-5. The client machine receives a packet from 192.168.1.1 and drops the =
-packet because it has no reference to that machine, only to the w.x.y.z =
-IP address. So the connection is never made.
+hmmm . . . I revised my rule set recently using the iptables tutorial  
+by Oskar Andreasson as a guide, and he recommends again doing any 
+filtering in the nat tables.
 
-6. Use SNAT between the local machines and the internal 192.168.1.1:4444 =
-machine as you would when the internal users browse the internet and you =
-masquerade them. You have to masquerade them for the internal server =
-too.
-
-iptables -A POSTROUTING -p tcp --dport 4444 -s 192.168.1.0/24 -d =
-192.168.1.1 -j SNAT $FIREWALLINTERNALIP
-
-The above rule should fix that..
-
------Original Message-----
-From: Nejc Skoberne [mailto:nejc.skoberne@guest.arnes.si]
-Sent: Tuesday, September 09, 2003 12:40 AM
-To: netfilter@lists.netfilter.org
-Subject: DNAT
+http://iptables-tutorial.frozentux.net/chunkyhtml/traversingoftables.html#TRAVERSINGGENERAL
 
 
-Hi.
+>what is probably not making it through is the returning connection attempts of
+>the Kazza servers? In which case... you shouldn't be using FORWARD lines at all
+>sinnce these are supposedly destined for the local machine(as in the Linux box
+>itself and not anything in your lan).
+>
 
-I have a problem with DNAT. I want to set up portforwarding. In local
-network I have two servers and workstations. One (main) server is =
-listening
-at some port, let's say 4444. The other one also acts like a gateway
-to internet and I set up a portforwarding like this:
+If you look further down in the link I posted, there is a diagram that 
+shows INPUT going to the localhost and the FORWARD being used for 
+packets destined for other hosts.  Hmmm again . . .  :-)
 
-iptables -A PREROUTING -p tcp --dport 4444 -j DNAT --to 192.168.1.1:4444
+> What I think is needed here is the
+>PREROUTING of a range or specific ports. I think this will solve your problem
+>for Kazza but it offers very little as in the way of security for those ports.
+>
+>An example of this is when I used to run my Half-Life Deadicated Server on my
+>internal Windows Machine I used a PREROUTING line such as...
+>
+>iptables -t nat -A PREROUTING -p udp --dport 27015 -i eth0 -j DNAT
+>--to-destination 192.168.1.25:27015
+>
+>While my scenerio was alot simpler than yours it's similar I think. Your
+>problem will be of course finding the range of ports. I would also say take
+>note of the use of limiting it to one protocol(if you can). Better to have a
+>straw open to the world than a big ol sewer pipe!
+>
+>  
+>
+Absolutely! That's what makes this an issue for me. I can't nail down 
+the ports Kazaa needs and the more I open up the less protection I have. 
+I need to find a better strategy and I'm open to suggestions.
 
-where 192.168.1.1 is the IP of the main server which runs the service.
-If I try to connect from outside, everything works fine. If I try to
-connect from one of workstations to the gateway machine to port 4444,
-nothing happens. tcpdumps shows just requests but no answers. Why
-doesnt DNAT work also for local IP addresses?
-
-Thanks.
-
---=20
-Nejc Skoberne
-Grajska 5
-SI-5220 Tolmin
-E-mail: nejc.skoberne@guest.arnes.si
+Jeff
 
 
 
