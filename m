@@ -1,12 +1,10 @@
-From: Tim Evans <tkevans@tkevans.com>
-Subject: MAC Addresses in Logfile Entries
-Date: Tue, 22 Apr 2003 21:07:24 -0400 (EDT)
+From: "Andrej Ricnik" <lemmetink@hotmail.com>
+Subject: Re: Questions - Urgent
+Date: Wed, 23 Apr 2003 00:46:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304230107.h3N17N5c024243@osprey.tkevans.com>
-Reply-To: Tim Evans <tkevans@tkevans.com>
+Message-ID: <Sea2-F50GzGqiuLeHTg0001b627@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-MD5: rXuBvvpNYolBZrQAHoWOAw==
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +14,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Some of our log entries contain MAC addresses, like this:
 
-Apr 20 10:15:35 foo kernel: IPT IN_FIREWALL: IN=eth1 OUT= 
-MAC=00:30:48:11:94:e5:00:d0:ba:45:ec:25:08:00 SRC=XXX.XX.XX.XX 
-DST=XXX.XX.XX.XX LEN=40 TOS=0x00 PREC=0x00 TTL=48 ID=0 DF PROTO=TCP 
-SPT=1572 DPT=1080 WINDOW=32430 RES=0x00 SYN URGP=0
+>Hi,
+>I have following questions regarding Netfilter/Iptables.
+>I would ge glad if you could answer then ASAP
+First of all, as a rule of thumb, things like
+urgent and/or ASAP will make you quite unpopular
+in open source communities...
 
-While others don't:
+>1. What Attacks does it protect against?
+Any an IP Filter can protect you from. Read the FAQ.
 
-Apr 14 07:55:35 foo kernel: IPT FORWARD: IN=eth0 OUT=eth1 
-SRC=XXX.XX.XX.XX DST=XXX.XX.XX.XX LEN=48 TOS=0x00 PREC=0x00 TTL=127 ID=225 
-DF PROTO=TCP SPT=1047 DPT=37 WINDOW=64512 RES=0x00 SYN URGP=0
+>2. What are the Compatibility Issuses?
+Compatibility with what?
 
-I see the "OUT" field in the latter contains "eth1" instead of a MAC
-address.
+>3. Dow do we implement this technology?
+Read the FAQ.
 
-Can someone elaborate on the difference here? Thanks.
---
-Tim Evans		|    5 Chestnut Court
-tkevans@tkevans.com	|    Owings Mills, MD 21117
-http://www.tkevans.com/	|    443-394-3864;410-748-0160 (pager)
+>4. How commonly is this used?
+Let's just say that a vast majority of
+Linux users out there (in particular the ones
+with a Linux-Kernel 2.4.x or higher) are using it.
+
+>5. when do you think one should use it?
+Whenever one thinks one needs a firewall.
+
+Maybe you want to go to http://linuxsecurity.com
+and learn something about TCP/IP networking in
+general before asking questions like these.
+
+
+>Tankx for all the help.
+>waiting for your reply.
+>Regards
+>Jitin Sahni
+Cheers,
+Tink
+
+-----BEGIN GEEK CODE BLOCK-----
+Version: 3.12
+GCM/IT/O d-(++)@ a C+(+++)@ UL++>+++ P+>+++ L++ E+@ W+@ N+ o? K? w---@(+) 
+O+++(+)@ M-@ V? PS+ PE- Y+ PGP++ t- 5- X- R-(*) tv-@ b+ DI++ D-- G++ !e* 
+h--- r++ z?
+------END GEEK CODE BLOCK------
+
+
+_________________________________________________________________
+STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
 
 
