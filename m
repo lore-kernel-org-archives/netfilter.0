@@ -1,10 +1,14 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: SSH Connections Lost After 1 minute idle
-Date: Tue, 13 Jul 2004 15:28:11 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: SSH Connections Lost After 1 minute idle
+Date: Tue, 13 Jul 2004 23:35:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7EACCDBB65D37443912D80713CC1245D02382A35@fsnsab20.losangeles.af.mil>
+Message-ID: <200407132335.18494.Antony@Soft-Solutions.co.uk>
+References: <20040713222509.24799.qmail@web40709.mail.yahoo.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040713222509.24799.qmail@web40709.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,40 +19,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'Dick St.Peters'" <stpeters@NetHeaven.com>, netfilter@lists.netfilter.org
-
-dick,
-
-i beg to differ.
-
-i must concur strongly with antony.
-
-if you cripple icmp, your networks will break...
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Dick St.Peters
-Sent: Tuesday, July 13, 2004 2:55 PM
 To: netfilter@lists.netfilter.org
-Subject: Re: SSH Connections Lost After 1 minute idle
 
+On Tuesday 13 July 2004 11:25 pm, Real Cucumber wrote:
 
-Antony Stone writes:
-> On Tuesday 13 July 2004 9:57 pm, Real Cucumber wrote:
-> 
-> > Why should ICMP not be completely blocked? The machine
-> > is used strictly as a port forwarding firewall/router.
-> 
-> Because blocking all ICMP will break networking.   Look up the RFCs
-explaining 
-> what ICMP is for if you do not understand this.
+> Basically I've created a port forwarding firewall with
+> two network interfaces, that's sole purpose is to
+> forward incoming SSH packets on one interface (WAN)
+> through the other interface (LAN) to a local SSH
+> server.
+>
+> I've done this using IPtables and the mangle table.
 
-I would like to second this vigorously, although I would phrase it
-differently: blocking ICMP makes networks fragile.  Fragile networks
-break easily when anything out of the ordinary happens.
+Please explain how you have used the mangle table to achieve this.
 
---
-Dick St.Peters, stpeters@NetHeaven.com 
+The use of the mangle table is for a few fairly restricted and generally 
+esoteric purposes, and I cannot see that your situation falls into these 
+categories.
+
+Regards,
+
+Antony.
+
+-- 
+What makes you think I know what I'm talking about?
+I just have more O'Reilly books than most people.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
