@@ -1,12 +1,15 @@
-From: forum@users.pc9.org
-Subject: RE: Redirect ports on localhost
-Date: Tue, 23 Mar 2004 20:57:18 -0600
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: newbie question : ip_conntrack_ftp
+Date: Wed, 24 Mar 2004 14:11:50 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <jbm.20040323205718.fa7a8555@alkaid.pc9>
-References: <jbm.20040323200102.07b7ea44@alkaid.pc9>
-  <200403240252.i2O2qesV018945@server5.bandwidthco.com>
+Message-ID: <20040324031150.GN3387@samad.com.au>
+References: <Pine.GSO.4.50.0403231611290.14538-100000@jagor.srce.hr>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4oQnj4jcM03NhqPN"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403240252.i2O2qesV018945@server5.bandwidthco.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.GSO.4.50.0403231611290.14538-100000@jagor.srce.hr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +19,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> I remember struggling with this a while.  Beat my head against the wall
-> for a month.  I finally discovered (after enabling bind debugging mode)
-> the problem was in my named.conf file:
-> 
-> ##########################
-> # PORTS
-> ##########################
-> # The listen-on record contains a list of local network interfaces to
-> listen on. Optionally the port can be
-> # specified. Default is to listen on all interfaces found on your
-> system. The default port is 53.
->     listen-on port 53 { 192.168.1.1; };
->     query-source address * port 53;
 
-This isn't the case for me, though -- in fact, I'm not using BIND but 
-rather rbldnsd and specifying that I wish to listen on all interfaces. And 
-I know it does respond, because if I run 'nslookup' and then 'set port=
-5300' and make my query, there is a response.
+--4oQnj4jcM03NhqPN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But if the port is on the default 53, the PREROUTING doesn't appear to 
-rewrite the destination port.
+On Tue, Mar 23, 2004 at 04:13:52PM +0100, Mihael Kukec wrote:
+>=20
+> Hello!
+>=20
+> Excuse me for my poor English...
+>=20
+> I'm using latest stable Debian, with 2.4.18 kernel. Unfortunately it does
+> not have ip_conntrack_ftp module included and I need it. Can someone give
+> me short instructions on that to do? Where to get code, if there are some
+> special instructions for compiling etc..
 
--- 
-forum@users.pc9.org
+can you run
 
+COLUMNS=3D200 dpkg -l 'kernel-im*' | grep ii
 
+this will show with kernel image you have install=20
+
+then run=20
+dpkg -L '<insert the package name from above>' | grep -i conn
+
+this should show you all the conntrack modules in the packages.
+
+Some else stated in another thread that the BF2.4 package doesn't come
+with all the conn track modules=20
+
+A
+>=20
+>=20
+> TIA
+>=20
+>=20
+>=20
+>=20
+
+--4oQnj4jcM03NhqPN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAYPx2kZz88chpJ2MRAuj3AKChIoztGI5XgJ95sRKuDN+Im+zU5wCgjILo
+Yll6jh2jJbRUwKMJAeIOMHg=
+=G1uY
+-----END PGP SIGNATURE-----
+
+--4oQnj4jcM03NhqPN--
 
