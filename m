@@ -1,14 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: fw-builder
-Date: Thu, 2 Jan 2003 21:01:53 -0500
+From: "Wes James" <wes.james@usu.edu>
+Subject: opening whole in iptables for a vpn
+Date: Thu, 2 Jan 2003 20:54:35 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301022101.53365.netfilter@newkirk.us>
-References: <20ED00AA0BC135449469D6EF0AE79C970FA3@ozlan.fcdomain.net>
-Reply-To: netfilter@newkirk.us
+Message-ID: <5CA287DBA85BF649A45916B75FD20E0E08D8F9@exchange01.blue.usu.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20ED00AA0BC135449469D6EF0AE79C970FA3@ozlan.fcdomain.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,37 +17,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Simpson, Doug" <dsimpson@friedmancorp.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thursday 02 January 2003 04:18 pm, Simpson, Doug wrote:
-> Here is my rc.firewall that I generated using FW Builder.
-> I want to add these lines -
-> iptables -t nat -A POSTROUTING -p tcp --dport 110 -o eth0 -s
-> $INTERNAL_IP -j SNAT --to $external_ip
-> iptables -t nat -A POSTROUTING -p tcp --dport 23 -o eth0 -s
-> $INTERNAL_IP -j SNAT --to $EXTERNAL_IP
-> Where can I put these in the script and do I need to follow the same
-> pattern as the script?
-> Thank you
-> Doug
-> ##############################################
-> #!/bin/sh
-> #
-> #  This is automatically generated file. DO NOT MODIFY !
-> #
-> #  Firewall Builder  fwb_ipt v1.0.7-
+I have tried to get the right iptables rules to work for a vpn
+connection.
 
-> $IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+Usually anything going out this rh8 box works fine.  Why do I need to
+punch a hole for the vpn.? I have noticed that holes need to be punched
+for the dns and bootp, but why - when this box is the originator of the
+traffic?
 
-Right here would probably make sense.  Actually you can put them=20
-anywhere, since there are no other POSTROUTING rules in the script. =20
-Just DON'T put them inside a loop or a conditional statement.  There's=20
-no explicit need to follow the pattern in the script, but be aware that=20
-if you rebuild the ruleset with fw-builder you will need to manually=20
-re-insert these afterwards, AFAIK.
+I have finally gotten these rulles to work in that the vpn loads, but
+the vpn still does not work right.  The only way I can get it to work
+right is to turn iptables off (service iptables stop).
 
-j
+These are the rules:
+
+-A RH-Lokkit-0-50-INPUT -m udp -s 1.2.3.0/24 -d 0/0 --dport 800 -p udp
+-j ACCEPT
+-A RH-Lokkit-0-50-INPUT -m udp -s 1.2.3.0/24 -d 0/0 --dport 8400 -p udp
+-j ACCEPT
+
+What else do I need to do to get the vpn to work on the network 1.2.3.0
+on ports 500 and 4500?
+
+These work for someone that use ipchains: =20
+
+-A input -p udp -s 1.2.3.0/24 -d 0/0 800 -j ACCEPT
+-A input -p udp -s 1.2.3.0/24 -d 0/0 8400 -j ACCEPT
+
+Are the iptables rules above converted right?
+
+thanks,
+
+wj
+
 
 
