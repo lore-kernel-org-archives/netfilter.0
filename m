@@ -1,11 +1,11 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+From: "Dimitri Yioulos" <dyioulos@firstbhph.com>
 Subject: RE: Adding variables to iptables file
-Date: Tue, 08 Mar 2005 17:18:38 -0500
-Message-ID: <1110320319.7450.9.camel@jasiiitosh.nexusmgmt.com>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQrQTl2OGOEWpZSe7NzzKncKAAAAQAAAAiN3rgGC/h06s79nbNf5FgQEAAAAA@bigpond.net.au>
+Date: Tue, 8 Mar 2005 17:50:38 -0500
+Message-ID: <200503082250.j28MoZra020800@mail1.firstbhph.com>
+References: <1110320319.7450.9.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQrQTl2OGOEWpZSe7NzzKncKAAAAQAAAAiN3rgGC/h06s79nbNf5FgQEAAAAA@bigpond.net.au>
+In-Reply-To: <1110320319.7450.9.camel@jasiiitosh.nexusmgmt.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,8 +17,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Veena Etcell <metcell@bigpond.net.au>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of John A. Sullivan
+III
+Sent: Tuesday, March 08, 2005 5:19 PM
+To: Veena Etcell
+Cc: Netfilter users list
+Subject: RE: Adding variables to iptables file
 
 On Tue, 2005-03-08 at 21:36 +1100, Veena Etcell wrote:
 > Ahh... The format of the example is skewiff.
@@ -74,19 +82,22 @@ On Tue, 2005-03-08 at 21:36 +1100, Veena Etcell wrote:
 > var=something
 > 
 <snip>
-Hmmm . . . perhaps I am misinformed but I thought one could not use a
-variable in a file passed to iptables-restore although one can use them
-in a regular script which uses the iptables command.  Of course,
-iptables-restore is the way to go for loading large rule sets.
+>Hmmm . . . perhaps I am misinformed but I thought one could not use a
+>variable in a file passed to iptables-restore although one can use them
+>in a regular script which uses the iptables command.  Of course,
+>iptables-restore is the way to go for loading large rule sets.
 
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
 
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
+This may not be related, but I'm also getting this error.  I upgraded from
+iptables-1.2.8-12.3 to iptables-1.2.11-3.2 on a CentOS 3.4 box.  I created
+the new version from src.rpm.  Now, when I fire off iptables, I get the
+"error at line 2", which in my iptables is nat, and iptables fails to load.
+Further exploration and experimentation shows that when I try to load
+iptable_nat.o, I get symbol errors.  However, when I run a iptables script I
+created, despite a little complaining, iptables does load.
+
+Any help to get this fixed (which hopefully helps the OP, too) would be
+greatly appreciated.
+
 
 
