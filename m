@@ -1,15 +1,12 @@
-From: Stephan Uhlmann <su@su2.info>
-Subject: Re: nat:REDIRECT on localhost not working in Kernel 2.6
-Date: Fri, 19 Nov 2004 19:03:41 +0100
-Message-ID: <200411191903.41692.su@su2.info>
-References: <200411191836.07261.su@su2.info>
-	<20041119174100.GA20905@bender.817west.com>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: state NEW
+Date: 19 Nov 2004 20:16:03 +0100
+Message-ID: <1100864139.1922.5.camel@nostromo.bgsecm.com>
+References: <D3DD55FDB74AD511BA5100500416368053EB16@ORION>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1369447.TrVClQBVJh";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041119174100.GA20905@bender.817west.com>
+In-Reply-To: <D3DD55FDB74AD511BA5100500416368053EB16@ORION>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,42 +17,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
---nextPart1369447.TrVClQBVJh
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+El vie, 19 de 11 de 2004 a las 10:31, Jochen Vogel escribi=C3=B3:
+> hi,
+>=20
+> i have the following forwarding rule
+>=20
+> $IPT -A FORWARD -i $INT -o $EXT -m state --state NEW,ESTABLISHED,RELATE=
+D -j
+> QUEUE
 
-On Friday 19 November 2004 18:41, Jason Opperisano wrote:
-> are all kernels in question compiled with:  IP_NF_NAT_LOCAL
+Here you are sending all this traffic to userspace, I suppose to
+snort-inline or similar program. You could use stateless rules because
+you are sending everything...
 
-No, all kernels I tested have that option not set. They are default kernels=
-=20
-from the distributions and that option seems not to be enabled by default.
+> $IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED   =
+  -j
+> ACCEPT
+>=20
 
-Strangely the option is also not set on the kernel 2.4 machine where the=20
-redirect worked.
+And this rule does nothing, because all the traffic has been sent to
+userspace and then accepted or dropped, probably.
 
-Anyway I guess the problem will go away if I set this option. Thank you for=
-=20
-the hint and your quick response!
+> if i send an ACK with hping from INT to EXT it reaches the target syste=
+m
+>=20
+> if i do
+>=20
+> $IPT -A FORWARD -i $INT -o $EXT -m state --state NEW -j ACCEPTLOG
+> $IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED-j
+> ACCEPT
 
+Here you are logging and accepting all the new connections and accepting
+all the related conections.
 
-Cheers,
-Stephan
+>=20
+> i can see the following
+>=20
+> Nov 19 12:05:20 snolin kernel: ACPT IN=3Deth0 OUT=3Dppp0 SRC=3D1.1.1.1 =
+DST=3D2.2.2.2
+> LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D12368 PROTO=3DTCP SPT=3D2=
+618 DPT=3D63
+> WINDOW=3D512 RES=3D0x00 ACK URGP=3D0
+>=20
 
---nextPart1369447.TrVClQBVJh
-Content-Type: application/pgp-signature
+So everything it's working as you have configured it.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+> did i have a false understanding from NEW or whats wrong
+>=20
 
-iD8DBQBBnjV90TAeRPnvmyERAr6MAJ4jKodwKQaOUNU4XVhSj43sAtLIiACeOuzK
-P5JCjxG+fCJja8aCz40C4vo=
-=ay7v
------END PGP SIGNATURE-----
+I don't know what you want to do exactly.
 
---nextPart1369447.TrVClQBVJh--
+> thx for help
+> jo
+
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
 
