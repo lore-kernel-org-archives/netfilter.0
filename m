@@ -1,13 +1,10 @@
-From: Visham Ramsurrun <vishamr2000@gmail.com>
-Subject: Re: netfilter Digest, Vol 9, Issue 4
-Date: Mon, 4 Apr 2005 11:19:54 +0400
-Message-ID: <9927912d050404001934175025@mail.gmail.com>
-References: <4250a314.2ce46d3c.5456.16e8SMTPIN_ADDED@mx.gmail.com>
-Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
+From: Moritz Gartenmeister <moritz@uplink-verein.ch>
+Subject: iptables crashes server?
+Date: Mon, 04 Apr 2005 10:16:32 +0200
+Message-ID: <4250F7E0.3070203@uplink-verein.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4250a314.2ce46d3c.5456.16e8SMTPIN_ADDED@mx.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> From: Pablo Neira <pablo@eurodev.net>
-> Subject: Re: Load balancing.
-> To: szpak <xperience@interia.pl>
-> Cc: netfilter@lists.netfilter.org
-> Message-ID: <425056ED.3010104@eurodev.net>
-> Content-Type: text/plain; charset=us-ascii; format=flowed
-> 
-> szpak wrote:
-> > Hello.
-> >
-> > I need help with I think something very easy to do with Iptables.
-> >
-> > I need to have load balancing via nat for two or more ISP as in chart:
-> >
-> >                            ------ ISP1
-> >                           |          128.0.0.0/30
-> > <MY NET>---->[Linux NAT]-------- ISP2
-> > 192.168.0.0/24     |      80.0.0.0/30
-> >                            ------ ISP3
-> >                                    85.0.0.0/30
-> >
-> > I have some users on my side and I want them to simply load balance trafic
-> > from them via those three ISP's.  How to do that, is there a way to have three default static routes?
-> 
-> This is not related to iptables itself. Have a look at iproute.
-> 
-> http://lartc.org/howto/
-> 
-> --
-> Pablo
-> 
-> ------------------------------
+hi all
 
-I found this rule in a book :
+i'm running linux 2.6.11.3 and iptables 1.3.1 with pom 20050321. i patched the kernel with ipp2p, 
+and layer-7 patch.
 
-iptables -t nat -A PREROUTING -i eth0 -o eth1 -d 192.0.34.72 -j dnat
---to-destination 192.168.1.2-192.168.1.4
+the server is running as a bridge and is working absolutly fine. after a while (there is no specific 
+time limit) the server crashes. the server is no more able to allocate new memory and even swapping 
+doesn't help. in this state i am unable to log in, i have to push the power button.
 
-you can replace populate a variable, PC_LB, with the ip addresses of the ISPs.
+i don't see heavy traffic before a crash and i don't see any flooding. is there a known memory leak 
+problem?
 
-Regards,
-Visham
+i checked /proc/sys/net/ipv4/netfilter/ip_conntrack_count this number is in the range of 2'000 - 5'000.
+i checked /proc/slabinfo <active_objs> is more or less similiar to ip_conntrack_count, <num_objs> is 
+the maximum of ip_contrack_count.
+i also was checking /proc/meminfo and there was no steady increase.
+
+/var/log/messages shows no warning.
+/var/log/syslog shows nothing
+icmp is working.
+imap is probably working (someone told me).
+http is not working.
+pop over ssl is working (sometimes).
+
+does anyone had/have the same experience? or does anyone have some hints for further steps?
+
+hardware: dell poweredge 2560 with 2gybte ram, 2 xenon dual cpus.
+
+i was running the same setup wiht an older kernel 2.6.7/10 without much troubles.
+
+regards
+moritz
+
+
 
