@@ -1,12 +1,10 @@
-From: lst_hoe01@kwsoft.de
-Subject: Re: network/iptables start order
-Date: Thu, 13 Jan 2005 10:46:01 +0100
-Message-ID: <1105609561.41e6435912106@webmail.kwsoft.de>
-References: <BAY101-F3520280EA804079C9229A4DF970@phx.gbl>
+From: "Guillermo Javier Nardoni" <gjnardoni@yahoo.com.ar>
+Subject: Forward with IPTABLES
+Date: Tue, 11 Jan 2005 17:13:51 -0300
+Message-ID: <002001c4f81a$1ee99840$0100000a@betasvr.noip.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY101-F3520280EA804079C9229A4DF970@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,40 +18,43 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Zitat von "Curby ." <kirbysdl@hotmail.com>:
+Hello, could you let me know if i can forward incoming packets from a
+specific IP address to an internal Server?
 
-> In what order should i have /etc/init.d/network and my iptables setup s=
-cript
-> (henceforth called "iptables") start?
->
-> If network starts first, netfilter defaults all filter chains in ACCEPT
-> policy, so there's a tiny chance that someone could do something unwant=
-ed.
-> Is this sufficient reason to start iptables or otherwise change chain
-> policies before network? I'm thinking yes.
->
-> If iptables starts before network, then network could override settings=
- in
-> /proc/sys/net when it calls upon /etc/sysctl.conf.   Additionally, it w=
-ould
-> be harder to identify dynamic IPs, additional IPs set with "ip addr add=
-,"
-> etc.  simply because the network isn't up yet.
+for example.
+we have a linux box running Red Hat 9 (Shrike) with this Networking
+configuration.
 
-We do it this way :
-Load a really tiny iptables script with /etc/init.d/boot.local to set all
-default policy to drop and only add a rule for SSH connect. The boot.loca=
-l is
-started after initial boot processes but before any run level 1 tasks.
-With the standard run-level scripts load the full firewall scripting *aft=
-er* the
-network start. This is because we do some MAC-address hard-coding only wo=
-rking
-after the network is started. With this script we also tune the network
-security parameters.
+eth0 (sis9000) ip: 10.0.0.1 (connected to an ADSL "modem" (Cisco 677))
+ppp0 Internet Conection using PPPoE through eth0 which is connected the ADSL
+(Dynamic IP)
+eth1 (rtl8139) ip: 192.168.0.1 (connected to the internal network and acting
+as Transparent Proxy (with Squid and IPTABLE)
 
-Regards
+the other Server (internal server) is running a Windows 2000 SP4
+eth0: rtl8139 ip: 192.168.0.2
 
-Andreas
+what i want to do is this:
+
+we have 2 domains hosted by our servers (www.domainA.com and
+www.domainB.com)
+when a customer asks for a webpage (through ppp0) port 80 at www.domainA.com
+i want to redirect it to our Windows 2000 server (it domain is written in
+ASP), but when some customers ask for a webpage from the other one (domainB)
+the page must flow-back  to the customer from linux server instead of
+Windows.
+
+may i Explain?
+Thank you so much.
+
+
+
+Lo saluda muy cordialmente,
+
+Guillermo Javier Nardoni
+e-mail: gjnardoni@gmail.com
+Rosario - Santa Fe
+Tel: 03402-15540590
+Est. de Ing. en Sistemas
 
 
