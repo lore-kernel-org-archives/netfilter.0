@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: connection tracking without iptables?
-Date: Wed, 29 Sep 2004 17:01:34 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: connection tracking without iptables?
+Date: Wed, 29 Sep 2004 14:22:41 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096491694.12262.44.camel@wolfpack.ljm.dom>
-References: <561dc3260409291350dc64a8a@mail.gmail.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679531@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <561dc3260409291350dc64a8a@mail.gmail.com>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +17,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jiann-Ming Su <sujiannming@gmail.com>, netfilter@lists.netfilter.org
 
-On Wed, 2004-09-29 at 16:50, Jiann-Ming Su wrote:
+Jiann-Ming Su wrote:
 > This is probably a dumb question, but is it possible to track
 > connections without iptables/netfilter?
 
-modprobe ip_conntrack
+Yeah, use libpcap and parse it out yourself! (snicker)
 
--j
-
--- 
-Jason Opperisano <opie@817west.com>
+Exactly what are you looking for and why? A good chunk of netfilter is
+*just* connection tracking. What do you expect to get out of just
+conntrack?
 
 
