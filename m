@@ -1,15 +1,20 @@
-From: Gerd Zemella <gzemella@gmx.net>
-Subject: Re: Port forwarding doesn't work.
-Date: Sun, 12 Oct 2003 23:41:02 +0200
+From: richard lucassen <netfilter@lucassen.org>
+Subject: Re: iptables jump to userdefined chain and ESTABLISHED,RELATED
+ rules
+Date: Sun, 12 Oct 2003 23:40:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065994862.3562.10.camel@Marvin>
-References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com>
-	 <200310121218.25934.Herman@AerospaceSoftware.com>
-	 <200310121411.00898.Herman@AerospaceSoftware.com>
+Message-ID: <20031012234049.587cadaa.netfilter@lucassen.org>
+References: <20031010132641.2591d3b5.netfilter@lucassen.org>
+	<1065889564.1268.11.camel@elendil.intranet.cartel-securite.net>
+	<20031011194527.17273de9.netfilter@lucassen.org>
+	<20031012111620.GB571@pcw.home.local>
+	<20031012195331.409596fc.netfilter@lucassen.org>
+	<1065984839.4919.59.camel@elendil.intranet.cartel-securite.net>
+Reply-To: reply2@lucassen.org
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-ZF4JmZ5TAhcfit/xx6lx"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310121411.00898.Herman@AerospaceSoftware.com>
+In-Reply-To: <1065984839.4919.59.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,86 +24,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Herman@AerospaceSoftware.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Sun, 12 Oct 2003 20:54:00 +0200
+Cedric Blancher <blancher@cartel-securite.fr> wrote:
 
---=-ZF4JmZ5TAhcfit/xx6lx
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> Not working for SSH.
+> 
+> In fact, it should work. A TCP SYN flaged as NEW will be sent to
+> CH_SSH chain, then be accepted by CH_SSH rule that allows NEW packets.
+> Then further packets are going by. They are ESTABLISHED.
+> 
+> They match first rule so they are sent to CH_SSH chain. They do not
+> match the rule, for thieses packets are not NEW. So they hit end of
+> user chain and are returned to FORWARD chain, rule 2. They match rule
+> 2 and then get accepted.
 
-Hi Herman,
+Yes, sorry, you're right, but I forgot to mention that I have a cleanup
+rule at the end of the CH_SSH:
 
-did you try something like
+$IPT -A CH_SSH -j DROP
  
-iptables -t nat -I PREROUTING  -d x.x.x.x -j DNAT --to destination
-y.y.y.y
+> If it does not work as your's, then you have a drop all rule at the
+> end of CH_SSH chain (I suppose) that prevents packet from returning
+> from user chain (CH_SSH here) to calling chain (FORWARD here).
 
-where you can add also protocol,port.....
-Important is also that the destination machine routes back the packets
-via the nat machine or you must specify an additional POSTROUTING roule
-so that it looks for the destination machine that the pakets are
-originated from the nat machine. 
-Perhaps an example to the PREROUTING roule.
+You got it right ;-)
 
-iptables -t nat -I POSTROUTING -d y.y.y.y -j SNAT --to-source z.z.z.z
-then z.z.z.z should be bind to the natting machine.
-
-works for iptables 1.2.7a
-
-greetings 
-Gerd
-
-Am Son, den 12.10.2003 schrieb Herman um 22:11:
-
-> Has anybody got me a *working* port forwarding rule please???
+> To me, the best way to handle this is :
 > 
-> This thing is driving me nuts, since the rules straight from the manuals don't 
-> work with 1.2.7a or 1.2.9rc1.
+> # ESTABLISHED and RELATED packets are accepted anyway
+> # We accept them first as they are most treated packets
+> $IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 > 
-> Cheers,
+> # Then we care of each proto.
+> $IPT -A FORWARD -p tcp --dport 22 -j CH_SSH
+> [...]
+> $IPT -A CH_SSH -m state --state NEW -s 1.2.3.4 -j ACCEPT
+> 
+> Case 3 works because you enforce ESTABLISHED,RELATED accept in your
+> use chain.
+> 
+> I really do think that 1st case is the best way to handle, as it
+> implies less rules evaluation for each packet.
 
---=-ZF4JmZ5TAhcfit/xx6lx
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Ok, thanks a lot, it's much clearer now :)
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.9">
-</HEAD>
-<BODY>
-Hi Herman,<BR>
-<BR>
-did you try something like<BR>
- <BR>
-iptables -t nat -I PREROUTING&nbsp; -d x.x.x.x -j DNAT --to destination y.y.y.y<BR>
-<BR>
-where you can add also protocol,port.....<BR>
-Important is also that the destination machine routes back the packets via the nat machine or you must specify an additional POSTROUTING roule so that it looks for the destination machine that the pakets are originated from the nat machine. <BR>
-Perhaps an example to the PREROUTING roule.<BR>
-<BR>
-iptables -t nat -I POSTROUTING -d y.y.y.y -j SNAT --to-source z.z.z.z<BR>
-then z.z.z.z should be bind to the natting machine.<BR>
-<BR>
-works for iptables 1.2.7a<BR>
-<BR>
-greetings <BR>
-Gerd<BR>
-<BR>
-Am Son, den 12.10.2003 schrieb Herman um 22:11:
-<BLOCKQUOTE TYPE=CITE>
-<PRE><FONT COLOR="#737373"><I>Has anybody got me a *working* port forwarding rule please???
+R.
 
-This thing is driving me nuts, since the rules straight from the manuals don't 
-work with 1.2.7a or 1.2.9rc1.
+-- 
+___________________________________________________________________
+Recursion: see recursion
 
-Cheers,</I></FONT></PRE>
-</BLOCKQUOTE>
-</BODY>
-</HTML>
-
---=-ZF4JmZ5TAhcfit/xx6lx--
-
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
+| Public key and email address:                                    |
+| http://www.lucassen.org/mail-pubkey.html                         |
++------------------------------------------------------------------+
 
