@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Send mail Secure(SSL): No, Socket Error
-Date: Fri, 11 Oct 2002 18:20:50 +0100
+Subject: Re: prevent script kiddies to abuse my ppp connection
+Date: Fri, 11 Oct 2002 18:16:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210111720.g9BHKvL19784@vulcan.rissington.net>
-References: <200210111434.52124.mklingens@ism.nl> <200210111629.26991.mklingens@ism.nl> <001b01c27140$457471a0$8c01a8c0@sundaram>
+Message-ID: <200210111717.g9BHH1L19776@vulcan.rissington.net>
+References: <15781.58154.125224.618756@juliva.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001b01c27140$457471a0$8c01a8c0@sundaram>
+In-Reply-To: <15781.58154.125224.618756@juliva.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,37 +20,48 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 11 October 2002 5:07 pm, Sundaram Ramasamy wrote:
+On Thursday 10 October 2002 9:29 pm, Ivan Kanis wrote:
 
-> hi ,
+> Hello,
 >
-> My external users are getting following error, while sending E-mail.
+> I left my computer for an hour and I was
+> surprised to see that the connection was still on! I thought that one
+> of my proces was using the connection so i did a quick dump of ppp0. I
+> was surprise to see that some script kiddy was looking at my netbios
+> port!
 >
-> Your server has unexpectedly terminated the connection. Possible causes for
-> this include server problems, network problems, or a long period of
->
-> inactivity. Subject 'Coming Late', Account: 'www.percipia.com', Server:
-> 'www.percipia.com',
->
-> Protocol: SMTP, Port: 25, Secure(SSL): No, Socket Error: 10053, Error
-> Number: 0x800CCC0F
->
-> I am not allowing SSL port? Do I need to open the SSL port for this error?
+> Now I have been thinking of ways to prevent these silliness from
+> shutting down my conneciton within 3mn. If I firewall these incoming
+> packets I believe that it won't help me. The blocked packet will still
+> traverse the ppp link. So it will still be seen as "activity" to the
+> ppp daemon. Correct me if I am mistaken.
 
-No, you don't need to allow SSL - that's why it says "Secure(SSL): No" - it 
-is not using SSL.
+I don't know - try it and see.
 
-The solution is to upgrade your mail client - getting them opff Outlook will 
-solve an awful lot of other security problems as well :-)
+Set a simple ruleset in netfilter, such as:
 
-If they don't want to run Kmail, Mutt, Mozilla etc, try them with something 
-like Pegasus or Eudora...
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+(assuming netfilter and you applications, are running on the machine with the 
+dialup connection).
+
+Then set up an inbound ping from some remote machine and see if your 
+connection times out...
+
+If not, maybe you can adjust your ppp daemon to only count outgoing packets 
+as contributing to a connection which should be kept alive ?   Then inbound 
+packets which get no response won't count...
 
 Antony.
 
 -- 
 
-90% of network problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
+All matter in the Universe can be placed into one of two categories:
+
+1. things which need to be fixed
+2. things which will need to be fixed once you've had a few minutes to play 
+with them
 
