@@ -1,242 +1,65 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] get rid of __MOD_INC_USE_COUNT/__MOD_DEC_USE_COUNT
-Date: Fri, 21 Mar 2003 16:49:09 +0100
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20030321164909.A10752@lst.de>
+From: "GBV" <guilherme@plannercorretora.com.br>
+Subject: IRCd and HTTPd under Iptables
+Date: Fri, 21 Mar 2003 11:58:23 -0300
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <00b001c2efba$51a81280$6800817d@guilherme>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: torvalds@transmeta.com
-Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: *netfilter <netfilter@lists.netfilter.org>
 
-As the netfilter folks don't seem to have any interest in 2.5 currently
-I decided to fix their last uses of those old module interfaces myself.
-The implementation (get a reference first and release it again when
-not actually needed) might be slightly suboptimial but the netfilter
-team should just fix it if/when they get any interest in Linux 2.5/2.6.
+Hi all,
 
-Also fix the MOD_INC_USE_COUNT/MOD_DEC_USE_COUNT to give more accurate
-deprecation warnings.
+I=B4m using Debian 3.0r1 with kernel 2.4.19 as a iptables firewall
+
+I have internal webservers that I need to publish as Internet Sites For this
+manipulation I=B4m using Apache ProxyPass. The site works perfectly under
+apache.. even when the internal host is an ISS.
+
+1. How can I do it without apache proxypass, using iptables?
+
+2. This internal webserver also have a IRC server... how can I manipulating
+iptables, to the external hosts use this internal IRC server, since i=B4m o=
+nly
+"sharing" the httpd via apache proxypass?
+
+3. Since I=B4m using apache proxypass I defined in virtualhosts that
+'/internalhost' leads to http://192.168.0.69:8080 , and I need to mantain
+that www.foo.com/internalhost , but using iptables someway. And I need the
+ircd of this internal server, responds via the same host. I=B4d like to
+mantain my apache since it=B4s in use... Is it possible? OR I=B4ll have to =
+put
+this apache in another internal host, and them using iptables for
+manipulating?
+
+4. I=B4ve create in my DNS an internalhost.foo.com that leads to
+www.foo.com/internalhost this must be manteined too.
+
+I have something like:
+
+Internet -> Firewall(Debian) -> Internal httpd and ircd server
+external           foo.com
+internal         192.168.0.1                      192.168.0.69
 
 
---- 1.52/include/linux/module.h	Fri Feb 21 22:50:41 2003
-+++ edited/include/linux/module.h	Fri Mar 21 12:30:33 2003
-@@ -69,8 +69,6 @@
-   __attribute__ ((unused, alias(__stringify(name))))
- 
- #define THIS_MODULE (&__this_module)
--#define MOD_INC_USE_COUNT _MOD_INC_USE_COUNT(THIS_MODULE)
--#define MOD_DEC_USE_COUNT __MOD_DEC_USE_COUNT(THIS_MODULE)
- 
- /*
-  * The following license idents are currently accepted as indicating free
-@@ -107,8 +105,6 @@
- #define MODULE_ALIAS(alias)
- #define MODULE_GENERIC_TABLE(gtype,name)
- #define THIS_MODULE ((struct module *)0)
--#define MOD_INC_USE_COUNT	do { } while (0)
--#define MOD_DEC_USE_COUNT	do { } while (0)
- #define MODULE_LICENSE(license)
- #endif
- 
-@@ -418,20 +414,6 @@
- #define symbol_request(x) try_then_request_module(symbol_get(x), "symbol:" #x)
- 
- /* BELOW HERE ALL THESE ARE OBSOLETE AND WILL VANISH */
--static inline void __deprecated __MOD_INC_USE_COUNT(struct module *module)
--{
--	__unsafe(module);
--	/*
--	 * Yes, we ignore the retval here, that's why it's deprecated.
--	 */
--	try_module_get(module);
--}
--
--static inline void __deprecated __MOD_DEC_USE_COUNT(struct module *module)
--{
--	module_put(module);
--}
--
- #define SET_MODULE_OWNER(dev) ((dev)->owner = THIS_MODULE)
- 
- struct obsolete_modparm {
-@@ -445,14 +427,7 @@
- struct obsolete_modparm __parm_##var __attribute__((section("__obsparm"))) = \
- { __stringify(var), type };
- 
--#else
--#define MODULE_PARM(var,type)
--#endif
--
--/* People do this inside their init routines, when the module isn't
--   "live" yet.  They should no longer be doing that, but
--   meanwhile... */
--static inline void __deprecated _MOD_INC_USE_COUNT(struct module *module)
-+static inline void __deprecated MOD_INC_USE_COUNT(struct module *module)
- {
- 	__unsafe(module);
- 
-@@ -460,9 +435,23 @@
- 	local_inc(&module->ref[get_cpu()].count);
- 	put_cpu();
- #else
--	try_module_get(module);
-+	(void)try_module_get(module);
- #endif
- }
-+
-+static inline void __deprecated MOD_DEC_USE_COUNT(struct module *module)
-+{
-+	module_put(module);
-+}
-+
-+#define MOD_INC_USE_COUNT	MOD_INC_USE_COUNT(THIS_MODULE)
-+#define MOD_DEC_USE_COUNT	MOD_DEC_USE_COUNT(THIS_MODULE)
-+#else
-+#define MODULE_PARM(var,type)
-+#define MOD_INC_USE_COUNT	do { } while (0)
-+#define MOD_DEC_USE_COUNT	do { } while (0)
-+#endif
-+
- #define __MODULE_STRING(x) __stringify(x)
- 
- /*
-===== net/ipv4/netfilter/arp_tables.c 1.4 vs edited =====
---- 1.4/net/ipv4/netfilter/arp_tables.c	Thu Mar 20 03:42:26 2003
-+++ edited/net/ipv4/netfilter/arp_tables.c	Fri Mar 21 12:25:13 2003
-@@ -912,19 +912,25 @@
- 		goto free_newinfo_counters_untrans_unlock;
- 	}
- 
-+	/* Get a reference in advance, we're not allowed fail later */
-+	if (!try_module_get(t->me)) {
-+		ret = -EBUSY;
-+		goto free_newinfo_counters_untrans_unlock;
-+	}
-+
- 	oldinfo = replace_table(t, tmp.num_counters, newinfo, &ret);
- 	if (!oldinfo)
--		goto free_newinfo_counters_untrans_unlock;
-+		goto put_module;
- 
- 	/* Update module usage count based on number of rules */
- 	duprintf("do_replace: oldnum=%u, initnum=%u, newnum=%u\n",
- 		oldinfo->number, oldinfo->initial_entries, newinfo->number);
--	if (t->me && (oldinfo->number <= oldinfo->initial_entries) &&
-- 	    (newinfo->number > oldinfo->initial_entries))
--		__MOD_INC_USE_COUNT(t->me);
--	else if (t->me && (oldinfo->number > oldinfo->initial_entries) &&
--	 	 (newinfo->number <= oldinfo->initial_entries))
--		__MOD_DEC_USE_COUNT(t->me);
-+	if ((oldinfo->number > oldinfo->initial_entries) || 
-+	    (newinfo->number <= oldinfo->initial_entries)) 
-+		module_put(t->me);
-+	if ((oldinfo->number > oldinfo->initial_entries) &&
-+	    (newinfo->number <= oldinfo->initial_entries))
-+		module_put(t->me);
- 
- 	/* Get the old counters. */
- 	get_counters(oldinfo, counters);
-@@ -938,6 +944,8 @@
- 	up(&arpt_mutex);
- 	return 0;
- 
-+ put_module:
-+	module_put(t->me);
-  free_newinfo_counters_untrans_unlock:
- 	up(&arpt_mutex);
-  free_newinfo_counters_untrans:
-===== net/ipv4/netfilter/ip_tables.c 1.12 vs edited =====
---- 1.12/net/ipv4/netfilter/ip_tables.c	Thu Mar 20 03:42:26 2003
-+++ edited/net/ipv4/netfilter/ip_tables.c	Fri Mar 21 12:26:12 2003
-@@ -1106,19 +1106,26 @@
- 		goto free_newinfo_counters_untrans_unlock;
- 	}
- 
-+	/* Get a reference in advance, we're not allowed fail later */
-+	if (!try_module_get(t->me)) {
-+		ret = -EBUSY;
-+		goto free_newinfo_counters_untrans_unlock;
-+	}
-+
-+
- 	oldinfo = replace_table(t, tmp.num_counters, newinfo, &ret);
- 	if (!oldinfo)
--		goto free_newinfo_counters_untrans_unlock;
-+		goto put_module;
- 
- 	/* Update module usage count based on number of rules */
- 	duprintf("do_replace: oldnum=%u, initnum=%u, newnum=%u\n",
- 		oldinfo->number, oldinfo->initial_entries, newinfo->number);
--	if (t->me && (oldinfo->number <= oldinfo->initial_entries) &&
-- 	    (newinfo->number > oldinfo->initial_entries))
--		__MOD_INC_USE_COUNT(t->me);
--	else if (t->me && (oldinfo->number > oldinfo->initial_entries) &&
--	 	 (newinfo->number <= oldinfo->initial_entries))
--		__MOD_DEC_USE_COUNT(t->me);
-+	if ((oldinfo->number > oldinfo->initial_entries) || 
-+	    (newinfo->number <= oldinfo->initial_entries)) 
-+		module_put(t->me);
-+	if ((oldinfo->number > oldinfo->initial_entries) &&
-+	    (newinfo->number <= oldinfo->initial_entries))
-+		module_put(t->me);
- 
- 	/* Get the old counters. */
- 	get_counters(oldinfo, counters);
-@@ -1132,6 +1139,8 @@
- 	up(&ipt_mutex);
- 	return 0;
- 
-+ put_module:
-+	module_put(t->me);
-  free_newinfo_counters_untrans_unlock:
- 	up(&ipt_mutex);
-  free_newinfo_counters_untrans:
-===== net/ipv6/netfilter/ip6_tables.c 1.15 vs edited =====
---- 1.15/net/ipv6/netfilter/ip6_tables.c	Thu Mar 20 03:43:40 2003
-+++ edited/net/ipv6/netfilter/ip6_tables.c	Fri Mar 21 14:06:26 2003
-@@ -1178,19 +1178,25 @@
- 		goto free_newinfo_counters_untrans_unlock;
- 	}
- 
-+	/* Get a reference in advance, we're not allowed fail later */
-+	if (!try_module_get(t->me)) {
-+		ret = -EBUSY;
-+		goto free_newinfo_counters_untrans_unlock;
-+	}
-+
- 	oldinfo = replace_table(t, tmp.num_counters, newinfo, &ret);
- 	if (!oldinfo)
--		goto free_newinfo_counters_untrans_unlock;
-+		goto put_module;
- 
- 	/* Update module usage count based on number of rules */
- 	duprintf("do_replace: oldnum=%u, initnum=%u, newnum=%u\n",
- 		oldinfo->number, oldinfo->initial_entries, newinfo->number);
--	if (t->me && (oldinfo->number <= oldinfo->initial_entries) &&
-- 	    (newinfo->number > oldinfo->initial_entries))
--		__MOD_INC_USE_COUNT(t->me);
--	else if (t->me && (oldinfo->number > oldinfo->initial_entries) &&
--	 	 (newinfo->number <= oldinfo->initial_entries))
--		__MOD_DEC_USE_COUNT(t->me);
-+	if ((oldinfo->number > oldinfo->initial_entries) || 
-+	    (newinfo->number <= oldinfo->initial_entries)) 
-+		module_put(t->me);
-+	if ((oldinfo->number > oldinfo->initial_entries) &&
-+	    (newinfo->number <= oldinfo->initial_entries))
-+		module_put(t->me);
- 
- 	/* Get the old counters. */
- 	get_counters(oldinfo, counters);
-@@ -1204,6 +1210,8 @@
- 	up(&ip6t_mutex);
- 	return 0;
- 
-+ put_module:
-+	module_put(t->me);
-  free_newinfo_counters_untrans_unlock:
- 	up(&ip6t_mutex);
-  free_newinfo_counters_untrans:
+Thanks all.
+
+Debian... because codes mather more than commercials
+
+
+
+
+
+
+
+
