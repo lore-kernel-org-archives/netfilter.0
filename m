@@ -1,8 +1,8 @@
 From: Geraldo Macedo <glmacedo@quality.com.br>
-Subject: UML and NetFilter Firewalls
-Date: 19 Jun 2002 16:13:37 -0300
+Subject: UML and Firewall
+Date: 19 Jun 2002 16:47:28 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1024514017.26895.184.camel@ux-glmacedo.intranet.quality.com.br>
+Message-ID: <1024516048.26896.189.camel@ux-glmacedo.intranet.quality.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -17,6 +17,7 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
+Cc: Humberto Baltazar Morais <hbmorais@ig.com.br>
 
 Greetings from Rio de Janeiro/Brazil,
 
@@ -25,18 +26,18 @@ firewall and separate machines?
 
 For example:
 
-		Router
-		|
-		|
-		|
-		UML Host
-		|-------------> Firewall
-		|-------------> HTTPd
-		|-------------> QMAIL
-		|
-		|
-	---------------------
-	Internal Network
+                Router
+                |
+                |
+                |
+                UML Host
+                |-------------> Firewall
+                |-------------> HTTPd
+                |-------------> QMAIL
+                |
+                |
+        ---------------------
+        Internal Network
 
 Sorry for my bad ASCII graph...
 
