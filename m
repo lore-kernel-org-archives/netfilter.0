@@ -1,13 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: OS Fingerprint
-Date: 18 Nov 2003 09:29:05 -0500
+From: Damjan <gdamjan@mail.net.mk>
+Subject: Howto match only the first connection from an IP
+Date: Tue, 18 Nov 2003 15:43:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069165744.1078.4.camel@valhalla>
-References: <Law14-F6682qhpp8eur0000b7c9@hotmail.com>
+Message-ID: <20031118144300.GA5071@legolas.on.net.mk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Law14-F6682qhpp8eur0000b7c9@hotmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rodre Ghorashi-Zadeh <rodrico7@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Tue, 2003-11-18 at 05:05, Rodre Ghorashi-Zadeh wrote:
->
-> Does anybody on this list have a rule that I can use to change the OS 
-> fingerprint of all packets leaving my DMZ? Thanks in advance.
+My goal is to set-up an iptables rule that will match and DNAT the
+first HTTP(port 80) connection from a client (IP address).
 
-Os passive fingerprinting is typically done with ICMP type 8's as well
-as TCP SYN packets. Its possible to do it with SYN/ACKs, but its not
-easy.
+The first connection is defined as the first established TCP session 
+from the time the iptables rule is inserted. No other TCP connection
+should match nor should be DNAT-ed.
 
-You could use iptables to rewrite the TTL. That usually the first value
-people key in on to do OS detection. That, and its something you could
-do to "all packets" as you require. It will not fool everyone, but any
-other changes will only be applicable to certain packets.
+Is there any easy way to do this with current Netfilter/Iptables/pom.
 
-HTH,
-C
+(I have installed almost all the patches from pom)
 
 
-
+-- 
+Damjan Georgievski
+jabberID: damjan@bagra.net.mk
 
 
