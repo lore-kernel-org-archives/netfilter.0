@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: --mac-destination possible ?
-Date: Sat, 5 Jun 2004 13:17:24 +0100
+From: =?iso-8859-1?q?Joerg=20Bruenner?= <joerg_bruenner@yahoo.de>
+Subject: firewall without rules blocks packages
+Date: Sat, 5 Jun 2004 15:06:15 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406051317.24886.Antony@Soft-Solutions.co.uk>
-References: <a995ba701b.a701ba995b@teleline.es>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040605130615.10604.qmail@web20027.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <a995ba701b.a701ba995b@teleline.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Friday 04 June 2004 4:26 pm, PETER-MULLER wrote:
+Hi,
 
-> Hello,
->
-> do you know if
->
-> 1. Is there any plans to include a --mac-destination parameter for the
-> MAC module to check package destinated to a certain MAC address (like as
-> --mac-source)
->
-> or
->
-> 2. Is there any impediments to implement such a parameter
+I have configured iptables:
 
-I do not think this is possible in iptables / netfilter (but it may be a 
-feature, or a possibility, for ebtables?).
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source=20
+            destination
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source=20
+            destination
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source=20
+            destination
 
-The reason I think this is because netfilter works with IP packets, and can 
-see the TCP / UDP / ICMP headers within them; it is also handed the MAC 
-address for incoming packets by the networking stack as a kind of bonus bit 
-of information.
+It should be wide open. But it is not:
+If I ping from firewall-box to box A A replies the
+expected way. If I ping from A to firewall A wont
+get an answer. Firewall recives the ping packes I
+verified.
+I can play the same with ssh or telnet ...
 
-However, for outgoing packets, netfilter (at the IP layer) knows nothing about 
-the MAC address of the destination machine (it doesn't even know whether it 
-is a local machine or on the other side of a router, which will make a big 
-difference to the MAC address which gets associated with a specific IP 
-address).   It's not until netfilter releases the packet to the networking 
-code and says "send this out on the wire please" that an ARP lookup gets done 
-and a MAC address is discovered.   By then it's too late to send the packet 
-back to netfilter to tell it what the MAC address was and ask what to 
-*really* do with the packet.
+What can I do?=20
 
-If anyone else thinks this is wrong, and netfilter can know about the 
-destination MAC, please correct me.
+Thanks a lot for help
+Joerg
 
-Regards,
 
-Antony.
+=09
 
--- 
-Ramdisk is not an installation procedure.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+=09
+	=09
+Mit sch=F6nen Gr=FC=DFen von Yahoo! Mail - http://mail.yahoo.de
 
