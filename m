@@ -1,11 +1,11 @@
-From: Jay Levitt <lists-netfilter@shopwatch.org>
-Subject: Re: RST instead of FIN?
-Date: Sun, 11 Apr 2004 14:01:20 -0400
+From: =?iso-8859-9?B?1m1lciBBa/Z6?= <omerakoz@e-kolay.net>
+Subject: ipip tunnel connection tracking
+Date: Sun, 11 Apr 2004 22:09:52 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <06fa01c41fee$fe77d440$9701a8c0@office>
-References: <05c301c41f2a$4a6ef650$9701a8c0@office> <1081677639.2013.11.camel@grendel>
+Message-ID: <EXCFE04GjcAbeYrvKM9000011ef@smtp.e-kolay.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000A_01C42011.B6A424C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,152 +16,151 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Chris Brenton wrote:
+This is a multi-part message in MIME format.
 
-> On Sat, 2004-04-10 at 14:33, Jay Levitt wrote:
-> >
-> > sourceforge: [SYN]
-> > me: [SYN, ACK]
-> > sourceforge: [ACK]
-> > [SMTP conversation ensues, switches to TLS, sends me an e-mail.  at
-> > the end..]
-> > me: [RST]
->
-> Weird. Are you sure this is not a RST/ACK?
-Yep.  It's an RST only.
+------=_NextPart_000_000A_01C42011.B6A424C0
+Content-Type: text/plain;
+	charset="iso-8859-9"
+Content-Transfer-Encoding: 7bit
 
->
-> > sourceforge: [FIN, ACK]
->
-> Looks like the RST was ignored (although hard to say since you did not
-> include time stamps). Does the source MAC on the RST match your system?
+Dear all,
 
-Sorry about that - I can't figure out how to get an abbreviated output from
-Ethereal so I just retyped it.  I've included the full output of the last
-few packets below, although I see now that timestamps are still missing!...
-The RST was sent within microseconds of the last packet received.  The
-source MAC is my own....
+ 
 
-OOH!  Looks like I read this wrong the first time.  The first RST is me, for
-reasons unknown, and the second two are sourceforge.  That's even weirder.
-With timestamps:
+I am working on connection tracking of ipip tunnel packets, while using ipip
+tunneling, in the ip_conntrack file, I see the outer src. and dst.
+addresses, I try to see original src and dst addresses. 
 
-#753 17:20:34.230099 sourceforge: last data packet of message body
-#754 17:20:34.230181 me: RST
-#755 17:20:34.230538 sourceforge: FIN, ACK
-#756 17:20:34.318588 sourceforge: RST
-#757 17:20:34.319745 sourceforge: RST
+ 
 
-> When I've seen this in the past its been an IDS or IPS attempting to
-> reset the session due to a suspicious payload, but they get the sequence
-> numbers wrong. Thus the RST/ACK gets ignored and the session continues.
+Is there any module to do this ? I see the "ip_conntrack_proto_gre", I think
+it makes this shows original addresses in gre packets ?
 
-Interesting.  I'm not running an IDS/IPS.  Perhaps sourceforge is, but that
-doesn't explain my sending the RST...
+ 
 
-> > me: [RST]
-> > me: [RST]
->
-> If this is an RST rather than a RST/ACK, it could be your system is
-> losing session info and handling the ACKs like they are new packets
-> (maybe some kind of broken IP wrapper application?).
+Thank you for your help.
 
-No wrappers installed here.. just iptables.
+ 
 
-> The second RST is
-> *really* odd as its an error packet without any stimulus. That's not
-> suppose to happen.
+Omer Akoz.
 
-Agreed..
+ 
 
-> I'm guessing this is not the kernel or Sendmail, but I'm honestly not
-> sure what it is.
+ 
 
-Any ideas where I might seek out other experts?
+ 
 
-Thanks for the help...
 
-Jay
+------=_NextPart_000_000A_01C42011.B6A424C0
+Content-Type: text/html;
+	charset="iso-8859-9"
+Content-Transfer-Encoding: quoted-printable
 
--------------------------
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-Frame 753 (95 bytes on wire, 95 bytes captured)
-Ethernet II, Src: 00:20:78:d0:44:8f, Dst: 00:50:2c:01:62:8e
-Internet Protocol, Src Addr: 66.35.250.206 (66.35.250.206), Dst Addr:
-192.168.1.150 (192.168.1.150)
-Transmission Control Protocol, Src Port: 42185 (42185), Dst Port: smtp (25),
-Seq: 2495007464, Ack: 3573134794, Len: 29
-    Source port: 42185 (42185)
-    Destination port: smtp (25)
-    Sequence number: 2495007464
-    Next sequence number: 2495007493
-    Acknowledgement number: 3573134794
-    Header length: 32 bytes
-    Flags: 0x0018 (PSH, ACK)
-    Window size: 14480
-    Checksum: 0x4684 (correct)
-    Options: (12 bytes)
-Simple Mail Transfer Protocol
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-9">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-Frame 754 (54 bytes on wire, 54 bytes captured)
-Ethernet II, Src: 00:50:2c:01:62:8e, Dst: 00:20:78:d0:44:8f
-Internet Protocol, Src Addr: 192.168.1.150 (192.168.1.150), Dst Addr:
-66.35.250.206 (66.35.250.206)
-Transmission Control Protocol, Src Port: smtp (25), Dst Port: 42185 (42185),
-Seq: 3573134794, Ack: 0, Len: 0
-    Source port: smtp (25)
-    Destination port: 42185 (42185)
-    Sequence number: 3573134794
-    Header length: 20 bytes
-    Flags: 0x0004 (RST)
-    Window size: 0
-    Checksum: 0x8109 (correct)
+</head>
 
-Frame 755 (66 bytes on wire, 66 bytes captured)
-Ethernet II, Src: 00:20:78:d0:44:8f, Dst: 00:50:2c:01:62:8e
-Internet Protocol, Src Addr: 66.35.250.206 (66.35.250.206), Dst Addr:
-192.168.1.150 (192.168.1.150)
-Transmission Control Protocol, Src Port: 42185 (42185), Dst Port: smtp (25),
-Seq: 2495007493, Ack: 3573134794, Len: 0
-    Source port: 42185 (42185)
-    Destination port: smtp (25)
-    Sequence number: 2495007493
-    Acknowledgement number: 3573134794
-    Header length: 32 bytes
-    Flags: 0x0011 (FIN, ACK)
-    Window size: 14480
-    Checksum: 0x877f (correct)
-    Options: (12 bytes)
+<body lang=3DTR link=3Dblue vlink=3Dpurple>
 
-Frame 756 (60 bytes on wire, 60 bytes captured)
-Ethernet II, Src: 00:20:78:d0:44:8f, Dst: 00:50:2c:01:62:8e
-Internet Protocol, Src Addr: 66.35.250.206 (66.35.250.206), Dst Addr:
-192.168.1.150 (192.168.1.150)
-Transmission Control Protocol, Src Port: 42185 (42185), Dst Port: smtp (25),
-Seq: 2495007464, Ack: 0, Len: 0
-    Source port: 42185 (42185)
-    Destination port: smtp (25)
-    Sequence number: 2495007464
-    Header length: 20 bytes
-    Flags: 0x0004 (RST)
-    Window size: 0
-    Checksum: 0xac2e (correct)
+<div class=3DSection1>
 
-Frame 757 (60 bytes on wire, 60 bytes captured)
-Ethernet II, Src: 00:20:78:d0:44:8f, Dst: 00:50:2c:01:62:8e
-Internet Protocol, Src Addr: 66.35.250.206 (66.35.250.206), Dst Addr:
-192.168.1.150 (192.168.1.150)
-Transmission Control Protocol, Src Port: 42185 (42185), Dst Port: smtp (25),
-Seq: 2495007464, Ack: 0, Len: 0
-    Source port: 42185 (42185)
-    Destination port: smtp (25)
-    Sequence number: 2495007464
-    Header length: 20 bytes
-    Flags: 0x0004 (RST)
-    Window size: 0
-    Checksum: 0xac2e (correct)
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Dear all,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I am working on connection tracking of ipip tunnel =
+packets, while
+using ipip tunneling, in the ip_conntrack file, I see the outer src. and =
+dst. addresses,
+I try to see original src and dst addresses. =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Is there any module to do this ? I see the =
+&#8220;ip_conntrack_proto_gre&#8221;,
+I think it makes this shows original addresses in gre packets =
+?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thank you for your help.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Omer Akoz.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_000A_01C42011.B6A424C0--
+
 
 
