@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NTP
-Date: Fri, 2 Jul 2004 12:08:16 +0100
+From: Steve Comfort <steve@4Dllc.com>
+Subject: TCP SYN FIN
+Date: Fri, 02 Jul 2004 14:27:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407021208.16907.Antony@Soft-Solutions.co.uk>
-References: <40E53FAE.1070007@4Dllc.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <40E554BE.1010402@4Dllc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40E53FAE.1070007@4Dllc.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Friday 02 July 2004 11:57 am, Steve Comfort wrote:
+Hi All,
 
-> Hi all,
->
-> Could someone tell me what rules I need in order to enable NTP?
+I'm running Nessus to check my firewall rules, and its telling me :
 
-NTP uses UDP port 123.
+"remote host does not drop TCP SYN packets with the FIN flag set .... "
 
-What rules you need depends on what you're trying to do - run an NTP server 
-(allow UDP 123 in the INPUT chain), access an NTP server (allow UDP 123 in 
-the OUTPUT chain), or allow clients and servers to talk to each other through 
-a router (allow UDP 123 through the FORWARD chain).
+I've tried adding the following rule :
 
-If in doubt, add a LOG rule, try using the protocol, and see what gets logged 
-- that will tell you what sort of packets you need to ACCEPT instead.
+$ipt -A INPUT -i $iface -d $network -p tcp --tcp-flags SYN,FIN SYN, FIN 
+-j DROP
 
-Regards,
+and a few permutations, but the warning still appears.
 
-Antony.
+How do I fix this?
 
--- 
-Software development can be quick, high quality, or low cost.
-
-The customer gets to pick any two out of three.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards
+Steve
 
 
