@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: eth1 answers SYN/ACK to SYNs dedicated for eth0. Why?
-Date: Wed, 15 Dec 2004 18:38:53 -0500
-Message-ID: <1103153933.13025.10.camel@hubcap.ljm.dom>
-References: <006401c4e2fa$cdd164d0$3001a8c0@cpcss>
+From: Paul Kosinski <prk@iment.com>
+Subject: Throttling by 'limit' in one chain fails whenever a
+ *different* chain is modified
+Date: Wed, 15 Dec 2004 18:44:20 -0500
+Message-ID: <041215184451.103156@ime1.iment.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <006401c4e2fa$cdd164d0$3001a8c0@cpcss>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +16,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-15 at 18:07, Stoycho Sleptsov wrote:
-> Hi.
-> 
-> I am new to iptables , so excuse me in advance for any strange
-> terminologies.
-> 
-> I have the following configuration:
-> an external IP assigned to eth0.
-> 192.168.0.1 assigned to eth1.
-> ip_forward set to 1.
-> sshd waiting on 22.
-> 
-> iptables:
-> 
-> *filter
-> :INPUT DROP
-> :FORWARD DROP
-> :OUTPUT ACCEPT
-> 
-> -A INPUT -i eth1 -j ACCEPT
+Hi,
 
-change that to:
+I have set up a moderately complicated firewall which has (among other things) two dynamic chains whose rules are changed several times per hour. The rule changing is done by first flushing the chain and then adding the new rules. Let's call these two chains DYNAMIC1 and DYNAMIC2, so the script reads thus (details of rules omitted):
 
-  -A INPUT -i eth1 -d $ip_of_eth1 -j ACCEPT
+  iptables -F DYNAMIC1
+  iptables -F DYNAMIC2
 
-and packets that arrive on eth1 destined for eth0's IP address won't be
-accepted anymore.
- 
--j
+  if [proper time of hour]; then
+    iptables -A DYNAMIC1 [allow some packets]
+    iptables -A DYNAMIC2 [allow other packets]
+  fi
 
---
-"I saw weird stuff in that place last night. Weird, strange, sick,
- twisted, eerie, godless, evil stuff. And I want in."
-	--The Simpsons
+In another section of the firewall, I have the following chain whose purpose is to log very occasionally some continually arriving tunnel packets (just to see when the tunnel is active).
+
+  iptables -A TUNLOG                                 \
+           -m state --state ESTABLISHED              \
+           -m limit --limit 1/hour --limit-burst 1   \
+           -j LOG --log-prefix "iptables: Tun ...  "
+
+  iptables -A TUNLOG                                 \
+           -m state --state NEW                      \
+           -m limit --limit 1/minute --limit-burst 1 \
+           -j LOG --log-prefix "iptables: Tun-New  "
+  
+  iptables -A TUNLOG                                 \
+           -m state --state RELATED                  \
+           -m limit --limit 1/minute --limit-burst 1 \
+           -j LOG --log-prefix "iptables: Tun-Rel  "
+  
+  iptables -A TUNLOG                                 \
+           -m state --state INVALID                  \
+           -m limit --limit 1/minute --limit-burst 1 \
+           -j LOG --log-prefix "iptables: Tun-Bad  "
+  
+  iptables -A TUNLOG                                 \
+           -j ACCEPT
+
+The problem I experience is that whenever the dynamic-rule script fires, I get a log entry for an established-tunnel packet. Since the first script fires N times per hour, I get N times as many log entries for the tunnel as I want. This makes my examination of the firewall log more tedious and error prone than it should be.
+
+This seems to me to be a bug in iptables/netfilter. I am using iptables 1.2.11 and kernel 2.4.28 with the ebtables patch 'ebtables-brnf-8_vs_2_4_28_diff'.
+
+Paul Kosinski
 
 
