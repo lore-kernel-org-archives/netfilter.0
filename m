@@ -1,9 +1,9 @@
 From: "Alexis" <alexis@attla.net.ar>
-Subject: Re: Filtered Port 21 somewhat open - iptables weirdness?
-Date: Sat, 24 Jan 2004 11:39:46 -0300
+Subject: Re: nat on multihomed server
+Date: Sat, 24 Jan 2004 11:44:10 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c3e287$ea1f5490$0200000a@heretic>
-References: <20040124014842.GA9219@localnet>
+Message-ID: <001301c3e288$8710f150$0200000a@heretic>
+References: <1164.203.131.168.150.1074915322.squirrel@www.localgovernance.net.ph>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,53 +19,55 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-try using 
+if your webserver is your firewall box, DNAT is not necessary.
 
-netstat -tupan and see wich process is using that port. if any.
+just the input rule is enough.
 
+
+eg
+
+eth1 isp1
+eth2 isp2
+
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -m state --state NEW -p --dport 80 -j ACCEPT
+
+and thats it
 
 
 ----- Original Message ----- 
-From: "Sven Riedel" <sr@gimp.org>
+From: "Sandy T. Santos" <sandy@bulacan.gov.ph>
 To: <netfilter@lists.netfilter.org>
-Sent: Friday, January 23, 2004 10:48 PM
-Subject: Filtered Port 21 somewhat open - iptables weirdness?
+Sent: Saturday, January 24, 2004 12:35 AM
+Subject: nat on multihomed server
 
 
-> Hi,
-> one of the machines I administer to is running iptables with an input
-> policy of drop, and allows only a few, selected services. Ftp is most
-> definitely not among them, and there is no ftp server installed on the
-> machine in question. 
-> 
-> nmap -P0 -sS reports that among the expected, port 21 is open.
-> telnetting to port 21 shows indeed a successful connect:
-> radagast@angmar:~>telnet <machine> 21
-> Trying <ip>...
-> Connected to <machine>
-> Escape character is '^]'.
-> ^]
-> telnet> quit
-> 
-> But it just sits there, no welcoming banner, no response to obvious
-> ascii-commands.
-> 
-> At the same time the kernel logs report that my telnet packets are being
-> blocked by iptables. hping2 -A gets reset packets from that port as
-> well, as if it weren't filtered, while amap shows me nothing of value. 
-> 
-> Is this maybe some ip_conntrack weirdness? I already sweeped the machine
-> as well as I could and so far I came up with no indication for a rootkit
-> or backdoor. 
-> 
-> Regs,
-> Sven
+> our campany has two internet links from different isp's. we then use both
+> of these to host the company's webserver. what i want is that the
+> webserver maybe accessible by coming from my isp1 link or my isp2 link. i
+> know that i need to set up my dns to have two ip addresses that points to
+> my linux box and then DNAT that connection towards my webserver. what i
+> don't know is what's the iptables script gonna look like for the SNAT
+> reply. how would i be able to determine that the request that came in to
+> my webserver originated from my isp1 or isp2 link  so that the reply would
+> be SNAT'ed to that interface?
+>
+> should i just make two SNAT  that replies to the request irregardless of
+> the destination address? ex. iptables -t nat -A POSTROUTING -s 192.168.x.2
+> --sport 80 -j SNAT --to-ip (ip facing isp1) and  iptables -t nat -A
+> POSTROUTING -s 192.168.x.2 --sport 80 -j SNAT --to-ip (ip facing isp2)
+>
+> other suggestions are welcome.
+>
 > -- 
-> Sven Riedel                      sr@gimp.org
-> Liebigstr. 38 
-> 30163 Hannover                  "Python is merely Perl for those who
->                                  prefer Pascal to C" (anon)
-> 
-> 
+> Sandy T. Santos <sandy@bulacan.gov.ph>
+> Provincial Information Technology Office
+> Provincial Government of Bulacan
+> Malolos, Philippines
+>
+>
+>
+
 
 
