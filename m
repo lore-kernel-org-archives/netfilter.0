@@ -1,10 +1,11 @@
-From: "Sebastiao Antonio Campos \(GWA\)" <sa.campos@datasulsp.com.br>
-Subject: Neighbour table overflow
-Date: Wed, 23 Mar 2005 11:08:34 -0300
-Message-ID: <000901c52fb2$ee024ee0$080211ac@PIVT>
-Reply-To: "Sebastiao Antonio Campos \(GWA\)" <sa.campos@datasulsp.com.br>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Neighbour table overflow
+Date: Wed, 23 Mar 2005 09:23:01 -0500
+Message-ID: <1111587781.4513.26.camel@hubcap.ljm.dom>
+References: <000901c52fb2$ee024ee0$080211ac@PIVT>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <000901c52fb2$ee024ee0$080211ac@PIVT>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,106 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Netfilter list <netfilter@lists.netfilter.org>, Sertys <sertys@supportivo.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-After I had applied the solution bellow I got the follwing msg error:
+On Wed, 2005-03-23 at 09:08, Sebastiao Antonio Campos (GWA) wrote:
+> After I had applied the solution bellow I got the follwing msg error:
+> 
+> Neighbour table overflow.
 
-Neighbour table overflow.
+IIRC--that error means you've filled up your arp table.  the values
+(defaults shown) are controlled by the kernel parameters:
 
-Tks
+        net.ipv4.neigh.default.gc_thresh3 = 1024
+        net.ipv4.neigh.default.gc_thresh2 = 512
+        net.ipv4.neigh.default.gc_thresh1 = 128
 
+how many hosts are on the physical subnets with your firewall machine?
 
------ Original Message ----- 
-From: "Sebastiao Antonio Campos (GWA)" <sa.campos@datasulsp.com.br>
-To: "Netfilter list" <netfilter@lists.netfilter.org>; "Sertys"
-<sertys@supportivo.org>
-Sent: Tuesday, March 22, 2005 9:51 PM
-Subject: Re: Two netwok cards to access the internet.
+i was surprised to see you say that everything was working, as your
+question appeared to be about policy routing, yet setting up a SNAT
+seemed to magically make it work--which made no sense to me.
 
+-j
 
-> Thanks.
->
-> It is working good.
->
->
->
-> ----- Original Message ----- 
-> From: "Sertys" <sertys@supportivo.org>
-> To: "Netfilter list" <netfilter@lists.netfilter.org>
-> Sent: Tuesday, March 22, 2005 7:24 PM
-> Subject: Re: Two netwok cards to access the internet.
->
->
-> On Tue, 22 Mar 2005 18:54:26 -0300, Sebastião Antônio Campos
-> <sa.campos@datasulsp.com.br> wrote:
->
-> Well, that's easy. When you know the ports you want to map through the
-> interfaces, just do
->
-> iptables -t nat -A POSTROUTING -m multiport -p tcp -s 172.17.1.8 --dports
-> 25,110,1723,1701,47 -o eth0 -j MASQUERADE
-> iptables -t nat -A POSTROUTING -s 172.17.0.0/16 -o eth2 -j MASQUERADE
-> or even better
-> iptables -t nat -A POSTROUTING -s 172.17.0.0/16 -o eth2 -j SNAT
-> --to-source $ETH2_IP
->
-> Those are simple states, you might add --syn or -m state, it's a choice of
-> yours anyway.
->
->
-> > Hi!
-> >
-> > I have the following:
-> >
-> > A RedHat 9.0 with 3 Network cards: One we use in local network (eth1)
-> > and the other (eth0 and eth2)  to access the internet.
-> >
-> > I'd like to separate the traffic. In the eth0 use only with the e-mail
-> > server (pop, smtp, 1723, 1701 and protocol 47) and the eht0 with others
-> > traffis (http, https, msn....).
-> >
-> > I tried
-> >
-> > iptables -t nat -A POSTROUTING -o eth2 -s 172.17.1.8 -j MASQUERADE
-> > (--this ip addrs is pop and smtp server)
-> > iptables -t nat -A POSTROUTING -o eth0 -s 172.17.0.0/16 -j MASQUERADE
-> >
-> > But when I did this I could not access the port 1723, 1701 and protocol
-> > 47 using the eth2.
-> >
-> > I tried too use only iptables -t nat -A POSTROUTING -o eth2 -s
-> > 172.17.0.0/16 -j MASQUERADE
-> >
-> > And I got the same prob.
-> >
-> > If I use iptables -t nat -A POSTROUTING  -s 172.17.0.0/16 -j MASQUERADE
-> >
-> > I will get a success access. Only when I use iptables -t nat -A
-> > POSTROUTING  -s 172.17.0.0/16 -j MASQUERADE (without -o eth2 or -o
-eth0).
-> >
-> >
-> > Who could help me?
-> >
-> > Thanks
-> >
-> >
-> > Sebastiгo Antфnio Campos
-> > Infojoi Computadores Ltda
-> > Joinville -SC - R. Iririъ, 3587
-> > Cml. (47) 437-0796 - Cel. (47) 9927-5349
-> > tiao@infojoi.com.br
-> > http://www.lupusnet.com.br
->
->
->
-> -- 
-> www.supportivo.org
->
-> I can't stop myself checking for pigs in the outlets. Everybody thinks i'm
-> a punk, cause of the hairstyle(220V).
-> end
->
+--
+"Well, I'm not calling you a liar, but... I can't think of a way to
+ finish that sentence."
+	--The Simpsons
 
 
