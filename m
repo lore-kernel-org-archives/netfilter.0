@@ -1,12 +1,11 @@
-From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: remove old conntrack entries
-Date: 04 Feb 2005 21:46:25 +0100
-Message-ID: <1107549965.24666.15.camel@nostromo.bgsecm.com>
-References: <0140CEDD3075ED428813B1F2A659081212C7FE@p001ex02.porta.local>
-	<1107547924.24666.8.camel@nostromo.bgsecm.com>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: What is the application sending packet out?
+Date: 04 Feb 2005 22:07:26 +0100
+Message-ID: <1107551244.24666.21.camel@nostromo.bgsecm.com>
+References: <1107549694.8323.7.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1107547924.24666.8.camel@nostromo.bgsecm.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1107549694.8323.7.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "Baake, Matthias" <m.baake@porta.de>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El vie, 04 de 02 de 2005 a las 21:12, Jose Maria Lopez escribió:
-> El vie, 04 de 02 de 2005 a las 09:30, Baake, Matthias escribió:
-> > Hi,
-> > 
-> > i'm having problems with my conntrack table. A few days ago i scanned a subnet, thru the problem iptable box, which is not existing. Now about 4 days after that scan these connections are still in the connection tracking. how do i remove them, 
-> > or where is the mistake with the configuration at all?
-> > 
-> > Sorry for the poor english.
-> > 
-> > Best regards
-> 
-> Included in our GPL bastion-firewall firewall it's the script
-> I attach to this message. It does just what you want.
+El vie, 04 de 02 de 2005 a las 21:41, Mohammad Khan escribi=C3=B3:
+> Hello List,
+>=20
+> I am not sure about some packet was trying to go out from my router.
+> Is there a way to know, what application(s) is/are sending those
+> packets?
+>=20
+> Thanks
+> Mohammad
 
-Reading my own message I have realized that it uses some of
-our bastion-firewall functions, but surely you can imagine
-how the script works. The only important think it's the one
-that uses hping2.
+Yes, it's very easy. Just use ethereal to capture the packets
+and identify the ports the application it's using to send the
+packets, then use lsof -i to see what application it's using
+that port.
 
-Sorry and Regards.
+Regards.
 
--- 
+--=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
 jkerouac@bgsec.com
 bgSEC Seguridad y Consultoria de Sistemas Informaticos
 http://www.bgsec.com
-ESPAÑA
+ESPA=C3=91A
 
 The only people for me are the mad ones -- the ones who are mad to live,
 mad to talk, mad to be saved, desirous of everything at the same time,
