@@ -1,16 +1,11 @@
-From: Michael Stilmant <ml-netfilter@adtech.be>
-Subject: RE: transparent tcp proxy
-Date: 27 May 2003 11:49:35 +0200
+From: Alexandre Hautequest <hquest@linuxbr.com.br>
+Subject: Limiting connections per time
+Date: 26 May 2003 17:37:41 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054028975.18150.65.camel@stilmant>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A019241@wardrive.citadelcomputer.com.au>
-	 <1053938722.17259.6.camel@stilmant>
-	 <1054024461.694.31.camel@elendil.intranet.cartel-securite.net>
-Reply-To: ml-netfilter@adtech.be
+Message-ID: <1053981461.32547.24.camel@clk-gtk.sigmaperitos>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1054024461.694.31.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,15 +18,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2003-05-27 at 10:34, Cedric Blancher wrote:
-> What about a layer 2 SNAT on OUTPUT chain from B to A for filtered
-> packets ?
-> ebtables can achieve this.
+Hello all.
 
-Well, I'll look in this solution. Thanks ...  so you say it's possible
-to make a filter in ebtables where I can say for all frame for ip:A port
-X from port Y replace MAC with the #C value ?
+First sorry if this had already replied before, but i found nothing in
+ml archives. Second, sorry about my poor english.
 
-Michael
+Can i use netfilter to limit a number of connections allowed in a
+per-time basis? Lets take this as an example:
 
+I have a UDP shoutcast server. A want to limit its external access to
+only one connection per IP for 30 minutes. Then i set up some rule (this
+rule is what i want to know if is possible and if so, how can i do this,
+what mods i need, and so on). Clients start to connect in (opens one
+*session*). Another people is opening a 2nd connection (maybe behind a
+NAT gw) and tries to connect in. It should block him. At the end of
+time, the first *session* should be automaticaly blocked again (maybe
+using my default DROP policy). A new connection can be accepted at this
+time, but not as its continuation -- i mean, start another *session*.
+
+This is what i have in mind, not actually for a shoutcast server, but is
+almost this situation i have. 
+
+Im not subscribed, so please cc me.
+
+Again sorry for my poor english, and thanks in advance for your time.
+
+--
+Alexandre Hautequest
 
