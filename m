@@ -1,14 +1,13 @@
 From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: RE: opening a port..
-Date: 09 Jan 2003 10:25:13 +0530
+Subject: Re: can't load the script
+Date: 09 Jan 2003 10:47:21 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042088119.810.3.camel@india>
-References: <FD8F124A387AD6119F7900A0D218B321019A9D@hslex01.hslbz.local> 
-	<1042080082.606.21.camel@nirvana>
+Message-ID: <1042089449.810.14.camel@india>
+References: <003401c2b796$b27ae0d0$4900a8c0@knitting.leahander.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1042080082.606.21.camel@nirvana>
+In-Reply-To: <003401c2b796$b27ae0d0$4900a8c0@knitting.leahander.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,42 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mdew <mdew@mdew.dyndns.org>
-Cc: Rob Sterenborg <rsterenborg@xs4all.nl>, netfilter <netfilter@lists.netfilter.org>
+To: Gary Lee <gary@leahander.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2003-01-09 at 08:11, mdew wrote:
-> On Thu, 2003-01-09 at 03:24, Rob Sterenborg wrote:
-> > > ok, telnet from another machine to the router.
-> > > 
-> > > telnet 10.0.0.6 4662
-> > > Trying 10.0.0.6...
-> > > telnet: Unable to connect to remote host: Connection refused
-> > > 
-> > > what "service" should I be running? I simply want 4662 open both ways.
-> > 
-> > # netstat -an|grep 4662
-> > should tell you if your box is listening at all on port 4662.
-> > 
-> > If you run eDonkey server on the firewall box, open port in the INPUT
-> > chain.
-> > If your eDonkey server is *behind* the firewall, open the port in the
-> > FORWARD chain, and add a DNAT rule in the nat table -> PREROUTING chain.
-> 
-> the edonkey server is behind the firewall
-> 
-> 210.54.175.12--->eth0 (Router) 10.0.0.6(eth1)--->10.0.0.x
-> 
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 210.54.175.12 --dport 4662 -j DNAT --to 10.0.0.6:4662
-> 
+Check 
+#which iptables
+if not found
+#find / -name iptables
 
-This should work without the last rule.
+It should say where is your iptables executable.If you found the
+executable change the path of the script to which you have found. Else
+install the iptables.
 
-iptables -A FORWARD -p tcp -i eth0 -d 10.0.0.6 --dport 4662 -j ACCEPT
-> 
-> like that?
-> 
-> 
-> 
+
+>  
+>  
 -- 
 Dharmendra.T
 Linux Enthu
