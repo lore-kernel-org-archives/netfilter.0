@@ -1,8 +1,8 @@
-From: Rasmus Reinholdt Nielsen <rasmus@narani.dk>
-Subject: binding nntp to one interface
-Date: Thu, 12 Sep 2002 09:05:48 +0200
+From: =?windows-1254?Q?=DDhsan__Turkmen?= <iturkmen@ifk.com.tr>
+Subject: RE: binding nntp to one interface
+Date: Thu, 12 Sep 2002 10:26:05 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.2.20020912090056.012e6d48@linda>
+Message-ID: <A758C299015FD411887B0000E2131186C213F2@TRUVA>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,9 +14,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: 'Rasmus Reinholdt Nielsen' <rasmus@narani.dk>, netfilter@lists.samba.org
+
+Rasmus.
+SNAT can not be defined in PREROUTING , you must use POSTROUTING table. This
+is your first failure..
+
+
+-----Original Message-----
+From: Rasmus Reinholdt Nielsen [mailto:rasmus@narani.dk]
+Sent: Thursday, September 12, 2002 10:06 AM
 To: netfilter@lists.samba.org
+Subject: binding nntp to one interface
+
 
 Hi
 
@@ -34,7 +46,8 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 119 -j REDIRECT --to
 
 and I get an error of "Invalid argument" on this SNAT rule
 
-iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 119 -j SNAT --to <wan-ip>
+iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 119 -j SNAT --to
+<wan-ip>
 
 hope somebody knows haw to do this.
 
