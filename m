@@ -1,15 +1,14 @@
-From: DALive Editor <dalive@flashmail.com>
-Subject: Re: h323
-Date: Mon, 11 Aug 2003 16:46:51 -0400
+From: Rob Verduijn <rverduij@dds.nl>
+Subject: Re: simple newbie question
+Date: Mon, 11 Aug 2003 23:19:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F3800BB.6060603@flashmail.com>
-References: <2C8B3976EDADFD41950F8C628F3E255A06B56626@co9510avexu2.global.avaya.com>
-Reply-To: dalive@flashmail.com
+Message-ID: <1060636743.2828.42.camel@vimes.localdomain>
+References: <000101c35ebe$9504e8f0$0401a8c0@pc2>
+	 <1060516426.3f36324a87d76@webmail.dds.nl>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------010006080508090109040506"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2C8B3976EDADFD41950F8C628F3E255A06B56626@co9510avexu2.global.avaya.com>
+In-Reply-To: <1060516426.3f36324a87d76@webmail.dds.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,117 +18,225 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset=; charset="iso-8859-9"
 To: netfilter@lists.netfilter.org
-Cc: "Morrison, Trevor (Trevor)" <tmorrison@avaya.com>
 
-This is a multi-part message in MIME format.
---------------010006080508090109040506
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi there,
 
-Hello to this mailinglist,
+The script I mentioned before.
+It's pretty simple and certainly could do with improvement.
+But it keeps the very basic nasty stuff outside and lets you do your
+stuff.
 
-I'd also really like an awnser to the question bellow about H323, you 
-have no idea how long I've toiled unsuccessfully. What is this about a 
-patch? And I've read a little about the gatekeeper, could someone cluse 
-me in further?
+ie let everything from the local network through to the internet , and
+keep the bad internet out.
 
-Thanks alot - I'd given up hope
+Also don't allow anything but the tunnel traffic and if needed the dhcp
+traffic on the external interface through.
+
+EXTERNAL_INT=3D"eth?"	# your external interface the one connected to
+			# your adsl modem
+INTERNAL_INT=3D"eth?"	# your internal network interface
+
+VPN_INT=3D"ppp?"		# this is your pppoe interface (probably ppp0)
+
+INTERNAL_IPADDR=3D"1.2.3.4"# your internal network interface ip address
+			# asuming it is static or else cut and paste a
+			# bit below
+EXTERNAL_IPADDR=3D"1.2.3.4"# your external interface ip address
+			# uncomment this line and uncomment below if
+			# it is dynamic
+# the 3 lines below should all three be unremarked if you got dynamic ip
+# EXTERNAL_IPADDR=3D \
+#`ifconfig eth1 | \
+#sed -ne's/.*addr:\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p'`
+
+VPN_IPADDR=3D"1.2.3.4"     # if you got static ip on the vpn interface
+# also unremark 2 lines below if your ppp address is dynamic
+#VPN_IPADDR=3D`ifconfig ppp0| \
+#sed -ne 's/ .*addr:\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p'`
+
+DHCP_SERVER=3D"1.2.3.4"	# if you have dhcp on your external interface
+
+IPTABLES=3D"/path/to/iptables" 	# use `which iptables` as root to find
+				# out what this should be
+
+PPP_PORT=3D"????"			# fill in the port adsl uses (beats me 				# what tha=
+t
+is)
+				# this script asumes it connect from the
+				# same port to the same port
+				# if not adjust the proper source and
+				# destination ports
+
+BROADCAST_SRC=3D"0.0.0.0"                 # broadcast source address
+BROADCAST_DEST=3D"255.255.255.255"        # broadcast destination address
+
+PRIVPORTS=3D"0:1023"                      # well-known, privileged port
+range
+UNPRIVPORTS=3D"1024:65535"                # unprivileged port range
 
 
-Morrison, Trevor (Trevor) wrote:
+# flush all excisting chains and erase all personal chains
+CHAINS=3D`cat /proc/net/ip_tables_names 2>/dev/null`
+for I in $CHAINS; do $IPTABLES -t $I -F; done
+for I in $CHAINS; do $IPTABLES -t $I -X; done
+                                                                         =
+                                                   =20
+# default policies
+$IPTABLES -t filter -P INPUT DROP
+$IPTABLES -t filter -P OUTPUT DROP
+$IPTABLES -t filter -P FORWARD DROP
 
-> Hi,
->
-> I have a RH 9.0 box running iptables-1.2.8 and a 2.4.20 kernel with 
-> the h323 patch applied and recompiled.  My network looks like this:
->
->                                     dhcp from ISP
-> Win 2000 box <--------------------------->RH 9.0 
-> Box<---------------------->Internet
-> 192.168.1.0/24                          NAT       12.207.X.X/32
->
->
-> I have searched the archives back to September of last year trying to 
-> find what rules I need to apply to my iptables to allow h323 traffic 
-> through my NAT'd box.  I am now more confused then before because the 
-> threads mentioned something about a gatekeeper that I need to run on a 
-> NAT box?
->
-> What I am looking for is what are the rules that I need to put into my 
-> filter file and what other programs or procedures do I need to add to 
-> that I have the full features and functionality of Microsoft's Net 
-> Meeting from my Win 2k box. 
->
-> Thanks in Advance and sorry for bring this subject up again but I 
-> could not find the information in the previous threads.
->
-> Trevor Morrison
->
+# accept local traffic
+$IPTABLES -A INPUT -i lo -d 127.0.0.1 -j ACCEPT
+$IPTABLES -A OUTPUT -o lo -d 127.0.0.1 -j ACCEPT
 
---------------010006080508090109040506
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+# connection tracking and some logging for the INPUT OUTPUT and
+# FORWARD chain
+# this allows tracking of excisting connections
+# this does not allow new traffic
+$IPTABLES -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -m state --state INVALID -j LOG \
+        --log-prefix "INVALID input: "
+$IPTABLES -A INPUT -m state --state INVALID -j DROP
+$IPTABLES -A OUTPUT -m state --state INVALID -j LOG \
+        --log-prefix "INVALID ouput: "
+$IPTABLES -A FORWARD -i $INTERNAL_INT -m state --state INVALID -j DROP
+$IPTABLES -A FORWARD -i $INTERNAL_INT -m state --state INVALID -j LOG \
+        --log-prefix "INVALID ouput: "
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-Hello to this mailinglist, <br>
-<br>
-I'd also really like an awnser to the question bellow about H323, you
-have no idea how long I've toiled unsuccessfully. What is this about a
-patch? And I've read a little about the gatekeeper, could someone cluse
-me in further? <br>
-<br>
-Thanks alot - I'd given up hope<br>
-<br>
-<br>
-Morrison, Trevor (Trevor) wrote:<br>
-<blockquote type="cite"
- cite="mid2C8B3976EDADFD41950F8C628F3E255A06B56626@co9510avexu2.global.avaya.com">
-  <meta http-equiv="Content-Type" content="text/html; ">
-  <meta name="Generator" content="MS Exchange Server version 6.0.6389.0">
-  <title>h323</title>
-<!-- Converted from text/rtf format -->
-  <p><font size="2" face="Arial">Hi,</font>
-  </p>
-  <p><font size="2" face="Arial">I have a RH 9.0 box running
-iptables-1.2.8 and a 2.4.20 kernel with the h323 patch applied and
-recompiled.&nbsp; My network looks like this:</font></p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font size="2" face="Arial">&nbsp;&nbsp;&nbsp;
-dhcp from ISP</font>
-  <br>
-  <font size="2" face="Arial">Win 2000 box
-&lt;---------------------------&gt;RH 9.0
-Box&lt;----------------------&gt;Internet</font>
-  <br>
-  <font size="2" face="Arial">192.168.1.0/24&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-NAT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12.207.X.X/32</font>
-  </p>
-  <br>
-  <p><font size="2" face="Arial">I have searched the archives back to
-September of last year trying to find what rules I need to apply to my
-iptables to allow h323 traffic through my NAT'd box.&nbsp; I am now more
-confused then before because the threads mentioned something about a
-gatekeeper that I need to run on a NAT box?</font></p>
-  <p><font size="2" face="Arial">What I am looking for is what are the
-rules that I need to put into my filter file and what other programs or
-procedures do I need to add to that I have the full features and
-functionality of Microsoft's Net Meeting from my Win 2k box.&nbsp; </font></p>
-  <p><font size="2" face="Arial">Thanks in Advance and sorry for bring
-this subject up again but I could not find the information in the
-previous threads.</font></p>
-  <p><font size="2" face="Arial">Trevor Morrison</font>
-  </p>
-</blockquote>
-</body>
-</html>
+#DHCP this bit is for dhcp traffic (if you need it)
+# if you don't need it comment it
+$IPTABLES -A OUTPUT -o $EXTERNAL_INT -p udp \
+             -s $BROADCAST_SRC --sport 68 \
+             -d $DHCP_SERVER --dport 67 -j ACCEPT
+$IPTABLES -A INPUT -i $EXTERNAL_INT -p udp \
+             -s $DHCP_SERVER --sport 67 \
+             -d $BROADCAST_DEST --dport 68 -j ACCEPT
 
---------------010006080508090109040506--
+#allow ppp traffic on external interface
+$IPTABLES -A OUTPUT -o $EXTERNAL_INT -p udp \
+        -s $EXTERNAL_IPADDR --sport $PPP_PORT \
+        -d $VPN_SERVER --dport $PPP_PORT \
+        -m state --state NEW -j ACCEPT
+$IPTABLES -A INPUT -i $EXTERNAL_INT -p udp \
+        -s $VPN_SERVER --sport $PPP_PORT \
+        -d $EXTERNAL_IPADDR --dport $PPP_PORT \
+        -m state --state NEW -j ACCEPT
 
+# at this point the gateway accepts only dhcp traffic on
+# its external interface and ppp traffic
+# the next rule allows all the traffic on the internal
+# interface to be forwarded to another interface
+# ie no traffice can come in via your external interface=20
+# or ppp interface (unless it's a reply on your traffic from
+# the internal interface
+
+$IPTABLES -A FORWARD -i $INTERNAL_INT -s $INTERNAL_NETWORK \
+        -m state --state NEW -j ACCEPT
+
+# no connections to your gateway are allowed in this script
+# you need to open up a port for that or log in on the console
+
+# example for ssh connections via the internal interface
+# to the gateway machine
+$IPTABLES -A INPUT -i $INTERNAL_INT -p tcp \
+        -s $INTERNAL_NETWORK --sport $UNPRIVPORTS \
+        -d $INTERNAL_IPADDR --dport 22 \
+        -m state --state NEW -j ACCEPT
+
+# end script
+
+note if you have dhcp on your external int or ppp
+connection this script will only work after the ppp
+connection and external interface are up
+
+Regards
+Rob
+
+
+On Sun, 2003-08-10 at 13:53, rverduij@dds.nl wrote:
+
+
+> Hi there,
+>=20
+> I used to have adsl I got cable now.
+>=20
+> You need to set up a firewall configuration on your ppp0 interface.
+> (asuming ppp0 is the interface you tunnel through)
+>=20
+> Because if you blok on your eth1 and/or eth0 all the traffic still get'=
+s=20
+> through to you machine, unless you have issued global rules which blok =
+all=20
+> interfaces.
+>=20
+> On your eth1 card you could set up filtering rules if you don't thrust =
+network=20
+> the eth1 network card is connected to.
+>=20
+> If you do remember to allow the traffice that builds the vpn (your pppo=
+e=20
+> tunneling).
+> And if you use a dynamic ip on your eth1 device to allow dhcp traffic a=
+s wel.
+>=20
+> I'm currently not at my own pc, but I'll post anexample tomorrow for yo=
+u.
+>=20
+> Regards
+> Rob
+>=20
+>=20
+> Citeren Mario Mer=C3=ADngolo <mmeringolo@arnet.com.ar>:
+>=20
+> > Im starting with this iptables stuff and trying to manage a home netw=
+ork
+> > trough linux and adsl + pppoe=20
+> >=20
+> > I have two simple questions.
+> >=20
+> > =20
+> >=20
+> > I have my adsl router conected to my eth1
+> >=20
+> > =20
+> >=20
+> > When im setting my iptables rules, should I think that eth0 routes pa=
+ckages
+> > through eth1 to ppp0 ?
+> >=20
+> > =20
+> >=20
+> > Because, if that is, my drop rules should be defined on eth1, and my =
+input
+> > ones on eth0
+> >=20
+> > =20
+> >=20
+> > Our should i think that eth1 does not matter and my reliable is eth0 =
+and my
+> > unreliable ppp0 ?
+> >=20
+> > =20
+> >=20
+> > Please forgive my crude english
+> >=20
+> > =20
+> >=20
+> > Thanx=20
+> >=20
+> > =20
+> >=20
+> > =20
+> >=20
+> >=20
+>=20
+>=20
+>=20
+>=20
 
 
