@@ -1,13 +1,13 @@
-From: Remo Mattei <remo@remo.ws>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: hi guys passive firewall
-Date: Sun, 07 Jul 2002 09:26:35 -0600
+Date: Sun, 7 Jul 2002 16:21:33 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D285DAB.9010908@remo.ws>
-References: <3D27B365.2050705@remo.ws> <20020707080609.TFPL23840.mta03-svc.ntlworld.com@there>
+Message-ID: <20020707152135.EBFS16050.mta01-svc.ntlworld.com@there>
+References: <3D27B365.2050705@remo.ws> <20020707080609.TFPL23840.mta03-svc.ntlworld.com@there> <3D285DAB.9010908@remo.ws>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------050308070701020209090201"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <3D285DAB.9010908@remo.ws>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,94 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.samba.org>
 
+On Sunday 07 July 2002 4:26 pm, Remo Mattei wrote:
 
---------------050308070701020209090201
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+> Antony Stone wrote:
 
-
-
-Antony Stone wrote:
-
->On Sunday 07 July 2002 4:20 am, Remo Mattei wrote:
+> > Depends whether you're talking about putting netfilter onto the server
+> > itself (in which case you filter the INPUT chain), or whether netfilter
+> > is on a router between the servers and the Internet (in which case you
+> > filter the FORWARD chain).
 >
->>I have an office with 64 ips which are all valid. I have some server
->>that do not need any security enable.
->>
+> So I guess since the anwser is above I just will use the forward and let
+> everything pass in the input.
 
->
->Oh yeah ?   What kind of servers are those, then ?   How come they're not 
->vulnerable to anything and therefore don't need any security :-) ?
->
-I guess I should say that the server itself have a firewall not that do 
-not need any security on them!!!
+It sounds to me as though you are uncertain about how packets pass through a 
+netfilter firewall.
 
->
->>But I do have other that I will
->>have to firewall down any suggestions? Will all rules come in into the
->>input chains and then forward all other packages work.
->>
->
->Depends whether you're talking about putting netfilter onto the server itself 
->(in which case you filter the INPUT chain), or whether netfilter is on a 
->router between the servers and the Internet (in which case you filter the 
->FORWARD chain).
->
-So I guess since the anwser is above I just will use the forward and let 
-everything pass in the input.
+Packets addressed to the firewall itself go through the INPUT chain.
 
-Thanks anthony
+Packets being routed from a machine on one side of the firewall to a machine 
+on the other go through the FORWARD chain.
 
-> 
->
->Antony.
->
+Packets originating on the firewall itself go through the OUTPUT chain.
 
+No single packet will ever go through both the INPUT and the FORWARD chains, 
+or the FORWARD and the OUTPUT chains.
 
---------------050308070701020209090201
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+ 
 
-<html>
-<head>
-</head>
-<body>
-<br>
-<br>
-Antony Stone wrote:<br>
-<blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
-  <pre wrap="">On Sunday 07 July 2002 4:20 am, Remo Mattei wrote:<br><br></pre>
-  <blockquote type="cite">
-    <pre wrap="">I have an office with 64 ips which are all valid. I have some server<br>that do not need any security enable.<br></pre>
-    </blockquote>
-    </blockquote>
-    <br>
-    <blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
-      <pre wrap=""><br>Oh yeah ?   What kind of servers are those, then ?   How come they're not <br>vulnerable to anything and therefore don't need any security :-) ?<br></pre>
-      </blockquote>
-I guess I should say that the server itself have a firewall not that do not
-need any security on them!!!<br>
-      <blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
-        <pre wrap=""><br></pre>
-        <blockquote type="cite">
-          <pre wrap="">But I do have other that I will<br>have to firewall down any suggestions? Will all rules come in into the<br>input chains and then forward all other packages work.<br></pre>
-          </blockquote>
-          <pre wrap=""><!----><br>Depends whether you're talking about putting netfilter onto the server itself <br>(in which case you filter the INPUT chain), or whether netfilter is on a <br>router between the servers and the Internet (in which case you filter the <br>FORWARD chain).<br><br></pre>
-          </blockquote>
-So I guess since the anwser is above I just will use the forward and let
-everything pass in the input.<br>
-          <br>
-Thanks anthony<br>
-          <br>
-          <blockquote type="cite" cite="mid:20020707080609.TFPL23840.mta03-svc.ntlworld.com@there">
-            <pre wrap=""> <br><br>Antony.<br><br></pre>
-            </blockquote>
-            <br>
-            </body>
-            </html>
-
---------------050308070701020209090201--
-
+Antony.
 
