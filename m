@@ -1,16 +1,14 @@
 From: Raymond Leach <raymondl@knowledgefactory.co.za>
 Subject: Re: block kazaa
-Date: 26 Mar 2003 07:22:17 +0200
+Date: 26 Mar 2003 07:30:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048656136.6602.11.camel@raylinux.internal>
-References: <20030325144636.21700.qmail@web80403.mail.yahoo.com>
-	 <20030326012710.2c9f4e37.scott@radsy.com>
-	 <Pine.LNX.4.51.0303251655060.11657@dns.toxicfilms.tv>
+Message-ID: <1048656618.6605.13.camel@raylinux.internal>
+References: <5.2.0.9.0.20030325212147.00ba2e88@mail.clara.net>
 Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-MzeJ95j9mWTNgcpANQhG"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-bKSZFQFkz/P/VZunKc46"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.51.0303251655060.11657@dns.toxicfilms.tv>
+In-Reply-To: <5.2.0.9.0.20030325212147.00ba2e88@mail.clara.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,34 +21,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-MzeJ95j9mWTNgcpANQhG
+--=-bKSZFQFkz/P/VZunKc46
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Hi
-
-Even if kazaa uses ports that can be set by the user, there must surely
-be some kind of control connection when the client starts up that it
-uses to establish connection to the kazaa network and tell other clients
-about it's port number.
-
-Just try to figure out (ethereal, tcpdump) what the initial connection
-is. With gnutella there is an initial http connection to the 'servers'.
-
-Ray
-
-On Tue, 2003-03-25 at 17:57, Maciej Soltysiak wrote:
-> > I am unaware of any specific netfilter technique to simply block the
-> > newer versions of kazaa. Wish I could help you further. Good Luck.
-> I have heard of people using the string match to reject packets with
-> "X-Kazaa-User" or some other string.
+On Tue, 2003-03-25 at 23:27, paulc@ibiblio.org wrote:
+> The way I block Kazaa (and the other file sharing applications) is a=20
+> blanket ban on all ports by default. I then open the ports as I think is=20
+> appropriate at the firewall. These only include the port 23 for anyone=20
+> wishing to use telnet. All web and ftp style ports on 80, 21 and the like=
+=20
+> are handled by a web-proxy to prevent using them for other purposes. All=20
+> incoming connects (and lots of ICMP messages) are dropped by the firewall=
+ also.
 >=20
-> Also, you could try to block access to the network pool of dns.kazaa.com.
-> I think this way if the clients have not been ever using kazaa, will not
-> get addresses of other kazaa nodes. But it is a wild guess.
+How do you get passive ftp to work and not allow file sharing networks?
+
 >=20
-> Regards,
-> Maciej Soltysiak
 --=20
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (  Raymond Leach                       )
@@ -74,18 +61,18 @@ On Tue, 2003-03-25 at 17:57, Maciej Soltysiak wrote:
      \___)=3D(___/          \___)=3D(___/
 
 
---=-MzeJ95j9mWTNgcpANQhG
+--=-bKSZFQFkz/P/VZunKc46
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQA+gTkIh1fuR/Bv+ygRAi6ZAJ9jy6ysoczfP6sTxIo/9IA/04ZFuwCePxDk
-Y/UPX6rO3AcfUOEM39Qu5IE=
-=n3Tk
+iD8DBQA+gTrqh1fuR/Bv+ygRAm2VAKCCTlY4d7zxvhvuIzOa1Bx1Q0/e1ACgimOx
+kMXivnbkIFJMB0nUXnWEvec=
+=/RS3
 -----END PGP SIGNATURE-----
 
---=-MzeJ95j9mWTNgcpANQhG--
+--=-bKSZFQFkz/P/VZunKc46--
 
 
