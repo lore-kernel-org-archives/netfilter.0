@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to setup netfilter to stop outbound DHCP?
-Date: Sun, 29 Feb 2004 20:07:01 +0000
+From: Jeroen Vriesman <j.vriesman@prompt.nl>
+Subject: Re: how do i forward ftp from my firewall to an internal server?
+Date: Sun, 29 Feb 2004 21:16:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402292007.01882.Antony@Soft-Solutions.co.uk>
-References: <001001c3fefd$daf70a70$6401a8c0@LSchmitt>
+Message-ID: <20040229211627.4c0713a2.j.vriesman@prompt.nl>
+References: <404050F8.8040902@karlskrona.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001001c3fefd$daf70a70$6401a8c0@LSchmitt>
+In-Reply-To: <404050F8.8040902@karlskrona.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,44 +20,76 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 29 February 2004 7:54 pm, Dr. Lawrence J. Schmitt wrote:
+Mayby use a rule with:
 
-> I am setting up a lab for students to configure and experiment with
-> Linux.  I need to set up something that will keep responses to DHCP
-> requests from leaving the lab to keep from driving the network support
-> people crazy.
+-m helper --helper ftp
 
-> 	1.  What is the appropriate tool to use?
+It uses conntrack and conntrack_ftp.
 
-A router.   DHCP doesn't cross network boundaries.
 
-> 	2.  Can anyone suggest an iptables rule that will block either
-> dhcp 		requests from entering the lab subnet or responses from
-> exiting.
+On Sat, 28 Feb 2004 09:27:36 +0100
+Gustav Petersson <gustav.petersson@karlskrona.net> wrote:
 
-Well, since the machine running netfilter (onto which you put your rules) is 
-going to have to have one subnet on one side, and another subnet on the 
-other, the precise rules you use don't much matter - the system will very 
-satisfactorily block DHCP for you.
-
-> 	3.  I would like to set up one pc running Linux as a router and
-> firewall, filter that also would run DHCP and DNS for the local
-> lab as well as block responses to DHCP requests on the nic that
-> is connected to the campus network.
-
-I think if you set up such a PC as a router and firewall, you won't have a 
-DHCP problem, simply because DHCP doesn't get routed.
-
-Regards,
-
-Antony.
-
--- 
-Documentation is like sex.
-When it's good, it's very very good.
-When it's bad, it's still better than nothing.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> Like the subject line says.. how do I do it?
+> 
+> I have port http traffic forwarded to the same server but when i use the 
+> same rule with only the port(s) changed for ftp traffic my ftp server 
+> opens the connection but immediately closes it again. I have tried 
+> running both the standard in.ftpd and proftpd. Any help would be greatly 
+> appreciated.
+> 
+> Gustav Petersson
+> 
+> I am running debian 3.0 with kernel 2.4.24 and I have the following 
+> modules loaded:
+> 
+> ipt_LOG
+> ipt_state
+> iptable_filter
+> ip_nat_ftp
+> ip_conntrack_ftp
+> iptable_nat
+> ip_conntrack
+> ip_tables
+> 
+> Here is my firewall config:
+> #!/bin/sh
+>  
+> EXT_IP=1.2.3.4
+> INT_IP=192.168.x.x
+> 
+> modprobe iptable_nat
+> modprobe ip_conntrack_ftp
+> modprobe ip_nat_ftp
+>  
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+>  
+> iptables -P INPUT ACCEPT
+> iptables -F INPUT
+> iptables -P OUTPUT ACCEPT
+> iptables -F OUTPUT
+> iptables -P FORWARD ACCEPT
+> iptables -F FORWARD
+> iptables -t nat -F
+> 
+> # NAT
+> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 213.88.181.68
+>  
+>                                                                                 
+> 
+> # Forward port 80 to internal server
+> iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 80 \
+>         -j DNAT --to $INT_IP:80
+> 
+> # Forward ports 20 and 21 to internal server
+> iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 20 \
+>         -j DNAT --to $INT_IP:20
+>                                                                                 
+> 
+> iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 21 \
+>         -j DNAT --to $INT_IP:21
+> 
+> 
+> 
+> 
 
