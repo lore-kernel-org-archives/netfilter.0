@@ -1,12 +1,12 @@
-From: Askar Ali Khan <askarali@gmail.com>
-Subject: service attacks (DoS)
-Date: Thu, 19 Aug 2004 17:47:49 +0500
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: netfilter and iproute2
+Date: Thu, 19 Aug 2004 14:33:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <a0f69e5040819054736ace4f6@mail.gmail.com>
-Reply-To: Askar Ali Khan <askarali@gmail.com>
+Message-ID: <200408191433.36850.gdh@acentral.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +17,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-hi,
+Hullo :)
 
-im try to protect my server from various type of DoS for example
-Syn-flood protection,  Furtive port scanner, Ping of death. Its our
-server B protected by firewall machine A.
+I'm trying to route based on source IP.. basically I want to send our 
+mailshots out through a cheaper ISP.
 
-client traffic follow A-------------->B
-                          (fw)              (server)
+I was pleased to find 
+http://www.linuxguruz.com/iptables/howto/2.4routing-11.html since this is 
+exactly what we're after, but I simply can't get it working, nor can I 
+determine is this is a lartc or netfilter issue, hence the post here :)
 
-what I did first to log packets on Server B to check with (thanks to Anthony)
+Our cheaper ISP is at 213.160.115.1 and I'm already sending all data from 
+213.2.4.33 out through it using iproute's own syntax, but now I'd like to get 
+more granular and involve the MARK target in netfilter.
 
-# To log avoid various denial of service attacks (DoS) with a faster
-rate to increase responsiveness
-iptables -N LogPackets
+This works:
 
-# Call the chain right at the top of the INPUT table so we see all the packets
-iptables -I INPUT -j LogPackets
+# ip rule add from 213.2.4.33 table 100
+# ip route add default via 213.160.115.1 table 100
 
-# Create a unique log entry for each type of packet we want to know about
-##Syn-flood protection
-iptables -A LogPackets -p tcp --syn -m limit --limit 1/s  -j LOG
---log-prefix "Syn-flood "
+I can see the results immediately with tcpdump that all traffic is going out 
+on the correct interface.
 
-## Furtive port scanner
-iptables -A LogPackets -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit
---limit 1/s -j LOG --log-prefix "Furtive port scanner "
+However, this doesn't work:
 
-## Ping of death
-iptables -A LogPackets -p icmp --icmp-type echo-request -m limit
---limit 1/s -j LOG --log-prefix "Ping of death "
+# iptables -A PREROUTING -i eth1 -s 213.2.4.37 -t mangle -j MARK --set-mark 50
+# ip rule add fwmark 50 table 100
 
-when i do "iptables -L LogPackets -nvx" im getting lot of  new packets/s
+Packets from 213.2.4.37 continue to have their route selected by BGP / zebra 
+just as everything else does.
 
- iptables -L LogPackets -nvx
-Chain LogPackets (1 references)
-    pkts      bytes target     prot opt in     out     source         
-     destination
-      25     1248 LOG        tcp  --  *      *       0.0.0.0/0        
-   0.0.0.0/0           tcp flags:0x16/0x02 limit: avg 1/sec burst 5
-LOG flags 0 level 4 prefix `Syn-flood '
-      24      960 LOG        tcp  --  *      *       0.0.0.0/0        
-   0.0.0.0/0           tcp flags:0x17/0x04 limit: avg 1/sec burst 5
-LOG flags 0 level 4 prefix `Furtive port scanner '
-       3      192 LOG        icmp --  *      *       0.0.0.0/0        
-   0.0.0.0/0           icmp type 8 limit: avg 1/sec burst 5 LOG flags
-0 level 4 prefix `Ping of death '
+I know the packets are getting into the right chain because of:
 
-My question: 
-1)                 what exactly im not getting is  "-m limit --limit
-1/s", what values to set for my enviroment, with 100 users connected
-at any time?
+# iptables -t mangle -vnL
+Chain PREROUTING (policy ACCEPT 962K packets, 473M bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+27602   24M MARK       all  --  eth1   *       213.2.4.37           0.0.0.0/0          
+MARK set 0x32
 
-2) ACCEPTed or DROPed ?
+.. and yet the rules are there:
 
-regards
-Askar
+# ip rule ls
+0:      from all lookup local
+32764:  from all fwmark       50 lookup 100
+32765:  from 213.2.4.33 lookup 100
+32766:  from all lookup main
+32767:  from all lookup default
+
+Any ideas? :)
+
+Cheers,
+Gavin.
 
