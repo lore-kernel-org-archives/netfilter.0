@@ -1,12 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: again problem with alias / virtual interface
-Date: Tue, 20 Jul 2004 20:09:33 +0100
+Date: Tue, 20 Jul 2004 14:12:01 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407202009.33758.Antony@Soft-Solutions.co.uk>
+Message-ID: <40FD6E81.10904@pbl.ca>
 References: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108> <40FC2286.3070005@pbl.ca> <007d01c46dae$0a45f330$eb53623e@x>
-Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <007d01c46dae$0a45f330$eb53623e@x>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,67 +17,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
 
-On Monday 19 July 2004 5:30 pm, Marco Strullato wrote:
-
-> I've tried with just eth1 but the rule is not applied, or it seems not to
-> be applied
-
-Do you mean "it does not show up when I list the rules afterwards", or do you 
-mean "the rule gets entered in the list, but it does not do what I want"?
-
+Marco Strullato wrote:
+> I've tried with just eth1 but the rule is not applied, or it seems not to be
+> applied
+> 
 > I've seen that using virtual interfaes is deprecated so I tryed to set
 > multilple ip with iproute.
-> If I set network interfaces only with iproute and not with ifconfig,
-> network configuration seems to be absent.
-
-What makes you say this?   If you try adding the extra addresses with "ip addr 
-add a.b.c.d dev eth0" etc, what do you get afterwards when you try "ip addr 
-show"?
-
+> If I set network interfaces only with iproute and not with ifconfig, network
+> configuration seems to be absent.
 > If I set network with ifconfig and not with iproute, network configuration
 > seems ok
-
-We are not saying there is anything wrong as such, or won't work, with using 
-ifconfig - you just aren't allowed to use the ":" in the interface name in 
-the netfilter rules.
-
 > So I can't to use iproute (to set interfaces) and iptables becacuse network
 > configuration is absent.
 
-How are you checking this?
+Everything should work just fine using virtual interfaces (configured
+the standard way using good old ifconfing).  I just did quick test on my
+Fedora box, and virtual interfaces worked just fine with iptables rules.
 
-Also, did you try the following?
+Looking at your firewall rules, there are two things:
 
-On Monday 19 July 2004 8:14 pm, Antony Stone wrote:
+First the cosmetic one (that doesn't brake anything, but does not have
+much sense):
 
-> I suggest you test these additional addresses with something like this:
->
-> iptables -A INPUT -p icmp -i eth1 -d 82.186.92.90 -j ACCEPT
-> iptables -A INPUT -p icmp -i eth1 -d 82.186.92.93 -j ACCEPT
-> iptables -A INPUT -p icmp -i eth1 -j ACCEPT
->
-> Then ping 82.186.92.90 from a machine connected to eth1; then ping
-> 82.186.92.93 from a machine connected to eth1; then use "iptables -L INPUT
-> -nvx" to check the packet / byte counts for the above three rules.
->
-> You should get non-zero packet counts for the first two rules; hopefully
-> zero packets for the third rule.
->
-> Also check from a machine directly connected on eth1 that you get the same
-> MAC address for both the above addresses in response to an "arp -an".
+   -A INPUT -m state -i eth0 --state NEW -j ACCEPT
+   -A INPUT -s 192.168.1.0 -i eth0 -j ACCEPT
 
-Regards,
+You obviously have intention to accept all incoming connection on eth0
+with first rule (which doesn't do what you wanted it to do, read bellow
+why).  What is the purpuse of the second rule?
 
-Antony.
+Second thing, you are using "-m state --state NEW" in (almost) all of
+your firewall rules.  But you don't have any rules for packets in
+"ESTABLISHED" (and/or "RELATED") state.  With this config, you are
+letting only the first packet to go through firewall, and you are
+blocking all subsequet packets (going in or out).  If you use tcpdump to
+analyze network traffic, you could see initial packet with SYN flag
+going into the interface, but no response (with ACK flag) going out
+(because your firewall rules blocked it).
+
+Now you need to do either of the following (but not both):
+
+You either need to add generic set of rules like this (for performance,
+add this as close to the top of your rules as possible):
+
+   -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+   -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+   -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Or (if you are more paranoid) to add rules for ESTABLISHED and RELATED
+packets for each port you want to have open.  For example, you would
+change this line that doesn't do what you intended to do:
+
+    -A INPUT -p tcp -m tcp -m state -i eth1 -d 82.186.92.90 \
+       --dport 22 --state NEW -j ACCEPT
+
+to this set of lines that should do what you intended to do (first line
+allows first and subseqent packets to go in, second allows outgoing
+packets to go out, and last two are to allow exchange of eventual ICMP
+packets related to this connection, if any):
+
+    -A INPUT -i eth1 -p tcp -d 82.186.92.90 --dport 22 \
+       -m state --state NEW,ESTABLISHED
+    -A OUTPUT -o eth1 -p tcp -s 82.186.92.90 --sport 22 \
+       -m state --state ESTABLISHED
+    -A INPUT -i eth1 -p icmp -d 82.186.92.90 -m state --state RELATED
+    -A OUTPUT -o eth1 -p icmp -s 82.186.92.90 -m state --state RELATED
+
+I've tossed the order of options around, to make things more readable to
+the human (and removed not needed options).
+
+You can even complicate this a bit more by allowing only certain types
+of ICMP messages, if you feel paranoid enough (and skilled enough not to
+block ICMPs that you shouldn't block).
+
+Also, check that your network is configured properly (check netmasks and
+broadcast addresses of network interfecase, check that all interfaces
+are up (there must be "UP" keyword in the ifconfig output), routing
+tables, and so on).
 
 -- 
-What makes you think I know what I'm talking about?
-I just have more O'Reilly books than most people.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
 
