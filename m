@@ -1,45 +1,38 @@
-From: Mike Mestnik <cheako911@yahoo.com>
-Subject: SNAT and DNAT ftp PORT and PASV cmds.
-Date: Wed, 28 Apr 2004 23:11:36 -0700 (PDT)
-Message-ID: <20040429061136.29136.qmail@web11907.mail.yahoo.com>
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Redirecting outgoing SMTP from LAN to another LAN server
+Date: Thu, 29 Apr 2004 10:59:49 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040429095949.GB22172@acentral.co.uk>
 Mime-Version: 1.0
-Return-path: <bounce-debian-firewall=debian-firewall=m.gmane.org@lists.debian.org>
-Resent-Message-ID: <xyISe.A.LAB.iyJkAB@murphy>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Post: <mailto:debian-firewall@lists.debian.org>
-List-Help: <mailto:debian-firewall-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-firewall-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-firewall-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-firewall/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: debian-firewall@lists.debian.org
 
-On the debian-firewall list it was discussed that.  SNATed ftp using the
-PASV cmd needed an outgoing rule.  Other than "state RELATED" when all
-unmatched packets are DROPed.
+Hullo :)
 
-I am wondering what is the current status of the ftp connection tracking
-and ftp nat?  Can ipfilter handle SNAT and DNAT ftp for both the PORT and
-PASV cmds?
+I'd like to do $SUBJECT, but after much playing with commands like
 
-Matrix  |  SNAT   |  DNAT   | NoNAT
-PORT    |  ???    |  ???    | ????
-PASV    |  ???    |  ???    | ????
+iptables -t nat -A PREROUTING -p tcp -i eth1 --dport 25 -j DNAT --to 10.0.0.253:25
 
-Legend:
-Yes, Connections are tracked.
-Mangle, Connections are tracked and cmd is nated.
-No, Connections are not tracked.
+I have given up and have come to you fine people for help...
 
-Your reply to debian-firewall@lists.debian.org is greatly appreciated.
+My LAN is on eth1, with WAN on eth0. The gateway machine is 10.0.0.254 doing masq for 
+LAN clients, but I'd like to send any outgoing SMTP connections to 10.0.0.253 - alas 
+any time I've tried, I just end up killing ALL outgoing SMTP :(
 
+Any suggestions warmly received!
 
-	
-		
-__________________________________
-Do you Yahoo!?
-Win a $20,000 Career Makeover at Yahoo! HotJobs  
-http://hotjobs.sweepstakes.yahoo.com/careermakeover 
+Cheers,
+Gavin.
 
