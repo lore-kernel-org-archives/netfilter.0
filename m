@@ -1,9 +1,9 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
+From: "Krishna" <Krishna_shekhar@gmx.net>
 Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `': Table does not exist (do you need to insmod?) <<Help>>
-Date: Tue, 24 Sep 2002 17:05:59 +0530
+Date: Tue, 24 Sep 2002 17:00:54 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002b01c263be$95b3f490$2b00a8c0@dharmu>
-References: <00fb01c263b7$a8fe5380$2900a8c0@spectranet.com>
+Message-ID: <000901c263bd$da3d1480$2900a8c0@spectranet.com>
+References: <00fb01c263b7$a8fe5380$2900a8c0@spectranet.com> <002b01c263be$95b3f490$2b00a8c0@dharmu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,57 +17,80 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Krishna <Krishna_shekhar@gmx.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Krishna,
- Have you tried it manually?
-#iptables-restore < /etc/sysconfig/iptables
+Hi,
+    It gives the same error
 
- I think the iptables could not reach to the file /etc/sysconfig/iptables
-Regards
-Dharmu
+ iptables-restore v1.2.5: can't initialize iptables table `': Table does not
+exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded
+
+regards
+Krishna
+
+Krishna Shekhar
+Network Administrator
+Wiplash Wireless
 ----- Original Message -----
-From: "Krishna" <Krishna_shekhar@gmx.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, September 24, 2002 4:16 PM
-Subject: iptables-restore v1.2.5: can't initialize iptables table `': Table
-does not exist (do you need to insmod?) <<Help>>
+From: Dharmendra.T <dharmu@nsecure.net>
+To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
+Sent: Tuesday, September 24, 2002 5:05 PM
+Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
+Table does not exist (do you need to insmod?) <<Help>>
 
 
-> Hi,
+> Hi Krishna,
+>  Have you tried it manually?
+> #iptables-restore < /etc/sysconfig/iptables
 >
-> I switched from ipchains to iptables. But whenever I start iptables it
-gives
-> me this error.
->
-> iptables-restore v1.2.5: can't initialize iptables table `': Table does
-not
-> exist (do you need to insmod?)
-> Perhaps iptables or your kernel needs to be upgraded.
->
-> lsmod shows that
-> iptable_mangle,iptable_nat,ip_conntrack,iptable_filter and iptables are
-> loaded.
-> That means the modules for iptables has loaded also I can see that modules
-> for ipchains are not loaded and that is right.
->
-> The iptables file is in /etc/sysconfig/iptables
-> The table goes like this
-> -P INPUT DROP
-> -A FORWARD -s 192.168.0.0/24 -j MASQUERADE
-> .......
-> ...........
-> ........................
-> I am using RedHAt 7.1 and kernel 2.4.2-2
-> What could be the problem?
->
-> regards
-> Krishna
->
-> Krishna Shekhar
-> Network Administrator
-> Wiplash Wireless
+>  I think the iptables could not reach to the file /etc/sysconfig/iptables
+> Regards
+> Dharmu
+> ----- Original Message -----
+> From: "Krishna" <Krishna_shekhar@gmx.net>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Tuesday, September 24, 2002 4:16 PM
+> Subject: iptables-restore v1.2.5: can't initialize iptables table `':
+Table
+> does not exist (do you need to insmod?) <<Help>>
 >
 >
+> > Hi,
+> >
+> > I switched from ipchains to iptables. But whenever I start iptables it
+> gives
+> > me this error.
+> >
+> > iptables-restore v1.2.5: can't initialize iptables table `': Table does
+> not
+> > exist (do you need to insmod?)
+> > Perhaps iptables or your kernel needs to be upgraded.
+> >
+> > lsmod shows that
+> > iptable_mangle,iptable_nat,ip_conntrack,iptable_filter and iptables are
+> > loaded.
+> > That means the modules for iptables has loaded also I can see that
+modules
+> > for ipchains are not loaded and that is right.
+> >
+> > The iptables file is in /etc/sysconfig/iptables
+> > The table goes like this
+> > -P INPUT DROP
+> > -A FORWARD -s 192.168.0.0/24 -j MASQUERADE
+> > .......
+> > ...........
+> > ........................
+> > I am using RedHAt 7.1 and kernel 2.4.2-2
+> > What could be the problem?
+> >
+> > regards
+> > Krishna
+> >
+> > Krishna Shekhar
+> > Network Administrator
+> > Wiplash Wireless
+> >
+> >
 
 
