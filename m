@@ -1,15 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Multiple IPSEC VPNs through a firewall based on 2.4.2X kernel
-Date: Thu, 26 Aug 2004 06:39:25 -0400
+From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
+Subject: Re: icmp gaps
+Date: Thu, 26 Aug 2004 07:07:35 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093516765.2021.8.camel@localhost>
-References: <09D3F703EF3B0A4CBE28449EA9F3D32069F456@nicta-atp-mail.in.nicta.com.au>
-	<1093339912.2050.208.camel@localhost>
-	<20040826091328.GD18545@arkena.dk>
+Message-ID: <004301c48b5c$e4b5d370$0200a8c0@floydian>
+References: <a0f69e504082521196c31a01a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040826091328.GD18545@arkena.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,52 +17,111 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Kirk <thomas@arkena.com>
-Cc: netfilter@lists.netfilter.org, Roksana Boreli <Roksana.Boreli@nicta.com.au>
+To: Askar <askarali@gmail.com>, netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2004-08-26 at 05:13, Thomas Kirk wrote:
-<snip>
-> Excusing me for interrupting the discussion but in a situation where i
-> would like to make a LAN-to-LAN IPsec VPN between to offices both
-> running iptables on the gateways. Ive been lurking on the liste for
-> some time but i have a few questions regarding this. First each site
-> have a link to internet howto specify which protocols that should go
-> over VPN and which should go to internet? Which IPsec implementation
-> would be the most stable and secure solution to use. Currently im
-> using a couple of retired pcworkstations running debian woody so i
-> would prefer something that is supported by debian but its not
-> absolutly neccessary :)
-> 
-> Thanks in advance
-I have been using either strongswan (http://www.strongswan.org) or
-openswan (http://www.openswan.org) for an IPSec implementation.  The
-Linux 2.6 kernel and I believe some of the later 2.4 kernels support
-IPSec natively.  I have yet to experiment with the kernel IPSec.  My
-guess is that its code is somewhat cleaner than *swan.
+Hi Askar,
+These gaps indicate PING DROPS. If you stop the pinging, the last line =
+before the command prompt will show you the statistics. You will see =
+what the success %age was and how many packets were dropped. Do a =
+traceroute and see at what node in your network the packets get dropped =
+or experience a great delay.
+I hope this helps.
+Thank you,
+Deepak
 
-I do like the way in which *swan uses a separate interface for IPSec
-traffic.  This makes it simple to identify the VPN traffic in iptables
-although it is not impossible to do so with the kernel IPSec.
+  ----- Original Message -----=20
+  From: Askar=20
+  To: netfilter=20
+  Sent: Thursday, August 26, 2004 12:19 AM
+  Subject: icmp gaps
 
-I have traditionally determined which traffic goes in the clear and
-which goes in the tunnel based upon destination network, e.g., traffic
-between 192.168.1.0/24 and 10.1.1.0/24 go through the tunnel while the
-rest goes in the clear.  I have been away from configuring *swan for
-quite a while and I believe there have been significant advances since
-then.  It used to be that one could specify which sockets could be used
-to initiate the tunnel but then any traffic could use the tunnel once
-established.  I believe one can now restrict a tunnel based upon socket
-but I'm not sure.  I would suggest going to either of the sites
-mentioned above and perusing the documentation.  Good luck - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
 
+  hi all
+
+  Below is the output of ping to our billing server from on one of
+  another server, when one look into "icmp_seq" sometime there is gap
+  between two packets for example in icmp_seq=3D25 <---> icmp_seq=3D28 =
+and
+  icmp_seq=3D21 <---> icmp_seq=3D23.
+  I just wants to know these gaps are normal or something to worried =
+about?
+
+  regards
+  Askar
+
+
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D0 ttl=3D61 =
+time=3D6.65 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D2 ttl=3D61 =
+time=3D22.5 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D3 ttl=3D61 =
+time=3D9.77 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D4 ttl=3D61 =
+time=3D26.9 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D5 ttl=3D61 =
+time=3D22.6 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D8 ttl=3D61 =
+time=3D13.1 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D9 ttl=3D61 =
+time=3D40.4 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D10 ttl=3D61 =
+time=3D24.0 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D11 ttl=3D61 =
+time=3D18.9 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D12 ttl=3D61 =
+time=3D5.80 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D13 ttl=3D61 =
+time=3D26.1 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D14 ttl=3D61 =
+time=3D26.6 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D15 ttl=3D61 =
+time=3D16.9 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D16 ttl=3D61 =
+time=3D7.64 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D17 ttl=3D61 =
+time=3D8.67 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D18 ttl=3D61 =
+time=3D8.04 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D19 ttl=3D61 =
+time=3D5.86 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D21 ttl=3D61 =
+time=3D6.14 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D23 ttl=3D61 =
+time=3D5.82 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D24 ttl=3D61 =
+time=3D5.84 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D25 ttl=3D61 =
+time=3D11.1 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D28 ttl=3D61 =
+time=3D5.89 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D29 ttl=3D61 =
+time=3D5.81 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D30 ttl=3D61 =
+time=3D5.79 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D31 ttl=3D61 =
+time=3D13.3 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D32 ttl=3D61 =
+time=3D5.79 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D33 ttl=3D61 =
+time=3D8.52 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D35 ttl=3D61 =
+time=3D25.1 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D36 ttl=3D61 =
+time=3D8.17 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D38 ttl=3D61 =
+time=3D5.97 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D39 ttl=3D61 =
+time=3D6.04 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D40 ttl=3D61 =
+time=3D13.4 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D41 ttl=3D61 =
+time=3D29.1 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D42 ttl=3D61 =
+time=3D26.0 ms
+  64 bytes from ab.abc.net (xxx.xxxx.xx.xx): icmp_seq=3D43 ttl=3D61 =
+time=3D12.9 ms
+  --=20
+  "If you really want something in this life, you have to work for it.
+  Now, quiet! They're about to announce the lottery numbers..."
+  - Homer Simpson
 
