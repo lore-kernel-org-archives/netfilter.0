@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: tcp packets on 25 port FORWARDING
-Date: Fri, 12 Mar 2004 10:21:45 +0000
+From: <peter.gehle@sbgit.com>
+Subject: Re-2: connection to vpn Server (pptp) behind iptables FW
+Date: 12 Mar 2004 10:34:05 UT
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403121021.45434.Antony@Soft-Solutions.co.uk>
-References: <DIIE.000000F500002A22@sbgit.com>
+Message-ID: <DIIE.000000F200002A31@sbgit.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <DIIE.000000F500002A22@sbgit.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,44 +18,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 12 March 2004 10:03 am, peter.gehle@sbgit.com wrote:
+ 
+ 
+> Micro$oft has a 'technote' on this in their technet section on the
+> website. AFAIR you need to allow protocol 37 to be forwarded between the
+> two.
+> 
+I have added a rule that forwards the protocol 37, but it still not works?
 
-> Try this:
->
-> LAN_IP=$(ifconfig eth1|head -n 2|tail -n 1|cut -d: -f2|cut -d" " -f1)
+Thanx Peter
 
-A simpler version is `ifconfig eth1|grep inet|tr -s ': ' '\t'|cut -f4`
-
-> iptables -t nat -A PREROUTING -i *EXT-NIC* -p tcp --dport 25 -j DNAT
-> --to_destination *POSTFIX-IP*
-
-> iptables -t nat -A POSTROUTING -o *INT-NIC* -p tcp --dport 25 -j SNAT
-> --to-source $LAN_IP
-
-Why include this rule?   It will make all email received by the Postfix 
-machine appear to come from the Firewall, not the real IP address of the 
-sending server.   This will make anti-spam measures more difficult / less 
-effective.
-
-> iptables -A FORWARD -i *EXT-NIC* -m state --state NEW -p tcp -d *POSTFIX-IP*
-> --dport 25 -j ACCEPT
-
-What about NEW packets from inside to outside (eg delivering mail to the 
-Internet?)
-
-Also don't forget that a mail server is likely to want to do things like DNS 
-lookups.
-
-Regards,
-
-Antony.
-
--- 
-Having been asked for a reference for this man,
-I can confirm that you will be very lucky indeed if you can get him to work 
-for you.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+To: raymondl@knowledgefactory.co.za
+Cc: netfilter@lists.netfilter.org
 
 
