@@ -1,9 +1,9 @@
-From: Elver Loho <kernelpenguin@hot.ee>
-Subject: Possible dangerous flaw in the NAT howto
-Date: Sun, 22 Jun 2003 05:44:49 +0300
+From: cable linux <cablelinux@yahoo.com>
+Subject: plz convert that script in iptables format
+Date: Sat, 21 Jun 2003 20:48:05 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030622024450.19E60105939@hot.ee>
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20030622034805.6854.qmail@web14403.mail.yahoo.com>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,67 +14,137 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I was on #netfilter (irc.freenode.net) earlier and asked about a possible f=
-law in the NAT howto, but got no reply (people sleeping?) so I'm just going=
- to paste what I said here and go to sleep. (nearing 6am currently)
+Q1. How can i implement below scanerio through
+iptables?
+
+### Flush previous rules
+ipchains -F
+
+### Deny input and forward policies
+ipchains -P input ACCEPT
+ipchains -P forward ACCEPT
+
+### Check on incomming packets
+
+ipchains -N ppp-in
+ipchains -A input  -i ppp0  -j ppp-in
+
+#Now, no packets coming in ppp0 should be claiming a
+source address of 192.168.1.*,
+#so we log and deny them
+ipchains -A ppp-in -s 192.168.1.0/24 -l -j DENY
+
+#UDP Packets Forward my Localip to DNS
+ipchains -A ppp-in -p udp -s ip-dns domain -d $LOCALIP
+domain -j ACCEPT
+ipchains -A ppp-in -p udp -s ip-dns1 domain -d
+$LOCALIP domain -j ACCEPT
 
 
-<elver> I have a question about masquerading. The NAT howto gives an exampl=
-e like this: "iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE", but si=
-nce it masks the packets that are outgoing on ppp0 (by the destination IP, =
-interface IP and netmask) then could that rule also be exploited by outside=
- hosts tunneling?
-<elver> For example, we have host A on subnet where the gateway to the inte=
-rnet is B (running that same rule) and then there are external hosts on the=
- internet C and D. A's packets to C and D are masq'ed by B, but can't C and=
- D also use B as a IP-level proxy to communicate to eachother?
-<elver> Over LAN the routing is done on the ethernet level usually, but ove=
-r the internet this could possibly done by IP encapsulation (RFC 2003 and R=
-FC 1853)
-<elver> Coming back to the example, C tunneling through B to D would look s=
-omething like [ IP layer: from C to B [ IP layer: from C to D [ TCP layer [=
- Data ] ] ] ]
-<elver> RFC 2003 does however define that if the source IP is the same as a=
-ny interface on itself, then it should drop it. So therefore, C can't fake =
-the address part to be B. However, with masquerading, it would NAT the conn=
-ection and thus to D it would appear as if the data was coming from B.
-<elver> Since Netfilter does NAT in the POSTROUTING table, then it only car=
-es about the outgoing interface, which would be ppp0 or whatever your inter=
-net link might be.
-<elver> The problem would be delivering the packet to B so that B would thi=
-nk that it is outgoing on it's internet link.
-<elver> Since routing is done at a higher layer (Ethernet layer above the I=
-P layer for example) then IP encapsulation could possibly used to deliver i=
-t to host B.
-<elver> The quick and dirty masquerading part of the NAT howto at netfilter=
-.org (http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-4.html#ss4.1)=
- does not build any safeguards against this.
-<elver> Sensible way would be denying all forwarding requests coming in ove=
-r the internet link.
-<elver> Potentially this could mean that there are hundreds of Linux gatewa=
-ys out there that could be used as anonymous proxies.
-<elver> Funny. The Masquerading Simple Howto (http://www.linuxdocs.org/HOWT=
-Os/Masquerading-Simple-HOWTO/summary.html) DOES address that specific secur=
-ity hole by adding "iptables -A FORWARD -i eth0 -o eth0 -j REJECT".
-<elver> So I would say that anyone using just netfilter.org howto could be =
-vulnerable. (http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-4.html=
-#ss4.1)
+ipchains -A ppp-in -p TCP -s proxy 8080 -d $LOCALIP 
+-j ACCEPT
+ipchains -A ppp-in -p TCP -s proxy 8080 -d $LOCALIP 
+-j ACCEPT
+ipchains -A ppp-in -p TCP -d $LOCALIP ftp -j ACCEPT
+
+ipchains -A ppp-in -p TCP -s
+gateway.messenger.hotmail.com 1863 -t 0x01 0x10
+ipchains -A ppp-in -p TCP -s
+gateway.messenger.hotmail.com 1863 -t 0x01 0x02
 
 
-This inconsistency between howtos was pointed out by Peter Johansson (x-g@g=
-amleby.net) when he was looking for docs while setting up his Linux gateway=
-. I did the additional research into the subject.
 
 
-Elver Loho
-kernelpenguin@hot.ee
+ipchains -A ppp-in -p icmp -s 0.0.0.0/0      -d
+$LOCALIP -j ACCEPT
 
------------------------------------------
-Hot Mobiil - helinad, logod ja pilts=F5numid!
-http://portal.hot.ee
 
+### Allow incoming tcp packets which are not sync
+ipchains -A ppp-in -p TCP ! -y -j ACCEPT
+
+### /sbin/ipchains -N lan-in
+ipchains -N lan-in
+ipchains -A input  -i eth0  -j lan-in
+ipchains -A lan-in        -s 192.168.1.0   -d 0/0     
+ -j ACCEPT
+ipchains -A lan-in -p TCP -s 192.168.1.0/24 -d !
+192.168.1.1 80 -j DENY
+ipchains -A lan-in -p TCP  -s 192.168.1.0/24 -d 0/0   
+   -j ACCEPT
+ipchains -A lan-in -p icmp -s 192.168.1.0/24 -j ACCEPT
+ipchains -A lan-in -p UDP  -s 192.168.1.0/24 -j ACCEPT
+ipchains -A lan-in  -p TCP -s 192.168.1.0/24  -d
+202.63.200.0/0      -j ACCEPT
+ipchains -A lan-in  -p TCP -s 192.168.1.0/24  -d
+202.63.192/0      -j ACCEPT
+ipchains -A lan-in  -p UDP -s 192.168.1.0/24  -d
+202.63.200.0/0      -j ACCEPT
+ipchains -A lan-in  -p UDP -s 192.168.1.0/24  -d
+202.63.192/0      -j ACCEPT
+ipchains -A input -i lo -j ACCEPT
+
+
+ipchains -A forward -p tcp -s 192.168.1.0/24 -d 0/0 
+-t 0x01 0x10 -j MASQ
+ipchains -A forward -p tcp -s 192.168.1.0/24 -d 0/0 
+-t 0x01 0x02 -j MASQ
+ipchains -A forward -s 192.168.1.0/24 -j MASQ
+
+
+ipchains -A ppp-in -p  TCP -d 0/0 ssh -t 0x01 0x10
+ipchains -A ppp-in  -p TCP -d 0/0 ssh -t 0x01 0x02
+
+
+
+Q2. how can i implement below scanerio?
+
+To configure your network for instant messaging and
+file transfer
+
+For instant messaging
+
+To allow your network users to have a direct
+connection to instant 
+messaging services, you will need to: 
+
+Open outgoing TCP connections to Port 1863 on your
+proxy servers. 
+Let your network users know which kind of proxy server
+your network 
+uses (HTTP, SOCKS4, or SOCKS5) and provide them with
+the corresponding 
+details (server name, port number, and so forth) so
+they can enter that 
+information on the Connection tab of the Options
+dialog box (Tools, 
+Options). Make sure the internal local area network
+has access to the 
+Domain Name System (DNS) servers to resolve the names
+of external 
+hosts such as messenger.msn.com.
+
+For file transfer
+
+Both incoming and outgoing TCP connections use this
+range of 
+ports: 6891 to 6900. This allows up to 10 simultaneous
+file transfers 
+per sender. If you open only Port 6891, users will be
+able to do only 
+one file transfer at a time.
+
+The TCP ports need to be configured so that sockets on
+a port remain 
+open for extended periods of time.
+
+
+
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
