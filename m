@@ -1,12 +1,13 @@
-From: Tony Zafiropoulos <tonyz@ctitek.com>
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: VPN Clients
-Date: Thu, 5 Sep 2002 13:02:40 -0500 (CDT)
+Date: Thu, 5 Sep 2002 14:20:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.21.0209051300140.32428-100000@jagd.ctitek.com>
-References: <200209051044.48905.marks@crvinc.com>
+Message-ID: <20020905182040.GL7289@cannon.eng.us.uu.net>
+References: <200209051251.24310.ramin@cannon.eng.us.uu.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209051044.48905.marks@crvinc.com>
+Content-Disposition: inline
+In-Reply-To: <200209051251.24310.ramin@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mark Seamans <marks@crvinc.com>
+To: marks@crvinc.com
 Cc: netfilter <netfilter@lists.netfilter.org>
 
+OK. IPsec. I think XP has a native IPsec client (it's just hear-say).
+And yes, there is no freeswan for windows.
 
-Not free for commercial use (using IPSEC not PansyPointTunnelProtocol)
+A much better and more comprehensive discussion as to what clients
+to use and how, can be find on the freeswans doc pages.
 
-Windoze client
-SSH.com Sentinel -
-Safenet-inc.com  SoftRemoteLT
+Ramin
 
-Freeswan on Firewall/Linux
+On Thu, Sep 05, 2002 at 12:51:24PM -0500, Ramin Alidousti wrote:
 
-
-On Thu, 5 Sep 2002, Mark Seamans wrote:
-
-> I see below that someone asked which VPN client to use....
-> I have the same question, but I will be a bit more specific.
+> Sorry, IPsec.
 > 
-> How about a Windows Client???  The last time I looked there was not Freeswan 
-> for Windows.  Also, has anyone used the Cisco VPN Client?
-> Free would be nice....
+> Hi Mark,
 > 
-> Thanks!
+> On Thu, Sep 05, 2002 at 10:44:48AM -0500, Mark Seamans wrote:
 > 
-> Mark
+> > I see below that someone asked which VPN client to use....
+> > I have the same question, but I will be a bit more specific.
 > 
-
--- 
-Tony Zafiropoulos
-FixMyVirus.com
-Cel: 314-504-3974
-tonyz@fixmyvirus.com
-Best way to reduce your virus exposure?
-Run Linux - Replace Windows one system at a time.
-
+> To be more specific you have to say first what kind of VPN you're
+> talking about. PPTP or IPsec.
+> 
+> Ramin
+> 
+> > 
+> > How about a Windows Client???  The last time I looked there was not Freeswan 
+> > for Windows.  Also, has anyone used the Cisco VPN Client?
+> > Free would be nice....
+> > 
+> > Thanks!
+> > 
+> > Mark
+> 
+> 
 
