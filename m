@@ -1,9 +1,11 @@
-From: David Bourgeois <david@muelec.fpms.ac.be>
-Subject: Advice on network config (unix - linux and windows - mac)
-Date: Mon, 14 Oct 2002 14:58:02 +0200
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Re: Log output going to screen
+Date: Wed, 16 Oct 2002 17:20:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ONYX635YHBSNA01PKGC52FCMKE0TPGC.3daabf5a@pc5>
+Message-ID: <003601c27559$d0160b80$8c01a8c0@sundaram>
+References: <B9D38D9C.45F%george@mattandgeorge.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,19 +17,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: George Agnelli <george@mattandgeorge.com>, netfilter@lists.netfilter.org
 
-I would like to setup a linux box as gateway - firewall and NAT (maybe DHCP too) for a network of SUN workstations, windoze (98, XP, 2000) PC's and macs. 
+check your /etc/syslog.conf to make sure it doesn't contain a line like
+'kern.* /dev/console'. If that doesn't work, try starting your klogd with
+the switch '-c 3'
 
-I don't care about win and macs but would want the SUN network to be as secure as possible. As I guess win can be easily compromised, I thought of physically 
-separating the unix network from the others by using three network cards on the gateway. So having two private networks, I can filter what goes from one to the other with 
-the gateway's firewall.
+redhat  /etc/init.d/syslog, start function
 
-Is this the right way to do what I would like? Any recommandation would be welcome.
+start() {
+        echo -n $"Starting system logger: "
+        daemon syslogd $SYSLOGD_OPTIONS
+        RETVAL=$?
+        echo
+        echo -n $"Starting kernel logger: "
+        daemon klogd $KLOGD_OPTIONS -c 3
+        echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/syslog
+        return $RETVAL
+}
 
-Thanks,
-David Bourgeois
 
+----- Original Message -----
+From: "George Agnelli" <george@mattandgeorge.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, October 16, 2002 4:41 PM
+Subject: Log output going to screen
+
+
+> Does anyone know why my logs are occasionally being dumped to screen as
+well
+> as to the messages file? How can I stop this happening?
+>
+> This is what I am currently logging:
+>
+> iptables -A INPUT  -i eth1 -j LOG
+> iptables -A OUTPUT -o eth1 -j LOG
+> iptables -A FORWARD  -i eth1 -o eth0 -j LOG
+> iptables -A FORWARD  -i eth0 -o eth1 -j LOG
+>
+> George
+>
+>
 
 
