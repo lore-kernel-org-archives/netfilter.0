@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: What is missed for port forwarding
-Date: Sun, 7 Mar 2004 16:02:25 +0000
+From: Fabian Hartmann <realdeal@realdealz.ch>
+Subject: Re: problem with forward/nat
+Date: Sun,  7 Mar 2004 19:24:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403071602.25190.Antony@Soft-Solutions.co.uk>
-References: <20040306183657.GB836@glorybox.de> <200403070953.52863.Antony@Soft-Solutions.co.uk> <20040307154907.GA1978@glorybox.de>
+Message-ID: <1078683840.404b68c0641ac@realdealz.ch>
+References: <BAY1-F168WzqJX7rVGS00004a39@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040307154907.GA1978@glorybox.de>
+In-Reply-To: <BAY1-F168WzqJX7rVGS00004a39@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,41 +19,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: Pierre Gillet <gpg__gpg@hotmail.com>
 
-On Sunday 07 March 2004 3:49 pm, Kai Weber wrote:
-
-> * Antony Stone <Antony@Soft-Solutions.co.uk>:
-> > Are you testing both SSH/10143 and HTTP/8888 from the same client machine
-> > out on the Internet?
+> hello,
 >
-> Thanks for the tip. It works from outside. I tested only from "inside".
->
-> Why does DNAT not work when trying from inside?
+Hi Pierre
 
-See my sig below.
+> #forward
+> 
+> iptables -A FORWARD -s 192.168.1.0/24 -j ACCEPT -o eth0
 
-Client (eg 192.168.1.10) connects to firewall on192.168.1.250.
-Firewall DNATs the packet and sends it to 192.168.1.2
-192.168.1.2 replies to 192.168.1.10, which is on the local network, therefore 
-reply doesn't go through the firewall, therefore no reverse NAT takes place.
+The rule above won't work! you must set the -o flag before you set the -j <TARGET>
+i. e. iptables -A FORWARD -o eth0 -s 192.168.1.0/24 -j ACCEPT
 
-Result: 192.168.1.10 sent a packet to 192.168.1.250 and got a reply from 
-192.168.1.2.
+Otherwise the rule won't be accepted by iptables and you have no rule that
+accepts  forwarded traffic when the default policy for the FORWARD chain is set
+to DROP.
 
-Confused unhappy client.
+---
+Fabian Hartmann
 
-See also http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
-
-Regards,
-
-Antony.
-
--- 
-90% of networking problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+realdeal@realdealz.ch
+www.realdealz.ch
 
