@@ -1,12 +1,15 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: state NEW
-Date: 19 Nov 2004 20:16:03 +0100
-Message-ID: <1100864139.1922.5.camel@nostromo.bgsecm.com>
-References: <D3DD55FDB74AD511BA5100500416368053EB16@ORION>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: PPTP CONNTRACK NAT patch for 2.6
+Date: Fri, 19 Nov 2004 22:02:41 +0100
+Message-ID: <20041119210241.GO6790@sunbeam.de.gnumonks.org>
+References: <20041119072111.GF6790@sunbeam.de.gnumonks.org>
+	<20041119195104.44980.qmail@web52509.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D3DD55FDB74AD511BA5100500416368053EB16@ORION>
+Content-Disposition: inline
+In-Reply-To: <20041119195104.44980.qmail@web52509.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,74 +20,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Joseph Kwok <joseph_k@pacbell.net>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-El vie, 19 de 11 de 2004 a las 10:31, Jochen Vogel escribi=C3=B3:
-> hi,
->=20
-> i have the following forwarding rule
->=20
-> $IPT -A FORWARD -i $INT -o $EXT -m state --state NEW,ESTABLISHED,RELATE=
-D -j
-> QUEUE
 
-Here you are sending all this traffic to userspace, I suppose to
-snort-inline or similar program. You could use stateless rules because
-you are sending everything...
+--CNfT9TXqV7nd4cfk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> $IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED   =
-  -j
-> ACCEPT
->=20
+On Fri, Nov 19, 2004 at 11:51:04AM -0800, Joseph Kwok wrote:
+> I can't find it, where is it? I am more than happy to
+> check it out.
 
-And this rule does nothing, because all the traffic has been sent to
-userspace and then accepted or dropped, probably.
+It's on svn.netfilter.org:
 
-> if i send an ACK with hping from INT to EXT it reaches the target syste=
-m
->=20
-> if i do
->=20
-> $IPT -A FORWARD -i $INT -o $EXT -m state --state NEW -j ACCEPTLOG
-> $IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED-j
-> ACCEPT
+http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/pptp-co=
+nntrack-nat/
 
-Here you are logging and accepting all the new connections and accepting
-all the related conections.
+Any recent patch-o-matic-ng snapshot will work, you can download nightly
+snapshots from ftp.netfilter.org or any of the mirrors.
 
->=20
-> i can see the following
->=20
-> Nov 19 12:05:20 snolin kernel: ACPT IN=3Deth0 OUT=3Dppp0 SRC=3D1.1.1.1 =
-DST=3D2.2.2.2
-> LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D12368 PROTO=3DTCP SPT=3D2=
-618 DPT=3D63
-> WINDOW=3D512 RES=3D0x00 ACK URGP=3D0
->=20
-
-So everything it's working as you have configured it.
-
-> did i have a false understanding from NEW or whats wrong
->=20
-
-I don't know what you want to do exactly.
-
-> thx for help
-> jo
-
+> Thanks,
+> Joseph
 --=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+--CNfT9TXqV7nd4cfk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFBnl9xXaXGVTD0i/8RAvWEAJ0Z87JMPbIQ0oVF+kVcHdQqVg0RhgCeOZcx
+P5s03LTM+xdUEwBmjBdal5E=
+=3epY
+-----END PGP SIGNATURE-----
+
+--CNfT9TXqV7nd4cfk--
 
