@@ -1,11 +1,12 @@
-From: <peter.gehle@sbgit.com>
-Subject: Still having problems with forwadding
-Date: 15 Mar 2004 13:26:22 UT
+From: "Fredrik Emil Jensen" <fredrik.jensen@netpower.as>
+Subject: RE: transparent proxy
+Date: Mon, 15 Mar 2004 10:19:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DIIE.000000E600002A8B@sbgit.com>
+Message-ID: <3C204966522884458700FF59D6EFB87A474DDE@FORUS01.netpower.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,90 +17,84 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Is this a good and secure Firewall Script?
+Hey=20
 
-Thanx Peter
-----------------------------------------------------
-#! /bin/sh
+I'm currently using squid and squidGuard for redirection. Setting up the
+rules:
 
-echo "1" > /proc/sys/net/ipv4/ip_forward # Initialising of Forwarding
+Iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d 0/0 --dport 80
+-j REDIRECT --to-ports 3128=20
 
-# Flushen, Deleting, Create#
-################################################################
-iptables -F
-iptables -F -t nat
+But does anyone know what to do if you want to use iptables to bypass
+squid with single IP address?
 
-iptables -F sperre
-iptables -X sperre
-iptables -N sperre
-iptables -F sperre
+I know that you can add the rule "iptables -t nat -A POSTROUTING -o eth0
+-s 192.168.1.10/32 -d 0/0 -j SNAT --to "source_Wan_address" ". But this
+rule will be added at the end of the rule list, and all traffic on port
+80 will still be redirected through squid. Even when I use priority
+"iptables -t nat -I POSTROUTING 1 etc" and I put higher priority on the
+rule for the bypass IP, it is still being redirected through squid. I
+have to remove the redirect rule before I can bypass squid.=20
 
-# first contact #
-#################
-iptables -A sperre -i eth1 -s ! 192.168.1.0/255.255.255.0 -j DROP                 # Drop everything how not comes from lokal LAN
-iptables -A sperre -i eth1 --dport 22,19,21,22,25,3389,1723,23000:23001 -j ACCEPT # Allow outbound only for specific ports
-iptables -A sperre -i lo -s 127.0.0.1/255.0.0.0 -j ACCEPT                         # Allow everything from loopback
-iptables -A sperre -i eth0 -s 192.168.1.0/255.255.255.0 -j DROP                   # Drop everyting how comes fro outside to inside  with LAN IP's
+Does anyone know what I'm doing wrong?
 
-# acceptstuff #
-###############
-iptables -A sperre -p tcp --dport 21 -j ACCEPT             # ftp 
-iptables -A sperre -p tcp --dport 23001:23001 -j ACCEPT    # Battlefield Server
-iptables -A sperre -p tcp --dport 90 -j ACCEPT             # DVISE
-iptables -A sperre -p tcp --dport 80 -j ACCEPT             # HTTP
-iptables -A sperre -p tcp --dport 3389 -j ACCEPT           # VPN
+Using Slackware 9.1 with Kernel 2.6.2, iptables version 1.2.9 and squid
+2.5
 
-# Antworten zulassen #
-######################
-iptables -A sperre -m state --state ESTABLISHED,RELATED -j ACCEPT
+Regards,=20
+Fredrik
 
-# Reject everything else (RFC-conform) #
-#######################################
-iptables -A sperre -p tcp -j REJECT --reject-with tcp-reset
-iptables -A sperre -p udp -j REJECT --reject-with icmp-port-unreachable
+-----Original Message-----
+From: Daniel F. Chief Security Engineer -
+[mailto:danielf@supportteam.net]=20
+Sent: 27. februar 2004 18:01
+To: Tomasz Macioszek; Netfilter
+Subject: Re: transparent proxy
 
-# activating sperre#
-#####################
-iptables -A INPUT -j sperre
-iptables -A FORWARD -j sperre
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
+That rule should work fine, make sure you compiled squid with:
 
-iptables -P OUTPUT ACCEPT # output accept
-iptables -P OUTPUT ACCEPT -t nat
+./configure --enable-linux-netfilter=20
 
-# NAT #
-#######
-iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE 
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 21 -j DNAT --to 192.168.1.198        # FTP to FTP-Server
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 3389 -j DNAT --to 192.168.1.220      # Terminal Server
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 1723 -j DNAT --to 192.168.1.2        # VPN Server
-iptables -A PREROUTING -t nat -i eth0 -p 47  -j DNAT --to 192.168.1.220                   # VPN Server
-iptables -A PREROUTING -t nat -i eth0 -p 37  -j DNAT --to 192.168.1.220                   # VPN Server
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 4661:4662 -j DNAT --to 192.168.1.198 # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 6343 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 6300 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 4242 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 8888 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 6661:6662 -j DNAT --to 192.168.1.198 # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p udp --dport 4665 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p udp --dport 4672 -j DNAT --to 192.168.1.198      # EDONKEY
-iptables -A PREROUTING -t nat -i eth0 -p udp --dport 6665 -j DNAT --to 192.168.1.198      # EDONKEY
+But for more usefull info :)
+Here is a nice HOW-TO
+http://en.tldp.org/HOWTO/TransparentProxy.html
 
-# Special Rules
-iptables -A INPUT -i eth0 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
-iptables -A OUTPUT -o eth1 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
-iptables -A INPUT -i eth0 -s 192.168.1.0/24 -p tcp --destination-port 25 -j ACCEPT
-iptables -A OUTPUT -o eth0 -s 0/0 -p tcp --destination-port 25 -j ACCEPT
 
-iptables -A INPUT lo -p tcp --destination-port 10024 -j ACCEPT
-iptables -A OUTPUT -o lo -p tcp --destination-port 10024 -j ACCEPT
+On Friday 27 February 2004 02:48, Tomasz Macioszek wrote:
+> Hello!
+> I have a Linux server acting as a gateway between internal network and
+> internet. The iptables rule set have been working  good for long time.
+> I have configured squid on this server. When I have set internal
+network
+> client to use directly proxy server it has worked properly. But when I
+have
+> set iptable to redirect all http traffic to squid  port (3128) it
+didn't
+> work (transparent proxy).
+> This is my iptable rule:
+> iptables -t nat -A PREROUTING -p TCP --dport 80 -j REDIRECT --to-port
+3128
+> I think that all options in my kernel are set properly.
+> I don't know why it doesn't work
+> I set tcpdump to listen on 3128 port and when client tried to connect
+to
+> web server on port 3128 showed only first IP  package of this
+connection
+> and connections failed.
+> Could you send me a solution for this problem?
+> Best regards
+> Tomek
 
-iptables -A INPUT -i lo -p tcp --destination-port 10025 -j ACCEPT
-iptables -A OUTPUT -o lo -p tcp --destination-port 10025 -j ACCEPT
+--=20
+_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:
+-.,_
+Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
+The distance between nothing and infinity is always the same no matter
+how=20
+close you get to nothing.
 
-echo "Firewall started"
+
 
 
