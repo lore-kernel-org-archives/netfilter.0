@@ -1,12 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: IPTABLES + IPROUTE2
-Date: Fri, 23 Jan 2004 23:51:31 +0000
+Date: Fri, 23 Jan 2004 20:04:57 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401232351.31891.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040124010457.GA8126@cannon.eng.us.uu.net>
 References: <EHENIKBEJAMHPLPJOJBPCEDKDIAA.lucho@galix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 In-Reply-To: <EHENIKBEJAMHPLPJOJBPCEDKDIAA.lucho@galix.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,29 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "L.Malinov" <lucho@galix.com>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 23 January 2004 11:44 am, L.Malinov wrote:
+On Fri, Jan 23, 2004 at 01:44:38PM +0200, L.Malinov wrote:
 
 > Hi there,
->
+> 
 > I have the following configuration: Local Net with Linux RedHat 9.0 Squid
 > proxy server (with one net card) and 2 gateways - router1 and router2. The
 > default gateway for everyone including the proxy is router1. I'd like, the
 > http request from the local net sent to the proxy to be forwarded to the
-> Internet via router2.
+> Internet via router2. I'm trying the following configuration:
+> 
+> iptables -A OUTPUT -o eth0 -t mangle -p tcp --dport 80 -j MARK --set-mark 2
 
-I'd suggest the simplest way to achieve this is to set the default route on 
-the proxy server to be router2.
+A suggestion: remove "-o eth0" from the above.
 
-Antony.
-
--- 
-Having been asked for a reference for this man,
-I can confirm that you will be very lucky indeed if you can get him to work 
-for you.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> echo 202 www.out >> /etc/iproute2/rt_tables
+> ip rule add fwmark 2 table www.out
+> ip route add default via router2 dev eth0 table www.out
+> 
+> It looks like the packets go through the right chain under iptables and get
+> marked, however after that they still don't get forwarded via router2 but
+> router1. What could be wrong in this config and is this possible to achieve
+> at all with the above configuration?
+> 
+> Regards
+> 
+> L.Malinov
+> 
 
