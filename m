@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Help in IPTABLES
-Date: Mon, 13 Jan 2003 15:30:14 -0500
+From: Peter Johnson <peter@thejohnsons.com.au>
+Subject: Re: DNS
+Date: 14 Jan 2003 09:21:16 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301131530.14106.netfilter@newkirk.us>
-References: <20030111054656.20063.qmail@web40711.mail.yahoo.com> <200301112132.00991.netfilter@newkirk.us> <20030112090122.3e9a3bc8.arnt@c2i.net>
-Reply-To: netfilter@newkirk.us
+Message-ID: <1042496478.611.16.camel@wizardslair>
+References: <3E22A883.103@mattiamartinello.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030112090122.3e9a3bc8.arnt@c2i.net>
+In-Reply-To: <3E22A883.103@mattiamartinello.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +18,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sunday 12 January 2003 03:01 am, Arnt Karlsen wrote:
+I am experiencing a similar sort of thing, I am using the 2.4.20 kernel.
 
-> ..the wee point I was trying to make, is an iptables firewall is
-> vulnerable while it is being set up, so echo "0" first to stop
-> forwarding, set up the firewall, and echo "1" at the end of the
-> script to start forwarding again, a wee nit into your helpful
-> responses to him.
+I put logging everywhere and also tcpdumped my interfaces and what I
+found was that as soon at the PREROUTING DNAT rule was reached the
+packet disappeared. It was not forwarded and certainly didn't reach the
+internal server.
 
-I do this myself in my script, but believe there is an additional=20
-solution, at least for some distros:
+My rules are (I am trying HTTP, "dot" is my public interface)
 
-I'm running RedHat 7.3, and so everything runs off SysV-Init.  I was=20
-greatly bothered by the fact that the S07iptables startup link would get=20
-run quite a bit (well, a few seconds at least :^) before my firewall=20
-would.  Changing my firewall to a lower number in the sequence wouldn't=20
-work easily, since I'm on a Dynamic IP at the moment and had to start up=20
-ADSL to get the IP, since I use it 'statically' in SNAT.  It also would=20
-need (or at least want) syslog up and running.  Couldn't easily move=20
-ADSL up in the sequence, since it depended on networking in general. =20
-Everything is pretty much fixed in the sequence it already starts in.
+$IPTABLES -t nat -A PREROUTING -i dot -p tcp --dport 80 -j DNAT --to
+192.168.1.1:80
 
-Then it occurred to me:  Modify the /etc/init.d/iptables script to set=20
-DROP policies, instead of the horribly shortsighted ACCEPT default it=20
-uses.  As soon as this occurred to me I changed it, and I feel much more=20
-comfortable now, knowing that if the whole startup collapses right after=20
-iptables and network scripts, I'm still not wide open.
+and
 
-My sequence now is=20
-iptables->ip6tables->network->syslog->ADSL->firewall->ip6firewall->freene=
-t
-(freenet is the startup for the IPv6inIPv4 tunnel)
+$IPTABLES -t filter -A FORWARD -i dot -o eth1 -p tcp --dport 80 -j
+ACCEPT
 
-I modified the /etc/init.d/iptables script to set DROP policies in both=20
-the 'start' and 'stop' functions.
+I look forward to hearing any advice to further debug this situation or
+if the solution is obvious then please let me (us) know.
 
-Despite being more comfortable with this, I'd like to hear if anyone sees=
-=20
-a hole in my reasoning.
+btw. I am forwarding local traffic out successfully.
 
-j
+
+Regards,
+
+Peter Johnson
+
+On Mon, 2003-01-13 at 22:52, Mattia Martinello wrote:
+> Hi all
+> 
+> I wish to open DNS connections and redirect it from the gateway and the 
+> server on the DMZ.
+> I tried these rules:
+> 
+> iptables -t nat -A PREROUTING -p tcp -i ppp0 -d [public IP] --dport 53 
+> -j DNAT --to [private IP]:53
+> iptables -A FORWARD -i ppp0 -d [private IP] -p tcp --dport 53 -j ACCEPT
+> 
+> iptables -t nat -A PREROUTING -p udp -i ppp0 -d [public IP] --dport 53 
+> -j DNAT --to [private IP]:53
+> iptables -A FORWARD -i ppp0 -d [private IP] -p tcp --dport 53 -j ACCEPT
+> 
+> But if I try to query my DNS server from the Internet my query goes in 
+> timeout.
+> The connections between [private IP] and the Internet are allowed (all 
+> other services work good without any problem, the only service that gets 
+> me some problems is DNS).
+> 
+> What have I to open to allow DNS connections from the gateway and the DMZ?
+> 
+> Thank you very much
+> Bye
+> Mattia
+> 
+> 
+-- 
+
+Give a man a fish and you feed him for a day. Teach him to use the Net
+and he won't bother you for weeks.
+
 
 
