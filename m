@@ -1,12 +1,13 @@
-From: "pengjie" <bill@acamar.com.cn>
-Subject: about ip_conntrack_count
-Date: Mon, 28 Apr 2003 10:49:05 +0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: RE Problem
+Date: 27 Apr 2003 23:28:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003c01c30d30$bbde1170$02020a0a@acamarpeng>
+Message-ID: <1051500525.2385.31.camel@alpha.newkirk.us>
+References: <Law9-OE53zdzF2tl9bX00004264@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0039_01C30D73.C9E14650"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Law9-OE53zdzF2tl9bX00004264@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: hard__ware@hotmail.com
+Cc: "lists.netfilter" <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+On Mon, 2003-04-28 at 15:59, hard__ware@hotmail.com wrote:
+> I still have the problem were i cant reply to messages properlly ?
+> 
+> any tricks to doing it in Outlook Express ?
 
-------=_NextPart_000_0039_01C30D73.C9E14650
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Depends on what is not working properly.
 
-aGVsbG8sYWxsIQ0KSSBoYXZlIGV4cGVyaW1lbnRlZCBvbiB0aGUgaXBfY29ubnRyYWNrLkJ1dCBJ
-IGZvdW5kIGFuIGludGVyZXN0aW5nIHRoaW5nOiBJIHNldCB0aGUgaGFzaHNpemUgMjAsIHRoZW4g
-dGhlIGlwX2Nvbm50cmFja19tYXggc2hvdWxkIGJlIDE2MCwgZXhhY3RseSBpdCdzIDE2MCBpbiAv
-cHJvYy9zeXMvbmV0L2lwdjQvaXBfY29ubnRyYWNrX21heC5JbiB0aGUgaGVhZGVyIG9mIGZ1bmN0
-aW9uIGluaXRfY29ubnRyYWNrKCkgSSBwcmludGsgdGhlIGlwX2Nvbm50cmFja19jb3VudC4gTm93
-LCB0aGlzIHByaW50aW5nIHZhbHVlIG1heSBncmVhdCB0aGFuIGlwX2Nvbm50cmFja19tYXgoMTYw
-KSBvY2Nhc2lvbmFseS5Ib3cgY2FuIHRoaXMgb2NjdXI/DQpXaG8gY2FuIGhlbHAgbWU/IFRoYW5r
-cyENCkJlc3QgcmVnYXJkcyENCg0KQmlsbC4NCg==
+In general, you should set the following in Tools->Options->Send:
 
-------=_NextPart_000_0039_01C30D73.C9E14650
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Mail Sending Format: Plain Text
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
-MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+PEJBU0UgDQpocmVmPSJmaWxlOi8vQzpcUHJv
-Z3JhbSBGaWxlc1xDb21tb24gRmlsZXNcTWljcm9zb2Z0IFNoYXJlZFxTdGF0aW9uZXJ5XCI+DQo8
-TUVUQSBjb250ZW50PSJNU0hUTUwgNS4wMC4yOTIwLjAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxF
-PjwvU1RZTEU+DQo8L0hFQUQ+DQo8Qk9EWSBiZ0NvbG9yPSNmZmZmZmYgb25sb2FkPXZic2NyaXB0
-OktKX3N0YXJ0KCk+DQo8RElWPg0KPERJVj48Rk9OVCBzaXplPTI+aGVsbG8sYWxsITwvRk9OVD48
-L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPkkgaGF2ZSBleHBlcmltZW50ZWQgb24gdGhlIGlwX2Nv
-bm50cmFjay5CdXQgSSBmb3VuZCBhbiANCmludGVyZXN0aW5nIHRoaW5nOiBJIHNldCB0aGUgaGFz
-aHNpemUgMjAsIHRoZW4gdGhlIGlwX2Nvbm50cmFja19tYXggc2hvdWxkIGJlIA0KMTYwLCBleGFj
-dGx5IGl0J3MgMTYwIGluIC9wcm9jL3N5cy9uZXQvaXB2NC9pcF9jb25udHJhY2tfbWF4LkluIHRo
-ZSBoZWFkZXIgb2YgDQpmdW5jdGlvbiBpbml0X2Nvbm50cmFjaygpIEkgcHJpbnRrIHRoZSBpcF9j
-b25udHJhY2tfY291bnQuIE5vdywgdGhpcyBwcmludGluZyANCnZhbHVlIG1heSBncmVhdCB0aGFu
-IGlwX2Nvbm50cmFja19tYXgoMTYwKSBvY2Nhc2lvbmFseS5Ib3cgY2FuIHRoaXMgDQpvY2N1cj88
-L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5XaG8gY2FuIGhlbHAgbWU/IFRoYW5rcyE8
-L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5CZXN0IHJlZ2FyZHMhPC9GT05UPjwvRElW
-Pg0KPERJVj4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPkJpbGwuPC9GT05UPjwvRElW
-PjwvRElWPjwvQk9EWT48L0hUTUw+DQo=
+In Plain Text Options you want "Indent with '>' when replying" selected.
 
-------=_NextPart_000_0039_01C30D73.C9E14650--
+Then you should be able to simply click "Reply All" to properly reply a
+message on the mailing list, and send that reply to both the list itself
+and the original poster of the message you are replying, and it should
+automatically prepend "RE:" to the subject for you.
+j
+
+ 
+> Thanks Anyway
+> 
+> Alex Nee
+> Hard__warE
 
 
