@@ -1,10 +1,10 @@
-From: =?iso-8859-1?q?pooja?= <pooja2909@yahoo.co.in>
-Subject: Iptables Queuing Problem
-Date: Thu, 30 Jan 2003 07:14:53 +0000 (GMT)
+From: Dhirendra Pal Singh <list@actiswitch.com>
+Subject: Querry about contrack
+Date: Thu, 30 Jan 2003 11:48:47 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030130071453.54533.qmail@web8206.mail.in.yahoo.com>
+Message-ID: <3E39819F.3060501@actiswitch.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,29 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi!!
+Hi All,
 
-I am using iptables queuing concept to get the packets
-for my application.The applicaction is just doing
-simple dynamic nat if reqd..I change the dest ip in
-prerouting hook if reqd and the src ip i postrouting
-hook...This is working fine for first few pkts after i
-start my application..But after that i am getting
-segmentation fault...What is happening is one pkt
-after passing through and accepted by prerouting hook
-disappears..it gets lost..neither it enters FORWARD
-hook nor postrouting hook..and the next pkt gives me
-the SEGMENTATION FAULT ERROR ..
+Is it possible to find
 
-CAn somebody tell me why is this happening????
+A) number of packets recived and send,
 
-Thanx in advance,
-Pooja
+B) no of connections existing
 
-________________________________________________________________________
-Missed your favourite TV serial last night? Try the new, Yahoo! TV.
-       visit http://in.tv.yahoo.com
+on the basis of port no.  ???
+
+Does contrack keeps a track of it.. or something else...
+I think somwehere in /proc contrack keeps a list of the active 
+connections.. but I need the info to analyse it in my piece of c code.
+
+Any ideas how can I do that..
+
+Thanks in Advance
+Dp
+
+
 
