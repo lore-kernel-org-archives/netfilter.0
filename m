@@ -1,13 +1,22 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Did MASQUERADE not work ?
-Date: Wed, 10 Mar 2004 09:23:00 +0000
+From: Hitesh Ballani <hb69@cornell.edu>
+Subject: Re: tunneling and iptables
+Date: Wed, 10 Mar 2004 04:38:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403100923.00253.Antony@Soft-Solutions.co.uk>
-References: <00c001c40644$19931970$6cfaa8c0@Defiant>
+Message-ID: <5.2.1.1.2.20040310043513.00b315a8@postoffice6.mail.cornell.edu>
+References: <5.2.1.1.2.20040310030818.00b40808@postoffice6.mail.cornell.edu>
+ <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
+ <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
+ <5.2.1.1.2.20040310030818.00b40808@postoffice6.mail.cornell.edu> <1078909348.2757.13.camel@anduril.intranet.cartel-securite.
+ net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00c001c40644$19931970$6cfaa8c0@Defiant>
+In-Reply-To: <1078909348.2757.13.camel@anduril.intranet.cartel-securite.
+ net>
+References: <5.2.1.1.2.20040310030818.00b40808@postoffice6.mail.cornell.edu>
+ <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
+ <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
+ <5.2.1.1.2.20040310030818.00b40808@postoffice6.mail.cornell.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +26,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 10 March 2004 2:05 am, Kevork wrote:
-
-> Hi !,
+At 10:02 AM 3/10/2004 +0100, Cedric Blancher wrote:
+>Le mer 10/03/2004 =E0 09:15, Hitesh Ballani a =E9crit :
+> > thanks for your comments on tunnels ... actually i am working on a model
+> > for anycast deployment and need to have the 16 bits so that i can=
+ support
+> > 256*(2^16) services using a single /24 block ..
 >
-> This problem is making me crazy ...
+>OK.
 >
-> All of the sudden, PCs from inside network lost conextion to internet.
-> After some tcpdump on the linux box, I saw the box was not NATing.
-> Paquets from inside are going to outside on its original IP source.
-> The most misterious thing is that this was working some hours ago, from the
-> first time I set up the box.
+>If I understand your context (what may not be true), your problem is
+>that you have to route packets against destination port and that MARK
+>capabilities are too limited for you to have Netfilter communicate
+>within policy routing.
+>
+>So, have you considered using ROUTE target (from patch-o-matic), that
+>allows one to specify a specific route for a given packet within
+>Netfilter. With it, you could implement rule just like this :
+>
+>         iptables -t mangle -A POSTROUTING -p tcp --dport $myservice \
+>                 -j ROUTE --gw $myservicegw
+>
+>
+>--
+>http://www.netexit.com/~sid/
+>PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+> >> Hi! I'm your friendly neighbourhood signature virus.
+> >> Copy me to your signature file and help me spread!
 
-Has your DHCP lease expired on the external interface?
 
-> MASQ line is:
-> iptables -t nat -A POSTROUTING -s 192.168.250.0/24 -d $internet -j
-> MASQUERADE
 
-What is $internet?
+Sorry to bug you  ... that ROUTE extension is perfect for me  ... but with=
+=20
+my design I will have around 2000~  tunnels created (i know this sounds=20
+crazy).. will the kernel be able to handle this or is this too much of an=20
+overhead .... leaving aside the start up overhead, during the actual=20
+forwarding is there any overhead besides the extra ip header being=
+ attached....
 
-Regards,
+Thanks for your time,
 
-Antony.
-
--- 
-This is not a rehearsal.
-This is Real Life.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Hitesh
 
 
