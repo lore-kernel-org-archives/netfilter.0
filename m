@@ -1,13 +1,13 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: redundancy with linux and two NIC
-Date: Fri, 13 Jun 2003 15:19:45 -0400
+From: <kwang@kwang.org>
+Subject: RE: IP forwarding on port 80
+Date: Fri, 13 Jun 2003 15:45:12 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030613191945.GA13464@cannon.eng.us.uu.net>
-References: <20030613171652.82258.qmail@web13206.mail.yahoo.com>
+Message-ID: <33015.128.83.147.87.1055537112.squirrel@www.kwang.org>
+References: <00b401c331da$246caf80$7035a8c0@hoeschen>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030613171652.82258.qmail@web13206.mail.yahoo.com>
+In-Reply-To: <00b401c331da$246caf80$7035a8c0@hoeschen>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,81 +18,345 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ivan Rodriguez <ivanoch79@yahoo.com.mx>
+To: chris.hoeschen@primevest.com
 Cc: netfilter@lists.netfilter.org
 
-On Fri, Jun 13, 2003 at 12:16:52PM -0500, Ivan Rodriguez wrote:
+128.83.147.87 is indeed the external IP. I can ping, ssh and telnet 80 to
+this address from an offsite machine, and since
 
-> Hi 
-> i have the next situation
-> 
->                           ADSL
->                    eth1--------->
-> 192.168.64.x --->LinuxBox
->                    eth0--------->
->                           DS0
->  
-> my Linux box is a GW i need the following:
->          
-> 
->         if etho is down then all traffic is routed
->         by eth1 and  if eth1 is down then all 
->         traffic is routed by eth0
-> 
-> it is posible ?
+-A PREROUTING -d 128.83.147.87 -p tcp -m tcp --dport 80 -j LOG --log-prefix
+"prerouting" --log-level 7
 
-Yes, it is possible but not easy. First of all, if a link goes down, so does
-your MASQ'ed sessions. You just can't switch the masq'ing interface. Secondly,
-the inbound initiations are totally out of your control. If someone sends you
-a packet with dst (eth0) and eth0 is down, the packet would be dropped (with
-an appropriate ICMP generated). I'm sure there are other deficiencies to this
-setup. One way of setting this up is to have a static IP assigned to a loopback
-(dummy device in linux terminology) on the linux box and have your ISP's (both
-if there are two) route that IP to you through your both interfaces. Then you
-would SNAT everything with that IP and set up your routes (with or without an
-equal cost) to both interfaces. Unfortunately in home setups the ethX might
-show up while the link is basically down, which means you have to monitor your
-next-hop access and remove the unreachable route if necessary, otherwise you'll
-create a blackhole for yourself. At any rate, you need a static IP and two (or
-one) willing ISP(s) to route that IP to you... From your routing table below
-it looks like you have eth1 and ppp0 to the Internet which seem to be on
-the same /18. So you're one step closer to this solution...
+catches it, it seems that
 
-Ramin
+-A PREROUTING -d 128.83.147.87 -p tcp -m tcp --dport 80 -j DNAT
+--to-destination 192.168.0.2:80
 
-> please help me and excusme mi english is not god
-> 
-> 
-> Destination     Gateway         Genmask         Flags 
->  MSS Window  irtt
-> Iface
-> 
-> 148.223.133.227 192.168.65.1    255.255.255.255 UGH   
->   40 0          0
-> eth1
-> 
-> 148.223.182.205 0.0.0.0         255.255.255.255 UH    
->   40 0          0
-> ppp0
-> 
-> 192.168.65.0    192.168.65.1    255.255.255.0   UG    
->   40 0          0
-> eth1
-> 
-> 192.168.65.0    0.0.0.0         255.255.255.0   U     
->   40 0          0
-> eth1
-> 
-> 10.0.0.0        0.0.0.0         255.0.0.0       U     
->   40 0          0
-> eth0
-> 
-> 127.0.0.0       0.0.0.0         255.0.0.0       U     
->   40 0          0
-> lo
-> 
-> 0.0.0.0         148.223.182.205 0.0.0.0         UG    
->   40 0          0
-> ppp0
+would also catch it.
+
+Also, since I have:
+
+-A INPUT -p tcp -m tcp --dport 80 -j LOG --log-prefix "input" --log-level 7
+-A FORWARD -j LOG --log-prefix "forward" --log-level 7
+
+then I should have a log entry no matter what with a prefix of either
+"input" or "forward". However, with the PREROUTING -j DNAT line in place,
+neither INPUT nor FORWARD logs the packet traversing through their chains.
+Isn't this behavior quite impossible since a packet that traverses
+PREROUTING (which I do successfully log in that chain), should definitely go
+to either INPUT or FORWARD?
+
+BTW, my iptables version is iptables-1.2.6a-2. Could there be some sort of
+patch I need? I'm not really using a special case since people do simple
+port 80 forwarding all the time.
+
+Kent Wang
+
+> Verify that 128.83.147.87 is the external IP address for this box.
+> Also how did you test this?  If you are inside the internal network (on
+> 192.168.0.5 for example) you can't access the web site by going to
+> 128.83.147.87.  So in other words you will have to be outside of your
+> network to test it.
+
+> From: kwang@kwang.org [mailto:kwang@kwang.org]
+> Sent: Friday, June 13, 2003 12:58 PM
+> To: chris.hoeschen@primevest.com
+> Cc: kwang@kwang.org
+> Subject: RE: IP forwarding on port 80
+>
+>
+> This is the iptables-save dump:
+>
+> *nat
+> :PREROUTING ACCEPT [37311:5054668]
+> :POSTROUTING ACCEPT [72:4540]
+> :OUTPUT ACCEPT [72:4540]
+> -A PREROUTING -d 128.83.147.87 -p tcp -m tcp --dport 80 -j LOG
+> --log-prefix "prerouting" --log-level 7 -A PREROUTING -d 128.83.147.87
+> -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.0.2:80 COMMIT
+> # Completed on Fri Jun 13 03:09:25 2003 # Generated by iptables-save
+> v1.2.6a on Fri Jun 13 03:09:25 2003 *filter :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0] :OUTPUT ACCEPT [17013:3920003] -A INPUT -d
+> 128.83.147.87 -p tcp -m tcp --dport 80 -j LOG --log-prefix "input"
+> --log-level 7 -A INPUT -s 127.0.0.1 -p tcp -j ACCEPT -A INPUT -m state
+> --state
+> RELATED,ESTABLISHED -j ACCEPT -A INPUT -p icmp -j ACCEPT -A INPUT -p
+> tcp -m tcp --dport 80 -j ACCEPT -A INPUT -p tcp -m tcp --dport 22 -j
+> ACCEPT -A INPUT -p tcp -m tcp --dport 115 -j ACCEPT -A INPUT -j DROP -A
+> FORWARD -j LOG --log-prefix "forward" --log-level 7 COMMIT
+>
+> This is the same as above, but with iptables -L and then -L -nat:
+>
+> Chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+> LOG        tcp  --  anywhere             dscp.nur.utexas.edutcp
+> dpt:http LOG
+> level debug prefix `input'
+> ACCEPT     tcp  --  localhost.localdomain  anywhere
+> ACCEPT     all  --  anywhere             anywhere           state
+> RELATED,ESTABLISHED
+> ACCEPT     icmp --  anywhere             anywhere
+> ACCEPT     tcp  --  anywhere             anywhere           tcp
+> dpt:http ACCEPT     tcp  --  anywhere             anywhere
+> tcp dpt:ssh ACCEPT     tcp  --  anywhere             anywhere
+> tcp dpt:sftp DROP       all  --  anywhere             anywhere
+>
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination
+> LOG        all  --  anywhere             anywhere           LOG level
+> debug
+> prefix `forward'
+>
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+>
+>
+> Anyway, I really appreciate you and everybody on the mailing list
+> helping me out.
+>
+> Kent Wang
+>
+>> Could you send me your entire firewall rules
+>>
+>>
+>> -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+>>
+>> | Chris Hoeschen - Distributed System Analysts        |
+>>
+>> | PrimeVest Financial Services                        |
+>>
+>> | (320) 656-4035 E-Mail: chris.hoeschen@primevest.com |
+>>
+>> -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+>>
+>>
+>>
+>> "Only two things are infinite, the universe and human stupidity, and
+>> I'm not sure about the former."
+>>
+>>  -- Albert Einstein
+>> Hippopotomonstrosesquippedaliophobia is the fear of long words
+>>
+>> -----Original Message-----
+>> From: Kent Wang [mailto:kwang@kwang.org]
+>> Sent: Friday, June 13, 2003 11:45 AM
+>> To: 'Chris Hoeschen'
+>> Subject: RE: IP forwarding on port 80
+>>
+>>
+>> -->
+>>
+>> HereR17;s the contents of PREROUTING:
+>>
+>>
+>>
+>> -A PREROUTING -d 128.83.147.87 -p tcp -m tcp --dport 80 -j LOG
+>> --log-prefix "prerouting" --log-level 7
+>>
+>> -A PREROUTING -d 128.83.147.87 -p tcp -m tcp --dport 80 -j DNAT
+>> --to-destination 192.168.0.2:80
+>>
+>>
+>>
+>> Apparently -m tcp is implied since my original command didn't include
+>> it but this is what the iptables-save dump says. But since these two
+>> are identical other than the action part, if something gets LOG'd, it
+>> should be DNAT'd and therefore passed to FORWARD right?
+>>
+>>
+>>
+>> This is what I have in FORWARD:
+>>
+>>
+>>
+>> -A FORWARD -j LOG --log-prefix "forward" --log-level 7
+>>
+>>
+>>
+>> So this means everything that passes through FORWARD gets logged,
+>> right? But my log has entries from PREROUTING (cause it has log-prefix
+>> 'prerouting) but none from FORWARD.
+>>
+>>
+>>
+>> The situation with tcpdump is still the same. Nothing incoming, except
+>
+>> when I manually do telnet 192.168.0.2 80.
+>>
+>>
+>>
+>> I think the fault is somewhere at the actual DNAT target or the
+>> FORWARDing mechanism. Could there have been a module that I didn't
+>> load properly? I don't know how to check that (and I would think that
+>> iptables would've told me about it already). This is a standard RedHat
+>
+>> 7 install with the latest iptables RPM.
+>>
+>>
+>>
+>> Kent Wang
+>>
+>>
+>>
+>> -----Original Message-----
+>> From: Chris Hoeschen [mailto:chris.hoeschen@primevest.com]
+>> Sent: Friday, June 13, 2003 8:03 AM
+>> To: 'Kent Wang'
+>> Subject: RE: IP forwarding on port 80
+>>
+>>
+>>
+>> A packet coming into your firewall will first travel through the
+>> prerouting table.  Depending on where that packet is destined will
+>> determine what other table it will be traveling through.  If that
+>> packet is going to your firewall itself then it will travel through
+>> the input table.  If it is going to be routed through your firewall to
+>
+>> another box then it will travel through the forward table.  The output
+>
+>> table only handles packets that originated from your firewall and is
+>> going out, it does not handle any packets that are getting routed
+>> through it.
+>>
+>>
+>>
+>> I didn't see you DNAT rule so make sure that is set correctly, an
+>> example for routing web would be as follows:
+>>
+>> iptables -t nat -A PREROUTING -p tcp -d {EXT_IP} --dport 80 -j DNAT
+>> --to-destination {WWW_IP}:80
+>>
+>>
+>>
+>> when you web server receives the packet the source address (the one it
+>
+>> will be sending the ACK back to) will still be set to the original
+>> source and not the firewall.  So it is important that the web server's
+>
+>> gateway is set to be your firewall.  If this will not work in your
+>> environment then you can put a rule into the postrouting table to SNAT
+>
+>> the packet, this way the web server will see the packet as coming from
+>
+>> your firewall and (granted that they are on the same subnet) will
+>> return the packet to the firewall.  This is not recommended as all
+>> connections to the web server will appear as if it was coming from the
+>
+>> firewall.
+>>
+>>
+>>
+>> Sorry for all the routing mojo but helps to get a understanding of the
+>
+>> tables for troubleshooting.
+>>
+>>
+>>
+>>
+>>
+>> -A FORWARD -p tcp -m tcp --dport 80 -j LOG --log-prefix "test"
+>> --log-level 7
+>>
+>> I don't know what the -m tcp module is and this might be your problem,
+>
+>> try removing it and see if it works.
+>>
+>>
+>>
+>> -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+>> | Chris Hoeschen - Distributed System Analysts        |
+>> | PrimeVest Financial Services                        |
+>> | (320) 656-4035 E-Mail: chris.hoeschen@primevest.com |
+>> -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+>>
+>> "Only two things are infinite, the universe and human stupidity, and
+>> I'm not sure about the former."
+>>  -- Albert Einstein
+>> Hippopotomonstrosesquippedaliophobia is the fear of long words
+>>
+>> -----Original Message-----
+>> From: netfilter-admin@lists.netfilter.org
+>> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Kent Wang
+>> Sent: Friday, June 13, 2003 2:25 AM
+>> To: 'George Vieira'; netfilter@lists.netfilter.org
+>> Subject: RE: IP forwarding on port 80
+>>
+>> -->
+>>
+>> OK, more info. My belief is that the packets are not being DNAT'd
+>> properly. I added this to that chain:
+>>
+>>
+>>
+>> -A PREROUTING -j LOG --log-prefix "test" --log-level 7
+>>
+>>
+>>
+>> And was able to log all the incoming HTTP packets. I then added these
+>> two:
+>>
+>>
+>>
+>> -A FORWARD -p tcp -m tcp --dport 80 -j LOG --log-prefix "test"
+>> --log-level 7
+>>
+>> -A OUTPUT -p tcp -m tcp --dport 80 -j LOG --log-prefix "test"
+>> --log-level 7
+>>
+>>
+>>
+>> A properly DNAT'd packet should pass through FORWARD and then OUTPUT,
+>> but I found nothing in the log. Is it possible that the DNAT module
+>> isn't loaded?
+>>
+>>
+>>
+>> IR17;ve done tcpdump and the firewall definitely always receives the
+>> internet-incoming message and the web server never receives it.
+>>
+>>
+>>
+>> Any clues?
+>>
+>>
+>>
+>> -----Original Message-----
+>> From: netfilter-admin@lists.netfilter.org
+>> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of George
+>> Vieira
+>> Sent: Thursday, June 12, 2003 5:18 PM
+>> To: Kent Wang; netfilter@lists.netfilter.org
+>> Subject: RE: IP forwarding on port 80
+>>
+>>
+>>
+>> What debugging have you done? tcpdump, iptables logging, anything?
+>>
+>>
+>>
+>> Does your web server have a default gateway of the firewall?
+>>
+>> Thanks,
+>>
+>>
+>>
+>> ____________________________________________
+>>
+>>
+>>
+>> George Vieira
+>> Citadel Computer Systems Pty Ltd  Systems Manager  georgev AT
+>> citadelcomputer DOT com DOT au
+>>
+>>
+>>
+>> Citadel Computer Systems Pty Ltd
+>>
+>> Phone : +61 2 9955 2644  HelpDesk: +61 2 9955 2698
+>> <http://www.citadelcomputer.com.au/> http://www.citadelcomputer.com.au
+>
+>> <http://www.citadelcomputer.com.au/>
+
+
+
 
