@@ -1,13 +1,13 @@
 From: Marcello Scacchetti <marcello.scacchetti@nextrem.it>
-Subject: Re: Filter by IP address problems
-Date: 11 Dec 2002 22:04:24 +0100
+Subject: Re: ipsec & nat
+Date: 11 Dec 2002 21:39:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039640664.25014.8.camel@nxitmirms1>
-References: <1039642859.4340.14.camel@damon.betcolan>
+Message-ID: <1039639156.25020.3.camel@nxitmirms1>
+References: <CAFAAEC91CC8D511952000062938C6F12ECD92@ozlan.fcdomain.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039642859.4340.14.camel@damon.betcolan>
+In-Reply-To: <CAFAAEC91CC8D511952000062938C6F12ECD92@ozlan.fcdomain.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,69 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi Damon,
-can you post on this list the output of:
-iptables -nL
-and of:
-iptables -t nat -nL
-and if possible the output of:
-ifconfig
-hiding public ip addresses?
-If you prefer you can use output of iptables-save for me is the same.
-Thanks,
+Hi Doug,
+i think your supposition is right, that's too general. Every packet
+going out on eth0 will be natted and this is not what you want in case
+of ipsec. Packet going out on the newly established vpn tunnel should
+NOT be natted in any way. I can suggest you to nat what you really need
+to nat so in this way you will get benefits on security side too.
+If you know wich ip address will be assigned or are assigned on the
+other side of the tunnel you can explicit disable nat on that
+destination.
+
 			Marcello
 
 
-Il mer, 2002-12-11 alle 22:40, Damon Brinkley ha scritto:
-> Hey everyone!  I'm getting extremely frustrated at iptables right now
-> because it doesn't seem to follow the rules as ipchains did.  Basically
-> I'm just trying to replace my ipchains server with a new computer that
-> uses 2.4 and iptables.  This is a NAT/gateway machine and we filter our
-> users by IP addresses.  The different ip blocks have certain access to
-> certain services.  I've copied over my old script that's running right
-> now and changed everything to work with iptables but it doesn't seem to
-> deny anyone.
-> 
-> Here's the basic rules I have right now for testing.  
-> 
-> ###################################
-> 
-> # disable ip forwarding while rules are applied
-> echo 0 > /proc/sys/net/ipv4/ip_forward
-> 
-> /sbin/modprobe iptable_nat
-> /sbin/modprobe ip_conntrack
-> 
-> /sbin/iptables -F
-> /sbin/iptables -t nat -F
-> /sbin/iptables -X
-> /sbin/iptables -t nat -X
-> 
-> /sbin/iptables -P INPUT DROP
-> /sbin/iptables -P OUTPUT DROP
-> /sbin/iptables -P FORWARD DROP
-> 
-> # no access
-> /sbin/iptables -A INPUT -s 172.17.0.0/20 -j DROP
-> 
-> # NAT
-> /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> /sbin/iptables -A FORWARD -j ACCEPT
-> 
-> # turn on ip forwarding
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> 
-> ####################
-> 
-> If I change my laptop IP to 172.17.0.244 then I'm able to ping
-> www.yahoo.com when the no access rule should deny then from doing
-> anything.  This is all working on a machine that uses ipchains...what am
-> I doing wrong?
-> 
-> Thanks
-> Damon Brinkley
+Il mer, 2002-12-11 alle 06:03, Simpson, Doug ha scritto:
+> I have a redhat 7.3 box that is dualhomed.  It is my firewall and vpn
+> server.  I can successfully vpn (with IPSEC) into it.  If I use the
+> following command "iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE" I
+> cannot use VPN, but my internal network can only receive email (POP3) and
+> telnet after I use this command.
+> I have set up squid so I proxy my www traffic.
+> Can I NAT my pop3 and my telnet, and still VPN (IPSEC)?  
+> I am guessing my command is too general and I need to be more specific -
+> ports, source, etc defined.
+> Thanks,
+> Doug
 -- 
 Marcello Scacchetti <marcello.scacchetti@nextrem.it>
 
