@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: firewall problem continued
-Date: Tue, 10 Aug 2004 10:14:22 +0100
+From: guillaume <guillaume.riviere@hcm.vsl-vn.com>
+Subject: Routing, SNAT and two ISPs
+Date: Tue, 10 Aug 2004 16:18:10 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408101014.22969.Antony@Soft-Solutions.co.uk>
-References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408100926.33589.Antony@Soft-Solutions.co.uk> <20040810084353.GB22730@tranquility.scriptkitchen.com>
-Reply-To: Netfilter ML <netfilter@lists.netfilter.org>
+Message-ID: <411892D2.6010904@hcm.vsl-vn.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040810084353.GB22730@tranquility.scriptkitchen.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +15,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: iptables <netfilter@lists.netfilter.org>
 
-On Tuesday 10 August 2004 9:43 am, Payal Rathod wrote:
+Hi all,
 
-> On Tue, Aug 10, 2004 at 09:26:33AM +0100, Antony Stone wrote:
-> > Why does the mail server need to refer to itself using the public IP?
->
-> No idea. I thought that is recommended. I mean every machine should
-> be able to access itself using all its IPs.
+Well, it's seams to be a little bit more complicated than
+I thought to loadbalance Internat connection between 2 (different) ISP
+lines ...
 
-That would mean "all IPs on all interfaces of the machine".   It doesn't 
-include arbitrary IPs which some other machine may choose to translate to an 
-IP on this machine's interface.
+Here is my problem:
 
-> Will the same rule apply even when I using it as a database or webserver?
+Basically, I need to connect my office to 2 differents ISP (different 
+gateways and different DNS ). My linux box is a 3 NICs Box. The problem 
+is that, for the first ISP, I don't have static Addresses.
 
-If you can find a good reason why a machine needs to refer to itself using an 
-IP which is not on one of its interfaces (ie: an address which gets 
-translated elsewhere), then we can try to think of a way to enable that.
+So, I would like to loadbalance, "route" and NAT all my internals Addresses
+through thoses 2 ISP except for some addresses and some port numbers 
+which will use
+only the ISP2.
 
-However, until the problem arises, don't worry about it.
+I would like also to detect dead gateway (maybe I ask for to much ...).
 
-> > You should be cautious about doing too many things one after another
-> > which are simply needed as workarounds for a strange network setup, or a
-> > non-ideal DNS setup, and sooner or later you need to stop adding
-> > workarounds and change the underlying design.
->
-> Are you saying my setup is broken? Should I change my whole design?
+My problem is that SNAT is POSTROUTING. I am lose ...
+I don't know if I have to deal with iptable2 loadbalancing or if I can do
+this only with netfilter.
 
-Since you do not apparently have a need for the mail server to reach itself on 
-the public IP address, then no, the design may be perfectly okay.   I thought 
-there was some need for this, which suggested to me that maybe it was the 
-wrong way to go about doing it.
+Maybe in a first part, I just would like to "statically loadbalance" my 
+connections.
+I mean, just put rules to (for example)
 
-So long as the system is working as it is, however, the design is probably 
-okay.
+- route http packets to my first ISP and ssh packets to my second ISP,
+- route packets from my internals IP 10.0.0.2-100 to ISP 1
+- route packets from my internals IP 10.0.0.101 to ISP2
+        (all with NAT, of course)
 
-Regards,
+After, I will deal with a real loadbalancing for a part of my internal 
+IP and
+for some protocols.
 
-Antony.
+Any Help will be very appreciated,
+Thank you in advance,
+Guillaume
 
--- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
