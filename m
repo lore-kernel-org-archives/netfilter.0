@@ -1,11 +1,11 @@
-From: "Joe de Vera Jr." <jhoedv@we-amuse.com>
-Subject: Re: Iptables Problem on DNS Server
-Date: Sun, 23 Jun 2002 02:26:40 -0700
+From: "David B. Bitton" <david@codenoevil.com>
+Subject: Re: Linksys v. Netfilter
+Date: Sat, 22 Jun 2002 14:27:11 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000601c21a98$162eeb40$6500a8c0@systemsadmin>
-References: <20020622173606.02EE74692@lists.samba.org>
+Message-ID: <047401c21a1a$6cea4700$0601030a@codenoevil.com>
+References: <OMELINNHIGOCHFNAFPEKOELBCAAA.blanda@mnsi.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -17,51 +17,45 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Brian <blanda@mnsi.net>
+Cc: netfilter@lists.samba.org
+
+or anything.  i'm using a netfilter firewall/nat, and I'm now wondering why.
+--
+
+David B. Bitton
+david@codenoevil.com
+www.codenoevil.com
+
+Code Made Fresh DailyT
+----- Original Message ----- 
+From: "Brian" <blanda@mnsi.net>
+To: "David B. Bitton" <david@codenoevil.com>
+Sent: Saturday, June 22, 2002 2:24 PM
+Subject: RE: Linksys v. Netfilter
 
 
---__--__--
-Message: 2
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Organization: Software Solutions
-To: <netfilter@lists.samba.org>
-Subject: Re: Iptables Problem on DNS Server
-Date: Sat, 22 Jun 2002 14:39:14 +0100
-
-On Sunday 23 June 2002 5:36 am, Joe de Vera Jr. wrote:
-
-> > On Sunday 23 June 2002 5:01 am, Joe de Vera Jr. wrote:
-> > > here's my ruleset in my machine... seen anything wrong or lacking
-here?
-> > > just to remind you guys my problem is that.. when my firewall is
-running
-> > > my DNS don't work... thanks!
-> >
-> > Can we just clarify that last bit ?
-> >
-> > Do you mean that your firewall cannot resolve names by contacting an
-> > external
-> > DNS server, or that you are running DNS on your firewall, and other
-> > machines cannot contact *it* as a DNS server ?
->
-> yep,, i'm running DNS on that machine also.. an that exactly my client
-> can't resolve from it.. so all the DNS record on that server can't
-function
-> due to this problem.. so i force not to run a firewall for a meantime...
-
-Okay - the answer is simple, then.   You have no rule allowing udp packets
-into the machine on port 53.
-
-
-
-Antony.
-
-
-oic... so now how will i going to add that udp packets allow to my ruleset?
-what parameter that i supposed to put on my iptables command...
-
-thanks in advance...
-
-joe
+> You mean how linksys uses statful firewalling?
+> 
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org]On Behalf Of David B. Bitton
+> Sent: Saturday, June 22, 2002 2:05 PM
+> To: netfilter@lists.samba.org
+> Subject: Linksys v. Netfilter
+> 
+> 
+> Have any whitepapers been written on the subject of a Linksys Router v. a
+> Netfilter implementation?
+> --
+> 
+> David B. Bitton
+> david@codenoevil.com
+> www.codenoevil.com
+> 
+> Code Made Fresh DailyT
+> 
+> 
+> 
 
 
