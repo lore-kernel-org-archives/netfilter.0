@@ -1,13 +1,16 @@
-From: Tom Eastep <teastep@shorewall.net>
+From: "David C. Hart" <DCH@TQMcube.com>
 Subject: Re: IPT Still Driving Me Nuts
-Date: Sun, 02 Nov 2003 10:16:36 -0800
+Date: Sun, 02 Nov 2003 13:57:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067796995.26406.10.camel@wookie.shorewall.net>
+Message-ID: <1067799467.18241.12.camel@main.tqmcube.com>
 References: <1067796031.18240.5.camel@main.tqmcube.com>
+	 <1067796995.26406.10.camel@wookie.shorewall.net>
+	 <1067797945.18250.8.camel@main.tqmcube.com>
+	 <1067798390.26406.16.camel@wookie.shorewall.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-QfuIZTHtZQFwTBhMxbEW"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1067796031.18240.5.camel@main.tqmcube.com>
+In-Reply-To: <1067798390.26406.16.camel@wookie.shorewall.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +20,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "David C. Hart" <DCH@TQMcube.com>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+To: iptables mailing list <netfilter@lists.netfilter.org>
+Cc: Tom Eastep <teastep@shorewall.net>
 
-On Sun, 2003-11-02 at 10:00, David C. Hart wrote:
-> "Nov  2 12:36:45 mail2 kernel:  -FW-  IN=eth1 OUT=
-> MAC=00:09:5b:22:29:d1:00:06:25:e4:ed:a3:08:00 SRC=61.172.3.25
-> DST=192.168.0.31 LEN=530 TOS=0x00 PREC=0x00 TTL=239 ID=21777 
-> PROTO=UDP SPT=32937 DPT=1026 LEN=510"
-> 
-> I have eliminated the virtual internal IP. The message above is still a
-> mismatch. That IP is on IF eth0 while it shows on eth1.
 
-Are eth0 and eth1 connected to the same Hub/Switch?
+--=-QfuIZTHtZQFwTBhMxbEW
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
--Tom
--- 
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
+On Sun, 2003-11-02 at 13:39, Tom Eastep wrote:
 
+> Such a setup is pure "security by obscurity" since the firewall can be
+> bypassed by hosts on your external subnet. Having both interfaces
+> connected to the same HUB/switch also means that either interface can
+> answer ARP "who-has" requests for addresses assigned to either
+> interface. That's why you see the "wrong" interface accepting input
+> traffic.
+>=20
+OK. I reconfigured and pulled the plug on eth1 to the router. Let's see
+what happens.
+
+--=-QfuIZTHtZQFwTBhMxbEW
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQA/pVOqol4OE0cpGaIRAtd2AJ9wfpeT8yDcMNtMcW1Mtu2+HsOjgQCdF/Qz
+QqFJios38zJvZwUvjW7tyAU=
+=MsUL
+-----END PGP SIGNATURE-----
+
+--=-QfuIZTHtZQFwTBhMxbEW--
 
 
