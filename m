@@ -1,8 +1,9 @@
-From: Joris <joriske@gmail.com>
-Subject: routing broadcast mac ethernet frames
-Date: Sat, 5 Feb 2005 08:24:23 +0100
-Message-ID: <afcf620205020423242dbf2877@mail.gmail.com>
-Reply-To: Joris <joriske@gmail.com>
+From: Vinod Chandran <vinod_chandran@multitech.co.in>
+Subject: Re: Usage of CONNMARK
+Date: Sat, 05 Feb 2005 13:06:23 +0530
+Message-ID: <42047777.3030102@multitech.co.in>
+References: <42032EC5.4090303@multitech.co.in>
+	<Pine.LNX.4.61.0502041515360.10050@filer.marasystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -15,42 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-Dear netfilter team,
+Hi,
+ 
+Currently, from the FTP helper if DROP is given, the packets are not 
+getting dropped since the conntrack entry exists and also since from 
+where the helper routine is called, there is no check for return value 
+of NF_DROP. Hence when NF_DROP is returned, inside ip_conntrack_in, I 
+set the conntrack value
+       ct->mark = 1
+ However this CONNMARK value is getting applicable only from the next 
+packet ownwards.
 
-I'd like to make a linux setup (both 2.4 and 2.6) accept and route
-packets on a lan with a broadcast mac.
+If on the other hand, say I try to change the mark value, 
+(*pskb)->nfmark ( I assume it contains the MARK indicator), and put a 
+rule in the KEEP_STATE_FORWARD chain to drop packets with the specific 
+mark value, the kernel is panicing , with a BUG in sched.c. I also get 
+panic if I call nf_conntrack_put.
 
-Maybe it's a setting somewhere we haven't discovered yet, perhaps it
-can be done with an iptables rule, or perhaps someone can whip up a
-kernel patch?
+The problem in my case, is the error is detected after the conntrack 
+state is changed. I am wondering whether this is the reason why its 
+causing all the problems.
+
+Thanks,
+Vinod C
+
+Henrik Nordstrom wrote:
+
+> On Fri, 4 Feb 2005, Vinod Chandran wrote:
+>
+>> I am using the CONNMARK patch.
+>> Inside conntrack_core, in case of special conditions, I have modified 
+>> the mark value in the conntrack.
+>
+>
+> When in conntrack is this modification done?
+>
+>> However this CONNMARK value is getting effective only for the next 
+>> packet and not for the same packet.
+>
+>
+> The connmark match looks at the connection mark value at the time the 
+> connmark match is evaluated.
+>
+>> Is there some way by which, I can make the settings applicable to the 
+>> same packet itself?
+>
+>
+> It is, assuming it's done before you need to evaluate the match.
+>
+> Regards
+> Henrik
+>
 
 
-This is why: certain embedded devices, such as some wifi accesspoints
-and some DSL modems, seem to have a common bug/feature.
-They keep an arp table, and any traffic from any host not in that
-table is re-sent with a broadcast mac address (ff:ff:ff:ff:ff:ff).
 
-As far as I know, linux will happily accept packets like that when
-they're adressed to itself, but will not route them. This makes
-communication impossible in certain setups with linux as a router.
-A lot of people, especially wireless communities, are (knowingly or
-more likely unknowningly) suffering from this problem.
-
-Of course, those devices are buggy and should use ARP, but making
-linux 'compatible' is a lot easier than getting multiple hardware
-manufacturers to rewrite their firmware.
-
-
-
-
-Many thanks in advance,
-Joris & zombie
-
-
-A highly similar problem description I found on the linux-net list:
-http://marc.theaimsgroup.com/?l=linux-net&m=108263333208537&w=2
-Read this too: http://marc.theaimsgroup.com/?l=linux-net&m=108264197315176&w=2
 
