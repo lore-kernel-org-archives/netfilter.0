@@ -1,14 +1,12 @@
-From: David Cannings <lists@edeca.net>
-Subject: Re: FW: Filtering multiple networks
-Date: Mon, 31 May 2004 13:19:33 +0000
+From: "Don Hughes" <dhughes@sannotes.org>
+Subject: Failure when compiling for SuSE Linux 9.1 (2.6.4), missing time module
+Date: Sun, 30 May 2004 16:42:51 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405311319.33568.lists@edeca.net>
-References: <E1BUk4b-0006Wv-Cf@vishnu.netfilter.org> <20040531104524.GA26731@home.manuelm.org>
+Message-ID: <40BA0F0B.19824.209BA9F@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040531104524.GA26731@home.manuelm.org>
-Content-Disposition: inline
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 31 May 2004 10:45, Frank Gruellich wrote:
-> * Markus Zeilinger <mz@sea.uni-linz.ac.at> 31. May 04:
-> > - Thy is DROP bad here? As I see REJECT would send an error message
-> > back to the source, but this would not make any sense on packets
-> > coming on the WAN interface with private IP addresses, or am I wrong?
-> It would be kinda polite to point the sender of the packets to his
-> misconfigured box.  REJECT is like yelling 'Hey, you are wrong!'
-> DROPping is like closing your eyes to somebodys problem.  Anyway, it's
-> you decision right here.
+Trying to reinstall iptables 1.2.9 after upgrading to SuSE Linux 
+9.1 and apply the time module from the 'extra' group.
 
-Can you please explain how a TCP RST or ICMP message is supposed to get 
-back to a spoofed RFC 1918 (or otherwise reserved) address?  Sending 
-replies of any sort out of a WAN interface onto the Internet to a 
-reserved or private address is very bad practice.  Some would even argue 
-that sending to unallocated space is bad.  If border routers don't drop 
-such packets, your firewall most certainly should.
+Using the same tools as I used previously, none of the POM 
+patches would apply.  It appears that the format of some of the 
+source configuration files has changed.  I downloaded the most 
+recent POM which still failed and with no further information; 
+and I can no longer find the time module.
 
-David
+
+..don
+
+support@microtechniques.com
+White Plains, NY
+
+
 
