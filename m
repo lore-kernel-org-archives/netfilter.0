@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: AW: AW: Firewall workaround
-Date: Fri, 16 Jan 2004 19:13:13 +0000
+From: kernel_learner <kernel_learner@yahoo.com>
+Subject: Cant find definitions
+Date: Fri, 16 Jan 2004 11:29:30 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401161913.13373.Antony@Soft-Solutions.co.uk>
-References: <357895CFC8CB7C44900D6A4F46D08AA90459D0@exchangeserver.IAT.local>
+Message-ID: <20040116192930.10566.qmail@web40312.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <357895CFC8CB7C44900D6A4F46D08AA90459D0@exchangeserver.IAT.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +15,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Friday 16 January 2004 7:01 pm, Benjamin Dickgiesser wrote:
+Looking for the following structures but was unable to
+track down their definitions in the source code..can
+someone point me to those please?
 
-> I didn't want to create a question about If I am alloud to actually bypass
-> the firewall. I am alloud to use specif services, however the it does not
-> say that I have to use the common ports for these services. The problem is
-> that I am forced to use different ports for these services because of a job
-> which I am doing.
->
-> It would really be nice if you could help!
+1. STRUCT_ENTRY_TARGET defined as struct
+ipt_entry_target
+2. STRUCT_ENTRY defined as struct ipt_entry
+and
+3. STRUCT_ENTRY_MATCH defined as struct
+ipt_entry_match
 
-Have you considered PPP over SSH? http://en.tldp.org/HOWTO/ppp-ssh/index.html
+but I could not see the exact definitions of those
+structures.. I beleve these are the structures
+referred to in the "Netfilter Hacking How to"
+http://www.netfilter.org/documentation/HOWTO//netfilter-hacking-HOWTO-4.html
 
-It's really ugly, but it works (well, er, so I've heard, of course...)
+Thanks!
 
-(Please note http://sites.inka.de/sites/bigred/devel/tcp-tcp.html as well)
 
-Antony.
-
--- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
-
- - Philip Hands
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
 
