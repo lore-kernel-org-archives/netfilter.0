@@ -1,13 +1,12 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
 Subject: Re: Iptables rules comparation
-Date: 30 Oct 2004 23:00:19 +0200
-Message-ID: <1099080752.22637.18.camel@nostromo.bgsecm.com>
+Date: 30 Oct 2004 23:00:13 +0200
+Message-ID: <1099080736.22637.16.camel@nostromo.bgsecm.com>
 References: <000d01c4baa2$35a17ae0$023ca8c0@cfg.onat.gov.cu>
-	<20041028071525.GD8169@rhum.iomeda.fr> <41811F28.2030103@w3works.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41811F28.2030103@w3works.com>
+In-Reply-To: <000d01c4baa2$35a17ae0$023ca8c0@cfg.onat.gov.cu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,29 +20,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El jue, 28 de 10 de 2004 a las 18:32, Dave Paris escribi=C3=B3:
-> > J.R. Barreras (barreras@cfg.onat.gov.cu) wrote:
-> >=20
-> >Hi all!
-> >How can I do compare iptables rule sets produced by different scripts?
-> >Any tools? Ideas?
-> >
-> >Waiting for yours reply, thanks in advance...
+El lun, 25 de 10 de 2004 a las 16:52, J.R. Barreras escribi=C3=B3:
+> Hi all!
+> How can I do compare iptables rule sets produced by different scripts?
+> Any tools? Ideas?
 >=20
-> What if you load the ruleset, then run 'iptables -nvL', normalize the=20
-> output a little (under interfaces, a '*' would match any specific=20
-> interface specified under a different ruleset) and simply compare the=20
-> output of the two?
+> Waiting for yours reply, thanks in advance...
 >=20
-> Sounds like a fairly trivial-ish task for someone fluent in Perl.
->=20
-> Kind Regards,
-> -dsp
+> Best wishes!
+> Barreras
 
-I would say that it's better to compare the capabilities of the
-scripts and not just the rules. A firewall can make it's work
-in a lot of different ways, and diff-ing the rules is not a good
-idea.
+The best thing you can do it's run each of the scripts and
+do some firewall stressing to the firewall. You can use the
+following tools to check your firewall rules:
+
+nmap: Check opened/closed ports and combinations of attacks to them
+hping2: Check the ICMP configuration of the firewall and do some attacks
+ to it.
+nessus: See what attacks the firewall it's blocking or not.
+
+As you can see you can use any tool that helps you to check the
+firewall, it's like doing penetration testing on your own firewall.
+This way you can find what script works better and blocks/accepts
+the packets you want.
+
+Another good idea it's to check the scripts by hand if you know
+iptables syntax. I would advise you this it's the best way to
+check the firewall, and see what rules you are using.
 
 --=20
 Jose Maria Lopez Hernandez
