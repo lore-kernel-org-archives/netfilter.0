@@ -1,10 +1,9 @@
-From: Jaroslaw Zdrzalek <zdrzalek@silpion.de>
-Subject: quering byte counts for user defined chains/rules using libiptc
-Date: Fri, 23 May 2003 14:56:11 +0200
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Sorta OT - Basic shell script to see "real time" byte/pkt counter for iptables
+Date: Tue, 9 Sep 2003 15:35:39 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.0.20030523143241.00a87008@mail.silpion.de>
+Message-ID: <20030909223539.82306.qmail@web40206.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/html; charset="us-ascii"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,73 +14,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: nf <netfilter@lists.netfilter.org>
 
-<html>
-dear all,<br><br>
-my prog, which uses libiptc, queries byte counts for a single rule in an
-user defined chain (ipXXX.XXX.XXX.XXX)<br><br>
-here comes a sample code:<br>
-...<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>h
-= iptc_init(tablenamefilter);<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>if
-(!h) slog(LOG_ERR, &quot;Can't initialize:
-%s\n&quot;,iptc_strerror(errno));<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>now
-= time(NULL);<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>for
-(chain = iptc_first_chain(&amp;h); chain; chain =
-iptc_next_chain(&amp;h))//ITERATE CHAINS<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>{<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>ip
-= chain+2;//2==strlen(chainprefix);<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>if(strncmp(chain,chainprefix,2)!=0)
-continue;<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>struct
-ipt_counters *count = NULL;<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>count
-= iptc_read_counter(chain, 1, &amp;h);<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>if(count
-== NULL) slog(LOG_ERR,&quot;iptc_read_counter(%s, 1, &amp;h); returns
-NULL&quot;,chain);<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>else<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>{<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>bytecnt
-= count-&gt;bcnt;<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>slog(LOG_INFO,&quot;iptc_read_counter(%s,
-1, &amp;h); returns %u&quot;,chain,bytecnt);<br>
-<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>}<br>
-......<br>
-the problem is that it always returns 0.<br>
-with iptables -L -v i get real counts<br><br>
-the version of iptables is 1.2.8 (stable)<br><br>
-if yoe have any suggestions please reply to my email,<br>
-because i am not a list member<br><br>
-thanks in advance<br><br>
-jaroslaw<br><br>
-<x-sigsep><p></x-sigsep>
-<hr>
-<font face="Courier New, Courier">Jaroslaw
-Zdrzalek&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-| e-mail
-<a href="mailto:zdrzalek@silpion.de">zdrzalek@silpion.de</a><br>
-Leiter Anwendungsentwicklung&nbsp; | web&nbsp;&nbsp;&nbsp;
-<a href="http://www.silpion.de/" eudora="autourl">www.silpion.de</a><br>
-Silpion IT-Solutions GmbH&nbsp;&nbsp;&nbsp;&nbsp; | tel&nbsp;&nbsp;&nbsp;
-+49 (40) 54 00 71 20<br>
-Pinnasberg
-29-33&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-| fax&nbsp;&nbsp; +49 (40) 54 00 71 19<br>
-20359
-Hamburg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-| mobil&nbsp; +49 (170) 87 82 96 9<br>
-<hr>
-</font><tt><br>
-</html>
+Ok first off let me say that I am not an experienced coder/scripter
 
+That being said this script I put together does the very basics of what I would
+like to see. It sort of emulates a daemon like a approach in which the iptables
+-vxnL (doesn't do NAT yet) command is looped in combination with sleep to
+achieve a semi real time monitoring.
+
+Like I said I'm not a great scripter and I would love the community to pick up
+on this and mayb sort of port the approach to PHP to work via a web page(of
+course it would be much  need to be much slower than the console).
+
+At any rate check it out and feel free to make it your own but please observe
+the GPL.
+
+http://nixn00b.net/iptstat.sh
+
+=====
+In the absence of order there will be chaos.
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
