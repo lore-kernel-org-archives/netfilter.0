@@ -1,13 +1,14 @@
-From: "Ryan Hatch" <spam@leadership-solutions.net>
-Subject: RE: IP masquerading and second ISP line questions
-Date: Sun, 16 May 2004 11:27:30 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IP masquerading and second ISP line questions
+Date: Sun, 16 May 2004 19:54:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BPPQK-0003pm-At@vishnu.netfilter.org>
-References: <200405161012.07517.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405161954.15392.Antony@Soft-Solutions.co.uk>
+References: <E1BPPQK-0003pm-At@vishnu.netfilter.org>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405161012.07517.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <E1BPPQK-0003pm-At@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,80 +21,63 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> > Hello all,
-> >
-> > I am running iptables on my fedora box to do ip masquerading for my
-> > internal network as well as 1 to 1 NAT for two windows terminal servers.
-> >
-> > #1, I am using a Checkpoint SecureClient to log into my VPN at my office
-> > (not on one of the two terminal servers).  Since I switched to iptables
-> to
-> 
-> Switched from what?   (Just out of interest, I don't think it matters to
-> this
-> question.)
+On Sunday 16 May 2004 6:27 pm, Ryan Hatch wrote:
 
-I should have made that more clear...I switched from PIX!
+> > It's generally recommended that if you have a static IP address (which
+> > you appear to have), then you use SNAT instead of MASQUERADE, however
+> > this is purely for a (very modest) performance improvement; it doesn't
+> > change the functionality in any way.
+>
+> So, in order to do this sort of static NATing, what sort of command would I
+> use to to replace the -A POSTROUTING -o eth0 -j MASQUERADE?  Would
+> sensibily, it seems like I should do something like this:
+>
+> -A POSTROUTING -s 192.168.0.0/24 -j SNAT -o eth1 --to-source 1.2.3.5
+>
+> Is that more or less what you were talking about?
 
-> 
-> > handle my ip masquerading, it has periodically booted me out of my
-> network
-> > forcing me to re-authenticate.  I had heard that there were more than
-> one
-> > ways to do IP sharing/masquerading.  Is the -A POSTROUTING -o eth0 -j
-> > MASQUERADE the preferred method to do this?
-> 
-> It's generally recommended that if you have a static IP address (which you
-> appear to have), then you use SNAT instead of MASQUERADE, however this is
-> purely for a (very modest) performance improvement; it doesn't change the
-> functionality in any way.
-> 
-So, in order to do this sort of static NATing, what sort of command would I
-use to to replace the -A POSTROUTING -o eth0 -j MASQUERADE?  Would
-sensibily, it seems like I should do something like this: 
+Exactly.
 
--A POSTROUTING -s 192.168.0.0/24 -j SNAT -o eth1 --to-source 1.2.3.5
+> Yeah, I actually do have a bunch of statics.  I don't think that my
+> SecureClient problem is a function of the IP addresses.  I think that it
+> has to do with NAT.  From what I can tell, it is a common problem that many
+> IPSec VPN clients have when working behind firewalls/routers using
+> masquerading NAT. Its seems that the common workaround is to do UDP
+> encapsulation--something that my particular client does not support.  I
+> might end up trying to do 1:1 on it.
 
-Is that more or less what you were talking about?
+I'm not aware of this "common problem", however I only use IPsec (through NAT) 
+in tunnel mode between networks, not in transport mode with a client-gateway 
+arrangement.
 
-> If you actually have a dynamic IP address on your external interface, then
-> you
-> have to use MASQUERADE, but this fact would also be the cause of you
-> losing
-> authentication on the SecureClient as well, because it would suddenly find
-> itself talking to a new address from time to time.
+> > Yes.   Set up another route using the iproute2 tools available from
+> > http://lartc.org - for what you want, the best solution is probably to
+> > MARK the packets you want to go up the cable modem in netfilter, and then
+> > route the marked packets with the appropriate iproute2 tables.
+>
+> Yeah, I've looked there....it seems like a slightly complex process.
+> Perhaps a project for next weekend!
 
-Yeah, I actually do have a bunch of statics.  I don't think that my
-SecureClient problem is a function of the IP addresses.  I think that it has
-to do with NAT.  From what I can tell, it is a common problem that many
-IPSec VPN clients have when working behind firewalls/routers using
-masquerading NAT. Its seems that the common workaround is to do UDP
-encapsulation--something that my particular client does not support.  I
-might end up trying to do 1:1 on it.
+Yes.   It looks slightly complex - but it isn't.   You almost certainly have 
+all the tools you need already on your system (you just never typed the "ip" 
+command before...)
 
-> 
-> > #2, I hope this is feasible--it is kind of a tricky one.  I have a third
-> > interface on my iptables box (not indicated on my diagram) that is
-> > connected to a cable modem (as a backup).  Since it is just sitting
-> there
-> > all day long not doing anything, I would love to use it from a few of my
-> > boxes to handle my bittorrent/ftp traffic.  Is it possible to do a
-> similar
-> > thing to what I am doing with my squid proxy to automatically route
-> > bittorrent or ftp traffic through eth2 instead of the default eth0?
-> Could
-> > somebody shed some light on that one for me?
-> 
-> Yes.   Set up another route using the iproute2 tools available from
-> http://lartc.org - for what you want, the best solution is probably to
-> MARK
-> the packets you want to go up the cable modem in netfilter, and then route
-> the marked packets with the appropriate iproute2 tables.
+Read about it, try it, and you'll find it's a lot easier than you think :)
 
-Yeah, I've looked there....it seems like a slightly complex process.
-Perhaps a project for next weekend!
+Regards.
 
-Thanks,
-Ryan
+Antony.
+
+-- 
+In science, one tries to tell people
+in such a way as to be understood by everyone
+something that no-one ever knew before.
+
+In poetry, it is the exact opposite.
+
+ - Paul Dirac
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
