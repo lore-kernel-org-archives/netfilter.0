@@ -1,12 +1,14 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: Re: Routing, SNAT and two ISPs
-Date: Thu, 12 Aug 2004 09:11:34 +0800
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: Question about REJECT in FORWARD rule
+Date: Wed, 11 Aug 2004 18:32:44 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <03ab01c48009$4f8a9640$0100a8c0@newlife>
-References: <D5C9032B2B09C64EA2409D6214E91AC905125E@asimail2.alphanumeric.com>
+Message-ID: <SERVER74ZDgC81TbdkS00000016@server7.bandwidthco.com>
+References: <20040811200045.GA6472@uglabng.math.gatech.edu>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040811200045.GA6472@uglabng.math.gatech.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +19,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Carlos Villegas' <villegas@math.gatech.edu>, 'Jason Opperisano' <Jopperisano@alphanumeric.com>
+Cc: netfilter@lists.netfilter.org
+
+ 
+Really? I thought "-j REJECT --reject-with tcp-reset" would always do the
+right thing, even without specifying --syn (of course, it wouldn't be a bad
+idea to specify it anyway). I have several systems running fine without the
+--syn option explicitly mentioned. Could any of the "core"
+guys say if my assumption is wrong? 
+
+Carlos
 
 
-
-> > Well, it's seams to be a little bit more complicated than
-> > I thought to loadbalance Internat connection between 2 (different) ISP
-> > lines ...
-> >
-> > Here is my problem:
-> >
-> > Basically, I need to connect my office to 2 differents ISP (different
-> > gateways and different DNS ). My linux box is a 3 NICs Box. The problem
-> > is that, for the first ISP, I don't have static Addresses.
-> >
-> > So, I would like to loadbalance, "route" and NAT all my internals
-Addresses
-> > through thoses 2 ISP except for some addresses and some port numbers
-> > which will use
-> > only the ISP2.
->
-> have a look at:
-> http://linux-ip.net/html/adv-multi-internet.html
->
-
-I like this article because basically it brings out the issues of having
-dual
-internet connects. I work on it for a few months to realized these issues.
-I do not have a theory paper to present, however, I have a different
-IMPLEMENTATION of dual internet connections, it is mostly based on
-netfilter capabilities ( rather than route-based ), it can handle all sorts
-of
-combinations :-
-
-1. Static or non-static external IPs.
-2. Select outbound based on services.
-3. Select outbound based on aggregate bandwidth.
-4. Inbound traffic via multiple connections.
-
-And it fits into a diskette. :-) Check out the implementation at :-
-
-   http://www.geocities.com/mctiew/ffw/dual.htm
-
-
-
-
+My views are this: If you are going to reset a TCP connection, it is best to
+do so at the earliest possible moment of a TCP session, preferably after the
+initial syn of the three-way handshake. When I use "-j REJECT --reject-with
+tcp-reset" it is always in response to a NEW (thus syn) packet. Perhaps Mr.
+Stone will weigh in on this. If Chris Brenton is listening in, I would like
+to hear his views on this as well.
 
 
 
