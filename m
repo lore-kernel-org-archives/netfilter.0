@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: how to filter applications with iptables
-Date: 26 Jun 2003 09:19:58 +0200
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: MSN and Yahoo Block through IPTABLES
+Date: 26 Jun 2003 03:40:48 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056611998.624.19.camel@elendil.intranet.cartel-securite.net>
-References: <20030626070125.065CEC11A@postfix4-2.free.fr>
+Message-ID: <1056613248.1894.18.camel@alpha.newkirk.us>
+References: <010a01c33b03$d78da1f0$5505a8c0@asimejaz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030626070125.065CEC11A@postfix4-2.free.fr>
+In-Reply-To: <010a01c33b03$d78da1f0$5505a8c0@asimejaz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +17,102 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Liber ChrXtien <liber.chretien@free.fr>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Asim Ejaz Butt <asim.butt@streaming-networks.com>
+Cc: netfilter@lists.netfilter.org
 
-Le jeu 26/06/2003 =E0 10:03, Liber ChrXtien a =E9crit :
-> I've a LAN at home with mdk as server and win and mdk on the clients
-> My question is : is there a way to block certain applications, such as =
-specific=20
-> softwares (office suite for example), to access internet with iptables?
->  How to identify the packets emitted from such applications and block t=
-hem ?
+On Wed, 2003-06-25 at 06:23, Asim Ejaz Butt wrote:
+> Hello Gurus,
 
-If you've planed to do this remotly, I mean on a dedicated firewall,
-such as your network gateway, you can't, as Netfilter is a packet
-filter. Thus, you can say "allow TCP/80 as destination, but cannot force
-HTTP usage through this port. To filter application protocols, you'll
-have to use an application proxy (e.g. HTTP proxy). Eventhough,
-distinguishing IE on Win, Word on Win or Mozilla on Win or Linux will be
-difficult if they all use HTTP. You can only rely on related HTTP fields
-that can be changed/forged.
+As David Busby pointed out, you are probably better off with DROP
+policies, and ACCEPT only desired/required traffic.
 
-If you've planed to do this locally, I mean using Netfilter on the
-GNU/Linux clients, then you can use owner match which provides a command
-line match (-m owner --owner-cmd $CMD). Although it is not as strict as
-expected (you can use a well named symlink to gain access through an
-authorized command), it allows some kind of valuable "personnal firewall
-like" filtering.
+> I am trying to block MSN and Yahoo Instant Messengers with my LAN using
+> IPTABLES. Following commands are used to block them but unsuccessful.
+> 
+>  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 --dport 1863 -j REJECT
+>  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 -d 64.4.0.0/18 -j REJECT
 
-For Win clients, use a personnal firewall, such as Kerio or Outpost. But
-this part is off-topic ;)
+DROP port 1863 should be sufficient to prevent MSN clients from logging
+on to MSN messenger, IIRC.  (My only use of MSN is with Gaim under
+Linux, and 1863 is the only port I need to open for it to connect)
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+>  /sbin/iptables -A FORWARD -d cs.yahoo.com -j REJECT
+>  /sbin/iptables -A FORWARD -d scsa.yahoo.com -j REJECT
+
+Apparently the only way to stop YIM is to block all connections to the
+servers.  The trick here is that there are quite a few more yahoo IM
+servers than these two rules cover...
+
+/sbin/iptables -A FORWARD -d 63.216.136.22     -j DROP
+/sbin/iptables -A FORWARD -d 66.135.224.142    -j DROP
+/sbin/iptables -A FORWARD -d 66.136.175.132    -j DROP
+/sbin/iptables -A FORWARD -d 66.163.168.105    -j DROP
+/sbin/iptables -A FORWARD -d 66.163.172.117    -j DROP
+/sbin/iptables -A FORWARD -d 66.163.173.76     -j DROP
+/sbin/iptables -A FORWARD -d 66.163.173.77     -j DROP
+/sbin/iptables -A FORWARD -d 66.163.173.78     -j DROP
+/sbin/iptables -A FORWARD -d 66.163.173.203    -j DROP
+/sbin/iptables -A FORWARD -d 66.163.175.128    -j DROP
+/sbin/iptables -A FORWARD -d 66.163.178.78     -j DROP
+/sbin/iptables -A FORWARD -d 204.71.200.36     -j DROP
+/sbin/iptables -A FORWARD -d 204.71.200.37     -j DROP
+/sbin/iptables -A FORWARD -d 204.71.201.134    -j DROP
+/sbin/iptables -A FORWARD -d 204.71.201.141    -j DROP
+/sbin/iptables -A FORWARD -d 216.136.173.172   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.173.179   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.175.132   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.175.142   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.175.143   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.175.144   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.175.145   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.175.145   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.175.226   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.224.134   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.224.142   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.224.213   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.224.213   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.224.214   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.225.12    -j DROP
+/sbin/iptables -A FORWARD -d 216.136.226.117   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.226.118   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.226.209   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.226.210   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.227.168   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.129   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.130   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.131   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.133   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.135   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.148   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.151   -j DROP
+/sbin/iptables -A FORWARD -d 216.136.233.152   -j DROP
+
+BTW, the two FQDNs you have are NOT (fully) represented in this list, I
+don't know if they need to be or not.  Be aware that scsa.yahoo.com
+actually maps to 8 IPs, so using it the way you do in your rule will NOT
+actually catch all of them.  "dig scsa.yahoo.com" yields:
+
+scsa.yahoo.com.         1800    IN      CNAME   scs.yahoo.com.
+scs.yahoo.com.          1800    IN      CNAME   scs-fooe.yahoo.com.
+scs-fooe.yahoo.com.     617     IN      A       216.136.233.138
+scs-fooe.yahoo.com.     617     IN      A       216.136.233.148
+scs-fooe.yahoo.com.     617     IN      A       216.136.233.152
+scs-fooe.yahoo.com.     617     IN      A       216.136.226.208
+scs-fooe.yahoo.com.     617     IN      A       216.136.233.133
+scs-fooe.yahoo.com.     617     IN      A       216.136.233.134
+scs-fooe.yahoo.com.     617     IN      A       216.136.233.135
+scs-fooe.yahoo.com.     617     IN      A       216.136.233.137
+
+
+
+> Anyone help in blocking them through IPTABLES.
+> 
+> Asim Ejaz Butt
+asim.butt@streaming-networks.com
+
+j
+
+
+
 
