@@ -1,12 +1,18 @@
-From: harish.k@lntinfotech.com
-Subject: RE: IPTables Query
-Date: Wed, 23 Oct 2002 13:37:40 +0530
+From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl?= Le Mignot)
+Subject: Re: nmap
+Date: Wed, 23 Oct 2002 09:35:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF4C23D8BB.4F323586-ON65256C5B.002C3B86-65256C5B.002CA6D5@lntinfotech.com>
-References: <FLEKIPPLAEDMJMOOBBDPEEBDDEAA.stewart.thompson@shaw.ca>
+Message-ID: <plopm3d6q1sj3a.fsf@drizzt.dyndns.org>
+References: <1035264046.15391.85.camel@hyperno>
+	<20021022174245.13d2766b.fonetica@tiscali.it>
+	<plopm31y6icovs.fsf@drizzt.dyndns.org>
+	<20021022211221.3d91e4fb.fonetica@tiscali.it>
+	<plopm3vg3ub2vw.fsf@drizzt.dyndns.org>
+	<20021023003527.50af26db.fonetica@tiscali.it>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FLEKIPPLAEDMJMOOBBDPEEBDDEAA.stewart.thompson@shaw.ca>
+In-Reply-To: <20021023003527.50af26db.fonetica@tiscali.it> (antonio's
+ message of "Wed, 23 Oct 2002 00:35:27 +0200")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +24,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: stewart.thompson@shaw.ca
+To: antonio <fonetica@tiscali.it>
 Cc: netfilter@lists.netfilter.org
 
-Hi Stewart,
 
-I have a Checkpoint firewall sitting in front of me. It's IP Add is 
-172.25.8.1. This machine does the NAT and filter functions.
-It is in turn connected to a router thru another interface and to the 
-Internet.
-The IP Add 172.25.8.125 *has* permission to pass thru, but the IP
-172.25.8.130 does not. So locally generated packets destined for
-DNS servers need to have the source IP of 172.25.8.125.
+Wed, 23 Oct 2002 00:35:27 +0200, tu as dit : 
 
-Rgds
+ > OK but if I set the policy OUTPUT at DROP which ports/prot I have to set 
+ > al ACCEPT?
+ > This's my problem.
+
+every dport/protocol you want to allow to be scanned... You cannot filter
+much OUTPUT if you want to allow nmap.
+
+You can use the -m owner with --cmd-owner if it's avaible on your computer
+to allow "mmap" initiated connections. 
+
+But... what do you want to do by filtering OUTPUT ? Sure, you can drop INVALID
+packets, filter floods, stop packets coming from root and so on, but if you
+want to allow normal internet activity from the box, you have to allow NEW
+connections on OUTPUT to any host/port...
+
 -- 
----------------------------------------------------------------
-Harish K                             <harish.k@lntinfotech.com>
-Systems Engineer                            Tel - 91-22-6948065
-Don't drink and drive. You might hit a bump and spill your beer
----------------------------------------------------------------
+Gael Le Mignot "Kilobug" - kilobug@freesurf.fr - http://kilobug.free.fr
+GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
+Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
 
-
-
-
-Stewart Thompson <stewart.thompson@shaw.ca>
-10/23/2002 01:30 PM
-Please respond to stewart.thompson
- 
-        To:     harish.k@lntinfotech.com, netfilter@lists.netfilter.org
-        cc: 
-        Subject:        RE: IPTables Query
-
-
-Hi:
-
-                 This isn't really practical. Most routers will drop 
-packets
-from private ranges. So your request won't make it to it's destination
-Anyway. Netfilter will make sure the request gets back to the right
-Machine. Why do you need this?
-
-
-Stu..........
-
+Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
