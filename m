@@ -1,80 +1,83 @@
-From: Andriy T. Yanko <wireless@wireless.org.ua>
-Subject: libipfwc memory leak?
-Date: Mon, 23 Sep 2002 17:39:58 +0300
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020923173958.631b43b5.wireless@wireless.org.ua>
+From: Marian Stagarescu <marian@ti.com>
+Subject: PPTP conntrack w/out DEBUG is broken ???
+Date: Wed, 25 Sep 2002 16:48:42 -0400
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <200209251648.42936.marian@ti.com>
+References: <87d6r9jaa4.fsf@sensi.yemanja.net> <1032690651.9594.13.camel@tux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <1032690651.9594.13.camel@tux>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Martin Josefsson <gandalf@wlug.westbo.se>, =?iso-8859-15?q?C=E9dric=20Rivard?= <cedric@yemanja.net>
+Cc: Netfilter-devel <netfilter-devel@lists.netfilter.org>, Netfilter <netfilter@lists.netfilter.org>
 
-Hi people!
+i run into one problem with PPTP conntrack:
 
-I know that this letter is not for this mailllist. But I'm tired to find mistake.
+run it with debug on: works
+run it w/out debug on: does not.
 
-I just writen this smal code for example:
+i also turned on the patch below and configure the CONFIG_NETFILTER_DEBUG=
+:
+compile ip_conntrack_pptp with debug on: all ok
+compile ip_conntrack_pptp w/out debug: does not even print the ASSERT rea=
+dlock=20
+statements from CONFIG_NETFILTER_DEBUG, PPTP connection is not establishe=
+d.
 
---- cut ---
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <signal.h>
-#include "libipfwc/libipfwc.h"
+this debug issue was tracked down to a single printk statement in=20
+ip_conntrack_pptp.c: line 244,245:
 
+DEBUGP("%s, CID=3D%X, PCID=3D%X\n", strMName[msg]                 =20
+                     ntohs(*cid), ntohs(*pcid));
 
-int main( int argc, char **argv)
-{
-    pid_t pid;
+i run this on a 2.4.17 mips little endian, single proc, latest pptp ALG f=
+iles=20
+from netfilter, newnat13.
 
-    unsigned int num_chains; 
-    unsigned int num_rules; 
-    static struct ipfwc_fwchain *chains;
-    struct ipfwc_fwrule *rules;
+how this can be ?=20
 
-    pid=fork();
-    if ( pid == -1 ) { printf("Can't fork!\n"); exit(0); }
-    if ( pid != 0) exit(0);
-    setsid();
-
-    while(1)
-    {
-	chains=ipfwc_get_chainnames(&num_chains); 
-	rules=ipfwc_get_rules(&num_rules,0); 
-	sleep(1);
-    }
-    
-    return 0;
-}
---- end ---
-
-When program is runnig I just type command "ps aux" 
-and I saw that my program get more and more system memory.
-
-Is this memory leak of libipfwc library?
-
-In  libipfwc.c  function ipfwc_get_chainnames & ipfwc_get_rules use malloc() but not use free().
-It's maybe ok for program ipchains but in my case is not gut.
-
-How to fix it?
-
-THANKS IN ADVANCE.
+thanks for any input,
+marian
 
 
--- 
-Andriy T. Yanko
-wireless@wireless.org.ua
 
-* Avoid The Gates of Hell use Linux
+On Sunday 22 September 2002 06:30 am, Martin Josefsson wrote:
+> On Fri, 2002-09-20 at 11:11, C=E9dric Rivard wrote:
+> > Hi all,
+> >
+> > As I've already reported, there is a problem with the PPTP conntrack
+> > module of pom. It can't be built with the option CONFIG_NETFILTER_DEB=
+UG.
+> > And I still receive questions about the first thread I started on thi=
+s
+> > problem but without pointing the cause. I hope that everyone is now a=
+ware
+> > of this issue.
+>
+> This issue came to my attention in the end of August, I produced a patc=
+h
+> and I never heard from that person again. The patch is quite ugly but i=
+t
+> does solve this specific problem. I was waiting for some more input fro=
+m
+> other developers before submitting it to cvs but now I've given up on
+> that and I've submitted it. patch-o-matic in cvs now works with
+> debugging enabled.
+>
+> or you can apply this patch on your kernel after patching with the
+> patch-o-matic you are currently using:
+>
+> http://www.netfilter.org/~gandalf/patches/ip_conntrack_proto_gre.c-lock=
+fix
+
 
