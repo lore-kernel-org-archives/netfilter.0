@@ -1,10 +1,9 @@
-From: Arindam Haldar <arindamhaldar@inbox.lv>
-Subject: messages in /var/log/message file
-Date: Wed, 09 Oct 2002 12:33:42 +0530
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: how many chains are part of the mangle table?
+Date: Wed, 9 Oct 2002 05:49:18 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DA3D4CE.9050407@inbox.lv>
+Message-ID: <Pine.LNX.4.44.0210090542060.13259-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,28 +14,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-hi all,
-im using RH7.3 with kernel 2.4.19 and have migrated to iptables 1.2.7a.
-earlier it was kernel 2.4.19 with iptables 1.2.6a..
-everything went ok but since using the newer version of iptables am 
-getting this messages in /var/log/message file...
 
-Oct  9 12:25:24 ICG kernel: NET: 5 messages suppressed.
-Oct  9 12:26:31 ICG kernel: NET: 1 messages suppressed.
-Oct  9 12:26:31 ICG kernel: ip_conntrack: max number of expected 
-connections 1 of ftp reached for <ipA> -> <ipB>, reusing
-Oct  9 12:27:12 ICG kernel: ip_conntrack: max number of expected 
-connections 1 of ftp reached for <ipA> -> <ipB>, reusing
+  for my own benefit, i'm trying to document the architecture of
+iptables, and i'm reading oskar andreasson's ubiquitous tutorial.
 
-these messages are piling the message file.
-am cusrious now why so ?.. what does this message signify ?
-earlier verion of iptables never gave any error & the only difference in 
-compling new iptables(1.2.7a) is that this time its compiled for using 
-module ip_nat_h323.o
-Awaiting a reply very anxiously
-A.H
+  early in that tutorial, he presents some tables showing the
+possible combinations of tables and chains, as well as a graphic
+portrayal of how packets traverse iptables.  in all of that, 
+the mangle table is shown as being part of only two chains:
+PREROUTING and OUTPUT.
+
+  however, "iptables -L -t mangle" shows that the mangle table
+can incorporate rules in all five chains: INPUT, OUTPUT, FORWARD,
+PREROUTING and POSTROUTING, but that's not at all obvious from
+that tutorial.
+
+  is it meaningful to ask where the mangle step would go in the
+diagram of packet processing in the INPUT, FORWARD and POSTROUTING
+chains?  that is, depending on where those rules are processed,
+would the order make a difference in the other processing?
+
+  is this making any sense?  the diagram of packet processing
+in andreasson's tutorial makes perfect sense, except it just seems
+to omit those three "mangle" steps in the other chains which,
+AFAICT, clearly can exist.
+
+rday
 
 
