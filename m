@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Help: Iptables rules
-Date: Thu, 15 Jan 2004 23:27:40 +0000
+From: XiChimos <xichimos@plobe.com>
+Subject: Editing IP Options
+Date: Thu, 15 Jan 2004 20:08:20 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401152327.40094.Antony@Soft-Solutions.co.uk>
-References: <OFA9978756.6595C97C-ON88256E1C.007F4A93-88256E1C.007F9D29@statsus.com>
+Message-ID: <40073984.6000805@plobe.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OFA9978756.6595C97C-ON88256E1C.007F4A93-88256E1C.007F9D29@statsus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +15,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 15 January 2004 11:13 pm, Minh Cao wrote:
+I am designing a user-space application and was wondering, how do I add
 
-> Most of the net applications are working fine,  web browser, ftp, telnet,
-> ssh, ping, Cisco VPN.
-> I only have problem with VPN using PPTP protocol.
->
-> Please let me know which modules to get pptp to work.
+an IP option of length roughly 8 bytes?  Though I doubt this would be a 
+challenge if I knew how to add it, how would I remove that also?
 
-Well, er, the PPTP modules (now part of the standard kernel compile options, 
-but see http://cvs.netfilter.org/netfilter-extensions/helpers/pptp for more 
-technical details).
+Thanks for the help.
 
-A Google search for "netfilter pptp" may help you considerably, I think.
+Chris
 
-Antony.
 
--- 
-This email is intended for the use of the individual addressee(s) named above 
-and may contain information that is confidential, privileged or unsuitable 
-for overly sensitive persons with low self-esteem, no sense of humour, or 
-irrational religious beliefs.
-
-If you have received this email in error, you are required to shred it 
-immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
-minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
-and eat the original message.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
