@@ -1,14 +1,11 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: what filtering to do on the OUTPUT chain?
-Date: Wed, 23 Oct 2002 00:26:59 +0100
+From: Wilson Fletcher <wilsonf@mclachlan.com.au>
+Subject: Masquerading
+Date: Tue, 22 Oct 2002 09:51:31 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021023002659.C8681@funkyjesus.org>
-References: <Pine.LNX.4.44.0210221455120.15018-100000@localhost.localdomain> <20021022200357.TCVO1554.mta07-svc.ntlworld.com@there>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <3DB49303.3050408@mclachlan.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20021022200357.TCVO1554.mta07-svc.ntlworld.com@there>; from Antony@Soft-Solutions.co.uk on Tue, Oct 22, 2002 at 09:03:54PM +0100
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Tue, Oct 22, 2002 at 09:03:54PM +0100, Antony Stone wrote:
-> On Tuesday 22 October 2002 7:57 pm, Robert P. J. Day wrote:
-> 
-> >   i've had a number of people tell me that, while they put a good deal
-> > of thought into their INPUT filtering, they simply ACCEPT all outgoing
-> > traffic since, if their input filtering is working properly, there's no
-> > reason to stop outgoing packets.
-> 
-> There's no reason to filter outgoing packets unless you don't trust the 
-> applications running on your machine.
+Just looking at iptables.
 
-You shouldn't trust the applications running on your machine.
+Normally a reply to a masq'd packet coming into the network will
+have the destination IP of the g/w. So if the NAT for masq is done
+in POSTROUTING (after filtering) do I need to except INPUT packets
+to ports in the masquerading range (~61000:65535 ????) ?
 
-> If you don't trust what's running on your machine, then you should
-> probably fix more than just what netfilter allows.
+The Linux 2.4 Packet Filtering HOWTO appears to suggest that I can
+ignore the fact that I'm nat'ing and use forwarding rules for packets
+being masq'd and de-masq'd and that I do not need to worry about
+INPUT for packets that are going to my masq'd range.
 
-Yes, but netfilter is a good start :)
+Have I understood this correctly ?
 
--- 
-FunkyJesus System Administration Team
+thanks,
+
+Wilson
+
+P.S. I'm not subscribed here. Can you reply to:
+research at mclachlan dot com dot au
 
 
