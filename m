@@ -1,8 +1,9 @@
-From: Zoilo <zoilo@xs4all.nl>
-Subject: NAT PREROUTING chain ignored on returning traffic ??
-Date: Fri, 29 Aug 2003 20:57:08 +0200
+From: "Guilherme Cox" <cox@ieee.org>
+Subject: Multicast routing question...
+Date: Thu, 28 Aug 2003 15:19:31 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4FA204.6010605@xs4all.nl>
+Message-ID: <MCEJJKCAIMHFOKODABEIIECEHNAA.cox@ieee.org>
+Reply-To: <cox@ieee.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,108 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: zoilo@xs4all.nl, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-I have 2 machines connected via a LAN: 192.168.192.254 and 
-192.168.192.123. I will call the '254' and '123' from now on.
 
-For the sake of it, I decided to 'rehearse' my netfilter theory, and ran 
-the following script on .123:
+I'd like to know if I can use iptables to solve one problem.
 
-#!/bin/bash
+My network is:
+<----Local Network/NAT (192.168.7.x)              -- eth0
+<----Internet link/Cisco router                   -- eth1
+<----ViaSat router/A Satelite link(10.254.103.x)  -- eth2
 
-iptables -t filter -I INPUT -j LOG --log-prefix "filter INPUT: "
-iptables -t filter -I OUTPUT -j LOG --log-prefix "filter OUTPUT: "
-iptables -t filter -I FORWARD -j LOG --log-prefix "filter FORWARD: "
+My default gateway is the Cisco router IP.
+I have static routes to networks connected using eth2.
 
-iptables -t nat -I PREROUTING -j LOG --log-prefix "nat PREROUTING: "
-iptables -t nat -I OUTPUT -j LOG --log-prefix "nat OUTPUT: "
-iptables -t nat -I POSTROUTING -j LOG --log-prefix "nat POSTROUTING: "
+My /sbin/route  is:
+cox@earth:~$ /sbin/route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use
+Iface
+xxx.xxx.xxx.128  0.0.0.0         255.255.255.192 U     0      0        0
+eth1
+192.168.7.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
+192.168.149.0   10.254.103.1    255.255.255.0   UG    0      0        0 eth2
+yyy.yyy.yyy.0   10.254.103.1    255.255.255.0   UG    0      0        0 eth2
+10.254.103.0    0.0.0.0         255.255.255.0   U     0      0        0 eth2
+127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
+224.0.0.0       0.0.0.0         240.0.0.0       U     0      0        0 eth0
+0.0.0.0         xxx.xxx.xx.129  0.0.0.0         UG    1      0        0 eth1
 
-iptables -t mangle -I PREROUTING -j LOG --log-prefix "mangle PREROUTING: "
-iptables -t mangle -I INPUT -j LOG --log-prefix "mangle INPUT: "
-iptables -t mangle -I FORWARD -j LOG --log-prefix "mangle FORWARD: "
-iptables -t mangle -I OUTPUT -j LOG --log-prefix "mangle OUTPUT: "
-iptables -t mangle -I POSTROUTING -j LOG --log-prefix "mangle POSTROUTING: "
+--x--
+Using this model the Multicast packets came from eth2 aren't routed to my
+Local Network (eth0).
+If I connect the VaiSat router on my switch and use ip-aliases, I can
+receive the IGMP. However, it is unsafe. I need to mantain my network but
+the multicast packets must be routed to eth0.
 
-There is nothing else in the configuration.
+Do you know how can I do? Any ideias? Did anybody have the same problem?
 
-Then I did a single 'ping' from one to the other, and vice versa, while 
-logging at 123.
+If you want more information about my network, please contact me.
 
-I) Here is the log on 123 in response to a 'ping -c 1 192.168.192.123' 
-issued from 254:
+Thanks and sorry my english mistakes.
 
-Aug 29 20:07:04 lfs kernel: mangle PREROUTING: IN=eth0 OUT= 
-MAC=00:40:63:ca:ee:3c:00:c0:4f:a6:7c:58:08:00 SRC=192.168.192.254 
-DST=192.168.192.123 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP 
-TYPE=8 CODE=0 ID=4615 SEQ=0
-Aug 29 20:07:04 lfs kernel: nat PREROUTING: IN=eth0 OUT= 
-MAC=00:40:63:ca:ee:3c:00:c0:4f:a6:7c:58:08:00 SRC=192.168.192.254 
-DST=192.168.192.123 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP 
-TYPE=8 CODE=0 ID=4615 SEQ=0
-Aug 29 20:07:04 lfs kernel: mangle INPUT: IN=eth0 OUT= 
-MAC=00:40:63:ca:ee:3c:00:c0:4f:a6:7c:58:08:00 SRC=192.168.192.254 
-DST=192.168.192.123 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP 
-TYPE=8 CODE=0 ID=4615 SEQ=0
-Aug 29 20:07:04 lfs kernel: filter INPUT: IN=eth0 OUT= 
-MAC=00:40:63:ca:ee:3c:00:c0:4f:a6:7c:58:08:00 SRC=192.168.192.254 
-DST=192.168.192.123 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP 
-TYPE=8 CODE=0 ID=4615 SEQ=0
-Aug 29 20:07:04 lfs kernel: mangle OUTPUT: IN= OUT=eth0 
-SRC=192.168.192.123 DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 
-ID=45404 PROTO=ICMP TYPE=0 CODE=0 ID=4615 SEQ=0
-Aug 29 20:07:04 lfs kernel: filter OUTPUT: IN= OUT=eth0 
-SRC=192.168.192.123 DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 
-ID=45404 PROTO=ICMP TYPE=0 CODE=0 ID=4615 SEQ=0
-Aug 29 20:07:04 lfs kernel: mangle POSTROUTING: IN= OUT=eth0 
-SRC=192.168.192.123 DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 
-ID=45404 PROTO=ICMP TYPE=0 CODE=0 ID=4615 SEQ=0
-
-II) Here is the log on 123 in response to a 'ping -c 1 192.168.192.254' 
-issued from 123 itself:
-
-Aug 29 20:07:57 lfs kernel: mangle OUTPUT: IN= OUT=eth0 
-SRC=192.168.192.123 DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 
-ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=3105 SEQ=0
-Aug 29 20:07:57 lfs kernel: nat OUTPUT: IN= OUT=eth0 SRC=192.168.192.123 
-DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP 
-TYPE=8 CODE=0 ID=3105 SEQ=0
-Aug 29 20:07:57 lfs kernel: filter OUTPUT: IN= OUT=eth0 
-SRC=192.168.192.123 DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 
-ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=3105 SEQ=0
-Aug 29 20:07:57 lfs kernel: mangle POSTROUTING: IN= OUT=eth0 
-SRC=192.168.192.123 DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 
-ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=3105 SEQ=0
-Aug 29 20:07:57 lfs kernel: nat POSTROUTING: IN= OUT=eth0 
-SRC=192.168.192.123 DST=192.168.192.254 LEN=84 TOS=0x00 PREC=0x00 TTL=64 
-ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=3105 SEQ=0
-Aug 29 20:07:57 lfs kernel: mangle PREROUTING: IN=eth0 OUT= 
-MAC=00:40:63:ca:ee:3c:00:c0:4f:a6:7c:58:08:00 SRC=192.168.192.254 
-DST=192.168.192.123 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=39819 PROTO=ICMP 
-TYPE=0 CODE=0 ID=3105 SEQ=0
-Aug 29 20:07:57 lfs kernel: mangle INPUT: IN=eth0 OUT= 
-MAC=00:40:63:ca:ee:3c:00:c0:4f:a6:7c:58:08:00 SRC=192.168.192.254 
-DST=192.168.192.123 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=39819 PROTO=ICMP 
-TYPE=0 CODE=0 ID=3105 SEQ=0
-Aug 29 20:07:57 lfs kernel: filter INPUT: IN=eth0 OUT= 
-MAC=00:40:63:ca:ee:3c:00:c0:4f:a6:7c:58:08:00 SRC=192.168.192.254 
-DST=192.168.192.123 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=39819 PROTO=ICMP 
-TYPE=0 CODE=0 ID=3105 SEQ=0
-
-To my astonishment, in II) the returning ICMP packets do *not* travel 
-through the NAT PREROUTING chain! In I) however, the incoming packets 
-*do* travel through the NAT PREROUTING chain, as expected.
-
-Fortunately, the behaviour is the same when the test is run on the other 
-machine, so I am the problem, and not iptables (of course).
-
-So why does a returning packet not travel through the NAT PREROUTING 
-chain, whereas a new incoming ping does travel through the NAT 
-PREROUTING chain? Both packets have exactly the same destination, huh?
-
-Z.
-
+cox
 
 
