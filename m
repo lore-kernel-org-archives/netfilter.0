@@ -1,8 +1,8 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: network setup help
-Date: Sat, 10 Apr 2004 19:54:47 +0100
+From: "Syed Faisal Gillani" <faisal@clickonlinenetworks.com>
+Subject: block ping  ?
+Date: Sun, 11 Apr 2004 01:26:27 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008301c41f2d$4be932e0$68892090@grouse>
+Message-ID: <006301c41f3a$19f04f00$0300000a@serverxx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,40 +18,12 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear all,
+i am a newbie learning iptables ...
+can u tell me the rule of blocking only ping on my nic ?
 
-I am trying to setup three PCs and do some simple filter+nat jobs. I'm a
-green hand on netfilter and linux and seem to always get something wrong. I
-apologize that my current problem has not reached the range of netfilter;
-instead, it's about network configuration. But I believe people on this list
-are very experienced on it. The situation is specified below:
+Syed Faisal Gillani
+ClickOnline Networks
+http://clickonlinenetworks.com
 
-1.PC1 has one NIC with a global IP connected to a Switch;
-2.PC2 has two NICs, eth0 with a global IP connected to the Switch and eth1
-with an internal IP (192.168.0.1/24) directly connected to PC3's eth1;
-3.PC3 has two NICs, eth0 with a global IP connected to the Switch and eth1
-with an internal IP (192.168.0.2/24) directly connected to PC2's eth1.
-
-              Internet
-                 |        +--------+----+
-              +------+<-->+PC2/eth0|eth1+
-+--------+    +      +    +--------+--+-+
-+PC1/eth0+<-->+Switch+                |
-+--------+    +      +    +--------+--+-+
-              +------+<-->+PC3/eth0|eth1+
-                          +--------+----+
-
-I am trying to send packets from PC1 to PC3, via PC1/eth0(global
-IP)-->PC2/eth0(global IP)-->PC2/eth1(192.168.0.1)-->PC3/eth1(192.168.0.2).
-Actually, PC3/eth0 is not in used in the case.
-
-Problems:
-Currently I fail to ping from PC3 to PC2/eth1(192.168.0.1). Actually I don't
-know which NIC PC3 is using to send the ping packets. I try disconnecting
-PC3/eth0, but it still does not work. Could anyone throw some light on it
-and warn me what I should pay attention to? Many many thanks!
-
-Regards,
-Jee
-
+E-mail powered by ClickOnline Networks
 
