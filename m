@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Can't compile iptables 1.2.8. Please help me!
-Date: Mon, 5 May 2003 09:31:15 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: asymetric routing
+Date: Mon, 5 May 2003 10:02:31 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E6D65A6EE5AAD6119DE800B0D03DA0C528960C@MS_LEU1>
-References: <20030505045757.67027.qmail@web20310.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.33.0305051000030.607-100000@blackhole.kfki.hu>
+References: <084a01c30d77$9c0b4740$0c0a0a0a@JOHNNY>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030505045757.67027.qmail@web20310.mail.yahoo.com>
+In-Reply-To: <084a01c30d77$9c0b4740$0c0a0a0a@JOHNNY>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: John Berntsen <john@pepco.no>
+Cc: netfilter@lists.netfilter.org
 
-> I tried a lot but I can't compile iptables 1.2.8 for 
-> linux-kernel 2.4.5!
-> 
-> # make pending-patches KERNEL_DIR=/usr/src/linux
-> make: *** No rule to make target `pending-patched`!
-> Stop.
+Hi,
 
-Patch-o-matic and iptables have become separate packges since some time
-now.
-To patch the kernel (and I think I'd use 2.4.20) you need the separate
-patch-o-matic packages, and call "KERNEL_DIR=<path/to/kernel> ./runme
-<submitted|pending|base|extra>".
-To compile iptables you can alter the Makefile if you need to and then
-just call "make".
+On Mon, 28 Apr 2003, John Berntsen wrote:
 
+> Everything worked fine, except for the pptp vpn against that one server.
+>
+> Clients trying this are nt4 boxes, and traffic works like this as far
+> as i can understand: client - linux-gateway - cisco router - pptp
+> server and back like: pptp server - nated ip on cisco - client
 
-Rob
+That is the problem I think: the linux gateway does not see the reply
+packets, which is needed for conntrack/NAT to work properly.
+
+[Please wrap your lines.]
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
