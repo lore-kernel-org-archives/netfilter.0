@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ip_conntrack: table full, dropping packet.
-Date: Fri, 24 Sep 2004 03:02:27 -0400
+From: "www.piratehosting.net" <webmazter@gmail.com>
+Subject: ip_conntrack: table full, dropping packet
+Date: Fri, 24 Sep 2004 02:07:52 -0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096009346.9581.71.camel@wolfpack.ljm.dom>
-References: <e73cec8004092321013f0350be@mail.gmail.com>
+Message-ID: <e73cec8004092401074a667c3a@mail.gmail.com>
+Reply-To: "www.piratehosting.net" <webmazter@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e73cec8004092321013f0350be@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,29 +19,8 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-09-24 at 00:01, www.piratehosting.net wrote:
-> ip_conntrack: table full, dropping packet.
-> 
-> i have been using
-> echo "4008192" > /proc/sys/fs/file-max
-> echo 4008192 > /proc/sys/net/ipv4/ip_conntrack_max
-> to increase the limits to avoid this dropping of packets.
-> can i just clear the list from
-> /proc/net/ip_conntrack
-> or something
-> 
-> some info
-> ip_conntrack_ftp       70576  0
-> ip_conntrack_irc       70064  0
-> ip_conntrack           24968  4
-> iptable_nat,ip_conntrack_ftp,ip_conntrack_irc,ipt_state
-
-how much physical RAM is in this machine and how many simultaneous
-connections are you trying to support?
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+512mb ram
+about 150,000 connections
+its a ircd server with 15 clients at 1024 users each.
+i have to keep moving it up as the conntrack doesnt empty
 
