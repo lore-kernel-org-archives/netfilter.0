@@ -1,12 +1,10 @@
-From: Frank Gruellich <frank@der-frank.org>
-Subject: Re: 4 NIC cards
-Date: Wed, 17 Nov 2004 11:49:10 +0100
-Message-ID: <20041117104910.GH21819@der-frank.org>
-References: <20041117100208.92063.qmail@web60402.mail.yahoo.com>
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: more than 1 ISP
+Date: Wed, 17 Nov 2004 06:51:58 -0500
+Message-ID: <20041117115158.GA30794@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20041117100208.92063.qmail@web60402.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +17,21 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-* ads nat <adsnat@yahoo.com> 17. Nov 04:
-> Hi,
+Hi,
+My ISP gives me a speed of 48kbps maximum (actually 64kbps is promised
+but it never goes about 48). For a month or 2 we are taking one more connection
+of 48kbps from another ISP (actually a nearby company) for uploading data to
+our client's computer.
+Can I terminate it in my Linux box (which is the gateway) and for few of my windows
+clients make that IP my default gateway or is lartc needed here?
+I don't mind if even FTP protocol passes through the other link and the first
+one is used for browsing and mails.
+I need a simple solution to this and lartc was becoming too complex.
 
-Hello,
+Any ideas anyone?
+With warm regards,
+-Payal
 
-> I would like to get bandwidth from all 4
-> simulteneously so that totally it will make
-> (256x4=1024 kbps) [snip]
-> 
-> Is it possible to achieve this?
-
-Simple answer: no.  More complex answer: look at the LARTC-howto.
-
- Regards, Frank.
--- 
-Sigmentation fault
 
