@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNATing packets sent to the NATing box
-Date: Sun, 14 Dec 2003 17:16:40 +0000
+From: =?iso-8859-1?Q?Lo=EFc?= Minier <lool+netfilter@via.ecp.fr>
+Subject: Re: Connections with SYN aren't NEW
+Date: Sun, 14 Dec 2003 18:24:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312141716.40029.Antony@Soft-Solutions.co.uk>
-References: <20031214135211.GA11695@tinuviel.compendium.com.ar> <20031214160416.GA17220@tinuviel.compendium.com.ar> <200312141155.19270.JALaramie@Loudoun-Fairfax.com>
+Message-ID: <20031214172408.GC897@via.ecp.fr>
+References: <20031214162315.GA897@via.ecp.fr> <200312141654.41489.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312141155.19270.JALaramie@Loudoun-Fairfax.com>
+Content-Disposition: inline
+In-Reply-To: <200312141654.41489.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +18,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Sunday 14 December 2003 4:55 pm, Jeffrey Laramie wrote:
+Antony Stone <Antony@Soft-Solutions.co.uk> - Sun, Dec 14, 2003:
 
-> On Sunday 14 December 2003 11:04, horape@tinuviel.compendium.com.ar wrote:
->
-> > The proxy has a udp socket bound to port 5000, and another udp socket
-> > bound to some other port, it reads from the first socket and does a
-> > sendto using the other socket (poll + read + write, no more)
->
-> It looks like the proxy is grabbing the packets first and then dropping
-> them directly onto the INPUT chain. Try disabling the proxy and release the
-> bound ports then try it again. Once the packets reach PREROUTING you can
-> DNAT them to another port.
+> What do you gain from having them match NEW, which isn't already true if =
+they=20
+> match --syn?
 
-I could ubnderstand the proxy code managing to grab the packet off the wire 
-before netfilter (PREROUTING) sees it, but I don't see how it would then get 
-seen by the INPUT chain - as far as I know, it's not possible for a packet to 
-reach netfilter's INPUT chain without first going through the PREROUTING 
-chain.   If a packet bypasses one of these, it will bypass both.
+ Frankly speaking, I am not certain of the true benefits I will ever
+ enjoy of forcing both NEW and --syn. But the topic of where to place
+ the limit in the types of traffic you accept would be too much of a
+ troll to discuss here... ;)
+   I see the TCP flags and the conntrack as two different providers for
+ the information "this is a new TCP connections". I think I should only
+ believe a new connection takes place when both agree, because my goal
+ is to stop suspicious traffic.
 
-However, the idea of disabling the proxy, and then seeing if the LOG rules 
-show anything different, is a good one.
+ As a dumb example of traffic I could reject with such a rule, I could
+ take an injected SYN packet in the middle of a real TCP connection
+ generating a tcp-reset and effectively closing the connection. This
+ could be an efficient manner of closing a connection in a way which
+ couldn't easily be seen. Call me paranoid, I prefer to call myself
+ ignorant of what somebody could do if I don't disallow this :)
 
-How is the proxy connected to the socket?   Anything unusual?
+ Is this clear enough? or too far-fetched?
 
-Antony
+   Sincerely,
 
--- 
-Having been asked for a reference for this man,
-I can confirm that you will be very lucky indeed if you can get him to work 
-for you.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--=20
+Lo=EFc Minier <lool@dooz.org>
 
