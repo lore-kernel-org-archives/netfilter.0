@@ -1,11 +1,13 @@
-From: Val Schmidt <vschmidt@ldeo.columbia.edu>
-Subject: Masquerade with multiple routes
-Date: Thu, 8 Jul 2004 13:02:01 -0400
+From: Fallucchi Antonio <fallucch@csr.unibo.it>
+Subject: Re: ip_conntrack_max
+Date: Thu, 08 Jul 2004 19:02:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <8788FC46-D100-11D8-B22D-000D93C19C8E@ldeo.columbia.edu>
-Mime-Version: 1.0 (Apple Message framework v618)
+Message-ID: <40ED7E40.60800@csr.unibo.it>
+References: <40ED161F.5070804@cisbic.com> <200407081152.42618.Antony@Soft-Solutions.co.uk> <40ED4865.7020208@cisbic.com> <200407081429.24492.Antony@Soft-Solutions.co.uk>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200407081429.24492.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +20,55 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-In previous posts here and elsewhere, there was a bug listed in which a 
-Masquerade statement would fail when there are multiple routes to a 
-network. One would see "MASQUERADE: Route sent us somewhere else" in 
-the system log.
 
-Does anyone know if this has been fixed in any of the latest versions?
+> <>
+> This is difficult. I think we should start by asking "what do you mean 
+> by a
+> connection?" Remember that many web browsers, for example, will open 5-10
+> simultaneous connections in order to load all the elements of a web page.
+> DNS needs its own connections in order to do name lookups. Some 
+> connections
+> are long-term (eg: telnet, ssh - even when you're not typing, the 
+> connection
+> is still there), some are very transient (eg: http - once you have the 
+> page
+> displayed, there's no connection between your browser and the server 
+> until
+> you click on another hyperlink).
+>
+Thancks for the instruction..
 
-I have a network redundant meshed network in which routes are generated 
-dynamically using ospf. However I get these errors when trying to route 
-to networks in which the number of hops is the same in more than one 
-direction.
+> <>Why do you want to limit connections per machine? What are you 
+> trying to
+> achieve?
+>
+The problem are the P2P software that create any connection on the 
+conntrack..
+Because filter all p2p port is very difficult, I thought that to limit 
+the number of simultaneous connection
+is a gooa idea..
 
-Anyone have any ideas?
+>That sounds fine.   Tell us if you get "connection tracking table full" errors 
+>again.
+>
+>Regards,
+>
+>Antony.
+>
+>  
+>
+Bye
 
--Val
-------------------------------------------------------------------
-Val Schmidt
-Lamont-Doherty Earth Observatory of Columbia University
-61 Route 9W
-Palisades, NY 10964
-m: 614 286 3726
-vschmidt[at]ldeo.columbia.edu
+ps: it's ok the signature now?
+
+-- 
+ ---------------------------------------------------------------
+| |||||||    ||    |  Fallucchi Antonio Giuseppe  mat. 2282     |
+| ||        ||||    |      --> Live free() of die() <--         |
+| ||||     ||  ||    |        OpenSource philosophy             |
+| ||      ||||||||    |  Universita' di Bologna sede di Cesena  |
+| ||     ||      ||    |    Cdl di Scienze dell'Informazione    |
+ ---------------------------------------------------------------
+
 
 
