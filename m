@@ -1,13 +1,12 @@
-From: Emilio Casbas <ecasbas@unav.es>
-Subject: Re: Transparant proxy
-Date: Fri, 04 Jun 2004 09:09:11 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Can I add a module to a prebuilt kernel?
+Date: Fri, 4 Jun 2004 09:48:57 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C02017.5030304@unav.es>
-References: <40BF3E60.2060206@efn.uncor.edu> <1157.172.16.131.133.1086337464.squirrel@mail.suarapembaruan.co.id>
+Message-ID: <Pine.LNX.4.33.0406040940180.15267-100000@blackhole.kfki.hu>
+References: <20040603210133.GN24398@wellnow.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1157.172.16.131.133.1086337464.squirrel@mail.suarapembaruan.co.id>
+In-Reply-To: <20040603210133.GN24398@wellnow.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: david@suarapembaruan.co.id
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jeff Gordon <jeff.gordon@wellnow.com>
 Cc: netfilter@lists.netfilter.org
 
-david@suarapembaruan.co.id wrote:
+On Thu, 3 Jun 2004, Jeff Gordon wrote:
+>
+> So I obtained the iptables-1.2.9 source package and compiled it.
+>
+> On 'make install', however I found libipt_recent.so was NOT placed into
+> the loadable modules directory...!
 
->Dear all,
->can anybody tell me how to set rules in iptables if i want to use
->transparant proxy.
->
->Thank's
->David Kandou
->
->
->
->
->  
->
-iptables -t nat -A prerouting -i eth0 -p tcp --dport 80 -j REDIRECT 
---to-port 3128
+The compilation process of the iptables binary will include whatsoever is
+supported in the kernel *source* it was told to look at it. So if the
+kernel source does not contain the recent module, it won't be supported
+by iptables either.
 
-This command make your kernel intercept  HTTP connections and send them
-to proxy port.
-
-
-Emilio C.
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
