@@ -1,12 +1,11 @@
-From: Sven Riedel <sr@gimp.org>
-Subject: Filtered Port 21 somewhat open - iptables weirdness?
-Date: Sat, 24 Jan 2004 02:48:42 +0100
+From: "Sandy T. Santos" <sandy@bulacan.gov.ph>
+Subject: nat on multihomed server
+Date: Sat, 24 Jan 2004 11:35:22 +0800 (PHT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040124014842.GA9219@localnet>
-Reply-To: sr@gimp.org
+Message-ID: <1164.203.131.168.150.1074915322.squirrel@www.localgovernance.net.ph>
+Reply-To: sandy@bulacan.gov.ph
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,37 +19,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-one of the machines I administer to is running iptables with an input
-policy of drop, and allows only a few, selected services. Ftp is most
-definitely not among them, and there is no ftp server installed on the
-machine in question. 
+our campany has two internet links from different isp's. we then use both
+of these to host the company's webserver. what i want is that the
+webserver maybe accessible by coming from my isp1 link or my isp2 link. i
+know that i need to set up my dns to have two ip addresses that points to
+my linux box and then DNAT that connection towards my webserver. what i
+don't know is what's the iptables script gonna look like for the SNAT
+reply. how would i be able to determine that the request that came in to
+my webserver originated from my isp1 or isp2 link  so that the reply would
+be SNAT'ed to that interface?
 
-nmap -P0 -sS reports that among the expected, port 21 is open.
-telnetting to port 21 shows indeed a successful connect:
-radagast@angmar:~>telnet <machine> 21
-Trying <ip>...
-Connected to <machine>
-Escape character is '^]'.
-^]
-telnet> quit
+should i just make two SNAT  that replies to the request irregardless of
+the destination address? ex. iptables -t nat -A POSTROUTING -s 192.168.x.2
+--sport 80 -j SNAT --to-ip (ip facing isp1) and  iptables -t nat -A
+POSTROUTING -s 192.168.x.2 --sport 80 -j SNAT --to-ip (ip facing isp2)
 
-But it just sits there, no welcoming banner, no response to obvious
-ascii-commands.
+other suggestions are welcome.
 
-At the same time the kernel logs report that my telnet packets are being
-blocked by iptables. hping2 -A gets reset packets from that port as
-well, as if it weren't filtered, while amap shows me nothing of value. 
-
-Is this maybe some ip_conntrack weirdness? I already sweeped the machine
-as well as I could and so far I came up with no indication for a rootkit
-or backdoor. 
-
-Regs,
-Sven
 -- 
-Sven Riedel                      sr@gimp.org
-Liebigstr. 38 
-30163 Hannover                  "Python is merely Perl for those who
-                                 prefer Pascal to C" (anon)
+Sandy T. Santos <sandy@bulacan.gov.ph>
+Provincial Information Technology Office
+Provincial Government of Bulacan
+Malolos, Philippines
+
 
