@@ -1,90 +1,138 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Weird TCP flags?
-Date: Fri, 12 Dec 2003 21:21:37 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312122121.37954.Antony@Soft-Solutions.co.uk>
-References: <003101c3c065$f61ad790$13fea8c0@melita.com> <200312121438.24448.Antony@Soft-Solutions.co.uk> <200312121105.19702.JALaramie@Loudoun-Fairfax.com>
+From: Kishore Dharmavaram <kishored@servgate.com>
+Subject: RE: iptable_nat module slows/hoses my Redhat 9.0 box
+Date: Fri, 12 Dec 2003 14:53:19 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B20F1@skat.sky.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312121105.19702.JALaramie@Loudoun-Fairfax.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: 'Jan Kaastrup' <jka@protego.dk>
+Cc: netfilter@lists.netfilter.org, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-On Friday 12 December 2003 4:05 pm, Jeffrey Laramie wrote:
+Hello Jan & All,
 
-> The TTL of his packet was about 60 secs lower than what I usually see which
-> makes Chris's explanation sound likely. How does TTL get calculated? Does
-> each host set a new TTL for it's packets or does it calculate it from the
-> time of the original SYN packet?
+Yes I want to do that for UDP & ICMP, can you tellme how to remove stateful
+inspection(connection tracking) for just ICMP and UDP protocols without
+removing NAT on ICMP and UDP packets.
 
-No, TTL doesn't mean "TIME to live" any more (it did when the Internet was 
-being invented, but pretty soon the meaning changed and TTL no longer has 
-anything to do with time).
+Thanks,
+Kishore
 
-TTL is actually a "maximum hop count", specifying the number of routers (and 
-remember, a netfilter firewall is a router too) a packet is allowed to pass 
-through before it "expires" and gets thrown away (with an ICMP "TTL expired" 
-packet being returned to the source address on the packet which just 
-expired).
+-----Original Message-----
+From: Jan Kaastrup [mailto:jka@protego.dk]
+Sent: Friday, December 12, 2003 2:57 AM
+To: 'Kishore Dharmavaram'
+Subject: RE: iptable_nat module slows/hoses my Redhat 9.0 box
 
-The easiest way (I think) to explain how this is used is to consider the 
-traceroute program and what it does:
 
-traceroute sends out three packets to some destination address with TTL=1.
+Could it be a possibility to remove the statefull part from your NAT
+connection.
+This helps me when i do security scannings of other servers and therefor
+have a lot of udp packets.
+The problem is, it has to insert all connection in ip_conntract.
 
-The first router they come to decrements the TTL (all routers do this) and if 
-the TTL is now = 0, the router discards the packet, and returns an ICMP "TTL 
-expired" to the source address (ie: the machine which started the traceroute 
-command).   The source address for this ICMP packet is that of the router, 
-which is how the traceroute program tells you the address (and, by reverse 
-DNS, also the name) of the first router the packet went through.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Kishore
+Dharmavaram
+Sent: 12. december 2003 10:20
+To: 'Harald Welte '
+Cc: ''netfilter@lists.netfilter.org' ';
+''netfilter-devel@lists.netfilter.org' '
+Subject: RE: iptable_nat module slows/hoses my Redhat 9.0 box
 
-Then traceroute sends three packets to the same destination address, this time 
-with TTL = 2.
 
-The first router decrements the TTL and passes the packets on (because that's 
-what routers do, and TTL is not = 0).
+Hello Harald & All,
 
-The second router decrements TTL, finds that it now = 0, and responds with the 
-ICMP packet (this time from the source address of the second router, so 
-traceroute can tell you that, too).
+Thanks for your reply. Eventhough I don't use NAT now, I will have to
+use it
+soon. 
 
-traceroute then just keeps on sending out packets with higher and higher TTLs, 
-waiting for all the ICMP responses to come back, and successive packets get 
-further and further, until traceroute receives either a "port unreachable" or 
-a genuine response packet, which means that the packets reached the real 
-destination.   Then traceroute stops, and you have a record of all the 
-routers the packets went through on their way to the destination.
+Connection setup really sucks after 'iptable_nat' module is inserted, my
+Pentium-4 RH9.0 box hangs with 7Mbps traffic using 20,000 concurrent UDP
+streams.
 
-traceroute normally sends UDP packets to port numbers which are unlikely to be 
-listening (therefore the expected response from the final destination is ICMP 
-port unreachable).
+Are there any tweaks that I can do in NAT code to increase performance
+of
+NAT, like: increase NAT hash-table size(I have got 1G RAM) or change
+hash
+algorithm etc?. 
 
-Note that due to dynamic routing across the Internet, there's no guarantee 
-that every packet will follow the same route on its way to the destination, 
-so traceroute outputs can be misleading, but it's a good start.
+For e.g: based on a recommendation from netfilter FAQ, I passed an
+odd-number(not a power of 2) as 'hashsize' parameter value  to
+'ip_conntrack' module,  session-setup performance improved a lot after
+that
+in my tests when UDP packet streams with incrementing source IP address
+are
+sent. But this 'hashsize' tweak did not improve session-setup
+performance
+when UDP streams with incrementing destination IP address are sent.
 
-Hope this helps explain a bit about TTL.....
+Is connection setup slow because of hash collisions i.e due to lot of
+connections getting hashed to same hash-bucket? or it due to lot of
+memcopies?. Can you please give some specific reasons for poor
+performance
+of NAT, it will help me in optimizing/tuning, if possible, that specifc
+part
+of netfilter nat functionality.
 
-Antony.
+Thanks,
+Kishore
 
+
+-----Original Message-----
+From: Harald Welte
+To: Kishore Dharmavaram
+Cc: 'netfilter@lists.netfilter.org';
+'netfilter-devel@lists.netfilter.org'
+Sent: 12/11/2003 11:13 PM
+Subject: Re: iptable_nat module slows/hoses my Redhat 9.0 box
+
+On Thu, Dec 11, 2003 at 09:47:25PM -0800, Kishore Dharmavaram wrote:
+> Hi All,
+> 
+> I find that after inserting "iptable_nat" module on my
+RH9.0(2.4.20-19.9)
+> box, session-setup(ip_conntrack)  performance gets very bad. 
+
+yes, that's true.  I think we cannot state often enogh: DO NOT load
+iptable_nat if you don't need nat.  
+
+> I am wondering why "iptable_nat" is slowing doing the box so much when
+I
+> don't have any NAT rules defined.
+
+NAT is inherently complex.  and in order to support any kind of nat,
+every connection (even the non-nat'ed ones) need to be placed in two
+additional hash tables.  
+
+If you just use conntrack, a single hash table is sufficient.. 
+
+> Do you guys know of any netfilter patches made to address/fix this
+issue?.
+
+There is no way to 'address' this issue other than not using NAT.
+
+> Thanks,
+> Kishore
 
 -- 
-The truth is rarely pure, and never simple.
-
- - Oscar Wilde
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+- Harald Welte <laforge@netfilter.org>
+http://www.netfilter.org/
+========================================================================
+====
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
 
