@@ -1,10 +1,11 @@
-From: William Stearns <wstearns@pobox.com>
-Subject: Address type module - all unicast?
-Date: Sun, 1 Feb 2004 21:57:59 -0500 (EST)
+From: "hare ram" <hareram@sol.net.in>
+Subject: layer7-filter with iptables problem
+Date: Mon, 2 Feb 2004 12:35:01 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0402012140520.19607-100000@sparrow>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <04e501c3e95a$e0674aa0$c2bf09ca@huecal>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,108 +16,122 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ML-netfilter <netfilter@lists.netfilter.org>, Patrick McHardy <kaber@trash.net>
-Cc: William Stearns <wstearns@pobox.com>
+Content-Type: text/plain; charset="us-ascii"
+To: lartc@mailman.ds9a.nl
+Cc: netfilter@lists.samba.org
 
-Good day, all,
-	I've started using the addrtype module.  Funny thing, though; I 
-only seem to be able to get UNICAST source and destination addresses.  
-(iptables -L -nxv output appended).
-	Is this module legal in the filter table?  I hope so, as I'd like 
-to be able to look for INPUT packets with, for example, a LOCAL or 
-BROADCAST source address type and drop them.
-	If it makes a difference, the kernel is a 2.4.23-rc3 with 
-1.2.9-20031122 iptables and patch-o-matic.
-	My apologies in advance is this is user error.  :-)
-	Cheers,
-	- Bill
+Hi
 
----------------------------------------------------------------------------
-	"I would give up my right arm before I'd give up my netfilter
-firewall."
-	-- Chris Brenton
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+iam running FEDORA,
 
+i have installed Source of iptable 1.2.9 with the patch  layer7-iptables
+patch done with out any errors
 
+and i applied patch in kernel to the layer 7 patch
 
-Chain INPUT (policy ACCEPT 2901118 packets, 330682572 bytes)
-    pkts      bytes target     prot opt in     out     source               destination         
-  812686 65801094 inputsrcaddrtype  all  --  !lo    *       0.0.0.0/0            0.0.0.0/0           
+and i have select the required option by doing
 
-Chain FORWARD (policy ACCEPT 180198579 packets, 52094581037 bytes)
-    pkts      bytes target     prot opt in     out     source               destination         
-110944255 32587214853 fwdsrcaddrtype  all  --  *      *       0.0.0.0/0            0.0.0.0/0           
-110941554 32586534304 fwddstaddrtype  all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+ make menyconfig
+done
 
-Chain OUTPUT (policy ACCEPT 3214113 packets, 449942923 bytes)
-    pkts      bytes target     prot opt in     out     source               destination         
-  715804 118028709 outputdstaddrtype  all  --  *      !lo     0.0.0.0/0            0.0.0.0/0           
+make dep
+make bzImage
+make modules
+make modules_install
+make install
 
-Chain fwddstaddrtype (1 references)
-    pkts      bytes target     prot opt in     out     source               destination         
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type UNSPEC 
-110941554 32586534304 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type UNICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type LOCAL 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type BROADCAST 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type ANYCAST 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type MULTICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type BLACKHOLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type UNREACHABLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type PROHIBIT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type THROW 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type NAT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type XRESOLVE 
+and rebooted with customer kernel
 
-Chain fwdsrcaddrtype (1 references)
-    pkts      bytes target     prot opt in     out     source               destination         
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type UNSPEC 
-110944255 32587214853 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type UNICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type LOCAL 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type BROADCAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type ANYCAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type MULTICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type BLACKHOLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type UNREACHABLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type PROHIBIT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type THROW 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type NAT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type XRESOLVE 
+when i type
 
-Chain inputsrcaddrtype (1 references)
-    pkts      bytes target     prot opt in     out     source               destination         
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type UNSPEC 
-  812686 65801094 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type UNICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type LOCAL 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type BROADCAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type ANYCAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type MULTICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type BLACKHOLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type UNREACHABLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type PROHIBIT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type THROW 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type NAT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match src-type XRESOLVE 
-
-Chain outputdstaddrtype (1 references)
-    pkts      bytes target     prot opt in     out     source               destination         
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type UNSPEC 
-  715804 118028709 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type UNICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type LOCAL 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type BROADCAST 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type ANYCAST 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type MULTICAST 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type BLACKHOLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type UNREACHABLE 
-       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type PROHIBIT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type THROW 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type NAT 
-       0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type XRESOLVE 
+iptables -t mangle -A POSTROUTING -m layer7 --l7proto http -j
+MARK --set-mark 1
+iptables v1.2.9: Couldn't load match
+`layer7':/usr/local/lib/iptables/libipt_layer7.so: cannot open shared object
+file: No such file or directory
 
 
+when i try to do manual compile, iam getting this error
+
+cc -O2 -Wall -Wunused -I/usr/src/linux-2.4.22-1.2115.nptl/include -Iinclude/
+ -DIPTABLES_VERSION=\"1.2.9\"  -fPIC -o extensions/libipt_layer7_sh.o -c
+extensions/libipt_layer7.c
+
+
+extensions/libipt_layer7.c:21:45: linux/netfilter_ipv4/ipt_layer7.h: No such
+file or directory
+extensions/libipt_layer7.c:52: warning: `struct ipt_layer7_info' declared
+inside parameter list
+extensions/libipt_layer7.c:52: warning: its scope is only this definition or
+declaration, which is probably not what you want
+extensions/libipt_layer7.c: In function `parse_protocol_file':
+extensions/libipt_layer7.c:84: error: `MAX_PROTOCOL_LEN' undeclared (first
+use in this function)
+extensions/libipt_layer7.c:84: error: (Each undeclared identifier is
+reported only once
+extensions/libipt_layer7.c:84: error: for each function it appears in.)
+extensions/libipt_layer7.c:87: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:87: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:87: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:93: error: `MAX_PATTERN_LEN' undeclared (first
+use in this function)
+extensions/libipt_layer7.c:95: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:95: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:95: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c: At top level:
+extensions/libipt_layer7.c:219: warning: `struct ipt_layer7_info' declared
+inside parameter list
+extensions/libipt_layer7.c: In function `parse_layer7_protocol':
+extensions/libipt_layer7.c:246: warning: passing arg 3 of
+`parse_protocol_file' from incompatible pointer type
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:264: error: `MAX_PATTERN_LEN' undeclared (first
+use in this function)
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c: In function `parse':
+extensions/libipt_layer7.c:278: warning: passing arg 2 of
+`parse_layer7_protocol' from incompatible pointer type
+extensions/libipt_layer7.c:280: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c: In function `print':
+extensions/libipt_layer7.c:325: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:326: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c: In function `save':
+extensions/libipt_layer7.c:334: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c:334: error: dereferencing pointer to incomplete
+type
+extensions/libipt_layer7.c: At top level:
+extensions/libipt_layer7.c:340: error: invalid application of `sizeof' to an
+incomplete type
+extensions/libipt_layer7.c:341: error: invalid application of `sizeof' to an
+incomplete type
+
+
+any help will be apprciate
+
+hare
 
 
