@@ -1,15 +1,12 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: Reinjecting packets using libipq
-Date: Tue, 20 Apr 2004 15:26:45 +0200
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: libipq speed
+Date: Tue, 20 Apr 2004 14:30:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040420132645.GA23569@zion.homelinux.com>
-References: <OFCC294FDA.EB782326-ON65256E7C.002FB337@hss.hns.com> <20040420102929.GA6236@zion.homelinux.com> <009401c426d9$3e2a3a10$68892090@grouse>
+Message-ID: <00af01c426db$a80f8820$68892090@grouse>
+References: <OFB36523E3.68912DA0-ON65256E7C.00336D2F@hss.hns.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <009401c426d9$3e2a3a10$68892090@grouse>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +16,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Jee J.Z." <jz105@york.ac.uk>
-Cc: aksingh@hss.hns.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org
 
+Hi again,
 
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+> Hi
+>
+>     On  many links regarding user space hanlding of packets I have read
+> warnings about using libipq, speed wise .... "do this only if u dont want
+> ultra high speeds and all" ... this speed issue arises because we need to
+> copy things from kernel space to usr space and vice versa, or is there any
+> other reason for this. I mean suppose i want to make a process that gets
+> the packets from the kernel and plays with them and then reinjects them
+> into the kernel( my process has to be in user space) ... keeping this
+> constraint in mind (the process that tinkers with the packets has to be in
+> user space), is there any faster solution than using libipq i.e do these
+> warnings just mean that using libipq gives slower results when if packet
+> mangling is done in the kernel space itself .. which is quite obvious, or
+> do they mean that we can have better ways(faster) than libipq for user
+> space packet mangling.
 
+I think the speed penalty is caused by userspace processing and delivery
+from kernel to userspace and vice versa. This should not be particular for
+libipq.
 
-Howdy Jee,
+Jee
 
-On Tue, Apr 20, 2004 at 02:13:16PM +0100, Jee J.Z. told us:
-> Hi,
->=20
-> You can have a look at 'libnet' for injecting a new packet. I think it's
-> good for packet construction. But I am not sure whether the newly generat=
-ed
-> packet can bypass a certain hook or not at this time.
+> thanks
+> Amit
+>
+> "DISCLAIMER: This message is proprietary to Hughes Software Systems
+Limited
+> (HSS) and is intended solely for the use of the individual to whom it is
+> addressed. It may contain  privileged or confidential information and
+> should not be circulated or used for any purpose other than for what it is
+> intended. If you have received this message in error, please notify the
+> originator immediately. If you are not the intended recipient, you are
+> notified that you are strictly prohibited from using, copying, altering,
+or
+> disclosing the contents of this message. HSS accepts no responsibility for
+> loss or damage arising from the use of the information transmitted by this
+> email including damage from virus."
+>
+>
+>
 
-I think those packets would traverse the hooks as it is completely new
-injected into the networking stack. But it would probably be the same=20
-with packet sockets (btw. maybe libnet uses packet socket and is just
-a comfortable way for building the packets)
-
-Sven
-
->=20
-> Jee
->=20
-
---=20
-Linux zion 2.6.6-rc1 #1 Sat Apr 17 11:50:12 CEST 2004 i686 athlon i386 GNU/=
-Linux
- 15:23:25  up 2 days, 22:21,  1 user,  load average: 0.00, 0.02, 0.00
-
---tKW2IUtsqtDRztdT
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFAhSUVo4FAdB2PneQRAgHPAJ935y7Ekq35Lc8XVoxrPRt0Nsb1hQCeOJBx
-qgVFxLe64KDOPKS+nATBHPA=
-=LNaV
------END PGP SIGNATURE-----
-
---tKW2IUtsqtDRztdT--
 
