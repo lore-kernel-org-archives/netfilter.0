@@ -1,13 +1,13 @@
-From: "Patrick Ahler" <patrick@vikus.com>
-Subject: RE: Desktop sharing with netmeeting
-Date: Mon, 19 May 2003 16:27:00 -0400
+From: Robert Cole <robert.cole@support4linux.com>
+Subject: iptables module load error
+Date: Mon, 19 May 2003 13:45:32 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ABEKJILKOKKGGDJKHKDFEEGACBAA.patrick@vikus.com>
-References: <Pine.LNX.4.43.0305191147160.1090-100000@pilchuck.reedmedia.net>
+Message-ID: <200305191345.32430.robert.cole@support4linux.com>
+Reply-To: robert.cole@support4linux.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.43.0305191147160.1090-100000@pilchuck.reedmedia.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Jeremy C. Reed" <reed@reedmedia.net>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-ok... that would lead to my next question =) how do I do any logging?
+I get this:
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Jeremy C. Reed
-Sent: Monday, May 19, 2003 2:54 PM
-To: Patrick Ahler
-Cc: netfilter EMAIL
-Subject: RE: Desktop sharing with netmeeting
+fw root # insmod ip_tables
+Using /lib/modules/2.4.20-hardened-r2/kernel/net/ipv4/netfilter/ip_tables.o
+/lib/modules/2.4.20-hardened-r2/kernel/net/ipv4/netfilter/ip_tables.o: 
+unresolved symbol nf_unregister_sockopt
+/lib/modules/2.4.20-hardened-r2/kernel/net/ipv4/netfilter/ip_tables.o: 
+unresolved symbol nf_register_sockopt
+fw root #
 
+When trying to load the ip_tables.o module and it causes problems on down the 
+line with other modules not loading. 
 
-On Mon, 19 May 2003, Patrick Ahler wrote:
+Anyone have any idea how to fix this? I'm running kernel 2.4.20. I have 
+everything under the netfilter section marked as a module except for realm 
+match support (because the kernel fails to compile with it).
 
-> I've patched the kernel with h323. Got netmeeting to talk through
-netfilter
-> by opening tcp ports 389 522 1503 1720 1731, and udp everything above
-1200,
-> but if I want to do desktop sharing netmeeting won't allow it unless the
-> firewall is down. Help?
-
-Try having iptables do some logging to see what is blocking.
-
-Have a look at  http://www.roeder.goe.net/~koepi/newnat.html
-
-And
-http://www.netfilter.org/documentation/pomlist/pom-extra.html#h323-conntrack
--nat
-
-   Jeremy C. Reed
-   http://www.reedmedia.net/
-
-
-
-
+Thanks,
+Robert
 
