@@ -1,11 +1,10 @@
-From: =?koi8-r?Q?=22=ED=C9=C8=C1=C9=CC=22=20?=<michaelkl@mail.ru>
-Subject: active connections
-Date: Thu, 27 May 2004 12:30:19 +0400
+From: Ludo Stellingwerff <ludo@protactive.nl>
+Subject: Some more IPSec - IPTables issues?
+Date: Thu, 27 May 2004 10:55:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BTGHL-0003HX-00.michaelkl-mail-ru@f13.mail.ru>
-Reply-To: =?koi8-r?Q?=22=ED=C9=C8=C1=C9=CC=22=20?=<michaelkl@mail.ru>
+Message-ID: <1085648121.3864.58.camel@laptop.stwerff.xs4all.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,21 +16,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Mon, 3 May 2004 10:19:34 -0700 Daniel Chemko wrote:
+Hi all,
 
->>> thanks
->>> but i m a student so i want to caputure the concept also. so please
->>> tell me the mystery or tell me about any tutorial about it.
->
->This is the wrong way to deal with dynamic table closures. What you want
->is a filter chain that explicitly drops unwanted sessions. Eventually
->the sessions will timeout on their own. I haven't used them, but there
->are also tools which can generate FIN/RST's on TCP connections which
->basically causes a graceful shutdown of the line.
+I have a similar question about the combination Netfilter and in-kernel
+IPSec. Most of the discussion about this combination is focussed on
+filtering incomming and/or outgoing traffic, both encrypted and
+decrypted. But my issue is about SNAT. I've googled around for an
+answer, but beside some people mentioning the problem I have not found a
+proper solution, yet.
 
-Could you please name such a tools?
-Or just point a direction, where I should look for it. :)
+The problem is about SNAT'ing traffic originating in the LAN, and being
+send out a IPSec tunnel at the gateway-router. With the current
+implementation of both IPSec and Netfilter this doesn't work, because
+POSTROUTING is applied only after the SPD gets a chance to decide on the
+pakket.
+
+Can anybody give some hints or inside on this subject? Is there a known
+work-around or a road-map to a solution?
+
+I need this functionality to be able to create a VPN-tunnel between to
+networks, one of which is behind a dynamic IP-address. I have a working
+solution by (dirty)-hacking Racoon, but that hack is unmaintainable.
+
+What I like to build looks like this:
+
+|    /---\       /---\     |
+|----| A |--//---| B |-----|
+|    \---/       \---/     |
+
+Where host B has a dynamic IP-Address. The network behind B should be
+able to enter network A, but the IPSec tunnel will only see a
+road-warrior host B:
+
+|    /---\       /---\
+|----| A |--//---| B |
+|    \---/       \---/
+
+
+Thanks in advanced,
+
+Ludo Stellingwerff.
+
+
 
 
