@@ -1,12 +1,11 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: please advise on this rule
-Date: Tue, 12 Aug 2003 11:51:42 -0700
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: iptables and the  RELATED option
+Date: Tue, 12 Aug 2003 15:53:21 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E1F@alderaan.smgtec.com>
+Message-ID: <01f801c36103$00a67150$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +16,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Payal Rathod <payal-iptables@staticky.com>, netfilter@lists.netfilter.org
-
-Source field doesn't matter since traffic destined for the internal
-(private) network will only pass through that chain if you define DNAT
-rules for them.
-
-The port 80 rule seems ok, but trusting something like that where a user
-can change their IP's or use different port numbers, it is pretty light
-security for anyone who knows what they are doing.
-
------Original Message-----
-From: Payal Rathod [mailto:payal-iptables@staticky.com]=20
-Sent: Wednesday, August 13, 2003 11:25 AM
 To: netfilter@lists.netfilter.org
-Subject: please advise on this rule
 
-Hi,
-Does this FORWARD chain look ok in a simple NAT network where the Linux
-box is connected to the net.
+Hi, My name is Peter Marshall.  I am having some problems letting ftp
+through my firewall without opening all of the ports.  I was trying to get
+RELATED to work, but for some reason it will not.  Here is an example of
+what my file looks like
 
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state
-RELATED,ESTABLISHED
-REJECT     tcp  --  192.168.10.1         0.0.0.0/0          tcp dpt:80
-reject-with icmp-port-unreachable
+$TABLENAME -A FORWARD -d x.x.x.x -o eth2 -j mychain
+
+$TABLENAME -A mychain -m state --state ESTABLISHED,RELATED -j ACCEPT
+$TABLENAME -A mychain -j DROP
+
+I don't think I need the ESTABLISHED, but I put it in anyways.
+
+If anyone could help it would be greatly appriciated.
+
+Thanks
 
 
-Is source 0/0 OK? Should be be 192.168.10.0/24 ?
-Will the third rule block outgoing connection from 192.168.10.1 to any
-server at port 80?
-
-Thanks a lot and eagerly waiting for the reply.
-With warm regards,
--Payal
-
---=20
-"Visit GNU/Linux Success Stories"
-http://payal.staticky.com
-Guest-Book Section Updated.
+Peter Marshall
+PS.  Sorry if te message appears twice.  I sent it the first tiem before I
+became a member
 
 
