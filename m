@@ -1,12 +1,13 @@
-From: "Alireza" <redhat@zagros.ipm.ac.ir>
-Subject: Re: Patch-O-matic
-Date: Wed, 10 Jul 2002 11:25:29 +0430
+From: "Dorian Haasler" <dorian@uptime.at>
+Subject: RE: Redhat 7.2 Kernel
+Date: Wed, 10 Jul 2002 10:39:24 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001201c227de$c958d3e0$ba46e1c2@saleh>
-References: <001e01c226c3$e6268ec0$3864a8c0@discmail.com> <001401c22717$c1fd76e0$f948e1c2@redhat> <200207101040.12164.fabrice@celestix.com>
+Message-ID: <000c01c227ed$4f5a8520$050b10ac@tuq155u4834h40>
+References: <000001c2277c$93210d40$7200a8c0@blue>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <000001c2277c$93210d40$7200a8c0@blue>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,57 +17,96 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: fabrice@celestix.com, netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: 'Denis JULIEN' <denis.julien@vupublishing.net>, "'Mike G. Hammonds'" <mhammonds@knowledgeinenergy.com>
+Cc: "'Iptables-User-list (E-mail)'" <netfilter@lists.samba.org>
 
-Hi,
-I really follow all the steps in the following howto, but patch-o-matic.
-prompt
-FAIL copy /usr/src/linux-2.4.18-5 and doesn't apply the patch (ip-limit) and
-som other that I applied to kernel version 2.4.2.
-When I checked my kernel directory I saw all the required files copied there
-for example iplimit.h and netlink.c was pathced but it doesn't add a line in
-/usr/src/linux-2.4/net/ipv4/netfilter/Config.in .
+=20
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I don't know about the errors.
+Why using rc.firewall scripts with RedHat? Write your script and at
+the of it use "iptables-save" to store the information!
+At the next reboot the iptables settings will be the same and you
+don=B4t need to run your script every time. Changes can done in
+/etc/sysconfig/iptables
+where the rules where stored!
 
-Regards
-Alireza
------ Original Message -----
-From: "Fabrice MARIE" <fabrice@celestix.com>
-To: "Redhat Enigma" <redhat@zagros.ipm.ac.ir>; "Aldo S. Lagana"
-<alagana@discmail.com>; "Denis JULIEN" <denis.julien@vupublishing.net>;
-"iptables" <netfilter@lists.samba.org>
-Sent: Wednesday, July 10, 2002 7:10 AM
-Subject: Re: Patch-O-matic
+ Mfg,
+Dorian Haasler
+
+- -----Original Message-----
+From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org] On Behalf Of Glover George
+Sent: Tuesday, July 09, 2002 9:12 PM
+To: 'Denis JULIEN'; 'Mike G. Hammonds'
+Cc: 'Iptables-User-list (E-mail)'
+Subject: RE: Redhat 7.2 Kernel
 
 
-> On Tuesday 09 July 2002 15:09, Redhat Enigma wrote:
-> > Dear Sir,
-> > Thanx for your help ,I just want to use iplimit and time matching, but I
-> > can't apply them to my kernel.
-> > Anyway I just want to apply pending-patches and most-of-pom that the
-> > documents tell they don't have any confilict with each other. So I don't
-> > know what kind of process i should follow.
->
-> Hello,
->
-> basically, all patches contained in pending/ submitted & base/ in p-o-m
-should apply without
-> conflict. Maybe you didn't follow the appropriate steps ?
->
-http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.html
->
-> Have a nice day,
->
-> Fabrice.
-> --
-> Fabrice MARIE
-> Senior R&D Engineer
-> Celestix Networks
-> http://www.celestix.com/
->
-> "Silly hacker, root is for administrators"
->        -Unknown
+If you install redhat with no firewall (i.e, when it asks for medium,
+high, or no firewall), these scripts will exist but will not run.=20
+Then
+the common practice around here is to just create your script in
+/etc/sysconfig/network-scripts/rc.firewall.  And have that run in
+/etc/rc.d/init.d/rc.local (although I believe local is run after all
+scripts, so this may not be the most secure for a highly secure
+solution).
+
+Glover George
+Systems/Networks Administrator
+Gulf Sales & Supply, Inc.
+dime@gulfsales.com
+(228)-762-0268
+
+
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org [mailto:netfilter-
+> admin@lists.samba.org] On Behalf Of Denis JULIEN
+> Sent: Tuesday, July 09, 2002 1:13 PM
+> To: 'Mike G. Hammonds'
+> Cc: Iptables-User-list (E-mail)
+> Subject: RE: Redhat 7.2 Kernel
+>=20
+> I suggest that you read this very good documentation:
+> http://www.netfilter.org/documentation/tutorials/blueflux/iptables-
+> tutorial.
+> html#INSTALLRH71
+> I'm using also red hat 7.2 and this was able to solve the same
+> problem like
+> you
+> rg
+> Denis
+>=20
+> -----Message d'origine-----
+> De : Mike G. Hammonds [mailto:mhammonds@knowledgeinenergy.com]
+> Envoy=E9 : mardi 9 juillet 2002 16:17
+> =C0 : Iptables-User-list (E-mail)
+> Objet : Redhat 7.2 Kernel
+>=20
+>=20
+> Does the default install kernel of RH7.2 have iptable support
+> already compiled in it?
+>=20
+> Mike Hammonds
+> Fellon-McCord & Associates, Inc.
+> Information Services Manager
+> Voice (502) 214-6324 Fax (502)426-8800
+> mhammonds@knowledgeinenergy.com
+<mailto:mhammonds@knowledgeinenergy.com >
+>=20
+
+
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: PGPfreeware 7.0.3 for non-commercial use <http://www.pgp.com>
+
+iQA/AwUBPSvyui/JW8KXJ5IHEQJscwCggkKbc9gC9HjyynhIwkOhcW/zMZIAoMYw
+lHxh6q0MQckwScyFIypGRI5X
+=3DKqOe
+-----END PGP SIGNATURE-----
+
 
 
