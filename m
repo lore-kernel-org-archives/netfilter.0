@@ -1,45 +1,73 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: ip_conntrack_pptp
-Date: Thu, 22 Jan 2004 13:09:04 -0500
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <14802.0446686589$1074804059@news.gmane.org>
-References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org> <003601c3e100$6e8a68c0$2d64a8c0@pcjka> <20040122175345.GN1810@obroa-skai.de.gnumonks.org>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Masquerading multiple VPN clients (Windows)
+Date: Thu, 22 Jan 2004 15:30:39 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040122203039.GA10688@obroa-skai.de.gnumonks.org>
+References: <20040122083018.5896a9da.bs@axysdesign.com> <20040122102939.71b72b55.bs@axysdesign.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <20040122175345.GN1810@obroa-skai.de.gnumonks.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+In-Reply-To: <20040122102939.71b72b55.bs@axysdesign.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
-To: Harald Welte <laforge@netfilter.org>, Jan Kaastrup <jka@protego.dk>
-Cc: 'Netfilter Development Mailinglist' <netfilter-devel@lists.netfilter.org>, 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>
-
-On January 22, 2004 12:53 pm, Harald Welte wrote:
-> On Thu, Jan 22, 2004 at 04:57:26PM +0100, Jan Kaastrup wrote:
-> > Hi Harald and all on this list.
-> >
-> > I have problems with ip_conntrack_pptp patch from POM-20031219
-> > Does anyone know of this, or is it just me being stupid ?
->
-> *sigh* *sigh* *sigh*.
->
-> Does anybody actually ponder reading the 'README' file included in the
-> patch-o-matic package?
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: Vichaya Sidhipong <bs@axysdesign.com>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
-	I thought that was for padding to make the MD5 sums work??? 
-	*grin*
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	Alistair
->
-> > Jan
+On Thu, Jan 22, 2004 at 10:29:39AM -0800, Vichaya Sidhipong wrote:
+> Hi Harald,
+>=20
+> patch-o-matic 20031219
+> kernel version 2.4.24, debian sid
+> iptables 1.2.9, also patched and rebuilt
+>=20
+> I did load these modules:
+>=20
+> ip_conntrack_proto_gre
+> ip_conntrack_pptp
+> ip_nat_pptp
+
+you are missing the ip_nat_proto_gre module
+
+> Thank you,
+> Bill
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFAEDLvXaXGVTD0i/8RAiu1AKCmtiwPn0i2Cti5BF0ebglwkewKkgCdFiFP
+ANKdLud2K5sVp0ZDZSYPzz0=
+=DcF7
+-----END PGP SIGNATURE-----
+
+--mP3DRpeJDSE+ciuQ--
 
