@@ -1,13 +1,11 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: Port Forwarding with iptables
-Date: Fri, 20 Aug 2004 11:15:57 +0100
+From: "Thomas Kristensen" <Hyper@ubn.dk>
+Subject: Log every package incoming and outcoming.
+Date: Fri, 20 Aug 2004 12:32:24 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040820101557.GI4818@metastasis.org.uk>
-References: <412487B7.9090505@digitalview.com> <20040819112216.GN29471@metastasis.org.uk> <4125CD2E.7000108@digitalview.com>
+Message-ID: <44585.80.164.248.134.1092997944.squirrel@krank.darknet.dk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4125CD2E.7000108@digitalview.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Aug 20, 2004 at 06:06:38PM +0800, Wilson Mak wrote:
-> Nick Drage wrote:
+How can i log every package coming on INPUT, OUTPUT and FORWARD chains.
 
-Excuse the short answer...
+I want to log every package to lateron collect the data and make stats
+over the use from every ip inside the firewall. The reason why i need to
+log, is i need to check every ip to se if its inside denmark, or outside
+denmark (i got the list for dk ips).
 
-> Thanks for all who help on this issue.  I mis-type the rule here.  Yes 
-> you guys are right, the rule should be: -d 10.1.0.12.  But still it 
-> doesn't work.  Do I need to enable something in the kernel when using 
-> Port-Forwarding?
+i dont want a full system setup, i just need somekind og modul for
+iptables, or a conf for iptables to log every thing.
+The problem is if i set a rule, iptables will stop at a matching rule, and
+therefor i cant set a log rule in the end for alle chains.
 
-Try:
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Any ideas?
 
-If you google for that you should find an explanation :)
 
--- 
-"I think a church with a lightning rod shows a decided lack of confidence"
+----------------------------------------------
+DarkNet Webmail -http://webmail.darknet.dk
+
+
 
