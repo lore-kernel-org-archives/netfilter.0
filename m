@@ -1,12 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+From: Walther@gehag-dsk.de
 Subject: Re: 1:1 NAT
-Date: Tue, 21 Jan 2003 17:41:33 +0100 (CET)
+Date: Tue, 21 Jan 2003 18:00:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0301211736270.959@dns.toxicfilms.tv>
-References: <001301c2c166$2c7671a0$1e01a8c0@win2k.com>
+Message-ID: <OF2B77F626.D8E69574-ONC1256CB5.005D08E8-C1256CB5.005D1B0C@GEHAG-DSK.DE>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001301c2c166$2c7671a0$1e01a8c0@win2k.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +15,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Mike <mikeeo@msn.com>
 Cc: netfilter@lists.netfilter.org
 
-> What I am trying to do is like how its done on cisco PIX i.e
-> "static (inside,outside) 208.15.232.12 192.168.1.167 netmask 255.255.255.255
-> 0 0"
-iptables -A POSTROUTING -t nat -o EXT -s 192.168.1.167 -j SNAT \
-	--to 208.15.232.12
-iptables -A PREROUTING -t nat -o EXT -d 208.15.232.12 -j DNAT \
-	--to 192.168.1.167
+hi,
 
-Where EXT is your external interface.
+from outside to inside:
 
-This does:
- - change source address of packets comming out of 192.18.1.167 to
-208.15.232.12
- - change destination address of packets comming to 208.15.232.12 to
-192.18.1.167
+iptables -t nat -A PREROUTING -d 208.15.232.12 -j DNAT --to 192.168.1.167
 
-The the packets get routed, and you have 1:1 NAT
+the other way around:
 
-You can also change ports, eg. make a world available ftp server on port
-21 on 208.15.232.12, that really is on port 17 on 192.18.1.167
-This way 192.168.1.167 can have 2 ftp servers, one public, one internal,
-on different ports.
+iptables -t nat -A POSTROUTING -s 192.168.1.167 -j SNAT --to 208.15.131.12
 
-It is just an example, maybe you could use things like that.
+you should specify the input and output interface as well like this:
 
-Regards,
-Maciej Soltysiak
+iptables -t nat -A PREROUTING -i <external-interface> -o 
+<internal-interface> -d 208.15.232.12 -j DNAT --to 192.168.1.167
+
+and 
+
+iptables -t nat -A POSTROUTING -i <internal-interface> -o 
+<external-interface> -s 192.168.1.167 -j SNAT --to 208.15.232.12
+
+Best Regards,
+MfG.
+
+Stefan Walther
+stefan_walther@gehag-dsk.de
+dienst.: +4930/89786448
+Funk: +49172/3943961
+http://www.gehag-dsk.de
+
+-------------------------------------------------------------- 
+Linux/UNIX is like an Indian Tipi:
+No Windows, no Gates and Apache inside.
+
+Outgoing Mail is certified mistake-free. 
+Examined by DOGMATIC infallibility system. 
+Version 6.04
+
+
+
+
+"Mike" <mikeeo@msn.com>
+Sent by: netfilter-admin@lists.netfilter.org
+21.01.2003 17:00
+
+ 
+        To:     <netfilter@lists.netfilter.org>
+        cc: 
+        Subject:        1:1 NAT
+
+
+Can anyone point me to some docs on setting up 1:1 NAT on netfilter?
+
+What I am trying to do is like how its done on cisco PIX i.e
+"static (inside,outside) 208.15.232.12 192.168.1.167 netmask 
+255.255.255.255
+0 0"
+
+That way I don't have to do IP alias on my ethernet card.
+
+Thanks,
+
+Mike
+
+
+
+
+
 
