@@ -1,13 +1,12 @@
 From: Samuel Jean <sj-netfilter@cookinglinux.org>
-Subject: Re: Limit module accept negation?
-Date: Thu, 13 Jan 2005 20:24:50 -0500
-Message-ID: <41E71F62.30208@cookinglinux.org>
-References: <41E2E0CB.18071.252B3E2C@localhost>	<41E6C745.7555.2118F01@localhost>
-	<41E71E70.4080703@cookinglinux.org>
+Subject: Re: Performance isues related to a large number of iptables rules
+Date: Thu, 13 Jan 2005 20:32:46 -0500
+Message-ID: <41E7213E.9080202@cookinglinux.org>
+References: <41E6FA0E.2060707@intellitree.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050901030309090202030207"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E71E70.4080703@cookinglinux.org>
+In-Reply-To: <41E6FA0E.2060707@intellitree.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,45 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: jagrelo@novadevices.com
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: henry <info@intellitree.com>
 Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------050901030309090202030207
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Samuel Jean wrote:
-> The patch below is against ipt_limit.c from 2.6.10. It's *untested* but 
-> reflects what I told you. It's just an exemple of how you can make
-> this module behaving the other way arround.
+henry wrote:
+> Does anyone know what the real numbers are, and 
+> what numbers are feasible and what numbers aren't?
 > 
 
-Doh! crapy patch. Attached good one. I hope.
+Not me. But if blocking large amount of subnets and host addresses is
+your issue here. Only one rule is sufficient. See ipset 2.0
 
---------------050901030309090202030207
-Content-Type: text/x-patch;
- name="ipt_limit.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ipt_limit.patch"
+http://people.netfilter.org/kadlec/ipset/
 
---- ipt_limit.c.orig	2005-01-13 20:13:19.000000000 -0500
-+++ ipt_limit.c	2005-01-13 20:14:10.000000000 -0500
-@@ -82,11 +82,11 @@
- 		/* We're not limited. */
- 		r->credit -= r->cost;
- 		spin_unlock_bh(&limit_lock);
--		return 1;
-+		return 0;
- 	}
- 
-        	spin_unlock_bh(&limit_lock);
--	return 0;
-+	return 1;
- }
- 
- /* Precision saver. */
+Sorry if am out of topic.
 
---------------050901030309090202030207--
+Samuel
 
