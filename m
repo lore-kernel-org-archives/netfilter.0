@@ -1,12 +1,12 @@
-From: "Gebauer Ulrich" <Ulrich.Gebauer@soldan.de>
-Subject: AW: iptables for ADSL
-Date: Mon, 24 Nov 2003 10:48:22 +0100
+From: Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>
+Subject: Re: Iptables not working with RH9
+Date: Mon, 24 Nov 2003 08:51:12 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <74A3B74C09656B489667D19991666F8254DD95@exchange1.soldan.org.dir>
+Message-ID: <sfc1c69f.013@pf.ueo.ohio-state.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +16,103 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: tkevans@tkevans.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: josh.berry@linknet-solutions.com
+Cc: netfilter@lists.netfilter.org, scottmackay@yahoo.com
 
-My 2 cents
+That's not true.   RH7.3  does come with the bridge-nf code enabled.
+I have not recompiled the kernel and I can set it up and it works. I just reinstalled rh7.3 last thursday to make sure i hadn't "forgotten" that i had recompiled the kernel and sure enough right after a minimal install I manually setup a bridge and it started bridging the connection then i used iptables to filter and block it and that worked as well.
+  So it does come with RH7.3  but the fact that you believe it doesn't come on any kernel probably tells me that RH9.0 doesn't have it ( I think mandrake 9.0 comes precompiled with the bridge code as well.)
+  Thanks Derek
+>>> "Josh Berry" <josh.berry@linknet-solutions.com> 11/20/03 08:47PM >>>
+The bridge-nf code does not come enabled by default with rh7.3.  I don't
+think that it comes enabled by default on any kernels.
 
-I identify in my firewall script my dsl interface by it's interface =
-name. Nothin else comes accross that way. Who cares of it's IP ? Tell me =
-if I'm wrong.
+> I have not custom compiled the kernel. I was first using rh7.3 and it
+> works straight out of the box.   I assumed that they would not have taken
+> that code back out of the precompiled kernel but i suppose they could have
+>
+> Derek
+>
+>>>> Scott MacKay <scottmackay@yahoo.com> 11/20/03 11:17AM >>>
+> Did you add on the iptables hook for bridging and
+> activate all the proper configuration settings?
+> I has a similar problem with 2.4.22 (under RH9)
+> because I forgot to  menuconfig and add in the proper
+> settings.
+>
+> --- Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>
+> wrote:
+>> Hello all
+>>   Hopefully someone can see my error.
+>> I have been running RH7.3 with it's standard kernal
+>> version 2.4.18-3 for several months configured as a
+>> transparent bridging firewall. We recently purchased
+>> a new machine and wanted to install RH9 with its
+>> standard kernal 2.4.20( i think)I followed the same
+>> steps installed with iptables and bridging utils and
+>> used my same script file to setup the bridge with
+>> two nics and fill in all my rules. This didn't seem
+>> to work right and on further testing realized
+>> NOTHING was being filtered. I then rebooted and
+>> manualy set up the bridge and cleared all the tables
+>> and set the default policy to drop. SO at this point
+>> nothing should get through. Well it bridges
+>> everything, and the counters in iptables do not
+>> increment. The system acts as if it is not there
+>> what so ever.
+>>
+>> here is the setup after the basic minimal install
+>> brctl addbr br0
+>> brctl addif br0 eth0
+>> brctl addif br0 eth1
+>> ifconfig eth1 0.0.0.0 promisc
+>> ifconfig eth0 0.0.0.0 promisc
+>> #bring up bridge with either of the next two
+>> commands
+>> ifconfig br0 up
+>> ip link set br0 up
+>> #both do the same thing  namely nothing
+>> iptables -X
+>> iptables -F
+>> iptables -P FORWARD DROP
+>> iptables -P INPUT DROP
+>> iptables -P OUTPUT DROP
+>>
+>> This setup happily bridges packets right on through
+>> with no updates to the iptables counters.
+>>
+>> I have been experimenting with devil linux as well
+>> recently and it exhibits the same problem.
+>>
+>> ip_forwarding is set to   as it has been on my
+>> working rh7.3 machine I tried setting it to 1 but
+>> that didn't help the problems. Im not 100% sure what
+>> exactl the ip_forwarding property corresponds to
+>> anyway.
+>>
+>> any help would be greatly appreciated!
+>>    Thanks
+>>          Derek
+>>
+>>
+>
+>
+> __________________________________
+> Do you Yahoo!?
+> Free Pop-Up Blocker - Get it now
+> http://companion.yahoo.com/ 
+>
+>
+>
+>
 
-Mit freundlichen Gr=FC=DFen
-        Ulrich Gebauer
 
-Hans Soldan GmbH, Dienste f=FCr Anw=E4lte
-Organisation / IT
-Bocholder Stra=DFe 259, 45356 Essen
-Telefon:0201 / 8612-228, Telefax: 0201 / 8612-377
-Email: gebauer@soldan.de
-Internet: http://www.marktplatz-recht.de
-
-
-
-
------Urspr=FCngliche Nachricht-----
-Von: Tim Evans [mailto:tkevans@tkevans.com]=20
-Gesendet: Freitag, 21. November 2003 20:40
-An: Antony Stone; Netfilter lista (iptables)
-Betreff: Re: iptables for ADSL
-
-
-On Fri, 21 Nov 2003 19:29:28 +0000, Antony Stone wrote
-> On Friday 21 November 2003 7:25 pm, Alejandro Cabrera Obed wrote:
->=20
-> > Hi people !!!
-> >
-> > I have a basic doubt: I want to connect my Linux with iptables to=20
-> > Intrenet via ADSL. Just one question:
-> >
-> > Do I have to set
-> > echo "1" > /proc/sys/net/ipv4/ip_dynadrr
-> > in order to work with dynamic addresses asigned by my ISP ????
-
-You just need to capture your dynamically assigned IP address at =
-iptables startup time and use it in your rules.  I have the following =
-variable assignment in my RH 7.3 startup sdript (all one line):
-
-INET_IP=3D`ifconfig eth1 | grep 'inet addr' | awk -F":" '{print $2}' | =
-sed 's/=20
-Bcast//'`
-
-Then just use $INET_IP in your rules.
---
-Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
-tkevans@tkevans.com             |    Owings Mills, MD 21117
-http://www.tkevans.com/         |    443-394-3864
-http://www.come-here.com/News/  |   =20
+Thanks,
+Josh Berry, CTO
+LinkNet-Solutions
+469-831-8543
+josh.berry@linknet-solutions.com 
 
 
 
