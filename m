@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: OT: Mail server problem [Was: Re: track bandwith used]
-Date: Wed, 30 Jun 2004 18:19:30 +0100
+From: "Narti Kitiyakara" <Nkitiyakara@nolacom.com>
+Subject: Microsoft VPN
+Date: Wed, 30 Jun 2004 12:27:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406301819.30843.Antony@Soft-Solutions.co.uk>
-References: <E1BfiMm-0003iK-GU@vishnu.netfilter.org>
-Reply-To: "netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <76408279273F86419EA113F4CC5BB13D026C5E@EXCHANGE.InsideNCS.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1BfiMm-0003iK-GU@vishnu.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +17,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 30 June 2004 5:55 pm, Antony Stone wrote:
+We're having trouble accessing our Microsoft VPN server through an =
+iptables firewall.  The first person to connect gets in fine, but we =
+can't make concurrent VPN connections.  We used guarddog and guidedog to =
+set up most of the firewall, but guidedog doesn't know how to DNAT based =
+on IP protocol, so we added an initialization script to run level 5 =
+(below) to DNAT based on protocol.  As I said, we're just perplexed as =
+to why this would work for one user but not additional users.  Any help =
+will be greatly appreciated.
 
-> Well, there are plenty of network monitoring tools which will give you this
-> sort of information as an aggregate figure for an interface, or broken down
-> by source/destination address, port number etc - iptraf is not a bad start
-> to see what can be done.
+/sbin/iptables -t nat -A ftolocal -p gre -j DNAT --to-destination =
+1.2.3.4
+/sbin/iptables -t mangle -A ftolocal -p gre -j MARK --set-mark 1
+/sbin/iptables -t nat -I PREROUTING 1 -p gre -j gforward
 
-I think someone at anguita.dti2.net ([81.24.162.8]) has a mail server 
-configuration problem - that machine has just repeated a posting I made 
-several hours ago back to the list, and has also managed to change the 
-timestamp in doing so!
 
-This list can get confusing enough at the best of times, without having 
-someone else repeating my own postings back to me with a different time on 
-them :)
-
-Regards,
-
-Antony.
-
--- 
-This email was created using 100% recycled electrons.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+- narti
 
 
