@@ -1,13 +1,9 @@
-From: Subhash Gopinath <subhashg@gmail.com>
-Subject: Re: problem with hook function for DHCP
-Date: Tue, 30 Nov 2004 15:21:28 -0800
-Message-ID: <81703d8a0411301521141c99e0@mail.gmail.com>
-References: <29F6FAF7F2C0D41190980002A513591E0E93BABB@FSNSAB30>
-Reply-To: Subhash Gopinath <subhashg@gmail.com>
+From: John <NetFilter@the-hobit.com>
+Subject: Iptables - Memory Allocation Errors
+Date: Tue, 30 Nov 2004 18:48:07 -0700
+Message-ID: <6.1.2.0.2.20041130184749.02284068@pop2.jjgb.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <29F6FAF7F2C0D41190980002A513591E0E93BABB@FSNSAB30>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,61 +14,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Hudson Delbert J Contr 61 CS/SCBN <delbert.hudson@losangeles.af.mil>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi,
+System Info:
 
-I need the o/p netfilter part for something else and not just for
-viewing DHCP packets(which can be done with TCPDump as u said).
+Netra T1 105
+Linux sparky 2.4.27-sparc #2 Thu Oct 7 10:49:35 MDT 2004 sparc64 sun4u TI 
+UltraSparc IIi (Sabre) GNU/Linux
+440Mhz
+512Meg Ram
+18Gig HD
+Gentoo Incarnation.
+Has been extremely stable.
+iptables v1.2.11
 
-Basically, I need to store the transaction ID of outgoing DHCP packets
-in a table ...
-When the server replies, the reply contains the transaction ID, and I
-need to match that with the corresponding entry in the table and then
-do some stunts later on....
+I have a previously developed firewall that goes way back in 
+years.  However, several years ago I switched to iptables from ipchains 
+when I went to Red Hat 7.3 on an X86 box.
 
-Unfortunately, I am not able to grab all outgoing DHCP
-packets....atleast when I put printk in the ougoing filter, messages
-are not printed in the dmesg .
+Having a few years of automated door slamming of cracker's, port scans etc. 
+etc., I have a sizable list of blocked IP's I would like to continue to 
+use.  Bout 1800 or so, as a matter of fact, plus my actual rules 
+allowing/disallowing services and such.  I could supply entire firewall if 
+needed, but I can't imagine I am the only one with this difficulty.
 
-Do u think there's a problem with the printk LOG LEVEL ?
+This whole firewall loads nicely on an X86 box running 128Meg ram and a 
+2.4.19 stock kernel and a X86 box I just set up using a 2.6.7 kernel on a 
+Gentoo distro. with 256M ram.
 
-thanks,
-~Subhash
+However, on the Sparc box, it will load only 857 lines of "iptables -A 
+INPUT -i $EXTERNAL_INTERFACE -s $BANNED -j DROP" and then I get "iptables - 
+memory allocation error" line after line through out the rest of the 
+load.  When I do "iptables -L -n |wc -l" the 857 shows up.
 
-On Tue, 30 Nov 2004 13:52:23 -0800, Hudson Delbert J Contr 61 CS/SCBN
-<delbert.hudson@losangeles.af.mil> wrote:
-> why not try tcpdump or hardware sniffer onm the lan itself.
-> 
-> 
-> 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Jason
-> Opperisano
-> Sent: Tuesday, November 30, 2004 12:42 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: problem with hook function for DHCP
-> 
-> On Mon, Nov 29, 2004 at 11:58:44PM -0800, Subhash Gopinath wrote:
-> > Hello all,
-> >
-> > I am facing problems capturing DHCP packets sent from a client to a
-> server....
-> > Basically, the hook function (defined below) is not getting called for
-> > each packet going out of the system.. Any ideas ?
-> 
-> my idea:  DHCP packets are generated and processed at the BPF layer
-> (which is below netfilter in the stack); and never pass through any
-> netfilter hooks.
-> 
-> -j
-> 
-> --
-> "Default! The two sweetest words in the English language!"
->         --The Simpsons
-> 
->
+I can load my basic I/O rules then start the loop for these IP's, and when 
+it hits the total of 857, same indication...
+
+Can anyone out there help me out?  Is this a Sparc64 thingy, and if so, how 
+may I work around it?
+
+Much thanks in advance.
+
+John  
+
 
