@@ -1,11 +1,13 @@
-From: Andras Kis-Szabo <kisza@securityaudit.hu>
-Subject: Re: iptables compile trouble
-Date: 05 Jun 2002 22:57:28 +0200
+From: Daniel Bastos <daniel@dbastos.net>
+Subject: Re: dns server
+Date: Thu, 6 Jun 2002 11:00:17 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023310649.28008.4.camel@hoi>
+Message-ID: <20020606110017.A28416@laptop.dbastos.net>
+References: <1420507267.20020606152231@gmx.de> <200206061333.g56DXZA31052@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <200206061333.g56DXZA31052@vulcan.rissington.net>; from Antony@Soft-Solutions.co.uk on Thu, Jun 06, 2002 at 02:33:18PM +0100
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,25 +18,28 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "L.Kremkow" <kremkow@polytomy.org>
-Cc: Netfilter <netfilter@lists.samba.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-Hi,
+> > Hi,
+> >
+> > im running a dns server here and i'm not sure if the following rule is
+> > enough to allow dns queries from everywhere:
+> >
+> > $IPTABLES -A INPUT -p udp --destination-port 53 -j ACCEPT
+> 
+> You should also allow TCP port 53.   DNS uses both.
 
-The
-> ip6tables.c:502: `AI_CANONNAME' undeclared (first use in this function)
-> ip6tables.c:509: warning: implicit declaration of function `getaddrinfo'
-> ip6tables.c:527: warning: implicit declaration of function `freeaddrinfo'
-> ip6tables.c:540: `NI_MAXHOST' undeclared (first use in this function)
-are definied in the /usr/include/netdb.h, which is included.
-These definitions depend on the __USE_POSIX define. (-D__USE_POSIX)
+As I remember, when clients query the DNS Server
+the port 53/tcp is used, and when your server 
+queries other servers, it uses the port 53/udp.
 
-Regards,
 
-	kisza
+
+Best Regards,
 -- 
-    Andras Kis-Szabo       Security Development, Design and Audit
--------------------------/        Zorp, NetFilter and IPv6
- kisza@SecurityAudit.hu /-----Member of the BUTE-MIS-SEARCHlab------>
-
+Daniel Bastos
+System Engineer
+http://www.dbastos.net
+GPG/PGP: http://www.dbastos.net/pgpkey.txt
 
