@@ -1,14 +1,13 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Need help on NAT
-Date: Tue, 10 Feb 2004 07:17:37 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables user defined chains disappear after a few hours ...
+Date: Tue, 10 Feb 2004 12:36:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076415456.2018.16.camel@ca.gts.nexusmgmt.com>
-References: <002401c3ebb8$4d7ccc00$f301a8c0@Zamani>
-	 <1076414843.4028c97b900c7@www.realdealz.ch>
+Message-ID: <200402101236.57066.Antony@Soft-Solutions.co.uk>
+References: <1076413370.2747.23.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1076414843.4028c97b900c7@www.realdealz.ch>
+In-Reply-To: <1076413370.2747.23.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,43 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Fabian Hartmann <realdeal@realdealz.ch>
-Cc: Saeed Zamani <szamani@tavanesh.com>, netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Tue, 2004-02-10 at 07:07, Fabian Hartmann wrote:
-> hi Saeed
-> There is an iptables patch called "nth" which allows you to match every Nth
-> packet encountered. 
-> That includes load-balancing such as you desire like every 4 received packet, 
-> SNAT first to the ip of ISP1, the other three to the ip of ISP2.
-> 
-> i. e.:  iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
->              --every 4 --packet 0 -j SNAT --to-source $ISP1
->         iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
->              --every 4 --packet 1 -j SNAT --to-source $ISP2
->         iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
->              --every 4 --packet 2 -j SNAT --to-source $ISP2
->         iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
->              --every 4 --packet 2 -j SNAT --to-source $ISP2
-> 
-> have a look at this
-> http://cvs.netfilter.org/patch-o-matic-ng/nth/help?rev=1.2
-> 
-> It is available in the netfilter patch-o-matic base repository
-> 
-> ---
-> Fabian Hartmann
-> 
-> realdeal@realdealz.ch
-> www.realdealz.ch
-That's much better than my suggestion! How does it interact with
-conntrack? Will packets that belong to an existing session also be load
-balanced? Thanks - John
+On Tuesday 10 February 2004 11:42 am, Ray Leach wrote:
+
+> Hi
+>
+> Has anyone encountered the above before?
+
+Do you perhaps have some cron job running on your system which periodically 
+reloads some standard ruleset, and this ruleset doesn't include the 
+user-defined chains which you've added by hand?
+
+Make a careful note of the exact time the chains disappear, put them back in, 
+and see when they disappear again.   The two times may give you a clue as to 
+what to look for on your system.
+
+I'd be pretty certain this is not netfilter losing chains all by itself.
+
+Antony.
+
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
