@@ -1,8 +1,8 @@
-From: =?iso-8859-1?B?Sm9yZ2UgVW1h8WE=?= <jorgeaub@hotmail.com>
-Subject: Web server access
-Date: Mon, 14 Jul 2003 09:10:00 -0600
+From: Nic <nferrier@tapsellferrier.co.uk>
+Subject: about the iptables tutorial and the state of documentation
+Date: 13 Jul 2003 01:29:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law11-F121EveicGgej0000c435@hotmail.com>
+Message-ID: <87znjjp8u2.fsf@tapsellferrier.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,24 +14,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: djTremors@newjackswing.dyndns.org
+Cc: netfilter@lists.netfilter.org
 
-I have a LINUX box with a public ip. I need to use iptables to send all the=
-=20
-packages that come to the 80 port to my Web server in Windows. I am using=20
-this chain:
-iptables -t nat -A PREROUTING -p tcp -d $ipPUBLIC --dport 80 -j DNAT=20
---to-destination $ipWEBSERVER
+After much searching around for info about the state of netfilter I
+found your reference to the tutorial.
 
-I tried to access my web page from outside but does not work
+Thanks for mailing that to the list, without it I would never have
+found out exactly what the situation is.
 
-I will appreciate your help
-Thanks
+This is due to the awful state of the netfilter documentation. The
+kernel documentation says that netfilter modules are no longer
+included (it certainly doesn't seem possible to turn them on with
+menuconfig) but the current netfilter documentation makes no mention
+of that at all.
 
-_________________________________________________________________
-Charla con tus amigos en l=EDnea mediante MSN Messenger:=20
-http://messenger.yupimsn.com/
+Maybe I've got the wrong end of the stick about all of this... but I'm
+not an inexperienced linux admin and I was mighty confused. I dead to
+think what someone coming from solaris of (horrors!) nt would think.
+
+
+-- 
+Nic Ferrier
+http://www.tapsellferrier.co.uk
 
 
