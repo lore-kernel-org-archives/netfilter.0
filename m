@@ -1,11 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: accessing a internal port fowarded email server from the internal network
-Date: Mon, 8 Dec 2003 01:57:56 +0000
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: accessing a internal port fowarded email server from the
+	internal network
+Date: 08 Dec 2003 07:39:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312080157.57000.Antony@Soft-Solutions.co.uk>
+Message-ID: <1070865572.1705.9.camel@kermit>
 References: <3FD3D65E.7000405@yahoo.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <3FD3D65E.7000405@yahoo.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,52 +18,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: TN <tnuro@yahoo.com.au>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Monday 08 December 2003 1:39 am, TN wrote:
+Am Mon, 2003-12-08 um 02.39 schrieb TN:
 
-> Hi all,
->
-> I have a problem which I thought I'd seen the solution so somewhere, but
-> I just can't find the posting anymore.
->
-> I have an iptables firewall, and I port forward to an internal email
-> server on a 192.168.10.0/24 LAN network.
-> This all works fine, external email comes & goes OK. My problem is that
-> I want to allow internal network users to address the email server using
-> the external IP address of the firewall.
->
-> Currently, laptop users internal to the network need to then become
-> external when they work external to the LAN, and they have to either
-> setup 2 different email accounts (one using the internal email server IP
-> address, and one using the external IP address), or they have to
-> remember to change their server settings each time they move from
+> Currently, laptop users internal to the network need to then become=20
+> external when they work external to the LAN, and they have to either=20
+> setup 2 different email accounts (one using the internal email server IP=20
+> address, and one using the external IP address), or they have to=20
+> remember to change their server settings each time they move from=20
 > internal to external and vice-versa. Both of these are a pain for them.
+> It doesn't work, the email client just times out, as if I'm still=20
+> blocking some part of the data stream.
+> What am I doing wrong ?
+>=20
+The client can reach the mailserver alright, but the mailserver tries to
+respond directly to the client using the wrong IP-Address.=20
+Easiest solution:
+Apply both DNAT and SNAT at the same time. Add the following rule:
+iptables -t nat -A POSTROUTING -p tcp -m multiport --dport 25,110,143 -d
+192.168.10.12 -s  192.168.10.0/24 -j SNAT --to <firewall-ip>
 
-Configure the machines to connect by hostname instead of IP address, and use 
-split DNS to give the internal address to internal enquiries, and the 
-external address to external enquiries.
+Cheers,
 
-Alternatively put the mail server on a perimeter network instead of the 
-internal LAN, then both internal and external clients can connect using the 
-external IP address.
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-The reason your existing setup doesn't work is that internal clients connect 
-to the extenal address, which gets translated to the internal address, which 
-then replies direct to the client (ie not back through the reverse nat on the 
-firewall), therefore the client connects to address A and gets a reply from 
-address B, confusing it and making it unhappy.
-
-Antony.
-
--- 
-Perfection in design is achieved not when there is nothing left to add, but 
-rather when there is nothing left to take away.
-
- - Antoine de Saint-Exupery
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Book: VPN mit Linux
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
