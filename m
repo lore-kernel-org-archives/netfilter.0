@@ -1,13 +1,14 @@
-From: Harish Pillay <harish@maringotree.com>
-Subject: Re: IP Alias replacement
-Date: Wed, 27 Aug 2003 08:24:49 +0800
+From: Stef Coene <stef.coene@docum.org>
+Subject: Re: [LARTC] Performanace fo the Iptables Server
+Date: Wed, 27 Aug 2003 17:30:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030827002449.GA9822@maringotree.com>
-References: <3F4BB33F.8030106@bus.okstate.edu>
+Message-ID: <200308271730.07228.stef.coene__20377.1471664824$1062300586@docum.org>
+References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall>
 Content-Disposition: inline
-In-Reply-To: <3F4BB33F.8030106@bus.okstate.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +19,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jason Joines <joines@bus.okstate.edu>
-Cc: netfilter@lists.netfilter.org
+To: hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
+Cc: lartc@mailman.ds9a.nl
 
-* on the Tue, Aug 26, 2003 at 02:21:35PM -0500, Jason Joines was commenting:
->  I was reading the IP Alias Mini-HOWTO at http://tldp.org.  It said, 
-> "IP Alias has been deprecated in 2.4.x and replaced by a more powerful 
-> firewalling mechanism."  What is this mechanism?
+On Wednesday 27 August 2003 07:46, hare ram wrote:
+> Hi all
+>
+> I have RH 9.0
+> PIII with 550Mhz
+> 512MB RAM
+>
+> working fine with Iptables+TC+HTB
+>
+> Now i want o make accounting system using ULOG
+>
+> so i introduced  to send all logs to Mysql
+> So i can make my own Graphs
+>
+> iptables -A INPUT -j ULOG
+> iptables -A FORWARD -j ULOG
+> iptables -A OUTPUT -j ULOG
+>
+>
+> the Server is connected to Several Clients
+>
+> does this server will have any Impact of performance
+> or this PC can handle Easily
+>
+> how can caluculate the PC configuration,
+The needed configutation also depends on how many logs you will have and how 
+you are going to proces them.  
+And do you really want to log everything?  If you are interested in what's 
+going thru your firewall, you can also log the connections.  Or you can 
+install ntop on the firewall.
 
-iprout2 and iptables.
-
-> Thanks,
-> 
-> Jason Joines
-> Open Source = Open Mind
-> ========================
-> 
+Stef
 
 -- 
-Harish Pillay
-Maringo Tree Technologies Pte Ltd
-15 Jalan Kilang Barat #06-06, Frontech Center, Singapore 159357. 
-w: +65.6271.8589  x: +65.6270.4552
 
-If this helped you, please take the time to rate the value of this post:
-            http://svcs.affero.net/rm.php?r=harish
+stef.coene@docum.org
+ "Using Linux as bandwidth manager"
+     http://www.docum.org/
+     #lartc @ irc.oftc.net
+
 
