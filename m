@@ -1,8 +1,9 @@
-From: Paul Caritj <pcaritj@riovia.net>
-Subject: Another interesting question...
-Date: Sun, 14 Sep 2003 05:01:40 -0400
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Deleting Rules
+Date: Sun, 14 Sep 2003 06:48:46 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F642E74.80808@riovia.net>
+Message-ID: <3F64478E.8060201@chrisbrenton.org>
+References: <3F642E1B.8010801@riovia.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,13 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Paul Caritj <pcaritj@riovia.net>
+Cc: netfilter@lists.netfilter.org
 
+Paul Caritj wrote:
+> 
+> Is it possible to delete rules without complete knowledge of its 
+> contents? E.g., Would it be possible to delete all rules that match a 
+> source ip of X?
 
-Does anyone have any experience with 4000 chains in one table? What sort 
-of hardware might I want? :)
+Not in my experience. Its only worked for me when I specify all the same 
+options that are in the original rule.
 
-As usual, many thanks and I hope everyone is well.
--Paul
+> If not, can anyone recommend a workaround?
+
+Maybe you can grep the output from '-L -nv' to search for the IP address 
+you want, and then use info in the output to create your delete rule?
+
+HTH,
+C
 
 
