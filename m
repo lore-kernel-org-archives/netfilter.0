@@ -1,11 +1,13 @@
-From: Mohammad Khan <mkhan@lextranet.com>
-Subject: Re: net2phone rules
-Date: Mon, 14 Feb 2005 17:16:07 -0500
-Message-ID: <1108419367.13080.18.camel@localhost.localdomain>
-References: <55503955141a.55141a555039@vsnl.net>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: I dont know how to forward port 80
+Date: Mon, 14 Feb 2005 17:32:50 -0500
+Message-ID: <1108420370.4338.23.camel@hubcap.ljm.dom>
+References: <420B54E3.8040900@google.com>
+	<1108128247.4489.45.camel@hubcap.ljm.dom>
+	<1108297731.10876.28.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <55503955141a.55141a555039@vsnl.net>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1108297731.10876.28.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,53 +18,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: varun_saa@vsnl.net, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Tue, 2005-02-08 at 01:01, varun_saa@vsnl.net wrote:
-> Hello,
->       I want my firewall to allow Net2phone.
-> 
-> A visit to http://web.net2phone.com/consumer/commcenter/helpfirewall.asp
-> states that you need to open up at least three ports:
-> tcp 80 - tcp 6800 - udp 6801.
-> 
-> One should use INPUT or FORWARD rule ?
+On Sun, 2005-02-13 at 07:28, Jose Maria Lopez Hernandez wrote:
+> El vie, 11-02-2005 a las 08:24 -0500, Jason Opperisano escribi=C3=B3:
+> >   # allow input packets that are part of an established connection
+> >   iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> >=20
+> >   # allow HTTP requests in
+> >   iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT
+>=20
+> Sorry, I've seen in some of your answers that you never use
+> -m state --state NEW. Could you tell me why?=20
 
-Depends on where is your net2phone client.
-If it is *NOT* on your firewall, use FORWARD
+for the sake of clarity.  when someone asks, "how do i allow http into
+my machine" it seems clearer to say:
 
-I visited the net2phone link, your forward rules should be
+  iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT
 
-# Following two rules would allow log in,
-# maintaining online status, and instant messaging
--A FORWARD -s internal_ne_ips -d relay.net2phone.com -p tcp --dport 80
--m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -s relay.net2phone -p tcp --sport 80 -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
+rather than:
 
-# Following two rules would allow voice packets to go out
--A FORWARD -s internal_net_ips tcp --sport 6800 -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -s internal_net_ips -p udp --sport 6801 -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
+  iptables -A INPUT -m state --state NEW -p tcp --syn \
+    --sport 1024:65535 --dport 80 -j ACCEPT
 
-# Following two rules would allow voice packets to get in 
--A FORWARD -d external_ip tcp --dport 6800 -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -d external_ip -p udp --dport 6801 -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
+you're not going to make me add a disclaimer to all my posts that says
+"any rules are included to clarify a point of discussion.  do not use
+the rules posted without understanding the full security implications of
+such an act.  firewall rules lasting more than four hours require
+medical attention."
 
+> I am updating
+> my firewall and I'm very confused with this, because you
+> seem to know everything about Netfilter and iptables,
 
-Above rules can be made more restrictive !
+heh heh--thanks, i needed a laugh.
 
+>  and
+> I am using the NEW state in all my rules. Should I do it
+> or should I not?=20
 
-Enjoy firewalling.
+i do.
 
-Mohammad
+> And by the way, should I use the --syn
+> flag?
 
+i do.
 
--- 
-"Mad cow? You'd be mad too, if someone was trying to eat you."
+-j
+
+--
+"I'm not a bad guy! I work hard, and I love my kids. So why should
+ I spend half my Sunday hearing about how I'm going to Hell?"
+	--The Simpsons
 
 
