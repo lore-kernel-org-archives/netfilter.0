@@ -1,11 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: changing rules at a defined time
-Date: Wed, 24 Dec 2003 04:47:40 -0500
+Date: Wed, 24 Dec 2003 11:01:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1072259260.2184.587.camel@grendel>
+Message-ID: <1072260076.787.53.camel@elendil.intranet.cartel-securite.net>
 References: <20031224092936.GB27890@staticky.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20031224092936.GB27890@staticky.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,43 +17,92 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Payal Rathod <payal-netfilter@staticky.com>
 Cc: Netfilter ML <netfilter@lists.netfilter.org>
 
-Greetings!
-
-On Wed, 2003-12-24 at 04:29, Payal Rathod wrote:
->
-> 1> Do the above steps look ok? I will refine them further. Right now are
+Le mer 24/12/2003 =E0 10:29, Payal Rathod a =E9crit :
+> - till 16:00 p.m. all ips can just use ftp but ips 192.168.0.1
+>   and 192.168.0.100 can do anything
+> - after 4:00 afternoon all can do anything till 5:00 after which again
+>   the above [1st rules] are to be applied.
+[...]
+> [For step 1]: - Policy ACCEPT for FORWARD
+> iptables -A FORWARD -s 192.168.0.1 -p tcp -j ACCEPT
+> iptables -A FORWARD -s 192.168.0.100 -p tcp -j ACCEPT
+> iptables -A FORWARD -s 192.168.0.0/32 -p tcp --dport 21 -j ACCEPT
+> iptables -A FORWARD -s 0/0 -p tcp -j DROP
+> [For step 2]: - Policy ACCEPT for FORWARD
+> iptables -A FORWARD -p tcp -j ACCEPT
+[...]
+> 1> Do the above steps look ok? I will refine them further. Right now ar=
+e
 > they workable.
 
-At the very least, I would specify the receiving interface as well or
-you may be subject to spoofing attacks. At the most, you are missing:
+They won't work as you don't deal with returning packets. You should try
+to use states that can improve your ruleset, particularly when dealing
+with FTP.
+You really should set FORWARD policy to DROP then get rid of your
+iptables -A FORWARD -s 0/0 -p tcp -j DROP rule. What if someone wants to
+do something else than TCP ? Such as UDP, ICMP, GRE or anything else ?
 
-Any kind of logging
-Deny inbound packets from loopback, private, etc.
-Deny outbound unreachables, Timex, Echo-replies, critical services, etc.
+[For step 1]: - Policy DROP for FORWARD
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 192.168.0.1 -p tcp -j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 192.168.0.100 -p tcp \
+		-j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 192.168.0.0/32 -p tcp \
+		--dport 21 -j ACCEPT
 
-There are probably others. The caffeine has not kicked in yet. ;-)
+[For step 2]: - Policy DROP for FORWARD
+iptables -A FORWARD -m state --state NEW -s 192.168.0.0/32 -p tcp \
+		-j ACCEPT
 
-> 2> If I want to change the rules at 16:00 what is the best way to change
-> them?
+> 2> If I want to change the rules at 16:00 what is the best way to chang=
+e
+> them? I was thing of flushing with iptables -F and iptables -F -t nat
+> and then running the second step.
+> Similary at 17:00 do the same kind of flushes and run 1st step from a
+> file? Is this approach ok or is there anything better?
 
-Two options:
+I would use a full flushing script that issues :
 
-1) Write up two sets of rules in two different shell scripts. Use cron
-to implement them at the appropriate time. Use '-F' as you mentioned at
-the beginning of the script to flush the existing rules.
+	iptables -F
+	iptables -t nat -F
+	iptables -t mangle -F
+	iptables -X
+	iptables -t nat -X
+	iptables -t mangle -X
 
-2) Install patch-o-matic and implement the time patch. You can then do
-something like:
+After that, I would generate two ruleset files using iptables-save for
+each case. Then, after flushing, you iptables-restore the appropriate
+ruleset.
 
-iptables -A FORWARD -i eth0 -p tcp -m time --timestart 16:00 --timestop
-17:00 --days Mon,Tue,Wed,Thu,Fri -s 192.168.0.0/32 -j ACCEPT
+Have you tried Fabrice Marie patch-o-matic time match that allows you to
+match time for a given rule ?
 
-HTH,
-C
+http://www.netfilter.org/documentation/pomlist/pom-base.html#time
+
+You would have a single ruleset of this kind (if I understood what you
+needed) :
+
+Policy DROP for FORWARD
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 192.168.0.1 -p tcp -j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 192.168.0.100 -p tcp \
+		-j ACCEPT
+iptables -A FORWARD -m state --state NEW -s 192.168.0.0/32 -p tcp \
+		--dport 21 -j ACCEPT
+iptables -A FORWARD -m state --state NEW -m time --starttime 16:00 \
+		--stoptime 17:00 -s 192.168.0.0/32 -p tcp -j ACCEPT
+
+You can even match days using --day option if you need to, e.g. allowing
+access only to working days.
 
 
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
