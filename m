@@ -1,11 +1,12 @@
-From: =?iso-8859-1?Q?Svavar_=D6rn_Eysteinsson?= <svavar@fiton.is>
-Subject: Best NICS for new Firewall(Router) ?
-Date: Mon, 16 Feb 2004 10:59:24 -0000
+From: "Carl Farrington" <carl@compsup.net>
+Subject: PPTP/GRE conntrack for kernel 2.6
+Date: Mon, 16 Feb 2004 11:03:18 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040216110335.DE34C22F177@mail.fiton.is>
+Message-ID: <739652C2AFA4834AAB5986A215F68CEC016591@svr1.home.compsup.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +19,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all.
-I need to buy, or build a powerfull Firewall Machine that will use IPTABLES.
+Is there a pptp / proto_gre nat/conntrack patch for kernel 2.6.2?
 
-What are the best NICS to use on a IPTABLES Firewall?
+I seem to remember finding that p-o-m didn't work for 2.6.
 
-3COM?
-Intel?
+Reason I ask is that the PoPToP guys have now got an MPPE module for
+2.6.2, so there's really nothing holding us PPTP freaks back other than
+Netfilters poor natting of outbound PPTP stuff.
 
-I've been using RH 7.1 on a AMD Athlon 1200, with 3COM 3C905C-TXM cards
-without any problems. (It serves as a firewall on a 10Mbit fiber connection)
-
-
-Any help or suggestions apriaceted. :0)
-
-With Best regards,
-
-Svavar O
-Reykjavik - Iceland
-
-
-
+Cheers,
+Carl
 
