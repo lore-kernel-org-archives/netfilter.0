@@ -1,9 +1,11 @@
-From: Patrick van der Smagt <smagt@dlr.de>
-Subject: giving a real IP to a ppp-connected host
-Date: Thu, 31 Oct 2002 08:37:50 +0100 (MET)
+From: "James Stickland" <jamesstickland@sympatico.ca>
+Subject: multiple external interfaces
+Date: Mon, 11 Jan 1999 12:13:45 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSO.4.40.0210310807130.12649-100000@amazonas.robotic.dlr.de>
+Message-ID: <001501be3d85$bf2b8e40$0200000a@workstation>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0012_01BE3D5B.D61262C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,86 +16,111 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I posted this a few days ago, but either everyone is dazzled by my problem
-(unlikely!) or else bored by the same---nonetheless I desparately need
-this thing solved, and I'm too dumb to do so.
+This is a multi-part message in MIME format.
 
-My problem is the following.  I have a SuSE Linux 8.0 machine with a real
-IP on interface 0, say 12.12.12.2.  I've also given it a secondary IP
-12.12.12.3 also on interface 0 (created by creating the file
-/etc/sysconfig/net/ifcfg-eth0:1).
+------=_NextPart_000_0012_01BE3D5B.D61262C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-To my host a second machine is connected using a ppp connection, and it
-has the local IP 10.1.0.100.  What I want to do is to give the remote
-machine a permanent IP, viz. 12.12.12.3.
+what i am currently trying to do is have my router masquerade multiple =
+external interfaces to multiple internal ethernets.
 
-Ifconfig on my host 12.12.12.2 shows me (I removed/changed sensitive info):
+I have two ppp connections: one over ethernet (dsl), and the other over =
+serial (pots line dialup).
 
-eth0   Link encap:Ethernet
-       inet addr:12.12.12.2  Bcast:12.12.12.255 Mask:255.255.255.0
-       UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1500  Metric:1
-       RX packets:501656 errors:0 dropped:0 overruns:0 frame:0
-       TX packets:120131 errors:0 dropped:0 overruns:0 carrier:0
-       collisions:0 txqueuelen:100
-       RX bytes:39036759 (37.2 Mb)  TX bytes:16703664 (15.9 Mb)
-       Interrupt:5 Base address:0xac00
+the dsl line is basically for my servers, it looks like this
 
-eth0:1 Link encap:Ethernet
-       inet addr:12.12.12.3  Bcast:12.12.12.255 Mask:255.255.255.0
-       UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1500  Metric:1
-       Interrupt:5 Base address:0xac00
+internet--dsl-->ppp0(eth0)-->router-->eth1-->server switch-->computers
 
-ppp0   Link encap:Point-to-Point Protocol
-       inet addr:10.1.0.1  P-t-P:10.1.0.100  Mask:255.255.255.255
-       UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1000  Metric:1
-       RX packets:36 errors:0 dropped:0 overruns:0 frame:0
-       TX packets:56 errors:0 dropped:0 overruns:0 carrier:0
-       collisions:0 txqueuelen:3
-       RX bytes:2191 (2.1 Kb)  TX bytes:3261 (3.1 Kb)
+this ethernet works fine, and all iptables rules written for it work =
+fine. (filtering and NATing)  new or established packets are taken in, =
+then forwarded along eth1 to the corresponding class c ip on the server =
+network.
 
-I've set up iptables as follows to do what I want:
-  iptables -t nat -D PREROUTING --dst 12.12.12.3 \
-        -j DNAT --to-destination 10.1.0.100
-  iptables -t nat -D POSTROUTING --dst 10.1.0.0/24 \
-        -j DNAT --to-destination 12.12.12.3
-  iptables -t nat -D OUTPUT --dst 12.12.12.3 \
-        -j DNAT --to-destination 10.1.0.100
-The first and second rule work fine, with those I can reach my machine
-10.1.0.100 at address 12.12.12.3 from all hosts, except 12.12.12.2 (of
-course). That's what the third rule is for.  However, rule 3 does not
-do everything for me.  After setting up all of the above rules, when I
-telnet to port 110 from .2 to .3, I find in /proc/net/ip_conntrack on .2:
+however, i would like to run my client/workstation's internet connection =
+from the same router, but using different external interface and =
+internal ethernet.
+for example, i would like the pots dialup line interface masqueraded to =
+eth2, so that all computers connected to eth2 use the ip address of the =
+ppp device connected to dialup.
 
-tcp      6 118 SYN_SENT src=12.12.12.3 dst=12.12.12.3 sport=2996
-dport=110 [UNREPLIED] src=10.1.0.100 dst=12.12.12.3 sport=110
-dport=2996 use=1
+here is how i vision it:
 
-or
+internet--dial_up-->ppp1(/dev/ttyS3)-->router-->eth2-->crossover_cable-->=
+client
 
-tcp      6 57 SYN_RECV src=12.12.12.3 dst=12.12.12.3 sport=2996
-dport=110 src=10.1.0.100 dst=12.12.12.3 sport=110
-dport=2996 use=1
+could anyone help me in doing so?  is it just a matter of some =
+additional iptables entries, or does this run deeper? please help, and =
+cc reply directly to jamesstickland@sympatico.ca
 
-which, if I interpret it correctly, shows me that the connection comes
-from .3 (the secondary IP of my host, which was intended for my
-ppp-connected host)!  My theory: if the packet leaves my host as .3,
-reaches 10.1.0.100, and a reply goes to .3, it is immediately routed
-out to 10.1.0.100 again and will never reach .2.  Not sure if
-this theory is correct, since I noticed no connection at all on
-my ppp-connected machine.
 
-Nonetheless I did not manage to change the iptables to get this going...
+------=_NextPart_000_0012_01BE3D5B.D61262C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Please help!
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>what i am currently trying to do is =
+have my router=20
+masquerade multiple external interfaces to multiple internal=20
+ethernets.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have two ppp connections: one over =
+ethernet=20
+(dsl), and the other over serial (pots line dialup).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>the dsl line is basically for my =
+servers, it looks=20
+like this</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial=20
+size=3D2>internet--dsl--&gt;ppp0(eth0)--&gt;router--&gt;eth1--&gt;server =
 
-Patrick
--- 
-Dr Patrick van der Smagt                phone +49 8153 281152, fax -34
-DLR/Institute of Robotics and Mechatronics                smagt@dlr.de
-P.O.Box 1116, 82230 Wessling, Germany     http://www.robotic.de/Smagt/
+switch--&gt;computers</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>this ethernet works fine, and all =
+iptables rules=20
+written for it work fine. (filtering and NATing)&nbsp; new or =
+established=20
+packets are taken in, then forwarded along eth1 to the corresponding =
+class c ip=20
+on the server network.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>however, i would like to run my=20
+client/workstation's internet connection from the same router, but using =
+
+different external interface and internal ethernet.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>for example, i would like the pots =
+dialup line=20
+interface masqueraded to eth2, so that all computers connected to eth2 =
+use the=20
+ip address of the ppp device connected to dialup.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>here is how i vision it:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial=20
+size=3D2>internet--dial_up--&gt;ppp1(/dev/ttyS3)--&gt;router--&gt;eth2--&=
+gt;crossover_cable--&gt;client</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>could anyone help me in doing so?&nbsp; =
+is it just=20
+a matter of some additional&nbsp;iptables entries, or does this run =
+deeper?=20
+please help, and cc reply directly to <A=20
+href=3D"mailto:jamesstickland@sympatico.ca">jamesstickland@sympatico.ca</=
+A></FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0012_01BE3D5B.D61262C0--
 
 
