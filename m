@@ -1,14 +1,12 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: how to got  lasting time about one connection from iptable log?
-Date: Wed, 4 Jun 2003 18:49:05 +0800
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: netfilter and VoIP
+Date: Wed, 4 Jun 2003 20:02:11 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030604104905.GE1477@floyd>
-References: <E19NOOU-0001Jt-00@kashyyyk.netfilter.org>
-Reply-To: kluivert@tm.net.my
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DBC@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <E19NOOU-0001Jt-00@kashyyyk.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: Jochen Vogel <jvogel@it-sec.de>, netfilter@lists.netfilter.org
+
+anything is possible..... until you are more specific.
+
+H323 is possible but with patches. RogerWilko works with a single port =
+forward... anything your refering to?=20
+
+-----Original Message-----
+From: Jochen Vogel [mailto:jvogel@it-sec.de]
+Sent: Wednesday, June 04, 2003 7:10 PM
 To: netfilter@lists.netfilter.org
+Subject: netfilter and VoIP
 
-On Wed, Jun 04, 2003 at 10:51:51AM +0800, gbj spoke thusly:
-> time                      in   pro    src         spt      dest        dpt
->Jun 02 07:59:31   ACCEPT  eth0  tcp  192.168.6.26  4278  64.215.164.33  80  
->Jun 02 07:59:32   ACCEPT  eth0  tcp  192.168.6.26  4278  64.215.164.33  80  
->Jun 02 07:59:32   ACCEPT  eth0  tcp  192.168.6.26  4278  64.215.164.33  80  
->
->but in fact, this connection information perhaps belonge to one
->connection,I want to know how to combine this information to one
->connection message and got the duration time of the connection,just like
 
-Really, HTTP/1.0 connection ?
+hi,
 
->this: start  time        duration       src         spt     dest       dtp
->
->    Jun 02 07:59:30        128         192.168.6.26  4269  64.215.164.33
->    80 
+is it possible to use VoIP over an routed and/or masquerading iptables
+gateway?
 
-You'll need to write a script to perform the calculations and joining for
-you. 
+thx for help
+jo
 
-Personally, from the above output, I think that would be quite easy, but
-not entirely correct because I reckon you'll have to ignore the source
-ports, or at least have some match going on, to determine that if your
-start and end source ports are close enough, then they are part of the same
-connection, if everything else (src, dst IP && dst port) are the same. [*]
-
-[*] -- This of course also depends on the fact that you don't have any
-       kernel patches (grsecurity comes to mind) which performs automatic
-       randomization of the source port (ala OpenBSD).
-
-(snip various bits)
 
