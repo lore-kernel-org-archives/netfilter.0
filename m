@@ -1,11 +1,14 @@
-From: "Kovacs Istvan" <kofa@alarmix.net>
-Subject: DNAT in postrouting?
-Date: Tue, 11 Mar 2003 15:32:37 +0100
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Iptables efficiency
+Date: Tue, 11 Mar 2003 09:31:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030311143247.89FF326A946@mx1.datanet.hu>
+Message-ID: <200303110931.23730.netfilter@newkirk.us>
+References: <007b01c2e72f$76712180$0200a8c0@rinse>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <007b01c2e72f$76712180$0200a8c0@rinse>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +19,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Rinse Kloek <rinse@solcon.nl>, netfilter@lists.netfilter.org
 
-Hi All,
+On Monday 10 March 2003 01:04 pm, Rinse Kloek wrote:
+> We use a RedHat 7.3 machine as bridge on a P3 1.8 Ghz with 2 64 bits
+> Gigabit interfaces. On the machine we have a lot of iptables rules
+> like : all  --  213.134.x.0        0.0.0.0/0
+>             all  --  0.0.0.0/0            213.134.x.0
+> TOS    all  --  213.134.x.4        0.0.0.0/0          TOS set 0x08
+>             all  --  0.0.0.0/0            213.134.x.4
+>
+> We have about 3200 iptables rules on our bridge. I've tested today to
+> remove 1000 of these rules. The load dropped from about 40% to 25%. So
+> I think the iptables rule take up the most of the CPU load. Do you
+> think this is a problem of ineffeciency of iptables or just a
+> 'limitation' in the TCP/IP stack of linux ?
+>
+> regards Rinse
 
-I've run into an interesting problem.
+What is the traffic load like?
 
-A company network is attached to several client networks via IPSec
-tunnels. Clients use private IP ranges. There are two clients whose IP
-ranges clash. I'm going to use dummy addresses 1.2.3.x and a.b.c.x for
-the two networks because I'm lazy to write 192.168.1.x and 10.1.1.x all
-the time.
+What types of matches are you performing?  IP and port,  TOS, state,=20
+string?  Are most of your rules 'test and drop' or 'test and accept', or=20
+are you performing extensive modifications like the TOS set above? =20
+These are big factors in the cost of getting a packet through.
 
-So let's say both clients use the addresses of the form 1.2.3.x. We'd
-like to map one of the clients to a.b.c.x without distrubing their
-network (modifying their firewall configuration or adding new boxes,
-let away reconfiguring the whole network).
+What is the structure of the ruleset?  Is it 'flat' where a given packet=20
+could potentially be tested against a large percentage of these rules?
 
-The IPSec interface towards one of the clients is ipsec0, to the other
-it's ipsec1.
+If you haven't done so, try organizing your rules as a tree, using custom=
+=20
+chains.  IE, instead of having 2000 rules in a row in FORWARD that test=20
+"-s a.b.c.d" try having rules that test "-s a.b.c.n/24" "-s a.b.d.n/24"=20
+"a.b.e.n/24" etc and jump to user-defined chains, one for each of the=20
+main rules.  This will immediately reduce the maximum number of tests=20
+for a given packet from ~2000 to ~260. (max now would be 253 for all=20
+legal values of the last octet, plus the number of rules in the main=20
+chain) You can further reduce by breaking that last octet down into,=20
+say, 16 chains of 16 IPs each, and then your second-level chains will=20
+contain rules that test "-s a.b.c.0/28" "-s a.b.c.16/28" "-s=20
+a.b.c.32/28" etc and jump to even more detailed chains.  Now you've=20
+reduced your maximum from ~2000 tests to ~40.  (16+16+mainchain - .0 and=20
+=2E255 only shorten two of these third-level chains)
 
-A possible solution would be to map one client to a.b.c.x by performing
-a.b.c.x->1.2.3.x DNAT after the routing decision is made and just
-before the packet leaves at the ipsec0 interface. Computers connected
-to the company LAN send packets to a.b.c.x. Packets are routed to the
-IPSec gateway. The stack has a routing entry that tells it to forward
-packets destined to a.b.c.x via IPSec interface ipsec0. After the
-routing decision is made, in the postrouting chain, we would map the
-destination address  to 1.2.3.x. The packet would then enter the IPSec
-tunnel (at ipsec0) and would emerge with the right destination address
-at the other end. On the way back, a packet with source address 1.2.3.x
-would pop out from ipsec0, and its source address would sooner or later
-be mapped to a.b.c.x.
+Has removal of those rules increased the throughput, or just the CPU load=
+=20
+on the bridge?
 
-My trouble is that it seems I cannot do the DNAT before the routing
-decision, because then the kernel would route it to the wrong
-interface, ipsec1. Unfortunately, the IPSec tutorial says 'This
-[postrouting/nat] chain should first and foremost be used for Source
-Network Address Translation.' and that DNAT is to be done at
-prerouting/nat.
-
-Unfortunately, I cannot access the networks in question right now, and
-I need to recommend a soltution soon, otherwise I would have tested it
-by now.
-
-Please advise.
-
-TIA,
-Kofa
-
-Homepage at http://emil.alarmix.org/kofa/ - For PGP public
-key: send mail with the subject PGP Public Key Request
-
+j
 
 
