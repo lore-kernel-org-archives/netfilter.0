@@ -1,13 +1,13 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+From: Patrick Schaaf <bof@bof.de>
 Subject: Re: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 15:57:42 -0400
+Date: Thu, 27 Jun 2002 22:11:41 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627195742.GA31466@cannon.eng.us.uu.net>
-References: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com> <20020627193043.UMUP19225.mta07-svc.ntlworld.com@there> <20020627214407.F2890@oknodo.bof.de> <20020627194405.GLHF295.mta03-svc.ntlworld.com@there>
+Message-ID: <20020627221141.G2890@oknodo.bof.de>
+References: <20020627193043.UMUP19225.mta07-svc.ntlworld.com@there> <NJEFLNJDIFFNMHDEBKMJEEJBDOAA.jpatterson@asgardgroup.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <20020627194405.GLHF295.mta03-svc.ntlworld.com@there>
+In-Reply-To: <NJEFLNJDIFFNMHDEBKMJEEJBDOAA.jpatterson@asgardgroup.com>; from jpatterson@asgardgroup.com on Thu, Jun 27, 2002 at 03:50:49PM -0400
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,44 +19,28 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
+To: Joe Patterson <jpatterson@asgardgroup.com>
 Cc: netfilter@lists.samba.org
 
-On Thu, Jun 27, 2002 at 08:44:03PM +0100, Antony Stone wrote:
+> Other than order I don't see any way to distinguish the first ack from
+> the 100th.
 
-> On Thursday 27 June 2002 8:44 pm, Patrick Schaaf wrote:
-> 
-> > > > There are some distinguishing characteristics... it is the first packet
-> > > > sent by the client that is in state ESTABLISHED.  it should have ACK
-> > > > set and no other flags.  the tcp data length should be zero.
-> > >
-> > > Isn't that in itself a bit of a giveaway ?   I can't think of a reason
-> > > why a zero-length packet should ever occur in the remainder of the data
-> > > stream... ?
-> >
-> > How to TCP keepalive packets look like?
-> 
-> Hmmm.   Don't know.   Hadn't thought about those...
-> 
-> > Also, isn't it possible that the third packet already carries data, in the
-> > general (read TCP protocol as it is written) case?
-> 
-> Well, I'd always thought that this was allowed, yes, but I've also been told 
-> by several different people (who play with real-world networks all the time) 
-> that it never happens in practice - you get:
-> 
+If perfect recognition is neccessary, a suitable in-kernel module would
+be able to remember there are sequence numbers from the SYNs (conntrack
+already does that), and pinpoint that ACK by looking at its sequence
+numbers, seeing that they are next to the one from the SYNs.
 
-If I'm not wrong you can always send data even in SYN and SYN/ACK.
-Like Patrick said the default options in the socket interface might
-not do it but I thought I saw some tweaking in one of Richard Steven's
-(god bless his soul) books to push traffic in SYN packets.
+> Now, you could say that if the tcp data length is greater than zero, then
+> the packet is either *not* valid, or is *not* the third packet (although
+> there was at one point a proposed tcp-like protocol that had data in the
+> third packet, to keep down latency on short duration sessions, but I believe
+> it's still considered evil in tcp-land).
 
-Ramin
+That was called T/TCP, there were some problems hindering wide deploying,
+if I remember correctly - and it would have permitted sending data already
+along with the SYN packets, the third ACK having also a FIN, and thus
+a full request/response connection in three packets.
 
-> SYN (no data)
-> SYN/ACK (no data)
-> ACK (no data)
-> ACK (data)
-> ACK (data)
-> etc.....
+best regards
+  Patrick
 
