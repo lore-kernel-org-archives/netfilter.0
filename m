@@ -1,12 +1,9 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: Blocking NAT-ed packets
-Date: Sat, 12 Mar 2005 11:14:54 +0200
-Message-ID: <3063e5050312011475257421@mail.gmail.com>
-References: <20050312074921.91658.qmail@web53307.mail.yahoo.com>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: "Tony Di Bernardo" <tdibernardo@carabinieri.it>
+Subject: Change destination ip address in incoming packet
+Date: Sat, 12 Mar 2005 10:14:29 +0100
+Message-ID: <000e01c526e3$e52201d0$220510ac@ros.carabinieri.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050312074921.91658.qmail@web53307.mail.yahoo.com>
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: pop liviu <liviup76@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-http://iptables-tutorial.frozentux.net/chunkyhtml/targets.html#TTLTARGET
+Hello,
+I would like to know if there is a way to change the destination IP =
+address in the IP header of an incoming packet in a linux box. I don't =
+want to do DNAT because I don't need that the packet comes back to the =
+host. All I need is to change destination address and put the packet in =
+the net again.
 
-I think you will figure about ttl match too.
+Thanks
+tony
+********
+Nel mondo intero serviranno al massimo quattro o cinque computer, fino =
+all'anno 2000.
 
-On Fri, 11 Mar 2005 23:49:21 -0800 (PST), pop liviu <liviup76@yahoo.com> wrote:
-> Hi,
-> My name is Liviu Pop and i am from Bucharest, Romania.
-> 
-> I have 2 big questions, and i didn't find any answer
-> about this:
-> 
-> 1.How can i block NAT-ed packets from a router behind
-> my firewall/router?
-> 
-> 2.How can i pass a firewall that block NAT-ed packets?
-> 
-> Best Regards,
-> Liviu Pop
-> system engineer
-> 
-> 
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! Small Business - Try our new resources site!
-> http://smallbusiness.yahoo.com/resources/
-> 
-> 
-
-
--- 
-Bla bla
-
+T.J. Watson
+Presidente IBM, 1945
+********
