@@ -1,13 +1,15 @@
-From: SaVaGE  <pc-secure@home.nl>
-Subject: Re: Help please..
-Date: Tue, 29 Apr 2003 13:46:09 +0200
+From: netfilter_user <netfilter_user@o2.pl>
+Subject: Re[2]: PREROUTING
+Date: Tue, 29 Apr 2003 14:53:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304291346.09526.pc-secure@home.nl>
-References: <3EAEAE8C.9050403@naturesoft.net>
+Message-ID: <50633741.20030429145355@o2.pl>
+References: <13955288009.20030429092330@o2.pl>
+ <200304290949.10989.pc-secure@home.nl>
+Reply-To: netfilter_user <netfilter_user@o2.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EAEAE8C.9050403@naturesoft.net>
+In-Reply-To: <200304290949.10989.pc-secure@home.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,18 +20,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: SaVaGE <pc-secure@home.nl>
+Cc: netfilter@lists.netfilter.org
 
-Op dinsdag 29 april 2003 18:55, schreef Karthik RC:
-> I'm newer to htis group.
->
-> whether the  explanation for below mentioned rule is correct?
-> the forward chain will reject  the packet with mac address
-> 00:01:23:45:67:89 whose source ip is not eqaul to  192.168.1.2
->
->
->
-> iptables -A FORWARD -m mac --mac-source 00:01:23:45:67:89 ! -s
-> 192.168.1.2 -j REJECT
- YES correct
+Hello SaVaGE,
+
+Tuesday, April 29, 2003, 9:49:10 AM, you wrote:
+
+S> Op dinsdag 29 april 2003 09:23, schreef netfilter_user:
+>> Hello everyone,
+>>
+>> this is my problem:
+>> My LAN is connected to Internet via Linux machine with 2 interface (
+>> ppp0 - for internet and eth1 for local net). I need to connect from
+>> local host, service that is running on port 23073 and 23083 UDP in
+>> internet. For this i wrote afew rules with PREROUTING but when I start
+>> script with rules below i receive:
+>>
+>> Bad argument `PREROUTING'
+>> Try `iptables -h' or 'iptables --help' for more information.
+>> Bad argument `PREROUTING'
+>> Try `iptables -h' or 'iptables --help' for more information.
+>>
+>>
+>> iptables -t nat -A PREROUTING -p udp -d 80.50.60.185 --dport 23073 -j DNAT
+>> --to-destination 192.168.1.2 iptables -t nat -A PREROUTING -p udp -d
+>> 80.50.60.185 --dport 23083 -j DNAT --to-destination 192.168.1.2
+>>
+>> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23073 -j ACCEPT
+>> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23083 -j ACCEPT
+>>
+>> What maybe a reason of this msg?
+>> Im using slackware 8.1 with iptables 1.2.6a
+
+S> This behaviour is correct NATting is done on the POSTROUTING table !!!!
+
+
+S> Pascal (PC-Secure Dutch security service)
+
+ammm....im afraid its not correct because I have received msg like this:
+
+ Bad argument `PREROUTING'
+ Try `iptables -h' or 'iptables --help' for more information.
+ Bad argument `PREROUTING'
+ Try `iptables -h' or 'iptables --help' for more information.
+
+...its not correct in my newbe opinion.
+
+-- 
+Best regards,
+mailto:netfilter_user@o2.pl
+
 
