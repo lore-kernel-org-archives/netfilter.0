@@ -1,10 +1,9 @@
-From: Sander Sneekes <sander@dmdsecure.com>
-Subject: doing prerouting/postrouting/output logfile problems
-Date: 21 Oct 2002 15:57:58 +0200
+From: saravanan sakthi <lxsara@yahoo.com>
+Subject: NAT problem
+Date: Mon, 21 Oct 2002 06:04:13 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035208680.14664.26.camel@sander.dmdint.com>
+Message-ID: <20021021130413.79139.qmail@web12906.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,49 +15,87 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: nf <netfilter@lists.samba.org>
 
-Hi,
+  Here is my sinario...
+        |             
+     ___v__________________
+    | eth0: 192.168.1.3/24 |
+    |                      |
+    |     Linux Box        |
+    |                      |
+    | eth1: 10.1.1.1/16    |
+    `---|------------------'
+        |
+    ____v________________________________________
+   /                                             \
+  |   10.1.0.0 network                            \
+  |                                                \
+  |       ____________         __________           |
+  |      /            \       /           \         |
+  |     | 10.1.11.0/16 |     | 10.1.9.0/16 |        |
+  |     |   network    |     |   network   |        |
+  |      \____________/       \___________/         |
+  |                                                 |
+  |       _____________________________             |
+  |      /                             \            |
+  |     | 10.1.12.0 (My Network)        \           |
+  |     |         |                      \          |
+  |     |         |                       \         |
+  |     |      ___v________________        |        |
+  |     |     | eth0: 10.1.12.1/16 |       |       /
+  |     |     |                    |       |      /
+  |     |     |    Linux Box       |       |     /
+  |     |     |                    |      /     /
+  |     |     | eth1: 10.0.0.1/8   |     /     /
+  |     |     `---|----------------'    /     /
+  |     |         |                    /     /
+  |     |        _v________           /     /
+  |     |       /          \         /     /
+  |     |      | 10.0.0.0/8 |       /     /
+  |     |      | network    |      /     /
+  |      \      \__________/      /     /
+   \      \                      /     /
+    \      \____________________/     /
+     \                               /
+      \_____________________________/
 
-I got a firewall (redhat 7.2/iptables) with behind it a couple of
-servers running apache/mail etc.
+Here
 
-Now i have 36 public ip's and for the outside it seems like the
-server are running public ip's i do that as followed :
+  * The Linux box at the beginning acts as a gateway
+and DNS forwarder
+    for the entire network (installed with
+rc.firewall-2.4).
 
-firewall
-eth0 = x.x.x.x (public ip)
-eth1 = 192.168.2.1 (internal ip)
+  * My network is 10.1.12.0, I have implemented my
+Linux box as a
+    router for my network (installed with
+rc.firewall-2.4).also acts
+    as DNS forwarder (forwards requests to 10.1.1.1).
 
-webserver
+  * I have a subnet inside (10.0.0.0).my Linux box
+acts as a gateway
+    for these computers.
 
-eth0 = 192.168.2.2
+What I want is.....
 
- ${IPTABLES} -t nat -A PREROUTING -p tcp -d x.x.x.x --dport 80 -j DNAT
---to-destination 192.168.2.2
-        
- ${IPTABLES} -t nat -A POSTROUTING -p tcp -d 192.168.2.2 --dport 80 -j
-SNAT --to-source 192.168.2.1
-        
- ${IPTABLES} -t nat -A OUTPUT -p tcp -d x.x.x.x --dport 80 -j DNAT
---to-destination 192.168.2.2
+   Connect a computer from 10.0.0.0 network to connect
+computers at
+   10.1.0.0 network.
 
-This work perfect people from the outside using x.x.x.x are getting a
-nice website. And also people inside the network using x.x.x.x also
-getting a nice site.
+Please tell me what are the rules should be added to
+rc.firewall-2.4
+file to accomplish this.
 
-But now here is my problem because in the logfile's of the site I get
-all entry's coming from 192.168.2.1 instead off when a client viset
-our site their ip. How can i solve it.? 
+Thanks for time
 
-I also use these lines for do mail traffic and I had some problems with
-open Relaying. Also because 192.168.2.1 was allowed to mail.
+Regards,
 
-thanks for you help.
+Saravanan.V
 
-Cheers
-Sander
-
-
-
+__________________________________________________
+Do you Yahoo!?
+Y! Web Hosting - Let the expert host your web site
+http://webhosting.yahoo.com/
 
