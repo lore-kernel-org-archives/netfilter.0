@@ -1,8 +1,8 @@
 From: Michael Gale <michael@bluesuperman.com>
 Subject: Re: Performance Monitoring
-Date: Mon, 5 Jan 2004 23:01:15 -0700
+Date: Mon, 5 Jan 2004 23:02:33 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040105230115.687bded9.michael@bluesuperman.com>
+Message-ID: <20040105230233.27d84a49.michael@bluesuperman.com>
 References: <004401c3d17c$4baa7cc0$0a01000a@xcom1>
 	<3FF9E4B7.8010109@lintelsys.com.au>
 	<011001c3d3f8$6a6a7e20$7700000a@lawrencewin2k>
@@ -24,54 +24,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+
 Hello,
 
-	Yesterday I was a reply on Performance Monitoring on the netfilter mail
-list, it suggested the user use IPAC-NG. The admin then have to create a
-chain for each IP they want to monitor.
+	Even if you have a script that creates the chains for each IP .. if you
+use all the IP's from .1 to .250. Then a packet will have to be compared
+to 249 chains before if matches a chain if it is from or to IP .250.
 
-I did not think this is a good idea ... so for those of you who want to
-do bandwidth monitoring I suggest you check out the following. Here is a
-list of ones I have tried.
-
-ntop -- provides a web GUI for real time monitoring. Using it now on a
-firewall box to monitoring traffic on each interface. 
-
-Adv .. provides great states , very detailed
-Dis .. seems to be some over header ... uses a DDR db :(
-
-You can use curl to pull the stats nightly and save them to a text file.
-Then create a little PHP scritp to provide you with the numbers. Now you
-will have stats for as long as you want.
-
-iptraf -- not bad ... detail is low.
-
-Adv ... NO over head and works great on a work station or 1 interface
-machine. It takes a bit to setup because you have to create all the
-filters your self.
-
-Dis ... out is simple ... a php script to produce a nice web GUI is
-needed.
-
-Nagios -- http://www.nagios.org/
-	Could be over kill depending on what you want ... this is more of a
-network monitoring tool. Really not designed to be run with one machine
-in mind.
-
-IPFM -- not bad .. very simple:
-
-example:
-HOST                          IN         OUT       TOTAL
-host1.domain.com           12345     6666684     6679029
-
-MRTG for total traffic accounts only
-
-Bandwidthd -- not bad ... currently testing it. Seems to provide web png
-files much like MRTG but does provide host info. I do not believe you
-are able to save the data though :(
-
+This is not good.
 
 Michael.
+
 
 
 On Tue, 06 Jan 2004 10:38:02 +0700
