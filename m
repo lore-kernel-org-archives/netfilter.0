@@ -1,12 +1,13 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: NAT PREROUTING chain ignored on returning traffic ??
-Date: Sat, 30 Aug 2003 22:31:03 -0700 (PDT)
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: port redirect for local host
+Date: 03 Sep 2003 12:54:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0308302220210.5528@xena.cft.ca.us>
-References: <3F4FA204.6010605@xs4all.nl>
+Message-ID: <1062586455.18242.3.camel@kermit>
+References: <Pine.LNX.4.33.0309012154390.24379-100000@pandora.is.bizsystems.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F4FA204.6010605@xs4all.nl>
+In-Reply-To: <Pine.LNX.4.33.0309012154390.24379-100000@pandora.is.bizsystems.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Zoilo <zoilo@xs4all.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Michael Robinton <michael@insulin-pumpers.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Fri, 29 Aug 2003, Zoilo wrote:
-> I have 2 machines connected via a LAN: 192.168.192.254 and
-> 192.168.192.123. I will call the '254' and '123' from now on.
---- snip ---
-> Then I did a single 'ping' from one to the other, and vice versa, while
-> logging at 123.
---- snip ---
-> To my astonishment, in II) the returning ICMP packets do *not* travel
-> through the NAT PREROUTING chain! In I) however, the incoming packets
-> *do* travel through the NAT PREROUTING chain, as expected.
+Am Die, 2003-09-02 um 07.00 schrieb Michael Robinton:
+> I have a relatively simple redirect that does not seem to work for the
+> local host. I'm running a DNSBL on a virtual IP address on a host that
+> already has a DNS daemon running.
+>=20
+> entry is...
+>=20
+> $IPTABLES -t nat -A PREROUTING -p tcp -d $DNSBL_IP --dport 53 -j REDIRECT
+> --to-port $DNSBL_PORT
+>=20
+> this works fine from both the network (internet) and from the interfaces
+> on the private side. eth1, eth0
+>=20
+> I does not work at all from the local host and no amount of tweaking of
+> the rule set seems to help.
+locally generated packets do not traverse the PREROUTING but the OUTPUT
+chain.=20
 
-The NAT PREROUTING chain is for packets from outside the machine that
-initiate a connection (whether thru traffic, or destined for the machine
-itself).  ICMP echo exchanges are tracked by conntrack and count as a
-connection.  So when on 254 you do "ping 123", 123 will log the packet in
-the NAT table, whereas on 123 you do "ping 254", but the answer is part of
-the established connection.  The only NATting that will happen, happens on
-254 when it gets the echo query packet.
+Cheers,
 
-Hope this helps!
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
