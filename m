@@ -1,12 +1,12 @@
-From: Les Mikesell <les@futuresource.com>
-Subject: RE: bandwidth monitoring
-Date: Thu, 06 Jan 2005 13:39:48 -0600
-Message-ID: <1105040388.14796.64.camel@moola.futuresource.com>
-References: <7C9884991ADAE0479C14F10C858BCDF591E3AA@alderaan.smgtec.com>
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: bandwidth monitoring
+Date: Thu, 06 Jan 2005 13:09:07 -0700
+Message-ID: <41DD9AE3.4060207@utilitran.com>
+References: <200501061128.04741.patrick.leduc@novipro.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E3AA@alderaan.smgtec.com>
+In-Reply-To: <200501061128.04741.patrick.leduc@novipro.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: patrick.leduc@novipro.com, netfilter@lists.netfilter.org
 
-On Thu, 2005-01-06 at 13:04, Daniel Chemko wrote:
+Hello,
 
-> I'll address this as well. Ntop is fantastic at giving you snapshot data
-> of a network, but it is inanely heavy at long term monitoring of
-> services. It got to the point that monitoring traffic from the firewall
-> filled memory and CPU usage if run long enough. It doesn't work for
-> continuous operations.
+	To run NTOP permanitly you just have to clear the stats nightly. I have 
+a php script that makes a HTTP connection, downloads the stats from NTOP 
+and saves them in a mysql database. It then makes another connection and 
+tells NTOP to reset the stats.
 
-The thing to keep in mind is that it is keeping a database that
-includes all of the remote IP addresses and ports as well as the
-local ones, so of course this will grow quickly.  I haven't needed
-to deal with long-term histories so I haven't investigated the
-possibilities but I do recall something about ntop being able
-to start new logs and archive the old ones as needed to limit
-the active size.  There are tools to monitor and summarize
-netflows between each pair of addresses, but again I haven't
-used that part of the package.  There is also some support for
-RRD databases which would probably be the way to go for longer
-histories.
+That keeps the memory and CPU usage low ... so you could run it 
+continuously.
+
+Michael.
+
+
+patrick.leduc@novipro.com wrote:
+> Hello
+> 
+> Does somebody know a program for monitoring bandwidth by ip? I have one 
+> internet interface and I must monitor many ips adresses on this interface. I 
+> tried Ipac-ng and, I worked a lot to do this config but it seems not working 
+> this way.
+> 
+> thanx
+> 
 
 -- 
-  Les Mikesell
-   les@futuresource.com
+Michael Gale
+Lan Administrator
+Utilitran Corp.
 
-
+I make better friends with those who think for them selves
 
