@@ -1,13 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: help iptables queuing
-Date: 18 Jun 2003 12:33:12 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: help iptables queuing
+Date: Wed, 18 Jun 2003 21:36:23 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055932392.2530.48.camel@raylinux.internal>
-References: <20030618093855.41783.qmail@mail.com>
+Message-ID: <FDEMKKNJDLAJDPNDPCDDCEONNEAA.georgev@citadelcomputer.com.au>
+References: <20030618104833.68889.qmail@mail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-togof5NfyiIsESYp214i"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030618093855.41783.qmail@mail.com>
+in-reply-to: <20030618104833.68889.qmail@mail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Paridhi Bansal <paridhibansal@mail.com>, IPtables <netfilter@lists.netfilter.org>
+
+embeded
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Paridhi Bansal
+Sent: Wednesday, June 18, 2003 8:49 PM
+To: IPtables
+Subject: Re: help iptables queuing
 
 
---=-togof5NfyiIsESYp214i
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+hi
 
-Hi
+>how do i check that whether conn tracking module is installed or not??
+do a `lsmod` and check the list
 
-Is your kernel compiled with connection tracking support (either in the
-kernel, or as a module)?
+Actually, this problem was not coming earlier..suddenly has it statred
+coming..now what is really puzzling me is that when i also queue packets
+from FORWARD chain(i did this just to check in case pkts were being directly
+sent to this chain instead of prerouting), i receive all the packets through
+prerouting, forward and postrouting chains..and when i change the FORWARD
+back to ACCEPT all without queuing, again,the same problem..i receive only
+the first pktof every TCP session in prerouting and postrouting chains....
+> Don't know what exactly the problem is but I use MRTG with Iptables so I
+can graph all traffic based on rules in the -N MRTG space... and it all
+works fine for me.
+I use `-I INPUT 1 -j MRTG` , `-I FORWARD 1 -j MRTG` , `-I OUTPUT 1 -j MRTG`
+and that grabs everything.
 
-Ray
-
-On Wed, 2003-06-18 at 11:38, Paridhi Bansal wrote:
-> HI!!
->=20
-> I am using RedHat linux 7.3 with iptablesv1.2.5..I am using iptables queu=
-ing to get the packets to my application...I have used thefollowing
-> iptables' commands:
->=20
-> 	iptables -t nat -A OUTPUT -j QUEUE
-> 	iptables -t nat -A PREROUTING -j QUEUE
-> 	iptables -t nat -A POSTROUTING -j QUEUE
-> 	iptables -A INPUT -j QUEUE
->=20
-> But instead of getting all the packets,i just get first packet of every c=
-onnection.For example, just first packet of TCP telnet, FTP connection (wit=
-h SYN bit set and ACK not set )and not the subsequent packets.Why is this s=
-o?????
->=20
-> Can somebody help me with the explanation of this??????
->=20
->=20
-> Paridhi
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-togof5NfyiIsESYp214i
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+8D/oh1fuR/Bv+ygRAiYjAJ4lxwkffVRq3EoL7sMgTysGLGiSQQCgnJnj
-J8Gn0UxV7ikesTV83upYooA=
-=5ugA
------END PGP SIGNATURE-----
-
---=-togof5NfyiIsESYp214i--
+So I don't know why yours doesn't....
 
 
