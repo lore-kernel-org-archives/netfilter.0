@@ -1,11 +1,11 @@
-From: "Kevin Smith" <ksmith@perfht.com>
-Subject: Cuseeme-nat
-Date: Fri, 25 Apr 2003 09:08:37 -0400
+From: Patrick Nelson <pnelson@neatech.com>
+Subject: Local rule for Port Forward
+Date: 25 Apr 2003 09:45:45 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBLGFEALDADHNDAAFFOEJBDJAA.ksmith@perfht.com>
+Message-ID: <1051289143.14581.25.camel@il.npn>
+Reply-To: pnelson@neatech.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0002_01C30B0A.437C3D60"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,54 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter List <netfilter@lists.samba.org>
 
-This is a multi-part message in MIME format.
+RH72 with iptables v1.2.5-3
 
-------=_NextPart_000_0002_01C30B0A.437C3D60
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+I'm doing port forwarding to a server that runs jabber and everything
+works fine, I did notice that if I bring up a jabber client on the
+firewall itself I do not get connected.  While this isn't really
+needed... I don't totally understand why it doesn't work.  Being
+inquisitive... well I just gots to know why!  Can anyone shed some
+light?
 
-I as wondering is there were any PATH requirements for the cuseeme-nat
-module?
-I have patched it to the kernel but cant get it to compile. 
-Kev
+My rules for the jabber port forward are:
 
-------=_NextPart_000_0002_01C30B0A.437C3D60
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
+iptables -A FORWARD 
+         -i $ExIF -d $JabIP -p tcp --dport $JabPort 
+         -j ACCEPT
+iptables -A PREROUTING 
+         -t nat -d $ExIP -p tcp --dport $JabPort
+         -j DNAT --to-destination $JabIP
+iptables -A POSTROUTING
+         -t nat -d $JabIP -p tcp --dport $JabPort
+         -j SNAT --to-source $InIP
 
-eJ8+IigNAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEGgAMADgAAANMHBAAZAAkACAAAAAUADQEB
-A5AGADQFAAAlAAAACwACAAEAAAALACMAAAAAAAMAJgAAAAAACwApAAAAAAADADYAAAAAAB4AcAAB
-AAAADAAAAEN1c2VlbWUtbmF0AAIBcQABAAAAFgAAAAHDCyvHQNd3rnR2/BHXtmQAoMnZ2UsAAAIB
-HQwBAAAAFwAAAFNNVFA6S1NNSVRIQFBFUkZIVC5DT00AAAsAAQ4AAAAAQAAGDgA4VrIrC8MBAgEK
-DgEAAAAYAAAAAAAAAAuQ/grZHtYRtlQAoMnZ2UvCgAAACwAfDgEAAAACAQkQAQAAAO4AAADqAAAA
-EQEAAExaRnXVuJFiAwAKAHJjcGcxMjUWMgD4C2BuDhAwMzNPAfcCpAPjAgBjaArAc7BldDAgBxMC
-gH0KgZJ2CJB3awuAZDQMYA5jAFALAwu1IEkgYZ0EIHcCIASBC4BnIAQA6CB0aASQZRQQFRIAcIB5
-IFBBVEggCXD4cXVpCXAHgAIwBCACEGMFwBTxIGN1ESAWkS0MbmEFQARhdWxlP28KogqAE9AQ8HYV
-MAqwdE8Q4AmAFLAFQHRvFzNrpQSRZQMgYnUFQGMAcJ0FQGcRMBn1BaBtcAMQjGUuCuMKgEtldhi0
-BRHhAB4AAAALAAGACCAGAAAAAADAAAAAAAAARgAAAAADhQAAAAAAAAMAA4AIIAYAAAAAAMAAAAAA
-AABGAAAAABCFAAAAAAAAAwAHgAggBgAAAAAAwAAAAAAAAEYAAAAAUoUAACdqAQAeAAmACCAGAAAA
-AADAAAAAAAAARgAAAABUhQAAAQAAAAQAAAA5LjAAHgAKgAggBgAAAAAAwAAAAAAAAEYAAAAANoUA
-AAEAAAABAAAAAAAAAB4AC4AIIAYAAAAAAMAAAAAAAABGAAAAADeFAAABAAAAAQAAAAAAAAAeAAyA
-CCAGAAAAAADAAAAAAAAARgAAAAA4hQAAAQAAAAEAAAAAAAAACwANgAggBgAAAAAAwAAAAAAAAEYA
-AAAAgoUAAAEAAAALADqACCAGAAAAAADAAAAAAAAARgAAAAAOhQAAAAAAAAMAPIAIIAYAAAAAAMAA
-AAAAAABGAAAAABGFAAAAAAAAAwA9gAggBgAAAAAAwAAAAAAAAEYAAAAAGIUAAAAAAAALAFKACCAG
-AAAAAADAAAAAAAAARgAAAAAGhQAAAAAAAAMAU4AIIAYAAAAAAMAAAAAAAABGAAAAAAGFAAAAAAAA
-AgH4DwEAAAAQAAAAC5D+Ctke1hG2VACgydnZSwIB+g8BAAAAEAAAAAuQ/grZHtYRtlQAoMnZ2UsC
-AfsPAQAAAIIAAAAAAAAAOKG7EAXlEBqhuwgAKypWwgAAUFNUUFJYLkRMTAAAAAAAAAAATklUQfm/
-uAEAqgA32W4AAABDOlxXSU5ET1dTXExvY2FsIFNldHRpbmdzXEFwcGxpY2F0aW9uIERhdGFcTWlj
-cm9zb2Z0XE91dGxvb2tcb3V0bG9vay5wc3QAAAADAP4PBQAAAAMADTT9NwAAAgF/AAEAAAAxAAAA
-PE5HQkJMR0ZFQUxEQURITkRBQUZGT0VKQkRKQUEua3NtaXRoQHBlcmZodC5jb20+AAAAAAMABhDa
-ihWxAwAHEHMAAAADABAQAAAAAAMAERAAAAAAHgAIEAEAAABlAAAASUFTV09OREVSSU5HSVNUSEVS
-RVdFUkVBTllQQVRIUkVRVUlSRU1FTlRTRk9SVEhFQ1VTRUVNRS1OQVRNT0RVTEU/SUhBVkVQQVRD
-SEVESVRUT1RIRUtFUk5FTEJVVENBTlRHRQAAAABe/Q==
-
-------=_NextPart_000_0002_01C30B0A.437C3D60--
 
 
