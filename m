@@ -1,11 +1,14 @@
-From: Jochen Vogel <jvogel@it-sec.de>
-Subject: AW: bootp problems
-Date: Wed, 7 Apr 2004 09:50:47 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: What targets are available in mangle table
+Date: Wed, 7 Apr 2004 10:26:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D3DD55FDB74AD511BA5100500416368053E843@ORION>
+Message-ID: <200404071026.16694.Antony@Soft-Solutions.co.uk>
+References: <000101c41c6b$86d682a0$1664640a@Younger>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Received: **stripped**
+In-Reply-To: <000101c41c6b$86d682a0$1664640a@Younger>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +19,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> > [DialIn]2.2.2.2----2.2.2.1[FW]1.1.1.1---1.1.1.2[DHCP]
-> >
-> > the DialIn tries to get an IP from the DHCP Server.
-> 
-> You need a DHCP relay on the 2 network to do this.
-> 
-> DHCP requests do not cross routers (they are ethernet broadcasts).
+On Wednesday 07 April 2004 7:42 am, Younger Wang wrote:
 
-Hi antony,
+> Hi,
+>
+> In iptables tutorial, it says "Targets that are only valid in the mangle
+> table: TOS, TTL and MARK"..
+>
+> Does it mean that only TOS TTL and MARK are valid in mangle table or TOS
+> TTL and MARK are valid only in mangle table? I am confused. Thank you!
 
-The DialIN should play Relay
+The second: it means you can use these targets in the mangle tables, but you 
+cannot use them in any other tables.
 
-FIRST the DialIn try it DIRECTLY to the DHCP Server
-with tcpdump on 2.1 i can see 0.0.0.0:68 > 1.1.1.2:67
-It doesnt work and i CANT see any entry in the iptables log
+There are other targets you can use in mangle as well, but those can be used 
+in other tables too.
 
-SECOND the DialIn try it with BROADCAST
-with tcpdump on 2.1 i can see 0.0.0.0:68 > 255.255.255.255:67
-It doesnt work and i CAN see an entry in the iptables log
+Regards,
 
-Thx for more informations
-Jo
+Antony.
+
+-- 
+Never write it in Perl if you can do it in Awk.
+Never do it in Awk if sed can handle it.
+Never use sed when tr can do the job.
+Never invoke tr when cat is sufficient.
+Avoid using cat whenever possible.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
