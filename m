@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Need help with rate-limiting NTTP traffic
-Date: Thu, 1 Apr 2004 09:16:58 +0100
+From: "Bo Jacobsen" <subs@systemhouse.dk>
+Subject: Redirection to local lan, isn't DNAT method unsafe.
+Date: Thu, 1 Apr 2004 10:25:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404010916.58286.Antony@Soft-Solutions.co.uk>
-References: <20040331165409.0d498074@daneel.volumen.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <002a01c417c2$d94db7e0$de0aa8c0@comp>
+References: <40696C1A.5080400@personalsoft.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040331165409.0d498074@daneel.volumen.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +19,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 01 April 2004 12:54 am, Shane Hickey wrote:
+I use DNAT to redirect traffic from the external lan eth0 (192.168.1.1) =
+to a
+specific host (192.168.10.10) on the internal lan (eth1) like this:
 
-> 	Basically, I have a fat upstream pipe and I can use it basically
-> all I want, except that my NNTP traffic seems to really clobber
-> everything else.  Also, since my NNTP traffic is pretty much constantly
-> ongoing, I'd like to limit it to 800kbit.
+iptables -t nat -A PREROUTING  -p tcp --dport 80  -d 192.168.1.1 -j DNAT =
 
-What are you using as your NNTP server?   If it's INN, I'm pretty sure that 
-has its own rate-limiting mechanism as a configuration parameter, and you'd 
-be better off doing rate limiting in the application itself if it's at all 
-possible.
+    --to 192.168.10.10 -i eth0
 
-Even if you're using something other than INN, have a look at the 
-configuration options for the server and see if you can solve this problem 
-there before resorting to netfilter and tc.
+and then I allow the redirected traffic:
+iptables -a FORWARD -p tcp --dport 80  -d 192.168.10.10 ........
 
-Regards,
+It works as expected but with this aproach, it's actually possible from =
+the outside
+to find out what internal ip, the http server is located at !.
+All one has to do is sending to 192.168.10.1, 192.168.10.2, 192.168.10.3 =
+etc.  (to=20
+eth0 on the outside) until one hits the server. The rules allows it.
 
-Antony.
+I have not been able to figure out how to solve this problem.
 
--- 
-This email was created using 100% recycled electrons.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Any suggestions.
+
+Thanks in advance
+Bo Jacobsen
+
 
 
