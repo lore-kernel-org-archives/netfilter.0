@@ -1,12 +1,12 @@
 From: Tom Eastep <teastep@shorewall.net>
 Subject: Re: Internal ip exiting network on firewall external nic despight
  rule
-Date: Fri, 20 Sep 2002 12:36:38 -0700
+Date: Fri, 20 Sep 2002 12:40:40 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8B78C6.1000408@shorewall.net>
-References: <000701c260d9$871a9070$0801a8c0@s3ac>
+Message-ID: <3D8B79B8.9000202@shorewall.net>
+References: <000701c260d9$871a9070$0801a8c0@s3ac> <20020920193425.PFHE16609.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms000200020409090506010509"
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms040900000402000502060602"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,43 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Rowan Reid <rreid@studio3arc.com>
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
 Cc: netfilter@lists.netfilter.org
 
 This is a cryptographically signed message in MIME format.
 
---------------ms000200020409090506010509
+--------------ms040900000402000502060602
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Rowan Reid wrote:
->>Rowan Reid wrote:
+Antony Stone wrote:
+>>>
+>>>Note that IN and OUT both indicate eth1 -- do you perhaps
+>>>have both NICs connected to the same hub/switch?
 >>
->>
->>>LOG FILE ###
->>>Sep 20 04:04:01 s3a-www kernel: IN=eth1 OUT=eth1 SRC=192.168.1.105 
->>>DST=216.99.233.76 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=61116 DF 
->>>PROTO=TCP SPT=4380 DPT=110 WI NDOW=8760 RES=0x00 ACK URGP=0
->>
->>Note that IN and OUT both indicate eth1 -- do you perhaps 
->>have both NICs 
->>connected to the same hub/switch?
->>
+>>Yes,
 > 
 > 
-> Yes, however my Rules are such that eth1 (External) should regect and
-> log external machines with an internal net address.
-> # remote interface, claiming to be local machines, IP spoofing, get lost
-> # $IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j
-> drop-and-log-it
+> Ugh !!!   This is a horrible way to connect a firewall.....    Why ????
+> 
 
-But the packet logged above never goes near the INPUT flter table chain -- 
-it goes through the FORWARD chain. Once you plug that hole then you'll 
-start having stalls due to the way that the Linux kernel handles ARP 
-who-has requests (the response can come from any interface connected to 
-the switch/hub). There was a solution for this problem on the 2.2 kernels 
-('hidden' interface flag) but last time that I researched it, there was no 
-solution on 2.4. Someone correct me please if I'm wrong about that...
+Seems like lots of people try to build test beds this way and given the 
+way that the Linux kernel handles ARP, these folks end up very confused....
 
 -Tom
 -- 
@@ -61,7 +46,7 @@ Tom Eastep    \ Shorewall - iptables made easy
 AIM: tmeastep  \ http://www.shorewall.net
 ICQ: #60745924  \ teastep@shorewall.net
 
---------------ms000200020409090506010509
+--------------ms040900000402000502060602
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -116,18 +101,18 @@ n+eE2MliYq0FxjGCAycwggMjAgEBMIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2Vz
 dGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UE
 CxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJT
 QSAyMDAwLjguMzACAwhOLTAJBgUrDgMCGgUAoIIBYTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
-AQcBMBwGCSqGSIb3DQEJBTEPFw0wMjA5MjAxOTM2MzhaMCMGCSqGSIb3DQEJBDEWBBR2KzVW
-QOyg1vcxfq0+OdefVqnKZzBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3
+AQcBMBwGCSqGSIb3DQEJBTEPFw0wMjA5MjAxOTQwNDBaMCMGCSqGSIb3DQEJBDEWBBRStcp6
+E6mRU7LJg8I9J0ykIsUIFzBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3
 DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBrQYLKoZI
 hvcNAQkQAgsxgZ2ggZowgZIxCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUx
 EjAQBgNVBAcTCUNhcGUgVG93bjEPMA0GA1UEChMGVGhhd3RlMR0wGwYDVQQLExRDZXJ0aWZp
 Y2F0ZSBTZXJ2aWNlczEoMCYGA1UEAxMfUGVyc29uYWwgRnJlZW1haWwgUlNBIDIwMDAuOC4z
-MAIDCE4tMA0GCSqGSIb3DQEBAQUABIIBABCqF8+1yfL7uyckfg8HrIYv4EVQWxchaN+qJa4e
-+a5msdMxl8I/3Q6Xb2sJ6C5luDxUX19HgEEUhAH0o4ma00R/Saln+v8WndzbYq1GyT4n4hxd
-hU6bYK0LoROxtRJJigjL4C6JbjvHkOm755jLv9uTPJn+W/pbk/uPRVGQqUP1dIR0ZJMkC1vK
-6fwMNlF3GgFe27TPSVAqybmWSy4emv7+XrAM2O1OteCIiE+99f3lYvoNCRhGgSNjKPzE/no/
-5RlrgqmGex/rLvP7fuWOIeFoLKvnRB65004S/vXowhrtzGhd6nTsgoCUe2tNlnPyX8PF5r+N
-LMyI34qYIBf2epYAAAAAAAA=
---------------ms000200020409090506010509--
+MAIDCE4tMA0GCSqGSIb3DQEBAQUABIIBAF5+ZB3bgYN69MuGHPkGjR4qwrIh2y8g23/o683g
+lEziK15lWO/38M0axdV66KgtJjC/C5L6MCOAQdKH/kay2EVSVxlqvyxRoktfgmLtTZd5aOgK
+ASCCyRed2twDGz7B6t78eQLw42/qOCQ3Rf40fUWMQ97R80T6GfThEpU7ofXB1U0dySeC4aE3
+gADfKDYKZgOEts244eyCzPYrmU+vr+bq3OdtRJSgFbnJovv0EO8Q8AFRqKKH4t+tnSXSlkx8
+yK/aa3/JMh3ZdIle+ZaF5QTdwEAdDiiKCfF5r8jRHTpJ8w4OssxZp18DMUIna+ZrUiNZ+AQ4
+aWgQ+x2g/OOtNIQAAAAAAAA=
+--------------ms040900000402000502060602--
 
 
