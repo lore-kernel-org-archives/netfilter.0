@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Ashley M. Kirchner" <ashley@pcraft.com>
 Subject: Re: Re: iptables help
-Date: Thu, 29 Jul 2004 19:28:48 +0100
+Date: Thu, 29 Jul 2004 15:07:02 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407291928.48974.Antony@Soft-Solutions.co.uk>
-References: <Pine.LNX.4.44.0407291026030.2121-100000@ivanhoe.pcraft.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <410966F6.3020206@pcraft.com>
+References: <Pine.LNX.4.44.0407291026030.2121-100000@ivanhoe.pcraft.com> <200407291928.48974.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0407291026030.2121-100000@ivanhoe.pcraft.com>
+In-Reply-To: <200407291928.48974.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 29 July 2004 5:29 pm, Ashley M. Kirchner wrote:
+Antony Stone wrote:
 
-> On Thu, 29 Jul 2004, Antony Stone wrote:
-> > 1. What help do you need?   Adding rules to block specific traffic is
-> > quite simple:
+>>>iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 80 -j REJECT
+>>>
 >
-> 	Simple, yes, I agree.  However, because there are several sections
-> in this iptables file, I'm not sure _where_ I need to be inserting more
-> rules for it to work properly.
+>"-I" will insert the rule at the top of the FORWARD chain, and therefore 
+>guarantees that these packet will be REJECTed, no matter other rules follow 
+>in your ruleset.
 >
-> > iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 80 -j REJECT
+    Thanks for the explanation.  So I'm testing this out now, and I 
+inserted:
 
-"-I" will insert the rule at the top of the FORWARD chain, and therefore 
-guarantees that these packet will be REJECTed, no matter other rules follow 
-in your ruleset.
+iptables -I FORWARD -s 66.218.75.184 -d 192.168.1.253 -p tcp --dport 80 
+-j REJECT
 
-> > a.b.c.d is the machine in your network you want the block to apply to
-> > w.x.y.z is a machine on the Internet you don't want them to access
->
-> 	However, with places such as Yahoo and Hotmail, where there's a
-> whole farm of machines doing the work, blocking per IP will simply result
-> in a long list of rules, correct?  Is there a way to use a CIDR address?
+    66.218.75.184 == mail.yahoo.com (or login.yahoo.akadns.net, or 
+l1.login.vip.scd.yahoo.com according to iptables -L), however that 
+machine (.253) can still reach that address just fine.  What am I missing?
 
-Yes, you can say:
-
-iptables -I FORWARD -s a.b.c.d -d w.x.y.z/n -p tcp --dport 80 -j REJECT
-
-where w.x.y.z could be 192.168.38.64/29 for example, to block destination 
-addresses 192.168.32.64 to 192.168.38.72
-
-Regards,
-
-Antony.
+    I don't see a round-robin IP setup for mail.yahoo.com (much like 
+what you'd see if you lookup www.yahoo.com) so I'm not quite sure why 
+it's not blocking it.
 
 -- 
-The truth is rarely pure, and never simple.
+W | I haven't lost my mind; it's backed up on tape somewhere.
+  +--------------------------------------------------------------------
+  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
+  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
+  Photo Craft Laboratories, Inc.            .     3550 Arapahoe Ave. #6
+  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A.
 
- - Oscar Wilde
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
