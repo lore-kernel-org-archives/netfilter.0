@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Having NAT problems
-Date: Thu, 1 Apr 2004 21:19:45 +0100
+From: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
+Subject: RE: I thought ssh is port #22 ?!!
+Date: Thu, 1 Apr 2004 21:22:42 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404012119.45564.Antony@Soft-Solutions.co.uk>
-References: <20040401192505.3100.69461.Mailman@vishnu.netfilter.org> <200404012039.48071.Antony@Soft-Solutions.co.uk> <20040401200109.M82978@niesc.k12.in.us>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <E1B98i2-000R7B-7m@alf1.lmb.internal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040401200109.M82978@niesc.k12.in.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,34 +18,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 01 April 2004 9:08 pm, Adam Kennedy wrote:
 
-> The iptables -L -nvx output is QUITE lengthy, but I can post if someone
-> really wants it. I'm a bit itchy over posting it due to wanna be system
-> crackers.
+>> > Here's how it works. The server listens on port 22. The client opens a
+>> > connection to the server, and tells the server which return port to use.
+>> > If you do "netstat -an" you will see the server talking on port 22, and
+>> > the client talking on some high numbered port like 32873. The high
+>> > number port used is random. It will change from one session to the next.
+>> >
+>> > This is true not just for ssh - it is true for most tcp applications.
+>
+>> Unfortunately I have the "privilage" of maintaining a customer TCP
+>> protocol which cans you if your source and destination ports aren't as
+>> specified by their fcked up protocol!!
+>
+>Nevertheless, that's how TCP works, for every customer in the Universe.
+>Sack your customer, and get another?.
 
-We don't mind if you obscure the IP addresses (so long as we can still tell 
-which is which...)
 
-However, from what you have posted, I think the problem is that you have no 
-FORWARD rule to allow the DNATed packets through your firewall?
+Hmmm. I thought it went like this:
 
-Oh, dear me, no - that's not it - you have a default ACCEPT policy on your 
-FORWARD chain (I'm not surprised you don't want to post your public IP 
-address to the list...)
+The client application requests a random high port
+on the client machine (a socket). Then, using this
+socket it makes a request to the required well-known
+port (e.g. 22 for ssh) on the server machine.
+Since no other application on the client box will ever
+be given the same high-numbered port as any other
+application on that box, the client-ipaddr/highPort + 
+server-ipaddr/wellKnownPort combination defines a unique
+'circuit' over which further communication takes place.
+The client doesnt have to do special things to tell the
+server what its connecting port-number is.
+Until along comes ftp, which has a command channel and
+a data channel. So having made a connection in the
+above way for the command channel, the client and server
+have to make further negotiations for a data channel.
+And firewalls have to be aware of this.
 
-Okay, how's this then  - please post all the rules which you think are needed 
-for this pcAnywhere setup to work (with suitable partial obscuring of IPs if 
-you wish).   Then we'll tell you if we can see something missing?
+Thats my two penn'orth
 
-Regards,
-
-Antony.
-
--- 
-People who use Microsoft software should be certified.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Cheers,
+Terry.
 
