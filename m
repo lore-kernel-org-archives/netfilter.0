@@ -1,119 +1,67 @@
-From: arif <djreef@yahoo.com>
-Subject: RE: Help with Iptables Tutorial and Port Forwarding/NAT
-Date: Fri, 12 Mar 2004 09:41:16 -0800 (PST)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040312174116.93905.qmail@web10206.mail.yahoo.com>
-References: <7C9884991ADAE0479C14F10C858BCDF56791EF@alderaan.smgtec.com>
+From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
+Subject: newbie struggling with p-o-m in kernel 2.6
+Date: Fri, 12 Mar 2004 13:57:22 -0500
+Sender: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Message-ID: <MPG.1abbd219144e52d99896a5@localhost>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF56791EF@alderaan.smgtec.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Errors-To: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmI2yCS0tKOigE@public.gmane.org>
+List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIRj+87qQpzpCql8G6E966Ow@public.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIFcjs2lY4wUfKtGCp0j7rLg@public.gmane.org>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 
-thanks for the reply! unfortunately though when i
-added the rule, i still get no connection from the
-outside... although when i watch tcpdump, i see that
-the packet now gets one step further - whereas before,
-i would only see it come in from the outside and get
-dropped, now i see a packet sent to the internal
-webserver... but in my logs i still get the same
-error:=20
+Hello.  I'm a newbie to patch-o-matic, though comfortable with patching 
+and building my own kernels.
 
-Mar 12 09:16:04 router IPT FORWARD packet died:
-IN=3Deth0 OUT=3Deth1 SRC=3D1.2.3.4
-6 DST=3D10.0.0.3 LEN=3D44 TOS=3D0x10 PREC=3D0x00 TTL=3D47
-ID=3D26103 DF PROTO=3DTCP SPT=3D46322
-DPT=3D80 WINDOW=3D5840 RES=3D0x00 SYN URGP=3D0
+I'm running kernel 2.6.3, and I'd like to install the 'condition' and 
+'time' extensions to netfilter.  But I'm having a really hard time of 
+it.  Here's as well as I can figure it right now:
 
-the other thing i notice -  on a server where this is
-working - while watching tcpdump i notice different
-behavior.=20
+- patch-o-matic, it seems, doesn't work at all with kernel 2.6.  I can't 
+find any statement about this on netfilter.org, but someone in a 
+newsgroup said it was so, and when I try to apply patches with p-o-m it 
+fails with complaints about not finding Config.help etc.  Shouldn't this 
+be a FAQ?
 
-here is basically what i see on the internal
-interfaces:
-1.1.1.1 =3D box on internet im trying to connect from
-2.2.2.1 =3D external IP of old firewall
-2.2.2.2 =3D external IP of new firewall
+- I grabbed patch-o-matic-ng-20040302, and tried it.  But it won't apply 
+the condition and time patches, because both of them are marked 'linux 
+< 2.6.0'.
 
-(old box)
-eth0: <1.1.1.1> -> <2.2.2.1:80>
-eth1: <10.0.0.15> -> <10.0.0.3:80>
+So as far as I can tell, right now someone who wants to use the 
+condition and time extensions with kernel 2.6 is just out of luck.  Am I 
+right, or is there some other technique that I'm missing?  Do we have an 
+ETA for 2.6-compliant condition and time patches?
 
-(new box)
-eth0: <1.1.1.1> -> <2.2.2.2:80>
-eth1: <1.1.1.1> -> <10.0.0.3:80>
+Also, a couple of minor complaints from a newbie:
 
-i don't even see it use the internal IP on the new
-firewall (10.0.0.12) while watching the traffic.
+- It seems that all of the old patch suite structure is gone, but the 
+docs haven't caught up yet.  The Netfilter Extensions HOWTO is very 
+nice, but unfortunately it's no longer accurate.  The newbie is left to 
+discover this for himself and guess that where before he would run e.g. 
+'./runme extra/condition', the new command is './runme condition'.  
 
-the "old" box has a super simple rule, basically just
-sets up masquerading and then forwards port 80. i hope
-this makes sense to someone!  THANKS!!!!
+- Even though I try to run runme in batch mode, it always asks where my 
+iptables source code is.  Looking through the script, there doesn't seem 
+to be an environment variable to set for that.
 
---- Daniel Chemko <dchemko@smgtec.com> wrote:
-> arif wrote:
-> > Hi, I am having a hard time trying to figure out
-> why
-> > any packets I am trying to forward to my internal
-> > network are being dropped. I am using the
-> > 'rc.firewall' file that is included in the
-> 'Iptables
-> > Tutorial'
-> >
->
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
->=20
-> >=20
-> >=20
-> > Everything is fine, except I can't get any packets
-> to
-> > forward to an internal webserver here. I am using
-> this
-> > line:
-> >=20
-> >=20
-> > /sbin/iptables -t nat -A PREROUTING --dst 1.2.3.4
-> -p
-> > tcp --dport 80 -j DNAT --to-destination
-> 10.0.0.3:80
-> >=20
-> > When I look at the packet count doing iptables -t
-> nat
-> > -L -v I can see the packet count go up on that
-> rule,
-> > every time i try and connect to port 80. But in my
-> > logs, I see that it matched a logging rule, and
-> shows
-> > up as 'IPT FORWARD packet died", so i guess it is
-> > ending prematurely in the forward chain? Any help
-> > would be greatly appreciated!!! THANKS!!!
->=20
-> NATing does not bypass the filter rules. So, insert
-> this:
->=20
-> iptables -A FORWARD --destination 10.0.0.3 -p tcp
-> --dport 80 -j ACCEPT
-> =20
-> >=20
-> > __________________________________
-> > Do you Yahoo!?
-> > Yahoo! Search - Find what you're looking for
-> faster
-> > http://search.yahoo.com=20
+I realize that p-o-m-ng is a work in progress.  Please consider these to 
+be constructive suggestions for improvement.
 
+Longer term, what is the plan for getting all of these useful extensions 
+merged into the main kernel line?
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Search - Find what you=92re looking for faster
-http://search.yahoo.com
+Thanks for your help.
+Andrew.
+
+-- 
+To reply by email, replace "deadspam.com" by "alumni.utexas.net"
+
 
