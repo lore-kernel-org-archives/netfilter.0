@@ -1,14 +1,14 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: smtp
-Date: Fri, 14 May 2004 12:37:08 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables do nat with Protocol 47 or GRE
+Date: Fri, 14 May 2004 12:30:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405141237.08794.gdh@acentral.co.uk>
-References: <BAY15-F29OTHXMm9VWL0005acdf@hotmail.com>
+Message-ID: <200405141230.14670.Antony@Soft-Solutions.co.uk>
+References: <E1BOadZ-0002lJ-PP@vishnu.netfilter.org>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F29OTHXMm9VWL0005acdf@hotmail.com>
-Content-Disposition: inline
+In-Reply-To: <E1BOadZ-0002lJ-PP@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,38 +21,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 14 May 2004 12:17, azeem ahmad wrote:
-> hi all
-> i m havingg a continous upload on port 25 but i m unable to know which ip
-> from my network is uploading on port 25. i saw on iptraf that some one is
-> continously uploading on 25. the hardware addresss that iptraf is showing
-> isnt really on my LAN but the traffic is coming from my LAN
-> how can i find out the real hardware address or ip of the machine uploadi=
-ng
+On Friday 14 May 2004 12:14 pm, Sez wrote:
 
-iptraf is a useful tool for some purposes, but here tcpdump would be more=20
-appropriate. Install it, and try
+> I am a newbie ... Some tutorial to do this?? I have redhat 8.0, some rpm
+> with pptp nat connection tracking??
+>
+> I read in some site that i must recompile the kernel??? Or only iptables???
+> I am a bit confussed!
 
-tcpdump -n port 25
+I hope someone else here will be able to help you.   I do not use Red Hat, 
+RPMs or PPTP (I use Slackware and IPsec), so although I know what's involved, 
+I can't give you detailed instructions for this setup.
 
-You may need to specify the eth device with "-i eth0" etc.=20
+I'm sure other people here know and will be able to advise you how to do it.
 
-It should be obvious very quickly which address on your LAN is generating t=
-he=20
-traffic (the machine will almost certainly be a Windows box with a virus).=
-=20
-=46rom then, you can issue=20
+Regards,
 
-$ iptables -A FORWARD -p tcp -i ethX -s X.X.X.X --dport 25 -j DROP
+Antony.
 
-And this will immediately stop all traffic from IP address X.X.X.X coming *=
-IN*=20
-to ethX on your firewall.
+-- 
+"640 kilobytes (of RAM) should be enough for anybody."
 
-=46rom there, remove the virus and then undo the above line. (replace -A wi=
-th=20
-=2DD)
+ - Bill Gates
 
-Cheers,
-Gavin.
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
