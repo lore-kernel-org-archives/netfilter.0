@@ -1,13 +1,11 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Any known issues with iptables-1.3.0 from cvs/svn ?
-Date: Fri, 22 Oct 2004 10:09:13 +0200
+From: "Joel n.solanki" <zealous@bonbon.net>
+Subject: squid iptables snmp
+Date: 22 Oct 2004 15:43:34 +0530
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041022080913.GV3551@sunbeam.de.gnumonks.org>
+Message-ID: <1098440013.4380.40.camel@linux.d2visp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Tln/wzp9jsNjmSUr"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +15,69 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>, squid <squid-users@squid-cache.org>
 
 
---Tln/wzp9jsNjmSUr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Dear all,
 
-Hi!
+I dont know wheather this problem is related to squid or iptables
+netfilter.
+But let me specify my problem. I tried my lots but i cant solve this
+problem. 
+		
+		
+Mrtg server	Squid + Netfilter box	Mikrotik Router
 
-I want to release iptables-1.3.0 (including the libiptc speedup rewrite)
-soon.
+When I try to create mrtg for mikrotik router which is behind Squid +
+netfilter box, it gives me this error.
 
-If anyone has any issues (bugs, changed functionality from 1.2.11, ...)
-with the current svn code or a recent snapshot, this is the time to step
-up :)
+---------------------------------------------------------------------------
+-base: Get Device Info on public@202.202.202.202:
+SNMP Error:
+no response received
+SNMPv1_Session (remote host: "202.202.202.202" [202.202.202.202].161)
+                  community: "public"
+                 request ID: 1723286139
+                PDU bufsize: 8000 bytes
+                    timeout: 2s
+                    retries: 5
+                    backoff: 1)
+ at /usr/bin/../lib/mrtg2/SNMP_util.pm line 450
+SNMPGET Problem for sysDescr sysContact sysName sysLocation sysObjectID
+on public@202.202.202.202:
+ at /usr/bin/cfgmaker line 657
+--base: Vendor Id:
+--base: Populating confcache
+---------------------------------------------------------------------------
 
-Please send mail to netfilter-devel and Cc me personally.
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+If I removed squid + netfilter box then I tried to create mrtg for
+mikrotik router then i can easily do it. It doesnt give me any error.
 
---Tln/wzp9jsNjmSUr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+Now i dont know wheather Is this problem related to Netfilter Iptables
+OR squid proxy server ????
 
-iD8DBQFBeMApXaXGVTD0i/8RAoQBAJ9d1ZbJPAzAT+663+zDSXz6+t4rQwCfSFVE
-ZQeCAzPzEkgcefHnRI0DiH8=
-=4ClE
------END PGP SIGNATURE-----
+I thought this might be iptables firewall problem so I just made the
+netfilter + squid box iptable rules to INPUT OUTPUT FORWARD to ACCEPT.
+So now it should work but it didnt.
 
---Tln/wzp9jsNjmSUr--
+Now i cant sort out where is the problem lying ...with iptables or with
+squid or any thing else ...
+
+Awaiting for Ideas to get the solution in urgent.
+
+
+-- 
+Joel N.Solanki
+Network Administrator
+Mobile: 91-9426353268
+Phone No: 0265-550001/2/3/4/5 Ext: 211/212
+Digtial 2 Virtual Internet Service Provider.
+http://www.packetraptor.com/
+http://www.d2visp.com/
+Gujarat (India)
+
+
 
