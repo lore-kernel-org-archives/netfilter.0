@@ -1,14 +1,11 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: Newbie question about having multiple destination addresses in
- a chain entry
-Date: Sun, 05 Jan 2003 14:13:50 +0100
+From: Subba Rao <subba3@cablespeed.com>
+Subject: Help with Masquerading
+Date: Sun, 05 Jan 2003 10:19:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E182F8E.3090601@fugmann.dhs.org>
-References: <3E181977.4020204@aut.ac.nz> <20030105124531.GJ16581@miggy.org>
+Message-ID: <3E184D14.10102@cablespeed.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030105124531.GJ16581@miggy.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +16,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Athan <netfilter@miggy.org>
-Cc: Ian Batterbee <ian.batterbee@aut.ac.nz>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Athan wrote:
->    I *think* your problem is that the NOTHING chain is empty, so at the
-> end of it it just returns to the calling chain.  Why not just simply -j
-> ACCEPT on the rule in PREROUTING?  That should stop it processing any
-> further down the PREROUTING for packets with that destination.
-Besides the solution presented (with the error corrected), a more clean 
-solution is to create a new chain, and then use the RETURN target in 
-this chain for packets that are not to be DNAT'ed:
+Hi
 
-iptables -t mangle -N DNAT_PROXY
-iptables -t mangle -A DNAT_PROXY -d 192.168.0.0/24 -j RETURN
-iptables -t mangle -A DNAT_PROXY -d x.x.0.0/16 -j RETURN
-iptables -t mangle -A DNAT_PROXY -p tcp -j REDIRECT --to-ports 3128
-iptables -t mangle -A PREROUTING -p tcp --dport 80 -j DNAT_PROXY
+My system is running kernel 2.4.20 with iptables compiled into the 
+kernel. The system has 2 interfaces. ETH0 is connected to the Internet 
+(via cablemodem) and ETH1 is connected to my home LAN which has only one 
+W2K laptop.  
 
-This allows you to do other stuff on packets in PREROUTING, as you are 
-not accepting packets that are not to be DNAT'ed.
+My W2K is configured with the Linux system as the gateway. Both systems 
+can ping each other.
+However my laptop is not able to go out to the Internet.
 
-Regards
-Anders Fugmann
---
-Author of FIAIF
-FIAIF Is An Intelligent Firewall
-http://fiaif.fugmann.dhs.org
+I am desperately trying to make my W2K laptop connect to the Internet.
+
+Please let me know how to make this work.
+
+Thank you in advance.
+
+Subba Rao
+subba3@cablespeed.com
+
+#!/bin/sh
+
+echo "Starting Firewall....."
+
+INTERNAL_NET="10.0.0.0/24"
+
+INTERNET=`ifconfig eth0 | grep inet | cut -d : -f 2 | cut -d \  -f 1`
+
+# Flush the tables
+/usr/sbin/iptables -F INPUT
+/usr/sbin/iptables -F OUTPUT
+/usr/sbin/iptables -F FORWARD
+/usr/sbin/iptables -t nat -F
+
+# Set default policies for packet entering this box
+
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+
+# Allow some packets in but accept all those on the internal interface
+/usr/sbin/iptables -A INPUT -i lo -j ACCEPT
+/usr/sbin/iptables -A INPUT -i eth0 -j ACCEPT
+/usr/sbin/iptables -A INPUT -i eth1 -j ACCEPT
+
+# Masquerade internal system with the public IP address
+
+iptables -t nat -A POSTROUTING -d $INTERNAL_NET -o $INTERNET -j ACCEPT
+iptables -t nat -A POSTROUTING -o $INTERNET -s $INTERNAL_NET -j MASQUERADE
+
+# Block inbound connections
+
+/usr/sbin/iptables -A INPUT -i eth0 -p tcp --syn -j DROP
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+
+
 
 
