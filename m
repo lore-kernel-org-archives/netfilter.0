@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: path-o-matic-20030929.tar.bz2 doesn't apply ok with k2.4.22
-Date: Fri, 3 Oct 2003 12:31:01 +0200
+Subject: Re: Using iptables with x86_64 static kernel (module problems)?
+Date: Fri, 3 Oct 2003 12:21:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031003103101.GZ5758@sunbeam.de.gnumonks.org>
-References: <3F79CC00.3040003@uga.com.br>
+Message-ID: <20031003102156.GV5758@sunbeam.de.gnumonks.org>
+References: <20031001161136.GA13226@cc.jyu.fi>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jXRFVvqvG+w3zy9F"
+	protocol="application/pgp-signature"; boundary="FOdG/w7DHD+yDhUZ"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <3F79CC00.3040003@uga.com.br>
+In-Reply-To: <20031001161136.GA13226@cc.jyu.fi>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +19,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Carlo Pires <carlo@uga.com.br>
-Cc: netfilter@lists.samba.org
+To: Jani Averbach <jaa@cc.jyu.fi>
+Cc: netfilter@lists.netfilter.org
 
 
---jXRFVvqvG+w3zy9F
+--FOdG/w7DHD+yDhUZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 30, 2003 at 03:31:28PM -0300, Carlo Pires wrote:
-> I am compiling kernel 2.4.22 with patch-o-matic-20030929.tar.bz2 and I=20
-> notice that
-> /usr/src/linux/include/linux/netfilter_ipv4/ipt_osf.h
-> after the patch applied don't have a #endif for #define _IPT_OSF_H
-> then I added a line with: #endif /* _IPT_OSF_H */ at the end of the file=
-=20
-> and everything compiled well.
+On Wed, Oct 01, 2003 at 07:11:36PM +0300, Jani Averbach wrote:
+>=20
+> Hello!
+>=20
+> I am trying to use netfilter (iptables) with static (no module
+> support) x86_64 kernel (2.4.23-pre5-x86_64-1). However, iptables won't
+> work with that kernel because it try to do various modules related
+> task. If I compile a static i386 2.4.23-pre5 kernel that will work
+> like expected.=20
 
-Thanks, I also noted that the osf.patch is broken in serveral ways.  I'm
-going to contact the author about that.
+I don't really understand the problem.  'iptables tries to do various
+mudules related task' ?
 
-> []s
-> Carlo
+> If this is a nontrivial problem, I could provide more detailed
+> information.
+
+yes, please.   I have no idea what you are talking about, sorry.
+
+> Thanks,
+> Jani
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -53,17 +59,17 @@ going to contact the author about that.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---jXRFVvqvG+w3zy9F
+--FOdG/w7DHD+yDhUZ
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/fU/lXaXGVTD0i/8RAiVfAJ4q7fAw19eREEnb2zZ5OHgyaWz5YQCgj8CM
-U18PCuHmqLJ5NqUc8upNIeQ=
-=irF1
+iD8DBQE/fU3EXaXGVTD0i/8RAr+PAJ9wsb44o4C692GJqWdKUdPbfeBGQQCfTeAA
+hSAgZOjtAym7FiVFqOHzicM=
+=3sig
 -----END PGP SIGNATURE-----
 
---jXRFVvqvG+w3zy9F--
+--FOdG/w7DHD+yDhUZ--
 
