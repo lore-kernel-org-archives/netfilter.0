@@ -1,11 +1,13 @@
-From: Walther@gehag-dsk.de
-Subject: Re: iptables and linuxVirtualServer
-Date: Wed, 2 Oct 2002 19:01:20 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Control outbound access on a per-application level
+Date: 02 Oct 2002 17:38:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFD55DDE68.D1F33888-ONC1256C46.005D409D-C1256C46.005D7EF8@GEHAG-DSK.DE>
+Message-ID: <1033573113.735.45.camel@elendil>
+References: <1033569217024171@spray.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1033569217024171@spray.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,98 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Transfer-Encoding: 7bit
-To: Tim Cronin <tim@13-colonies.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Gustav Svensson <gurra16@spray.se>
 Cc: netfilter@lists.netfilter.org
 
-this is based on tcp-connection basics
+Le mer 02/10/2002 =E0 17:23, Gustav Svensson a =E9crit :
+> Is it possible to set "outbound" rules based on what binary application=
+ it is that
+> wants to access the Internet?
 
-client ->syn-> server
-server ->ack(syn-ack) and syn(time-sync)-> client
-client ->ack-> server (HERE you get the ack-problems)
-server ->ack->client
+You can use --cmd-owner switch from owner module (lastest patch-o-matic)
+which provides you the ability to choose a command name.
 
+But unfortunately, it just match the command name, and does not check
+binaries location in the filesystem. If I authorize ping command, anyone
+who launch a command called ping will be granted (e.g. ln -s
+/usr/bin/ssh ping), whatever it is. Which means it is imho quite
+uneffective on systems where users can build and/or install their own
+stuff, even if you considerer hardening command filtering with other
+stuff :
 
-Best Regards,
-MfG.
+	iptables -A OUTPUT -m owner --cmd-owner ping -p icmp \
+		--icmp-type echo-request -j ACCEPT
 
-Stefan Walther
-stefan_walther@gehag-dsk.de
-dienst.: +4930/89786448
-Funk: +49172/3943961
-http://www.gehag-dsk.de
+I am still to launch to tool that communicate over ICMP, as an example.
 
--------------------------------------------------------------- 
-Linux/UNIX is like an Indian Tipi:
-No Windows, no Gates and Apache inside.
+I was considering a device/inode check, but I am afraid it is far over
+my skills to add this to that very module. You would give iptables the
+complete path and tool will get device ID and inode number for the
+binary and store it as match. Then, Netfilter checks the file that owns
+the socket, check it device ID and inode number and take the decision.
 
-Outgoing Mail is certified mistake-free. 
-Examined by DOGMATIC infallibility system. 
-Version 6.04
+My 2 cents of euro.
 
-
-
-
-Tim Cronin <tim@13-colonies.com>
-Sent by: netfilter-admin@lists.netfilter.org
-02.10.2002 17:52
-
- 
-        To:     "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
-        cc: 
-        Subject:        iptables and linuxVirtualServer
-
-
-I have a box I'm using as a gateway to a private network.
-It does lvs_nat to expose http and ftp services.
-eth0 is my external nic.
-it's running rh 7.3 /w kernel 2.4.19
-I've go the connection tracking modules loading.
-
-I've posted this on the lvs mailing list and it was suggested 
-I post here as well.
-
-I'm having problems with the following
-iptables -A INPUT -i eth0 -p tcp ! --syn -m state --state NEW -j DROP 
-if this rule is set I'm unable to connect to my web server.
-
-I added the following 
-
-iptables -A INPUT -i eht0 -p tcp ! --syn \
--m state --state NEW \
--j LOG --log-prefix "IPTABLES SYN: "
-
-and I get the following log
-
-Oct  1 11:12:24 loadbalancer kernel: 
-IPTABLES SYN: 
-IN=eth0 OUT= 
-MAC=00:80:ad:98:14:94:00:b0:d0:2c:96:16:08:00 
-SRC=172.24.1.24 
-DST=172.24.1.251 
-LEN=411 TOS=0x00 PREC=0x00 TTL=128 ID=61175 DF 
-PROTO=TCP 
-SPT=1262 
-DPT=80 
-WINDOW=64240 RES=0x00 ACK PSH URGP=0
-
-if I add the following before the rule above
-
-iptables -A INPUT -i eth0 -p tcp ! --syn --dport http -m state --state NEW
--j ACCEPT
-
-I can get access, but this seems to defeat the purpose.
-
-I'm guessing that since the http requests are being handled by
-lvs iptables doesn't track the state, but this is just a swag on my part.
-
-any help would be appreciated.
-
-
-
-
-
-
-
-
+--=20
+C=E9dric Blancher
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
