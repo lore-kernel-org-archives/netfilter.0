@@ -1,12 +1,13 @@
-From: "Lior Hammer" <lior@typo.co.il>
-Subject: Re: Strange problem with iptables IP Masq
-Date: Mon, 16 Sep 2002 16:38:37 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: why can't I telnet
+Date: Mon, 16 Sep 2002 16:11:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002401c25dda$32319880$6400a8c0@hammer1>
-References: <002001c25dc4$69549800$6400a8c0@hammer1> <1032175409.719.48.camel@elendil>
+Message-ID: <200209161511.g8GFBBv15493@vulcan.rissington.net>
+References: <6029A399F5BFD6118BB200104B0DF37302764B@MAILGATE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <6029A399F5BFD6118BB200104B0DF37302764B@MAILGATE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Thank you very much, it's working!
-I have a PPTP ADSL connection, but it's working now!
-Thank you,
-Lior.
------ Original Message -----
-From: "Cedric Blancher" <blancher@cartel-securite.fr>
-To: "Lior Hammer" <lior@typo.co.il>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Monday, September 16, 2002 4:23 AM
-Subject: Re: Strange problem with iptables IP Masq
+On Monday 16 September 2002 2:45 pm, Naleendra@dms.lanka.net wrote:
 
+> HI LIST,
+>
+> 	I can't telnet when my Iptables rule set is active. However the
+> moment I stop thee service I am able to do so. Mine is a default drop
+> policy. However I can ping with no problems. Telnet pertaining portion
+> lines are,
+>
+> 	iptables -A INPUT -i <adaptor> -d <ip-address> -p tcp --dport 23 -j
+> ACCEPT
+> 	iptables -A OUTPUT -o <adaptor> -s <ip-address> -p tcp --sport 23 -j
+> ACCEPT
 
-> Le lun 16/09/2002 =E0 23:02, Lior Hammer a =E9crit :
-> > I'm using the IP Masq script from the IP masq howto from TLDP.
-> > The connection sharing is fine except for one thing:
-> > in some of the sites (for example: http://httpd.apache.org or DynDNS.org
-> > members area) my browser keep's searching and searching without any
-result
-> > (or other response) or it just print few lines and that's it.
-> > I thought it's a problem with my browser, so i tryed to get the page
-> > directly with telnet.
-> > i got the HTTP Headers, and the first lines, and that's it, it didn't
-> > disconnect or somthing, just waited.
-> > Everything is ok when i'm trying to get this page directrly with lynx
-from
-> > the computer that shares the conection.
->
-> Are you connected via ADSL line using PPPoE ?
->
-> If so, you have to lower TCP MSS for forwarded packets down to 1452 (MTU
-> 1492) to avoid problems when PMTU discovery is broken. This can be done
-> directly on pppoed using -m switch :
->
-> pppoe -I eth0 -T 80 -m 1452
->
-> Or this can be done using Netfilter mangle table :
->
-> iptables -t mangle -A FORWARD -o ppp0 -p tcp --syn \
-> -j TCPMSS --clamp-mss-to-pmtu
->
-> If not, forwarded hosts will export a 1460 TCP MSS (MTU 1500). Big
-> replies will be to big and lost.
->
-> --
-> C=E9dric Blancher
-> Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-> T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-> PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
->
+You are adding an INPUT rule with a destination port = 23, and an output rule 
+with a source port = 23, which is correct if this is the machine you are 
+trying to telnet *to*, from whatever machine you are specifying by 
+<ip-address>.
 
+If that is correct - you are trying to telnet *to* this machine, not from it, 
+and you are trying to telnet to *this* machine, and not another one which is 
+routed through this one, then I can't see the reason why it's not working; I 
+suggest you add a LOGging rule after each of these rules to show you what 
+packets are trying to get in or out of the machine and being blocked.
+
+If my assumption about your network setup is not correct, then tell us 
+precisely what you are trying to do, and show us the rest of yur ruleset, and 
+we'll suggest what you might be able to do about it.
+
+Regards,
+
+Antony.
+
+-- 
+
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
