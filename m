@@ -1,10 +1,14 @@
-From: =?iso-8859-1?B?SOVrYW4gRW5nYmxvbQ==?= <cynic_0@hotmail.com>
+From: "Tarek W." <mailinglists1@hotpop.com>
 Subject: Re: source-mac filtering
-Date: Sun, 11 Jan 2004 19:16:12 +0100
+Date: Sun, 11 Jan 2004 21:05:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea1-F166Ss04dM6Mpx00054200@hotmail.com>
+Message-ID: <1073847935.13069.16.camel@carve.personal.localdomain>
+References: <Sea1-F7gMiX6AZCFgXe000520e9@hotmail.com>
+ <20040111163756.GA6168@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <20040111163756.GA6168@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,54 +18,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-OK, thanks for the support.
+On Sun, 2004-01-11 at 18:37, Ramin Dousti wrote:
+> dhcpd takes and puts packets by netlink sockets which bypass the whole
+> IP stack. So in short, you cannot filter the requests nor the response.
+> 
+> Ramin
+> 
+<snippage>
 
-br H=E5kan E.
-
-
->From: Antony Stone <Antony@Soft-Solutions.co.uk>
->To: netfilter@lists.netfilter.org
->Subject: Re: source-mac filtering
->Date: Sun, 11 Jan 2004 17:50:52 +0000
->
->On Sunday 11 January 2004 5:39 pm, H=E5kan Engblom wrote:
->
-> > Yes, I've come to realize that.
-> >
-> > Is it technically necessary for the dhcp-server to do so, or could it be
-> > that some other dhcpd behaves different ?
->
->It is technically necessary, because DHCP clients do not have IP addressing
->information when they begin the communication; everything is done using
->ethernet broadcasts.   Such packets cannot be acquired using a standard
->socket bind, so the server application needs to listen at a lower level=20
->than
->the TCP/IP stack allows.
->
->Regards,
->
->Antony.
->
->--
->A: Because it messes up the order in which people normally read text.
->Q: Why is top-posting such a bad thing?
->A: Top-posting.
->Q: What is the most annoying thing on usenet and in e-mail?
->
->                                                      Please reply to the =
-
->list;
->                                                            please don't C=
-C=20
->me.
->
->
-
-_________________________________________________________________
-Hitta r=E4tt p=E5 n=E4tet med MSN S=F6k http://search.msn.se/
+this is slightly off... iirc, some of the negotiation happens that way,
+further negotiation does not... what I'm sure of however is that if u
+don't explicitely allow dhcpd traffic server-side, negotiation does not
+work client-side... which means that not all traffic if any bypasses
+netfilter... don't have the time to investigate further server-side...
+sorry...
 
 
