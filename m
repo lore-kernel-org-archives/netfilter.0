@@ -1,12 +1,14 @@
-From: Sagara Wijetunga <sagaralists@yahoo.com>
-Subject: Re: Allow active and passive FTP connections
-Date: Thu, 17 Jun 2004 08:13:08 -0700 (PDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: deleting a conntrack record
+Date: Thu, 17 Jun 2004 16:20:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040617151309.68677.qmail@web14710.mail.yahoo.com>
-References: <200406171323.25501.Antony@Soft-Solutions.co.uk>
+Message-ID: <200406171620.24232.Antony@Soft-Solutions.co.uk>
+References: <876ef97a0406170807663b89e0@mail.gmail.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406171323.25501.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <876ef97a0406170807663b89e0@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,66 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
---- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> On Thursday 17 June 2004 1:13 pm, Piszcz, Justin
-> Michael wrote:
->=20
-> > I think he meant, modprobe ip_conntrack_ftp and if
-> you are behind nat
-> > there is a module for that as well.
->=20
-> insmod should do the job perfectly well.
->=20
-> NAT is very unlikely when the rules are running on
-> the FTP server itself=20
-> (they're in the INPUT & OUTPUT chains).
->=20
-Thanks very much for everybody's comments on this.=20
+On Thursday 17 June 2004 4:07 pm, Tobias DiPasquale wrote:
 
-In my Linux kernel, the =93FTP protocol support=94 under
-=93IP: Netfilter Configuration=94 is build into the
-kernel. Therefore, there is no ip_conntrack_ftp module
-to load.
+> Hello all,
+>
+> I have a module that exports a /proc entry which takes a string with 4
+> args in it (src IP/port and dst IP/port) and then attempts to delete
+> the conntrack entry for the TCP connection associated with those
+> arguments.
+>
+> The problem is as follows:
+>
+> There is a userspace script that runs from cron every 5 minutes. It
+> looks through the /proc/net/ip_conntrack listing to see if any
+> connections are "stale" (i.e. haven't seen a packet from them in
+> some amount of time). It then feeds their connection information
+> into my module's /proc entry so that those conntrack records can
+> be destroyed.
 
-I use Linux kernel 2.6.5, I don't use NAT and I use
-iptables v1.2.10.
+Why not just use the built-in timeouts to delete stale entries from the 
+conntrack table?
 
-I noticed =93IP: kernel level autoconfiguration=94 was not
-set. I just build that also in to the kernel,
-recompiled, reinstalled the Linux kernel, rebuild all
-modules and rebooted the server and retried the FTP
-connection. But my problem is still the same.=20
+You can adjust the timeout settings using entries in 
+/proc/sys/net/ipv4/netfilter and I believe there may be a p-o-m update to 
+give even further fine-grained control.
 
-For active FTP connections it drops the following
-packet:
-Jun 17 22:51:04 svr1 kernel: OUTPUT PKT DROPPED: IN=3D
-OUT=3Deth0 SRC=3D[server IP addr] DST=3D[client IP addr]
-LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D33736 DF PROTO=3DTCP
-SPT=3D20 DPT=3D32914 WINDOW=3D5840 RES=3D0x00 SYN URGP=3D0
+Regards,
 
-For passive FTP connections it drops the following
-packet:
-Jun 17 22:54:12 svr1 kernel: INPUT PKT DROPPED:
-IN=3Deth0 OUT=3D
-MAC=3D00:e0:29:34:b3:58:00:e0:29:34:bb:36:08:00
-SRC=3D[client IP addr] DST=3D[server IP addr] LEN=3D60
-TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D40886 DF PROTO=3DTCP
-SPT=3D32916 DPT=3D32769 WINDOW=3D5840 RES=3D0x00 SYN URGP=3D0
+Antony.
 
-Is it necessary to build ip_conntrack_ftp as a module?
+-- 
+I own three Windows books, published by O'Reilly.   They are "Windows 
+Annoyances", "Office 97 Annoyances" and "Windows 98 Annoyances".   That 
+pretty much sums it up for me.
 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-Sagara
-
-
-=09
-	=09
-__________________________________
-Do you Yahoo!?
-New and Improved Yahoo! Mail - 100MB free storage!
-http://promotions.yahoo.com/new_mail=20
 
