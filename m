@@ -1,10 +1,12 @@
-From: "SB CH" <chulmin2@hotmail.com>
-Subject: using public ip winthin NAT firewall?
-Date: Thu, 31 Oct 2002 10:24:15 +0000
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: next topic:  --limit and --burst-limit
+Date: Thu, 31 Oct 2002 06:00:51 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F32stY3Uyn3p6ALZWUX000020f2@hotmail.com>
+Message-ID: <Pine.LNX.4.44.0210310553200.29866-100000@localhost.localdomain>
+References: <1036052695.21032.21.camel@elendil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1036052695.21032.21.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,16 +16,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"; format="flowed"
-Content-Transfer-Encoding: base64
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-aGVsbG8gYWxsLgoKSSBvcGVyYXRlZCBzb21lIHdpbmRvd3Mgc3lzdGVtIGF0IG15IG5ldHdvcmsg
-YW5kIEkgd291bGQgbGlrZSB0byBzZWN1cmUgCnRoaXMgbmV0d29yayB1c2luZyBvbmUgbGludXgg
-ZmlyZXdhbGwgdXNpbmcgbm90IG9yIG90aGVyIG1ldGhvZC4KQnV0IEkgbXVzdCB1c2UgcHVibGlj
-IGlwIGFkZHJlc3MgYXQgd2luZG93cyBzeXN0ZW0uCkhvdyBjYW4gSSB1c2UgcHVibGljIGlwIGFk
-ZHJlc3MgYXQgd2luZG93cyBzZXJ2ZXIgPwpzb21lIGNvbmZpZyBpcyByZXF1aXJlZCBhdCByb3V0
-ZXI/CgogICBUaGFua3MgaW4gYWR2YW5jZS4KCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18Kw6W788Cnv6EgtNm4riC/w7iu
-sO0gtMCx38fPsNQgwfGx5LTZLi4uIE1TTiC/wrbzwM4gu/O/tbD8ICAKaHR0cDovL3ZvZC5tc24u
-Y28ua3IgCgoK
+
+  ok, i think i've got a handle on the meaning of --limit and
+--limit-burst, but there's still one thing that puzzles me.
+some of the examples i've seen of this on the net seem to
+be backwards.
+
+  from "man iptables", we have that the "limit" module:
+
+  "matches at a limited rate using a token bucket filter.  A rule
+   using this extension will *match* [my emphasis] until this
+   limit is reached (unless the '!' flag is used)."
+
+this suggests that, if you add a rule incorporating a limit,
+a match would imply that you *haven't* exceeded the limit and
+that you don't necessarily want to take any countermeasures.
+
+  from one tutorial, here's the lines that deal with 
+syn-flooding protection:
+
+  iptables -N syn-flood
+  iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+  iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
+  iptables -A syn-flood -j DROP
+  
+this seems to match the man page -- in the "syn-flood" user-defined
+chain, if you match the limit rule, you're still fine and you return.
+otherwise, you drop the packet that forced you to exceed the limit.
+
+  i'm harping on this since i've seen examples in which a matching
+rule incorporating limit explicitly drops the packet, or LOGs it
+with "Packet dropped, limit exceeded."  which seems backward.
+(and no, they didn't have a '!' to negate the rule.)
+
+  so, have i understood this correctly?  thanks for your patience.
+
+rday
+
+
