@@ -1,14 +1,12 @@
-From: Erik Pagel <erik.pagel@gmx.de>
-Subject: Re: Yet another FTP connection problem (Solved)
-Date: Fri, 07 Jun 2002 08:32:07 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: RE: What ICMP packets does state RELATED allow?
+Date: Fri, 7 Jun 2002 09:04:58 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <426975548.1023438727@[192.168.13.4]>
-References: <200206061852.g56Iq2A30805@Networker.rockstone.co.uk>
+Message-ID: <Pine.LNX.4.33.0206070900500.3884-100000@blackhole.kfki.hu>
+References: <NJEFLNJDIFFNMHDEBKMJAEFPDOAA.jpatterson@asgardgroup.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206061852.g56Iq2A30805@Networker.rockstone.co.uk>
-Content-Disposition: inline
+In-Reply-To: <NJEFLNJDIFFNMHDEBKMJAEFPDOAA.jpatterson@asgardgroup.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,32 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Joe Patterson <jpatterson@asgardgroup.com>
+Cc: Nick Drage <nickd@funkyjesus.org>, netfilter@lists.samba.org
 
-Hi Antony,
+On Thu, 6 Jun 2002, Joe Patterson wrote:
 
->> ># allow ftp control connections outbound
->> > iptables -A OUTPUT -p tcp --dport 21 -j ACCEPT
->>
->> Why only port 21 and not also port 20 (DATA Channel).
+> That's interesting...  I guess it could make sense... sort of...
 >
-> Because the first outbound connection from the client to the server will
-> always be a control connection, and then replies for both control and
-> data  will be handled as in the ESTABLISHED,RELATED state match.
-
-It looks like iptables didn't like my portrange. If I use only port 21 and 
-didn't mention port 20, it's working like a charm.
-Maybe this is a point for the ip_nat_ftp/ip_contrack_ftp README.
-
+> but, to be really obnoxious about it, I would think it would make sense to
+> have rules such as:
 >
-> So did you try them ?   Do they work ?
-
-Yes. Thank you and all other for your help.
-
+> for IF in `ifconfig | cut -d " " -f 1 | grep -v ^$`; do
+> 	$IPT -A INPUT -p icmp --icmp-type 5 -m state --state RELATED -i $IF -s `ip
+> addr ls dev $IF | grep inet | cut -d " " -f 6` -j ACCEPT
+> done
 >
-> Antony.
+> and
 >
-bye Erik
+> $IPT -A FORWARD -p icmp --icmp-type 5 -j DROP
+>
+> on the basis of my belief that you should never ever have a redirect
+> crossing a router, but you *may* want to accept redirects from local
+> gateways...
+
+conntrack is responsible to keep track of the connections as perfectly
+(and with as little overhead) as possible. At the filter stage one can
+filter out the unwanted packets exactly as you suggested.
+
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+WWW-Home: http://www.kfki.hu/~kadlec
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
