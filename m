@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Microsoft VPN
-Date: Thu, 1 Jul 2004 10:14:29 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: traceroute
+Date: Thu, 1 Jul 2004 11:21:15 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407011014.29753.Antony@Soft-Solutions.co.uk>
-References: <76408279273F86419EA113F4CC5BB13D026C5E@EXCHANGE.InsideNCS.local> <03f601c45f4a$e92dad80$1700000a@afsatke.local>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <Pine.LNX.4.33.0407011119540.29206-100000@blackhole.kfki.hu>
+References: <200406302339.02075.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <03f601c45f4a$e92dad80$1700000a@afsatke.local>
+In-Reply-To: <200406302339.02075.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 01 July 2004 10:07 am, Wycliffe Bahati wrote:
+On Wed, 30 Jun 2004, Antony Stone wrote:
 
-> > We're having trouble accessing our Microsoft VPN server through an
-> > iptables firewall.  The first person to connect gets in fine, but we can't
-> > make concurrent VPN connections.
-> >
-> > /sbin/iptables -t nat -A ftolocal -p gre -j DNAT --to-destination 1.2.3.4
-> > /sbin/iptables -t mangle -A ftolocal -p gre -j MARK --set-mark 1
-> > /sbin/iptables -t nat -I PREROUTING 1 -p gre -j gforward
+> On Wednesday 30 June 2004 11:36 pm, Florian Boelstler wrote:
 >
-> Have u tried to uses snat to do a direct translation to the MS
+> > > Tell us how you handle NEW packets leaving the machine.
+> >
+> > By looking at other posts in this thread I've learned that traceroutes
+> > are done with echo-requests. Is this true for Linux 2.6.6 ?
+>
+> No, that's true for Windows systems.   Unix machines (Linux included) uses
+> high-port numbered UDP packets.
+>
+> Therefore you need to allow UDP packets to leave your machine for you to be
+> able to run traceroute from it.
 
-That won't help - if you notice, the problem is not that nobody can connect, 
-but that only the first user can connect.   Therefore the NAT and routing are 
-working fine, but the PPTP Conntrack Helper has not been loaded, so second 
-and subsequent connections are not passed on correctly to the server.
+Actually UDP based traceroute uses ports in the range 33434-33523.
 
-Regards,
-
-Antony.
-
--- 
-I don't know, maybe if we all waited then cosmic rays would write all our 
-software for us. Of course it might take a while.
-
- - Ron Minnich, Los Alamos National Laboratory
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
