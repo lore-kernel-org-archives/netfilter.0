@@ -1,14 +1,13 @@
-From: Tom Van Overbeke <tvanoverbeke@ccncsi.net>
-Subject: RE: Firewall software
-Date: Tue, 05 Aug 2003 10:47:18 +0200
+From: pammann@execomm.net (Paul Ammann)
+Subject: Re: Firewall software
+Date: Tue, 5 Aug 2003 04:46:08 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000c01c35b2e$2de52100$d90315ac@rsrc.be.local>
+Message-ID: <001201c35b47$2c5c06a0$6ee00b42@na6xxo6g5tg9af>
 References: <003801c35b2a$c9a8c1e0$7700000a@lawrencewin2k>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
- boundary="Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)"
+	boundary="----=_NextPart_000_000D_01C35B0C.7CA6FEC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <003801c35b2a$c9a8c1e0$7700000a@lawrencewin2k>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,126 +17,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: 'Lawrence - D' <ingsiong@daltron.com.pg>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: Lawrence - D <ingsiong@daltron.com.pg>, Netfilter <netfilter@lists.netfilter.org>
 
 This is a multi-part message in MIME format.
 
---Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+------=_NextPart_000_000D_01C35B0C.7CA6FEC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-fwbuilder & firepoint
+Go to Sourceforge, and look up Firewall Builder. This VERY user friendly =
+interface interacts with IPtables as well as PIX.
 
+Best regards,
 
-fwbuilder is a graphic interface with icons representing various firewall
-objects (hosts, firewalls, tcp ports), which makes it a lot easier to create
-a decent firewall policy.
+Paul Ammann
 
-firepoint is a wrapper around fwbuilder with as main features access control
-& automatic activation of firewall policy. firepoint is not perfect (access
-control is actually not very secure), but this combo together with iptables
-enables one to create a rather professional firewall setup.
-
-
-Tom.
-
-  -----Original Message-----
-  From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Lawrence - D
-  Sent: 05 August 2003 10:23
-  To: Netfilter
+  ----- Original Message -----=20
+  From: Lawrence - D=20
+  To: Netfilter=20
+  Sent: Tuesday, August 05, 2003 1:22 AM
   Subject: Firewall software
 
 
   Hi,
-      Can anyone recommend firewall software that can work together with
+      Can anyone recommend firewall software that can work together with =
 IPtables ? User friendly interface.
 
 
-  Lawrence Tang
+  Lawrence Tang=20
 
-****************************************************************************
-Disclaimer: 
-This electronic transmission and any files attached to it are strictly 
-confidential and intended solely for the addressee. If you are not 
-the intended addressee, you must not disclose, copy or take any
-action in reliance of this transmission. If you have received this 
-transmission in error, please notify the sender by return and delete
-the transmission.  Although the sender endeavors to maintain a
-computer virus free network, the sender does not warrant that this
-transmission is virus-free and will not be liable for any damages 
-resulting from any virus transmitted. 
-Thank You.
-****************************************************************************
-
---Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)
-Content-type: text/html; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+------=_NextPart_000_000D_01C35B0C.7CA6FEC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-
-
-<META content="MSHTML 6.00.2800.1170" name=GENERATOR>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
-<BODY bgColor=#ffffff>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2>fwbuilder &amp; firepoint</FONT></SPAN></DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2>fwbuilder is a graphic interface with icons representing various firewall 
-objects (hosts, firewalls, tcp ports), which makes it a lot easier to create a 
-decent firewall policy.</FONT></SPAN></DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2>firepoint is a wrapper around fwbuilder with as main features access 
-control &amp; automatic activation of firewall policy. firepoint is not perfect 
-(access control is actually not very secure), but this combo together with 
-iptables enables one to create a rather professional firewall 
-setup.</FONT></SPAN></DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2>Tom.</FONT></SPAN></DIV>
-<DIV><SPAN class=330104408-05082003><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
-  <DIV class=OutlookMessageHeader dir=ltr align=left><FONT face=Tahoma 
-  size=2>-----Original Message-----<BR><B>From:</B> 
-  netfilter-admin@lists.netfilter.org 
-  [mailto:netfilter-admin@lists.netfilter.org]<B>On Behalf Of </B>Lawrence - 
-  D<BR><B>Sent:</B> 05 August 2003 10:23<BR><B>To:</B> 
-  Netfilter<BR><B>Subject:</B> Firewall software<BR><BR></FONT></DIV>
-  <DIV><FONT face=Arial size=2>Hi,</FONT></DIV>
-  <DIV><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp; Can anyone 
-  recommend&nbsp;firewall software that can work together with IPtables ? User 
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Go to Sourceforge, and look up Firewall =
+Builder.=20
+This VERY user friendly interface interacts with IPtables as well as=20
+PIX.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Best regards,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Paul Ammann</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Dingsiong@daltron.com.pg=20
+  href=3D"mailto:ingsiong@daltron.com.pg">Lawrence - D</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  href=3D"mailto:netfilter@lists.netfilter.org">Netfilter</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Tuesday, August 05, 2003 =
+1:22=20
+  AM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Firewall =
+software</DIV>
+  <DIV><BR></DIV>
+  <DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Can anyone=20
+  recommend&nbsp;firewall software that can work together with IPtables =
+? User=20
   friendly interface.</FONT></DIV>
   <DIV>&nbsp;</DIV>
-  <DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-  <DIV><FONT face=Arial size=2>Lawrence Tang 
-<BR></FONT></DIV></BLOCKQUOTE><FONT SIZE=3 COLOR=BLUE><PRE>****************************************************************************
-Disclaimer: 
-This electronic transmission and any files attached to it are strictly 
-confidential and intended solely for the addressee. If you are not 
-the intended addressee, you must not disclose, copy or take any
-action in reliance of this transmission. If you have received this 
-transmission in error, please notify the sender by return and delete
-the transmission.  Although the sender endeavors to maintain a
-computer virus free network, the sender does not warrant that this
-transmission is virus-free and will not be liable for any damages 
-resulting from any virus transmitted. 
-Thank You.
-****************************************************************************
-</PRE></FONT>
-</BODY></HTML>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Lawrence Tang=20
+<BR></FONT></DIV></BLOCKQUOTE></BODY></HTML>
 
---Boundary_(ID_ghnwSy9gg+KjdVk3LvB44A)--
+------=_NextPart_000_000D_01C35B0C.7CA6FEC0--
+
 
