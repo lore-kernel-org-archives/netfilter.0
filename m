@@ -1,10 +1,13 @@
-From: "Afshin Lamei" <linux_st@hotmail.com>
-Subject: bridging firewall with Iptables
-Date: Tue, 04 Feb 2003 14:30:21 +0330
+From: "Franck" <franck@zoccolo.com>
+Subject: RE : Port forward
+Date: Tue, 4 Feb 2003 12:17:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F19z0NuQWGhu25aGkVn00011cb3@hotmail.com>
+Message-ID: <000001c2cc3e$f9c04040$29a2a8c0@dev.gcf.fr>
+References: <D007132BBC42D5118FD20002A52844414BCF2F@ASC01>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <D007132BBC42D5118FD20002A52844414BCF2F@ASC01>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,26 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I want to do both bridging and firewalling with linux. I've some questions 
-about it:
-1 - When I start up bridging, I see that all my linux terminals are 
-outputing the bridge trafic and I am not able to see my command prompt! so 
-how can I prevent it from doing so?
-2 - Can I use all of the benefits of Iptables in a bridging firewall?
-thanks,
-afshin
+> Thanks a lot the error message is gone now,
+> after I changed the line to:
+> iptables -t nat -A PREROUTING -p tcp --destination-port 25 -i eth0 -j
+DNAT --to-destination 192.168.22.6:25
 
+> But when I do iptables --list
+> I dont see any entrys in the chain for PREROUTING
 
+You must specify that you want to list the content of the nat table....
 
+iptables -t nat --list
 
-
-_________________________________________________________________
-The new MSN 8: smart spam protection and 2 months FREE*  
-http://join.msn.com/?page=features/junkmail
 
 
