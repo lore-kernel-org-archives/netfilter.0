@@ -1,14 +1,13 @@
-From: Evan Davies <evand@voiceplus.com.au>
-Subject: Please Help Re: PPTP server + Firewall + PPTP VPN Masq through
-	firewall
-Date: 02 Jul 2003 13:21:01 +1000
+From: cc <cc@belfordhk.com>
+Subject: Re: PCAnywhere and netfilter
+Date: Wed, 02 Jul 2003 12:21:33 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057116061.7125.1.camel@proto.voiceplus.com.au>
-References: <1057025403.4161.20.camel@proto.voiceplus.com.au>
+Message-ID: <3F025DCD.2060004@belfordhk.com>
+References: <Pine.LNX.4.44.0306301314470.31613-100000@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=_fileserver.voiceplus.com.au-3499-1057116068-0001-2"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1057025403.4161.20.camel@proto.voiceplus.com.au>
+In-Reply-To: <Pine.LNX.4.44.0306301314470.31613-100000@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,115 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Chris Wilson <chris@netservers.co.uk>, netfilter@lists.netfilter.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+Chris Wilson wrote:
 
---=_fileserver.voiceplus.com.au-3499-1057116068-0001-2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Hi Chris!
 
-On Tue, 2003-07-01 at 12:10, Evan Davies wrote:
+Just want to update that it's now working!  There were
+a few issues that contributed to me having so much
+trouble.
 
-> Hi All,
-> 
-> I was wondering if the following was possible:
-> 
-> Windows Client
-> PPTP VPN Client  ----\
->                                   \
-> Linux Client ---------->------> FIREWALL + PPTP Server --- INTERNET
-> ----- FIREWALL + PPTP Server
->                                    /                              |
-> Windows Client ------/                                |
->                                                                    |
->                                                             Home User
-> PPTP VPN
-> 
-> 
-> I can have the Firewall/ VPN server work correctly in that the home
-> user can connect. But the internal PPTP client  cannont make a
-> connection out through the firewall.
-> 
-> I turn the VPN server off and adjust the iptables rules so incoming 47
-> connections are blocked and the internal PPTP client connects no
-> problems to another external pptp server.
-> 
-> Is i possible to have both connections running ?
-> 
-> I'm using RH 8.0 with iptables 1.2.7a + pptp_connection tracking
-> module is compiled into the kernel but not as a module.
-> 
-> Can anyone give me an example of an iptables script to do this
-> 
-> 
-> Any help would be greatly appreciated
-> 
-> 
-> -- 
-> Evan Davies <evand@voiceplus.com.au>
+1) We were running two different broadband suppliers.
+   One was being phased out while the other was being
+    phased in. :)  So the PCAnywhere system wasn't using
+     the right Router (don't know if this actually makes
+    any difference).
 
---=_fileserver.voiceplus.com.au-3499-1057116068-0001-2
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
+2) I was using a my workstation (has PCAnywhere installed)
+   to log on to the other PCAnywhere station but via the
+   Internet IP and not the stated local IP.  Meaning,
+    if aa.bb.cc.dd was my given Internet IP, I'd use my
+    local station to access the aa.bb.cc.dd to access
+    the PCAnywhere station.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.5">
-</HEAD>
-<BODY>
-On Tue, 2003-07-01 at 12:10, Evan Davies wrote:
-<BLOCKQUOTE TYPE=CITE>
-    <FONT COLOR="#737373"><I>Hi All,<BR>
-    <BR>
-    I was wondering if the following was possible:<BR>
-    <BR>
-    Windows Client<BR>
-    PPTP VPN Client&nbsp; ----\<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \<BR>
-    Linux Client ----------&gt;------&gt; FIREWALL + PPTP Server --- INTERNET ----- FIREWALL + PPTP Server<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
-    Windows Client ------/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Home User PPTP VPN<BR>
-    <BR>
-    <BR>
-    I can have the Firewall/ VPN server work correctly in that the home user can connect. But the internal PPTP client&nbsp; cannont make a connection out through the firewall.<BR>
-    <BR>
-    I turn the VPN server off and adjust the iptables rules so incoming 47 connections are blocked and the internal PPTP client connects no problems to another external pptp server.<BR>
-    <BR>
-    Is i possible to have both connections running ?<BR>
-    <BR>
-    I'm using RH 8.0 with iptables 1.2.7a + pptp_connection tracking module is compiled into the kernel but not as a module.<BR>
-    <BR>
-    Can anyone give me an example of an iptables script to do this<BR>
-    <BR>
-    <BR>
-    Any help would be greatly appreciated<BR>
-    </I></FONT><BR>
-    <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<BR>
-</TD>
-</TR>
-</TABLE>
-<BR>
-    <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
--- <BR>
-Evan Davies &lt;<A HREF="mailto:evand@voiceplus.com.au"><U>evand@voiceplus.com.au</U></A>&gt;
-</TD>
-</TR>
-</TABLE>
+(I know. Stupid, but I needed to test whether or not I could
+connect.  I know using the actual machine's LAN IP works.  I
+just didn't know if I could go via the External IP.
 
-</BLOCKQUOTE>
-</BODY>
-</HTML>
+   ie.  MyMachine -> Firewall's Ext IP -> PCAnywhere.)
 
---=_fileserver.voiceplus.com.au-3499-1057116068-0001-2--
+Anyway, it works.  I'm surprised I'm had so much trouble
+with this.  It seemed pretty straight forward.
+
+Thanks for all the help Chris!
+
+Edmund
+
+
+-- 
+email: cc@belfordhk.com  | "A man who knows not where he goes,
+                         |  knows not when he arrives."
+                         |                - Anon
+
 
