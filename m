@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: how to interconnect two private network
-Date: 03 Dec 2002 14:14:45 +0100
+From: Rasmus Reinholdt Nielsen <rasmus@narani.dk>
+Subject: Re: Multible Links with Transparent Cache
+Date: Tue, 03 Dec 2002 14:02:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1038921285.8905.9.camel@elendil.intranet.cartel-securite.net>
-References: <200212030913.02744.michel.guilhem@cp.finances.gouv.fr>
+Message-ID: <5.1.0.14.2.20021203140152.030ccd48@of23sm3>
+References: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200212030913.02744.michel.guilhem@cp.finances.gouv.fr>
+In-Reply-To: <06f501c29ab8$8eb3c040$13fcc5cb@nextto>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "GUILHEM Michel (34)" <michel.guilhem@cp.finances.gouv.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: hare ram <hareram@sol.net.in>, netfilter@lists.netfilter.org
 
-Le mar 03/12/2002 =E0 10:13, GUILHEM Michel (34) a =E9crit :
-[...]
-> I want trying to do this the following rule
-> iptables -t nat -A POSTROUTING -s 10.0.0.0/255.0.0.0 -o eth0 -j SNAT --=
-to=20
-> source 154.0.0.0/255.0.0.0=20
-> But i am not sure , is my probleme solvable by a combination of iptable=
-s , nat=20
-> and route ?
+Take a look at
+http://www.linuxvirtualserver.org/~julian/nano.txt
 
-I do not think DNAT will work until you specify a DNAT rule per client
-(i.e. static DNAT).
+its working for me.
 
-You can use patch-o-matic NETMAP target that is almost what you exactly
-want :
+/Rasmus
 
-	http://www.netfilter.org/documentation/pomlist/pom-base.html#NETMAP
+At 16:11 03-12-2002 +0530, hare ram wrote:
+>Hi all
+>
+>i am running with RedHat 7.3 with iptables + transparent Cache
+>its working well
+>
+>no i have added another Link to My network with another Provider
+>now i want to Load Balance with Two Links
+>
+>At now iam running both with 2 Different Server,
+>
+>iam planning to do below
+>
+>  eth0 with Public IP x.x.x.x gateway x.x.x.1
+>  eht0:0 with Private IP (ADSL)  which is provided another Provider
+>192.168.3.2 gateway is 192.168.3.1
+>
+>i have LAN with 2 networks at this moment with 2 servers
+>
+>one Server Serving 192.168.2.0 network Going to First Link
+>another Server Serving 192.168.20.0 network Going to Second Link
+>
+>i want  to load balance with this two network with One Server with
+>Transparent cache,
+>the cache and routing should automatically load Balance the Links
+>
+>one link is 128kbps another is 256kbps Link
+>
+>any one recomend how to do this
+>
+>thanks
+>hare
 
-NETMAP target just alters network part of IP, letting host part
-unmodified. It can provide both DNAT and SNAT if respectively used in
-PREROUTING or POSTROUTING.
-
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
