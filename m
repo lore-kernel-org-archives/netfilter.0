@@ -1,11 +1,13 @@
-From: "David Wynter" <david@roamware.com>
-Subject: Required iptables restart each boot?
-Date: Thu, 14 Nov 2002 18:16:28 -0000
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: h.323 firewall
+Date: Thu, 14 Nov 2002 21:37:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LPECIAHGIGJJHHELMIDLIEAGDAAA.david@roamware.com>
+Message-ID: <20021114213744.4915ab70.arnt@c2i.net>
+References: <000d01c28c0a$473ff290$057ba8c0@wxcsmtp450>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000d01c28c0a$473ff290$057ba8c0@wxcsmtp450>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +18,80 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+On Thu, 14 Nov 2002 19:18:48 +0100, 
+"vincent blondel" <vincent.blondel@chello.be> wrote in message 
+<000d01c28c0a$473ff290$057ba8c0@wxcsmtp450>:
 
-Hi,
+> Hi,
+> 
+> I want to implement in our organisation a complete video conferencing
+> infrastructure but I am completely novice
+> in this matter. I read a lot of documentation these last days but
+> there are some points that stay not clear.
+> 
+> As you can see it above, we want to open domains DEV1 and DEV2 to the
+> net for h.323 traffic.
+> 
+> The current situation incorporates :
+> 
+>           10.66.0.xxx
+>      +---------------+
+>      | SMC7008BR |
+>      +---------------+
+>           10.66.1.xxx
+>                    DEV2
+>                 |           |
+>   +---------+-+   +--+--------+
+>   | slack 8.0 |   | Slack 8.0 |
+>   +-----------+   +-----------+
+>                       192.168.0.xxx   +-----+       10.66.0.xxx
+>                                              | pp0 | 
+>                                              | +---------------+
+>                                              +--+--+  |   switch     
+>                                              |
+>                                                  |       +-----------
+>                                                  |       ----+
+>                                                  |         DMZ
+>                                                  +-------+ 
+>                                                  +-------------+
+>                                                  |  NS2  |   | NS1
+> |
+>                       10.66.0.xxx          |  HTTP2| | HTT1        |
+>                  +---------------+         +-------+  | FTP          
+>                  +--ISP
+>                  |  SMC7008BR|                        | SMTP       |
+>                  +---------------+                       
+>                  +-------------+
+>                   192.168.0.xxx                           
+>                   192.168.0.xxx
+>                      DEV1
+>                   |            |
+>  +-----------+-+      +-+---------+
+>  |   linux         | .... |    w2k      |
+>  +-------------+      +-----------+
+>   GnomeMeeting         NetMeeting
+> 
+> - a firewall iptables on NS1 and NS2
+> - communcication with the net is passing through our DMZ zone
+> - DMZ integrates 2 servers linux slackware 8.0 / kernel 2.4.18 /
+> patch-o-matic-20020825 / iptables 1.2.7a
+> - DMZ is configured with nat feature for traffic between DEV1/DEV2 and
+> the net
+> - DEV1/DEV2 includes some 15 users with webcams and/or H323 compliant
+> equipment.
+> 
+> So the problems I encounter are the following :
 
-I have an iptables script that works just fine. But when I have to reboot my
-Linux box it runs the iptables script (it has chkconfig as 2345 08 92). But
-none of my PCs on the LAN can see the Internet until I do "services iptables
-restart" then they can. But my Linux box can see the Internet prior to this
-iptables restart? Any explanation as to why this is so?
+...a wee problem in your ascii artwork: 
+try again with a _constant_width_ font.
 
-I have another problem too. I am not sure it is related to iptables. I have
-iptables on my linux box attached to my LAN. The LAN has 2 PCs a Win98
-notebook and a W2K Server PC. The former can ping the gateway IP address,
-but the latter cannot. The former is 10.0.0.5 and the latter is 10.0.0.6
-both within the range of the lansubnet declared in the iptables script
-(10.0.0.0/8). The W2K Server can FTP to the Linux box only via the internet
-not directly to the gateway IP (10.0.0.1). I have made sure that packet
-filtering on the W2K box id OFF. Any ideas on why the W2K PC cannot access
-any service on ports I have allowed on the Linux box with iptables running
-when the Win98 notebook can? By the way FORWARD'ed packets are fine for all
-PCs on the LAN.
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-
-Regards
-
-David Wynter
-
-roamware Ltd.
-(+44) (0) 208 922 7539 B.
-(+44) (0) 7879 605 706 M.
-david@roamware.com
 
 
