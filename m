@@ -1,13 +1,9 @@
-From: Mail Lists <lists@sapience.com>
-Subject: Re: subnet problem
-Date: Mon, 19 Jul 2004 23:15:42 -0400
+From: "Carlos Montero" <cmom0020@endrino.cnice.mecd.es>
+Subject: "-p ICMP -m state --state RELATED" works????
+Date: Mon, 19 Jul 2004 17:34:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040720031542.GC7576@sapience.com>
-References: <20040718205007.GA7576@sapience.com> <200407182202.20404.Antony@Soft-Solutions.co.uk> <20040718221008.GB7576@sapience.com> <200407191012.04832.Antony@Soft-Solutions.co.uk>
-Mime-Version: 1.0
+Message-ID: <cdfrrl$hq4$1@sea.gmane.org>
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200407191012.04832.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +13,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-On Mon, Jul 19, 2004 at 10:12:04AM +0100, Antony Stone wrote:
-> On Sunday 18 July 2004 11:10 pm, Mail Lists wrote:
-> 
-> > iptables -A INPUT   -s 1.0.0.0/7 -i eth1 -j cRES_LDROP
-> > iptables -A INPUT   -s 173.0.0.0/5 -i eth1 -j cRES_LDROP
-> > iptables -A INPUT   -s 181.0.0.0/6 -i eth1 -j cRES_LDROP
-> > iptables -A INPUT   -s 185.0.0.0/7 -i eth1 -j cRES_LDROP
-> > iptables -A INPUT   -s 189.0.0.0/7 -i eth1 -j cRES_LDROP
-> 
-> The first first octet of all the above addresses is an odd number; therefore 
-> the LSB = 1, therefore any netmask shorter than 8 bits is inappropriate.
+Hi people, i=B4m configuring a firewall with iptables and have a little
+trouble. I want filter the icmp packets type 3 and 11
+(destination-unreachable and time-exceeded). I want that the firewall block
+all packets of this type that don=B4t be RELATED to another connection. I
+tried with this rule:
 
-  Indeed - wacky list - will fix - I'm assuming that might cause
-  problems. Looks like 173/5 is an attempt to represent is 
-  173/8 thru 180/8 for example. 
+iptables -A -p icmp --icmp-type 3 -m state --state RELATED -j ACCEPT
 
-  Will repair asap.
+but this don=B4t work. I hace tried all combinations of state value (
+NEW,ESTABLISHED,RELATED) but nothing seems work.
+However, the icmp type echo-reply and echo-request works fine with state
+control (NEW and ESTABLISHED):
+iptables -A INPUT -p icmp --icmp-type 8 -m state --state NEW -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type 0 -m state --state ESTABLISHED -j
+ACCEPT
 
-  Thanks kindly'
+ Is it possible only a type of icmp packets works with state control? Is it
+a bug? I hope someone can help me, than you.
 
-  gene/
+Carlos.
 
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> RTFM may be the appropriate reply, but please specify exactly which FM to R.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
+
+
 
