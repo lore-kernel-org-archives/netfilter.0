@@ -1,13 +1,13 @@
-From: <enosp.netmeeting@onlinehome.de>
-Subject: Packet loss at routing to own machine
-Date: Mon,  9 Feb 2004 19:52:01 +0100
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Forwarding Multicast Traffic
+Date: Tue, 10 Feb 2004 13:17:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6747028$10763525044027d5f82f55f0.43608586@config13.schlund.de>
+Message-ID: <1076411868.2827.0.camel@raylinux.internal>
+References: <F5200854-5AD1-11D8-87C2-000A95C71776@freezone.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_10763525044027d5f82f55f0.43608586";
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-eYRsHqejcyY8LPIg8Rjk"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F5200854-5AD1-11D8-87C2-000A95C71776@freezone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,109 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-This is a multi-part message in MIME format.
+--=-eYRsHqejcyY8LPIg8Rjk
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-------_=_NextPart_10763525044027d5f82f55f0.43608586
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+On Mon, 2004-02-09 at 09:31, ms419@freezone.co.uk wrote:
+> Two machines communicate with one another using multicast - mDNS - when=20
+> they are on the same network segment. When they are on separate network=20
+> segments, however - though they can connect to one another across a=20
+> router - they can't communicate using multicast. I presume that this is=20
+> because the router isn't forwarding multicast traffic to other network=20
+> segments? The router is running Linux kernel version 2.4.23 and=20
+> iptables. How can I configure iptables to forward multicast traffic to=20
+> other network segments?
+>=20
+Make sure you have the appropriate FORWARD and -t nat PREROUTING (if you
+use NAT) rules to forward the multicast traffic (224.0.0.0)
 
-Please see attached file!
+> Thanks very much,
+>=20
+> Jack
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-------_=_NextPart_10763525044027d5f82f55f0.43608586
-Content-Type: text/plain; name=udp-packet-loss.txt
-Content-Disposition: attachment; filename="udp-packet-loss.txt"
+--=-eYRsHqejcyY8LPIg8Rjk
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Packet loss at routing to own machine!
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
+iD8DBQBAKL3ch1fuR/Bv+ygRAm78AKC1eju3V6l4Pvl5qnCjd+JgbJ2JiQCgsSMs
+VuaYIkeNg3xcEVzjr80hGvI=
+=W4G8
+-----END PGP SIGNATURE-----
 
-
-I have following test configuration to measure udp round trip time:
-
-(ADR is set to 192.168)
-
-                                             |--------| 
-
-|---------|eth1 (ADR.1.2)<---->(ADR.1.1) eth1|router 1|eth0 (ADR.3.1)<-   
-
-|Test PC  |           cross cable 1          |--------|                |
-
-|reflect. |                                                   cross    |
-
-|         |                                                   cable 3  |
-
-|send/rec.|                                  |--------|                |
-
-|---------|eth0 (ADR.2.2)<---->(ADR.2.1) eth1|router 2|eth1 (ADR.3.2)<-
-
-                      cross cable 2          |--------|
-
-
-
-The linux routers 1 and 2 have activated forwarding.
-
-On the Test PC is running an udp Sender program, which sends udp packets from 
-
-eth0 (192.168.2.2) over the routers 2 and 1 to eth1 (192.168.1.2) on the Test PC.
-
-An udp reflector program receiving the packets on eth1 sends it back over both
-
-routers to eth0 where the packets arrive.
-
-With etheral it can be seen, that the reflected packets arrive at eth0 of the
-
-Test PC, but the receive call of the send/receive program does not get the packets.
-
-
-
-When the Sender program and the reflector program run on separate machines,
-
-it works fine.
-
-
-
-To avoid an internal shortcut,
-
-(udp packets sent from eth0 to eth1 over the loop back interface)
-
-I shut down the loop back interface with 
-
-ifconfig lo down
-
-
-
-Following routing table entries were set:
-
-route add -host 192.168.1.1 dev eth1
-
-route add -host 192.168.2.2 gw 192.168.1.1 dev eth1
-
-route add -host 192.168.2.1 dev eth0
-
-route add -host 192.168.1.2 gw 192.168.2.1 dev eth0
-
-
-
-All other routing entries were deleted.
-
-
-
-Who throws away the received udp packets, when the send/receive program
-
-and the reflector program runs on the same machine ?
-
-
-
-Have I to set iptables rules, if so, which rules have I to use ? 
-
-
-
-Many thanks in advace for your help ...    
-
-
-
-------_=_NextPart_10763525044027d5f82f55f0.43608586--
+--=-eYRsHqejcyY8LPIg8Rjk--
 
 
