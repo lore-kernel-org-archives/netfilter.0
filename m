@@ -1,13 +1,11 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: RE: pptp patch
-Date: Thu, 19 Jun 2003 09:18:41 -0700
+From: "Gary Cote" <gcote@transat-tech.com>
+Subject: re: pptp patch
+Date: Thu, 19 Jun 2003 11:19:31 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006101c3367e$734644b0$1001a8c0@s3ac>
-References: <84874F5F45111E48B53F4A3314BC4F3C389674@mail.columbuscontainer.com>
+Message-ID: <OKEKIACJCGNKMLKPKIIKAEJCCOAA.gcote@transat-tech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <84874F5F45111E48B53F4A3314BC4F3C389674@mail.columbuscontainer.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +16,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "'Hill, John'" <jhill@columbuscontainer.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+John,
+
+I also need to to route pptp traffic through a box with 
+recent kernel revisions (2.4.20-18.7 for me at the moment). 
+The linux box is neither the pptp client nor server. It's 
+just a router/NAT. Would you be so kind as to forward 
+anything you might find out over to me? Once I know your
+address, I'll do the same.
+
+(sorry for the "me too" post on the list, but I subscribed
+ to the group after your posting, and the archive masks out 
+ email addresses.)
+
+A couple questions:
+
+. Am I correct in understanding that there are two pptp
+  patches out there? One against the latest netfilter
+  sources, and the John Hardin/Brian Kushak patch against
+  earlier revisions?
+  . Is the first one the patch-o-matic extra/pptp-conntrack-nat.patch?
+
+. You said Brian Kushak's 2.4.19 patch won't work against 
+  2.4.21. Do you simply mean that patch reported errors, 
+  or have you looked into what it would take to port the
+  patch to recent kernels? I've taken a quick look through
+  it and saw the code has been redesigned in some spots,
+  so it's not a simple cut-and-paste job. If it's already
+  known to be a lost cause, then I won't waste any more time
+  looking at it.
+
+. Your post said you built 2.4.21 netfilter with pptp support.
+  I guess this refers back to my first question. Are you
+  referring to the pptp-conntrack-nat.patch?
+
+Once I get my head screwed on straight about all this stuff,
+and figure out what ground's already been covered, maybe we
+can figure out how to get it to work for both of us.
+
+thanks
 
 
-> 
-> I have kernel 2.4.21 netfilter - latest cvs.
-> 
-> Built netfilter for extra added pptp support.
-> 
-> Recompiled kernel -- netfilter.
-> 
-> I have a win2000 pptp server behind a Linux firewall
-
-Well having gone yrou route here is my 2 cents. 
-
-A.) if your not married to pptp then setup a freeswan vpn on your
-firewall  freeswan accepts connection from pretty much any other vpn
-including windows2000. sorry pptp not included. I think it's generally
-accepted that pptp is out the door.
-
-B.) if you are married to pptp wait until a stable version has been
-released with netfilter. It's not wise to play with beta/experimental
-software on sensitive information.   To the best of my knowledge pptp
-can nly handle one connection at a time with the current patch. This is
-per the netfilter website.
-
-
-> 
-> I had 3 VPN connections working. When one closed the 
-> connection the kernel panicked and died. I could not recover 
-> the error message. I was forced to power off.
 
 
