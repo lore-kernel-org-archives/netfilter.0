@@ -1,12 +1,12 @@
-From: horape@tinuviel.compendium.com.ar
-Subject: DNATing packets sent to the NATing box
-Date: Sat, 13 Dec 2003 21:52:12 -0300
+From: Matt Brei <mbrei@carolina.rr.com>
+Subject: Routing a VPN.....confused
+Date: Sat, 13 Dec 2003 21:24:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031214005212.GA8217@tinuviel.compendium.com.ar>
+Message-ID: <1071368662.3630.37.camel@Psycho>
+Reply-To: mbrei@carolina.rr.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-I've a system that at its core has an UDP proxy that's the performance
-bottleneck. I wanted to use the DNAT kernel facilities to replace my
-code with the very tuned one on netfilter.
+Hi all,
 
-I'm adding a rule that says something like this:
+I'm trying to set up a VPN with my buddy back in Chicago.  We're both
+using iptables to nat our Internet connection to the rest of the LAN and
+filter out all the naughtiness on the cable modem connection.  So far,
+we've tried FreeS/WAN on the iptables routers, but as soon as we start
+the ipsec service, it kills the Internet connection.  
 
-/sbin/iptables -t nat -A PREROUTING -d myip -p udp -m udp --dport 5000 -j D=
-NAT
-		--to-destination otherip:18918
+Now I know this sounds like a FreeS/WAN problem, and it probably is, but
+the mailing list seems to be down, and the netfilter people are great,
+so I'm asking you.  Hopefully someone can give me some advice, or point
+me in another direction. 
 
-but the rule never see the packets (they never got to the chain)
+Is the ipsec service supposed to block the rest of the Internet?  If
+this is supposed to happen, is there a way to stop it or will we need to
+use 2 machines with public IP addresses?  Provided we can get the VPN
+working, is there a way to use iptables to nat the VPN connection to the
+rest of the LAN?  Basically we would like to use a PC with iptables and
+whatever ipsec software just like you would use a Cisco PIX.
 
-I assume that it's because I've a socket listening on udp:5000, and it seems
-reasonable what's happening... I'd like to add a PREPREROUTING chain that
-is processed before deciding if the packet is for a local socket, can someb=
-ody
-give me a hint on where to look for it?
+Thanks for your time,
+Matt
 
-Saludos,
-					HoraPe
----
-Horacio J. Pe=F1a
-horape@compendium.com.ar
-horape@uninet.edu
 
