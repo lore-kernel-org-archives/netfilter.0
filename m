@@ -1,13 +1,10 @@
-From: saint <nagajuna@optushome.com.au>
+From: ASC - Ronald Roeleveld <r.roeleveld@ascinternational.nl>
 Subject: RE: Port forward
-Date: 05 Feb 2003 00:31:15 +1100
+Date: Tue, 4 Feb 2003 14:43:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044365475.8127.6.camel@juna.cypherworld.org>
-References: <D007132BBC42D5118FD20002A52844414BCF31@ASC01>
+Message-ID: <D007132BBC42D5118FD20002A52844414BCF34@ASC01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D007132BBC42D5118FD20002A52844414BCF31@ASC01>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,7 +15,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: ASC - Ronald Roeleveld <r.roeleveld@ascinternational.nl>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: 'saint' <nagajuna@optushome.com.au>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+
+Why I used telnet was just for testing. I wanted to test to make sure that
+if I connected to port 25 with telnet to my firewall that it redirected me
+to the mail server. And as it seems it doesn't work, because I get an error
+that no connection can me estabslihed. And offcource for management purpose
+I use SSH..:)
+
+
+-----Original Message-----
+From: saint [mailto:nagajuna@optushome.com.au]
+Sent: dinsdag 4 februari 2003 14:31
+To: ASC - Ronald Roeleveld; Netfilter Mailing List
+Subject: RE: Port forward
+
 
 I don't know what your setup is but I myself explicitly FORWARD
 things to telnet:
@@ -39,5 +52,4 @@ Santos.
 
 Security is a blessing.
 	 
-
 
