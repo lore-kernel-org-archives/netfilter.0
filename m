@@ -1,12 +1,13 @@
-From: <bigman@monster-solutions.net>
-Subject: IP_forward
-Date: Mon, 25 Nov 2002 12:17:28 -0500
+From: Alexandros Papadopoulos <apapadop@cmu.edu>
+Subject: Re: IP_forward
+Date: Mon, 25 Nov 2002 13:07:28 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00af01c294a6$88ca0c60$e5b4e40f@lsmith5953>
+Message-ID: <200211251307.28634.apapadop@cmu.edu>
+References: <00af01c294a6$88ca0c60$e5b4e40f@lsmith5953>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00AC_01C2947C.9F22AAA0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00af01c294a6$88ca0c60$e5b4e40f@lsmith5953>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,43 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: bigman@monster-solutions.net
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-------=_NextPart_000_00AC_01C2947C.9F22AAA0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Monday 25 November 2002 12:17, bigman@monster-solutions.net wrote:
+> all,
+>     what file do I tell the server to run echo 1 >
+> /proc/sys/net/ipv4_ipforward in?
+>
 
-all,
-    what file do I tell the server to run echo 1 > =
-/proc/sys/net/ipv4_ipforward in?
+You probably mean /bin/echo 1 > /proc/sys/net/ipv4/ip_forward
+and the easiest way to run it is out of /etc/rc.local
 
+- -A
+- --=20
+http://andrew.cmu.edu/~apapadop/pub_key.asc
+3DAD 8435 DB52 F17B 640F  D78C 8260 0CC1 0B75 8265
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-thanks!
-
-------=_NextPart_000_00AC_01C2947C.9F22AAA0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>all,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; what file do I tell =
-the server=20
-to run echo 1 &gt; /proc/sys/net/ipv4_ipforward in?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>thanks!<BR></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_00AC_01C2947C.9F22AAA0--
+iD8DBQE94mbggmAMwQt1gmURAmuzAJwPNStgK3b3JEGSd/zplE+hlAsVAACfbRsW
+TVp7wWohb2uQO/lvpB5lPsw=3D
+=3DxurZ
+-----END PGP SIGNATURE-----
 
 
