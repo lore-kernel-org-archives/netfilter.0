@@ -1,61 +1,36 @@
-From: Arindam Haldar <arindamhaldar@inbox.lv>
-Subject: Re: owner based policy routing
-Date: Mon, 14 Oct 2002 17:51:37 +0530
-Sender: lartc-admin@mailman.ds9a.nl
-Message-ID: <3DAAB6D1.2000100@inbox.lv>
-References: <Pine.LNX.4.44.0210120056220.1206-100000@u.domain.uli>
+From: "Riho Randla" <riho@hot.ee>
+Subject: iptables and suddenly refused connections for vpn
+Date: Mon, 14 Oct 2002 13:15:31 +0300
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <01b601c2736a$a13c0cb0$c300a8c0@VAIO>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <lartc-admin@mailman.ds9a.nl>
-Errors-To: lartc-admin@mailman.ds9a.nl
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Julian Anastasov <ja@ssi.bg>
-Cc: LARTC <lartc@mailman.ds9a.nl>, NETFILTER <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-ok, i have tried applying the ip rule fwmark in hex but dont see any 
-difference !..
+Hi,
 
-The routing decission is take be4 the packets comes to OUTPUT table, if 
-thats true then it will be not possible to route **owner** as per policy 
-routing--am i right ??
-if ys then how can one achieve **owner** based policy routing in linux 
-box ??
+Can enybody suggest how I could track down a problem with sometimes refused
+connections? Couple of times a week nobody can make a vpn connection to our
+poptop vpn server. In /var/log/messages I get the following error:
 
-Julian Anastasov wrote:
-> 	Hello,
-> 
-> On Fri, 11 Oct 2002, Arindam Haldar wrote:
-> 
-> 
->>50:     from all fwmark       50 lookup ispA
-> 
-> 
-> 	fwmark in ip rule is 0x50 (it is defined and printed in hex)
-> 
-> 
->>iptables -I OUTPUT -t mangle -m owner --uid-owner <squid> -d 202.0.0.0/8
->>  -j MARK --set-mark 50
-> 
-> 
-> 	and here 50 is 0x32 (not 0x50). Is that the problem?
-> 
-> Regards
-> 
-> --
-> Julian Anastasov <ja@ssi.bg>
-> 
-> 
-> 
+pptpd[4374]: GRE: read(fd=5,buffer=8055a20,len=8260) from network failed:
+status = -1 error = Connection refused
+
+When I restart my firewall everithing gets ok for a while again. How to find
+out what's going on with the pptpd or iptables (or maybe with the kernel)?
+And how to understand the components of the message from pptpd? I guess the
+problem is not in pptp, as restarting the firewall rules solves the issue.
 
 
-_______________________________________________
-LARTC mailing list / LARTC@mailman.ds9a.nl
-http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
+
