@@ -1,12 +1,11 @@
 From: "Ian! D. Allen" <idallen@idallen.ca>
-Subject: Re: Differences between -j MARK and -j CONNMARK
-Date: Sun, 20 Feb 2005 18:33:04 -0500
-Message-ID: <20050220233304.GB21766@elm.home.idallen.ca>
-References: <009f01c5101f$6302ddd0$910010ac@coco>
-	<1108125634.4489.24.camel@hubcap.ljm.dom>
+Subject: Re: CONNMARK, OUTPUT, sid-owner and marking closed connections
+Date: Sun, 20 Feb 2005 18:52:48 -0500
+Message-ID: <20050220235248.GC21766@elm.home.idallen.ca>
+References: <20050218034429.GA14099@elm.home.idallen.ca>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1108125634.4489.24.camel@hubcap.ljm.dom>
+In-Reply-To: <20050218034429.GA14099@elm.home.idallen.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,60 +18,128 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Ian! D. Allen wrote:
+> How do I arrange that *all* the packets get marked, even the "FIN" ones?
 
-> i have found that version 1; i.e using -j MARK --set-mark instead of
-> -j CONNMARK --set-mark, is more reliable.  i have no idea why this is.
+Connection marking does it, once you fix the kernel bugs that prevent
+it from working!
 
-Here's why:
+Here is a script that lets you set up one or more "session IDs"
+(e.g. xterm windows, login sessions) that have all outgoing packets
+marked.  With matching iproute2 rules (given at the bottom), all packets
+from these sessions can be diverted out your second interface card
+instead of the default first card.  So you can have one xterm that uses
+only eth0 and one beside it that uses only eth1.
 
-Version 1:
-a) iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
-b) iptables -A POSTROUTING -t mangle -m mark ! --mark 0 -j ACCEPT
-c) iptables -A POSTROUTING -t mangle -m ipp2p --ipp2p -j MARK --set-mark 30
-d) iptables -A POSTROUTING -t mangle -m ipp2p --bit -j MARK --set-mark 30
-e) iptables -A POSTROUTING -t mangle -j CONNMARK --save-mark
+For example, you can open up an xterm, put the shell PID in the PIDLIST
+below, run this script to set up connection marking, and then any network
+activity that originates from that shell or its children will go out
+$IF1 instead of $IF0.  Way cool.
 
-Version 1 Explanation:
- a) copy the connection mark (may or may not be zero) to the packet mark
- b) if this packet now has a mark, accept it (and leave the chain)
- c+d) possibly set the packet mark using the ipp2p module
- e) copy the packet mark (may or may not be zero) to the connection mark
+"Session IDs" are "process groups" - usually including everything that
+is a child of your login shell or of an X11 terminal shell.  The process
+id of the first shell is usually the session ID you need.
 
-In other words, the above marks a packet and then copies the mark to
-the connection mark.  That means *all* the packets are marked, even
-the very first one.  Once a connection is marked, all further packets
-inherit that mark.  This is what you want.
+#!/bin/sh -u
+#   $0
+# mark and re-route packets going out IF0 to IF1 for a given session ID
+#
+# Marked packets are diverted out a different interface using iproute2
+# lines like this:  from all fwmark $MARK lookup $TABLE
+# where $TABLE has a default route out $IF1
+#
+# -IAN! idallen@idallen.ca
 
-Version 2:
-a) iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
-b) iptables -A POSTROUTING -t mangle -m mark ! --mark 0 -j ACCEPT
-c) iptables -A POSTROUTING -t mangle -m ipp2p --ipp2p -j CONNMARK --set-mark 30
-d) iptables -A POSTROUTING -t mangle -m ipp2p --bit -j CONNMARK --set-mark 30
-e) iptables -A POSTROUTING -t mangle -j CONNMARK --save-mark
+# list of sessions whose packets we will route out IF1
+PIDLIST='22540 22706'
 
-Version 2 Explanation:
- a) copy the connection mark (may or may not be zero) to the packet mark
- b) if this packet now has a mark, accept it (and leave the chain)
- c+d) possibly set the connection mark using the ipp2p module
- e) copy the zero packet mark to the connection mark, overwriting the
-    good work just done by c) and d) with zero [THIS IS BAD]
+IF0=eth0
+IF1=eth1
+PRIO=9     # must follow local and precede everything else
+TABLE=2    # from the iproute2 rule list
+MARK=5     # an arbitrary number
 
-In other words, Method #2 doesn't work.  It never sets any new connection
-marks.  The only time it might stagger along is if you happen to already
-have some connection marks from some other rules - Method 2 will use
-those existing connection marks to mark packets.  But it will never
-create any new connection marks.
+ip rule del fwmark $MARK 2>/dev/null
+ip rule del fwmark $MARK 2>/dev/null
+ip rule add prio $PRIO fwmark $MARK table $TABLE 
+ip route flush cache
 
-If you replace the last rule in either version with this one:
+# stop "martian source" errors on $IF1 for packets diverted from $IF0 to $IF1
+#
+echo 0 > /proc/sys/net/ipv4/conf/$IF1/rp_filter
 
-e) iptables -A POSTROUTING -t mangle -m mark ! --mark 0 -j CONNMARK --save-mark
-   (only transfer the packet mark to the connection mark if it is not zero)
+# the entire contents of the ianmark table is defined here; we can
+# flush it safely
+#
+iptables -t mangle -F ianmark 2>/dev/null
+iptables -t mangle -N ianmark 2>/dev/null
 
-then you'll have a count of the number of *new* connection marks being
-created.  You'll see that Version 2 always creates zero new marks...
+# Doing the marking based on session ID works fine until the connection
+# drops - then suddenly the kernel-generated FIN packets aren't marked
+# and end up going out $IF0. Use CONNMARK connection marking to ensure
+# that the marking continues into the FIN packets.
+
+# restore the CONNMARK connection mark into the packet mark:
+# the following --restore-mark line doesn't work in 2.6.10-1mdk
+iptables -t mangle -A ianmark -j CONNMARK --restore-mark
+# if we now have a mark set then no mark testing and setting is needed
+iptables -t mangle -A ianmark -m mark ! --mark 0 -j RETURN
+# we don't have a mark set yet -
+# set the packet mark for packets originating from these sessions IDs:
+for pid in $PIDLIST ; do
+    iptables -t mangle -A ianmark -m owner --sid-owner $pid \
+	    -j MARK --set-mark $MARK
+done
+# save any non-zero packet marks into the CONNMARK connection mark:
+# the following --save mark line doesn't work in 2.6.10-1mdk
+iptables -t mangle -A ianmark -m mark ! --mark 0 -j CONNMARK --save-mark
+
+# packets leaving on $IF1 still have the $IF0 source address - SNAT it
+#
+inet1=$( ifconfig $IF1 | grep 'inet addr:' | tr ':' ' ' | awk '{print $3}' )
+iptables -t nat -D POSTROUTING -m mark --mark $MARK \
+        -j SNAT --to-source $inet1 2>/dev/null
+iptables -t nat -A POSTROUTING -m mark --mark $MARK \
+        -j SNAT --to-source $inet1
+
+# add the ianmark table to the end of the OUTPUT table;
+# send packets that are going out $IF0 that don't have a mark yet
+#
+iptables -t mangle -D OUTPUT -o $IF0 -m mark --mark 0 -j ianmark  2>/dev/null
+iptables -t mangle -A OUTPUT -o $IF0 -m mark --mark 0 -j ianmark 
+
+# list the tables for good luck
+iptables -n -v -t mangle -L OUTPUT
+iptables -n -v -t mangle -L ianmark
+
+================================================
+iproute2 rules that make the above marking work:
+================================================
+
+----- IP Rules ----------------------------------
+0:      from all lookup local 
+9:      from all fwmark 0x5 lookup 2 
+10:     from 192.168.9.0/24 lookup 1    # eth0
+20:     from 192.168.7.0/24 lookup 2    # eth1
+30:     from all lookup main 
+40:     from all lookup default 
+ 
+----- Table 1 [eth0] ----------------------------------
+default via 192.168.9.254 dev eth0  proto static  src 192.168.9.250 
+ 
+----- Table 2 [eth1] ----------------------------------
+default via 192.168.7.1 dev eth1  proto static  src 192.168.7.250 
+ 
+----- Table main ----------------------------------
+192.168.7.0/24 dev eth1  proto kernel  scope link  src 192.168.7.250 
+192.168.9.0/24 dev eth0  proto kernel  scope link  src 192.168.9.250 
+127.0.0.0/8 dev lo  scope link 
+ 
+----- Table default ----------------------------------
+default via 192.168.9.254 dev eth0  proto static  src 192.168.9.250  metric 10 
+default via 192.168.7.1 dev eth1  proto static  src 192.168.7.250  metric 20 
 
 -- 
 -IAN!  Ian! D. Allen   Ottawa, Ontario, Canada
