@@ -1,13 +1,13 @@
 From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: help with routing/firewall
-Date: Thu, 18 Dec 2003 13:19:57 -0500
+Date: Thu, 18 Dec 2003 13:33:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FE1EFCD.2050307@Loudoun-Fairfax.com>
-References: <20031218180112.66315.qmail@web20419.mail.yahoo.com>
+Message-ID: <3FE1F2F6.1010307@Loudoun-Fairfax.com>
+References: <007901c3c591$e420f200$3800a8c0@kanux1> <013501c3c592$f845d8d0$7000a80a@melita.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031218180112.66315.qmail@web20419.mail.yahoo.com>
+In-Reply-To: <013501c3c592$f845d8d0$7000a80a@melita.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -27,36 +27,31 @@ To: netfilter@lists.netfilter.org
   <title></title>
 </head>
 <body text="#000000" bgcolor="#ffffff">
-Fred Gurn wrote:<br>
+Ian Hunter wrote:<br>
 <blockquote type="cite"
- cite="mid20031218180112.66315.qmail@web20419.mail.yahoo.com">
-  <div>Hi,</div>
-  <div>I have set up suse linux as bridge/firewall.</div>
-  <div>Simple configuration. </div>
-  <div>eth0 internet</div>
-  <div>eth1 local net</div>
-  <div>Everything accepted from eth1, nothing from eth0, traffic from
-eth1 is routed to internet.</div>
-  <div>IP forwarding is enabled.</div>
-  <div>From local net I can ping eth1 and eth0 (that means machine is
-routing packets), but I cant go outside eth0. Same happens when ther is
-no firewall. What's the problem with routing?</div>
+ cite="mid013501c3c592$f845d8d0$7000a80a@melita.com">
+  <pre wrap="">SuSE comes with a script called SuSEfirewall that automatically configures
+things for you.  You probably don't want that if you're talking to folks on
+this list.
+
+  </pre>
 </blockquote>
 <br>
-You've answered your own question. You have a problem with routing.
-Check the default routes on your LAN and make sure they point to the
-firewall box.<br>
+Yeah, SuSE configures everything through a yast2 gui and the options
+are very limited. It may work for a simple configuration like his, but
+that's about it.<br>
 <blockquote type="cite"
- cite="mid20031218180112.66315.qmail@web20419.mail.yahoo.com">
-  <div>What comands can I use to monitor what is happening with packets?</div>
+ cite="mid013501c3c592$f845d8d0$7000a80a@melita.com">
+  <pre wrap="">See if you have iptables or ipchains -- type iptables-save and if you get
+output, post it to the list and we'll see what SuSE is doing firewall wise.
+
+  </pre>
 </blockquote>
 <br>
-Insert LOG rules in the ruleset and then check for entries in
-/var/log/messages. You can use LOG just like any other target. Until
-you fix the routing issue you can't do much with iptables.<br>
+SuSE 8.2 comes with iptables. But if he can't get through when the
+firewall is disabled...<br>
 <br>
 Jeff<br>
-<br>
 </body>
 </html>
 
