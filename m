@@ -1,12 +1,13 @@
-From: Aaron Clausen <maureen-taocow@alberni.net>
-Subject: (no subject)
-Date: Mon, 9 Dec 2002 09:02:08 -0800 (PST)
+From: netfilter@tommi.org
+Subject: Re: iptables and Poptop
+Date: Mon, 9 Dec 2002 20:04:35 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0212090859290.8234-100000@ts1.alberni.net>
-References: <wazza.874r9nzdtt.fsf@message.id>
+Message-ID: <20021209200435.GA31098@ok.is>
+References: <11FE00AA8C43D311ABE3000629B0CB481398E1@DBSISERVER>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <wazza.874r9nzdtt.fsf@message.id>
+Content-Disposition: inline
+In-Reply-To: <11FE00AA8C43D311ABE3000629B0CB481398E1@DBSISERVER>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +17,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: laurent.ml@linuxfr.org
-Cc: netfilter@lists.netfilter.org
+To: Justin Kay <jkay@nwrecc.org>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-On Mon, 9 Dec 2002 laurent.ml@linuxfr.org wrote:
+I belive this is a PPP issue, try looking up the ppp proxyarp
+option.
 
->
-> Hi,
->
-> I'm trying to use netfilter/patch-o-matic on 2.5 kernel tree.
-> I can't get patches to be applied.
-> I've tried with the cvs patch-o-matic runme and the patch-o-matic_2.5 one.
-> That's the kind of error I get:
->
-> Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] Y
-> Testing patch base/REJECT.patch.ipv6...
-> Warning - no help text file could be found in either
-> /usr/src/linux-2.5/../c62c99fc67edd58b0e489365f0396b196d35894ae90feca146dd16320f5b08b4/net/ipv6/netfilter/Config.help
-> or /usr/src/linux-2.5/../c62c99fc67edd58b0e489365f0396b196d35894ae90feca146dd16320f5b08b4/Documentation/Configure.help
-> fgrep: /usr/src/linux-2.5/../c62c99fc67edd58b0e489365f0396b196d35894ae90feca146dd16320f5b08b4/net/ipv6/netfilter/Config.in: No such file or directory
-> Could not find place to slot in Config.in line
-> TEST FAILED: patch NOT applied.
->
-> I've tried a runme patch from netfilter-devel mailing list, but it does not solve the problem.
-> Could you give me some advice or tell me where to find a working 2.5 runme ?
+- Tomas Edwardsson
+- Unix/Linux Support
+- Opin Kerfi HF
 
-I'll give you my experience.  I tried patching both 2.4.5 and 2.4.9, and was
-able to put in only a few iptables features, and none that I wanted.  At
-the end of the day, I finally through in the towel, downloaded the vanilla
-2.4.19 kernel, and managed to get all the patches I wanted to work.  I would
-still like to hear if anybody out there has successfully patched some of the
-later kernels.
-
--- 
-Aaron Clausen
-
-
+On Mon, Dec 09, 2002 at 11:26:30AM -0700, Justin Kay wrote:
+> From: Justin Kay <jkay@nwrecc.org>
+> To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+> Subject: iptables and Poptop
+> X-Mailer: Internet Mail Service (5.5.2653.19)
+> Date: Mon, 9 Dec 2002 11:26:30 -0700
+> 
+> I am trying to set up a server as a firewall/vpn server.  I am using
+> iptables 1.2.6a and poptop 1.1.3.  I can connect to the poptop server just
+> fine from the internet.  I can ping to the 10.0.0.1 address that my poptop
+> server uses on the internal interface from the poptop client, but I don't
+> get any further that that.  I can't ping anything else internally (ten net
+> addresses) and I can't ping out to the address issued to the poptop client
+> from a LAN machine.  Any ideas on where to look?
+> 
+> Rules:
+> 
+> ########################## Policy Section #########################
+> 
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -P OUTPUT DROP
+> $IPTABLES -P FORWARD DROP
+> 
+> ####################### User defined chains #####################
+> 
+> $IPTABLES -N icmp_packets
+> 
+> $IPTABLES -A icmp_packets -p ICMP --icmp-type 8 -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP --icmp-type 11 -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP --icmp-type 3 -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP -s $LAN_IP_RANGE -j ACCEPT
+> 
+> ########################## Input Section ################################
+> 
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LAN_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $INET_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+> 
+> $IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state ESTABLISHED,RELATED \
+> 	-j ACCEPT
+> $IPTABLES -A INPUT -p TCP --dport 1723 -j ACCEPT
+> $IPTABLES -A INPUT -p 47 -j ACCEPT
+> 
+> $IPTABLES -A INPUT -i ppp+ -j ACCEPT
+> 
+> $IPTABLES -A INPUT -p ICMP -j icmp_packets
+> 
+> $IPTABLES -A INPUT -j LOG --log-prefix "INPUT chain "
+> ########################### Forward Section #############################
+> 
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $NT --dport 25 -j ACCEPT
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $NT --dport 110 -j ACCEPT
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $TETON --dport 80 -j ACCEPT
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $TETON --dport 443 -j ACCEPT
+> #$IPTABLES -A FORWARD -p ICMP -j icmp_packets
+> $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -i ppp+ -o $LAN_IFACE -j ACCEPT
+> $IPTABLES -A FORWARD -i $LAN_IFACE -o ppp+ -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -j LOG --log-prefix "FORWARD chain "
+> ########################### Output Section ###############################
+> 
+> $IPTABLES -A OUTPUT -p ALL -o ppp+ -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $INET_IP2 -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT 
+> 
+> $IPTABLES -A OUTPUT -j LOG --log-prefix "OUTPUT packet died: "
+> 
+> ########################## end script ####################################
+> 
+> Justin 
 
