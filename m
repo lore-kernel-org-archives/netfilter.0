@@ -1,13 +1,13 @@
 From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: simple iptables firewall configuration to practice
-Date: 16 Apr 2003 16:35:00 +0530
+Subject: Re: Can iptables manager source mac address?
+Date: 16 Apr 2003 16:39:26 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1050491147.2948.4.camel@india>
-References: <544E7CEC5B4A5B4D86DC7CC755CD43CA2734D1@MAIL.fspl.com>
+Message-ID: <1050491396.2953.11.camel@india>
+References: <1050747660.10928.6.camel@ntc9.local>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-2Zyxb0/i6JLSTuecwt6T"
+Content-Type: multipart/alternative; boundary="=-c9uQsdNGpyvF/AeV5Gp8"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <544E7CEC5B4A5B4D86DC7CC755CD43CA2734D1@MAIL.fspl.com>
+In-Reply-To: <1050747660.10928.6.camel@ntc9.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Gaurav Natani <Gaurav.Natani@formulasys.com>
+To: NetSnake <netsnake@963.net>
 Cc: netfilter@lists.netfilter.org
 
 
---=-2Zyxb0/i6JLSTuecwt6T
+--=-c9uQsdNGpyvF/AeV5Gp8
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
+On Sat, 2003-04-19 at 15:51, NetSnake wrote:
 
-
-On Wed, 2003-04-16 at 12:47, Gaurav Natani wrote:
-
-Hi Gaurav,
-
- First you have to understand how does it work, so that you can have
-some hands on experience on this. It again depends on what you want to
-do. Like want develop an application on iptables or want to install as a
-firewall. Based on this you should start your reading. Best for this is
-www.netfilter.org  and www.linuxsecurity.com. These has good links and
-documents.
-
-Regards
-Dharmendra T.
-
-    Could any one please send me some simple iptables firewall
-    configuration to practice with and get started. I am a new comer and
-    have just started on iptables.
+      I use iptables to nat to internet, but I found some user use a proxy
+    on intranet, like, 192.168.0.5 can access to internet, 192.168.0.10 can
+    not access to internet, now 10 access a proxy on 192.168.0.5, then he
+    can access now, I thought in package from 192.168.0.5 must contant some
+    information about proxy, like source mac address, this can help me to
+    identified users, can iptables do this?
     
-     
+      Thanks.
     
-    With warm regards,
-    
-    Gaurav Natani.
-    
-     
-    
-    _______________________________________________________
-     
-    
-     
 
+You can block based on the mac address. But you should check whether
+192.168.0.10 contains the same mac addres or it is getting modified in
+proxy server.
 -- 
 Regards
 Dharmendra.T
@@ -69,7 +51,7 @@ message in error,please notify the sender and destroy the message
 immediately.Unauthorised use or reproduction of this message is strictly
 prohibited.
 
---=-2Zyxb0/i6JLSTuecwt6T
+--=-c9uQsdNGpyvF/AeV5Gp8
 Content-Type: text/html; charset=utf-8
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
@@ -78,55 +60,20 @@ Content-Type: text/html; charset=utf-8
   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
   <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
 </HEAD>
-<BODY LINK="#0000ff">
-
-<BR>
-
-<BR>
-On Wed, 2003-04-16 at 12:47, Gaurav Natani wrote:
-<BR>
-<FONT SIZE="2"></FONT>
-<BR>
-<FONT SIZE="2">Hi Gaurav,</FONT>
-<BR>
-<FONT SIZE="2"></FONT>
-<BR>
-<FONT SIZE="2"> First you have to understand how does it work, so that you can have some hands on experience on this. It again depends on what you want to do. Like want develop an application on iptables or want to install as a firewall. Based on this you should start your reading. Best for this is </FONT><A HREF="http://www.netfilter.org"><FONT SIZE="2">www.netfilter.org</FONT></A><FONT SIZE="2">&nbsp; and </FONT><A HREF="http://www.linuxsecurity.com"><FONT SIZE="2">www.linuxsecurity.com</FONT></A><FONT SIZE="2">.</FONT><FONT SIZE="2"> These has good links and documents.</FONT>
-<BR>
-<FONT SIZE="2"></FONT>
-<BR>
-<FONT SIZE="2">Regards</FONT>
-<BR>
-<FONT SIZE="2">Dharmendra T.</FONT>
+<BODY>
+On Sat, 2003-04-19 at 15:51, NetSnake wrote:
     <BLOCKQUOTE>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I>Could any one please send me some simple </FONT></FONT></I><FONT COLOR="#737373"><FONT SIZE="2"><I>iptables</FONT></FONT></I><FONT COLOR="#737373"><FONT SIZE="2"><I> firewall configuration to practice with and get </FONT></FONT></I><FONT COLOR="#737373"><FONT SIZE="2"><I>started.</FONT></FONT></I><FONT COLOR="#737373"><FONT SIZE="2"><I> I am a new comer and have just started on </FONT></FONT></I><FONT COLOR="#737373"><FONT SIZE="2"><I>iptables</FONT></FONT></I><FONT COLOR="#737373"><FONT SIZE="2"><I>.</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I></FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I></FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I>With warm regards,</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I></FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I>Gaurav Natani</FONT></FONT></I><FONT COLOR="#737373"><FONT SIZE="2"><I>.</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I></FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I></FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="2"><I>_______________________________________________________</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#737373"><FONT SIZE="3"><I> </FONT></FONT></I>
+<PRE><FONT COLOR="#737373"><FONT SIZE="3"><I>  I use iptables to nat to internet, but I found some user use a proxy</FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I>on intranet, like, 192.168.0.5 can access to internet, 192.168.0.10 can</FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I>not access to internet, now 10 access a proxy on 192.168.0.5, then he</FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I>can access now, I thought in package from 192.168.0.5 must contant some</FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I>information about proxy, like source mac address, this can help me to</FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I>identified users, can iptables do this?</FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I>  Thanks.</FONT></FONT></I>
+<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
     </BLOCKQUOTE>
+<FONT SIZE="3">You can block based on the mac address. But you should check whether 192.168.0.10 contains the same mac addres or it is getting modified in proxy server.</FONT>
 <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
 <TR>
 <TD>
@@ -143,6 +90,6 @@ This message is intended for the addressee only. It may contain privileged or Co
 </BODY>
 </HTML>
 
---=-2Zyxb0/i6JLSTuecwt6T--
+--=-c9uQsdNGpyvF/AeV5Gp8--
 
 
