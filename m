@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Need help with iptables DNAT on local loopback
-Date: Fri, 16 Apr 2004 20:57:40 +0100
+From: "Ravi Verma" <ravi.verma@telecommand.com>
+Subject: Iptables ACCEPT and DROP
+Date: Fri, 16 Apr 2004 10:43:07 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404162057.40638.Antony@Soft-Solutions.co.uk>
-References: <003101c423eb$fe5d2360$0a02a8c0@wacko6tr80mjb7>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <000201c423da$486c8250$8101a8c0@TELECOMME9F58X>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003101c423eb$fe5d2360$0a02a8c0@wacko6tr80mjb7>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,35 +18,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 16 April 2004 8:49 pm, C Kadziolka wrote:
+Dear Friends:
 
-> Hello,
->
-> I am having some problems with making iptables work. I have
-> a standard Slackware 9.0 installation, which is running kernel
-> 2.4.22.
->
-> My problem is this, it seems like no matter what iptables
-> commands i issue, the kernel ignores them and acts as if
-> i never issued them.
->
-> To start with, i would just like to be able to DNAT all connections
-> from one port to another port, all on the same computer over the
-> local loopback.
+I have observe a behavior of iptables which I need to understand.
 
-Put the rules in the nat table of the OUTPUT chain for DNATting local packets.
+216.155.193.168 is the IP address of Yahoo's messenger site and it
+listens on port 5050.
 
-Regards,
+The following command will allows the machine to connect to
+216.155.193.168.
 
-Antony.
+iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
+ACCEPT
 
--- 
-I don't know, maybe if we all waited then cosmic rays would write all our 
-software for us. Of course it might take a while.
+After that, I see output like following:
 
- - Ron Minnich, Los Alamos National Laboratory
+#telnet 216.155.193.168 5050
+Trying 216.155.193.168...
+Connected to 216.155.193.168.
+Escape character is '^]'.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Now when I issue
+iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
+DROP
+And
+iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
+REJECT
+
+Still, it allows connection to 216.155.193.168 on port 5050.
+
+How does this work? It seems -j DROP is not opposite of -j ACCEPT. How
+can stop this?
+
+Kind regards.
+
+Ravi Verma
 
 
