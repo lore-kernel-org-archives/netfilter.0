@@ -1,10 +1,10 @@
-From: =?ISO-8859-1?Q?Tiziano_M=FCller?= <tiziano@ifi.unizh.ch>
-Subject: 1:1 NAT, DMZ and Masq
-Date: Tue, 18 Feb 2003 22:00:46 +0100 (CET)
+From: "Ian Douglas" <ian@icreditvision.com>
+Subject: using iptables for poor-man's load balancing?
+Date: Tue, 18 Feb 2003 13:53:21 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045602046.3e529efe1672f@mail.2wire.ch>
+Message-ID: <HMEBKOCKLOOEJGIOMFAPAEGOFJAA.ian@icreditvision.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,40 +18,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi guys
+We currently have two machines (soon to be 4) that we'd like to balance our web
+traffic to. Say for argument's sake that our public IP is 1.2.3.4 and our
+internal LAN machines are:
+  192.168.1.1
+  192.168.1.12
+  192.168.1.16
+  192.168.1.17
 
-I apologize for my first message, it was crap.
-sorry.
+Just curious if the following rules would work to round-robin the connections:
 
-Now, I\'ve a little problem and no idea how to
-solve it, I hope, someone could give me a hint.
+/sbin/iptables -t nat -A PREROUTING -p udp -d 1.2.3.4 --dport 80  -j DNAT \
+   --to-destination 192.168.1.1:80 \
+   --to-destination 192.168.1.12:80 \
+   --to-destination 192.168.1.16:80 \
+   --to-destination 192.168.1.17:80
+/sbin/iptables -t nat -A PREROUTING -p udp -d 1.2.3.4 --dport 433  -j DNAT \
+   --to-destination 192.168.1.1:80 \
+   --to-destination 192.168.1.12:80 \
+   --to-destination 192.168.1.16:80 \
+   --to-destination 192.168.1.17:80
 
-Situation:
+??
 
-Internet -- Firewall 1 -- DMZ -- Firewall 2 -- LAN
-                           |-- Webserver = WWW
-                           |-- FTP
-                           |-- DNS
+Thanks for any feedback or suggestions.
 
-now, for the Server in the DMZ, I wanted to use a 1:1
-NAT, for the hole rest Masq. So did I the follow (for the WWW)
-on the Linux-Router:
+Ian
 
-10.0.0.4 = DMZ IP WWW; x.x.x.165 = Official IP WWW
-
-ifconfig eth1:1:0 add x.x.x.165
-(as described in the NAT HowTo, necessary for the ARP-Packets)
-
-iptables -t nat -A PREROUTING -d x.x.x.165 -j DNAT --to 10.0.0.4
-iptables -t nat -A POSTROUTING -s 10.0.0.4 -j SNAT --to x.x.x.165
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-
-So far it works well from the inside. From outside I can only ping
-the WWW and connect with SSH, but not connect via FTP or WWW (the
-services are up and running).
-
-Has someone an idea, why this happens? Or a better idea to do this?
-
-Thanks very much in advance
-Tiziano
 
