@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Iptables do nat with Protocol 47 or GRE
-Date: Fri, 14 May 2004 13:27:45 +0100
+Subject: Re: smtp
+Date: Fri, 14 May 2004 13:46:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405141327.45242.Antony@Soft-Solutions.co.uk>
-References: <E1BObWp-00044c-Cv@vishnu.netfilter.org>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <200405141346.09095.Antony@Soft-Solutions.co.uk>
+References: <BAY15-F29OTHXMm9VWL0005acdf@hotmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1BObWp-00044c-Cv@vishnu.netfilter.org>
+In-Reply-To: <BAY15-F29OTHXMm9VWL0005acdf@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +21,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 14 May 2004 1:11 pm, Sez wrote:
+On Friday 14 May 2004 12:17 pm, azeem ahmad wrote:
 
-> Hi, again...
->
-> I have other question about it.
->
-> If i change the ip destination on GRE packets, i don't make nat...  It can
-> work ?
+> hi all
+> i m havingg a continous upload on port 25 but i m unable to know which ip
+> from my network is uploading on port 25. i saw on iptraf that some one is
+> continously uploading on 25. the hardware addresss that iptraf is showing
+> isnt really on my LAN but the traffic is coming from my LAN
+> how can i find out the real hardware address or ip of the machine uploading
 
-I don't understand the difference.   What is NAT, if it's not changing the 
-source or destination IP address?
-
-Regards,
+Plug a packet sniffer (eg: ethereal) into the link using a hub?
 
 Antony.
 
 -- 
-In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-the mechanics are German, the lovers are French, the entertainment is 
-American, and everything is organised by the Swiss.
-
-In Hell, the police are German, the chefs are British, the beer is American, 
-the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-and everything is organised by the Italians.
+Most people have more than the average number of legs.
 
                                                      Please reply to the list;
                                                            please don't CC me.
