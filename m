@@ -1,13 +1,12 @@
-From: "Prasanta kumar Panda" <prasanta.kumar@wipro.com>
-Subject: RE: iptables2.spec
-Date: Wed, 12 Mar 2003 23:40:46 +0530
+From: Jonathan Humphrey <jhumphrey@codemasters.com>
+Subject: RE: Today's Brain Teaser.
+Date: Wed, 12 Mar 2003 18:21:23 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7F9067FBD7B14F4387EA63434CE260033F844C@hyd-mdp-msg.wipro.com>
+Message-ID: <4D613EBFB75BD6118A5B00508BEEC62C0111CBE5@JESS>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C2E8C2.B46957C8"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2E8C4.0A504724"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,109 +16,199 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Luis Miguel Cruz Miranda <luismi@b2bi.es>, netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-------_=_NextPart_001_01C2E8C2.B46957C8
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+------_=_NextPart_001_01C2E8C4.0A504724
+Content-Type: text/plain
 
-
-Hi Luis
-
-But before that you should be able to build it manually. When I run make =
-after a normal configure got this error
-
-
-make[1]: Entering directory =
-`/usr/src/redhat/BUILD/iptables2-pra1/libnfnetlink'
-cd . && aclocal
-/bin/sh ./config.status --recheck
-./config.status: ./config.status: No such file or directory
-make[1]: *** [config.status] Error 127
-make[1]: Leaving directory =
-`/usr/src/redhat/BUILD/iptables2-pra1/libnfnetlink'
-make: *** [all-recursive] Error 1
-=20
-
-Other wise this is the way to make the rpm
-
-Move the iptables2 directory to iptables2-VERSION directory and put to =
-tar+gzip as iptables2-VERSION.tar.gz
-Next
-rpmbuild -tb iptables2-VERSION.tar.gz
-Or
-rpmbuild -ts iptables2-VERSION.tar.gz to get a srpm package which you =
-can compile later on with rpmbuild --rebuild command.
-
-Reg.
-Prasanta
-
-
-
+just to let you all know (in case anyone was trying to find out why...)
+ 
+the ftp daemon that was running was listening on all interfaces.  once i
+limited it to 1 its all working now....
 
 -----Original Message-----
-From: Luis Miguel Cruz Miranda [mailto:luismi@b2bi.es]=20
-Sent: Wednesday, March 12, 2003 10:26 PM
-To: netfilter@lists.netfilter.org
-Subject: iptables2.spec
-
-
-I downloaded netfilter code from cvs.
-I discover it cames with a iptables2.spec.
-I tried to use it in order to create an iptables rpm, but I couldn't!!. =
-How can I use it? rpm -ba iptables2.spec doesn't run for me.
-
-Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
-CCNA - Systems Administrator            |       Pol. Ind. de Asipo
-                                         |       C/A - Parcela 86-C
-Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
-Fax:+34 985 980 794                     |       ASTURIAS =
-(ESPA=D1A/SPAIN)
+From: Jonathan Humphrey [mailto:jhumphrey@codemasters.com]
+Sent: 12 March 2003 12:29
+To: 'raymondl@knowledgefactory.co.za'; Netfilter Mailing List
+Subject: RE: Today's Brain Teaser.
 
 
 
+xxx.xxx.xxx.xxx is a tottaly seprate T1, with a completly different ISP. 
 
-------_=_NextPart_001_01C2E8C2.B46957C8
-Content-Type: text/x-vcard;
-	name="Prasanta (prasanta.kumar@wipro.com).vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Prasanta (prasanta.kumar@wipro.com).vcf
-Content-Disposition: attachment;
-	filename="Prasanta (prasanta.kumar@wipro.com).vcf"
-
-QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpOOlBhbmRhO1ByYXNhbnRhO0t1bWFyDQpGTjpQcmFz
-YW50YSAocHJhc2FudGEua3VtYXJAd2lwcm8uY29tKSAocHJhc2FudGEpDQpPUkc6V2lwcm8gVGVj
-aG5vbG9naWVzO0lNRy1IREMNClRJVExFOlNyLiBOZXR3b3JrIEFuYWx5c3QNClRFTDtXT1JLO1ZP
-SUNFOis5MSA0MC02NTY1MTQ4DQpURUw7V09SSztWT0lDRTorOTEgNDAtNjU2NTAwMA0KQURSO1dP
-Uks7RU5DT0RJTkc9UVVPVEVELVBSSU5UQUJMRTo7O1dpcHJvIFRlY2hub2xvZ2llcz0wRD0wQVN1
-cnZleSAjIDY0PTBEPTBBTWFkaGFwdXI7SHlkZXJhYmFkO0FuZGhyYSBQcmFkZXNoPQ0KOzUwMDAz
-MztJbmRpYQ0KTEFCRUw7V09SSztFTkNPRElORz1RVU9URUQtUFJJTlRBQkxFOldpcHJvIFRlY2hu
-b2xvZ2llcz0wRD0wQVN1cnZleSAjIDY0PTBEPTBBTWFkaGFwdXI9MEQ9MEFIeWRlcmFiYWQsIEFu
-ZGhyYSBQcmE9DQpkZXNoIDUwMDAzMz0wRD0wQUluZGlhDQpVUkw7V09SSzpodHRwOi8vd3d3Lndp
-cHJvLmNvbQ0KRU1BSUw7UFJFRjtFWDovbz1XaXByby9vdT1GaXJzdCBBZG1pbmlzdHJhdGl2ZSBH
-cm91cC9jbj1SZWNpcGllbnRzL2NuPXByYXNhbnRhDQpSRVY6MjAwMjA3MjVUMDcwODI3Wg0KRU5E
-OlZDQVJEDQo=
+-----Original Message----- 
+From: Raymond Leach [ mailto:raymondl@knowledgefactory.co.za
+<mailto:raymondl@knowledgefactory.co.za> ] 
+Sent: 12 March 2003 10:32 
+To: Netfilter Mailing List 
+Subject: RE: Today's Brain Teaser. 
 
 
-------_=_NextPart_001_01C2E8C2.B46957C8
-Content-Type: text/plain;
-	name="Wipro_Disclaimer.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="Wipro_Disclaimer.txt"
+On Wed, 2003-03-12 at 11:20, Jonathan Humphrey wrote: 
+> As a company we have two t1's (greedy i know!) 
+> 
+> the aaa.aaa.aaa.aaa address range is the external address's for one T1 
+> xxx.xxx.xxx.xxx is the address range for the other T1 
+> 
+How does the xxx.xxx.xxx.xxx connect to the linux router? eth1:1? Or are 
+the two t1's connected to the router (something like a Cisco 2501)? If 
+that's the case, then I would check the routing tables (and interfaces) 
+on the router first ... 
 
-**************************Disclaimer************************************************
+> Does that make sense! 
+> 
+> -----Original Message----- 
+> From: Raymond Leach [ mailto:raymondl@knowledgefactory.co.za
+<mailto:raymondl@knowledgefactory.co.za> ] 
+> Sent: 12 March 2003 09:09 
+> To: Netfilter Mailing List 
+> Subject: Re: Today's Brain Teaser. 
+> 
+> 
+> On Wed, 2003-03-12 at 10:35, Jonathan Humphrey wrote: 
+> > I've been struggling with this one for some time, i am currently at 
+> > the end of my teather so if anyone has any great ideas about why 
+> this 
+> > happens let me know. 
+> >  
+> > Basically, i have a linux server that has three interfaces; 
+> >  
+> >     eth1          aaa.aaa.aaa.202        External Facing network 
+> >     eth0          bbb.bbb.bbb.254        Internal protected network 
+> >     eth1:0       aaa.aaa.aaa.197        External IP Address for 
+> > FTPServer 
+> >  
+> > I have a device that sits on xxx.xxx.xxx.5 that cannot get to any 
+> > service on aaa.aaa.aaa.197, however every other ip address i have 
+> > tried can.  I suspect that if i release the real ip address of 
+> > aaa.aaa.aaa.197 then everyone reading this list could too. 
+> >  
+> > And it's on the .5 address, if i try from xxx.xxx.xxx.15 i can 
+> > connect. 
+> Where is xxx.xxx.xxx.5? Is it on the internal or external network? 
+> 
+> >  
+> > Nothing is being show as dropped in the logs either.    
+> >  
+> > Thanks, 
+> >  
+> > Jonathan Humphrey 
+> >  
+> > 
+> > 
+> ********************************************************************** 
+> > This email and any files transmitted with it are confidential and 
+> > intended solely for the use of the individual or entity to whom they 
+> > are addressed. If you have received this email in error please 
+> notify 
+> > the system manager. 
+> > 
+> > This footnote also confirms that this email message has been swept 
+> by 
+> > MIMEsweeper for the presence of computer viruses. 
+> > 
+> > 
+> ********************************************************************** 
 
-Information contained in this E-MAIL being proprietary to Wipro Limited is 
-'privileged' and 'confidential' and intended for use only by the individual
- or entity to which it is addressed. You are notified that any use, copying 
-or dissemination of the information contained in the E-MAIL in any manner 
-whatsoever is strictly prohibited.
 
-***************************************************************************************
+------_=_NextPart_001_01C2E8C4.0A504724
+Content-Type: text/html
 
-------_=_NextPart_001_01C2E8C2.B46957C8--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<TITLE>RE: Today's Brain Teaser.</TITLE>
+
+<META content="MSHTML 6.00.2800.1041" name=GENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=359571918-12032003><FONT face=Arial color=#0000ff size=2>just 
+to let you all know (in case anyone was trying to find out 
+why...)</FONT></SPAN></DIV>
+<DIV><SPAN class=359571918-12032003><FONT face=Arial color=#0000ff 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=359571918-12032003><FONT face=Arial color=#0000ff size=2>the 
+ftp daemon that was running was listening on all interfaces.&nbsp; once i 
+limited it to 1 its all working now....</FONT></SPAN></DIV>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+  <DIV class=OutlookMessageHeader dir=ltr align=left><FONT face=Tahoma 
+  size=2>-----Original Message-----<BR><B>From:</B> Jonathan Humphrey 
+  [mailto:jhumphrey@codemasters.com]<BR><B>Sent:</B> 12 March 2003 
+  12:29<BR><B>To:</B> 'raymondl@knowledgefactory.co.za'; Netfilter Mailing 
+  List<BR><B>Subject:</B> RE: Today's Brain Teaser.<BR><BR></FONT></DIV>
+  <P><FONT size=2>xxx.xxx.xxx.xxx is a tottaly seprate T1, with a completly 
+  different ISP.</FONT> </P>
+  <P><FONT size=2>-----Original Message-----</FONT> <BR><FONT size=2>From: 
+  Raymond Leach [<A 
+  href="mailto:raymondl@knowledgefactory.co.za">mailto:raymondl@knowledgefactory.co.za</A>]</FONT> 
+  <BR><FONT size=2>Sent: 12 March 2003 10:32</FONT> <BR><FONT size=2>To: 
+  Netfilter Mailing List</FONT> <BR><FONT size=2>Subject: RE: Today's Brain 
+  Teaser.</FONT> </P><BR>
+  <P><FONT size=2>On Wed, 2003-03-12 at 11:20, Jonathan Humphrey wrote:</FONT> 
+  <BR><FONT size=2>&gt; As a company we have two t1's (greedy i know!)</FONT> 
+  <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; the aaa.aaa.aaa.aaa address 
+  range is the external address's for one T1</FONT> <BR><FONT size=2>&gt; 
+  xxx.xxx.xxx.xxx is the address range for the other T1</FONT> <BR><FONT 
+  size=2>&gt; </FONT><BR><FONT size=2>How does the xxx.xxx.xxx.xxx connect to 
+  the linux router? eth1:1? Or are</FONT> <BR><FONT size=2>the two t1's 
+  connected to the router (something like a Cisco 2501)? If</FONT> <BR><FONT 
+  size=2>that's the case, then I would check the routing tables (and 
+  interfaces)</FONT> <BR><FONT size=2>on the router first ...</FONT> </P>
+  <P><FONT size=2>&gt; Does that make sense!</FONT> <BR><FONT size=2>&gt; 
+  </FONT><BR><FONT size=2>&gt; -----Original Message-----</FONT> <BR><FONT 
+  size=2>&gt; From: Raymond Leach [<A 
+  href="mailto:raymondl@knowledgefactory.co.za">mailto:raymondl@knowledgefactory.co.za</A>]</FONT> 
+  <BR><FONT size=2>&gt; Sent: 12 March 2003 09:09</FONT> <BR><FONT size=2>&gt; 
+  To: Netfilter Mailing List</FONT> <BR><FONT size=2>&gt; Subject: Re: Today's 
+  Brain Teaser.</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; 
+  </FONT><BR><FONT size=2>&gt; On Wed, 2003-03-12 at 10:35, Jonathan Humphrey 
+  wrote:</FONT> <BR><FONT size=2>&gt; &gt; I've been struggling with this one 
+  for some time, i am currently at</FONT> <BR><FONT size=2>&gt; &gt; the end of 
+  my teather so if anyone has any great ideas about why</FONT> <BR><FONT 
+  size=2>&gt; this</FONT> <BR><FONT size=2>&gt; &gt; happens let me know.</FONT> 
+  <BR><FONT size=2>&gt; &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; Basically, 
+  i have a linux server that has three interfaces;</FONT> <BR><FONT size=2>&gt; 
+  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; 
+  eth1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  aaa.aaa.aaa.202&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; External Facing 
+  network</FONT> <BR><FONT size=2>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; 
+  eth0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  bbb.bbb.bbb.254&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Internal protected 
+  network</FONT> <BR><FONT size=2>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; 
+  eth1:0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  aaa.aaa.aaa.197&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; External IP Address 
+  for</FONT> <BR><FONT size=2>&gt; &gt; FTPServer</FONT> <BR><FONT size=2>&gt; 
+  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; I have a device that sits on 
+  xxx.xxx.xxx.5 that cannot get to any</FONT> <BR><FONT size=2>&gt; &gt; service 
+  on aaa.aaa.aaa.197, however every other ip address i have</FONT> <BR><FONT 
+  size=2>&gt; &gt; tried can.&nbsp; I suspect that if i release the real ip 
+  address of</FONT> <BR><FONT size=2>&gt; &gt; aaa.aaa.aaa.197 then everyone 
+  reading this list could too.</FONT> <BR><FONT size=2>&gt; &gt;&nbsp; 
+  </FONT><BR><FONT size=2>&gt; &gt; And it's on the .5 address, if i try from 
+  xxx.xxx.xxx.15 i can</FONT> <BR><FONT size=2>&gt; &gt; connect.</FONT> 
+  <BR><FONT size=2>&gt; Where is xxx.xxx.xxx.5? Is it on the internal or 
+  external network?</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; 
+  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; Nothing is being show as dropped 
+  in the logs either.&nbsp;&nbsp;&nbsp; </FONT><BR><FONT size=2>&gt; &gt;&nbsp; 
+  </FONT><BR><FONT size=2>&gt; &gt; Thanks,</FONT> <BR><FONT size=2>&gt; 
+  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; Jonathan Humphrey</FONT> 
+  <BR><FONT size=2>&gt; &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; 
+  </FONT><BR><FONT size=2>&gt; &gt;</FONT> <BR><FONT size=2>&gt; 
+  **********************************************************************</FONT> 
+  <BR><FONT size=2>&gt; &gt; This email and any files transmitted with it are 
+  confidential and</FONT> <BR><FONT size=2>&gt; &gt; intended solely for the use 
+  of the individual or entity to whom they</FONT> <BR><FONT size=2>&gt; &gt; are 
+  addressed. If you have received this email in error please</FONT> <BR><FONT 
+  size=2>&gt; notify</FONT> <BR><FONT size=2>&gt; &gt; the system 
+  manager.</FONT> <BR><FONT size=2>&gt; &gt; </FONT><BR><FONT size=2>&gt; &gt; 
+  This footnote also confirms that this email message has been swept</FONT> 
+  <BR><FONT size=2>&gt; by</FONT> <BR><FONT size=2>&gt; &gt; MIMEsweeper for the 
+  presence of computer viruses.</FONT> <BR><FONT size=2>&gt; &gt; 
+  </FONT><BR><FONT size=2>&gt; &gt;</FONT> <BR><FONT size=2>&gt; 
+  **********************************************************************</FONT> 
+  </P></BLOCKQUOTE></BODY></HTML>
+
+------_=_NextPart_001_01C2E8C4.0A504724--
 
