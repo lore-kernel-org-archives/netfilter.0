@@ -1,14 +1,11 @@
 From: Cody Harris <hchs@ns.sympatico.ca>
-Subject: Re: Netfilter and Squid
-Date: Tue, 27 Jan 2004 14:28:48 -0400
+Subject: NAT Help...Again...
+Date: Tue, 27 Jan 2004 15:07:14 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040127142848.272b8ce3.hchs@ns.sympatico.ca>
-References: <5.2.1.1.0.20040127093418.029803f0@mail.cybercorpinc.com>
-	<1075226090.1898.78.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <20040127150714.7de338f7.hchs@ns.sympatico.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1075226090.1898.78.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,39 +18,51 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> I usually set Squid up as a transparent proxy, i.e., I use the REDIRECT
-> iptables target to redirect any Internet bound traffic on port 80 to
-> port 3128 on the same server (and thus to Squid) whereas all other
-> traffic just obeys the normal iptables rules - John 
-
-REDIRECT table or chain? Webmin shows me: filter, mangle, and nat.
+Ok ok, i've looked around sites and stuff, and here is my problem:
+I have 2 computers, one called darna and one called bagle (don't ask). 
+Here is my setup:
 
 
-root@darna:/usr/local/squid/sbin# iptables -L
-Chain INPUT (policy DROP)
+INTERNET --> eth1 = 10.30.7.147 |darna| eth0 = 192.168.0.1 <--> eth0 = 192.168.0.2 |bagle|
+
+Here is my routing tables (netstat -r) for each: 
+
+root@darna:/home/cody# netstat -r
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+10.30.7.144     *               255.255.255.240 U        40 0          0 eth1
+172.16.18.0     *               255.255.255.0   U        40 0          0 vmnet8
+192.168.0.0     *               255.255.255.0   U        40 0          0 eth0
+192.168.189.0   *               255.255.255.0   U        40 0          0 vmnet1
+loopback        *               255.0.0.0       U        40 0          0 lo
+default         10.30.7.145     0.0.0.0         UG       40 0          0 eth1
+root@darna:/home/cody#
+
+and bagle's:
+root@bagle:~# netstat -r
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+localnet        *               255.255.255.0   U        40 0          0 eth0
+localnet        *               255.255.255.0   U        40 0          0 eth0
+loopback        *               255.0.0.0       U        40 0          0 lo
+root@bagle:~#
+
+The problem: I can't access anything beyond darna. On darna, this is my nat table:
+root@darna:/home/cody# iptables -L -t nat
+Chain PREROUTING (policy ACCEPT)
 target     prot opt source               destination         
-ACCEPT     all  --  anywhere             anywhere           
-ACCEPT     all  --  anywhere             anywhere           
-ACCEPT     udp  --  anywhere             anywhere           udp 
-ACCEPT     icmp --  anywhere             anywhere           
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:http 
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:https 
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:pop3 
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:smtp 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpts:32000:40000
 
-> -- 
-> John A. Sullivan III
-> Chief Technology Officer
-> Nexus Management
-> +1 207-985-7880
-> john.sullivan@nexusmgmt.com
-> ---
-> If you are interested in helping to develop a GPL enterprise class
-> VPN/Firewall/Security device management console, please visit
-> http://iscs.sourceforge.net 
-> 
-> 
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+MASQUERADE  tcp  --  192.168.0.2  anywhere           tcp dpt:http 
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+root@darna:/home/cody# 
+
+I can't access ANYTHING, like i said, beyond darna.
+
+What gives?
 
 
 -- 
