@@ -1,12 +1,14 @@
-From: Javier Miguel =?unknown-8bit?q?Rodr=EDguez?= <javier@talika.eii.us.es>
-Subject: Rule matchup in iptables
-Date: Thu, 6 Mar 2003 13:47:58 +0100
+From: Andre Costa <acosta@ar.microlink.com.br>
+Subject: Re: Prioritizing empty TCP ACKs?
+Date: Thu, 6 Mar 2003 10:46:41 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030306124758.GB23703@talika.eii.us.es>
-Reply-To: javier@talika.eii.us.es
+Message-ID: <20030306104641.518745b9.acosta@ar.microlink.com.br>
+References: <20030305151033.396b3e9a.acosta@ar.microlink.com.br>
+	<Pine.LNX.4.51.0303052144020.8093@dns.toxicfilms.tv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.51.0303052144020.8093@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +19,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: netfilter@lists.netfilter.org
+
+Thks for the pointer, Maciej, I will take a look at it.
+
+Best,
+
+Andre
+
+On Wed, 5 Mar 2003 21:45:32 +0100 (CET)
+Maciej Soltysiak <solt@dns.toxicfilms.tv> wrote:
+
+> > Seemed pretty simple and effective to me. Is this possible at all
+> > with iptables on Linux?
+> I think i have seen the idea of prioritizing empty ACKs in "Linux
+> Advanced Routing & Traffic Control" @ www.lartc.org.
+> Check it out. tc with u32 is powerfull.
+> 
+> Regards,
+> Maciej
+> 
+> 
 
 
-	Hello
-
-	I have a iptables based firewall, with 5 gigabit ethernet
-adapters and almost 8000 rules (ouch!). This is a "test bed", (still) not a
-production enviroment
-
-	I can see delays in traffic when crosses the firewall
-(miliseconds). I want to optimize the firewall rules (we use a LOT of
-VoIP) , so this is my question: Is there any way to know when a packet matches a rule? 
--j LOG is not feasible (thousands of packets per second). I want something like this: 
-
-Last two hours:
-
-Rule 1: 15000 hits, 150 megabytes
-Rule 2: 3500 hits, 34 megabytes
-Rule 3: 9675 hits, 2 megabytes
-ad infinitum...
-
-	Other question? How can I test iptables rules? In ipchains I
-could try them, but with iptables do I have to generate fake traffic?
-
-	Thank you for your support.
-
+-- 
+Andre Oliveira da Costa
 
