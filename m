@@ -1,8 +1,8 @@
 From: <bmcdowell@coxhealthplans.com>
-Subject: RE: [despammed] -i and -o options for iptables FORWARD chain
-Date: Fri, 2 Jan 2004 09:13:09 -0600
+Subject: RE: help needed: clogged console
+Date: Fri, 2 Jan 2004 09:15:24 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C6B04@coxhpexg.coxhp.com>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C6B06@coxhpexg.coxhp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,59 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: orlowscy@hotpop.com, shrike-list@redhat.com, redhat-list@redhat.com
+Cc: netfilter@lists.netfilter.org
 
 
-Actually, couldn't this be just a 2.6.x change? (I never saw the rules =
-go by...)  I thought I saw a message go by earlier to that effect.  =
-Something about the syntax and needing '--physdev' and '-i' both, or =
-something?
-
-I could search the archives, I guess, but instead I suggest Gonya give =
-that a go.
+Search for 'dmesg -n 1' - I think that's what you're after.
 
 
 Bob
+
 -----Original Message-----
 From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: Friday, January 02, 2004 8:03 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: [despammed] -i and -o options for iptables FORWARD chain
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Slawomir
+Orlowski
+Sent: Tuesday, December 23, 2003 12:32 PM
+To: shrike-list@redhat.com; redhat-list@redhat.com
+Cc: netfilter@lists.netfilter.org
+Subject: help needed: clogged console
 
 
-On Friday 02 January 2004 1:30 pm, Andreas Kretschmer wrote:
+Hello,
 
-> am  Wed, dem 31.12.2003, um 15:36:34 -0800 mailte Gongya Yu folgendes:
-> > Hi, I just updated Linux kernel to 2.6.0 with iptables and ebtables
-> > enabled.
->
-> I'm using iptables on 2.4.x, possible there are differences with =
-2.6.x.
->
-> > But iptables ignores -i and -o options for FORWARD chain. Wheneneve =
-I use
-> > something like -i eth0 or -o eth0, the rule is just ignored.
->
-> RTFM!
->
-> -i is only for INPUT, FORWARD and PREROUTING
-> -o is only for FORWARD, OUTPUT and POSTROUTING
+I have Linux RH 9.0 configured as filtering firewall, and getting a lot =
+of
+(kernel, iptables) messages on active consoles.
+I have thought that putting in /etc/syslog.conf:
 
-Are you suggesting that -i and -o cannot be used in FORWARD?   As far as =
-I can=20
-see the syntax of the rule Gonya posted is perfectly okay.
+# *.kern /dev/console
+kern.* /var/log/kernel
+kern.* /dev/tty8
 
-Antony.
+would free me from this, but it did not.
+How can I force kernel message to appear only in /var/log/kernel log and =
+on
+tty8 only?
 
---=20
-Christmas is an opportunity to upgrade to kernel 2.6 while no-one's =
-around to=20
-notice the downtime.
+Best Regards
+I hope that somebody will be able to help me.
+When  I'm getting a lot of dropped packages it is not possible even to =
+log.
 
-                                                     Please reply to the =
-list;
-                                                           please don't =
-CC me.
+Slawomir Orlowski
 
 
