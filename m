@@ -1,14 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: portfw on iptables 2.4 kernel problem.
-Date: Thu, 12 Dec 2002 09:25:43 -0500
+From: "tinozaure" <tinozaure@netcourrier.com>
+Subject: multilink using Cable and ADSL.
+Date: Thu, 12 Dec 2002 16:00:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212120925.43434.netfilter@newkirk.us>
-References: <5.1.0.14.2.20021212094109.02d83370@of23sm3>
-Reply-To: netfilter@newkirk.us
+Message-ID: <015a01c2a1ef$3cb166b0$c800a8c0@tino>
+References: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za> <3DF86BDD.2090505@istitutocolli.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: Quoted-Printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.2.20021212094109.02d83370@of23sm3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +16,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Rasmus Reinholdt Nielsen <rasmus@narani.dk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Thursday 12 December 2002 03:51 am, Rasmus Reinholdt Nielsen wrote:
-> Hi
->
-> I have the same problem here. Using kernel 2.4.19-pre9, where I just
-> can't forward port 80. Port 8080 works for instace fine. I have also
-> tried to redirect all requests on port 80 to port 8080, but without
-> any luck. When connecting to port 80 the browser just hangs. I can see
-> in the apache log on the webserver that it gets the request, so I
-> think it is a problem of the packets not getting back through the
-> firewall and to the browser.
->
-> I just can't see what is wrong. I even tried the following rules to
-> see it that would help, but it didn't
->
-> iptables -A INPUT -j ACCEPT
-> iptables -A FORWARD -j ACCEPT
-> iptables -t nat -A POSTROUTING -j MASQUERADE
-> iptables -t nat -A PREROUTING -p tcp -i eth1 --dport 80 -j DNAT --to
-> <http_ip>:80
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->
-> This is not my usual firewall script, but I can't think of a more open
-> one :)
+Hello
+I try to use a Cable ISP and ADSL ISP together on the same gateway to hav=
+e
+benefit from low latency cable and High Bandwith ADSL at the same time.
 
-Just a few observations.  I assume eth1 is your internet connection, so=20
-you should probably be using:
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-Otherwise it will constantly be checking the IP of every interface and=20
-masquerading packets outbound on every interface.
-and you also need (did you just not list it?)
+In this way I read lot of docs and essentialy the advanced routing HOWTO
+which explain how to mark packets to route them on an interface or anothe=
+r.
+
+I tried the examples but these doesn't work.
+
+My Goal is to use Cable for low latency application and ADSL for all othe=
+r
+applications.
+
+I need some help to understand how to proceed to realise this.
+
+
+This is my actual situation.
+eth0=3D 192.168.1.254 (DMZ )
+eth1=3D 192.168.0.254 (LAN)
+eth2=3D dynamic public ip (Cable ISP)
+ppp0=3D dynamic public ip (ADSL ISP)
+
+This is my simple iptables script for NAT
+
+----------------START---------------
+IPTABLES=3D"/sbin/iptables"
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
 echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-for the MASQ target to work.
+# Remise a Zero des regles du firewall au cas ou
+$IPTABLES -F
+$IPTABLES -t nat -F
 
-> Anybody knows of this might be a problem with the 2.4.19 kernels, I
-> have a 2.4.18 firewall as well on which forwarding IS working, with
-> the same ruleset.
+echo Init des regles par defaut
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -P FORWARD ACCEPT
 
-Is this just DNAT that fails, or all forwarding?  And just to be sure,=20
-since you didn't say, are you testing it from outside the LAN, or from a=20
-local machine (or the firewall box itself)?
 
-j
+echo Debut des regles de filtrage
+
+$IPTABLES -t nat -A POSTROUTING -s 192.168.0.0/23 -o ppp0 -j MASQUERADE
+
+#Fin des regles de routage
+echo "Firewall install=E9."
+----------------END---------------
+
+Thanks.
+
 
