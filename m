@@ -1,11 +1,13 @@
-From: jon west <lwsivad@yahoo.com>
-Subject: Logging to separate file
-Date: Tue, 9 Dec 2003 12:45:23 -0800 (PST)
+From: Joshua Jackson <jjackson@vortech.net>
+Subject: PPTP NAT module
+Date: Tue, 9 Dec 2003 18:03:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031209204523.29020.qmail@web40406.mail.yahoo.com>
+Message-ID: <200312091803.55451.jjackson@vortech.net>
+Reply-To: jjackson@vortech.net
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1141590856-1071002723=:20327"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,75 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---0-1141590856-1071002723=:20327
-Content-Type: text/plain; charset=us-ascii
+I know there have been a pile of questions about this module in the past, but 
+I can't seem to find any responses about the behaviour I am seeing.
 
-I'm trying to get logging working, again.  It was logging to /var/log/messages and I tried to move it to /var/log/iptables.  Now I can't get it to log to either.
- 
-Redhat 9 on Intel box
-sysconfig.conf:
-(first or last line, didn't work either way)
-kern.=debug   /var/log/iptables
- 
-IPTables Configuration:
- ... -j LOG --log-level debug
- 
-I also tried:
-syslog.conf
-*.=debug  /var/log/iptables
- 
-IPTables configuration:
-... -j LOG --log-level debug
- 
-I also tried to delete all the things I added to syslog.conf then set the IPTables configuration to just "-j LOG" but it doesn't work either.
- 
-When I do an /sbin/iptables -L -vn, it says the packets are logged (then dropped on the next line) but I cannot get it to write to any files.
- 
-Any help?
- 
-syslog.conf (right now):
-kern.=debug  /var/log/iptables
-*.info;mail.none;authpriv.none;cron.none;local6.none  /var/log/messages
-authpriv.*  /var/log/secure
-mail.*  /var/log/maillog
-cron.*  /var/log/cron
-*.emerg  *
-uucp,news.crit  /var/log/spooler
-local7.*  /var/log/boot.log
-local6.*  /var/log/dhcp.log
- 
-Thanks.
+I am currently running a 2.4.23 kernel with the lastest officially released 
+POM patches applied to it. The network being protected by the firewall is 
+providing NAT for the hosts behind it. If the ip_nat_pptp module is loaded, 
+none of the protected clients can establish an outbound PPTP session. If the 
+conntrack modules are removed, a single session can be established (as would 
+be expected).
 
+The remote PPTP server log shows the initial TCP connection, but never sees 
+any GRE traffic from the connecting host.
 
----------------------------------
-Do you Yahoo!?
-New Yahoo! Photos - easier uploading and sharing
---0-1141590856-1071002723=:20327
-Content-Type: text/html; charset=us-ascii
+I have seen posts about the local NAT kernel option, I have tried it both ways 
+with the same results. If there are any kernel settings in particular that I 
+may be missing, please let me know.
 
-<DIV>I'm trying to get logging working, again.&nbsp; It was logging to /var/log/messages and I tried to move it to /var/log/iptables.&nbsp; Now I can't get it to log to either.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Redhat 9 on Intel box</DIV>
-<DIV>sysconfig.conf:<BR>(first or last line, didn't work either way)<BR>kern.=debug&nbsp;&nbsp; /var/log/iptables</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>IPTables Configuration:<BR>&nbsp;... -j LOG --log-level debug</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I also tried:<BR>syslog.conf<BR>*.=debug&nbsp; /var/log/iptables</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>IPTables configuration:<BR>... -j LOG --log-level debug</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I also tried to delete all the things I added to syslog.conf then set the IPTables configuration to just "-j LOG" but it doesn't work either.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>When I do an /sbin/iptables -L -vn, it says the packets are logged (then dropped on the next line) but I cannot get it to write to any files.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Any help?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>syslog.conf (right now):<BR>kern.=debug&nbsp; /var/log/iptables<BR>*.info;mail.none;authpriv.none;cron.none;local6.none&nbsp; /var/log/messages<BR>authpriv.*&nbsp; /var/log/secure<BR>mail.*&nbsp; /var/log/maillog<BR>cron.*&nbsp; /var/log/cron<BR>*.emerg&nbsp; *<BR>uucp,news.crit&nbsp; /var/log/spooler<BR>local7.*&nbsp; /var/log/boot.log<BR>local6.*&nbsp; /var/log/dhcp.log</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanks.</DIV><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://pa.yahoo.com/*http://us.rd.yahoo.com/evt=21260/*http://photos.yahoo.com">New Yahoo! Photos - easier uploading and sharing</a>
---0-1141590856-1071002723=:20327--
+My iptables firewall rules include a default policy of DROP for INPUT and 
+FORWARD, ACCEPT for OUTPUT. The first line in the rules includes an ACCEPT 
+for the INPUT chain for established and related connection. There is also a 
+rule allowing any traffic for all protocols to any host which originates from 
+the protected network on the internal interface.
+
+-- 
+Joshua Jackson
+Vortech Consulting
+http://www.vortech.net
+
 
