@@ -1,13 +1,14 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: secure ftp with SSL
-Date: Fri, 13 Sep 2002 10:43:52 +0200
+From: Alexey Talikov <alexey_talikov@texlab.com.uz>
+Subject: Re[2]: reset /proc/net/dev
+Date: Fri, 13 Sep 2002 14:45:08 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209131043.52555.roy@karlsbakk.net>
-References: <754E53EEA7D3D31194E50050DAB99F6E70543C@thor.id.magnus.com>
+Message-ID: <5421706552.20020913144508@texlab.com.uz>
+References: <Pine.LNX.4.44.0209121538280.16753-100000@SGI.rdscv.ro>
+Reply-To: Alexey Talikov <alexey_talikov@texlab.com.uz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <754E53EEA7D3D31194E50050DAB99F6E70543C@thor.id.magnus.com>
+In-Reply-To: <Pine.LNX.4.44.0209121538280.16753-100000@SGI.rdscv.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +19,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rendy V <RendyV@atd.magnus.co.id>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: Ionut Spirlea <ionuts@SGI.rdscv.ro>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 13 September 2002 05:09, Rendy V wrote:
-> Hi All,
-> I have a strange problem, the problem is like this :
-> I have an application that use secure ftp and for that reason I have op=
-ened
-> up the command port (990) with state NEW and allowed data port
-> (20000:20049) with state ESTABLISHED, RELATED on the firewall. It fails
-> when it try to use data port, for authentication it working just fine.
-> Please see the log on the below.
-> If I open data port 2000:20049 with state NEW it working normally but I
-> don't want to make a big hole on my firewall. I suspect that the iptabl=
-es
-> connection tracking cannot track the relation between command port and =
-data
-> port because it is encrypted using SSL. Is it true or is there somethin=
-g I
-> miss here?? What should I do now??
+Hello Ionut,
 
-first - have you loaded ip_conntrack_ftp?=20
+Thursday, September 12, 2002, 5:46:29 PM, you wrote:
+IS> # insmod c_dev.o
+IS> # rmod c_dev
 
-second - I'm not sure the ip_conntrack_ftp module can understand encrypte=
-d=20
-traffic. Try using sftp from openssh instead. That only uses 22/tcp.
+It reset all interfaces eth ppp ...
+May be you can add options for this module
+F.E.
+insmod c_dev.o eth1
+insmod c_dev.o ppp12
 
-roy
-
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
-
-Computers are like air conditioners.
-They stop working when you open Windows.
+-----------------------------------
+mailto:alexey_talikov@texlab.com.uz
+BR
+Alexey Talikov
+FORTEK
+-----------------------------------
 
 
