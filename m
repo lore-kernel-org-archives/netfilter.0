@@ -1,11 +1,10 @@
-From: Bruhin Gregor <gbruhin@vianetworks.ch>
-Subject: multiple redirects / match & don't stop
-Date: Fri, 27 Jun 2003 12:54:46 +0200
+From: "Chris Frederick" <cdf123@cdf123.com>
+Subject: iptables port forwarding not working
+Date: Fri, 27 Jun 2003 13:06:05 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <44DD250CCB01D51188CD0000E83C052E03226F79@SMARTWEB01>
+Message-ID: <3EFC878D.50304@cdf123.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C33C9A.861FD890"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,115 +15,94 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C33C9A.861FD890
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
 Hi,
 
- 
+I need some help with an iptables script.  I'm trying to forward port 80 
+on the Firewall/NAT/Router to another machine inside the firewall.  I've 
+googled for some scripts and found the PREROUTING lines that are needed, 
+but it doesn't seem to work.  The port isn't open on the machine.  I've 
+attached a sample script bellow that sums up what I'm doing.  Any 
+sugestions?
 
-Is it possible to use netfilter to duplicate some udp packets to multiple
-other ip's ?
+FYI:  I copied the script I use for my Mandrake 9.0 server at home for a 
+start point, but the script is actually running on a Slackware 9.0 box. 
+The depmod and modprobes run fine so I'm assuming there's no difference 
+between the two systems that concerns iptables.  Though I tried running 
+the script at home too, and it didn't work there either.
 
- 
+On a side note, once I get this working, I'm planning on forwarding 
+HTTPS to another machine, and also forwarding SSH on a non-standard port 
+to another machine (e.g.  port 999 to 22).  Are there any issues with 
+doing this?  Like, say the HTTPS or SSH certs looking like they're 
+comming from a different ip and causing errors trying to connect?  Or 
+will I get key change errors from the server (since I connect to SSH on 
+22 and 999 on the same ip) every time I connect to the other one?   Or 
+am I overthinking this, and it all just works?
 
-My idea is to use "redirect" feature, but don't know if it is possible to
-redirect one packet more than one time and how (go on through all rules also
-if previous rules matched) ?
+Thanks in advance for any help.
+Chris Frederick
 
- 
+--------------Script--------------
+#!/bin/bash
+INET_IP="1.1.1.1"
+INET_IFACE="eth1"
+INET_BROADCAST="1.1.1..255"
 
-Thanks for your help, Gregor Bruhin
+LAN_IP="2.2.2.2"
+LAN_IP_RANGE="2.2.2.0/24"
+LAN_BROADCAST_ADDRESS="2.2.2.255"
+LAN_IFACE="eth0"
 
- 
+LO_IFACE="lo"
+LO_IP="127.0.0.1"
+
+DNAT_IP_PORT="2.2.2.3:80"
+
+IPTABLES=/usr/sbin/iptables
+
+/sbin/depmod -a
+/sbin/modprobe ip_tables
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_filter
+/sbin/modprobe iptable_mangle
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_limit
+/sbin/modprobe ipt_state
+/sbin/modprobe ip_nat_ftp
+
+$IPTABLES -P INPUT DROP
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+
+#Accept all LAN and LO trafic
+$IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $LO_IFACE -j ACCEPT
+
+#Accept SSH and HTTP trafic from the net
+$IPTABLES -A INPUT -p TCP -i $INET_IFACE -s 0/0 --dport 22 -j ACCEPT
+$IPTABLES -A INPUT -p TCP -i $INET_IFACE -s 0/0 --dport 80 -j ACCEPT
+
+#Route internal traffic to the net
+echo "1" > /proc/sys/net/ipv4/ip_forward
+$IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j MASQUERADE
+$IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+
+#Forward the HTTP trafice from the net to the server at 2.2.2.3
+$IPTABLES -t nat -A PREROUTING -p tcp -i $INET_IFACE -d $INET_IP --dport 
+80 -j DNAT --to $DNAT_IP_PORT
+$IPTABLES -A FORWARD -p tcp -i $INET_IFACE -d $INET_IP --dport 80 -j ACCEPT
+
+echo "Firewall Completed"
+--------------End of Script--------------
 
 
-------_=_NextPart_001_01C33C9A.861FD890
-Content-Type: text/html
-
-<html>
-
-<head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
-
-
-<meta name=Generator content="Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:SimSun;
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
-@font-face
-	{font-family:"\@SimSun";
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.StyleCourrierlectronique17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:70.85pt 70.85pt 2.0cm 70.85pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=EN-US link=blue vlink=purple>
-
-<div class=Section1>
-
-<p class=MsoNormal><font size=2 face=Arial><span lang=DE-CH style='font-size:
-10.0pt;font-family:Arial'>Hi,</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span lang=DE-CH style='font-size:
-10.0pt;font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Is it possible to use netfilter to duplicate some udp
-packets to multiple other ip's ?</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>My idea is to use "redirect" feature, but don't
-know if it is possible to redirect one packet more than one time and how (go on
-through all rules also if previous rules matched) ?</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span lang=DE-CH style='font-size:
-10.0pt;font-family:Arial'>Thanks for your help, Gregor Bruhin</span></font></p>
-
-<p class=MsoNormal><font size=3 face="Times New Roman"><span lang=DE-CH
-style='font-size:12.0pt'>&nbsp;</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C33C9A.861FD890--
 
