@@ -1,11 +1,10 @@
-From: Giovanni Cardone <g_cardone@libero.it>
-Subject: ip_conntrack_ftp doesn't work
-Date: Fri, 14 Jun 2002 19:42:04 +0200
+From: Carlos Lopez <chlopezl@yahoo.com>
+Subject: dual homed problem.
+Date: Fri, 14 Jun 2002 11:25:32 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020614194204.A232@rainbow>
+Message-ID: <20020614182532.43867.qmail@web13903.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,60 +14,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.samba.org
+Cc: raymondl@knowledgefactory.co.za
 
-On 2.4.18 with 1.2.7(1.2.6a too) ftp conntrack module doesn't work.
-I'm trying to understand this using a simple script:
+Hi all,
+I'm working on a dual homed configuration. I have a
+firewall that makes the routing.
+the configurations is as follows:
 
-<begin script>
-#!/bin/sh
+public-ip-eth0 --\
+                  FIREWALL ----> private-ip-eth2
+public-ip-eth1 --/
 
-ipt='/usr/local/sbin/iptables'
+I want to be able to have access to a server with a
+private ip throughout a public ip and DNAT.
+I understand that DNAT has session management so I did
+as follows:
 
-modprobe ip_tables
-modprobe iptable_filter
-modprobe ipt_state
-modprobe ip_conntrack
-modprobe ip_conntrack_ftp
-modprobe ipt_LOG
+on the firewall I configured public ips as aliases
+ie:
+ifconfig eth1:0 200.62.53.226 netmask 255.255.255.240
 
-$ipt -P INPUT DROP
-$ipt -P OUTPUT DROP
-$ipt -P FORWARD DROP
-$ipt -A INPUT -i lo -j ACCEPT
-$ipt -A OUTPUT -o lo -j ACCEPT
-$ipt -A OUTPUT -o ppp0 -j ACCEPT
-$ipt -A INPUT -p tcp -m state --state RELATED -j ACCEPT 
-$ipt -A INPUT -p tcp ! --syn -m state --state NEW -j LOG --log-prefix 
-"NEW_NOT_SYN "
-$ipt -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
-$ipt -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-$ipt -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-$ipt -A INPUT -j LOG
-$ipt -A OUTPUT -j LOG
-$ipt -A FORWARD -j LOG
-<end script>
+then added in the firewall the following line:
+iptables -A PREROUTING -t nat -d 200.62.53.226 -j DNAT
+--to-destination 172.28.16.4
 
-The logs shows up some entries like these:
+is there something wrong?
+Why it doesn't work?
 
-Jun 14 19:10:44 darkstar kernel: IN=ppp0 OUT= MAC= SRC=195.210.93.107
-DST=151.26.80.131 LEN=60 TOS=0x08 PREC=0x00 TTL=58 ID=40516 DF PROTO=TCP
-SPT=20 DPT=1039 WINDOW=32120 RES=0x00 SYN URGP=0
+thanks in advance,
+Carlos L=F3pez.
 
-When I try to contact an ftp server, lsmod says:
-
-darkstar\# lsmod | awk '/ftp/'
-ip_conntrack_ftp        3120   0  (unused)
-ip_conntrack           13264   1  [ip_conntrack_ftp]
-
-So the syn about the data channel from the server port 20 to me is not RELATED
-to the connections in the table. It's normal that lsmod shows up the
-conntrack_ftp as unused? I was thinking no ... :)
-
-What do I need to do?
-
-
-Many Thanks 
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
