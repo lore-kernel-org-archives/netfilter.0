@@ -1,13 +1,11 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: External IP addresses on internal network
-Date: Thu, 28 Aug 2003 15:24:48 -0400
+From: Mattia Martinello <liste@mattiamartinello.com>
+Subject: DNAT
+Date: Fri, 29 Aug 2003 00:57:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4E5700.8030700@Loudoun-Fairfax.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C1B5@wardrive.citadelcomputer.com.au> <3F4C0519.8000109@Loudoun-Fairfax.com> <Pine.LNX.4.53.0308270944480.7868@simba.math.ucla.edu> <3F4CFD8C.5020404@Loudoun-Fairfax.com> <20030828145632.GC3447@cannon.eng.us.uu.net> <3F4E2844.2050108@Loudoun-Fairfax.com> <20030828181717.GA3993@cannon.eng.us.uu.net>
+Message-ID: <3F4E88DD.6060704@mattiamartinello.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030828181717.GA3993@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,72 +16,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hey all,
+Hi all
 
-You guys must hate me by now. I've had a handful of good responses and 
-been responding and cc'ing the list trying to keep everyone current, but 
-with the list lag it isn't working very well. If your box isn't full 
-yet, it will be. Sorry.
+I created a script that setup a set of rules on the nat table.
+It works good without any problem on SuSE 8.0, and now I wish to move 
+the system on Debian.
+I installed Debian and I set the network correctly like on SuSE and I 
+copied the script on it.
+The scripts shows me no error, and the rules works good, but there is a 
+little problem.
+The DNATs from the local network works very well (I can see the server 
+which is on the DMZ from the local network), but the DNATs from the 
+Internet doesn't work! From the Internet (ppp0) i cannot see the server 
+which is on the DMZ.
+On SuSE 8.0 all works good and I didn't change anything in the script!
+The input, output and forward chains are all setted on ACCEPT, like all 
+the chains on the nat table.
 
-Ramin Dousti wrote:
+This works good:
+iptables -t nat -A POSTROUTING -s $LocalNET/24 -o ppp0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s $LocalNET/24 -o ppp0 -j ACCEPT
+iptables -t nat -A POSTROUTING -s $LocalNET/255.255.255.0 -o eth2 -j 
+MASQUERADE
+iptables -t nat -A PREROUTING -p tcp -i eth1 -d $PublicIP -j DNAT --to 
+$ServerIP
 
->On Thu, Aug 28, 2003 at 12:05:24PM -0400, Jeffrey Laramie wrote:
->  
->
->>>Could it be that the client machine dials up to AOL, receives that IP
->>>address and later it needs to resolve a name and vecause of the DNS
->>>settings on the client machine it tries the query 192.168.0.24 with
->>>its source 172.144.233.136?
->>>
->>>      
->>>
->>Thanks for the suggestion. That was my first thought since one of the LAN
->>clients is a notebook with dialup ability, but with a DSL connection through
->>the LAN it's not used now. I did check it though to see if it still had an
->>AOL IP assigned to it or an AOL server listed for DNS. It didn't, and the log
->>timestamp indicates that these packets are occuring when a different client
->>(with no dialup) is checking AOL mail.
->>
->>    
->>
->
->What about this theory (although I don't know anything about the AOL stuff)
->that the client connects to AOL. AOL sets up a tunnel with this client
->and assigns 172.144.233.136 to it. Then due to the static DNS settings
->on the client, a DNS query is made to your named on the firewall, instead
->of using AOL's DNS server?
->
-I don't know much about tunneling, but this sounds possible. Almost like 
-a remote shell where the server session runs on client hardware, except 
-here the DNS call gets mis-handled and sent to the client nameserver 
-instead?
+This DOESN'T work! :(
+iptables -t nat -A PREROUTING -p tcp -i ppp0 -d $PublicIP --dport 80 -j 
+DNAT --to $ServerIP:80
 
-Chris had a very good theory too:  (quoted here in case you didn't get 
-it yet)
+The kernel in use is 2.4.20 with all netfilter modules.
 
-> This obviously is not a legit DNS request because the source port is 
-> wrong (should be 53 or >1023). My guess is a brain dead Windoze system 
-> or even more likely, a load balancer.
->
->> The firewall host is also a DNS server for my LAN so this would be a 
->> normal request coming from the LAN **except** for the client IP address.
->
->
-> I've seen this before. An internal client goes to access a Web site 
-> (say www.fubar.org) and the authoritative NS is actually a load 
-> balancer. It spews suspicious looking traffic at the requesting NS in 
-> order to generate performance metrics to figure out what IP to serve 
-> back (assumption being the client is close to the NS).
->
-> So if this is the case, you should see a query for a host within the 
-> AOL domain (owner of the address space) just prior to this traffic.
+Where could be the problem?
 
-This is good stuff, thanks guys. I'll let you know if I find out 
-anything definative.
-
-Jeff
+Thank you very much!
+Bye
+Mattia.
 
 
