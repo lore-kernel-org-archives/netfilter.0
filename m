@@ -1,13 +1,11 @@
-From: Frank Gruellich <frank@home.manuelm.org>
-Subject: Re: /sbin/iptables -vnxL OUTPUT
-Date: Wed, 3 Mar 2004 22:31:13 +0100
+From: "John H. Spicer" <jhs@edg.com>
+Subject: Problem using fwmark -- how to mark packets from local host?
+Date: Wed, 03 Mar 2004 17:09:38 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040303213113.GG757@home.manuelm.org>
-References: <20040302170849.GD757@home.manuelm.org> <18196.1078334024@www39.gmx.net>
+Message-ID: <404657A2.7080301@edg.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <18196.1078334024@www39.gmx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-* Mario Ohnewald <mario.Ohnewald@gmx.de>  3. Mar 04:
-> Hi,
+I'm trying to use fwmark to mark packets so that they can be routed to a 
+particular interface.
 
-Hello,
+I'm doing this:
 
-> I call this default policy at the beginning of my script (actually
-> SuSEFirewalls script):
+iptables -t mangle -A PREROUTING -d ! $inet -j MARK --set-mark 0x0a -p tcp --dpo
+rt 25
+ip route add default via $IPADDR2 table TSMTP
+ip rule add pref 1 fwmark 0x0a table TSMTP
 
-It doesn't matter, when you call it.  Packets traverse chains from top
-to bottom.  The 'bottom' is the default policy.  (Well, it's listed on
-top, but you know what I mean.)
+I'm also using NAT and masquarading.
 
-> $IPTABLES -F INPUT
-> $IPTABLES -F OUTPUT
-> $IPTABLES -F FORWARD             2> /dev/null
-> $IPTABLES -P INPUT "$DROP"
-> $IPTABLES -P OUTPUT "$ACCEPT"
-> $IPTABLES -P FORWARD "$ACCEPT"     2> /dev/null
-> $IPTABLES -F
-> $IPTABLES -X
-> $IPTABLES -t nat -F
-> $IPTABLES -t nat -X
-> $IPTABLES -t mangle -F
-> $IPTABLES -t mangle -X
-> 
-> so why am i "-j ACCEPT" accepting it before that?
+The rules above work for packets received from other systems that are going 
+through NAT, but it doesn't work for packets from the local system.  Those 
+packets are still going out through the normal default route of the system.
 
-In these scrambled outputs I did not wanted to sort again was a
-match-any-rule with -j ACCEPT in your OUTPUT (it isn't set here).  So
-never a packet reached the bottom (policy) of your OUTPUT.
+Is there a way to mark packets originating on the local system?
 
-Please RTFM,
- regards, Frank.
--- 
-Sigmentation fault
+Thanks,
+
+John Spicer
 
