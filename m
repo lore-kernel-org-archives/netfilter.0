@@ -1,78 +1,51 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: ipq_read return values when timeout is specified
-Date: Tue, 1 Jun 2004 09:00:48 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040601070048.GA896@zion.homelinux.com>
-References: <OF79639C38.78EA339D-ON65256EA6.0023ED00@hss.hns.com>
+From: Thomas Spatzier <tspat@de.ibm.com>
+Subject: Re: ip_conntrack memory leak?
+Date: Tue, 1 Jun 2004 09:35:39 +0200
+Sender: linux-net-owner@vger.kernel.org
+Message-ID: <200406010935.40119.tspat@de.ibm.com>
+References: <9e3aacf404052815384498ae20@mail.gmail.com>
+Reply-To: tspat@gmx.de
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
-Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-net-owner@vger.kernel.org>
+In-Reply-To: <9e3aacf404052815384498ae20@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <OF79639C38.78EA339D-ON65256EA6.0023ED00@hss.hns.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: aksingh@hss.hns.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: linux-net <linux-net@vger.kernel.org>, netfilter <netfilter@lists.netfilter.org>, nf-devel <netfilter-devel@lists.netfilter.org>
 
+> Hi all,
+> 
+> I am noticing what appears to be a memory leak in conntrack on one of
+> my boxes. The machine is a single 2.4GHz P4 1U rackmount with software
+> RAID 1 on 2 40GB IDE HDDs and an onboard e1000 (eth0) and e100 (eth1).
+> The kernel is 2.4.26 from kernel.org with ip_conntrack compiled
+> statically into the kernel.
+> 
+> The conntrack slab (/proc/slabinfo) grows without bound and the
+> machine needs to be rebooted every few days in order to prevent it
+> from running out of memory. This machine is the most heavily loaded
+> box I have; it is a stateful firewall and pseudo-bridge for a
+> high-traffic subnet. The important thing to note here is that the
+> number of active objects reported by /proc/slabinfo is far below the
+> number that is reported by a cat /proc/net/ip_conntrack. There are
+> ~70K entries in /proc/net/ip_conntrack, whereas /proc/slabinfo reports
+> several times that many active objects in the slab. As well, the
+> number of active objects keeps going up over time while the number of
+> objects reported by /proc/net/ip_conntrack stays relatively the same.
+> 
+> Has anyone experienced a similar memory leak in this area?
+> 
 
---7AUc2qLy4jB3hD7Z
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A few weeks ago I posted to these list reporting a similar problem, however
+on Linux 2.6. The problem I had (and still have) is that when I have
+ip_conntrack enabled on a router I lose memory over time. An extreme
+example: a flood ping with packets of size 64K over this router results in
+a memory leak of about 10MB per second. The problem did only occur if
+packets larger than MTU size were sent, which looks like there is a
+problem in ip_conntrack reassembly (possibly refcounting for slab objects ?).
+The behaviour of the slab cache is exactly the same as you described it.
 
-
-Hi Amit,
-
-On Tue, Jun 01, 2004 at 12:06:25PM +0530, aksingh@hss.hns.com told us:
->=20
-> Hi,
->=20
->    Correct me if I am wrong, if I give -1 as the timeout parameter to
-> ipq_read, then ipq_read returns :
->=20
-> -1 incase of an error,
-> a +ve non zero value, if there was something to read
-> 0 if there was nothing to read, or a non-blocked signal was caught .
-
-Right.
-
->=20
-> Also, since I gave this -ve value as timeout parameter ipq_read would
-> return immediately if there was nothing to read .
-
-Also right.
-
->=20
-> regards
-> Amit
->=20
-
-Sven
-
---=20
-Linux zion 2.6.7-rc2 #2 Mon May 31 22:58:01 CEST 2004 i686 athlon i386 GNU/=
-Linux
- 08:59:34  up  9:59,  3 users,  load average: 0.00, 0.01, 0.00
-
---7AUc2qLy4jB3hD7Z
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFAvCmgo4FAdB2PneQRAncZAJ9WkPpFuIS4FB7L9k550wuxsIRXtgCfVM86
-Vsxld2TA379P+6nqHsNMkE0=
-=fZrm
------END PGP SIGNATURE-----
-
---7AUc2qLy4jB3hD7Z--
-
+-- 
+Regards,
+Thomas.
