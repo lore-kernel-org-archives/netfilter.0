@@ -1,10 +1,15 @@
-From: "Han, Yan" <hany@u.library.arizona.edu>
-Subject: iptables ftp problems; unable to "ls"
-Date: Wed, 5 Nov 2003 16:40:05 -0700
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: TARPIT Documentation?
+Date: Wed, 5 Nov 2003 18:55:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BEA73FB6B8F62545A5B2818724D0DF2902E70864@u.library.Arizona.EDU>
+Message-ID: <200311051855.32244.Alistair@nerdnet.ca>
+References: <E26ABBCB14D369428125D23DF8BE94E503310E85@DGEXCH06.mcilink.com>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <E26ABBCB14D369428125D23DF8BE94E503310E85@DGEXCH06.mcilink.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +20,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "Regalado, Ron" <Ron.Regalado@mci.com>, netfilter@lists.netfilter.org
 
+On November 5, 2003 03:39 pm, Regalado, Ron wrote:
+> Are there step by step instructions anywhere on setting up the TARPIT
+> module for iptables?  I have tried recompiling the kernel and the iptables
+> source.. No luck..
+>
+>
+> Thanks,
+>
+> Ron
+	
+	You need to add it to the kernel source from Patch-O-Matic -- which no longer 
+comes bundled with iptables. --- 
+	http://www.netfilter.org/downloads.html#pom-20030912
 
-We use a linux server as a firewall and forward packets to different
-servers. In this case, we applied the iptables to forward packets from $Fido
-to $AtlasFtp for FTP. It is ok that we can log in the ftp server, but unable
-to do other things such as "ls", neither does Windows GUI FTP.
+	once added from there ... rebuild kernel and iptables and away you go 
+	(okay ... you might not have to rebuild iptables --- but is good policy)
+-- 
 
-Does anyone know why the FTP does not work? (we opened the port 20 and 21
-for FTP)? Is there something wrong with ports? 
-
-
-############    FTP   #########
-  iptables -t nat -A PREROUTING -i eth0 --dst $Fido -p tcp --dport $FTP_Port
--j DNAT --to $AtlasFtp
-#    iptables -t nat -A PREROUTING -i eth0 --dst $Fido -p udp --dport
-$FTP_Port -j DNAT --to $AtlasFtp
-
-    iptables -t nat -A POSTROUTING -p tcp --dst $AtlasFtp --dport $FTP_Port
--j SNAT --to-source $Fido
-#    iptables -t nat -A POSTROUTING -p tcp --dst $AtlasFtp --dport $FTP_Port
--j SNAT --to-source $Fido
-
-    iptables -t nat -A OUTPUT --dst $Fido -p tcp --dport $FTP_Port -j DNAT
---to-destination $AtlasFtp
- #   iptables -t nat -A OUTPUT --dst $Fido -p udp --dport $FTP_Port -j DNAT
---to-destination $AtlasFtp
-
-
-
-Yan 
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
