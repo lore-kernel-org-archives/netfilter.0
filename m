@@ -1,12 +1,12 @@
-From: "Andrzej Kozak" <a.kozak@dolnoslaski.ruch.com.pl>
-Subject: trouble with pptp
-Date: Thu, 16 Oct 2003 17:26:21 +0200
+From: "Britt Tabor" <btabor@edgeaccess.net>
+Subject: Policy, why is it doing that
+Date: Thu, 16 Oct 2003 11:37:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003201c393f9$db9b3e70$dc00140a@AndrzejXP>
+Message-ID: <BDF3100EBB9E3A47B84F816A10D9A4E5A8E5@eai-exchange.edgeaccess.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002F_01C3940A.9DCF05C0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +16,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello,
 
-------=_NextPart_000_002F_01C3940A.9DCF05C0
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+	I have a linux (slackware) box that I am running iptables on. I have =
+masq. on and I have only one entry in the table. I currently have the =
+policy for FORWARD set to ACCEPT. Here's the problem, if I set the =
+policy to DROP it drops everything. No rules are looked at before =
+dropping it just drops everything. Here is a list of my iptables.
 
-Hello!
-When I patched my 2.4.22 kernel with pptp-conntrack-nat -DNAT and -SNAT =
-is broken if I use iptables with -t nat
-I get message: iptables: Invalid argument
-Iptables v. 1.2.8
-I need establish connect from my security network to outside VPN server.
+bash-2.05# iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination        =20
 
-best regards
-Andrew Kozak
-------=_NextPart_000_002F_01C3940A.9DCF05C0
-Content-Type: text/html;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination        =20
+ACCEPT     all  --  anywhere             anywhere          =20
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hello!<BR>When I patched my 2.4.22 =
-kernel with=20
-pptp-conntrack-nat -DNAT and -SNAT is broken if I use iptables with -t =
-nat<BR>I=20
-get message: iptables: Invalid argument<BR>Iptables v. 1.2.8<BR>I need =
-establish=20
-connect from my security network to outside VPN server.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>best regards<BR>Andrew=20
-Kozak</FONT></DIV></BODY></HTML>
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+bash-2.05# iptables -t nat -L
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
 
-------=_NextPart_000_002F_01C3940A.9DCF05C0--
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
+MASQUERADE  all  --  anywhere             anywhere          =20
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+with this everything is fine but as you can tell there is no real =
+security, because I ACCEPT all. However, if I set the policy on FORWARD =
+to DROP everything gets dropped regardless of rule entries. Previously I =
+used ipchains, when a packet came in it would traverse the rule entries =
+in the FORWARD list and if it didn't match anything it would apply the =
+policy. With iptables it seems to be doing just the opposite. When =
+packets come in it applys the policy first.???
+
+Is this the case?=20
+
+
+
+
+=A0
+=A0
+Britt Tabor
+Edge Access, Inc.
+btabor@edgeaccess.net
+http://www.edgeaccess.net
+813.594.6142 Voice
+813.249.1126 Fax
+=A0
+=A0
+=A0
 
 
