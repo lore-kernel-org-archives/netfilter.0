@@ -1,12 +1,11 @@
-From: "Gaby Schilders" <G.Schilders@ibfd.org>
-Subject: RE: local DNAT with bind,postfix,and iptables
-Date: Thu, 16 Oct 2003 08:23:12 +0200
+From: "Simon Garner" <sgarner@expio.co.nz>
+Subject: NAT with two Internet links
+Date: Thu, 16 Oct 2003 19:37:31 +1300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E1296039@ibfdmail.ibfd.oin>
+Message-ID: <01b801c393b0$3c837080$0301a8c0@SIMON>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +16,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: netfilter list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Actually, I was referring to the 1-server setup needing 'voodoo' to get =
-it working in a similar fashion to the current 2-server setup. ;)
+Hi,
 
-I don't judge. Everyone can decide for themselves what's the best =
-solution for their case! :D
+I have a small network with several Windows client PCs, a Linux
+firewall/server, and two links to the Internet. What I want to do is
+have certain traffic (based on source and/or destination ports) routed
+through one link while everything else goes through the other.
 
-(From a security point of view, I've always taken the stance that as =
-little as possible should be running on the firewall. Especially nothing =
-like Bind or a mail-server. It's only my opinion, though.)
+The first link is a 256k wireless/radio connection with a static IP. The
+second is a 128k ADSL connection via an external ADSL modem/router with
+a dynamic IP.
 
-Gaby Schilders
-IBFD network admin
+The Linux (2.4) firewall machine has two network interfaces, eth0
+[192.168.1.2] connects it to the LAN, and eth1 [1.2.3.4] which plugs
+straight into the wall (the wireless link).
 
------Original Message-----
-From: George Vieira [mailto:georgev@citadelcomputer.com.au]
-Sent: donderdag 16 oktober 2003 8:17
-To: Gaby Schilders; Carlo Florendo
-Cc: netfilter list
-Subject: RE: local DNAT with bind,postfix,and iptables
+The ADSL modem has a LAN IP [192.168.1.1] and itself acts as a NAT
+device.
 
+All the client PCs are set to use the Linux firewall as their gateway,
+and I have it set up to do NAT. The Linux firewall has two default
+gateway addresses, one for eth0 (the ADSL router, 192.168.1.1) and one
+for eth1 (the wireless gateway, 1.2.3.3). Currently eth1 is set as the
+lower metric so that all data is going out through the wireless link,
+and the ADSL is not being used. If I swap this around, vice versa works
+also.
 
-> 1) Postfix trick mentioned by George (and obviously having=20
-> only one postfix box instead of two with a voodoo like setup=20
-> to compensate... ;-)
->=20
+How can I set it up to route some data out through eth1 and some through
+the ADSL (based on sport/dport)? I've tried adding a rules like:
 
-hey, that ain't voodoo man.. ;P I use this method to stop people going =
-straight to my internal Microstop Exchange box and forced to go through =
-my postfix box which as a transport file to relay internal but the =
-machine itself.. This enables me to control the mail as well as setup =
-RBL and free antivirus setup using linux...
+/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 80 -o eth0 -j
+MASQUERADE
+/sbin/iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 
-Otherwise just put a smart host entry on your sendmail/postfix/firewall =
-box to use the internal server for relaying out.. but I prefer my =
-transport idea... that's what it was made for... ;P he he
+But this doesn't seem to do anything, http is still routed through the
+wireless.
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+Help!
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
+-Simon
 
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
-
-> -----Original Message-----
-> From: Gaby Schilders [mailto:G.Schilders@ibfd.org]
-> Sent: Thursday, 16 October 2003 4:08 PM
-> To: Carlo Florendo
-> Cc: netfilter list
-> Subject: RE: local DNAT with bind,postfix,and iptables
->=20
->=20
-> Perhaps I'm out of line here, but there are several ways=20
-> leading to Rome, as they say here.
->=20
 
