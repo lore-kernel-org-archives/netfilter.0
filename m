@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how can i combine these 2 iprules
-Date: Fri, 5 Mar 2004 20:24:34 +0000
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: Create IPTables rules using output from a database?
+Date: Fri, 05 Mar 2004 15:43:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403052024.34953.Antony@Soft-Solutions.co.uk>
-References: <3590.128.59.176.161.1078512825.squirrel@sojourn.dyndns.org> <20040305191716.DD886DBC@sterenborg.info> <3698.128.59.176.161.1078517044.squirrel@sojourn.dyndns.org>
+Message-ID: <1078519423.2065.20.camel@localhost>
+References: <200403051921.i25JLmR05621@megalon.oregonisonline.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3698.128.59.176.161.1078517044.squirrel@sojourn.dyndns.org>
+In-Reply-To: <200403051921.i25JLmR05621@megalon.oregonisonline.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,39 +18,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: John P Lang <johnl@oregonisonline.net>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 05 March 2004 8:04 pm, Technical wrote:
+On Fri, 2004-03-05 at 14:21, John P Lang wrote:
+> Good morning,
+> 
+> Just out of curiosity, has anyone seen an application that allows you to
+> build iptables rules using web forms, post to a database of choice and
+> builds a firewall script?
+> 
+> I know... I'm not asking for much.
+> 
+> Any suggestions or comments would be greatly appreciated.
+> 
+> John L
 
-> Ok I got that but i am confused about how true iptables' sequential
-> execution of rules is.
->
-> Say for example that my I ping this machine from a host other than
-> cnnp1.com and cnnp2.com. The packet should be logged by >> > iptables -A
-> mychain -j LOG --log-prefix "IPTABLES: "
->
-> My question is should not the execution of the rest of the rules in
-> RH-Firewall-1-INPUT not happen
+If I understand your request properly, you may want to look at fwbuilder
+(http://www.fwbuilder.org).
 
-Once a packet RETURNs from a user-defined chain, or gets to the end of a 
-user-defined chain (as it will if it matches the LOG target - this target 
-does not terminate processing), it continues to be processed through the rest 
-of the rules in the built-in chain which called it.
+I am very involved with the ISCS project (http://iscs.sourceforge.net)
+however it has not yet released code.  When it does, we will go far
+beyond being able to generate iptables rules from a graphically
+front-ended database.  Instead of creating rules, one describes one's
+security and communications environment in high level business terms
+(e.g., give Executive and Financial access to Financial Data).  It then
+evaluates the environment and produces consistent iptables filter, nat
+and mangle rules, OpenS/WAN VPN connections, iproute2 route
+configurations, user authentication routines for out-of-band user
+authentication (e.g., creating iptables rules based upon a user's X.509
+certs, RADIUS ID, ActiveDirectory ID) and RAS DHCP configurations to
+produce the environment.  It stores them in any RDBMS that supports
+transactions and automatically distributes them to any number of
+gateways anywhere.
 
-The two rules which you posted in your question only LOGged the packets - did 
-not ACCEPT or DROP them, therefore the version I suggested to you in my 
-answer did exactly the same - LOG without ACCEPTing or DROPping.
+One can also define and distribute in the same high-level, abstracted
+way, layer1 and layer2 configurations for the physical gateways.  This
+makes the product extensible beyond just security devices.  It can be
+used to managed large numbers of Linux routers.  A possible fabulous use
+is to create large networks of thousands of wireless access points with
+out-of-band user identification so that even if someone does gain
+unauthorized access to the access point, they cannot go anywhere beyond
+the access point unless they can properly identify themselves and, even
+then, they can only go where their credentials allow them to go.
 
-If you want to ACCEPT or DROP the packets and thereby avoid further processing 
-in the INPUT chain, do so at the end of the user-defined "mychain".
+That might be little more than you are looking for but we're quite
+intrigued with it.  Although it does meet your requirement to talk to
+any RDBMS, because the user interface is extremely demanding, it is
+managed through a web browser. However, the GUI is written in Qt so that
+the same code with only minor modifications will run on Windows, X11 or
+Mac.
 
-Antony.
+Finally, it is not just limited to iptables.  Any vendor who can provide
+the requisite functionality and a communications method can be managed
+with ISCS.
+
+Good luck in your search - John
 
 -- 
-If you can't find an Open Source solution for it, then it isn't a real 
-problem.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Open Source Development Corporation
+Financially Sustainable open source development
+http://www.opensourcedevelopmentcorp.com
 
 
