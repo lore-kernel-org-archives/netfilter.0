@@ -1,16 +1,13 @@
 From: Dan Egli <dan@shortcircuit.dyndns.org>
-Subject: Re: Hoax..
-Date: Thu, 24 Apr 2003 11:06:33 -0600
+Subject: Re: Port Forwarding
+Date: Thu, 24 Apr 2003 11:26:20 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EA81999.6000102@shortcircuit.dyndns.org>
-References: <20030423021401.26417.52880.Mailman@kashyyyk>	
-	<NGBBLGFEALDADHNDAAFFCEIKDJAA.ksmith@perfht.com>	
-	<20030423182602.24b0d726.arnt@c2i.net>
-	<1051117353.25368.12.camel@alpha.newkirk.us>
+Message-ID: <3EA81E3C.5030405@shortcircuit.dyndns.org>
+References: <091A6DF13847F44395B31658ED61C19C627C1E@yellowstone.medclaim.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1051117353.25368.12.camel@alpha.newkirk.us>
+In-Reply-To: <091A6DF13847F44395B31658ED61C19C627C1E@yellowstone.medclaim.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,72 +17,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: "Brei, Matt" <mbrei@medclaiminc.com>
+Cc: netfilter@lists.netfilter.org
 
-Joel Newkirk wrote:
+Brei, Matt wrote:
 
->On Wed, 2003-04-23 at 12:26, Arnt Karlsen wrote:
->  
+> Hello all.
 >
->>On Wed, 23 Apr 2003 09:07:28 -0400, 
->>"Kevin Smith" <ksmith@perfht.com> wrote in message 
->><NGBBLGFEALDADHNDAAFFCEIKDJAA.ksmith@perfht.com>:
->>
->>    
->>
->>>>>UNION TOGOLAISE DE BANQUE LOME TOGO,
->>>>>LOME-TOGO.
->>>>>STRICTLY AND CONFIDENTIAL,
->>>>>          
->>>>>
->>>    ^^^^^^^^^^^^^^^^^^^^
->>>The Hint this this is a hoax..(I mean to a mailing list?)
->>>
->>>      
->>>
->>..this went to and __thru__ the netfilter list ?????????
->>I thought is was only my ~/.procmailrc having a hickup.
->>    
->>
+> I=92m using iptables on RH 8.0 to route and firewall my cable connection =
+
+> to the rest of the lan. My problem is joining games (Ghost Recon) on=20
+> ubi.com from behind the firewall. Ubi.com requires port 80 for http=20
+> which works fine, port 6667 for chat which also works fine, and=20
+> 40000-42000 for the game (I=92m assuming) which seems to be random when=20
+> I run nmap on machines running the game with no firewall. Is there a=20
+> way to allow one or multiple machines behind the firewall to join/host=20
+> a game by forwarding the ports. I attached my iptables script that I=92m =
+
+> currently using.
 >
->Someone harvested the archives of this mailinglist for email addresses,
->and is sending various forms of these "Nigerian 419 scam" emails.  I use
->netfilter@newkirk.us for ONLY this mailinglist and associated
->conversations, and I get about one of these every 2-3 weeks now at that
->address.  
+> Thanks,
 >
->They're mailing direct to the email addresses found in the archive.  I
->forward them to the Secret Service, who collect these in the US.
+> Matt
 >
->My latest was two days ago:
->
->  
->
->>From: SAMSON GUEI <samsonguei@redffmail.com>
->>To: netfilter@newkirk.us
->>Subject: CONFIDENTIAL & URGENT
->>Date: 22 Apr 2003 12:06:48 +0200
->>
->>FROM:MR,Samson Guei. 
->> 
->>DEAR SIR, ATTN:THE PRESIDENT/CEO. 
->> 
->>I AM MR,Samson GUEI, THE SON OF LATE GENERAL ROBERT GUEI 
->>EX-MILITARY HEAD OF STATE OF IVORY COAST, WHO WAS MURDERED ALONG 
->>WITH THE INTERIOR MINISTER ON THE 19th OF SEPTEMBER 2002
->>    
->>
->
->j
->
->
->
->  
->
-I was wondering why I never saw this :> I use a whitelist system (TMDA) 
-to block this type of junk. It was probably sent to me,  and my tmda 
-caught it and I deleted it out of hand w/o seeing more than the header. :>
+Shouldn't need anything that specific. The port forwarding is to allow=20
+packets that origonate OUTSITE the system to be sent to a specific=20
+computer. I'm on a cable modem at home and I play Unreal Tournament 2003=20
+great with simple masquerading.
+
+After reading your script, (which in my simple opinion is overly=20
+complicated), the line:
+
+> $IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_=
+IP
+
+would normally be enough. I use port forwarding for UT2003 only because I r=
+un a game server behind the firewall, so I need to allow connections from t=
+he inet to the server. But w/o the server, I have no need of port forwardin=
+g. Naturally nmap won't see the ports because technically the port is not o=
+pen. nmap only checks for a port that is (or at least appears to be) open a=
+nd listening for connections. if I did not have port forward on, and I was =
+in a UT2003 game and someone hit my inet IP on one of the game ports (7777 =
+for example) they would get a ICMP_PORT_UNREACHABLE error (connection refus=
+ed).=20
+
+Are you on a static IP or a dynamic? I am on a dynamic and my Masquerading =
+line: iptables -A POSTROUTING -s 192.168.0.0/255.255.255.0 -o eth1 -j MASQU=
+ERADE=20
+
+works grand. Cannot see why it would not work for you. Try disabling the po=
+rt forwarding. Can you connect to a web site from a machine behind the fire=
+wall? IF so there should be no reason I am aware of that you cannot connect=
+ to the game server.
 
 --- Dan
+
+
+
+
 
