@@ -1,14 +1,11 @@
-From: Anatoly Pugachev <mator@gsib.ru>
-Subject: error compiling iptables-1.2.8 on linux kernel-2.5.69
-Date: Fri, 16 May 2003 12:17:58 +0400
+From: <rwaeger@m-logix.de>
+Subject: Problems with policy based routing
+Date: 16 May 2003 10:27:47 UT
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030516081758.GH30683@gsib.sl.ru>
+Message-ID: <000147C2.3EC4D93D@192.168.206.251>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="9dgjiU4MmWPVapMU"
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Resent-Message-Id: <200305160908.h4G98u0O012926@gsib.sl.ru>
-Content-Disposition: inline
-Resent-To: netfilter@lists.netfilter.org
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,93 +15,178 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi!
 
---9dgjiU4MmWPVapMU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Maybe a routing and iptables guru can help me....
 
-Hello.
-Sorry if i missed something essencials from the docs on compiling
-iptables (INSTALL), but i'm unable to compile it. Here what i have:
-iptables 1.2.8 got from netfilter.org
-linux kernel version 2.5.69 from kernel.org
-gcc-3.2.3 from RH rawhide
-libc-2.3.2 from RH rawhide
-and errors compiling iptables, 
-$ make KERNEL_DIR=../linux-2.5.69 2>&1 | tee error-log.txt
-in attached text file.
-PS: i've succesfully compiled iptables, using source of 2.4.20 kernel.
-So can i use this binary with newer linux kernel 2.5.X ?
--- 
-/mator
+We're trying to setup a policy based Linux router to route "normal" 
+services (like http(s) or ftp) over a DSL line and all other services
+(like smtp, ssh, pop3) over a leased line. The leased line router is 
+listening to an official IP net. There are some internal servers (mail 
+and web) which are using official IPs (but nated at Firewall-1). All 
+traffic for and from these servers have to go over eth1. 
 
---9dgjiU4MmWPVapMU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: attachment; filename="error-log.txt"
+What happens:
+An external mail server sends a mail to the internal mail server (static IP is
+153.233.136.210). Incoming packets reaches the internal mail server (logged in 
+the Check Point Log). The internal mail server sends some packets out to the 
+sender mail server. These packets doesn't go over eth1 and the leased line router, 
+but go over eth2 and DSL. Mail doesn't work. Only what really works is http(s). 
 
-Extensions found: IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
-ld -shared -o extensions/libipt_ah.so extensions/libipt_ah_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_conntrack_sh.o -c extensions/libipt_conntrack.c
-In file included from ../linux-2.5.69/include/asm/bitops.h:9,
-                 from ../linux-2.5.69/include/linux/bitops.h:3,
-                 from ../linux-2.5.69/include/linux/netfilter_ipv4/ip_conntrack.h:9,
-                 from extensions/libipt_conntrack.c:12:
-../linux-2.5.69/include/linux/compiler.h:56:1: warning: "__attribute_used__" redefined
-In file included from /usr/include/features.h:291,
-                 from /usr/include/stdio.h:28,
-                 from extensions/libipt_conntrack.c:5:
-/usr/include/sys/cdefs.h:192:1: warning: this is the location of the previous definition
-ld -shared -o extensions/libipt_conntrack.so extensions/libipt_conntrack_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_dscp_sh.o -c extensions/libipt_dscp.c
-extensions/libipt_dscp_helper.c:69: warning: `dscp_to_name' defined but not used
-ld -shared -o extensions/libipt_dscp.so extensions/libipt_dscp_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_ecn_sh.o -c extensions/libipt_ecn.c
-ld -shared -o extensions/libipt_ecn.so extensions/libipt_ecn_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_esp_sh.o -c extensions/libipt_esp.c
-ld -shared -o extensions/libipt_esp.so extensions/libipt_esp_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_helper_sh.o -c extensions/libipt_helper.c
-ld -shared -o extensions/libipt_helper.so extensions/libipt_helper_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_icmp_sh.o -c extensions/libipt_icmp.c
-ld -shared -o extensions/libipt_icmp.so extensions/libipt_icmp_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_iplimit_sh.o -c extensions/libipt_iplimit.c
-In file included from ../linux-2.5.69/include/asm/bitops.h:9,
-                 from ../linux-2.5.69/include/linux/bitops.h:3,
-                 from ../linux-2.5.69/include/linux/netfilter_ipv4/ip_conntrack.h:9,
-                 from extensions/libipt_iplimit.c:9:
-../linux-2.5.69/include/linux/compiler.h:56:1: warning: "__attribute_used__" redefined
-In file included from /usr/include/features.h:291,
-                 from /usr/include/stdio.h:28,
-                 from extensions/libipt_iplimit.c:2:
-/usr/include/sys/cdefs.h:192:1: warning: this is the location of the previous definition
-ld -shared -o extensions/libipt_iplimit.so extensions/libipt_iplimit_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_length_sh.o -c extensions/libipt_length.c
-ld -shared -o extensions/libipt_length.so extensions/libipt_length_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_limit_sh.o -c extensions/libipt_limit.c
-ld -shared -o extensions/libipt_limit.so extensions/libipt_limit_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_mac_sh.o -c extensions/libipt_mac.c
-ld -shared -o extensions/libipt_mac.so extensions/libipt_mac_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_mark_sh.o -c extensions/libipt_mark.c
-ld -shared -o extensions/libipt_mark.so extensions/libipt_mark_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_multiport_sh.o -c extensions/libipt_multiport.c
-ld -shared -o extensions/libipt_multiport.so extensions/libipt_multiport_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_owner_sh.o -c extensions/libipt_owner.c
-ld -shared -o extensions/libipt_owner.so extensions/libipt_owner_sh.o
-cc -O2 -Wall -Wunused -I../linux-2.5.69/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_physdev_sh.o -c extensions/libipt_physdev.c
-extensions/libipt_physdev.c: In function `parse':
-extensions/libipt_physdev.c:86: `IPT_PHYSDEV_OP_MATCH_IN' undeclared (first use in this function)
-extensions/libipt_physdev.c:86: (Each undeclared identifier is reported only once
-extensions/libipt_physdev.c:86: for each function it appears in.)
-extensions/libipt_physdev.c:97: `IPT_PHYSDEV_OP_MATCH_OUT' undeclared (first use in this function)
-extensions/libipt_physdev.c: In function `print':
-extensions/libipt_physdev.c:144: `IPT_PHYSDEV_OP_MATCH_IN' undeclared (first use in this function)
-extensions/libipt_physdev.c:146: `IPT_PHYSDEV_OP_MATCH_OUT' undeclared (first use in this function)
-extensions/libipt_physdev.c: In function `save':
-extensions/libipt_physdev.c:156: `IPT_PHYSDEV_OP_MATCH_IN' undeclared (first use in this function)
-extensions/libipt_physdev.c:158: `IPT_PHYSDEV_OP_MATCH_OUT' undeclared (first use in this function)
-make: *** [extensions/libipt_physdev_sh.o] Error 1
+We don't want to use static routes (together with source routing) for all static 
+IPs (officials), if possible. Does anyone have an idea to solve this problem?
 
---9dgjiU4MmWPVapMU--
+Thanx in advance
+
+Raffi
+
+
+Used Kernel is 2.4.20. No patches applied.
+
+This is the constellation we are using:
+
+
+       internet                                internet
+          |                                       |
+          |                                       | NAT
+          |                                       |
+   -----------------                      -----------------
+  |   Leased Line   |                    |       DSL       |
+  | 154.233.136.193 |                    |   192.168.1.1   |
+   -----------------                      -----------------
+           \                                     /
+            \                                   /
+             \                                 /
+              \                               /
+               \                             /
+                \                           /
+                 \                         /
+                  \                       /
+                   \                     /
+                    \                   /
+              eth1   \                 /   eth2
+154.233.136.194/30    -----------------    192.168.1.2/24
+                     |  Linux Router   |
+                     |  policy based   |
+                      -----------------
+                              |
+                        eth0  | 
+          154.233.136.198/30  |
+                              |
+                              |
+                              |
+                              |
+                              |
+                              |
+                              |  if1
+                              |  154.233.136.197/30
+                      -----------------
+                     |   Check Point   |
+                     |    Firewall     |
+                      -----------------
+
+
+
+
+And this is the simple policy. Do not wonder about the routing entries, - they 
+are necessary at present.
+
+#!/bin/sh
+
+# Global vars
+MARK_FOR_DSL=2
+MARK_FOR_LEASEDLINE=3
+
+# Recreate standard routing table
+ip route flush all
+ip route add 154.233.136.196/30 dev eth0 proto kernel scope link src 154.233.136.198
+ip route add 154.233.136.192/30 dev eth1 proto kernel scope link src 154.233.136.194
+ip route add 192.168.1.0/24 dev eth2 proto kernel scope link src 192.168.1.2
+ip route add 154.233.136.224/27 via 154.233.136.197 dev eth0
+ip route add 154.233.136.200/29 via 154.233.136.197 dev eth0
+ip route add 154.233.136.208/28 via 154.233.136.197 dev eth0
+ip route add default via 192.168.1.1 dev eth2
+ip route flush cache
+
+# Flush iptables
+iptables -t mangle -F PREROUTING
+iptables -F INPUT
+
+# ACCEPT ping
+iptables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT 
+iptables -A INPUT -p icmp -m state --state ESTABLISHED,RELATED  -j ACCEPT 
+
+# ACCEPT local connections
+iptables -A INPUT -p tcp -s 127.0.0.1 --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp -s 127.0.0.1 --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp -s 127.0.0.1 --dport 98 -j ACCEPT
+iptables -A INPUT -p tcp -s 127.0.0.1 --dport 515 -j ACCEPT
+iptables -A INPUT -p tcp -s 127.0.0.1 --dport 901 -j ACCEPT
+iptables -A INPUT -p tcp -s 127.0.0.1 --dport 1024 -j ACCEPT
+
+# DROP connections to eth0 (154.233.136.198, internal) for specific ports
+iptables -A INPUT -p tcp -d {154.233.136.198} --dport 25 -j DROP
+iptables -A INPUT -p tcp -d {154.233.136.198} --dport 22 -j DROP
+iptables -A INPUT -p tcp -d {154.233.136.198} --dport 98 -j DROP
+iptables -A INPUT -p udp -d {154.233.136.198} --dport 514 -j DROP
+iptables -A INPUT -p tcp -d {154.233.136.198} --dport 515 -j DROP
+iptables -A INPUT -p tcp -d {154.233.136.198} --dport 587 -j DROP
+iptables -A INPUT -p tcp -d {154.233.136.198} --dport 901 -j DROP
+iptables -A INPUT -p tcp -d {154.233.136.198} --dport 1024 -j DROP
+
+# MARK for leased line traffic
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport 22 -j MARK --set-mark MARK_FOR_LEASEDLINE
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport 25 -j MARK --set-mark MARK_FOR_LEASEDLINE
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport 110 -j MARK --set-mark MARK_FOR_LEASEDLINE
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport 119 -j MARK --set-mark MARK_FOR_LEASEDLINE
+          
+# MARK for DSL traffic
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport 80 -j MARK --set-mark MARK_FOR_DSL
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport 443 -j MARK --set-mark MARK_FOR_DSL
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport ftp-data -j MARK --set-mark MARK_FOR_DSL
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.196/30 -d ! 154.233.136.196/30 --dport ftp -j MARK --set-mark MARK_FOR_DSL
+      
+# Telnet and SSH with minimum delay
+iptables -t mangle -A PREROUTING -p tcp --dport ssh -j TOS --set-tos 0x10
+iptables -t mangle -A PREROUTING -p tcp --dport telnet -j TOS --set-tos 0x10
+
+# HTTP traffic for internal web server
+iptables -t mangle -A PREROUTING -p tcp -s 154.233.136.212/255.255.255.255 -d ! 154.233.136.196/30 -j MARK --set-mark MARK_FOR_LEASEDLINE
+      
+# Do not allow redirects
+echo 0 > /proc/sys/net/ipv4/conf/all/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/default/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/eth1/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/eth2/send_redirects
+      
+# Make entries in rt_tables if necessary
+if (test -z "`awk '/202 dsl.out/' /etc/iproute2/rt_tables`"); then
+   echo 202 dsl.out >> /etc/iproute2/rt_tables
+fi
+
+if (test -z "`awk '/203 leasedline.out/' /etc/iproute2/rt_tables`"); then                                    
+      echo 203 leasedline.out >> /etc/iproute2/rt_tables                                                        
+fi
+
+# Delete existing policy
+ip rule del lookup dsl.out
+ip rule del lookup leasedline.out
+ip rule del table dsl.out
+ip rule del table leasedline.out
+
+# Rules for MARKs
+ip rule add fwmark 2 table dsl.out
+ip rule add fwmark 3 table leasedline.out
+
+# Default routes for tables dsl.out and leasedline.out
+ip route add default via 154.233.136.193 dev eth1 table leasedline.out
+ip route add default via 192.168.1.1 dev eth2 table dsl.out
+ip route add throw 154.233.136.210/32 table leasedline.out
+ip route flush cache
+
+-------
+
 
