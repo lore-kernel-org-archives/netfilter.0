@@ -1,8 +1,10 @@
-From: erich@uruk.org
-Subject: Only MASQ/NAT, no FORWARDing?
-Date: Wed, 22 Jan 2003 11:35:58 -0800
+From: <oarojo@intermediacorp.com>
+Subject: port forwarding problem
+Date: Tue, 28 Jan 2003 16:14:09 +0800 (PHT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E18bQfG-0007hN-00@trillium-hollow.org>
+Message-ID: <24307.192.168.0.1.1043741649.squirrel@mail.intermediacorp.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -13,39 +15,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
+
+hello guys!!! Can someone help me on my problem regarding iptables???
+
+This has been my problem a month now.. I'm running a redhat 7.3 firewall
+server with two NICs; eth0 facing the internal network (192.168.0.x) and
+eth1 facing the internet (external network). Now I wish to forward all
+traffic on eth1, port 25 to another to my mail server (say, 192.168.0.2). I
+did something like:
+
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
+iptables -A FORWARD -p tcp --dport 25 -d 192.168.0.2 -j ACCEPT
+iptables -A PREROUTING -t nat -p tcp --dport 25 -d x.x.x.x -j DNAT
+ --to 192.168.0.2
+
+Now when i used to test SMTP connection thru telnetting from another
+server... say:
+
+#telnet xxx.xxx.xxx.xxx 25
+
+It just stucked in there doesn't continue...
+
+using nmap on my firewall:
+
+#nmap xxx.xxx.xxx.xxx -p 25
+
+it says that port 25 is filtered...
 
 
-Please respond to my email address "erich@uruk.org", as I'm not on
-the email list...
+Is there anything wrong with my iptable rules? I would really appreciate if
+you can send me your help... thanks!
 
-Sorry if this is a FAQ, but I couldn't figure this out from the HOWTO,
-FAQs I could find, nor from the experimentation I've done so far (though
-it arguably hasn't been exhaustive).
 
-My question is:  On a Redhat 8.0 machine (most recent patch kernel,
-based on 2.4.18) with 2 ethernet cards "eth0" and "eth1", I want to
-Masquerade/NAT connections originating from the eth1 side going out
-the eth0 side ONLY.
+Oliver
 
-I figured out how to keep masquerading only going one direction, but
-what I can't figure out is how to disable all normal packet forwarding
-other than the masqueraded connections with iptables.  I.e. someone
-on the other side who knows my internal IP addressing can still send
-crafted packets through my firewall.
 
-Telling the "FORWARD" rule to drop all packets blocks the masq/NAT
-connections.  The same thing happens if I only tell it to drop packets
-that come from eth0 and go out eth1.
-
-So, I'm not quite sure how to do this...  can someone help here?
-
-Thanks...
-
---
-    Erich Stefan Boleyn     <erich@uruk.org>     http://www.uruk.org/
-"Reality is truly stranger than fiction; Probably why fiction is so popular"
 
