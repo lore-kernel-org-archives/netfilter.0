@@ -1,15 +1,14 @@
-From: justin <cmbb@dslr.net>
-Subject: Re[2]: Broken MS tcp new not syn: better to REJECT or DROP?
-Date: Thu, 30 Jan 2003 02:35:39 -0500
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: PPP over Ethernet (PPPoE)... what ports does it need open for
+	netfilter?
+Date: 30 Jan 2003 08:38:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <160490618171.20030130023539@dslr.net>
-References: <3E307456.70104@orix.com.au.>
- <106459900750.20030129180342@dslr.net> <20030130002029.GM11221@miggy.org>
-Reply-To: justin <cmbb@dslr.net>
+Message-ID: <1043912314.20157.2.camel@elendil.intranet.cartel-securite.net>
+References: <20030129150633.B14273@spawar.navy.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030130002029.GM11221@miggy.org>
+In-Reply-To: <20030129150633.B14273@spawar.navy.mil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +18,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: seberino@spawar.navy.mil
+Cc: netfilter@lists.netfilter.org
 
-thanks.
-Hmm, I saw this article a few weeks ago, but confusingly, it says
-"observed in 1997"(!), then it backpedals to say it was observed in
-NT4.0 (still in 1997, presumably) and was supposedly an NT stack problem
-not a browser issue.
+Le jeu 30/01/2003 =E0 00:06, seberino@spawar.navy.mil a =E9crit :
+> I'm having trouble converting an old static ip=20
+> iptables script to PPPoE/DSL.
+> Does PPPoE/DSL need more ports open I don't
+> know about???  That would explain lots.
 
-Well just for kicks, I tried XP and current MSIE to new URLs, via a
-linux router and see nothing but the correct initial SYN packet. Is
-anyone still running 1997s version of NT 4.0? seems unlikely, or a
-vanishingly small number of people?
+PPPoE does not need any port, for it is a layer 2 concept. You do not
+ever need an IP on the interface that supports your PPPoE link.
 
-A> On Wed, Jan 29, 2003 at 06:03:42PM -0500, justin wrote:
->> Is there a web page somewhere on this subject you can point me at?
->> "broken ms tcp" ?
+While I do not think this is an accurate place to discuss this, I can
+point you to http://www.roaringpenguin.com/pppoe/ where you'll find very
+usefull documentation stuff.
 
-A>   I presume they mean this:
-
-A>         http://slashdot.org/article.pl?sid=03/01/05/2025254&mode=thread
-A>         http://grotto11.com/blog/slash.html?+1039831658
-
-A> -Ath
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
 
