@@ -1,71 +1,50 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ANNOUNCE] netfilter.org looking for ftp and www mirror sites
-Date: Wed, 1 Oct 2003 10:28:32 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031001082832.GU5758@sunbeam.de.gnumonks.org>
-Reply-To: webmaster@netfilter.org
+From: "Axel Christiansen" <axel@zedx.org>
+Subject: sugestion needed for session marking from different default routres
+Date: Wed, 1 Oct 2003 12:41:16 +0200 (CEST)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <34887.212.202.127.214.1065004876.squirrel@knex.zedx.net>
+Reply-To: axel@zedx.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qX4XtzAfKSOolMWY"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hello,
+
+i have a problem, maby one can help me with that.
+
+There is a iptables Box with 2 default routes.
+One hat dynamic IP (DSL), the other one owns a
+small inet /29 Net. The DSL route should be used,
+because of the flatrate on that line. The
+filterbox does DNAT to an host behind it on
+a private Net for ssh.
+
+Now, ssh from inet on the DSL line works fine. The
+Pakets get back the right way by the active default
+route. I also want to ssh in over the other interface,
+and want the packets back in that line.
+
+I am thinking about marking the incoming packets and
+then finding out about the returning packets some how.
+If this would work, the routing then can by done by
+ip rule (routing).
+
+How could this be done? Is there another solution
+for my problem.
+
+thx a lot, Axel
 
 
---qX4XtzAfKSOolMWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
-
-The netfilter project is calling for international mirrors of it's
-homepage and ftp server.
-
-Ideally we would have one mirror for ftp and http per country,
-having ftp.<CCtld>.netfilter.org and www.<CCtld>.netfilter.org in
-operation.
-
-We already have mirrors for: .de, .at, .it, .ar
-
-If you have sufficient bandwith and want to donate a mirror, please
-contact webmaster@netfilter.org (Reply-To is set in this message).
-
-The mirrors are pulling from the public rsync service
-(rsync.netfilter.org::ftp / rsync.netfilter.org::www).
-
-Thanks in advance!
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---qX4XtzAfKSOolMWY
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/epAwNfqJzMqajVsRAiPHAJ9r5x1MPxnA+aVAHRAmPOaMKxh+FQCffeZA
-1wnxtJOBwr0anLlWfwPdby8=
-=6mOG
------END PGP SIGNATURE-----
-
---qX4XtzAfKSOolMWY--
 
