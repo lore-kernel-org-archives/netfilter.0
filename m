@@ -1,8 +1,8 @@
-From: fsauer@brfree.com.br
-Subject: Filtering with NAT
-Date: Wed, 21 May 2003 21:48:07 +0000
+From: "Leszek Zur" <lzur@record.com.pl>
+Subject: POSTROUTING & DNAT
+Date: Thu, 22 May 2003 15:01:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030521214807.31292.qmail@brfree.com.br>
+Message-ID: <000501c32062$42b751e0$6901a8c0@tailor>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,17 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: anderson@dbktecnologia.com.br
 
-Dear Friends, 
+Hello
 
-May I filter a specific source (real but reserved) IP of a LAN that were 
-mascarated with NAT and to permit another IP (real but reserved) of the same 
-LAN ? Can you exemplify this (with ipchains) ? 
+iptables -t nat -A OUTPUT -d 1.1.1.1 -j DNAT --to-destination 2.2.2.2
+iptables: Invalid argument
 
-Thanks in Advance 
+Can anyone help me understand what is happening?
 
-Fred Sauer
+iptables v1.2.8
+kernel 2.4.20
+
+thnx
+
+Leszek
+
+
 
