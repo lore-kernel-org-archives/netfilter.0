@@ -1,9 +1,10 @@
-From: "dawn lin" <alantisjun@hotmail.com>
-Subject: how can i set iptables for forwarding
-Date: Sat, 07 Jun 2003 08:57:13 +0800
+From: Gary Metcalf <gtm@lou-telecom.net>
+Subject: ip masqurade
+Date: Fri, 06 Jun 2003 22:17:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY7-F46zTH1jyQnjR30003ad42@hotmail.com>
+Message-ID: <3EE14B43.7060102@lou-telecom.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,27 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-hi,
-
-i wonder iptables can help me set my Computer B to forward packets to 
-computer A.
-is that possible?
-As i have 3computers.
-
-A can see B but not C.
-B can see C and A.
-
-Therefore, A need to talk to C by B.
-I hope to have B forward all packets to C from A.
-Is it possible.
-Thanks.
-
-_________________________________________________________________
-Send a fun phone greeting to your friend! 
-http://www.msn.com.sg/mobile/fungreetings/
+I'm running Slackware 8.1 with kernel 2.4.18. I'm needing to have some 
+computers on my LAN to gateway to the internet via my Linux Modem. My 
+modem does connect to the internet ok and I can use it via my Linux 
+system. What I don't know and have been reading the How-To's is how to 
+set this thing up. I've un-remarked some lines in my rc.modules file 
+that is supose to allow ipmasqurade when I boot. Now I have learned that 
+I need to build some tables and this is where I get lost.
+   My Linux IP address is: 192.168.168.1   and one of my computers 
+(windows) on my lan is: 192.168.168.2
+What lines do I need to input for iptables to set this up where it will 
+allow browsing and mail for my windows computer and other computers on 
+my lan which will fall in the ip range of 192.168.168.0/24. I've set up 
+my windows to use Gateway to my linux ip.
+    Gary
 
 
