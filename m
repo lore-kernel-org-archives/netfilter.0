@@ -1,14 +1,12 @@
-From: "Alex Bennee" <alex@bennee.com>
-Subject: Re: how to drop MP3 and other Downloads
-Date: Wed, 13 Nov 2002 09:40:57 -0000 (GMT)
+From: Scott van Looy <scott@ethosuk.org.uk>
+Subject: RE: MS Messenger
+Date: Wed, 13 Nov 2002 09:15:36 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39590.217.42.120.194.1037180457.squirrel@www.bennee.com>
-References: <F539FmGvZ3e61Hx5RMA0000b147@hotmail.com>
-Reply-To: alex@bennee.com
+Message-ID: <Pine.LNX.4.44.0211130914150.16075-100000@novak.ethosuk.org.uk>
+References: <E131E9F1848D0148813EAF06A846608FD77706@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F539FmGvZ3e61Hx5RMA0000b147@hotmail.com>
+In-Reply-To: <E131E9F1848D0148813EAF06A846608FD77706@w2ks-e2k.iconos.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,88 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: xanadian9@hotmail.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Andrew Magnus said:
->
-> This, of course, brings up a question I've been thinking about.
->
-> Is there a patch that will allow iptables to read into the header for
-> the  presentation layer to filter out, for example, MP3s being
-> downloaded?
+On Nov 12 Sneppe Filip did spake thusly:
 
-The fact you want something at the transport layer to be looking at data at
-the application layer tells you something is wrong with the approach. This
-is what proxies are for.
+> Aaron Clausen [mailto:maureen-taocow@alberni.net] wrote:
+> >
+> >I'm running iptables, and have a user claiming that they cannot use MS
+> >Messenger.  I have no other complaints, but I'm not exactly sure if any
+> >other users are actually using MS Messenger?  Does there have to be special
+> >connection tracking.
+> >
+> 
+> Hi Aaron,
+> 
+> You need a connection tracking helper module if you want to do
+> file transfers, as these open random ports. That module has not been
+> written yet for netfilter/iptables.
+> 
+> >
+> >I'm also blocking the MS file sharing ports at the router.  Would this cause
+> >the problem?
+> >
+> 
+> Well, if you block tcp port 1863, or if you block access to the MSN
+> login servers, your clients won't be able to sign in. 1863 Is the port
+> were everything except file transfers happen, AFAIK.
 
->
->>From: "hare ram" <hareram@sol.net.in>
->>Reply-To: "hare ram" <hareram@sol.net.in>
->>To: "Antony Stone"
->><Antony@Soft-Solutions.co.uk>,<netfilter@lists.netfilter.org>
->>Subject: Re: how to drop MP3 and other Downloads
->>Date: Tue, 12 Nov 2002 19:35:14 +0530
->>
->>hi some one guided in the news group
->>
->>----
->>That of course was not the connbytes patch. You can find it at
->>http://luxik.cdi.cz/~devik/connbytes/.
->>
->>You may need some sort of crontab to change the rules as you go. You
->>can also use connbytes with the --mark to move all long lived downloads
->>to a lower tc class if your doing traffic shaping.
->>------
->>
->>
->>what you think about this
->>
->>thanks
->>hare
->>----- Original Message -----
->>From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
->>To: <netfilter@lists.netfilter.org>
->>Sent: Tuesday, November 12, 2002 6:13 PM
->>Subject: Re: how to drop MP3 and other Downloads
->>
->>
->> > On Tuesday 12 November 2002 12:13 pm, hare ram wrote:
->> >
->> > > Hi all
->> > >
->> > > i have small application here like
->> > > how do the drop all downloads more than 1MB from
->> > > the day time
->> > > and rest of the time open for all
->> >
->> > I don't see that netfilter can know a download is going to be more
->> > than 1Mbyte before it's already seen a million bytes downloaded...
->> >
->> > Antony.
->> >
->> > --
->> >
->> > There are two possible outcomes.
->> >
->> > If the result confirms the hypothesis, then you've made a
->> > measurement. If the result is contrary to the hypothesis, then
->> > you've made a
->>discovery.
->> >
->> >  - Enrico Fermi
->> >
->> >
->
->
-> _________________________________________________________________
-> MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*.
-> http://join.msn.com/?page=features/virus
+I got MSN file transfers working fine by installing "reaim" on my gateway...google for it and you'll find it...it just acts as a gatekeeper and it works
+really well as far as I can see :)
 
+-- 
+Scott van Looy - email:me@ethosuk.org.uk | web:www.ethosuk.org.uk
+PGP Fingerprint: 7180 5543 C6C4 747B 7E74  802C 7CF9 E526 44D9 D4A7
+      -------------------------------------------
+      |/// /// /// /// WIDE LOAD /// /// /// ///|
+      -------------------------------------------
 
-Alex
-www.bennee.com/~alex/
+Disco is to music what Etch-A-Sketch is to art.
+
 
 
 
