@@ -1,10 +1,12 @@
-From: mailinglists@belfin.ch
-Subject: RE: SNAT question
-Date: Thu, 31 Oct 2002 13:18:54 +0100
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: next topic:  --limit and --burst-limit
+Date: Thu, 31 Oct 2002 07:15:12 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31347F3CE518D6118ACB00A0246AD0560B23F4@mx.snizek.ch>
+Message-ID: <Pine.LNX.4.44.0210310704480.30108-100000@localhost.localdomain>
+References: <1036052695.21032.21.camel@elendil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1036052695.21032.21.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,33 +16,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-Hi
+On 31 Oct 2002, Cedric Blancher wrote:
 
-this is my problem:
+> So I'll try to explain it a bit...
+> 
+> Limit is a bucket. This bucket is separated in two parts. The first one
+> is the burst. The second one is the limit. You do not apply the limit
+> until burst is full. This bucket is emptying a limit rate.
+> 
+>         |       |
+>         |       | <---- limit
+>         |-------|
+>         |       |
+>         |       | <---- burst
+>         |_______|
+> 
+> So, in the HOWTO exemple, (limit 1/s, burst 5, 4 packet/s flow), you're
+> filling the burst part of the bucket the first second. The second one,
+> the burst part is filled when receiving the 2nd packet. So, we begin to
+> fill the limit part of the bucket, and the limit of 1/s is beginning to
+> apply. I can accept the sixth packet, but not the following one,
+> arriving at the same second. When the second ends, I can flush the limit
+> part of the bucket, so I can accept more packets on top of the burst
+> part, within the limit.
+> 
+> Later, the flow stops. Each second I do not receive a packet, one packet
+> is taken from the bucket (because it's 1/s limit). For limit part is
+> empty, then we take it from the burst part. And then, if it goes again,
+> the burst part is getting filled again, and once filled, the limit
+> applies. And so on...
 
-+ iptables -t mangle -A PREROUTING -i eth1 -j TTL --ttl-inc 1
-iptables: No chain/target/match by that name
+ok, i'm almost certainly going to embarrass myself here, but after looking
+at the graphical explanation of limiting and bursts, this seems so simple,
+i'm at a loss to understand why so many explanations make it seem like
+rocket science (witness the phrase "hysteresis door" -- sheesh).
+so here's what it looks like (in contrast to cedric's explanation,
+i prefer the analogy of *starting* with a bucket of tokens and 
+paying them out as packets come in).
 
-modprobe ipt_ttl is in my script. 
-According to 
-http://cert.uni-stuttgart.de/archive/usenet/comp.os.linux.security/2002/08/m
-sg00458.html
-there should be two ttl modules in
-/lib/modules/2.4.18-4GB/kernel/net/ipv4/netfilter/.
-ipt_TTL for the target
-ipt_ttl for matching.
+example:
+	limit: 3/hour
+	burst: 5
 
-ipt_TTL isnt in the modules directory.
+what does this mean?  it means that i start with a bucket of 5 tokens
+and, every time a matching packet comes in, i can accept it by paying
+a token.  simple as that.    when i run out of tokens, i can't accept
+any more packets until i get more tokens.
 
-How am I going to get this to work?
+and with a limit of 3/hour, every 20 minutes, i get another token dropped
+into my bucket, up to a maximum of my burst value of 5, so that i can 
+accept more packets.  that's it.  is it really that simple?
 
-Thanks,
-Philipp
+this explanation seems to match what i read in the packet filtering HOWTO
+at netfilter.org.  it means that, with a full bucket, i can take a burst
+of (in this example) 5 incoming packets, but now have to wait until the
+next 20-minute point for another token so i can accept just one more
+additional packet.  and so on.
 
-PS: 
-System is Suse 8.0, Kernel 2.4.18, iptables 1.2.25
+have i oversimplified things here?
+
+rday
+
 
