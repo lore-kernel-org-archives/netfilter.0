@@ -1,14 +1,12 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: forwarding traffic to different hosts
-Date: Mon, 30 Aug 2004 01:01:19 +0100
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: OT: Pings phenomen :)
+Date: Sat, 28 Aug 2004 16:27:27 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040830000119.GA20169@metastasis.org.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC906420F@asimail2.alphanumeric.com>
-Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Message-ID: <Pine.GSU.4.58.0408281620510.21465@adore.lightlink.com>
+References: <213736141.20040828221628@op.pl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC906420F@asimail2.alphanumeric.com>
+In-Reply-To: <213736141.20040828221628@op.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,66 +16,46 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Marcin Sura <slacklist@op.pl>
+Cc: netfilter@lists.netfilter.org
 
-On Sat, Aug 28, 2004 at 10:14:25AM -0400, Jason Opperisano wrote:
-> > 207.155.252.12 - out on the Internet somewhere
-> >   |
-> > 198.81.129.1 - default gateway
-> >   |
-> > -------------------------------------
-> >   |                              |
-> >   |                        198.81.129.101
-> > 198.81.129.100
-> >
+Whenever you saturate your link, the DSL modem has the opportunity to
+queue packets.  You (or the remote server sending data to you, depending
+on direction) are sending data faster than the line can handle it, so the
+buffer starts filling up until it can't take any more.  Aparently this is
+roughly two seconds worth of download or 5 second worth of upload.  2
+seconds * 512kbit/sec = 1Mbit = 128Kbytes.  A fairly reasonable buffer
+size.  4 sec * 128 Kbit/sec = 512Kbit = 64Kbyte.  So, you can see that it
+doesn't take much data to put your modem several seconds behind the real
+world.  Of course, the queue that would be active in a heavy DOWNLOAD
+would be in the DSL modem at your ISP, whereas the queue that would govern
+in an UPLOAD would be in your modem (assuming the ISP can retransmit your
+data to the internet at 128Kbit -- they'd better).
 
-> my first question would be:  is it silly to ask why you don't redirect
-> the traffic from 207.155.252.12 to 198.81.129.101 on the 198.81.129.1
-> gateway?
+If these ping times are frusterating to you, you might consider traffic
+shaping and policing.  Check out lartc.org for info on traffic control.
 
-It isn't a silly question at all, 198.81.129.1, the gateway, doesn't
-have that functionality.
 
-<snip>
 
-> (1) SNAT the packets in addition to DNAT-ing the packets so that they
-> appear to come from 100, and 101 will reply back through 100.  this
-> was my original answer that wasn't viable in your situation.
+On Sat, 28 Aug 2004, Marcin Sura wrote:
 
-This is the option I was considering, but it's a bit nasty isn't it.
-However this
-
-> neither of the above are what i would call ideal solutions.  the
-> "proper" way to do this (IMHO), would be to use the power of the
-> application in question (bind) to do what you want (here i go with my
-> OT non-netfilter configs).
+> Date: Sat, 28 Aug 2004 22:16:28 +0200
+> From: Marcin Sura <slacklist@op.pl>
+> To: netfilter@lists.netfilter.org
+> Subject: OT: Pings phenomen :)
+>
+> Hi
+>
+>   I have 512/128 adsl. I wonder why, when I download files at full
+>   speed, pings to site X are about 2000ms. But when I upload files at
+>   full speed, pings to X are about 3000 to 5000ms. Can someone explain
+>   this to me from tcp/ip point of view? ;)
+>
+> --
+> Pozdrawiam
+>  Marcin                         mailto:slacklist@op.pl
 >
 >
-> create a view in bind on 198.81.129.100 for the client 207.155.252.12:
-> 
-> in named.conf:
-> 
->   acl "specialhost" { 207.155.252.12/32; };
->   include "named.conf.specialhost";
-> 
-> in named.conf.specialhost:
-> 
-> view special {
->         match-clients { "specialhost"; };
->         forward only;
->         forwarders { 198.81.129.101; };
-> };
-> 
-> HTH...
-
-It does, a lot.  That's something I'll have to play with, I didn't
-realise that BIND was that malleable.  
-
-Thank you very much for your help and thoughts on this, much
-appreciated.
-
--- 
-mors omnia vincit
 
