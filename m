@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: "iptables -h" seems to be overly verbose
-Date: Wed, 29 Oct 2003 13:55:29 -0500 (EST)
+From: =?ISO-8859-15?Q?J=F6rg_Sch=FCtter?= <netfilter@schuetter.org>
+Subject: Re: how to negate a limit match?
+Date: Wed, 29 Oct 2003 20:18:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310291354330.28249-100000@localhost.localdomain>
-References: <200310291840.h9TIesE06107@agate.rockstone.co.uk>
+Message-ID: <20031029201814.7970a2d7.netfilter@schuetter.org>
+References: <Pine.LNX.4.44.0310291330000.27971-100000@localhost.localdomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310291840.h9TIesE06107@agate.rockstone.co.uk>
+In-Reply-To: <Pine.LNX.4.44.0310291330000.27971-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Wed, 29 Oct 2003, Antony Stone wrote:
+Hallo Robert,
 
-> On Wednesday 29 October 2003 6:25 pm, Robert P. J. Day wrote:
-> 
-> >   following the man page, i wanted to see just the information
-> > about symbolic names for ICMP types with:
-> >
-> >   $ iptables -p icmp -h
-> >
-> > but i got what looks like the full online help.  should i have
-> > expected this?
-> 
-> I get the normal full help, followed by the ICMP-specific help.
+On Wed, 29 Oct 2003 13:31:10 -0500 (EST)
+"Robert P. J. Day" <rpjday@mindspring.com> wrote:
 
-this seems to be overkill, no?  i mean, if i type "iptables -p icmp -h",
-i figured i would get just the ICMP-specific stuff.  is this worth
-a bugzilla RFE?
+>=20
+>   it's not clear from the man page how to reverse the meaning
+> of a limit match.  if i want to accept everything *over* a given
+> limit, i'm supposed to use the "!".  but where?  is it like
+> this?
+>=20
+>   -m ! limit -- limit ... etc etc ...
+-m limit ! --limit ...
+>=20
+Take a look at http://iptables-tutorial.frozentux.net/ . There will you
+find a good tutorial for iptables.
 
-rday
+
+Gru=DF
+  J=F6rg
+
+--=20
+J=F6rg Sch=FCtter           http://www.lug-untermain.de/
+joerg@schuetter.org     http://www.schuetter.org/joerg/
+ICQ: 298982789          http://mypenguin.bei.t-online.de/
+
+
+
+--=20
+Gru=DF
+  J=F6rg
+
+--=20
+J=F6rg Sch=FCtter           http://www.lug-untermain.de/
+joerg@schuetter.org     http://www.schuetter.org/joerg/
+ICQ: 298982789          http://mypenguin.bei.t-online.de/
 
 
