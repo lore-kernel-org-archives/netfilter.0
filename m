@@ -1,14 +1,14 @@
-From: Gabriele Altomare <augustus@inwind.it>
-Subject: Re: help needed-VPN
-Date: 27 May 2003 12:31:11 +0200
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: H/A
+Date: Tue, 27 May 2003 18:09:05 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054031471.4197.2.camel@localhost.localdomain>
-References: <000101c32433$e1c08b10$0223a8c0@satconet.com>
-Reply-To: augustus@inwind.it
+Message-ID: <20030527100905.GA1395@floyd>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CE7@wardrive.citadelcomputer.com.au>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c32433$e1c08b10$0223a8c0@satconet.com>
+Content-Disposition: inline
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CE7@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,36 +19,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-You have to add a static route on the machine X which say :
+On Tue, May 27, 2003 at 07:47:31AM +1000, George Vieira spoke thusly:
+>LIVE IP=203.x.x.x
+>FW1=10.1.1.1    FW2=10.1.1.1
+>
+>using iproute2 I add the live IP to FW1 which is the Master FW.
+>
+>ip add addr 203.x.x.x/28 dev eth0
+>
+>Then my firewall scripts find the dev IP using "ip addr show $EXTDEV" add
+>then "tail -1" for so it grabs the last line of the list otherwise it
+>finds 2 IP bounded to the 1 network card and the scripts go nuts.. See
+>snippet of my iptables script below.
 
-to the remote lan (the lan on the other side of the tunnel) use the Cipe
-Gateway. That's all.
+George,
 
+You have not stated, exactly what failover scenarios does your setup work
+for ? Ie,
 
-On Tue, 2003-05-27 at 11:39, Steven Mugassa wrote:
-> Hello,
-> 
-> I'm trying to implement VPN of two remote LANs(LAN A & LAN B) using CIPE (on
-> RedHat 9.0). I have tried to follow instructions from "CIPE-How to" from
-> tldp.org and it seems to work (the machines on the two LANs can ping &
-> traceroute each other using the internal IP addresses)
-> 
-> However i have one more requirement which i need advice on how to do it:-
-> -One of the machines(call it machine X) in LAN B is not using CIPE gateway
-> as its gateway( it is going to the internet using another gateway, which is
-> also in the same LAN). This machine don't need to access machines in LAN A,
-> but machine in LAN A need to access this machine. Since this machine is
-> using another gateway(not CIPE gateway), then the classical CIPE-based VPN
-> implementation will not allow it to be accessible by remote LAN.
-> 
-> -My question is, what modifications (routings, or SNAT/DNAT, ...) can i do
-> to allow machine in remote LAN A to access that machine X (in LAN B)?
-> 
-> Thanks,
-> Steven
-> 
+[ internet link #1 ] +- [ firewall #1 ] -- +-------+
+                     |                     | LAN1  |
+	             |                     | LAN2  | 
+[ internet link #2 ] +- [ firewall #2 ] -- +-------+
 
+I was addressing something like the above. If firewall #1 goes down,
+firewall #2 can take over, but it still requires that all state information
+from firewall #1; be propogated to firewall #2. I am not taking into
+account any load balancing requirements, pure failover. State info for both
+iptables + their VPN setup. [*]
 
+I don't understand how your unique IP addressing method will solve the
+above, though your setup itself isn't very clear to me.
+
+That said, the original poster didn't exactly state (IIRC) what sort of VPN
+setup he is using (office <-> office), what exactly does he want
+fail-over'ed, does he have dual Internet links and many many other bits of
+information.
+
+Take note, that even my ascii diagran above only caters for certain
+failover scenarios.
 
