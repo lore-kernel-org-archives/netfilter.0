@@ -1,11 +1,13 @@
-From: "Jeroen Dille" <jeroen.dille@st.cs.kuleuven.ac.be>
-Subject: policy based routing
-Date: Wed, 3 Jul 2002 21:05:41 +0200
+From: Ross Vandegrift <ross@willow.seitz.com>
+Subject: Re: Unable to apply pptp patch
+Date: Wed, 3 Jul 2002 15:01:27 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <011c01c222c4$a1356280$0200a8c0@gaiothpc>
+Message-ID: <20020703190127.GB19157@willow.seitz.com>
+References: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER> <200207030925.g639PfU28723@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <200207030925.g639PfU28723@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,57 +18,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-Hello,
+> > I'd rather use IPSEC if I can only just compile my damn kernel right for
+> > once.. (it's been a while)..
+> 
+> FreeS/WAN isn't difficult - it just takes a while, and you have to follow the 
+> instructions carefully.   I think the guides and documentation on 
+> http://www.freeswan.org are very good, though.
 
-I'm running a home-made Debian 2.4.18 kernel with iproute2-ss010824. I have
-2 cable-modems to 2 different providers. One with a transparant proxy and
-one with a regular. I would like to load-balance all traffic over the 2
-modems and to do this with http traffic I have to run 2 squid processes:
-squid1 to act as a proxy for the provider with the transparant proxy and
-squid2 that does the load-balancing between the squid1 and the regular proxy
-of the other provider.
+Does anyone distribute the FreeS/WAN kernel code as a patch instead of
+the crazy scriptish system they use?  I've never been able to get that
+part working without many hours of fudging.  And after that, I'd *never*
+want to have to do it again.  OTOH, if someone had a way to make diffs,
+that would be very easy.
 
-The main difficulty is to route all packets coming from the squid1 to the
-right interface (eth0 in my case). I want to do this based on the user
-that's running the squid process. I think this should work, but it
-doesn't... What I've done:
-
-To mark all packets coming from the squid process:
-iptables -t mangle -A OUTPUT -m owner --uid-owner 23 -j MARK --set-mark 1
-
-To send all marked packets to routing table T4:
-ip rule add fwmark 1 table T4
-
-This is my main routing table:
-127.0.0.1 dev lo  scope link  src 127.0.0.1
-192.168.0.0/24 dev eth2  proto kernel  scope link  src 192.168.0.15
-195.130.138.0/23 dev eth1  proto kernel  scope link  src 195.x.x.x
-10.4.0.0/16 dev eth0  proto kernel  scope link  src 10.4.29.11
-default
-        nexthop via 10.4.0.1  dev eth0 weight 1
-        nexthop via 195.130.138.1  dev eth1 weight 1
-
-This is table T4:
-10.4.0.0/16 dev eth0  proto kernel  scope link  src 10.4.29.11
-default via 10.4.0.1  dev eth0
-
-The packets get marked correctly but the routing is wrong. If I put "ip rule
-add fwmark 1 table default" instead of "ip rule add fwmark 1 table T4" it
-works like a charm... (well, if I leave the load-balancing, only 1 in 2
-pages work, if I put default via 10.4.0.1 dev eth0 in the main table it
-always works)
-
-I've tried to recreate the main table in T4 but that didn't work either...
-127.0.0.1 dev lo  scope link  src 127.0.0.1
-192.168.0.0/24 dev eth2  scope link  src 192.168.0.15
-10.4.0.0/16 dev eth0  scope link  src 10.4.29.11
-default via 10.4.0.1 dev eth0
-
-Does anybody knows what's going wrong? What routes should be in table T4?
-
-tia
-Jeroen
-
+Ross Vandegrift
+ross@willow.seitz.com
 
