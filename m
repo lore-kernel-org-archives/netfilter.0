@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I think iptables is not alowing me to connect
-Date: Sat, 21 Sep 2002 00:43:27 +0100
+From: Tom Eastep <teastep@shorewall.net>
+Subject: Re: Internal ip exiting network on firewall external nic despight
+ rule
+Date: Fri, 20 Sep 2002 18:00:04 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020920234330.UPRN17905.mta07-svc.ntlworld.com@there>
-References: <001f01c260ce$7e185ad0$2101a8c0@aerowillys> <20020920200354.RYHR292.mta01-svc.ntlworld.com@there> <005501c260ed$d5563eb0$2101a8c0@aerowillys>
+Message-ID: <3D8BC494.2000409@shorewall.net>
+References: <000401c260fb$611f3c50$0801a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms020702040007050506070209"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005501c260ed$d5563eb0$2101a8c0@aerowillys>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,69 +17,98 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: Rowan Reid <rreid@studio3arc.com>
+Cc: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-On Friday 20 September 2002 10:36 pm, AndreLSM wrote:
+This is a cryptographically signed message in MIME format.
 
-> Sorry I was not very clear,
->
-> Actualy I removed all iptables rules with:
-> iptables -F
-> iptables -X
-> iptables -Z
+--------------ms020702040007050506070209
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Have you removed your nat rules (eg SNAT in the POSTROUTING chain) as well ?
+Rowan Reid wrote:
+> <action>
+> Kicks his networking for dummies book out the window
+> </action>
+> 
 
-> but adsl still hangs and does not connect.
-> Before  I started testing iptables it used to connect quickly.
-> My network is like this:
-> on eth0:  connection to another computer, ip 192.168.0.1 this is ok
-> on eth1: connection to the adsl modem. I know that this device can not be
-> initialized on the booting process
+You really should if the book advocates a one-hub test bed for a Linux 
+firewall; that just plain doesn't work. That advice is mentioned several 
+times on my site (URL below)....
 
-What do you mean by this last comment ?
+-Tom
+-- 
+Tom Eastep    \ Shorewall - iptables made easy
+AIM: tmeastep  \ http://www.shorewall.net
+ICQ: #60745924  \ teastep@shorewall.net
 
-> and I thought that maybe iptables was initializing it, but I removed all
-> rules and stopped running the rc.firewall file. This one has dynamic ip.
+--------------ms020702040007050506070209
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Are you getting a valid IP address for this interface from your ISP ?
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJVDCC
+AwgwggJxoAMCAQICAwhOLTANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
+BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
+HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
+bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkxODIxMTQxN1oXDTAzMDkxODIxMTQxN1owRzEf
+MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEkMCIGCSqGSIb3DQEJARYVdGVhc3Rl
+cEBzaG9yZXdhbGwubmV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvdDPv/q5
+adQCmEtbNtdWcsmF7qO5Eg5JkvI50WkiCkcv89KfsRA6tFGtsgIOsgU5l3wDQSzqEVX0MfIV
+qpn7ycZJ6823cuvXXjBQwwpqVSlpJkHhpd1uCCLomkfPAxKdfBNAjh4E1ZgHuur7GAWc0iBd
+2n9oJ9wBg8gDQP9ViYU4+x2z/7muvY4RuzL5eF+mtzx4UtSx9CFqu1n8uNIu44T4CXRZ8HwT
+Hg2eC61x6E6XFV48Oid9t8qmKXjUGINJ3hbXwQmees3K/ZrGYZ+FPoOJyWn+PpvrNQrVvkp5
+a7YblgaoLX1dS5QGgsl9XhRz6sqzvklAd7eh4g0JoWOD4QIDAQABozIwMDAgBgNVHREEGTAX
+gRV0ZWFzdGVwQHNob3Jld2FsbC5uZXQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQQFAAOB
+gQDakl1XW6IrAL4ZG+WtwT5GqQLPnFgbHjo/s88xvvdQRRhgd//uW81hQUk5tHkBisJKgHcv
+F1trxcylWylrSSLf2TANtw0M8kvW9clJe5xZieyshemLvEWHsC4mItPiId9dWaZQX90L9yZz
+0qi8iTlmU5i8JPeiJJVwwmQJNI93LzCCAwgwggJxoAMCAQICAwhOLTANBgkqhkiG9w0BAQQF
+ADCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2Fw
+ZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2Vz
+MSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkxODIx
+MTQxN1oXDTAzMDkxODIxMTQxN1owRzEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJl
+cjEkMCIGCSqGSIb3DQEJARYVdGVhc3RlcEBzaG9yZXdhbGwubmV0MIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAvdDPv/q5adQCmEtbNtdWcsmF7qO5Eg5JkvI50WkiCkcv89Kf
+sRA6tFGtsgIOsgU5l3wDQSzqEVX0MfIVqpn7ycZJ6823cuvXXjBQwwpqVSlpJkHhpd1uCCLo
+mkfPAxKdfBNAjh4E1ZgHuur7GAWc0iBd2n9oJ9wBg8gDQP9ViYU4+x2z/7muvY4RuzL5eF+m
+tzx4UtSx9CFqu1n8uNIu44T4CXRZ8HwTHg2eC61x6E6XFV48Oid9t8qmKXjUGINJ3hbXwQme
+es3K/ZrGYZ+FPoOJyWn+PpvrNQrVvkp5a7YblgaoLX1dS5QGgsl9XhRz6sqzvklAd7eh4g0J
+oWOD4QIDAQABozIwMDAgBgNVHREEGTAXgRV0ZWFzdGVwQHNob3Jld2FsbC5uZXQwDAYDVR0T
+AQH/BAIwADANBgkqhkiG9w0BAQQFAAOBgQDakl1XW6IrAL4ZG+WtwT5GqQLPnFgbHjo/s88x
+vvdQRRhgd//uW81hQUk5tHkBisJKgHcvF1trxcylWylrSSLf2TANtw0M8kvW9clJe5xZieys
+hemLvEWHsC4mItPiId9dWaZQX90L9yZz0qi8iTlmU5i8JPeiJJVwwmQJNI93LzCCAzgwggKh
+oAMCAQICEGZFcrfMdPXPY3ZFhNAukQEwDQYJKoZIhvcNAQEEBQAwgdExCzAJBgNVBAYTAlpB
+MRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMR
+VGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2
+aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3
+DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMDA4MzAwMDAwMDBaFw0w
+NDA4MjcyMzU5NTlaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIw
+EAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNh
+dGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAw
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAN4zMqZjxwklRT7SbngnZ4HF2ogZgpcO40Qp
+imM1Km1wPPrcrvfudG8wvDOQf/k0caCjbZjxw0+iZdsN+kvx1t1hpfmFzVWaNRqdknWoJ67Y
+cvm6AvbXsJHeHOmr4BgDqHxDQlBRh4M88Dm0m1SKE4f/s5udSWYALQmJ7JRr6aFpAgMBAAGj
+TjBMMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwxLTI5NzASBgNVHRMB
+Af8ECDAGAQH/AgEAMAsGA1UdDwQEAwIBBjANBgkqhkiG9w0BAQQFAAOBgQAxsUtHXfkBceX1
+U2xdedY9mMAmE2KBIqcS+CKV6BtJtyd7BDm6/ObyJOuR+r3sDSo491BVqGz3Da1MG7wD9LXr
+okefbKIMWI0xQgkRbLAaadErErJAXWr5edDqLiXdiuT82w0fnQLzWtvKPPZE6iZph39Ins6l
+n+eE2MliYq0FxjGCAycwggMjAgEBMIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2Vz
+dGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UE
+CxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJT
+QSAyMDAwLjguMzACAwhOLTAJBgUrDgMCGgUAoIIBYTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
+AQcBMBwGCSqGSIb3DQEJBTEPFw0wMjA5MjEwMTAwMDRaMCMGCSqGSIb3DQEJBDEWBBSJR40V
+i4q3IjeOTI+HoVifECy3WjBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3
+DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBrQYLKoZI
+hvcNAQkQAgsxgZ2ggZowgZIxCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUx
+EjAQBgNVBAcTCUNhcGUgVG93bjEPMA0GA1UEChMGVGhhd3RlMR0wGwYDVQQLExRDZXJ0aWZp
+Y2F0ZSBTZXJ2aWNlczEoMCYGA1UEAxMfUGVyc29uYWwgRnJlZW1haWwgUlNBIDIwMDAuOC4z
+MAIDCE4tMA0GCSqGSIb3DQEBAQUABIIBAEZWguicigxxTJevkKqHThUvu4Dkv4aFcH2/lo/K
+e0SYJWLH4/LDF1HMpIro8bJVeUYc1O5o6OzK3sulnxyd15TMxq3k6PvyyzJMinuPjbKcMCqM
+UFwHNt1/lWT8nnmfFSRUDfKk5mIgnyUY23Dwlp+DEwrNSlkirFoMp/9WElrTJviedTbNjfVu
+e78tczm1ksqKnTJW4tT6l1jp4U7kT3EpA7lnn6lIqthbQ21yX3+PG7uoYdBVpimGMKHwSpEi
+EerCSllGzZBRi35in//02hDi9eBbMoi6zCxjiO64Nt2KhBS6S2x+8WVKEPyvfB/+OBhfBKNA
+E3Mo74XkzDi/MaoAAAAAAAA=
+--------------ms020702040007050506070209--
 
-> I know that both network adapters are working fine, so it=B4s not hardware
-> problem.
-
-Can you connect to the Internet from the Firewall machine itself (never min=
-d=20
-the internal machines on your network for now) ?
-
-If you can, then tell us whether you have a SNAT rule in your POSTROUTING=20
-chain to allow internal machines to connect out as well.
-
-If you cannot connect from the Firewall machine, then it is not a netfilter=
-=20
-problem.   Check the hardware and the interface configuration.   Why do you=
-=20
-say "both network adapters are working fine" ?   How do you know ?   What=20
-have you tested ?
-
-Antony.
-
---=20
-
-This email is intended for the use of the individual addressee(s) named abo=
-ve=20
-and may contain information that is confidential, privileged or unsuitable =
-
-for overly sensitive persons with low self-esteem, no sense of humour, or=20
-irrational religious beliefs.
-
-If you have received this email in error, you are required to shred it=20
-immediately, add some nutmeg, three egg whites and a dessert spoonful of=20
-caster sugar. =A0 Whisk until soft peaks form, then place in a a warm oven =
-for=20
-40 minutes. =A0 Remove promptly and let stand for 2 hours before adding som=
-e=20
-decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
-mail=20
-and eat the original message.
 
