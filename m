@@ -1,11 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: ever block *outgoing* packets on your firewall?
-Date: Sun, 16 Jan 2005 20:52:22 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0198E3@pxtvjoexd01.pxt.primeexalia.com>
+From: DurgaPrasad Adusumalli <adusumallid@gmail.com>
+Subject: Performance of iptables with web proxy
+Date: Mon, 17 Jan 2005 11:33:07 +0530
+Message-ID: <75b657f40501162203456d5151@mail.gmail.com>
+Reply-To: DurgaPrasad Adusumalli <adusumallid@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: ASHISH <ashishis@gmail.com>, netfilter@lists.netfilter.org
-
-And the confusion sets in...  If you are blocking UDP and TCP for things
-that shouldn't leave your network then why would that have no effect?
-
-For example, if you want to run a proxy only shop then you might right a
-rule that says no port 80 out traffic is allowed except from host x
-forcing clients to use the proxy.  Same holds true for socks, etc...
-
-It's very practical and used in many places.  My full time job is
-working for a major bank and that's exactly what we do.
-
-Gary Wayne Smith
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of ASHISH
-Sent: Sunday, January 16, 2005 8:26 PM
 To: netfilter@lists.netfilter.org
-Subject: Re: ever block *outgoing* packets on your firewall?
 
-It will have no effect on tcp traffic, but it can be a real mess with
-udp traffic.
+I am using web proxy content filter (Dansguardian) to scan all
+outgoing traffic from my LAN. I am using transparent proxying with an
+iptable rule that forwards all outgoing traffic to web proxy. This
+setup works but all the browsing activity gets slowed down. When I
+configure my browser to use proxy Internet access gets faster.
 
-
+Can someone suggest me how can I enhance the performance of iptables
+with this rule is place and without configuring my browser to use
+proxy.
+ 
+Thanks in advance.
+Durga Prasad.
 
