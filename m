@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: curious about address specification and port specification
-Date: Thu, 10 Oct 2002 07:30:01 +0100
+Subject: Re: Bad argument `53'
+Date: Thu, 10 Oct 2002 07:34:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021010063004.WOUQ7631.mta03-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0210091755001.17555-100000@localhost.localdomain>
+Message-ID: <20021010063434.WSKG7631.mta03-svc.ntlworld.com@there>
+References: <002a01c27003$2c9d14e0$0201a8c0@com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210091755001.17555-100000@localhost.localdomain>
+In-Reply-To: <002a01c27003$2c9d14e0$0201a8c0@com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 09 October 2002 10:57 pm, Robert P. J. Day wrote:
+On Thursday 10 October 2002 3:17 am, David F. Strauch wrote:
 
-> On Wed, 9 Oct 2002, Antony Stone wrote:
-
-> > The --dport or --sport options are invalid without
-> > also specifying -p tcp or -p udp
-> >
-> > Can you give an example of a rule which works, and which specified a port
-> > but not a protocol ?
+> I?ve just started writing the script to allow DNS Loopkups as a client with
+> the following:
 >
-> just the other day, i was at a local LUG meeting and a guy was giving a
-> quick tutorial on iptables and displayed a sample rule file that contained
-> the rule:
->
->   iptables -A FORWARD --destination 172.16.0.2 --destination-port 25  \
-> --jump ACCEPT
->
->   doesn't this represent an example of what i was asking about?  a
-> reference to a port with no reference to protocol.
+> iptables -A OUTPUT -o $INTERNET -p udp \
+>          -s $IPADDR --sport $UNPRIVPORTS \
+>          -d $NAMESERVER --dport 53 -j ACCEPT
 
-Yes, it does.   However, I do not believe it is an example of a rule which 
-works.   Try it on a netfilter machine and see.
+Why are you specifying Source Address and Port on an OUTPUT rule ?
+
+> iptables -A INPUT  -i $INTERNET -p udp \
+>          -s $NAMESERVER --sport 53 \
+>          -d $IPADDR --dport $UNPRIVPORTS -j ACCEPT
+
+Is it really necessary to specify Destination Address and Port on an INPUT 
+rule ?   How many addresses do you have on your interface, and why would you 
+only want some of them to receive DNS replies ?
+
+> When I execute the script with sh /etc/rc.d/rc.firewalls I receive Bad
+> argument `53' for every instance of either  --dport 53 or --sport 53.  I?ve
+> also tried --destination-port and --source-port with out any success.
+
+Check what the earlier variables in the command contain.   I think you'll 
+probably find one (or more) of them is empty.
 
 Antony.
 
 -- 
 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
+Abandon hope, all ye who enter here.
+You'll feel much better about things once you do.
 
