@@ -1,13 +1,12 @@
-From: Kelly Setzer <Kelly.Setzer@placemark.com>
-Subject: Re: Purpose of self-referential rule
-Date: Wed, 26 Feb 2003 08:55:48 -0600
+From: Rasmus Reinholdt Nielsen <rasmus@narani.dk>
+Subject: Re: H323
+Date: Sun, 02 Mar 2003 11:41:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030226145548.GC28230@placemark.com>
-References: <20030224160628.GH4316@placemark.com> <200302260903.58241.netfilter@newkirk.us>
+Message-ID: <5.1.0.14.2.20030302113931.0252ceb8@of23sm3.kadnet.dom>
+References: <000a01c2dcdb$72762890$0223a8c0@satconet.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200302260903.58241.netfilter@newkirk.us>
+In-Reply-To: <006501c2dcde$55feaf40$9100000a@intgrp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +16,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Eric Wood <eric@interplas.com>, netfilter <netfilter@lists.netfilter.org>
 
-On Wed, Feb 26, 2003 at 09:03:58AM -0500, Joel Newkirk wrote:
-> On Monday 24 February 2003 11:06 am, Kelly Setzer wrote:
-> > I've been experimenting with gShield trying to learn the ins and outs
-> > of iptables.  One of the rules is generates is:
+Hi
+
+Does anybody know I can use one of these gatekeepers / proxys as a 
+transparent proxy for the msn messenger ip telephone client?
+
+
+Thanks
+
+
+/Rasmus
+
+At 09:58 25-02-2003 -0500, Eric Wood wrote:
+>I think netfilter can do the job.  You'll need a gatekeeper to do this:
+>
+>Here's a few:
+>OpenGK gatekeeper translates between user aliases and IP addresses. Makes
+>your life easier.
+>OpenH232Proxy is a gatekeeper with built in proxy feature. It enables the
+>routing through the gatekeeper of the RTP traffic (audio and video) and the
+>T.120 traffic (data) so no traffic is directly exchanged between endpoints.
+>(This one is not in the distro yet.)
+>OpenMCU H.323 conferencing server lets you hold virtual conferences. simply
+>connect to openmcu server instead of connecting to another gnomemeeting
+>client, and you are ready to go. If installed on a firewall (and visible
+>from both sides), openmcu can serve as a proxy.
+>
+>
+>I've got OpenH232Proxy sort of working for my cams.
+>http://openh323proxy.sourceforge.net/
+>
+>-eric wood
+>
+>
+>----- Original Message -----
+>From: "Dhyanesh Ramaiya" <dhyanesh@intafrica.com>
+>To: <netfilter@lists.netfilter.org>
+>Sent: Tuesday, February 25, 2003 9:37 AM
+>Subject: H323
+>
+>
+> > Greetings,
 > >
-> > iptables -A INPUT -s 192.168.6.0/24 -d 192.168.6.0/24 -i eth1 -j
-> > ACCEPT
+> > I am running Redhat 7.3 with Linux kernel 2.4.20 with H323 applied
+>(compiled
+> > in the kernel). However, I am still not able to get netmeeting working
+>over
+> > the NAT server. Is there any detailed documentation that I could refer to?
+> > Also, is there any way I could get MSN voice chat and file transfers to
+>work
+> > over NAT firewall? I am running iptables-1.2.6a-2 on my NAT firewall. I
+>have
+> > a rule in my firewall script that is SNAT-ting all the internal traffic to
+> > the IP address of the ethernet card connected to the Internet.
 > >
-> > The source and dest are correct for my internal network, and eth1 is
-> > the internal net.  My question is, when would the firewall ever see a
-> > packet that could possible match this?
+> > Please assist.
 > >
-> 
-> What's the IP of eth1?  This is the INPUT chain, so it's for traffic 
-> targeted at the firewall box itself.  Having a destIP listed with a /24 
-> is a little odd, though, unless you are DHCP assigned IP or some such 
-> where it won't know the IP when the rule is generated, or it may change.
-
-The eth1 interface has a statically assigned address of 192.168.6.1.
-Another respondent mentioned that it's only use (as INPUT rule) would
-be allow traffic directly to the firewall.  DHCP is used to assign
-addresses to windows clients on this network.  In any case, it seems a
-little weak to allow clients full access to the firewall - way too
-open.
-
-I suppose I should try removing the rule and seeing if anything
-breaks.
-
-thanks all,
-Kelly
-
---
-Kelly Setzer, System Administrator/Architect - Placemark Investments
-14180 Dallas Pkwy, Suite 200, Dallas, TX 75240
-kelly.setzer@placemark.com  http://www.placemark.com
-(972)404-8100x41 (work)       (214) 287-3464 (cell)
+> > Thank you very much.
+> >
+> > Dhyanesh Ramaiya
+> > dhyanesh@intafrica.com
+> >
 
 
