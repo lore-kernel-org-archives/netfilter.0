@@ -1,12 +1,10 @@
-From: Steve <steve@sheddy.net>
-Subject: Re: Broken fwmark
-Date: Mon, 3 Jun 2002 00:49:33 +0100 (BST)
+From: Art Reisman <astormchaser2002@yahoo.com>
+Subject: tcpdump behavior not getting all packets in promisc mode
+Date: Sun, 2 Jun 2002 16:52:56 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206030037270.14482-100000@shaun.sheddy.net>
-References: <200206022239.g52MdJA10657@Networker.rockstone.co.uk>
+Message-ID: <20020602235256.95544.qmail@web10408.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206022239.g52MdJA10657@Networker.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,26 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Hi Antony,
+It is my understanding with my network interface in
+promisc mode, that I should be able to see all network
+packets on my LAN with tcpdump (no parameters).
 
-> I'm no expert on packet marking, but why should a reply packet automatically
-> pick up the mark of whatever it's a reply to ?   I mean, where would the mark
-> get applied ?
+For some reason I am not seeing IP traffic unless it
+is destined for me or a broadcast. I replaced my HUB
+with very old model to insure that it was not
+switched.
 
-I'm no expert either!
+Do I need to restart my interface after setting
+promisc mode?
 
-My working configuration was watermarking the packet as it came in via a
-specific interface and then checking the watermark on the reply so the
-packet took the same route out.
-
-Surely then, the watermark is "set" (by whatever means) on the reply
-packet otherwise the conditional routing would not work?
-
-Steve.
-
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
