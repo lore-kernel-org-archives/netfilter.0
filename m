@@ -1,15 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: NFS and iptables.
-Date: Sun, 25 Apr 2004 10:24:57 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: I still have no idea why this doesn't work...(further  details)
+Date: Sun, 25 Apr 2004 09:28:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082881497.11802.14.camel@anduril.intranet.cartel-securite.net>
-References: <1082844037.10067.20.camel@james>
-	 <1082848320.11802.12.camel@anduril.intranet.cartel-securite.net>
-	 <1082850005.15312.15.camel@localhost>
+Message-ID: <200404250928.47760.Antony@Soft-Solutions.co.uk>
+References: <web-294871830@mail01.infosat.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1082850005.15312.15.camel@localhost>
+In-Reply-To: <web-294871830@mail01.infosat.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Cc: Krunk <krunkalot@hotpop.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le dim 25/04/2004 =E0 01:40, John A. Sullivan III a =E9crit :
-> I have always and recently found the RPC helper patch to be highly
-> unstable as much as I would really love to use it - John
+On Sunday 25 April 2004 7:59 am, IT Clown wrote:
 
-Good to know.
-I didn't have to firewall RPC at the time, but who knows ?
+> have you tried: modprobe ip_nat_ftp
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Why would he need ip_nat_ftp with rules in the INPUT chain?   There's no nat 
+going on.
+
+However, you have raised the question of whether he has compiled in or loaded 
+as a module ip_conntrack_ftp support?   That would be needed in this 
+situation.
+
+Regards,
+
+Antony.
+
+> On Sat, 24 Apr 2004 18:53:43 -1000
+>
+>  Garison Piatt <todo@garisonpiatt.com> wrote:
+>
+> >    i Control connection successfully established.
+> >    < 220 ProFTPD FTP Server ready.
+> >    i Time zone of server could not be determined.
+> >    > USER admin
+> >    < 331 Password required for admin.
+> >    > PASS <password>
+> >    < 230 User admin logged in.
+> >    > SYST
+> >    < 215 UNIX Type: L8
+> >    > PWD
+> >    < 257 "/home/admin" is current directory.
+> >    > PASV
+> >    < 227 Entering Passive Mode (207,36,232,90,132,36).
+> >    i Data connection A8 could not be established (10060).
+> > followed by a notice that the connection timed out.
+
+-- 
+Late in 1972 President Richard Nixon announced that the rate of increase of 
+inflation was decreasing.   This was the first time a sitting president used 
+a third derivative to advance his case for re-election.
+
+ - Hugo Rossi, Notices of the American Mathematical Society
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
