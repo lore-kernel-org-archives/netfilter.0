@@ -1,11 +1,11 @@
-From: =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@ncparty.dk>
-Subject: Can i reply with a text when packet dropped :)
-Date: Fri, 22 Nov 2002 06:50:43 +0100
+From: Luciano Ruete <kies@myrealbox.com>
+Subject: Re: OT: Please respond !
+Date: Fri, 22 Nov 2002 03:26:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002201c291eb$18f533a0$0200000a@parseerror.dk>
+Message-ID: <3DDDCDF9.7010606@myrealbox.com>
+References: <1037595834.24974.6.camel@tux.go-nix.ca> <3DDD8E65.4120BFFD@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001F_01C291F3.7A91C850"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,60 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Martin Stricker <shugal@gmx.de>
+Cc: "Nix N. Nix" <nix@go-nix.ca>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Martin Stricker escribi=F3::
+> "Nix N. Nix" wrote:
+>=20
+>>What's going on ?  I haven't gotten any new messages from the list,
+>>yet, when I try to subscribe my email, it says I'm already
+>>subscribed.  Has there really been no new traffic all weekend ?
 
-------=_NextPart_000_001F_01C291F3.7A91C850
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+same issue to me
 
-Hey :)
+> I'm sending this to you and the list. There was traffic. Maybe you set
+> your subscription to "no mail" or have some mailfilter active on your
+> computer or mail account?
 
-I would like to know if there exist a module where i can customize a =
-reply when it get hitted by a packet..
+others lists and the account it self, both working well.
 
-like
+Regards.
 
-iptables -A FORWARD -p tcp -m string --string "foo" -j REPLY "bar"
+--
+Luciano
 
-Are there a module there support it? :) I would be cool=20
 
-- Matias Bj=F8rling
 
-------=_NextPart_000_001F_01C291F3.7A91C850
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hey :)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I would like to know if there exist a =
-module where=20
-i can customize a reply when it get hitted by a packet..</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>like</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -p tcp -m string =
---string "foo"=20
--j REPLY "bar"</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Are there a module there support it? :) =
-I would be=20
-cool </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>- Matias =
-Bj=F8rling</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_001F_01C291F3.7A91C850--
+
 
 
