@@ -1,12 +1,13 @@
-From: jamal <hadi@cyberus.ca>
-Subject: Re: [Linux Diffserv] ANNOUNCE: tc filter extensions
-Date: Sat, 4 Jan 2003 13:37:44 -0500 (EST)
+From: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffe@amagerkollegiet.dk>
+Subject: Re: ECN target does not behave as expected
+Date: Tue, 7 Jan 2003 11:23:49 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030104133257.I48869__21721.9144259163$1041974615@shell.cyberus.ca>
-References: <20030104125252.J48869@shell.cyberus.ca> <3E172729.2070707@promo.ro>
+Message-ID: <Pine.LNX.4.44.0301071122270.2806-100000@grignard.amagerkollegiet.dk>
+References: <004101c2b62a$37489320$a268c451@Marius>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E172729.2070707@promo.ro>
+In-Reply-To: <004101c2b62a$37489320$a268c451@Marius>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,80 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ciprian Niculescu <ciprian@promo.ro>
-Cc: diffserv-general <diffserv-general@lists.sourceforge.net>, lartc@mailman.ds9a.nl, netfilter@lists.samba.org, netfilter-devel@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Marius Cristian CONSTANTIN <mconstantin@speedymail.org>
+Cc: netfilter@lists.netfilter.org
 
+On Tue, 7 Jan 2003, Marius Cristian CONSTANTIN wrote:
 
+>     I am running a firewall based on 2.4.20 kernel and 1.2.7a iptables
+> version. Also patch-o-matic is version 20020825.
+>     I am tryin to disable ECN per destination host, using -j ECN target
+> and --ecn-tcp-remove option.
+>     When I try to connect to the hosts using the rule in mangle table, if
+> the tcp_ecn option is enabled, tcpdump shows bad checksum. According to
+> documentation this is only a display bug, because tcpdump has a copy of
+> packet, and does not see entire info. Still, I cannot connect to the host=
+=2E
+>     If I disable ECN entirely (by using /proc/sys/net/ipv4/tcp_ecn)
+> connection works perfectly. Any clue or indication to achieve the desire
+> results (ECN enabled in general, but disabled for some hosts)?.
+>     I've searched the archives, found someone reporting similar problem
+> (http://lists.netfilter.org/pipermail/netfilter/2002-August/037228.html),
+> but no answer.
 
-Yes, thats is a useful feature.
-Should be able to able use the iptables LOG; I am trying to avoid
-replicating things which already exist; it is very easy to replicate it.
-I'll test iptables LOG sometimes today; if you beat me to it, let me know
-if it works.
+Apparently you need the patch below - at least that works for me:
 
-cheers,
-jamal
+diff -urN linux-2.4.20.orig/net/ipv4/netfilter/ipt_ECN.c linux-2.4.20/net/i=
+pv4/netfilter/ipt_ECN.c
+--- linux-2.4.20.orig/net/ipv4/netfilter/ipt_ECN.c=092002-11-29 00:53:15.00=
+0000000 +0100
++++ linux-2.4.20/net/ipv4/netfilter/ipt_ECN.c=092002-12-28 20:08:20.0000000=
+00 +0100
+@@ -87,8 +87,8 @@
+ =09}
 
-On Sat, 4 Jan 2003, Ciprian Niculescu wrote:
+ =09if (diffs[0] !=3D *tcpflags) {
+-=09=09diffs[0] =3D htons(diffs[0]) ^ 0xFFFF;
+-=09=09diffs[1] =3D htons(*tcpflags);
++=09=09diffs[0] =3D diffs[0] ^ 0xFFFF;
++=09=09diffs[1] =3D *tcpflags;
+ =09=09tcph->check =3D csum_fold(csum_partial((char *)diffs,
+ =09=09                                    sizeof(diffs),
+ =09=09                                    tcph->check^0xFFFF));
 
-> hello,
->
-> if someone can develop a feature like -j LOG from iptables, for the tc
-> filter
->
-> for ex i have
->
-> tc filter ...... match dport 80 0xffff flowid 1:1
->
-> i want to write to syslog the headers of the packets that matched this rule.
->
-> C
->
-> jamal wrote:
-> >
-> > I guess holidays means idle time which means idle minds which leads to
-> > thumb twiddling which then leads to some work (which is sometimes useful)
-> >
-> > Ive updated the traffic control patches i posted about six months ago.
-> > Note, the current release does not break anything in tc. It is fully
-> > backward compatible so you can choose not to use it and things will work
-> > as they do today. Of course, it is very useful so you cant choose to
-> > ignore it!
-> >
-> > It's now upgraded to better than "use at your own risk" category.
-> > tested on both uni and SMP 2.4.18 and 2.4.20.
-> >
-> > http://www.cyberus.ca/~hadi/patches/action/
-> >
-> > Bug reports and feedback are appreaciated.
-> > A lot more goodies coming up, so this is just the tip. First steps are to
-> > prove sanity of the idea.
-> >
-> > cheers,
-> > jamal
-> >
-> >
-> > -------------------------------------------------------
-> > This sf.net email is sponsored by:ThinkGeek
-> > Welcome to geek heaven.
-> > http://thinkgeek.com/sf
-> > _______________________________________________
-> > Diffserv-general mailing list
-> > Diffserv-general@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/diffserv-general
->
->
->
->
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Diffserv-general mailing list
-> Diffserv-general@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/diffserv-general
->
+/Rasmus
+
+--=20
+-- [ Rasmus "M=F8ffe" B=F8g Hansen ] --------------------------------------=
+-
+Expect the unexpected.
+- HitchHikers Guide to the Galaxy, Douglas Adams
+----------------------------------[ moffe at amagerkollegiet dot dk ] --
+
 
