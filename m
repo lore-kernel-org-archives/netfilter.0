@@ -1,12 +1,9 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: IPTable Help !
-Date: Wed, 6 Nov 2002 10:23:02 +0530
+From: "SB CH" <chulmin2@hotmail.com>
+Subject: iptables can protect syn-flooding?
+Date: Wed, 06 Nov 2002 05:01:33 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00e501c28550$6362ea60$43723fca@nextto>
-References: <NGBBJIEMADMKCHCLFBLKKECOCBAA.bishop@pacbell.net>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <F124l1k7ZDGRLvoD6ax0001857d@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,33 +14,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Louie <bishop@pacbell.net>, Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="euc-kr"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
-go to Linuxgurz
-
-hare
------ Original Message -----
-From: "Louie" <bishop@pacbell.net>
-To: "Antony Stone" <Antony@Soft-Solutions.co.uk>;
-<netfilter@lists.netfilter.org>
-Sent: Wednesday, November 06, 2002 1:21 AM
-Subject: IPTable Help !
-
-
-> Hello all!
->
-> Hope that everyone had a good weekend. I
-> was wondering does anyone know a site
-> that has simple explains on iptables
-> like "Iptables for dummies"
->
-> Thank you,
->
-> Louie
->
->
->
->
-
-
+SGVsbG8gYWxsLgoKCkkgc2F3IHRoYXQgd2UgY2FuIHByb3RlY3Qgc3luLWZsb29kaW5nIHVzaW5n
+IGlwdGFibGVzIGxpa2UgdGhpcy4KCiRJUFRBQkxFUyAtTiBzeW4tZmxvb2QKJElQVEFCTEVTIC1B
+IElOUFVUIC1wIHRjcCAtLXN5biAtaiBzeW4tZmxvb2QKJElQVEFCTEVTIC1BIHN5bi1mbG9vZCAt
+bSBsaW1pdCAtLWxpbWl0IDEvcyAtLWxpbWl0LWJ1cnN0IDQgLWogUkVUVVJOCiRJUFRBQkxFUyAt
+QSBzeW4tZmxvb2QgLWogRFJPUAoKQnV0IEkgdGhpbmsgdGhhdCBhbnlvbmUgY2FuJ3QgcHJvdGVj
+dCBzeW4tZmxvb2RpbmcgYXR0YWNrIGNvbXBsZXRlbHkgdXNpbmcgCnRoaXMgcnVsZSwganVzdCBz
+b21lIGxlZ2FsIGNsaWVudCBjYW4ndCBjb25uZWN0IHRoZSBzZXJ2ZXIgYmVjYXVzZSB0aGUgcmF0
+ZSAKbGltaXQgcnVsZSBpbiBidXN5IHN5c3RlbS4KCkkgZ3Vlc3MgdGhhdCBhbnkgZmlyZXdhbGwg
+Y2FuJ3QgcHJvdGVjdCBzeW4tZmxvb2RpbmcgZXhjZXB0IHRjcCBpbnRlcmNlcHQgCm1ldGhvZC5y
+aWdodD8KKGJ1dCB0Y3AgaW50ZXJjZXB0IHJlcXVpcmVzIHNvIG11Y2ggbWVtb3J5KQoKYW55IGlk
+ZWE/CgoKVGhhbmtzIGluIGFkdmFuY2UuCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KwfWxxyDBpLq4ILChwOUguvy4o7Dt
+IMbtx8+w1CC6uL3HILz2IMDWvcC0z7TZLiBNU04gwfWxxy/F9cDaICAKaHR0cDovL3d3dy5tc24u
+Y28ua3Ivc3RvY2svIAoKCg==
