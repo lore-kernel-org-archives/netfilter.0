@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: passive ftp
-Date: 12 Feb 2003 11:05:07 +0100
+From: Scott van Looy <scott@ethosuk.org.uk>
+Subject: connection stuff
+Date: 12 Feb 2003 10:30:17 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045044307.12854.2.camel@elendil.intranet.cartel-securite.net>
-References: <5.2.0.9.2.20030211174150.01b9b4f8@172.26.0.8>
+Message-ID: <1045045817.4068.7.camel@pixel.ethosuk.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-IwmZMn8IKKRNg3GuK7l2"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.2.0.9.2.20030211174150.01b9b4f8@172.26.0.8>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Luis Miguel Cruz Miranda <luismi@b2bi.es>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Le mar 11/02/2003 =E0 17:43, Luis Miguel Cruz Miranda a =E9crit :
-> Ok, I spend more than 30 minutes and I couldn't discover how to allow=20
-> inbound passive ftp.
 
-Just load ip_conntrack_ftp then allow RELATED state and you're done.
+--=-IwmZMn8IKKRNg3GuK7l2
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> Can anyone write me a generic iptables rules?
+I have 6x external IPS and they're mapped using pre and post routing to
+internal IPS as 1:1 NAT
 
-iptables -A INPUT -m state --state RELATED -j ACCEPT
+I have NAT of local connections compiled into my kernel
 
-Can't be more generic.
+So why can't I ssh from internal to the domain name of the external?
+
+ssh lazarus
+ssh: connect to host lazarus port 22: Connection refused
+
+Just mildly confused is all
+
+I can't view websites either on that box without adding its host and
+internal ip to my hosts file
+
+Is there a reason for this? :)
 
 --=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Scott van Looy - email:me@ethosuk.org.uk | web:www.ethosuk.org.uk
+PGP Fingerprint: 7180 5543 C6C4 747B 7E74  802C 7CF9 E526 44D9 D4A7
+      -------------------------------------------
+      |/// /// /// /// WIDE LOAD /// /// /// ///|
+      -------------------------------------------
 
+Be free and open and breezy!  Enjoy!  Things won't get any better so
+get used to it.
 
+--=-IwmZMn8IKKRNg3GuK7l2
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+SiI5fPnlJkTZ1KcRArkEAKCdMD3WR4oC9dNgf9oEW32Ig0BJVgCgi9ih
+4fIv08alSf5Zm/0P7qYDk18=
+=LgSs
+-----END PGP SIGNATURE-----
+
+--=-IwmZMn8IKKRNg3GuK7l2--
 
