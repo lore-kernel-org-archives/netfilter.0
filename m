@@ -1,12 +1,11 @@
-From: Kevin McConnell <kevymac@yahoo.com>
-Subject: Re: Doing Bridge with firewalling
-Date: Tue, 31 Dec 2002 08:08:53 -0800 (PST)
+From: "JUSTIN GERRY" <JGERRY@butchers.com>
+Subject: Trying to setup two ethernet cards with two websites
+Date: Tue, 31 Dec 2002 11:29:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021231160853.7071.qmail@web40303.mail.yahoo.com>
-References: <F154kB47qXLFfJNwPmx00000ffb@hotmail.com>
+Message-ID: <se117fa8.025@butchers.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F154kB47qXLFfJNwPmx00000ffb@hotmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +18,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: Afshin Lamei <linux_st@hotmail.com>
 
+I am attempting to setup two websites with two ip address, each one on a
+different ethernet card/interface.
 
---- Afshin Lamei <linux_st@hotmail.com> wrote:
+It only seems to work for the first rule (first listed ip address) that
+gets matched up, so I can get one website to work but not the other. How
+do I write this so it covers both address and allows httpd to go to
+either interface or either address? Can I write a single rule to match a
+range of ip addresses (.93 and .94) instead of writing one for each
+individual address? 
 
-> 1- Is it necessary to disable ip address of both
-> eth0 and eth1? if yes, how 
-> to do that?
+This is what I have so far for testing.....
 
-how could you do NAT'ing if you removed the IP
-addresses?
+IF1="eth0"
+IF2="eth1"
+IP2="172.30.12.93"
+IP1="172.30.12.94"
+UNPRIVPORTS="1024:65535"
 
-> 2- When I try to add eth0 as an interface to the
-> bridge (using brctl addif), 
-> It says : "eth0:Setting promiscuous mode." what does
-> it mean?
-> thanks,
+iptables -F
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
 
-It means that the interface will take all frames that
-are traversing the network it's attached to, even if
-they aren't supposed to be destined for the device.
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT 
+iptables -A INPUT -i $IF1 -p tcp --sport $UNPRIVPORTS -d $IP1 --dport
+80 -m state --state NEW -j ACCEPT
+iptables -A INPUT -i $IF2 -p tcp --sport $UNPRIVPORTS -d $IP2 --dport
+80 -m state --state NEW -j ACCEPT
+iptables -A INPUT -i $IF1 -p tcp --sport $UNPRIVPORTS -d $IP1 --dport
+80 -j ACCEPT
+iptables -A INPUT -i $IF2 -p tcp --sport $UNPRIVPORTS -d $IP2 --dport
+80 -j ACCEPT
+iptables -A OUTPUT -o $IF2 -p tcp ! --syn -s $IP2 --sport 80 --dport
+$UNPRIVPORTS -j ACCEPT
+iptables -A OUTPUT -o $IF1 -p tcp ! --syn -s $IP1 --sport 80 --dport
+$UNPRIVPORTS -j ACCEPT
 
-
-=====
-Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+Thanks,
+Justin
 
