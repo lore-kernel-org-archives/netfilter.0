@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Translators of howto in french
-Date: Tue, 27 Jan 2004 02:37:45 +0100
+Subject: Re: ip_nat_ftp module and freeswan IPSEC module don't work together?
+Date: Tue, 27 Jan 2004 02:41:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040127013745.GM19250@sunbeam.de.gnumonks.org>
-References: <1074931376.1817.9.camel@localhost>
+Message-ID: <20040127014130.GN19250@sunbeam.de.gnumonks.org>
+References: <BAY10-F42llTdrrcwv1000519cf@hotmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E0h0CbphJD8hN+Gf"
+	protocol="application/pgp-signature"; boundary="sGwo475CiIwWEjLI"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1074931376.1817.9.camel@localhost>
+In-Reply-To: <BAY10-F42llTdrrcwv1000519cf@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,33 +19,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Guillaume Audirac <guillaume.audirac@netpratique.fr>
-Cc: netfilter@lists.samba.org
+To: Rodre Ghorashi-Zadeh <rodrico7@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
 
---E0h0CbphJD8hN+Gf
+--sGwo475CiIwWEjLI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 24, 2004 at 09:02:57AM +0100, Guillaume Audirac wrote:
+On Fri, Jan 23, 2004 at 02:41:46AM +0000, Rodre Ghorashi-Zadeh wrote:
 > Hello,
->=20
-> Some howtos in french (at www.netfilter.org) need revision and/or
-> update. Previous translators don't seem to do this work.
-> Thanks to tell me if you know some translations are already underway. If
-> not, I could take some time to do so.
-> For information, a french site (www.traduc.org) is well organized to
-> follow general linux translations.
+=20
+> Any help regarding this matter would be greatly appreciated. Thanks in=20
+> advance.
 
-The old translations were done by Fabrice Marie, IIRC.  Please contact
-him and discuss how to proceed.
+I have no idea how this could be caused.  But it seems to me at the
+first glance, that this is not a netfilter/iptables issue.  It works
+with a stock kernel...  Maybe you should talk to the freeswan guys and
+ask if somebody is able to come up with an explanation.
 
-We'd certainly love ot have up-to-date translations.
+Also, please submit bug reports via bugzilla.netfilter.org instead of
+posting to the mainlintlist, please.
 
-> Bye.
-> Guillaume
-> guillaume(dot)audirac(at)netpratique(dot)fr
+thanks.
+
+> ?odre
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -57,7 +56,7 @@ We'd certainly love ot have up-to-date translations.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---E0h0CbphJD8hN+Gf
+--sGwo475CiIwWEjLI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -65,10 +64,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQFAFcDpXaXGVTD0i/8RAjwBAJ4/yTL2eL6NO8zCfzX+66sxOGPQ1ACgjC6l
-/pVxJ4F0Kh3396pnhUIH6cM=
-=wLx0
+iD8DBQFAFcHKXaXGVTD0i/8RAnvWAKCXjslcJZFMuqU+T/3XNKUkm9VwgACfU692
+U7IhB2piAWkJdIvWq257prk=
+=yCK9
 -----END PGP SIGNATURE-----
 
---E0h0CbphJD8hN+Gf--
+--sGwo475CiIwWEjLI--
 
