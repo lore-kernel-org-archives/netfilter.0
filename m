@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: conntrack - UDP = good
-Date: Wed, 23 Jun 2004 16:13:40 +0100
+From: Brett Simpson <simpsonb@hillsboroughcounty.org>
+Subject: Re: Send local traffic to a different server.
+Date: Wed, 23 Jun 2004 12:34:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406231613.40133.Antony@Soft-Solutions.co.uk>
-References: <876ef97a04062309012fa66caf@mail.gmail.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <1088008480.4009.80.camel@simpsonb.hillsboroughcounty.org>
+References: <s0d956ae.099@GroupWise>
+	 <200406231558.00325.Antony@Soft-Solutions.co.uk>
+Reply-To: simpsonb@hillsboroughcounty.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <876ef97a04062309012fa66caf@mail.gmail.com>
+In-Reply-To: <200406231558.00325.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,29 +22,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 23 June 2004 5:01 pm, Tobias DiPasquale wrote:
+On Wed, 2004-06-23 at 10:58, Antony Stone wrote:
+> On Wednesday 23 June 2004 3:08 pm, Brett Simpson wrote:
+> 
+> > I've tried a number of different PREROUTING and POSTROUTING rules and can't
+> > seem to make this work.
+> >
+> > I have a system with a single nic (eth0). While I'm on the system via a
+> > shell I would like to connect to 127.0.0.1:6000 and get seemlessly
+> > translated to 207.156.7.15:80.
+> 
+> I might as well just check something rather obvious:
+> 
+> Can you access 207.156.7.15:80 from the machine we are talking about?
 
-> Hi all,
->
-> Is there a way to get conntrack to _not_ track UDP connections (or
-> also ICMP)? It seems rather pointless to me and its certainly taking
-> up way too much memory on my box just for some DNS queries. Any ideas?
+Yes.
 
-This may help:
+> ie: assuming we get the NAT to work the way you want, do the packets get to 
+> the remote server and the replies back again okay?
 
-http://lists.netfilter.org/pipermail/netfilter/2003-October/047892.html
 
-Regards,
-
-Antony.
-
--- 
-Perfection in design is achieved not when there is nothing left to add, but 
-rather when there is nothing left to take away.
-
- - Antoine de Saint-Exupery
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
