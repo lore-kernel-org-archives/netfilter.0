@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Squid Accelerator configuration
-Date: Tue, 20 Jul 2004 14:03:27 -0400
+Subject: RE: Asking again: string match fails to find anything
+Date: Tue, 20 Jul 2004 14:37:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511CD@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511CF@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,210 +17,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jim Matthews <jim.matthews@notes.duke.edu>
-Cc: netfilter@lists.netfilter.org
+To: gypsy <gypsy@iswest.com>, netfilter <netfilter@lists.netfilter.org>
 
-didn't mean to be terse...
-
-what the logs are saying to me is this:  i am dropping a TCP packet with =
-flags A,P,F in my OUTPUT chain from 192.168.1.1:80 to 192.168.1.15:3582
-
-do you have something along the lines of:
-
-	"-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
-	"-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
-
-at the top of your INPUT and OUTPUT chains?
-
-it appears to me that your rules are not properly allowing replies from =
-the Squid box back to the client machine.
+is it possible that a rule above your "-m string --string $STRING" is =
+matching the data packets of the connection; i.e, a "-m state --state =
+ESTABLISHED -j ACCEPT" rule?
 
 -j
 
 -----Original Message-----
-From: Jim Matthews [mailto:jim.matthews@notes.duke.edu]
-Sent: Tuesday, July 20, 2004 1:55 PM
-To: Jason Opperisano
-Subject: RE: Squid Accelerator configuration
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of gypsy
+Sent: Tuesday, July 20, 2004 9:57 AM
+To: netfilter
+Subject: Asking again: string match fails to find anything
 
 
-Jason
+Facts:
+iptables 1.2.9 built against kernel v 2.4.25 or .26 depending on which
+computer.
+kernel 2.4.26
+os fingerprinting only works on the internal interface,  not eth1.
+"tcpdump -n -i eth1 -w /tmp/dump" clearly shows the text I am attempting
+to match.
+I have a test bed with very little traffic so that using a string match
+will not bog down.
+Repeats on 3 different computers all running Slackware 9.1.
+Several other POM / POM-NG modules are installed.
+When I "make modules", the only issue with ipt_string is:
+in function `search_sublinear':
+:55: warning: subscript has type `char'
+:80: warning: subscript has type `char'
+(referring to needle and haystack)
 
-Thanks for the response.  I'm not sure I understand what this line is=20
-doing.  Should I be replacing any of my entries with this line or=20
-appending this line?  I tried adding the line (I added it below my other =
-2=20
-http rules) and it's still not connecting.=20
+Problem:
+No matter what text is in $STRING, iptables fails to see the match.
 
-192.168.1.1 - Squidbox
-192.168.1.15 - Client
+iptables -I INPUT -m string --string $STRING -j LOG
 
+"iptables -nvL | grep STRING" has zeros in the counters.
 
-Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3582 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3583 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3584 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:46 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3577 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:48 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1152 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3578 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:49 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3579 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:50 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3580 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:50 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D19532 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3581 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3582 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3583 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3584 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:54 squidbox52 kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1485 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3576 WINDOW=3D10720 RES=3D0x00 ACK PSH FIN URGP=3D0=20
+Example:
+Replace $STRING with "oreilly".  From a remote computer run "lynx
+http://myurl/oreilly" and variants until at least 30 pages have been
+displayed to be certain that at least one packet is not so fragmented
+that "oreilly" isn't there (see also Facts above).  On the "myurl"
+computer iptables counters are zero.
 
-Thanks again for your help and any additional help you could provide.
----------------------
-Jim Matthews=20
-ISS Systems Administrator=20
-Duke University - Perkins Library
-Box 90196
-Durham, NC 27708
-Email: jim.matthews@duke.edu
-Voice: 919-660-5963
-Fax: 919-684-6990
+QUESTION:
+How can I find out why the string match fails to find the intended
+text?  (Later on I may ask how to fix that...)
 
-
-
-"Jason Opperisano" <Jopperisano@alphanumeric.com>=20
-07/20/2004 01:35 PM
-
-To
-"Jim Matthews" <jim.matthews@notes.duke.edu>,=20
-<netfilter@lists.netfilter.org>
-cc
-
-Subject
-RE: Squid Accelerator configuration
-
-
-
-
-
-
--A OUTPUT -p tcp --syn -s 192.168.1.1 --sport 1024: -d 192.168.1.5 =
---dport=20
-80 -j ACCEPT
-
--j
-
------Original Message-----
-From: Jim Matthews [mailto:jim.matthews@notes.duke.edu]
-Sent: Thursday, July 15, 2004 10:46 AM
-To: netfilter@lists.netfilter.org
-Subject: Squid Accelerator configuration
-
-
-Hi
-
-We have a backend web server.  To off-load some of the load from the=20
-backend server, we have a Squid server in front.=20
-
-I am having an issue with my iptables configuration on my Squid box.=20
-Everything works correctly when I disable the firewall (no good), so I'm =
-
-having problems with my rules on the Squid server.  I want to configure=20
-the systems so that:
-
--On Squid-
--allow all requests from Internet to port 80
--allow all requests from WWW box to/from port 80
-
--On WWW-
--allow all forwarded requests to/from Squid Box to port 80
--do not allow requests from Internet to port 80
-
-Has anyone setup something similar?  Any suggestions or pointers on how =
-to=20
-
-configure this?
-
-Here is the ruleset I'm using on my Squid box:
-
-# Squid
-# These rules are to allow testing from the internal network - the first =
-
-two rules are for the Squid port
--A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport squid -m=20
-state --state NEW,ESTABLISHED -j ACCEPT
--A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport squid -m state --state =
-
-ESTABLISHED -j ACCEPT
-
-# These two rules are for the http port
--A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport http -m=20
-state --state NEW,ESTABLISHED -j ACCEPT
--A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport http -m state --state=20
-ESTABLISHED -j ACCEPT
-
-# These two rules should cover the forwarding of connections for the=20
-backend WWW server
--A FORWARD -s 0/0 -d 192.168.1.5 -p TCP --sport 1024:65535 --dport 80 -j =
-
-ACCEPT
--A FORWARD -d 0/0 -s 192.168.1.5 -p TCP -m state --state ESTABLISHED -j=20
-ACCEPT
-
-Any help you could give would be greatly appreciated.  Thanks.
-
-Thanks.
----------------------
-Jim Matthews=20
-ISS Systems Administrator=20
-Duke University - Perkins Library
-Box 90196
-Durham, NC 27708
-Email: jim.matthews@duke.edu
-Voice: 919-660-5963
-Fax: 919-684-6990
-
+gypsy
 
 
