@@ -1,12 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Traffic going out wrong interface
-Date: Wed, 27 Aug 2003 21:21:09 -0400
+From: ads nat <adsnat@yahoo.com>
+Subject: Re: Can IPTABLES be used to send alerts!
+Date: Wed, 27 Aug 2003 19:28:36 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4D5905.9030400@chrisbrenton.org>
-References: <3F4B3DCC.8010104@chrisbrenton.org>
+Message-ID: <20030828022836.63124.qmail@web20705.mail.yahoo.com>
+References: <E19s10M-00014S-Ge@kashyyyk.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1516299412-1062037716=:62123"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <E19s10M-00014S-Ge@kashyyyk.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,108 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: netfilter@lists.netfilter.org
+To: dir@att.net, Deshwal Chand <CDD@kampsax.co.in>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-I know its bad form to reply to one's own e-mail, but I have some 
-additional info:
+--0-1516299412-1062037716=:62123
+Content-Type: text/plain; charset=us-ascii
 
-I tried disabling Snort on the firewall but the problem remained. Then 
-for kicks I changed the REJECT rule to kick back host unreachables 
-rather than TCP resets. Everything works fine now, even with Snort 
-running on the firewall again.
-
-So it appears that something about having iptables kick back RST's 
-rather than type 3's caused the bogus ARP packets as well as the RST 
-being transmitted out the wrong interface as I described below. I'm not 
-sure if I'm the only one having this problem, but then again I'm not 
-sure how many people scrutinize layer 2 as deeply as I do. ;-)
-
-Thanks for the feedback,
-Chris
+I am not C developer. But fairly good in php.
+Is it possible to extract details of file (100 %) by using php.
+Thanks
 
 
-Chris Brenton wrote:
-> Greetings all,
+dir@att.net wrote:
+Yes, this would be pretty straightforward to do if you are a C developer.
+
+You can use the QUEUE target to queue all HTTP traffic to userland. You 
+would then build a userland program to monitor packets for a set of suspect 
+keywords.
+
+This approach wouldn't be bullet-proof because the HTTP traffic will be 
+fragmented to the MTU size, but it would probably catch 99% of the keywords 
+you care about. With a little more code, you could demux the TCP traffic to 
+rebuild the entire TCP stream, thereby making it 100%, but that's a lot more 
+effort for little return IMO.
+
+Regards, dir
+
+> HI,
 > 
-> I'm running into a weird bug/feature that is not causing problems per 
-> se', but I thought I would pass it along to see if anyone has run into 
-> the same.
+> I don't know whether this is the right place to raise this post.
 > 
-> I'm using SNAT and DNAT for some one to one mappings on some internal 
-> addresses. Here are examples of the appropriate rules:
+> I am using IPTABLES and Squid. I want to monitor all the traffic going out
+> of this box. Suppose someone sends his/her CV from our network using his/her
+> Yahoo or Hotmail account, then I may get an alert.
 > 
-> iptables -t nat -A PREROUTING -d 64.179.20.65 -j DNAT --to-destination 
-> 192.168.1.6
-> iptables -t nat -A POSTROUTING -o eth0 -s 192.168.1.7 -j SNAT 
-> --to-source 64.179.20.66
-> iptables -t nat -A PREROUTING -d 64.179.20.66 -j DNAT --to-destination 
-> 192.168.1.7
-> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 64.179.20.22
+> Can IPTABLES do this by using some addones!!
 > 
-> 
-> What I'm seeing on the internal network (192.168.1.0/24) on occasion is 
-> this:
-> 
-> 23:46:50.091784 arp who-has 192.168.1.7 tell 64.179.20.66
-> 0x0000   0001 0800 0604 0001 0050 8beb 5976 40b3        .........P..Yv@.
-> 0x0010   1442 0000 0000 0000 c0a8 0107 0000 0000        .B..............
-> 0x0020   0000 0000 0000 0000 0000 0000 0000             ..............
-> 
-> 23:47:08.698954 arp who-has 192.168.1.6 tell 64.179.20.65
-> 0x0000   0001 0800 0604 0001 0050 8beb 5976 40b3        .........P..Yv@.
-> 0x0010   1441 0000 0000 0000 c0a8 0106 0000 0000        .A..............
-> 0x0020   0000 0000 0000 0000 0000 0000 0000             ..............
-> 
-> So the firewall is ARPing for the private address and asking it to 
-> respond to the DNAT address mapped above. Hummm...
-> 
-> Here is another time I'm seeing this type of traffic:
-> 
-> iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL SYN,ACK -j LOG 
-> --log-prefix " SYNACK_FALLOUT "
-> iptables -A FORWARD -i eth0 -p tcp --tcp-flags ALL SYN,ACK -j REJECT 
-> --reject-with tcp-reset
-> 
-> (yes these rules show up _after_ I process the state table. Its to make 
-> spoofing my IP address space less useful for SYN flooding ;)
-> 
-> And what I'm seeing on the internal network on occasion is this:
-> 
-> 01:46:44.909145 64.179.20.65.1881 > 205.158.107.16.80: R [tcp sum ok] 
-> 1192820737:1192820737(0) win 0 (DF) (ttl 255, id 0, len 40)
-> 0x0000   4500 0028 0000 4000 ff06 ee2c 40b3 1441        E..(..@....,@..A
-> 0x0010   cd9e 6b10 0759 0050 4719 0001 0000 0000        ..k..Y.PG.......
-> 0x0020   5004 0000 d37a 0000 0000 0000 0000             P....z........
-> 
-> 02:05:54.646567 64.179.20.66.1525 > 205.158.107.16.80: R [tcp sum ok] 
-> 149880833:149880833(0) win 0 (DF) (ttl 255, id 0, len 40)
-> 0x0000   4500 0028 0000 4000 ff06 ee2b 40b3 1442        E..(..@....+@..B
-> 0x0010   cd9e 6b10 05f5 0050 08ef 0001 0000 0000        ..k....P........
-> 0x0020   5004 0000 1308 0000 0000 0000 0000             P.............
-> 
-> So the RST is getting transmitted out the wrong interface. Please note 
-> that 99.9% of the time this all works fine. It only happens every now 
-> and then (maybe once out of every 300-500 SYN/ACK packets seen).
-> 
-> I never see any other external packets going out the internal interface. 
-> Its only ARP requests and RST packets. BTW, this is one of the few rules 
-> I use to issue a bogus RST (only other is TCP/113 requests). Most of my 
-> rules kick back ICMP host unreachables, and I never see those on the 
-> internal network. It might mean something, it might not. Just thought I 
-> would include it to complete the info. :)
-> 
-> Some config info:
-> Hardware - Compaq Proliant; 1.2 GHz Intel; 512 MB RAM
-> WAN link is 768 Kb
-> Internal net is 100 Mb switched
-> Kernel version - 2.4.20-20.7
-> iptables version - 1.2.8
-> 
-> Any and all thoughts are greatly appreciated,
-> Chris
-> 
+> Pls. pardon me if i am being wrong in posting this question on this list.
 
 
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--0-1516299412-1062037716=:62123
+Content-Type: text/html; charset=us-ascii
+
+<DIV>I am not C developer. But fairly good in php.</DIV>
+<DIV>Is it possible to extract details of file&nbsp;(100 %) by using php.</DIV>
+<DIV>Thanks</DIV>
+<DIV><BR><BR><B><I>dir@att.net</I></B> wrote:</DIV>
+<BLOCKQUOTE class=replbq style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px">Yes, this would be pretty straightforward to do if you are a C developer.<BR><BR>You can use the QUEUE target to queue all HTTP traffic to userland. You <BR>would then build a userland program to monitor packets for a set of suspect <BR>keywords.<BR><BR>This approach wouldn't be bullet-proof because the HTTP traffic will be <BR>fragmented to the MTU size, but it would probably catch 99% of the keywords <BR>you care about. With a little more code, you could demux the TCP traffic to <BR>rebuild the entire TCP stream, thereby making it 100%, but that's a lot more <BR>effort for little return IMO.<BR><BR>Regards, dir<BR><BR>&gt; HI,<BR>&gt; <BR>&gt; I don't know whether this is the right place to raise this post.<BR>&gt; <BR>&gt; I am using IPTABLES and Squid. I want to monitor all the traffic going out<BR>&gt; of this box. Suppose someone sends his/her CV from our network using
+ his/her<BR>&gt; Yahoo or Hotmail account, then I may get an alert.<BR>&gt; <BR>&gt; Can IPTABLES do this by using some addones!!<BR>&gt; <BR>&gt; Pls. pardon me if i am being wrong in posting this question on this list.<BR><BR></BLOCKQUOTE><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
+--0-1516299412-1062037716=:62123--
 
