@@ -1,8 +1,9 @@
-From: Ruslan Spivak <alienoid@is.lg.ua>
-Subject: REDIRECT question
-Date: Wed, 02 Jul 2003 13:56:21 +0300
+From: Fox <admin@flshlnk.com>
+Subject: OUTPUT chain DNAT problem
+Date: Wed, 2 Jul 2003 15:57:08 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F02BA55.1030504@is.lg.ua>
+Message-ID: <4417747639.20030702155708@flshlnk.com>
+Reply-To: admin@flshlnk.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,26 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello, netfilter users.
+Hi.
 
-i want make transaparent proxy on localhost and want to disabe access 
-after redirecting to port 3128 if destination address in net other then 
-193.108.240.0/22.
-Does REDIRECT target send packet to INPUT chain and i should disable 
-access in INPUT chain or should i disable access in '-t nat -A 
-POSTROUTING' chain?
+I'm having problems with rewriting outgoing packets.
+I've specified the following rule:
+iptables -t nat -A OUTPUT -d 10.0.0.2 -j DNAT --to-destination
+192.168.0.2
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
---to-port 3128
+When I ping 10.0.0.2 i get them rewritten (i check it with tcpdump and
+get stats with `iptables -t nat -L -v -n`). But when an application
+sends a packet to 10.0.0.2 it's not rewritten. I can't understand why.
 
+I need to to the following thing:
 
-Thanks in advance. Your help is very, very appreciated.
+A              B                C
+10.0.0.2  ---> 192.168.0.1 ---> 192.168.0.2
 
-Best regards,
-Ruslan
+A send requests to B and B replies to A. But i want those replies go
+to C and only C.
 
+Your help is appreciated.
+thanks.
+fox
 
 
