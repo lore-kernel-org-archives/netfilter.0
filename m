@@ -1,13 +1,13 @@
-From: "William da Rocha Lima" <wrochal@bembolado.com.br>
-Subject: Scan not Nmap
-Date: Fri, 27 Dec 2002 08:04:08 -0200
+From: Andrea Rossato <mailing_list@istitutocolli.org>
+Subject: Re: ECN mangling
+Date: Fri, 27 Dec 2002 12:14:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006201c2ad8f$4c177710$d654fea9@wrl>
-Reply-To: "William da Rocha Lima" <wrochal@bembolado.com.br>
+Message-ID: <3E0C361A.6040603@istitutocolli.org>
+References: <20021227073624.GA1878@miggy.org> <20021227091659.GB1878@miggy.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_005F_01C2AD7E.8849FCF0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021227091659.GB1878@miggy.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,69 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+there's a bug in that code: in the netfilter-devel mailing list a patch 
+was posted:
 
-------=_NextPart_000_005F_01C2AD7E.8849FCF0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ >      90                 diffs[0] = diffs[0] ^ 0xFFFF;
+ >      91                 diffs[1] = *tcpflags;
 
+that does the job.
+andrea
 
-Hello,
-
-Rules for blocking nmap the scan..
-
-thanks..
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
- William da Rocha Lima
- www.linuxit.com.br - Linux e Tecnologia               =20
- wrochal@linuxit.com.br
- ICQ: 111752037
- MSN: wrochal
- Yim/Aim: wrochal2002
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-------=_NextPart_000_005F_01C2AD7E.8849FCF0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Rules for blocking nmap the =
-scan..</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>thanks..</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<BR>&nbsp;William=20
-da Rocha Lima<BR>&nbsp;<A=20
-href=3D"http://www.linuxit.com.br">www.linuxit.com.br</A> - Linux e=20
-Tecnologia&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-<BR>&nbsp;<A=20
-href=3D"mailto:wrochal@linuxit.com.br">wrochal@linuxit.com.br</A><BR>&nbs=
-p;ICQ:=20
-111752037<BR>&nbsp;MSN: wrochal<BR>&nbsp;Yim/Aim:=20
-wrochal2002<BR>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_005F_01C2AD7E.8849FCF0--
+Athan wrote:
+>   Looking at latest CVS there doesn't seem to be any changes to the code
+> in net/ipv4/netfilter/ipt_ECN.c.  Not being uptospeed with how the code
+> all works it looks like it should be working:
+> 
+>      89         if (diffs[0] != *tcpflags) {
+>      90                 diffs[0] = htons(diffs[0]) ^ 0xFFFF;
+>      91                 diffs[1] = htons(*tcpflags);
+>      92                 tcph->check = csum_fold(csum_partial((char *)diffs,
+>      93                                                     sizeof(diffs),
+>      94                                                     tcph->check^0xFFFF));
+>      95                 (*pskb)->nfcache |= NFC_ALTERED;
+>      96 
+>      97                 return 1;
+>      98         }
+> 
+> But it obviously isn't.
+> 
+> -Ath
 
 
