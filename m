@@ -1,16 +1,12 @@
-From: Martin Petruzzi <m.petruzzi@bluewin.ch>
-Subject: Re: Changes in kernel >= 2.4.20 ? -> YES
-Date: Wed, 19 Nov 2003 16:08:01 +0100
+From: =?iso-8859-1?Q?Jos=E9_Gomes?= <jgomes@datas.com.br>
+Subject: TWO ROUTING
+Date: Wed, 19 Nov 2003 13:17:06 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031119160801.37e3e164.m.petruzzi@bluewin.ch>
-References: <20031117110642.73ee78fc.m.petruzzi@bluewin.ch>
-	<200311182043.18773.Alistair@nerdnet.ca>
-	<20031119115041.38aee642.m.petruzzi@bluewin.ch>
-	<200311190919.06502.Alistair@nerdnet.ca>
+Message-ID: <E1AMU5R-0001oJ-Io@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0005_01C3AE9F.6FD32ED0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311190919.06502.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,87 +16,318 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Alistair@nerdnet.ca
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 19 Nov 2003 09:19:06 -0500
-Alistair Tonner <Alistair@nerdnet.ca> wrote:
+This is a multi-part message in MIME format.
 
-> On November 19, 2003 05:50 am, Martin Petruzzi wrote:
-> > On Tue, 18 Nov 2003 20:43:18 -0500
-> >
-> > Alistair Tonner <Alistair@nerdnet.ca> wrote:
-> > > > For other Alcatel users reading this, put:
-> > > > mtu 1430
-> > > > mru 1430
-> > > > ...into /etc/ppp/options
-> > >
-> > > 	Doing this works, but you are forcing yourself to a certain size which
-> > > 	1) might be smaller than optimal,
-> > > 	2) could change one night unexpectedly.
-> > >
-> > > 	Personally I trust the clamp mss to mtu ... it works.
-> > > 	(for what its worth .. my MTU is somewhat larger than that...
-> > > 	on a GVC DSL modem to ALCATEL DsLAM)
-> >
-> > Is there a way to find out what DSLAM device my provider has or even better
-> > what mtu it uses?
-> 
-> 	There is signature data in an ethereal TCP dump from the ethernet devices 
-> that connect to the modem, but I'm not sure about what your modem does.  On 
-> my GVC modem I can log into it, and it appears to be able to decode the DsLam 
-> type from what it gets on the line.
+------=_NextPart_000_0005_01C3AE9F.6FD32ED0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0006_01C3AE9F.6FD32ED0"
 
-And how do I get that signature? Pardon me if that is a stupid question...
 
-> >
-> > I guess/claim that the support people of my provider don't know that and it
-> > would cost me a fortune to confirm this suspect. But if I'm right, you say
-> > with the clamp rule the problem is solved (seems to by dynamic then) and I
-> 
-> 	it is indeed dynamic. --- I only noticed the differences due to a borked win 
-> 3.11 tcp stack. -- it REALLY doesn't behave well... (WFW ... Workgroups .. 
-> yeah...    it seemd to blatantly disregard the concept of PMTU discovery... 
-> might not have been in there at all from the way it behaved)
-> 
-> > don't need to know at all? Any idea why this was no problem with kernels <
-> > 2.4.20 (only wondering, not a need to know)?
-> 
-> 	I would suspect that you changed something in your kernel compile at 2.4.20 
-> that caused this ... I don't think ipMTU functionality has changed much in 
-> any of the kernels from 2.4.9 up. -- possibly path ipmtu disocovery ... but 
-> not sure. -- it could be that you opened up the MTU on your LAN device and 
-> didn't notice it ... 
+------=_NextPart_001_0006_01C3AE9F.6FD32ED0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I claim no, I actually did a make oldconfig with the .config of 2.4.14 and only added the Speedtouch module, which is new since 2.4.22 (of the stable ones), and I saw the same problem on an other box with a Fritz!DSL earlier (with 2.4.20), it was just a couple of webpages that didn't work there (lots less than with my box), and the configuration (as well as the provider) were the same apart from different DSL device. Also I noticed that i.e. RedHat rpms want a kernel 2.4.20 or later with their latest iptables update, that's how I came to this idea in the beginning. But anyway, it'd just be interesting to know, not necessairy.
+=20
 
-> >
-> > By the way, I found the number 1430 a couple of times in different other
-> > maillists to be the size always working with the Alcatel Speedtouch USB, I
-> > have no idea about a technical background of exactly that size.
-> 
-> 	As I pointed out the # will vary depending on the configuration of the device 
-> on the other end .. .look at the defined MTU of your ppp device when it comes 
-> up .. .thats your maximum ... and should always be (at least 8 bytes) less 
-> than the MTU of the ethernet device which is connected to the modem.
-> 	(on a side note ... dunno if this true for USB modems... hmm
-> 	 my DSL is pppoe - my modem is connected by ethernet to a NIC on 
-> 	my box .. )
->    MSS is MTU - (sum of all packet headers) -- i.e. PPP packet header + TCP 
-> packet header + whatever proprietary subspecies you might have packet header 
-> 	if I recall correctly .. (and if I don't someone will jump all over me) --
-> 	with DSL the ppp tunnel adds a ppp wrapper packet around the  TCP/UDP/
-> whatever packet.(again --- if I recall correctly)  this ppp packet has an 8 
-> byte header .. .it makes life easier on the system as a whole if the TCP/UDP 
-> packets are bundled correctly at the source, and small enough to withstand 
-> having the 8 bytes wrapped around them and still fit through the PPP tunnel 
-> in a single go.
+ Hello All,
 
-Thank you for the explanation.
-   
-> 	Specially considering that there are some OS out there that don't understand 
-> the idea of PMTU discovery.
+=20
 
-Martin
+I Need to setup one Linux box with 3 Nics and two valid ip address, my
+question is:
+
+=20
+
+Nic1: 192.168.14.0/24
+
+Nic2: 200.204.x.x/29 route to internet
+
+Nic3: 200.171.x.x/29 route to internet=20
+
+=20
+
+How can both Ips with different routes response to requests with both =
+routes
+enable ???
+
+=20
+
+Please help-me.
+
+=20
+
+=20
+
+=20
+
+Best Regards,
+
+=20
+
+=20
+
+Jos=E9 Gomes
+
+Network Specialist
+
+Redbox Networks Ltda
+
+jgomes@redbox.com.br
+
+ <http://www.redbox.com.br/> http://www.redbox.com.br
+
++ 5511 3816-3720 R. 212
+
+=20
+
+
+------=_NextPart_001_0006_01C3AE9F.6FD32ED0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:Arial;
+	color:black;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	color:black;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 3.0cm 70.85pt 3.0cm;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext=3D"edit">
+  <o:idmap v:ext=3D"edit" data=3D"1" />
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=3Dwhite background=3D"cid:image001.gif@01C3AE9F.6DEBAA20" =
+lang=3DPT-BR
+link=3Dblue vlink=3Dpurple>
+<img src=3D"cid:image001.gif@01C3AE9F.6DEBAA20"
+v:src=3D"cid:image001.gif@01C3AE9F.6DEBAA20" v:shapes=3D"_x0000_Mail" =
+width=3D0
+height=3D0 class=3Dshape style=3D'display:none;width:0;height:0'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D3 =
+color=3Dblack
+face=3DArial><span style=3D'font-size:12.0pt'>=A0</span></font><font =
+size=3D2
+color=3Dblack face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;
+font-family:"Courier New";color:windowtext'>Hello =
+All,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>I Need to setup one Linux box with 3 Nics and two =
+valid ip
+address, my question is:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Nic1: 192.168.14.0/24<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Nic2: 200.204.x.x/29 route to =
+internet<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Nic3: 200.171.x.x/29 route to internet =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>How can both Ips with different routes response to =
+requests
+with both routes enable ???<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Please help-me.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Best Regards,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Jos=E9 Gomes<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Network Specialist<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>Redbox Networks Ltda<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>jgomes@redbox.com.br<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'><a href=3D"http://www.redbox.com.br/"><span =
+lang=3DEN-US>http://www.redbox.com.br</span></a></span></font><font
+size=3D2 color=3Dblack face=3D"Courier New"><span lang=3DEN-US =
+style=3D'font-size:10.0pt;
+font-family:"Courier =
+New";color:windowtext'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-autospace:none'><font size=3D2 =
+color=3Dblack
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New";
+color:windowtext'>+ 5511 3816-3720 R. 212<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3DArial><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_001_0006_01C3AE9F.6FD32ED0--
+
+------=_NextPart_000_0005_01C3AE9F.6FD32ED0
+Content-Type: image/gif;
+	name="image001.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <image001.gif@01C3AE9F.6DEBAA20>
+
+R0lGODlhFAAUAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z//+ZzP+Z
+mf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8zAP8A//8AzP8Amf8A
+Zv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszMM8zMAMyZ/8yZzMyZmcyZZsyZ
+M8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwzZswzM8wzAMwA/8wAzMwAmcwAZswAM8wA
+AJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm
+/5lmzJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kAAGb//2b/
+zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZZmaZM2aZAGZm/2ZmzGZm
+mWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YAzGYAmWYAZmYAM2YAADP//zP/zDP/mTP/
+ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNm
+MzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/
+AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBmAAAz
+/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAMwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAFAAUAEAIQwBJCBxI
+sKBBAAgTKlyYUCDDhwsdQpwoceLDihYjksh4cSNHjR9BhmzocSQAjCFRflTJkWVGlxZhUiw5UiZE
+gzhzBgQAOw==
+
+------=_NextPart_000_0005_01C3AE9F.6FD32ED0--
+
 
