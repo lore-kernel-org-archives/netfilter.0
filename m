@@ -1,9 +1,11 @@
-From: Pablo Allietti <pablo@lacnic.net>
-Subject: limit connections to ssh
-Date: Mon, 14 Mar 2005 21:01:11 -0300
-Message-ID: <20050315000111.GA34990@micron.lacnic.net.uy>
+From: "Travis Bell" <travis@dptexas.net>
+Subject: ARP who-has woes
+Date: Mon, 14 Mar 2005 17:47:06 -0600
+Message-ID: <42B3C34A03A8FC4BB0A80082CE8993F31C1C23@onstopnt.onestop.com>
+References: <42B3C34A03A8FC4BB0A80082CE8993F32DA28E@onstopnt.onestop.com>
 Mime-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <42B3C34A03A8FC4BB0A80082CE8993F32DA28E@onstopnt.onestop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,12 +17,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-iptables can limit connections to a a port? for exmaple 
+This is a little off topic, but I know this list has people in it who
+can answer this easily.
 
-i need to permit only 3 connections to a ssh in a period of 5 minutes
+We are a small ISP and I'm trying to figure out how to keep my customers
+from getting so much ARP traffic.
 
-iptables can do this?
+Here's a very dumbed-down diagram of how the network is set up:
+,------------.
+| 4 T1 lines |
+`------------'
+       |
+,--------------.
+| Cisco Router |
+`--------------'
+       |
+,-----------------.   ,------------------.   ,-------------.
+| Ethernet Switch |---| Web/Email Server |---| DHCP Server |
+`-----------------'   `------------------'   `-------------'
+       |
+(( Wireless Network ))
+       |
+,---------------.
+| Customer's PC |
+`---------------'
+
+
+Right now, customers default gateway is set to the Cisco Router.  I'm
+guessing I need to insert another router in the mix and customers should
+be using it.  New diagram:
+,------------.
+| 4 T1 lines |
+`------------'
+       |
+,--------------.
+| Cisco Router |
+`--------------'
+       |
+,-----------------.   ,------------------.
+| Ethernet Switch |---| Web/Email Server |
+`-----------------'   `------------------'
+       |
+,--------------.
+| Linux Router |
+`--------------'
+       |
+,-----------------.   ,-------------.
+| Ethernet Switch |---| DHCP Server |
+`-----------------'   `-------------'
+       |
+(( Wireless Network ))
+       |
+,---------------.
+| Customer's PC |
+`---------------'
+
+Am I right?  If so, what do I need to do to get this going right?
+
+Thanks in advance,
+
+Travis
+
 
