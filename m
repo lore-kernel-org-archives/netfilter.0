@@ -1,13 +1,13 @@
-From: viclists@mail.esoo.ru>
-Subject: static/shard libs from iptables.o
-Date: Wed, 26 Mar 2003 22:43:07 +0500
+From: "Farshad" <farshadas@excite.com>
+Subject: > netfilter and packet manipulation
+Date: Wed, 26 Mar 2003 13:55:31 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303262243.07297.viclists@mail.esoo.ru>
-Reply-To: viclists@mail.esoo.ru
+Message-ID: <20030326185531.91568299A3@xmxpita.excite.com>
+Reply-To: farshadas@excite.com
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is it possible create a static or shared libs(i.e libiptables.so or 
-libiptables.la) from iptables.o, which have been created after compilation of 
-iptables-1.2.7a.
 
-If it possible,please, explain me how  can I do it.
+Hello,
 
-You can ask me - Why?
-Because I want to use it from my application by traditional way(as a general 
-libs).
+I need to choose a tool for packet manipulation. So I wonder if you could give me your comments on the below issues:
 
-P.S. Sorry for my English. I just study it yet. :(
+- How do you compare Netfilter to Divert Sockets and Netlink?
+(other than what Divert Sockets mini-HOWTO says)
+Two factors are important for me: the below question and the
+efficency of communication between user and kernel space
+(doing packet processing in user space)
 
-Victor V Ismakaev
+- (just to make sure) Using Netfilter, is it possible to capture a packet on its way to another host while it is being routed, send it to the user space, then create a number of packets (e.g. two packets) in user space, and send them down into the kernel instead of the original packet towards the destination of the original packet?
+
+thanks very much,
+Farshad
+
+
+_______________________________________________
+Join Excite! - http://www.excite.com
+The most personalized portal on the Web!
 
