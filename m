@@ -1,13 +1,11 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: [despammed] port based filtering and IPsec 2.6
-Date: Wed, 21 Jan 2004 16:44:20 +0100
+From: Rasca <rasca-ml@triad.de>
+Subject: port forwarding with one interface to trace traffic?
+Date: Wed, 21 Jan 2004 16:45:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040121154420.GH27986@torres.ka0.zugschlus.de>
-References: <20040114162623.GR4106@openoffice.nl> <20040117134519.GA4911@kaufbach.delug.de> <20040121153748.GA2715@openoffice.nl>
+Message-ID: <400E9EB3.4070309@triad.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040121153748.GA2715@openoffice.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, Jan 21, 2004 at 04:37:48PM +0100, Valentijn Sessink wrote:
-> Yes you can. Re-read my post, and be creative.
+Hi IP-gurus,
 
-That will work for incoming packets. And how do I protect myself
-against configuration errors sending out unencrypted packets? I'd need
-to put the mark on the packets for destination networks, which is
-error prone.
+I want to setup a specific port forwarding to trace the
+ip traffic between a macos9 and a hp net printer to debug
+a spooler problem.
 
-The idea is nice, but it looks like an ugly hack. And it _is_ an ugly
-hack.
+I thought the port forwarding feature of linux/iptables
+would be nice to do that. But until now I wasn't able
+to get it running ;-(
 
-Greetings
-Marc
+May be some one can help here. The setup is quite simple.
+
+* one class C net (192.168.10.0)
+* a linux box with one interface (eth0), kernel 2.4.24
+   and iptables 1.2.9 (192.168.10.156
+
+* macos9 machine with 9.2.x (192.168.10...)
+
+* HP laser printer with network interface (192.168.10.9)
+
+I want to configure the Mac to print to the linux box.
+The linux box should do port forwarding to the hp printer.
+So I can use "ethereal" or what ever to dump the traffic.
+
+Because it's not a firewall all chains have as default
+"accept".
+
+I added the following rule (which seems not to be enough,
+cause the printing freezes):
+
+iptables -t nat -A PREROUTING -p tcp --dport 515 \
+	-d 192.168.10.156/32 -j DNAT --to-dest 192.168.10.9:515
+
+Any ideas?
+
+thx + cu
+  rasca
+
 
 -- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Karlsruhe, Germany |  lose things."    Winona Ryder | Fon: *49 721 966 32 15
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 721 966 31 29
+_______________________________________________________________
+| Triad Berlin Projektgesellschaft mbH | http://www.triad.de/ |
+
 
