@@ -1,8 +1,8 @@
 From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: RE: MSN Messanger through a iptables firewall.
-Date: Fri, 5 Jul 2002 08:47:26 +1000
+Subject: RE: NetBIOS browsing across subnets
+Date: Fri, 5 Jul 2002 08:51:16 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA22D@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA22F@JUPITER>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
@@ -16,14 +16,14 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-Only IRC and FTP modules are available AFAIK.
-
-MSN works fine for me as I allow outgoing from my network and
-RELATED,ESTABLISHED back.. All of my games work and even those crappy
-DirectX network ones using DXport to specify define UDP ports for each
-machine..
+Best put a Samba server on the firewall and broadcast to both networks using
+the `remote announce =` option..
+Make this machine the master browser for both networks and you should be
+fine, I do with with VPN users and it works like a dream until you put a PDC
+into the network which continously complains and wants to be the master.. he
+he.. linux beats it hands down on every election..
 
 thanks,
 George Vieira
@@ -35,54 +35,31 @@ http://www.citadelcomputer.com.au
 
 -----Original Message-----
 From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Friday, 05 July 2002 12:25 AM
-To: netfilter
-Subject: Fwd: RE: MSN Messanger through a iptables firewall.
-
-
-Someone just posted this to me instead of the list.
-
-Antony.
-
-----------  Forwarded Message  ----------
-
-Subject: RE: MSM Mesanger through a iptables firewall.
-Date: Thu, 4 Jul 2002 15:27:56 +0100
-From: <aaa.coms.sec@btclick.com>
-To: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-
-might be me but what about the irc modules ? i.e.
-
-/sbin/depmod -a
-/sbin/modprobe ip_masq_ftp
-/sbin/modprobe ip_masq_raudio
-/sbin/modprobe ip_masq_autofw
-/sbin/modprobe ip_masq_cuseeme
-/sbin/modprobe ip_masq_mfw
-/sbin/modprobe ip_masq_portw
-/sbin/modprobe ip_masq_quake
-/sbin/modprobe ip_masq_user
-/sbin/modprobe ip_masq_vdolive
-/sbin/modprobe ip_masq_irc
-
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
-Sent: 04 July 2002 15:13
+Sent: Friday, 05 July 2002 6:46 AM
 To: netfilter@lists.samba.org
-Subject: Re: MSM Mesanger through a iptables firewall.
-
-On Thursday 04 July 2002 3:06 pm, Stephan Viljoen wrote:
-> Firewall 2:
-> eth0 : 193.220.24.8
-> eth1 : 193.220.24.193
-> eth2 : 192.168.1.1
-
-What are the netmasks on eth0 and eth1 ?
-
-What's the routing table on this machine ?
+Subject: Re: NetBIOS browsing across subnets
 
 
+On Thursday 04 July 2002 9:44 pm, John Jones wrote:
+
+> I have a need to allow NetBIOS/Network Neighborhood browsing across a
+> firewall between one internal LAN segment (192.168.0.0/23) to another
+> (192.168.10.0/24).  The two networks are on interfaces eth2 and eth3,
+> respectively, off of the corporate firewall.
+
+As far as I am aware you cannot do Network Neighbourhood browsing across a 
+router - it works by using broadcast packets, so unless you bridge your 
+networks together you will not be able to browse one side from the other.
+
+You can certainly make Windows / SMB / NetBios connections from one network 
+to another, but only if you know in advance the IP address/es of the 
+machine/s you want to connect to.
+
+If anyone knows a way of supporting Windows browsing across a router, please
+
+speak up :-)
+
+ 
 
 Antony.
 
