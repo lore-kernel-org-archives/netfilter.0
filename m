@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: icmp messages to spoofed address acceptedby -m conntrack --ctstate ESTABLISHED,RELATED
-Date: Fri, 19 Mar 2004 21:25:45 +0000
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: state match support in ip6tables
+Date: Sat, 20 Mar 2004 09:57:46 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403192125.45552.Antony@Soft-Solutions.co.uk>
-References: <20040319204142.GA3294@salty>
+Message-ID: <20040319225746.GE29442@samad.com.au>
+References: <1079045669.6476.3.camel@localhost> <20040311233044.GC26800@samad.com.au> <20040319124503.GX2350@dvmwest.dvmwest.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="acY8GN8fvSPNWryy"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040319204142.GA3294@salty>
+Content-Disposition: inline
+In-Reply-To: <20040319124503.GX2350@dvmwest.dvmwest.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +19,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Friday 19 March 2004 8:41 pm, Jim Laurino wrote:
 
-> On 2004.03.18 17:35, Jim Laurino  - nfcan.x.jimlaur@dfgh.net wrote:
+--acY8GN8fvSPNWryy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > I added a rule with this matching pattern to
-> > the iptables firewall on my machine.
-> >
-> > -m conntrack --ctstate ESTABLISHED,RELATED
-> >
-> > It is matching icmp packets about an
-> > unreachable destination that are sent here
-> > because someone is spoofing my IP address.
+On Fri, Mar 19, 2004 at 01:45:04PM +0100, Frank Matthie? wrote:
+> Alexander Samad [2004-03-12 00:30 CET]:
+> > On Thu, Mar 11, 2004 at 11:54:30PM +0100, marco wrote:
+> > > hi all, i need help with ip6tables and match support
+> > >=20
+> > > can i use it with vannilla2.4?
+> > > where can i get a patch to enable the it (evenif there's one)?
+> >=20
+> > Conntection tracking isn't implemented in ipv6 AFSIK.
+>=20
+> Do you know. why this isn't implemented yet?
+> Are there technical reasons or only a problem of priorities?
+No, I don't know, only passing on what I have read in the dev mailing
+list.
 
-On Thursday 18 March 2004 10:53 pm, Antony Stone wrote:
+>=20
+> I would like to have IPv6 statefull inspection, because i and some others
+> want to play with IPV6 over freenet6. But making firewall rules w/o
+> statefull inspection isn't really funny, nor is it compareable.
+agreed
+>=20
+> Frank.
+> --=20
+> Frank Matthie?
+>=20
+> [x] Nail here for new monitor.
 
-> I agree with this latter explanation.
->
-> http://isc.incidents.org/port_details.html?port=1026
-> http://www.mynetwatchman.com/kb/security/articles/popupspam
-> http://www.lurhq.com/popup_spam.html
 
-Regards,
 
-Antony.
+--acY8GN8fvSPNWryy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
--- 
-In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-the mechanics are German, the lovers are French, the entertainment is 
-American, and everything is organised by the Swiss.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-In Hell, the police are German, the chefs are British, the beer is American, 
-the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-and everything is organised by the Italians.
+iD8DBQFAW3rqkZz88chpJ2MRAuJOAKCiYEVwLcgp1ak0KRtKxoMmyE0CowCg399G
+eUMM4R7PZBLO9QGcd+tBlfE=
+=R1NM
+-----END PGP SIGNATURE-----
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--acY8GN8fvSPNWryy--
 
