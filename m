@@ -1,7 +1,7 @@
 From: travis@visionsbeyond.com
-Subject: FTP: masqued AND forwarded
-Date: Wed, 26 Jan 2005 15:31:04 -0700 (MST)
-Message-ID: <36476.192.168.2.125.1106778664.squirrel@mail2.visionsbeyond.com>
+Subject: ftp: masqued AND forwarded
+Date: Wed, 26 Jan 2005 15:44:01 -0700 (MST)
+Message-ID: <36512.192.168.2.125.1106779441.squirrel@mail2.visionsbeyond.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,7 +19,7 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi all,
-     I am new to the list.  I have spent several hours scouring the
+     I have spent several hours scouring the
 archives trying to find out how to send external ftp requests to an
 internal server while at the same time allowing clients behind the
 firewall to access external ftp servers.  (currently requests from
@@ -54,9 +54,9 @@ $MYADDR is the firewall external address
 $EXTERNALIF is the external interface (eth0)
 $INTERNALIF is the internal interface (eth1)
 
-
+My apologies if this question has already been answered (probable) and ask
+forgiveness for my lack of being able to find it.
 
 Travis Crook
 Visions Beyond
-
 
