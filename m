@@ -1,11 +1,9 @@
-From: "Jet" <yenjet.chan@eglobal.com.my>
-Subject: Re: NAT only - No connection tracking
-Date: Wed, 13 Nov 2002 10:46:25 +0800
+From: Aaron Clausen <maureen-taocow@alberni.net>
+Subject: MSN Messenger
+Date: Tue, 12 Nov 2002 20:33:50 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002b01c28abe$ddc28f90$0bc8c80a@dolphin>
-References: <20021111192103.14755.qmail@web40910.mail.yahoo.com> <1037099676.12587.8.camel@hope>
+Message-ID: <Pine.LNX.4.33.0211122032380.20101-100000@ts1.alberni.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,35 +14,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists" <netfilter@lists.netfilter.org>, Filip Sneppe <filip.sneppe@cronos.be>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Thanks for all the reply.
+Further to my query on MSN Messenger through iptables/netfilter.  I found
+reference to helper modules like "ip_masq_h323" for the 2.2 kernel.  I'm
+running 2.4.9.  Does anyone know about these patches?
 
-I'm now looking at http://www.policyrouting.org/ and might plan to buy a
-copy of it.
-
-Thanks again everyone here for such a good help.
-
-.//Jet
-
------ Original Message -----
-From: "Filip Sneppe" <filip.sneppe@cronos.be>
-To: "Brad Chapman" <kakadu_croc@yahoo.com>
-Cc: "Antony Stone" <Antony@Soft-Solutions.co.uk>;
-<netfilter@lists.netfilter.org>
-Sent: Tuesday, November 12, 2002 7:14 PM
-Subject: Re: NAT only - No connection tracking
-
-
-
->>
-> The book is being released online at http://www.policyrouting.org/,
-> but is definately worth the buy.
->
-> Regards,
-> Filip
->
->
+-- 
+Aaron Clausen
 
 
