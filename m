@@ -1,15 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Question regarding unclean match support!
-Date: Wed, 11 Jun 2003 09:54:16 -0400
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: string is not working, any help?
+Date: Wed, 11 Jun 2003 09:31:32 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306110954.16270.Alistair@nerdnet.ca>
-References: <00a601c32e4a$577181a0$6828010a@telxsi.com>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <20030611163132.91227.qmail@web40207.mail.yahoo.com>
+References: <3EE682F0.60800@iprimus.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00a601c32e4a$577181a0$6828010a@telxsi.com>
-Content-Disposition: inline
+In-Reply-To: <3EE682F0.60800@iprimus.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,39 +17,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rahul  Gulati <rgulati@tataelxsi.co.in>, netfilter@lists.netfilter.org
-
-On June 9, 2003 01:45 am, Rahul Gulati wrote:
-> Hi, All,
->
-> I had a question regarding support for "unclean" match in Linux 2.4.18
-> kernel.
-> I am not able to see "unclean" match as an option under IP: Netfilter
-> Configuration.
->
-> I would like to know if I need to down load some patch for unclean match
-> support,
-> if yes would appreciate if anyone could direct me to the location where the
-> patch might be available.
->
-> TIA...
-> Rahul
+Content-Transfer-Encoding: 7bit
+To: IPtables Users <netfilter@lists.samba.org>
 
 
+--- Michael Kearey <mutk@iprimus.com.au> wrote:
+> Esteban wrote:
+> <snip>
+> > root@dejawu:~# iptables -t mangle -A PREROUTING -p tcp -m --string
+> > "pepee" -j DROP
+> > iptables v1.2.7a: Couldn't load match
+> > `--string':/lib/iptables/libipt_--string.so: 
+> 
+> The clue is above. You don't have 'so' called libipt_--string, it's 
+> called libipt_string.so
+> 
+> >cannot open shared object
+> > file: No such file or directory
+> > 
+> > Try `iptables -h' or 'iptables --help' for more information.
+> > 
+> > why is not working --string match??
+> > im using pom version patch-o-matic-20030107 under 2.4.20 kernel.
+> 
+> The correct syntax is :
+> 
+> iptables -t mangle -A PREROUTING -p tcp -m string "pepee" -j DROP
+> 
+> Cheers,
+> Michael
+> 
+> 
+no offence Michael but I think you are wrong
 
-	Get the most recent Patch O  Matic  -- Unclean is NOT in kernel yet.
-	you need to have kernel source, iptables and POM and in the POM 
-	dir:
-	KERNEL_DIR=/where/you/have/kernelsource ./runme
-	(hit me if I'm wrong folks ... I've been on iptables 1.2.7a and POM from 
-February of this year for ages)
-	and apply the unclean match from there.
--- 
+it's -m string --string "string to match"
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+Cheers
+John
+
+=====
+"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+http://calendar.yahoo.com
 
