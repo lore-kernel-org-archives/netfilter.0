@@ -1,10 +1,13 @@
-From: "Reckhard, Tobias" <tobias.reckhard@secunet.com>
-Subject: RE: Translating Ziegler Book ipchains Rules
-Date: Wed, 11 Dec 2002 13:43:19 +0100
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: Re: PPTP+NAT+MASQ anyone?
+Date: Wed, 11 Dec 2002 12:49:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <96C102324EF9D411A49500306E06C8D1021AE3F2@eketsv02.cubis.de>
+Message-ID: <200212111249.53924.roy@karlsbakk.net>
+References: <200212091226.23888.roy@karlsbakk.net> <200212091558.22457.roy@karlsbakk.net> <1039447047.25961.47.camel@tux>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1039447047.25961.47.camel@tux>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,53 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Martin Josefsson <gandalf@wlug.westbo.se>
+Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-> That script has nice, symmetrical pairs of rules like this:
-> 
-> # HTTP (80) - accessing remote web sites as a client
-> ipchains -A output -i eth1 -s $IPADDR $UNPRIV -d 0/0 80 -p 
-> tcp -j ACCEPT
-> ipchains -A input -i eth1 -s 0/0 80 -d $IPADDR $UNPRIV -p tcp 
-> ! -y -j ACCEPT
-> 
-> With connection tracking in iptables, can all these pairs be 
-> cut to just
-> one rule, like this:
-> 
-> $IPTABLES -A FORWARD -o eth1 -s $IPADDR -p tcp --sport $UNPRIV  \
-> --dport 80 -j ACCEPT
-> 
-> Or do I still need this, too?
-> 
-> $IPTABLES -A FORWARD -i eth1  -p tcp --sport 80 -d $IPADDR \
-> --dport $UNPRIV ! --syn -j ACCEPT
+> > I've tried all the ones I can find.
+> > When trying to apply the pptp-conntrack-nat.patch, I get errors apply=
+ing
+> > it. Do I need to hand patch this thing? I've tried with 2.4.{18,19,20=
+}
+>
+> Did you run './runme pending' first like the documentation tells you?
 
-You can, if you wish, make do with the following:
+yes. I get this error message when trying to patch 2.4.{19|20}.=20
 
-# Allow all established and related traffic to pass the FORWARD chain
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+Testing... pptp-conntrack-nat.patch NOT APPLIED ( 8 missing files)
+The extra/pptp-conntrack-nat patch:
+   Author: Harald Welte <laforge@gnumonks.org>
+   Status: Beta
 
-# Allow HTTP session initiation
-$IPTABLES -A FORWARD -p tcp -s $IPADDR -i $INIF --dport 80 -o eth1 \
-  -m state --state NEW -j ACCEPT
+   This adds CONFIG_IP_NF_PPTP:
+   Connection tracking and NAT support for PPTP.
 
-> Similarly, is it necessary to have multiple rules for ftp control
-> and data ports, or does ip_conntrack_ftp handle everything with just
-> one rule, like this:
-> 
-> $IPTABLES -A FORWARD -o eth1 -s $IPADDR -p tcp --sport $UNPRIV  \
-> --dport 21 -j ACCEPT
-> 
-> Or do I need these in pairs also, with parallel ones for port 21?
+   Note that this code currently has limitations
+   - can only NAT connections from PNS to PAC
+   - doesnt' support multiple calls within one session
 
-Well, the first rule above takes care of ESTABLISHED and RELATED traffic, so
-you should only need the above rule. You should use "-m state --state NEW"
-in it, though.
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?]
 
-If you don't want to trust netfilter's state that much, you can still use
-ipchains style rules and state, if you want.
+roy
 
-Tobias
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
+
+Computers are like air conditioners.
+They stop working when you open Windows.
+
 
