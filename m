@@ -1,13 +1,11 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: about iprange
-Date: Tue, 25 Jan 2005 09:08:40 -0800
-Message-ID: <41F67D18.4060100@shorewall.net>
-References: <1106251621.41f00f65147cb@imp6-q.free.fr>	<1106252952.5024.25.camel@hubcap.ljm.dom>	<1106335800.41f15838d9d26@imp6-q.free.fr>	<1106660735.41f64d7f087a7@imp5-q.free.fr>
-	<1106671920.5306.50.camel@jasiiitosh.nexusmgmt.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: Help debugging iptables firewall....
+Date: Tue, 25 Jan 2005 09:13:04 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F01991C@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1106671920.5306.50.camel@jasiiitosh.nexusmgmt.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter users list <netfilter@lists.netfilter.org>
+To: Greg Cope <gregcope@gmail.com>, netfilter@lists.netfilter.org
 
-John A. Sullivan III wrote:
+I would recommend that you put a log entry for the protocol(s) or IP to
+IP connections that you want to debug across the DMZ.  I did this while
+trying to debug some IPSEC traffic.
 
-> 
-> We found we needed to accommodate solutions both ways within ISCS, i.e.,
-> if a gateway supports iprange, we write iptables rules with ranges.  If
-> not, we use the logic found in SubnetCreator
-> (http://subnetcreator.sourceforge.net) to break the range into subnets
-> and then create rules for the resultant subnets.
+-A FORWARD -p tcp -m tcp --dport 1433 -j LOG --log-prefix "MySQL [tcp]:
+" --log-level 1
+-A FORWARD -p udp -m udp --dport 1433 -j LOG --log-prefix "MySQL [udp]:
+" --log-level 1
 
-FWIW, Shorewall takes the same approach although Shorewall has it's own
-code for converting a range into a list of subnets.
+Put this at the beginning of the chain (tweak it for whatever DB you
+need) and then just watch the calls to make sure that you are see the
+flow that you want.  When you are done move them down to the end of the
+chain, if they are still hitting then you are loosing packets.
 
--Tom
--- 
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
-PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
+BTW, are you running pinholes (point to point IP for each port you want
+open)?  What DB?
+
+Gary Wayne Smith
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Greg Cope
+Sent: Tuesday, January 25, 2005 8:54 AM
+To: netfilter@lists.netfilter.org
+Subject: Help debugging iptables firewall....
+
+Hi All,
+
+I have a 3 interface firewall (internet, dmz, lan).
+
+For some reason a dmz host can longer ssh or connect to a DB server on
+the lan(it could before).
+
+Nothing seems to get logged with a $IPTABLES -A FORWARD -j LOG
+--log-prefix "FORWARD DENY: " rule.  And when I disable the FW and
+enable the plain routing it seems to be able to connect ok.
+
+At a loss as to why this would not work without logging something.
+
+Firewall and Webserver are FC1, DB server is Redhat AS3.
+
+Could someone suggest some ideas on debuging this?
+
+Any  ideas gratefully received.
+
+Greg
+
 
