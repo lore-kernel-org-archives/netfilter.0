@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: netfilter and proxies
-Date: Thu, 14 Oct 2004 17:15:32 -0400
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: traffic forward
+Date: 14 Oct 2004 23:39:23 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041014211532.GA4529@bender.817west.com>
-References: <200410141702.00033.JALaramie@Loudoun-Fairfax.com>
+Message-ID: <1097778121.21962.6.camel@nostromo.bgsecm.com>
+References: <416EA83F.3030503@divx.team.lv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200410141702.00033.JALaramie@Loudoun-Fairfax.com>
+In-Reply-To: <416EA83F.3030503@divx.team.lv>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,62 +17,31 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Thu, Oct 14, 2004 at 05:02:00PM -0400, Jeffrey Laramie wrote:
-> Hey All,
-> 
-> I'm trying to help a guy on another list with his network configuration but 
-> he's thrown me a curve. He has a firewall/server on the perimeter with one 
-> NIC facing an ADSL router and one facing his LAN. Here's his description of 
-> the problem:
-> 
-> "to internet: no problem, but i have problem to connect with any vhost  
-> (some virtual domain running in the server) or for send email through my 
-> email server, using internal pc lan. 
-> if I try to connect from outside (cybercafe) i don't have any kind of  
-> problems (i can check my email and i can relay through my server )
-> Thats why i think the problem start whith the forward rules  define at 
-> the firewall."
-> 
-> I asked him to give me iptables -L -t nat and -t filter. Here's the output of 
-> his nat chain:
-> 
-> # iptables -L -t nat
+El jue, 14 de 10 de 2004 a las 18:24, capsx escribi=C3=B3:
+> hello!
+>=20
+> How can i forward incoming traffic to external ip FROM outside a to=20
+> other ip in OUTSIDE ....?
 
-it would actually help more to have the output of "iptables -vnxL -t
-nat" instead, but oh well...
+I suppose so. You should do DNAT as if it was an IP from the
+internal network and then route the packets back to the
+exterior. It's more a problem of routing that one of netfilter.
 
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> REDIRECT   tcp  --  192.168.0.0/24       anywhere            tcp 
-> dpt:http redir ports 3128
-> REDIRECT   tcp  --  192.168.0.0/24       anywhere            tcp 
-> dpt:smtp redir ports 3128
-> REDIRECT   tcp  --  192.168.0.0/24       anywhere            tcp 
-> dpt:pop3 redir ports 3128
-> REDIRECT   tcp  --  192.168.0.0/24       anywhere            tcp 
-> dpt:imap redir ports 3128
-> 
-> I don't use proxies or REDIRECT myself and I'm not sure what he means when he 
-> says he has a "virtual domain", but this doesn't look right to me. Can he 
-> have multiple services forwarded to the same port like this?
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
-i will naively assume from the port number that this is a squid proxy?
-yes--you can redirect multiple destination ports to the same proxy; as
-long as the proxy understands the layer 7 protocol.  i.e. redirecting
-both TCP port 21 and TCP port 80 to a squid proxy is valid, as squid can
-proxy both FTP and HTTP (though i've never tried transparent redirecting
-of FTP--dunno how that would work).  however; proxying SMTP, POP3, and
-IMAP to a squid proxy...well it isn't the most ridiculous thing i've
-heard in a while--but it's up there...
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
-squid supports FTP, Gopher, and HTTP proxying...
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
 
