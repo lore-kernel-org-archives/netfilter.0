@@ -1,12 +1,12 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: Fwd: Re: FreeS/WAN + static NAT + 2 machines
-Date: Tue, 24 Sep 2002 22:17:22 +0200
+From: <skmail@mcewen.wcnet.org>
+Subject: internal ftp/port forwarding problem
+Date: Tue, 24 Sep 2002 16:24:36 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D90C852.9090104@fugmann.dhs.org>
-References: <OF97101FEC.E6B99807-ONC1256C3E.005480B2-C1256C3E.0054FC9A@GEHAG-DSK.DE>
+Message-ID: <Pine.LNX.4.33.0209241608490.8828-100000@mcewen.wcnet.org>
+References: <FLEKIPPLAEDMJMOOBBDPKEGOCPAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPKEGOCPAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Walther@gehag-dsk.de
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Walther@gehag-dsk.de wrote:
-> 
-> but i cannot mount any Windows or SAMBA share. do you know something about 
-> this???
-> 
-As Anthony pointed out, it proberbly because its using broadcast to 
-locate machines, which cannot be routed. You can circumvent this by 
-setting up a wins server on the network, and let all windows machines 
-use this. A wins server is a kind of name server for the netbios 
-protocol. All clients in "hybrid" or "Peer" mode will query this machine 
-to get a list of available servers, and fall back on broadcast if the 
-machine could not be contacted.
+I am behind a firewall at work, trying to open up a path through a linux
+firewall at a second remote site.  Following are the iptables rules that I
+am trying to use.  I can get logged in, but since firewalls are involved
+it's set for passive ftp and when it opens the data connection for
+directory listing it comes back as this:
 
-To make windows use a wins server you must of cource set one up. The 
-samba server can easily do this. Then make sure that all clients are 
-using a wins server (it should be easy to find in the network settings), 
-and make sure that they run in the hybrid/H-mode.
+COMMAND:>	PASV
+227 Entering Passive Mode (10,8,13,16,4,66).
 
-If you are using a DHCP server for your windows clients, you can set it 
-up to send these parameters automatically to the clients.
+Which if I'm correct means try to connect to 10.8.13.16 (ftp server's
+internal address, which is why it doesn't work) for the passive data
+connection.  I can't figure out why iptables isn't nat'ing this to work.  
+All my iptables ftp options are compiled directly into the kernel, 2.4.19
+with V 1.2.7 iptables.  Hopefully somebody out there can help explain to
+my addled brain why this isn't working.  Thanks!
 
-I have no experience with other DHCP server than unix dhcp3-server.
-The options here are:
-	option netbios-name-servers <wins-ip-address>;
-	option netbios-node-type 8;
-
-(node type 8 is the hybrid mode)
-
-Thats it.
-Anders Fugmann
-
-P.s.
-Sorry for getting a bit offtopic, but usually windoes machines are setup 
-to broadcast, which is a totally waste of bandwidth and has big flaws. 
-This letter may correct some of this.
+------------------------------------------
 
 
+# forward port 2101 to internal for an internal ftp server 
+
+$IPTB -t nat -A PREROUTING -d $EXT_IP -p tcp --dport 2101 -j DNAT --to
+$INT_FTP_SRVR:2101
+
+
+$IPTB -A FORWARD -s ! $INT_NET -d $INT_FTP_SRVR -p tcp --dport 2101 -j
+ACCEPT
+
+
+$IPTB -t nat -A POSTROUTING -s $INT_IP -p tcp --sport 2101 -j SNAT --to
+$EXT_IP:2101
+
+
+$IPTB -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT 
+
+$IPTB -A FORWARD -m state --state NEW -i $INTDEV -s $INT_NET -j ACCEPT
 
 
 
