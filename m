@@ -1,9 +1,9 @@
 From: "Peter Marshall" <peter.marshall@caris.com>
 Subject: Re: bad ftp speeds through nat
-Date: Mon, 22 Nov 2004 14:31:17 -0400
-Message-ID: <0e7301c4d0c1$74ba04b0$49caa8c0@caris.priv>
-References: <0e2d01c4d092$b8c13950$49caa8c0@caris.priv>
-	<20041122150411.GA30543@bender.817west.com>
+Date: Mon, 22 Nov 2004 14:39:36 -0400
+Message-ID: <0e7801c4d0c2$9dc80220$49caa8c0@caris.priv>
+References: <0e2d01c4d092$b8c13950$49caa8c0@caris.priv><20041122150411.GA30543@bender.817west.com>
+	<0e7301c4d0c1$74ba04b0$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,7 +18,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter <netfilter@lists.netfilter.org>
+To: Peter Marshall <peter.marshall@caris.com>, Jason Opperisano <opie@817west.com>, netfilter <netfilter@lists.netfilter.org>
+
+It looks like it is slow with any type of file transfer through the firewall
+.. not just ftp ...
+
+
+----- Original Message ----- 
+From: "Peter Marshall" <peter.marshall@caris.com>
+To: "Jason Opperisano" <opie@817west.com>; "netfilter"
+<netfilter@lists.netfilter.org>
+Sent: Monday, November 22, 2004 2:31 PM
+Subject: Re: bad ftp speeds through nat
+
 
 I have not tried it with the firewall off ... yet ... however, transfer
 speeds between boxes in the DMZ are fast .... I transefered a 40 MB file in
@@ -53,5 +65,6 @@ the FTP server, what's that throughput look like?
 "It's not easy to juggle a pregnant wife and a troubled child, but
  somehow I managed to fit in eight hours of TV a day."
         --The Simpsons
+
 
 
