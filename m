@@ -1,8 +1,8 @@
 From: "Carlos Fernandez Sanz" <cfs-netfilter@nisupu.com>
 Subject: Re: Routing problem
-Date: Sat, 14 Feb 2004 16:15:39 +0100
+Date: Sat, 14 Feb 2004 16:19:31 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003101c3f30d$67d8ed20$1530a8c0@HUSH>
+Message-ID: <003a01c3f30d$f21c9630$1530a8c0@HUSH>
 References: <002c01c3f247$9d3ee350$1530a8c0@HUSH> <200402131712.44158.Antony@Soft-Solutions.co.uk> <000a01c3f2d6$677d1680$1530a8c0@HUSH> <200402140909.20468.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,6 +18,8 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter <netfilter@lists.netfilter.org>
+
+(sorry, the first time it went out incomplete)
 
 > > The link between the carrier and the linux box happens using WAN
 addresses,
@@ -51,68 +53,23 @@ to
 >
 > What (exactly) do you mean by "It also has our first public address"?   Is
 > that public IP assigned to one of your router's interfaces?   If it is,
+
+Actually I don't have it *assigned*, because the interface where packets
+come from internet has 172.x.y.99... so when anything comes to our first
+public address, I DNAT it to the router private address. I guess I could 'ip
+addr add' the IP instead of doing this.
 then
 > simply connect the machine needing the second public IP address on it to
 that
-> interface, pointing to the first public IP as the default route.
-Provided
-> your NAT rules are only applied to what was originally 192.168.21.x
-traffic,
-> then those packets with (source address = second public IP) will simply go
-> through the router and work without NAT.
->
-> If, on the other hand, you don't mean that the first public IP has been
-> assigned to one of the interfaces on your router, then I see you have
-three
-> choices (no doubt there are others, maybe some will be suggested by
-people):
->
-> 1. Add another interface to the router, assign it your first public IP,
-and
-> proceed as described in the paragraph above.
->
-> 2. Add another interface to the machine requiring the public IP, make sure
-the
-> software running on it binds to the public IP and not the private one, and
-> set up a route on your router telling it "public IP number 2 can be found
-via
-> this gateway", giving it the private address of the special machine as the
-> gateway address.
->
-> 3. Add an interface to the router and assign it some completely new IP
-> address, outside any of the network ranges you are currently using (eg
-> 192.168.250.1), and create a point-to-point link to the machine requiring
-the
-> public IP (which now needs only one interface, and is assigned that public
-> IP, but again using a point-to-point route).
->
-> You might be able to achieve any of the above using a virtual interface
-> instead of a physical one, but that would be harder to debug in the event
-of
-> problems.
->
-> I hope we're getting somewhere now :)
->
-> > Just for the record, our user is a SAP employee who needs to access the
-SAP
-> > internal network from our office. They have a setup to allow workers to
-> > connect from home, etc, but obviously they didn't thought they could
-connect
-> > from another LAN...
->
-> Why don't they just use a VPN?
->
-> Antony.
->
-> -- 
-> In science, one tries to tell people
-> in such a way as to be understood by everyone
-> something that no-one ever knew before.
->
-> In poetry, it is the exact opposite.
->
->  - Paul Dirac
->
->
+> interface,
+
+How? By connecting the router interface, the second machine, and the carrier
+gateway to the same switch/hub? I'm not sure that would do, remember that
+packets to the internet must come from the router using the 172.x.y.99
+address...so the second machine and the carrier gateway can't talk to each
+other directly.
+
+
+Carlos.
 
 
