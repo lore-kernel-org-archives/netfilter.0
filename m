@@ -1,14 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Debug
-Date: Mon, 23 Feb 2004 15:12:21 +0000
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: Anybody heard about UP&P ?
+Date: Mon, 23 Feb 2004 09:48:56 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040223151221.3ea3083a.arnt@c2i.net>
-References: <BAY7-DAV50ii08N8yxd00027876@hotmail.com>
-	<1077543593.1658.2.camel@pepelui.baicom>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D73101668CA7@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077543593.1658.2.camel@pepelui.baicom>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Mon, 23 Feb 2004 10:39:54 -0300, 
-Alexis <alexis@attla.net.ar> wrote in message 
-<1077543593.1658.2.camel@pepelui.baicom>:
-> 
-> On Mon, 2004-02-23 at 04:36, Shaju wrote:
-> > Hi,
-> >  
-> >          I have setup gateway-proxy firewall using redhat linux 7.1
-> > and i have replaced the default  /etc/rc.d/init.d/iptables script
-> > with my own script, and restart the iptables service. It shows me
-> > done. when i tried "service iptables status" it shows iptables
-> > stopped. please help me to fix this issue.
-> >  
-> because in init.d are sysv init scripts, make shure that your scripts
-> complies these requirements.
-> 
 
-..also, Red Hat quit supporting all but Red Hat 9 on Dec. 31'th 2003,
-RH9 support "dies" on April 1'st 2004, so you will want to buy support
-from RH or someone else, or transform to Fedora, I went for Debian, 
-I made that decision before I knew of Fedora and Red Hat's legal 
-action on the SCO Group.
+When I wanted to get this particular feature working to chat with my =
+Dad, I wrote a quickie script to -j ACCEPT his IP.  Then I use another =
+one to reset my rules when we're done chatting.  Worked fine after that, =
+NAT and all.
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+IIRC, UPnP was the reason for that first 'big' XP patch right after it =
+came out.  So, yes, it is probably a vulnerability.
 
+
+Bob
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Chris Brenton
+Sent: Sunday, February 22, 2004 6:33 AM
+To: netfilter@lists.netfilter.org
+Subject: RE: Anybody heard about UP&P ?
+
+
+This sounds *really* fishy to me. Sounds to me like what they are
+looking to do is setup a 1 to 1 NAT mapping (or possibly port
+forwarding) to the host needing "remote assistance" and probably punch
+open the filtering as well.=20
+
+Do you know how how much access gets opened up? Any authentication or
+encryption being used during the management session? Any guarantee that
+the hole gets closed up when they are done? Any logging of the access as
+well as what gets changed during the session?
+
+You could always ask what level of access is required and just manually
+create the rules yourself. At least that way you know what is going on.
+
+I think I'm real glad Netfilter does not support this. Sounds like a
+compromise waiting to happen.
+
+C
+
+
+On Fri, 2004-02-20 at 14:35, Carl Farrington wrote:
+> UPNP means Universal Plug'n'Play. I guess WinXP looks to automagically =
+reconfigure the NAT rules via upnp.
+>=20
+> No idea about the netfilter stuff myself I'm afraid.
+>=20
+> > -----Original Message-----
+> > From: Marc Recht=E9 [mailto:mrechte@randodetente.org]
+> > Sent: 20 February 2004 07:14
+> > To: netfilter@lists.netfilter.org
+> > Subject: Anybody heard about UP&P ?
+> >=20
+> > To enable remote assistance from Internet of a WinXP PC on a LAN =
+using
+> > NAT one must have a UP&P NAT compatible router.
+> >=20
+> > Can Netfilter act as such a router, and if so do you have an idea of =
+the
+> > chain to apply ?
+> >=20
+> > Thanks for your help
+> >=20
+> > Marc.
+> >=20
+>=20
+>=20
 
 
