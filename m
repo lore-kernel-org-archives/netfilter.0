@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Ruleset
-Date: Tue, 10 Aug 2004 09:45:18 +0100
+Subject: Re: firewall problem continued
+Date: Tue, 10 Aug 2004 10:14:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408100945.18144.Antony@Soft-Solutions.co.uk>
-References: <HAEOIFPIBBBLGLHOMLLIIEPPCGAA.bclark@eccotours.biz> <200408100927.22281.Antony@Soft-Solutions.co.uk>
-Reply-To: "iptables" <netfilter@lists.netfilter.org>
+Message-ID: <200408101014.22969.Antony@Soft-Solutions.co.uk>
+References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408100926.33589.Antony@Soft-Solutions.co.uk> <20040810084353.GB22730@tranquility.scriptkitchen.com>
+Reply-To: Netfilter ML <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408100927.22281.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040810084353.GB22730@tranquility.scriptkitchen.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +19,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.netfilter.org>
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Tuesday 10 August 2004 9:27 am, Antony Stone wrote:
+On Tuesday 10 August 2004 9:43 am, Payal Rathod wrote:
 
-> On Tuesday 10 August 2004 8:22 am, Brent Clark wrote:
-> > Hi all
-> >
-> > If possible would someone be so kind as to have a look at my ruleset and
-> > if possible, share some pointers.  I have another linux box (Ip address
-> > 192.168.3.3, connected to eth1 on the FW)  I have a lan (192.168.2.0/24)
-> > connected to eth0 For my internet handling I have a ppp connection.  Im
-> > also currently toying with dyndns (ez-ipupdate).
+> On Tue, Aug 10, 2004 at 09:26:33AM +0100, Antony Stone wrote:
+> > Why does the mail server need to refer to itself using the public IP?
 >
-> 4. Do you *really* want to allow *all* NEW packets from the Internet to the
-> DMZ, no matter what protocol they are?   You might as well simply stick
-> your 192.168.3.3 machine on a public IP address with no firewall....
+> No idea. I thought that is recommended. I mean every machine should
+> be able to access itself using all its IPs.
 
-The above comment is not quite accurate - you are, of course, only DNATting 
-packets to TCP port 80, therefore only HTTP should get through to the DMZ, 
-however I would still recommend narrowing down the FORWARD rule just to make 
-it obvious that's what's happening when you look at the filter rules, rather 
-than having to refer to the nat rules to figure out what traffic is being 
-allowed.
+That would mean "all IPs on all interfaces of the machine".   It doesn't 
+include arbitrary IPs which some other machine may choose to translate to an 
+IP on this machine's interface.
 
-In other words, make the ruleset slightly more obvious, so you don't make the 
-same mistake I did, when you come to read the ruleset in 3 months' time :)
+> Will the same rule apply even when I using it as a database or webserver?
+
+If you can find a good reason why a machine needs to refer to itself using an 
+IP which is not on one of its interfaces (ie: an address which gets 
+translated elsewhere), then we can try to think of a way to enable that.
+
+However, until the problem arises, don't worry about it.
+
+> > You should be cautious about doing too many things one after another
+> > which are simply needed as workarounds for a strange network setup, or a
+> > non-ideal DNS setup, and sooner or later you need to stop adding
+> > workarounds and change the underlying design.
+>
+> Are you saying my setup is broken? Should I change my whole design?
+
+Since you do not apparently have a need for the mail server to reach itself on 
+the public IP address, then no, the design may be perfectly okay.   I thought 
+there was some need for this, which suggested to me that maybe it was the 
+wrong way to go about doing it.
+
+So long as the system is working as it is, however, the design is probably 
+okay.
 
 Regards,
 
 Antony.
 
 -- 
-People who use Microsoft software should be certified.
+Normal people think "If it ain't broke, don't fix it".
+Engineers think "If it ain't broke, it doesn't have enough features yet".
 
                                                      Please reply to the list;
                                                            please don't CC me.
