@@ -1,14 +1,12 @@
-From: Thierry ITTY <thierry.itty@besancon.org>
-Subject: Re: iptables msn messenger
-Date: Thu, 14 Oct 2004 09:41:56
+From: vlad <faktroot@mail.ru>
+Subject: Problem with connbyte modul
+Date: Thu, 14 Oct 2004 16:40:59 +0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <3.0.1.16.20041014094156.1d3771c0@s-net-04.besancon.org>
-References: <1097725760.1580.9.camel@joel.d2visp.com>
+Message-ID: <1647394259.20041014164059@mail.ru>
+Reply-To: vlad <faktroot@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1097725760.1580.9.camel@joel.d2visp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,61 +16,47 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "Joel n.solanki" <zealous@bonbon.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter <netfilter@lists.netfilter.org>
 
-I posted several times the same answer on this list
+Hello netfilter,
 
-I don't have the text anymore so I can't send it to you right now
+  I have kernel 2.4.27, pom-ng-20041013, iptables-1.3.0-20041013,
+  patch-owl for kernel 2.4.27. But when compile modules before
+  compilation kernel, I have this litle problem:
 
-basically msn messenger needs an UPnP capable network gateway, which, to
-say it very shortly will allow inside clients to tell the gw which
-connections/redirections they need.
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.27/include -Wall -Wstrict-prototype=
+s -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointe=
+r -pipe -mpreferred-stack-boundary=3D2 -march=3Di686 -DMODULE  -nostdinc =
+-iwithprefix include -DKBUILD_BASENAME=3Dipt_connbytes  -c -o ipt_connbyt=
+es.o ipt_connbytes.c
+ipt_connbytes.c: In function `match':
+ipt_connbytes.c:28: error: structure has no member named `bytes'
+ipt_connbytes.c:28: error: structure has no member named `bytes'
+ipt_connbytes.c:30: error: structure has no member named `bytes'
+ipt_connbytes.c:30: error: structure has no member named `bytes'
+make[2]: *** [ipt_connbytes.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.27/net/ipv4/netfilter'
+make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.27/net'
+make: *** [_mod_net] Error 2
+root@fakt /usr/src/linux# mc
 
-there is an upnp daemon working with iptables/netfilter for linux
+Thanks in advance.
 
-try and search this list's archieves to find my former posts which explain
-what to install and where to get it.
-
-hth
+PS. Sorry for my very bed englesh. :)
 
 
-A 09:19 14/10/2004 +0530, vous avez =E9crit :
->Dear list,
->
->I am facing problem with msn messenger connection. I havent recived this
->type of problem for atleast year.=20
->
->I want to know wheather iptables can perform msn messenger connection
->problem. I am facing this problem for 2 days.
->
->some time msn messenger connects and works properly and sometime it
->doesnt connect.=20
->
->yesterday there was msn messenger maintenance ....we got that message in
->msn itself.
->but as i told u i m facing this problem for 2 days so i dont know
->wheather they have done maintenance due to this.
->
->is there any option in /proc/sys/net/ipv4/????? or anything or iptables.
->??
->
->I know this question is little out of list.
->but i have mailed to this coz i want to know wheather this type of
->problem is created by iptables or not?
->
->--=20
->Joel N.Solanki
->Network Administrator
->Mobile: 91-9426353268
->Phone No: 0265-550001/2/3/4/5 Ext: 211/212
->Digtial 2 Virtual Internet Service Provider.
->http://www.packetraptor.com/
->http://www.d2visp.com/
->Gujarat (India)
->
->
->
->
->
+
+--=20
+With best wishes,
+ vlad                          mailto:faktroot@mail.ru
+
+System/Network Administrator
+TV/Video Engineer
+ICQ 163227020
+----------------------------------------------
+=F7=D3=C5 =DA=C1=C2=C1=D7=CE=CF, =D0=CF=CB=C1 =DC=D4=CF =D3=CC=D5=DE=C1=C5=
+=D4=D3=D1 =D3 =CB=C5=CD - =D4=CF =C4=D2=D5=C7=C9=CD.=20
+
 
