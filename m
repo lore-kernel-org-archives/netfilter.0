@@ -1,83 +1,50 @@
-From: Marian Stagarescu <marian@ti.com>
-Subject: PPTP conntrack w/out DEBUG is broken ???
-Date: Wed, 25 Sep 2002 16:48:42 -0400
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200209251648.42936.marian@ti.com>
-References: <87d6r9jaa4.fsf@sensi.yemanja.net> <1032690651.9594.13.camel@tux>
+From: "Mohammad Shakir" <shakirz1@hotmail.com>
+Subject: Need Help
+Date: Fri, 27 Sep 2002 11:08:47 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <F270kuutSgcOrBLSAQV00000096@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <1032690651.9594.13.camel@tux>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Martin Josefsson <gandalf@wlug.westbo.se>, =?iso-8859-15?q?C=E9dric=20Rivard?= <cedric@yemanja.net>
-Cc: Netfilter-devel <netfilter-devel@lists.netfilter.org>, Netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/html; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.samba.org
 
-i run into one problem with PPTP conntrack:
-
-run it with debug on: works
-run it w/out debug on: does not.
-
-i also turned on the patch below and configure the CONFIG_NETFILTER_DEBUG=
-:
-compile ip_conntrack_pptp with debug on: all ok
-compile ip_conntrack_pptp w/out debug: does not even print the ASSERT rea=
-dlock=20
-statements from CONFIG_NETFILTER_DEBUG, PPTP connection is not establishe=
-d.
-
-this debug issue was tracked down to a single printk statement in=20
-ip_conntrack_pptp.c: line 244,245:
-
-DEBUGP("%s, CID=3D%X, PCID=3D%X\n", strMName[msg]                 =20
-                     ntohs(*cid), ntohs(*pcid));
-
-i run this on a 2.4.17 mips little endian, single proc, latest pptp ALG f=
-iles=20
-from netfilter, newnat13.
-
-how this can be ?=20
-
-thanks for any input,
-marian
-
-
-
-On Sunday 22 September 2002 06:30 am, Martin Josefsson wrote:
-> On Fri, 2002-09-20 at 11:11, C=E9dric Rivard wrote:
-> > Hi all,
-> >
-> > As I've already reported, there is a problem with the PPTP conntrack
-> > module of pom. It can't be built with the option CONFIG_NETFILTER_DEB=
-UG.
-> > And I still receive questions about the first thread I started on thi=
-s
-> > problem but without pointing the cause. I hope that everyone is now a=
-ware
-> > of this issue.
->
-> This issue came to my attention in the end of August, I produced a patc=
-h
-> and I never heard from that person again. The patch is quite ugly but i=
-t
-> does solve this specific problem. I was waiting for some more input fro=
-m
-> other developers before submitting it to cvs but now I've given up on
-> that and I've submitted it. patch-o-matic in cvs now works with
-> debugging enabled.
->
-> or you can apply this patch on your kernel after patching with the
-> patch-o-matic you are currently using:
->
-> http://www.netfilter.org/~gandalf/patches/ip_conntrack_proto_gre.c-lock=
-fix
-
+<html><div style=3D'background-color:'><DIV>Dear Russell,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have this setup in ipchains and now I want to convert in iptables. p=
+lz help me. <BR></DIV>
+<DIV>
+<DIV>/sbin/ipchains&nbsp; -F forward&nbsp;&nbsp; </DIV>
+<DIV>/sbin/ipchains&nbsp; -F input&nbsp;&nbsp;&nbsp;&nbsp; </DIV>
+<DIV>/sbin/ipchains&nbsp; -F output&nbsp;&nbsp;&nbsp; </DIV>
+<DIV>&nbsp;</DIV></DIV>
+<DIV>/sbin/ipchains&nbsp; -P forward&nbsp;&nbsp; ACCEPT<BR>/sbin/ipchains&n=
+bsp; -P input&nbsp;&nbsp;&nbsp;&nbsp; ACCEPT<BR>/sbin/ipchains&nbsp; -P out=
+put&nbsp;&nbsp;&nbsp; ACCEPT</DIV>
+<DIV><BR>echo "1" &gt; /proc/sys/net/ipv4/ip_forward</DIV>
+<DIV>&nbsp;</DIV>
+<DIV># for transparent proxy<BR>/sbin/ipchains -A input -j REDIRECT 8080 -p=
+ tcp -s 0.0.0.0/0 -d 0.0.0.0/0 80</DIV>
+<DIV># for direct connection excluding HTTP<BR>/sbin/ipchains&nbsp; -A forw=
+ard -j -p all -s 0.0.0.0/0 -d 0.0.0.0/0</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>It was my old setup in RedHat Linux 7.0Rel.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Now I have installed new verions of RedHat Linux 7.2, with Kernel 2.4.=
+7-10 and iptables version 1.2.3.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><BR>thanks in advance </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>shakir <BR></DIV></div><br clear=3Dall><hr>Join the world=92s largest =
+e-mail service with MSN Hotmail. <a href=3D'http://g.msn.com/1HM1ENXX/c157?=
+?PI=3D31901'>Click Here</a><br></html>
 
