@@ -1,9 +1,8 @@
 From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: one to one NAT
-Date: Tue, 10 Sep 2002 08:29:26 +0200
+Subject: mangle tables.
+Date: Tue, 10 Sep 2002 08:49:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D7D9146.3080905@fugmann.dhs.org>
-References: <200209100010.g8A0AAr9027286@ns2.is.bizsystems.com> <20020910002200.VICK295.mta06-svc.ntlworld.com@there>
+Message-ID: <3D7D9614.1040205@fugmann.dhs.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,29 +16,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org, michael@insulin-pumpers.org
+To: netfilter@lists.samba.org
 
-Antony Stone wrote:
-> On Tuesday 10 September 2002 2:10 am, Michael wrote:
->>I want to map 1.2.3.5 to a single address behind the linux box
->>1.2.3.5 is mapped to eth1:0
- >
-> iptables -A PREROUTING -a nat -d 1.2.3.5 -j DNAT --to 192.168.1.19
-> iptables -A FORWARD -d 192.168.1.19 -j ACCEPT
-> 
-This only takes care of the ingoring part. Outgoing would be solved
-by using SNAT:
-$ iptables -A POSTROUTING -t nat -s 1.2.3.5 -j SNAT \
-	--to-source 192.168.1.19
-$ iptables -A FORWARD -s 192.168.1.19 -j ACCEPT
+Hi all
 
-(Antony made a small typo - it should have been '-t nat' and not '-a 
-nat', unless Im mistaken)
+I'm lookin at the new mangles tables as of 2.4.18, and fail to
+understand excatly packets traverse these chains.
 
-I would suggest that you apply network interface names, where possible.
+the manpage says:
+      Since kernel 2.4.18, three other built-in chains are  also
+      supported  :  INPUT  (for  packets  coming  into the box itself),
+      FORWARD (for altering packets being routed through the box), and
+      POSTROUTING (for altering packets as they are about to go out).
 
-Regards
+Am I correct in the following:
+Packets going through the firewall (forwarded):
+PREROUTING,....,FORWARD,....,POSTROUTING.
+
+Packets originating from the firewall itself:
+	OUTPUT,...,POSTROUTING.
+
+Packets destined for the firewall itself:
+	PREROUTING,...,INPUT.
+
+Next, is the above is correct, when does packets hit the chains,
+e.g. what chains are traversed between PREROUTING and FORWARD and 
+POSTROUTING, in the forwarding example?
+
+Thanks in advance
 Anders Fugmann
 
 -- 
