@@ -1,15 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: protocol 50 unreachable
-Date: Thu, 2 Dec 2004 12:25:31 -0500
-Message-ID: <20041202172531.GA5363@bender.817west.com>
-References: <1101964546.2025.149.camel@localhost>
-	<Pine.LNX.4.44.0412012128370.22471-100000@gollum.grajagan.net>
-	<20041202151447.GA4749@bender.817west.com>
-	<CACE583C-4474-11D9-A63B-0003939B51C0@grajagan.org>
+Subject: Re: restriction for some hosts.
+Date: Thu, 2 Dec 2004 12:55:37 -0500
+Message-ID: <20041202175537.GA5532@bender.817west.com>
+References: <d594c764041202032049654f4b@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <CACE583C-4474-11D9-A63B-0003939B51C0@grajagan.org>
+In-Reply-To: <d594c764041202032049654f4b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,34 +19,55 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thu, Dec 02, 2004 at 07:13:59AM -0800, Helge Weissig wrote:
-> Jason,
+On Thu, Dec 02, 2004 at 03:20:10AM -0800, BusyBoy wrote:
+> Hello,
 > 
-> 	my ESP packets do not go from the external interface to the internal 
-> one and vice versa. The connection to the VPN server works when I hook 
-> up directly with no changes other than the IP of the client. I cannot 
-> see how this would be a problem with the VPN network at all.
+> I need some help in iptables  and I want to allow   some  hosts
+> to ping to my box and rest of the network or internet blocked.
 > 
-> h.
+> like I have linux box 192.168.0.1 (Gateway) and 192.168.0.2 to
+> 192.168.0.100 are clients.
+> 
+> I want only
+> 
+> 192.168.0.5
+> 192.168.0.10
+> 192.168.0.55
+> 
+> to be allowed to ping my linux box 192.168.0.1 and internet hosts  but
+> rest of the machines should be  blocked.( not being able  to ping and
+> traceroute )
+> 
+> any help in this reagrd will be highly appriciated.
 
-looking at your logs--all your ESP packets are from client->server.
-you don't have a single ESP packet from server->client.  so when you
-say, "my ESP packets do not go from the external interface..." you are
-ignoring the fact that there are no ESP packets ever getting to your
-external interface.
+traceroute can use either ICMP Echo Requests with TTL's incrementing
+from 1, or UDP packets starting at UDP port 33434.  these rules
+accommodate both types:
 
-which brings me back to what i said several replies ago:
+  PINGERS="192.168.0.5 192.168.0.10 192.168.0.55"
 
-  your VPN server is discarding the ESP packets from your client as a
-  result of the mangling of your intermediate NAT device.
+  # allow specific hosts to ping fw and traceroute via UDP
+  for i in $PINGERS; do
+    iptables -A INPUT -p icmp --icmp-type echo-request -s $i -j ACCEPT
+    iptables -A INPUT -p udp --dport 33434:33534 -s $i -j ACCEPT
+  done
 
-either make the VPN server more tolerant, or use NAT-T on your client.
+  # allow specific hosts to ping internet and traceroute via UDP
+  for i in $PINGERS; do
+    iptables -A FORWARD -p icmp --icmp-type echo-request -s $i -j ACCEPT
+    iptables -A FORWARD -p udp --dport 33434:33534 -s $i -j ACCEPT
+  done
+
+i'm assuming you utilize "-P DROP" on your filter chains, and "-m state
+--state ESTABLISHED,RELATED -j ACCEPT" at the top of each filter chain.
 
 -j
 
 --
-"Ah, good ol' trustworthy beer. My love for you will never die."
+"Do you want to change your name to Homer Junior? The kids can call
+ you Hoju!"
         --The Simpsons
+
 
