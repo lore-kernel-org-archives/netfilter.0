@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bridge/VPN question.
-Date: Wed, 23 Jun 2004 10:40:40 +0100
+From: "Dharmendra T." <dharmu@nsecure.net>
+Subject: Re: Routing between two firewalls
+Date: 23 Jun 2004 15:34:05 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406231040.40257.Antony@Soft-Solutions.co.uk>
-References: <041201c45865$cb810cf0$c10da8c0@arvmobile> <200406231008.40635.Antony@Soft-Solutions.co.uk> <1087983028.7624.55.camel@dharmu.nsecure.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1087985129.7945.64.camel@dharmu.nsecure.net>
+References: <40D94B3D.8050308@openscroll.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1087983028.7624.55.camel@dharmu.nsecure.net>
+In-Reply-To: <40D94B3D.8050308@openscroll.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +18,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Sudhakar Chandra <thaths@openscroll.org>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 23 June 2004 10:30 am, Dharmendra T. wrote:
+On Wed, 2004-06-23 at 14:49, Sudhakar Chandra wrote:
+> Hi,
+> 
+> I am having some trouble routing some packets between two dual-homed 
+> machines both running iptables.
+> 
+> I have a setup that I assume should be pretty common.  I have a LAN 
+> (192.168.100.0/24) which has two gateways / firewalls on it.  Both the 
+> gateways are dual-homed.
+> 
+> My setup is something like so:
+> 
+> LAN ---> (192.168.100.1) Gateway 1 (isp1.global.ip) --->
+> LAN ---> (192.168.100.2) Gateway 2 (isp2.global.ip) --->
+> 
+> Gateway 1 routes through ISP1 and Gateway 2 through ISP2.  Some machines 
+> in my LAN have .1 set as the gateway and some have .2 as the gateway.
+> 
+> I have my mail server connected to one of the global IPs that ISP2 has 
+> given me.  Or in other words, mail server is on the same subnet as the 
+> external interface of Gateway 2.
+> 
+> As things are today, packets originating on machines having Gateway 1 as 
+> their default gateway traverse out through ISP1, the global internet, 
+> back through ISP2 into my global ISP2 subnet.  This is a waste of 
+> bandwidth as well as slow.
+> 
+> I want to set up a rule on Gateway 1 such that all packets destined to 
+> my mail server (actually, my entire ISP2 subnet) should be sent to 
+> Gateway 2 for routing.
+> 
+> I tried adding a static route on Gateway 1 to route all packets destined 
+> to the mail server to Gateway 2 like so:
+> 
+> route add -host mail.server.ip gw 192.168.100.2
+> 
+> After I set this up, I am able to traceroute to mail server (packets 
+> flow through Gateway 2).  But when I try connecting to port 25, nothing 
+> happens.
+> 
+> 1. What is the fastest and easiest way to do what I want?
+> 2. Should I be doing DNAT?
+> 3. Should I be doing something using iptables AND routing?
+> 
+> Your help would be much appreciated.
+> 
+> Thaths
+> -- 
+>    "Trying is the first step towards failure." -- Homer J. Simpson
+> Slacker Without Borders                        http://openscroll.org/
+> Key fingerprint = 8A 84 2E 67 10 9A 64 03  24 38 B6 AB 1B 6E 8C E4
+> 
 
-> On Wed, 2004-06-23 at 14:38, Antony Stone wrote:
->
-> > 1. You have a default DROP policy on FORWARD (good idea), and a rule
-> > allowing packets to TCP port 25 on a specific server, but no rule
-> > allowing replies back again.   Therefore no traffic gets *through* the
-> > machine.
-> >
-> > 2. You have a default DROP policy on INPUT, and no rules in the INPUT
-> > chain allowing anything at all, therefore no packets can get in (which
-> > makes the rule in the OUTPUT chain allowing some packets out somewhat
-> > pointless).
->
-> Yes I agree. But these rules were given assuming that the user has given
-> Required rulsets (Assuming means that the user can connect to the
-> approved mail server. Please check the last mail to which I replied).
-
-You said "Are there any other rules you have defined? If no, this may work:"
-
-To me, that means that if the user does not have any other rules, then he 
-should try these (the ones you posted).
-
-I just wanted to avoid the original poster trying out a ruleset which could 
-not possibly work (and if they were connected to the machine by SSH, would 
-cut them off permanently, too).
-
-Regards,
-
-Antony.
-
+Does both the LANs are in the same physical network? Could you send us
+the network diagram? 
 -- 
-You can spend the whole of your life trying to be popular,
-but at the end of the day the size of the crowd at your funeral
-will be largely dictated by the weather.
+Dharmendra T.
+Linux Security and Admin,
+www.nsecure.net
 
- - Frank Skinner
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+This message is intended for the addressee only. It may contain
+privileged or confidential information. If you have received
+ this message in error, please notify the sender and destroy the message
+immediately. Unauthorised use or reproduction of 
+this message is strictly prohibited.
 
 
