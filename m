@@ -1,12 +1,16 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: RE: ftp and ssl
-Date: Wed, 5 Nov 2003 11:41:39 +0100 (CET)
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Re: conntrack for samba/netbios-ns
+Date: Wed, 05 Nov 2003 07:30:58 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0311051135020.10772@dns.toxicfilms.tv>
-References: <Pine.GSO.4.44.0311051052530.22263-100000@rose.man.poznan.pl>
+Message-ID: <1068035458.14617.13.camel@tarkus>
+References: <20031105003401.GA11702@shell.blacknet.de>
+ <1067999419.7813.38.camel@tarkus>
+ <1068017027.807.15.camel@elendil.intranet.cartel-securite.net>
+Reply-To: tedkaz@optonline.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.44.0311051052530.22263-100000@rose.man.poznan.pl>
+In-reply-to: <1068017027.807.15.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +20,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Marcin Kaminski <maxiu@man.poznan.pl>
-Cc: "Stuart J. Browne" <stuart@promed.com.au>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Goetz Bock <netfilter@blacknet.de>, netfilter <netfilter@lists.netfilter.org>
 
-> > You can use SSL over anything.
->
-> Not quite, You can use almost anything over SSL rather than reverse.
-You got me there.
+Ah, just like the Checkpoint implementation.
+So their is still no state tracking per say, but a hash table
+based on SA/port DA/port, and a 180 second timer.
 
-> > telnet over SSL is called ssh.
->
-> No, it is not. SSH is also based on SSL but it is not just telnet over
-> SSL. Telnet over SSL is telnet over SSL.
-Ok, that simplifaction was to far going.
+Doesn't 180 seconds seem a tad long?
+I kinda vaguely remember Checkpoint default on this being 40 seconds.
 
-> > Sure, some people use this. (Not me, yet) It works like ftp or http -
-> > requires to exchange an x.509 certificate and then goes on with an encrypted
-> > conenction.
->
-> And It can be used to encrypt only control stream, or both data and
-> control streams.
-So connection tracking is out of the question. However, the router could
-act as a 'man in the middle' ssl proxy, and then it could decrypt
-ftp-control and track these connections. Is there any software that
-actually does that to aid netfilter?
+I remember being in a discussion with some developers on this and the
+consensus was 30 second heartbeats ( strange, they almost always end =
+up
+with 30 second heartbeats for everything, hehe ).
 
-> Latest draft about the topic is in:
-> http://www.ietf.org/internet-drafts/draft-murray-auth-ftp-ssl-12.txt
-So it's still a draft, no wonder I never got to reading that :)
+Could the developers enlighten me as to why they ended up with 180?
+Not a big deal, but it never hurts to learn something :-)
 
-> Regards
-Regards,
-Maciej
+Thanks,
+Ted
+
+PS By the way your tutorials are great.
+
+On Wed, 2003-11-05 at 02:23, Cedric Blancher wrote:
+> Le mer 05/11/2003 =E0 03:30, Ted Kaczmarek a =E9crit :
+> > udp is connectionless, not sure where you can get a state on it.
+>=20
+> Connection <> state
+>=20
+> State tracking applies to UDP and is based on timers. See Iptables
+> Tutorial for UDP state tracking :
+>=20
+> http://iptables-tutorial.frozentux.net/chunkyhtml/udpconnections.ht=
+ml
+
+
 
