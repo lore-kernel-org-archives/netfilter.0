@@ -1,13 +1,11 @@
-From: Jon Colverson <netfilter@vcxz.co.uk>
-Subject: Re: conf scenario.
-Date: Mon, 03 May 2004 23:01:01 +0100
+From: Kevin White <ml-kevin@kevbo.org>
+Subject: Connection stats logging?
+Date: Mon, 03 May 2004 11:11:12 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4096C11D.5000709@vcxz.co.uk>
-References: <4096AE99.5070705@o2.pl> <200405032156.34614.Antony@Soft-Solutions.co.uk>
+Message-ID: <40966110.7090901@kevbo.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405032156.34614.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,39 +18,37 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> On Monday 03 May 2004 9:42 pm, Krystian wrote:
->>i need some help on how to configure this scenario in iptables:
->>
->>[adsl modem/router]-----[eth1-linux box-eth0]-----[network]
->>
->>question: how to configure "linux box's" iptables to forward and
->>masquarade traffic from most users and bridge traffic for couple
->>"public" users.
+Hello all,
 
-I don't believe that any iptables configuration is necessary for the 
-machines with public IPs. The Linux box will need a public IP on the 
-same subnet as them and will need to have IP forwarding turned on (echo 
-1 > /proc/sys/net/ipv4/ip_forward). The boxes with public IPs will need 
-to have the Linux box as their default gateway and it should all just work.
+We had a firewall application using an old OpenBSD (2.9).  One of the
+things it did on NAT was log lines like this when connections closed:
 
-If you can't spare a public IP for the Linux box, can you just connect 
-the ADSL modem/router, the Linux box, and the clients all to the same 
-Ethernet? This is the setup I use. In that case the clients with public 
-IPs would be able to see the ADSL modem/router directly (and would 
-simply use that as their default gateway).
+Apr 29 23:25:46 si000AmerSh ipmon[3122]: 23:25:46.021102 STATE:CLOSE
+216.65.19.55,53505 -> 192.168.0.82,25 PR tcp Pkts 60 Bytes 22144
 
-> Add a third interface card eth2, bridge eth1 and eth2 as br0, and then route 
-> between br0 and eth0.
-> 
-> If you have hosts on your network which need public IPs then they have to be 
-> on a separate subnet from your normal clients anyway.
+We used this line to do statistics.
 
-I don't think this is necessary. The public IP clients are obviously on 
-a different IP subnet, but they can happily share the Ethernet with the 
-NATed clients.
+I'm trying to figure out how to get something similar with Netfilter.
 
--- 
-Jon
+Basically, what I need is a report of the connection: where it was to,
+how many bytes and packets it had, when it closes.
+
+I've looked at ulogd, but I'm not sure that would be ideal.  Basically,
+I'd have to build my own connection tracker DB to assign every packet
+to, so I'd be at least doubling the memory footprint.
+
+I'm wondering if there's something built in that I can get to to give me
+these kinds of statistics.  Or if I should be writing an extension.
+(I'd like to get this data for every connection that goes through the
+firewall.)
+
+Thoughts, or pointers?  I'm looking for input before I waste too much
+time barking up the wrong tree.
+
+Thanks,
+
+Kevin
+
+
 
 
