@@ -1,12 +1,12 @@
-From: "Kim Leandersson" <kim.leandersson@chs.chalmers.se>
+From: "Wouter Coppens" <wouter.coppens@dedigate.com>
 Subject: RE: Trouble with --dport
-Date: Tue, 22 Oct 2002 09:58:55 +0200
+Date: Tue, 22 Oct 2002 11:31:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <61127EF4BF2E9C4C8DA4E358CFD4E52D7A3FA4@olga.chs.chalmers.se>
+Message-ID: <DBAC6BAF12D1D64289EC75515BD865776858F2@exch101>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,7 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+Hey,
+
+I had a similar problem. The cause was running the recent kernel version
+and an older iptables. I upgraded iptables to the latest version and my
+problem was solved.
+
+Wouter
+
+-----Original Message-----
+From: Kim Leandersson [mailto:kim.leandersson@chs.chalmers.se]=20
+Sent: dinsdag 22 oktober 2002 9:59
+To: Antony Stone; netfilter@lists.netfilter.org
+Subject: RE: Trouble with --dport
 
 I also got those errors when using v1.2.5. The iptables-save added a
 "-m" in my rules-save and that caused the same error as "blah blah". I
@@ -54,4 +68,5 @@ iptables this is fixed.
 > This email was created using 100% recycled electrons.
 >=20
 >=20
+
 
