@@ -1,12 +1,11 @@
-From: Brent Clark <bclark@rocketseed.us>
-Subject: Re: (No subject header)
-Date: Tue, 30 Nov 2004 09:09:06 +0200
-Message-ID: <41AC1C92.4030700@rocketseed.us>
-References: <41aba9f5.308.7f37.1299399369@arbbs.net>
+From: yangtao <yangtao_mike@huawei.com>
+Subject: How I get the origin IP and port, when I use the NAT function?
+Date: Tue, 30 Nov 2004 16:07:01 +0800
+Message-ID: <000501c4d6b3$9263a370$626d460a@china.huawei.com>
+Reply-To: yangtao <yangtao_mike@huawei.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41aba9f5.308.7f37.1299399369@arbbs.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +16,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: black@arbbs.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-John Black wrote:
->  
-> I'm trying to setup a connection to port 3389 on a windows
-> 2003 server.
-> 
-> my server 80.1.1.1
-> 
-> public ip address for windows server110.20.30.15
-> 
-> private ip address for windows server 192.168.0.15
-> 
-> 
-> is this right:
-> iptbles -t nat -A PREROUTING -d 80.1.1.1 -p tcp \
-> --dport 3389   -j DNAT --to 110.20.30.15:2289
-> iptbles -t nat -A PREROUTING -d 110.20.30.15 -p tcp\
-> --dport 3389   -j DNAT --to 192.168.0.15:2289
+I use the DNAT function to redirect all the traffic to loacl host.
+Then my application can process the traffic.
+But I want get the real destination IP before NAT transfer.
 
-Hi
+Is there any function or API, my application can get the 
+relationship between the original IP and the IP after NAT.
 
-This is my ruleset
 
-Hope it helps
 
-$IPT -t filter -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPT -t nat -A PREROUTING -i eth0 -p tcp -s 1.2.3.4 --dport 3389 -j DNAT 
---to 192.168.111.124:3389
-$IPT -t filter -A FORWARD -i eth0 -p tcp -s 1.2.3.4 --dport 3389 -d 
-192.168.111.124 -j ACCEPT
+Best Regards
+Mike  YangTao
 
-Kind Regards
-Brent Clark
+****************************************************************************
+This e-mail and its attachments contain confidential information 
+from HUAWEI, which is intended only for the person or entity 
+whose address is listed above. Any use of the information 
+contained herein in any way (including, but not limited to, 
+total or partial disclosure, reproduction, or dissemination) 
+by persons other than the intended recipient(s) is prohibited. 
+If you receive this e-mail in error, please notify the sender 
+by phone or email immediately and delete it!
+*******************************************************************************
 
