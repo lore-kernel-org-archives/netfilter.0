@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Upper limit of users for iptables firewall
-Date: Thu, 14 Oct 2004 08:10:04 -0400
+Subject: Re: masquerade
+Date: Thu, 14 Oct 2004 08:36:20 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097755804.1708.14.camel@wolfpack.ljm.dom>
-References: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
+Message-ID: <1097757380.1708.21.camel@wolfpack.ljm.dom>
+References: <416D5AD0.6040405@freemail.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
+In-Reply-To: <416D5AD0.6040405@freemail.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,46 +20,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-10-14 at 03:46, ads nat wrote:
+On Wed, 2004-10-13 at 12:41, Janos Makadi wrote:
 > Hi,
-> My Redhat linux 9.0 gateway server is with iptables
-> firewall. I am defining security rules based on mac
-> address of 400 users.
-> My server configure is 
-> 1) Intel Pentium IV 2.4 Ghz processor.
-> 2) 512 MB DD RAM
-> 3) 40 GB hard disc.
 > 
-> Will it be able to server request of 400 users?
-> I am doubtfull about performance of iptables firewall
-> for this load but want to avoid commercial firewall.
-> 
-> Has anybody used Iptables firewall for this user
-> traffic or more than this.
-> Please guide me for same.
-> 
-> Thanks for support.
-> 
-> 
-> slow fireawll Can someone give ideaWhat 
+> I`m absoulte newbie to netfilter, but last year I set up my debian 
+> firewall. I tought it`s configuration is correct, but yesterday I found 
+> http://audiymypc.com which shows my real ip address which I wanted to 
+> hide. It shows the correct address too, but it seems my real local 
+> address is visible on the internet somehow.
 
-what size pipe are you trying to firewall?  while the number of users
-behind a firewall is relevant--the amount of bandwidth that needs to be
-filtered has more of an influence on the performance requirements.
+disable java in your web browser and re-run the test--they won't be able
+to find your real IP address anymore.  they're probably either using
+this code directly, or a similar technique:
 
-1000 users behind a firewall with a T1 connection can only ever push
-1.54 Mbps through the firewall--which is nothing.
+  http://reglos.de/myaddress/MyAddress.html
 
-100 users behind a firewall with a OC-3 connection would have a
-drastically greater hardware requirement.
+none of this has anything to do with the configuration of your firewall.
 
-in any case--a P4 2.4 with 512 MB of RAM is pretty healthy box.  and in
-the grand scheme, 400 users isn't really a huge amount.  i have a P3 800
-MHz with 384 MB of RAM server-class machine on a 4 Mbps connections for
-about that many users that isn't breaking a sweat.
+-j
 
--j 
- 
 -- 
 Jason Opperisano <opie@817west.com>
 
