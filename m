@@ -1,11 +1,14 @@
-From: Mark Hindley <mark@hindley.uklinux.net>
-Subject: Firehol DROPping INVALID
-Date: Sat, 5 Jun 2004 21:17:39 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Firehol DROPping INVALID
+Date: Sun, 6 Jun 2004 15:11:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040605201739.GA3481@hindley.uklinux.net>
+Message-ID: <200406061511.59730.Antony@Soft-Solutions.co.uk>
+References: <20040605201739.GA3481@hindley.uklinux.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20040605201739.GA3481@hindley.uklinux.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +19,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Saturday 05 June 2004 9:17 pm, Mark Hindley wrote:
 
-I have asked this on the Firehol lists, but got no response. Hope you
-can help.
+> Hi,
+>
+> I have asked this on the Firehol lists, but got no response. Hope you
+> can help.
 
-I am using kernel 2.6.6 and have firehol setting up a firewall on the
-gateway machine with eth0 LAN, ppp0 dial-up link. NAT for hosts on LAN
+I know nothing about (have never heard of) firehol, however here's my 
+observation on the rule you've quoted.
 
-If the ppp link is down and a host on the LAN sends a packet destined
-for the outside world, the icmp-unreacahble packet does not get
-returned, so the LAN host has to wait to time out.
+> iptables -A OUTPUT -m state --state INVALID -j DROP
+>
+> Although the comment says this is recommended in the Netfilter HOWTO, I
+> cannot find it.
 
-The offending command issued by firehol seems to be: 
+It seems like a rather strange rule to have, to me.   Why would you expect 
+your own machine to be generating invalid packets (and therefore go to the 
+bother of writing a firewall rule to drop them)?
 
+I'd be interested to know the response you get from the author of firehol if 
+you ask for the source of the recommendation.
 
-iptables -A OUTPUT -m state --state INVALID -j DROP
+I can understand why you might want to drop *incoming* invalid packets, but 
+outgoing ones would seem to me to be (a) someone else's problem - they can 
+decide whether to accept them or not - and (b) an indication of some more 
+fundamental problem with whatever application is generating such packets, 
+which should be fixed, rather than using netfilter to ignore the problem and 
+pretend the packets never happened.
 
-Although the comment says this is recommended in the Netfilter HOWTO, I
-cannot find it.
+Therefore my recommendation would be to eliminate the above rule altogether.
 
-I can get round it by adding
+Most people secure their firewall against inbound problems (INPUT for the 
+firewall itself, FORWARD for machines it is routing to) - outbound problems 
+should not exist.
 
-iptables -I OUTPUT 2  -m state --state INVALID -p icmp --icmp-type  destination-unreachable -j ACCEPT
+Maybe you want to post the rest of your ruleset so we can comment on how 
+sensible that seems for you?
 
-which inserts the ACCEPT before the DROP above and means that hosts on
-the LAN get an immediate icmp reply "destination-unreachable" if the
-ppp link is down.
+Regards,
 
-Is this wise? secure. Am I missing something.
+Antony.
 
-Thanks for your help
+-- 
+"The problem with television is that the people must sit and keep their eyes 
+glued on a screen; the average American family hasn't time for it."
 
-Mark
+ - New York Times, following a demonstration at the 1939 World's Fair.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
