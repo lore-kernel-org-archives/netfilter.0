@@ -1,10 +1,12 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: what services/protocols can't be handled by RELATED,ESTABLISHED?
-Date: Tue, 28 Oct 2003 16:53:24 -0500 (EST)
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: iptables analyzer
+Date: Tue, 28 Oct 2003 15:30:53 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310281643520.25084-100000@localhost.localdomain>
+Message-ID: <20031028233053.25326.qmail@web40203.mail.yahoo.com>
+References: <16286.31173.508541.794389@teak.killian.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <16286.31173.508541.794389@teak.killian.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,47 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: iptables mailing list <netfilter@lists.netfilter.org>
+To: "Earl A.Killian" <netfilter@lists.killian.com>
+Cc: netfilter@lists.netfilter.org
+
+Heh what about people who run iptables from a script... like me?
 
 
-  i'm giving a tutorial on iptables next week -- very basic, just 
-protecting a single host so all i'll be covering is filtering on
-INPUT and OUTPUT.
+--- "Earl A.Killian" <netfilter@lists.killian.com> wrote:
+> Actually I'm planning something static, independent of the traffic
+> received by the host.
+> 
+> Basically, it would take iptables-save output and make a list of all the
+> * protocols used (the -p's)
+> * the src addresses used (the -s's)
+> * the dst addresses used (the -d's)
+> * the src ports used (the --sport's)
+> * the dst ports used (the --dport's)
+> * the input interfaces used (the -i's)
+> * the output interfaces used (the -o's)
+> * the --icmp-types used
+> then augment each of the above lists with an "other" entry, and then
+> and then simulate every combination of the above and
+> * the 4 conntrack states
+> * the possible ip flags (-f)
+> * the possible tcp flags
+> against the rules, and print a table of the final target (ACCEPT or
+> DROP).
+> 
+> The output would be big, but some intelligent pruning (use of '*' to
+> merge multiple rows when possible) should make it more manageable.
+> 
+> One use is to simply have paranoid humans review the output.
+> Another use is to run it on two different iptable rule sets and
+> compare what's different (e.g. if you reorder rules for efficiency,
+> this would check that you haven't inadvertently changed the firewall
+> semantics).
 
-  to keep things *really* simple, my example will look something
-like this:
 
-  IPT -P INPUT DROP
-  IPT -P FORWARD DROP
-  IPT -P OUTPUT ACCEPT
+=====
+In the absence of order there will be chaos.
 
-  IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-  IPT -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-there will be more, of course -- tossing in some logging, and opening
-up the host to a couple of services, perhaps ssh -- and that's about it.
-
-  now i know some people wince at seeing the "OUTPUT ACCEPT", but if i
-really lock down the INPUT filtering, then in most cases, allowing 
-arbitrary output is not going to hurt me that much (although i will
-be careful to point out the alternative, which is to rigorously filter
-on the OUTPUT chain as well).
-
-  however, my actual question is, if i want to allow pretty much all 
-outgoing service requests, which services/protocols will need more
-support than just allowing "RELATED,ESTABLISHED" packets back in?
-
-  for example, FTP is a little more complicated than the average
-service, but that's handled specifically by the ftp_conntrack module,
-right?  same with IRC.  then there's DNS, in which my system will
-want to contact a nameserver out there somewhere.  and perhaps samba,
-when i try to mount a share.
-
-  in short, what are the services that will require special treatment
-to support because they don't follow the basic client-server model?
-
-rday
-
+__________________________________
+Do you Yahoo!?
+Exclusive Video Premiere - Britney Spears
+http://launch.yahoo.com/promos/britneyspears/
 
