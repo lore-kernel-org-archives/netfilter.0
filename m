@@ -1,15 +1,15 @@
 From: Alexis <alexis@attla.net.ar>
-Subject: Re: IPTables, Linksys BEFSR41 and PCAnywhere
-Date: Thu, 15 Jan 2004 15:52:06 -0300
+Subject: Re: Multihomed firewall and port forwarding nightmare ))):-(
+Date: Thu, 15 Jan 2004 15:55:35 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1074192725.1572.26.camel@pepelui.baicom>
-References: <000a01c3db92$465416d0$0f00a8c0@tandem>
-	 <1074190723.1570.10.camel@pepelui.baicom>
-	 <000401c3db95$9d0a8bf0$0f00a8c0@tandem>
+Message-ID: <1074192934.1570.31.camel@pepelui.baicom>
+References: <00db01c3db07$9daf47f0$0200000a@heretic>
+	 <005901c3db95$45d98840$017ca8c0@lucens.caracal.ch>
+	 <1074191916.1576.23.camel@pepelui.baicom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000401c3db95$9d0a8bf0$0f00a8c0@tandem>
+In-Reply-To: <1074191916.1576.23.camel@pepelui.baicom>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,34 +22,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter <netfilter@lists.netfilter.org>
 
-i have a lot of customers with linksys devices and the port fowarding
-works fine.
+On Thu, 2004-01-15 at 15:38, Alexis wrote:
 
-i dont know why they said that linksys will not work.
+....
+
+> if you set the default route via eth0, all outgoing packets will leave
+> the firewall via eth1 , if it goes down, then it will use eth2 and then
+> eth3 like ip route commands specifies
+
+....
+
+where it say "if you set the default route via eth0" must say "if you set the default route via eth1"
+
+now it make sense
 
 
+sorry about the typo
 
-On Thu, 2004-01-15 at 15:30, A. Clausen wrote:
-> ----- Original Message ----- 
-> From: "Alexis" <alexis@attla.net.ar>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Thursday, January 15, 2004 10:18
-> Subject: Re: IPTables, Linksys BEFSR41 and PCAnywhere
-> 
-> 
-> > youre right, just dont forget that pc anywhere uses 2 ports, that i
-> > think they are 5631 and 5631 tcp
-> >
-> > the linksys is with nat enabled? (its just to know, forwarding the ports
-> > is enough to work)
-> 
-> That's good to hear.  The problem is that it was another company that
-> administrates their network and some specialized software, and he's
-> insisting that the Linksys won't do this, when I've seen D-links and
-> Livingstons work quite well.  I did research, and PCAnywhere works fine
-> through NAT networks, and I thought the claim pretty dubious, but sometimes
-> dubious claims are right.
--- 
-Alexis <alexis@attla.net.ar>
 
 
