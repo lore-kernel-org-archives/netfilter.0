@@ -1,13 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Need help have some questions...
-Date: 25 Aug 2003 22:30:28 +0200
+From: "Daniel Arjona" <darjona@transito.gob.pa>
+Subject: FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape with my Netscape Client
+Date: Mon, 25 Aug 2003 15:34:42 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1061843428.1507.86.camel@kermit>
-References: <20030825200507.25987.qmail@web40207.mail.yahoo.com>
+Message-ID: <030d01c36b48$508f45d0$0221a0c0@DANIEL>
+Reply-To: "Daniel Arjona" <darjona@transito.gob.pa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030825200507.25987.qmail@web40207.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +16,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: SBlaze <dagent.geo@yahoo.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Am Mon, 2003-08-25 um 22.05 schrieb SBlaze:
-> > Now, what does the circuit relay do? Does it just amplify the signal? O=
-r does
-> > it terminate, reconstruct and forward the information?
-> >=20
-> Ralf seems to disagree that the second layer is a bridge... I never thoug=
-h of a
-> bridge as a dumb proxy...but thats essentially what it is right?? Anyway =
-this
-> isn't really the focus of what I want to know...=20
-Circuit Relay operates on Application layer. A typical circuit relay is
-socks. It just forwards connections.
+Hello:
 
-> So if I understand what Ramen is saying. It is possible to do this with a
-> module  that could be loaded into iptables. Aside from the CPU argument i=
-s
-> there any other reason why this isn't being done? It seems to come up tim=
-e and
-> time again.
->=20
-You could, if you would write the module. But this is better done in
-userspace.=20
-> > >=20
-> Again no one really shed any light on what I'm supposed to do here. What =
-proxy
-> am I supposed to use? Everyone is saying use a proxy but no one is giving=
- any
-> specifics as to what kind or what software?.
-Sure, I did: Use Apache. Apache can work as a webserver for you on your
-Linux box and at the same time as a proxy for the Windows box.
+I tried to configure an iptables firewall, but i can't.  I need cofigure
+this to use FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape
+with my Netscape Client.
+I'm a Linux newbie.
+Please Help me!!!
 
-Cheers,
+Regards,
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+DANIEL ARJONA
+PD:  SEE MY IPTABLES SCRIPT
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+
+## eth1 = my local interface
+## eth0 = public network interface
+## XXX.XXX.XXX.0/24 = My local subnet
+
+## FLUSH
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+
+## DEFAULT POLICIES
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+iptables -t nat -P POSTROUTING ACCEPT
+
+## LOCAL HOST
+iptables -A INPUT -i lo -j ACCEPT
+
+
+## ACCEPT ACCESS FROM THE LOCAL NETWORK & LOCAL INTERFACE
+iptables -A INPUT -s XXX.XXX.XXX.0/24 -i eth1 -j ACCEPT
+
+## SMTP Port
+iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 25 -j ACCEPT
+
+## POP3 Port
+iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 110 -j ACCEPT
+
+## FORWARDS TO HTTP PORT
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 80 -j ACCEPT
+
+## FORWARDS TO HTTPS PORT
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 443 -j ACCEPT
+
+## FORWARDS TO IMAP PORT
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 143 -j ACCEPT
+
+## FORWARDS TO KAZAA PORT
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 1214 -j
+ACCEPT
+
+## FORWARD TO DNS QUERIES PORT
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 53 -j ACCEPT
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p udp --dport 53 -j ACCEPT
+
+## FORWARDS TO FTP PORT
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 21 -j ACCEPT
+
+## DENIED FORWARD FOR THE OTHERS PORTS
+iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -j DROP
+
+## MASQUERADING OF THE LOCAL NETWORK
+iptables -t nat -A POSTROUTING -s XXX.XXX.XXX.0/24 -o eth0 -j MASQUERADE
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+iptables -A INPUT -s 0.0.0.0/0 -i eth0 -p tcp --dport 1:1024 -j DROP
+iptables -A INPUT -s 0.0.0.0/0 -i eth0 -p udp --dport 1:1024 -j DROP
+
+## CLOSE WEBMIN PORT
+iptables -A INPUT -s 0.0.0.0/0 -i eth0 -p tcp --dport 10000 -j DROP
+
+echo " OK . Verifique que lo que se aplica con: iptables -L -n"
+
+# END
+
+
 
