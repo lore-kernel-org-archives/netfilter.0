@@ -1,10 +1,14 @@
-From: "Robert K. Johnson" <johnson60@llnl.gov>
-Subject: iptables config for netperf
-Date: Thu, 13 Mar 2003 10:04:30 -0800
+From: Daniel Wittenberg <daniel-wittenberg@starken.com>
+Subject: Re: help on DMZ project
+Date: 13 Mar 2003 12:54:43 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.2.20030313100406.020e85e0@poptop.llnl.gov>
+Message-ID: <1047581684.1686.4.camel@runabout.noc.starken.com>
+References: <20030313114142.2704C1BB2FE@mail.powweb.com> 
+	<20030313145842.44367092.arnt@c2i.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030313145842.44367092.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,28 +18,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Arnt Karlsen <arnt@c2i.net>
+Cc: netfilter@lists.netfilter.org, Chris Partsenidis <Chris@Firewall.cx>
 
-I am having trouble getting netperf to work through a Linux iptables firewall.
-I have created an allow rule for TCP/12865 and for TCP with 
-state=Established,Related on the machine that will be running netserver. 
-However, after successfully connecting from a client machine, the server 
-drops TCP packets that are destined for ports in the 1024-1030 range. Here 
-is an excerpt from /var/log/messages:
+I personally would avoid ipcop because the last time I checked it was
+still 2.2 based and was not a stateful firewall.  I can't speak for
+shorewall, I haven't had a chance to play with it yet (we wrote our own
+firewall code + web interface so I haven't kept up too much on some of
+these other projects).
 
-Mar 12 13:39:59 basis16 authpriv.info netserver[440]: connect from 
-10.1.253.254
-Mar 12 13:39:59 basis16 daemon.info klogd: Pkt Dropped IN=eth1 OUT= 
-MAC=00:09:b7:f1:05:17:00:09:b7:f1:07:b4:08:00 SRC=10.1.253.254 
-DST=10.1.253.115 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=3424 DF PROTO=TCP 
-SPT=1029 DPT=1026 WINDOW=5840 RES=0x00 SYN URGP=0
-Mar 12 13:40:02 basis16 daemon.info klogd: Pkt Dropped IN=eth1 OUT= 
-MAC=00:09:b7:f1:05:17:00:09:b7:f1:07:b4:08:00 SRC=10.1.253.254 
-DST=10.1.253.115 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=3425 DF PROTO=TCP 
-SPT=1029 DPT=1026 WINDOW=5840 RES=0x00 SYN URGP=0
+Dan
 
-What iptables configuration is required to get netperf to be fully operational? 
+On Thu, 2003-03-13 at 07:58, Arnt Karlsen wrote:
+> On Thu, 13 Mar 2003 11:41:42 -0000, 
+> "Chris Partsenidis" <Chris@Firewall.cx> top posted in message 
+> <20030313114142.2704C1BB2FE@mail.powweb.com>:
+> > > 
+> > > ---------- Original Message -------------
+> > > Subject: help on DMZ project
+> > > Date: Thu, 13 Mar 2003 17:16:27 +0800
+> > > From: "louie miranda" <lmiranda@chikka.com>
+> > > To: <netfilter@lists.samba.org>
+> > > 
+> > > 
+> > > I currently have a project to make a DMZ farm of servers. I actually
+> > > want to make this firewall
+> > > be splitted in to 4 or more networks. I'll be trying to host 3
+> > > different company, I would like to
+> > > try using Iptables as my main firewall and gateway before the
+> > > internet.
+> > > 
+> > > Could this be done? And which documents should i read? I currently
+> 
+> ..piece of cake, several ways:  http://ipcop.org/  needs its 
+> own box, http://shorewall.net/ does really does too in your 
+> case, add in http://webmin.com/ to control it too, from a web 
+> browser, or, you can control both from ssh.  
+
 
 
