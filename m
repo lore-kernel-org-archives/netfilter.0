@@ -1,11 +1,10 @@
-From: "Jason Pappas" <jpappas@sharemedia.com>
-Subject: Re: Two Interfaces Same Network / Netmask
-Date: Tue, 11 Jun 2002 11:03:26 -0400
+From: "Wei koong Chai" <eem1wc@eim.surrey.ac.uk>
+Subject: [newbie]: Help on intercepting packets
+Date: Tue, 11 Jun 2002 16:04:35 +0100 (BST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001f01c21159$274107d0$6400780a@win.pappasfamily.net>
-References: <000501c210be$a97a7240$7b0010ac@dynamicaccess.lan>
+Message-ID: <1513.131.227.136.10.1023807875.squirrel@ike.ee.surrey.ac.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -19,27 +18,30 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Interesting question.. First question, why would you want 2 interfaces with
-addresses on the same network?  What is your network setup?
- As to your questions:
+Hi...
 
-> for some reason it does not work for me ??? it only lets packets down one
-> adapter ???
+I'm new to Netfilter. Hope to get some help here. I have a bridge with eth0 
+and eth1. 
+                      +--------+ 
+          ------ eth0 | BRIDGE | eth1 ------
+                      +--------+
 
-Your routing table will chose a single adapter to exit on.  You can have two
-routes to this network using both interfaces but there is no guarentee that
-packets will enter or leave via the same one without some work.  See my
-later link.  Are these interfaces on the same physical ethernet?
+I need to intercept all the packets that come through both interfaces and 
+pass them to the userspace (QUEUE target)... how can i do this?
 
-> does iproute2 allow for you to have say a PPP link and a NIC so that your
-> External Public Address Set
-> is somehow maybee bridged to the nic and this nick also can be used as the
-> Deafult Gateway for the rest of the Network ?
+I am currently using
+[1] RH 7.2 with kernel 2.4.18 (kernel patched with brctl's netfilter patch 
+bridge-nf-0.0.7-against-2.4.18.diff)
+[2] brctl (bridge-utils-0.9.5)
+[3] iptables 1.2.5
 
-You would still run into routing issues that if your PPP connection had an
-address of 65.65.65.99 and your private network was 172.16.0.0/16 that
-machines on your network would not know the 65.65.65.99 address.  You would
-have to arp or use NAT.  If your PPP is to the internet, you would need to
-NAT or MASQ the connection as the source address is not routable.
+Any help would be greatly welcomed. Thank you.
+
+
+-- 
+Wei Koong CHAI            
+CCSR
+University of Surrey
+United Kingdom
 
 
