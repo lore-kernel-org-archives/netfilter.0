@@ -1,13 +1,13 @@
 From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: System Load
-Date: Mon, 17 Nov 2003 11:16:25 +0200
+Subject: Re: Caching of rules in PRE(POST)ROUTING chains?
+Date: Mon, 17 Nov 2003 11:17:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069060584.22071.59.camel@raylinux.internal>
-References: <200311141519.11902.bikrant_ml@wlink.com.np>
+Message-ID: <1069060670.21919.61.camel@raylinux.internal>
+References: <1072098477.20031115110735@msmu.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ZVqAuk+RHfflLEG46SSS"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-R6kr7jzDTsYK5346dY5I"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311141519.11902.bikrant_ml@wlink.com.np>
+In-Reply-To: <1072098477.20031115110735@msmu.eu.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,28 +20,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-ZVqAuk+RHfflLEG46SSS
+--=-R6kr7jzDTsYK5346dY5I
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-11-14 at 11:34, Rohit wrote:
-> Hi,
-> 	Is it possible to know how much system resources (cpu/memory load) that =
-the=20
-> netfilter module(s) is using? We are using HTB to shape our client traffi=
-c=20
-> and there are 4 iptables rule for each client in the mangle table. I thin=
-k it=20
-> will be helpful to gather such data and graph it using mrtg.
+On Sat, 2003-11-15 at 10:07, Pavel V. Yanchenko wrote:
+> Hello.
 >=20
-Just remember, iptables is only used to mark the traffic. tc is used to
-classify and shape the traffic.
+> As far as I understand, rules in PRE- and POSTROUTING chains are
+> cached? Because when I delete a rule with SNAT target for ip
+> 192.168.10.10 this address's packets are still SNATed for several
+> minutes. The same thing happens for rules in PREROUTING chains.
+Isn't it the connection tracking table that's cached and NOT the rules?
+Active connections need to timeout first.
 
-> I'm really sorry if someone has already asked about it.
-> Thanks a lot.
+> Is it possible to disable this feature? Maybe there is some file in
+> /proc where cached rules are listed?
 >=20
-> with regards,
-> Rohit Nepali
+> Thanks in advance.
 --=20
 --
 Raymond Leach <raymondl@knowledgefactory.co.za>
@@ -51,18 +47,18 @@ http://www.knowledgefactory.co.za
 Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
 --
 
---=-ZVqAuk+RHfflLEG46SSS
+--=-R6kr7jzDTsYK5346dY5I
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
 
-iD8DBQA/uJHoh1fuR/Bv+ygRAjUcAKCtTAFtc542TkCT2IkWU/0L1deEJQCfXxlV
-qtrQURczttsOsmUpusF3eB0=
-=/ohx
+iD8DBQA/uJI+h1fuR/Bv+ygRAn4bAJ9tYmiWX2PA+cS18dFKoqmQViRBhwCffyZL
+0j3VRb3ceKZow9N0BFR+XMk=
+=RYO/
 -----END PGP SIGNATURE-----
 
---=-ZVqAuk+RHfflLEG46SSS--
+--=-R6kr7jzDTsYK5346dY5I--
 
 
