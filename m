@@ -1,13 +1,8 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: MARKing question
-Date: Tue, 1 Feb 2005 10:18:40 +0500
-Message-ID: <a0f69e505013121185a3133fd@mail.gmail.com>
-References: <a0f69e5050131022966942181@mail.gmail.com>
-	<20050131162531.GA24980@bender.817west.com>
-Reply-To: Askar <askarali@gmail.com>
+From: faisal gillani <fasi_74@yahoo.com>
+Subject: diffrence between reject & drop ?
+Date: Mon, 31 Jan 2005 23:58:01 -0800 (PST)
+Message-ID: <20050201075801.30992.qmail@web51009.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050131162531.GA24980@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,69 +13,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 31 Jan 2005 11:25:31 -0500, Jason Opperisano <opie@817west.com> wrote:
-> On Mon, Jan 31, 2005 at 03:29:32PM +0500, Askar wrote:
-> > hi list,
-> >
-> > I'm MARKing packets in PREROUTING of mangle with the below rule to
-> > route them from other route then the default route .(iproute2 +
-> > iptables)
-> >
-> > $iptables -A PREROUTING -i eth0 -t mangle -s 202.xxx.xxx.0/24 -d 0/0
-> > -p tcp --dport 80 -j MARK --set-mark 4
-> >
-> > What I want is to exclude a single IP from the above to be MARKed, i-e
-> > the particular IP packets goes through default route of the firewall
-> > machine not through iproute2 route.
-> >
-> > Is this possible with iptables or I have to apply pom (extentions) to
-> > accomplished this?
-> 
-> two thoughts:  1) ACCEPT the packet from the "excluded IP" prior to the
-> mark rule or 2) reset the MARK on packets from the "excluded IP" after
-> the mark rule.
-> 
-> version 1:
-> 
->   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
->     --dport 80 -j ACCEPT
-> 
->   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
->     --dport 80 -j MARK --set-mark 4
-Thanks jason, i go with version 2 and it worked
+What is the basic diffrence between rejecting a packet
+& droping a packet ?=20
 
-> 
-> version 2:
-> 
->   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
->     --dport 80 -j MARK --set-mark 4
-> 
->   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
->     --dport 80 -j MARK --set-mark 0
-> 
-> version 1 gets packets from $EXCLUDED_IP out of the mangle PREROUTING
-> chain as quickly as possible.
-> 
-> version 2 allows packets from $EXCLUDED_IP to continue to traverse
-> mangle PREROUTING in case you want to do other stuff to it.
-> 
-> which one is "better" would depend on your specific situation.
-> 
-> -j
-> 
-> --
-> "I saw this in a movie about a bus that had to SPEED around a city,
->  keeping its SPEED over fifty, and if its SPEED dropped, it would
->  explode. I think it was called, 'The Bus That Couldn't Slow Down.'"
->         --The Simpsons
-> 
-> 
+both denies the packet right ?
 
 
--- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-your life a little easier)
+
+=3D=3D=3D=3D=3D
+*=BA=A4., =B8=B8,.=A4=BA*=A8=A8=A8*=A4 Allah-hu-Akber*=BA=A4., =B8=B8,.=A4=
+=BA*=A8=A8*=A4
+                    God is the Greatest
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
