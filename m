@@ -1,13 +1,11 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: Public Webserver behind IPtables Router
-Date: 18 Jul 2003 23:50:11 +0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: ..why _never_ answer off-list: "Q3a51q.jpg.exe"  ;-)
+Date: Sat, 19 Jul 2003 01:59:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058565010.18859.5.camel@porky>
-References: <001c01c34d75$51848ea0$5001a8c0@linux>
+Message-ID: <20030719015916.046cbb2b.arnt@c2i.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Dq3JH+cN+ZJnTwMIrBoi"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001c01c34d75$51848ea0$5001a8c0@linux>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +15,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
---=-Dq3JH+cN+ZJnTwMIrBoi
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+..I found this in my spam dump.  ;-) 
 
-Le ven 18/07/2003 =E0 23:41, thomas krause a =E9crit :
-> Hello , i tried to set up an IPTables Router for my Webserver. All
-> hosts have has an official IP Adress. The eth0 of the Router is in =20
-> iptables -P FORWARD DROP
-> iptables -A FORWARD -s 0.0.0.0/0 -p tcp --dport 80 -j ACCEPT
-> =20
-> iptables -P OUTPUT ALLOW
-> =20
-> Will this work ? O.K. Iam a Newbie but i will learn !
 
-No, you just authorize packet to port 80 and what happened to return
-packet to have this working you have to add a rules using STATE, ie
-accept all packet of the connection (and in particular response packet)
-:
-	iptables -P FORWARD DROP
-	iptables -A FORWARD -m state --state ESTABLISHED -j ACCEPT
-	iptables -A FORWARD -s 0.0.0.0/0 -p tcp --dport 80 -j ACCEPT
-BR,
-=20
---=20
-Eric Leblond <eric@regit.org>
+Return-Path: <tj.miller@man.poznan.pl>
 
---=-Dq3JH+cN+ZJnTwMIrBoi
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+..<snip top Received stanza>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Received: from area51.it ([217.141.202.85]) by fep20-svc.swip.net with 
+	SMTP
+        id <20030718221737.UPZC9567.fep20-svc.swip.net@area51.it>
+        for <arnt@c2i.net>; Sat, 19 Jul 2003 00:17:37 +0200
+Received: (qmail 27537 invoked from network); 18 Jul 2003 22:17:24 -0000
+Received: from unknown (HELO decibel-q2g3k3v) (192.168.1.66)
+  by mail.area51.it with SMTP; 18 Jul 2003 22:17:24 -0000
+From:  Tim Miller <tj.miller@man.poznan.pl>
+Subject:  INPUT vs. FORWARD when????
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----------GYOBSIU3SEQ760"
+Message-Id: <20030718221737.UPZC9567.fep20-svc.swip.net@area51.it>
+Date: Sat, 19 Jul 2003 00:17:42 +0200
 
-iD8DBQA/GGuSnxA7CdMWjzIRAnoQAJ47rWf2ovDuUyFmF0yUaHIyjGdKwQCfaAKb
-rPkxCIJW8c0rmn02DdkHMuY=
-=PXQj
------END PGP SIGNATURE-----
+------------GYOBSIU3SEQ760
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
---=-Dq3JH+cN+ZJnTwMIrBoi--
+
+As a newbie to iptables I have some confusion on the subject of the
+chain traversal process that I hope the list can help me clear up.
+
+Let say for a moment I have one machine, 2 interfaces configured as
+follows, assume for the moment that the 192 address is my internet
+connection.
+
+eth0 -> 192.168.1.1 - Internet Gateway
+eth1 -> 10.2.0.1 - Local Lan gateway
+
+T   F : A packet is received on eth1 whose destination address is
+10.2.0.1 then I assume
+
+------------GYOBSIU3SEQ760
+Content-Type: application/x-msdownload; name="Q3a51q.jpg.exe"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Q3a51q.jpg.exe"
+
+TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAA
+AAAA2AAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9
+TIG1v
+ZGUuDQ0KJAAAAAAAAACPY1NsywI9P8sCPT/LAj0/sB4xP88CPT9IHjM/yQI9PyMdNz/eAj0
+/Ix05
+P8kCPT+pHS4/wAI9P8sCPD9xAj0/Ix02P9sCPT9SaWNoywI9PwAAAAAAAAAAUEUAAEwBAwA
+5bVKy
+AAAAAAAAAADgAA4BCwEGAAAgAQAAEAAAAOAGACABCAAA8AYAABAIAAAAQAAAEAAAAAIAAAQ
+AAAAA
+AAAABAAAAAAAAAAAIAgAABAAAAAAAAACAAAAAAAQAAAQAAAAABAAABAAAAAAAAAQAAAAAAA
+AAAAA
+AAAAEAgAZAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGQRCAAMAAAAAAAAAAAAAAAAAAA
+AAAAA
+
+..<snip 96 kB kiddie snott>
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
+
 
