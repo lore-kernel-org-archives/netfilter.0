@@ -1,10 +1,12 @@
-From: "Ricardo A" <racham@hotmail.com>
-Subject: Re: Stealth on emule....
-Date: Mon, 07 Jun 2004 17:59:29 +0000
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: Knowing thy enemy - #1 - MS ISA Server - SSL-to-SSL bridging
+Date: Mon, 7 Jun 2004 14:04:40 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY1-F169qCppZHFoX60000b505@hotmail.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E330@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,206 +16,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I thought it'd be a nice idea to keep up to date on what other firewall
+platforms can do in order to compare them to current OSS solutions.
 
->From: Antony Stone <Antony@Soft-Solutions.co.uk>
->Reply-To: <netfilter@lists.netfilter.org>
->To: <netfilter@lists.netfilter.org>
->Subject: Re: Stealth on emule....
->Date: Mon, 7 Jun 2004 15:51:17 +0100
->I see no rule in your ruleset allowing those packets through the FORWARD 
->chain
->on your machine, therefore it won't pass them on to the client?
->
->Maybe I'm missing something because of the layout of the rules - if you 
->think
->the appropriate FORWARDing rules are there, please post the output of
->"iptables -L -nvx; iptables -L -t nat -nvx; iptables -L -t mangle -nvx"
->because I find this an easier format to understand for such a long ruleset.
+Overview
+Today, I present Microsoft ISA server 2000's feature called SSL-to-SSL
+bridging. It is a Layer 7 feature which handles server side transparent
+SSL filtering/tunneling, but with a price.=20
 
-OK, Thanks you Antony...
 
-Linux:~# iptables -L -nvx
-Chain INPUT (policy DROP 29421 packets, 1718646 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-  101717  5292111 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0
-    6560   808679 ACCEPT     all  --  eth1   *       192.0.0.0/8
-0.0.0.0/0
-       2      244 ACCEPT     all  --  lo     *       127.0.0.1
-0.0.0.0/0
-       0        0 ACCEPT     all  --  lo     *       192.168.111.1
-0.0.0.0/0
-       0        0 ACCEPT     all  --  lo     *       200.xxx.xxx.xxx
-0.0.0.0/0
-    3142   642016 ACCEPT     all  --  *      *       0.0.0.0/0
-200.xxx.xxx.xxx       state
-RELATED,ESTABLISHED
-   24164  1124548 tcp_packets  tcp  --  eth0   *       0.0.0.0/0
-0.0.0.0/0
-    4464  1114537 udp_packets  udp  --  eth0   *       0.0.0.0/0
-0.0.0.0/0
-     927    46338 icmp_packets  icmp --  eth0   *       0.0.0.0/0
-0.0.0.0/0
-   13005   809968 LOG        all  --  *      *       0.0.0.0/0
-0.0.0.0/0          limit: avg 3/min
-burst 3 LOG flags 0 level 7 prefix `IPT INPUT packet died: '
+OSS Equivalent
+Squid proxy provides non-transparent client-side proxy SSL
+filtering/tunneling  but it does not provide any server-side SSL
+protection.
 
-Chain FORWARD (policy DROP 11272 packets, 552279 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-14218836 7001833881 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0
-7966884 4793464646 ACCEPT     all  --  eth1   *       0.0.0.0/0
-0.0.0.0/0
-6585552 2237493007 ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0          state
-RELATED,ESTABLISHED
-    8688   425676 LOG        all  --  *      *       0.0.0.0/0
-0.0.0.0/0          limit: avg 3/min
-burst 3 LOG flags 0 level 7 prefix `IPT FORWARD packet died: '
 
-Chain OUTPUT (policy DROP 2 packets, 128 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-    5192   230734 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0
-       2      244 ACCEPT     all  --  *      *       127.0.0.1
-0.0.0.0/0
-    2127   454165 ACCEPT     all  --  *      *       192.168.111.1
-0.0.0.0/0
-    8965   590752 ACCEPT     all  --  *      *       200.xxx.xxx.xxx
-0.0.0.0/0
-       0        0 LOG        all  --  *      *       0.0.0.0/0
-0.0.0.0/0          limit: avg 3/min
-burst 3 LOG flags 0 level 7 prefix `IPT OUTPUT packet died: '
+Microsoft's Description of the feature
+SSL to SSL bridging allows the firewall to terminate and reestablish SSL
+sessions. In contrast, your poor cousin's firewall just allows SSL
+tunneled traffic through to the Exchange Web sites. The ISA 2004 SSL
+termination feature allows the ISA firewall to inspect the contents of
+the SSL connection and block those containing suspicious or recognized
+exploits. In contrast, a packet filter firewall like PIX merrily passes
+the SSL tunneled exploits back to your OWA, OMA and RPC over HTTP sites.
+But to be fair, the PIX passes those exploits really fast!=20
 
-Chain allowed (3 references)
-    pkts      bytes target     prot opt in     out     source
-destination
-       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp
-flags:0x16/0x02
-       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          state
-RELATED,ESTABLISHED
-       0        0 DROP       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0
+SSL termination (SSL to SSL bridging) is only one of the ISA 2004
+firewall features that enable secure remote access to Exchange Servers.
+Check out some of these other Exchange protection technologies:=20
+	Delegation of Basic authentication prevents unauthenticated
+users from connecting to the Exchange site=20
+	ISA 2004 firewall form-based authentication allows the firewall
+to generate the form, instead of the Exchange 2003 Web site. Firewall
+generated forms-based authentication extends the security provided by
+delegation of basic authentication to protect the OWA Web site from
+attacks by unauthenticated users=20
+	Secure Exchange RPC, both inbound and outbound with the secure
+Exchange RPC filter. If the ISP's don't DoS your Exchange connections by
+blocking TCP 135, you can enjoy "hand's free" access to the full range
+of Exchange features from the full Outlook client using secure,
+encrypted Exchange RPC connections from anywhere in the world=20
 
-Chain bad_tcp_packets (3 references)
-    pkts      bytes target     prot opt in     out     source
-destination
-    4819   230860 REJECT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp
-flags:0x12/0x12 state NEW reject-with tcp-reset
-   75974  5381480 LOG        tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp
-flags:!0x16/0x02 state NEW LOG flags 0 level 4 prefix `New not syn:'
-   75974  5381480 DROP       tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp
-flags:!0x16/0x02 state NEW
 
-Chain icmp_packets (1 references)
-    pkts      bytes target     prot opt in     out     source
-destination
-     251     7920 DROP       icmp --  *      *       0.0.0.0/0
-0.0.0.0/0          icmp type 8
-      54     3372 DROP       icmp --  *      *       0.0.0.0/0
-0.0.0.0/0          icmp type 11
+My comments / Questions
 
-Chain tcp_packets (1 references)
-    pkts      bytes target     prot opt in     out     source
-destination
-       0        0 allowed    tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:4661
-       0        0 allowed    tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:4662
-       0        0 allowed    tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:4711
+If you are doing end-point SSL termination, the Private keys for all
+your SSL sessions must be
+    Located on the ISA server
+    Available through some sort of domain surrogate (only for MS
+networks)
+    Available from the SSL server (Only for MS products since nobody
+does this)
+    Something else??
+Can someone tell me which one that Microsoft uses for SSL-SSL bridging?=20
 
-Chain udp_packets (1 references)
-    pkts      bytes target     prot opt in     out     source
-destination
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0          udp dpt:2074
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0          udp dpt:4000
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0          udp dpt:4665
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0          udp dpt:4672
-    1774   609945 DROP       udp  --  eth0   *       0.0.0.0/0
-255.255.255.255    udp dpts:67:68
-Linux:~#
----------------
-----------------
+Does anyone else find this worrisome that the Firewall holds so much
+important data?
+    Exploitation of the firewall would mean a breakdown in the whole
+end-to-end security that SSL was designed for.
 
-Linux:~# iptables -L -t nat -nvx
-Chain PREROUTING (policy ACCEPT 459191 packets, 27464157 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-      63     2809 DNAT       tcp  --  *      *       0.0.0.0/0
-200.xxx.xxx.xxx       tcp dpt:4661
-to:192.168.111.2:4661
-   11346   555376 DNAT       tcp  --  *      *       0.0.0.0/0
-200.xxx.xxx.xxx       tcp dpt:4662
-to:192.168.111.2:4662
-       0        0 DNAT       udp  --  *      *       0.0.0.0/0
-200.xxx.xxx.xxx       udp dpt:4665
-to:192.168.111.2:4665
-       0        0 DNAT       udp  --  *      *       0.0.0.0/0
-200.xxx.xxx.xxx       udp dpt:4672
-to:192.168.111.2:4672
+Do you think this is a safer way to secure your network than just
+leaving Exchange / IIS / Apache / etc. servers open to direct SSL based
+attacks?
 
-Chain POSTROUTING (policy ACCEPT 1 packets, 208 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-  350137 19348610 SNAT       all  --  *      eth0    0.0.0.0/0
-0.0.0.0/0          to:200.xxx.xxx.xxx
+If we all deem this feature worthy for inclusion, what can we do to
+implement it?
+    Squid is the most logical OSS product to integrate it into. Have
+they seen / like this feature?
 
-Chain OUTPUT (policy ACCEPT 1354 packets, 176307 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-Linux:~#
-------------------
 
-Linux:~# iptables -L -t mangle -nvx
-Chain PREROUTING (policy ACCEPT 14720036 packets, 7058043928 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
+Other misc. questions
 
-Chain INPUT (policy ACCEPT 119262 packets, 7994213 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
+Does anyone still export port 135 to the internet (VPN's excluded) for
+real business needs?
 
-Chain FORWARD (policy ACCEPT 14600748 packets, 7050048259 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-
-Chain OUTPUT (policy ACCEPT 11528 packets, 1085092 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-
-Chain POSTROUTING (policy ACCEPT 14597456 packets, 7049102787 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-Linux:~#
------------------------
----------------------
-And please, Antony, I don't have great iptables knowledge... you could tell 
-me
-what rule should add and what
-rule should remove or to modify (and how... ) so that it works????
-
-I thank you cordially your help
-Richard
-
-_________________________________________________________________
-Protect your PC - get McAfee.com VirusScan Online 
-http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
-
+With RPC-over-HTTP becoming more prevalent, can ANYONE reliably filter a
+network without explicitly filtering the HTTP data stream and block well
+known HTTP-RPC signatures? I mean, if there's a SOAP exploit in a
+well-known web-service, how are we to block just that SOAP service vs.
+the entire HTTP protocol?
+    It seams that Microsoft has realized the fcked up the TCP port
+concept (they're not the only ones) and as a result they're forced to
+start polluting HTTP with more and more.=20
+    HTTP's going to start getting blocked the same way that TCP is today
+if companies don't use it responsibly! Be afraid?
 
