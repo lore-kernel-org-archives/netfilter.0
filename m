@@ -1,12 +1,11 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: MSN access with a webcam
-Date: Wed, 11 Aug 2004 16:37:07 -0400
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: RST packets
+Date: Wed, 11 Aug 2004 18:00:38 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051273@asimail2.alphanumeric.com>
+Message-ID: <024c01c47fe6$40e03e60$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +16,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-> I can use Microsoft's MSN(chat) but using a webcam wont work.
->
-> Here's a part listings of my firewall MSN rules:
->
-> echo "MSN Messenger..."
-> iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 1863 -s =
-$net_lan -j ACCEPT
-> iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 1863 -m =
-state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 443 -s =
-$net_lan -j ACCEPT
-> iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 443 -m =
-state --state ESTABLISHED,RELATED -d $net_lan -j ACCEPT
->
-> Is a webcam using another TCP port?
+I am having a problem now where I am getting RST packets being blocked from
+my internal network heading out to the external network.  It looks like RST
+packets are used to stop a TCP connection when there is a problem.
 
-as far as i know, it uses UPnP.  take a look at:  =
-http://sourceforge.net/projects/linux-igd/
+The setup is like this:
+I have a web box in my dmz that people connect to.  A mod-jk connection is
+made through my firewall, and the responses are allowed back with the
+standard ESTABLISHED,RELATED allow on the Forward chain.
 
-i have no idea if IGD actually works or not...
+I guess I was wondering why I was getting a bunch of RST packets and also,
+why the firewall was blocking them.  Would they not be part of the
+ESTABLISED-RELATED chain ?
 
--j
+Here are the relevant rules.
+$IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+$IPT -A FORWARD -s $WEB_BOX_IP -I eth1 -j web-int
+$IPT -A web-int -d 192.168.202.168 -p tcp --dport 8009:8020 -j ACCEPT
+
+I do have a chain for int-web ... which is used to connect to a webserver
+running on it ..(and it rejects everything else).  This is the chain that
+the RST packet is making it too and is then getting rejected.  However, I
+did not think that the packet should reach this chain as it is related (or
+establised) to the web-int connection ...
+
+Any suggestions would be greatly appreciated.  My network set up is a DMZ
+between two firewalls.  The web box is in the DMZ.  The "int" in my chains
+is my internal network.  the internal network is separated form the DMZ by a
+firewall.
+
+Peter Marshall
+
 
