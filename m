@@ -1,8 +1,8 @@
-From: "Trever L. Adams" <tadams-lists@myrealbox.com>
-Subject: ipv6 and state matching
-Date: 24 Mar 2003 15:08:40 -0500
+From: =?iso-8859-1?Q?Herbert_H=F6hlke?= <hhohlke2000@yahoo.com.ar>
+Subject: H.323_NAT: partial packet  0/6 in 0/0
+Date: Mon, 24 Mar 2003 22:00:25 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048536519.1040.5.camel@aurora.localdomain>
+Message-ID: <NHBBJMFAILALELGBFJEJMEBMCKAA.hhohlke2000@yahoo.com.ar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,22 +16,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, Leaf User Mail List <leaf-user@lists.sourceforge.net>
 
-I am unable to find any questions about this.  I really love state
-matching in ipv4.  I find that w/ RedHat 8.0 and Phoebe (8.1.99 or
-something like that), that I cannot do this.  This does indeed seem to
-be an accurate state.
+Hello
 
-Are there plans on doing state support?  Is it all that much more
-difficult?
+I have a linux 2.4.20 firewall running iptables 1.2.7a with
+ip_conntrack_h323 and ip_nat_h323 installed and Netmeeting running in both
+ends, inside the LAN and in the Internet. Sometime appears on screen the
+following error six times:
+  H.323_NAT: partial packet 0/6 in 0/0
+  H.323_NAT: partial packet 0/6 in 0/0
+  H.323_NAT: partial packet 0/6 in 0/0
+  H.323_NAT: partial packet 0/6 in 0/0
+  H.323_NAT: partial packet 0/6 in 0/0
+  H.323_NAT: partial packet 0/6 in 0/0
+and in syslog twice:
+  /var/log/syslog:Mar 24 21:32:58 firewall kernel: H.323_NAT: partial packet
+0/6 in 0/0
+  /var/log/syslog:Mar 24 21:36:08 firewall kernel: H.323_NAT: partial packet
+0/6 in 0/0
 
-Thank you,
-Trever Adams
+I searched in Google but I found only 9 occurences but in italian language.
 
-P.S. Please, cc me in any answers, I am not currently on the list.
---
-"We want a few mad people now. See where the sane ones have landed us!"
--- George Bernard Shaw (1856-1950)
+Does someone know, what causes this error?
+
+Regards
+Herbert
 
 
