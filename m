@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: nmap difficulty number??
-Date: Wed, 30 Oct 2002 16:33:24 +0000
+Subject: Re: ip_conntrack: table full, dropping packet.
+Date: Wed, 30 Oct 2002 16:28:41 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210301633.g9UGXWe11985@vulcan.rissington.net>
-References: <39778BFB9C25BA429794B15B50AEC78104B1F3@server-dcms>
+Message-ID: <200210301628.g9UGSpe11970@vulcan.rissington.net>
+References: <200210301928.42300.mail@vickysh.wlink.com.np>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <39778BFB9C25BA429794B15B50AEC78104B1F3@server-dcms>
+In-Reply-To: <200210301928.42300.mail@vickysh.wlink.com.np>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-On Wednesday 30 October 2002 2:08 pm, Didier Hung Wan Luk wrote:
+On Wednesday 30 October 2002 1:43 pm, Vicky Shrestha wrote:
 
-> hello all,=0D
->  =0D
-> what do the difficulty numbers mean is higher better or worse??=0D
->  =0D
-> Difficulty=3D2463109 (Good luck!) ?? what does this mean?=0D
+> I have built a firewall on 2.4.8-17 kernel which has 2 Mb of traffic going
+> in an out of it.
+>
+> I recently added a line :
+> iptables -A FORWARD -m state --state ESTABLISED,RELATED -J ACCEPT
+>
+> Now I can see the lines "ip_conntrack : table full, dropping packet" in my
+> kern.log.
+>
+> Does dropping packets means that it is actually dropping the packets or
+> just truncating the file /proc/net/ip_conntrack , does this affect my
+> client's connections???
 
-This is a netfilter mailing list, not nmap.
+It means it really is dropping packets.   You should find out why the 
+conntrack table is too small and do something about it.
 
-However, from the nmap man page:
+The two possible reasons are:
 
-              Another test enabled by -O  is  TCP  Sequence  Pre=AD
-              dictability Classification.  This is a measure that
-              describes approximately how hard it is to establish
-              a  forged  TCP  connection against the remote host.
-              This is useful for exploiting source-IP based trust
-              relationships  (rlogin,  firewall  filters, etc) or
-              for hiding the source of  an  attack.   The  actual
-              difficulty  number is based on statistical sampling
-              and may fluctuate.  It is generally better  to  use
-              the  English  classification  such as "worthy chal=AD
-              lenge" or "trivial joke".  This is only reported in
-              normal output with -v.
+1. You have a reasonable sized conntrack table but something is creating 
+large numbers of entries (maybe SYN floods or something similar).
+
+2. You have a reasonable number of connections being created through the 
+machine, but insufficient memory has been allocated to the conntrack table.
+
+Questions:
+
+1. How much memory do you have in your firewall machine ?
+
+2. What are the results of:
+wc -l /proc/net/ip_conntrack
+cat /proc/sys/net/ipv4/ip_conntrack_max
 
 Antony.
 
---=20
+-- 
 
-Software development can be quick, high-quality, or low-cost.
-
-The customer gets to pick any two out of three.
+Your email has been returned due to insufficient voltage.
 
