@@ -1,13 +1,10 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: psd and active ftp mode
-Date: Wed, 09 Apr 2003 13:03:49 +0200
+From: Scott Johnson <sjohnson@eccweb1.edina.k12.mn.us>
+Subject: SNAT help
+Date: Tue, 8 Apr 2003 15:38:11 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E93FE15.8020006@rtij.nl>
-References: <136459744507.20030409032210@lf.lv>
+Message-ID: <Pine.LNX.4.44.0304081529560.17863-100000@eccweb1.edina.k12.mn.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <136459744507.20030409032210@lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +14,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Peteris Krumins <newsgroups@lf.lv>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Peteris Krumins wrote:
 
->hello,
->
-> i was just testing psd match and w/ ftp active mode.
->
-> I created 10000 files on the ftp server and set my ftp client to
-> active mode and let it download those files while having
-> `iptables -A INPUT -p tcp -m psd -j REJECT --reject-with tcp-reset`
-> (with psd default threshold/weigh values).
-> The psd matched 3136 packets.
->
-> Ftp server went mad issuing:
->  425: Unable to build data connection: Connection refused
->
-> This means i cannot relay on psd and block 'possible portscans'?
-> Any suggestions?
->
-> The same would happen, if i created some rules with limit match..
->
->  
->
+I'm new to iptables so I very much appreciate any help I can get.
 
-I never have this problem. I think you should accept RELATED before the 
-psd match.
+I've been digging through information for about 1.5 weeks now and got most 
+things to work, however I'm stumped on one thing...
 
-Martijn
+I've got masquerading going on for the 3000+ work stations I have in 
+house.  In addition, I've got some good basic firewalling going on, I'm 
+still working on the rules, but I'm happy they're working as well as they 
+are.
 
+Now, I've got a few PC's that need a different public IP address from the 
+masses.  So I'm trying to assign a static NAT to these.  When I assign the 
+static nat rule, it never gets used.
+
+For example:
+
+eth0 - internal
+eth1 - dmz
+eth2 - external
+
+iptables -t nat -A POSTROUTING -s 10.1.3.35/32 -o eth2 -j SNAT --to 
+1.2.3.4
+(where 1.2.3.4 is the public address that I'm assigning)
+ip address add 1.2.3.4 dev eth2
+
+creates a rule that looks like:
+
+   0     0 SNAT       all  --  *      eth2    10.1.3.35            
+0.0.0.0/0          to:1.2.3.4
+
+When I go check my ip address at an external site, I keep getting the 
+public interface IP address.
+
+Again, any and all help is MUCH appreciated.
+
+Thanks!
+  Scott 
 
 
