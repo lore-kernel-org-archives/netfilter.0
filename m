@@ -1,11 +1,10 @@
-From: patrick.leduc@novipro.com
-Subject: bandwidth monitoring
-Date: Thu, 6 Jan 2005 11:28:04 -0500
-Message-ID: <200501061128.04741.patrick.leduc@novipro.com>
+From: Les Mikesell <les@futuresource.com>
+Subject: GRE over IPSec?
+Date: Thu, 06 Jan 2005 10:51:58 -0600
+Message-ID: <1105030318.14796.9.camel@moola.futuresource.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,12 +18,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello
+This may be off-topic for this list but perhaps someone could at least
+point me to a better source...  When doing IPSec tunnels between Cisco
+routers it works nicely to first make a GRE tunnel which gives you
+a fairly normal interface that can run routing protocols, etc., then
+use 'crypto map' to push the GRE packets through IPSec encryption.
 
-Does somebody know a program for monitoring bandwidth by ip? I have one 
-internet interface and I must monitor many ips adresses on this interface. I 
-tried Ipac-ng and, I worked a lot to do this config but it seems not working 
-this way.
+Are there any examples available that would match this setup with
+Linux on one end, Cisco on the other?  A Linux<->Cisco GRE is easy
+enough and zebra/quagga should run rip or ospf over that, but then
+I'd like to pass the GRE packets though IPSec before sending.
 
-thanx
+-- 
+  Les Mikesell
+   les@futuresource.com
+
+
 
