@@ -1,14 +1,10 @@
-From: Nabil SEFRIOUI <admin@osmium-work.com>
-Subject: Re: [LARTC] layer7-filter with iptables problem
-Date: Tue, 3 Feb 2004 03:08:02 +0000
+From: ip tables <iptables_help@yahoo.com>
+Subject: wired route entry
+Date: Tue, 3 Feb 2004 13:19:46 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402030308.02789.admin@osmium-work.com>
-References: <04e501c3e95a$e0674aa0$c2bf09ca@huecal>
+Message-ID: <20040203211946.23417.qmail__29101.08152214$1075852258@web20725.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <04e501c3e95a$e0674aa0$c2bf09ca@huecal>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,135 +14,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: hare ram <hareram@sol.net.in>, lartc@mailman.ds9a.nl
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: redhat-list@redhat.com
 
-try patching and installing kernel before iptables
+hello group(S)
 
-Le Lundi 02 F=E9vrier 2004 07:05, hare ram a =E9crit :
-> Hi
->
-> iam running FEDORA,
->
-> i have installed Source of iptable 1.2.9 with the patch=20
-> layer7-iptables patch done with out any errors
->
-> and i applied patch in kernel to the layer 7 patch
->
-> and i have select the required option by doing
->
->  make menyconfig
-> done
->
-> make dep
-> make bzImage
-> make modules
-> make modules_install
-> make install
->
-> and rebooted with customer kernel
->
-> when i type
->
-> iptables -t mangle -A POSTROUTING -m layer7 --l7proto http -j
-> MARK --set-mark 1
-> iptables v1.2.9: Couldn't load match
-> `layer7':/usr/local/lib/iptables/libipt_layer7.so: cannot open shared
-> object file: No such file or directory
->
->
-> when i try to do manual compile, iam getting this error
->
-> cc -O2 -Wall -Wunused -I/usr/src/linux-2.4.22-1.2115.nptl/include
-> -Iinclude/ -DIPTABLES_VERSION=3D\"1.2.9\"  -fPIC -o
-> extensions/libipt_layer7_sh.o -c extensions/libipt_layer7.c
->
->
-> extensions/libipt_layer7.c:21:45: linux/netfilter_ipv4/ipt_layer7.h:
-> No such file or directory
-> extensions/libipt_layer7.c:52: warning: `struct ipt_layer7_info'
-> declared inside parameter list
-> extensions/libipt_layer7.c:52: warning: its scope is only this
-> definition or declaration, which is probably not what you want
-> extensions/libipt_layer7.c: In function `parse_protocol_file':
-> extensions/libipt_layer7.c:84: error: `MAX_PROTOCOL_LEN' undeclared
-> (first use in this function)
-> extensions/libipt_layer7.c:84: error: (Each undeclared identifier is
-> reported only once
-> extensions/libipt_layer7.c:84: error: for each function it appears
-> in.) extensions/libipt_layer7.c:87: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:87: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:87: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:93: error: `MAX_PATTERN_LEN' undeclared
-> (first use in this function)
-> extensions/libipt_layer7.c:95: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:95: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:95: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c: At top level:
-> extensions/libipt_layer7.c:219: warning: `struct ipt_layer7_info'
-> declared inside parameter list
-> extensions/libipt_layer7.c: In function `parse_layer7_protocol':
-> extensions/libipt_layer7.c:246: warning: passing arg 3 of
-> `parse_protocol_file' from incompatible pointer type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:264: error: `MAX_PATTERN_LEN' undeclared
-> (first use in this function)
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c: In function `parse':
-> extensions/libipt_layer7.c:278: warning: passing arg 2 of
-> `parse_layer7_protocol' from incompatible pointer type
-> extensions/libipt_layer7.c:280: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c: In function `print':
-> extensions/libipt_layer7.c:325: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:326: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c: In function `save':
-> extensions/libipt_layer7.c:334: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c:334: error: dereferencing pointer to
-> incomplete type
-> extensions/libipt_layer7.c: At top level:
-> extensions/libipt_layer7.c:340: error: invalid application of
-> `sizeof' to an incomplete type
-> extensions/libipt_layer7.c:341: error: invalid application of
-> `sizeof' to an incomplete type
->
->
-> any help will be apprciate
->
-> hare
->
-> _______________________________________________
-> LARTC mailing list / LARTC@mailman.ds9a.nl
-> http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO:
-> http://lartc.org/
+I have installed redhat 9 (2.4.20 - 8) on an i686 with
+3 network cards fixed. When i start network services
+it puts in an entry 
 
-=2D-=20
+169.254.0.0 255.255.0.0 eth2
+
+why does this happen. This happen on boot also but i
+managed to remove it with a route del in the rc.local.
+What is the reason for this and how can i prevent
+this.
+
+Thanks and regards
+
 __________________________________
-Osmium Work - Ing=E9nierie Open Source
-http://www.osmium-work.com/
-
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
 
