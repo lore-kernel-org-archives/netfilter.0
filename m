@@ -1,12 +1,13 @@
-From: "Thomas Hilgert" <Thomas.Hilgert@hilgert.de>
-Subject: RE: AW: snat dnat question
-Date: Sun, 7 Jul 2002 12:39:59 +0200
+From: "Vik Heyndrickx" <vik.heyndrickx@pandora.be>
+Subject: RE: QOS with Netfilter/IPTables
+Date: Sun, 7 Jul 2002 13:05:52 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <8C14C590A51EB74285ADCA3DAD1A9DD705C11D@hilgert-srv1.internal.hilgert.de>
+Message-ID: <PMEAIAHPLBDGPGEMEPEICEOPCDAA.vik.heyndrickx@pandora.be>
+References: <OF1631AB06.5B28AC8A-ONC1256BEF.00363021-C1256BEF.00369929@synetics.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <OF1631AB06.5B28AC8A-ONC1256BEF.00363021-C1256BEF.00369929@synetics.fr>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,34 +18,22 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
-
-Thanks for the reply but the network traffic is passing the nat box
-twice. The mail.mailwatch.com is external and doesn't answer on a
-telnet.
+To: netfilter@lists.samba.org
 
 > -----Original Message-----
-> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-> Sent: Saturday, July 06, 2002 12:05 PM
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org]On Behalf Of
+> alexander.swann@synetics.fr
+> Sent: Sunday, July 07, 2002 11:55 AM
 > To: netfilter@lists.samba.org
-> Subject: Re: AW: snat dnat question
->=20
-> On Saturday 06 July 2002 10:11 am, Thomas Hilgert wrote:
->=20
-> > Hi George,
-> > What I do is a telnet mail.mailwatch.com 25 to emulate a smtp
-> connection.
-> > When I do this from my Firewall directly it works fine. If I try
-this
-> from
-> > my LAN (10.1.0.0/24) it works. But if I try the same thing from my
-DMZ
-> > (10.2.0.0/24) if doesn't answer.
->=20
-> http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
->=20
->=20
->=20
-> Antony.
+> Subject: QOS with Netfilter/IPTables
+> 
+> I am locking for some information (web site, tutorial ...) on how to QOS
+> with Netfilter/IPTables
+
+http://lartc.org/
+
+-- 
+Vik
 
 
