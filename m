@@ -1,12 +1,13 @@
-From: Chris Wilson <chris@netservers.co.uk>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Not quite understanding DNAT
-Date: Fri, 25 Jul 2003 10:47:30 +0100 (BST)
+Date: 25 Jul 2003 12:10:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0307251045220.1760-100000@localhost>
-References: <3F1FA56E.28480.E59161E@localhost>
+Message-ID: <1059127851.1020.45.camel@elendil.intranet.cartel-securite.net>
+References: <Pine.LNX.4.44.0307251045220.1760-100000@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F1FA56E.28480.E59161E@localhost>
+In-Reply-To: <Pine.LNX.4.44.0307251045220.1760-100000@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Coutts, Ashe (Testing Account)" <ATest@sbsdk12.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Chris Wilson <chris@netservers.co.uk>
+Cc: Coutts@elendil.intranet.cartel-securite.net, "Ashe (Testing Account)" <ATest@sbsdk12.org>, netfilter@lists.netfilter.org
 
-Hi Ashe,
+Le ven 25/07/2003 =E0 11:47, Chris Wilson a =E9crit :
+> You could try:
+> 	route add <internal-server-10.0.0.x> dev eth0 \
+> 		gw <address-of-eth0:x>
+> Using an address of your own box as the gateway of a route will cause
+> locally-generated traffic going down that route to come from that addre=
+ss,
+> instead of the default address on the device. This should mean that the
+> masquerading uses that address too, but I haven't tested it.
 
-> I have set up a very basic firewall for our system. 
-> We have 126 addresses to be used to/from the outside world (204.48.178.0/25) 
-> and are using 10.x numbers on the inside.
-> 
-> It is working almost as I expected except for the following. The DNAT 
-> connections come into the system fine but are seen as originating from the 
-> eth0 interface rather than their eth0:x interface. So, when attaching to a linux 
-> cpu with ssh I am needing to place the ip# for the eth0 interface in the 
-> hosts.allow file rather than the much more restrictive eth0:x ip#. Can it be set 
-> up so the connection is between the external eth0:x ip# and its linked internal 
-> ip#?
+I've just tested this, it does not work as I was expecting.
 
-You could try:
+Therefore, you can use iproute2 to achieve this kind of behaviour. You
+can specify to use an arbitrary local IP as source for a given route.
+Ashe, you should try this :
 
-	route add <internal-server-10.0.0.x> dev eth0 \
-		gw <address-of-eth0:x>
+	ip route add $INSERV dev eth0 src $SRCIP
 
-Using an address of your own box as the gateway of a route will cause
-locally-generated traffic going down that route to come from that address,
-instead of the default address on the device. This should mean that the
-masquerading uses that address too, but I haven't tested it.
+I use this quite often on net2net VPN using FreeS/WAN to force gateways
+to use their private IP when communicating through the tunnel.
 
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
