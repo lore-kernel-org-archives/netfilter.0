@@ -1,11 +1,13 @@
-From: =?iso-8859-1?q?Augusto=20Flavio?= <augustoflavioms@yahoo.com.br>
-Subject: iptables support this?
-Date: Fri, 18 Jul 2003 11:55:26 -0300 (ART)
+From: Shawn <core@enodev.com>
+Subject: Re: iptables support this?
+Date: 18 Jul 2003 10:10:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030718145526.49893.qmail@web41505.mail.yahoo.com>
+Message-ID: <1058541048.2196.8.camel@localhost>
+References: <20030718145526.49893.qmail@web41505.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030718145526.49893.qmail@web41505.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,24 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Augusto Flavio <augustoflavioms@yahoo.com.br>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi,
+Performance no fail much, but you fail to mention how it is all
+organized. Not that it should matter much with modern CPUs. How many
+sequential steps in the path you're worried about? 500? That would be
+just silly.
+
+I'm guessing you have different rules for different IP or IP range
+matches. No big deal.
+
+Keep in mind if you're that worried about speed, maybe you ought to
+think about making your routing and firewalling separate.
 
 
-The IPTables support some like 500 rules?=20
-The performance fail much?
+On Fri, 2003-07-18 at 09:55, Augusto Flavio wrote:
+> Hi,
+> The IPTables support some like 500 rules? 
+> The performance fail much?
+> 
+> 
+> Tkz!
 
-
-Tkz!
-
-
-Augusto Flavio
-
-_______________________________________________________________________
-Yahoo! Mail
-Mais espa=E7o, mais seguran=E7a e gratuito: caixa postal de 6MB, antiv=EDru=
-s, prote=E7=E3o contra spam.
-http://br.mail.yahoo.com/
 
