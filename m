@@ -1,14 +1,10 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Port range forwarding
-Date: Mon, 12 Jan 2004 22:29:26 -0800
+From: duong hung <duong.vn@rocketmail.com>
+Subject: multicast over firewall linux
+Date: Mon, 12 Jan 2004 22:36:33 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401130629.i0D6TOHu016959@server5.bandwidthco.com>
-References: <E4DB60AD-44FC-11D8-842F-000A95DA9C9A@msa.hinet.net>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <20040113063633.93629.qmail@web40107.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E4DB60AD-44FC-11D8-842F-000A95DA9C9A@msa.hinet.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +15,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Max Yin' <max.yin@msa.hinet.net>, netfilter@lists.netfilter.org
-
-Now let me fix that:
-
-i=3100
-X=2100
-while [ "$i" -le 3500 ]
-do
-	$IPT -t nat -A PREROUTING -i eth0 -j DNAT -p tcp --	dport $i
---to-destination 192.168.2.60:$x
-
-	i=`expr $i + 1`
-	x=`expr $x + 1`
-done  
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Max Yin
-Sent: Monday, January 12, 2004 4:43 AM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: Port range forwarding 
 
-Hi,
-I'm not sure if this question is already been asked before or not, because I
-can't find any discussion before.
+Hi ,
 
-I want to setup a port forwarding rule that will translate a specified port
-range to another port range, for example:
+My network have config as : 
 
-iptables -t nat -A PREROUTING -i eth0 -j DNAT -p tcp --dport 3100:3500
---to-destination \ 192.168.2.60:2100-2500
+  Cisco -------------- linux box ----------- Cisco
+ 203.168.3.1   203.168.3.2   192.168.0.1  192.168.0.2
 
-But I found that all connections from 3100 to 3500 will be mapped to 2100
-port only, not 3100 to 2100, 3101 to 2101, etc.
-
-So, how can I make it? or is it possible ?
+I want multicast packets to flow between two router
+cisco . Multicast routing use PIMv2. Any people help
+me this problem
 
 Thanks
-Max
 
 
 
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
 
