@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Home web server using front firewall
-Date: Wed, 10 Dec 2003 23:40:14 +0000
+From: "Bryan Dyson" <lan_administrator@solanapres.org>
+Subject: Help with iptables
+Date: Wed, 10 Dec 2003 15:45:52 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312102340.14210.Antony@Soft-Solutions.co.uk>
-References: <HFEBJMKNPOCPPMGFHDMCOECACDAA.esanz@minorplanetusa.com>
+Message-ID: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3BF77.BF04C962"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HFEBJMKNPOCPPMGFHDMCOECACDAA.esanz@minorplanetusa.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +17,101 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 10 December 2003 11:24 pm, Erick Sanz wrote:
+This is a multi-part message in MIME format.
 
-> All,
->
-> I am trying to install a small web server at home in order
-> to display some family pictures and some other personal
-> topics (hobbies, interests ...)
->
-> For this I need port forwarding and probably NAT to change
-> the outgoing IP address.
+------_=_NextPart_001_01C3BF77.BF04C962
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-If you do DNAT for incoming packets, you will get automatic SNAT on the 
-outgoing reply packets - you do not need to set up your own rule to handle 
-these.
 
-> I want the real server to be completely blocked for
-> any other port than http and https on the web server
-> (I am planning to accept requests only from the internal
-> network).
+Hi folks,
 
-Um, do you really mean what that last bit says?   You only want to accept 
-requests from the internal network - ie not from the Internet???
+I've got my iptables setup and working with one small glitch. My ISP
+says I'm an open proxy.
+What I'm trying to do is set a rule in iptables that will drop port 3128
+requests coming from the outside but still allow my internal network to
+use the proxy on this port.
+I've tried the following, but they seem to shut down routing of e-mail
+from the internal mail server:
 
-> Am I forgetting anything else?
+-A PREROUTING -I eth1 -p tcp -m tcp --dport 3128 -j DROP
+And
+-A PREROUTING -I x.x.x.x (public IP) -p tcp -m -tcp --dport 3128 -j DROP
 
-The only thing I can see missing from the rules you posted is:
 
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+If anyone could help I'd appreciate it.
 
-That rule will allow the reply packet to traverse your firewall, and return to 
-the outside world (assuming that's what you really want to happen....).
+Bryan Dyson
+LAN/db Administrator
+Solana Beach Presbyterian Church
+858-509-2580
+Shelby 5.4.1472
 
-If you have any problems with the ruleset you posted (with the above addition) 
-feel free to post here again, but please be as specific as you can about what 
-the problem is, and how you have tested for it.
 
-Hope you have a good time with netfilter.
 
-Antony.
+------_=_NextPart_001_01C3BF77.BF04C962
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6249.1">
+<TITLE>Help with iptables</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+<BR>
 
- - William H Gates III
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi folks,</FONT>
+</P>
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+<P><FONT SIZE=3D2 FACE=3D"Arial">I've got my iptables setup and working =
+with one small glitch. My ISP says I'm an open proxy.</FONT>
 
+<BR><FONT SIZE=3D2 FACE=3D"Arial">What I'm trying to do is set a rule in =
+iptables that will drop port 3128 requests coming from the outside but =
+still allow my internal network to use the proxy on this =
+port.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">I've tried the following, but they seem =
+to shut down routing of e-mail from the internal mail server:</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">-A PREROUTING -I eth1 -p tcp -m tcp =
+--dport 3128 -j DROP</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">And</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">-A PREROUTING -I x.x.x.x (public IP) =
+-p tcp -m -tcp --dport 3128 -j DROP</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">If anyone could help I'd appreciate =
+it.</FONT>
+</P>
+
+<P><FONT FACE=3D"Arial">Bryan Dyson</FONT>
+
+<BR><FONT FACE=3D"Arial">LAN/db Administrator</FONT>
+
+<BR><FONT FACE=3D"Arial">Solana Beach Presbyterian Church</FONT>
+
+<BR><FONT FACE=3D"Arial">858-509-2580</FONT>
+
+<BR><FONT FACE=3D"Arial">Shelby 5.4.1472</FONT>
+</P>
+<BR>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C3BF77.BF04C962--
 
