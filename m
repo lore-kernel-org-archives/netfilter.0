@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: icmp messages to spoofed address accepted by -m conntrack --ctstate ESTABLISHED,RELATED
-Date: Thu, 18 Mar 2004 22:53:47 +0000
+From: Frederic de Villamil <neuro@seclab.jp>
+Subject: Re: port scanning
+Date: Fri, 19 Mar 2004 00:02:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403182253.47803.Antony@Soft-Solutions.co.uk>
-References: <20040318223551.GA1128@salty>
+Message-ID: <20040318230209.GA13552@jesus.seclab.jp>
+References: <20040318224754.5502418D76@smtp.latinmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040318223551.GA1128@salty>
+Content-Disposition: inline
+In-Reply-To: <20040318224754.5502418D76@smtp.latinmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter list <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Jorge Garcia <anarkophobia@latinmail.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Thursday 18 March 2004 10:35 pm, Jim Laurino wrote:
+On Thu, 18 Mar 2004, Jorge Garcia wrote:
 
-> Hello,
->
-> I added a rule with this matching pattern to
-> the iptables firewall on my machine.
->
-> -m conntrack --ctstate ESTABLISHED,RELATED
->
-> I am logging the matches, the only packets matching are icmp destination
-> unreachable packets that are responses to -
-> a udp packet sent to dest ports 1026 or 1027 that has the source IP of my
-> machine.
->
-> I have now done parallel tcpdump tracing, (among other tests) and I now
-> think the original udp packets do not come from me, but rather that someone
-> is spoofing my IP address.
+> hi, i need an example of script ( please, i need the example works, becuouse i found a lot on internet that doesnt work) for logging and dropping port scans with iptables.
+> thanx
 
-I agree with this latter explanation.
+Hello,
+did you try the psd match, included in the patch-o-matic?
 
-http://isc.incidents.org/port_details.html?port=1026
-http://www.mynetwatchman.com/kb/security/articles/popupspam
-http://www.lurhq.com/popup_spam.html
+You can use it that way, or with options. Have a look at the netfilter
+extensions HOWTO at
+http://netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-3.html#ss3.12
+iptables -A INPUT -m psd -j DROP
 
-Regards,
+regards
+Frederic
 
-Antony
-
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
-
- - William H Gates III
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--
+< Ylli> lol je rigole neuro jte prend pa pr un pervers ms un president
+et pere de famille respectable :s
+http://www.seclab.jp
 
