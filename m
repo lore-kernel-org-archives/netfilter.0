@@ -1,8 +1,8 @@
-From: "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>
+From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: Order in ruleset edition
-Date: Wed, 26 Nov 2003 12:53:38 -0600
+Date: Wed, 26 Nov 2003 10:59:08 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D8FBABA1EF6F2E4DBCC88903F60691F3023F157E@houxchsvr.ucscorp.ucs.pvt>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122EA8@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,17 +17,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+To: Alejandro Cabrera Obed <sisdis@tournet.com.ar>, "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-It does not matter if you put rules for different chains amongst each =
-other. You do not have to enter all of the forward rules first and then =
-all of the input rules, etc. The order of the rules within the chain =
-does matter. Obviously it makes it easier to read if you group the rules =
-by which chain they are going into, so it isn't a bad idea.=20
+The order of rule insertion only matters when the rules have the same
+table and chains. So, the following table/chain combinations can be
+applied in any order:
+
+Raw/PREROUTING
+Mangle/PREROUTING
+Nat/PREROUTING
+Mangle/INPUT
+Filter/INPUT
+Mangle/FORWARD
+Filter/FORWARD
+Raw/OUTPUT
+Mangle/OUTPUT
+Filter/OUTPUT
+Nat/OUTPUT
+Mangle/POSTROUTING
+Nat/POSTROUTING
+
+Also, any policy (-P ..) rules can be applied in any order, but if you
+have more than one policy rule for any of the above table/chain
+combinations, the later executed rule will persist.
 
 -----Original Message-----
-From: Alejandro Cabrera Obed [mailto:sisdis@tournet.com.ar]
-Sent: Wednesday, November 26, 2003 12:41
+From: Alejandro Cabrera Obed [mailto:sisdis@tournet.com.ar]=20
+Sent: Wednesday, November 26, 2003 10:41 AM
 To: Netfilter lista (iptables)
 Subject: Order in ruleset edition
 
@@ -37,11 +53,11 @@ script.
 
 My question is the following:
 
-Is there any order about CHAINS and TABLES that I have to follow in =
+Is there any order about CHAINS and TABLES that I have to follow in
 order to
-construct my iptables ruleset ??? For example, is it the same if firstly =
+construct my iptables ruleset ??? For example, is it the same if firstly
 I
-write in my script my the FORWARD rules and then the OUTPUT and INPUT =
+write in my script my the FORWARD rules and then the OUTPUT and INPUT
 rules
 or viceversa ???
 
@@ -50,12 +66,4 @@ Thanks a lot and regards !!!
 Alejandro.
 
 
-----------------------------------------
-The information transmitted in this message is intended only for the =
-person or entity to whom it is addressed and may contain confidential =
-and/or privileged material.  Any review, retransmission, dissemination =
-or other use of, or taking of any action in reliance upon this =
-information by persons or entities other than the intended recipient is =
-prohibited.  If you received this in error, please contact the sender =
-and destroy any copies of this document.
 
