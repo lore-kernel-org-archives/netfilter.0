@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: firewall + tcpdump
-Date: Tue, 30 Mar 2004 16:50:31 +0100
+From: "V. A.H." <vlhip@yahoo.com>
+Subject: Re: Firewall question...
+Date: Tue, 30 Mar 2004 07:53:34 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403301650.31936.Antony@Soft-Solutions.co.uk>
-References: <40698161.1020502@n-dsi.com> <200403301537.54461.Antony@Soft-Solutions.co.uk> <40698F5B.8060204@n-dsi.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040330155334.56475.qmail@web41404.mail.yahoo.com>
+References: <200403301058.37604.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative; boundary="0-322882363-1080662014=:55552"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40698F5B.8060204@n-dsi.com>
+In-Reply-To: <200403301058.37604.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +17,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 30 March 2004 4:16 pm, Peggy Kam wrote:
+--0-322882363-1080662014=:55552
+Content-Type: text/plain; charset=us-ascii
 
-> > Not sure quite what you by "in front or behind", however I can tell you
-> > that tcpdump works "closer to the wire" than netfilter, so it will see
-> > all traffic hitting the interface, whether netfilter allows it or not.
->
-> As you have said that all traffic hitting the interface is seen whether
-> netfilter allows it or not, my question was how do I know whether the
-> packets being sent get blocked?
+This is how the whole setup is looking for the moment:
+ 
+Internet (Different ISP)
+        |
+Subnet Y (10.0.0.0/20)
+        |
+        |
+My Subnet(10.0.1.0/24)
+        |
+(eth1)-10.0.1.1(default route for My Subnet)
+Firewall/Router(SNAT)
+(eth0)-some real ip address
+        |
+Internet (My ISP).
 
-1. If it's a routing firewall, see if the packets come out the other side 
-(tcpdump on both interfaces).
 
-2. If it's not a routing firewall, see if any response packets come back again 
-(for TCP).
+ 
+<<I'm not surprised you are a little bit confused if these IP addresses are 
+accurate :)
+Please confirm: is eth0 10.0.1.254, or 10.0.0.254?
+And: you have one subnet 10.0.0.0/20, with another connected network 
+10.0.1.0/24 (ie a subnet of the original network)???>>
 
-3. Put a LOG rule in your ruleset just before DROPping the packets, so you 
-know what got DROPped.
+10.0.0.0/20 is a metropolitan network; in order to access this network I have a /24 subnet available, 10.0.1.0 and the netmask for my clients is 255.255.240.0 (/20). As I mentioned before, I have to setup this firewall between metropolitan network and my clients. And I'm stuck :-) The network interfaces from my furure firewall (I hope) can take only an ip from my available /24 network.
+ 
+Thank You.
 
-4. If you're really interested in this sort of thing, you might want to 
-investigate http://www.snort.org
 
-Regards,
+---------------------------------
+Do you Yahoo!?
+Yahoo! Finance Tax Center - File online. File on time.
+--0-322882363-1080662014=:55552
+Content-Type: text/html; charset=us-ascii
 
-Antony.
-
--- 
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+<DIV>This is how the whole setup is looking for the moment:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>
+<DIV>Internet (Different ISP)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>Subnet Y (10.0.0.0/20)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>My Subnet(10.0.1.0/24)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</DIV>
+<DIV>(eth1)-10.0.1.1(default route for My Subnet)</DIV>
+<DIV>Firewall/Router(SNAT)</DIV>
+<DIV>(eth0)-some real ip address</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>Internet (My ISP).</DIV></DIV>
+<DIV><BR>&nbsp;</DIV>
+<DIV>&lt;&lt;I'm not surprised you are a little bit confused if these IP addresses are <BR>accurate :)<BR>Please confirm: is eth0 10.0.1.254, or 10.0.0.254?<BR>And: you have one subnet 10.0.0.0/20, with another connected network <BR>10.0.1.0/24 (ie a subnet of the original network)???&gt;&gt;<BR></DIV>
+<DIV>10.0.0.0/20 is a metropolitan network; in order to access this network I have&nbsp;a /24 subnet available, 10.0.1.0 and the netmask for my clients&nbsp;is 255.255.240.0 (/20). As I mentioned before, I have to setup&nbsp;this firewall between metropolitan network and my clients. And I'm stuck :-) The network interfaces from my furure firewall (I hope) can take only an ip from my available /24 network.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You.</DIV><p><hr size=1><font face=arial size=-1>Do you Yahoo!?<br>
+<a href="http://taxes.yahoo.com/filing.html"><b>Yahoo! Finance Tax Center</a></b> - File online. File on time.
+--0-322882363-1080662014=:55552--
 
