@@ -1,8 +1,8 @@
 From: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
 Subject: Re[2]: Problem with Port forwarding
-Date: Tue, 6 Apr 2004 11:31:27 +0400
+Date: Tue, 6 Apr 2004 11:41:26 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <374457109.20040406113127@internetplustravel.ru>
+Message-ID: <1825056156.20040406114126@internetplustravel.ru>
 References: <146373237921.20040405211401@internetplustravel.ru>
  <200404051854.13708.Antony@Soft-Solutions.co.uk>
 Reply-To: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
@@ -23,6 +23,7 @@ Content-Type: text/plain; charset="us-ascii"
 To: Antony Stone <netfilter@lists.netfilter.org>
 
 Hello Antony,
+
 Thank you for your answer.
 
 Now the connection does not logged
@@ -34,11 +35,10 @@ Trying X.X.X.X...
 telnet: Unable to connect to remote host: Connection timed out
 
 This is the log from mail server:
-Tue 2004-04-06 10:31:42: [804:52:2] Accepting SMTP connection from[Y.Y.Y.Y : 33222]
+Tue 2004-04-06 10:31:42: [804:52:2] Accepting SMTP connection from [Y.Y.Y.Y : 33222]
 Tue 2004-04-06 10:31:42: [804:52:2] Socket connection closed by the other side (how rude!)
 Tue 2004-04-06 10:31:42: [804:52:2] Winsock Error 10053 Software caused a connection abort.
 Tue 2004-04-06 10:31:42: [804:52:2] Unexpected socket closure
-
 
 Monday, April 5, 2004, 9:54:13 PM, you wrote:
 
