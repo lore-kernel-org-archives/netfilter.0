@@ -1,10 +1,21 @@
-From: James <newsjn@dpmg.com>
-Subject: DNATed packet not hitting FORWARD chain
-Date: Mon, 22 Nov 2004 14:06:48 -0600
-Message-ID: <9FB9C39FACF4034BB4AC7F89F2AEB0AB0159373A@win2k.aries.dpmg.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: state: INVALID
+Date: Mon, 22 Nov 2004 16:39:10 -0500
+Message-ID: <20041122213910.GA31537@bender.817west.com>
+References: <419E75B1.3030406@uni-paderborn.de>
+	<1100990773.3501.9.camel@hubcap.ljm.dom>
+	<419FD0BD.6000906@uni-paderborn.de>
+	<1101061543.3501.18.camel@hubcap.ljm.dom>
+	<41A11AD5.3080401@uni-paderborn.de>
+	<1101131121.13662.17.camel@hubcap.ljm.dom>
+	<41A2010A.9090601@uni-paderborn.de>
+	<20041122175440.GA31032@bender.817west.com>
+	<41A23EE6.4080804@uni-paderborn.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <41A23EE6.4080804@uni-paderborn.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,62 +26,103 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
+Cc: bj-schmidt@uni-paderborn.de
 
-Hi,
+On Mon, Nov 22, 2004 at 08:32:54PM +0100, Bj=F6rn Schmidt wrote:
+> Jason Opperisano wrote:
+> >alright--let's reset here.  this is how i understand the situation:
+> >
+> >you have two machines:
+> >
+> >192.168.1.1	(skyron)
+> >192.168.1.2	(gigabyte)
+>=20
+> Yes.
+>=20
+> >there's an IPSec tunnel setup between the two machines to encrypt all
+> >traffic between them.
+>=20
+> No, not a tunnel. IPsec in transport mode:
+>=20
+> http://www.ipsec-howto.org/x247.html
+>=20
+> >you are trying to initiate an SSH connection from 192.168.1.1 to
+> >192.168.1.2.
+>=20
+> No, from 192.168.1.2 to 192.168.1.1
+>=20
+> >192.168.1.2 is running iptables.
+>=20
+> Yes.
+>=20
+> >with no rules loaded on 192.168.1.2, the SSH connection from 192.168.1=
+.1
+> >succeeds.
+>=20
+> No, but:
+>=20
+> with no rules loaded on 192.168.1.2, the SSH connection from 192.168.1.=
+2
+> to 192.168.1.1 succeeds.
+>=20
+> >once you load a basic ruleset on 192.168.1.2--the ACK packets from
+> >192.168.1.2 to 192.168.1.1 get dropped in the OUTPUT chain which allow=
+s
+> >"-m state --state ESTABLISHED" packets.
+>=20
+> Yes.
 
-I'm having some trouble getting DNAT to work properly.  I have a gateway
-machine that has two different connections to the Internet, on eth1 and
-eth2.  I'm trying to allow inbound port 1723 to be forwarded to an internal
-PPTP server through both interfaces.  It works on eth2, but not eth1.
-Here's what I've got:
+would you be so kind as to humor me by loading the following rule set on
+192.168.1.2?  essentially--it is the minimal ruleset you can load on
+192.168.1.2 to allow bi-directional, IPSec-only communications between
+the two machines.  if 192.168.1.2 needs to communicate outbound to other
+hosts, or if other hosts need to communicate to 192.168.1.2--this rule
+set DOES NOT take that into account (you've been warned).  you'll also
+probably have to re-establish the VPN after the firewall rules are
+loaded (i.e. load firewall rules first, then initiate VPN).
 
-Chain PREROUTING (policy ACCEPT 217K packets, 15M bytes)
- pkts bytes target     prot opt in     out     source
-destination
-   15   744 DNAT       tcp  --  eth2   *       0.0.0.0/0            $DSL_IP
-tcp dpt:1723 to:192.168.0.167:1723
-  127  7152 DNAT       tcp  --  eth1   *       0.0.0.0/0
-$CABLE_IP   tcp dpt:1723 to:192.168.0.165:1723
+if you choose to load it--let us know what happens.
 
-Chain FORWARD (policy DROP 6 packets, 360 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-    0     0 LOG        all  --  *      *       0.0.0.0/0
-192.168.0.165      LOG flags 0 level 4
- 508K  306M ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0          state RELATED,ESTABLISHED
-    0     0 ACCEPT     47   --  eth1   eth0    0.0.0.0/0
-192.168.0.165      state NEW
-    1    60 ACCEPT     tcp  --  eth2   eth0    0.0.0.0/0
-192.168.0.167      tcp dpt:1723 state NEW
+---BEGIN SCRIPT---
 
-As you can see from the counters, the packets coming in from both interfaces
-are hitting the DNAT rules, and so they should be rewritten correctly.
-Then, it would seem that the packets rewritten for 192.168.0.165 get lost in
-space - I added the LOG target as the first rule of the FORWARD chain just
-to be sure, and no packets ever hit that rule.  Packets rewritten for
-192.168.0.167 work fine, they hit the FORWARD chain and are accepted.
+VPNPEER=3D"192.168.1.1"
 
-I though it might be the routing, so I checked:
+for table in mangle nat filter; do
+  iptables -t $table -F
+  iptables -t $table -X
+  iptables -t $table -Z
+done
 
-gw:/home/james# ip ro get 192.168.0.165
-192.168.0.165 dev eth0  src 192.168.0.1
-    cache  mtu 1500 advmss 1460
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
 
-Packets for 192.168.0.165 should be routed out eth0, which is different than
-the eth1 they came in on, so they should hit the FORWARD chain, right?  Any
-ideas on where the packets are going, since they aren't making it to the
-FORWARD chain?  Where else can I look?
+iptables -t mangle -A PREROUTING -p 50 -s $VPNPEER -j MARK --set-mark 1
+iptables -t mangle -A PREROUTING -p 51 -s $VPNPEER -j MARK --set-mark 1
 
-(This is only a part of my iptables ruleset, but I don't think the other
-rules matter, at least until the packets are being logged by the first rule
-in the FORWARD chain.  Let me know if you think differently and want to see
-the whole ruleset.)
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m mark --mark 1 -m state --state NEW -j ACCEPT
+iptables -A INPUT -p 50 -s $VPNPEER -j ACCEPT
+iptables -A INPUT -p 51 -s $VPNPEER -j ACCEPT
+iptables -A INPUT -p udp -s $VPNPEER --sport 500 --dport 500 -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -j LOG --log-prefix "INPUT DROP: "
 
-Thanks,
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -p 50 -d $VPNPEER -j ACCEPT
+iptables -A OUTPUT -p 51 -d $VPNPEER -j ACCEPT
+iptables -A OUTPUT -p udp -d $VPNPEER --sport 500 --dport 500 -j ACCEPT
+iptables -A OUTPUT -m state --state NEW -d $VPNPEER -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+iptables -A OUTPUT -j LOG --log-prefix "OUTPUT DROP: "
 
-James
+--- END SCRIPT ---
 
+-j
+
+--
+"Ah, beer, my one weakness. My achilles heel, if you will."
+        --The Simpsons
 
