@@ -1,14 +1,13 @@
-From: "Joel n.solanki" <zealous@bonbon.net>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: [squid-users] squid iptables snmp
-Date: 22 Oct 2004 20:49:07 +0530
+Date: Fri, 22 Oct 2004 11:28:06 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1098458347.5037.16.camel@linux.d2visp.com>
+Message-ID: <20041022152806.GA14687@bender.817west.com>
 References: <1098440013.4380.40.camel@linux.d2visp.com>
-	<Pine.LNX.4.61.0410221644580.23825@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0410221644580.23825@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <1098440013.4380.40.camel@linux.d2visp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +18,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Henrik Nordstrom <hno@squid-cache.org>
-Cc: netfilter <netfilter@lists.netfilter.org>, squid <squid-users@squid-cache.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-Ok :)
+On Fri, Oct 22, 2004 at 03:43:34PM +0530, Joel n.solanki wrote:
+> 
+> Dear all,
+> 
+> I dont know wheather this problem is related to squid or iptables
+> netfilter.
+> But let me specify my problem. I tried my lots but i cant solve this
+> problem. 
+> 		
+> 		
+> Mrtg server	Squid + Netfilter box	Mikrotik Router
+> 
+> When I try to create mrtg for mikrotik router which is behind Squid +
+> netfilter box, it gives me this error.
 
-On Fri, 2004-10-22 at 20:15, Henrik Nordstrom wrote:
-> On Fri, 22 Oct 2004, Joel n.solanki wrote:
-> 
-> > I dont know wheather this problem is related to squid or iptables
-> > netfilter.
-> 
-> If anything it is related to iptables.
-> 
-> There is no technical way it can be related to running Squid.
-> 
-> Regards
-> Henrik
+can you ping "Mikrotik Router" from "Mrtg server" when "Squid +
+Netfilter" is between them?
+
+is IP forwarding enabled on "Squid + Netfilter" box?
+
+what is the default gateway of "Mrtg server"?
+
+what is the default gateway of "Mikrotik Router"?
+
+are you trying to NAT the traffic to "Mikrotik Router"?
+
+-j
+
 -- 
-Joel N.Solanki
-Network Administrator
-Mobile: 91-9426353268
-Phone No: 0265-550001/2/3/4/5 Ext: 211/212
-Digtial 2 Virtual Internet Service Provider.
-http://www.packetraptor.com/
-http://www.d2visp.com/
-Gujarat (India)
-
-
+Jason Opperisano <opie@817west.com>
 
