@@ -1,8 +1,8 @@
 From: "Gaby Schilders" <G.Schilders@ibfd.org>
-Subject: RE: NAT with two Internet links
-Date: Thu, 16 Oct 2003 11:08:02 +0200
+Subject: RE: DNAT + 2 uplinks + route = nogo
+Date: Thu, 16 Oct 2003 11:24:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E10119907F@ibfdmail.ibfd.oin>
+Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E1296037@ibfdmail.ibfd.oin>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,57 +17,88 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Simon Garner <sgarner@expio.co.nz>
-Cc: netfilter list <netfilter@lists.netfilter.org>
+To: netfilter list <netfilter@lists.netfilter.org>
+Cc: Jim Carter <jimc@math.ucla.edu>
 
-Alternatively, if you want to be on the bleeding edge... (who doesn't =
-;-)
+Unfortunatly, that is not a feature, it's mistake. Most providers I =
+know, including the two involved here filter any and all packets that =
+have a source IP other than the address range handed out by them. No =
+traffic will therefore go out.
 
-If you include the 'ROUTE' target (from a recent p-o-m) and get a recent =
-iptables snapshot and compile it against your shiney new kernel source =
-you can do without the Mark target and iproute2 altogether:
+You have, however, convinced me that there can be cases where you want =
+traffic going up one creek, and down the other ;-).
 
-use the target -j ROUTE --gw GWx (add --oif OIFx if you're paranoid like =
-me) --continue
-
-Where in GWx and OIFx x is the number of the uplink you want to use for =
-this particular connection (I have two uplinks so I have rules for GW1 =
-and GW2 but this can be extended ad inifinitum)
-
-Don't forget the --continue or your packets go out without being SNATted =
-or UnDNATted...
-
-I only figured this one out today though ;)
-
-I'll expand on this solution somewhere on Monday when it's all fixed up.
+As I just sent to the list, I'm going to try out some things now.
 
 Gaby Schilders
 IBFD network admin
 
 -----Original Message-----
-From: Simon Garner [mailto:sgarner@expio.co.nz]
-Sent: donderdag 16 oktober 2003 9:46
-To: netfilter@lists.netfilter.org
-Subject: Re: NAT with two Internet links
+From: Jim Carter [mailto:jimc@math.ucla.edu]
+Sent: woensdag 15 oktober 2003 19:05
+To: Gaby Schilders
+Cc: netfilter list; Ray Leach
+Subject: RE: DNAT + 2 uplinks + route =3D nogo
 
 
-On Thursday, October 16, 2003 7:37 PM [GMT+1200=3DNZT],
-Simon Garner <sgarner@expio.co.nz> wrote:
+On Wed, 15 Oct 2003, Gaby Schilders wrote:
 
-> Hi,
->
-> I have a small network with several Windows client PCs, a Linux
-> firewall/server, and two links to the Internet. What I want to do is
-> have certain traffic (based on source and/or destination ports) routed
-> through one link while everything else goes through the other.
->
+> - packets coming in over both lines are correctly DNATted (the rules
+> match and their count goes up). these packets now have a src-ip of the
+> originating host but the private address of the DNATted server as =
+dst-ip
+> and are routed to the internal interface. So far, so good.
 
-Nevermind, after a bit more googling I found the answer myself. The
-solution is to mark the wanted packets with iptables and then route them
-with iproute2, as per:
-http://www.lartc.org/howto/lartc.netfilter.html
+> - the return packets for connections over both lines go to the linux
+> box's internal interface with the private address of the DNATted =
+server
+> as src-ip and the originating host as dst-ip. How must the Linux box
+> discern these packets and how does it decide to send the replies =
+through
+> which line? Same goes for the ROUTE target: what matching criteria =
+would
+> you use to discern the packets? Both packets come from the same src =
+(at
+> that moment of matching, UnDNATting is the last step of all), both =
+have
+> the same destination, both have the same incoming interface (the =
+internal
+> interface).
 
--Simon
+Do I understand the malfunction correctly?  The router has external
+interfaces eth1 =3D 1.2.3.4 and eth2 =3D 2.3.4.5.  A global internet =
+client,
+let's say 128.97.4.125, connects to a certain port on 2.3.4.5.  The
+connection is DNATted to an internal server, which replies to =
+128.97.4.125.
+The router un-DNATs it and now has a packet allegedly "from" 2.3.4.5's
+special port, "to" 128.97.4.125.
 
+The complaint is that the packet is then sent out eth1, when the =
+incoming
+connection was on eth2.
 
+I think "that's not a bug, that's a feature" :-)  If eth1 truly cannot
+reach 128.97.4.125, the route assigned through it should reflect the
+subnets that it can reach.  If it's a cost or political issue which
+interface is used, I have no experience in the "right" way to deal with
+that (TOS?), but if you set a high metric on the less preferred route,
+that is definitely honored for ordinary packets.  If the issue is load
+balancing, I've heard of people doing advanced routing stuff to make =
+that
+happen, but again I have no experience myself.
+
+Another person suggested CONNMARKing the connection according to the
+incoming interface, and then using ROUTE (from P-O-M) to preempt the
+routing decision.  It should work, but also should not be necessary --
+nothing will actually break if different routes are used.  Unless there =
+are
+two other NAT boxes involved which depend on bidirectional traffic to
+recognize throughgoing connections.  But that's really unlikely.
+
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  =
+90095-1555
+Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for =
+PGP key)
 
