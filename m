@@ -1,15 +1,12 @@
-From: netfilter_user <netfilter_user@o2.pl>
-Subject: Re[2]: access to server
-Date: Wed, 30 Apr 2003 03:38:12 +0200
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: string v1.2.8 (I'm v1.2.5)  Message critical or not?
+Date: Tue, 29 Apr 2003 18:38:53 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1246491441.20030430033812@o2.pl>
-References: <5436369716.20030430004931@o2.pl>
- <20030430031030.50b8d13b.arnt@c2i.net>
-Reply-To: netfilter_user <netfilter_user@o2.pl>
+Message-ID: <20030430013853.60105.qmail@web40205.mail.yahoo.com>
+References: <3EAE19E9.3030103@jetrentals.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030430031030.50b8d13b.arnt@c2i.net>
+In-Reply-To: <3EAE19E9.3030103@jetrentals.co.nz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,29 +17,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
-
-Hello Arnt,
-
-Wednesday, April 30, 2003, 3:10:30 AM, you wrote:
-
-AK> On Wed, 30 Apr 2003 00:49:31 +0200, 
-AK> netfilter_user <netfilter_user@o2.pl> wrote in message 
-AK> <5436369716.20030430004931@o2.pl>:
-
->> Rule: "iptables -A FORWARD -i eth1 -p udp -m --multioport --dport 
-AK>                                                      /\
-AK> ..is " -m --multioport " a valid match in iptables, or a correct 
-AK> quote of your attempt to write  ' -m --multiport ' ?
+Content-Transfer-Encoding: 7bit
+To: David <david@jetrentals.co.nz>, netfilter@lists.netfilter.org
 
 
-damn my wrong...it should looks like this:
-iptables -A FORWARD -i eth1 -p udp -m --multioport --dport 23073,23083
--j ACCEPT
+--- David <david@jetrentals.co.nz> wrote:
+> Hi,
+> 
+> I have just used the P-O-M to enables "strings" with iptables. When I 
+> set a rule using the "string" statement I get the message below. Is this 
+> message an error message or just notification? While my rule work??
+> 
+> iptables: match `string' v1.2.8 (I'm v1.2.5).  
+> Thanks
+> 
+> David.
+> 
+> 
 
--- 
-Best regards,
-  mailto:netfilter_user@o2.pl
+Chances are you did not install the iptables after you fixed your kernel.
+Or if you did... You are running a preinstalled version of iptables as opposed
+to the version you want to run...
 
+soloution... as root do this
+updatedb
+locate iptables | grep bin
+
+you should see two completely different set of iptables (this happens when your
+distro installs  a deb or rpm package of iptables and you latter install from
+source)
+
+one will prob be 
+/sbin/iptables
+
+another might be like
+/usr/local/sbin/iptables
+
+maybe
+
+/usr/sbin/iptables
+
+in eaither case... unistall the distrobution's package
+updatedb and then locate the iptables command again
+
+Hope this helps
+J
+
+=====
+"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
