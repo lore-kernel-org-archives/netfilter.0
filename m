@@ -1,8 +1,8 @@
 From: "Dan Egli" <dan@shortcircuit.dyndns.org>
-Subject: Samba Blocked? (repost)
-Date: Tue, 26 Nov 2002 15:10:06 -0700
+Subject: Samba blocked?
+Date: Tue, 26 Nov 2002 14:05:31 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001d01c29598$b3087a00$1e00a8c0@yamatto>
+Message-ID: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
