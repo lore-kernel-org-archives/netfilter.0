@@ -1,12 +1,12 @@
-From: Vadim Kurland <vadim@vk.crocodile.org>
-Subject: Re: inner workings of IP tables
-Date: Sun, 29 Sep 2002 20:16:56 -0700
+From: Simon Matthews <simon@paxonet.com>
+Subject: Re: Iptables, SNAT/MASQ,  Multiple gateways (fwd)
+Date: Sun, 29 Sep 2002 20:02:30 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D97C228.6030602@vk.crocodile.org>
-References: <Pine.LNX.4.40.0209292103480.19136-100000@klepto.security.algx.lan>
+Message-ID: <Pine.LNX.4.44.0209291956070.16263-100000@localhost.localdomain>
+References: <20020929232812.NJRO20346.mta02-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20020929232812.NJRO20346.mta02-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +16,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
+
+On Mon, 30 Sep 2002, Antony Stone wrote:
+
+> On Monday 30 September 2002 12:12 am, Simon Matthews wrote:
+> 
+> > I have a dual-homed firewall. It has 2 Internet connections, provided by
+> > different ISPs (each with an associated IP address). The 2 Internet
+> > connections are connected to the same physical interface.
+> 
+> Why ???
+
+Why not? What benefit is there in having more than one physical interface 
+connected to the Internet gateways? Actually, adding another interface 
+might allow me to solve the problem (match on -o), but this does not seem 
+to be an elegant solution. 
 
 
+> 
+> >
+> > Now, since the gateway is already defined, how do I make MASQ/SNAT work so
+> > that it set the appropriate source address for the gateway?
+> 
+> Can you use the MARK match ?
+> 
+> I know it's possible to set a MARK on packets using the mangle table, and 
+> then use the MARK in iproute2 to send them the right way, but I'm not so sure 
+> about doing it the other way around - setting the MARK with iproute2 so that 
+> you can read it in the nat table and set the source address.
 
-Kevin Dwyer wrote:
+Exactly the problem. How do I set a MARK or other value in iproute2 that 
+can be matched in the iptables command? 
 
->>At least with a CLI you're in full control, even if you need to learn
->>a bit more syntax before you start typing.
->>    
->>
->
->Precisely.
->This is seen as a drawback to some people, because you are given the gun
->with which to shoot yourself in the foot.  However, I'd prefer to have a
->competent firewall admin over a point-and-click lemming.
->
->  
->
+> 
+> > Or will MASQ just work properly -- setting the
+> > source address according to the gateway that the packet will use?
+> 
+> No.   MASQUERADE will not know which of the two addresses on eth0 you're 
+> thinking about, so it would use the same one for every packet.
 
-I would like to assert that in the case of CLI we are just as like in 
-the mercy of a vendor who may or may not implement interfaces to certain 
-features of underlying software. I prefer to think of these components 
-as layers of different level of abstraction and access: first, there is 
-TCP/IP stack, then a set of hooks and kernel functions, then perhaps a 
-CLI tool to configure this stuff and on top of that may be a GUI. This 
-is rough and inaccurate model which I have here just to explain my 
-point. Each level needs to be implemented and while doing so certain 
-features of underlying levels may get dropped by various reasons.
+I thought this was probably the case, but I had to ask. 
 
-Cluefullness of firewall administrator has almost nothing to do with a 
-type of user interface firewall he prefers to use. Like we never saw 
-wrong firewall configurations done in iptables, or in ipfilter, or PIX 
-using their CLI. In the end, what matters is how much time one needs to 
-spend building rules and verifying them, and what is the proprability of 
-an error still slipping through. Anything that can help reduce this 
-probablility is useful, even if it is a GUI.
+Any ideas on how it will select an address to use? A partial solution 
+would be to have it use my fast connection, then, if this connection 
+fails, the interface will disappear and then the MASQ will use the other 
+interface. 
 
-Another reason is this: what if you have a staff and need several 
-engineers to be able to work on the same policy at different times? 
-Again, anything that can make this policy look uniform and 
-understandable is useful.
-
-I agree that interface does induce certain model and makes us think of a 
-subject in a certain way... That is of course true and choice of good 
-unterface, both CLI and a GUI, is a difficult task. But this is a 
-different interesting topic, which can be far more scientific that 
-religious war of CLI versus GUI.
-
---vk
-
-
+Simon
 
 
