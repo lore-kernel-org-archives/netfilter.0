@@ -1,13 +1,13 @@
-From: "Aldo S. Lagana" <alagana@discmail.com>
-Subject: RE: Patch-O-matic
-Date: Mon, 8 Jul 2002 17:10:33 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Bad Argument error
+Date: Mon, 8 Jul 2002 22:18:40 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001e01c226c3$e6268ec0$3864a8c0@discmail.com>
-References: <Pine.LNX.4.33.0207090018030.13923-100000@zagros.ipm.ac.ir>
+Message-ID: <20020708211842.FLFJ19225.mta07-svc.ntlworld.com@there>
+References: <956DDDA708487D498B43C36EA4DEA4050B5C50@SFEXCH01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.33.0207090018030.13923-100000@zagros.ipm.ac.ir>
+In-Reply-To: <956DDDA708487D498B43C36EA4DEA4050B5C50@SFEXCH01>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,46 +18,71 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Red Hat Enigma' <redhat@zagros.ipm.ac.ir>, netfilter@lists.samba.org
+To: netfilter <netfilter@lists.samba.org>
 
-Fellers corect me if I'm wrong, but the P-O-M features are not to be ALL
-used simultaneously - it even says it during the patch process that some
-patches break other patches...
+On Monday 08 July 2002 10:08 pm, Mike G. Hammonds wrote:
 
-SO
+> Attached is a sample of my iptables script file located in the
+> /etc/sysconfig/ <dir>
 
-If you need the functionality found in a specific or a few patches - go
-ahead and apply only those patches, otherwise you always seem to get
-that _ out of _ failed chunks error...
+Well, I can't see anything wrong with the line
+LOOPBACK="lo"
+which is the only place I can see the variable defined, but then I can't see 
+any use of the variable $LOOPBACK either.
 
+Does the error occur on that line of the script, or later on (try commenting 
+it out and see if the error goes away) ?
 
+How do you run the script ?
+
+Antony.
 
 > -----Original Message-----
-> From: netfilter-admin@lists.samba.org 
-> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Red Hat Enigma
-> Sent: Monday, July 08, 2002 3:52 PM
-> To: netfilter@lists.samba.org
-> Subject: Patch-O-matic
-> 
-> 
-> Dear friends
-> I still try to find a way to use patch-o-matic features on my 
-> kernel ( 
-> 2.4.18 ) ,when I run make patch-o-matic ,many patches say, 
-> applying patch 
-> fail and I don't know why, I do the following steps :
-> 
-> make pending-patches
-> make most-of-pom
-> make patch-o-matic
-> < compiling the kernel>
-> make KERNEL_DIR
-> 
-> but many patches didn't apply .
-> 
-> Regards
-> Alireza
-> 
-> 
-
+> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+> Sent: Monday, July 08, 2002 4:38 PM
+> To: netfilter
+> Subject: Re: Bad Argument error
+>
+> On Monday 08 July 2002 9:29 pm, Mike G. Hammonds wrote:
+> > Thanks
+> > I'm also getting this error
+> > Bad Argument 'LOOPBACK="lo"
+>
+> If the script you are running is reasonably short, post it here and we'll
+> try
+> and tell you why this error occurs.
+>
+> However, you should be able to find the problem for yourself by doing a
+> grep
+>
+> on the script for LOOPBACK and spot the line with the mistake ?
+>
+> Antony.
+>
+> > -----Original Message-----
+> > From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+> > Sent: Monday, July 08, 2002 4:18 PM
+> > To: netfilter
+> > Subject: Re: Bad Argument error
+> >
+> > On Monday 08 July 2002 9:00 pm, Mike G. Hammonds wrote:
+> > > I'm running RH7.2 with iptables1.2.4-2
+> > > every time I start iptables I get the following error
+> > > Bad Argument 'LOG_LEVEL="notice" [FAILED]
+> > >
+> > > any ideas on how to fix this?
+> >
+> > Use a numeric argument to --log-level instead
+> >
+> > "notice"=5
+> >
+> > So you would use
+> >
+> > iptables -A FORWARD -s 192.168.1.0/24 -j LOG --log-level=5
+> >
+> > or whatever....
+> >
+> >
+> >
+> > Antony.
 
