@@ -1,12 +1,14 @@
-From: "Diego R. Rodriguez Herlein" <diegorh@infovia.com.ar>
-Subject: Re: dual gateways
-Date: Thu, 6 Feb 2003 01:01:37 -0300
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: IpTables question...
+Date: Thu, 6 Feb 2003 00:28:22 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c2cd94$72556c50$8201a8c0@lw1dqwin>
-References: <F213bNDN4CxpAOAkK5L0000d3bd@hotmail.com>
+Message-ID: <200302060028.22169.netfilter@newkirk.us>
+References: <F9VYbb0fBGr4zL748kF00020127@hotmail.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F9VYbb0fBGr4zL748kF00020127@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,54 +19,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: per j <perj8@hotmail.com>, netfilter@lists.netfilter.org
+To: Curca Claudiu <rapandulex@msn.com>, netfilter@lists.netfilter.org
 
-let's have a look at www.lartc.org may can help you!!
-regards,
+On Monday 03 February 2003 01:47 am, Curca Claudiu wrote:
+> I'm using RedHat Linux 8.0 on an PIII - Coppermine 750 MHz. I used
+> Iptables for NAT  networking at my home (5 PC's + 1 Server).
+> The server is used as a gateway and dns server. My question is:
+>
+> Is there any way I could limit the transfer rate of the inside
+> computers to the internet?
+> For example I want 192.168.3.5 to have a limit of 5 KB/s transfer
+> rate.
+>
+> Please help me!!
 
-diego
+You need to establish a Queueing Discipline.  Your best choice would=20
+probably be Hierarchical Token Bucket.  See=20
+http://lartc.org/howto/lartc.qdisc.classful.html#AEN1050 in the Linux=20
+Advanced Routing and Traffic Control how-to for details on HTB, (and the=20
+full how-to for all the info...) and the section following it entitled=20
+"Classifying packets with filters" which explains how to specify a=20
+filter that matches specific IPs, or use the 'fwmark' match to let you=20
+set a mark in an iptables mangle-table PREROUTING chain and queue=20
+traffic based on the marks.
 
------ Original Message -----
-From: "per j" <perj8@hotmail.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, February 05, 2003 2:25 PM
-Subject: Re: dual gateways
-
-
-> How about this?  Use at to ping something on the Internet periodically or
-> ping the T3 router.  Modify the defaultroute by using route whenever ping
-> returns false.  Use MASQUERADE instead of SNAT in Netfilter.
->
-> >I'm sure this is possible, but I just haven't gotten it to work right by
-> >playing around with the settings.
-> >
-> >I've got three NICs in the firewall box.  I've also got two routers that
-go
-> >to the Internet via two separate lines (a T1 and a partial T3).  I've got
-> >my
-> >default gateway set on the linux box to go out via the T3 and NAT setup
-for
-> >my clients to route out via that interface.  I'd like to know if it's
-> >possible to setup a failover route to redirect clients out the T1 should
-> >the
-> >T3 not be available, even if the router is.  Here's the basic diagram:
-> >
-> >
-> >                           (default route)
-> >                           eth2 <---> |T3 Router| <---> Internet
-> >LAN <---> eth1 |firewallBox|
-> >                           eth1 <---> |T1 Router| <---> Internet
-> >
-> >
-> >Khanh Tran
-> >Network Operations
-> >Sarah Lawrence College
->
->
-> _________________________________________________________________
-> The new MSN 8: advanced junk mail protection and 2 months FREE*
-> http://join.msn.com/?page=features/junkmail
->
->
+j
 
 
