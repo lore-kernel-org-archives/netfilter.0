@@ -1,12 +1,13 @@
-From: "Linux" <linuxchp@terra.com.br>
-Subject: IPtables redirect rules
-Date: Mon, 12 May 2003 17:24:39 -0300
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: IPtables redirect rules
+Date: Mon, 12 May 2003 23:05:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ee01c318c4$8616be80$0a00a8c0@sic.local>
+Message-ID: <000201c318ca$2f0e69c0$0401000a@sterenborg.info>
+References: <00ee01c318c4$8616be80$0a00a8c0@sic.local>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00E9_01C318AB.5E65A5E0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00ee01c318c4$8616be80$0a00a8c0@sic.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter/IPTables Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Netfilter/IPTables Mailing List' <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+> VPN, but with Win2K. So I want to redirect all VPN=20
+> requests from the linux machine to my Win2K server.=20
+> How can I do that?
 
-------=_NextPart_000_00E9_01C318AB.5E65A5E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Patch the kernel with the latest patch-o-matic. You need the pptp
+conntrack and nat modules.
+Configure the kernel so that you get the pptp conntrack and nat modules,
+then compile and install it.
+Make sure you load the modules when you rebooted and everything goes
+well.
 
-Hi,
+The iptables rules :
 
-I have a Linux Firewall (MY GATEWAY) doing NAT for a LAN with the IP =
-192.168.0.x and I have a  Windows 2000 Server as a file server. I would =
-like to do a VPN, but with Win2K. So I want to redirect all VPN requests =
-from the linux machine to my Win2K server. How can I do that?
+iptables -P FORWARD DROP
 
-Thanks,
-Charles
-------=_NextPart_000_00E9_01C318AB.5E65A5E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+iptables -A FORWARD -i <if_inet> -d <pptp_svr_ip> \
+ -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have a Linux Firewall (MY =
-GATEWAY)&nbsp;doing NAT=20
-for a LAN with the IP 192.168.0.x and I have a&nbsp; Windows 2000 Server =
-as a=20
-file server. I would like to do a VPN, but with Win2K. So I want to =
-redirect all=20
-VPN requests from the linux machine to my Win2K server. How can I do=20
-that?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Charles</FONT></DIV></BODY></HTML>
+iptables -A FORWARD -i <if_inet> -d <pptp_svr_ip> \
+ -p gre -j ACCEPT
+iptables -A FORWARD -i <if_inet> -d <pptp_svr_ip> \
+ -p tcp --dport 1723 -j ACCEPT
 
-------=_NextPart_000_00E9_01C318AB.5E65A5E0--
+iptables -t nat -A PREROUTING -i <if_inet> -p gre \
+ -j DNAT --to-destination <pptp_svr_ip>
+iptables -t nat-A PREROUTING -i <if_inet> -p tcp \
+ --dport 1723 -j DNAT --to-destination <pptp_svr_ip>
 
+
+But I have to tell you (and I read it from other people too) : I got
+this working in the past (with kernel 2.4.17), but somehow I can't get
+it working anymore. So I installed the poptop server which works fine.
+
+
+Gr,
+Rob
 
 
