@@ -1,13 +1,13 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: ipt_tcpmss_target: bad length
-Date: Mon, 18 Aug 2003 13:03:21 +1000
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: Redirect of DNS requests
+Date: 18 Aug 2003 09:31:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4041F9.1030004@snapgear.com>
-References: <269A1D930039744AB5A54123F2D74BCD4A49@dc0.nl.corp.keenondots.net>
+Message-ID: <1061191907.1915.4.camel@kermit>
+References: <3F403CD2.4060507@hailix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <269A1D930039744AB5A54123F2D74BCD4A49@dc0.nl.corp.keenondots.net>
+In-Reply-To: <3F403CD2.4060507@hailix.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Laurens van Alphen <subscriptions@keenondots.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Trevor Morrison <trevor@hailix.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Laurens van Alphen wrote:
-> Today, I received this kernel log entry via e-mail:
-> 
-> Aug 17 14:19:17 filter0 kernel: ipt_tcpmss_target: bad length (472
-> bytes)
-> 
-> Using Google, I could not find a single useful meaning of this message.
+Am Mon, 2003-08-18 um 04.41 schrieb Trevor Morrison:
+> I have a RH 9.0 with a 2.4.20 kernel.  The box is running iptables-1.2.7=20
+> and does NAT from my 192.168.1.x network to my  ISP assigned dhcp IP.=20
+>  What I would like to do is redirect a certain domain's email, DNS, or=20
+> Web traffic to a w2k server that sits in my private network, sort of=20
+> like a DMZ situation and have the another domain's services continue to=20
+> be routed to the RH box.  On the RH box I am running Bind and Sendmail=20
+> amoung other things.
+You cannot do this using iptables. Iptables does not support the kind of
+application protocol filtering you need.=20
+You can only configure your Linux applications (bind/sendmail/apache) to
+do this.
 
-Here's the comment from the source code which explains it:
+Cheers,
 
-/* Since it passed flags test in tcp match, we know it is is
-    not a fragment, and has data >= tcp header length.  SYN
-    packets should not contain data: if they did, then we risk
-    running over MTU, sending Frag Needed and breaking things
-    badly. --RR */
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-In other words, SYN packets cannot have data, so the total length
-of the packet must be the same as the tcp header length, otherwise
-it is a bad length.
-
--- 
-Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
-SnapGear - Custom Embedded Solutions and Security Appliances
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
