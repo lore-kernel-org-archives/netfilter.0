@@ -1,9 +1,9 @@
 From: "Peter Marshall" <peter.marshall@caris.com>
 Subject: Re: return
-Date: Fri, 4 Jun 2004 11:27:54 -0300
+Date: Fri, 4 Jun 2004 11:22:19 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <017d01c44a40$20102d70$49caa8c0@caris.priv>
-References: <5D3C2276FD64424297729EB733ED1F760639A918@email1.mitretek.org>
+Message-ID: <016801c44a3f$57dc7fc0$49caa8c0@caris.priv>
+References: <00f201c44a39$599a9230$49caa8c0@caris.priv> <20040604135810.GO20290@home.manuelm.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,119 +17,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>, netfilter <netfilter@lists.netfilter.org>
+To: Frank Gruellich <frank@home.manuelm.org>, netfilter <netfilter@lists.netfilter.org>
 
-Oh, I see ....
-But would that not just return you to the parent chain of syn-flood ????
+oops .. that was a typo ... (the missing -p tcp) ...
 
-Thank you for the reply
-Peter
+However, assuming that was there ....
+I thought the return uses the default policy if and only if it was attached
+to either input, forward, or output chains ....
+my understanding of it for other chains, is that it would just "return" the
+chain it came from ....
 
------ Original Message ----- 
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
-<netfilter@lists.netfilter.org>
-Sent: Friday, June 04, 2004 11:14 AM
-Subject: RE: return
+so in my case, if nothing was matched at the end of subchain1, then it would
+just jump back to the chain that called it (forwared), and continue parseing
+the rules .....
 
+So ... if this is trued (and if it is not, please let me know), is this an
+efficiant way to do this ... if it is not, then let me know.
 
-The first time I used RETURN was today.
-
--A syn-flood -m limit --limit 6/s --limit-burst 10 -j RETURN
-
-As I pasted in the message below, as it is useful in these situations in
-which you need to limit packets per second.
-
-
------Original Message-----
-From: Peter Marshall [mailto:peter.marshall@caris.com]
-Sent: Friday, June 04, 2004 10:02 AM
-To: Piszcz, Justin Michael; netfilter
-Subject: Re: return
-
-I don't mean to sound rude .. but your response ( as far as I can tell
-..
-and I apologize if I am missing something) has nothing to do with my
-question .. at all ...
-
-Peter
-
------ Original Message ----- 
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
-<netfilter@lists.netfilter.org>
-Sent: Friday, June 04, 2004 10:49 AM
-Subject: RE: return
-
-
-I do after reading this message:
-
-Now that I've got ipt_recent installed and running, I'd be grateful for
-comments or rule samples that could work best to ameliorate syn-floods.
-(The site I'm working on has been the target of moderate-to-large-sized
-syn-floods for a few months now, ongoing.)
-
-I've been using this approach:
-
--N syn-flood
--A syn-flood -m limit --limit 6/s --limit-burst 10 -j RETURN
--A syn-flood -j LOG --log-prefix "SYN-FLOOD: "
--A syn-flood -j DROP
-
--A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
--A INPUT -i eth0 -p tcp --syn -j syn-flood
-
-...and, on the high-traffic site involved, have had occasions when the
-machine became unreachable, the server load too high.
-
-Someone suggested ipt_recent could handle this matter more accurately.
-I found a rule on the web that someone was using, and tried that a few
-minutes ago, with this approach:
-
--N syn-flood
--A syn-flood -j LOG --log-prefix "SYN-FLOOD: "
--A syn-flood -j DROP
-
--A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
--A INPUT -i eth0 -p tcp --syn -m recent --hitcount 10 --update \
-   --seconds 60 -j syn-flood
-
-...but very soon _no one_ could get a server connection, with that.
-
-My 'mental model' of how ipt_recent is working must not be correct --
-at least, I don't understand why the '--limit' ruleset seems to allow
-normal traffic under most conditions but the '-m recent' rule kept
-normal users from getting in, just a few minutes ago.
-
-If anyone knows what I'm missing in my understanding of this, or has a
-ruleset that works well to ameliorate syn-flooding, please let me know.
-
-Thanks kindly,
-
--- 
-
- -- Jeff --   <http://www.wellnow.com>
-
- "There's nothing left in the world to prove.  All that's worth doing
-  is to love one another, using whatever means are available to serve."
-
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Marshall
-Sent: Friday, June 04, 2004 9:39 AM
-To: netfilter
-Subject: return
-
-I was just wondering if anyone here uses "return" in their rules .. I
-understand what it is for .. just wondering if it is efficient to use.
-
-ex.
+My problem is, there are some useres who require nats to other companies ...
+somtimes a couple of users require the same rule set .... so assuming that
+my nat tables are correct ( i did not include them), I wanted to do the
+following.
 
 -A Forward -s 192.168.200.5 -o eth1 -j subchain1
+-A Forward -s 192.168.200.6 -o eth1 -j subchain1
 -A Forward -s 192.168.200.0/24 -o eth1 -j subchain2
 
 -A subchain1 -d 200.200.200.200 --dport 1234 -j ACCEPT
@@ -138,28 +49,59 @@ ex.
 
 -A subchain2 .......... blah blah blah ....
 
-Or would you just write the rules different ?
+If I did a "Reject" or "Drop" at the end of subchain1, then the 200.5 and
+200.6 users would never get to subchain2 (they would drop into subchain1
+because it matches their source ...)
 
-Also, I was wondering is there a way to specify multiple source ip
-address ?
+Thank you again for the help.
 
-ex -s 192.168.200.5, 192.168.200.20 .....
+Peter
 
-Thank you,
-Peter.
-
-
-Peter Marshall, BCS
-Network Administrator, CARIS
-115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
-Phone:  (506) 458-8533 (Reception)
+----- Original Message ----- 
+From: "Frank Gruellich" <frank@home.manuelm.org>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Friday, June 04, 2004 10:58 AM
+Subject: Re: return
 
 
+* Peter Marshall <peter.marshall@caris.com>  4. Jun 04:
+> I was just wondering if anyone here uses "return" in their rules ..
 
+Not really, but I know when I should use it.
 
+> -A Forward -s 192.168.200.5 -o eth1 -j subchain1
+> -A Forward -s 192.168.200.0/24 -o eth1 -j subchain2
+>
+> -A subchain1 -d 200.200.200.200 --dport 1234 -j ACCEPT
 
+BTW: this rule will not work.  --dport without -p is not valid.
 
+> -A subchain1 -d 200.200.300.300 --dport 4321 -j ACCEPT
+> -A subchain1 -j RETURN
 
+Well, if this is the last rule in subchain1 it is useless, as RETURN is
+something like the default polycy of userdefined chain.  If you want to
+apply a large ruleset to a whole subnet expect a couple of host (e.g.
+cause you don't like them) you could do something like:
 
+$IPT -N subchain1
+# not for the bad hosts
+$IPT -A subchain1 -j RETURN    -s 192.168.0.23
+$IPT -A subchain1 -j RETURN    -s 192.168.0.55
+$IPT -A subchain1 -j ACCEPT    -p tcp --dport 4662
+# lot more $IPT -A subchain1 ...
+$IPT -A FORWARD   -j subchain1 -s 192.168.0.0/24
+$IPT -A FORWARD   -j ACCEPT    -p tcp --dport 80
+
+> Also, I was wondering is there a way to specify multiple source ip address
+?
+> ex -s 192.168.200.5, 192.168.200.20 .....
+
+Not with unpatched iptables.  Use two rules or search the pom.
+
+HTH,
+ regards, Frank.
+-- 
+Sigmentation fault
 
 
