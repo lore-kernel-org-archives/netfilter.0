@@ -1,13 +1,14 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: DHCP and conntrack?
-Date: Fri, 7 Jun 2002 15:36:10 -0400
+From: "Shazad Malik" <smalik@vistawiz.com>
+Subject: Re: H323 compile question again!
+Date: Fri, 7 Jun 2002 15:20:36 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020607193610.GO29214@cannon.eng.us.uu.net>
-References: <3D00E6A3.30006@athensgroup.com> <20020607173835.GA599@escape.ca>
+Message-ID: <1273.24.168.132.35.1023477636.squirrel@mail.vistawiz.com>
+References: <3D010135.2070706@attbi.com>
+Reply-To: smalik@vistawiz.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020607173835.GA599@escape.ca>
+In-Reply-To: <3D010135.2070706@attbi.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,45 +19,32 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: sshore@escape.ca
-Cc: James Garrison <jhg@athensgroup.com>, netfilter@lists.samba.org
+To: robertlaferla@attbi.com
+Cc: smalik@vistawiz.com, netfilter@lists.samba.org
 
-On Fri, Jun 07, 2002 at 12:38:35PM -0500, sshore@escape.ca wrote:
+Still getting the same error!!!! as mentioned in my original mail.
 
-> On Fri, Jun 07, 2002 at 12:00:19PM -0500, James Garrison wrote:
-> > Does connection tracking understand incoming DHCP responses as
-> > being related to recent outgoing broadcast DHCP requests?  In other
-> > words,  if I configure iptables to allow outgoing DHCP broadcast
-> > requests, do I have to explicitly open up a hole for the returning
-> > response, or will conntrack do it for me with RELATED?
-> 
-> Since dhcp requests go out on port 68, and responses come back on port 67, 
-> connection tracking will not relate them.
+It just does not go away!  There has to be something else..... I have done
+pretty much everything that has been recommeded!  So, anyone... out there
+have any clues? ideas?
 
-It's like you say, http traffic is not being tracked because the
-outgoing packets go out on port 8 and the incoming packets come in
-on port whatever like 1025. So, no, that's not the reason. The
-reason could be this:
+Cheers
+Shazad
 
-15:26:43.933324 vlan6 B 0.0.0.0.bootpc > 255.255.255.255.bootps: xid:0xdefebd43
-15:26:43.981708 vlan6 > 10.0.6.1.bootps > 255.255.255.255.bootpc: xid:0xdefebd43
+> I think we need a FAQ for the Netfilter with H323.  Here are two web
+> pages that can help.  However, I think we may need something that is
+> (1)  updated and (2) describes what you can and cannot do with various
+> versions of the software and (3) answers other questions.  Anyone want
+> to help put together a FAQ?
+>
+> http://www.aboutbillbell.com/ContentPage.jsp?content_page_id=44
+> http://www.kfki.hu/~kadlec/sw/netfilter
 
-As you can see there is no "regular" src.port/dst.port relationship
-here for the general conntrack module to catch this.
 
-I hope that some guru someday will add this intelligence to the
-code :-)
-
-Ramin
-
-> you'll need to explicitly open 
-> up a hole for the returning response.
-> 
-> -- 
-> Scottie Shore <sshore@escape.ca>
-> "You haven't gamed until you've circle-strafed while barrel rolling."
->   - Blair on the Logitech Cyberman II
+-- 
+Shazad Malik
+work: (845)623-2161
+fax: (845) 623-1154
 
 
 
