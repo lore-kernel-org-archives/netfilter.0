@@ -1,13 +1,13 @@
-From: Ben Russo <ben@umialumni.com>
-Subject: Re: can't initialize iptables table `'
-Date: 26 Nov 2002 17:18:43 -0500
+From: "Nix N. Nix" <nix@go-nix.ca>
+Subject: Re: IPTABLES vs Checkpoint
+Date: 26 Nov 2002 17:32:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1038349122.16933.1.camel@ben.mis.tnsi.com>
-References: <6FB083FB72EFD21181D30004AC4CA18A01EABFA8@srv002>
+Message-ID: <1038349954.22977.34.camel@tux.go-nix.ca>
+References: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6FB083FB72EFD21181D30004AC4CA18A01EABFA8@srv002>
+In-Reply-To: <3F5BAB933C75004690195047C4040A6D0535D4@tc-pdc.jhbA.techconcepts.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sam Pointer <sam.pointer@hpdsoftware.com>
+To: Wayne de Nobrega <wdenobre@techconcepts.co.za>
 Cc: netfilter@lists.netfilter.org
 
-Did you custom compile your kernel?
-If you are using a standard RedHat 8 kernel have you upgraded to the
-latest?
+On Tue, 2002-11-26 at 14:28, Wayne de Nobrega wrote:
+> Hello,
+> 
+> I have a customer who is part of an international group which has a
+> policy of using the Nokia Checkpoint firewall.  Due to the signifcant
+> cost differences, and our preference, the local branch and ourselves
+> would like to install an IPTABLES based firewall.  I need some help in
+> motivating this to head office and am looking for information comparing
+> the two solutions.  I need to focus on the technical issues of the two
+> products and ultimately the inherent security realised from the two
+> products.
+> 
+> Can anyone offer some input or point me to a source of information.
 
-On Tue, 2002-11-26 at 12:20, Sam Pointer wrote:
-> Before I carry, please feel free to tell me FAQ off; I have quickly scanned
-> the archive and google and haven't found a solution to this problem - but
-> I'm open to suggestions.
+AFAIK Checkpoint is not a firewall at all, but a proxy server.  This
+clearly means that it acts like a Web/FTP/whatever server that connects
+people in your company to the outside world by requesting Web pages over
+HTTP and initiating FTP connections on their behalf.
+
+OTOH iptables works below the application layer.  It allows manipulation
+of individual TCP connections, UDP packets and ICMP traffic irrespective
+of the application layer service they provide.
+
+Nonetheless:  Checkpoint and iptables are not necessarily mutually
+exclusive.  Consider the following setup:
+    ________      __________      ________      ________________
+   /        \    /          \    /        \    /                \
+  | Internet +--+ Checkpoint +--+ iptables +--+ Internal Network |
+   \________/    \__________/    \________/    \________________/
+
+The Checkpoint box would basically allow all traffic through.  It
+wouldn't be just an inert box though !  You could forward all outgoing
+HTTP traffic from the iptables computer to the Checkpoint Web proxy to
+do authentication, content filtering, etc.  The Checkpoint box would be
+mostly closed off, and you would rely on iptables to selectively block
+ports and do all the fancy things a Linux router can do for you.
+
+This way, you can comply with corporate policy and use iptables as well.
+
 > 
-> I'm initialising iptables on RH Linux 8. When I start iptables I am getting
-> the error message " can't initialize iptables table `' ". 
+> Many thanks
 > 
-> Now, I issued `lsmod` and I have both "iptable_filter" and "ip_tables"
-> modules loaded.
-> 
-> I initially tried starting ipchains with a whole raft of rules, but even
-> starting with the single rule:
-> 
-> -P INPUT DROP
-> 
-> causes this error to appear.
-> 
-> When I reboot the machine and check my syslog messages, I notice that
-> iptables-restore is issuing a modprobe for module `iptable_`, as in:
-> 
-> iptables: Applying iptables firewall rules
-> modprobe: modprobe: Can't locate module iptable_
-> modprobe: modprobe: Can't locate module iptable_
-> ...
-> iptables: can't initialize iptables table `' (do you need to insmod?)
-> 
-> which leads me to believe that some table module it requires isn't loaded.
-> Is this correct, and if so how is this. I'm only using the default "filter"
-> table (which is loaded) with my single policy rule...
-> 
-> Any help or pointers to solutions would be greatly appreciated.
-> 
-> 
-> This email and any attachments are strictly confidential and are intended
-> solely for the addressee. If you are not the intended recipient you must
-> not disclose, forward, copy or take any action in reliance on this message
-> or its attachments. If you have received this email in error please notify
-> the sender as soon as possible and delete it from your computer systems.
-> Any views or opinions presented are solely those of the author and do not
-> necessarily reflect those of HPD Software Limited or its affiliates.
-> 
->  At present the integrity of email across the internet cannot be guaranteed
-> and messages sent via this medium are potentially at risk.  All liability
-> is excluded to the extent permitted by law for any claims arising as a re-
-> sult of the use of this medium to transmit information by or to 
-> HPD Software Limited or its affiliates.
-> 
-> 
+> Wayne
+
+Good luck !
 
 
