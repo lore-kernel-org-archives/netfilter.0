@@ -1,13 +1,13 @@
-From: "rohit_linux" <rohit_linux@indiatimes.com>
-Subject: Iptables Port forwarding Problem
-Date: Tue, 06 May 2003 14:32:31 +0530
+From: xchris <lyra@fastwebnet.it>
+Subject: Re: VPN Issue - help
+Date: Tue, 6 May 2003 11:35:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305060817.NAA07652@WS0005.indiatimes.com>
-Reply-To: "rohit_linux"<rohit_linux@indiatimes.com>
+Message-ID: <200305061135.30694.lyra@fastwebnet.it>
+References: <006c01c31357$a1565ce0$6400a8c0@homes>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	   boundary="=_MAILER_ATTACH_BOUNDARY1_2003562143231719885386"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <006c01c31357$a1565ce0$6400a8c0@homes>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,86 +17,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: Voltaire Pascual <voltaire@voltaire.servebeer.com>
 
---=_MAILER_ATTACH_BOUNDARY1_2003562143231719885386
-Content-Type: text/plain; charset=us-ascii
-
-Hi Friend's
-
-
-I need help on Iptables port forwarding .
-
-
-i configured my linux box with 2 nic's
-
-
-OS          Redhat 8.0
-
-
-iptables enabled.
-
-
-eth0=x.x.x.x.x/255.255.255.252(Live IP)(external interface)on which site is hosted .
-
-
-eth1=192.168.0.120/255.255.255.0(internal interface)
-
-
-Used gSheild package for firewalling.
-
-
-PORT 80,25 are forwarded to internal lan machine 192.168.0.1
-
-
-from outside i can access my WebServer and Mailing services.
-
-
-but LAN machines are not able to access the webservices 
-
-
-scenario is like 
-
-
-192.168.0.10 ------&gt;x.x.x.x:80   -------&gt;192.168.0.1:80
-
-
-i get the error 
+On Tuesday 06 May 2003 00:42, Voltaire Pascual wrote:
+> repost:
+>
+> Clients can connect to the VPN server w/o any problem. Private network =
+is
+> 192.168.0.0/24. VPN server IP is
+>
+> Public (ppp0) =3D 203.x.x.x
+> Private (eth0) =3D 192.168.0.10
+>> When client is connected to the VPN server, it can ping the VPN but no=
+t the
+> other machines in the network. Client IP when connected is
+> 192.168.0.80/255.255.255.255. clients can surf the net after they are
+> connected but cannot see other machines inside the network.
+>
+> ###########################
+> other config:
+> net.ipv4.ip_forward =3D 1
+> net.ipv4.conf.eth0.proxy_arp =3D 1
+>
+> ###########################
+> client is connected to the VPN. here's the result of ifconfig:
+>
+> ppp1      Link encap:Point-to-Point Protocol
+>           inet addr:192.168.0.10  P-t-P:192.168.0.80  Mask:255.255.255.=
+255
+>           UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1400  Metric:1
+>           RX packets:18 errors:0 dropped:0 overruns:0 frame:0
+>           TX packets:10 errors:0 dropped:0 overruns:0 carrier:0
+>           collisions:0 txqueuelen:3
+>           RX bytes:1062 (1.0 Kb)  TX bytes:147 (147.0 b)
+> ###########################
+> route -n
+>
+> 192.168.0.180   0.0.0.0         255.255.255.255 UH    0      0        0
+> ppp1 ###########################
+>
+>
+> What could be the problem? What iptables rule should i do.
 
 
-"(111) Connection refused"
+
+from route -n
+you should have
+192.168.0.0      0.0.0.0         255.255.255.0   U     0      0        0=20
+eth(?)
+
+not 192.168.0.180/32
+what is .180?
 
 
-so friend's i need your help on this.
+maybe you should post your ifconfig (complete) and route -n (complete) an=
+d=20
+maybe your pptpd.conf
 
-
-Rohit
-Get Your Private, Free E-mail from Indiatimes at  http://email.indiatimes.com
-Buy The Best In BOOKS at http://www.bestsellers.indiatimes.com
-Bid for Air Tickets @ Re.1 on Air Sahara Flights. Just log on to http://airsahara.indiatimes.com and Bid Now !
-
---=_MAILER_ATTACH_BOUNDARY1_2003562143231719885386
-Content-Type: text/html; charset=us-ascii
-
-<P>Hi Friend's</P>
-<P>I need help on Iptables port forwarding .</P>
-<P>i configured my linux box with 2 nic's</P>
-<P>OS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Redhat 8.0</P>
-<P>iptables enabled.</P>
-<P>eth0=x.x.x.x.x/255.255.255.252(Live IP)(external interface)on which site is hosted .</P>
-<P>eth1=192.168.0.120/255.255.255.0(internal interface)</P>
-<P>Used gSheild package for firewalling.</P>
-<P>PORT 80,25 are forwarded to internal lan machine 192.168.0.1</P>
-<P>from outside i can access my&nbsp;WebServer and Mailing services.</P>
-<P>but LAN machines are not able to access the webservices </P>
-<P>scenario is like </P>
-<P>192.168.0.10 ------&gt;x.x.x.x:80&nbsp;&nbsp; -------&gt;192.168.0.1:80</P>
-<P>i get the error </P>
-<P>"(111) Connection refused"</P>
-<P>so friend's i need your help on this.</P>
-<P>Rohit</P>
-<hr><font face="Arial" size="2"><b>Get Your Private, Free E-mail from Indiatimes at  </font><a href="http://email.indiatimes.com"><font face="Arial" size="2">http://email.indiatimes.com</a></b><br>Buy The Best In <b>BOOKS</b> at <A href="http://www.bestsellers.indiatimes.com">http://www.bestsellers.indiatimes.com</A><br>Bid for <b>Air Tickets @ Re.1</b> on Air Sahara Flights. Just log on to <a href="http://airsahara.indiatimes.com">http://airsahara.indiatimes.com</a> and Bid Now !</font>
-
---=_MAILER_ATTACH_BOUNDARY1_2003562143231719885386--
-
+bye
 
