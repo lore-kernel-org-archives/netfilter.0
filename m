@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: ftp
-Date: Thu, 27 May 2004 21:34:51 +0200
+From: Jorge Davila <isaac@nicaraguarealestate.com>
+Subject: Problem with nat table in iptables
+Date: Thu, 27 May 2004 12:23:42 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040527193451.05B99DBD@sterenborg.info>
-References: <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
+Message-ID: <40B6322E.6050205@nicaraguarealestate.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <11c201c4441a$f2b875b0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +15,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> > > .... Thank you for the info.  My question now is, will your rule
-> > > take care of both passive and active ftp ?  I would prefer to just
-> > > use active .. But
+Hi!
 
-> > ip_conntrack_ftp does handle both passive and active ftp.
+When I insert a new rule in the chain INPUT and save/restart iptables my=20
+firewall lost the nat table.
 
-> Any thoughts on my last question ?
+Someone have an idea about how recover the nat table?
 
-As far as I see, Antony answered your last question : both passive and
-active ftp are handled.
-Or am I missing something ?
+Thanks,
 
-
-Gr,
-Rob
+Jorge D=E1vila.
 
 
