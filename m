@@ -1,9 +1,9 @@
 From: "Peter Marshall" <peter.marshall@caris.com>
 Subject: Re: traceroute
-Date: Wed, 30 Jun 2004 11:25:27 -0300
+Date: Wed, 30 Jun 2004 11:50:26 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <12ad01c45eae$16ec93a0$49caa8c0@caris.priv>
-References: <2E314DE03538984BA5634F12115B3A4E62E800@email1.mitretek.org>
+Message-ID: <12c901c45eb1$946a8e10$49caa8c0@caris.priv>
+References: <2E314DE03538984BA5634F12115B3A4E62E806@email1.mitretek.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,28 +19,70 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>, netfilter <netfilter@lists.netfilter.org>
 
+Why would I use the INPUT chain .. I am doing a trace route from an internal
+box to an internet box ... on the other side of my firewall ... I am pretty
+sure that is a forwared rule ... is it not ?
+
+Peter
+
+----- Original Message ----- 
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
+<netfilter@lists.netfilter.org>
+Sent: Wednesday, June 30, 2004 11:34 AM
+Subject: RE: traceroute
+
+
+Is there a reason why you are doing stuff with the FORWARD chain?
+Have you tried enabling ACCEPT for the FORWARD chain and seeing if it
+works?
+
+Generally, with the FORWARD chain, over all other chains you need to be
+careful on how you use it. If used improperly, you could screw a lot of
+things up on the network.
+
+I would recommend trying it without any forward options.
+Ie: iptables -P FORWARD ACCEPT
+
+You need the ESTABLISHED,RELATED option for the INPUT chain.
+
+# STEP 9 - ALLOW IN WHAT WE SEND OUT
+####################################### $IPTABLES -A INPUT -m state
+--state ESTABLISHED,RELATED -j ACCEPT
+
+-----Original Message-----
+From: Peter Marshall [mailto:peter.marshall@caris.com]
+Sent: Wednesday, June 30, 2004 10:25 AM
+To: Piszcz, Justin Michael; netfilter
+Subject: Re: traceroute
+
 I don't get anything (except the name lookup) from traceroute.
 
-When I run a packet sniffer, I see the following (when doing a traceroute on
+When I run a packet sniffer, I see the following (when doing a
+traceroute on
 www.google.com)
 
 source     destination                 Proto
 me           216.239.41.99          UDP            sourceport 1059
 destination port 33435
-3com       3com                         ARP            who has <gatewayip>
+3com       3com                         ARP            who has
+<gatewayip>
 tell <my ip>
-3com        3com                        ARP            <gateway ip> is at
+3com        3com                        ARP            <gateway ip> is
+at
 <mac address>
 me           216.239.41.99           UDP          soutceport: 1059
 Destination port 33437
 ......
 
-traceroute to www.google.akadns.net (216.239.39.147), 30 hops max, 38 byte
+traceroute to www.google.akadns.net (216.239.39.147), 30 hops max, 38
+byte
 packets
  1  * * *
  2  * * *
 
-Below are the relavant rules .... tracert is the ip of the box I am trying
+Below are the relavant rules .... tracert is the ip of the box I am
+trying
 to traceroute form.
 The Ip of that box is an internet routable ip addess.
 
@@ -114,6 +156,7 @@ completely hidden by their superficial design flaws."
 list;
                                                            please don't
 CC me.
+
 
 
 
