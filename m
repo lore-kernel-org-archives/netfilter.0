@@ -1,13 +1,13 @@
-From: Tim Miller <tj.miller@javaspotlet.com>
-Subject: Re: DHCP Issues
-Date: Thu, 20 Mar 2003 10:33:17 -0600 (CST)
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: mail relay
+Date: Thu, 20 Mar 2003 16:39:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0303201024320.6606@beethoven.javaspotlet.com>
-References: <Pine.LNX.4.53.0303200827390.6606@beethoven.javaspotlet.com>
- <20030320151842.GB18401@placemark.com>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019C76@hslex01.hslbz.local>
+References: <OFF04453C4.ECF4132D-ONC1256CEF.00548382-C1256CEF.00543F77@LocalDomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030320151842.GB18401@placemark.com>
+In-Reply-To: <OFF04453C4.ECF4132D-ONC1256CEF.00548382-C1256CEF.00543F77@LocalDomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: NetFilter List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: david@atd.es, netfilter@lists.netfilter.org
 
-On Thu, 20 Mar 2003, Kelly Setzer wrote:
+> I would like to know how can I filter the mail relay received 
+> in my port 25 with the firewall,..  I want only accept the 
+> packets from only one ip, my ISP. 
 
-> What does your dhcpd log say?
+iptables -P INPUT DROP
+# Maybe you don't need it, but I'll add it anyway
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i <eth_inet> -s <isp_mailserver_ip> -p tcp --dport 25
+-j ACCEPT
 
-DHCPREQUEST for 10.2.0.10 to {mac address}
-DHCPPACK on 10.2.0.10 to {mac address}
-send_packet: not permitted
+However, this way you will be blocking *everything* else from coming in.
+You probably want to accept local traffic, something like this :
 
->
-> Do a tcpdump while you attempt to renew.  That should be revealing.
->
-> Kelly
->
-> --
-> Kelly Setzer, System Administrator/Architect - Placemark Investments
-> 14180 Dallas Pkwy, Suite 200, Dallas, TX 75240
-> kelly.setzer@placemark.com  http://www.placemark.com
-> (972)404-8100x41 (work)       (214) 287-3464 (cell)
->
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -i <eth_lan> -s <net_lan> -j ACCEPT
 
--- 
--Tim Miller
+If you're running other servers on the box too (e.g. a webserver), you
+also need rules for those servers.
 
-"You are who you become"
+Or you could do simply this, dropping all traffic *not* coming from your
+isp's mailserver :
 
-Email: tj.miller@javaspotlet.com
-Registered Linux User #302727
+iptables -A INPUT -i <eth_inet> -s <! isp_mailserver_ip> -p tcp --dport
+25 -j DROP
+
+
+Rob
+
 
