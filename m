@@ -1,9 +1,9 @@
-From: <bigman@monster-solutions.net>
-Subject: Re: DHCRELAY through IPTABLES Firewall
-Date: Tue, 29 Oct 2002 05:02:32 -0500
+From: "Allan Gee" <AllanG@Equation.co.za>
+Subject: nf-bridging and iproute2 won't work
+Date: Tue, 29 Oct 2002 11:47:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001701c27f32$4c7a21c0$8f33e40f@lsmith5953>
-References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <200210281054.g9SAsee08116@vulcan.rissington.net> <002c01c27e74$d989fb80$8f33e40f@lsmith5953> <200210281139.g9SBdPe08223@vulcan.rissington.net> <000b01c27f1d$f805e430$8f33e40f@lsmith5953>
+Message-ID: <000001c27f30$3cf76840$0eb2a8c0@equation.co.za>
+Reply-To: <Allang@equation.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,97 +17,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: bigman@monster-solutions.net, Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-and I have also looked into this further by putting a sniffer on my DHCP
-server. I see the request come in from the system that is getting an IP
-successfully, but I never see a request from the system that is failing.
-Both systems are on the same subnet so they should be using the same
-netfilter rules.
+Hi Guys I would like some help on the following:
+Excuse my asci-art!
 
------ Original Message -----
-From: <bigman@monster-solutions.net>
-To: "Antony Stone" <Antony@Soft-Solutions.co.uk>;
-<netfilter@lists.netfilter.org>
-Sent: Tuesday, October 29, 2002 2:37 AM
-Subject: Re: DHCRELAY through IPTABLES Firewall
+	Web Server
+		|
+		|
+	Bridge 1 --tunnel-10.4.0.1--|
+		|                     |
+		|                     |
+	Std Router 10.1.1.1         |
+		|                     |
+		|                     |
+	Slow 64kbit line            |
+		|                     |
+		|                     |
+	Std router 10.1.2.1         |
+		|                     |
+		|                     |
+	Bridge 2 --tunnel-10.4.0.2--|
+		|
+		|
+	LAN network
 
 
-> here is how I ended up fixing my problem. However I have just discovered
-it
-> only works with one client. When I try to get another client to obtain an
-IP
-> it does not work. Any ideas? Is DNAT limiting me on one MAC to pass
-through
-> or something? I am lost here.
->
->
-> 1)    turned off DHCPD and DHCRELAY on firewall
-> 2)    iptables -t nat -A PREROUTING -i eth2 -p udp --dport 67 -j
-> DNAT --to-destination 192.168.1.70
-> 3)    iptables -A FORWARD -p udp -m multiport --dport 67,68 -j ACCEPT
->
-> ----- Original Message -----
-> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Monday, October 28, 2002 6:39 AM
-> Subject: Re: DHCRELAY through IPTABLES Firewall
->
->
-> > On Monday 28 October 2002 11:26 am, bigman@monster-solutions.net wrote:
-> >
-> > > my comments for each question are in BOLD... thanks for all of the
-help.
-> >
-> > > > > iptables -A FORWARD -i eth2 -o eth2 -j lan2-lan1-fwd
-> > > >
-> > > > I don't like the look of that rule !
-> > >
-> > > IT SHOULD BE -O ETH1 AND NOT -O ETH2
-> >
-> > I know.   I just thought you should check whether this was a typo in
-your
-> > email, or a typo in the original script...
-> >
-> > > > the best thing might be to add a LOGging
-> > > > rule just before the DROP rule in each of your lan1-lan2-fwd and
-> > > > lan2-lan1-fwd chains so you can see if anything's being blocked...
-> > >
-> > > SO DHCRELAY WILL USE FORWARDING INSTEAD OF OUTPUT AND INPUT FOR IT TO
-> WORK?
-> >
-> > No, sorry, I should have suggested adding the LOGging rules to the
-chains
-> > lan1-in lan2-in and lan1-lan2.
-> >
-> > You are correct that dhcrelay is supposed to pick up broadcasts on the
-> source
-> > network (which will come in to the firewall via the INPUT chain) and the
-> > dhcrelay application then generates its own packet to send to the dhcp
-> server
-> > (which will go out via the OUTPUT chain).
-> >
-> > Replies should come back in from the dhcp server through the INPUT
-chain,
-> and
-> > then go back out to the original client through the OUTPUT chain.
-> >
-> > No packets are expected to be FORWARDed (routed).
-> >
-> > Antony.
-> >
-> > --
-> >
-> > KDE 3.0.3 contains an important fix for handling SSL certificates.
-Users
-> of
-> > Internet Explorer, which suffers from the same problem but which
-> > does not yet have a fix available, are also encouraged to switch to KDE
-> 3.0.3.
-> >
-> > http://www.kde.org/announcements/announce-3.0.3.html
-> >
->
->
+without the tunnel running the route for LAN is via 10.1.1.1 and route for
+Web Server is via 10.1.2.1
+All is fine!
+Now I want the Web Server traffic to go via the tunnel end point(10.4.0.2)
+so it will be compressed and encrypted but I Don't want to have to change
+ANY gateway's on either the LAN devices or the Web Server.
+When the tunnel comes up I thought I would use Iptables to catch traffic
+going to each router and somehow redirect it to the tunnel.
+I've tried to MARK packets and then send them via a rt_table but it still
+goes to the default gateway on the std router. I think it's the bridging
+that is messing me up but I don't no why?
+My netfilter IS patched with nf-bridge V0.0.6 ON KERNEL 2.4.17 etc.. I get
+the packets to the MARK mangle table but they don't go to the rt_table
+
+This is the script that runs when the tunnel comes up :
+
+FOR Web Server side bridge:
+iptables -A PREROUTING -t mangle -d 10.1.2.0/24 -j MARK --set-mark 1
+ip rule add fwmark 1 table for.tun
+ip route del 10.1.2.0/24 via 10.1.2.1  #the original gateway for LAN but I
+keep a static for the
+						# single IP so the tunnel keeps going
+ip route add 10.1.2.0/24 via dev tune table for.tun
+ip route flush cache
+#END
+in rt_tables
+202 for.tun
+The same mirrored on the LAN bridge side!
+I use OPENVPN for the tunnel!
+NO GO!!
+Please give me some ideas as to what's going wrong or to whether I should
+use some other plan.
+
+Regards Allan Gee
+Equation
+021 4181777
+www.equation.co.za
 
 
