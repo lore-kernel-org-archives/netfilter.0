@@ -1,13 +1,13 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Redirecting outgoing SMTP from LAN to another LAN server
-Date: Sat, 15 May 2004 13:27:01 +0100
+From: Phil C <flah@hell.com>
+Subject: Re: help accepting unbound addresses
+Date: Sat, 15 May 2004 14:51:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040515122701.GA21149@acentral.co.uk>
-References: <20040429095949.GB22172@acentral.co.uk> <20040429144757.GA6534@zion.homelinux.com> <200405131346.12621.gdh@acentral.co.uk> <200405131442.24566.Antony@Soft-Solutions.co.uk> <40A6021D.9030201@arava.co.il>
+Message-ID: <20040515185108.GA82869@adsl195.cofs.net>
+References: <20040515002908.GU78829@adsl195.cofs.net> <20040515033249.GW78829@adsl195.cofs.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <40A6021D.9030201@arava.co.il>
+In-Reply-To: <20040515033249.GW78829@adsl195.cofs.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,36 +21,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sat, May 15, 2004 at 02:42:21PM +0300, Micha Silver wrote:
-> Gavin:
-> Why would your LAN users ever need to send SMTP to anywhere other 
-> than your MTA?
+A temporary resolution to my question, which is far from ideal (not very
+scalable):
 
-Mostly as a convenience. We have dozens of LAN machines with an 
-assortment of SMTP server settings. We also have some notebooks that 
-roam between different sites, and I deemed it more appropriate to 
-force everyone to use the local MTA than to have to manually reconfigure 
-everything.
+Put subnets on the loopback, to accept packets as they come in on 443.
+Add a DNAT rule, for the but bound port 80 traffic, which routes traffic
+out to the correct destination.
 
-> With the above rules aren't you allowing an 1nside (I 
-> like that 0 1 idea!) computer, infected with a worm to propagate the 
-> virus?
+I was really hoping for something far more dynamic than this, but it'll have
+to do in a pinch. The ideal solution would be to simply accept any packet
+on a single interface and deliver it as local (without modifying the destination
+address). That would allow me to simply route new subnets to my stunnel box
+and have 0 configuration updates on the stunnel box, but alas it doesn't seem
+feasible. :(
 
-Yes and no. Yes by allowing people to theoretically connect to any 
-external MTA, the virus can propogate, but this is weighed against the 
-monitoring I have in place so that the number of mails processed and 
-load average on the MTA machine will spike up, and this allows me to 
-quickly identify the offending machine and firewall it out completely 
-whilst the virus is neutralised..
+If anyone has any suggestions, please let me know.
 
-Thinking about it, I could simply firewall things more so that only
-"our" MTAs are permitted... hmm I might do that actually - thanks for 
-the train of thought.
-
-I'm glad you like the 0utside/1nside thing... it even holds (to a lesser 
-extent) when you have eth2 configured as the 'DM2' interface :)
-
-Cheers,
-Gavin.
-
+-- 
+<flah@hell.com>
+01101000011000010110110001100110
 
