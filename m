@@ -1,8 +1,8 @@
-From: Fallucchi Antonio <fallucch@csr.unibo.it>
-Subject: ip_conntrack_max
-Date: Thu, 08 Jul 2004 11:34:22 +0200
+From: Sudheer Divakaran <sudheer@svw.com>
+Subject: Is Linux based Gateway/Firewall feasible
+Date: Thu, 08 Jul 2004 17:40:33 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40ED151E.4090602@csr.unibo.it>
+Message-ID: <40ED39B9.30608@svw.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,24 +18,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-hi
+Hi,
 
-i have the problem width "ip_conntrack: table full, dropping packet."
+I've a local LAN consisting of about 150 machines.  I'm using a machine 
+with Linux + IPTables  as the gateway machine which inturn connects to 
+two different ISPs.  My question is can a Linux based machine match the 
+performance of a hardware based routers provided by Cisco,... OR is my 
+decision to go for a Linux based solution is a wrong one?.
 
-what is the good and max dimension  of the ip_conntrack_max ?
+Is there so much difference between these two solutions?
 
-tanks.
-bye
+Can I achieve the same performance using a high end PC and Linux?
 
--- 
+I'm asking this because one guy told me that my decision to go for a 
+Linux based solution is a wrong one and it can never match the 
+performance of hardware based Routers.
 
- ---------------------------------------------------------------
-| |||||||    ||    |  Fallucchi Antonio Giuseppe  mat. 2282     |
-| ||        ||||    |      --> Live free() of die() <--         |
-| ||||     ||  ||    |        OpenSource philisophy             |
-| ||      ||||||||    |  Universita' di Bologna sede di Cesena  |
-| ||     ||      ||    |    Cdl di Scienze dell'Informazione    |
- ---------------------------------------------------------------
-
-
+Thanks
+Sudheer
 
