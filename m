@@ -1,9 +1,13 @@
-From: Tasha Smith <natasha3641@yahoo.com>
-Subject: Shareaza and IPtables
-Date: Sat, 13 Nov 2004 20:16:47 -0800 (PST)
-Message-ID: <20041114041647.120.qmail@web40727.mail.yahoo.com>
+From: Marc Haber <mh+netfilter@zugschlus.de>
+Subject: Re: Question; what is this netfilter logfile entry ?
+Date: Sun, 14 Nov 2004 08:42:11 +0100
+Message-ID: <20041114074211.GB27066@torres.ka0.zugschlus.de>
+References: <1100392955.4894.25.camel@localhost.localdomain>
+	<000c01c4c9f0$4807a0d0$de0aa8c0@comp>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <000c01c4c9f0$4807a0d0$de0aa8c0@comp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,85 +20,24 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Bo Jacobsen <subs@systemhouse.dk>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hii Everyone,
+On Sun, Nov 14, 2004 at 03:18:46AM +0100, Bo Jacobsen wrote:
+> Nov 14 02:24:48 WF1-HOME kernel: DENY-OUT:.IN= OUT=eth0 SRC=192.168.1.2 DST=198.41.0.4 LEN=560 TOS=0x00 PREC=0xC0 TTL=64 ID=3123 PROTO=ICMP TYPE=3 CODE=3 [SRC=198.41.0.4 DST=192.168.1.2 LEN=532 TOS=0x00 PREC=0x00 TTL=49 ID=41159 PROTO=UDP SPT=53 DPT=51981 LEN=512 ]
+> 
+> It looks like ICMP with an embedded DNS call  ?.
+> What is it exactly, and how would a rule to allow this look like ?
 
-I am running Shareza(P2P) program on my laptop behind my Router/Firewall running
-Linix 7.3 and Iptables 1.2.7a. Iam trying to open up port 6346 on my firewall so
-it forwards it to my laptop where Sharaza is running. My OUTBOUND rule is
-already sent to ACCEPT
-# Set the default policy to drop.
-$iptables --policy INPUT DROP
-$iptables --policy FORWARD DROP
-$iptables --policy OUTPUT ACCEPT
+That's a "destination unreachable" triggered by the DNS call (probably
+an answer packet) mentioned there.
 
-$iptables -t nat --policy PREROUTING ACCEPT
-$iptables -t nat --policy OUTPUT ACCEPT
-$iptables -t nat --policy POSTROUTING ACCEPT
+Greetings
+Marc
 
-Here is Shareza's connection test the i keep timing out on.
-http://www.crucial-forums.com/connectiontest/
-
-I have Shareza's port configured to 6346.
-My firewall rule that i thought should work but are not are here. This is for
-emule as well. Any help guys to get this going. I googled but couldnt find
-anything really useful on this.
-
-#My rules for EMULE;
-$iptables -A INPUT -p tcp --dport 4662 -j ACCEPT
-$iptables -A OUTPUT -p tcp -m multiport --sport 4661,4662 -j ACCEPT
-$iptables -t nat -A PREROUTING -p tcp --dport 4662 -j DNAT --to 192.168.0.69
-#These are my Forwarding rules.
-$iptables -A FORWARD -i eth1 -p tcp --dport 80 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 25,80,110,443 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp --dport 21 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp --dport 22 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport
-1040,1043,1046,1047,1048,1050,1051,1052,1053,1054 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p udp --dport 500 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p 50 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p 51 -j ACCEPT
-#$iptables -A FORWARD -i eth1 -p udp --dport 10000 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p udp --dport 1863 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp --dport 1863 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 135,137,138,139 -j
-ACCEPT
-$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 135,137,138,139 -j
-ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp --dport 1214 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p udp --dport 1214 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p udp --dport 2644 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp --dport 3389 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p udp --dport 3389 -j ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 6344,6345,6346,6347 -j
-ACCEPT
-$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 6344,6345,6346,6347 -j
-ACCEPT
-$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 4242,4661,4662 -j
-ACCEPT
-$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 4661,4662,4772 -j
-ACCEPT
-$iptables -A FORWARD -p tcp --dport 4662 -i eth0 -o eth1 -j ACCEPT
-$iptables -A FORWARD -p udp --dport 4662 -i eth0 -o eth1 -j ACCEPT
-
-# Enables Packet Forwarding
-$iptables -t nat -A POSTROUTING -o eth0  -j MASQUERADE
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-
-
-
-
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Check out the new Yahoo! Front Page. 
-www.yahoo.com 
- 
-
+-- 
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
 
