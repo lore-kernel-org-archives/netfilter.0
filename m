@@ -1,12 +1,14 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Mailing List Guidelines
-Date: Tue, 25 Nov 2003 15:07:48 -0800 (PST)
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: NAT & MySQL
+Date: Tue, 25 Nov 2003 18:56:51 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031125230748.40926.qmail@web40201.mail.yahoo.com>
-References: <20031125183433.08352adc.hchs@ns.sympatico.ca>
+Message-ID: <200311260256.hAQ2usiu004660@server5.bandwidthco.com>
+References: <3FC3C8A7.2030301@Loudoun-Fairfax.com>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031125183433.08352adc.hchs@ns.sympatico.ca>
+In-Reply-To: <3FC3C8A7.2030301@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +19,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Cody Harris <hchs@ns.sympatico.ca>, Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Cc: nf <netfilter@lists.netfilter.org>, QT mail group <qt-interest@trolltech.com>, xmail@xmailserver.org
+To: 'Jeffrey Laramie' <JALaramie@Loudoun-Fairfax.com>, netfilter@lists.netfilter.org
 
-Kudos Jeff.
+Yeah you are correct Jeff.  Don't know what I was thinking. Maybe that's the
+problem: I wasn't.
 
-    Good luck getting people to use it though. :}}
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Jeffrey Laramie
+Sent: Tuesday, November 25, 2003 1:25 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: NAT & MySQL
 
-SBlaze
+Mark E. Donaldson wrote:
 
-=====
-In the absence of order there will be chaos.
+> The ACK packets you see in your dump are probably being dropped at the 
+> firewall because a state table entry does not exist.  So you need to 
+> add a NEW rule to do this:
+>  
+> iptables -A FORWARD -i ppp0 -o eth0 -m state --state NEW -j ACCEPT
+>  
+> this rule will then allow your ESTABLISHED,RELATED rule to work and 
+> permit those ACK packets to pass.
+>
+>
 
-__________________________________
-Do you Yahoo!?
-Free Pop-Up Blocker - Get it now
-http://companion.yahoo.com/
+Hi Mark,
+
+I'm not sure I understand what this rule does for him. Only the first packet
+from the web client would be NEW and based on his FORWARD rules that's been
+accepted and the dump shows it went through (although I'd still like to see
+his SNAT rule). Your rule would open his mysql server to any NEW packet. Are
+you saying that the RELATED ACK packets won't go through unless the first
+packet is matched with a NEW state and makes an entry in the state table?
+
+Jeff
+
+
+
+
 
