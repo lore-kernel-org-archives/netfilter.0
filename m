@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: help...
-Date: Wed, 17 Dec 2003 18:22:21 +0000
+Subject: Re: Trouble NAT'ing with a pool of public addresses
+Date: Wed, 17 Dec 2003 18:30:14 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312171822.21343.Antony@Soft-Solutions.co.uk>
-References: <000801c3c291$db2de390$6400a8c0@stillnickcomp1> <00df01c3c4c8$ed220980$7000a80a@melita.com>
+Message-ID: <200312171830.14363.Antony@Soft-Solutions.co.uk>
+References: <1122.63.164.0.198.1071644845.squirrel@squirrel.dialnetwork.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00df01c3c4c8$ed220980$7000a80a@melita.com>
+In-Reply-To: <1122.63.164.0.198.1071644845.squirrel@squirrel.dialnetwork.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,39 +20,72 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 17 December 2003 6:09 pm, Ian Hunter wrote:
+On Wednesday 17 December 2003 7:07 am, Adam Pyne wrote:
 
-> Start off by giving us your existing rules?
-> ----- Original Message -----
-> From: "Cristiano Soares" <stillnick@terra.com.br>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Sunday, December 14, 2003 5:30 PM
-> Subject: help...
+> On our Cisco we used a pool of public IP's for our users to NAT through.
+> I've found a comparable configuration to do the same with iptables:
 >
-> Hi, i would like to know if u guys could help me with a simple problem that
-> im having trying to set up a network server. I have DSL conection and im
-> sharing it with a network. I had set up the DHCPD server, all the DHCP
-> clients in my network can receive an IP from the server, but they cant
-> browse. I know that there as some lines that i have to set up to make de
-> server allow the clients to browser normaly. and i also know that it has
-> something to do with iptables, and maskarading. Please, i need help doing
-> this. I have MSN and ICQ if anyone would like to help me. I have SSH server
-> running also. please, please, i need help. Thanks a lot.
+> iptables -t nat -p all -A POSTROUTING -s 10.0.0.0/8 -o eth0 -j SNAT --to
+> x.x.x.x - y.y.y.y
+>
+> With this in place, outbound connections have a source address picked in a
+> round-robin fashion from the pool which is basically what we want in order
+> to not overload a single public IP.
 
-Sounds like this guy simply needs to know:
+Sounds like you're worried about wearing out IP addresses :)
 
-iptables -A POSTROUTING -o $EXTIF -j MASQUERADE
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+For 150+ users I really wouldn't worry about hanging them all off a single 
+public IP.
 
-If that doesn't do the trick then yes, post your existing ruleset and tell us 
-what works and what doesn't (and how you're testing it).
+> However, we now have an issue with
+> some websites that have security measures in place to reject users
+> connecting via a different IP for each transaction subsequent to logging
+> in.
+>
+> For example, if my initial connection to http://secure.foo.com comes from
+> xxx.xxx.xxx.4, the server will reject my next transaction if it comes from
+> xxx.xxx.xxx.5.
+>
+> Somehow the Cisco NAT was able to address this with what I'm guessing was
+> some kind of translation tracking procedure (either that or perhaps magic
+> fairy dust) making subsequent connections to a site from a particular user
+> come from the same IP.
+>
+> My question is, is there a way to configure iptables to do the same? If
+> not, in your opinion how many users can we expect to successfully NAT to
+> one public IP?
+
+I would say "well over 150".
+
+The reasoning is as follows:
+
+Each outbound connection uses a different source port on the firewall in order 
+to connect to a remote machine.
+
+There are 65535 source ports available, so either:
+
+a) guess how many concurrent connections an average user will have, divide 
+into 65535, and that's the number of users you can have, or
+
+b) think up a number of users, divide into 65535, and that's the number of 
+simultaneous connections each of them can have.
+
+Therefore, for your estimate of 150 users, 65535 / 150 = 436 simultaneous 
+concurrent connections per user.   Seems like enough to me :)
+
+By the way, if you do envisage running out of source ports like this, remember 
+to increase the size of the connection tracking table first, otherwise this 
+will be the limiting factor well before you run out of ports.
+
+Hope this helps,
 
 Antony.
 
 -- 
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
+"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
+line program, and it ends up depending on the entire known universe."
+
+ - Philip Hands
 
                                                      Please reply to the list;
                                                            please don't CC me.
