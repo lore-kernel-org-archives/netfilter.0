@@ -1,12 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iprange
-Date: Tue, 11 Nov 2003 09:43:34 +0100 (CET)
+From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
+Subject: Re: ethernet headers and iptables counters
+Date: Tue, 11 Nov 2003 10:37:40 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0311110937110.24817-100000@blackhole.kfki.hu>
-References: <Pine.LNX.4.58.0311101220310.488@fhynpb.envafyvqr.arg>
+Message-ID: <003f01c3a858$fbf212c0$8effa8c0@ESTACAO>
+References: <1068455679.10203.4.camel@hohum.marcsnet.com> <200311100940.hAA9eij16696@agate.rockstone.co.uk> <200311102321.hAANLsj17218@agate.rockstone.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0311101220310.488@fhynpb.envafyvqr.arg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,43 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Vigil <nvnwdfuq02@sneakemail.com>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter ML <netfilter@lists.samba.org>
 
-On Mon, 10 Nov 2003, Vigil wrote:
-
-> I take it nobody else uses iprange or any other new built plugins (connlimit,
-> realm, classify, connmark, netmap) with 1.2.9?
-
-I have just checked and it works fine (2.4.22 kernel + 1.2.9 iptables
-release).
-
-> On Fri, 7 Nov 2003, Vigil nvnwdfuq02-at-sneakemail.com |Netfilter Mailing List| wrote:
 >
-> >1.2.8 (from Slackware 9, without pom and iprange) was installed when I compiled
-> >1.2.9. I uninstalled it before installing 1.2.9. I then uninstalled 1.2.9,
-> >unpacked it and compiled and installed it again, just in case anything from
-> >1.2.8 was interfering. I then recompiled the kernel (2.4.22) and rebooted with
-> >the new 1.2.9, then uninstalled it and compiled and installed it again(!)
+> It does occur to me to wonder whether the ISP counts IP headers, but I
+really
+> would expect them to do so, and even so, an IP header is only 24 bytes,
+with
+> up to 1452 bytes of data inside the packet (assuming an MTU of 1500).
+For
+> 24 bytes to make 12% difference your data would be only 200 bytes on
+average,
+> and this is far too low to be plausible.
 
-I still suspect you have got two iptables binaries on your system and you
-start the previous one instead what you installed from source.
+    Your affirmation 'IP header is only 24 bytes' is wrong. IP header has,
+at least, 20 bytes and can have up to 60 bytes if you use IP Options. But,
+in almost all cases, you'll have IP with no options, which means 20 bytes
+for the IP headers. It can have 24 bytes in some cases, no doubt, but it's
+not right that is always will have 24 and only 24 bytes.
 
-iptables installed from source goes into /usr/local/sbin/iptables. Call
-the binary with full path to be sure.
+    There also Transport Layer (4) headers. Using TCP, for example, you'll
+have at least 20 bytes on the TCP headers, being able to reach 64 bytes if
+all TCP options are enabled.
 
-Please don't try to guess the syntax: it works as it is documented in the
-manpage: iprange is an extension, so you must invoke it as
-'iptables .... -m iprange <iprange-options>' ...
+    This small error cannot explain the 12% difference ....... but we should
+notice it :)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
+    Sincerily,
+    Leonardo Rodrigues
 
 
