@@ -1,9 +1,11 @@
-From: Sam Pointer <sam.pointer@hpdsoftware.com>
-Subject: RE: can't initialize iptables table `'
-Date: Wed, 27 Nov 2002 15:43:41 -0000
+From: Juliano Murlick <jumurlick@sispro.com.br>
+Subject: Traffic Shaping
+Date: Wed, 27 Nov 2002 14:24:15 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6FB083FB72EFD21181D30004AC4CA18A01EABFB1@srv002>
+Message-ID: <C01FA3FA475FB04AA54D083D5E637EE10BE34D@siscannet.sispro.com.br>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C29639.CF10C440"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,145 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Ben Russo' <ben@umialumni.com>
-Cc: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-yes, I'm using "iptables start" from /etc/rc.d/init.d/ directories. 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-The contents of the /etc/sysconfig/iptables at the moment is just :
+------_=_NextPart_001_01C29639.CF10C440
+Content-Type: text/plain
 
--P INPUT DROP
+    Hello,
+    Anybody knows if there is some module for netfilter that works like
+traffic shaper ? i am trying to shaper my traffic but in dinamic way, not
+static , like 50 % for FTP and 25 % SMTP, 5% ICMP  ... what is best way to
+do it ?
+ 
+     Ats,
+    Juliano Murlick
+ 
 
-!!! which is why I can't understand why I'm having problems. I did have some
-more comprehensive rules in there ported from an old ipchains setup, but
-whittled it down to that to diagnose this problem.
+------_=_NextPart_001_01C29639.CF10C440
+Content-Type: text/html
 
-With regards kernelness, to quote myself from my earlier post:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<TITLE>Message</TITLE>
 
-> > Now, I issued `lsmod` and I have both "iptable_filter" and "ip_tables"
-> > modules loaded.
+<META content="MSHTML 6.00.2800.1126" name=GENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=Arial size=2><SPAN class=670563913-27112002>&nbsp;&nbsp;&nbsp; 
+Hello,</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=670563913-27112002>&nbsp;&nbsp;&nbsp; 
+Anybody knows if there is some module for netfilter that works like traffic 
+shaper ?&nbsp;i am trying to shaper my traffic but in dinamic way, not static 
+,&nbsp;like 50 % for FTP and 25 % SMTP, 5% ICMP&nbsp;&nbsp;... what is best way 
+to do it ?</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial 
+size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ats,</FONT></DIV>
+<DIV align=left><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT 
+face=Arial size=2>Juliano Murlick</FONT></DIV>
+<DIV align=left><FONT face=Arial size=2>&nbsp;</FONT></DIV></BODY></HTML>
 
-..and that's it, no other modules loaded; which is what I expect as I'm not
-using the `nat', `masq' or other tables.
-
-I'll let you know on the iptables-save shortly.
-
------Original Message-----
-From: Ben Russo [mailto:ben@umialumni.com]
-Sent: 27 November 2002 14:54
-To: Sam Pointer
-Cc: netfilter@lists.netfilter.org
-Subject: RE: can't initialize iptables table `'
-
-
-OK,  when you say "initialize iptables" do you mean that you are using
-the standard RedHat system V init script called
-"/etc/rc.d/init.d/iptables" ?
-If so what is the content of your /etc/sysconfig/iptables?
-That might be the problem there.
-
-When you do an iptables-save what do you see?
-
-
-
-It doesn't really feel like a kernel/modules related issue, but you lean
-in that direction, so....
-when you type "lsmod" what do you see?
-
-On one of my Linux firewalls I see these ipt related modules loaded:
-
-	ipt_state               1152  25 (autoclean)
-	ipt_MASQUERADE          1824   5 (autoclean)
-	iptable_nat            18452   0 (autoclean) [ipt_MASQUERADE]
-	ip_conntrack           17068   2 (autoclean) [ipt_state
-ipt_MASQUERADE
-iptable_nat]
-	iptable_mangle          2272   0 (autoclean) (unused)
-	iptable_filter          2272   0 (autoclean) (unused)
-	ip_tables              11424   7 [ipt_state ipt_MASQUERADE
-iptable_nat
-iptable_mangle iptable_filter]
-
-Maybe try running "depmod -a" and then reruning the "modprobe ip_tables"
-
-
-
-On Wed, 2002-11-27 at 06:02, Sam Pointer wrote:
-> No I didn't custom compile the kernel and the distro is the latest one
-from
-> the ftp site at RedHat. I've been using Linux since the 1.x kernels.
-> although only consider myself an "op" type rather than any great kernel
-> hacker.
-> 
-> Thanks for your help.
-> 
-> -----Original Message-----
-> From: Ben Russo [mailto:ben@umialumni.com]
-> Sent: 26 November 2002 22:19
-> To: Sam Pointer
-> Cc: netfilter@lists.netfilter.org
-> Subject: Re: can't initialize iptables table `'
-> 
-> 
-> Did you custom compile your kernel?
-> If you are using a standard RedHat 8 kernel have you upgraded to the
-> latest?
-> 
-> On Tue, 2002-11-26 at 12:20, Sam Pointer wrote:
-> > Before I carry, please feel free to tell me FAQ off; I have quickly
-> scanned
-> > the archive and google and haven't found a solution to this problem -
-but
-> > I'm open to suggestions.
-> > 
-> > I'm initialising iptables on RH Linux 8. When I start iptables I am
-> getting
-> > the error message " can't initialize iptables table `' ". 
-> > 
-> > Now, I issued `lsmod` and I have both "iptable_filter" and "ip_tables"
-> > modules loaded.
-> > 
-> > I initially tried starting ipchains with a whole raft of rules, but even
-> > starting with the single rule:
-> > 
-> > -P INPUT DROP
-> > 
-> > causes this error to appear.
-> > 
-> > When I reboot the machine and check my syslog messages, I notice that
-> > iptables-restore is issuing a modprobe for module `iptable_`, as in:
-> > 
-> > iptables: Applying iptables firewall rules
-> > modprobe: modprobe: Can't locate module iptable_
-> > modprobe: modprobe: Can't locate module iptable_
-> > ...
-> > iptables: can't initialize iptables table `' (do you need to insmod?)
-> > 
-> > which leads me to believe that some table module it requires isn't
-loaded.
-> > Is this correct, and if so how is this. I'm only using the default
-> "filter"
-> > table (which is loaded) with my single policy rule...
-> > 
-> > Any help or pointers to solutions would be greatly appreciated.
-
-
-
-This email and any attachments are strictly confidential and are intended
-solely for the addressee. If you are not the intended recipient you must
-not disclose, forward, copy or take any action in reliance on this message
-or its attachments. If you have received this email in error please notify
-the sender as soon as possible and delete it from your computer systems.
-Any views or opinions presented are solely those of the author and do not
-necessarily reflect those of HPD Software Limited or its affiliates.
-
- At present the integrity of email across the internet cannot be guaranteed
-and messages sent via this medium are potentially at risk.  All liability
-is excluded to the extent permitted by law for any claims arising as a re-
-sult of the use of this medium to transmit information by or to 
-HPD Software Limited or its affiliates.
-
-
+------_=_NextPart_001_01C29639.CF10C440--
 
