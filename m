@@ -1,11 +1,12 @@
-From: Michael Bellion and Thomas Heinz <nf@hipac.org>
-Subject: [ANNOUNCE] nf-hipac v0.8 released
-Date: Wed, 25 Jun 2003 22:12:49 +0200
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ADMINISTRATIVE] netfilter.org mail server upgrade
+Date: Wed, 25 Jun 2003 23:26:51 +0200
 Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200306252212.49588.nf@hipac.org>
-Reply-To: nf@hipac.org
+Message-ID: <20030625212651.GF2645@sunbeam.de.gnumonks.org>
+Reply-To: laforge@gnumonks.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m0OTIrBz/ErRqy1N"
 Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
 Errors-To: netfilter-devel-admin@lists.netfilter.org
@@ -17,78 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
-
-Hi
-
-We have just released a new version of nf-hipac. You might wonder why
-this lasted so long. Well, we did a major rewrite of most of the code,
-added a bunch of new features and did heavy userspace testing of the
-algorithmic core. 
+To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, coreteam@netfilter.org, netfilter-failover@lists.netfilter.org, netfilter-workshop@lists.netfilter.org
 
 
-For all of you who don't know nf-hipac yet, here is a short overview:
+--m0OTIrBz/ErRqy1N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-nf-hipac is a drop-in replacement for the iptables packet filtering module.
-It implements a novel framework for packet classification which uses an
-advanced algorithm to reduce the number of memory lookups per packet.
-The module is ideal for environments where large rulesets and/or high
-bandwidth networks are involved. Its userspace tool, which is also called 
-'nf-hipac', is designed to be as compatible as possible to 'iptables -t 
-filter'.
+Hi!
 
-The official project web page is:    http://www.hipac.org
-The releases can be downloaded from: http://sourceforge.net/projects/nf-hipac
+I'm planning to upgrade kashyyyk.netfilter.org to exim4 with exiscan_acl
+and spamassassin tonight. (that is, in about one to two hours from now).
 
+This upgrade is mostly neccessarry because of the high volume of spam we
+are receiving lately.
 
-Here is a short overview of the new features:
+I've moved a couple of exim-3.3x sites to exim-4.20 recently, so I think
+the netfilter.org upgrade should go seamless and without any bigger
+trouble.
 
-  - generic support for iptables targets and matches:
-       nf-hipac is now binary compatible to iptables targets and
-       matches.
+In the case of any problems, please contact me at laforge@gnumonks.org,
+since all @netfilter.org mail is routed via kashyyyk.netfilter.org.
 
-  - support for user defined chains:
-       This was a real challenge.
+Thanks for your patience.
 
-  - 64 bit atomic counters:
-       We avoided cache ping-pong on SMP machines.
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-  - nf-hipac connection tracking helper:
-       This is basically a dummy module which avoids that you
-       manually load ip_conntrack.
+--m0OTIrBz/ErRqy1N
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-  - extended proc statistics
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-  - libnfhipac:
-       We've implemented a very lightweight userspace library which
-       does the netlink communication for you, so writing an alternative
-       userspace tool for nf-hipac is simplified. [you still have to
-       construct the rule which is sent to the kernel]
+iD8DBQE++hObXaXGVTD0i/8RAvXKAJ4vQx20rkmb53YAffw7F2stFsA+VgCgpyXp
+kj/Pr6zSWK/EszND03RXKCE=
+=fOjj
+-----END PGP SIGNATURE-----
 
-  - new netlink based protocol:
-       Apart from that it was necessary to redesign the protocol
-       to support the new features we have improved the listing speed
-       by putting as many rules/chains in a packet as possible.
-
- - non-terminal rule support:
-       The nf-hipac rule target is optional.
-
-Basically, nf-hipac now offers the same functionality as iptables -t filter
-apart from the RETURN target which is missing and some minor
-user-defined chain related issues.
-
-Unfortunately we discovered an alignment bug in the btree layer
-(the only part we haven't rewritten) which breaks architectures
-requiring strict alignment for pointers (like alpha).
-Sparc64 again seems to work fine.
-
-
-Enjoy,
-
-+-----------------------+----------------------+
-|   Michael Bellion     |     Thomas Heinz     |
-| <mbellion@hipac.org>  |  <creatix@hipac.org> |
-+-----------------------+----------------------+
-
+--m0OTIrBz/ErRqy1N--
 
