@@ -1,12 +1,12 @@
-From: "Omar Garcia" <omar.garcia@fractalia.biz>
-Subject: Re: Connlimit problem
-Date: Wed, 26 Jan 2005 16:59:02 +0100
-Message-ID: <008801c503bf$f49109f0$910010ac@coco>
-References: <001801c503b3$115416c0$910010ac@coco>
-	<25214.142.169.215.10.1106754134.squirrel@142.169.215.10>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: use of the limiting options
+Date: Wed, 26 Jan 2005 11:17:27 -0500
+Message-ID: <20050126161727.GA6583@bender.817west.com>
+References: <Pine.LNX.4.53.0501251248340.24829@altaica>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.53.0501251248340.24829@altaica>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,79 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all!!
+On Tue, Jan 25, 2005 at 12:54:54PM -0600, Tib wrote:
+> 
+> I'd like to use the --limit and --limit-burst options to protect my sshd
+> from dictionary password attacks. Considering the userbase and activity
+> level I'd say that something like this would suit me just fine.
+> 
+> --limit 6/hour
+> --limit-burst 2
+> 
+> This would limit it to two connect/login attempts at first, and then one
+> more every 10 minutes.. correct?
+> 
+> Would this be the proper command to use? I'm trying to just limit
+> connections from the outside world, not from the local network, hence the
+> address as a destination:
+> 
+> iptables -A INPUT --d 66.80.174.210 --dport 22   \
+>    --limit 6/hour --limit-burst 2
 
-Thanks.!!
-Now I know that the module isn=B4t compiled. (cat /proc/net/......)
-I had patched kernel source with POMng but for any reason the connlimit
-patch didn=B4t apply. I am recompiling a new kernel and patched it from zer=
-o.
+that's a fantastic way to DoS yourself.  so after 8 idiots try to
+connect to your SSH server--you're locked out from connecting yourself
+for an hour...*brilliant*.
 
-Thanks, I`ll post my advances.
-Regards.
+try some real security measures instead of snake oil:
 
+- disable password auth on your SSHD and only allow public key auth
 
------ Original Message -----=20
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-To: "Omar Garcia" <omar.garcia@fractalia.biz>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Wednesday, January 26, 2005 4:42 PM
-Subject: Re: Connlimit problem
+- filter access to your SSHD by source IP, if possible
 
+- use some sort of VPN access (IPSec/OpenVPN/etc) to get to your SSHD,
+  and only allow access that way.
 
-> On Wed, January 26, 2005 9:26 am, Omar Garcia said:
-> > Hi list,
->
-> Hi Omar!
->
-> > [...]
-> > If i tried in two steps, i confirm that the module connlimit is
-installed:
-> >
-> > BridgeWall:/home/omar# iptables -A PREROUTING -t mangle -m connlimit
-> >     iptables v1.2.11: You must specify `--connlimit-above'
-> >     Try `iptables -h' or 'iptables --help' for more information.
->
-> This doesn't confirm that it is. This only tests the iptables 'module'
-> which I will call, an extension library.
->
-> >
-> >
-> >  BridgeWall:/home/omar# iptables -A PREROUTING -t mangle -m connlimit
-> > --connlimit-above 12 -j DROP
-> >      iptables: No chain/target/match by that name
->
-> This means the kernel module (called ipt_connlimit) is not loadable or
-> compiled at all.
->
-> > Any idea????
->
-> Yes, patch your kernel or enable this module.
->
-> If unsure:
->
-> lsmod | grep ipt_connlimit
->
-> No result? Then 'modprobe ipt_connlimit'
->
-> It works ? Then make sure it properly registered against netfilter:
->
-> cat /proc/net/ip_tables_matches | grep connlimit
->
-> >
-> > Thanks in advange.
-> >
-> > Regards
-> >
->
-> HTH,
->
-> Samuel
->
->
+-j
 
-
+--
+"Please do not offer my god a peanut"
+        --The Simpsons
 
