@@ -1,13 +1,11 @@
-From: Daniel 'NebuchadnezzaR' Dehennin <nebuchadnezzar@nerim.net>
-Subject: Re: problem with p-o-m...
-Date: Thu, 17 Jul 2003 16:59:54 +0200
+From: "Lombardo Federico" <egopfe@hotmail.com>
+Subject: Re: Re: how to drop out of state packets
+Date: Thu, 17 Jul 2003 17:24:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <87k7ah6vx1.fsf@zion.matrix>
-References: <001e01c34c70$b8f4b980$1a00a8c0@mj>
+Message-ID: <Law14-OE39TcS51LfJv00009797@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001e01c34c70$b8f4b980$1a00a8c0@mj> (slackware9@tlen.pl's
- message of "Thu, 17 Jul 2003 16:35:51 +0200")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-"marekjs" <slackware9@tlen.pl> writes:
+but, If I put these rule for first for example:
 
->    -/pending/40_nf-log (ipv4 and ipv6 too)
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state NEW -p tcp ! --syn -j DROP
 
-Looking into pending I found :
-- 40_nf-log.patch : ipv4 patch
-- 40_nf-log.patch.help : p-o-m help
-- 40_nf-log.patch.ipv6 : ipv6 patch
-- 40_nf-log.patch.ipv6.depend
-- 40_nf-log.patch.ipv6.help
-- 40_nf-log.patch.userspace : patch to userspace//extensions/libipt_ULOG.c
+these mean for connection tracking that if I receive a packet, with all flag
+not equal to SYN, that not belongs to any ESTABLISHED or RELATED connection,
+netfilter will DROP the packet.
 
-For me the 40_nf-log doen't apply by when I make patch my kernel
-source by hand with the 40_nf-log.path and the ipv6 one in dry-run
-mode, everything seems to be correct.
+so, I think that this mean that it will drop any out of state packets, also
+ACK out of state, isnt'it ?
 
-I suppose it come from the userspace patch, which should be in
-userspace directory, isn't it ?
 
--- 
-Daniel 'NebuchadnezzaR' Dehennin
 
+>Le lun 07/07/2003 =E0 17:38, Lombardo Federico a =E9crit :
+>> INVALID state also matches ACK out of state packets ?
+>
+>Unless you've patched your kernel with tcp-no-pickup patch, no.
+>
+>--=20
+>C=E9dric Blancher  <blancher@xxxxxxxxxxxxxxxxxx>
+>Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux - Cartel S=E9curit=
+=E9
+>T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+>PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
