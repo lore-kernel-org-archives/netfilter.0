@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Configure my firewall
-Date: Wed, 17 Mar 2004 09:52:09 +0000
+Date: Wed, 17 Mar 2004 11:46:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403170952.09787.Antony@Soft-Solutions.co.uk>
-References: <20040317093541.C8A5BC154@postfix3-2.free.fr> <200403170949.53323.Antony@Soft-Solutions.co.uk>
+Message-ID: <1079520416.3615.38.camel@anduril.intranet.cartel-securite.net>
+References: <20040317093541.C8A5BC154@postfix3-2.free.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403170949.53323.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040317093541.C8A5BC154@postfix3-2.free.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: nicolas boussekeyt <nicolas.boussekeyt@free.fr>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Wednesday 17 March 2004 9:49 am, Antony Stone wrote:
+Le mer 17/03/2004 =E0 10:37, nicolas boussekeyt a =E9crit :
+> Hi, I want filter my firewall for raleka worm.
+> Actually, i have used :
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j DROP
+> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j LOG
+[...]
+> But the worm is back.
 
-> On Wednesday 17 March 2004 9:37 am, nicolas boussekeyt wrote:
-> > Hi, I want filter my firewall for raleka worm.
-> >
-> > But the worm is back.
-> >
-> > Can you give me information.
+Do you mean that FORWARD policy is set to ACCEPT and only thoses ports
+are blocked ? If so, you have a _major_ misconfiguration, as you should
+block _everything_ first and then only accept what is OK for you.
 
-Sorry, I should have posted this as well:
+I am not aware of your need of course, but I don't think you need your
+LAN stations :
 
-http://securityresponse.symantec.com/avcenter/venc/data/w32.hllw.raleka.html
+	. being accessible on TCP/135 from the Internet (needed for the
+	  worm to infect)
+	. being accessible on TCP/32767 from the Internet (needed for
+	  the backdoor to be accessible)
 
-> http://www.microsoft.com/security/security_bulletins/ms03-039.asp
->
-> Regards,
->
-> Antony.
+Furthermore, if the worm comes back, that means that your stations are
+still vulnerable. It may be time to patch...
+If the rules you gave are not overriden by another, as we do not have
+your complete ruleset to check its consistency, this means you still
+have an infected host inside your LAN that on one hand continue to
+infect other hosts and on the other hand may has its backdoor
+potentially reachable from the Internet as you do not block all upper
+32767 ports.
 
--- 
-The idea that Bill Gates appeared like a knight in shining armour to lead all 
-customers out of a mire of technological chaos neatly ignores the fact that 
-it was he who, by peddling second-rate technology, led them into it in the 
-first place.
+So, things to do :
 
- - Douglas Adams in The Guardian, 25th August 1995
+	. shut the Internet down
+	. clean and patch all your boxes (see Antony's post to both
+	  Symantec and MS advisory)
+	. have a full rewrite of filtering ruleset
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
