@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Allowing limited broadcasts between LAN <-> DMZ?
-Date: Tue, 25 Jun 2002 12:42:32 +0100
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Iptables problem
+Date: Tue, 25 Jun 2002 07:51:53 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206251142.MAA19842@slate.rockstone.co.uk>
-References: <Pine.LNX.4.33.0206251044140.4927-100000@blackhole.kfki.hu> <3D18379C.B101AA83@aon.at>
+Message-ID: <20020625115153.GA29655@cannon.eng.us.uu.net>
+References: <CC845BB8BC74D6119934000347DD23E87C0C0E@jhbmail.autopage.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3D18379C.B101AA83@aon.at>
+Content-Disposition: inline
+In-Reply-To: <CC845BB8BC74D6119934000347DD23E87C0C0E@jhbmail.autopage.co.za>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,27 +18,40 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Paulo Andre <PAndre@autopage.altech.co.za>
+Cc: "Netfilter (E-mail)" <netfilter@lists.samba.org>
 
-On Tuesday 25 June 2002 10:27 am, Chris wrote:
+On Tue, Jun 25, 2002 at 12:47:04PM +0200, Paulo Andre wrote:
 
-> Hello,
->
->
-> i am wondering if it would be a security risk to generally allow ALL
-> limited broadcasts (255.255.255.255)?!
->
-> We have a heterogenous network with Linux (Firewalls, Mail/Proxy/Time/
-> etc-server), WinNT/W2k Clients & Servers and one AS/400 as server.
-> Now there is our internal firewall between the LANs and the DMZ.
-> At the moment i am blocking limited broadcasts, which breaks the
-> functionality of some windows stuff (SQL-Server, NetBIOS, SMB, ...).
+> I have the following setup.
+> 
+> <fw1>		<fw2>
+>    \		/
+>     \	     /
+>   <gateway_fw>
+> 	  |
+> 	  |
+> 	<LAN>
+> 
+> 
+> My problem is this...
+> A request comes in on fw2 DNAT's to server on LAN. The gw_fw uses fw1 as a
+> gateway.
+> What would be the best way to fix this. Should I get a routing protocol with
+> iproute2...???
+> Should I add an extra network card to fw1 and then do away with fw2...???
+> Any suggestions / help..???
 
-Broadcasts will not cross a router, from one network to another, so even if 
-you did not actively block them with netfilter, they still wouldn't pass from 
-your LAN to your DMZ.
+My suggestion would be to replace fw1, fw2 and gateway_fw with one fw with
+three nics.
 
- 
+Ramin
 
-Antony.
+> 
+> 
+> Paulo Andre
+> 
+> 
+> 
 
