@@ -1,12 +1,12 @@
-From: Dominic Iadicicco <sctylib2004@yahoo.com>
-Subject: Re: Can anyone tell me how to do this?
-Date: Wed, 22 Sep 2004 08:29:22 -0700 (PDT)
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Can anyone tell me how to do this?
+Date: Wed, 22 Sep 2004 09:59:10 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040922152922.96440.qmail@web51309.mail.yahoo.com>
-References: <1095865672.4393.12.camel@coati>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E375@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1095865672.4393.12.camel@coati>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
-
-I got it.  :)
-
-It worked.
-
-I am starting to get it a little more now.
-
-It is almost like a phone switch board.
-
-a send line and a receive line.
-
-I am sure I will have more questions later.
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
 
+> learning more about iptables is a nice goal to have.  sometimes i wish
+> it was just as glamorous for people to want to learn more about
+> routing and the OSI model, before becoming super l33t firewall
+> gurus...but i digress...
 
+Problem is: Neither of these topics can easily be approached by network
+newbs without a lot of setup. There aren't many visiting this list with
+routing more complicated than ip route add x via y
 
-Thank you.  Eric and Jason Operisano, Both of your
-post  have helped me learn alot.
+As for OSI, any casual admin wouldn't find much real world value in it.
+I'd say OSI influences programmers more than admins. Experienced admins
+do need to understand programming and OSI's a good practical example of
+basic layered approaches, etc.. Plus, since others use OSI as a mindset
+when developing, its good to know where they get their ideas from.
 
+Firewalls are an inevitability these days. You either: Don't use a
+firewall and get viruses, or you do use a firewall and you're forced to
+fiddle with it when one of your programs doesn't work. See, your forced
+to learn it if you like networking and administration or not.=20
 
-
-
-
---- Eric Leblond <eric@inl.fr> wrote:
-
-> On Wed, 2004-09-22 at 16:45, Dominic Iadicicco
-> wrote:
-> > Eric:
-> > Should that command also be executed on the same
-> > machine as the previous?
-> 
-> yes.
-> 
-> take a paper and write carrefully the life of a
-> packet on its way in and
-> back.
-> 
-> BR,
-> -- 
-> Eric Leblond <eric@inl.fr>
-> INL
-> 
-> 
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
