@@ -1,12 +1,10 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
+From: "Narendra Prabhu. B" <naren@deeproot.co.in>
 Subject: Re: local forwarding(?)
-Date: 17 Jan 2003 13:38:43 +0200
+Date: Fri, 17 Jan 2003 17:20:00 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042803523.485.69.camel@rayw.knowledgefactory.co.za>
+Message-ID: <Pine.LNX.4.43.0301171647240.1320-100000@abodh.pesit.deeproot.co.in>
 References: <200301171115.h0HBFJZC013763@ns.kdtc.net>
-Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-rXWXZYhh0P/e53g+u8Yd"
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <200301171115.h0HBFJZC013763@ns.kdtc.net>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,107 +16,96 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: cc <cc@ns.kdtc.net>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-
---=-rXWXZYhh0P/e53g+u8Yd
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2003-01-17 at 13:15, cc wrote:
+On Fri, 17 Jan 2003, cc wrote:
 > Hi,
->=20
-> I finally got the bridge working and so far,=20
-> things look ok. =20
->=20
-> >From the outside, I can goto the website.  That's
+>
+> I finally got the bridge working and so far,
+> things look ok.
+
+Congrates ..
+
+>
+> From the outside, I can goto the website.  That's
 > no problem.  The problem is for local machines
 > going to http://www.mydomain.com/, the firewall
 > doesn't seem to be redirecting it properly.
 > LAN users have to use http://192.168.11.10/ to
 > access the website instead of the www.mydomain.com.
->=20
+>
 > I understand that the actual ip address skips
 > the firewall and goes directly to the machine.
-> >From my boss' point of view(totally ignorant
-> that 192.168.11.10 =3D www.mydomain.com), he
+> From my boss' point of view(totally ignorant
+> that 192.168.11.10 = www.mydomain.com), he
 > doesn't like that.  So I'm hoping that he
 > can access (locally) www.mydomain.com.
->=20
+>
 > So far my firewall script (the lines pertaining
 > to the www port) is as follows:
->=20
+>
 > $IPTABLES -t nat -A PREROUTING -p tcp -i eth0 x.x.x.x \
 >       --dport 80 -j DNAT --to 192.168.10.11
+
+There is no -d or -s option in the above command ....
+Well, I guess that would be your public ip and the option would be -d in
+that case.
+
+Two things possible :-
+
+	1> What IP address does the your dns resolve for www.mydomain.com
+	   a)x.x.x.x
+	   b)192.168.10.11
+
+	try: $dig www.mydomain.com
+
+	2> Check wheather eth0 is really your internal interface !! As you
+	   have set up a bridge you can as well say the <bridge interface>
+           <br0> .. But if you are really paranoid about the security then
+	   try eth1 also.
+
+	try: put separate rules for eth0 and eth1 and check which counter
+		is incretmented... $iptables -nvL ....
+
 > $IPTABLES -A FORWARD -p tcp -i eth0 -d 192.168.10.11 \
 >       --dport 80 -j ACCEPT
+
+Again, check the counters.
+
 > $IPTABLES -A FORWARD -p tcp -i eth0 --dport 80 -j DROP
->=20
+>
 > (I'm not entirely sure about that last item.  It looks
 > strangely invalid...but I could be wrong.  I don't
 > even think I should have that there.. am I right?)
-Depends on the default POLICY for your FORWARD chain. If the default
-policy is to drop, then you don't need it.
 
->=20
-> If all my LAN ips are of the 192.168.10.0 host,=20
+In my perseption, you dont want any other web site to be visited with this
+rule.
+
+>
+> If all my LAN ips are of the 192.168.10.0 host,
 > and the web server is 192.168.10.11, how do I
 > get the LAN clients to go to www.mydomain.com and
 > have the firewall redirect the packets to 192.168.10.11?
->=20
-Is the firewall the gateway to the internet for your users?
-
-iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -d
-www.mydomain.com -j REDIRECT --to-destination 192.168.10.11:80
-
-That should work (eth0 is your internal interface, right?) ...
-
-Of course you also need the forwarding rules:
-
-iptables -A FORWARD -p tcp --dport 80 -d 192.168.1.11 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -s 192.168.1.11 -j ACCEPT
-
-These are very wide open rules. You might want to add the -i and maybe
-state checking...
-
-> As you probably can figure out, I'm a little confused.=20
->=20
+>
+> As you probably can figure out, I'm a little confused.
+>
 > Any help appreciated
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
 
---=-rXWXZYhh0P/e53g+u8Yd
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Let us know if it helps you.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+Bye,
+Narendra.
 
-iD8DBQA+J+tDh1fuR/Bv+ygRAh6uAKCMsSZdckwrhBeUb5mkt+HoeGOMRwCeNuFl
-LBwpgCa5WpmpzNkw5Q82Z/g=
-=WdY4
------END PGP SIGNATURE-----
+In the middle of difficulty..... lies Opportunity. (Albert Einstein)
+--------------------------------------------------------------------
+Narendra Prabhu. B             Free Software at its product-ive best.
+DeepRoot Linux                             http://www.deeproot.co.in
+                ---- Server Appliances ----
+             ---- Linux Support and Services ----
+-------------------------------------------------------------------
 
---=-rXWXZYhh0P/e53g+u8Yd--
 
 
