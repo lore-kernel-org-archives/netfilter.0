@@ -1,12 +1,11 @@
-From: "Brandis Jaroslav" <jaroslav.brandis@softec.sk>
-Subject: Masq support for IPSEC ?
-Date: Fri, 4 Jul 2003 08:41:23 +0200
+From: "Benjamin Garcia" <juanbenjamingr@terra.es>
+Subject: GUI to configure IPTables rules
+Date: Thu, 3 Jul 2003 22:51:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5E415169BC383A4EB17C22078E27D5B25015CF@dcba01.softec.sk>
+Message-ID: <002301c341a4$d6d2b140$05001aac@breton1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,9 +18,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello...
+Hello everybody,
 
-Is ther  way to make Ipsec tunel over masqueraded gw  ? Something like
-PPTP support for masq ?=20
+Could someone suggest me a GUI tool to configure IPTables rules? Is there
+any tool that is also able to configure freeswan VPNs?
+
+Thanks
+
+Juan
+
 
 
