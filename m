@@ -1,12 +1,13 @@
-From: Boryan Yotov <yotov@prosyst.com>
-Subject: Re: Why would these rules cause errors only sometimes?
-Date: Thu, 24 Oct 2002 09:59:04 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: z-newnat16 again......
+Date: 24 Oct 2002 10:53:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DB7A848.50201@prosyst.com>
-References: <20021024044638.87841.qmail@web40707.mail.yahoo.com>
+Message-ID: <1035449595.8915.4.camel@elendil>
+References: <000a01c27ac3$21285d20$3200a8c0@dualcon.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000a01c27ac3$21285d20$3200a8c0@dualcon.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,86 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tasha Smith <natasha3641@yahoo.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Juliano Dapper <juliano@dualcon.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Sorry I didn't read your mail until the end :)
-Concerning the dynamic IP address a little trick should do the work 
-until you got "pump" working:
+Le mer 23/10/2002 =E0 20:36, Juliano Dapper a =E9crit :
+> [root@teste /]# lsmod
+> Module                  Size  Used by    Not tainted
+> ipt_MASQUERADE          1184   0  (autoclean)
+> iptable_filter          1728     0  (unused)
+> iptable_nat            14420   0  [ipt_MASQUERADE]
+> ip_conntrack         22188   1  [ipt_MASQUERADE iptable_nat]
+> ip_tables              10528   5  [ipt_MASQUERADE iptable_filter iptabl=
+e_nat]
+>=20
+> [root@teste /]# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> iptables: Invalid argument
+>=20
+> Linux teste.dualcon.com.br 2.4.19 #1 Qua Out 23 11:54:48 BRST 2002 i586=
+ unknown
 
-in your /etc/rc.d/rc.iptables or whatever shell script you use to setup 
-your firewall you could use the following to retrieve you ipaddress:
+As someone pointed out before, is your iptables build according to that
+kernel ? I mean, do you use iptables 1.2.7a ?
 
-#!/bin/sh
-....
-#The following could work for ppp device as well just change it a little :)
-eth0_address=`ifconfig eth0 | grep "inet addr" | awk '{print $2}' | sed 
-'s/addr://'`
-
-....
-#And simple rule should look like:
-iptables -A INPUT -p tcp -d $eth0_address --dport 80 -j REJECT 
---reject-with tcp-reset
-
-Note: of course you need to restart your firewall rules after you gain a 
-new IP address on that interface but atleast you don't need to edit your 
-rules again :)
-
-Tasha Smith wrote:
-
->Hiii,
->
->Can someone tell me why these rules will only casue errors "sometimes"? I ran my
->script before and it worked fine. But then i added a few more log polocies
->and drop rules and then i get errors. I know its these rules casue when i #
->commented them out the script it ran properly again and it happened before but
->it fixed itself somehow. Here are the rules that are casue the error:
->
->iptables -A OUPUT -o eth0 -p tcp \
->         -s eth0 --sport 1024:65535 \
->         --dport 80 -j ACCEPT
->iptables -A INPUT -i eth0 -p tcp \
->         --sport 80 \
->         -d eth0 --dport 1024:65535 -j ACCEPT
->
->
->iptables -A INPUT -i eth0 -p udp \
->         -s 122.xx.xxx.xx  --sport 67 \
->         --dport 68 -j ACCEPT
->iptables -A OUTPUT -o eth0 -p udp \
->         -s eth0 --sport 68 \
->         -d 122.xx.xxx.xx --dport 67 -j ACCEPT
->
->
->Here the error i get:
->iptables v1.2.7a: host/network  `eth0' not found
->Try iptables `iptables -h' or `iptables --help for more infomation'
->iptables v1.2.7a: host/network  `eth0' not found
->Try iptables `iptables -h' or `iptables --help for more infomation'
->iptables v1.2.7a: host/network  `eth0' not found
->Try iptables `iptables -h' or `iptables --help for more infomation'
->
->Here are the rules i added and they work fine when i comment out the above
->rules!
->iptables -t nat --policy PREROUTING -j DROP
->iptables -t nat --policy OUPUT -j DROP
->iptables -t nat --policy POSTROUTING -j DROP
->
->
->how can i fix this? thanks guys! i have a dynamic ip address and i cant get pump
->to work thats why i using eth0 instaead of an IP adress! 
->
->
->__________________________________________________
->Do you Yahoo!?
->Y! Web Hosting - Let the expert host your web site
->http://webhosting.yahoo.com/
->
->
->
->  
->
-
-
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
