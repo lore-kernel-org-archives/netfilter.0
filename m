@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: best netfilter/iptables book?
-Date: Wed, 18 Feb 2004 10:19:42 +0000
+From: Nicole Haehnel <nicole.haehnel@epost.de>
+Subject: Re: Ping and traceroute denied?
+Date: Wed, 18 Feb 2004 11:43:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402181019.42336.Antony@Soft-Solutions.co.uk>
-References: <016801c3f5f2$13aa8960$027d2fac@admwebdevws>
+Message-ID: <403341EE.7010803@epost.de>
+References: <40332D1F.5010806@epost.de> <1077096635.2333.92.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <016801c3f5f2$13aa8960$027d2fac@admwebdevws>
+In-Reply-To: <1077096635.2333.92.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 18 February 2004 7:37 am, Louie Miranda wrote:
+Hi,
 
-> what book can you recommend about netfilter/iptables?
+it works!
+Now I have to teach this fwbuilder.
 
-Do you really need a *book*, or will some very good documentation do?
+Thanks!
 
-http://iptables-tutorial.frozentux.net
+Nicole
 
-Antony.
 
--- 
-There's no such thing as bad weather - only the wrong clothes.
+Ray Leach schrieb:
 
- - Billy Connolly
+>On Wed, 2004-02-18 at 11:15, Nicole Haehnel wrote:
+>  
+>
+>>Hi,
+>>
+>>I added this rules (with fwbuilder):
+>>
+>>$IPTABLES -A FORWARD -p icmp  -m state --state NEW  -j ACCEPT
+>>$IPTABLES -A OUTPUT -p icmp  -m state --state NEW  -j ACCEPT
+>>$IPTABLES -A INPUT -p icmp  -m state --state NEW  -j ACCEPT
+>>
+>>
+>>Why was ping from an interface of my firewall-host denied?
+>>Traceroute too.
+>>
+>>    
+>>
+>When the return packets come back, their state is not NEW, probably
+>RELATED.
+>
+>  
+>
+>>What rule shall I add?
+>>
+>>    
+>>
+>$IPTABLES -A INPUT -p icmp  -m state --state NEW,RELATED  -j ACCEPT
+>
+>  
+>
+>>Thanks!
+>>
+>>Nicole
+>>    
+>>
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
