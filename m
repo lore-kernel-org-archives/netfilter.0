@@ -1,14 +1,14 @@
-From: Abdul-Wahid Paterson <abdulwahid@gmail.com>
-Subject: Re: DNAT-Problem
-Date: Thu, 9 Sep 2004 09:44:25 +0100
+From: Jacob Friis Larsen <jfl@list.idg.dk>
+Subject: Re: Port is open but I am unable to connect
+Date: Thu, 09 Sep 2004 12:17:40 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <995fcdb00409090144c3959f0@mail.gmail.com>
-References: <20040909041047.7f8457cf@nixe>
-Reply-To: Abdul-Wahid Paterson <abdulwahid@gmail.com>
+Message-ID: <41402DC4.3030901@list.idg.dk>
+References: <413E0B9E.8010708@list.idg.dk> <413E2123.6050908@pbl.ca>
+	<413EAAF6.5030804@list.idg.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040909041047.7f8457cf@nixe>
+In-Reply-To: <413EAAF6.5030804@list.idg.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +18,49 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Tom Fischer <tom.fischer@ebuz.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+Cc: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 
-Are you sure that you are not dropping the packet in another
-table/chain. Perhaps do something like
+With the changes I still can't connect. I also use bonding if that's 
+important.
 
-watch -n 1 iptables -L -n -v
+<script>
+#!/bin/sh
 
-so that you can see the packet count when you test to see if the
-packet rule is being accepted or dropped somewhere.
+# Modules
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
 
-Abdul-Wahid
+# Defaults
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
 
+# Flush
+iptables -t nat -F POSTROUTING
+iptables -t nat -F PREROUTING
+iptables -t nat -F OUTPUT
+iptables -F
 
-On Thu, 9 Sep 2004 04:10:47 +0200, Tom Fischer <tom.fischer@ebuz.de> wrote:
-> Hi,
-> 
-> i have a problem with DNAT. We have to move some services for a few days
-> on another machine. So we want do DNAT on incoming Packets. I set
-> 
-> iptables -A PREROUTING -t nat -s 0/0 -d xxx.xxx.xxx.xxx -p tcp --dport
-> 9000-j DNAT --to xxx.xxx.xxx.xxx
-> 
-> Should be enough on this box in my opinion. So i can see the Packet
-> incoming on the old machine, and i can see the Packet with my Source IP
-> and the new destination IP, but i think the packet never leaves the old
-> machine. tcpdump looks like this
-> 
-> [root@server4 mysql]# tcpdump -n port 9000
-> tcpdump: listening on eth0
-> 04:02:04.746105 217.232.189.4.65423 > oldmachine.9000: S
-> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66069311
-> 0,nop,wscale 7> (DF) [tos 0x70]
-> 04:02:04.746151 217.232.189.4.65423 > newmachine.70.9000: S
-> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66069311
-> 0,nop,wscale 7> (DF) [tos 0x70]
-> 04:02:07.744772 217.232.189.4.65423 > oldmachine.9000: S
-> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66072311
-> 0,nop,wscale 7> (DF) [tos 0x70]
-> 04:02:07.744806 217.232.189.4.65423 > newmachine.9000: S
-> 740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66072311
-> 0,nop,wscale 7> (DF) [tos 0x70]
-> 
-> The packet never arivves on the new machine. What am I missing?
-> 
-> Kernel is 2.4.27, the box seems to be Fedora Core 2 and iptables is
-> Version 1.2.7a.
-> 
-> Anybody can help me out?
-> 
-> Tom
-> 
->
+# STATE RELATED for router
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Localhost
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Open ports on router for server/services
+#iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 20 -m state 
+--state NEW
+iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 21 -m state 
+--state NEW
+iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 22 -m state 
+--state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 25 -m state --state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 80 -m state --state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 143 -m state --state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 993 -m state --state NEW
+</script>
 
