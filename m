@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: selective filter
-Date: Wed, 3 Dec 2003 09:23:52 +0000
+From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Subject: Re[2]: Invalid argument in -j SNAT
+Date: Wed, 3 Dec 2003 16:40:55 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312030923.52492.Antony@Soft-Solutions.co.uk>
-References: <000f01c3b97c$e64a2d10$0501a8ac@Rares>
+Message-ID: <19067494521.20031203164055@internetplustravel.ru>
+References: <13211830200.20031202215027@internetplustravel.ru>
+ <20031202201831.EAB3C1710@sterenborg.info>
+Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000f01c3b97c$e64a2d10$0501a8ac@Rares>
+In-Reply-To: <20031202201831.EAB3C1710@sterenborg.info>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,78 +22,126 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 03 December 2003 9:07 am, Admin wrote:
+Tuesday, December 2, 2003, 11:18:29 PM, you wrote:
 
-> Dear community,
-> I am new to this branch (Linux I mean) and as a new user it was my turn to
-> install a new server. I installed RedHat 8 on a system with 2 LAN cards.
-> The server works as a mailserver, apache, proxy and firewall.
-> The first 3 problems are solved. It work really fine.
-> The last daemon is the problem.
-> IPTABLES is installed but it is only with the default settings and with
-> some settings made by the ISP. The problem is that my bosses ask me to do
-> some access list to restrict the access to some users on internet. I
-> "composed" some rules in squid.conf and everything works just fine until "a
-> smart guy" discovered that if he doesn't put the mark on "use proxy server"
-> he have internet access.
-> In this case, I'm not verry sure, but I guess it is an iptables problem. I
-> read something about this topic, but I didn't find anything related to this
-> specific problem.
-> Here are my data:
-> eth0: 193.2xx.xxx.xxx
-> eth1: 192.168.1.254
->
-> I want to restrict all users EXCEPT this 3 addresses: 192.168.1.100,
-> 192.168.1.200, 192.168.1.21
->
-> How can I do that?
-> All that I found in all documentation that I read it was related to
-> restricting all addresses. Please, consider that I am a beginer and be a
-> little more detailed on your help. Do you have another ideea about solving
-> this problem?
+>> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 
+>> XXX.XXX.XXX.XXX
+>> with an error "iptables: Invalid argument" I suspect, that an argument
+>> is XXX.XXX.XXX.XXX
 
-It is important that you remember that the squid proxy, and the netfilter 
-packet filtering firewall, are separate systems on your machine.
+RS> Did you compile and load the module iptable_nat ?
+RS> Gr,
+RS> Rob
+Thank you for your answers
 
-Therefore if someone has the proxy settings selected in their browser, squid 
-will determine what they can do; if they do not then netfilter will determine 
-what they can do.   Also, squid is for http only (and ftp over http in 
-client-proxy mode), whereas netfilter can be used to control access to all IP 
-services, including ones which don't even use TCP or UDP (such as VPNs).
+I compiled the kernel without modules
 
-Anyway, here are two answers to your question.
+yes, NAT is on
+this is my kernel .config
 
-1. How to block all users from bypassing the squid proxy except 192.168.1.21, 
-192.168.1.100 and 192.168.1.200:
+# Networking options
+#
+CONFIG_PACKET=y
+CONFIG_PACKET_MMAP=y
+# CONFIG_NETLINK_DEV is not set
+CONFIG_NETFILTER=y
+CONFIG_NETFILTER_DEBUG=y
+CONFIG_FILTER=y
+CONFIG_UNIX=y
+# CONFIG_NET_KEY is not set
+CONFIG_INET=y
+CONFIG_IP_MULTICAST=y
+CONFIG_IP_ADVANCED_ROUTER=y
+CONFIG_IP_MULTIPLE_TABLES=y
+CONFIG_IP_ROUTE_FWMARK=y
+CONFIG_IP_ROUTE_NAT=y
+CONFIG_IP_ROUTE_MULTIPATH=y
+CONFIG_IP_ROUTE_TOS=y
+CONFIG_IP_ROUTE_VERBOSE=y
+CONFIG_IP_PNP=y
+# CONFIG_IP_PNP_DHCP is not set
+# CONFIG_IP_PNP_BOOTP is not set
+# CONFIG_IP_PNP_RARP is not set
+CONFIG_NET_IPIP=y
+CONFIG_NET_IPGRE=y
+CONFIG_NET_IPGRE_BROADCAST=y
+CONFIG_IP_MROUTE=y
+CONFIG_IP_PIMSM_V1=y
+CONFIG_IP_PIMSM_V2=y
+CONFIG_ARPD=y
+CONFIG_INET_ECN=y
+# CONFIG_SYN_COOKIES is not set
+# CONFIG_INET_AH is not set
+# CONFIG_INET_ESP is not set
+# CONFIG_INET_IPCOMP is not set
 
-iptables -A FORWARD -s 192.168.1.21 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -s 192.168.1.100 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -s 192.168.1.200 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 80 -j REJECT
-
-2. An alternative solutions, which will force all your internal users to go 
-via squid (whether they've selected "use proxy" in their browser or not), 
-therefore the access control of who is allowed to do what is now completely 
-handled by squid:
-
-iptables -A PREROUTING -t nat -s 192.168.1.0/24 -p tcp --dport 80 -j REDIRECT 
---to 3128
-
-This will redirect all TCP port 80 requests (to anywhere) to go to TCP port 
-3128 on the local machine (the one running squid) instead of reaching the 
-external server.   This is called "transparent proxying" and is not the 
-recommended way of using squid, but will generall work for the people who try 
-to bypass "use proxy" in their browsers.
-
-Hope this helps,
-
-Antony.
-
+#
+#   IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=y
+CONFIG_IP_NF_FTP=y
+# CONFIG_IP_NF_AMANDA is not set
+CONFIG_IP_NF_TFTP=y
+CONFIG_IP_NF_IRC=y
+CONFIG_IP_NF_CT_PROTO_GRE=y
+CONFIG_IP_NF_PPTP=y
+CONFIG_IP_NF_QUEUE=y
+CONFIG_IP_NF_IPTABLES=y
+CONFIG_IP_NF_MATCH_LIMIT=y
+CONFIG_IP_NF_MATCH_QUOTA=y
+CONFIG_IP_NF_MATCH_MAC=y
+# CONFIG_IP_NF_MATCH_PKTTYPE is not set
+CONFIG_IP_NF_MATCH_MARK=y
+CONFIG_IP_NF_MATCH_MULTIPORT=y
+CONFIG_IP_NF_MATCH_TOS=y
+CONFIG_IP_NF_MATCH_TIME=y
+CONFIG_IP_NF_MATCH_PSD=y
+# CONFIG_IP_NF_MATCH_NTH is not set
+# CONFIG_IP_NF_MATCH_RECENT is not set
+# CONFIG_IP_NF_MATCH_ECN is not set
+# CONFIG_IP_NF_MATCH_DSCP is not set
+CONFIG_IP_NF_MATCH_AH_ESP=y
+CONFIG_IP_NF_MATCH_LENGTH=y
+CONFIG_IP_NF_MATCH_TTL=y
+CONFIG_IP_NF_MATCH_TCPMSS=y
+CONFIG_IP_NF_MATCH_HELPER=y
+CONFIG_IP_NF_MATCH_STATE=y
+CONFIG_IP_NF_MATCH_CONNTRACK=y
+CONFIG_IP_NF_MATCH_UNCLEAN=y
+CONFIG_IP_NF_MATCH_OWNER=y
+CONFIG_IP_NF_FILTER=y
+CONFIG_IP_NF_TARGET_REJECT=y
+CONFIG_IP_NF_TARGET_MIRROR=y
+CONFIG_IP_NF_NAT=y
+CONFIG_IP_NF_NAT_NEEDED=y
+CONFIG_IP_NF_TARGET_MASQUERADE=y
+CONFIG_IP_NF_TARGET_REDIRECT=y
+CONFIG_IP_NF_NAT_PPTP=y
+CONFIG_IP_NF_NAT_PROTO_GRE=y
+# CONFIG_IP_NF_NAT_LOCAL is not set
+CONFIG_IP_NF_NAT_SNMP_BASIC=y
+CONFIG_IP_NF_NAT_IRC=y
+CONFIG_IP_NF_NAT_FTP=y
+CONFIG_IP_NF_NAT_TFTP=y
+CONFIG_IP_NF_MANGLE=y
+CONFIG_IP_NF_TARGET_TOS=y
+# CONFIG_IP_NF_TARGET_ECN is not set
+# CONFIG_IP_NF_TARGET_DSCP is not set
+CONFIG_IP_NF_TARGET_MARK=y
+CONFIG_IP_NF_TARGET_LOG=y
+CONFIG_IP_NF_TARGET_ULOG=y
+CONFIG_IP_NF_TARGET_TCPMSS=y
+CONFIG_IP_NF_ARPTABLES=y
+CONFIG_IP_NF_ARPFILTER=y
+CONFIG_IP_NF_ARP_MANGLE=y
+# CONFIG_IPV6 is not set
+CONFIG_XFRM=y
+# CONFIG_XFRM_USER is not set
+# CONFIG_KHTTPD is not set
+# CONFIG_ATM is not set
+# CONFIG_VLAN_8021Q is not set
 -- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards,
+ Oleg                            mailto:savostyanov@internetplustravel.ru
 
 
