@@ -1,10 +1,10 @@
-From: Morvan <mmuller@softplan.com.br>
-Subject: statefull filter for Inbound to FTP server (passive mode)
-Date: Tue, 24 Aug 2004 17:24:20 -0300
+From: Chetan Nagaraja <chetanmn_in@yahoo.com>
+Subject: ICMP Connections ...
+Date: Tue, 24 Aug 2004 06:36:10 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3.0.3.32.20040824172420.003df030@xxx>
+Message-ID: <20040824133610.80037.qmail@web14926.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/alternative; boundary="0-864952120-1093354570=:79151"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,20 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-To have an ftp server on a DMZ segment (behind the fw) I need to open 21/tcp, syn=1 and all ports above 1024/tcp, syn=1 to the FTP server IP. For me it is very bad because I have other services running on the ftp server box that cannot be reached by the world.
+--0-864952120-1093354570=:79151
+Content-Type: text/plain; charset=us-ascii
 
-My question: There is and application filter extension for ftp_server that interact with iptables/ipfilter for handle dynamically inbound/reverse passive mode ftp connections based on a established ftp control channel (21/tcp), to a ftp server on the DMZ. (make statefull filtering based on the first connection established to 21/tcp port).
+Dear All,
+First of all, let me introduce as a total newbie in filtering and iptables.
  
-For example I only create the inbound rule in the fw for the ftp server in DMZ (allow any tcp 21 syn) an this application filter open the reverse socket for inbound passive connections, that require syn=1 in ports above 1024/tcp. So only sources that have a established ftp session (21/tcp) with the ftp server can see ports above 1024, and only the port handled by the control session on port 21/tcp.
+To ping a host in a different network, I have configured a dual homed[ two network interfaces] linux system to act as NAT router.
+I have add a rule in the NAT table of iptables, to achieve the following.
+If the Linux system recieves a icmp packet from a particular host in NETWORK A addressed to a particular HOST in NETWORK B , perform SNAT of the ICMP packet to that of the Linux System, so that the icmp replies reaches the Linux system.
+ 
+The above is working very fine. The ICMP requests are reaching the expected destination. 
+But I'am unable to understand the fact that the ICMP replies are reaching the host in NETWORK A which had generated the requests, without adding a DNAT rule for the same.
+How is this possible, does iptables automatically redirect ICMP replies ?
+And How to avoid the same.
+ 
+Thanking you,
+Chetan M N
 
-PS:
-For outbound connections via NAT/iptables there is "ip_nat_ftp" module to make ftp clients to work in passive and port mode, OK! I want inbound statefull filtering for a ftp server.
 
+		
+---------------------------------
+Do you Yahoo!?
+Yahoo! Mail is new and improved - Check it out!
+--0-864952120-1093354570=:79151
+Content-Type: text/html; charset=us-ascii
 
-Thanks, 
-Morvan
-
+<DIV>Dear All,</DIV>
+<DIV>First of all, let me introduce as a total newbie in filtering and iptables.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>To ping a host in a different network, I have configured a dual homed[ two network interfaces]&nbsp;linux system to act as NAT router.</DIV>
+<DIV>
+<DIV>I have add a rule in the NAT table of iptables, to achieve the following.</DIV>
+<DIV>If the Linux system recieves a icmp packet from a particular host in NETWORK A addressed to a particular HOST in&nbsp;NETWORK B , perform SNAT of the ICMP packet to that of the Linux System, so that the icmp replies reaches the Linux system.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The above is working very fine. The ICMP requests are reaching the expected destination. </DIV>
+<DIV>But I'am unable to understand the fact that the ICMP replies are reaching the host in NETWORK A which had generated the requests, without adding a DNAT rule for the same.</DIV>
+<DIV>How is this possible, does iptables automatically redirect ICMP replies ?</DIV>
+<DIV>And How to avoid the same.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanking you,</DIV>
+<DIV>Chetan M N</DIV></DIV><p>
+		<hr size=1>Do you Yahoo!?<br>
+Yahoo! Mail is new and improved - <a href="http://us.rd.yahoo.com/mail_us/taglines/new/*http://promotions.yahoo.com/new_mail">Check it out!</a>
+--0-864952120-1093354570=:79151--
 
