@@ -1,11 +1,10 @@
-From: ^Hal <me@hal.vu>
-Subject: problem with nat...
-Date: Tue, 24 Sep 2002 18:20:37 -0300
+From: Fall Birahim <birahim.fall@upu.int>
+Subject: Checkpoint VPN through Iptables
+Date: Tue, 24 Sep 2002 11:42:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020924212037.GB25333@alucicrazy.tacnet.com.br>
+Message-ID: <8F31D8DF00BBD411975C00508B6D6E65F8908F@hermes.upu.int>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,101 +16,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'fw1@phoneboy.com'" <fw1@phoneboy.com>
+Cc: "'BNC.Bourqui Laurent'" <laurent@bnc.ch>, Bernieu Olivier <olivier.bernieu@upu.int>
 
-Hello all,
-        I have had problems with iptables nat with some servers.
-        Is strange, because the nat works during some time...
+Hi all,
 
-        I have a machine with 3 interfaces...
-        eth0 - 200.xxx.xxx.163
-        eth1 - 10.1.2.1
-        eth2 - 10.0.0.1
-               10.0.0.65
-               10.0.1.1
-               10.0.1.65
-               10.0.2.1
-               10.0.2.65
-               10.0.3.1
-               10.0.3.65
-               10.0.4.1
-               10.0.5.1
-               10.0.5.65
-               10.0.5.129
-               10.0.5.194
-               10.0.6.1
+I'm hanged with the following problem.
+I want to access our enterprise network behind a Nokia checkpoint FW-UPU
+@a.b.c.d 
+from a Windows 2k Checkpoint NG client @192.168.0.2
+behind my Linux Redhat 7.2 iptables 1.2.6a FW-HOME with eth0 @DHCP and eth1
+@192.168.0.1
 
-        I have the following rules for MASQUERADE:
-        iptables -t nat -A POSTROUTING -s 10.1.2.0/25 -j MASQUERADE
-        iptables -t nat -A POSTROUTING -s 10.0.0.0/16 -j MASQUERADE
+I have the following script
 
-Use iproute2 to help in nat :
-        ip a a 200.xxx.xxx.165 dev eth0 scope global
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -t mangle -F
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -P FORWARD ACCEPT
+$IPTABLES -t nat -A POSTROUTING -s 192.168.0/24 -o eth0 -j MASQUERADE
 
-        and the iptables with the following rules
-        iptables -t nat -A PREROUTING -d 200.xxx.xxx.165 -j DNAT --to
-10.1.2.17
-        iptables -t nat -A POSTROUTING -s 10.1.2.17 -j SNAT --to
-200.xxx.xxx.165
+My little understanding of firewall, linux and iptables, makes me believe
+that :
+a) I've a quite secureless FW-HOME and my internal LAN is nated
+b) no matter the protocol, the src/dst ports etc, everything should pass.
+c) The checkpoint client should be able to access my enterprise VPN
+Is that right?
 
-During determined time  (depending on what I pass through the server) it
-works.....
-as it shows ping, captured in tcpdump..
+My problem is that the client cannot access my enterprise VPN.
+I added some loging rules and it seems that
+My client uses UDP, src port 500 dst port 500.
+The FW-HOME send that to FW-UPU (prot udp, src port 500 dst port 500)
+(masquerading the IP@)
+The FW-UPU replies to FW-UPU (prot udp, src port 500 dst port 500)
+The FW-HOME replies : icmp port udp 500 unreachable
 
-(from machine outside of network, (200.yyy.yyy.6)):
+I made another test before incriminating the Client
+I plugged it directly to my CableModem and it worked immediately.
+I check that it was configured correctly (IKE + Force UDP encapsulation +
+IKE over TCP)
+according to PhoneBoy http://www.phoneboy.com/faq/0141.html 
+and http://www.phoneboy.com/faq/0372.html
+After this test I concluded that the Client is operational.
 
-ping 200.xxx.xxx.165
+Another info:
+It worked with a Redhat 7.0 + ipchains
+It didn't worked with ISA
 
-tcpdump eth0:
-15:01:06.104716 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:06.105192 200.xxx.xxx.165 > 200.yyy.yyy.6: icmp: echo reply
-15:01:07.053800 200.yyy.yyy.6 > 200.152.199.166: icmp: echo request
-15:01:07.054269 200.xxx.xxx.165 > 200.yyy.yyy.6: icmp: echo reply
-15:01:08.085214 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:08.085622 200.xxx.xxx.165 > 200.yyy.yyy.6: icmp: echo reply
-
-tcpdump eth1:
-15:01:06.104973 200.yyy.yyy.6 > 10.1.2.17: icmp: echo request
-15:01:06.105139 10.1.2.17 > 200.yyy.yyy.6: icmp: echo reply
-15:01:07.054079 200.yyy.yyy.6 > 10.1.2.17: icmp: echo request
-15:01:07.054226 10.1.2.17 > 200.yyy.yyy.6: icmp: echo reply
-15:01:08.085417 200.yyy.yyy.6 > 10.1.2.17: icmp: echo request
-15:01:08.085584 10.1.2.17 > 200.yyy.yyy.6: icmp: echo reply
-
-tcpdump eth2:
-nothing ...
+So for me the problem is located somewhere on FW-HOME.
+Anybody can help, explain, advice!?!?
 
 
-after some time :
 
-tcpdump eth0:
-nothing...
-
-tcpdump eth1:
-nothing...
-
-tcpdump eth2:
-
-15:01:09.087368 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:10.126394 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:11.085064 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:12.112981 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:13.087442 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:14.134855 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:15.088227 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
-15:01:16.109413 200.yyy.yyy.6 > 200.xxx.xxx.165: icmp: echo request
+_________________________________________________________
+Birahim FALL
+Project Manager (Postal Technologie Centre)
+Universal Postal Union, PO Box, CH-3000 Bern 15 (Switzerland)
+Phone	+41 313.503.372
+Fax	+41 313.503.110
+Email	mailto:birahim.fall@upu.int
 
 
-it remains thus during long time, more than 1 hour
-note that, 1 second later eth1 stops to answer, eth2 starts...
-
-Some one knows about it ?
-
-        Thanks
-        and sorry the english ;>
-	
--- 
-^hal
-<me@hal.vu>
-http://hal.vu
 
