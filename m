@@ -1,14 +1,12 @@
-From: Richard Mueller <mueller@teamix.net>
-Subject: Re: Best vpn w/ iptables.
-Date: Sat, 21 Dec 2002 13:24:53 +0100
+From: <system@eluminoustechnologies.com>
+Subject: Default policy
+Date: Sat, 21 Dec 2002 18:46:49 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <136225831458.20021221132453@teamix.net>
-References: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
-Reply-To: Richard Mueller <mueller@teamix.net>
+Message-ID: <001501c2a8f3$40be2e40$1a01a8c0@vishal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0012_01C2A921.521F8ED0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +16,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Rowan Reid <rreid@studio3arc.com>
-Cc: 'iptables-list' <netfilter@lists.samba.org>
+To: iptables <netfilter@lists.netfilter.org>
 
-Hallo Rowan,
+This is a multi-part message in MIME format.
 
-Friday, December 20, 2002, 6:23:21 PM, haben Sie geschrieben:
+------=_NextPart_000_0012_01C2A921.521F8ED0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hi All,
+
+Following is the policy that my firewall generation script gives, but my =
+system hangs when i execute this, I am using ssh to execute this script. =
+I am opening all other required ports. When I comment the last two lines =
+my script works fine.
+
+******Script*******
+
+#Set default policies to DROP=20
+
+$IPTABLES -F INPUT=20
+$IPTABLES -F OUTPUT=20
+$IPTABLES -F FORWARD=20
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT DROP=20
+$IPTABLES -P FORWARD DROP
+
+# Rejecting all Packets
+
+#$IPTABLES -A INPUT -s 0/0 -d 0/0 -p udp -j DROP
+#$IPTABLES -A INPUT -s 0/0 -d 0/0 -p tcp -j DROP
+
+Can anyone help me.
+
+thanks in advance.
+
+Regards,
 
 
+------=_NextPart_000_0012_01C2A921.521F8ED0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-RR> I'm gonna be implimenting a VPN between two offices. Both gateways being
-RR> the Firewall also. Which uses Netfilter I'm looking for secure straight
-RR> forward routable setup and 100% compatability with netfilter ie not
-RR> pptp. It also has to be open source. I know this isn't a vpn group but I
-RR> figured you would have valuable input. Thanks Right now I'm looking at
-RR> freeswan
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi All,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Following is the policy that my =
+firewall generation=20
+script gives, but my system hangs when i execute this, I am using ssh to =
+execute=20
+this script. I am opening all other required ports. When I comment the =
+last two=20
+lines my script works fine.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>******Script*******</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>#Set default policies to DROP =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><BR>$IPTABLES -F INPUT <BR>$IPTABLES -F =
+OUTPUT=20
+<BR>$IPTABLES -F FORWARD <BR>$IPTABLES -P INPUT DROP<BR>$IPTABLES -P =
+OUTPUT DROP=20
+<BR>$IPTABLES -P FORWARD DROP</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2># Rejecting all Packets</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>#$IPTABLES -A INPUT -s 0/0 -d 0/0 -p =
+udp -j=20
+DROP<BR>#$IPTABLES -A INPUT -s 0/0 -d 0/0 -p tcp -j DROP</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Can anyone help me.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>thanks in advance.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
 
-http://openvpn.sf.net/
-
-It's easy to set up, and can run totally in userspace. :)
-
-Mit freundlichen Gruessen
-
-Richard Mueller
-
---
-Richard Mueller     mailto:mueller@teamix.net  Fon: +49 9171 896287
-Teamix GmbH         http://www.teamix.de       Fax: +49 9171 896286
-Networks - Consulting - Training - Software Development - eCommerce
+------=_NextPart_000_0012_01C2A921.521F8ED0--
 
 
