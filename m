@@ -1,10 +1,14 @@
-From: "Kevin D. White" <web_crawlz@yahoo.com>
-Subject: Ok, how about this?
-Date: Sat, 29 May 2004 13:22:26 -0700 (PDT)
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: SuSE Linux and iptables
+Date: Sat, 29 May 2004 14:05:58 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040529202226.59280.qmail@web41701.mail.yahoo.com>
+Message-ID: <200405292105.i4TL5qeV012538@server5.bandwidthco.com>
+References: <s0b89584.043@webmail.minorplanetusa.com>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <s0b89584.043@webmail.minorplanetusa.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,86 +19,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: 'Erick Sanz' <esanz@minorplanetusa.com>, netfilter@lists.netfilter.org
+
+ 
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Erick Sanz
+Sent: Saturday, May 29, 2004 11:52 AM
 To: netfilter@lists.netfilter.org
+Subject: SuSE Linux and iptables
 
-# Pick out TCP packets
-$TPath -N NEWTCP
-$TPath -A NEWTCP -p tcp --tcp-flags ALL FIN -j
-LOGFINPROBE
-$TPath -A NEWTCP -p tcp --tcp-flags ALL SYN,ACK -j
-LOGSYNACK
-$TPath -A NEWTCP -p tcp --tcp-flags NONE -j
-LOGNULLSCAN
-$TPath -A NEWTCP -p tcp --tcp-flags ALL FIN,URG,PUSH
--j LOGXSCAN
-$TPath -A NEWTCP -p tcp --tcp-flags ALL ACK -j
-LOGACKSCAN
-$TPath -A NEWTCP -p tcp -j DROP
+All,
 
-Am I missing any suspect flags combinations or
-problems with these?
+I just changed from Red Hat Linux 9.0 to SuSE Linux 9.1; I had several rules
+working at home that I would like to use in SuSE; however, SuSE comes with
+its own version of firewalling (tied with YaST); I don't want to use their
+version (it does not do *exactly* what I want)...
 
-## INPUT table
+I tried to unistall their SuSEfirewall2 package; however, it is linked to
+yast, which is linkded to DHCP and it goes on with the dependencies...
 
-$TPath -A INPUT -p ALL -m state --state
-ESTABLISHED,RELATED -j ACCEPT  #now I am only left
-with NEW packets
-$TPath -A INPUT -p ALL -i $ExNet -d 255.255.255.255 -j
-DROP 	
+I just want to turn their firewall off and start iptables on my own, with my
+own rules...
 
-#$TPath -A INPUT -p ALL -m multiport
---destination-port 22,53,80,110 -j OPEN   #this line
-is out because I have no open ports
+Has anyone done this?
 
-$TPath -A INPUT -p tcp -m --limit 10/minute -m
-multiport --destination-port $TarPits -j TARPIT
-$TPath -A INPUT -p tcp -j NEWTCP
+Beforehand, thank you for your help!
 
-$TPath -A INPUT -p icmp -m --limit 1/s -j LOGFLOOD
-$TPath -A INPUT -p icmp -j REJECT --reject-with
-icmp-net-unreachable  
 
-$TPath -A INPUT -p udp -m --limit 10/minute -j
-LOGUDPSCAN
-$TPath -A INPUT -p udp -j DROP
-
-$TPath -A INPUT -p ALL -j DROP
-
-Do you see any obvoius problems with this INPUT chain?
- For now its a stand alone machine.
-
-Does "/etc/init.d/iptables clear" set all the tables
-to DROP?
-
-Do PID's change?
-
-If yes:
-I would like to have this script start up applications
-(Firefox, xmms, proFtp, etc.), gather and store their
-PID's into variables.  Where would I call this script
-from to have the OS boot to a desktop and those
-programs running, with the PID's stored and the
-table's appended with those PID's?  If I was to close
-the program and start it up again, would the PID
-change?
-
-And finally, can I make changes on the fly?  I mean
-after the everything has started, can I run Iptables
-from the command line or run more script and make the
-changes, any problems with doing this?
-
-Thanks
+This email message has been scanned for viruses.
 
 
 
+Yes - I run a five NIC Iptables/netfilter firewall with SUSE 9.1.  By the
+way, I love it. Just a couple of tips and you are on your way.
+
+1. The Yast version is started with three scripts in the /etc/init.d
+directory, all starting with SuSEfirewall2*.  Just run chkconfig to disable
+all three:
+
+chkconfig SuSEfirewsall2** off
+
+2. Write your own script and place it in the /etc/init.d directory. Either
+start it up manually from there, or soft link it into rc3.d and rc5.d for
+bootime startup. Activate it the same way you deactivated the Yast version:
+
+chkconfig firewall_script_name on
+
+It's just that simple. Have fun.
 
 
 
-	
-		
-__________________________________
-Do you Yahoo!?
-Friends.  Fun.  Try the all-new Yahoo! Messenger.
-http://messenger.yahoo.com/ 
+########################################################
+This message has been scanned for viruses and dangerous 
+content by MailScanner, and is believed to be clean.
+
+postmaster@bandwidthco.com
+MailScanner at bandwidthco.com is for your absolute protection.
+########################################################
+
 
