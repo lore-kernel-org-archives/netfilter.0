@@ -1,10 +1,13 @@
-From: "Williamson, Fionn" <FWilliamson@fnb.co.za>
-Subject: iptables, stateful checking using tcp sequence numbers
-Date: Tue, 7 May 2002 11:58:54 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: splitting one network physically using linux box.
+Date: Thu, 13 Jun 2002 16:47:53 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <67024BB66045D511A9380000F6B2EF85F20C1F@RBGMSG02>
+Message-ID: <200206131548.QAA08074@slate.rockstone.co.uk>
+References: <20020507110703.2ef33390.daniel.rycaj@fuchs.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020507110703.2ef33390.daniel.rycaj@fuchs.pl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,51 +18,32 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-Hi All,
+On Tuesday 07 May 2002 10:07 am, Daniel Rycaj wrote:
 
-I hope somebody can assist me in finding information about this...
+> hi,
+>
+> I have a *very* standard situation:
+>
+> network: 10.1.1.97/27
+>
+> 	   small router			10 PCs
+> 	---[ 10.1.1.97 / 27 ] --------- [ 10.1.1.98-108 ]
+>
+> Now I want to create a firewall between the "small router" and "10 PCs".
+> The only problem is: nobody should change configuration of PC.
+> So the default gw still should be set to 10.1.1.97 on each PC.
 
-Please consider the following argument:
+I can understand why you don't want to change the configurations of the PCs.
 
-"Although the TCP sequence numbers may get sent to the log file (if
-logging is turned on for a rule), if it not present in the "state table"
-(/proc/net/ip_conntrack), then it is not used to maintain state.
-However, I cannot verify that Firewall-1 does this as well (although any
-good firewall should), and tests conducted on older versions of
-Firewall-1 indicate that it did not used to use sequence numbers as part
-of state verification (and may still not use them). "
+I there any REALLY GOOD reason why you can't change the configuration on the 
+router ?
 
-Can anybody PLEASE tell me:
+If you do not want to do that, you will end up with a pretty horrible and 
+difficult arrangement on your Linux box.....
 
-1. if the sequence numbers are actually used in iptables to MAINTAIN the
-state of a connection, or if it is merely used to ESTABLISH connections,
-and thereafter ignored.
+ 
 
-2. point me towards documentation confirming or denying this.
-
-Thank you very much
-
-Jacques Botha
-
-jacquesb@fnb.co.za
-South Africa
-  
-
-___________________________________________________________________________________________________
-
-
-The views expressed in this email are, unless otherwise stated, those of the author and not those
-of the FirstRand Banking Group or its management.  The information in this e-mail is confidential
-and is intended solely for the addressee. Access to this e-mail by anyone else is unauthorised. 
-If you are not the intended recipient, any disclosure, copying, distribution or any action taken or 
-omitted in reliance on this, is prohibited and may be unlawful.
-Whilst all reasonable steps are taken to ensure the accuracy and integrity of information and data 
-transmitted electronically and to preserve the confidentiality thereof, no liability or 
-responsibility whatsoever is accepted if information or data is, for whatever reason, corrupted 
-or does not reach its intended destination.
-
-                               ________________________________
+Antony.
 
