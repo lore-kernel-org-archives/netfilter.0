@@ -1,9 +1,10 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: Problem receiving mail from  "netfilter@lists.netfilter.org"
-Date: Tue, 13 Jan 2004 01:10:06 -0800 (PST)
+From: "Muhammad Talha" <talha@worldcall.net.pk>
+Subject: kernel 2.6.x and iptables
+Date: Tue, 13 Jan 2004 14:22:45 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040113091006.70752.qmail@web60402.mail.yahoo.com>
+Message-ID: <00cb01c3d9b6$cd9b2d00$23c051cb@ns3.worldcall.net.pk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,21 +16,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-I am not receiving any emails from
-"netfilter@lists.netfilter.org" I am registered to
-this list and used to receive email regularly. Don't
-know what is problem.
-Please check the matter and help. Tell me if I have to
-change something at my end.
+Dear all
 
-Thanks
+i have upgraded kernel 2.4.20 to kernel 2.6.1 and i have same problem with
+2.6.0 kernel as well
+OS Redhat
+module-init-tools 0.9.13
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
-http://hotjobs.sweepstakes.yahoo.com/signingbonus
+but i am iptables stop working its was iptables-1.2.7
+then i upgraded to iptables to 1.2.9 ( lastest ) still same problem
+
+error message i get
+
+iptables v1.2.9:can't initialize iptables table 'filter' iptables who? (do
+you need to insmod)
+Perhaps iptables or kernel needs to be upgraded.
+
+i aslo get these kind of errors when compiling iptables-1.2.9
+
+/usr/src/linux-2.6.1/include/linux/compiler-gcc3.h:22:1 warning
+""__attribute_pure__" redefined
+In file included from  /usr/include/feature.h:291
+                       from  /usr/include/stdio.h:28
+                       from extensions/libipt_conntrack.c:5
+/usr/include/sys/cdefs.h:183 warning this the location of the prevoius
+definiation
+
+
+###########################################
+
+Plz help me urgently
+
+THANKS AND Regards
+
+TALHA
+
+
 
