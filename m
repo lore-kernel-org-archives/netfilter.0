@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Multiple output routes
-Date: Wed, 15 Dec 2004 10:10:22 -0500
-Message-ID: <1103123422.871.11.camel@hubcap.ljm.dom>
-References: <200412151044.46362@X-Blurb>
+From: "Maxime Ducharme" <mducharme@cybergeneration.com>
+Subject: Re: Max Concurrent Session
+Date: Wed, 15 Dec 2004 10:20:50 -0500
+Message-ID: <074d01c4e2b9$a90aa210$b000a8c0@cybergeneration.com>
+References: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200412151044.46362@X-Blurb>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +16,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: amador@puc.cl, NetFilter Users <netfilter@lists.netfilter.org>
 
-On Wed, 2004-12-15 at 04:44, O-Zone wrote:
-> Hi all,
-> i want to route traffico for a specific subnet to routeA while default route 
-> for my linuxbox is routeB. Here's the diagram:
-> 
-> (internet)--[Router A]---+
->                                     |
->                                 [Linux BOX]----(Subnet 10.0.0.x)
->                                     |
-> (internet)--[Router B]---+
-> 
-> RouterA and RouterB have the same subnet (i.e. RouterA lan is 192.168.0.1 and 
-> RouterB has 192.168.0.2) and LinuxBox have ONLY ONE externat iface like 
-> 192.168.0.3. While i use LinuxBOX i wanna go "out" trought 192.168.0.1 but 
-> PC's MASQ'ed in Subnet 10.0.0.x must go out throug 192.168.0.2. 
 
-leave the default gateway of "Linux Box" set to RouterA--which will take
-care of all packets from "Linux Box" being routed out via RouterA.
+Hi Miguel
+    we run iptables 1.2.9 on a Dell PowerEdge 750.
 
-setup policy routing so that packets from 10.0.0.0/24 get routed out via
-RouterB:
+It protects 128 IPs adresses which host many Internet
+services (www, mail, ftp, ssl, ssh, ...).
 
-  echo 200 RouterB >> /etc/iproute2/rt_tables
+Current connections are above 2000 :
+[root@Cerberux root]# cat /proc/net/ip_conntrack |wc -l
+   2168
 
-  ip rule add fwmark 0x01 table RouterB
+Current load :
+[root@Cerberux root]# uptime
+ 10:10:24  up 156 days, 21:54,  1 user,  load average: 0.00, 0.00, 0.00
 
-  ip route add default via 192.168.0.2 table RouterB
+About 250 mos of RAM is used.
 
-  ip route flush cache
+Maximum connections is set here :
+[root@Cerberux root]# cat /proc/sys/net/ipv4/ip_conntrack_max
+16368
 
-  iptables -t mangle -A PREROUTING -i $insideIF -s 10.0.0.0/24 \
-    -j MARK --set-mark 0x01
 
-add filter and nat rules as necessary...
+This value may be set higher but ensure you have enough RAM.
 
--j
+The higher value I ever seen is 5000 (happens when many worms
+scan our network concurrently), and we didnt noticed any network
+slowdown.
 
---
-"I'm a well-wisher, in that I don't wish you any specific harm."
-	--The Simpsons
+Have a nice day
+
+Maxime Ducharme
+Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
+
+----- Original Message -----=20
+From: "Miguel Angel Amador L" <amador@puc.cl>
+To: "NetFilter Users" <netfilter@lists.netfilter.org>
+Sent: Friday, December 10, 2004 2:11 PM
+Subject: Max Concurrent Session
+
+
+> Hi All
+>  I need implement a firewall that support 2000 concurrent sessions, it
+> is posible with Iptables/Netfiler ??
+>  What need to do?
+>
+> Thanks for all
+>
+> regards
+>  Miguel Angel Amador L.
+>
 
 
