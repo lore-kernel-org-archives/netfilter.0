@@ -1,8 +1,8 @@
 From: "Gonzalez, Federico" <fgonzalez@goyaike.com.ar>
 Subject: TTL target
-Date: Fri, 23 Jul 2004 14:56:12 -0300
+Date: Fri, 23 Jul 2004 14:51:31 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001201c470de$5775b900$1e00000a@goyaike.com>
+Message-ID: <000c01c470de$1325ee00$1e00000a@goyaike.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
