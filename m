@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: gateway without nat
-Date: Thu, 07 Oct 2004 19:33:36 +0200
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: RST Packets ?
+Date: Thu, 7 Oct 2004 14:46:57 -0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097170416.2564.20.camel@anduril.intranet.cartel-securite.net>
-References: <200410071631.58038.lcml@pixel.it>
+Message-ID: <0b0501c4ac95$a40370d0$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200410071631.58038.lcml@pixel.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +15,25 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: lcml@pixel.it
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le jeu 07/10/2004 =E0 16:31, Lucio a =E9crit :
-> The problem is that I don't know how to make the kernel route packets b=
-etween=20
-> the DMZ and WAN NICs without using a SNAT rule: can anyone help me plea=
-se?
+I keep getting loads of messages like below in my messages file.  Does
+anyone know why these are occurring ?
 
-Maybe I don't get your point there, but to simply route packets, you
-just have to do :
+Oct  7 14:44:02 radium kernel: REJECT: int-web3 IN=eth0 OUT=eth1
+SRC=192.168.202.124 DST=205.174.164.21 LEN=40 TOS=0x00 PREC=0x00 TTL=127
+ID=3855 PROTO=TCP SPT=8010 DPT=45832 WINDOW=0 RES=0x00 RST URGP=0
 
-	echo 1 > /proc/sys/net/ipv4/ip_forward
+Thanks
 
-And then set FORWARD chain rules accordingly to traffic you want to
-allow. And that's it.
+Peter
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+
+Peter Marshall, BCS
+Network Administrator, CARIS
+115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+Phone:  (506) 458-8533 (Reception)
+
 
