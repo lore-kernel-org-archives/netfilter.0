@@ -1,10 +1,13 @@
-From: Renato Rossi <renato.rossi@savi.ch>
-Subject: Help me  SNAT/DNAT
-Date: Thu, 5 Sep 2002 18:09:42 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Modem to Ethernet Bridge
+Date: Thu, 5 Sep 2002 16:40:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F392BE64738A7143B00E86A5634FBF142C0D@akun2900.intra.savi.ch>
+Message-ID: <200209051541.g85Ff5v00844@vulcan.rissington.net>
+References: <F37GuSKqGABtvNLepTy000017d8@hotmail.com> <200209051442.g85EgNv00719@vulcan.rissington.net> <20020905153012.GH7289@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20020905153012.GH7289@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,77 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+On Thursday 05 September 2002 4:30 pm, Ramin Alidousti wrote:
 
+> I don't see why a natted solution is required here.
 
+I agree that a NATted solution is not *required*, however I think it should 
+work and is therefore an effective solution to the problem.   Depending on 
+the routing issues on other machines, it might well be the simplest solution, 
+involving changes on only one machine.
 
+> It's all basic routing. Assuming all the hosts in the lan (192.168.0.0/24)
+> have a default route to 192.168.0.25
 
-	Hi,
-	I'm in a lot of trouble!
+I didn't feel comfortable making that assumption, and it doesn't deal with 
+machines other than those directly on the local network.
 
-	First I don't write in English, it's a lot of time that I don't.
+> and the ppp host at 192.168.1.2 has
+> a default route to 192.168.1.1, then the linux box must be able to
+> forward packets back and forth between these two subnets.
 
-	I'm trying to make a pair of firewall to give me a lot of time to
-spent in holidays.... at last one day!
-	This is my idea
-	                                           |-----------------------|
-|--------------------------|
-	Leased line with /28 network  |                       |    Lan
-192.168.2.0/24               |                          |          Lan
-192.168.1.0/24
-	-------------------------------------------|  first firewall
-|-----------------------------------------------|   second firewall
-|---------------------------------------
-	                                           |                       |
-|                                     |                          |
-	                                           ------------------------
-|                                      ---------------------------
-|					
-	
--------|---------
-	                                                                   |
-|
-	                                                                   |
-HTTPD    |
-	                                                                   |
-|
-	
-------------------
+This route does seem reasonable, and I'm sure the linux box itself must be 
+able to forward packets between the two networks.   However, this doesn't 
+necessarily mean that other machines know to use 192.168.0.25 as the route to 
+get to 192.168.1.2
 
-	Now, the problem is to make running SNAT/DNAT ,
-	I've modify this script :
-http://www.sentry.net/~obsid/IPTables/rc.scripts.dir/current/rc.firewall.ipt
-ables.dual
-	and no NAT is running, else if I give command directly.
-	The output of iptables -L -t nat -v explain that some packets are
-mangled by PREROUTING table and nothing else.
-	If I change POSTROUTING rule in an illogical manner I can see that
-all packet are mangled also.
+If Scott's running another firewall somewhere on the LAN with a connection to 
+the Internet, he might not SNAT packets from 192.168.1.2 as well as 
+192.168.0.0/24 on their way out to the Internet, which would be needed in 
+order to provide Internet access from this machine.
 
-	I don't like to insert 3 NIC to make DMZ, I prefer the security that
-second firewall give to me....
-	in my heed first and second firewall are cluster (really I'll use
-MON, Heartbeat ...etc.). Now all the IP address aren't aliases. I think it
-doesn't matter.
-	The HTTPD server is only a representative service....
+Antony.
 
-	Thanks
+-- 
 
-
-
-Renato Rossi
-
- SAVI  Consulting SA
-cp203 
-6533 LUMINO
-Switzerland
- 
-tel.	+41 (0)91  8291383
-fax	+41 (0)91  8290383
-mobile	+41 (0)79  4121685
-email	renato.rossi@savi.ch
-
-
+Most people have more than the average number of legs.
 
