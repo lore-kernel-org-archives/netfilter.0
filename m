@@ -1,14 +1,12 @@
-From: Brice GIBOUDEAU <brice@pingus.org>
-Subject: Re: insecure script
-Date: Tue, 23 Mar 2004 21:49:59 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: insecure script
+Date: Tue, 23 Mar 2004 13:40:03 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080074999.663.51.camel@twin.pingus.org>
-References: <20040323195832.0ACB83BAD18@smtp.latinmail.com>
-	 <200403232017.17094.Antony@Soft-Solutions.co.uk>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679246@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403232017.17094.Antony@Soft-Solutions.co.uk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,69 +17,129 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Jorge Garcia <anarkophobia@latinmail.com>, netfilter@lists.netfilter.org
 
-1)
-192.168.0.0 is your LAN.
-3 users want to access to a server on port 8080.
 
-iptables -t filter -A FORWARD -p tcp -s 192.168.0.0/24 --sport  
-1024:65535 -d 0/0 --dport 8080 -j ACCEPT
-iptables -t filter -A FORWARD -p tcp -s 0/0 --sport 8080 -d
-192.168.0.0/24 --dport 1024:65535 -j ACCEPT
+---
+As anthony put it, don't use the following for FTP:
+# BAD
+iptables -A FORWARD -i ${IF_INTERNET} --destination ${FTP_SERVER} -p tcp
+--dport 1024:65535 -j ACCEPT
+iptables -A FORWARD --source ${FTP_SERVER} --source ${FTP_SERVER} -p tcp
+--dport 1024:65535 -j ACCEPT
 
-The 192.168.0.0/24 is dangerous because the access is open to all your
-Lan and with 0/0 all the users of your Lan can access to all 8080 TCP
-port on the internet, than they can install gateway, proxy, VPN with
-this rule ... and an anonymous computer in your lan can use this, etc
-....
-    - It's better to specify the ip(s) of the computer can acces to the
-service
-    - It's better to specify the ip(s) of the server(s) the users want
-to access.
+Instead, implement it with:
+# Good
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
+---
 
-2)
-If you use NAT on your firewall, you can only NAT users in POSTROUTING
-than no connection can be done from Internet to your LAN.
-If you have servers who need connection initialised from the outside
-(like SMTP, HTTP etc ...) you can add only this computer to your
-PREROUTING.
+---
+Always limit number of logging messages.
 
-3)
-When you need to open a port to all your users to 0/0, like 80 or 443,
-you can install a transparent proxy between the users and Internet, with
-that you can filter all the traffic.
+# BAD
+iptables -A INPUT -p tcp --dport <good_proto> -j ACCEPT
+iptables -A INPUT -j LOG
+iptables -A INPUT -j DROP
 
-Brice
+# GOOD
+iptables -A INPUT -p tcp --dport <good_proto> -j ACCEPT
+iptables -A INPUT -m limit --limit 4/s -j LOG
+iptables -A INPUT -j DROP
 
-On Tue, 2004-03-23 at 21:17, Antony Stone wrote:
-> On Tuesday 23 March 2004 7:58 pm, Jorge Garcia wrote:
-> 
-> > hi, im starting to write a paper about iptables security, and im trying to
-> > focus in the scripts. anyone can give some examples of insecure scripts or
-> > some tips to find my own insecurities in many scripts on the net. how
-> > hackers can take advantages in insecurities in the scriipts??
-> 
-> Here's a few ideas:
-> 
-> 1. Don't use a default ACCEPT policy on INPUT or FORWARD chains.
-> 
-> 2. Don't try to "block the bad stuff and allow the rest" - always "allow what 
-> you know you want, and block the rest"
-> 
-> 3. Use stateful matching - don't just allow packets in to high port numbers on 
-> the basis that "they must be replies"
-> 
-> 4. Don't assume that all packets from source port 53 are DNS.
-> 
-> 5. Be careful about allowing all connections from internal clients to the 
-> Internet - somebudy might bring a compomised laptop into your network, or 
-> somebody inside the organisation might not be trustworthy.   Check for 
-> suspicious outgoing traffic as well as incoming.
-> 
-> Regards,
-> 
-> Antony.
+Note: the 4/sec is best for my configuration. The better the machine,
+you may want to log more or less depending on your system's specs and
+your eagerness to go through the crud.
+---
 
+---
+Setting up "junk" filtering in mangle is advisible just in case an
+extension later on gets confiused. Plus, it saves the processing time
+that it takes to jump through the network systems.
+
+Here is a snapshot of what I do first thing:
+
+   # Drop stealth scanners
+   ${IPTABLES} -t mangle -A PREROUTING -p tcp --tcp-flags ALL     NONE
+-j DROP
+   ${IPTABLES} -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN
+SYN,FIN -j DROP
+   ${IPTABLES} -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST
+SYN,RST -j DROP
+   ${IPTABLES} -t mangle -A PREROUTING -p tcp --tcp-flags FIN,RST
+FIN,RST -j DROP
+   ${IPTABLES} -t mangle -A PREROUTING -p tcp --tcp-flags ACK,FIN FIN
+-j DROP
+   ${IPTABLES} -t mangle -A PREROUTING -p tcp --tcp-flags ACK,URG URG
+-j DROP
+   ${IPTABLES} -t mangle -A PREROUTING -p tcp --tcp-flags ACK,PSH PSH
+-j DROP
+
+   # Drop bulk portscan attackers
+   ${IPTABLES} -t mangle -A PREROUTING -i ${IF_INET3} -m psd -m limit
+\
+      --limit 2/s -j LOG --log-prefix=3D"ipt.portscan "
+   ${IPTABLES} -t mangle -A PREROUTING -i ${IF_INET3} -m psd -j DROP
+   ${IPTABLES} -t mangle -A PREROUTING -i ${IF_INET4} -m psd -m limit
+\
+      --limit 2/s -j LOG --log-prefix=3D"ipt.portscan "
+   ${IPTABLES} -t mangle -A PREROUTING -i ${IF_INET4} -m psd -j DROP
+
+This is appropriate for me, but maybe not for you. If you use
+Patch-O-Matic (which I would always recommend to users comfortable
+building kernels) you may want to suplement the DROP rule on portscans
+with TARPIT. Basically it holds a TCP session open forever, which
+usually causes serious havoc with scanners.
+---
+
+---
+Firewall DOSing
+
+I read about this one a while ago. If you're a hacker and you detect
+portscan blocking, you can pull a nasty trick on the firewall's owner.
+
+Once they detect the firewall blocks portscans, they find the upstream
+gateway of the host. This is done using traceroute. Then, they start
+sending forged portscan requests with the gateway's ip address as the
+src. If the firewall isn't careful and the gateway doesn't drop the
+forged packets, then BOOM. No more internet for you.
+---
+
+---
+String matching to block KAZAA
+
+Don't expect this to work 100% of the time. If the requesting packet
+gets fragmented inside the string being searched for, the match will
+fail. This can be exploited by abusers if they set their MTU's low
+enough to force the fragmentation along those lines.
+---
+
+---
+Firewalls are perfect, NOT
+
+Never forget that the firewall is a point of attack. If you plan it
+right, there should be one port open on the INPUT chain, SSH. On odd
+occasions, hackers are able to find hacks against the protocol stack
+itself, in which case, you better upgrade your kernel ASAP. Same goes
+for SSH/SSL. This is not a product that you should be leaving alone for
+years. It can last that long if you wanted it to though.=20
+---
+
+---
+Accidental forwards during firewall ruleset refreshes.
+
+You want to make sure you disable forwarding whenever you do a firewall
+ruleset load, then enable it wence its complete
+
+echo "0" > /proc/sys/net/ipv4/ip_forward
+${MY_RULES}
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+This keeps rogue packets from being marked ESTABLISHED even when they're
+clearly NOT allowed. This rare occasion could become a lot more
+dangerous if a hacker found a way to force the script to re-execute, or
+detect when a ruleset reload occurs.
+---
+
+Ah.. that's it for me. Back to real work..
 
