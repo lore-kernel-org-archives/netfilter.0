@@ -1,11 +1,13 @@
-From: Ryan Barr <ryan@ryanbarr.com>
-Subject: Re: FTP Passive mode Connection Loss - iptables rh9
-Date: Tue, 18 May 2004 19:41:49 -0700
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: how do I port forward through loopback?
+Date: Wed, 19 May 2004 07:31:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <141F6FA6-A93E-11D8-9187-000A957469CC@ryanbarr.com>
-Mime-Version: 1.0 (Apple Message framework v613)
-Content-Transfer-Encoding: 7bit
+Message-ID: <1084944672.19380.6.camel@raylinux.internal>
+References: <40AA16A7.1010706@shadowpuppets.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-m4+QoOLnCoHmAI4n+JZM"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40AA16A7.1010706@shadowpuppets.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,50 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Thanks Bernd,
-	I loaded the MASQUERADE module because I was trying everything I could 
-think of to get this working... I will unload it and check that kernel 
-module and see what happens.. As far as the rules I have been applying 
-are concerned, did you see any improvements that can be made?  I really 
-am at a loss on this one.  I took a look, and the scripts seem pretty 
-close over all, any ideas would be appreciated.  Again, thanks!
-
--Ryan
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Message: 13
-Date: Tue, 18 May 2004 22:04:56 +0200
-From: Bernd Strebel <b.strebel@digitec.de>
-Organization: digitec GmbH
-To: netfilter@lists.netfilter.org
-Subject: Re: FTP Passive mode Connection Loss - iptables rh9
+--=-m4+QoOLnCoHmAI4n+JZM
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, 2004-05-18 at 15:59, Mark wrote:
+> Hello,
+> I need to port forward all traffic locally going to port 80 to port=20
+> 8040.  For the external interface eth0 this works, I thought it would=20
+> work for the internal/loopback as well. Nothing else is turned on
+> , all other settings are open.
+>=20
+> /sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT=20
+> --to-port 8040
+>=20
+> this doesn't work for the internal network, 127.0.0.1 lo, not sure why
+> System info: Redhat7.3, 2.4.20 kernel, iptables-1.2.8-8.72.3
+> Thanks
 
-Sometime ago we have similar troubles in a clustered ftp environment.
+To get nat to work on the local interface you have to compile the kernel
+with local nat support. The catch is that normal nat stops working.
 
-After replacing MASQUERADE with SNAT for the external interface, most of
-the problems go away.
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-Today we can use a simple
+--=-m4+QoOLnCoHmAI4n+JZM
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
--t nat -A PREROUTING ... -d IP_EXT -j DNAT    --to-destination IP_DMZ
-         -A FORWARD    ... -d IP_DMZ -j ACCEPT
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-to provide active/passive ftp via an transparent ftp-proxy located in
-the DMZ to the external world.
+iD8DBQBAqvEgh1fuR/Bv+ygRAutmAJ9A/FtkE4qGdI5C368Rb0ni8OgzvACfQu1u
+/b4fj6vbsS9WEoacj9ulsM4=
+=p/CV
+-----END PGP SIGNATURE-----
 
-The ftp-proxy use active ftp to connect through an internal firewall to
-the final destination.
-
-As far as I can see, your rules are ok. But why do you load the
-MASQUERADE module, if you don't use it? I'm not an expert, but NAT and
-connection tracking must be a tricky thing for ugly protocols like ftp.
-
-Have you checked ip/port from the PASV command at the client side? Do
-you get the right (external) address?
-
+--=-m4+QoOLnCoHmAI4n+JZM--
 
 
