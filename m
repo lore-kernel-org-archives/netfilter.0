@@ -1,11 +1,13 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: iptables installation problem
-Date: Fri, 5 Sep 2003 04:17:54 -0700 (PDT)
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: finding out the culprit ip
+Date: 05 Sep 2003 17:17:55 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030905111754.9251.qmail@web20701.mail.yahoo.com>
+Message-ID: <1062762620.1164.2.camel@india.nsecure.net>
+References: <20030905183420.GA1850@linux.local>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-489246669-1062760674=:8959"
+Content-Type: multipart/alternative; boundary="=-Of8o3yTUr+IHRuGuJAzZ"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030905183420.GA1850@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,62 +17,110 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
---0-489246669-1062760674=:8959
-Content-Type: text/plain; charset=us-ascii
-
-Hi,
-I am trying to install iptables-1.2.8.tar.bz2 on Linux 8.0 server.
-I have downloaded iptables-1.2.8.tar.bz2 file from netfilter downloads to /root/iptables-1.2.8 directory. 
-by using command 
-"tar -xf iptables-1.2.8.tar"
-It has created iptables-1.2.8 directory in which all files are extracted.
- 
-I don't know how to go further.
-I tried make and make install.
- 
-Then when i gave command "/etc/rc.d/rc.local"
-it gives following error.
-"[root@xyz iptables-1.2.8]# /etc/rc.d/rc.local
-SIOCDELRT: No such process
-RTNETLINK answers: File exists
-SIOCADDRT: File exists
-SIOCADDRT: File exists
-iptables v1.2.6a: can't initialize iptables table `-nat': Table does not exist (do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
- 
-How to go ahead now?
- 
-Thanks
+To: Payal Rathod <payal-iptables@staticky.com>
+Cc: netfilter@lists.netfilter.org
 
 
+--=-Of8o3yTUr+IHRuGuJAzZ
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+Hi payal,
 
----------------------------------
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
---0-489246669-1062760674=:8959
-Content-Type: text/html; charset=us-ascii
+Just see too which domain the mails are getting sent by your machine.
+Then try to get the mx entry for that domain. If you resolve the ip of
+the mx entry, which is you wanted.
 
-<DIV>Hi,</DIV>
-<DIV>I am trying to install iptables-1.2.8.tar.bz2 on Linux 8.0 server.</DIV>
-<DIV>I have downloaded iptables-1.2.8.tar.bz2 file from netfilter downloads to /root/iptables-1.2.8 directory. </DIV>
-<DIV>by using command </DIV>
-<DIV>"tar -xf iptables-1.2.8.tar"</DIV>
-<DIV>It has created iptables-1.2.8 directory in which all files are extracted.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I don't know how to go further.</DIV>
-<DIV>I tried make and make install.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Then when i gave command "/etc/rc.d/rc.local"</DIV>
-<DIV>it gives following error.</DIV>
-<DIV>"[root@xyz iptables-1.2.8]# /etc/rc.d/rc.local<BR>SIOCDELRT: No such process<BR>RTNETLINK answers: File exists<BR>SIOCADDRT: File exists<BR>SIOCADDRT: File exists<BR>iptables v1.2.6a: can't initialize iptables table `-nat': Table does not exist (do you need to insmod?)<BR>Perhaps iptables or your kernel needs to be upgraded.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>How to go ahead now?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanks<BR><BR></DIV><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
---0-489246669-1062760674=:8959--
+Regards
+Dharmendra T.
+
+On Sat, 2003-09-06 at 00:04, Payal Rathod wrote:
+
+    Hi,
+    A particular machine in my LAN is affected by SoBig virus and is sending
+    mails to remote sites. I need to find that IP. The only lead I have is
+    that it is that IP which is generating maximum SMTP traffic. How do I
+    find it out and block it (or maybe clean it)?
+    
+    Any ideas on this?
+    With warm regards,
+    -Payal
+    
+    -- 
+    "Visit GNU/Linux Success Stories"
+    http://payal.staticky.com
+    Guest-Book Section Updated.
+    
+
+-- 
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+
+This message is intended for the addressee only. It may contain
+privileged or Confidential information. If you have received this
+message in error,please notify the sender and destroy the message
+immediately.Unauthorised use or reproduction of this message is strictly
+prohibited.
+
+--=-Of8o3yTUr+IHRuGuJAzZ
+Content-Type: text/html; charset=utf-8
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
+</HEAD>
+<BODY>
+Hi payal,
+<BR>
+
+<BR>
+Just see too which domain the mails are getting sent by your machine. Then try to get the mx entry for that domain. If you resolve the ip of the mx entry, which is you wanted.
+<BR>
+
+<BR>
+Regards
+<BR>
+Dharmendra T.
+<BR>
+
+<BR>
+On Sat, 2003-09-06 at 00:04, Payal Rathod wrote:
+    <BLOCKQUOTE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>A particular machine in my LAN is affected by SoBig virus and is sending</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>mails to remote sites. I need to find that IP. The only lead I have is</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>that it is that IP which is generating maximum SMTP traffic. How do I</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>find it out and block it (or maybe clean it)?</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Any ideas on this?</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>With warm regards,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>-Payal</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>-- </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>&quot;Visit GNU/Linux Success Stories&quot;</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>http://payal.staticky.com</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Guest-Book Section Updated.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
+    </BLOCKQUOTE>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<PRE>-- 
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+
+This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
+</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>
+
+--=-Of8o3yTUr+IHRuGuJAzZ--
+
 
