@@ -1,10 +1,11 @@
-From: Marco Colombo <netfilter@esiway.net>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Is Linux based Gateway/Firewall feasible
-Date: Thu, 8 Jul 2004 16:05:08 +0200 (CEST)
+Date: Thu, 08 Jul 2004 16:43:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0407081537580.3962-100000@Megathlon.ESI>
+Message-ID: <1089297824.2125.32.camel@anduril.intranet.cartel-securite.net>
 References: <40ED39B9.30608@svw.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <40ED39B9.30608@svw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,69 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: Sudheer Divakaran <sudheer@svw.com>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 8 Jul 2004, Sudheer Divakaran wrote:
-
-> Hi,
-> 
-> I've a local LAN consisting of about 150 machines.  I'm using a machine 
-> with Linux + IPTables  as the gateway machine which inturn connects to 
-> two different ISPs.  My question is can a Linux based machine match the 
-> performance of a hardware based routers provided by Cisco,... OR is my 
-> decision to go for a Linux based solution is a wrong one?.
-> 
-> Is there so much difference between these two solutions?
-> 
-> Can I achieve the same performance using a high end PC and Linux?
-> 
-> I'm asking this because one guy told me that my decision to go for a 
-> Linux based solution is a wrong one and it can never match the 
+Le jeu 08/07/2004 =E0 14:10, Sudheer Divakaran a =E9crit :
+> I'm asking this because one guy told me that my decision to go for a=20
+> Linux based solution is a wrong one and it can never match the=20
 > performance of hardware based Routers.
 
-iptables is not concerned with routing. If you're comparing 
-a Cisco _routing_ solution with a linux-based one, this is the wrong
-list I think. There are many things to consider: raw performances,
-routing software (are you running EIGRP?) and so on, all off topic here.
+While this statement is not true regarding low end Cisco products : my
+home "ye old good" P233MMX performs better at routing/firewall than a
+Cisco 827 router with IOS Firewall. Not mentioning price... Stressed, I
+got 50Mbps total passthrough using DLink quad ethernet adapter, router
+optimize kernel and ratherly clean ruleset, what is largely overperforms
+my needs...
 
-Despite, ask that guy to show you a real 'hardware based router'.
-That is, remove any software (IOS) from a Cisco piece of hardware
-and see how it performs. Ciscos (but high end ones only) do have
-specialized hardware, so you may refer to it as "hardware-assisted
-routing", no more. But they're software-based routers, too.
-Again, this is quite off topic.
+Now, one can tell you that a Cisco 7200 serie will perform far better
+than a PC architectured solution based on Linux, which will probably be
+true. But, the thing you should consider first is whether you need this
+performance or not. I mean I could plug a 7200 on my home LAN, with
+gigabit interface, connected to a 2950 switch and so on. It will perform
+far better than my Linux box. But, in my context which is 5Mbps ADSL
+link, 3 Wifi 54g laptops and 1 box, I certainly don't need this
+overpowerful and overpriced solution.
 
-iptables is about filtering, NATing, mangling IP packets (am I missing
-anything?). Yeah, Ciscos can do that too. But, please correct me
-if I'm wrong, I'm not aware of _any_ hardware that assists them in
-that. So it's not hardware-based filtering anyway. It's all in software.
+Now you can stress your Linux box to bench it, and see if it offers
+bandwidth and latency you need now, and fits your future evolution
+plans. And don't forget a high end PC with PCI 64bits gigabit adapter is
+often cheaper than most Cisco stuff...
 
-The following rule:
+Finally, you have to take in account the fact that a Linux based
+solution is de facto full featured, as with stock 2.6 kernel, you have :
 
-iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+	. routing
+	. advanded policy routing
+	. QoS
+	. stateful firewalling from layer 2 to layer 5
+	. 802.3ad bonding (see Cisco Etherchannel)
+	. 802.1q VLAN support
+	. etc...
 
-which may make sense in simple setups, takes _global_ decisions,
-hardly it can be "distributed" to interface processors (think of
-packets belonging to the same flow that may arrive from two different
-interfaces).
+Which is not necessarily the case of Cisco routers with stock IOS, not
+mentionning the fact that some Cisco routers cannot be shipped with all
+available features because of a too small Flash/RAM amount.
 
-In the end, the right question is: how do iptables compare to IOS
-access-lists? I'll leave the comparison to others. All I know is
-that there's no UNIX shell running on a Cisco. There's no UNIX-like
-environment. Put two lines in crontab, and have them invoke a script
-that sets iptables up, passing it a parameter (night/day), in order
-to implement less permissive rules at night and during weekends.
-Now do the same with a Cisco. You get the idea.
 
-.TM.
--- 
-      ____/  ____/   /
-     /      /       /			Marco Colombo
-    ___/  ___  /   /		      Technical Manager
-   /          /   /			 ESI s.r.l.
- _____/ _____/  _/		       Colombo@ESI.it
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
