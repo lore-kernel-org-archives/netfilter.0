@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: A simple question
-Date: Mon, 5 Apr 2004 23:40:22 +0100
+From: root <johnh@vrml.k12.la.us>
+Subject: Logging of kernel packets dropped for lack of a route
+Date: Mon, 05 Apr 2004 14:41:35 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404052340.23077.Antony@Soft-Solutions.co.uk>
-References: <4072150B.8060400@tin.it>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <4071A85F.E2D9D7ED@vrml.k12.la.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4072150B.8060400@tin.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,41 +18,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 06 April 2004 3:25 am, Gianni Pucciani wrote:
 
-> Hi all,
-> I'm new to the use of iptable. I set this script for my home
-> workstation, but when I apply these rules anything stop functioning.
-> I guess I'm doing something stupid but this is my very first time with
-> iptables, so sorry.
 
-The major problem with your ruleset is that you have no rules in either your 
-INPUT or OUTPUT chains to allow reply packets.
+How may one log packets the kernel drops because  no route exists ???
 
-My recommendation is to start simple, and add things bit by bit.   Then if 
-something goes wrong, you only need to look at the (simple) thing you added 
-most recently.
+Tuning netfilter  could be much easier   if we could see           tail
+-f    KERNEL-packet drops.
 
-For a home workstation, try the following ruleset (which will allow more 
-traffic than you say you want, but is still secure from the outside world).
 
-You can add more specific rules to allow only the correct traffic, and to 
-allow limited connections from the outside, as you want to.
-
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -j ACCEPT
-
-Regards,
-
-Antony.
-
--- 
-Most people have more than the average number of legs.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
