@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: possible to use netfilter for NETBSD
-Date: 06 May 2003 08:57:11 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: iprange match processing overhead
+Date: Tue, 6 May 2003 09:21:47 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052204231.799.145.camel@elendil.intranet.cartel-securite.net>
-References: <3EB74965.F63BE8EB@gmx.ch>
+Message-ID: <Pine.LNX.4.33.0305060918130.2984-100000@blackhole.kfki.hu>
+References: <1052144634.1861.16.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EB74965.F63BE8EB@gmx.ch>
+In-Reply-To: <1052144634.1861.16.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: o5twm01@gmx.ch
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Cc: netfilter@lists.netfilter.org
 
-Le mar 06/05/2003 =E0 07:34, o5twm01@gmx.ch a =E9crit :
-> its possible to use netfilter for a other
-> opeeration systems like NETBSD 1.6
+On 5 May 2003, John A. Sullivan III wrote:
 
-Nope.
-Netfilter is Linux kernel stuff.
+> 	Thanks for the reply.  If that's the only overhead, I don't think we'll
+> notice it.  Is that all the additional overhead incurred?
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Yes.
+
+[...]
+> 	Does the iprange patch in effect create multiple standard
+> source/destination rules or is its processing as efficient as the
+> standard source/destination rules once it has passed the any address
+> evaluation? Thanks in advance for the clarification - John
+
+No, it does not convert internally the given range into CIDR blocks. It's
+a natural range evaluation. Have a look at
+net/ipv4/netfilter/ipt_iprange.c in the source tree.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
 
