@@ -1,11 +1,9 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: help with random patch
-Date: Wed, 9 Feb 2005 08:45:26 -0500 (EST)
-Message-ID: <25359.142.169.215.10.1107956726.squirrel@142.169.215.10>
-References: <BAY102-F2613C4ADC79C98252120B4AE740@phx.gbl>
+From: "dave beach" <drbeach@rogers.com>
+Subject: Logging question
+Date: Wed, 9 Feb 2005 09:08:08 -0500
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4w8KAAAAQAAAA2SDxWNDfuEmRY16FU7zNcwEAAAAA@rogers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <BAY102-F2613C4ADC79C98252120B4AE740@phx.gbl>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +15,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Brandon Hall <jodious33@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, February 8, 2005 1:31 pm, Brandon Hall said:
-> hi everyone
+Hi, I have been using iptables for quite some time now but only recently
+have decided to do things a bit differently. I'm trying to ulog various
+things, and am having an unexpected problem ulogging packets outbound on
+eth0 (the external interface). I don't have a problem constructing the rule,
+just in figuring out in which table/chain to place it.
 
-Hi Brandon
+I'm clearly still not fully understanding table/chain traversal. It was my
+understanding that every outbound packet, no matter where its origin or
+destination, would pass through the nat/POSTROUTING chain, so this is where
+my ulog rule came in to try and log all outbound packets. After seeing this
+wasn't working (at all, although a similar rule to ulog all packets outbound
+on eth1 (the internal interface) placed right after it seems to work like a
+charm), I noticed in Oskar's excellent tutorial the statement that some
+packets may not in fact pass through nat/POSTROUTING at all.
 
-> 	I'm new to the lists and I'm trying to get a certain script to work,
-> however to work I need the random patch.  I can't find this patch
-> anywhere,
-> but I really do not know where to look.
+Without posting my entire iptables script, I guess I have several general
+questions:
 
-The patch is part of automatic patching system called "Patch-O-Matic".
-This is part of Netfilter and contains all pending/base/extra patches
-official to Netfilter. You may have a look at:
+1) Can the "flow" diagram in section 3.1 of Oskar's tutorial be relied upon?
+I would have thought so, and it has seemed reliable in practice, but the
+failure of this one logging rule is now making me doubt that.
 
-http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-random
+2) Under what circumstances would packets not traverse the nat/POSTROUTING
+chain, as hinted at by Oskar in the tutorial?
 
-You can download latest POM in a daily snapshot forms. Those are provided
-here :
+3) Where would be a more appropriate place to put a ulog rule to capture
+details of all outbound packets on eth0, and why would that not be the same
+place as one to capture details of all outbound packets on eth1? I suspect
+the answer to this is intimately related to the answers to 1 and 2 above.
 
-http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
-
-You will need source of your running kernel as well as iptables source.
-Patch-O-Matic will apply patches you want against both sources.
-
-Then, it requires you to enable the module into your kernel
-(make menuconfig?), recompile the kernel or the module if you've selected
-it as a module.
-
-Don't forget to recompile iptables too handing it a path to the patched
-kernel:
-
-make KERNEL_DIR=3D/usr/src/linux-patched-with-pom
-
-Also, don't do the mistake of running you're old itpables binary
-(usually in /usr). The iptables' Makefile comes with default prefix
-path of /usr/local. You may want to edit.
-
-For any details I forgot, please refer to the README.
-
-HTH,
-Samuel
-
+Any help would be appreciated; I can post my iptables script if it would be
+useful.
 
