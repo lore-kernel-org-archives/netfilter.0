@@ -1,10 +1,11 @@
-From: "Kevin G. Currie" <kevin.currie@wmich.edu>
-Subject: want:  logical OR for the MARK target
-Date: 27 Oct 2003 11:53:46 -0500
+From: "Kevin Smith" <kevin@perfht.com>
+Subject: Modules.
+Date: Mon, 27 Oct 2003 14:14:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067273626.955.13.camel@localhost.localdomain>
+Message-ID: <NGBBLGFEALDADHNDAAFFIENDDMAA.kevin@perfht.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0000_01C39C94.B220E920"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,30 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-Hello,
+This is a multi-part message in MIME format.
 
-I have a need to mark packets with several different flags for later
-processing in my iptables rules.  Some of these flags could be used in
-combination.
+------=_NextPart_000_0000_01C39C94.B220E920
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-I'm looking into implementing a logical OR for the "-j MARK --set-mark"
-target such that the value given to --set-mark would be logically OR'd
-with the current mark value of the packet.
+I was wondering what is the difference between ip_conntrack and
+ipt_conntrack?
+I noticed with one of my older Kernels ip_conntrack exists, and the newer
+(2.4.21) have ipt_. I do have them enabled in the .config So Im dotn quite
+understand why it not available as a module (it is not statically
+installed). 
 
-I've looked around in the iptables source code a bit, but an (at this
-point) hopelessly confused.  Could someone tell me if this is a
-modification that needs to be made in iptables, the kernel modules, or
-both?
+TIA, 
 
+Kev
 
-Kevin
+------=_NextPart_000_0000_01C39C94.B220E920
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
 
+eJ8+IjcTAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
+b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEGgAMADgAAANMHCgAbAA4ADgAAAAEAHAEB
+A5AGAMAFAAAlAAAACwACAAEAAAALACMAAAAAAAMAJgAAAAAACwApAAAAAAADADYAAAAAAB4AcAAB
+AAAACgAAAE1vZHVsZXMuIAAAAAIBcQABAAAAFgAAAAHDnL6aXxXnvq8IcxHYtmYAoMnZ2UsAAAIB
+HQwBAAAAFgAAAFNNVFA6S0VWSU5AUEVSRkhULkNPTQAAAAsAAQ4AAAAAQAAGDgAM8Hm+nMMBAgEK
+DgEAAAAYAAAAAAAAAAuQ/grZHtYRtlQAoMnZ2UvCgAAACwAfDgEAAAACAQkQAQAAAH0BAAB5AQAA
+zwEAAExaRnWwhWGaAwAKAHJjcGcxMjUWMgD4C2BuDhAwMzNPAfcCpAPjAgBjaArAc7BldDAgBxMC
+gH0KgZJ2CJB3awuAZDQMYA5jAFALAwu1IEkgd7phBCB3AiAEgQuAZxPgBxDwBUAEACB0aGUgWmQG
+kGYEkAnwYxVwYk0RMHcJ4RUQcF8FoG6lAjByANBrIABwZBaxOnQW6D8KogqAE9Bub650DeAJgBPg
+aRVQIAIgQRVwb2YgbXkZ8GzJBIEgSwSRZWwEIBbLxGV4BAB0cywXgxVSBxoQFnAFwCgyLjQu0DIx
+KSAQ8HYVcBfSsi4TwWRvHjQVUW0cQLpuAaBsGYELgBVDLhbx1GZpFLBTHyBJH8AfELJ0A6BxdRnA
+FXB1FFJ/HIAXkhTQGoAZwBkiF4B23wtwC2AgEReABCBhGmAEcPp1JDEoI1EVISOCIrEZUX0HQGwj
+MQCAAZAmQAmAKcce0Bi0GLRUSUEcsCdKLRsAdhi0EeEAKeAAAAALAAGACCAGAAAAAADAAAAAAAAA
+RgAAAAADhQAAAAAAAAMAA4AIIAYAAAAAAMAAAAAAAABGAAAAABCFAAAAAAAAAwAHgAggBgAAAAAA
+wAAAAAAAAEYAAAAAUoUAACdqAQAeAAmACCAGAAAAAADAAAAAAAAARgAAAABUhQAAAQAAAAQAAAA5
+LjAAHgAKgAggBgAAAAAAwAAAAAAAAEYAAAAANoUAAAEAAAABAAAAAAAAAB4AC4AIIAYAAAAAAMAA
+AAAAAABGAAAAADeFAAABAAAAAQAAAAAAAAAeAAyACCAGAAAAAADAAAAAAAAARgAAAAA4hQAAAQAA
+AAEAAAAAAAAACwANgAggBgAAAAAAwAAAAAAAAEYAAAAAgoUAAAEAAAALADqACCAGAAAAAADAAAAA
+AAAARgAAAAAOhQAAAAAAAAMAPIAIIAYAAAAAAMAAAAAAAABGAAAAABGFAAAAAAAAAwA9gAggBgAA
+AAAAwAAAAAAAAEYAAAAAGIUAAAAAAAALAFKACCAGAAAAAADAAAAAAAAARgAAAAAGhQAAAAAAAAMA
+U4AIIAYAAAAAAMAAAAAAAABGAAAAAAGFAAAAAAAAAgH4DwEAAAAQAAAAC5D+Ctke1hG2VACgydnZ
+SwIB+g8BAAAAEAAAAAuQ/grZHtYRtlQAoMnZ2UsCAfsPAQAAAIIAAAAAAAAAOKG7EAXlEBqhuwgA
+KypWwgAAUFNUUFJYLkRMTAAAAAAAAAAATklUQfm/uAEAqgA32W4AAABDOlxXSU5ET1dTXExvY2Fs
+IFNldHRpbmdzXEFwcGxpY2F0aW9uIERhdGFcTWljcm9zb2Z0XE91dGxvb2tcb3V0bG9vay5wc3QA
+AAADAP4PBQAAAAMADTT9NwAAAgF/AAEAAAAwAAAAPE5HQkJMR0ZFQUxEQURITkRBQUZGSUVORERN
+QUEua2V2aW5AcGVyZmh0LmNvbT4AAwAGEGTQEDADAAcQ/AAAAAMAEBAAAAAAAwAREAAAAAAeAAgQ
+AQAAAGUAAABJV0FTV09OREVSSU5HV0hBVElTVEhFRElGRkVSRU5DRUJFVFdFRU5JUENPTk5UUkFD
+S0FORElQVENPTk5UUkFDSz9JTk9USUNFRFdJVEhPTkVPRk1ZT0xERVJLRVJORUxTSVBDAAAAAHgt
 
--- 
-phew, for a minute there i lost myself.
-
+------=_NextPart_000_0000_01C39C94.B220E920--
 
 
