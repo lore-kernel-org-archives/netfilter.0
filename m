@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: problems with ftp
-Date: Wed, 18 Sep 2002 08:53:41 +0100
+Subject: Re: Telnet not being let through
+Date: Wed, 18 Sep 2002 08:50:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020918075343.IOQQ295.mta06-svc.ntlworld.com@there>
-References: <6029A399F5BFD6118BB200104B0DF37302764E@mailgate.dms.lanka.net>
+Message-ID: <20020918075004.IKXF295.mta06-svc.ntlworld.com@there>
+References: <5.1.1.6.0.20020917182240.00b2f008@mail.attbi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6029A399F5BFD6118BB200104B0DF37302764E@mailgate.dms.lanka.net>
+In-Reply-To: <5.1.1.6.0.20020917182240.00b2f008@mail.attbi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,75 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 17 September 2002 3:17 pm, Naleendra@dms.lanka.net wrote:
+On Wednesday 18 September 2002 3:15 am, Chris Born wrote:
 
-> Hi,
+> I'm trying to allow telnet sessions through from the outside. Here are the
+> rules I have for the input chain:
 >
-> 	First & foremost thanks anthony, telnet works smoothly.
+> $IPTABLES = /sbin/iptables
+> $UNIVERSE = "0.0.0.0/0"
 >
-> 	You see I am checking the services that I'll be needing one by one
-> before by plug in the IPTABLES box in to a running network. Next on line =
-is
-> FTP. Now I've heard that FTP tends to be a bit bothersome . Listed below =
-is
-> my FTP ruleset. My connections are refused both ways. Your help is greatly
-> appreciated.
+> $EXTIP = "`$IFCONFIG $EXTIF | /bin/grep 'inet addr'  | /bin/awk '{print 2}'
 >
->    #Allow FTP outbound.
-> iptables -A INPUT -i $PPPIF -p tcp --sport 21 -m state --state ESTABLISHED
-> -j ACCEPT
+> | /bin/sed -e 's/.*://'`"
 >
-> iptables -A OUTPUT -o $PPPIF -p tcp --dport 21 -m state --state
-> NEW,ESTABLISHED -j ACCEPT
+> $EXTIF = "eth1"
+> $INTIF = "eth0"
 >
-> iptables -A INPUT -i $PPPIF -p tcp --sport 20 --dport $UP_PORTS  -m state
-> --state ESTABLISHED,RELATED -j ACCEPT
+> $INTNET = "192.168.0.0/24"
 >
-> iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport 20  -m state
-> --state ESTABLISHED -j ACCEPT
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -F INPUT
 >
->  iptables -A INPUT -i $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  =
--m
-> state --state ESTABLISHED -j ACCEPT
+> $IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+> $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $UNIVERSE -j ACCEPT
+> $IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
+> $IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state
+> ESTABLISEHED,RELATED
+> $IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -p TCP --dport 23 -j
+> ACCEPT $IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
 >
-> iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  =
--m
-> state --state ESTABLISHED,RELATED -j ACCEPT
+> Telnetting from and inside machine works just fine, but every time someone
+> tries to connect from the outside the connection is refused. Wondering what
+> I'm doing wrong here.
 
-You need nothing so complicated.
+Simple.   You're putting the rules into the INPUT chain instead of the 
+FORWARD chain.
 
-These rules will allow passive & active ftp outbound:
+INPUT is for packets destined to the machine running netfilter.
 
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A FORWARD -p tcp --dport 21 -o $PPPIF -j ACCEPT
-
-That's it.   All the remaining "bothersome" bits about ftp are handled by t=
-he=20
-RELATED state.   Just make sure you've got all the ftp support bits of=20
-netfilter compiled into your kernel, or loaded as modules.
+FORWARD is for packets going through the machine running netfilter.
 
 Antony.
 
---=20
+-- 
 
-This email is intended for the use of the individual addressee(s) named abo=
-ve=20
-and may contain information that is confidential, privileged or unsuitable =
-
-for overly sensitive persons with low self-esteem, no sense of humour, or=20
-irrational religious beliefs.
-
-If you have received this email in error, you are required to shred it=20
-immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
-caster sugar. =A0 Whisk until soft peaks form, then place in a a warm oven =
-for=20
-40 minutes. =A0 Remove promptly and let stand for 2 hours before adding som=
-e=20
-decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
-mail=20
-and eat the original message.
+Which part of 'apt-get dist-upgrade' do you not understand ???
 
