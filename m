@@ -1,52 +1,68 @@
-From: Kishore Dharmavaram <kishored@servgate.com>
-Subject: Memory leaks in ip_conntrack?
-Date: Fri, 7 Nov 2003 14:21:13 -0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B2041@skat.sky.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Memory leaks in ip_conntrack?
+Date: Fri, 7 Nov 2003 22:58:55 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200311072259.hA7Mx0j15065@agate.rockstone.co.uk>
+References: <EFBADA8C200C2B418DA39734FD15475B0B2041@skat.sky.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <EFBADA8C200C2B418DA39734FD15475B0B2041@skat.sky.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi All,
+On Friday 07 November 2003 10:21 pm, Kishore Dharmavaram wrote:
 
-I have a Linux box running 2.4.20 kernel with netfilter(ip_conntrack)
-compiled-in. When I do stress test on the box I find from /proc/slabinfo
-that ip_conntracks have reached maximum value 131072 and box stopped
-processing to any traffic, but strange thing is there are only 21 entries in
-/proc/net/ip_conntrack. 
+> Hi All,
+>
+> I have a Linux box running 2.4.20 kernel with netfilter(ip_conntrack)
+> compiled-in. When I do stress test on the box I find from /proc/slabinfo
+> that ip_conntracks have reached maximum value 131072 and box stopped
+> processing to any traffic, but strange thing is there are only 21 entries
+> in /proc/net/ip_conntrack.
+>
+> My question is why are there only 21 entries in "/proc/net/ip_conntrack"
+> when /proc/slabinfo shows 131072 entries, does this indicate memory leaks
+> in netfilter code?
+>
+> Please provide me some insight, hints into the problem, is there any way I
+> can find out rest of ip_conntracks.
+>
+> Note: There are application proxies, squid(Http), POP, SMTP, FTP, running
+> on the Linux box.
 
-My question is why are there only 21 entries in "/proc/net/ip_conntrack"
-when /proc/slabinfo shows 131072 entries, does this indicate memory leaks in
-netfilter code? 
+ip_conntrack should not use more than a few hundred bytes per connection 
+being tracked.
 
-Please provide me some insight, hints into the problem, is there any way I
-can find out rest of ip_conntracks. 
+Squid will use a lot of memory given the opportunity.
+What are you using for a pop proxy?
+I assume by smtp proxy you mean sendmail, exim, qmail etc, and for ftp you're 
+using frox?
+These last shouldn't use much in the way of memory unless there's a problem.
 
-Note: There are application proxies, squid(Http), POP, SMTP, FTP, running on
-the Linux box. 
+In order to pin the memory usage down to iptables please try the system 
+without the proxies running (by the way, what do you mean by "stress test"?) 
+and see if the situation is the same.
 
-Thanks,
-Kishore
+Antony.
 
-[root@Firewall root]# uname -a
-Linux Firewall 2.4.20 #9 Thu Oct 30 00:49:56 PST 2003 i686 i686 i386
-GNU/Linux
-[root@Firewall root]# cat /proc/slabinfo | fgrep ip_conn
-ip_conntrack      131072 131080    384 13108 13108    1
-[root@Firewall root]#
-[root@Firewall root]# cat /proc/net/ip_conntrack | wc -l
-     21
-[root@Firewall root]#
+-- 
 
+There are two possible outcomes.
+
+If the result confirms the hypothesis, then you've made a measurement.
+If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
