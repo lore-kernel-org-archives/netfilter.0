@@ -1,8 +1,8 @@
 From: bobo <boboaq@163.com>
 Subject: How to  load these modules?
-Date: Fri, 20 Dec 2002 11:22:52 +0800
+Date: Fri, 20 Dec 2002 11:27:42 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212200314.LAA20137@email.whu.edu.cn>
+Message-ID: <20021220032315.3B1701D110BCC@sm181.163.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,8 +16,8 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
-Cc: "bobowd@sohu.com" <bobowd@sohu.com>
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+Cc: bobowd@sohu.com, bobowd@sohu.com
 
      Hello  all:
 
