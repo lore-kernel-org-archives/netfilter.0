@@ -1,13 +1,11 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: dhcrelay-*-*-*-*-*-*-*-
-Date: Sun, 30 Nov 2003 01:28:48 -0500
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Counter broken in Fedora Core 1
+Date: Sun, 30 Nov 2003 12:26:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031130062848.GA11438@cannon.eng.us.uu.net>
-References: <1070150706.3fc93432d9526@paris-hme1> <200311292140.11754.Alistair@nerdnet.ca> <200311292304.40538.JALaramie@Loudoun-Fairfax.com>
+Message-ID: <1070213194.10226.10.camel@tarkus>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200311292304.40538.JALaramie@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +16,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sat, Nov 29, 2003 at 11:04:40PM -0500, Jeffrey Laramie wrote:
+Started testing some Fedora Core 1 stuff, found that the counter
+is misbehaving for one line of my test input chain. The weird part
+is if I originate icmp echo from the Fedora Core 1 box, the replies
+do hit the counter, but no tcp or udp packets increment the counter
+field.
 
-> Hmm, bootstrap=dhcp=tcp/udp 67:68 ? I thought dhcp ran on a lower protocol  
-> level than tcp/ip, but if this is true then this should work.
+rpm -q iptables
+iptables-1.2.8-13
+rpm -q kernel
+kernel-2.4.22-1.2115.nptl
 
-dhcp uses udp 67/68 (server/client). What is low level protocol is the
-implementation of the server which bypasses the regular udp sockets and
-takes the broadcasts off the wire itself. That's why the rules below
-might be irrelevant.
+Opened up a bug report with Redhat as well.
+Below is the test setup I am using, and yes I know I am not applying the
+logging :-)
 
-Ramin
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+*nat
+:PREROUTING ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A POSTROUTING -o eth0 -j MASQUERADE
+COMMIT
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:dropwall - [0:0]
+:firewall - [0:0]
+:silent - [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -i eth1 -j ACCEPT
+-A INPUT -s 121.246.124.242 -j ACCEPT (Counter broken)
+-A INPUT -s 66.121.212.96/255.255.255.224 -j ACCEPT
+-A INPUT -s 38.113.7.102 -j ACCEPT
+-A INPUT -i cipcb0 -j ACCEPT
+-A INPUT -i cipcb1 -j ACCEPT
+-A INPUT -i cipcb2 -j ACCEPT
+-A INPUT -p icmp --icmp-type any -j ACCEPT
+-A INPUT -p 50 -j ACCEPT
+-A INPUT -p 51 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 25 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+-A INPUT -i eth0 -p udp -m udp --dport 53 -j ACCEPT
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -s 192.168.21.16/255.255.255.248 -i eth0 -j DROP
+-A dropwall -m limit --limit 15/min -j LOG --log-prefix "Dropwall:"
+-A dropwall -j DROP
+-A firewall -m limit --limit 15/min -j LOG --log-prefix "Firewall:"
+-A firewall -j DROP
+-A silent -m limit --limit 15/min -j LOG --log-prefix "Silent:"
+-A silent -j DROP
+COMMIT
 
-> 
-> >
-> > 	iptables -A INPUT -p tcp  -s ${client ip range} -d 255.255.255.255 -m
-> > multiport --dport 67:68 -j ACCEPT
-> >
-> > 	iptables -A INPUT -p udp  -s ${client ip range} -d 255.255.255.255 -m
-> > multiport --dport 67:68 -j ACCEPT
-> >
-> >         and appropriate equivalient rules on the OUTPUT chain should make
-> > this work shouldn't it?
-> 
-> Sounds like a winner to me! synkx: Does it work?
-> 
-> Jeff
+
+Ted
+
 
