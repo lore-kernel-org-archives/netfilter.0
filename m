@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Tracking user bandwidth
-Date: Sat, 1 Jun 2002 22:39:33 +0100
+From: <iptables@kilsgaard.dk>
+Subject: NAT, ports and iptables
+Date: Sun, 2 Jun 2002 03:53:34 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206012139.g51LdhA23253@Networker.rockstone.co.uk>
-References: <CCEDLJGFOELOPJOLAJHFEEHLNDAA.christopher.nuernberger@colorado.edu>
+Message-ID: <000101c209d8$5183e720$6401a8c0@GKXP>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <CCEDLJGFOELOPJOLAJHFEEHLNDAA.christopher.nuernberger@colorado.edu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,16 +16,71 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.samba.org>
-
-On Saturday 01 June 2002 10:29 pm, Chris Nuernberger wrote:
-
-> Hey, I am new to the netfilter stuff, and I was just wondering how I could
-> track the amount of traffic coming from various computers on my LAN to see
-> who is using the most bandwidth, etc?  Chris
-
-Try iptraf - http://cebu.mozcom.com/riker/iptraf
+To: netfilter@lists.samba.org
 
 
-Antony.
+I am quite new to LINUX and Iptables,  i have worked some with FreeBSD
+and ipfw, but now i am werry confused by the way iptable handles the
+roules.
+
+I hope that some of you can help me.
+
+I have made the script listed below, from pieces found on the internet,
+and it also works fine, with NAT and no ports are open out to the
+internet.
+
+But can anyone tell men how i can open for ports, so they can bee
+accessed from the internet.
+	I would like joust to open some ports (80,21,22.).
+	And then i would linke to translate a port to an local Ip
+address, so i can access a PC on my local LAN from the internet.
+Is the rules i have made okay, or is there an better way to doo the
+trick.
+
+Is there a place where there is a description of iptables and its
+posibilities?
+
+Thanks (and sorry for by bad english)
+
+/Graves Kilsgaard
+
+
+Here is my script:
+--------------------------------------------------------------------
+#!/bin/bash
+
+# Variables
+FWCMD="/sbin/iptables"
+FWSAVE="/sbin/iptables"
+
+OUTIP="***.***.***.***"
+OUTEth='eth1'
+
+#Flush all rules
+$FWCMD -t nat -F
+$FWCMD -F
+$FWCMD -X block
+
+#Stopping service
+/etc/rc.d/init.d/iptables stop
+
+#Enable nat
+$FWCMD -t nat -A POSTROUTING -o $OUTEth -j SNAT --to-source $OUTIP
+
+#Setting rules
+$FWCMD -N block
+$FWCMD -A INPUT -j block
+$FWCMD -A FORWARD -j block
+$FWCMD -A block -m state --state RELATED,ESTABLISHED -j ACCEPT
+$FWCMD -A block -i ! eth1 -m state --state NEW -j ACCEPT
+$FWCMD -A block -j DROP
+
+#Saving rules
+/etc/rc.d/init.d/iptables save
+#Starting service
+/etc/rc.d/init.d/iptables start
+
+--------------------------------------------------------------------
+
+
 
