@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Upgrade Iptables...
-Date: Mon, 16 Sep 2002 21:15:15 +0100
+From: Michael Atighetchi <matighet@bbn.com>
+Subject: forcefully closing TCP connections
+Date: Mon, 16 Sep 2002 16:19:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020916201517.ONQE17905.mta07-svc.ntlworld.com@there>
-References: <001101c25db6$90e19890$3a00a8c0@am>
+Message-ID: <20020916201911.GU3540@bbn.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001101c25db6$90e19890$3a00a8c0@am>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Monday 16 September 2002 8:23 pm, Arif Mahmood wrote:
+I'd like to forcefully close TCP connections out of band under Linux
+2.4 - does anyone know how to do this ?
 
-> Hi Raj,
->
-> How do I do the  patch-o-matic, I mean if you send me the steps to do
-> patch-o-matic on RedHat 7.3.  I couldn't find the  patch-o-matic
-> documentations.
+Imagine:
 
-http://www.netfilter.org/documentation/FAQ/netfilter-faq-1.html#ss1.5
+ Client <ip1, p1> -----> Server <ip2,pX>
+ Client <ip1, p2> -----> Server <ip2,pX>
+     ...
+ Client <ip1, p100> ---> Server <ip2,pX>
 
-Antony
+
+I'm looking for an easy way to close (TCP RST?) all hundred
+connections without touching client / server code. Assume that I have
+sudo permissions to any command on Server.
+
+
+
 
 -- 
-
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
+matighet@bbn.com   BBN Technologies
 
