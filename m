@@ -1,14 +1,10 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: newbie URL with lots of examples?
-Date: Fri, 02 Apr 2004 13:48:06 -0500
+From: "Philippe Anctil" <z77y16@hotmail.com>
+Subject: Re: safe default chain policies
+Date: Fri, 02 Apr 2004 14:02:00 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080931686.17764.48.camel@localhost>
-References: <200404030001.04793.fajarpri@arinet.org>
-	 <200404021933.18595.Antony@Soft-Solutions.co.uk>
+Message-ID: <BAY16-F74E0ivR0wzGD000006a0@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404021933.18595.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,39 +14,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Oskar's is the one that I used to get started.  There are also some
-slide shows in the training section at http://iscs.sourceforge.net
+> > May I ask what are your arguments in favor of putting filter output and
+> > forward chains to drop?
+>
+>The secure attitude uses the same argument as for FORWARD - you block all
+>traffic except that which you know you want and write ACCEPT rules for, and
+>you can then be sure your machine isn't communicating in any other way than
+>you want it to.
 
+Yes I understand this attitude is the base of building a secure firewall. I 
+was actually applying it abusively.
 
-On Fri, 2004-04-02 at 13:33, Antony Stone wrote:
-> On Friday 02 April 2004 6:01 pm, Fajar Priyanto wrote:
-> 
-> > Hi guys,
-> > Thanks for helping me with the ssh thing.
-> > I'm really newbie in iptables, and I want to learn more.
-> > Can anybody give me directions where I can find a good tutorial (I've
-> > downloaded one from netfilters.org, but, my logic can't quite follow it)
-> 
-> Which one?
-> 
-> > with loooottttsss of examples and explanataions? I really need the
-> > examples. Thanks.
-> 
-> Have you tried Oskar's?   http://iptables-tutorial.frozentux.net
-> 
-> Even if you find that one hard to understand, Oskar might actually appreciate 
-> the feedback if it helps make it better for future readers?   (That's a guess 
-> on my part; I can't speak for Oskar...)
-> 
-> Regards,
-> 
-> Antony.
--- 
-Open Source Development Corporation
-Financially Sustainable open source development
-http://www.opensourcedevelopmentcorp.com
+The thing is, traffic hitting the three filter chains have different origins 
+and different purpose. Allow me to review the secure approach for each table 
+individually.
+
+I find setting up the INPUT chain to DROP unquestionable. This is because 
+traffic hitting this chain gives direct access to services on the main gate.
+
+Traffic hitting the OUTPUT originates from the firewall box itself. Why 
+wouldn't we want a program to communicate outside? Because it is not 
+authorized. What kind of unauthorized program could be installed on my box? 
+Well this question does not exactly sounds like the right one. Who could 
+install unauthorized programs on the box? Only those who have remote / 
+physical access to the box. For an entreprise level filtering bug I'd 
+probably go for a DROP. For my home network, I'll put it to ACCEPT. I may 
+reconsider this, but my current ruleset does not make sense anyway:
+
+iptables -P OUTPUT DROP
+iptables -A OUTPUT -s 127.0.0.1 -j ACCEPT
+iptables -A OUTPUT -s $internal_ip -j ACCEPT
+iptables -A OUTPUT -s $external_ip -j ACCEPT
+
+Now what about the FORWARD chain? Traffic hitting this chain has two 
+possible origins and a corresponding destination.
+
+A. Local network traffic going outside. For my home network, I am not 
+restricting  outgoing traffic. This type of traffic does not justify a 
+restricted policy.
+
+B. Outside traffic heading back (or even towards?) to the local network. I 
+think the origin of the traffic totally justifies this chain to be set to 
+DROP. There is no limit to what wacked attempts outsiders may try.
+
+But allow me to argue a little more on the FORWARD table subject. This table 
+tends to have very loose restrictions. Mine's like this:
+
+iptables -P FORWARD DROP
+iptables -A FORWARD -s $network_addr -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Here I am trusting iptables entirely : in the hypothesis someone more clever 
+than me finds a way of tricking the state machine, too bad for 'me home 
+network. How much more would I trust iptables if I were to configure this 
+table with a default ACCEPT policy? Iptable is good enough to identify 
+established and related connections. How would a default ACCEPT policy would 
+make it less good? I mean, if there is a way for an outsider to hit the 
+FORWARD chain directly, outside of any legitimate connection process, what 
+is the risk of having the chain set to ACCEPT? Shouldn't iptable discard the 
+rubbish?
+
+As I said above, I'll set FORWARD to DROP for my peace of mind. But I can't 
+help thinking it does much of the work by itself.
+
+Thank you very much for your helpful feedback! I hope you enjoyed the read 
+;-)
+
+_________________________________________________________________
+Watch LIVE baseball games on your computer with MLB.TV, included with MSN 
+Premium! 
+http://join.msn.com/?page=features/mlb&pgmarket=en-us/go/onm00200439ave/direct/01/
 
 
