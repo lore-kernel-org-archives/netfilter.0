@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: i use iptables for nat, and can connect with ping command but other ports can't connect
-Date: Mon, 28 Oct 2002 15:17:41 +0000
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Rules for blocking Email from libero.it domain
+Date: Mon, 28 Oct 2002 09:04:51 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210281517.g9SFHle08726@vulcan.rissington.net>
-References: <20021026211632.17973.qmail@web20305.mail.yahoo.com>
+Message-ID: <006901c27e8a$fbde4630$8c01a8c0@sundaram>
+References: <OF4868D659.17C45E12-ON65256C60.003E4AD9-65256C60.004175C4@lntinfotech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021026211632.17973.qmail@web20305.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +17,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, harish.k@lntinfotech.com
 
-On Saturday 26 October 2002 10:16 pm, Irvan Adrian Kristiono wrote:
+Hi,
 
-> iptables -t nat -A POSTROUTING -s 192.168.15.0/24 -o
-> eth0 -j SNAT --to-source myinternetip
+I want to block all incoming mail from the libero.it domain. I have NATed
+mail server.
 
-Is that your complete ruleset ?   You have *no* other rules ?
+I set the following rules in my firewall, But still I am getting mails from
+this domain.
 
-> when i try to browse from my workstation which at 192.168.15.0/24
-> it cannot find any page.. so i try ping command to yahoo.com
-> IP, and get the reply.
+Can you please help on this.?
 
-When you "try to browse from your workstation" is that machine able to 
-resolve the name to an IP address or not ?
+#libero.it - 195.210.91.83
+SIP=195.210.91.83
+$IPT -A INPUT -s $SIP -j LOG --log-prefix="spam: "
+$IPT -A INPUT -s $SIP -j DROP
 
-When you try pinging to yahoo.com and get a reply is that also from the 
-workstation, or from the firewall ?
+$IPT -A INPUT -s $SIP -j LOG --log-prefix="spam: "
+$IPT -A FORWARD -s $SIP -j DROP
 
-Tell us:
 
-1. The output of iptables -L -n -v
+[root@gw root]# dig libero.it
 
-2. The routing table on your firewall (route -n)
+; <<>> DiG 9.2.0 <<>> libero.it
+;; global options:  printcmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 8861
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 0
 
-3. Whether the firewall can resolve names (ping www.netfilter.org - doesn't 
-matter whether you get a reply; does it resolve the IP address ?)
+;; QUESTION SECTION:
+;libero.it.                     IN      A
 
-4. Whether the workstation can resolve names (ping www.samba.org - doesn't 
-matter whether you get a reply; does it resolve the IP address ?)
+;; ANSWER SECTION:
+libero.it.              86169   IN      A       195.210.91.83
 
-Antony.
+;; AUTHORITY SECTION:
+libero.it.              86169   IN      NS      ns2.libero.it.
+libero.it.              86169   IN      NS      ns1.libero.it.
 
--- 
+;; Query time: 4 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Mon Oct 28 09:00:45 2002
+;; MSG SIZE  rcvd: 79
 
-How I want a drink, alcoholic of course, after the heavy chapters
-involving quantum mechanics.
+-SR
 
- - 3.14159265358979
 
