@@ -1,12 +1,11 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: IPSEC and other non tcp/udp/icmp blocking
-Date: Mon, 14 Oct 2002 13:37:16 +0200
+From: George Agnelli <george@mattandgeorge.com>
+Subject: Iptables and GRE/PPTP
+Date: Mon, 14 Oct 2002 13:02:18 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608F615F80@w2ks-e2k.iconos.be>
+Message-ID: <B9D070DA.3D0F%george@mattandgeorge.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: murli@icafe.co.tz, netfilter@lists.netfilter.org
+To: netfilter users <netfilter@lists.netfilter.org>
 
-Hi,
+Dear All,
 
-Mitesh P Choksi [mailto:murli@icafe.co.tz] wrote:
->=20
-> How does netfilter work with other protocols apart tcp/udp/icmp?
->=20
-> I am trying to either block or account IPSec traffic.
->=20
+Can anyone explain why when connecting an internal win2k VPN client through
+an iptables firewall/gateway to an external VPN server, authentication
+should time out? I believe PPTP uses the GRE protocol (47) for
+authentication? So if I have flushed all the tables, set a default policy of
+ACCEPT for everything and set up masquerading then in theory it should work,
+right? Or must I explicitly ACCEPT these protocols/ports?
 
-Well that can be done with:
+George
 
-iptables -A ... -p udp --dport 500 -j ...=20
-iptables -A ... -p 50 -j ...
-iptables -A ... -p 51 -j ...
-
-for IKE, ESP and AH respectively. You may also want to=20
-look at the "ah" and "esp" matches that allow you to=20
-match against the SPI of AH and ESP IPsec traffic.
-Those matches are in the standard kernel.
-
-Regards,
-Filip
 
