@@ -1,10 +1,12 @@
-From: Brent Clark <bclark@rocketseed.us>
-Subject: port 113 ?
-Date: Thu, 13 Jan 2005 09:59:54 +0200
-Message-ID: <41E62A7A.2020605@rocketseed.us>
+From: Les Mikesell <les@futuresource.com>
+Subject: Re: GRE problem
+Date: Thu, 13 Jan 2005 08:32:31 -0600
+Message-ID: <1105626751.917.21.camel@les-home.futuresource.com>
+References: <200501131013.17416.marcin.giedz@eulerhermes.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200501131013.17416.marcin.giedz@eulerhermes.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Cc: netfilter@lists.netfilter.org
 
-Hi all
+On Thu, 2005-01-13 at 03:13, Marcin Giedz wrote:
 
-on my debian fw, im running virtually no services (as to which is the
-law) on my fw:
+> When first client is trying to connect to VPN server out side our office all
+> packets are sent through "linux router". When he finishes the connection
+> and second client wants to make a new connection no GRE packets are sent
+> through router. If I down and up interfaces on "linux router" everything
+> works OK as earlier - GRE packets are transmitted through router. If I
+> don't down and up interfaces but wait eg. for next day everything also
+> works OK. It seems for me that some "timeout" variable is set on my linux
+> router but I didn't set anything. 
 
-gate:~# netstat -ln
-Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State
-tcp        0      0 0.0.0.0:113             0.0.0.0:*               LISTEN
-tcp        0      0 192.168.111.10:22       0.0.0.0:*               LISTEN
-tcp        0      0 192.168.111.10:3128     0.0.0.0:*               LISTEN
-tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
-udp        0      0 0.0.0.0:33644           0.0.0.0:*
-Active UNIX domain sockets (only servers)
-Proto RefCnt Flags       Type       State         I-Node Path
-gate:~#
+Is NAT involved here?  I have a similar problem where a GRE
+connection goes out the wrong interface as the gateway starts
+up, getting a NAT association in ip_conntrack and the NAT
+never goes away after the correct interface and route come
+up.  I think you need to get rid of the /proc/net/ip_conntrack
+entry but there is no mechanism to do this.
 
+-- 
+  Les Mikesell
+   les@futuresource.com
 
-Soo I would like to know, if it is advisable to stop identd. I have
-googled abit and from what I gather, its considered as dangerous and
-basically pointless to run. By removing / stopping this service, will it
-hamper hinder my users, other servers in any other way. I only run a
-mail and ftp server.
-
-Kind Regards and thanks inadvance
-Brent Clark
 
 
