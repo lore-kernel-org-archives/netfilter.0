@@ -1,11 +1,10 @@
-From: "Toshihiro Sonoda" <toshihiro@jp.fujitsu.com>
-Subject: Re: h323
-Date: Mon, 23 Sep 2002 10:45:24 +0900
+From: "Peter.Chen" <chenlf@cibn.com>
+Subject: my system is under syn-flood attack
+Date: Mon, 23 Sep 2002 11:06:30 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001d01c262a2$e2cbdb70$ccf8a8c0@monday>
-References: <3D8DF73A.7020408@iol.it> <003e01c26263$bcbef230$8201a8c0@lw1dqwin>
+Message-ID: <002201c262ae$36db04b0$9801010a@redhat73>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,53 +18,50 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+bXkgYm94IGlzIHJlZGhhdCA3LjMgYXBhY2hlIDEuMy4yNg0KDQpmcm9tIGxhc3Qgd2VlayAuIHNv
+bWUgZ3V5cyB1c2Ugc3luLWZsb29kIGFuZCBwaW5nIGRlYXRoIHRvIGF0dGFjayBteSBzeXN0ZW0N
+Cg0KaSB1c2UgZmxvd2luZyBzY3JpcHQ6DQojIS9iaW4vc2gNCg0KSVBUQUJMRVM9Ii9zYmluL2lw
+dGFibGVzIg0KDQplY2hvICJGbHVzaGluZyBydWxlcy4uLiINCiRJUFRBQkxFUyAtRg0KJElQVEFC
+TEVTIC1YDQoNCiNTZXQgZGVmYXVsdCBwb2xpY2llcyB0byBEUk9QDQokSVBUQUJMRVMgLUYgSU5Q
+VVQNCiRJUFRBQkxFUyAtRiBPVVRQVVQNCiRJUFRBQkxFUyAtRiBGT1JXQVJEDQokSVBUQUJMRVMg
+LVAgSU5QVVQgQUNDRVBUDQokSVBUQUJMRVMgLVAgT1VUUFVUIEFDQ0VQVA0KDQoNCkxPT1BfSUY9
+ImxvIg0KDQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KIy0tLS1TZXQgbmV0d29yayBzeXNjdGwgb3B0
+aW9ucy0tLS0tIw0KZWNobyAiLS1TZXR0aW5nIHN5c2N0bCBvcHRpb25zLS0iDQoNCmVjaG8gIkRp
+c2FibGluZyBJUCBTcG9vZmluZyBhdHRhY2tzIg0KZWNobyAyID4gL3Byb2Mvc3lzL25ldC9pcHY0
+L2NvbmYvYWxsL3JwX2ZpbHRlcg0KDQplY2hvICJEaXNhYmxpbmcgcmVzcG9uZCB0byBicm9hZGNh
+c3QgcGluZ3MiDQplY2hvIDEgPiAvcHJvYy9zeXMvbmV0L2lwdjQvaWNtcF9lY2hvX2lnbm9yZV9i
+cm9hZGNhc3RzDQoNCmVjaG8gIkJsb2NraW5nIHNvdXJjZSByb3V0aW5nIg0KZWNobyAwID4gL3By
+b2Mvc3lzL25ldC9pcHY0L2NvbmYvYWxsL2FjY2VwdF9zb3VyY2Vfcm91dGUNCg0KZWNobyAiS2ls
+bCB0aW1lc3RhbXBzIg0KZWNobyAwID4gL3Byb2Mvc3lzL25ldC9pcHY0L3RjcF90aW1lc3RhbXBz
+DQoNCmVjaG8gIkVuYWJsZSBTWU4gQ29va2llcyINCmVjaG8gMSA+IC9wcm9jL3N5cy9uZXQvaXB2
+NC90Y3Bfc3luY29va2llcw0KDQplY2hvICJLaWxsIHJlZGlyZWN0cyINCmVjaG8gMCA+IC9wcm9j
+L3N5cy9uZXQvaXB2NC9jb25mL2FsbC9hY2NlcHRfcmVkaXJlY3RzDQoNCmVjaG8gIkVuYWJsaW5n
+IGJhZCBlcnJvciBtZXNzYWdlIHByb3RlY3Rpb24iDQplY2hvIDEgPiAvcHJvYy9zeXMvbmV0L2lw
+djQvaWNtcF9pZ25vcmVfYm9ndXNfZXJyb3JfcmVzcG9uc2VzDQoNCmVjaG8gIkxvZ2dpbmcgbWFy
+dGlhbnMgKHBhY2tldHMgd2l0aCBpbXBvc3NpYmxlIGFkZHJlc3NlcykiDQplY2hvIDEgPiAvcHJv
+Yy9zeXMvbmV0L2lwdjQvY29uZi9hbGwvbG9nX21hcnRpYW5zDQoNCmVjaG8gIlJlZHVjaW5nIERv
+UydpbmcgYWJpbGl0eSBieSByZWR1Y2luZyB0aW1lb3V0cyINCmVjaG8gNjAgPiAvcHJvYy9zeXMv
+bmV0L2lwdjQvdGNwX2Zpbl90aW1lb3V0DQplY2hvIDI0MDAgPiAvcHJvYy9zeXMvbmV0L2lwdjQv
+dGNwX2tlZXBhbGl2ZV90aW1lDQplY2hvIDAgPiAvcHJvYy9zeXMvbmV0L2lwdjQvdGNwX3dpbmRv
+d19zY2FsaW5nDQplY2hvIDAgPiAvcHJvYy9zeXMvbmV0L2lwdjQvdGNwX3NhY2sNCmVjaG8gIkRv
+bmUuLi4iDQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMNCmVjaG8gIi0tU2V0dGluZyB1cCBzdGFuZGFyZCBy
+dWxlcy0tIg0KDQplY2hvICJBbGxvdyB1bmxpbWl0ZWQgdHJhZmZpYyBvbiB0aGUgbG9vcGJhY2sg
+aW50ZXJmYWNlIg0KJElQVEFCTEVTIC1BIElOUFVUIC1pIGxvIC1qIEFDQ0VQVA0KJElQVEFCTEVT
+IC1BIE9VVFBVVCAtbyBsbyAtaiBBQ0NFUFQNCg0KZWNobyAiRW5hYmxpbmcgU1lOLUZMT09ESU5H
+IFBST1RFQ1RJT04iDQokSVBUQUJMRVMgLU4gc3luLWZsb29kDQokSVBUQUJMRVMgLUEgSU5QVVQg
+LXAgdGNwIC0tc3luIC1qIHN5bi1mbG9vZA0KJElQVEFCTEVTIC1BIHN5bi1mbG9vZCAtbSBsaW1p
+dCAtLWxpbWl0IDEvcyAtLWxpbWl0LWJ1cnN0IDQgLWogUkVUVVJODQokSVBUQUJMRVMgLUEgc3lu
+LWZsb29kIC1qIERST1ANCg0KZWNobyAiTWFraW5nIHN1cmUgTkVXIHRjcCBjb25uZWN0aW9ucyBh
+cmUgU1lOIHBhY2tldHMiDQokSVBUQUJMRVMgLUEgSU5QVVQgLXAgdGNwICEgLS1zeW4gLW0gc3Rh
+dGUgLS1zdGF0ZSBORVcgLWogRFJPUA0KDQplY2hvICJMb2dnaW5nIGZyYWdtZW50cyBjYXVnaHQi
+DQokSVBUQUJMRVMgLU4gZnJhZ21lbnRzDQokSVBUQUJMRVMgLUEgSU5QVVQgLWYgLWogZnJhZ21l
+bnRzDQokSVBUQUJMRVMgLUEgZnJhZ21lbnRzIC1qIExPRyAtLWxvZy1wcmVmaXggIklQVEFCTEVT
+IEZSQUdNRU5UUzoiDQokSVBUQUJMRVMgLUEgZnJhZ21lbnRzIC1qIERST1ANCg0KZWNobyAiUmVm
+dXNpbmcgc3Bvb2ZlZCBwYWNrZXRzIHByZXRlbmRpbmcgdG8gYmUgZnJvbSB5b3VyIElQIGFkZHJl
+c3MiDQojJElQVEFCTEVTIC1BIElOUFVUIC1zICRORVRfSVBBRERSIC1qIERST1ANCmVjaG8gIkRv
+bmUuLi4iDQoNCmJ1dCBpdCdzIG5vIHVzZSBob3cgY2FuIGkgcHJvdGVjdCBteSBzeXN0ZW0gZnJv
+bSBzeW4gZmxvb2Q/PyBpIGhhdmUgbm8gaGFyZHdhcmUgZmlyZXdhbGwgYQ0K
 
-Hi, Diego.
-
-I have questions.
-does the new nat patch have h.225ras, or ldap for NAT problems.
-before, when i applied the h.323 patch, the patchs
-have a part of h.323, but not h.225.
-Is that ok?
-
-Can you use ILS server, or Gatekeeper?
-
-
-> Hi, 
-> sorry about my english.
-> I use kernel 2.4.17 with the newnat patch and h323 work great !
-> Regards,
-> 
-> Diego
-> 
-> 
-> ----- Original Message ----- 
-> From: "Mattia Martinello" <m.martinello@iol.it>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Sunday, September 22, 2002 2:00 PM
-> Subject: h323
-> 
-> 
-> > Hi
-> > 
-> > I am on a LAN which access to the Internet with a NAT on a gateway Linux 
-> > server configured with iptables.
-> > How I can use on a client inside the LAN a program which uses h323 
-> > protocol, for example Microsoft Netmeeting? I wish to correctly use 
-> > text, audio and video features of Netmeeting, and I wish to call and to 
-> > be called.
-> > 
-> > How I can configure the firewall on the gateway server?
-> > I rememeber that for ipchains there was an h323 module. There is 
-> > anything for iptables too?
-> > 
-> > Thank you very much
-> > Bye
-> > Mattia Martinello
-> > m.martinello@iol.it
-> > 
-> > 
-> > 
-> 
-> 
 
