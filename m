@@ -1,11 +1,14 @@
-From: ro0ot <ro0ot@phreaker.net>
-Subject: destination nat onto the same network
-Date: Thu, 17 Jun 2004 20:18:53 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Allow active and passive FTP connections
+Date: Thu, 17 Jun 2004 13:23:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40D18C2D.9030700@phreaker.net>
+Message-ID: <200406171323.25501.Antony@Soft-Solutions.co.uk>
+References: <2E314DE03538984BA5634F12115B3A4E894F8D@email1.mitretek.org>
+Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E894F8D@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,38 +18,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all,
+On Thursday 17 June 2004 1:13 pm, Piszcz, Justin Michael wrote:
 
-I have one webserver inside my LAN but when I try to browse it via the 
-hostname (eg. www.example.com) from a workstation inside my LAN, the 
-browser can't reach the page.  Why?  From remote (outside), I can browse 
-to the website.
+> I think he meant, modprobe ip_conntrack_ftp and if you are behind nat
+> there is a module for that as well.
 
-Below is a simple diagram of my network: -
+insmod should do the job perfectly well.
 
-INTERNET <-> ROUTER <-> FIREWALL_IPTABLES <-> SWITCH <-> WEBSERVER + 
-OTHER_WORKSTATIONS
-
-Here is my simple firewall rules: -
-
-$IPTABLES -P INPUT DROP
-$IPTABLES -P FORWARD DROP
-$IPTABLES -P OUTPUT DROP
-
-$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$IPTABLES -A FORWARD -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-$IPTABLES -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-
-$IPTABLES -t nat -A PREROUTING -i $fwif -p tcp --dport 80 -j DNAT --to 
-$webserver_ip
-
-$IPTABLES -t nat -A POSTROUTING -o $fwif -j MASQUERADE
+NAT is very unlikely when the rules are running on the FTP server itself 
+(they're in the INPUT & OUTPUT chains).
 
 Regards,
-ro0ot
 
+Antony.
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Chris Brenton
+> Sent: Thursday, June 17, 2004 8:08 AM
+> To: Sagara Wijetunga
+> Cc: netfilter
+> Subject: Re: Allow active and passive FTP connections
+>
+> On Thu, 2004-06-17 at 07:03, Sagara Wijetunga wrote:
+> > I have following issues relating to above rules:
+> > 1. For active FTP requests by remote clients, it drops
+> > the data connection request to the remote client from
+> > the server on the OUTPUT chain.
+> >
+> > 2. For passive FTP requests by remote clients, it
+> > drops the data connection request to the server from
+> > remote clients on the INPUT chain.
+>
+> Try:
+> insmod ip_conntrack_ftp
+>
+> HTH,
+> C
+
+-- 
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing on usenet and in e-mail?
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
