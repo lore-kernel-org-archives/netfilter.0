@@ -1,13 +1,13 @@
 From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Round Robin Load Balancing
-Date: Sat, 26 Jul 2003 20:30:53 -0400
+Subject: Re: new nat target extension --jump rt_lookup
+Date: Sat, 26 Jul 2003 20:40:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030727003053.GA2152@cannon.eng.us.uu.net>
-References: <200307261821.h6QILbOg023303@webmail1.magma.ca>
+Message-ID: <20030727004019.GB2152@cannon.eng.us.uu.net>
+References: <1059223007.1604.11.camel@drs0.manchotnetworks.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200307261821.h6QILbOg023303@webmail1.magma.ca>
+In-Reply-To: <1059223007.1604.11.camel@drs0.manchotnetworks.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,80 +19,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Javier Govea <jgovea@magma.ca>
-Cc: George Vieira <georgev@citadelcomputer.com.au>, Daniel Chemko <dchemko@smgtec.com>, Ramin Dousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
+To: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Sat, Jul 26, 2003 at 02:21:37PM -0400, Javier Govea wrote:
+On Sat, Jul 26, 2003 at 02:36:46PM +0200, lartc@manchotnetworks.net wrote:
 
-> Ok guys, I was finally able to compile and install the NTH patch. But, it's not working
-> for me...does anybody use it before succesfully???? 
+> hi all,
 > 
-> Here is again what i'm trying to do:
-> In my linux box i'm trying to masquerade some traffic comming from my LAN. The traffic is
-> masqueraded before it is forwarded on 4 ppp links to my ISP. I want to load balance my
-> traffic on my ppp links. By using the NTH patch, if in one of my hosts i open two browsers
-> at the same time, then none of them can load any web page!! if i open only one browser
-> then it is able to load a web page (but very slowly). 
+> just wondering what everyone would think about
+> 
+> iptables --append POSTROUTING or OUTPUT --table nat --jump rt_lookup
+> 
+> 
+> this would ask for a new route lookup as a packet traverses the nat
+> table (done once) and would enable the effective marking/routing of
+> locally generated packets, as well as determining a potentially new
+> out-interface after natting.
+> 
+> can anyone comment on potential problems/dangers/issues from such a
+> --jump?
 
-If you open two it also works but "very very very" slowly. Basically, Nth is
-not what you need, regardless the impression that you get by its name. You
-don't want to send packets to different interfaces just because the count of
-the packet mod 4 is something. There is much more involed than that specially
-with TCP. When you say "it works with one browser but very slow", it's because
-from 4 packets being sent out only one is sent the right way. This almost kills
-TCP...
+An infinite loop, maybe? Also, OUTPUT is before routing anyway...
 
+My 2c.
 Ramin
 
 > 
-> I'm not sure if NTH does not work well with the masquerade target (has anybody use NTH and
-> Masquerade succesfully????) or if i'm applying the wrong rule (below are my rules) or if
-> just the NTH patch doesn't really work....
+> cheers
 > 
-> any ideas or suggestions are all very welcome....
-> 
-> Here are my rules:
-> 
-> iptables -t nat -A POSTROUTING -m nth --every 4 --packet 0 -o ppp0 -j MASQUERADE
-> iptables -t nat -A POSTROUTING -m nth --every 4 --packet 1 -o ppp1 -j MASQUERADE
-> iptables -t nat -A POSTROUTING -m nth --every 4 --packet 2 -o ppp2 -j MASQUERADE
-> iptables -t nat -A POSTROUTING -m nth --every 4 --packet 3 -o ppp2 -j MASQUERADE
-> 
-> and this the default route i'm setting up with iproute2
-> 
-> ip route add default nexthop via 192.168.100.101 dev ppp0 weight 1 \
->                      nexthop via 192.168.100.101 dev ppp1 weight 1 \
->                      nexthop via 192.168.100.101 dev ppp2 weight 1 \
->                      nexthop via 192.168.100.101 dev ppp3 weight 1 
-> 
-> thanx to all
-> X
+> charles
 > 
 > 
-> On Jul 18, "George Vieira" <georgev@citadelcomputer.com.au> wrote:
-> > 
-> > It's the NTH patch. he he p-o-m.. 
-> > 
-> > Thanks,
-> > ____________________________________________
-> > George Vieira
-> > Systems Manager
-> > georgev@citadelcomputer.com.au
-> > 
-> > Citadel Computer Systems Pty Ltd
-> > <a href='http://www.citadelcomputer.com.au'>http://www.citadelcomputer.com.au</a>
-> >  
-> > 
-> > -----Original Message-----
-> > From: Daniel Chemko [mailto:dchemko@smgtec.com]
-> > Sent: Friday, July 18, 2003 8:37 AM
-> > To: Javier Govea; Ramin Dousti
-> > Cc: netfilter@lists.netfilter.org
-> > Subject: RE: Round Robin Load Balancing
-> > 
-> > 
-> > There is an extension that says something like every N packets, execute
-> > this rule. I forgot what it was called though.. *doh*
-> > 
-> > 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
 
