@@ -1,8 +1,8 @@
 From: Luis legar Garcia <legar1@dnrpa.gov.ar>
 Subject: Re: comments about lokkit default script (Faheem Mitha)
-Date: Sat, 13 Sep 2003 17:48:01 -0300
+Date: Sat, 13 Sep 2003 17:52:17 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030913174801.453a8db0.legar1@dnrpa.gov.ar>
+Message-ID: <20030913175217.315cbfdf.legar1@dnrpa.gov.ar>
 References: <20030913100149.1ee765e9.legar1@dnrpa.gov.ar>
 	<Pine.LNX.4.44.0309131350300.1054-100000@Chrestomanci>
 Mime-Version: 1.0
@@ -19,8 +19,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Faheem Mitha <faheem@email.unc.edu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 Dear Faheem,
 
