@@ -1,14 +1,12 @@
-From: "John Guntenaar" <john@guntenaar.nl>
-Subject: RE: per user IP adresses
-Date: Mon, 5 May 2003 10:30:06 +0200
+From: "John Berntsen" <john@pepco.no>
+Subject: Re: asymetric routing
+Date: Mon, 5 May 2003 10:31:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c312e0$8bf85d70$0200a8c0@WKSJOHN>
-References: <01CEA3A5B8B2D511890F0002A5870AEC0128AD85@EXCHANGE>
-Reply-To: <john@guntenaar.nl>
+Message-ID: <005501c312e0$c3dd9980$0c0a0a0a@JOHNNY>
+References: <Pine.LNX.4.33.0305051000030.607-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC0128AD85@EXCHANGE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,88 +17,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Khanh Tran' <khanh@slc.edu>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.netfilter.org
 
-That won't work either because the IP's are aliased, so the all have the
-same MAC address.
+Hi
 
-I just want that userid 1234 can't use IP 1.2.3.4 BUT userid 1235 CAN
-use that IP to bind for things like IRC sessions (for like a vhost or
-something).
+All the clients were coming from a frame link router on the internal
+lan, I adjusted the routing there and it works fine, the linux
+firewall never have to deal with these packets.
 
------Oorspronkelijk bericht-----
-Van: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] Namens Khanh Tran
-Verzonden: maandag 5 mei 2003 2:10
-Aan: john@guntenaar.nl
-CC: netfilter@lists.netfilter.org
-Onderwerp: RE: per user IP adresses
+I tried to set the linux firewall as the deafult route to make it see
+the reply packets wich it did, but still this did not work,
+maybe the pptp patch where interfering i dont know.
 
-I think what you want to do is continue to use your rule that drops all
-IRC
-packets, but then add a rule that will -m --mac yo:ur:ma:ca:dd:re:ss and
--j
-ACCEPT for IRC ports.  Remember to put the match rule for your MAC
-address
-after the drop rule since the rules are processed in order!
+I also tried to create another routing table like this:
 
+ip rule add from 192.168.0.0/16 to $pptpsrv table pptp
+ip route add $pptpsrv via 192.168.1.2 table pptp
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
+but still the pptp traffic did not work.
 
------Original Message-----
-From: John Guntenaar [mailto:john@guntenaar.nl]
-Sent: Sunday, May 04, 2003 3:19 PM
-To: netfilter@lists.netfilter.org
-Subject: RE: per user IP adresses
+I belive that what I was trying to achive is not possible at
+the moment for pptp, with http pop etc. this works fine
+but pptp ...................
+
+Thanks for answering though.
+
+Mvh
+John Berntsen / Pepco AS
+----- Original Message -----
+From: "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu>
+To: "John Berntsen" <john@pepco.no>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Monday, May 05, 2003 10:02 AM
+Subject: Re: asymetric routing
 
 
-I think you didn't understand my question,
-
-Ofcourse I can just set open that IP address, but I only want it to be
-open for my own user (so the other users CAN'T use the IP)
-
-I think I need things like -m owner --owner-uid or something but I can't
-figure out a good rule, I get errors on everything I try :(
-
-John
-
------Oorspronkelijk bericht-----
-Van: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] Namens SaVaGE
-Verzonden: zondag 4 mei 2003 21:19
-Aan: netfilter@lists.netfilter.org
-Onderwerp: Re: per user IP adresses
-
-Op zondag 4 mei 2003 20:38, schreef John Guntenaar:
-> Hello,
+> Hi,
 >
-> I have a linux machine with 4 IP addresses, I have a couple of friends
-> on that machine and I don't allow them to use IRC, so I simply blocked
-> the IRC ports, but I want to use IRC from the 4th IP without the other
-> users being able to use it. I think I can reach that goal by using the
-> owner match facility of iptables, though I can't find any good
-examples
-> with google, is it correct and can somebody post an example?
+> On Mon, 28 Apr 2003, John Berntsen wrote:
 >
-> Thanks in advantage,
+> > Everything worked fine, except for the pptp vpn against that one server.
+> >
+> > Clients trying this are nt4 boxes, and traffic works like this as far
+> > as i can understand: client - linux-gateway - cisco router - pptp
+> > server and back like: pptp server - nated ip on cisco - client
 >
-> John
-
-this one is very easy , you can use the same rule , you used before ,
-but now 
-you say :     ..........     -s ! $4th_ip -j DROP
-
-
-Pascal
-
-
-
-
-
-
-
+> That is the problem I think: the linux gateway does not see the reply
+> packets, which is needed for conntrack/NAT to work properly.
+>
+> [Please wrap your lines.]
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
+>
 
 
