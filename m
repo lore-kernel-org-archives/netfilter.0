@@ -1,13 +1,13 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: help bootp filters
-Date: Mon, 16 Jun 2003 11:40:43 -0400
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Help on this iptable script
+Date: Sun, 15 Jun 2003 22:52:09 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030616154043.GC30628@cannon.eng.us.uu.net>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A019285@wardrive.citadelcomputer.com.au> <003901c33408$8b802640$0101a8c0@cerbere>
+Message-ID: <000f01c333b2$47c194d0$8c01a8c0@RSUNDARAM>
+References: <88116A11E9DFD411870900508BEC3831803B4B@CPQ01>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000C_01C33390.C09DA550"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <003901c33408$8b802640$0101a8c0@cerbere>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +17,253 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Yoann <yoann.juet@ifrance.com>
-Cc: George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
+To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-If I recall correctly some DHCP servers operate on raw IP sockets
-and bypass the normal path of the packet traversal. It takes the
-requests off the wire and puts the replies on the wire. You can look
-at the sources of your DHCP server to confirm this observation...
+This is a multi-part message in MIME format.
 
-Ramin
+------=_NextPart_000_000C_01C33390.C09DA550
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+RE: Using IPTABLES, cannot go to External InterfaceHi All,
+
+Sorry for asking this question again.  I have machine with single =
+interface card, We want to black all incoming, outgoing package other =
+than 21,22,23,53,80,2020,3306,8080 ports.
+
+When default OUTPUT policy is ACCEPT every thing working fine.
+
+$IPT -P OUTPUT ACCEPT
 
 
-> > Hi,
-> >
-> > I experiment trouble with netfilter/iptables on rh9. I configured a server
-> with the following rules just to accept, for the moment, SSH sessions,
-> everything else is dropped.
-> >
-> > $IPTABLES -P INPUT DROP
-> > $IPTABLES -P FORWARD DROP
-> > $IPTABLES -P OUTPUT DROP
-> >
-> > $IPTABLES -A INPUT -i $LO_IFACE -j ACCEPT
-> > $IPTABLES -A OUTPUT -o $LO_IFACE -j ACCEPT
-> >
-> > $IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j
-> ACCEPT
-> > $IPTABLES -A OUTPUT -p tcp --sport 22 -m state --state ESTABLISHED -j
-> ACCEPT
-> >
-> > $IPTABLES -A INPUT -j LOG --log-level warning --log-prefix "DROP input
-> packet died: "
-> > $IPTABLES -A OUTPUT -j LOG --log-level warning --log-prefix "DROP output
-> packet died: "
-> >
-> > It works fine, excepted for DHCP/BOOTP requests. In fact, the server
-> (single interface with IP address 192.168.2.110) is also a DHCP server and
-> responds to BOOTP requests as shown below :
-> >
-> > [root@pluton root]# tcpdump port 67 or 68
-> > tcpdump: listening on eth0
-> > 17:10:30.925605 0.0.0.0.bootpc > 255.255.255.255.bootps:  xid:0x9a499735
-> flags:0x8000 [|bootp]
-> > 17:10:31.005330 192.168.2.1.bootps > 255.255.255.255.bootpc:
-> xid:0x9a499735 flags:0x8000 Y:192.168.2.110 S:192.168.2.1 ether
-> 0:90:f5:c:80:a0 [|bootp] [tos 0x10]
-> >
-> > netfilter log messages are show below :
-> >
-> > Jun 12 17:28:29 pluton kernel: DROP input packet died: IN=eth0 OUT=
-> MAC=ff:ff:ff:ff:ff:ff:00:90:f5:0c:80:a0:08:00 SRC=0.0.0.0
-> DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=128 ID=55877 PROTO=UDP
-> SPT=68 DPT=67 LEN=308
-> > Jun 12 17:28:29 pluton kernel: DROP output packet died: IN= OUT=eth0
-> SRC=192.168.2.1 DST=192.168.2.110 LEN=48 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF
-> PROTO=ICMP TYPE=8 CODE=0 ID=63703 SEQ=0
-> >
-> > Can you explain me why a BOOTP response is sent even though such packets
-> (seem to be) dropped by iptables rules ?
-> >
-> > Many thanks,
-> > Regards,
-> > Yoann.
-> >
-> >
-> 
-> 
-> _____________________________________________________________________
-> Envie de discuter en "live" avec vos amis ? T?l?charger MSN Messenger
-> http://www.ifrance.com/_reloc/m la 1?re messagerie instantan?e de France
-> 
+If I make default OUTPUT policy is DROP, I was not able login using ssh, =
+also iptables -L command takes about 3 minutes to display the result.
+
+$IPT -P OUTPUT DROP
+
+What I am dong wrong? Any tips to improve this script
+
+
+Thanks
+-SR
+
+#!/bin/bash
+
+#set -xv
+
+INT=3D"eth0"
+
+LO=3D"lo"
+
+ANY=3D"Any/0"
+
+PRIVP=3D"0:1023"
+
+UNPRI=3D"1024:65535"
+
+IN_PORTS=3D"21,22,23,53,80,2020,3306,8080"
+
+OUT_PORTS=3D"21,22,23,53,80,2020,3306,8080"
+
+IPT=3D"/sbin/iptables"
+
+# Set the Default Policies
+
+$IPT -P INPUT DROP
+
+$IPT -P OUTPUT ACCEPT
+
+$IPT -P FORWARD DROP
+
+$IPT -F
+
+$IPT -X icmp_packets
+
+$IPT -X tcp_packets
+
+$IPT -X udp_packets
+
+
+#Local Loopback Address
+
+$IPT -A INPUT -i $LO -j ACCEPT
+
+$IPT -A OUTPUT -o $LO -j ACCEPT
+
+$IPT -N icmp_packets
+
+$IPT -N tcp_packets
+
+$IPT -N udp_packets
+
+# Filter untrusted traffic
+
+$IPT -A INPUT -i eth0 -p icmp -j icmp_packets
+
+$IPT -A INPUT -i eth0 -p tcp -j tcp_packets
+
+$IPT -A INPUT -i eth0 -p udp -j udp_packets
+
+# Trust traffic we initiated from untrusted networks.
+
+$IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Log dropped traffic.
+
+$IPT -A INPUT -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix =
+"IPT INPUT packet died: " --log-level 6
+
+# Allow outbound traffic.=20
+
+$IPT -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+$IPT -A OUTPUT -p tcp -m multiport --source-ports ${OUT_PORTS} -j ACCEPT
+
+$IPT -A OUTPUT -p udp -m multiport --source-ports ${OUT_PORTS} -j ACCEPT
+
+# Log dropped traffic.
+
+$IPT -A OUTPUT -m limit --limit 3/min --limit-burst 3 -j LOG =
+--log-prefix "IPT OUTPUT packet died: " --log-level 6
+
+
+
+# Allow incoming ports=20
+
+$IPT -A tcp_packets -p tcp -m multiport --destination-ports ${IN_PORTS} =
+-j ACCEPT
+
+## Manage the following ICMP traffic .
+
+$IPT -A icmp_packets -p icmp -m icmp --icmp-type 0 -j ACCEPT
+
+$IPT -A icmp_packets -p icmp -m icmp --icmp-type 3 -j ACCEPT
+
+$IPT -A icmp_packets -p icmp -m icmp --icmp-type 5 -j ACCEPT
+
+$IPT -A icmp_packets -p icmp -m icmp --icmp-type 11 -j ACCEPT
+
+$IPT -A icmp_packets -i eth1 -p icmp -m icmp --icmp-type 8 -j ACCEPT
+
+$IPT -A icmp_packets -i lo -p icmp -m icmp --icmp-type 8 -j ACCEPT
+
+# Allow potentially untracked valid DNS traffic.
+
+$IPT -A udp_packets -p udp -m udp --sport 53 -j ACCEPT
+
+
+
+------=_NextPart_000_000C_01C33390.C09DA550
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>RE: Using IPTABLES, cannot go to External =
+Interface</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DUTF-8">
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi All,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Sorry for asking this question =
+again.&nbsp; I have=20
+machine with single interface card, We want to black all incoming, =
+outgoing=20
+package other than <FONT face=3D"Times New =
+Roman">21,22,23,53,80,2020,3306,8080=20
+ports.</FONT></FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>When default&nbsp;OUTPUT policy is =
+ACCEPT every=20
+thing working fine.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV>$IPT -P OUTPUT ACCEPT</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>If I make default OUTPUT policy is =
+DROP, I was not=20
+able login using ssh, also iptables -L command takes about 3 minutes to =
+display=20
+the result.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV>$IPT -P OUTPUT DROP</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>What I am dong wrong? Any tips to =
+improve this=20
+script</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>-SR</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>
+<P>#!/bin/bash</P>
+<P>#set -xv</P>
+<P>INT=3D"eth0"</P>
+<P>LO=3D"lo"</P>
+<P>ANY=3D"Any/0"</P>
+<P>PRIVP=3D"0:1023"</P>
+<P>UNPRI=3D"1024:65535"</P>
+<P>IN_PORTS=3D"21,22,23,53,80,2020,3306,8080"</P>
+<P>OUT_PORTS=3D"21,22,23,53,80,2020,3306,8080"</P>
+<P>IPT=3D"/sbin/iptables"</P>
+<P># Set the Default Policies</P>
+<P>$IPT -P INPUT DROP</P>
+<P>$IPT -P OUTPUT ACCEPT</P>
+<P>$IPT -P FORWARD DROP</P>
+<P>$IPT -F</P>
+<P>$IPT -X icmp_packets</P>
+<P>$IPT -X tcp_packets</P>
+<P>$IPT -X udp_packets</P>
+<P></P>
+<P>#Local Loopback Address</P>
+<P>$IPT -A INPUT -i $LO -j ACCEPT</P>
+<P>$IPT -A OUTPUT -o $LO -j ACCEPT</P>
+<P>$IPT -N icmp_packets</P>
+<P>$IPT -N tcp_packets</P>
+<P>$IPT -N udp_packets</P>
+<P># Filter untrusted traffic</P>
+<P>$IPT -A INPUT -i eth0 -p icmp -j icmp_packets</P>
+<P>$IPT -A INPUT -i eth0 -p tcp -j tcp_packets</P>
+<P>$IPT -A INPUT -i eth0 -p udp -j udp_packets</P>
+<P># Trust traffic we initiated from untrusted networks.</P>
+<P>$IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT</P>
+<P># Log dropped traffic.</P>
+<P>$IPT -A INPUT -m limit --limit 3/min --limit-burst 3 -j LOG =
+--log-prefix "IPT=20
+INPUT packet died: " --log-level 6</P>
+<P># Allow outbound traffic. </P>
+<P>$IPT -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT</P>
+<P>$IPT -A OUTPUT -p tcp -m multiport --source-ports ${OUT_PORTS} -j =
+ACCEPT</P>
+<P>$IPT -A OUTPUT -p udp -m multiport --source-ports ${OUT_PORTS} -j =
+ACCEPT</P>
+<P># Log dropped traffic.</P>
+<P>$IPT -A OUTPUT -m limit --limit 3/min --limit-burst 3 -j LOG =
+--log-prefix=20
+"IPT OUTPUT packet died: " --log-level 6</P>
+<P><FONT face=3DArial></FONT>&nbsp;</P>
+<P># Allow incoming ports </P>
+<P>$IPT -A tcp_packets -p tcp -m multiport --destination-ports =
+${IN_PORTS} -j=20
+ACCEPT</P>
+<P>## Manage the following ICMP traffic .</P>
+<P>$IPT -A icmp_packets -p icmp -m icmp --icmp-type 0 -j ACCEPT</P>
+<P>$IPT -A icmp_packets -p icmp -m icmp --icmp-type 3 -j ACCEPT</P>
+<P>$IPT -A icmp_packets -p icmp -m icmp --icmp-type 5 -j ACCEPT</P>
+<P>$IPT -A icmp_packets -p icmp -m icmp --icmp-type 11 -j ACCEPT</P>
+<P>$IPT -A icmp_packets -i eth1 -p icmp -m icmp --icmp-type 8 -j =
+ACCEPT</P>
+<P>$IPT -A icmp_packets -i lo -p icmp -m icmp --icmp-type 8 -j =
+ACCEPT</P>
+<P># Allow potentially untracked valid DNS traffic.</P>
+<P>$IPT -A udp_packets -p udp -m udp --sport 53 -j ACCEPT</P>
+<P><FONT face=3DArial></FONT>&nbsp;</P></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000C_01C33390.C09DA550--
+
 
