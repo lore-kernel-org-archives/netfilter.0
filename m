@@ -1,12 +1,12 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: RE: samba and iptables
-Date: Fri, 17 Oct 2003 17:56:44 +0800
+From: "Gaby Schilders" <G.Schilders@ibfd.org>
+Subject: RE: DNAT +2 uplinks +route=GO
+Date: Fri, 17 Oct 2003 12:02:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8D5D@overlord.overturemedia.com>
+Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E129603B@ibfdmail.ibfd.oin>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,79 +17,84 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+To: netfilter list <netfilter@lists.netfilter.org>
+
+I'm sorry for replying to myself, but I've finally figured out what =
+caused the problem with single path default route and two uplinks: =
+rp_filter.
+
+So basically I suffered from the standard ailment of so many before: =
+forgot to read the fine print in the manual.
+
+I'll propose to put a mention of this in the Linux advanced routing & tc =
+howto to the writers.
+
+Gaby Schilders
+IBFD network admin
+
+-----Original Message-----
+From: Gaby Schilders=20
+Sent: donderdag 16 oktober 2003 19:31
+To: netfilter list
+Subject: DNAT +2 uplinks +route=3DGO
 
 
-Here is what I did:
-190.200.5.51 - my computer
-190.200.5.235 - windows domain controller
+The lowdown:
 
-$IPTABLES -A INPUT -p tcp -s 190.200.5.51 --dport 137:139 -j ACCEPT
-$IPTABLES -A INPUT -p udp -s 190.200.5.51 --dport 137:139 -j ACCEPT
-$IPTABLES -A INPUT -p udp -s 190.200.5.235 --sport 137:139 -j ACCEPT
+Repeat situation description:
+- 2 uplinks with own public address space
+- 1 internal network with private address space
 
-I forgot to allow the windows domain controller to reply back to the =
-samba server.
+Goal: do DNAT through address in both public ranges, converging on =
+internal hosts:
+ExtIP1 > IntIP1
+ExtIP2 > IntIP1
 
-Thanks.
+Everything is done in iptables, nothing was changed in the standard =
+route/rules setup.
 
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
+Trick used:
+iptables -t nat -A PREROUTING -i $ExtNet1 -p tcp -d =
+$ExtAddress1InternalHost \
+-j DNAT --to-destination $IntAddressInternalHost
 
+iptables -t nat -A PREROUTING -i $ExtNet2 -p tcp -d =
+$ExtAddress2InternalHost \
+-j DNAT --to-destination $IntAddressInternalHost
 
+This part is easy and works. The return path is the problem.
 
-> -----Original Message-----
-> From: Rob Sterenborg [mailto:rob@sterenborg.info]
-> Sent: Friday, October 17, 2003 5:32 PM
-> To: Fritz Mesedilla; 'Netfilter Mailing List (E-mail)'
-> Subject: RE: samba and iptables
->=20
->=20
-> > I still can't seem to make samba and iptables work properly.
-> >=20
-> > First connection - I need to turn iptables off
-> > Succeeding connections - I can turn iptables on
-> >=20
-> > I have done this already:
-> > $IPTABLES -A INPUT -p tcp -s 190.200.5.51 --dport 137:139 -j ACCEPT
-> > $IPTABLES -A INPUT -p udp -s 190.200.5.51 --dport 137:139 -j ACCEPT
-> > $IPTABLES -A INPUT -p tcp -s 190.200.5.51 --dport 445 -j ACCEPT
-> >=20
-> > It's being blocked in the 1st attempt so I need to turn=20
-> > iptables off to make it work.
-> > Based on "iptables -nvL" the 3 lines above produce accepted packets.
-> > Now what else do I need to add to make the 1st transaction to work?
-> >=20
-> > By the way, I have 2 network cards. How do I know which one=20
-> > is being used by samba?
->=20
-> Do you also have something like :
-> $IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
->=20
->=20
-> Gr,
-> Rob
->=20
->=20
+Solution:
 
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
+iptables -t mangel -A POSTROUTING -s $IntNet/IntMask -m conntrack \
+--ctorigdst $ExtAddressRange1/ExtAddressRange1Mask \
+--ctstate ESTABLISHED,RELATED
+-j ROUTE --gw GWExtNet1 --oif IFExtNet1 --continue
 
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
+iptables -t mangel -A POSTROUTING -s $IntNet/IntMask -m conntrack \
+--ctorigdst $ExtAddressRange2/ExtAddressRange2Mask \
+--ctstate ESTABLISHED,RELATED
+-j ROUTE --gw GWExtNet2 --oif IFExtNet2 --continue
+
+Caveats:
+To get routing working, you _must_ have Equal-cost-multipath routing =
+enabled in the kernel and you must set up a multipath route over both =
+links. If someone can explain to me why I would be very thankfull. =
+Simply adding another default route with different metric won't work.
+
+You need a recent p-o-m and iptables to use the --continue. You _need_ =
+the --continue or UnDNATting will not be performed (you jump out on the =
+-j ROUTE).
+
+If you want even more flexibility, you can use the other suggested =
+route: instead of -j ROUTE, use -j MARK x where x is different for each =
+uplink to match. You can then proceed to use iproute2+tc and 'rules' =
+based on fwmark to do even more funky stuff.
+
+Thanks for all the help and suggestions, I hope this helps some other =
+poor schmuck who is at a loss.
+
+Gaby Schilders
+IBFD network admin
 
 
