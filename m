@@ -1,11 +1,13 @@
-From: "XMundo - Soporte Tecnico" <soporte@xmundo.net>
-Subject: Mirror!!
-Date: Thu, 19 Feb 2004 10:36:51 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: PPTP port forwarding
+Date: Thu, 19 Feb 2004 13:43:47 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <108e01c3f6ed$6fb6aa30$fe01000a@estacion1>
+Message-ID: <200402191343.47231.Antony@Soft-Solutions.co.uk>
+References: <4034A3CF.20307@able.be> <200402191204.57391.Antony@Soft-Solutions.co.uk> <4034BAF6.5030508@able.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4034BAF6.5030508@able.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +20,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-o the person responsible for managing the mirrors.
+On Thursday 19 February 2004 1:32 pm, Wim Ceulemans wrote:
 
-I have been sending messages for almost a month to the following emails:
+> Antony
+>
+> Ok, thanks, but this setup with the NATed router worked with kernel
+> 2.2.17, so where is the difference?
 
-coreteam@netfilter.org
-webmaster@netfilter.org
-netfilter-mirrors@lists.netfilter.org
-solt@dns.toxicfilms.tv
-laforge@netfilter.org
+You were using netfilter/iptables under kernel 2.2.17 ???
 
-And I receive no answer to the request I'm making. 
+I think in fact that would have been ipchains, which works very differently.
 
-Could you read netfilter-mirrors and make the change I'm asking you for?
+Regards,
 
-Thanks for considering my message.
+Antony.
 
-Regards.
+-- 
+This is not a rehearsal.
+This is Real Life.
 
-Cristian Merz
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
