@@ -1,13 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: redirecting traffic through firewall problem
-Date: Wed, 19 Mar 2003 13:17:56 +0100
+From: MOUDARIR Mohamed <moudarir@Richbond.ma>
+Subject: H323 module installing and copiling prob
+Date: Wed, 19 Mar 2003 11:58:46 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019C6B@hslex01.hslbz.local>
-References: <244640-22003331992321632@M2W069.mail2web.com>
+Message-ID: <14C5057BC852D611BAC400E0299AA10F127444@MAILSERV>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <244640-22003331992321632@M2W069.mail2web.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,86 +15,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> my mail goal here is to 
-> 
-> 1) setup a firewall that enables internet access from the internal LAN
-> 2) redirect inbound http and smtp traffic from the external 
-> network to web
-> servers and mail servers on the lan
-> 
-> for security I will say here that the external subnet is 
-> 192.168.1.* eth1
-> the internal network will be described here as 192.168.0.* eth0
-> 
-> The firewall is assigned to 192.168.1.33
-> with three extra ips that are aliased to the same card using ->
-> 
-> ip addr add 192.168.1.34/27 broadcast 255.255.255.224 dev eth1
-> ip addr add 192.168.1.35/27 broadcast 255.255.255.224 dev eth1
-> ip addr add 192.168.1.36/27 broadcast 255.255.255.224 dev eth1
-> 
-> inbound mail to the company is sent to 192.168.1.34 from the 
-> isp's smart mail host
-> and redirected to 192.168.0.7 redhat linux 7.3 mail server 
-> running sendmail
-> 
-> the company hosts two web sites on the LAN redhat 7.3 linux apache web
-> server.
-> the addresses below are aliased on that server for the web traffic
-> 192.168.0.220 website 1
-> 192.168.0.221 website 2
+Hi all,
+I want to use netmeeting over an iptables firewal version 1.2.3 ( redhat
+7.2, kernel 2.4 )
+I use this command to update iptables :
+	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login 
+	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co
+netfilter/userspace netfilter/patch-o-matic 
+And to make dependecies :
+	# cd /usr/src/linux/ 
+	# make dep 
+And cd ton ~/netfilter/patch-o-matic/ :
+	./runme extra
+and  # ./runme --batch extra/h323-conntrack-nat.patch
+After that, i add H323 module to kernel :#  make menuconfig
+And compile iptables :
+	# cd ~/netfilter/userspace/
+	# make all install
+So i obtain this message :
+Making dependencies: please wait...
+cc -O2 -Wall -Wunused -I/usr/src/linux-2.4.7-10/include -Iinclude/
+-DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_ah_sh.o -c
+extensions/libipt_ah.c
+ld -shared -o extensions/libipt_ah.so extensions/libipt_ah_sh.o
+cc -O2 -Wall -Wunused -I/usr/src/linux-2.4.7-10/include -Iinclude/
+-DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_conntrack_sh.o -c
+extensions/libipt_conntrack.c
+In file included from extensions/libipt_conntrack.c:14:
+include/linux/netfilter_ipv4/ipt_conntrack.h:28: `IP_CT_DIR_MAX' undeclared
+here (not in a function)
+include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX' undeclared
+here (not in a function)
+include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX' undeclared
+here (not in a function)
+extensions/libipt_conntrack.c: In function `parse_status':
+extensions/libipt_conntrack.c:103: `IPS_EXPECTED' undeclared (first use in
+this function)
+extensions/libipt_conntrack.c:103: (Each undeclared identifier is reported
+only once
+extensions/libipt_conntrack.c:103: for each function it appears in.)
+extensions/libipt_conntrack.c:105: `IPS_SEEN_REPLY' undeclared (first use in
+this function)
+extensions/libipt_conntrack.c:107: `IPS_ASSURED' undeclared (first use in
+this function)
+extensions/libipt_conntrack.c: In function `parse':
+extensions/libipt_conntrack.c:202: `IP_CT_DIR_ORIGINAL' undeclared (first
+use in this function)
+extensions/libipt_conntrack.c:259: `IP_CT_DIR_REPLY' undeclared (first use
+in this function)
+extensions/libipt_conntrack.c: In function `print_status':
+extensions/libipt_conntrack.c:364: `IPS_EXPECTED' undeclared (first use in
+this function)
+extensions/libipt_conntrack.c:368: `IPS_SEEN_REPLY' undeclared (first use in
+this function)
+extensions/libipt_conntrack.c:372: `IPS_ASSURED' undeclared (first use in
+this function)
+extensions/libipt_conntrack.c: In function `matchinfo_print':
+extensions/libipt_conntrack.c:420: `IP_CT_DIR_ORIGINAL' undeclared (first
+use in this function)
+extensions/libipt_conntrack.c:440: `IP_CT_DIR_REPLY' undeclared (first use
+in this function)
+make: *** [extensions/libipt_conntrack_sh.o] Error 1
 
-So, what you want is :
-192.168.1.34 -> 192.168.0.7
-192.168.1.35 -> 192.168.0.220
-192.168.1.35 -> 192.168.0.220
-
-Where :
-eth0 : 192.168.1.33
-eth1 : 192.168.0.?
-
-This may be a start :
-
-----
-
-# Disable forwarding
-echo 0 > /proc/sys/net/ipv4/ip_forward
-
-# Default things
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-# Accept connections from LAN to INET
-iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT
-
-# Accept connections for specific services from INET to LAN
-iptables -A FORWARD -i eth0 -o eth1 -d 192.168.0.7 -p tcp --dport 25 -j
-ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -d 192.168.0.220 -p tcp --dport 80
--j ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -d 192.168.0.221 -p tcp --dport 80
--j ACCEPT
-
-# SNAT connections from LAN to INET
-iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -j SNAT
---to-source 192.168.1.33
-
-# DNAT specific connections from INET to LAN
-iptables -t nat -A PREROUTING -i eth1 -d 192.168.1.34 -j DNAT
---to-destination 192.168.0.7
-iptables -t nat -A PREROUTING -i eth1 -d 192.168.1.35 -j DNAT
---to-destination 192.168.0.220
-iptables -t nat -A PREROUTING -i eth1 -d 192.168.1.36 -j DNAT
---to-destination 192.168.0.221
-
-# Enable forwarding
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
----
-
-
-Rob
-
+Is there any probleme, and how can i delete the old version of iptables.
+Thanks.
 
