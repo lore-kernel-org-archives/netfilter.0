@@ -1,14 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Chris Wilson <chris@netservers.co.uk>
 Subject: Re: DNAT question..
-Date: 24 Jul 2003 16:16:52 +0200
+Date: Thu, 24 Jul 2003 15:15:10 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059056211.1168.40.camel@elendil.intranet.cartel-securite.net>
-References: <Pine.LNX.4.44.0307241040530.20694-100000@localhost>
-	 <3F1FE12B.EB91AB1B@goyaike.com>
+Message-ID: <Pine.LNX.4.44.0307241510310.20694-100000@localhost>
+References: <3F1FDDFB.469242E1@goyaike.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F1FE12B.EB91AB1B@goyaike.com>
+In-Reply-To: <3F1FDDFB.469242E1@goyaike.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: "Gonzalez, Federico" <fgonzalez@goyaike.com>
-Cc: netfilter@lists.netfilter.org
+Cc: Rio Martin <rio@martin.mu>, Netfilter <netfilter@lists.netfilter.org>
 
-Le jeu 24/07/2003 =E0 15:37, Gonzalez, Federico a =E9crit :
->    I think the problem is in the destination IP address, you have to us=
-e the
+Hi Federico,
+
+>    I think the problem is in the destination IP address, you have to use the
 > external IP, so i think the rule should be:
+> 
 > iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.0/24 -d 211.1.1.10
 >    --dport 80 -j SNAT --to 192.168.1.1
 
-Don't think so. In POSTROUTING chain, DNAT has already occured, then
-original destination (211.1.1.10) has already been changed to
-192.168.1.2.
+I don't think that's true in this case. As far as I know, after the
+destination address has been rewritten in PREROUTING, all subsequent hooks
+(FORWARD and POSTROUTING) will see the new destination address, not the
+original. But please correct me if I'm wrong.
 
-Problem must sit elsewhere (next to the truth out there) ;)
+[By the way, you sent your reply to me, not to Rio or the Netfilter list.]
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
+
 
