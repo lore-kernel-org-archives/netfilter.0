@@ -1,13 +1,15 @@
-From: =?ISO-8859-15?Q?J=F6rg_Sch=FCtter?= <netfilter@schuetter.org>
-Subject: Re: extreme rDNS lag with iptables
-Date: Tue, 4 Nov 2003 21:47:42 +0100
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Memory leak?
+Date: Tue, 4 Nov 2003 17:18:29 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031104214742.18b1ef85.netfilter@schuetter.org>
-References: <E1AH7km-00008y-AB@aphex.cyberpixels.com>
+Message-ID: <200311041718.29027.Alistair@nerdnet.ca>
+References: <000301c3a2e2$ce7e05e0$12dfa643@tichael>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1AH7km-00008y-AB@aphex.cyberpixels.com>
+In-Reply-To: <000301c3a2e2$ce7e05e0$12dfa643@tichael>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +19,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Michael Friedhoff <michael@profindy.com>, netfilter@lists.netfilter.org
 
-Hallo Ben,
+On November 4, 2003 09:49 am, Michael Friedhoff wrote:
+> Does anyone know of any memory leaks in the
+> netfilter code?
 
-On Tue, 4 Nov 2003 15:27:04 -0500
-"Ben" <nigma@nigma.info> wrote:
+	Netfilter in general is not known to have any terrible memory leaks, but you 
+dont tell us which version or sufficient detail of which modules you are 
+using.
 
-> Hello,
->=20
-> =20
->=20
-> I'm new to this list, so forgive me is I seem newbish :-)
->=20
-> =20
->=20
-> The problem I am having that when I turn on iptables, I see rDNS lag
-> to about 30 seconds.  I see this happen with two programs I am using,
-> proftpd and uwimap.  Both work fine with flush tables, but when I run
-> the following
-[...]
+>
+> I have a dedicated dual 667 running as a SNAT server.
+> It has two Intel Pro100S adapter.  This is a RedHat 9
+> box.  I am running kernel version 2.4.20-8smp.  I know
+> it is not as current as what it should be.  This is a
+> production box and have not had the time to upgrade the
+> kernel.  I have noticed a steady decrease in the amount
+> of memory being utilized.
+>
 
-try to reject ident connections instead of dropping them () which is the
-default in your policy.
+	Are you seeing any issues that indicate the box is in distress?
+
+	Linux by its memory management nature will utilize all the ram in a system.  
+given sufficient time any system will end up with almost no  apparently  free 
+ram.  Should an application require it the kernel will free appropriate ram 
+from caching duties.
 
 
-J=F6rg
+> [root@nat root]# ps -A
+>   PID TTY          TIME CMD
+>     1 ?        00:00:06 init
+>     2 ?        00:00:00 migration/0
+>     3 ?        00:00:00 migration/1
+>     4 ?        00:00:00 keventd
+>     5 ?        00:00:00 ksoftirqd_CPU0
+>     6 ?        00:00:00 ksoftirqd_CPU1
+>    11 ?        00:00:00 bdflush
+>     7 ?        00:00:01 kswapd
+>     8 ?        00:00:00 kscand/DMA
+>     9 ?        00:00:56 kscand/Normal
+>    10 ?        00:00:00 kscand/HighMem
+>    12 ?        00:00:00 kupdated
+>    13 ?        00:00:00 mdrecoveryd
+>    21 ?        00:00:05 kjournald
+>    79 ?        00:00:00 khubd
+>  1239 ?        00:00:00 kjournald
+>  1619 ?        00:00:07 syslogd
+>  1623 ?        00:00:00 klogd
+>  1641 ?        00:00:00 portmap
+>  1968 ?        00:00:00 sshd
+>  2006 ?        00:00:00 gpm
+>  2053 ?        00:00:00 crond
+>  2286 ?        00:00:00 atd
+>  2345 tty2     00:00:00 mingetty
+>  2346 tty3     00:00:00 mingetty
+>  2347 tty4     00:00:00 mingetty
+>  2348 tty5     00:00:00 mingetty
+>  2352 tty6     00:00:00 mingetty
+>  4596 tty1     00:00:00 mingetty
+>  5013 ?        00:02:05 sshd
+>  5016 pts/0    00:00:00 bash
+>  5662 pts/0    00:00:00 ps
+>
+> I am not positive that netfilter is the cause for
+> the memory loss, but it is the only purpose of the
+> machine.  In the last 12 hours, the amout of
+> available memory has decreased by 1.5MB.  I know
+> that isn't much, but since this is a production box,
+> I would rather not have to reboot it constantly.
+>
+	You shouldn't need to do this unless there are problems with connecting to 
+the box or there are demonstrable problems with client connections.
 
---=20
-J=F6rg Sch=FCtter           http://www.lug-untermain.de/
-joerg@schuetter.org     http://www.schuetter.org/joerg/
-ICQ: 298982789          http://mypenguin.bei.t-online.de/
+   Your logs will tell you that there are issues should there be problems.  
+Please post those messages should you get them.
 
+> --Michael Friedhoff
+
+-- 
+
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
