@@ -1,13 +1,11 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: --limit 5/m doesn't work
-Date: Wed, 23 Mar 2005 08:44:44 -0500
-Message-ID: <1111585483.4513.12.camel@hubcap.ljm.dom>
-References: <000001c52f53$ed3f3220$1500a8c0@itasam>
-	<558224e30503222255158832bc@mail.gmail.com>
-	<558224e305032300217c4772c9@mail.gmail.com>
+Subject: Re: MARK
+Date: Wed, 23 Mar 2005 08:57:46 -0500
+Message-ID: <1111586266.4513.19.camel@hubcap.ljm.dom>
+References: <42409559.7080001@uplink-verein.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <558224e305032300217c4772c9@mail.gmail.com>
+In-Reply-To: <42409559.7080001@uplink-verein.ch>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,21 +19,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2005-03-23 at 03:21, ASHISH wrote:
-> The rule that you have mentioned will "Accept" the first five matches.
+On Tue, 2005-03-22 at 16:59, Moritz Gartenmeister wrote:
+> hi all
+> 
+> i got an problem with the MARK target:
+> 
+> $IPTABLES -t mangle -A PREROUTING -p ICMP -s 0/0 --icmp-type 8 -j MARK --set-mark 1 # ECHO
+> 
+> gives the following error:
+> iptables: Invalid argument
 
-to split hairs here--the way the OP has the rule written:
+the syntax of that rule is fine.
 
-iptables -A INPUT -i eth0 -m limit --limit 5/m --limit-burst 5 -j ACCEPT
+> ipt_MARK is loaded. (and also ipt_mark, just in case ;-) )
+> 
+> i once was running this target without any problems. but i changed to connmark (not my best idea).
+> 
+> so do i have a typo? it seems for me exactly the way as the docu and the source want it to be...
+> iptables 1.2.11
+> 
+> btw, it runs perfectly with:
+> 
+> $IPTABLES -t mangle -A PREROUTING -p ICMP -s 0/0 --icmp-type 8 -j CONNMARK --set-mark 1 # ECHO
 
-it will actually accept the first 10 packets, the limit of 5 + the burst
-of 5--then the limit will enforce for 5 minutes.
+my guess would be that if you've been patching and compiling here and
+there, that you may have ended up with and iptables utility that doesn't
+know about the MARK target; i.e., you have no libipt_MARK.so file...on
+my machine here it's in /lib/iptables/...might be diff depending on your
+specific distro.
 
 -j
 
 --
-"Have you ever been in a police car?
- Not in the front..."
+"Do you want to change your name to Homer Junior? The kids can call
+ you Hoju!"
 	--The Simpsons
 
 
