@@ -1,12 +1,13 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: iptables and yahoo games
-Date: Fri, 28 Nov 2003 14:43:51 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables and yahoo games
+Date: Fri, 28 Nov 2003 09:43:15 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8EEF@overlord.overturemedia.com>
+Message-ID: <200311280943.15855.Antony@Soft-Solutions.co.uk>
+References: <F22386C3FEB012449238672E38ED61E70A8EEF@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <F22386C3FEB012449238672E38ED61E70A8EEF@overlord.overturemedia.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +20,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
+On Friday 28 November 2003 6:43 am, Fritz Mesedilla wrote:
 
-Greetings friends!
-What are the rules to allow yahoo games in iptables?
+> Greetings friends!
+> What are the rules to allow yahoo games in iptables?
 
-Thanks.
+Don't know.
 
-Cheers,
+What TCP/UDP etc ports do the games use?
 
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
+If you can tell me that, I can tell you what rules to use.
 
+Antony.
 
+-- 
+RTFM may be the appropriate reply, but please specify exactly which FM to R.
 
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
