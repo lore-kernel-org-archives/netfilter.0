@@ -1,8 +1,12 @@
-From: netfilter@horizon.com
-Subject: -j ECN --ecn-tcp-remove seems to be mangling the TCP checksum...
-Date: 27 Sep 2002 06:27:53 -0000
+From: "David S. Miller" <davem@redhat.com>
+Subject: Fw: problems with ip6tables on sparc64 with 2.4.19
+Date: Wed, 25 Sep 2002 13:23:37 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020927062753.13067.qmail@science.horizon.com>
+Message-ID: <20020925.132337.93583635.davem@redhat.com>
+Mime-Version: 1.0
+Content-Type: Multipart/Mixed;
+ boundary="--Next_Part(Wed_Sep_25_13:23:37_2002_688)--"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -13,84 +17,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: netfilter@horizon.com
 
-Environment: x86, 2.4.19 kernel with NTP PPS, ipsec, and netfilter patch-o-matic
-patches (current CVS) installed.  Monolithic kernel.
+----Next_Part(Wed_Sep_25_13:23:37_2002_688)--
+Content-Type: Message/Rfc822
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I have the current mangle rules installed:
+Return-Path: <linux-net-owner@vger.kernel.org>
+Received: from localhost (IDENT:davem@localhost.localdomain [127.0.0.1])
+	by pizda.ninka.net (8.9.3/8.9.3) with ESMTP id EAA15609
+	for <davem@localhost>; Wed, 25 Sep 2002 04:07:24 -0700
+Received: from localhost
+	by localhost with POP3 (fetchmail-5.3.1)
+	for davem@localhost (single-drop); Wed, 25 Sep 2002 04:07:24 -0700 (PDT)
+Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com [172.16.52.254])
+	by devserv.devel.redhat.com (8.11.6/8.11.0) with ESMTP id g8PBGl904739;
+	Wed, 25 Sep 2002 07:16:47 -0400
+Received: from mx1.redhat.com (mx1.redhat.com [172.16.48.31])
+	by int-mx1.corp.redhat.com (8.11.6/8.11.6) with SMTP id g8PBGlf28439;
+	Wed, 25 Sep 2002 07:16:47 -0400
+Received: from vger.kernel.org (vger.kernel.org [209.116.70.75])
+	by mx1.redhat.com (8.11.6/8.11.6) with SMTP id g8PAwpi07243;
+	Wed, 25 Sep 2002 06:58:51 -0400
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id <S261955AbSIYLLJ>; Wed, 25 Sep 2002 07:11:09 -0400
+Received: (majordomo@vger.kernel.org) by vger.kernel.org
+	id <S261957AbSIYLLJ>; Wed, 25 Sep 2002 07:11:09 -0400
+Received: from squeaker.ratbox.org ([207.188.202.227]:40064 "EHLO
+	squeaker.ratbox.org") by vger.kernel.org with ESMTP
+	id <S261955AbSIYLLI>; Wed, 25 Sep 2002 07:11:08 -0400
+Received: by squeaker.ratbox.org (Postfix, from userid 1000)
+	id BB714301A6; Wed, 25 Sep 2002 07:16:21 -0400 (EDT)
+Date: Wed, 25 Sep 2002 07:16:21 -0400 (EDT)
+From: Aaron Sethman <androsyn@ratbox.org>
+To: linux-net@vger.kernel.org
+Subject: problems with ip6tables on sparc64 with 2.4.19
+Message-ID: <Pine.LNX.4.44.0209250711320.1183-100000@squeaker.ratbox.org>
+X-GPG-FINGRPRINT: 1024D/D4DE2553 0E60 59B5 60DA 2FD3 F6F5  27A3 6CD2 21AD D4DE 2553
+X-GPG-PUBLIC_KEY: http://squeaker.ratbox.org/androsyn.asc
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: linux-net-owner@vger.kernel.org
+Precedence: bulk
+X-Mailing-List: linux-net@vger.kernel.org
 
-bash-2.05b# iptables -n -t mangle -L 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination         
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
+Basically ip6tables pretty much doesn't work...I get the following error:
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
+# ip6tables -L
+ip6tables v1.2.7a: can't initialize ip6tables table `filter': Table does
+not exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
-fix-ecn    tcp  --  0.0.0.0/0            0.0.0.0/0          tcp flags:0x16/0x02 
+After a bit of investigation I enabled the #define DEBUG_IP_FIREWALL_USER
+in ip6_tables.c and got the following upon trying to load the
+ip6tables_filter.o module:
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination         
+translate_table: size 856
+Bad offset 0000000140020074
 
-Chain fix-ecn (1 references)
-target     prot opt source               destination         
-ECN        tcp  --  0.0.0.0/0            205.181.112.65     ECN TCP remove 
-ECN        tcp  --  0.0.0.0/0            205.152.54.6       ECN TCP remove 
-ECN        tcp  --  0.0.0.0/0            134.219.0.0/16     ECN TCP remove 
-ECN        tcp  --  0.0.0.0/0            64.14.140.109      ECN TCP remove 
+Any clues or ideas on how to resolve this issue?
 
-The fix-ecn chain is the beginning of a rule to cope with broken hosts (or,
-more commonly, firewalls) that do the wrong thing with ECN.
+Regards,
 
-First, suppose I turn tcp_ecn on and try to telnet to some random web server:
-bash-2.05b# echo 1 > /proc/sys/net/ipv4/tcp_ecn ; telnet 1.1.1.1 80
+Aaron
 
-tcpdump -vvvx produces
-01:50:26.819358 science.horizon.com.11047 > 1.1.1.1.www: SWE [tcp sum ok] 2541756082:2541756082(0) win 5840 <mss 1460,sackOK,timestamp 14279600 0,nop,wscale 0> (DF) [tos 0x10]  (ttl 64, id 64770, len 60)
-                         4510 003c fd02 4000 4006 1783 c023 6401
-                         0101 0101 2b27 0050 9780 1eb2 0000 0000
-                         a0c2 16d0 441d 0000 0204 05b4 0402 080a
-                         00d9 e3b0 0000 0000 0103 0300
+-
+To unsubscribe from this list: send the line "unsubscribe linux-net" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Now I'll turn tcp_ecn off:
-bash-2.05b# echo 0 > /proc/sys/net/ipv4/tcp_ecn ; telnet 1.1.1.1 80
-01:50:55.077891 science.horizon.com.11051 > 1.1.1.1.www: S [tcp sum ok] 2563190821:2563190821(0) win 5840 <mss 1460,sackOK,timestamp 14282426 0,nop,wscale 0> (DF) [tos 0x10]  (ttl 64, id 56991, len 60)
-                         4510 003c de9f 4000 4006 35e6 c023 6401
-                         0101 0101 2b2b 0050 98c7 3025 0000 0000
-                         a002 16d0 2715 0000 0204 05b4 0402 080a
-                         00d9 eeba 0000 0000 0103 0300
 
-Now I'll add the random host to the fix_ecn and try with ECN turned on:
-bash-2.05b# iptables -t mangle -A fix-ecn -d 1.1.1.1 -p tcp -j ECN --ecn-tcp-remove
-bash-2.05b# echo 1 > /proc/sys/net/ipv4/tcp_ecn ; telnet 1.1.1.1 80
-01:52:20.662338 science.horizon.com.11058 > 1.1.1.1.www: S [bad tcp cksum bf40!] 2655433521:2655433521(0) win 5840 <mss 1460,sackOK,timestamp 14290984 0,nop,wscale 0> (DF) [tos 0x10]  (ttl 64, id 41753, len 60)
-                         4510 003c a319 4000 4006 716c c023 6401
-                         0101 0101 2b32 0050 9e46 b331 0000 0000
-                         a002 16d0 3c55 0000 0204 05b4 0402 080a
-                         00da 1028 0000 0000 0103 0300
-
-Now I'll turn tcp_ecn off again:
-bash-2.05b# echo 0 > /proc/sys/net/ipv4/tcp_ecn ; telnet 1.1.1.1 80
-01:52:36.771155 science.horizon.com.11059 > 1.1.1.1.www: S [tcp sum ok] 2671050014:2671050014(0) win 5840 <mss 1460,sackOK,timestamp 14292595 0,nop,wscale 0> (DF) [tos 0x10]  (ttl 64, id 60269, len 60)
-                         4510 003c eb6d 4000 4006 2918 c023 6401
-                         0101 0101 2b33 0050 9f34 fd1e 0000 0000
-                         a002 16d0 2bed 0000 0204 05b4 0402 080a
-                         00da 1673 0000 0000 0103 0300
-
-Notice the bad tcp checksum in the third case.
-
-Is this a bug?  The ipt_ECN.c file is
-ipt_ECN.c,v 1.4 2002/08/05 19:36:51 laforge Exp
-
-Thanks!
-
+----Next_Part(Wed_Sep_25_13:23:37_2002_688)----
 
