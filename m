@@ -1,8 +1,8 @@
 From: "Ralf Braga" <ralf@4linux.com.br>
 Subject: to understand --tcp-flags
-Date: Sat, 31 May 2003 19:10:58 -0300 (BRT)
+Date: Sat, 31 May 2003 19:10:53 -0300 (BRT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <36427.200.204.151.150.1054419058.squirrel@webmail.4linux.com.br>
+Message-ID: <36426.200.204.151.150.1054419053.squirrel@webmail.4linux.com.br>
 References: <20030531140137.C16012@jmhowell.com>
 Reply-To: ralf@4linux.com.br
 Mime-Version: 1.0
@@ -23,7 +23,7 @@ To: netfilter@lists.netfilter.org
 
 Hi,
 
-I dont understand this command:
+I dont understande this command:
 
 iptables -A INPUT -p tcp --tcp-flags SYN,ACK SYN,ACK \
 -m state --state NEW -j REJECT --reject-with tcp-reset
