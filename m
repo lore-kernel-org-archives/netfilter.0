@@ -1,11 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: iptables configuration help
-Date: Fri, 5 Nov 2004 10:42:09 -0500
-Message-ID: <20041105154209.GA1245@bender.817west.com>
+Date: Fri, 05 Nov 2004 10:45:04 -0500
+Message-ID: <1099669503.4891.125.camel@localhost>
 References: <1099669284.891.131.camel@dhanush.intranet.calsoft.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <1099669284.891.131.camel@dhanush.intranet.calsoft.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,10 +18,10 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: vijay@calsoftinc.com
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-On Fri, Nov 05, 2004 at 09:11:24PM +0530, Vijay Kumar wrote:
+On Fri, 2004-11-05 at 10:41, Vijay Kumar wrote:
 > Hello,
 > 
 > I have a firewall with three nic ( external ip, DMZ ip, LAN ip ) 
@@ -33,50 +33,42 @@ On Fri, Nov 05, 2004 at 09:11:24PM +0530, Vijay Kumar wrote:
 > I have done the following : 
 > 
 > iptables -t nat -I POSTROUTING -s 172.16.0.119 -o eth1:0 -j SNAT --to-source <external_ip> 
-
-i really wish this question would come up more often...
-
-add your secondary IP address to eth1 like so:
-
-  ip addr add <external_ip> dev eth1
-
-and write your NAT rule like so:
-
-  iptables -t nat -I POSTROUTING -s 172.16.0.119 -o eth1 \
-    -j SNAT --to-source <external_ip>
-
+> 
 > After adding this I also added the below mentioned rules : 
 > 
 > iptables -A INPUT -s 172.16.0.119 -d 0.0.0.0/0.0.0.0 -j ACCEPT 
-
-INPUT is only for packets who's destination IP is local to the firewall
-itself--so this will allow you to access the firewall machine from
-172.16.0.119.
-
 > iptables -I FORWARD -s 172.16.0.119 -j ACCEPT 
+> 
+> When I addded the rules iptables gave me an Warning stating :" Weird character in interface eth0:0, no ! : "
+> 
+> Where am I going wrong ? Are sub interface allowed in iptables ? 
+> 
+> What iptables rule should  add so that the LAN machine uses the subinterface to reach the internet ? 
+> 
+> What i need is something like static nat ?
+> 
+> Kindly help.
+> 
+> Vijay.
+I'm not sure about the aliases because I always use iproute2 instead to
+bind a second address to the same interface.
 
-ok.  make sure you've also enabled IP forwarding:
+I would you suggest that, instead of creating an alias, you do something
+like"
+ip address add <2nd external IP>/<mask length> dev eth0 brd +
 
-  sysctl -w net.ipv4.ip_forward=1
+then replace your -o eth0:1 with simply -o eth0
 
-and make sure you're allowing reply packets back through your FORWARD
-chain:
+>  
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
-  iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-<snip>
-
-if only there were a way to search the archives of this mailing list to
-see how people have solved this riddle of the sphinx in the past...oh
-wait...
-
-  http://marc.theaimsgroup.com/?l=netfilter&r=1&w=2
-
--j
-
---
-"Lisa, if the Bible has taught us nothing else, and it hasn't, it's
- that girls should stick to girls sports, such as hot oil wrestling
- and foxy boxing and such and such."
-        --The Simpsons
 
