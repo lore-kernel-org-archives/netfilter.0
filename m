@@ -1,12 +1,13 @@
-From: "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>
-Subject: RE: Order in ruleset edition
-Date: Wed, 26 Nov 2003 13:16:26 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Order in ruleset edition
+Date: Wed, 26 Nov 2003 19:24:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D8FBABA1EF6F2E4DBCC88903F60691F3023F1584@houxchsvr.ucscorp.ucs.pvt>
+Message-ID: <200311261924.16969.Antony@Soft-Solutions.co.uk>
+References: <00f201c3b44c$d9388520$0200a8c0@ale>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <00f201c3b44c$d9388520$0200a8c0@ale>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,83 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-We do parallel updates to prevent attacks from sneaking through. =
-Basically you have the real forward chain and you add a rule to it that =
-jumps to a user defined rule FORWARD_0 where the filtering rules are =
-actually located. You then load the new rules into FORWARD_1. Once those =
-rules are loaded you change the jump from FORWARD_0 to FORWARD_1 and =
-then remove FORWARD_0. You make sure the default forward policy is to =
-deny so that those packets for the millisecond or two the firewall is =
-not setup won't get through. It works very well, although I have heard =
-this technique can take a little bit longer with huge rulesets (but =
-nowhere near as long as a straight ruleset install after a flush).=20
+On Wednesday 26 November 2003 6:40 pm, Alejandro Cabrera Obed wrote:
 
------Original Message-----
-From: William Stearns [mailto:wstearns@pobox.com]
-Sent: Wednesday, November 26, 2003 12:59
-To: Alejandro Cabrera Obed
-Cc: Netfilter lista (iptables); William Stearns
-Subject: Re: Order in ruleset edition
+> Is there any order about CHAINS and TABLES that I have to follow in order
+> to construct my iptables ruleset ??? For example, is it the same if firstly
+> I write in my script my the FORWARD rules and then the OUTPUT and INPUT
+> rules or viceversa ???
 
-Good afternoon, Alejandro,
+I recommend:
 
-On Wed, 26 Nov 2003, Alejandro Cabrera Obed wrote:
+1. Turn off kernel forwarding:
+echo 0 >/proc/sys/net/ipv4/ip_forward
 
-> I'm trying to construct my own ruleset of iptables; I'm editing a file
-> script.
->
-> My question is the following:
->
-> Is there any order about CHAINS and TABLES that I have to follow in =
-order to
-> construct my iptables ruleset ??? For example, is it the same if =
-firstly I
-> write in my script my the FORWARD rules and then the OUTPUT and INPUT =
-rules
-> or viceversa ???
+2. Apply default DROP policies to all chains:
+iptables -P DROP INPUT
+iptables -P DROP OUTPUT
+iptables -P DROP FORWARD
 
-        There isn't a difference in the final outcome, no.
+3. Flush any old rules:
+iptables -F
+iptables -F -t nat
+iptables -F -t mangle (well, you never know...)
 
-        However, unless you're blocking all traffic until the firewall =
-is
-completely constructed, the second and third chains you construct will =
-be
-left unprotected longer (on the order of 1-5 seconds or so).  It's a =
-minor
-consideration, but I've seen an attack that sneaked through a firewall =
-as
-it was being reloaded.
-        Cheers,
-        - Bill
+4. Create the rules to allow the packets you want.   The order in which you 
+create them is not important, so long as the order they end up in does the 
+job you want.   Do not change the default DROP policies :)
 
--------------------------------------------------------------------------=
---
-        "Don't say you don't have enough time.  You have exactly the
-same number of hours per day that were given to Helen Keller, Pasteur,
-Michaelangelo, Mother Teresa, Leonardo da Vinci, Thomas Jefferson, and
-Albert Einstein."
-        -- H. Jackson Brown
-(Courtesy of <drow@visi.com>)
--------------------------------------------------------------------------=
--
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, =
-p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   =
-http://www.stearns.org
-Linux articles at:                         =
-http://www.opensourcedigest.com
--------------------------------------------------------------------------=
--
+5. Turn on kernel forwarding again:
+echo 1 >/proc/sys/net/ipv4/ip_forward
 
+I regard the above as a safe way to create rules without allowing thing to 
+sneak in or through whilst you're doing it.
 
-----------------------------------------
-The information transmitted in this message is intended only for the =
-person or entity to whom it is addressed and may contain confidential =
-and/or privileged material.  Any review, retransmission, dissemination =
-or other use of, or taking of any action in reliance upon this =
-information by persons or entities other than the intended recipient is =
-prohibited.  If you received this in error, please contact the sender =
-and destroy any copies of this document.
+Antony.
+
+-- 
+Ramdisk is not an installation procedure.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
