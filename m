@@ -1,11 +1,10 @@
-From: "Michael P. Soulier" <michael_soulier@mitel.com>
-Subject: portforwarding difficulties
-Date: Thu, 23 Jan 2003 14:45:44 -0500
+From: Ralph Churchill <mrchucho@yahoo.com>
+Subject: simply confusing
+Date: Thu, 23 Jan 2003 12:03:14 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030123144544.V8675@e-smith.com>
+Message-ID: <20030123200314.99399.qmail@web11401.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +18,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-    People,
+I work at a large company and was having some fellow
+employees regularly scanning my box... so I put up a
+little firewall. Here's my one and only rule:
 
-    My apologies if this has been asked before. 
+iptables -A INPUT --source 192.168.0.0/16 -j DROP
 
-    I'm setting up iptables to permit a DMZ configuration to be managed by
-a Linux box with 3 NICs. Currently, in the PREROUTING chain of the nat
-table, I have a rule stating:
+Now, shouldn't that block any and ALL traffic from any
+computer on the 192.168.*.* subnet? Do I need to be
+more explicit? I also have snort running and I see
+some stuff getting through... Thanks.
 
-/sbin/iptables --append PREROUTING --protocol tcp \
-               --dport 6800 \
-               -d $external_interface/32 \
-               -j DNAT --to-destination $server
+RMC
 
-    Now, from the internet on the external interface, this works fine. The
-server box receives the forwarded traffic. However, from a box on the
-private network, the DNAT rule is skipped, and the client ends up trying to
-connect to the gateway, which fails since nothing is listening on that
-port. 
-
-    My question is, if a client on the private network tries to connect to
-$external_interface, should the DNAT rule in the PREROUTING chain match? It
-does not appear to be.
-
-    I can see the traffic arrive with tcpdump, but my logging rule in the
-firewall that records DNAT'd traffic, which works fine from the internet,
-logged nothing in the private network case. 
-
-    Thanks,
-    Mike
-
--- 
-Michael P. Soulier <michael_soulier@mitel.com>, 613-592-2122 x2522
-SME Solutions, Mitel Networks Corporation
-"...the word HACK is used as a verb to indicate a massive amount
-of nerd-like effort."  -Harley Hahn, A Student's Guide to Unix
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
