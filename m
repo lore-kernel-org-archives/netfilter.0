@@ -1,7 +1,8 @@
-From: "Guillermo Javier Nardoni" <gjnardoni@gmail.com>
-Subject: Forward with IPTABLES
-Date: Wed, 12 Jan 2005 19:54:02 -0300
-Message-ID: <001a01c4f8f9$9de78f00$0100a8c0@betasvr.noip.org>
+From: Askar <askarali@gmail.com>
+Subject: what is --set-mes 128
+Date: Thu, 13 Jan 2005 09:50:11 +0500
+Message-ID: <a0f69e505011220501c9284b@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,45 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello, could you let me know if i can forward incoming packets from a
-specific IP address to an internal Server?
+Hello,
 
-for example.
-we have a linux box running Red Hat 9 (Shrike) with this Networking
-configuration.
+can someone help mevto understand these rules...
 
-eth0 (sis9000) ip: 10.0.0.1 (connected to an ADSL "modem" (Cisco 677))
-ppp0 Internet Conection using PPPoE through eth0 which is connected the ADSL
-(Dynamic IP)
-eth1 (rtl8139) ip: 192.168.0.1 (connected to the internal network and acting
-as Transparent Proxy (with Squid and IPTABLE)
+$iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 128
+$iptables -t nat -A PREROUTING -p tcp --tcp-flags SYN,RST SYN -j
+TCPMSS --set-mss 128
 
-the other Server (internal server) is running a Windows 2000 SP4
-eth0: rtl8139 ip: 192.168.0.2
-
-what i want to do is this:
-
-we have 2 domains hosted by our servers (www.domainA.com and
-www.domainB.com)
-when a customer asks for a webpage (through ppp0) port 80 at www.domainA.com
-i want to redirect it to our Windows 2000 server (it domain is written in
-ASP), but when some customers ask for a webpage from the other one (domainB)
-the page must flow-back  to the customer from linux server instead of
-Windows.
-
-may i Explain?
-Thank you so much.
+Secondly is there any benefit of changing TOS of packets going out i-e...
 
 
+$iptables -A OUTPUT -t mangle -p tcp --dport http -j TOS --set-tos
+Maximize-throughput
 
-Lo saluda muy cordialmente,
+any help will be greatly appreciated.
 
-Guillermo Javier Nardoni
-e-mail: gjnardoni@gmail.com
-Rosario - Santa Fe
-Tel: 03402-15540590
-Est. de Ing. en Sistemas
+regards
 
+Askar
+
+-- 
+(after bouncing head on desk for days trying to get mine working, I'll make
+your life a little easier)
 
