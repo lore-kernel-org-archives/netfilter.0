@@ -1,12 +1,13 @@
-From: "stu" <stu@gateway10.homeip.net>
-Subject: Startup script
-Date: Fri, 16 Apr 2004 11:42:45 +0200
+From: matthieu <matthieu@bsdmon.com>
+Subject: Re: iptables newbie questions
+Date: Fri, 16 Apr 2004 12:00:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040416114221.8E7B9CE2F8@firewall.gateway10.homeip.net>
-Reply-To: <stu@gateway10.homeip.net>
+Message-ID: <407FAEB1.7070203@bsdmon.com>
+References: <407F9DA0.80008@bsdmon.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <407F9DA0.80008@bsdmon.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,15 +17,11 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: matthieu <matthieu@bsdmon.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi All
+of course in the first question, assume that the chains "block" and "RH-Lokkit-0-50-INPUT" already exist, this is not the point of my question
 
-Where is the best place to put my firewall script, for example when the
-firewall is booted.
-
-Thanks
-Stu
 
 
