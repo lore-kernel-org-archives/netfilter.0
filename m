@@ -1,11 +1,13 @@
-From: =?ISO-8859-1?Q?Mart=EDn_Chikilian?= <slack@efn.uncor.edu>
-Subject: Re: security question
-Date: Thu, 03 Jun 2004 12:06:08 -0300
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Managing large number of rules
+Date: Thu, 03 Jun 2004 11:18:13 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40BF3E60.2060206@efn.uncor.edu>
+Message-ID: <1086275893.3189.13.camel@localhost>
+References: <s0bf002f.044@GroupWise>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <s0bf002f.044@GroupWise>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,74 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Brett Simpson <Simpsonb@hillsboroughcounty.org>
+Cc: netfilter@lists.netfilter.org
 
-a.westendoerpf@gmx.de wrote:
+On Thu, 2004-06-03 at 10:40, Brett Simpson wrote:
+> For those who have a large number (1000 or more) of Iptables rules how are you managing them?
+> 
+> Do you hand edit the rules or do you use a management gui (i.e. FwBuilder)?
+> 
+> Brett
+I'll mention two items.  First, I always make sure I use the
+iptables-restore files and syntax lest loading large rule sets create a
+seemingly interminable bootup.
 
-> Hi *!
+Second, this is exactly the impetus behind the ISCS project
+(http://iscs.sourceforge.net).  The need was to handle the potentially
+thousands of rules on hundreds and thousands of devices in order to
+implement sophisticated, inter and intra office/partner security.  When
+attempting to implement Internet style access controls internally to
+achieve compartmentalization and a multi-layered defense, the size,
+complexity and rate of change of the rule sets skyrocket.  Moreover, one
+must manage this complexity without interfering with the NAT, VPN and
+routing rules or the existing firewall rules.  Finally, the cost of
+managing the complexity must not drive the cost of such multi-layered
+security beyond a justifiable expense.
 
-> I have the following setup. Please tell me if I have some security
-> issues here.
+We've achieved these goals in a real world, multi-client distributed
+managed service organization including a 90% reduction in the cost of
+managing security using a no longer available proprietary product.  ISCS
+is an open source replacement that achieves even better results using
+completely original code.
 
-> A linux box with two ethernet interfaces to work as a masquerading
-> router. One of them (eth0) is connected to a dsl-modem, the other is a
-> wlan card (eth1). All client systems get this box a default gateway
-> via dhcp.
+Basically, the administrator describes the overall flow of information
+and the desired security and the ISCS automatically generates and
+distributes a consistent,properly ordered firewall/NAT/VPN/Router rules
+set.  This is something beyond even the most expensive commercial tools
+like Solsoft, SmartPipes or the global managers available from
+NetScreen/Checkpoint/etc.
 
-> My goal is to drop everything coming from the wlan by default. I do
-> this with:
-
-> # iptables -t nat -P PREROUTING  DROP
-
-I don't know if i understand well what you wrote, but i think that your rule applies to drop packets being PREROUTED by default. What is the goal of this??
-What you mean with "is to drop everything coming from the wlan by default" ??
-You want to drop packets destined TO wlan by default???
-
-> I want the all www-requests of the client systems to be redirected to
-> the local Apache on the box. I do this with:
-
-> # iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth1 - REDIRECT
-
-The corect rule for this is the next one:
-iptables -t nat -A POSTROUTING -p tcp --dport 80 -i eth1 -j REDIRECT
-
-Note the POSTROUTING chain must be used (I think)
-
-> As I need DNS for these www-requests I have to let DNS be accepted:
-
-> # iptables -t nat -A PREROUTING -p udp --dport 53 -i eth1 -j ACCEPT
-
-> Then, in the POSTROUTING chain I need all the packets that made it
-> here to be masqueraded:
-
-> # iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-> If I want to allow a specific wlan client to get outside connections I
-> use:
-
-> # iptables -t nat -I PREROUTING -m mac --mac-source XX:XX:XX:XX:XX:XX
-> -i the1 -j ACCEPT
-
-> to let him through.
-
-> Beside of MAC-spoofing, is this setup safe? Can someone get though the
-> PREROUTING chain, without being "MAC-inserted".
-
-Sure there are ways to bypass this restriction, but it is pretty difficult, imho ;-)
-
-> What can I do to block incoming connection attempts? I only want to
-> allow ssh from outside (internet) to the box.
-Through wlan?? You can do:
-iptables --policy INPUT DROP	/* DROP by default incoming packets
-iptables --append INPUT --in-interface eth1 --destination-port ssh --jump ACCEPT
-
-Note that if you drop incoming packets by default, you also need to add a few rules:
-iptables --append INPUT --in-interface eth1 --match multiport --ports http,https,ftp,ftp-data,ssh,... --jump ACCEPT
-You must add the ports that you and your clients commonly use.
-
-Any other doubt, contact the list.
-
-Ciao, Martin
+I would not dream of implementing the kind of security we did at Nexus
+Management (http://www.nexusmgmt.com) without such a tool.  We are
+between 2/3 and 3/4 of the way to our first release.  If anyone wants to
+help with either time or money, we can use all the help we can get for
+such an enormous project - John
+-- 
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevelopmentcorp.com
 
 
