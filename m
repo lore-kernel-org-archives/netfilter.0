@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: port scan identification
-Date: Thu, 10 Jun 2004 11:37:16 +0100
+Subject: Re: Updating multple iptables on servers
+Date: Thu, 10 Jun 2004 11:40:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406101137.16463.Antony@Soft-Solutions.co.uk>
-References: <40C635E0.2010208@wanadoo.fr>
+Message-ID: <200406101140.16805.Antony@Soft-Solutions.co.uk>
+References: <E1BXbKC-0007Rf-9w@vishnu.netfilter.org> <1086860603.2005.4.camel@localhost>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40C635E0.2010208@wanadoo.fr>
+In-Reply-To: <1086860603.2005.4.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,40 +21,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 08 June 2004 10:55 pm, Rakotomandimby Mihamina wrote:
+On Thursday 10 June 2004 10:43 am, John A. Sullivan III wrote:
 
-> I have this rule :
+> On Tue, 2004-06-08 at 03:46, Thomas Kristensen wrote:
+> > Is it possible to update iptables from a central server. I got 25 servers
+> > using the same firewall and i need something to update them all from a
+> > central server.
+> >
+> > Any ideas?
+> >
+> > Hilsen Thomas Kristensen
 >
-> iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST \
-> -j LOG --log-level debug --log-prefix 'p_scan_: '
->
-> and i see this when i tail the output file :
->
-> Jun  8 22:52:32 milina kernel: p_scan_: IN=ppp0 OUT= MAC=
-> SRC=81.220.171.201 DST=81.248.95.56 LEN=40 TOS=0x00 PREC=0x00 TTL=54
-> ID=45424 PROTO=TCP SPT=4391 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
->
-> Well . According to me, a port scan is the action to scan _all_ the
-> ports ... why is the port scan identified as only scaning the 80th port
-> ? I mean, a port scan should not be on one port only ... isn't it ?
+> Strange . . . I thought I saw this identical post a few days ago!
 
-A packet can only be sent to one address and one port.   You cannot send a 
-single packet to multiple ports.   Therefore what is commonly called a "port 
-scan" is a series of packets, each addressed to a different port, which 
-between them result in lots of ports being scanned.
+So did I.
 
-You are seeing someone sending a packet to port 80.   Maybe they'll send one 
-to port 110 tomorrow, or next week, or five seconds later, or whenever they 
-feel like it....
+Chris Brenton's answer looked promising:
+
+http://www.stearns.org/fanout
+
+Let us know if it meets your needs, or if problems remain.
 
 Regards,
 
 Antony.
 
 -- 
-Microsoft may sell more software than any other company, but McDonald's sell 
-more burgers than any other company, and I think the other similarities are 
-obvious...
+"Linux is going to be part of the future. It's going to be like Unix was."
+
+ - Peter Moore, Asia-Pacific general manager, Microsoft
 
                                                      Please reply to the list;
                                                            please don't CC me.
