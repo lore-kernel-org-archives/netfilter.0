@@ -1,12 +1,11 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: Anybody heard about UP&P ?
-Date: Mon, 23 Feb 2004 09:48:56 -0600
+From: cky@arcor.de
+Subject: problem with ip_connlimit modul
+Date: Mon, 23 Feb 2004 17:06:43 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D73101668CA7@coxhpexg.coxhp.com>
+Message-ID: <32094483.1077552403980.JavaMail.ngmail@webmail02.arcor-online.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,73 +15,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi!
 
-When I wanted to get this particular feature working to chat with my =
-Dad, I wrote a quickie script to -j ACCEPT his IP.  Then I use another =
-one to reset my rules when we're done chatting.  Worked fine after that, =
-NAT and all.
+I try to compile the new 2.4.25 kernel with patch-o-matic-20031219 and I've a little problem.
 
-IIRC, UPnP was the reason for that first 'big' XP patch right after it =
-came out.  So, yes, it is probably a vulnerability.
+All iptables works fine, but just the ipt_connlimit module makes trouble, when I try to compile it.
 
-
-Bob
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Chris Brenton
-Sent: Sunday, February 22, 2004 6:33 AM
-To: netfilter@lists.netfilter.org
-Subject: RE: Anybody heard about UP&P ?
+Here's my output:
 
 
-This sounds *really* fishy to me. Sounds to me like what they are
-looking to do is setup a 1 to 1 NAT mapping (or possibly port
-forwarding) to the host needing "remote assistance" and probably punch
-open the filtering as well.=20
-
-Do you know how how much access gets opened up? Any authentication or
-encryption being used during the management session? Any guarantee that
-the hole gets closed up when they are done? Any logging of the access as
-well as what gets changed during the session?
-
-You could always ask what level of access is required and just manually
-create the rules yourself. At least that way you know what is going on.
-
-I think I'm real glad Netfilter does not support this. Sounds like a
-compromise waiting to happen.
-
-C
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.25/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpreferred-stack-boundary=2 -march=athlon -DMODULE -DMODVERSIONS -include /usr/src/linux-2.4.25/include/linux/modversions.h  -nostdinc -iwithprefix include -DKBUILD_BASENAME=ipt_connlimit  -c -o ipt_connlimit.o ipt_connlimit.c
+ipt_connlimit.c: In function `init':
+ipt_connlimit.c:219: `ip_conntrack_module' undeclared (first use in this function)
+ipt_connlimit.c:219: (Each undeclared identifier is reported only once
+ipt_connlimit.c:219: for each function it appears in.)
+ipt_connlimit.c:220: warning: value computed is not used
+ipt_connlimit.c: In function `fini':
+ipt_connlimit.c:227: `ip_conntrack_module' undeclared (first use in this function)
+ipt_connlimit.c:228: warning: value computed is not used
+make[2]: *** [ipt_connlimit.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.25/net/ipv4/netfilter'
+make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.25/net'
+make: *** [_mod_net] Error 2
 
 
-On Fri, 2004-02-20 at 14:35, Carl Farrington wrote:
-> UPNP means Universal Plug'n'Play. I guess WinXP looks to automagically =
-reconfigure the NAT rules via upnp.
->=20
-> No idea about the netfilter stuff myself I'm afraid.
->=20
-> > -----Original Message-----
-> > From: Marc Recht=E9 [mailto:mrechte@randodetente.org]
-> > Sent: 20 February 2004 07:14
-> > To: netfilter@lists.netfilter.org
-> > Subject: Anybody heard about UP&P ?
-> >=20
-> > To enable remote assistance from Internet of a WinXP PC on a LAN =
-using
-> > NAT one must have a UP&P NAT compatible router.
-> >=20
-> > Can Netfilter act as such a router, and if so do you have an idea of =
-the
-> > chain to apply ?
-> >=20
-> > Thanks for your help
-> >=20
-> > Marc.
-> >=20
->=20
->=20
+Can anybody help? I think I've to rename something in ipt_connlimit.c, but I don't know that....
+Thanks in advance.
+
+Best regards,
+Thomas
+
+
+
 
 
