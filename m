@@ -1,13 +1,12 @@
-From: Alexandros Papadopoulos <apapadop@cmu.edu>
-Subject: Re: non-standard FTP ports and connection tracking
-Date: Mon, 9 Dec 2002 18:05:05 -0500
+From: Jason Liao <maillist@Gallantry.com>
+Subject: Re: How to change a packet's arriving interface? -j ROUTE?
+Date: Mon, 09 Dec 2002 17:32:21 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212091805.06266.apapadop@cmu.edu>
-References: <61127EF4BF2E9C4C8DA4E358CFD4E52D7A414C@olga.chs.chalmers.se>
+Message-ID: <3DF54425.6CDB2FF4@Gallantry.com>
+References: <3DF0D338.C2F4E50@Gallantry.com> <1039411928.1714.3.camel@rayw.knowledgefactory.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <61127EF4BF2E9C4C8DA4E358CFD4E52D7A414C@olga.chs.chalmers.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +17,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Kim Leandersson <kim.leandersson@chs.chalmers.se>, netfilter@lists.netfilter.org
-Cc: Rob Sterenborg <rsterenborg@xs4all.nl>
+To: raymondl@knowledgefactory.co.za
+Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi Ray,
 
-On Monday 09 December 2002 17:01, Kim Leandersson wrote:
-> Put the line:
-> ip_conntrack_ftp ports=3D2121
-> In your modules.autoload, when it should work fine for you.
+Thank you for your reply, but maybe I was not clear in the original
+post:  The destination of the incoming traffic is the firewall machine
+itself, just the destination IP address is of the DMZ interface.  For
+this reason, the FORWARD rule won't be checked because it is basically
+INPUT traffic.  Another issue is that the traffic is IPSec so that any
+change to the source address (SNAT) will break the IPSec authentication.
 
-Thank you for the prompt answers.
+Thanks again for your suggestions.
 
-I changed my module-loading commands in the iptables script to:
+Best regards,
 
-/sbin/modprobe ip_conntrack_ftp ports=3D2121
+Jason Liao
 
-and it works like a charm.
-
-Caveat: One needs to first remove the module completely (/sbin/rmmod),=20
-and then reload it with the new parameter.
-
-Thanks again!
-
-- -A
-- --=20
-http://andrew.cmu.edu/~apapadop/pub_key.asc
-3DAD 8435 DB52 F17B 640F  D78C 8260 0CC1 0B75 8265
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE99SGigmAMwQt1gmURAvtbAJ4pOHnqLPQP6IALPcGYoXO0s/1GuwCeM/sX
-Tcd1x/gE468uFCofUPHKrOM=3D
-=3DAv8y
------END PGP SIGNATURE-----
-
+Raymond Leach wrote:
+> 
+> Hi
+> 
+> Use SNAT on the POSTROUTING chain in the NAT table.
+> 
+> iptables -t nat -A POSTROUTING -d $NET_DMZ -j SNAT --to-source
+> $IP_DMZ_IFACE
+> 
+> also you would need a FORWARD rule to route the initial traffic:
+> iptables -A FORWARD -d $NET_DMZ -j ACCEPT
+> 
+> These are the least restrictive examples of possible rules. The above
+> assumes you have public ips in your DMZ.
+> 
+> Ray
+> 
+> On Fri, 2002-12-06 at 18:41, Jason Liao wrote:
+> > Hi,
+> >
+> > I have a firewall running iptables with 3 interfaces: LAN, WAN and DMZ.
+> > The LAN IP address is 10.0.0.1/24, WAN 66.134.34.157/28, and DMZ
+> > 66.134.34.249/28.  The WAN interface connects to the Internet and the
+> > DMZ interface connects to a stub network.
+> >
+> > When someone sends a packet to the IP address of the DMZ interface from
+> > the Internet, the packet x.x.x.x->66.134.34.249 arrives at the WAN
+> > interface.  I want to know if there is a way using iptables (maybe with
+> > other tools such as iproute2) to make this packet to appear as if it
+> > arrives at the DMZ interface.  The packet itself should not be
+> > modified.  I need this to work because I am running an IPSec VPN with
+> > FreeS/WAN on the DMZ interface.  When the ESP packets arrives on the WAN
+> > interface, they cannot be properly processed by IPSec because the ipsec0
+> > interface is tied to the DMZ interface directly.
+> >
+> > I looked at the mangle table but could not figure out if it is the right
+> > direction.  I read about the ROUTE target but do not know if this target
+> > is for diverting packets to be sent OUT on another interface, or can it
+> > be used to change a packet's arriving interface.
+> >
+> > Thanks in advance.
+> >
+> > Jason Liao
+> --
 
