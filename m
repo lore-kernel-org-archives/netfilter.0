@@ -1,14 +1,12 @@
-From: Ted Kaczmarek <tazman@linsolutions.com>
-Subject: Re: 127.0.0.1 source flood and dhcpd DOS
-Date: Sun, 22 Feb 2004 08:37:49 -0500
+From: "zeinali" <zeinali@iomco.com>
+Subject: static nat with iptables
+Date: Sun, 22 Feb 2004 10:39:09 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040222133749.GA11511@tarkus.linsolutions.com>
-References: <002601c3f948$08ed3230$2d01a8c0@ad4gc1asnujhom>
+Message-ID: <000501c3f912$c70bc230$190da8c0@iomco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0006_01C3F930.1D3B2E30"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <002601c3f948$08ed3230$2d01a8c0@ad4gc1asnujhom> (from crv2@tstd.pl on Sun, Feb 22, 2004 at 08:30:26 -0500)
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,92 +16,156 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
-To: crv2 <crv2@tstd.pl>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Track down the mac address and remove/fix/disable that machine.
+This is a multi-part message in MIME format.
 
-Ted
-On 02/22/04 08:30:26, crv2 wrote:
-> hi,
-> 
-> Does someone else observe the problem with Blaster spoofed flood
-> attack
-> affecting Dhcpd daemon?
-> 
-> The output from the Tcpdump -i eth1 -ne host 127.0.0.1 (eth1 -
-> internal
-> interface):
-> 18:18:48.933129 0:a:cd:1:b:39 0:10:15:34:23:34 0800 60: 127.0.0.1.80  
-> >
-> 10.0.143.221.1806: R 0:0(0) ack 357826561 win 0
-> 18:18:48.943879 0:2:44:57:364 0:10:15:34:23:34 0800 60: 127.0.0.1.80  
-> >
-> 10.0.192.42.1689: R 0:0(0) ack 83165185 win 0
-> 18:18:48.955866 0:a:cd:0:a7:7f 0:10:15:34:23:34 0800 60: 127.0.0.1.80
-> >
-> 10.0.57.67.1197: R 0:0(0) ack 1552613377 win 0
-> 18:18:48.956093 0:30:4f:20:e0:8b 0:10:15:34:23:34 0800 60:
-> 127.0.0.1.80 >
-> 10.0.56.108.1893: R 0:0(0) ack 952369153 win 0
-> 18:18:48.956519 0:30:4f:26:c7:96 0:10:15:34:23:34 0800 60:
-> 127.0.0.1.80 >
-> 10.0.2.37.1812: R 0:0(0) ack 1434583041 win 0
-> 18:18:48.956715 0:a:cd:1:b:39 0:10:15:34:23:34 0800 60: 127.0.0.1.80  
-> >
-> 10.0.209.93.1642: R 0:0(0) ack 992411649 win 0
-> 18:18:48.963920 0:2:44:57:364 0:10:15:34:23:34 0800 60: 127.0.0.1.80  
-> >
-> 10.0.2.169.1524: R 0:0(0) ack 717750273 win 0
-> 
-> 00:10:15:34:23:34 out server DHCPd mac address
-> flood is about 1200p/s and from 4 different MAC's
-> 
-> and another output (out client DHCP request with no response from out
-> server)
-> tcpdump -i eth1 -n udp port 67:
-> 
-> tcpdump: listening on eth1
-> 18:38:34.071188 0.0.0.0.68 > 255.255.255.255.67:  xid:0x1e429414
-> secs:55030
-> file ""[|bootp]
-> 18:38:35.702552 0.0.0.0.68 > 255.255.255.255.67:  xid:0x1c6f144e
-> secs:56566
-> flags:0x8000 file ""[|bootp]
-> 18:38:36.298190 0.0.0.0.68 > 255.255.255.255.67:  xid:0x4a34ea34
-> secs:57846
-> flags:0x8000 file ""[|bootp]
-> 18:38:37.894439 0.0.0.0.68 > 255.255.255.255.67:  xid:0xa41add0d
-> secs:57846
-> flags:0x8000 file ""[|bootp]
-> 18:38:40.527775 0.0.0.0.68 > 255.255.255.255.67:  xid:0xb20b790e
-> secs:59382
-> flags:0x8000 file ""[|bootp]
-> 
-> It seems that it is affecting only dhcpd daemon, on different version
-> of
-> kernel and iptables.
-> iptables v1.2.9 and iptables v1.2.8
-> kernel 2.4.23 and 2.4.24
-> Internet Software Consortium DHCP Server V3.0pl2
-> 
-> And why iptables -I FORWARD -s 127.0.0.1 -i eth1 -j DROP and iptables
-> -I
-> INPUT -s 127.0.0.1 -i eth1 -j DROP
-> does not blocking the traffic?
-> 
-> Only solution is: iptables -I PREROUTING -t mangle -s 127.0.0.1 -i
-> eth1 -j
-> DROP
-> After that Dhcpd starts working normaly again (And we are not 100%
-> surre of
-> that)
-> 
-> ifconfig lo down or ifconfig lo 192.168.1.1/32 does not work
-> 
-> Any idea?
-> 
-> 
-> 
+------=_NextPart_000_0006_01C3F930.1D3B2E30
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Dear sir 
+
+Pls kindly help me
+
+I have a private address like 192.168.20.19/24 and I have a public address
+like 213.29.76.153/27 im going to translate (STATIC NAT) my private ip
+address to public address (213.29.76.19) with iptables
+
+Meanwhile my router is redhat linux 8.0 and have 2 network adapter like
+below
+
+Eth0 192.168.20.1 /24  (connect to private network)
+
+Eth1 213.29.76.154 /27 (connected to internet )
+
+ 
+
+Many Thanks&Best Regards
+
+       Behnam Zeinali
+
+         Internet Dept.
+
+     www.maadiran.com <http://www.maadiran.com/> 
+
+ 
+
+
+------=_NextPart_000_0006_01C3F930.1D3B2E30
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Dear sir </span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Pls kindly help me</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have a private address like 192.168.20.19/24 and I =
+have a
+public address like 213.29.76.153/27 im going to translate (STATIC NAT) =
+my
+private ip address to public address (213.29.76.19) with =
+iptables</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Meanwhile my router is redhat linux 8.0 and have 2 =
+network adapter
+like below</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Eth0 192.168.20.1 /24&nbsp; (connect to private =
+network)</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Eth1 213.29.76.154 /27 (connected to internet =
+)</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><b><i><font size=3D3 face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt;font-weight:bold;font-style:italic'>Many
+Thanks&amp;Best Regards</span></font></i></b></p>
+
+<p class=3DMsoNormal><b><i><font size=3D3 color=3Dnavy face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:navy;font-weight:bold;font-style:italic'>=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Behnam Zeinali</span></font></i></b></p>
+
+<p class=3DMsoNormal><b><i><font size=3D3 color=3Dnavy face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:navy;font-weight:bold;font-style:italic'>=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Internet Dept.</span></font></i></b></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;&nbsp;&nbsp;&nbsp; <a =
+href=3D"http://www.maadiran.com/">www.maadiran.com</a></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0006_01C3F930.1D3B2E30--
+
 
