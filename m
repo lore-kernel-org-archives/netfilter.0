@@ -1,12 +1,13 @@
-From: "Leonardo Borda" <borda@netwall.com.br>
-Subject: tools for netfilter
-Date: Mon, 12 May 2003 09:36:47 -0300
+From: Filip Sneppe <filip.sneppe@cronos.be>
+Subject: Re: top level rules
+Date: 12 May 2003 14:49:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IHEHKFMEMKMGFDMIAHCIGEIFDMAA.borda@netwall.com.br>
-Reply-To: <borda@netwall.com.br>
+Message-ID: <1052743756.1399.0.camel@xbox>
+References: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Patrick Ahler <patrick@vikus.com>
+Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-Hello,
+On Mon, 2003-05-12 at 14:25, Patrick Ahler wrote:
+> Is there any way to insert a new rule at the top of a table...
+> 
+> For instance, I have rules...
+> 
+> RULE 1
+> RULE 2
+> RULE 3
+> RULE 4
+> 
+> in order... but what if I want to place a rule before rule 1? Is that
+> possible?
 
-	I wish to install a netfilter firewall in my organization and I decided to
-use the following applications for:
+Yes, just use the -I (insert) option of iptablesinstead of -A (append).
 
-	Firewall
-		- Iptables
-	Management
-		- Webmin + shorewall
-
-	Does anybody know a tool for logging connections on the fly and generate a
-log report?
-	I need to see what connections is going from and to my firewall and its
-users? Does it have a tool for the web?
-
-regards
-
-Leonardo Borda.
-
-
-
-
-
-
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.478 / Virus Database: 275 - Release Date: 6/5/2003
+Regards,
+Filip
 
 
