@@ -1,13 +1,13 @@
-From: Sasa Stupar <sasa@stupar.homelinux.net>
-Subject: Re: MAC addres and iptables
-Date: Sun, 29 Feb 2004 15:38:45 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: MAC address and iptables
+Date: Sun, 29 Feb 2004 15:12:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4041F975.3060701@stupar.homelinux.net>
-References: <4041ED0A.9070001@stupar.homelinux.net> <200402291355.16107.Antony@Soft-Solutions.co.uk> <4041F1E4.8020408@stupar.homelinux.net>
+Message-ID: <200402291512.36482.Antony@Soft-Solutions.co.uk>
+References: <4041ED0A.9070001@stupar.homelinux.net> <4041F1E4.8020408@stupar.homelinux.net> <4041F975.3060701@stupar.homelinux.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4041F1E4.8020408@stupar.homelinux.net>
+In-Reply-To: <4041F975.3060701@stupar.homelinux.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Netfilter-List <netfilter@lists.netfilter.org>
 
-Sasa Stupar pravi:
+On Sunday 29 February 2004 2:38 pm, Sasa Stupar wrote:
 
-> Antony Stone pravi:
->
->> On Sunday 29 February 2004 1:45 pm, Sasa Stupar wrote:
->>
->>  
->>
->>> Hi!
->>>
->>> I have a working router for my network. Is it possible to allow access
->>> to the router by defining a MAC address with iptables?
->>> So basically I need to allow only some users to access internet and not
->>> all. So I want to allow access only to users with certain MAC address
->>> and deny all others.
->>>
->>> Is this possible with iptables and how?
->>>   
->>
->>
->> Try something like:
->>
->> iptables -A INPUT -s a.b.c.d -m mac --mac aa:bb:cc:dd:ee:ff -j ACCEPT
->>
->> Where a.b.c.d is the IP address and aa:bb:cc:dd:ee:ff is the MAC 
->> address of the machine you want to allow access to the firewall system.
->>
->> You need to have compiled mac address matching into your kernel, or 
->> loaded the appropriate module.
->>
->> See "man iptables" for more info.
->>
->> Regards,
->>
->> Antony.
->>
->>  
->>
->
-> Thanx for the answer. Since I am new to linux and iptables: how do I 
-> know if mac address matching is compiled or not in the kernel and what 
-> is the responsible module?
-> BTW, I am running on RH8 with iptables 1.2.9.
->
-> Regards,
-> Sasa
->
->
-I have done this command and it doesn't work. I have changed the rule to:
+> Sasa Stupar pravi:
+> > Antony Stone pravi:
+> >>
+> >> Try something like:
+> >>
+> >> iptables -A INPUT -s a.b.c.d -m mac --mac aa:bb:cc:dd:ee:ff -j ACCEPT
+> >>
+> >> Where a.b.c.d is the IP address and aa:bb:cc:dd:ee:ff is the MAC
+> >> address of the machine you want to allow access to the firewall system.
+> >>
+> >> See "man iptables" for more info.
 
-iptables -A INPUT -s ! a.b.c.d -m ! mac --mac aa:bb:cc:dd:ee:ff -j  DROP
+> I have done this command and it doesn't work.
 
-then it works BUT as soon as I add another ip and mac address then I am 
-blocked out.
+When you say "it doesn't work", do you mean netfilter gives you an error, 
+saying there is a problem with the command you entered, or netfilter accepts 
+the command, but it doesn't happen to do what you want it to do?
 
-What am I doing wrong here?
+> I have changed the rule to:
+>
+> iptables -A INPUT -s ! a.b.c.d -m ! mac --mac aa:bb:cc:dd:ee:ff -j  DROP
+>
+> then it works
+
+This sounds worryingly like you have a default ACCEPT policy on your INPUT 
+table.
+
+> BUT as soon as I add another ip and mac address then I am
+> blocked out.
+>
+> What am I doing wrong here?
+
+Tell us the rest of your ruleset - it sounds like you are accepting everything 
+on INPUT, except packets which you're blocking, when you should be doing it 
+the other way round.
 
 Regards,
-Sasa
+
+Antony.
+
+-- 
+Anyone that's normal doesn't really achieve much.
+
+ - Mark Blair, Australian rocket engineer
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
