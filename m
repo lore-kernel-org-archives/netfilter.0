@@ -1,8 +1,8 @@
-From: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
-Subject: Commands not working in latest version
-Date: Sun, 16 Feb 2003 13:48:59 -0000
+From: Nathanael Morrison <nathanael_morrison@cogeco.ca>
+Subject: Iptables Forwarding Vnc Connection
+Date: Fri, 14 Feb 2003 18:29:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003101c2d5c2$2872a950$0100a8c0@nikita>
+Message-ID: <3E4D7BE7.6010008@cogeco.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,30 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi,
 
-I've changed from my old distribution to a new one that comes with iptables
-1.2.7a.
-I have iptables in the kernel (2.4.20) and I've loaded the modules
-iptable_nat, ipt_REDIRECT and ipt_MASQUERADE.
-I had in my previous distributions the following lines:
-iptables -t nat -F
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+I currently have several computers behind a linux gateway, one of which 
+is my personal computer. I often want to access my desktop from campus 
+using KDE's remote desktop feature. At the moment I forward any 
+connections to port 5900 to my pc. This works but then I thought, 
+wouldn't it be nice if I could to this securely with an ssh tunnel 
+Correct me if I'm wrong but, I think the connection gets tunneled 
+through ssh, and a connection is made locally (on the gateway) to port 
+5900. Using iptables, is there a way to forward a locally generated 
+connection to another computer?
 
-This would give total access from lan attached to eth0 to the internet
-through my computer. But now, line 1 executes ok, line 2 gives:
-iptables: Invalid Argument
+Your help would be greatly appreciated,
 
-If I do :
-iptables -t nat -A POSTROUTING -o eth0
-everything runs ok but lan has still no access to the internet as expected.
-What's happening, any ideas?
+Nathanael Morrison
 
-Best regards,
-
-Paulo
 
 
