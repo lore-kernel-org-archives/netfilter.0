@@ -1,8 +1,9 @@
-From: "=?koi8-r?B?98zBxMnNydIg8M/UwdDP1w==?=" <varyag18@mail.ru>
-Subject: FW: Problems with DNS
-Date: Fri, 5 Sep 2003 23:36:03 +0400
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: Nat with a dynamic IP
+Date: Fri, 5 Sep 2003 16:28:57 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HMEKJPOHJKKBIDHGBCMDCEGJCAAA.varyag18@mail.ru>
+Message-ID: <03d101c373e3$f388dff0$49caa8c0@caris.priv>
+References: <7C9884991ADAE0479C14F10C858BCDF52E3680@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,46 +17,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Daniel Chemko <dchemko@smgtec.com>, Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: Thorsten Scherf <tscherf@web.de>, netfilter@lists.netfilter.org
+
+yep.  (but I wish I had access to their switches and vlans :)
+
+Thanks for the tips.  everyone.
+
+----- Original Message -----
+From: "Daniel Chemko" <dchemko@smgtec.com>
+To: "Ramin Dousti" <ramin@cannon.eng.us.uu.net>
+Cc: "Peter Marshall" <peter.marshall@caris.com>; "Thorsten Scherf"
+<tscherf@web.de>; <netfilter@lists.netfilter.org>
+Sent: Friday, September 05, 2003 4:23 PM
+Subject: RE: Nat with a dynamic IP
 
 
-
-I have some problems with DNS and iptables.
-
-  ------------      ETH1 ----------------------------- ETH0    ----------
- | DNS SERVER|-----------| Packet filter with iptables|--------|Internet|
-  ------------           ------------------------------        ----------
-This is my rules for forwarding dns packets from eth0 to eth1 and from eth1
-to eth0 :
-121.1.1.1 - eth0 routable IP.
-192.168.5.2 - DNS_DMZ IP.
-192.168.5.0/255.255.255.0 -DMZ subnet.
--A PREROUTING -d 121.1.1.1 -i eth0 -p tcp -j DNAT --to-destination
-192.168.5.2
--A PREROUTING -d 121.1.1.1 -i eth0 -p udp -j DNAT --to-destination
-192.168.5.2
--A POSTROUTING -o eth0 -j SNAT --to-source 121.1.1.1
--A FORWARD -d 192.168.5.0/255.255.255.0 -i eth0 -o eth1 -p tcp -m
-tcp --dport 53 -j allow
--A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -p tcp -m
-state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -d 192.168.5.0/255.255.255.0 -i eth0 -o eth1 -p udp -m
-udp --dport 53 -j ACCEPT
--A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -p tcp -m
-tcp --dport 53 -j allow
--A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -p udp -m
-udp --dport 53 -j ACCEPT
--A allow -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A allow -p tcp -m tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
--A allow -p tcp -j LOG
--A allow -p tcp -j DROP
-
-Problem:
-My packet filter couldn't forward dns udp query to the internet and from
-internet to local .What I'm doing wrong ?
-
------
-With best regards,
-    Potapov Vladimir.
+> It is to an ISP, so no beans...
+>
+> -----Original Message-----
+> From: Ramin Dousti [mailto:ramin@cannon.eng.us.uu.net]
+> Sent: Friday, September 05, 2003 12:14 PM
+> To: Daniel Chemko
+> Cc: Peter Marshall; Thorsten Scherf; netfilter@lists.netfilter.org
+> Subject: Re: Nat with a dynamic IP
+>
+> Here is an idea, It might cost you some vlanning efforts on both the
+> dhcp client and the dhcp server:
+>
+> vconfig add eth2 10
+> vconfig add eth2 11
+> vconfig add eth2 12
+> vconfig add eth2 13
+>
+> dhcpcd eth2.10
+> dhcpcd eth2.11
+> dhcpcd eth2.12
+> dhcpcd eth2.13
+>
+>
 
 
