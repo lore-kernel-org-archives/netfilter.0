@@ -1,11 +1,12 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Outbound Connections fail.
-Date: Mon, 14 Mar 2005 10:12:59 +0100
-Message-ID: <1110791580.7055.10.camel@nostromo.bgsecm.com>
-References: <20050314070617.5F6DEB6F5@xprdmailfe19.nwk.excite.com>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: dig doesn't work
+Date: Mon, 14 Mar 2005 11:26:16 +0200
+Message-ID: <1403218a050314012612cfb19e@mail.gmail.com>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F0199C5@pxtvjoexd01.pxt.primeexalia.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20050314070617.5F6DEB6F5@xprdmailfe19.nwk.excite.com>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F0199C5@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Gary W. Smith" <gary@primeexalia.com>, netfilter <netfilter@lists.netfilter.org>
 
-El lun, 14-03-2005 a las 02:06 -0500, Praneeth Samineni escribi=C3=B3:
->  Hi!I am using Iptables on a RH 30 2.4 Kernel for INPUT connections fil=
-tering, while allowing all OUTPUT.Inbound connections seems to work fine,=
- but outbound connections fail. Connection status is SYN_SENT on the SOUR=
-CE side and SYN_RECV at the destination side, shows that ACK packets are =
-getting filtered at INPUT chain. Does not IPTABLES allow the return packe=
-ts of a connection initiated already thru IPTABLES? Are there any rules t=
-o enable this apart from manually allowing return packets on port basis e=
-verytime.Best WishesPraneeth Samineni
+umm
+This should be it.
+But it is lots of headache
+Gonna try
 
-Yes, just allow the incoming ESTABLISHED and RELATED connections.
+On Sun, 13 Mar 2005 09:20:13 -0800, Gary W. Smith <gary@primeexalia.com> wrote:
+> Did you apply all of the RH specific patches as well or did you use the
+> vanilla kernel.  I had exactly that problem where there are several
+> things compiled to use RH's modified glibc.  To get around that you MUST
+> apply all of the patches in the same order that they do in the
+> SRPMS/SPECS file.
+> 
+> RHES3 is a hybrid kernel (which I found out when everything segfaulted)
+> that uses many of the 2.6 networking features.  As a result it's heavily
+> incompatible from vanilla sources.
+> 
+> My suggestion is that you make a chance to the vanilla source, diff it,
+> create a patch and append it to the RH kernel Spec file.  That works for
+> most of the stuff that I have done.
+> 
+> Hope that helps.
+> 
+> Gary
+> 
+> > -----Original Message-----
+> > From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> > bounces@lists.netfilter.org] On Behalf Of Mohamed Eldesoky
+> > Sent: Sunday, March 13, 2005 5:23 AM
+> > To: netfilter; EBTables Users
+> > Subject: dig doesn't work
+> >
+> > I use RHEL3AS
+> > Patched my system for ebtables, using 2.4 kernels.
+> > Now the dig command gives segmentation fault
+> > Did it occure to anyone  ??
+> > --
+> > Mohamed Eldesoky
+> > www.eldesoky.net
+> > RHCE
+> 
+> 
 
-iptables -A INPUT -i <extif> -m state --state ESTABLISHED,RELATED -j
-ACCEPT
 
-Regards.
-
---=20
-
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
-
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
