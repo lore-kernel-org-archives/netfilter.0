@@ -1,12 +1,13 @@
-From: "Iced Tea" <Iced_tea@gmx.net>
-Subject: Re: iptables newbie
-Date: Sat, 27 Dec 2003 20:09:53 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How do i Block Adult Sites through IPTABLE
+Date: Fri, 2 Jan 2004 12:53:42 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000a01c3ccad$033417e0$056fa8c0@gotcha>
-References: <Pine.GSO.4.58.0312271424260.10965@peppar.cs.umu.se> <1072536610.1868.41.camel@jasiiitosh.nexusmgmt.com> <Pine.GSO.4.58.0312271715200.23735@peppar.cs.umu.se>
+Message-ID: <200401021253.43299.Antony@Soft-Solutions.co.uk>
+References: <20031224121049.86897.qmail@web13204.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031224121049.86897.qmail@web13204.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Johan Cimen <c99jcn@cs.umu.se>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+On Wednesday 24 December 2003 12:10 pm, Nilesh wrote:
 
------ Original Message ----- 
-From: "Johan Cimen" <c99jcn@cs.umu.se>
-To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Saturday, December 27, 2003 6:05 PM
-Subject: Re: iptables newbie
-
-
+> Hello
 >
-> A more precise explanation of my problem:
-> When I use below command within my script,
->
-> iptables -t mangle -A OUTPUT -o $IFACE -p UDP --dport 7001 -j TOS
-> --set-tos 0x10
->
-> where I have an iptables -L at the very end, I can see the results:
->
-> Chain OUTPUT (policy ACCEPT)
-> target  prot opt source  destination
-> TOS     udp -- anywhere  anywhere    udp dpt:7001 TOS set
-Maximize-Throughput
+> How do i block Adult XXX sites through iptables
 
-for detailed information use verbose option -v:
+You don't.   There is an important word implied but not stated in your 
+question: "web".
 
-iptables -vL OUTPUT
+Use Squid or some similar HTTP proxy, and filtering rules or blacklists.
 
-tschoe
-  Ulrich
+Antony.
+
+-- 
+Most people are aware that the Universe is big.
+
+ - Paul Davies, Professor of Theoretical Physics
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
