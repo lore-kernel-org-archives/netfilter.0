@@ -1,13 +1,13 @@
-From: =?gb2312?q?Benjam=A8=AAn=20Ubach?= <spamfree@tutopia.com>
-Subject: Re: can somebody give me some advice about starcraft over netfilter gateway?
-Date: Mon, 5 May 2003 15:20:21 -0500
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: 3rd NIC & SNAT Question
+Date: Mon, 5 May 2003 23:02:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305051520.24024.spamfree@tutopia.com>
-References: <E19CcgX-0005M8-00@kashyyyk.netfilter.org>
+Message-ID: <002501c31349$9a34ae70$0401000a@sterenborg.info>
+References: <200305011113.36865.franco@gasperino.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E19CcgX-0005M8-00@kashyyyk.netfilter.org>
+In-Reply-To: <200305011113.36865.franco@gasperino.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: ultraice <it@easy-boarding.com>, netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: franco@gasperino.org, netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On Monday 05 May 2003 04:54, ultraice wrote:
-> can somebody give me some advice about starcraft over netfilter gateway=
-?
+> connections in the /proc/net/ip_conntrack file. How can I 
+> force the last SNAT 
+> rule below to only nat the 10.0.0.0/24 net and not touch the 
+> 100.100.101.0/24 
+> net?
+> 
+> Public External Net: 100.100.100.0/30
+> Public External Address: 100.100.100.2
+> Public External Interface: eth0
+> 
+> Local Private Net: 10.0.0.0/24
+> Local Private Address: 10.0.0.1
+> Local Private Interface: eth1
+> 
+> Local Public Net: 100.100.101.0/24
+> Local Public Address: 100.100.101.1
+> Local Public Interface: eth2
+> 
+> iptables -A INPUT -j ACCEPT
+> iptables -A OUTPUT -j ACCEPT
+> iptables -A FORWARD -j ACCEPT
 >
-> thx!
+> iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -j SNAT --to-source 
+> 100.100.100.2
 
-Hi!
+What if you make this :
 
-You may try this:
+iptables -P FORWARD DROP
+iptables -A FORWARD -i eth1 -o eth0 -s 10.0.0.0/24 -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -s 100.100.101.0/24 -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/24 \
+ -j SNAT --to-source 100.100.100.2
 
-http://www.u.arizona.edu/~trw/games/ports.htm tells
-http://shadow.sentry.org/~trev/adsl/magic_ports.html
-http://www.practicallynetworked.com/sharing/app_port_list.htm
 
-Tell us which one did it :-D
-
-Hope you find it useful
-
-- --=20
-- ------------------------------------------------------------------
-Reality is acceptable... if practiced with moderation...
-- ------------------------------------------------------------------
-
-Benjam=A8=AAn Ubach Nieto
-
-Contact Info:
-
-e-mail:                               ICQ:               MSN:
-spamfree @ tutopia.com      66021618      exmetallifan @ hotmail.com
-
-Linux Registered User: 310305
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE+tseFn/37kYXielsRAiJ9AJ9Cw7CCeYHRJ3ithNFM13WPX8G3HgCgpHqr
-mmKGtWPCnpTLheNTmMWKMok=3D
-=3DZkGe
------END PGP SIGNATURE-----
+Rob.
 
 
