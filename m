@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Tightening up outgoing traffic
-Date: Tue, 15 Oct 2002 14:03:21 +0100
+Date: Tue, 15 Oct 2002 16:22:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210151303.g9FD3RL23621@vulcan.rissington.net>
-References: <1034686034.15446.38.camel@localhost.localdomain>
+Message-ID: <200210151522.g9FFMWL23883@vulcan.rissington.net>
+References: <1034686034.15446.38.camel@localhost.localdomain> <009b01c27457$a7ab66c0$0800000a@wormhole>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1034686034.15446.38.camel@localhost.localdomain>
+In-Reply-To: <009b01c27457$a7ab66c0$0800000a@wormhole>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,46 +20,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 15 October 2002 1:47 pm, Neil Hodge wrote:
+On Tuesday 15 October 2002 3:32 pm, Dan Searle wrote:
 
-> All:
+> > I keep getting "domainname can not be found.  Please check the name and
+> > try again" from my browser.  This only happens for new web sites (i.e.,
+> > Yahoo works fine).  As this seems somewhat like a DNS issue, I tried
+> > adding this:
+> >
+> > iptables -A OUTPUT -p tcp --destination-port nameserver -j ACCEPT
+> >
+> > but it didn't work.  Any ideas?  Thanks.
 >
-> I am running directly off the firewall box.  I currently have the
-> following:
+> iptables -A OUTPUT -p tcp --dport domain -j ACCEPT
+> iptables -A OUTPUT -p udp --dport domain -j ACCEPT
 >
-> iptables -P OUTPUT ACCEPT
->
-> When I change to this:
->
-> iptables -P OUTPUT DROP
-> iptables -A OUTPUT -p tcp --destination-port http -j ACCEPT
->
-> I keep getting "domainname can not be found.  Please check the name and
-> try again" from my browser.  This only happens for new web sites (i.e.,
-> Yahoo works fine).  As this seems somewhat like a DNS issue, I tried
-> adding this:
->
-> iptables -A OUTPUT -p tcp --destination-port nameserver -j ACCEPT
->
-> but it didn't work.  Any ideas?  Thanks.
+> You want to use the service name "domain", not "nameserver",
 
-Yes.   Change the tcp to udp in the last command above :-)
+In my version of /etc/services those are synonymous - 'domain' is the primary 
+name of the service, and 'nameserver' is listed as an alias.
 
-By the way, I would recommend adding a LOGging rule to your OUTPUT chain, at 
-the end just before packets get default DROPped, so you can see what you're 
-blocking which you might not realise you want to allow....
+> also I think
+> domain lookups use the udp protocol also. (Don't quote me on that one :-)
 
-There are things like some ICMP packets which you might not realise you 
-should allow out of your machine in order to keep things running nicely.
+General rule for DNS is:
+
+Client lookup on server uses UDP
+Server to server transfers use TCP
 
 Antony.
 
 -- 
 
-There are two possible outcomes.
-
-If the result confirms the hypothesis, then you've made a measurement.
-If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
