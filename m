@@ -1,11 +1,13 @@
-From: "Eric Plikuhn" <ericgate@imagestream-is.com>
-Subject: Need to NAT incomming packets
-Date: Wed, 12 Jun 2002 15:31:57 -0500
+From: Mike Tone <simpletone@mbox.com.au>
+Subject: flushing stale conntrack'ed connections
+Date: Thu, 13 Jun 2002 13:56:30 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <011e01c21250$32829ee0$cd64a8c0@imagestream.com>
+Message-ID: <1265e5f1269b2c.1269b2c1265e5f@mbox.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
+Content-language: en
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,34 +20,14 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-I trying to determine if the following can be done.  I've searched for a
-solution but can not find it... because most people are not forced to
-attempt this.
+is there a way apart from rebooting to flush the connections listed in
+/proc/sys/ip_conntrack?
 
-Here is the scenario:
+stale UNREPLIED connections that is ..
 
-Site A  10.0.0.0/8
-   ||
-   ||
-Core Router==========Internet
-   ||
-   ||
-Site B  10.0.0.0/8
+tia
 
-My problem is that the Site A and B router don't/can't do NAT.  The second
-problem is that they MAY be using the same IP addresses at both sites.  Each
-site was giving the 10.0.0.0/8 private network to do work with and they have
-IP address all over it.
-
-I was hoping have a SNAT rule for each incoming interface in the prerouting
-chain on the Core router....  but you can't do SNAT in prerouting with
-iptables.
-
-I'm thought of a few possibilities, but so far they all fall short.
-Assuming that I can't get new routers at the Site locations and they may be
-using the same IP's what can I do?
-
-Eric
-
-
+---------------------------------------------------------------------
+NEW to mBox, receive faxes to any email address!
+Find out more http://www.mbox.com.au/fax
 
