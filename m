@@ -1,13 +1,11 @@
-From: Thomas Kirk <thomas@arkena.dk>
-Subject: Re: How to stop imesh with iptables
-Date: Thu, 12 Jun 2003 15:08:27 +0200
+From: <kwang@kwang.org>
+Subject: IP forwarding on port 80
+Date: Tue, 10 Jun 2003 17:08:20 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030612130827.GB2641@thomas.arkena.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E23@wardrive.citadelcomputer.com.au> <20030611200517.2278.qmail@web40306.mail.yahoo.com>
+Message-ID: <33603.128.83.147.87.1055282900.squirrel@www.kwang.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030611200517.2278.qmail@web40306.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +16,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Kevin McConnell <kevymac@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, Jun 11, 2003 at 01:05:17PM -0700, Kevin McConnell wrote:
+Firewall, called dscp, has these iptables settings:
 
-> On a slightly OT note, just out of curiousity, am I
-> the only person that denies everything by default and
-> only allows the protocols through the firewall that I
-> feel people need to use? This keeps the average joe
-> from abusing bandwidth, but there will always be other
-> people who figure out how to pierce the FW using other
-> holes.
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     tcp  --  localhost.localdomain  anywhere
+ACCEPT     all  --  anywhere             anywhere           state
+RELATED,ESTABLISHED
+ACCEPT     icmp --  anywhere             anywhere
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:sftp
+DROP       all  --  anywhere             anywhere
 
-Nope thats the companypolicy where i work. Oh btw im the one that
-formulates this policy ;-)
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
--- 
-Venlig hilsen/Kind regards
-Thomas Kirk
-ARKENA
-tlf/phone +4570233456
-thomas(at)arkena(dot)com
-Http://www.arkena.com
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       tcp  --  anywhere             dscp.nur.utexas.edutcp dpt:http
+to:192.168.0.2
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+HTTP server has these settings:
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     tcp  --  localhost.localdomain  anywhere
+ACCEPT     all  --  anywhere             anywhere           state
+RELATED,ESTABLISHED
+ACCEPT     icmp --  anywhere             anywhere
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:sftp
+DROP       all  --  anywhere             anywhere
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Firewall connects to the world via eth1 and to the HTTP server on eth0. HTTP
+server connects to the firewall on eth0 and to another machine on eth1.
+
+I can access the HTTP server from the firewall just fine but not from the
+internet. Any clues?
 
 
-"Unfortunately, son, we Simpsons sometimes have to bend the rules
-a little in order to hold our own." -- Homer Simpson
 
