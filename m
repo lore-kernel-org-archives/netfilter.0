@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables and permits ports
-Date: Thu, 12 Sep 2002 09:34:59 +0100
+From: "Muenz, Manja" <M.Muenz@t-systems.com>
+Subject: Need to mark filtered packets and retrieve this information in my
+	 application....
+Date: Thu, 12 Sep 2002 09:40:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020912083501.UQTP287.mta02-svc.ntlworld.com@there>
-References: <1031772226005316@caramail.com>
+Message-ID: <476F91F7CFDBD41182E000D0B7E7E6930280D028@U9JM7.mgb01.telekom.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1031772226005316@caramail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wednesday 11 September 2002 10:23 pm, Mohamed Nassih wrote:
-
->  Hi,
->
->  my firewall file is like below, It is work without any
-> problem, today I test to connect to a oracle server via the
-> internet from inside to the port 1521(in outside oracle
-> server), and it is work.
->
->  Normaly as you can see from the roles I drop all paquets
-> that do not have as a distination-port www,ftp..the
-> firewall must drop all paquets with the port-destination
-> 1521!!
->  Can I have please explanation of this..
-
-I don't know whether by "inside" you mean some machine on your LAN (not your 
-firewall), or the firewall itself, however:
-
-You have no FORWARDing rules whatsoever, so if you're sending packets from 
-your internal LAN, everything is allowed by the default ACCEPT policy (which 
-you haven't changed).
-
-You have no OUTPUT policy either, so if you're sending packets from the 
-firewall itself, everything is allowed by the default ACCEPT policy (which 
-you haven't changed).
-
-Antony.
-
--- 
-
-All matter in the Universe can be placed into one of two categories:
-
-1. things which need to be fixed
-2. things which will need to be fixed once you've had a few minutes to play 
-with them
+> Hello there,
+> 
+> I am working on suse 8.0.
+> I would like to use kernel packet filtering/iptables, but not to drop the files to which the filters apply, but to mark them. Then I would like to get all packets (the ones to which the filters applied and the others) in my own c++-application and differ them by the mark set before, to handle them differently.
+> Reading two days a lot of stuff about iptables, packet filtering, bpf and so on in the net I was not even able to identify, if I can do so. (I have to modify an already existing application, which uses kernel packet filtering with bpf and pcap, which until now only drops the packets to which the filters applies  - and I have to do it quick :-( ...)
+> 
+> Can somebody please answer me:
+> 1. Can I do it anyway?
+> 2. If it is possible, how can I do it?
+> 
+> Thank you very much
+> Manja
 
