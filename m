@@ -1,13 +1,13 @@
-From: "Christopher Davis" <cldavis@speakeasy.net>
-Subject: cannot ping loopback address
-Date: Wed, 5 Nov 2003 03:18:12 -0500
+From: Eric Leblond <eric@regit.org>
+Subject: Re: cannot ping loopback address
+Date: Wed, 05 Nov 2003 09:41:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <JKELJHHMDHPOLKFBOEGHKEGLDAAA.cldavis@speakeasy.net>
-Reply-To: <cldavis@speakeasy.net>
+Message-ID: <1068021693.26225.4.camel@porky>
+References: <JKELJHHMDHPOLKFBOEGHKEGLDAAA.cldavis@speakeasy.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0000_01C3A34B.71C77E80"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-rPL48DzRjPi0E8B3kQSX"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <JKELJHHMDHPOLKFBOEGHKEGLDAAA.cldavis@speakeasy.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,88 +17,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: cldavis@speakeasy.net
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_01C3A34B.71C77E80
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-Hello everyone!
-
-I have setup an iptables script that will not allow me to ping 127.0.0.1 for
-some reason --
-
-Input policy is drop
-Forward and output policy is accept.  (Egress filtering on the way!)
-
-I have in the rules to allow established or related connections -- "-A
-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-Can ping everything else.
-ifconfig does have information on the lo @ 127.0.0.1
-
-Any ideas?
-
-Thanks!!
-Christopher Davis
-
-------=_NextPart_000_0000_01C3A34B.71C77E80
-Content-Type: text/html;
-	charset="iso-8859-1"
+--=-rPL48DzRjPi0E8B3kQSX
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial size=3D2>Hello=20
-everyone!</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial size=3D2>I have =
-setup an=20
-iptables script that will not allow me to ping 127.0.0.1 for some reason =
+Le mer 05/11/2003 =C3=A0 09:18, Christopher Davis a =C3=A9crit :
+> Hello everyone!
+> =20
+> I have setup an iptables script that will not allow me to ping
+> 127.0.0.1 for some reason --=20
+> =20
+> Input policy is drop
+> Forward and output policy is accept.  (Egress filtering on the way!)
+> =20
+> I have in the rules to allow established or related connections -- "-A
+> INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> Can ping everything else.
+> ifconfig does have information on the lo @ 127.0.0.1
+> =20
+> Any ideas?
+
+The fw receives a ping on INPUT : a ping has to be unrelated to the
+connection open by the emission of the ping. So it cames as new on the
+INPUT chains and it is dropped.
+Add=20
+	iptables -A INPUT -p icmp -m state --state NEW -j LOG
+to check. It ping is logged, that's it.
+
+The standard way to do is to have :
+iptables -I INPUT -i lo -j ACCEPT
+iptables -I OUTPUT -o lo -j ACCEPT
+
+BR,
+> =20
+> Thanks!!
+> Christopher Davis
 --=20
-</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial size=3D2>Input =
-policy is=20
-drop</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial =
-size=3D2>Forward and output=20
-policy is accept.&nbsp; (Egress filtering on the =
-way!)</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial size=3D2>I have =
-in the rules=20
-to allow established or related connections -- "-A INPUT -m state =
---state=20
-ESTABLISHED,RELATED -j ACCEPT</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial size=3D2>Can =
-ping everything=20
-else.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial =
-size=3D2>ifconfig does have=20
-information on the lo @ 127.0.0.1</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial size=3D2>Any=20
-ideas?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial=20
-size=3D2>Thanks!!</FONT></SPAN></DIV>
-<DIV><SPAN class=3D000090408-05112003><FONT face=3DArial =
-size=3D2>Christopher=20
-Davis</FONT></SPAN></DIV></BODY></HTML>
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
 
-------=_NextPart_000_0000_01C3A34B.71C77E80--
+--=-rPL48DzRjPi0E8B3kQSX
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/qLe9nxA7CdMWjzIRAlLKAJ9L/w997S8a8OQNIDc52CR4LUj2XgCfQzyy
+DLEQmrtYZMK+BU+Qh3SZzI8=
+=+p62
+-----END PGP SIGNATURE-----
+
+--=-rPL48DzRjPi0E8B3kQSX--
 
 
