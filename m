@@ -1,11 +1,13 @@
-From: Sam Loy <sampaw@mac.com>
-Subject: Still having problems...
-Date: Wed, 30 Jun 2004 13:30:53 -0500
+From: Florian Boelstler <euphoria@web.de>
+Subject: Re: traceroute
+Date: Wed, 30 Jun 2004 23:47:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9E8B5B9C-CAC3-11D8-A356-000A95AD0230@mac.com>
-Mime-Version: 1.0 (Apple Message framework v618)
-Content-Type: multipart/mixed; boundary=Apple-Mail-2-791387482
+Message-ID: <40E334EC.1080606@web.de>
+References: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv> <200406301429.14248.Antony@Soft-Solutions.co.uk>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200406301429.14248.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,166 +17,84 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi,
+
+I have a similar problem.
+
+My traceroute says:
+
+traceroute to www.google.akadns.net (66.102.11.99), 30 hops max, 38 byte
+packets
+traceroute: sendto: Operation not permitted
+ 1 traceroute: wrote www.google.akadns.net 38 chars, ret=-1
+[ ... ]
+
+My setup is rather simple. I have "black-boxed" router connected to the
+internet, that is able to forward traceroutes. My client is equipped
+with netfilter.
+When I disable my local netfilter on the client, traceroute works fine.
+
+I use
+
+$IPTABLES -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+at the beginning of my firewall script.
+
+Nevertheless traceroute does not work.
+
+Do I miss something?
+
+Thanks.
+
+Cheers,
+
+  Florian
 
 
---Apple-Mail-2-791387482
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=US-ASCII;
-	format=flowed
-
-I sorry to be such a newbie, but I still cannot get my firewall up and 
-running.
-
-Actually, I had it working with the enclosed script, until I generated 
-/etc/sysconfig/iptables using /sbin/service iptables save.
-
-After I tried to get things to spin up at boot time it quit 
-working...not sure what I did.
-
-I erased my tracks, can still ping and set the net before loading 
-iptables. Afterwords, I can't even ping the 192.168.1.1 interface on 
-the same machine!
-
-Anyway, jason, antony, dick, a lot of you have been very helpful. Thank 
-you so much for your continued help and patience.
-
-It is starting to make sense, but I still don't get it. I'm also in 
-processing of up2dating my linux. maybe that will help.
-
-fwscript is the script I'm using (from Jason with slight mods). I run 
-it after I connect ppp0 and get an ip from my isp, before running 
-dhcpd. stillnowork is the output of iptables-save.
-
-Like I said, it worked until I tried to get it to start at boot time.
-
-Thanks,
-
-Sam
---Apple-Mail-2-791387482
-Content-Transfer-Encoding: 7bit
-Content-Type: application/octet-stream;
-	x-unix-mode=0755;
-	name="fwscript"
-Content-Disposition: attachment;
-	filename=fwscript
+Antony Stone wrote:
+> On Wednesday 30 June 2004 2:05 pm, Peter Marshall wrote:
+>
+>
+>>Hi.  I was wondering what I would need for rules to have traceroute work
+>>through my firewall.  (I have a box behind the firewall trying to get out
+>>using traceroute).
+>>
+>>I have an allow established connections on my forwared chain, and I am
+>>allowing anything from the source IP of the box in question to leave
+... It
+>>appears that the problem is on the packets comming back in .. but I am not
+>>sure what I have to do to fix it ....
+>
+>
+> Allow RELATED packets as well as ESTABLISHED.
+>
+> Regards,
+>
+> Antony.
+>
 
 
 
-PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-# NOTES:
-# 1) Assumes that eth0 is external interface, and eth1 is internal.  Adjust
-#    to taste.
+...............................
 
-# Get current details:
-EXT_IF=ppp0
-INT_IF=eth0
-EXTERNAL_IP=`ifconfig $EXT_IF | grep "inet addr:" | awk '{print $2}' | \
-		cut -f 2 -d :`
-
-# Clean out tables
-iptables --flush
-iptables --table nat --flush
-iptables --delete-chain
-iptables --table nat --delete-chain
-
-# Set up source nat
-iptables --table nat --append POSTROUTING --out-interface $EXT_IF \
-		-j MASQUERADE
-
-#iptables --append FORWARD --in-interface $EXT_IF -j ACCEPT
-#iptables --table nat --append POSTROUTING -d 192.168.1.0/24 \
-#		-j MASQUERADE
-#iptables --append FORWARD -s 192.168.1.0/24  -j ACCEPT
-iptables --append FORWARD --in-interface $EXT_IF -j ACCEPT
-
-# Allow loopback traffic
-iptables -A INPUT -i lo -p all -j ACCEPT
-iptables -A OUTPUT -o lo -p all -j ACCEPT
-
-# Internal DHCP
-iptables -A INPUT -p tcp --syn -s 192.168.1.0/24 \
-		--dport 67 -j ACCEPT
-iptables -A INPUT -p udp -s 192.168.1.0/24 \
-		--dport 67 -j ACCEPT
-
-iptables -A INPUT -p tcp -i $EXT_IF --dport 67 -j DROP
-iptables -A INPUT -p udp -i $EXT_IF --dport 67 -j DROP
-
-# ssh internal and external
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-
-# samba internal
-iptables -A INPUT -p tcp -i $INT_IF \
-		--dport 139 -j ACCEPT
-
-# Accept established connections
-#iptables -A INPUT -i $EXT_IF -m state --state ESTABLISHED,RELATED -j ACCEPT 
-#iptables -A INPUT -i $INT_IF -m state --state ESTABLISHED,RELATED -j ACCEPT 
-iptables -A FORWARD -i $INT_IF -j ACCEPT
-
-# Reject non-established connections.
-#iptables -A INPUT -p tcp --tcp-option ! 2 -j REJECT --reject-with tcp-reset
-
-iptables -P INPUT DROP
-		# Drop all other connection attempts. 
-		# Only connections defined above are allowed.
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-#echo 1 > /proc/sys/net/ipv4/conf/${EXT_IF}/rp_filter
-
-#iptables -A OUTPUT -p icmp -d 0/0 -j DROP 		# block all icmp
-
-# ftp external
-# iptables -A INPUT -p tcp -i $EXT_IF --dport 21 -j ACCEPT
-# iptables -A INPUT -p udp -i $EXT_IF --dport 21 -j ACCEPT
-
-# http external
-# iptables -A INPUT -p tcp -i $EXT_IF --dport 80 -j ACCEPT
-# iptables -A INPUT -p udp -i $EXT_IF --dport 80 -j ACCEPT
-
-# DEBUG ONLY!
-#iptables -A INPUT -j LOG --log-prefix "INPUT_DROP: "
-#iptables -A OUTPUT -j LOG --log-prefix "OUTPUT_DROP: "
-########################################################################
+Someone on the net said:
+Frank, have you been sniffing medical samples again? - Hawkeye
 
 
---Apple-Mail-2-791387482
-Content-Transfer-Encoding: 7bit
-Content-Type: application/octet-stream;
-	x-unix-mode=0644;
-	name="stillnowork"
-Content-Disposition: attachment;
-	filename=stillnowork
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
 
-# Generated by iptables-save v1.2.7a on Wed Jun 30 12:01:04 2004
-*nat
-:PREROUTING ACCEPT [59:6784]
-:POSTROUTING ACCEPT [7:588]
-:OUTPUT ACCEPT [21:1466]
--A POSTROUTING -o ppp0 -j MASQUERADE 
-COMMIT
-# Completed on Wed Jun 30 12:01:04 2004
-# Generated by iptables-save v1.2.7a on Wed Jun 30 12:01:04 2004
-*filter
-:INPUT DROP [1:48]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [21:1309]
--A INPUT -i lo -j ACCEPT 
--A INPUT -s 192.168.1.0/255.255.255.0 -p tcp -m tcp --dport 67 --tcp-flags SYN,RST,ACK SYN -j ACCEPT 
--A INPUT -s 192.168.1.0/255.255.255.0 -p udp -m udp --dport 67 -j ACCEPT 
--A INPUT -i ppp0 -p tcp -m tcp --dport 67 -j DROP 
--A INPUT -i ppp0 -p udp -m udp --dport 67 -j DROP 
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT 
--A INPUT -i eth0 -p tcp -m tcp --dport 139 -j ACCEPT 
--A FORWARD -i ppp0 -j ACCEPT 
--A FORWARD -i eth0 -j ACCEPT 
--A OUTPUT -o lo -j ACCEPT 
-COMMIT
-# Completed on Wed Jun 30 12:01:04 2004
-
---Apple-Mail-2-791387482--
-
+iD8DBQFA4zTswT2gPfZm6tURAoOnAKCtHbVHsvg7nrTBCviE4DVydenpQgCfeVuS
+jdBS08sKpALhTTMJ+gGYcsc=
+=g53n
+-----END PGP SIGNATURE-----
 
