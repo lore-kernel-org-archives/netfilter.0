@@ -1,15 +1,11 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Bye and Packet Counters
-Date: Fri, 27 Dec 2002 16:49:51 +0000
+From: Justin Hammond <fish@dynam.ac>
+Subject: How to disable ip_contrack_irc when its compiled into the kernel?
+Date: 28 Dec 2002 00:55:42 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021227164951.GJ1878@miggy.org>
-References: <000101c2adbf$d7d5ff80$6c00a8c0@blue>
+Message-ID: <1041008143.15849.81.camel@fish-dt.dmz.dynam.ac>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VIOdPewhitSMo36n"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000101c2adbf$d7d5ff80$6c00a8c0@blue>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi all
 
---VIOdPewhitSMo36n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We have a problem on one of our servers. Its running:
 
-On Fri, Dec 27, 2002 at 09:51:33AM -0600, Glover George wrote:
-> Now with iptables -t nat -L -v I can get some packet counters, but not
-> the complete number.  Even still this would require constant polling
-> since before a delete, I could read the packet counters, but if I'm not
-> deleteing it, I would constantly have to poll it (the counters are
-> presented via a graphical interface, and will be polled every so many
-> seconds).  So you see, I can't just go running iptables constantly.
+Linux 2.4.17 on a Sparc Box with IPtables 1.2.4
 
-   I don't see how you can get around the need to constantly run
-iptables, but if the lack of accurate numbers is the problem then simply
-add the -x flag to get the exact byte/packet counts:
+The Kernel support for IPtables was compiled into the kernel, not as
+loadable modules, and now we have some problems. 
 
-	iptables -t nat -nxvL
+We recently setup a IRC server for a customer, and they came back and
+told us that DCC sending was not working for any client connected to
+this IRC server. A quick check of the logs revealed:
 
-For doing it without running iptables I you may want to look at:
+Forged DCC command from 218.103.157.103: 1.154.254.169:0
+Forged DCC command from 218.103.157.103: 1.154.254.169:0
+Forged DCC command from 218.103.157.103: 1.154.254.169:0
+Forged DCC command from 218.103.157.103: 1.154.254.169:0
 
-	http://www.netfilter.org/documentation/FAQ/netfilter-faq-4.html#ss4.1
 
-HTH,
+Throughout the entire kernel log. 
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+(I believe the problem has been fixed in later releases of iptables, so
+I'm not after a fix)
 
---VIOdPewhitSMo36n
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Now here is my problem. The Server is in Sydney, Australia, and I'm in
+Singapore, around 8000Miles away, so doing a remote kernel compile and
+reboot to remove the contrack_irc module is not something that I fancy. 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+I'm wondering if there is a Rule or way that I can disable the contrack
+module from operating?
 
-iEYEARECAAYFAj4MhK8ACgkQzbc+I5XfxKdyHwCeMRuuLk41pL99TrS4JtwON/du
-GS4AoIvOyXjVn3ZZS3YXltexabMp1ky/
-=NOX9
------END PGP SIGNATURE-----
+Thanks :)
 
---VIOdPewhitSMo36n--
+Justin
+
+
 
