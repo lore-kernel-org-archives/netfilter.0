@@ -1,10 +1,13 @@
-From: Jean Wolter <jw5-nf@os.inf.tu-dresden.de>
-Subject: Wrong patch in Netfilter Security Advisory: Conntrack list_del() DoS ?
-Date: 10 Aug 2003 00:54:18 +0200
+From: rverduij@dds.nl
+Subject: Re: simple newbie question
+Date: Sun, 10 Aug 2003 13:53:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <86ekzua1d1.fsf@os.inf.tu-dresden.de>
+Message-ID: <1060516426.3f36324a87d76@webmail.dds.nl>
+References: <000101c35ebe$9504e8f0$0401a8c0@pc2>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000101c35ebe$9504e8f0$0401a8c0@pc2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,50 +17,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mario =?iso-8859-1?b?TWVy7W5nb2xv?= <mmeringolo@arnet.com.ar>
+Cc: netfilter@lists.netfilter.org
 
-Date: 10 Aug 2003 00:49:59 +0200
+Hi there,
 
-Hello,
+I used to have adsl I got cable now.
 
-I just tried to apply the recommended patch to a pristine 2.4.20
-kernel and the following part fails:
+You need to set up a firewall configuration on your ppp0 interface.
+(asuming ppp0 is the interface you tunnel through)
 
-diff -urN --exclude-from=diff.exclude linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
---- linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c Tue Feb 18 17:07:26 2003
-+++ linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c Fri Feb 21 17:03:35 2003
-@@ -192,7 +192,7 @@
-	  have an established connection: this is a fairly common
-	  problem case, so we can delete the conntrack
-	  immediately.  --RR */
--	if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
-+	if (!test_bit(IPS_SEEN_REPLY_BIT, &conntrack->status) && tcph->rst) {
-        	WRITE_UNLOCK(&tcp_lock);
-        	if (del_timer(&conntrack->timeout))
-            		conntrack->timeout.function((unsigned long)conntrack);
+Because if you blok on your eth1 and/or eth0 all the traffic still get's=20
+through to you machine, unless you have issued global rules which blok all =
 
-In the original 2.4.20 ip_contrack_prot_tcp the code looks like
-follows (starting at line 189):
+interfaces.
 
-        WRITE_UNLOCK(&tcp_lock);
+On your eth1 card you could set up filtering rules if you don't thrust netw=
+ork=20
+the eth1 network card is connected to.
 
-        /* If only reply is a RST, we can consider ourselves not to
-           have an established connection: this is a fairly common
-           problem case, so we can delete the conntrack
-           immediately.  --RR */
-        if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
-                if (del_timer(&conntrack->timeout))
-                        conntrack->timeout.function((unsigned long)conntrack);
+If you do remember to allow the traffice that builds the vpn (your pppoe=20
+tunneling).
+And if you use a dynamic ip on your eth1 device to allow dhcp traffic as we=
+l.
 
-The WRITE_UNLOCK ist not part of the if clause, it is done before
-checking the conntrack state. Therefore the patch fails at this point.
+I'm currently not at my own pc, but I'll post anexample tomorrow for you.
 
-Is this a bug in the patch, in the linux archive or did I do anything
-wrong?
+Regards
+Rob
 
-regards, 
-Jean
+
+Citeren Mario Mer=EDngolo <mmeringolo@arnet.com.ar>:
+
+> Im starting with this iptables stuff and trying to manage a home network
+> trough linux and adsl + pppoe=20
+>=20
+> I have two simple questions.
+>=20
+> =20
+>=20
+> I have my adsl router conected to my eth1
+>=20
+> =20
+>=20
+> When im setting my iptables rules, should I think that eth0 routes packag=
+es
+> through eth1 to ppp0 ?
+>=20
+> =20
+>=20
+> Because, if that is, my drop rules should be defined on eth1, and my input
+> ones on eth0
+>=20
+> =20
+>=20
+> Our should i think that eth1 does not matter and my reliable is eth0 and =
+my
+> unreliable ppp0 ?
+>=20
+> =20
+>=20
+> Please forgive my crude english
+>=20
+> =20
+>=20
+> Thanx=20
+>=20
+> =20
+>=20
+> =20
+>=20
+>=20
+
+
 
 
