@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp
-Date: Thu, 20 May 2004 16:43:33 +0100
+From: O-Zone <liste@zerozone.it>
+Subject: Re: DMZ to DMT through ROUTER problem !
+Date: Thu, 20 May 2004 17:53:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405201643.33270.Antony@Soft-Solutions.co.uk>
-References: <BAY15-F33Fxkl6JpfmG0001c2dc@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200405201753.40647.liste@zerozone.it>
+References: <200405201318.34706.liste@zerozone.it> <200405201658.59945.liste@zerozone.it> <200405201607.10019.Antony@Soft-Solutions.co.uk>
+Reply-To: liste@zerozone.it
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F33Fxkl6JpfmG0001c2dc@hotmail.com>
+In-Reply-To: <200405201607.10019.Antony@Soft-Solutions.co.uk>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,64 +20,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 20 May 2004 4:18 pm, azeem ahmad wrote:
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> From: Antony Stone <Antony@Soft-Solutions.co.uk>
->
-> > Do you get the same error message from the server if you access it from
-> > some machine which does not go through the firewall (and is not the
-> > firewall itself)?   Even if you have to temporarily set up a client to
-> > test this, I think it would be useful, because it would be good to know if
-> > the server generates this error independently of anything the firewall is
-> > doing to the packets.
+On Thursday 20 May 2004 17:07, Antony Stone wrote:
+> If you do not in fact already have the PREROUTING DNAT rules, then what do
+> you mean by "Each DMZ server is mapped to its PUBLIC IP"?   Maybe I
+> misunderstood what you have already done, and already have working, and
+> what problem is still left to solve?
 
-> the server is accesible from other machines. for an example i goto squid
-> mirror sites
-> http://www.squid-cache.org/Mirrors/ftp-mirrors.html
-> but even no server here can be accessed. here is a long list of ftp mirror
-> servers. and also i set the rule up as u said. but still no luck
+Here's the problem (TCPDUMP on 192.168.0.1):
+root@bastion:/etc/rc.d# tcpdump -i eth2 dst 151.8.47.B
+17:45:52.507152 IP 192.168.0.2.45621 > 151.8.47.B.pop3: S=20
+1931786477:1931786477(0) win 5840 <mss 1460,sackOK,timestamp 107802174[|tcp=
+]>
+17:45:55.506855 IP 192.168.0.2.45621 > 151.8.47.B.pop3: S=20
+1931786477:1931786477(0) win 5840 <mss 1460,sackOK,timestamp 107805174[|tcp=
+]>
+17:46:01.506454 IP 192.168.0.2.45621 > 151.8.47.B.pop3: S=20
+1931786477:1931786477(0) win 5840 <mss 1460,sackOK,timestamp 107811174[|tcp=
+]>
 
-I am confused :(
+but on 151.8.47.B (192.168.0.3) no any packet arrive. This is a piece of=20
+rc.firewall:
 
-Are we talking about one ftp server which you are getting the previously- 
-quoted error message from (and about which I have asked whether the same 
-error message gets generated when you access that particular server without 
-going through your firewall rules), or are you saying that you cannot access 
-any ftp server through the rules on your firewall?
+#
+# 4.3.8 POSTROUTING chain
+#
 
-> and i wanna ask something that is not relevant to list is that u quote very
-> good quotations.
+$IPTABLES -t nat -A POSTROUTING -s 10.0.0.0/24 -j MASQUERADE
+$IPTABLES -t nat -A POSTROUTING -s 172.16.0.0/24 -j MASQUERADE
 
-Thank you :)
+$IPTABLES -t nat -A POSTROUTING -s 192.168.0.0/24 -d 192.168.0.0/24 -p tcp =
+=2Dj=20
+SNAT --to 192.168.0.1
 
-> can u tell me from where i can get quotes like this
+$IPTABLES -t nat -A POSTROUTING -s $DMZ_SIENA_IP -o $INET_IFACE -j SNAT=20
+=2D --to-source $SIENA_IP
+$IPTABLES -t nat -A POSTROUTING -s $DMZ_DOMINI_IP -o $INET_IFACE -j SNAT=20
+=2D --to-source $DOMINI_IP
+$IPTABLES -t nat -A POSTROUTING -s $DMZ_EXCHANGE_IP -o $INET_IFACE -j SNAT=
+=20
+=2D --to-source $EXCHANGE_IP
+$IPTABLES -t nat -A POSTROUTING -s $DMZ_ELEKTRA_IP -o $INET_IFACE -j SNAT=20
+=2D --to-source $ELEKTRA_IP
+$IPTABLES -t nat -A POSTROUTING -s $DMZ_LEONARDO_IP -o $INET_IFACE -j SNAT=
+=20
+=2D --to-source $LEONARDO_IP
+$IPTABLES -t nat -A POSTROUTING -s $DMZ_PROXYSAT_IP -o $INET_IFACE -j SNAT=
+=20
+=2D --to-source $PROXYSAT_IP
 
-Steal them from my postings :) ?
+The problem is still here :-(
 
-> and also quotes that are relevant to computer science. infact i m a student
-> and some time i need such material.
+=2D --=20
+What is algebra, exactly?  Is it one of those three-cornered things?
+		-- J.M. Barrie
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-Google?
-
-The quotes on my emails have been built up over some time, from a mixture of 
-articles I've read online, books and magazines I've read in print, a couple 
-I've thought up myself, and a couple I've stolen from other people's emails.
-
-I wrote a simple bash script which pseudo-randomly selects which one to add to 
-each email I send, which is why you see different ones at different times.
-
-Regards,
-
-Antony.
-
--- 
-If builders made buildings the way programmers write programs, then the first 
-woodpecker to come along would destroy civilisation.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+iD8DBQFArNSCYuBSFbgkEysRApQsAKCACoGu7IIxbBGI8r5BOOPwQAUzMgCeI/g0
+ODxv+ha7hSWSLOr1RdU2g7o=3D
+=3DkqyU
+=2D----END PGP SIGNATURE-----
 
 
