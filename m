@@ -1,10 +1,13 @@
-From: Rinse Kloek <Rinse@solcon.org>
-Subject: RE: Question about -m tos option
-Date: Sat, 21 Jun 2003 14:08:30 +0200
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Do I need to write a module?
+Date: Tue, 24 Jun 2003 11:55:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <70A180F483A4D611B18600E0810285C45CEEB4@EXCHANGE>
+Message-ID: <20030624155500.GF32226@cannon.eng.us.uu.net>
+References: <sef8269b.024@mail.stone-ware.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <sef8269b.024@mail.stone-ware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +19,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'Pavel V. Yanchenko'" <balrog@mail.ru>, netfilter@lists.netfilter.org
+To: Tony Thompson <tony.thompson@stone-ware.com>
+Cc: netfilter@lists.netfilter.org
 
-You need to patch iptables with the DSCP-target patch. Then you can use the
-DSCP target to set all TOS values.
+On Tue, Jun 24, 2003 at 10:22:52AM -0500, Tony Thompson wrote:
 
-regards Rinse
+> Thanks for the response.  Maybe I should give a better picture of what I
+> am trying to do.  I have a private network that I am trying to route
+> through a Linux box.  I want to deny all traffic (from a MAC address)
+> until a user authenticates, with their browser, to a Java application on
+> the Linux server (when they authenticate, something has to happen to let
+> netfilter know that the MAC address is allowed to pass).  There has to
+> be some level of coordination at that point between the Java app and
+> netfilter so that session timeouts, etc. can be handled.  I would like
+> to have all of this happen as close to real time (i.e. not batched) as
+> possible.
+> 
+> After writing this out, maybe I don't even need a module but, just a
+> way to control netfilter from a Java app.  I am still open to
+> suggestions...
 
------Oorspronkelijk bericht-----
-Van: Pavel V. Yanchenko [mailto:balrog@mail.ru]
-Verzonden: donderdag 19 juni 2003 19:41
-Aan: netfilter@lists.netfilter.org
-Onderwerp: Question about -m tos option
+Yes, what you need is to control netfilter from a Java app.
+
+Before the authentication, redirect his web traffic to your java app.
+
+After the authentication, remove the MAC restriction for the client,
+add the necessary rules for his service.
+
+Also, I'd implement some kind of timer to go off after certain period
+of inactivity and remove the permission of his MAC.
+
+It sounds easy but I'm sure it's gonna be fun implementing it ;-)
 
 
-Hello.
+Ramin
 
-I need to create a rule matching packets with 0x60 value of TOS field.
-The standard tos option of iptables doesn't accept such value, as well
-as dscp, which is extension to tos - it processes only 6 bits of TOS
-field :(
-I guess value 0x60 is precedence bits...
-
-The question is: how can I match such packets?
-
-Thanks in advance.
-
-  
-
-Best regards,
- Pavel                          mailto:balrog@mail.ru
-
+> 
+> Thanks.
+> Tony
 
