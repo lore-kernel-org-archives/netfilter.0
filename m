@@ -1,12 +1,14 @@
-From: "Wes James" <wes.james@usu.edu>
-Subject: opening whole in iptables for a vpn
-Date: Thu, 2 Jan 2003 20:54:35 -0700
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: bridge/firewall example
+Date: Fri, 3 Jan 2003 02:34:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5CA287DBA85BF649A45916B75FD20E0E08D8F9@exchange01.blue.usu.edu>
+Message-ID: <200301030234.08375.netfilter@newkirk.us>
+References: <3E139DEF.80009@kdtc.net> <200301020300.04692.netfilter@newkirk.us>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200301020300.04692.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +19,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: cc <cc@kdtc.net>, Netfilter Group <netfilter@lists.netfilter.org>
 
-I have tried to get the right iptables rules to work for a vpn
-connection.
+On Thursday 02 January 2003 03:00 am, Joel Newkirk wrote:
 
-Usually anything going out this rh8 box works fine.  Why do I need to
-punch a hole for the vpn.? I have noticed that holes need to be punched
-for the dns and bootp, but why - when this box is the originator of the
-traffic?
+[snipped down to my screwup]
 
-I have finally gotten these rulles to work in that the vpn loads, but
-the vpn still does not work right.  The only way I can get it to work
-right is to turn iptables off (service iptables stop).
+> If you have a box with IP's on two different subnets, and it passes
+> communications between those subnets, you've essentially got a bridge.
+> It's a router.  NAT is Network Address Translation, where you
 
-These are the rules:
+Sorry, I didn't finish this thought, I was cut'n'pasting all over the=20
+place.  That should read:
+"(It's a router) living on two subnets, passing packets between them."
 
--A RH-Lokkit-0-50-INPUT -m udp -s 1.2.3.0/24 -d 0/0 --dport 800 -p udp
--j ACCEPT
--A RH-Lokkit-0-50-INPUT -m udp -s 1.2.3.0/24 -d 0/0 --dport 8400 -p udp
--j ACCEPT
+I guess I should re-read my posts an extra time before posting.  (or not=20
+read them after posting, and take the heat :^) (or maybe compose more=20
+concise messages, to ease proofreading...)
 
-What else do I need to do to get the vpn to work on the network 1.2.3.0
-on ports 500 and 4500?
-
-These work for someone that use ipchains: =20
-
--A input -p udp -s 1.2.3.0/24 -d 0/0 800 -j ACCEPT
--A input -p udp -s 1.2.3.0/24 -d 0/0 8400 -j ACCEPT
-
-Are the iptables rules above converted right?
-
-thanks,
-
-wj
-
+j
 
 
