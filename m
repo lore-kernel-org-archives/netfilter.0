@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is it possible to forward broadcasting with IPtables?
-Date: Wed, 7 Apr 2004 12:14:40 +0100
+From: manisha s <cdac_manisha@yahoo.com>
+Subject: Iptables command failed
+Date: Wed, 7 Apr 2004 04:59:31 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404071214.40138.Antony@Soft-Solutions.co.uk>
-References: <000001c41c90$8a969810$1664640a@Younger>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040407115931.75869.qmail@web61002.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c41c90$8a969810$1664640a@Younger>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,31 +15,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wednesday 07 April 2004 12:07 pm, Younger Wang wrote:
+Hello All,
 
-> If the broadcast packets traverse the chains, they should be put to
-> INPUT chain. Is there a way to transfer a packet from INPUT chain to
-> FORWARD chain?
+I m new to this mailing list and I don't know if
+somebody have faced such a problem and may have
+answerd to this question.
 
-DNAT in PREROUTING?
+I m using kernel 2.4.22 and iptables rpm 1.2.7a-2.
+I compiled a kernel to support the Network filtering
+successfully. But when i issued the following command
 
-In theory this would do what you want, however I'm sure it won't work.
+iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
 
-Regards,
+i got the following error
 
-Antony.
+/lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o:
+unresolved symbol nf_register_sockopt_Rsmp_f5985dce
 
--- 
-The idea that Bill Gates appeared like a knight in shining armour to lead all 
-customers out of a mire of technological chaos neatly ignores the fact that 
-it was he who, by peddling second-rate technology, led them into it in the 
-first place.
+/lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o:
+unresolved symbol nf_unregister_sockopt_Rsmp_a5c3249c
 
- - Douglas Adams in The Guardian, 25th August 1995
+/lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o:
+insmod 
+/lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o
+failed
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+/lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o:
+insmod ip_tables failed
 
+iptables v1.2.7a: can't initialize iptables table
+`filter': iptables who? (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+
+
+what this error means?do i need to update the iptables
+or kernel?
+
+Any help or hint would be appreciated
+
+Thanks in advance
+Manisha
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Small Business $15K Web Design Giveaway 
+http://promotions.yahoo.com/design_giveaway/
 
