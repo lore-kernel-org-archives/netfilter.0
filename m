@@ -1,12 +1,13 @@
-From: Naleendra@dms.lanka.net
-Subject: proxying along with iptables
-Date: Fri, 1 Nov 2002 19:24:39 +0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: proxying along with iptables
+Date: Fri, 1 Nov 2002 13:34:39 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <A590F7F751E6D6118C0800104B0DF37304CDA3@MAILGATE>
+Message-ID: <200211011334.gA1DYje14690@vulcan.rissington.net>
+References: <A590F7F751E6D6118C0800104B0DF37304CDA3@MAILGATE>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C281AA.08064FD0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <A590F7F751E6D6118C0800104B0DF37304CDA3@MAILGATE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,64 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Friday 01 November 2002 1:24 pm, Naleendra@dms.lanka.net wrote:
 
-------_=_NextPart_001_01C281AA.08064FD0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+> 	Hi lists,
+>
+> 	this is not directly connected to iptables, however your comments
+> would be most welcome. What are the proxying products that could run along
+> with iptables but which can talk with a windows NT/2000 based user base for
+> authentication ? Does squid provide for this ?
 
+What protocol/s do you want to proxy ?
 
+What sort of user authentication do you want to use ?
 
-	Hi lists,
+Antony
 
-	this is not directly connected to iptables, however your comments
-would be most welcome. What are the proxying products that could run along
-with iptables but which can talk with a windows NT/2000 based user base for
-authentication ? Does squid provide for this ?
+-- 
 
- Your comments pls.
-
- nal 
-
-------_=_NextPart_001_01C281AA.08064FD0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>proxying along with iptables</TITLE>
-</HEAD>
-<BODY>
-<BR>
-<BR>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">Hi lists,</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">this is not directly connected to iptables, however your =
-comments would be most welcome. What are the proxying products that =
-could run along with iptables but which can talk with a windows NT/2000 =
-based user base for authentication ? Does squid provide for this =
-?</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;Your comments pls.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;nal </FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C281AA.08064FD0--
+If at first you don't succeed, destroy all the evidence that you tried.
 
