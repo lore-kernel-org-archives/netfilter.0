@@ -1,13 +1,10 @@
-From: "Jesper Lund" <jesper@ballbreaker.dk>
-Subject: Re: deny cgi scanner
-Date: Tue, 1 Apr 2003 20:17:25 +0200 (CEST)
+From: Bob Keyes <bob@sinister.com>
+Subject: RFC 3514 support?
+Date: Tue, 1 Apr 2003 13:12:34 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4096.212.242.51.102.1049221045.squirrel@www.ramstedt.dk>
-References: <3E89CD8A.5020007@gmx.ch>
+Message-ID: <Pine.LNX.4.44.0304011310180.17145-100000@Sinister.Com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E89CD8A.5020007@gmx.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +14,13 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: mailing-lists@gmx.ch
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-> does anybody know how to drop packets with
-> destination-port 80 after a limit of connections
-> has been reached?
-> i'd like to deny access for the attacker as soon
-> as a cgi-scan has been detected.
->
-> is it possible to do that with iptables?
+I am wondering if there are any plans to support RFC 3514 in netfilter?
+ftp://ftp.rfc-editor.org/in-notes/rfc3514.txt
 
-The patch-o-matic module iplimit can do exactly that.
-
-//Jesper
-
+Specifically, I'd like to tag all kazaa packets.
 
 
