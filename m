@@ -1,11 +1,13 @@
-From: "Joe de Vera Jr." <jhoedv@we-amuse.com>
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: Iptables Problem on DNS Server
-Date: Sat, 22 Jun 2002 01:17:47 -0700
+Date: Fri, 21 Jun 2002 13:20:16 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <003f01c219c5$4c54e900$6500a8c0@systemsadmin>
+Message-ID: <20020621172016.GY26150@cannon.eng.us.uu.net>
+References: <003f01c219c5$4c54e900$6500a8c0@systemsadmin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <003f01c219c5$4c54e900$6500a8c0@systemsadmin>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,36 +18,28 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: "Joe de Vera Jr." <jhoedv@we-amuse.com>
+Cc: netfilter@lists.samba.org
 
-Message: 2
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Organization: Software Solutions
-To: <netfilter@lists.samba.org>
-Subject: Re: Iptables problem on DNS Server
-Date: Fri, 21 Jun 2002 15:31:05 +0100
+>> What rules do you have ?
+>> 
+>> 
+>> 
+>> Antony.
+> 
+> 
+> how would i know if what kind of rules do i have?
 
-On Saturday 22 June 2002 6:29 am, Joe de Vera Jr. wrote:
+You could, eg, cat your firewall script, ie, if you knew
+where it was.
 
-> hello...
->
-> the scenario is this.. my DNS can't resolve when i activate the firewall
-on
-> this machine..
+Ramin
 
-What rules do you have ?
-
-
-
-Antony.
-
-
-how would i know if what kind of rules do i have?
-
-it just so happen that when i activate my firewall the DNS doesn't work..
-but when i deavtivate my firewall it turn back to normal operation...
-
-
-joe
-
+> it just so happen that when i activate my firewall the DNS doesn't work..
+> but when i deavtivate my firewall it turn back to normal operation...
+> 
+> 
+> joe
+> 
 
