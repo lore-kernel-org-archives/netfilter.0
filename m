@@ -1,14 +1,15 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ipip tunnel connection tracking
-Date: Wed, 14 Apr 2004 01:08:38 +0200
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: script firewall -- munged to OT -- very OT
+Date: Tue, 13 Apr 2004 19:23:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081897718.1731.14.camel@anduril.intranet.cartel-securite.net>
-References: <EXCFE04GjcAbeYrvKM9000011ef@smtp.e-kolay.net>
-	 <200404112134.40862.Antony@Soft-Solutions.co.uk>
+Message-ID: <2119.92824120006$1081899444@news.gmane.org>
+References: <20040413212810.35514.qmail@web40506.mail.yahoo.com> <200404132302.20098.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404112134.40862.Antony@Soft-Solutions.co.uk>
+From: Alistair Tonner <>
+In-Reply-To: <200404132302.20098.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,19 +22,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Le dim 11/04/2004 =E0 22:34, Antony Stone a =E9crit :
-> Why would a connection tracking module need to know about the addreses =
-inside=20
-> the packets, rather than the addresses in the headers?
+On April 13, 2004 06:02 pm, Antony Stone wrote:
+> "640 kilobytes (of RAM) should be enough for anybody."
+>
+> =A0- Bill Gates
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Please reply to the
+> list; please don't CC me.
 
-And if you want to deal with inner packet, then you just terminate the
-tunnel on your firewall and see what's in through
-tun0/gre0/whateveryoulike0 interface. And you build another tunnel with
-destination and you're done.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+	Antony -- I love yer sigs... And back then I was already cursing the bugge=
+r.
+
+	(for what its worth, I was running DRDos at the time....)
+
+Alistair Tonner
 
