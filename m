@@ -1,14 +1,13 @@
-From: Andreas Kretschmer <andreas_kretschmer@despammed.com>
-Subject: Re: [despammed] port based filtering and IPsec 2.6
-Date: Sat, 17 Jan 2004 14:45:19 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Multiple IPSec sessions
+Date: Sat, 17 Jan 2004 13:44:24 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040117134519.GA4911@kaufbach.delug.de>
-References: <20040114162623.GR4106@openoffice.nl>
+Message-ID: <200401171344.24184.Antony@Soft-Solutions.co.uk>
+References: <000101c3da34$232e0940$e964da9e@gtgjhrm31>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040114162623.GR4106@openoffice.nl>
+In-Reply-To: <000101c3da34$232e0940$e964da9e@gtgjhrm31>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-am  Wed, dem 14.01.2004, um 17:26:23 +0100 mailte Valentijn Sessink folgend=
-es:
-> Now there seems a solution that is a bit of a hack, but it does work. Sim=
-ply
-> use a *tunnel* between the two hosts, and define the subnets to be
-> "tunneled" to be the hosts themselves, like so:
->=20
-> Now you'll find double logs from each packet, like so:
+On Wednesday 14 January 2004 12:19 am, mukesh Kumar wrote:
 
-Okay, but you can't filtering packets. It's not possible to filter, for
-instance, all traffic from/to telnet-port and enable all traffic to/from
-ssh-port. For this reasen there are the ipsecX-interface in FreeSwan. On
-the ethX you see only the crypted traffic, and on ipsecX the plain
-traffic. So you can filtering, you can enable only ah/esp on ethX and
-enable only ssh on ipsecX.
-I miss this option in Kernel 2.6.
+> Hi All,
+>
+>    I am trying to extend conntrack/NAT to allow multiple IPsec(ESP)
+> tunnels to pass through.
 
+I'm not sure I understand why you need to "extend" it.
 
-Andreas, and sorry about my english...
---=20
-Diese Message wurde erstellt mit freundlicher Unterst=FCtzung eines freilau-
-fenden Pinguins aus artgerechter Freilandhaltung.   Er ist garantiert frei
-von Micro$oft'schen Viren. (#97922 http://counter.li.org)     GPG 7F4584DA
-Was, Sie wissen nicht, wo Kaufbach ist? Hier: N 51.05082=B0, E 13.56889=B0 =
-;-)
+> The purpose is to allow multiple lan clients to have sessions with the
+> same server.
+
+This is possible anyway.   Standard connection tracking distinguishes 
+independent connections by source & destination IP address (and also source & 
+destination port in the case of TCP / UDP), therefore so long as at least one 
+of the addresses involved in each connection is unique you should have no 
+problem supporting mutliple sessions.   You say you wish multiple clients to 
+access one server - the clients will all have different IP addresses, 
+therefore they will be treated as independent connections.
+
+Regards,
+
+Antony
+
+-- 
+Anyone that's normal doesn't really achieve much.
+
+ - Mark Blair, Australian rocket engineer
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
