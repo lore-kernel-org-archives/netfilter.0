@@ -1,12 +1,13 @@
-From: Alin Nastac <mrness@technosoft.ro>
-Subject: Re: Why the http response is so slow with Total Control
-Date: Tue, 04 Jun 2002 07:18:17 +0300
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: block Kazaa download
+Date: Tue, 4 Jun 2002 07:50:47 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CFC3F89.1010803@technosoft.ro>
-References: <20020604034644.36656.qmail@web21408.mail.yahoo.com>
+Message-ID: <200206040750.48242.raymondl@knowledgefactory.co.za>
+References: <000301c20b79$c12c00b0$0200a8c0@JEFF>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <000301c20b79$c12c00b0$0200a8c0@JEFF>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,69 +17,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
-To: wain wen <wain_wen@yahoo.com.cn>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: LunarFox <lunar@comcast.net>, 'netfilter' <netfilter@lists.samba.org>
 
-Q0JRIGhhcyBhIGJ1bmNoIG9mIHBhcmFtZXRlcnMuIElmIHlvdSBhcmUgbmV3IHRvIHRjIChieSB0
-aGUgd2F5LCBpdCdzCnRyYWZmaWMgY29udHJvbCBub3QgdG90YWwgY29udHJvbCksIHVzZSBjYnEu
-aW5pdCAoZnJvbQpodHRwOi8vd3d3LmZyZWFzaG1lYXQubmV0KS4KCk9yIGdvIHRvIGh0dHA6Ly9s
-YXJ0Yy5vcmcuIFRoaXMgaXMgdGhlIG11c3QtdG8tcmVhZCBwYWdlIHJlZ2FyZHMgdHJhZmZpYwpj
-b250cm9sLgoKd2FpbiB3ZW4gd3JvdGU6Cgo+IAo+SGk6Cj4gCj5CZWxvdyBpcyBteSBuZXR3b3Jr
-IHRvcG9sb2d5ICggbiA9IDYwICk6Cj4gCj4KPmludGVybmV0IC0tLS0tLS0tLS0tIGxpbnV4IGJv
-eCAtLS0tLS0tLS0gUEMxCj4gICAgICAgICBBRFNMKDEwMjRrKSAgICAgICAgICAgfAo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwtLS0tLS0tLSBQQzIKPiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfC0tLS0tLS0t
-IFBDbgo+IAo+SWYgdGhlIGxpbnV4IGJveCBvbmx5IHNlcnZlcnMgYXMgZ2F0ZXdheSwgZXZlcnl0
-aGluZwo+aXMgb2suSG93ZXZlciwgYm9zcyB3YW50cyB0byBjb250cm9sIHRoZSBmbG93IG9mIGV2
-ZXJ5Cj5QQywgbXkgY29uZmlndXJhdGlvbiBpcyA6Cj4gCj4jIHRjIHFkaXNjIGxpc3QgZGV2IGV0
-aDEgICAvLyBldGgxIGlzIHRoZSBpbnRlcm5hbAo+aW50ZXJmYWNlIG9mIGxpbnV4IGJveCB3aGlj
-aCBpcCBpcyAxOTIuMTY4LjAuMQo+IAo+IHFkaXNjIHNmcSA4MDEyOiBxdWFudHVtIDE1MTRiIHBl
-cnR1cmIgMTVzZWMgCj4gcWRpc2Mgc2ZxIDgwMTE6IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNl
-YyAKPiBxZGlzYyBzZnEgODAxMDogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAo+IHFkaXNj
-IHNmcSA4MDBmOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVzZWMgCj4gcWRpc2Mgc2ZxIDgwMGU6
-IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKPiBxZGlzYyBzZnEgODAwZDogcXVhbnR1bSAx
-NTE0YiBwZXJ0dXJiIDE1c2VjIAo+IHFkaXNjIHNmcSA4MDBjOiBxdWFudHVtIDE1MTRiIHBlcnR1
-cmIgMTVzZWMgCj4gcWRpc2Mgc2ZxIDgwMGI6IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAK
-PiBxZGlzYyBzZnEgODAwYTogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAo+IHFkaXNjIGNi
-cSAxMDogcmF0ZSAxMDBNYml0IChib3VuZGVkLGlzb2xhdGVkKSBwcmlvCj5uby10cmFuc21pdAo+
-IAo+ICN0YyBjbGFzcyBsaXN0IGRldiBldGgxCj4gCj4gY2xhc3MgY2JxIDEwOjExIHBhcmVudCAx
-MDoxIGxlYWYgODAxMjogcmF0ZSAxME1iaXQKPihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRy
-YW5zbWl0Cj4gY2xhc3MgY2JxIDEwOiByb290IHJhdGUgMTAwTWJpdCAoYm91bmRlZCxpc29sYXRl
-ZCkKPnByaW8gbm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6MjU2IHBhcmVudCAxMDoxIGxlYWYg
-ODAwYzogcmF0ZSAyNTZLYml0Cj4oYm91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdAo+
-IGNsYXNzIGNicSAxMDoxIHBhcmVudCAxMDogcmF0ZSAxMDBNYml0IHByaW8gNQo+IGNsYXNzIGNi
-cSAxMDo4MTkyIHBhcmVudCAxMDoxIGxlYWYgODAxMTogcmF0ZSA4TWJpdAo+KGJvdW5kZWQsaXNv
-bGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6NjQgcGFyZW50IDEwOjEgbGVh
-ZiA4MDBhOiByYXRlIDY0S2JpdAo+KGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQK
-PiBjbGFzcyBjYnEgMTA6NTEyIHBhcmVudCAxMDoxIGxlYWYgODAwZDogcmF0ZSA1MTJLYml0Cj4o
-Ym91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdAo+IGNsYXNzIGNicSAxMDoxMDI0IHBh
-cmVudCAxMDoxIGxlYWYgODAwZTogcmF0ZSAxTWJpdAo+KGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8g
-bm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6NDA5NiBwYXJlbnQgMTA6MSBsZWFmIDgwMTA6IHJh
-dGUgNE1iaXQKPihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRyYW5zbWl0Cj4gY2xhc3MgY2Jx
-IDEwOjEyOCBwYXJlbnQgMTA6MSBsZWFmIDgwMGI6IHJhdGUgMTI4S2JpdAo+KGJvdW5kZWQsaXNv
-bGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6MjA0OCBwYXJlbnQgMTA6MSBs
-ZWFmIDgwMGY6IHJhdGUgMk1iaXQKPihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRyYW5zbWl0
-ICAgICAgCj4gCj4jIHRjIGZpbHRlciBsaXN0IGRldiBldGgxCj4gCj4gZmlsdGVyIHBhcmVudCAx
-MDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIAo+IGZpbHRlciBwYXJlbnQgMTA6IHByb3RvY29s
-IGlwIHByZWYgMTAwIHUzMiBmaCA4MDA6IGh0Cj5kaXZpc29yIDEgCj4gZmlsdGVyIHBhcmVudCAx
-MDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoCj44MDA6OjgwMCBvcmRlciAyMDQ4IGtleSBo
-dCA4MDAgYmt0IDAgZmxvd2lkIDEwOjEyOAo+bWF0Y2ggYzBhODAwM2YvZmZmZmZmZmYgYXQgMTYK
-PiBmaWx0ZXIgcGFyZW50IDEwOiBwcm90b2NvbCBpcCBwcmVmIDEwMCB1MzIgZmgKPjgwMDo6ODAx
-IG9yZGVyIDIwNDkga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cj5tYXRjaCBjMGE4MDAz
-ZS9mZmZmZmZmZiBhdCAxNgo+IGZpbHRlciBwYXJlbnQgMTA6IHByb3RvY29sIGlwIHByZWYgMTAw
-IHUzMiBmaAo+ODAwOjo4MDIgb3JkZXIgMjA1MCBrZXkgaHQgODAwIGJrdCAwIGZsb3dpZCAxMDox
-MjgKPm1hdGNoIGMwYTgwMDBmL2ZmZmZmZmZmIGF0IDE2Cj4gZmlsdGVyIHBhcmVudCAxMDogcHJv
-dG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoCj44MDA6OjgwMyBvcmRlciAyMDUxIGtleSBodCA4MDAg
-Ymt0IDAgZmxvd2lkIDEwOjEyOAo+bWF0Y2ggYzBhODAwMTEvZmZmZmZmZmYgYXQgMTYKPiAuLi4u
-ICAgIAo+IAo+SW4gbXkgb3BpbmlvbiwgZXZlcnkgSVAgc2hvdWxkIGhhdmUgb25seSAxMjhrYml0
-cy5JdAo+aXMgdHJ1ZSB3aGVuIEkgZG93bmxvYWQgZmlsZXMgd2l0aCBmdHAuQnV0IHRoZSBodHRw
-Cj5yZXNwb25zZSBpcyB2ZXJ5IHZlcnkgc2xvdyxldmVuIGlmCj50aGVyZSBpcyBvbmx5IG9uZSBw
-ZXJzb24gb25saW5lLiBXaGVuIFBDMSBkb3dubG9hZAo+ZmlsZXMgLCBvdGhlciBQQyBwaW5nIHRo
-ZSBnYXRld2F5IHNob3VsZCB0YWtlIG1vcmUKPnRoYW4gMzAwIG1zIC5Tb21ldGhpbmcgbXVzdCBi
-ZSB3cm9uZyB3aXRoIG15Cj5jb25maWd1cmF0aW9uLiAKPklzIHRoZSBwZXJmb3JtYW5jZSBwcm9i
-bGVtID8gSG93ZXZlciwgdGhlIGlkbGUgaXMKPmFib3V0IDkwJS5CeSB0aGUgd2F5IEkgYm91bmRs
-ZWQgdGhlIElQIGFuZCB0aGUgTUFDCj5hZGRyZXNzIHdpdGggYXJwLiAKPiAKPlRoeC4KPiAKPgo+
-Cj5fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KPkRvIFlvdSBZYWhvbyE/IAo+MjAwMsTqysC957GtyLrQ2/fp1b0g0cW7otbQufq+2725yNW6
-qwo+aHR0cDovL2NuLmZpZmF3b3JsZGN1cC55YWhvby5jb20vCj4KCgoK
+><snip>
+ > anybody has a sample how to block Kazaa download?
+>
+> KaZaA appears to listen on port 1214.  So if you block that port
+> *inbound* to your machine, in theory no one should be able to =
+download
+> FROM you.  Of course, you can also just tell the program not to share
+> files.
+>
+> If you block *outbound* connections to 1214, your users should be not
+> able to download from anyone ELSE.  At least, that's my limited
+> understanding of it, I could be completely wrong.  ;)
+>
+> Shouldn't hurt to try one of these rules, depending on which way =
+you're
+> trying to block:
+>
+> $IPT -A INPUT -p tcp --dport 1214 -j DROP   # Avoid people =
+downloading
+> from you, and/or
+> $IPT -A OUTPUT -p tcp --dport 1214 -j DROP  # Block your users from
+> downloading via KaZaA
+>
+> I use the first rule above, because I was sick and tired of seeing
+> logged packets being dropped when I wasn't even running the client.
+>
+> The usual caveat:  people are often able to get around fixed port
+> assignments and your blocking of same.  I don't know if the main =
+KaZaA
+> client can do this, but I suspect it wouldn't be too hard to hack it
+> (consider what's been done with KaZaA Lite).
+>
+I think the latest kazaa can use http proxies too, so you'll need to =
+block=20
+that too (with squidGuard or something similar).
+> HTH,
+>
+> Jeff Bonner
+
+--=20
+----------------------------------------
+
+Ray Leach (Technical Network Specialist)
+
+Knowledge Factory
+
+www: http://www.knowledgefactory.co.za
+
+Tel: +27-11-445-8100 Direct: 445-8263
+
+Fax: +27-11-445-8101
+
+"No matter where you go, there you are."
+
+----------------------------------------
+
