@@ -1,14 +1,10 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Multiple Netmeeting Sessions
-Date: Sun, 25 Apr 2004 15:57:18 -0400
+From: "Edgar Estrada Lopez" <estradaedgar@hotmail.com>
+Subject: Selective Masquerading
+Date: Sat, 24 Apr 2004 11:14:04 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404251557.18229.Alistair@nerdnet.ca>
-References: <408BE248.4030302@rd.arkonnetworks.com> <200404251826.38016.Antony@Soft-Solutions.co.uk>
+Message-ID: <BAY8-F97Fk2H3b98Ktd0002fb6f@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404251826.38016.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-On April 25, 2004 01:26 pm, Antony Stone wrote:
-> On Sunday 25 April 2004 5:07 pm, Norman Zhang wrote:
-> > Hi,
-> >
-> > I was wondering if it is possible to setup iptables to allow multiple
-> > Netmeeting sessions originated from internet to local net? So far I map
-> > the port in /etc/shorewall/rules
-> >
-> > DNAT net loc:10.0.0.10 tcp 1720
-> > DNAT net loc:10.0.0.10 tcp 1503
-> >
-> > But it only goes to a single machine? Or do I need gateway for this?
->
-	I believe that you need to also forward other ports for netmeeting.
-	port 389, and 522 need to be forwarded through.  Although, with
-	this setup I believe you can only connect to one machine inside.
+HI guys:
 
-	I'm not sure what frontend those rule are for, but they both appear to be 
-	forwarded to the same machine.  Thus the connections will always go 
-	there.
+I have a DSL @ 1mb, and another one @ 256kbps
 
-	The problem in this case is that there is a specific port on which the 
-	call is initiated, and the machine to which you forward 1520 will recieve all
-	inbound calls.
+I've been reading countless hours regarding the split access / load=20
+balancing issue (most info in http://lartc.org) but for some strange reason=
+,=20
+things don't work the way they should.
 
-	If you have many 'recievers' inside the firewall that have non-routable 
-addressess you will want to look into h323 gatekeeper software, or look into 
-having different primary ports for each 'recieving' host i.e 10.0.0.10:1520
-	10.0.0.11:1521 10..0.0.12:1522 --> I know this can be done with gnomemeeting, 
-	but I am unsure if MS netmeeting can be configured to recieve calls on ports 
-	*other* than 1520.
+Sometimes the split access works, other times a DSL begins an ARP flood=20
+pointing all the ARP replies to the other DSL, and sometimes they just wont=
+=20
+work.
 
-	There are two h323gatekeeper packages that I'm aware of, 
+While giving a deep thought on why I got the 2 dsl, the answer is simple: S=
+o=20
+I could have fast downloads, and fast web browsing also.
 
-	http://www.gnugk.org/
-	http://www.equival.com/phonepatch  <-- I haven't been able to get there 
-	recently -- anyone know if equivalence is titsup, or is this just bad 
-	routing/networking in their neck of the woods?
+So I was thinking: is there a way to masquerade  / direct all web browsing =
 
-	of course, as Antony points out --->
+to the 256dsl, and leave the rest of the communications (higher ports) to=20
+the 1 mbps line?
 
-> I believe you need H.323 helper modules for netmeeting.   Patch-O-Matic
-> should have these.
+Thanks
 
-	You definately need these to get the connections through.	
->
-> Regards,
->
-> Antony.
+_________________________________________________________________
+Charla con tus amigos en l=EDnea mediante MSN Messenger: =20
+http://messenger.microsoft.com/es
+
 
