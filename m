@@ -1,12 +1,12 @@
-From: "nassri abokhalaf" <nassri@oninet.pt>
-Subject: Port Redirection
-Date: Wed, 30 Apr 2003 15:43:44 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: limit match log question
+Date: Wed, 30 Apr 2003 17:13:50 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0bf101c30f26$e69bcd10$4802a8c0@oninet.pt>
+Message-ID: <Pine.LNX.4.51.0304301712450.18203@dns.toxicfilms.tv>
+References: <17030000.1051714338@hoovers-59.hoovers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <17030000.1051714338@hoovers-59.hoovers.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Frank Smith <fsmith@hoovers.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hello to all,
+Hi,
 
-I need to redirect some services to my ssh port.
-my firewall has two interfaces and i want to redirect all traffic to =
-port 22,
-so i added this code to my firewall script
+> If you are using the limit match to control the number of log entries,
+> is there any way to also show the number of matches?
+Yes,
 
-...initialisation code....
+# iptables -L -nv
 
-My_PORTS_TCP=3D"22 ftp telnet squid socks kazaa back_or"
+-v option will show the number of packets that has hit the rule.
 
-echo -n "TCP port "
-for i in $My_PORTS_TCP;
-do
-        echo -n "$i "
-        $IPT -t nat -A PREROUTING -p TCP -d $EXTNET --dport $i -j =
-REDIRECT --to-ports  22
+Regards,
+Maciej Soltysiak
 
-        fi
-done
-
-but when i do tcpdump to port 22 i see no traffic at all, although i am =
-doing ftp to my firewall !?!
-questions:
-1-Is the rule wrong ?
-2-Is the tcpdump leastning in a raw socket before redirection ?
-3-How can i confirm that redirection is functioning ?
-
-please comment,
-
-
-nassri
 
