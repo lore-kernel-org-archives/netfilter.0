@@ -1,11 +1,10 @@
-From: seberino@spawar.navy.mil
-Subject: Re: IDS better than hardcore iptables rules?
-Date: Sat, 5 Feb 2005 22:29:35 -0800
-Message-ID: <20050206062935.GA9580@spawar.navy.mil>
-References: <186AC876521E0F46BDE77079A6567FD0F0DD9E@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
+From: Ramoni <ramoni@databras.com.br>
+Subject: new connections
+Date: Sun, 6 Feb 2005 05:20:25 -0200
+Message-ID: <200502060520.25538.ramoni@databras.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <186AC876521E0F46BDE77079A6567FD0F0DD9E@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,109 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hudson & Ron
+People...
+What do you all think about make rules for new connections only ?
+Make all rules for new connections (--syn) and let the -m state --state 
+ESTABLISHED care about connectuions you have allowed ?
 
-I'm not sure there even exists documentation to explain
-some of the DROP rules I see in firewall scripts.
+I' ll aplly a poatch on my firewall to support the raw table, to use the 
+NOTRACK targe for cionnections that I does not need to track (and ensure a 
+connection response) for example:
+A connection from outside to my webserver, will always come from random port 
+to port 80 of my server, and the response will be from port80 to any port 
+outsdie.
 
-Have you seen guys like these?...
+Whats the really need to track this ? I can make rules allowing these and just 
+make connectinio tracking for connections from inside to outside that I wont 
+make rules expecting the response.
 
- -p tcp --tcp-flags ACK,FIN FIN -j DROP
- -p tcp --tcp-flags ACK,PSH PSH -j DROP
- -p tcp --tcp-flags ACK,URG URG -j DROP
-
-What TCP/IP book tells you that FIN, PSH and URG packets
-usually have ACK set?  **These** are the rules I don't
-know how to understand.
-
-Chris
-
-On Fri, Feb 04, 2005 at 08:13:51AM -0800, Hudson Delbert J Contr 61 CS/SCBN wrote:
-> ron,
->
-> i can now die happy as i've finally heard someone echo my sentiments
-> as regards to 'shortcuts' to eliminate learning the basics of network
-> environments. its the same malady that many programmers suffer from
-> as evidenced by the shoddy un checked code that makes its to mkt today.
->
-> ~go to school
->
->
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of R. DuFresne
-> Sent: Thursday, February 03, 2005 4:32 PM
-> To: seberino@spawar.navy.mil
-> Cc: netfilter@lists.netfilter.org
-> Subject: Re: IDS better than hardcore iptables rules?
->
->
-> On Thu, 3 Feb 2005 seberino@spawar.navy.mil wrote:
->
-> > Many people on this list including Jason O. are masters
-> > at creating very detailed careful iptables rules that
-> > DROP packets that have anything peculiar about them.
-> >
-> > (e.g. FIN without ACK, etc.)
-> >
-> > My iptables script just filters based on port
-> > number and protocol.  I was wondering if instead
-> > of diving into TCP education to duplicate the
-> > fine work Jason and others have done,
-> > if an IDS (Intrusion Detection System)
-> > like Snort would serve the same purpose???
-> >
-> > I assume Snort **ALSO** knows what TCP flag combos
-> > typically signify a port scan and other nasties?
-> >
->
-> And there are many that have delved into combining the two applications to
-> work together, but, IDS is a beat unto itself, takes perhaps a bit more
-> thought and work just to tune the IDS *behind* the firewall to get the
-> proper set of true alarms working such that it's not just another whining
-> app that gets ignored pretty much as much as most system logs tend to be.
->
-> And TCP education is require as much for IDS setup and design as proper
-> firewalling.  There are no shortcuts, one needs to gain the basic
-> knowledge levels to tackle more then the basics of network design as in
-> any other venture one wishes to put their efforts into.  Afterall, there
-> were no real cheap shortcuts to your phd, correct?
->
-> Thanks,
->
-> Ron DuFresne
-> --
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->         admin & senior security consultant:  sysinfo.com
->                         http://sysinfo.com
->
-> ...Love is the ultimate outlaw.  It just won't adhere to rules.
-> The most any of us can do is sign on as it's accomplice.  Instead
-> of vowing to honor and obey, maybe we should swear to aid and abet.
-> That would mean that security is out of the question.  The words
-> "make" and "stay" become inappropriate.  My love for you has no
-> strings attached.  I love you for free...
->                         -Tom Robins <Still Life With Woodpecker>
->
->
->
-
---
-_______________________________________
-
-Christian Seberino, Ph.D.
-SPAWAR Systems Center San Diego
-Code 2872
-49258 Mills Street, Room 158
-San Diego, CA 92152-5385
-U.S.A.
-
-Phone: (619) 553-9973
-Fax  : (619) 553-6521
-Email: seberino@spawar.navy.mil
-_______________________________________
+Sorry for the bad english, as usually.
+Ramoni
 
