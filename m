@@ -1,13 +1,12 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: How can I ask IPTABLES to drop a packet based upon its content
-Date: 06 Aug 2003 11:50:35 +0200
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re[2]: Interesting problems
+Date: Wed, 6 Aug 2003 11:03:51 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060163434.13515.17.camel@tech004.alphalink.fr>
-References: <88116A11E9DFD411870900508BEC3831803C2B@CPQ01>
+Message-ID: <Pine.LNX.4.44.0308061053420.21531-100000@localhost>
+References: <16160478015.20030805225428@lf.lv>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ebhSaSNO5AScfU2ehIoR"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <88116A11E9DFD411870900508BEC3831803C2B@CPQ01>
+In-Reply-To: <16160478015.20030805225428@lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +16,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Peteris Krumins <newsgroups@lf.lv>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
+Hi Peteris,
 
---=-ebhSaSNO5AScfU2ehIoR
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> 266 isnt that slow, that's only connection tracking, is it (too slow)?
 
-On Wed, 2003-08-06 at 11:37, Deshwal Chand wrote:
-> Hi,
->=20
-> I am running IPTABLES on Redhat 7.2 box. We are running a mail server
-> behind this firewall. We receive lot of spam e-mails. Instead of
-> investing into the anti-spam s/w, I want to configure the IPTABLES to
-> read the contents on the packets and drop them based upon the filter
-> defined.
+For 20000 connections, I'd say it was too slow.
 
-You can use the the string module to do so (in POM)
-But a really better choice is to install a spam software like
-spamassassin.
+> Most of the entries taking up conntrack table are:
+> tcp 6 419547 ESTABLISHED src=X dst=Y sport=A dport=B [UNREPLIED] src=Y
+> dst=X sport=B dport=A use=1 mark=0
+> 
+> They would expire only after 419547 secs that is 4 days, but during those 4
+> days the table grows 5 times that much entries..
+> 
+> Is there some trick to kill UNREPLIED tcp conntrack entires if there
+> is no reply after NN seconds.
 
-BR,
---=20
-Eric Leblond <eric@regit.org>
-Regit.org
+In theory they should be killed automatically to make room for real 
+(ESTABLISHED) connections. So you may be able to reduce the size of the 
+conntrack table without impacting user experience, and make your system 
+run faster that way.
 
---=-ebhSaSNO5AScfU2ehIoR
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+You could also try the patch that Daniel Chemko suggested,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+> Also could it be done in software w/o much trouble? Monitoring
+> conntrack table and removing dead entries like these.
+> If it's not much trouble i can instruct our programmers instantly to
+> work on such tool.
 
-iD8DBQA/MM9qnxA7CdMWjzIRAq0oAJ94AiUlNCLOWgSNhW7oRDVl/MCv9QCePdUP
-/SywyEUq/ePnhDiOMOZJ+Fo=
-=RkSH
------END PGP SIGNATURE-----
+I believe that Harald is working on nfnetlink/ctnetlink which will allow 
+you to do this, but I think it's still experimental. 
 
---=-ebhSaSNO5AScfU2ehIoR--
+> I can instruct our programmers (I am the team leader) to do some work
+> on iptables connection tracking code and after improvments i could
+> send it as a patch for current iptables. So connection tracking would
+> be as efficient as possible. I just need someone to tell me exactly
+> what is inefficient in conntrack code.
+
+Sorry, I'm really not the best person to ask about that, but Harald and
+Rusty have some profiling and optimisations on their TODO lists which they
+might be willing to hand off to your team.
+
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
 
 
