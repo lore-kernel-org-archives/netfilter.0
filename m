@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: snmptraps incomming on udp port 162 REDIRECT to 4162 not working?
-Date: Tue, 5 Nov 2002 12:43:11 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: from firewall machine wget is not working
+Date: Tue, 5 Nov 2002 18:32:35 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211051243.11962.netfilter@newkirk.us>
-References: <1036512998.8715.44.camel@ben.mis.tnsi.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <200211051832.gA5IWhe19780@vulcan.rissington.net>
+References: <1100D69203AAD2118E3C00508B8B9E8A67F13C@mailhost.intech.unu.edu> <005001c284ed$22276d40$8c01a8c0@sundaram>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1036512998.8715.44.camel@ben.mis.tnsi.com>
+In-Reply-To: <005001c284ed$22276d40$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,26 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ben Russo <ben@umialumni.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tuesday 05 November 2002 11:16 am, Ben Russo wrote:
+On Tuesday 05 November 2002 5:02 pm, Sundaram Ramasamy wrote:
+
+> Hi,
 >
-> I tried the following:
+> wget command is not working form my firewall machine, But inside my network
+> I was able to use wget command
 >
-> iptables -t nat -p udp -m udp --dport 162 -j REDIRECT --to-ports 4162
+> What is the problem?
 
-iptables -t nat -A PREROUTING -p udp --dport 162 -j REDIRECT --to-ports 4=
-162
+Please can you post your ruleset as the iptables commands you use to set up 
+the rules, not the output of iptables -L ?
 
-should redirect all incoming for port 162 to port 4162.  You needed to sp=
-ecify=20
-what chain in the nat table (IE, PREROUTING to catch them as they first h=
-it=20
-the firewall).  If it still fails then make sure you are allowing packets=
- for=20
-port 4162 through the INPUT chain of the filter table, since that's where=
-=20
-they should pass, and the dport they should indicate.
+The latter doesn't give us all the information we'd like to see, and I for 
+one find it much more difficult to understand...
 
-j
+Antony.
+
+-- 
+
+If at first you don't succeed, destroy all the evidence that you tried.
 
