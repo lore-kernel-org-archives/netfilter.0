@@ -1,13 +1,16 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: ICMP and connection tracking
-Date: Thu, 20 May 2004 11:24:07 -0500
+From: O-Zone <liste@zerozone.it>
+Subject: Re: DMZ to DMT through ROUTER problem !
+Date: Thu, 20 May 2004 18:32:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40ACDBA7.5010008@pbl.ca>
-References: <40ACC986.8060103@pbl.ca> <200405201637.10513.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405201832.26844.liste@zerozone.it>
+References: <200405201318.34706.liste@zerozone.it> <200405201753.40647.liste@zerozone.it> <200405201707.30559.Antony@Soft-Solutions.co.uk>
+Reply-To: liste@zerozone.it
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405201637.10513.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200405201707.30559.Antony@Soft-Solutions.co.uk>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +20,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> On Thursday 20 May 2004 4:06 pm, Aleksandar Milivojevic wrote:
-> 
->>Are ICMP packets related to new and established TCP connections and UDP
->>traffic considered to be part of them,
-> 
-> An ICMP packet which is returned in response to a previously sent TCP or UDP 
-> packet is considered to be RELATED.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Thanks.  This preaty much answers my question.
+On Thursday 20 May 2004 18:07, Antony Stone wrote:
+> What about the rest of rc.firewall?   You have posted your POSTROUTING SN=
+AT
+> rules - do you have any PREROUTING DNAT rules to convert 151.8.47.B into
+> 192.168.0.3?
 
->>or do I need to have explicit rules like
->>
->>    -A INPUT -p icmp -m state --state RELATED -j ACCEPT
->>
->>for things like path MTU discovery, traceroute, ICMP port unreachables,
->>and so on to work properly?
-> 
-> Nothing wrong with the above rule, however remember that it isn't only ICMP 
-> packets which are considered to be RELATED - in an FTP connection, for 
-> example, the reverse (data) connection is considered to be RELATED to the 
-> original (control) connection, even though it's another TCP link, not ICMP.
+Yes ! Here is (for SIENA only):
 
-Yup, I'm aware of that part.
+$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_SIENA_IP -=
+m=20
+multiport --dports 25,53,110 -j allowed
+$IPTABLES -A FORWARD -p UDP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_SIENA_IP -=
+m=20
+multiport --dports 53 -j allowed
 
->>Any downsides of using generic rule like above (if it is needed)?
-> 
-> Most people use an even *more* generic rule:
-> 
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_SIENA_IP =
+=2Dj=20
+icmp_packets
 
-Actually, the orginal question was prompted because I'm avoiding this 
-more generic rule :-)
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $SIENA_IP -m multip=
+ort=20
+=2D --dports 25,53,80,110 -j DNAT --to-destinati$
+$IPTABLES -t nat -A PREROUTING -p UDP -i $INET_IFACE -d $SIENA_IP -m multip=
+ort=20
+=2D --dports 53 -j DNAT --to-destination $DMZ_SI$
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+
+> If you do not have any PREROUTING rules, I remain confused about how this
+> was already working from the Internet as you said previously, but try:
+>
+> iptables -A PREROUTING -t nat -p tcp --dport 110 -d 151.8.47.B -j DNAT --=
+to
+> 192.168.0.3
+
+Don't work :-(
+
+=2D --=20
+"If a camel flies, no one laughs if it doesn't get very far."
+		-- Paul White
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFArN2YYuBSFbgkEysRAmcFAKCW2V0kRalMNbuwZmq42Gy+u7p08gCffD7w
+KAM4uDcf9QHjbXn5U/QRQN4=3D
+=3DexTi
+=2D----END PGP SIGNATURE-----
+
 
