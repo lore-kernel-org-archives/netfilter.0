@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: REJECT target and Source NAT
-Date: Tue, 5 Nov 2002 15:17:05 +0000
+From: Ben Russo <ben@umialumni.com>
+Subject: snmptraps incomming on udp port 162 REDIRECT to 4162 not working?
+Date: 05 Nov 2002 11:16:29 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211051517.gA5FHCe19285@vulcan.rissington.net>
-References: <BC6421B0F2CC4C43897842092E0E00A94C1938@tx1ex1nt.dyncorptx.com>
+Message-ID: <1036512998.8715.44.camel@ben.mis.tnsi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BC6421B0F2CC4C43897842092E0E00A94C1938@tx1ex1nt.dyncorptx.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tuesday 05 November 2002 1:42 pm, Kellogg, Chris wrote:
+Hi,
 
-> Hi, everyone.
->
-> I'm thinking about a series of obfuscation rules to try to reduce firewall
-> visibility.
->
-> I'd like to make an IPTables firewall reject packets with an
-> ICMP-Host-Unreachable, but also change the source address of the packet to
-> be the gateway router instead of the firewall itself.
->
-> Opinions?  Comments?
+I have a server that performs many functions on a testing/lab network.
+I don't really need a firewall, but I do want to restrict users from
+having root access.
 
-My opinion is that if you want to reduce firewall visibility, you should send 
-back nothing at all.
+Sometimes users want to be able to bind a process to a low port like say
+an snmptrap receiver to port 162, but the process needs privelages to do
+that.
 
-However, if you want to try your idea, I think it's not the OUTPUT chain you 
-want to look at, but the POSTROUTING chain, because that's where SNAT is 
-done.   I see no reason why you shouldn't be able to SNAT ICMP packets coming 
-from the firewall to make them look like they came from somewhere else.
+So I had the bright idea of using iptables to redirect the incomming
+packets on the low port to a high port that the users program can bind
+to without problems.
 
-iptables -A POSTROUTING -t nat -p icmp -s a.b.c.d -j SNAT --to w.x.y.z
+I tried the following:
 
-a.b.c.d is firewall's external address
-w.x.y.z is gateway router's external address
+iptables -t nat -p udp -m udp --dport 162 -j REDIRECT --to-ports 4162
 
-Antony.
+The user started his program that bound to udp port 4162 (I could see it
+while using netstat -nap ).  But his program didn't receive anything?
+tcpdump -n | egrep "snmptrap|162 
+did show incomming snmptraps to port 162, but "icmp unreachable" replies
+were sent back?
 
--- 
+Any ideas on how to make this work?
 
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
+Thanks in advance,
+-Ben.
+
 
