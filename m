@@ -1,11 +1,9 @@
-From: John Holman <jaholman@eastax.com>
-Subject: Accuracy of packet counting?
-Date: Fri, 17 May 2002 08:32:26 +1000
+From: Jay Brown <linuxsa2002@yahoo.com>
+Subject: path of packets in the default chains
+Date: Thu, 16 May 2002 16:15:16 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CE4337A.85D8CAE1@eastax.com>
-Reply-To: mail@john.holman.name
+Message-ID: <20020516231516.49964.qmail@web21503.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -17,53 +15,34 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-I would be grateful for expert opinion on a simple matter:
+Sorry if this is someplace else but can't find the
+answer.
 
-I am trying to reconcile the traffic charges of my ISP with my own
-counts.  
-I have a plain 1500/256 bridged ADSL connection (i.e. no connection
-software or overhead) to eth0 on a lightly-loaded web/mail server.
+There are 8 default tables INPUT, OUTPUT, FORWARD,
+nat/PREROUTING, nat/OUTPUT, nat/POSTROUTING,
+mangle/PREROUTING, mangle/OUTPUT.  For a packet coming
+into an interface and going to leave another interface
+(not going to userspace), what tables does the packet
+traverse?  Is it ethX -> mangle/PREROUTING ->
+nat/PREROUTING -> route process -> FORWARD ->
+nat/POSTROUTING ->ethZ?  or are fewer items involved? 
+ 
+What about for a packet going into userspace is it
+ethX -> mangle/PREROUTING -> nat/PREROUTING -> route
+process -> INPUT -> userspace ? 
 
-My traffic counter is simply this:
+What about for a packet going from userspace -
+userspace -> OUTPUT -> mangle/OUTPUT ->
+nat/POSTROUTING ->ethZ?  
 
-#iptables -L -n -v -x
-Chain INPUT (policy ACCEPT 21095 packets, 2640498 bytes)
-    pkts      bytes target     prot opt in     out    
-source               destination         
-    9639  1817610 ACCOUNTING  all  --  eth0   *      
-0.0.0.0/0            0.0.0.0/0          
+Thanks for the clarification in advance.
+Jay Brown
 
-Chain FORWARD (policy ACCEPT 629 packets, 262264 bytes)
-    pkts      bytes target     prot opt in     out    
-source               destination         
-
-Chain OUTPUT (policy ACCEPT 20654 packets, 5383330 bytes)
-    pkts      bytes target     prot opt in     out    
-source               destination         
-    9957  4391462 ACCOUNTING  all  --  *      eth0   
-0.0.0.0/0            0.0.0.0/0          
-
-Chain ACCOUNTING (2 references)
-    pkts      bytes target     prot opt in     out    
-source               destination         
-   19596  6209072 RETURN     all  --  *      *      
-0.0.0.0/0            0.0.0.0/0
-
-My question:
-
-Is there ANY reason to suppose that the ACCOUNTING total is not an
-accurate count of all IP traffic into and out of eth0?
-
-(The machine is a dual-Pentium Pro Linux box, daily traffic 20-30 MB
-average, ifconfig never reports any dropped packets).
-
-TIA, 
-
--- 
-Best regards,
-John Holman
-Eastax WWW
-Melbourne, Australia
+__________________________________________________
+Do You Yahoo!?
+LAUNCH - Your Yahoo! Music Experience
+http://launch.yahoo.com
 
