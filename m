@@ -1,11 +1,13 @@
-From: Xemul <epv_xemul@mail.ru>
-Subject: Double nat
-Date: Fri, 18 Jul 2003 20:31:22 +0400
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: block msn
+Date: Fri, 18 Jul 2003 18:55:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030718203122.0f105933.epv_xemul@mail.ru>
+Message-ID: <010501c34d4d$5a728120$0401000a@sterenborg.info>
+References: <3F1538A4.9000702@sat.com.py>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <3F1538A4.9000702@sat.com.py>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +20,54 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Well here goes my network configuration.
-I have two computers.
-1st has two ifs:
-eth0 192.168.2.91
-eth1 172.16.1.1
-2nd has one if:
-eth0 172.16.1.2
+> I`ve got this rulset but It doesn`t work what else do I need to add?
+> All the windows machine work msn, just on linux doesn`t
+> Any suggetions ?
 
-On 192.168.2.0/24 subnet I have a 192.168.2.254 router (I can't admin
-it) which provides NAT for the 192.168.2.0 subnet.
+With these rules I'm successfully blocking MSN usage.
 
-I want to make NAT for my 2nd comp on the 1st one.
+Iptables :
 
-I do the following on the 1st comp:
+/usr/local/sbin/iptables -A FORWARD -p tcp --dport 1863 -j REJECT
+--reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.46.104.20 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.46.110.35 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.46.110.41 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.46.110.43 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.46.110.48 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.46.110.49 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.46.110.254 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.68.171.247 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
+/usr/local/sbin/iptables -A FORWARD -d 207.68.178.239 -p tcp --dport 80
+-j REJECT --reject-with tcp-reset
 
-#/sbin/iptables -A POSTROUTING -t nat -s 192.168.1.0/24 -j SNAT
---to-source 192.168.2.91
-#/sbin/iptables -A FORWARD -i eth0 -o eth1 -m state --state
-RELATED,ESTABLISHED -j ACCEPT
-#/sbin/iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+Squid :
 
-The 2nd comp has default router set to 172.16.1.1.
+# Deny MSN access to servers
+acl MSN_Servers dst 207.46.104.20
+acl MSN_Servers dst 207.46.110.35
+acl MSN_Servers dst 207.46.110.41
+acl MSN_Servers dst 207.46.110.43
+acl MSN_Servers dst 207.46.110.48
+acl MSN_Servers dst 207.46.110.49
+acl MSN_Servers dst 207.46.110.254
+acl MSN_Servers dst 207.68.171.247
+acl MSN_Servers dst 207.68.178.239
+http_access deny MSN_Servers
 
-Everything goes fine but nothing works.
-I can see with tcpdump all incoming packets from eth1 but I can't see
-any outgoing from eth0 corresponding to them.
-What should I do?
+I don't know if the serverlist is complete, but at the moment it works
+for me.
+
+
+--
+Rob
+
 
