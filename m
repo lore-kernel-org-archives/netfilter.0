@@ -1,14 +1,12 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: HELP--Is it posible to SNAT certain port--
-Date: Wed, 10 Sep 2003 15:20:10 +0800
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: forwarding/proxying
+Date: Wed, 10 Sep 2003 09:34:40 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030910072010.GF7633@propaganda.localdomain>
-References: <000801c32184$d34770a0$0706a8c0@r>
-Reply-To: kluivert@tm.net.my
+Message-ID: <49554.193.173.35.183.1063179280.squirrel@www.sterenborg.info>
+References: <71650A6F73F1D411BE8000805F65E3CB3B35DC@SRV-03>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000801c32184$d34770a0$0706a8c0@r>
+In-Reply-To: <71650A6F73F1D411BE8000805F65E3CB3B35DC@SRV-03>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,19 +20,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sat, May 24, 2003 at 07:40:58AM +0800, Ricky spoke thusly:
-
->Is it posibles to MASQ only sertain port (eg. smtp) package?
->That I want to let users mail with another ADSL to keep my web server
->working smooth.
+jwsacksteder@ramprecision.com said:
+> With netcat it is possible to proxy arbitrary ip:port destination pairs.
+> Could this be done with netfilter rules entirely?
 >
->I mean, is this working?
->iptables -t nat -A POSTROUTING -p tcp --dport 25 -o eth0 -j SNAT --to
->1.2.3.4
+> As an example, I have a host that listens for incoming tcp connections on
+> port 110 and I want to forward them to port  5900 on another host
+> transparently. Obviously ftp and any other multichannel protocols would
 
-Seems to work without issues for me.
--- 
-The fact that the United States can label other countries as terrorist
-states itself is quite remarkable because its not a secret that the United
-States is incontrovertibly a terrorist state. -- Noam Chomsky
+You mean like this ?
+
+# If default FORWARD policy is DROP, then allow this :
+iptables -A FORWARD -i <if_in> -d <ip_other_host> \
+  -p tcp --dport 5900 -j ACCEPT
+(and of course the RELATED,ESTABLISHED stuff)
+
+# Forward port 110 to 5900 on other host :
+iptables -t nat -A PREROUTING -i <if_in> -p tcp --dport 110 \
+  -j DNAT <ip_other_host>:5900
+
+
+Gr,
+Rob
+
 
