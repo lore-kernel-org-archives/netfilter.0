@@ -1,11 +1,11 @@
-From: Eric Marchionni <mailing-lists@gmx.ch>
-Subject: ICQ file transfer => sending!
-Date: Sat, 30 Aug 2003 14:02:33 +0200
+From: Payal Rathod <payal-iptables@staticky.com>
+Subject: hazy table rules
+Date: Sun, 31 Aug 2003 17:56:29 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F509259.3060902@gmx.ch>
+Message-ID: <20030831122629.GA1748@linux.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,26 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi
+Hi,
+On a firewall, the rules I am giving are like,
 
-thx to the following lines i'm anle to receive files with icq
-(i had to tell my icq-client the incomming ports):
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD DENY
 
-# portforwarding ICQ Filetransfer
-iptables -A FORWARD -i $WAN_IFACE -p tcp --dport 2010:2030 \
--j ACCEPT
-iptables -t nat -A PREROUTING -i $WAN_IFACE -p tcp \
---dport 5010:5030 -j DNAT --to-destination $ICQ_CLIENT
+$IPTABLES -t nat -A POSTROUTING -j MASQUERADE
 
-but unfortunately i'm still not able to send files, though
-i have rules like:
-iptables -A FORWARD -i $LAN_IFACE -o $WAN_IFACE -j ACCEPT
-iptables -t nat -A POSTROUTING -o $WAN_IFACE -j MASQUERADE
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/24 -p tcp -m tcp --dport 20 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/24 -p tcp -m tcp --dport 21 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/24 -p tcp -m tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/24 -p udp -m udp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -p icmp --icmp-type 0 -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-anybody got an idea?
--eric
+Still when I view through iptraf, I find that there is traffic to
+few outside port 137 of remote machines.
 
+What is the issue?
+
+With warm regards,
+-Payal
+
+-- 
+"Visit GNU/Linux Success Stories"
+http://payal.staticky.com
+Guest-Book Section Updated.
 
