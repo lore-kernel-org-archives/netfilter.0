@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: NAT only some ports
-Date: Mon, 10 Feb 2003 17:03:20 -0500
+From: jpiszcz <jpiszcz@lucidpixels.com>
+Subject: Evil bug in netfilter/kernel 2.4.x?
+Date: Mon, 10 Feb 2003 17:28:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302101703.20156.netfilter@newkirk.us>
-References: <3E47F7E0.2E4CACC1@wildapache.net>
-Reply-To: netfilter@newkirk.us
+Message-ID: <3E482780.2090903@lucidpixels.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E47F7E0.2E4CACC1@wildapache.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,39 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Del Winiecki <delw@wildapache.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Monday 10 February 2003 02:05 pm, Del Winiecki wrote:
-> Hi,
->
-> I have a Linux router box configured:
->
-> Wanpipe1: upstream isp
-> eth1: downstream isp1 -- (public address 209.aaa.aaa.x) must not be
-> Nat'd
-> eth2: downstream isp2 --   same 209.bbb.bbb.x
-> eth3: company1 on 192.168.254/253/252.0 (3 class c private) must be
-> NAT'd
-> eth4: company2 on 192.168.1.0/24 must NAT'd
->
-> All NAT'd "outside" addresses should show as one of isp1's addresses,
-> so just one fixed public address like 209.aaa.aaa.13, for example.
->
-> Is it possible to accomplish this with iptables?
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+"As a secondary note, if you use connection tracking you will not see 
+any fragmented packets, since they are dealt with before hitting any 
+chain or table in iptables."
 
-Certainly.  You just introduce some matches into the NAT rules.  I assume=
-=20
-you're talking about SNAT, to make outbound traffic heading upstream=20
-appear from only the 209.aaa.aaa.xxx address range, right? If you can=20
-isolate isp1's IP space, you could match "-s ! 209.aaa.aaa.x/yy" in the=20
-nat POSTROUTING rule that performs the SNAT and SNAT anything NOT in=20
-that ip range.  If the only things you want to SNAT are the private IPs,=20
-just use "-s 192.168.0.0/16" or something similar to match only that=20
-traffic.
+PROBLEM:
 
-> Del W.
+root@p300:/etc/rc.d# iptables -t filter -I INPUT -f -j LOG --log-level 3 
+--log-prefix "FRAG: "
+root@p300:/etc/rc.d# iptables -I INPUT -f -j LOG --log-level 3 
+--log-prefix "FRAG: "
+root@p300:/etc/rc.d# iptables -I INPUT -f -j LOG --log-level 3 
+--log-prefix "FRAG: "
+root@p300:/etc/rc.d# iptables -I INPUT -f -j DROP
 
-j
+I've tried all of these, each one by itself.
+
+However, when I run tcpdump, I can clearly see these are not getting 
+dropped or logged by the kernel.
+
+I like conn_track for DCC/FTP connections, however, to get logging & 
+dropping of fragmented packets working properly, I must recompile 
+without the conn_tracker's?
+
+Wouldn't this be considered as a bug?  Someone could be 
+pounding/scanning you with fragmented packets, and you would never see 
+it, as many people run the DCC and/or FTP connection trackers!
+
+box1# nmap -sS -P0 -f -p 1-65535 box2.com
+
+17:11:52.659286 box1.com > box2.com: (frag 2729:4@16)
+17:11:52.661416 box1.com > box2.com: (frag 986:4@16)
+17:11:52.663400 box1.com > box2.com: (frag 61814:4@16)
+17:11:52.665398 box1.com > box2.com: (frag 30216:4@16)
+17:11:52.667401 box1.com > box2.com: (frag 4100:4@16)
+17:11:52.669392 box1.com > box2.com: (frag 61387:4@16)
+
+947 packets received by filter
+0 packets dropped by kernel
+
+Is it possible in anyway to log/drop/match fragmented packets with 
+connection tracking turned on?
+
 
 
