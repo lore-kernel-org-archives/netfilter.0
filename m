@@ -1,12 +1,13 @@
-From: "Guillaume" <gkweb@wanadoo.fr>
-Subject: RE "nat table"
-Date: Sat, 7 Sep 2002 19:14:19 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: nat table
+Date: Sat, 7 Sep 2002 20:06:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001401c25692$01361250$0100a8c0@poste1>
+Message-ID: <20020907190623.JDLP25423.mta01-svc.ntlworld.com@there>
+References: <000901c2568f$757ca410$0100a8c0@poste1>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0011_01C256A2.C4557220"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000901c2568f$757ca410$0100a8c0@poste1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Saturday 07 September 2002 5:56 pm, Guillaume wrote:
 
-------=_NextPart_000_0011_01C256A2.C4557220
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> I have a windows PC behind a linux gateway with iptables. Whit it, the
+> default policy for all is DROP, but the two line "mangle" are ACCEPT.
+> .....But, when I put policy for nat table "POSTROUTING, OUTPUT"
+> to ACCEPT, it's work!
 
-I don't know why, but instead of trying to connect with ip i connected =
-with name, and it worked. And since, even with ip it's work. Is it =
-possible that the daemon was disturbed by being blocked too long? and =
-even when it was good, it refused to connect?
-Whatever, it's work now.=20
+It is *strongly* recommended that you do not change the default policy for 
+either the nat or mangle tables from the standard ACCEPT.
 
-        Guillaume.
+There are two reasons for this:
 
-------=_NextPart_000_0011_01C256A2.C4557220
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+1. It will cause a lot of things not to work properly.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>I don't know why, but instead of trying =
-to connect=20
-with ip i connected with name, and it worked. And since, even with ip =
-it's work.=20
-Is it possible that the daemon was disturbed by being blocked too long? =
-and even=20
-when it was good, it refused to connect?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Whatever, it's work now. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-Guillaume.</FONT></DIV></BODY></HTML>
+2. The nat and mangle tables are for natting and mangling, not for filtering, 
+therefore you should not apply a filtering policy to them.
 
-------=_NextPart_000_0011_01C256A2.C4557220--
+> Why when i put default policy of nat table to DROP, i can't connect? even
+> with this rules? What i have to do against?
 
+If you DROP packets in the nat table, they will not be able to go through 
+your Firewall, even if you allow them in the FORWARD chain of your filter 
+table.
+
+All packets entering your firewall go through the PREROUTING chain (nat and 
+mangle tables) before entering either the INPUT or FORWARD chain (filter 
+table).
+
+All packets going out of your firewall go through either the FORWARD or 
+OUTPUT chain (filter table) and then the POSTROUTING table (nat and mangle 
+tables).
+
+If you block them at any one of these points they will not get to their 
+destination.
+
+Antony.
+
+-- 
+
+Never write it in Perl if you can do it in Awk.
+Never do it in Awk if sed can handle it.
+Never use sed when tr can do the job.
+Never invoke tr when cat is sufficient.
+Avoid using cat whenever possible.
 
