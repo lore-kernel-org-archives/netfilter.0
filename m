@@ -1,10 +1,11 @@
-From: Pekka Savola <pekkas@netcore.fi>
-Subject: netfilter6: REJECT target? (fwd)
-Date: Thu, 14 Aug 2003 12:58:53 +0300 (EEST)
+From: Juergen Stohr <stohr@lpr.e-technik.tu-muenchen.de>
+Subject: bug? blocked packets get shadowed to internal network
+Date: Thu, 14 Aug 2003 13:11:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308141258330.22834-100000@netcore.fi>
+Message-ID: <20030814131108.A23231@rcs.ei.tum.de>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,37 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-DaveM asked me to ask on a netfilter list :-)
+Hi to all,
 
--- 
-Pekka Savola                 "You each name yourselves king, yet the
-Netcore Oy                    kingdom bleeds."
-Systems. Networks. Security. -- George R.R. Martin: A Clash of Kings
----------- Forwarded message ----------
-Date: Wed, 13 Aug 2003 23:30:49 +0300 (EEST)
-From: Pekka Savola <pekkas@netcore.fi>
-To: netdev@oss.sgi.com
-Subject: netfilter6: REJECT target?
+we are using a firewall with RedHat kernel 2.4.20-19.7. The firewall is
+configured to block every packet with DPT 199 into our network. When doing
+a "telnet server.in.our.network 199" from outside, the firewall correctly
+drops that packet, logging
 
-Hi,
+IN=eth1 OUT=eth0 SRC=xxx.xxx.11.231 DST=xxx.xxx.151.184 LEN=44 TOS=0x00 PREC=0x0
+0 TTL=252 ID=12615 DF PROTO=TCP SPT=34869 DPT=199 WINDOW=8760 RES=0x00 SYN URGP=
+0
 
-Is there some reason the IPv6 Netfilter REJECT target hasn't been merged 
-during the last 2 years it has existed in Netfilter's patch-o-matic.
+to syslog. The external interface is eth1, internal is eth0.
+However, at the same time, the firewall generates a packet which is droped
+by the output chain of the firewall. It fakes the SRC and DST and wants to send
+that packet to the internal server:
 
-(it hasn't been pushed for merging, sure, ...)
+IN= OUT=eth0 SRC=xxx.xxx.151.184 DST=xxx.xxx.11.231 LEN=40 TOS=0x00 PREC=0x00 TT
+L=255 ID=0 DF PROTO=TCP SPT=199 DPT=34869 WINDOW=0 RES=0x00 ACK RST URGP=0
 
-Just wondering why we are keeping Netfilter6 crippled like this.  Unless 
-we can properly use it to reject packets with ICMPv6/TCP-RST, it's pretty 
-close to useless :-(
+When setting the output chain to accept policy, the above packet is delivered
+to xxx.xxx.151.184!
 
--- 
-Pekka Savola                 "You each name yourselves king, yet the
-Netcore Oy                    kingdom bleeds."
-Systems. Networks. Security. -- George R.R. Martin: A Clash of Kings
+How can we prohibit those packets to be generated? Kernel RH 2.4.18-x didn't
+show that behaviour.
 
+regards,
+        juergen
 
 
