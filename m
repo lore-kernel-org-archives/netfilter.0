@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: How to block a range of IPs?
-Date: 27 Apr 2003 11:26:02 +0200
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: port forwarding
+Date: Sun, 27 Apr 2003 11:37:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051435562.1136.13.camel@elendil.intranet.cartel-securite.net>
-References: <Law15-F69D7eX6Djee700022e1a@hotmail.com>
+Message-ID: <000a01c30ca0$a6fc2930$0401000a@sterenborg.info>
+References: <548356826.20030427140916@intal.uz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Law15-F69D7eX6Djee700022e1a@hotmail.com>
+In-Reply-To: <548356826.20030427140916@intal.uz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Afshin Lamei <linux_st@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le dim 27/04/2003 =E0 08:11, Afshin Lamei a =E9crit :
-> How can I write a rule for a custom range of IPs? for example, I want t=
-o=20
-> block every WWW packet incoming from eth1, which source is an IP betwee=
-n=20
-> 192.168.1.10 and 192.168.1.20.
+> I want to forward all the packets to port 80 and 443 to 16721 and
+> using the following rules:
+>=20
+> # 80->16721->80
+> ${IPTABLES} -t nat -A PREROUTING -s 0.0.0.0/0 -d 192.168.0.1=20
+> -p tcp --dport 80 -j DNAT \
+> --to-destination 192.168.0.1:16721
+> ${IPTABLES} -t nat -A POSTROUTING -s 192.168.0.1 -d 0/0 -p=20
+> tcp --sport 16721 -j SNAT \
+>  --to-source 192.168.0.1:80
+>=20
+> # 443->16721->443
+> ${IPTABLES} -t nat -A PREROUTING -s 0.0.0.0/0 -d 192.168.0.1=20
+> -p tcp --dport 443 -j DNAT \
+> --to-destination 192.168.0.1:16721
+> ${IPTABLES} -t nat -A POSTROUTING -s 192.168.0.1 -d 0/0 -p=20
+> tcp --sport 16721 -j SNAT \
+>  --to-source 192.168.0.1:443
+>=20
+> I'm just wondering - won't the source address of packets to 443 be
+> changed to 192.168.0.1:80 instead of 192.168.0.1:443 when they're
+> replied to the client?
 
-A bit HS, but a quite wonderful tool for this kind of situation.
-netmask, distributed with Debian, allows you to find all subnets that
-cover an arbitrary IP range :
+NAT will handle that, but I'm not sure if this setup is going to work :
+you are forwarding both http and https to the same port.
 
-	cbr@elendil:~$ netmask 192.168.1.10:192.168.1.20
-	   192.168.1.10/31
-	   192.168.1.12/30
-	   192.168.1.16/30
-	   192.168.1.20/32
+> I don't know what type of connection tracking to use. Your help is
+> appreciated.
 
-Now you have coverd your range, just implement your 4 rules.
+With conntrack, you don't need the postrouting rules.
 
-The other solution is to find a single subnet that covers your whole
-range. In your case, the minimal one seems to 192.168.1.1/27 that covers
-from 192.168.1.1 to 192.168.1.31.
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i <if_inet> -d 192.168.0.1 -p tcp --dport 80 \
+ -j ACCEPT
+iptables -A FORWARD -i <if_inet> -d 192.168.0.1 -p tcp --dport 443 \
+ -j ACCEPT
 
-	cbr@elendil:~$ netmask -r 192.168.1.1/27
-	    192.168.1.0-192.168.1.31    (32)
+iptables -t nat -A PREROUTING -i <if_inet> -p tcp --dport 80 \
+ -j DNAT --to-destination 192.168.0.1:16721
+iptables -t nat -A PREROUTING -i <if_inet> -p tcp --dport 443 \
+ -j DNAT --to-destination 192.168.0.1:16721
 
-Now you have a single rule, but it covers a much larger range than you
-need.
+If I were you I'd make the webserver listen on 16722 (or whatever) for
+https and forward port 443 to 16722.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+
+Gr,
+Rob
+
 
