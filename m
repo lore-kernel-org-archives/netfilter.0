@@ -1,12 +1,12 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: RE: Is this at all possible
-Date: Thu, 2 Dec 2004 10:06:24 -0300
-Message-ID: <E1CZqgw-0005FY-00@deer.gmane.org>
-References: <41AF0514.4030503@4Dllc.com>
+From: John Lash <jkl@sarvega.com>
+Subject: Re: iptables for port forwarding
+Date: Tue, 30 Nov 2004 07:26:57 -0600
+Message-ID: <20041130072657.5acc7264@homer.sarvega.com>
+References: <20041130005154.6978.qmail@web11204.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41AF0514.4030503@4Dllc.com>
+In-Reply-To: <20041130005154.6978.qmail@web11204.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Steve Comfort' <steve@4Dllc.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Double nat is the solution for this issue.
-
-http://www.netfilter.org/documentation/HOWTO//netfilter-double-nat-HOWTO.htm
-l
-
- 
-
-> -----Mensaje original-----
-> De: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] En nombre de 
-> Steve Comfort
-> Enviado el: Jueves, 02 de Diciembre de 2004 9:06
-> Para: netfilter@lists.netfilter.org
-> Asunto: Is this at all possible
+> I tried doing this:
+> /sbin/iptables -A FORWARD -p tcp --dport 80 -j ACCEPT 
+> /sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth0 -j DNAT
+> --to 127.0.0.1:5900 
 > 
-> Hi all,
+> But the VNC client hangs for a while before timing out when I try to
+> connect to it.
 > 
-> I'm 99% sure that the answer to this one is no, but a 
-> customer asked :)
+> Ideas on how to achieve the desired result?
 > 
-> They have two buildings with networks running on the same 
-> (192.168.2.x) subnet.
+> Thanks,
 > 
-> Is it possible to configure a (wireless) router that would be 
-> capable of routing between these identical sub-nets. Somehow, 
-> maybe restricting one half to addresses below 127 and getting 
-> cunning with the netmask?
-> 
-> Don't ask why they don't want to change to different subnets!
-> 
-> A resounding lack of response will be sufficient confirmation 
-> for me that this is a silly scenario.
-> 
-> Ciao
-> Steve Comfort
-> 
-> 
-> 
+> Nick
 > 
 
+I suspect that you won't be able to redirect to 127.x.x.x. Check out this
+thread:
+	https://lists.netfilter.org/pipermail/netfilter/2002-November/040104.html
+
+He comes to the conclusion that you can't redirect packets to localhost because
+the kernel refuses to route a packet from an external ip to a destination on the
+127.x.x.x network. I haven't yet verified that in the code but it sounds
+reasonable enough.
+
+I played with something similar for a while and was also unsuccessful. Needless
+to say, if you find a way to do this, short of hacking the routing code, please
+post back. Seems to be a fairly common wish.
+
+The usual way to forward the port to localhost is to use ssh. There are many
+references to that on the net.
+
+--john
 
