@@ -1,12 +1,12 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: Logging only the first 20 packets of a new connection
-Date: Fri, 07 Jan 2005 12:46:22 -0700
-Message-ID: <41DEE70E.8050807@utilitran.com>
-References: <200501071829.j07ITSXH082515@jkcpub.iserver.net>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: transparent bridge troubles?
+Date: Fri, 7 Jan 2005 14:44:06 -0500
+Message-ID: <20050107194406.GA900@bender.817west.com>
+References: <074001c4f4ea$388d1070$3e0010ac@esonet18>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200501071829.j07ITSXH082515@jkcpub.iserver.net>
+Content-Disposition: inline
+In-Reply-To: <074001c4f4ea$388d1070$3e0010ac@esonet18>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Deepak Seshadri <dseshadri@broadbandmaritime.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hello,
-
-	I think you could use mark and limit to come up with something ... but 
-why on the first 20 packets ??
-
-I have a rule that logs all SYN packets coming from a certain end point 
-that SNAT's ... so we can later track with PC made the connection if needed.
-
-Michael.
-
-
-
-Deepak Seshadri wrote:
-> Hello everybody,
+On Fri, Jan 07, 2005 at 01:53:48PM -0500, mdpeters wrote:
+> This is what my iptables setup looks like.
 > 
-> Could someone suggest how would I log only the first 15 or 20 packets of any
-> new connection?
-> 
-> Thanks in advance,
-> 
-> Deepak Seshadri
-> 
-> 
-> 
+> /usr/local/sbin/iptables -P FORWARD DROP
 
--- 
-Michael Gale
-Lan Administrator
-Utilitran Corp.
+k--so all packets traversing FORWARD that don't match one of the
+following rules will get dropped.
 
-I make better friends with those who think for them selves
+> /usr/local/sbin/iptables -A FORWARD -p tcp --syn -m state --state NEW -j QUEUE
+> /usr/local/sbin/iptables -A FORWARD -p tcp -m state --state RELATED,ESTABLISHED -j QUEUE
+> /usr/local/sbin/iptables -A FORWARD -p udp -j QUEUE
+> /usr/local/sbin/iptables -A FORWARD -p icmp -j QUEUE
+
+and all we've done is QUEUE packets.
+
+> #/usr/local/sbin/iptables -L
+
+please use "iptables -vnxL" in the future when posting output.
+
+> Chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+> 
+> Chain FORWARD (policy DROP)
+> target     prot opt source               destination
+> QUEUE      all  --  anywhere             anywhere
+> QUEUE      tcp  --  anywhere             anywhere            tcp
+> flags:SYN,RST,ACK/SYN state NEW
+> QUEUE      tcp  --  anywhere             anywhere            state
+> RELATED,ESTABLISHED
+> QUEUE      udp  --  anywhere             anywhere
+> QUEUE      icmp --  anywhere             anywhere
+> 
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+
+well--you're queuing all your packets to a userspace daemon--what are
+you doing with them when they get there?
+
+-j
+
+--
+"To alcohol: the cause of, and solution to, all of life's problems."
+        --The Simpsons
 
