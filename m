@@ -1,12 +1,13 @@
-From: "Keith R. Weiner" <keith@valiant.com>
+From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
 Subject: RE: netfilter and IIS5
-Date: Mon, 7 Oct 2002 15:46:30 -0400
+Date: Mon, 7 Oct 2002 14:41:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <AF435BB1224A4C4888B58C546728EE322FF4@s2.valiant.com>
+Message-ID: <IMEDICLPAGAOCBLCCKLPKEGPECAA.netfilter@darrelldieringer.com>
+References: <AF435BB1224A4C4888B58C546728EE3229AA@s2.valiant.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <AF435BB1224A4C4888B58C546728EE3229AA@s2.valiant.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +18,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-As a matter of fact I think that you have the answer.
-
-I remember having problems in the past with IIS running behind an =
-netfilter firewall.  The problem was when I changed the external address =
-to forward to the same internal address.  Even rebooting both the linux =
-and the windows servers didn't help.  Microsoft had a bulletin on the =
-subject of IIS having problems behind a natted firewall, but offered no =
-solution.
-
-It magically started working again.
-I will focus on IIS and see the logs.  I will try your solutions for the =
-future should this occur again.
-
-Once again, your help was greatly appreciated.
-
------Original Message-----
-From: Darrell Dieringer [mailto:netfilter@darrelldieringer.com]
-Sent: Monday, October 07, 2002 3:42 PM
-To: Keith R. Weiner; netfilter@lists.netfilter.org
-Subject: RE: netfilter and IIS5
-
+To: "Keith R. Weiner" <keith@valiant.com>, netfilter@lists.netfilter.org
 
 Awhile ago I was dealing with what amounted to be an IIS issue.
 
