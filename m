@@ -1,14 +1,12 @@
-From: Doc Nielsen <WebMaster@DocNielsen.dk>
-Subject: Re: ip_tables.o not loading - nf_unregister_sockopt error [FIXED]
-Date: Mon, 8 Sep 2003 14:46:36 +0200
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: Kazaa Ports
+Date: Mon, 8 Sep 2003 10:01:51 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309081446.36345.WebMaster@DocNielsen.dk>
-References: <000501c37184$d6701fc0$7b01a8c0@Doc> <1063001214.960.33.camel@india.nsecure.net>
+Message-ID: <20030908170151.21523.qmail@web40205.mail.yahoo.com>
+References: <3F5CA520.6060102@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063001214.960.33.camel@india.nsecure.net>
-Content-Disposition: inline
+In-Reply-To: <3F5CA520.6060102@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,49 +17,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Dharmendra.T" <dharmu@nsecure.net>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>, netfilter@lists.netfilter.org
 
-On Monday 08 September 2003 08:06, Dharmendra.T wrote:
-> On Wed, 2003-09-03 at 00:33, Doc Nielsen wrote:
->>
->>     hey guys
->>
->>     Im having some trouble compiling and using iptables/netfilter
->>     Its enabled in the kernel, and the modules are there, but when I try to
->> load them I get this:
->>
->>     root@server:~# modprobe ip_tables
->>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved
->> symbol nf_unregister_sockopt
->>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved
->> symbol nf_register_sockopt
->>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod
->>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o failed
->>     /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod
->> ip_tables failed
->>
->>     What am I doing wrong?
->>
->>     Please CC mail directly to me, as Im not subscribed to the list.
->>     And yes, I have browsed the archives with no luck.
->>
->>     - Doc
->
->     Could you tell me how you have compiled your kernel?
 
-It's the debian kernel-source-2.4.20.deb
-make menuconfig && make dep && make bzlilo modules modules_install
+--- Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
+> Hi All,
+> 
+> I am trying to provide a modest amount of security for a home LAN using 
+> NAT and filtering. My family insists on using Kazaa Lite on their 
+> Windows boxes (aaahhh!!).
+> 
+> My (other) problem is that Kazaa insists on using sequential source 
+> ports and seemingly random destination ports to make connections. I 
+> already have a rule to allow ESTABLISHED,RELATED through, but these 
+> packets must be new connections (connecting to supernodes maybe?). No 
+> matter how many ports I open I can't seem to open enough ports to make 
+> it run.
+> 
+> I'm rapidly becoming unpopular in my house. Any ideas how I can make 
+> Kazaa Lite work and still maintain some security? Are these mutually 
+> exclusive goals?
+> 
+> Jeff
+> 
+> 
 
-A complete recompile solved the problem, or went around it...
+Are you using NAT? This is probably your best soloution.
 
-cp /usr/src/kernel-source-2.4.20/.config /usr/src/config.txt
-rm -rf /usr/src/kernel-source-2.4.20 
-tar xjf kernel-source-2.4.20.tar.bz2
-cp /usr/src/config.txt /usr/src/kernel-source-2.4.20/.config
-cd /usr/src/kernel-source-2.4.20/
-make menuconfig && make dep && make bzlilo modules modules_install
+SBlaze
 
-- Doc
+=====
+"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
 
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
