@@ -1,11 +1,11 @@
-From: Andrey Tverdokhleb <at@tigry.net>
-Subject: How to control DF in iptables
-Date: Mon, 17 Nov 2003 15:38:46 -0800
+From: Damjan <gdamjan@mail.net.mk>
+Subject: Howto match only the first connection from an IP
+Date: Tue, 18 Nov 2003 06:12:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB95C06.7090606@tigry.net>
+Message-ID: <20031118051208.GA24242@legolas.on.net.mk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,18 +15,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all!
+My goal is to set-up an iptables rule that will match and DNAT the
+first connection from a client. 
 
-Is there way to enable fragmentation on per-interface or per-IP or 
-per-Whatever basis?
-I don't want to disable DF globally in ip_no_pmtu_disc, but I want some 
-packets forwarded
-without DF and fragmented if needed.
+The first connection is defined as the first established TCP session 
+from the time the iptables rule is inserted. No other TCP connection
+should match nor should be DNAT-ed.
 
-Thanks,
-Andrey Tverdokhleb
+Is there any easy way to do this with current Netfilter/Iptables/pom.
 
+(I have installed almost all the patches from pom)
+
+
+-- 
+Damjan Georgievski
+jabberID: damjan@bagra.net.mk
 
