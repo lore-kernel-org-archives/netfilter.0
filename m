@@ -1,13 +1,11 @@
-From: "Franck" <franck@zoccolo.com>
-Subject: RE : DNAT probs
-Date: Mon, 10 Feb 2003 14:35:39 +0100
+From: Del Winiecki <delw@wildapache.net>
+Subject: NAT only some ports
+Date: Mon, 10 Feb 2003 12:05:04 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002601c2d109$4ee55b40$29a2a8c0@dev.gcf.fr>
-References: <200302101412.26834.roy@karlsbakk.net>
+Message-ID: <3E47F7E0.2E4CACC1@wildapache.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302101412.26834.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +16,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Roy Sigurd Karlsbakk' <roy@karlsbakk.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Roy 
-> Sigurd Karlsbakk
-> Sent: Monday, February 10, 2003 2:12 PM
-> To: netfilter@lists.netfilter.org
-> Subject: DNAT probs
->
-> The firewall (netfilter/iptables) doesn't seem to be able to do 
-> the dmz -> netfilter -> dmz NATing.
-> 
-> Any ideas?
+Hi,
 
-This is not a problem, because this behaviour is documented. So this is
-a feature :-)
+I have a Linux router box configured:
 
-Maybe you should have a look to the netfilter NAT howto, especially this
-chapter :
-http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html
+Wanpipe1: upstream isp
+eth1: downstream isp1 -- (public address 209.aaa.aaa.x) must not be
+Nat'd
+eth2: downstream isp2 --   same 209.bbb.bbb.x
+eth3: company1 on 192.168.254/253/252.0 (3 class c private) must be
+NAT'd
+eth4: company2 on 192.168.1.0/24 must NAT'd
 
+All NAT'd "outside" addresses should show as one of isp1's addresses, so
+just one fixed public address like 209.aaa.aaa.13, for example.
+
+Is it possible to accomplish this with iptables?
+
+Del W.
 
