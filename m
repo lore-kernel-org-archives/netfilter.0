@@ -1,9 +1,8 @@
-From: Roland Kaeser <roli8200@yahoo.de>
-Subject: ipt_string and Kernel 2.6 !!URGENT!!
-Date: Wed, 12 Jan 2005 09:30:23 +0100 (CET)
-Message-ID: <20050112083023.42281.qmail@web26109.mail.ukl.yahoo.com>
+From: Lim Boon Ping <syseeker@yahoo.com>
+Subject: Setup simple PC-based router using IPTABLES
+Date: Wed, 12 Jan 2005 00:53:42 -0800 (PST)
+Message-ID: <20050112085342.40592.qmail@web12503.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,32 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all
+Hi,
+ 
+I need some help on using IPTABLES to setup a simple PC-based router (for LAN usage).
+The PC consists of  a 10/100 NIC on eth0, and a gigabit fiber NIC on eth1. The gigabit fiber NIC is connected to another fiber-based port, whereas the 10/100 NIC is connected to a 10/100 hub. Now, for all packets coming from eth0, forward it to eth1, and vice versa. 
+Could anyone verify/suggest commands to set for this setting?
+# iptables -A FORWARD -i eth0 -o eth1 
+# iptables -A FORWARD -i eth1 -o eth0 
+ 
+Is it that's all we need to do? Thanks.
+ 
+Regards,
+Jocelyn
 
-I know this was subject of many conversations, but I need this feature very
-urgently!
-I readt a lot of articles etc. about this thing, and lots of patches circulate
-around mailing lists etc. But with all my inquiries I couldn't get a running
-combination of a Kernel 2.6.9 and an actual netfilter release.
-
-Some of the web sources speaks about a patch-o-matic-ng-20041229 but I could not see
-any download by that name. Can somebody give me REALLY working howto for enabling
-this function in a kernel 2.6.9?
-
-This is for a very large firewall project.
-
-Kind Regards
-
-Roland Kaeser
-Systems Administrator
-
-
-	
-
-	
 		
-___________________________________________________________ 
-Gesendet von Yahoo! Mail - Jetzt mit 250MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
-
+---------------------------------
+Do you Yahoo!?
+ Read only the mail you want - Yahoo! Mail SpamGuard.
