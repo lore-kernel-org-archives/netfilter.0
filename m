@@ -1,15 +1,13 @@
-From: Alejandro Flores <alejandro.flores@triforsec.com.br>
+From: Askar Ali Khan <askarali@gmail.com>
 Subject: Re: droping in forward/postrouting
-Date: Sat, 31 Jul 2004 09:11:31 -0300
+Date: Sat, 31 Jul 2004 17:27:13 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1091275890.17060.20.camel@aflores>
-References: <OF314C1F3E.9AD1008B-ON80256EE0.005745C8@start-global.com>
-	 <a0f69e504072913084fc39ee8@mail.gmail.com>
-	 <a0f69e504072923151d18afa3@mail.gmail.com>
+Message-ID: <a0f69e504073105276e10d9d3@mail.gmail.com>
+References: <OF314C1F3E.9AD1008B-ON80256EE0.005745C8@start-global.com> <a0f69e504072913084fc39ee8@mail.gmail.com> <a0f69e504072923151d18afa3@mail.gmail.com> <200407310848.28840.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <a0f69e504072923151d18afa3@mail.gmail.com>
+In-Reply-To: <200407310848.28840.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,52 +20,99 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-	Hi there,
-
-> hi
-> I duno but filter table "FORWARD" not blocking/dropping any of these
-> site actaully these are spywares a gift from windowz and why i want to
-> drop these dirty shits coz they consume lot of my precious bandwidth
-> "dialup" ;)
+On Sat, 31 Jul 2004 08:48:28 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
+> On Friday 30 July 2004 7:15 am, Askar Ali Khan wrote:
 > 
-> iptables -I FORWARD -s 0/0 -d 66.35.229.0/24 -j DROP
-> iptables -I FORWARD -s 0/0 -d  212.4.208.105 -j DROP
-> iptables -I FORWARD -s 0/0 -d 66.35.229.185 -j DROP
-> iptables -I FORWARD -s 0/0 -d  64.152.73.0/24 -j DROP
-> iptables -I FORWARD -s 0/0 -d  66.35.229.236 -j DROP
+> > hi
+> > I duno but filter table "FORWARD" not blocking/dropping any of these
+> > site actaully these are spywares a gift from windowz and why i want to
+> > drop these dirty shits coz they consume lot of my precious bandwidth
+> > "dialup" ;)
+> >
+> > iptables -I FORWARD -s 0/0 -d 66.35.229.0/24 -j DROP
+> > iptables -I FORWARD -s 0/0 -d  212.4.208.105 -j DROP
+> > iptables -I FORWARD -s 0/0 -d 66.35.229.185 -j DROP
+> > iptables -I FORWARD -s 0/0 -d  64.152.73.0/24 -j DROP
+> > iptables -I FORWARD -s 0/0 -d  66.35.229.236 -j DROP
+> >
+> > However PREROUTING do working and dropping it :)
+> >
+> > iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.0/24 -j DROP
+> > iptables -t nat -I PREROUTING -s 0/0 -d  212.4.208.105 -j DROP
+> > iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.185 -j DROP
+> > iptables -t nat -I PREROUTING -s 0/0 -d  64.152.73.0/24 -j DROP
+> > iptables -t nat -I PREROUTING -s 0/0 -d  66.35.229.236 -j DROP
 > 
-> However PREROUTING do working and dropping it :)
+> Do you have both these sets of rules in your ruleset at the same time?
+No one at a time I hash (#) the appreporate rules
 > 
-> iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.0/24 -j DROP
-> iptables -t nat -I PREROUTING -s 0/0 -d  212.4.208.105 -j DROP
-> iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.185 -j DROP
-> iptables -t nat -I PREROUTING -s 0/0 -d  64.152.73.0/24 -j DROP
-> iptables -t nat -I PREROUTING -s 0/0 -d  66.35.229.236 -j DROP
+> If so, then packets which are DROPped in the PREROUTING chain will never make
+> it to the FORWARD chain (because they've been DROPped), therefore the FORWARD
+> rules will never see anything to DROP.
 > 
-> Therefore my confusion still exists, as rule is that to filter in
-> fiter table and other things NATting , mangling in nat and mangle
-> table respectively.
+> Try changing both targets from DROP to LOG, and see if the packets go through
+> both chains as expected.
 > 
-> Then why FOWARD not blocking these sites and nat PREROUTING does?
+> Also, of the five rules you've listed, two are pointless, as the addresses
+> 66.35.229.185 and 66.35.229.236 both fall within the first /24 range
+> specified and will therefore be caught by the first rule.
+> 
+> If, on the other hand, you're saying that putting the rules above into
+> PREROUTING does DROP the packets, but removing them from PREROUTING and
+> putting them into FORWARD instead does not DROP the packets, then show us the
+> rest of your PREROUTING ruleset, as you may be changing the destination
+> address before the packets reach FORWARD?
+Yeah its Drops the packets in PREROUTING, however not Dropping the
+same while tries with FOWARD.
+here are my PREROUTING rules (1st one is of POSTROUTING)
 
-	If you're using both (drop in prerouting and forward), the packets are
-dropped in nat prerouting. You know why? When the packet starts the
-'netfilter journey' it goes to:
-	1.  table mangle -> chain PREROUTING
-	2.  table nat -> chain PREROUTING (you're dropping packets here)
-		(routing decision)
-	3b. table mangle -> chain FORWARD
-	4b. table filter -> chain FORWARD
-	5.  table mangle -> chain POSTROUTING
-	6.  table nat -> chains POSTROUTING
+> 
+> Regards,
+iptables -t nat -A POSTROUTING -o ppp0 -s 192.168.0.0/24 -d 0/0  -j MASQUERADE
 
-	Remove the drop in PREROUTING, and change your FORWARD rules to
-something like:
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
+--to-port 3128
 
-iptables -A FORWARD -i LAN_IF -o EXT_IF -d spywarez_site/mask -j DROP
+######## USING filter table chain FORWARD ########### not working :D
+#iptables -I FORWARD -s 0/0 -d 66.35.229.0/24 -j DROP
+#iptables -I FORWARD -s 0/0 -d  212.4.208.105 -j DROP
+#iptables -I FORWARD -s 0/0 -d 66.35.229.185 -j DROP
+#iptables -I FORWARD -s 0/0 -d  64.152.73.0/24 -j DROP
+#iptables -I FORWARD -s 0/0 -d  66.35.229.236 -j DROP
+#iptables -I FORWARD -s 0/0 -d  64.157.165.181 -j DROP
+#iptables -I FORWARD -s 0/0 -d  66.35.229.153 -j DROP
+#iptables -I FORWARD -s 0/0 -d 64.157.165.249 -j DROP
+#iptables -I FORWARD -s 0/0 -d  66.35.229.175 -j DROP
+##########
+######### Using PREROUTING ############## working
+iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.0/24 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d  212.4.208.105 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d 66.35.229.185 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d  64.152.73.0/24 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d  66.35.229.236 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d 64.152.73.174 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d  64.157.165.181 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d  66.35.229.153 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d  64.152.73.207 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d 64.157.165.249 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d 64.152.73.185 -j DROP
+iptables -t nat -I PREROUTING -s 0/0 -d  66.35.229.175 -j DROP
+###############
+see I hashed the FORWARD rules coz it was not Droping packets.
 
-	You don't have to specify the source if the source is any (-s 0/0).
-
-Regards,
-Alejandro Flores
+> 
+> Antony.
+regards
+Askar
+> 
+> --
+> I think, therefore I am.
+> I'm pink, therefore I'm Spam.
+> I drink, therefore I think I am.
+> 
+>                                                     Please reply to the list;
+>                                                           please don't CC me.
+> 
+>
 
