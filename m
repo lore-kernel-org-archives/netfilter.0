@@ -1,11 +1,13 @@
-From: "Peter Hoeg" <disposable1@hoeg.com>
-Subject: Firewalling non-IPsec connections
-Date: Sun, 14 Dec 2003 23:30:35 +0100
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Firewalling non-IPsec connections
+Date: Mon, 15 Dec 2003 00:59:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000c01c3c291$e4e0f3a0$fc00000a@vmwarew2k>
+Message-ID: <20031215005928.326b0f11.arnt@c2i.net>
+References: <000c01c3c291$e4e0f3a0$fc00000a@vmwarew2k>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000c01c3c291$e4e0f3a0$fc00000a@vmwarew2k>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Normally google is my friend but hasn't been able to help me out, which is
-the reason I am turning to you guys.
+On Sun, 14 Dec 2003 23:30:35 +0100, 
+"Peter Hoeg" <disposable1@hoeg.com> wrote in message 
+<000c01c3c291$e4e0f3a0$fc00000a@vmwarew2k>:
 
-Here is the deal:
+> Normally google is my friend but hasn't been able to help me out,
+> which is the reason I am turning to you guys.
+> 
+> Here is the deal:
+> 
+> I have a multipurpose gateway/firewall box (running linux kernel
+> 2.6.0-test9) using iptables 1.2.9 (standard debian package) with 3
 
-I have a multipurpose gateway/firewall box (running linux kernel
-2.6.0-test9) using iptables 1.2.9 (standard debian package) with 3 NICs:
+..tried 2.6.0-test_11_?  
+knoppix@ttyp5[knoppix]$ finger @finger.kernel.org
+[zeus-pub.kernel.org]
+The latest stable version of the Linux kernel is:           2.4.23
+The latest prepatch for the stable Linux kernel tree is:  2.4.24-pre1
+The latest snapshot for the stable Linux kernel tree is:  2.4.23-bk11
+The latest beta version of the Linux kernel is:             2.6.0-test11
+The latest snapshot for the beta Linux kernel tree is:   
+2.6.0-test11-bk10 
+The latest 2.2 version of the Linux kernel is:           2.2.25 
+The latest 2.0 version of the Linux kernel is:           2.0.39 
+The latest prepatch for the 2.0 Linux kernel tree is:  2.0.40-rc6 
+The latest -ac patch to the stable Linux kernels is:  2.4.22-ac4 
+The latest -ac patch to the beta Linux kernels is:    2.6.0-test1-ac3 
+knoppix@ttyp5[knoppix]$
 
-eth0 - internal LAN
-eth1 - WLAN (using a crossover cable into an orinoco wireless gateway)
-eth2 - internet connection via adsl
 
-For the IPsec stuff I am using the in-kernel ipsec implementation and racoon
-for IKE (tunnel mode by the way).
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-What I want to do:
-
-Basically, the only connections that are to be allowed as wireless
-connections are IPsec tunnels, so I can ensure nobody else uses my
-connection. This is pretty easy for connections to the gateway host (UDP
-port 500 for IKE, ESP protocol and dhcp) as I just need to limit the INPUT
-chain for eth1.
-
-The REAL problem is since I need to allow connections from the wireless LAN
-segment to go onto the internet and it seems like the connections only hit
-the FORWARD chain AFTER the kernel has done all its magic with unpacking the
-encrypted packages. What I would like to do is something like:
-
-iptables -A FORWARD -i eth1 -o eth2 -p esp -j ACCEPT
-
-and then drop everything else, but again, the problem is that if I as an
-example ping www.google.com from a wireless host with the IPsec tunnel
-active and having this rule:
-
-iptables -A FORWARD -j LOG
-
-I can then see the ICMP packages in my log for the forward chain.
-
-I hope I have managed to explain what it is that I am looking for and that
-somebody out there can help me out.
 
 
