@@ -1,13 +1,12 @@
-From: Frank Gruellich <frank@home.manuelm.org>
-Subject: Re: Multiple matches and others
-Date: Mon, 31 May 2004 11:11:17 +0200
+From: "Markus Zeilinger" <mz@sea.uni-linz.ac.at>
+Subject: Filtering multiple networks
+Date: Mon, 31 May 2004 11:57:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040531091116.GY26731@home.manuelm.org>
-References: <02c901c446ed$7237a7a0$0100a8c0@newlife>
+Message-ID: <E1BUjWm-0005kj-GQ@vishnu.netfilter.org>
+Reply-To: <mz@sea.uni-linz.ac.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <02c901c446ed$7237a7a0$0100a8c0@newlife>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +17,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-* Ming-Ching Tiew <mingching.tiew@redtone.com> 31. May 04:
-> I am try to figure out what is the meaning of multiple match
-> like this :-
-> 
->    iptables ......     -m state --state NEW -m mark --mark 1
-> 
-> is it a boolean AND of two conditions
+Hi all,
 
-Yes.
+sorry if this is a stupid question, I am just a newbie with iptables.
 
-> or is it a boolean OR ?
+I am currently writing a little script for a simple network design. I have a
+local network parted from the internet with a linux firewall. Now I would
+like to drop all packets coming on the Internet interface on the firewall
+with source address out of the private IP address ranges (10.0.0.0/8,
+192.168.0.0/16, 172.16.0.0/12 and 169.254.0.0/16). I use the following
+syntax in my script:
 
-No.
+...
+WAN_IFACE="eth0"
+PRIV_IP="10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,169.254.0.0/16"
+...
+iptables -A INPUT -i $WAN_IFACE -s $PRIV_IP -j DROP
+...
 
-> If it is boolean AND, does it mean, 
-> 
->    iptables ..... -m mark --mark 1 -m state --state NEW ....
-> 
-> this is the same as the first  ?
+When I execute the script I get the following error:
+...
+iptables v1.2.9: host/network
+`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0' not found
+...
 
-Yes.
+Isn't it possible to write a rule like this, or what am I doing wrong?
 
-> Similarly I have problem with multiple states comma together, eg :-
-> 
->   iptables ....  -m state --state NEW,INVALID ......
-> 
-> Does it mean state NEW --and-- INVALID
+Thx for you help guys!
 
-No.
+Cheers,
+Markus
 
-> or  NEW --or-- INVALID ?
+--------------------------------------------------------------------
+Markus Zeilinger (System Administration)
 
-Yes.
+University of Linz, Systems Engineering and Automation
+Altenberger Strasse 69, 4040 Linz, AUSTRIA 
+Phone: +43(0)732-2468-8869, Fax: +43(0)732-2468-8878
 
-HTH,
- regards, Frank.
--- 
-Sigmentation fault
+PGP Fingerprint: 5FC3 E7B3 DC02 C0A2 0198  70CB 9715 491B DA97 4E3F
+
+Home: http://www.sea.uni-linz.ac.at/department/staff/mz/
+--------------------------------------------------------------------
+
+
+
 
