@@ -1,10 +1,10 @@
-From: "SILES,RAUL (HP-Spain,ex1)" <raul_siles@hp.com>
-Subject: Netfilter high availability module?
-Date: Tue, 4 Jun 2002 16:39:24 +0200
+From: jn@angel.cz
+Subject: SNAT of icmp: fragmentation-needed
+Date: Tue, 4 Jun 2002 17:30:02 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <6428DE54F23B2E44BAE5EF7D53FF67D10110CF53@gaudi.spain.hp.com>
+Message-ID: <Pine.LNX.4.44.0206041715120.27892-100000@albert.ha-vel.cz>
+Reply-To: jn@angel.cz
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,42 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
-Cc: "SILES,RAUL (HP-Spain,ex1)" <raul_siles@hp.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-Hi all,
-I=B4m trying to find a Linux (kernel 2.4) software module that will =
-allow to
-create a firewall cluster based on netfilter/iptables.
 
-- Is there any software to create a high availability firewall solution
-based on Linux (netfilter)?
-I would like to get something similar to the Nokia Firewall-1 solution =
-(it
-is based on VRRP).
+Hi,
 
-- Does anyone know if the VRRPd module from
-http://w3.arobas.net/~jetienne/vrrpd/FAQ works fine with netfilter?
+I would like to SNAT icmp fragmentation-needed messages that have source
+address from private network range (RFC1918), I have tried something like:
 
-- Does anyoe know if other High Availability Linux solutions work fine =
-with
-netfilter, for example, the RedHat Piranha software
-(http://www.redhat.com/support/wpapers/piranha/) or perhaps the LVS,
-http://www.linuxvirtualserver.org.
+iptables -t nat  -I POSTROUTING -j SNAT --to real_address -p icmp  \
+--icmp-type fragmentation-needed -s 192.168.0.0/16
 
-The idea will be to create a 2 node cluster, both systems filtering =
-network
-traffic using netfilter, and the desired features will be:
-- fault tolerance (if one node falut down, the other will take its
-connections, without loosing them).
-- load sharing (both nodes are working and filtering traffic at the =
-same
-time).
+but it does not work. I think that because these packets are part of
+valid TCP connection, they are somehow processed by ip_conntrack
+module and do not pass this rule....
 
-I would like to get both, open source and commercial references, if =
-any.
+any idea?
 
-Regards,
-Ra=FAl
+jn
+
 
