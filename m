@@ -1,12 +1,11 @@
-From: "Richard Whittaker" <RWHITTAKER@nwtel.ca>
-Subject: NetFilter DMZ question...
-Date: Fri, 23 May 2003 13:29:15 -0700
+From: Salman Ahmed <syd_salman@yahoo.com>
+Subject: Some confuisions about following script
+Date: Fri, 23 May 2003 15:19:48 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sece223b.030@nwtel.ca>
+Message-ID: <20030523221948.60971.qmail@web11508.mail.yahoo.com>
+Reply-To: syd_salman@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Greetings:
+I have downloaded one script from internet which some
+parts are making confusion which are:
 
-We have a webserver living in a DMZ, and I have the following rule
-setup to allow this:
+####################################################
+#----Create logging chains-----#
 
-/usr/sbin/iptables -A PREROUTING -t nat -i eth1 -p tcp -d 199.85.228.1
---dport 80 -j DNAT --to 192.168.70.3:80
+##These are the logging-chains. They all have a
+certain limit of log-entries/sec to prevent
+log-flooding
+##The syslog-entries will be fireparse-compatible (see
+http://www.fireparse.com)
 
-Unfortunately, the web server only sees the IP address of the
-interface, not the source IP address, which kinda messes with our
-statistical programs, since the only address the web server "sees" is
-the same one over, and over... Is there any way to present the web
-server with the "real" address, or should it be be already?....
+#Invalid packets (not ESTABLISHED,RELATED or NEW)
+	$IPTABLES -N LINVALID
+	$IPTABLES -A LINVALID -m limit --limit $LOGLIMIT
+--limit-burst $LOGLIMITBURST -j LOG --log-prefix
+"fp=INVALID:1 a=DROP " $IPTABLES -A LINVALID -j DROP
 
-Thanks,
-Richard...
+#####################################################
 
 
-Richard Whittaker, CISSP
-System Manager
-NorthwesTel Inc.
-Whitehorse, YK
-(867) 393-7756
+I am having following confusions.
 
+What is LOGLIMIT 
+What is LOGLIMITBURST and
+What is --log-prefix "fp=INVALID:1 a=DROP "
+
+How can we only block mns messenger and yahoo
+messenger?
+
+How can we block all communications except www. 
+
+
+Please help me out.
+
+Best Regards
+Salman
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
