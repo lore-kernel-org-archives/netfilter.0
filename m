@@ -1,43 +1,44 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: RE: Memory leaks in ip_conntrack?
-Date: Wed, 12 Nov 2003 00:34:54 +0100 (CET)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0311120028560.26051-100000@blackhole.kfki.hu>
-References: <EFBADA8C200C2B418DA39734FD15475B0B205F@skat.sky.com>
+From: Vigil <nvnwdfuq02@sneakemail.com>
+Subject: Re: iprange
+Date: Wed, 12 Nov 2003 00:11:43 +0000 (GMT)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.58.0311120005560.7355@fhynpb.envafyvqr.arg>
+References: <Pine.LNX.4.33.0311120009030.26051-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <EFBADA8C200C2B418DA39734FD15475B0B205F@skat.sky.com>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.33.0311120009030.26051-100000@blackhole.kfki.hu>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Kishore Dharmavaram <kishored@servgate.com>
-Cc: netfilter@lists.netfilter.org, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Tue, 11 Nov 2003, Kishore Dharmavaram wrote:
+>What is 'ngh'? Negative?
 
-> I verified & I find my 2.4.20 is already patched with UNCONFIRMED
-> connections fix: http://www.netfilter.org/security/2003-08-01-listadd.html
->
-> > Did you apply any patches from patch-o-matic? If yes, which one?
+It is the sound a mong makes when he realises he made a stupid mistake.
 
-There are other patches in p-o-m. Didn't you apply anything else?
-Say the nfnetlink/ctnetlink patch? It is known that there was a buggy
-version of that which screwed up the internal conntrack counter.
+>Where did you read it's built into the iptables *binary*? Which binary? Why are
+>you sure it's truly built into the binary on your machine?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+All I did to resolve my problem was run the iprange patch from patch-o-matic to
+put it into my kernel, recompile the kernel and reboot. Patch-o-matic didn't
+touch iptables 1.2.9 that I already had installed.
 
+IIRC (and I probably don't), I had to compile patch-o-matic's netfilter with the
+iprange patch and use that instead of the 'normal' iptables 1.2.8 source. I just
+forgot that there were two parts to getting iprange working: 1. iptables has to
+recognise it, 2. the kernel also must be compiled with it. With the 1.2.9
+changelog saying iprange was built into it, in my excitement I forgot about part
+two.
+
+-- 
+
+.
 
