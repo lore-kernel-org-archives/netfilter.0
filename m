@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ICMP and connection tracking
-Date: Thu, 20 May 2004 16:37:10 +0100
+Subject: Re: ftp
+Date: Thu, 20 May 2004 16:43:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405201637.10513.Antony@Soft-Solutions.co.uk>
-References: <40ACC986.8060103@pbl.ca>
-Reply-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+Message-ID: <200405201643.33270.Antony@Soft-Solutions.co.uk>
+References: <BAY15-F33Fxkl6JpfmG0001c2dc@hotmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40ACC986.8060103@pbl.ca>
+In-Reply-To: <BAY15-F33Fxkl6JpfmG0001c2dc@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +19,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thursday 20 May 2004 4:06 pm, Aleksandar Milivojevic wrote:
+On Thursday 20 May 2004 4:18 pm, azeem ahmad wrote:
 
-> Are ICMP packets related to new and established TCP connections and UDP
-> traffic considered to be part of them,
-
-An ICMP packet which is returned in response to a previously sent TCP or UDP 
-packet is considered to be RELATED.
-
-ICMP packets are often regarded as the "error messages" of the Internet, and 
-usualy arise in relation to UDP packets (which don't have their own 
-error-detection and correction mechanism), rather than TCP packets (which 
-have things like the SYN, SYN-ACK, ACK three way handshake, and sequence / 
-acknowledgement numbers to ensure reception of what got sent).
-
-> or do I need to have explicit rules like
+> From: Antony Stone <Antony@Soft-Solutions.co.uk>
 >
->     -A INPUT -p icmp -m state --state RELATED -j ACCEPT
->
-> for things like path MTU discovery, traceroute, ICMP port unreachables,
-> and so on to work properly?
+> > Do you get the same error message from the server if you access it from
+> > some machine which does not go through the firewall (and is not the
+> > firewall itself)?   Even if you have to temporarily set up a client to
+> > test this, I think it would be useful, because it would be good to know if
+> > the server generates this error independently of anything the firewall is
+> > doing to the packets.
 
-Nothing wrong with the above rule, however remember that it isn't only ICMP 
-packets which are considered to be RELATED - in an FTP connection, for 
-example, the reverse (data) connection is considered to be RELATED to the 
-original (control) connection, even though it's another TCP link, not ICMP.
+> the server is accesible from other machines. for an example i goto squid
+> mirror sites
+> http://www.squid-cache.org/Mirrors/ftp-mirrors.html
+> but even no server here can be accessed. here is a long list of ftp mirror
+> servers. and also i set the rule up as u said. but still no luck
 
-> Any downsides of using generic rule like above (if it is needed)?
+I am confused :(
 
-Most people use an even *more* generic rule:
+Are we talking about one ftp server which you are getting the previously- 
+quoted error message from (and about which I have asked whether the same 
+error message gets generated when you access that particular server without 
+going through your firewall rules), or are you saying that you cannot access 
+any ftp server through the rules on your firewall?
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> and i wanna ask something that is not relevant to list is that u quote very
+> good quotations.
 
-Thus allowing back any sort of reply to a previously sent packet (controlled 
-by the rules in your OUTPUT chain).
+Thank you :)
+
+> can u tell me from where i can get quotes like this
+
+Steal them from my postings :) ?
+
+> and also quotes that are relevant to computer science. infact i m a student
+> and some time i need such material.
+
+Google?
+
+The quotes on my emails have been built up over some time, from a mixture of 
+articles I've read online, books and magazines I've read in print, a couple 
+I've thought up myself, and a couple I've stolen from other people's emails.
+
+I wrote a simple bash script which pseudo-randomly selects which one to add to 
+each email I send, which is why you see different ones at different times.
 
 Regards,
 
 Antony.
 
 -- 
-"I estimate there's a world market for about five computers."
-
- - Thomas J Watson, Chairman of IBM
+If builders made buildings the way programmers write programs, then the first 
+woodpecker to come along would destroy civilisation.
 
                                                      Please reply to the list;
                                                            please don't CC me.
