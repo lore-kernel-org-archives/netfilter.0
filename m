@@ -1,10 +1,9 @@
-From: gummi7@simnet.is
-Subject: Measuring traffic that goes thrugh a specific IP
-Date: Sun, 2 Feb 2003 22:11:19 +0000
+From: "per j" <perj8@hotmail.com>
+Subject: ipt_recent 0.2.3/0.2.7 --rttl doesn't work
+Date: Tue, 04 Feb 2003 17:35:08 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <isapiwc.433ab781.5d1d.3e3d9787.496f4.ad@postur.simnet.is>
+Message-ID: <F126VMq7zIrWIK5mSxt0000b87d@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,29 +14,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello
+--rttl function in ipt_recent doesn't work.  It's supposed to match every 
+single packet with the same ip address and ttl value.  Wierd thing is it 
+produces a match maybe once every 1000 packets with the same ip address and 
+ttl.
 
-I'm a linux/iptables/netfilter newbie, but I want to ask you a simple quest=
-ion.
-It's a long story and unrellevant to tell you why I want to do it so i'll j=
-ust get straigt to the point.
+I get the same ip address with the same TTL value in the logs.  I've also 
+tested this by using another computer with a stable connection (ie. same ip 
+address and same ttl).  -m recent with --rttl doesn't match any of the 
+packets from that computer, but -m recent without --rttl matches.
 
-I want to be able to measure(with my linux router) all the traffic from the=
- computers on my network that go thrugh a specifc IP number wich is located=
- in another place in my country. That is, if a computer on my network acces=
-ses a website and goes trough a specifed IP number to get that website, I w=
-ant to be able to measure the amount of data that goes trough that specifie=
-d IP number, but only the data on my behalf. Note that I do not have phisic=
-al(nor telnet or ssh) access to the router with the specifed IP number that=
- I want to measure.
+I upgraded to ipt_recent 0.2.7 from 0.2.3 and the problem is not solved.  
+Can you post a fix?
 
-Can I do that with iptables and/or ipfilter? A yes is all I have to hear if=
- that is possible but an example or a little help wouldn't hurt :)
+I'm using vanilla kernel 2.0.43 with patches from patch-o-matic CVS 
+(Jan24,2003), openmosix, super-freeS/WAN, ipt_recent 0.2.7 
+(ipt_recent-0.2.6.tar.gz).  And netfilter stuff all built as modules.
 
-With reagards, Gu=F0mundur Viktorsson
+Already applied: submitted/01_2.4.19
+                 submitted/02_2.4.20
+                 base/iplimit
+                 base/mport
+                 base/nth
+                 base/quota
+                 base/random
+                 base/time
+                 base/TTL
+                 extra/h323-conntrack-nat
+                 extra/ipt_TARPIT
+                 extra/mms-conntrack-nat
+                 extra/recent
 
-ps. Please say so if I don't make myself clear enough.
+I've also removed ipt_TTL from all chains in my iptables and it had no 
+effect.
+
+Here are the rules in my iptables 1.2.7a:
+INPUT chain (default DROP):
+-j ACCEPT -i ppp0 --state ESTABLISHED,RELATED
+-j DROP -i ppp0 -m recent --update --rttl --name recentDropBox
+-j LOG -i ppp0 --log-prefix recentDropBox -m limit
+-j DROP -i ppp0 -m recent --set --name recentDropBox
+
+
+I attempt to telnet to port 137 on this box from a computer on the internet 
+(ppp0) and I see in /var/log/messages:
+Feb  4 12:16:11 router kernel: recentDropBoxIN=ppp0 OUT= MAC= 
+SRC=24.238.110.10
+DST=24.239.135.221 LEN=48 TOS=0x00 PREC=0x00 TTL=122 ID=10436 DF PROTO=TCP 
+SPT=3
+936 DPT=137 WINDOW=8760 RES=0x00 SYN URGP=0
+Feb  4 12:16:14 router kernel: recentDropBoxIN=ppp0 OUT= MAC= 
+SRC=24.238.110.10
+DST=24.239.135.221 LEN=48 TOS=0x00 PREC=0x00 TTL=122 ID=10443 DF PROTO=TCP 
+SPT=3
+936 DPT=137 WINDOW=8760 RES=0x00 SYN URGP=0
+
+_________________________________________________________________
+STOP MORE SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
+
 
