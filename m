@@ -1,13 +1,11 @@
-From: Kenneth Porter <shiva@sewingwitch.com>
-Subject: Re: Stateful filtering for IPv6?
-Date: Sun, 07 Nov 2004 20:58:09 -0800
-Message-ID: <04DAB2BC29B83CEEE2E931F4@[10.0.0.4]>
-References: <20041108014229.GA9070@tintin>
+From: Askar <askarali@gmail.com>
+Subject: patch not applied
+Date: Mon, 8 Nov 2004 12:45:38 +0500
+Message-ID: <a0f69e504110723453eb7117c@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041108014229.GA9070@tintin>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
---On Monday, November 08, 2004 2:42 AM +0100 Nicolas Boullis 
-<nboullis@debian.org> wrote:
+hi 
+I am trying to apply pom to my kernel 2.6.9 but I don't know why I
+only getting "TEST FAILED: patch NOT applied." for every patch.
 
-> I thought this question would be a FAQ, but I could not find it answered
-> on http://www.netfilter.org/documentation/FAQ/netfilter-faq.html.
-> Currently, only stateless filtering is available for IPv6. Hence, I'd
-> like to know what the status of stateful filtering for IPv6 is. Is it
-> some work in progress? Is it supposed to be a very complex task? Is it
-> thought to be impossible for some reason?
->
-> I'd love to switch to IPv6, but a good firewall would be a requirement,
-> and I'm very happy with netfilter for IPv4.
+here what I follow
+1) download pom via cvs
+2) export KERNEL_DIR=/home/askar/linux-2.6.9
 
-I was just looking into this the other day. Actually, I was investigating 
-why the IPv6 REJECT target is considered "unstable" by Red Hat and found 
-sort of an answer in the same place, but this section should answer your 
-question:
+then cd ~/netfilter/patch-o-matic and finally
+./rume extra 
+I also tried ./runme base , but with no success
 
-<http://www.netfilter.org/documentation/conferences/nf-workshop-2004-summary.html#AEN482>
+here is the single interaction with pom bitch...
 
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+Testing patch extra/condition.patch...
+Warning - no help text file could be found in either
+/home/askar/linux-2.6.9/net/ipv4/netfilter/Config.help
+or /home/askar/linux-2.6.9/Documentation/Configure.help
+fgrep: /home/askar/linux-2.6.9/net/ipv4/netfilter/Config.in: No such
+file or directory
+Could not find place to slot in Config.in line
+TEST FAILED: patch NOT applied.
 
+I am getting the same message for every patch
+
+regards
+askar
+
+-- 
+(after bouncing head on desk for days trying to get mine working, I'll make
+your life a little easier)
 
