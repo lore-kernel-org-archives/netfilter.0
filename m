@@ -1,37 +1,75 @@
-From: "Paul Clark" <paul@xmill.com>
-Subject: RE: NAT of entire subnets
-Date: Sat, 24 May 2003 11:56:27 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <EIEMLBOIBLCDHIEMFNPCOENOCDAA.paul@xmill.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CCF@wardrive.citadelcomputer.com.au>
+From: Tom Marshall <tommy@home.tig-grr.com>
+Subject: Re: Experimental RTSP modules
+Date: Sat, 24 May 2003 07:30:23 -0700
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030524143023.GA31579@home.tig-grr.com>
+References: <20030406033532.GA23082@home.tig-grr.com> <20030523195843.GQ3077@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CCF@wardrive.citadelcomputer.com.au>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20030523195843.GQ3077@sunbeam.de.gnumonks.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Vann H. Walke" <walkev@presearch.com>, netfilter@lists.netfilter.org
-Cc: George Vieira <georgev@citadelcomputer.com.au>
-
-George Vieira wrote:
-> There is a patch-o-matic patch that does this.. forgotten the name.
-> 
-> it matches external IPs to internal ones.. so 203.11.11.56 would 
-> be 192.xx.xx.56 and so on..
-
-It's NETMAP
-
-http://www.netfilter.org/documentation/pomlist/pom-base.html#NETMAP
-
-Paul
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Harald Welte <laforge@netfilter.org>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
 
+--T4sUOijqQbZv57TR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, May 23, 2003 at 09:58:43PM +0200, Harald Welte wrote:
+> On Sat, Apr 05, 2003 at 07:35:32PM -0800, Tom Marshall wrote:
+> > Please note this is an experimental module.  It works for me.  It may w=
+ork
+> > for you, it may panic your kernel, or it may just sit there using ram.
+>=20
+> great news. If you could convert it to patch-o-matic format, I'm happy
+> to include it!
+
+Thank you.
+
+I am interested in getting the module into the mainline kernel.  I believe
+this is where the majority of users are.  I have not and will not use p-o-m=
+.=20
+I will convert the patch to use kernel coding standards if someone would
+sponsor the change to the 2.4 kernel, but any changes necessary to use p-o-m
+will need to be done by someone else because I have zero interest.
+
+> >  * Handle multiple SETUP messages in a single packet.
+> >  * Un-mangle client_port on return trip.
+>=20
+> Any progress so far?
+
+Well, no feedback so far at all so I have left the code alone for the
+moment.  I'm sure you are familiar with the phenomenon.  ;-)
+
+--=20
+Football combines the two worst features of American life.
+It is violence punctuated by committee meetings.
+        -- George F. Will
+
+--T4sUOijqQbZv57TR
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj7Pgf8ACgkQFMm9uvwPXW5lrwCeLV6ldy6BPZsy52oaFPsStHJF
+rhcAn1yRgye0gBPOoiALyDFG8eqVQ3pL
+=i13C
+-----END PGP SIGNATURE-----
+
+--T4sUOijqQbZv57TR--
 
