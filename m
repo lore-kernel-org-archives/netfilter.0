@@ -1,13 +1,12 @@
-From: "Ian Douglas" <ian@icreditvision.com>
+From: "mpboden" <mpboden@surfcity.net>
 Subject: RE: using iptables for poor-man's load balancing?
-Date: Wed, 19 Feb 2003 16:55:22 -0800
+Date: Wed, 19 Feb 2003 19:00:27 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HMEBKOCKLOOEJGIOMFAPIEKBFJAA.ian@icreditvision.com>
-References: <200302191930.05271.netfilter@newkirk.us>
+Message-ID: <001b01c2d88c$385830c0$483918ac@C1006818>
+References: <20030219232644.14732.18331.Mailman@kashyyyk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200302191930.05271.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +17,83 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@newkirk.us, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> The only reason I can think of (now) that all your traffic went to the
-> first on the list is that there simply wasn't any load to speak of.  How
-> were you testing?
+i was recently reading the "Iptables Tutorial 1.1.16" by Oskar Andreasson,
+and i'm getting the impression that your rules might be written incorrectly.
+of course, i could be wrong, but if you check the following link,
+http://iptables-tutorial.frozentux.net/chunkyhtml/targets.html, he
+specifically talks about load balancing. in essence, he specifies a range of
+ip addresses that the packets would randomly go to, and this is specified in
+only one "--to-destination" instead of two as you have it written. the
+following rule would send the packets randomly to any of the servers with
+ip's from 192.168.1.1. through 192.168.1.12.
 
-By blasting traffic at the system that's doing the packet forwarding. Perhaps I
-can write some different code on the web servers that will hold the connection
-for a while (ie: call a perl script that does a 'sleep 60' or something) and
-test it that way.
+iptables -t nat -A PREROUTING -p tcp -d 1.2.3.4 --dport 80 -j
+DNAT --to-destination 192.168.1.1-192.168.1.12
 
-> Multiple simultaneous connections?
+so perhaps a comma would work in your case if you specifically need to have
+the ip's as you have them. i've never tried this, but it seems to make sense
+to me.
 
-Yes. I have a script that cycles through a perl script (I'll call it
-blasticv.pl) that calls another perl script (I'll call it icv.pl) with 3 varying
-parameters... each occurrence of that icv.pl makes a connection to the web
-server to send and retrieve a chunk of data. "blasticv.pl" cycles through and
-calls icv.pl 100 times with each of the 3 parameters, and not sleeping at all in
-the loop. This should simulate 300 requests on the web servers that, given the
-timing to complete a single request, would mean we'd have about 200 active
-requests at the peak of activity, yet every single 'hit' on the systems landed
-on 1.1, and not a single hit on 1.12.
+iptables -t nat -A PREROUTING -p tcp -d 1.2.3.4 --dport 80 -j
+DNAT --to-destination 192.168.1.1,192.168.1.12
 
-> it will simply keep sending traffic to the first
-> on the list, only using the next one if there is more traffic
-> 'currently' (presumably based on the connection-tracking data) on the
-> first destination than on the second.
+furthermore, he mentions adding two more specific rules in the nat table to
+allow hosts on the LAN as well as the firewall computer itself to access the
+servers properly. please check those out.
 
-... which is what I read, also, yet it seemed that causing a good volume of busy
-traffic didn't forward anything to 1.12
+mike
 
--id
+
+
+> Message: 7
+> From: "Ian Douglas" <ian@icreditvision.com>
+> To: <netfilter@lists.netfilter.org>
+> Subject: RE: using iptables for poor-man's load balancing?
+> Date: Wed, 19 Feb 2003 15:17:48 -0800
+>
+> > Say for argument's sake that our public IP is 1.2.3.4 and our
+> > internal LAN machines are:
+> >   192.168.1.1
+> >   192.168.1.12
+>
+> (cut two of them out since they're not actually ready to run yet)
+>
+> > Just curious if the following rules would work to round-robin the
+connections:
+> >
+> > /sbin/iptables -t nat -A PREROUTING -p udp -d 1.2.3.4 --dport 80  -j
+DNAT \
+> >    --to-destination 192.168.1.1:80 \
+> >    --to-destination 192.168.1.12:80
+> > /sbin/iptables -t nat -A PREROUTING -p udp -d 1.2.3.4 --dport 433  -j
+DNAT \
+> >    --to-destination 192.168.1.1:80 \
+> >    --to-destination 192.168.1.12:80
+>
+> I tested this last night and it didn't work - every request went to 1.1
+>
+> Should I be using "--to 192.168.1.1:80" instead of "--to-destination
+> 192.168.1.1:80" ? I've seen documentation show the use of --to and a
+working
+> script for port forwarding that uses --to-destination
+>
+> As a followup:
+>
+> # uname -a
+> Linux icv.com 2.4.18-18.7.x #1 Wed Nov 13 20:29:30 EST 2002 i686 unknown
+>
+> # rpm -qa | grep iptables
+> iptables-1.2.5-3
+> iptables-ipv6-1.2.5-3
+>
+> # iptables -V
+> iptables v1.2.5
+>
+> Andrej (Tink) suggested I write the list again and ask what version of
+iptables
+> introduced 'multiple targets' for port forwarding.
+>
 
 
