@@ -1,36 +1,61 @@
-From: Gary Metcalf <gtm@lou-telecom.net>
-Subject: ip masqurade
-Date: Fri, 06 Jun 2003 22:17:39 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EE14B43.7060102@lou-telecom.net>
+From: "calvin" <calvinproject@ihug.com.au>
+Subject: can netfilter capture internal network packet?
+Date: Sat, 7 Jun 2003 18:37:50 +1000
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <001101c32cd0$14bdf940$010aa8c0@toowoomba>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-I'm running Slackware 8.1 with kernel 2.4.18. I'm needing to have some 
-computers on my LAN to gateway to the internet via my Linux Modem. My 
-modem does connect to the internet ok and I can use it via my Linux 
-system. What I don't know and have been reading the How-To's is how to 
-set this thing up. I've un-remarked some lines in my rc.modules file 
-that is supose to allow ipmasqurade when I boot. Now I have learned that 
-I need to build some tables and this is where I get lost.
-   My Linux IP address is: 192.168.168.1   and one of my computers 
-(windows) on my lan is: 192.168.168.2
-What lines do I need to input for iptables to set this up where it will 
-allow browsing and mail for my windows computer and other computers on 
-my lan which will fall in the ip range of 192.168.168.0/24. I've set up 
-my windows to use Gateway to my linux ip.
-    Gary
+Dear all,
+
+I got a serious problem with my netfilter programe.
+
+what i am trying to do is capture a packet frmo A to B in the same network
+and direct it to QUEUE.
+
+My setup is
+
+A      B
+ \       /
+  \     /
+  HUB
+     | (eth0)
+   GW
+     |(eth1)
+     |
+     |
+
+is that possible to: when A send a message to B port 1700 (for example) ,
+the iptales in GW can grep the packet and put into queue for processing and
+put it back to the line?
+I tried to the rules like:
+iptables -A INPUT -i eth0 -p udp --dport 17-- -j QUEUE
+or
+iptables -A INPUT -o eth1 -p udp --dport 17-- -j QUEUE
+or both of them.
+
+I can get it works.
+
+I also have a netfilter module, insepecting packetsrc/dest port in the
+PRE_ROUTING hook point, also can't get it.
+
+is that any way I can do what I want to do in module? in iptables?
+
+Thanks very much for any of your help..
+
+Regards,
+Calvin
 
 
