@@ -1,13 +1,12 @@
-From: Metal Gear <finattack@gmail.com>
-Subject: Port forwarding error
-Date: Tue, 1 Mar 2005 22:45:30 +0500
-Message-ID: <110c78440503010945afcfa69@mail.gmail.com>
-References: <110c784405030102077fa30d3e@mail.gmail.com>
-	<42244EE2.5000206@mnemon.de>
-Reply-To: Metal Gear <finattack@gmail.com>
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: Re: these INPUT and OUTPUT rules blocking more than desired....
+Date: Tue, 01 Mar 2005 11:22:12 -0800
+Message-ID: <1109704931.1096.88.camel@seberino.spawar.navy.mil>
+References: <20050301014308.GA18177@spawar.navy.mil>
+	<1109669487.11189.2.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <42244EE2.5000206@mnemon.de>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1109669487.11189.2.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,83 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-9"
+To: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi, 
+Jose
 
-First of all thanks for quick reply.
-After reading the reply throughly i completed my rulesets and sending
-it for ur review. I m need little explanation regarding rules u sent
-to me
-[Quote]
-You can do it this way. Remember, that only NEW packages (with SYN
-set) will hit this rule. Next step is to allow these connection in
-FORWARD chain (assuming the policy id DROP or REJECT).
-[/Quote] and
+Thanks.  The port numbers you mentioned are the ones I'm using.
+(I got them from /etc/services.)  It *is* possible that
+I'm not defining my variables correctly.  I'll check that.
+Assuming INCOMING_TCP_PORTS =3D=3D INCOMING_UDP_PORTS =3D=3D OUTGOING_TCP=
+_PORTS=20
+=3D=3D OUTGOING_UDP_PORTS =3D=3D "53 80", Is there any reason
+by code snippet won't do DNS and HTTP fine? (i.e. is there anything else
+wrong?)
 
-[Quote]
-And don't forget to allow ICMP "Destination Unreachable" :)
-[/Quote]
+Chris
 
-Why is this sooo??? Why we need the above two rules.
+On Tue, 2005-03-01 at 01:31, Jose Maria Lopez Hernandez wrote:
+> El lun, 28-02-2005 a las 17:43 -0800, seberino@spawar.navy.mil escribi=C3=
+=B3:
+> > The snippet below was intended to *ONLY* allow types of traffic that
+> > I desired in and out of PC.  For example, I tried to only allow DNS, =
+SSH
+> > and HTTP.
+> >=20
+> > These services don't work.  It seems like they need more than /one/
+> > port opened.  Or, they need something else I'm forgetting.
+> > Any help would be greatly appreciated.....
+> >=20
+>=20
+> You don't post your vars so we don't know what ports you are
+> opening...
+> But it's just:
+> DNS=3D53/tcp 53/udp
+> SSH=3D22/tcp
+> HTTP=3D80/tcp
+>=20
+> >       # INPUT
+> >=20
+> >       $IPTABLES -t filter -A INPUT                      \
+> >                 -i $INTERNET_INTERFACE                  \
+> >                 -d $INTERNET_ADDRESS                    \
+> >                 -m state --state ESTABLISHED,RELATED    \
+> >                 -j ACCEPT
+> >       for PORT in $OPEN_INCOMING_TCP_PORTS; do
+> >          $IPTABLES -t filter -A INPUT                   \
+> >                    -i $INTERNET_INTERFACE               \
+> >                    -d $INTERNET_ADDRESS                 \
+> >                    -p tcp --dport $PORT                 \
+> >                    -j ACCEPT
+> >       done
+> >       for PORT in $OPEN_INCOMING_UDP_PORTS; do
+> >          $IPTABLES -t filter -A INPUT                   \
+> >                    -i $INTERNET_INTERFACE               \
+> >                    -d $INTERNET_ADDRESS                 \
+> >                    -p udp --dport $PORT                 \
+> >                    -j ACCEPT
+> >       done
+> >=20
+> >       # OUTPUT
+> >=20
+> >       $IPTABLES -t filter -A OUTPUT                     \
+> >                 -o $INTERNET_INTERFACE                  \
+> >                 -s $INTERNET_ADDRESS                    \
+> >                 -m state --state ESTABLISHED,RELATED    \
+> >                 -j ACCEPT
+> >       for PORT in $OPEN_OUTGOING_TCP_PORTS; do
+> >          $IPTABLES -t filter -A OUTPUT                  \
+> >                    -o $INTERNET_INTERFACE               \
+> >                    -s $INTERNET_ADDRESS                 \
+> >                    -p tcp --dport $PORT                 \
+> >                    -j ACCEPT
+> >       done
+> >       for PORT in $OPEN_OUTGOING_UDP_PORTS; do
+> >          $IPTABLES -t filter -A OUTPUT                  \
+> >                    -o $INTERNET_INTERFACE               \
+> >                    -s $INTERNET_ADDRESS                 \
+> >                    -p udp --dport $PORT                 \
+> >                    -j ACCEPT
+> >       done
+>=20
+> Regards.
 
-And for the rules for pop, smtp and dns forwarding what i understood
-from the diagram (tables_traverse.jpg) of
-(http://iptables-tutorial.frozentux.net/)
-- We got a packet from network
-- We done NAT PREROUTING
-- We FORWARDED the packet
-- We done NAT POSTROUTING
-- The packet agains flow the interface
-Am i right???????
-
-Below is my final rules script based on your help
-
-Thanks
------------------------------------------------------------------------------------
-#!/bin/sh
-
-# Flushing the chains
-iptables -F
-iptables -F -t nat
-
-# Allow icmp destination unreacable
-iptables -A INPUT -p icmp -m icmp --icmp-type destination-unreachable -j ACCEPT
-
-# Rules for Squid
-iptables -A INPUT -p tcp -s $LAN_ADDRESS/$NETMASK --dport 3128 -m
-state --state NEW,ESTABLISHED,RELATED -j accept
-iptables -A OUTPUT -p tcp -d $LAN_ADDRESS/$NETMASK --sport 3128 -m
-state --state ESTABLISHED,RELATED -j accept
-
-# Enabling POP3 Forwarding
-iptables -A PREROUTING -t nat -d squidip -p tcp --dport 110 -j DNAT
---to $POPSERVER
-iptables -A FORWARD -p tcp --dport 110 -d $POPSERVER -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -p tcp --sport 110 -s $POPSERVER -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-iptables -t nat -A POSTROUTING -p tcp --dport 110 -d $POPSERVER -j
-SNAT --to $SQUIDIP
-
-# Enabling SMTP Forwarding
-iptables -A PREROUTING -t nat -d squidip -p tcp --dport 25 -j DNAT
---to $SMTPSERVER
-iptables -A FORWARD -p tcp --dport 25 -d $SMTPSERVER -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -p tcp --sport 25 -s $SMTPSERVER -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-iptables -t nat -A POSTROUTING -p tcp --dport 25 -d $SMTPSERVER -j
-SNAT --to $SQUIDIP
-
-# Enabling DNS Forwarding
-iptables -A PREROUTING -t nat -d squidip -p udp --dport 53 -j DNAT
---to $DNSSERVER
-iptables -A FORWARD -p udp --dport 53 -d $DNSSERVER -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -p udp --sport 53 -s $DNSSERVER -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-iptables -t nat -A POSTROUTING -p udp --dport 53 -d $DNSSERVER -j SNAT
---to $SQUIDIP
 
