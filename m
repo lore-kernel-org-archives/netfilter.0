@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
 Subject: Re: LAN accessing DMZ
-Date: Sun, 18 Jul 2004 18:59:47 +0100
+Date: Sun, 18 Jul 2004 14:51:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407181859.47417.Antony@Soft-Solutions.co.uk>
-References: <f51b72bc040718062373640612@mail.gmail.com> <200407181812.31070.Antony@Soft-Solutions.co.uk> <20040718173937.GA31408@tranquility.scriptkitchen.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <20040718185129.GA679@tranquility.scriptkitchen.com>
+References: <f51b72bc040718062373640612@mail.gmail.com> <200407181812.31070.Antony@Soft-Solutions.co.uk> <20040718173937.GA31408@tranquility.scriptkitchen.com> <200407181859.47417.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040718173937.GA31408@tranquility.scriptkitchen.com>
+Content-Disposition: inline
+In-Reply-To: <200407181859.47417.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,43 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Sunday 18 July 2004 6:39 pm, Payal Rathod wrote:
-
-> I do not have access to that machine till tomorrow. But I have copied the
-> firewall script at http://payal.staticky.com/fw2.txt
-
-I do not understand how you can connect through this ruleset to TCP port 10000 
-from anywhere.
-
-I look forward to the ruleset listing with packet counters.
-
-Please make sure you also post the following information:
-
-1. The IP address of the machine you are connecting *from* to TCP port 10000.
-
-2. The IP address of the machine you are connecting *to* on TCP port 10000.
-
-3. The network info for each subnet connected to the firewall.
-
-(By the way, there is a problem, probably unimportant, but worth correcting 
-anyway, with the "-s 10.10.10.0/255.0.0.0" in your ruleset.   The address 
-should not contain more 1-bits than the netmask, therefore this should either 
-be "-s 10.10.10.0/255.255.255.0" or else "-s 10.0.0.0/255.0.0.0", depending 
-on which netmask is correct for your subnet.)
-
-Regards,
-
-Antony.
-
--- 
-These clients are often infected by viruses or other malware and need to be 
-fixed.  If not, the user at that client needs to be fixed...
-
- - Henrik Nordstrom, on Squid users' mailing list
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+On Sun, Jul 18, 2004 at 06:59:47PM +0100, Antony Stone wrote:
+> On Sunday 18 July 2004 6:39 pm, Payal Rathod wrote:
+> 
+> > I do not have access to that machine till tomorrow. But I have copied the
+> > firewall script at http://payal.staticky.com/fw2.txt
+> 
+> I do not understand how you can connect through this ruleset to TCP port 10000 
+I have http that I have squid on this machine. Is it because of that?
+Is it passing thru' squid cos' I enter in my browser 
+https://10.10.10.2:10000
+Just a thought till tomorrow.
+-Payal
 
