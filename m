@@ -1,10 +1,10 @@
-From: Paulo Ricardo Bruck <pauloric@contato.com.br>
-Subject: delay
-Date: Fri, 31 Oct 2003 16:56:33 -0200
+From: "Han, Yan" <hany@u.library.arizona.edu>
+Subject: RE: Help! NAT unable to routing
+Date: Fri, 31 Oct 2003 11:59:25 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067626591.1451.21.camel@pauloric.intranet>
+Message-ID: <BEA73FB6B8F62545A5B2818724D0DF2902E70848@u.library.Arizona.EDU>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,59 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hi guys
-
-Just a question. I have a firewall w/ 3 NIC as below:
-
-			Internet ADSL
-			|
-			|eth1 200.200.200.44/26
-		_________________________	
-		|	Firewall	|	DMZ
-		| iptables 1.2.8	|_eth2 192.168.1.1/24______EMail
-		|_______________________|			192.168.1.3	
-			|
-			| eth0 10.0.0.1/24
-			LAN
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?=27J=F6rg_Sch=FCtter=27?= <netfilter@schuetter.org>, netfilter@lists.netfilter.org
 
 
-Firewall : Debian 2.4.22 + iptables 1.2.8
+> # what is wrong ??
+> iptables -t nat -A PREROUTING -i eth0 -p tcp -d 150.135.44.245 =
+--dport 80
+-j
+> DNAT --to 150.135.45.96
 
+>> what does "iptables -t nat -L -n -v" show? Is the counter (first =
+column)
+increased every time you try to connect your webserver?
 
-route:
-200.200.200.0/26 dev eth1  proto kernel  scope link  src 200.200.200.44
-10.0.0.0/24 dev eth0  proto kernel  scope link  src 10.0.0.1
-192.168.1.0/24 dev eth2  proto kernel  scope link  src 192.168.1.1
-default via 200.200.200.1 dev eth1
+Yes! It does. The "pkts" increases once I try to connect the address
+150.135.44.245. I think it is correct that destination "150.135.44.245
+tcp dpt:80  to:150.135.45.96". Any idea?
 
-rules:
+-------------------------------
+Chain PREROUTING (policy ACCEPT 512K packets, 78M bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
+    3   144 DNAT       tcp  --  eth0   *       0.0.0.0/0
+150.135.44.245     tcp dpt:80 to:150.135.45.96=20
 
-a) iptables -A PREROUTING -d 200.200.200.1 -p tcp -m multiport --dports
-smtp,pop3,imap2,webcache -j DNAT --to-destination 192.168.1.3
+Chain POSTROUTING (policy ACCEPT 46739 packets, 2972K bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
 
-b) iptables -A POSTROUTING -o eth1 -j SNAT --to-source 200.200.200.1
+Chain OUTPUT (policy ACCEPT 46752 packets, 2973K bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
 
-c) iptables -A POSTROUTING -o eth2 -j SNAT --to-source 192.168.1.1
-
-
-What happens:
-
-- all desktops ( M$windows) access webmail and email w/ no problems, but
-if I insert rule c) above it causes a delay when any desktop hit
-get/post e-mail in Outlook and it takes +- 40 seconds to "connenct".
-
-I know that must be a silly misconfiguration of something but after 1
-week searching the problem I can't imagine what's wrong.
-
-Can anybody help me please
-
-Thanks in advance
+>> What does "cat /proc/sys/net/ipv4/ip_forward" show?
+1
+(so the ipv4-forward is opened).
 
 
 
 
+  J=F6rg
+
+--=20
+J=F6rg Sch=FCtter           http://www.lug-untermain.de/
+joerg@schuetter.org     http://www.schuetter.org/joerg/
+ICQ: 298982789          http://mypenguin.bei.t-online.de/
 
 
