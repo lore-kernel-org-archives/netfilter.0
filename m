@@ -1,8 +1,8 @@
-From: "Bryan Martin" <mailinglist@myplaceinspace.com>
-Subject: Internal NAT Translation:
-Date: Wed, 30 Jun 2004 21:45:26 -0400
+From: "sarky" <sarky@raycon.net>
+Subject: Configuring zone
+Date: Thu, 1 Jul 2004 03:18:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c45f0d$15467890$0c02a8c0@bryanhome>
+Message-ID: <032001c45f11$b5455880$3c8c1fd9@CPQ48762168204>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,36 +18,10 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Setup looks like this
+How do i configure a zone to put the ip address before the domain name.
+i.e 10.10.10.10.isp.com
 
-            Internet
-                 ^
-Redhat 9 iptables nat/masq    (200.200.200.200 public address = eth1;
-192.168.2.1 private address = eth0)
-                 ^
-windows web server (192.168.2.254) | windows clients.    (all 192.168.2.X)
+Thank you
 
-
-Now the rh box is masquerading for the private boxes.  Only thing not
-standard is that any inbound http connections to the public address
-200.200.200.200 is being dnatted to 192.168.2.254 which is the address of
-the windows server.  This is working as expected.  The problem arises when a
-internal client tries to connect to the public website.
-
-For instance client request www.mycompany.com and DNS says go here
-200.200.200.200 which would be correct if I was sitting on the outside
-looking in.  I need iptables to basically say if any http request comes from
-the internal network addressed to my public address dnat the public
-200.200.200.200 to the private address.  I have tried the following without
-success.  Only other thing I know is to setup a internal DNS just so the
-internal clients get the internal address.  That would however be an extreme
-waste of resources.
-
--A PREROUTING -i eth1 -d 200.200.200.200 -p tcp --dport 80 -j
-DNAT --to-destination 192.168.2.254
-
-Can someone help?
-
-Bryan
-
+Sarky
 
