@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Can anyone tell me how to do this?
-Date: Thu, 23 Sep 2004 13:31:05 -0400
+Subject: RE: Can anyone tell me how to do this?
+Date: Thu, 23 Sep 2004 13:48:08 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095960665.6715.23.camel@wolfpack.ljm.dom>
-References: <20040923165847.46091.qmail@web51303.mail.yahoo.com>
+Message-ID: <1095961688.6715.35.camel@wolfpack.ljm.dom>
+References: <20040923172846.66764.qmail@web51302.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040923165847.46091.qmail@web51303.mail.yahoo.com>
+In-Reply-To: <20040923172846.66764.qmail@web51302.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,40 +20,56 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-23 at 12:58, Dominic Iadicicco wrote:
-> Jason:
+On Thu, 2004-09-23 at 13:28, Dominic Iadicicco wrote:
+> it didn't work
+>  
 > 
->   Thats a perfectly good question.
+>   Thank you for the input though. 
 > 
->    I am tring to learn how to use iptables.  I have
-> read a lot of documentation but am not having to much
-> success. So my whole goal in this is just to learn.
-> :)
-> 
-> 
-> Thanks.
 > 
 > Dom
 
-this is not tested, but it works in my head:
+hmmm...i never got Samuel's response...
 
-  iptables -t nat -A PREROUTING -i eth1 -p tcp \
-    -d 10.0.0.1 --dport 22 -j DNAT --to-destination 172.16.12.130
+a good learning exercise for you would be to figure out why it doesn't
+work...
 
-  # at this point, the netfilter code should treat this
-  # packet as "locally-destined" and i *believe* will
-  # never enter the FORWARD chain
+> --- Samuel Daz Garca (ArcosCom)
+> <samueldg@arcoscom.com> wrote:
 
-  iptables -A INPUT -p tcp -d 172.16.12.130 --dport 22 -j ACCEPT
+[ snip]
 
-i'm pretty sure i recall reading somewhere that the INPUT vs. FORWARD
-decision is solely based on IP, not interface.  so even though
-conceptually it seems as though the packet would be "forwarded" from
-eth1 to eth0, it's still just an INPUT packet, as it is destined for a
-local IP (172.16.12.130)...  the "IN=" in a log entry should still show
-eth1, i think...
+> > $> iptables -t filter -A INPUT -i eth1 -d 10.0.0.1
+> > -m tcp -p tcp --dport
+> > 22 -j ACCEPT
 
-let us know how it goes.
+this allows connections to pass an INPUT filter rule with destination IP
+10.0.0.1 and destination port 22 (TCP).
+
+that wasn't really what you were asking for, but may be of some use to
+you in another situation...
+
+> > $> iptables -t nat -A PREROUTING -i eth1 -d 10.0.0.1
+> > -m tcp -p tcp --dport
+> > 22 -j DNAT --to-destination 172.16.12.130:22
+
+think about what the word PREROUTING means.  it means that before this
+linux host every makes any layer 3 decision about this packet at
+all--we're going to modify it.  once this rule is applied--the linux
+host will never ever see a packet that has a destination IP of 10.0.0.1
+in the context of this connection.  the destination IP is
+172.16.12.130.  as such, any filter rules applied later in the stack
+will have to accommodate 172.16.12.130, not 10.0.0.1.
+
+if you're using this as a learning experience (and i hope this is on a
+test machine); i recommend LOG-ing everything you can, break things at
+will, figure out why they broke, and how to fix them.
+
+and i never get tired of pimping this:
+
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+HTH...
 
 -j
 
