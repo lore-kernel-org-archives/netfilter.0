@@ -1,10 +1,11 @@
-From: Oskar Andreasson <blueflux@koffein.net>
+From: "Andrew Smith" <nfml@k1k2.com>
 Subject: Re: Creating a Hybrid Connection to Balance Traffic
-Date: Sat, 26 Oct 2002 21:25:28 +0200 (CEST)
+Date: Sun, 27 Oct 2002 10:14:41 +1100 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210262119170.3576-100000@laptop1.agatha>
+Message-ID: <39397.192.168.7.14.1035674081.squirrel@iw.k1k2.com>
 References: <20021026190433.24795.qmail@web40607.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20021026190433.24795.qmail@web40607.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,34 +17,8 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Paul Aumer-Ryan <raptorion@yahoo.com>
-Cc: netfilter@lists.netfilter.org
-
-Hi Paul,
-
-Your story sounds like you are looking for assymetric routing, which 
-should be doable with policy routing. Check out 
-http://www.policyrouting.org where Matthew Marsh is currently working on 
-getting his excellent book "Policy Routing using Linux" online. 
-
-Note that it isn't fully up on the net yet, so if you need to find out how
-it works quickly, you may want to buy the book. 
-
-Other resources that may be of interest is http://www.lartc.org,
-http://www.netfilter.org and http://www.frozentux.net. The last two sites
-contains information on iptables in linux kernel 2.4, which you may want
-to upgrade to if you are still running kernel 2.2.
-
-Hope this is of some help.
-
-----
-Oskar Andreasson
-http://www.frozentux.net
-mailto:blueflux@koffein.net
-
-On Sat, 26 Oct 2002, Paul Aumer-Ryan wrote:
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 > I've got a peculiar situation that I hope you all
 > would listen to and offer feedback on any possible
@@ -101,13 +76,29 @@ On Sat, 26 Oct 2002, Paul Aumer-Ryan wrote:
 > Sorry for the long story, and I thank everyone in
 > advance for their time.  Have a good one,
 > Paul
-> 
-> __________________________________________________
-> Do you Yahoo!?
-> Y! Web Hosting - Let the expert host your web site
-> http://webhosting.yahoo.com/
-> 
-> 
 
+Not sure how to MASQUERADE a connection and to specify a
+differnet IP address (which I guess is what you want to do)
+but you also need to check that the dialup ISP does not do
+egress filtering - coz if they do - it will not work anyway.
+
+Use google to look up egress, but basically it means that they
+may only allow the source IP of outgoing packets to match the
+IP address they supply you and they drop all other packets.
+This is apparently common in the USA.
+
+If they don't do egress then you should be able to do it - but
+not sure how :-) I can think of things to try - but no idea if
+any are correct - basically using the "-t nat" table,
+"-A POSTROUTING" and something like -j SNAT
+but that would also require changing the rule every time the
+dialup DHCP IP changes and I'm not sure about what happens to
+return packets.
+
+-- 
+-Cheers
+-Andrew
+
+MS ... if only he hadn't been hang gliding!
 
 
