@@ -1,14 +1,10 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: providing partial access to iptables for non root user
-Date: Wed, 23 Feb 2005 23:38:59 +0100
-Message-ID: <1109198339.17992.40.camel@porky>
-References: <4219C6F1.2070500@juergens.name>
-	<1108996157.5516.14.camel@hubcap.ljm.dom>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Port-forwarding Perfomance
+Date: Wed, 23 Feb 2005 19:07:40 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502231906030.9291-100000@darkstar.sysinfo.com>
+References: <421DFC25.5010000@wildcash.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-wqGvxLVyEwGSpyg8Mvvz"
-In-Reply-To: <1108996157.5516.14.camel@hubcap.ljm.dom>
+In-Reply-To: <421DFC25.5010000@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,52 +15,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Rudi Starcevic <tech@wildcash.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+
+On Thu, 24 Feb 2005, Rudi Starcevic wrote:
+
+> Hi,
+> 
+> >1 - you have a speed/duplexing mismatch between the internal interface
+> >of the firewall and your internal switch...or the windows box and the
+> >internal switch (but you should notice that slowing internal
+> >transfers)...or both.
+> >  
+> >
+> 
+> Thanks, am checking on this one now ..
+
+often if this is the case,m you would also notice the connections dropping
+completely and/or connectivity totally disappearing as well.
+
+Thanks,
 
 
---=-wqGvxLVyEwGSpyg8Mvvz
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Ron DuFresne
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-On Mon, 2005-02-21 at 09:29 -0500, Jason Opperisano wrote:
-> On Mon, 2005-02-21 at 06:33, Michael J=FCrgens wrote:
-> > Hi,
-> >=20
-> > I=B4m looking for a solution to provide a non root user write access to=
- a=20
-> > chain.
-> >=20
-> > In this special case I have to provide the a mechanism to block some ip=
-=20
-> > adresses to connect to http.
-> > But this should be done by a non root user. The non root user should no=
-t=20
-> > change any other rule.
-> >=20
-> > Any ideas?
->=20
-
-Why not to use a conf file with proper right ?
-selected user could add rules in the script that will be automatically
-inserted into the firewall via a cron task or a sudo script ?
-
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL
-
---=-wqGvxLVyEwGSpyg8Mvvz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBCHQYCnxA7CdMWjzIRAoD+AJ9I8EEBoylU7Ep7NwJHk+bbWSwrXgCfZEmF
-XJCLIPHMo27nDr7IUR9OSDE=
-=za9f
------END PGP SIGNATURE-----
-
---=-wqGvxLVyEwGSpyg8Mvvz--
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
 
