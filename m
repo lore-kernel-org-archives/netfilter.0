@@ -1,13 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Re(2): Need for GLIBC 2.3?
-Date: Fri, 18 Apr 2003 18:05:10 +0200
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: host names and IPs
+Date: 18 Apr 2003 11:41:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030418180510.7f7f4ebb.arnt@c2i.net>
-References: <OFFF8865C2.2434357B-ON88256D0C.004E3CB8-88256D0C.00505D66@deepwoods.com>
+Message-ID: <1050680509.6664.27.camel@alpha.newkirk.us>
+References: <003301c305a1$c04ab1a0$0500a8c0@effenberger>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OFFF8865C2.2434357B-ON88256D0C.004E3CB8-88256D0C.00505D66@deepwoods.com>
+In-Reply-To: <003301c305a1$c04ab1a0$0500a8c0@effenberger>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +18,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Carol Anne Ogdin <caogdin@deepwoods.com>
+To: Florian Effenberger <floeff@arcor.de>
 Cc: netfilter@lists.netfilter.org
 
-On Fri, 18 Apr 2003 07:37:47 -0700, 
-Carol Anne Ogdin <caogdin@deepwoods.com> wrote in message 
-<OFFF8865C2.2434357B-ON88256D0C.004E3CB8-88256D0C.00505D66@deepwoods.co
-m>:
-
-..I'm on the netfilter list, so no need to duplicate to my private 
-email for _that_ purpose.  ;-)
-
+On Fri, 2003-04-18 at 07:57, Florian Effenberger wrote:
+> Hi,
 > 
-> On Apr 18, Arnt Karlsen) wrote:
-> > From arnt@c2i.net  Fri Apr 18 03:53:40 2003
-> > From: arnt@c2i.net (Arnt Karlsen)
-> > Date: Fri, 18 Apr 2003 04:53:40 +0200
-> > Subject: Need for GLIBC 2.3?
-> > On Thu, 17 Apr 2003 17:41:04 -0700,
-> > Carol Anne Ogdin <caogdin@deepwoods.com> wrote in message
-> > <OFCE07B0DA.63D2DEA4-ON88256D0C.0002759A-88256D0C.0003C28A@
-> > deepwoods.com>:
-> >
-> > > Red Hat 7.3 (v2.4.18) supplies iptables v1.2.5, which relies on
-> > > glibc v2.2.5.  I'd like to apply the rpm for v1.2.7a, but the RH
-> > > distro demands glibc v2.3. 
-> <snip>
-> > >
-> > > What would you do?
-> >
-> > ..'rpmbuild -ta iptables-1.2.8.tar.bz2' or somesuch,
-> > should use what you have in your box.
-> > You _may_ have to chuck in a few *-devel.rpm's etc,
-> > rpm should whine which to 'rpm -ivh'.
-> >
-> <snip>
+> I have a question to the gurus on this list ;-)
 > 
-> Thanks, Arnt, but that doesn't seem to get me where I need to go.
-> when I run the command you recommend, I get
->       error: Name field must be present in package: (main package)
->       error: Version field must be present in package: (main package)
->       error: Release field must be present in package: (main package)
->       error: Summary field must be present in package: (main package)
->       error: Group field must be present in package: (main package)
->       error: License field must be present in package: (main package)
-> rpmbuild's -vv option produces nothing more detailed that this.
+> I'm on Linux 2.4.20 with iptables 1.2.7a. I have a syntax as follows:
+> 
+> ===
+> iptables -A INPUT -p tcp -s www.myhostname.com --dport 53 -j ACCEPT
+> ===
+> 
+> Now it seems that www.myhostname.com is resolved only the first time the
+> rule is set and that a fixed IP address is stored.
 
-..no .spec file in the tarball???  Which tarball? (url?)
+Correct.
 
-> Not having any experience as a developer in Linux, I'm feeling
-> overwhelmed by what I don't know.
+> However, www.myhostname.com has a dynamically assigned address and I would
+> like to have iptables resolve the IP address everytime.
 
-..I'm no developer.  ;-)  
-Except of course in thermochemical gasification, where I _am_ a guru:
-http://www.crest.org/discussion/gasification/199903/msg00055.html ;-)
+Same here... :^(
 
-..heh, GNU/Linux hurts at first, it _does_ take un-learning the nice 
-and easy bad habits from wintendo.  ;-)
+> Is that possible? If yes, how? Or will it produce too much load?
 
-..but it is worth it, you get away from letting the wintendo guys 
-and the scriptkiddies have their way with you as _they_ please.  
+Iptables/netfilter does not, AFAIK, support this at all.  I have a
+similar situation, and found two solutions.
 
-> --Carol Anne
+The one I implemented was to map out the range of dynamic IPs assigned
+(ISP refused to disclose!) and ended up using a /22 netmask.  Not as
+tight, but simpler and less overhead than:
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+The other approach was to write a script (cron scheduled) that would
+extract the IP from 'dig' output and compare it against a stored value
+from the last change (/tmp/myhostname.com.ip perhaps).  If the same do
+nothing. If different, delete the original rule, insert a
+newly-constructed one, and echo the new IP to the tmp file.  Depending
+on the lease-length (or whatever other factor may determine lifespan of
+a given IP for www.myhostname.com...) and frequency of expected
+connections, you'd set the frequency of the job accordingly.
+
+Depending on what services are being made available to
+www.myhostname.com, the first solution is probably your best bet so long
+as it doesn't open up anything critical.  For my case, the rule only
+opens SSH, and only a single non-root user can login with SSH on that
+box.  (and all SSH access is logged)
+
+The third solution, of course, would be to dig into the source and write
+a new match, or patch the "-s" match with a new flag like "--dynip" and
+the obvious support to enable that... ;^)  Checking the current IP of a
+named host for every packet would be impossible.  The only feasible
+solution here would be to integrate the effect of the cron job approach
+into the netfilter code, periodically confirming the IP and updating if
+needed.
+
+> Thanks
+> Florian
+
+j
+
 
 
