@@ -1,13 +1,13 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: Internal ip exiting network on firewall external nic despight
- rule
-Date: Fri, 20 Sep 2002 12:13:49 -0700
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Internal ip exiting network on firewall external nic despight rule
+Date: Fri, 20 Sep 2002 12:11:30 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8B736D.1060808@shorewall.net>
-References: <000501c260d4$b650ff50$0801a8c0@s3ac>
+Message-ID: <000701c260d9$871a9070$0801a8c0@s3ac>
+References: <3D8B736D.1060808@shorewall.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms050209010403000801000609"
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <3D8B736D.1060808@shorewall.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,100 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Rowan Reid <rreid@studio3arc.com>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Tom Eastep' <teastep@shorewall.net>
 Cc: netfilter@lists.netfilter.org
 
-This is a cryptographically signed message in MIME format.
 
---------------ms050209010403000801000609
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Rowan Reid wrote:
-
+> Rowan Reid wrote:
 > 
-> LOG FILE ###
-> Sep 20 04:04:01 s3a-www kernel: IN=eth1 OUT=eth1 SRC=192.168.1.105
-> DST=216.99.233.76 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=61116 DF
-> PROTO=TCP SPT=4380 DPT=110 WI
-> NDOW=8760 RES=0x00 ACK URGP=0
+> > 
+> > LOG FILE ###
+> > Sep 20 04:04:01 s3a-www kernel: IN=eth1 OUT=eth1 SRC=192.168.1.105 
+> > DST=216.99.233.76 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=61116 DF 
+> > PROTO=TCP SPT=4380 DPT=110 WI NDOW=8760 RES=0x00 ACK URGP=0
+> 
+> Note that IN and OUT both indicate eth1 -- do you perhaps 
+> have both NICs 
+> connected to the same hub/switch?
+> 
 
-Note that IN and OUT both indicate eth1 -- do you perhaps have both NICs 
-connected to the same hub/switch?
+Yes, however my Rules are such that eth1 (External) should regect and
+log external machines with an internal net address.
+# remote interface, claiming to be local machines, IP spoofing, get lost
+# $IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j
+drop-and-log-it
+Also all machines are configured such that the internal nic address
+192.168.1.1 is the only gateway. Me detects a fish! My ifconfig output
+Is below.
 
--Tom
--- 
-Tom Eastep    \ Shorewall - iptables made easy
-AIM: tmeastep  \ http://www.shorewall.net
-ICQ: #60745924  \ teastep@shorewall.net
+eth0      Link encap:Ethernet  HWaddr 00:04:75:B1:3D:A9
+          inet addr:192.168.1.1  Bcast:192.168.1.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:67496 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:88214 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:5813 txqueuelen:100
+          RX bytes:5334404 (5.0 Mb)  TX bytes:101576923 (96.8 Mb)
+          Interrupt:11 Base address:0x6100
 
---------------ms050209010403000801000609
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+eth1      Link encap:Ethernet  HWaddr 00:04:75:B1:3D:6C
+          inet addr:**.**.76.66  Bcast:65.45.76.71  Mask:255.255.255.248
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:51089 errors:0 dropped:0 overruns:1 frame:0
+          TX packets:41940 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:10 txqueuelen:100
+          RX bytes:37129813 (35.4 Mb)  TX bytes:4338695 (4.1 Mb)
+          Interrupt:10 Base address:0x6200
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJVDCC
-AwgwggJxoAMCAQICAwhOLTANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
-HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
-bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkxODIxMTQxN1oXDTAzMDkxODIxMTQxN1owRzEf
-MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEkMCIGCSqGSIb3DQEJARYVdGVhc3Rl
-cEBzaG9yZXdhbGwubmV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvdDPv/q5
-adQCmEtbNtdWcsmF7qO5Eg5JkvI50WkiCkcv89KfsRA6tFGtsgIOsgU5l3wDQSzqEVX0MfIV
-qpn7ycZJ6823cuvXXjBQwwpqVSlpJkHhpd1uCCLomkfPAxKdfBNAjh4E1ZgHuur7GAWc0iBd
-2n9oJ9wBg8gDQP9ViYU4+x2z/7muvY4RuzL5eF+mtzx4UtSx9CFqu1n8uNIu44T4CXRZ8HwT
-Hg2eC61x6E6XFV48Oid9t8qmKXjUGINJ3hbXwQmees3K/ZrGYZ+FPoOJyWn+PpvrNQrVvkp5
-a7YblgaoLX1dS5QGgsl9XhRz6sqzvklAd7eh4g0JoWOD4QIDAQABozIwMDAgBgNVHREEGTAX
-gRV0ZWFzdGVwQHNob3Jld2FsbC5uZXQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQQFAAOB
-gQDakl1XW6IrAL4ZG+WtwT5GqQLPnFgbHjo/s88xvvdQRRhgd//uW81hQUk5tHkBisJKgHcv
-F1trxcylWylrSSLf2TANtw0M8kvW9clJe5xZieyshemLvEWHsC4mItPiId9dWaZQX90L9yZz
-0qi8iTlmU5i8JPeiJJVwwmQJNI93LzCCAwgwggJxoAMCAQICAwhOLTANBgkqhkiG9w0BAQQF
-ADCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2Fw
-ZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2Vz
-MSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkxODIx
-MTQxN1oXDTAzMDkxODIxMTQxN1owRzEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJl
-cjEkMCIGCSqGSIb3DQEJARYVdGVhc3RlcEBzaG9yZXdhbGwubmV0MIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAvdDPv/q5adQCmEtbNtdWcsmF7qO5Eg5JkvI50WkiCkcv89Kf
-sRA6tFGtsgIOsgU5l3wDQSzqEVX0MfIVqpn7ycZJ6823cuvXXjBQwwpqVSlpJkHhpd1uCCLo
-mkfPAxKdfBNAjh4E1ZgHuur7GAWc0iBd2n9oJ9wBg8gDQP9ViYU4+x2z/7muvY4RuzL5eF+m
-tzx4UtSx9CFqu1n8uNIu44T4CXRZ8HwTHg2eC61x6E6XFV48Oid9t8qmKXjUGINJ3hbXwQme
-es3K/ZrGYZ+FPoOJyWn+PpvrNQrVvkp5a7YblgaoLX1dS5QGgsl9XhRz6sqzvklAd7eh4g0J
-oWOD4QIDAQABozIwMDAgBgNVHREEGTAXgRV0ZWFzdGVwQHNob3Jld2FsbC5uZXQwDAYDVR0T
-AQH/BAIwADANBgkqhkiG9w0BAQQFAAOBgQDakl1XW6IrAL4ZG+WtwT5GqQLPnFgbHjo/s88x
-vvdQRRhgd//uW81hQUk5tHkBisJKgHcvF1trxcylWylrSSLf2TANtw0M8kvW9clJe5xZieys
-hemLvEWHsC4mItPiId9dWaZQX90L9yZz0qi8iTlmU5i8JPeiJJVwwmQJNI93LzCCAzgwggKh
-oAMCAQICEGZFcrfMdPXPY3ZFhNAukQEwDQYJKoZIhvcNAQEEBQAwgdExCzAJBgNVBAYTAlpB
-MRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMR
-VGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2
-aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3
-DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMDA4MzAwMDAwMDBaFw0w
-NDA4MjcyMzU5NTlaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIw
-EAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNh
-dGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAw
-gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAN4zMqZjxwklRT7SbngnZ4HF2ogZgpcO40Qp
-imM1Km1wPPrcrvfudG8wvDOQf/k0caCjbZjxw0+iZdsN+kvx1t1hpfmFzVWaNRqdknWoJ67Y
-cvm6AvbXsJHeHOmr4BgDqHxDQlBRh4M88Dm0m1SKE4f/s5udSWYALQmJ7JRr6aFpAgMBAAGj
-TjBMMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwxLTI5NzASBgNVHRMB
-Af8ECDAGAQH/AgEAMAsGA1UdDwQEAwIBBjANBgkqhkiG9w0BAQQFAAOBgQAxsUtHXfkBceX1
-U2xdedY9mMAmE2KBIqcS+CKV6BtJtyd7BDm6/ObyJOuR+r3sDSo491BVqGz3Da1MG7wD9LXr
-okefbKIMWI0xQgkRbLAaadErErJAXWr5edDqLiXdiuT82w0fnQLzWtvKPPZE6iZph39Ins6l
-n+eE2MliYq0FxjGCAycwggMjAgEBMIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2Vz
-dGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UE
-CxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJT
-QSAyMDAwLjguMzACAwhOLTAJBgUrDgMCGgUAoIIBYTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
-AQcBMBwGCSqGSIb3DQEJBTEPFw0wMjA5MjAxOTEzNTJaMCMGCSqGSIb3DQEJBDEWBBR+sgw9
-FBXszRN3K63OMPx6/BemrDBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3
-DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBrQYLKoZI
-hvcNAQkQAgsxgZ2ggZowgZIxCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUx
-EjAQBgNVBAcTCUNhcGUgVG93bjEPMA0GA1UEChMGVGhhd3RlMR0wGwYDVQQLExRDZXJ0aWZp
-Y2F0ZSBTZXJ2aWNlczEoMCYGA1UEAxMfUGVyc29uYWwgRnJlZW1haWwgUlNBIDIwMDAuOC4z
-MAIDCE4tMA0GCSqGSIb3DQEBAQUABIIBAFznMBYxojjemldiHRDJukXIjRIUe5W5mBGVR2q7
-qyMzwrV3UDhbik9DY3Bjc/SXN8B0vHPJ4n+/22O7b1v4qRaMsFVIayImisTZHb4JZMY6fkyh
-aK40f4q7sBJpTfx3RvT7BVoK981PfWxTh2EJEH8eGfJkSnqBA3jAlGLfYBv6tLLsDKE4aFhN
-kuAGXmNaTe0G1CpWXJx8mpsrmBe9KjRc0kj4YWj6E/AeUvLI1B/LFJQ8nCatrYrbSoxtzIVi
-wIMFDJ5N00rQT2mlWg59t39K3lKokObKR34ZbTfJ/KoNv1seovlZI/KqwY5DDE6oQxHhJ/sC
-Z9hfLoc0j9EpHXoAAAAAAAA=
---------------ms050209010403000801000609--
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:13 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:13 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:1374 (1.3 Kb)  TX bytes:1374 (1.3 Kb)
 
 
