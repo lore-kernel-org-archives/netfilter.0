@@ -1,12 +1,13 @@
-From: "Breno Cardoso Perucchi" <brenol@omegatec.net>
-Subject: SNAT FTP - HELP ME
-Date: Wed, 9 Apr 2003 10:35:47 -0300
+From: xchris <lyra@fastwebnet.it>
+Subject: Re: redirection
+Date: Wed, 9 Apr 2003 15:38:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006801c2fe9c$ee27bc50$1c01010a@PERUCCHI>
+Message-ID: <200304091538.35998.lyra@fastwebnet.it>
+References: <7497DCA1C240C042B28F6657ADFD8E09250995@i2km11-ukbr.domain1.systemhost.net> <200304091534.46363.christian@cernuschi.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0065_01C2FE83.C8A395D0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200304091534.46363.christian@cernuschi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,101 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: dhiraj.2.bhuyan@bt.com, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Wednesday 09 April 2003 03:34 pm, Christian Cernuschi wrote:
+> On Wednesday 09 April 2003 03:10 pm, dhiraj.2.bhuyan@bt.com wrote:
+> > note one thing -
+> >
+> > when the client tries to connect to port 80 of x.y.z.1, the firewall =
+in
+> > x.y.z.1 redirects the traffic to x.y.z.2:80
+> >
+> > so the client will be receiving packets from x.y.z.2:80 - which is no=
+t
+> > what it is expecting. It is waiting for packets from x.y.z.1:80 - so =
+it
+> > will no doubt timeout. You should be able to see the packets coming f=
+rom
+> > x.y.z.2:80 by running a sniffer on the client machine.
+> >
+> > I think Eric Joe did infact give the right solution - that x.y.z.1 wi=
+ll
+> > be working as a proxy between the client and x.y.z.2 - although you c=
+an
+> > question if you are achieving your "loadbalancing" by this.
+>
+ exactly...
+ it's the same conclusion i arrived..
 
-------=_NextPart_000_0065_01C2FE83.C8A395D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ The solution (also for source adress keeping) is to masquerade the
+ destination machine under the first one!
 
+ The destination machine must not reside "under" the first.It can also be=
+ at
+ the same level (read attached to the same switch) but needs to have the
+ first machine as gateway. (so MASQ rules works)
 
-Hello,
-
-This is my first mail to the list.  =20
-I've been trying to transport tcp 20:21 to out of my network with SNAT   =
-
-iptables -t nat -A POSTROUTING -p tcp --dst 200.200.200.201 --dport =
-20:21 -j SNAT --to-source 192.168.2.1
-
-This is my network =20
-Firewall
-eth0:200.100.100.100  (NAT to 192.168.2.0/24)
-eth1:200.200.200.200  (Another Class the IP)
-eth2:192.168.2.50    (LAN)
-
-Server1 in Network  192.168.2.1 =20
-My firewall have this rule in the NAT  =20
-iptables -t nat -A POSTROUTING -s 192.168.2.0/24 -j SNAT --to =
-200.100.100.100
-
-This is my problem. I transport all ports of the ip 200.200.200.201 to =
-the 192.168.2.1 =20
-iptables -t nat -A PREROUTING -p tcp -d 200.200.200.201 -j DNAT --to =
-192.168.2.1 =20
- =20
-But all the ports don't get out with IP 200.200.200.201 and yes with IP =
-of Masquerade 200.100.100.100 =20
-My I need to resolved this .=20
-
-Breno Cardoso Perucchi
-breno@omegatec.net
-Consultor - Omega Tecnologia
-http://www.omegatec.net/
-
-------=_NextPart_000_0065_01C2FE83.C8A395D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>This is my first mail to the =
-list.&nbsp;&nbsp;=20
-<BR>I've been trying to transport tcp 20:21 to out of my network with=20
-SNAT&nbsp;&nbsp; </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -t nat -A POSTROUTING -p tcp =
---dst=20
-200.200.200.201 --dport 20:21 -j SNAT --to-source =
-192.168.2.1</FONT></DIV><FONT=20
-face=3DArial size=3D2>
-<DIV><BR>This is my network&nbsp; <BR>Firewall</DIV>
-<DIV>eth0:200.100.100.100&nbsp; (NAT to 192.168.2.0/24)</DIV>
-<DIV>eth1:200.200.200.200&nbsp; (Another Class the IP)</DIV>
-<DIV>eth2:192.168.2.50&nbsp;&nbsp;&nbsp; (LAN)</DIV>
-<DIV><BR>Server1 in Network&nbsp; 192.168.2.1&nbsp; <BR>My firewall have =
-this=20
-rule in the NAT&nbsp;&nbsp; <BR>iptables -t nat -A POSTROUTING -s =
-192.168.2.0/24=20
--j SNAT --to 200.100.100.100</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>This is my problem. I transport all ports of the ip 200.200.200.201 =
-to the=20
-192.168.2.1&nbsp; <BR>iptables -t nat -A PREROUTING -p tcp -d =
-200.200.200.201 -j=20
-DNAT --to 192.168.2.1&nbsp; <BR>&nbsp; <BR>But all the ports =
-don't&nbsp;get=20
-out&nbsp;with IP 200.200.200.201 and yes with IP of Masquerade=20
-200.100.100.100&nbsp; <BR>My I need to resolved this . </FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Breno Cardoso Perucchi<BR><A=20
-href=3D"mailto:breno@omegatec.net">breno@omegatec.net</A><BR>Consultor - =
-Omega=20
-Tecnologia<BR><A=20
-href=3D"http://www.omegatec.net/">http://www.omegatec.net/</A><BR></FONT>=
-</DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0065_01C2FE83.C8A395D0--
+ Doing in this way should work everything!!
+ Thank you again (i liked to study this...)
+xchris
 
 
