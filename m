@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Fairly complex multi-ISP firewall/router problem
-Date: Fri, 02 Apr 2004 16:36:06 -0500
+Date: Fri, 2 Apr 2004 22:50:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080941765.17616.61.camel@localhost>
-References: <c4kjrg$lqm$1@gatekeeper.tmr.com>
+Message-ID: <200404022250.54788.Antony@Soft-Solutions.co.uk>
+References: <c4kjrg$lqm$1@gatekeeper.tmr.com> <1080941765.17616.61.camel@localhost>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <c4kjrg$lqm$1@gatekeeper.tmr.com>
+In-Reply-To: <1080941765.17616.61.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,72 +19,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Bill Davidsen <davidsen@tmr.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, 2004-04-02 at 15:57, Bill Davidsen wrote:
-> I am trying to set up a single Linux router, RH9.0, for a non-profit I 
-> am supporting with some free consulting. They have two ISP lines, each 
-> of which has a three bit CIDR block, and an internal network.
-> 
-> Part one:
-> 
-> I want to have an IP for each of the services, mail and http, on each 
-> ISP, so that is DSL is down I can use cable, and vice-versa. I will do 
-> NAT in the firewall, and forward the packets to the actual server. 
-> Eventually the servers will move to a DMZ after the other stuff settles 
-> down.
-> 
-> The problem is that a packet can come from any IP outside, and when the 
-> reply packet is sent out, it may go out either NIC. And that's the root 
-> of the problem, getting the source IP to match the NIC. I've added rules 
-> to the mangle table to MARK the packets, that just doesn't seem to work 
-> reliably.
-> 
-> I want very much to do this without patching the kernel, I have two 
-> patches which seem to solve the problem on other systems, but 
-> maintaining a patched kernel long term is really undesirable, and makes 
-> it hard to turn over the job in the future.
-> 
-> All I want to do is send packets out the interface which matches the 
-> source IP, and I don't think there's any reasonable way to get there 
-> without patches or BSD.
-> 
-> Yes, I know about the lartc docs, nano.txt and several other things. The 
-> problem is that the marks don't reliably WORK, routing by destination IP 
-> is being used in some cases (but not all, which is really odd).
+On Friday 02 April 2004 10:36 pm, John A. Sullivan III wrote:
 
-Hmmm . . . I admit to not having tried this and only giving it five
-minute's thought but I'm not sure I see the problem.  Well, I see why
-one can't be guaranteed to send the packet out the same interface but
-I'm not sure why that is a problem.
+> On Fri, 2004-04-02 at 15:57, Bill Davidsen wrote:
+> >
+> > All I want to do is send packets out the interface which matches the
+> > source IP, and I don't think there's any reasonable way to get there
+> > without patches or BSD.
+>
+> Hmmm . . . I admit to not having tried this and only giving it five
+> minute's thought but I'm not sure I see the problem.  Well, I see why
+> one can't be guaranteed to send the packet out the same interface but
+> I'm not sure why that is a problem.
 
-If the packet comes in and is DNAT'd (I assume that is what you are
-doing), wouldn't it be entered in conntrack so that the reply packets
-will be SNAT'd to the same source address as the destination address of
-the original packet? That should make the reply packet acceptable to the
-originating device.  One cannot ensure which interface it goes out (I am
-assuming that the source address alteration of the reply packet occurs
-post routing and thus iproute2 is useless here) but it should make its
-way back to the originating device via the magic of Internet routing
-regardless of interface -- shouldn't it?
+Some ISPs block packets with source addresses not matching their own network 
+range, as a contribution to blocking spoofed packets.
 
-In the case of an interface or ISP failure, I assume you would disable
-the interface which would eliminate the route.
+> In the case of an interface or ISP failure, I assume you would disable
+> the interface which would eliminate the route.
 
-So I would think the packet path would be from originating device to one
-of the FW interfaces, DNAT to the private address, reply from the
-private address, SNAT of the reply according to conntrack, out either of
-the interfaces, back via Internet routing to the originating device.
+That's not necessarily a difficult task (bringing it back up again afterwards 
+is not entirely trivial, however), but if the problem can be solved without 
+sending all outbound traffic across a single connection, and leaving the 
+other one largely idle, it would be a better solution.
 
-Of course, I could be brain-cramping here as I am eager to return to my
-current task from this quick e-mail break but I missed seeing the
-problem - John
+Regards,
+
+Antony.
+
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+The idea that Bill Gates appeared like a knight in shining armour to lead all 
+customers out of a mire of technological chaos neatly ignores the fact that 
+it was he who, by peddling second-rate technology, led them into it in the 
+first place.
+
+ - Douglas Adams in The Guardian, 25th August 1995
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
