@@ -1,8 +1,9 @@
-From: Martijn Klingens <mklingens@ism.nl>
-Subject: Fwd: Re: NEW vs INVALID
-Date: Tue, 1 Oct 2002 14:17:56 +0200
+From: Dworf <root@dworf.com>
+Subject: on high load the connections drop
+Date: Tue, 1 Oct 2002 14:50:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210011417.56637.mklingens@ism.nl>
+Message-ID: <200210011450.02766.root@dworf.com>
+Reply-To: root@dworf.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,40 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Since I messed up initially by replying personally (grmbl... some mailingli=
-sts=20
-set a reply-to header and some don't and I always mix them up) it's at leas=
-t=20
-fair to forward the reply here again...
+Dear all,
 
-Martijn
+In high loads (when iptables DROP packets couse of Syn Flood I get `kerne=
+l:=20
+eth0: Too much work in interrupt, status e401.`  message and the connecti=
+ons=20
+drop after about 20mins of constant attack. I think it could be the buffe=
+r=20
+filling up or somthing? Is there any patch for iptables to flush the buff=
+er=20
+or somthing? or a patch for high loads?
 
-----------  Forwarded Message  ----------
+Thank you!
 
-Subject: Re: NEW vs INVALID
-Date: 01 Oct 2002 14:05:39 +0200
-From: "Jens Lechtenb=F6rger" <lechten@wi.uni-muenster.de>
-To: Martijn Klingens <mklingens@ism.nl>
-
-Martijn Klingens <mklingens@ism.nl> writes:
-> >  "--state NEW --tcp-flags SYN,ACK,FIN,RST SYN"...
->
-> This makes quite some sense, but it makes me wonder what the use is of the
-> '--syn' option.
-
-There is a followup by Anders Fugman stating that SYN+FIN is a
-request for a connection that should immediately be closed...
-
-> Also, does that mean I have to update my firewall script if I
-> want to achieve tighter security? I guess so :(
-
-Probably...
-
-Jens
-
--------------------------------------------------------
-
+David
 
