@@ -1,61 +1,44 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: CONNMARK Patching Problem
-Date: 12 Nov 2002 11:11:34 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <1037095894.4403.25.camel@tux>
-References: <005a01c287e5$2d0862a0$0200000a@parseerror.dk>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Where to drop packets ...
+Date: Tue, 12 Nov 2002 09:08:19 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20021112090821.EYP27595.mta05-svc.ntlworld.com@there>
+References: <1037022417.16834.64.camel@rayw>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <005a01c287e5$2d0862a0$0200000a@parseerror.dk>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1037022417.16834.64.camel@rayw>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Matias =?ISO-8859-1?Q?Bj=F8rling?= <mb@ncparty.dk>
-Cc: Netfilter-devel <netfilter-devel@lists.netfilter.org>, Netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-On Sat, 2002-11-09 at 12:43, Matias Bj=F8rling wrote:
-> Hey! :D
->=20
-> I'm having a very anoying problem.
->=20
-> I have patched 2.4.18-19 kernels where both have the same problem, when i
-> run patch-o-magic on a fresh kernel, then when i come to where i can patc=
-h
-> the CONNMARK module into the kernel, it always fail, even if it's the onl=
-y
-> thing i select, and with both kernels, even they both are fresh installed=
-.
+On Monday 11 November 2002 1:46 pm, Ray Leach wrote:
 
-> iptables 1.2.7a
-> patch-o-magic 20021008
-> have tried with newer cvs image patch-o-magic and did'nt even work
-> kernel 2.4.18-19 both have the same problem.
->=20
-> Does anybody know if theres a workaround for this thingie?.. or am i just
-> lost in my dreams until a new release come? Is there a way i can check wh=
-at
-> the error is?
+> Hi
+>
+> Is it better to drop or reject packets in the mangle-prerouting table or
+> in the filter-forward chain?
 
-You've failed to read the docs :)
+Filter-forward.
 
-you didn't run ./runme --batch pending
-after that CONNMARK works fine.
+The mangle tables are for mangling packets.
 
-(two patches in pending won't apply correctly, they need to be applied
-after the newnat patch and not before (just run the same command one
-more time and they should apply), I've just fixed it in cvs)
+The filter tables are for filtering them.
 
---=20
-/Martin
+Drop and reject are filtering actions.
 
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+Antony.
+
+-- 
+
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
