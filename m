@@ -1,27 +1,40 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: Three kernel Oops/panic/BUG ksymoopses (kernel BUG at buffer.c:539)
-Date: Sat, 3 Jan 2004 13:54:27 +0100 (CET)
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <Pine.LNX.4.44.0401031352040.2301-100000@poirot.grange>
-References: <87isjuhqq9.fsf@loki.odinnet>
+From: Andreas Kretschmer <andreas_kretschmer@despammed.com>
+Subject: Re: [despammed] How to restrict uploading by using iptables?
+Date: Sat, 3 Jan 2004 17:28:12 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040103162812.GA5395@kaufbach.delug.de>
+References: <20040103160545.47544.qmail@web60407.mail.yahoo.com>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <87isjuhqq9.fsf@loki.odinnet>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040103160545.47544.qmail@web60407.mail.yahoo.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Erik Bourget <erik@midmaine.com>
-Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Fri, 2 Jan 2004, Erik Bourget wrote:
+am  Sat, dem 03.01.2004, um  8:05:45 -0800 mailte ads nat folgendes:
+> I have setup LAN with Linix 8.0 server and
+> distributing Internet bandwidth to LAN users.
+> There is lot of uploading by LAN users. I want
+> restrict it with IPTABLES.
 
-> I had a very bizarre situation where four boxes in the same rack all
-> simultaneously (within 30 minutes) hard-locked with Oops messages.  The boxes
+Please read http://lartc.org
 
-An obvious idea - after reading an article about a break-in into Debian
-and others' boxes - sure you weren't cracked?
 
-Guennadi
----
-Guennadi Liakhovetski
+Andreas
+--=20
+Diese Message wurde erstellt mit freundlicher Unterst=FCtzung eines freilau-
+fenden Pinguins aus artgerechter Freilandhaltung.   Er ist garantiert frei
+von Micro$oft'schen Viren. (#97922 http://counter.li.org)     GPG 7F4584DA
+Was, Sie wissen nicht, wo Kaufbach ist? Hier: N 51.05082=B0, E 13.56889=B0 =
+;-)
 
