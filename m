@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Not forwarding?
-Date: Sun, 28 Mar 2004 22:24:12 +0100
+From: Alex Satrapa <alex@lintelsys.com.au>
+Subject: Re: General denial question (tarpitting)
+Date: Mon, 29 Mar 2004 08:59:50 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403282224.12071.Antony@Soft-Solutions.co.uk>
-References: <20040328155231.32b07799@darna.vectec.net> <200403282154.17071.Antony@Soft-Solutions.co.uk> <20040328170733.23247779@darna.vectec.net>
+Message-ID: <406758E6.8090106@lintelsys.com.au>
+References: <Pine.LNX.4.44.0403251546510.29753-100000@e-smith.charlieb.ott.istop.com> <40634D80.9050609@pay2send.com> <4063B458.4030501@smgtec.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040328170733.23247779@darna.vectec.net>
+In-Reply-To: <4063B458.4030501@smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +18,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sunday 28 March 2004 10:07 pm, Cody Harris wrote:
+Daniel Chemko wrote:
+> Check out the Patch-o-matic enhancements to netfilter.
+> TARPIT? Check.
 
-> I rewrote the rules following your suggestions. It still doesn't work:
->
-> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-> target     prot opt in     out     source              destination
-> ACCEPT     all  --  eth1   any     anywhere             anywhere
+>> Charlie Braddy wrote, on the qpsmtpd list, which is about
+>> a perl drop-in replacement for qmail-smtpd:
+>>
+>>> If you are going to undertake the noble task of sucking up their 
+>>> bandwidth, then I'd suggest that you do the job thoroughly, and make 
+>>> sure that their TCP stack decides to retransmit as many packets as 
+>>> possible. Use iptables (for instance) to selectively/randomly drop 
+>>> packets.
 
-Okay, that will allow all packets coming through from eth1
+Note that any kind of packet loss as high as 5% will cause the TCP stream to wither and die. I'm not sure of the exact numbers, but if 1 in 20 packets goes missing, you'll find the TCP flow-control ends up backing off more than it regains through the slow-start mechanism. Remember, TCP treats packet loss as a symptom of congestion. The protocol cannot handle sustained packet loss for any other reason.
 
-> ACCEPT     tcp  --  any    any     anywhere             192.168.0.2       
-> tcp dpt:ssh state RELATED,ESTABLISHED
+TARPIT simply causes the transmission to cease by setting the window size to 0. TARPIT achieves DoS only if enough "targetted" sites use the TARPIT option, thus depriving the originator or system resources (required for tracking the connection). TARPIT keeps the connection alive (ACK packets flow freely), but prevents the resources being released, since the data isn't flowing.
 
-That will allow packets coming through from 192.168.0.2 (which is plugged in 
-to eth1) to destination port 22.
+Neither packet loss nor TARPIT will result in a demand-side bandwidth DoS.
 
-You have no rule to allow the reply packets back (and the above rule won't 
-allow the NEW packets through, either).
-
-Try this:
-
-iptables -F FORWARD
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -s 192.168.0.2 -p tcp --dport 22 -j ACCEPT
-
-If that doesn't work tell us exactly how you are testing it - which machine is 
-the SSH client on, where is the server, what are the IP addresses...
-
-Regards,
-
-Antony.
-
--- 
-It is also possible that putting the birds in a laboratory setting 
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennet
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+If you want to achieve DoS by continual retransmission, you'll have to keep sending back ACKs for one particular sequence number, claiming a very large window.
 
