@@ -1,11 +1,9 @@
-From: "louie miranda" <lmiranda@chikka.com>
-Subject: Re: portfw on iptables 2.4 kernel problem.
-Date: Wed, 11 Dec 2002 14:08:36 +0800
+From: "Simpson, Doug" <DSimpson@friedmancorp.com>
+Subject: ipsec & nat
+Date: Tue, 10 Dec 2002 23:03:22 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d301c2a0db$c8c2b240$0b00000a@nocpc3>
-References: <Pine.LNX.4.33.0212101216060.9625-100000@blackhole.kfki.hu>
+Message-ID: <CAFAAEC91CC8D511952000062938C6F12ECD92@ozlan.fcdomain.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,68 +15,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi, thanks for all your replies, etc. But my problem is not yet solved. I
-dont know why?!
-Can someone give me how did they did it?
-
-
-
---
-thanks,
-louie miranda
-
-
------ Original Message -----
-From: "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu>
-To: "Raymond Leach" <raymondl@knowledgefactory.co.za>
-Cc: <rsterenborg@xs4all.nl>; "'Paulo Andre'" <pandre@darkstar.nom.za>;
-"'louie miranda'" <lmiranda@chikka.com>; "'netfilter'"
-<netfilter@lists.netfilter.org>
-Sent: Tuesday, December 10, 2002 7:22 PM
-Subject: RE: portfw on iptables 2.4 kernel problem.
-
-
-> On 10 Dec 2002, Raymond Leach wrote:
->
-> > Yes, you do. Port 20 (and/or any other) connections after the control
-> > connection are not 'RELATED, ESTABLISHED' to the control connection.
-> > They are new connections either from the client to the server or vice
-> > versa. You therefore need seperate rules for them.
->
-> If we are speaking about the data channels of the supported protocols
-> (FTP, IRC and all the other protocols from p-o-m), then this is absolutely
-> false.
->
-> > Remember connection tracking happens at a pakcet level, i.e all states
-> > relate to packets of a connection, not per protocol.
->
-> In the case of the supported protocols with additional channels, again,
-> untrue. Please do no spread false info! Why would then the RELATED state
-> exist?
->
-> > > However, I'm not sure if it's better to split them up into 2 rules :
-> > > iptables -A FORWARD -i eth0 -o eth1 -p tcp --dport 21 -m state --state
-> > > NEW -j ACCEPT
-> > > iptables -A FORWARD -i eth0 -o eth1 -m state --state
-ESTABLISHED,RELATED
-> > > -j ACCEPT
->
-> Because the destination port of the data channels cannot be port 21,
-> therefore you must use two rules. And because you specify the
-> incoming/outgoing interfaces, you need a third rule for the reply packets
-> as well.
->
-> Regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
->
->
->
-
+I have a redhat 7.3 box that is dualhomed.  It is my firewall and vpn
+server.  I can successfully vpn (with IPSEC) into it.  If I use the
+following command "iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE" I
+cannot use VPN, but my internal network can only receive email (POP3) and
+telnet after I use this command.
+I have set up squid so I proxy my www traffic.
+Can I NAT my pop3 and my telnet, and still VPN (IPSEC)?  
+I am guessing my command is too general and I need to be more specific -
+ports, source, etc defined.
+Thanks,
+Doug
 
