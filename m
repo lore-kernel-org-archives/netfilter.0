@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bad Filter Set?
-Date: Sat, 9 Nov 2002 14:41:11 +0000
+Subject: Re: Question on INPUT and PREROUTING chains
+Date: Sat, 9 Nov 2002 14:42:56 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021109144114.JEWN21275.mta07-svc.ntlworld.com@there>
-References: <004701c2867f$f176d2a0$d900a8c0@yamatto>
+Message-ID: <20021109144300.JGFE21275.mta07-svc.ntlworld.com@there>
+References: <E189XVl-0008TW-00@kashyyyk.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004701c2867f$f176d2a0$d900a8c0@yamatto>
+In-Reply-To: <E189XVl-0008TW-00@kashyyyk.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +20,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 07 November 2002 5:05 pm, Dan Egli wrote:
+On Wednesday 06 November 2002 7:14 pm, Carlos.facanha wrote:
 
-> I'm a bit lost here, so hopefully someone can work with me on this. I
-> created a firewall script that is intended to  block most attempts for
-> access to the system, while allowing certain protocols (i.e. http, Telet,
-> ftp, ssh, etc..) to go through. It also needs to do Masquerading.
+> I have a Linux box used as NAT server and firewall. All requests on its
+> port 80 are forwarded to a local webserver inside my network. I want to
+> block access to all services including http from a specific external host.
+
+Note your (correct) use of the word "forwarded" in the above paragraph.
+
+> I'm using the following rule to block the host
 >
-> P.S. I edited the file on a WinXP machine so it's in DOS text format. Sorry
-> folks.
+> iptables -A INPUT -i $extint -s $hostip -j DROP
 
-I can't open the attachment.   Amusing enough when I save it and ask 'file' 
-what format it is, I get the response:
-fwscript: MPEG 1.0 layer 3 audio stream data,  40 kBit/s layer 2 audio stream 
-data,  48 kBit/s, 44.1 kHz, stereo
+Note your (incorrect) use of the word "INPUT" in the above rule.
 
-(I assume you didn't read out loud your firewall rules and record them in 
-audio format :-)
-
-Please repost your ruleset in the body of the email.
-
-Thanks,
+Change the rule to the FORWARD chain and it should do what you want.
 
 Antony.
 
 -- 
 
-There are two possible outcomes.
-
-If the result confirms the hypothesis, then you've made a measurement.
-If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
