@@ -1,11 +1,16 @@
-From: =?iso-8859-1?Q?Cilli=E8_Burger?= <security@sadomain.co.za>
-Subject: RE:Is "no route to host" fake possible?
-Date: Fri, 25 Jun 2004 12:44:56 +0200
+From: Joel Solanki <zealous@bonbon.net>
+Subject: Re: Ip accounting Help
+Date: Fri, 25 Jun 2004 16:57:15 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00c601c45aa1$74751080$3b7819c4@PHAKE>
+Message-ID: <1088162835.2658.11.camel@joel.d2visp.com>
+References: <1087962571.2041.10.camel@joel.d2visp.com>
+	 <200406231001.24925.Antony@Soft-Solutions.co.uk>
+	 <1087988244.2036.60.camel@joel.d2visp.com>
+	 <200406231241.29378.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200406231241.29378.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +21,122 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-yes, it is 
+On Wed, 2004-06-23 at 17:11, Antony Stone wrote:
+> On Wednesday 23 June 2004 11:57 am, Joel wrote:
+> 
+> > On Wed, 2004-06-23 at 14:31, Antony Stone wrote:
+> > >
+> > > Beware of trying to do this if you are using the stateful connection
+> > > tracking of netfilter (iptables -I FORWARD -m state --state
+> > > ESTABLISHED,RELATED), because if you are, then almost all of the packets
+> > > going through the machine (specifically, all except the first one of each
+> > > connection) will be processed by this one rule, and all the other rules
+> > > in the FORWARD chain will only see one packet per connection (the first
+> > > one).
+> > >
+> > > You may be able to do what you want using the mangle table of the FORWARD
+> > > chain, but not with the default filter table.
+> >
+> > Yes I am using stateful connection tracking of netfilter ( iptables -I
+> > FORWARD -m state --state ESTABLISHED,RELATED)
+> > So as per you i have used FORWARD chain in MANGLE table like this.
+> >
+> > # iptables -t mangle -i eth1 -A FORWARD -s 10.1.1.24/29 -j ACCEPT  ---> I
+> > think for Download traffic  ---> M I right ?
+> > # iptables -t mangle -i eth0 -A FORWARD -d 10.1.1.24/29 -j ACCEPT  ---> I
+> > think for Upload traffic ----> M I right ?
+> >
+> > This is the output of 
+> > # iptables -t mangle -nvL FORWARD
+> >
+> > Chain FORWARD (policy ACCEPT 1747K packets, 318M bytes)
+> >  pkts bytes target     prot opt in     out     source             
+> > destination
+> > 1068 91499 ACCEPT     all  --  eth1   *       10.1.1.24/29         0.0.0.0/0
+> >  148 26923 ACCEPT     all  --  eth0   *       0.0.0.0/0           
+> > 10.1.1.24/29
+> >
+> > Antony i have lot of other ip address but i have created only this subnet
+> > for mangle table for testing.
+> > Traffic bytes are passing through this.
+> > So is the correct method ?
+> > Will be the bytes over here are accurate ???
+> 
+> The byte counts will be accurate, yes, and you have the correct idea about 
+> using -s a.b.c.d and -d w.x.y.z to capture traffic to and from particular IP 
+> addresses.
+> 
+> The thing I suggest you change, though, is not to have a -j ACCEPT at the end 
+> of your rules - just let all the packets flow right through the mangle table, 
+> with the rules simply counting them as they go past.
+> 
+> In other words, don't do:
+> 
+> iptables -t mangle -i eth1 -A FORWARD -s 10.1.1.24/29 -j ACCEPT
+> 
+> Just do:
+> 
+> iptables -t mangle -i eth1 -A FORWARD -s 10.1.1.24/29
+> 
+> The packets will still get counted just the same.
+> 
+> The reason for this advice is that the filter table is for filtering; the nat 
+> and mangle tables are not.   Therefore you shouldn't use targets like ACCEPT, 
+> DROP, etc (which are filtering operations) anywhere except the filter tables.
+> 
+> Regards,
+> 
+> Antony.
 
-observe 
+Hi antony,
 
-# man route
+I have done some R&D on this on my production server.
 
-reject      install a blocking route, which will force a  route
-              lookup  to  fail.  This is for example used to mask
-              out networks before using the default route.   This
-              is NOT for firewalling.
+I have given this commands on the server.
 
-route add -host 192.168.1.2 reject 
+# $IPT -t mangle -i eth1 -A FORWARD -s 192.168.0.2
+# $IPT -t mangle -o eth1 -A FORWARD -d 192.168.0.2
 
-# ping 192.168.1.2
-connect: Network is unreachable
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source        destination
+    0     0            all  --  eth1   *       192.168.0.2     0.0.0.0/0
+    0     0            all  --  *      eth1    0.0.0.0/0     192.168.0.2
 
-for more info check the route man page 
+		AND 
+
+# $IPT -t mangle -i eth1 -A FORWARD -s 192.168.0.2
+# $IPT -t mangle -o eth0 -A FORWARD -d 192.168.0.2
+
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source        destination
+    0     0            all  --  eth1   *       192.168.0.2    0.0.0.0/0
+    0     0            all  --  *      eth0    0.0.0.0/0     192.168.0.2
 
 
 
->Date: Fri, 25 Jun 2004 10:53:36 +0200
->Subject: Is "no route to host" fake possible?
->From: iptables-ml@xy1.org
+Right now there are no bytes counter in above both scenario coz i have
+restarted my production server.
 
->Hello,
+I can get the dowload bytes counters perfectly in the $IPT -t mangle -i
+eth1 -A FORWARD -s 192.168.0.2 command. From this command i can measure
+the download bytes.
 
->I know the rules REJECT, DENY or DROP, but is it possible to return to 
->the client the error message "no route to host" ?
+How do i measure the upload bytes ..?
+what will be the command.
+I tried the above commands but its not working appropiate.
+Where i have gone wrong...?
 
->I saw that it's possible to configure this on CISCO routers, and I would 
->lke to know it it's possible?
+Regards,
+-- 
+Joel n.solanki
+Systems Administrator
+(M) 91-9825500258
+D2V ISP PVT LTD
+http://www.d2visp.com
 
->Best regards,
->saf
+
+
 
