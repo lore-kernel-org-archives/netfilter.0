@@ -1,11 +1,11 @@
 From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Port-forwarding Perfomance
-Date: Wed, 23 Feb 2005 11:56:09 +0100
-Message-ID: <1109156169.11713.2.camel@nostromo.bgsecm.com>
-References: <421D2F04.8090100@wildcash.com>
+Subject: Re: Iptables Network Performance
+Date: Wed, 23 Feb 2005 12:02:00 +0100
+Message-ID: <1109156520.11713.6.camel@nostromo.bgsecm.com>
+References: <421D2CCE.50702@wildcash.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <421D2F04.8090100@wildcash.com>
+In-Reply-To: <421D2CCE.50702@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,45 +19,36 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mi=C3=A9, 23-02-2005 a las 17:33 -0800, Rudi Starcevic escribi=C3=B3:
+El mi=C3=A9, 23-02-2005 a las 17:24 -0800, Rudi Starcevic escribi=C3=B3:
 > Hi,
 >=20
-> I have www port-forwarding setup and running OK.
+> Could iptables really reduce network speed by more than 50%.
 >=20
-> However I wonder if they way I have configured it is not the most=20
-> optimal for speed and performance.
+> It is hard to believe but that seems to be my predicament right now.
 >=20
-> I have a default policy of DROP with a total of about 30 rules.
+> For this test I have a 12 meg file.
 >=20
-> These rules below do my www port-forwarding, can you see if there is a=20
-> better way to do this ?
+> When I download this from my Linux box is get a download speed of 47.23=
+K/s
 >=20
-> # ENABLE FORWARDING / NAT / MASQUERADING
-> echo "1" > /proc/sys/net/ipv4/ip_forward
+> When I move this 12 meg file to an internal web server and port-forward
+> to it from the Linux box I see a download rate of 11.70K/s
 >=20
-> # NAT Forwarding Setup
-> $IPTABLES --table nat --append POSTROUTING --out-interface $ETH0 -j=20
-> MASQUERADE
+> Does this sound reasonable?
 
-The only thing I can say about your rules it's that if you
-know the firewall IP it's much better to use SNAT than
-MASQUERADE, because you gain some speed with it.
+No, it doesn't sound reasonable. I use DNAT and it almost doesn't
+affect my download/upload speed on the server. I think you have
+another problem.
 
-> $IPTABLES -A FORWARD -i $ETH1 -j ACCEPT
-> $IPTABLES -A FORWARD -i $ETH0 -j ACCEPT
-> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->=20
-> # http Port-Forwarding setup
-> $IPTABLES -t nat -A PREROUTING -i $ETH0 -p tcp --dport 80 -d $MEDIA1_IP=
-=20
-> -j DNAT --to $MEDIA1_LO:80
+> If I move my Port-forwarding rule higher up woudld it help?
 
-The rule it's OK, I don't know how you can do it better to achieve
-more speed.
+I don't think so. But it would be better that the rule it's the first
+in the nat chain, but it doesn't matter where you put it in
+the script. I suppose you knew that.
 
-> Many thanks,
-> Kind regards
-> Rudi
+> Thanks
+> Regards
+> Rudi     =20
 
 Regards.
 
