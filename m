@@ -1,12 +1,13 @@
-From: Sven Schuster <schuster.sven@gmx.de>
+From: Ruslan Spivak <alienoid@is.lg.ua>
 Subject: Re: MARK and ! question
-Date: Thu, 26 Jun 2003 17:22:19 +0200
+Date: Thu, 26 Jun 2003 18:39:34 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EFB0FAB.2010105@gmx.de>
+Message-ID: <3EFB13B6.7080100@is.lg.ua>
 References: <Pine.LNX.4.44.0306261611390.28942-100000@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0306261611390.28942-100000@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,17 +19,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Chris Wilson <chris@netservers.co.uk>
-Cc: Ruslan Spivak <alienoid@is.lg.ua>, netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
 Chris Wilson wrote:
 
+>Hi Ruslan, Hi Sven,
+>
+>  
+>
+>>>What about using a user-defined chain like this:
+>>>
+>>>iptables -t mangle -N setmark
+>>>iptables -t mangle -A setmark -s ! 193.220.70.0/27 -d 193.220.70.32/27 \
+>>>        -j RETURN
+>>>iptables -t mangle -A setmark -s ! 193.108.240.0/22 -d 193.220.70.32/27 \
+>>>        -j RETURN
+>>>iptables -t mangle -A setmark -j MARK --set-mark 107
+>>>iptables -t mangle -A POSTROUTING -j setmark
+>>>      
+>>>
+>
+>  
+>
+>>Thanks for your reply.
+>>And can you describe how packet traverses such chain?
+>>    
+>>
+>
 >I think the ruleset above is wrong: the '!' should not be present here. 
 >Allow me to explain the packet traversal when the same rules are used, but 
 >with "!" removed:
 >
->
-Yeah you're right, sorry...need more coffee ;-))
-
 >iptables -t mangle -N setmark
 >iptables -t mangle -A setmark -s 193.220.70.0/27 -d 193.220.70.32/27 \
 >        -j RETURN
@@ -52,9 +73,14 @@ Yeah you're right, sorry...need more coffee ;-))
 >   (presumably to be delivered to a network device)
 >
 >Cheers, Chris.
+>  
 >
+Sorry for disturbance, but one more question: it looks like all other 
+packets not from
 
-Sven
+193.220.70.0/27 and not from 193.108.240.0/22 will be marked, but i need mark packets that have destination 193.220.70.32/27 and not from above mentioned networks. What else should i add or modify?
+
+Thanks in advance.
 
 
 
