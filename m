@@ -1,11 +1,10 @@
-From: "j-michel.caricand" <j-michel.caricand@wanadoo.fr>
-Subject: H323
-Date: Wed, 12 Jun 2002 07:08:22 +0200
+From: Gerard G.Dangca II <dangca@furukawa.co.jp>
+Subject: hello
+Date: Wed, 12 Jun 2002 16:30:32 +0900
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001501c211cf$2d576580$0103a8c0@gretabesancon.fr>
+Message-ID: <02061216302400.01850@DHY119>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0012_01C211DF.F0385CC0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,72 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-C'est un message de format MIME en plusieurs parties.
+Hello,
 
-------=_NextPart_000_0012_01C211DF.F0385CC0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+hi!  i just visited your site http://www.iptables.org/contact.html#list and 
+it really did help me a lot. thanks!
 
-Hello, I am a serious problem this my gateway. I must apply the =
-newnat/h323 patch for use netmetting.=20
-I have following the steps of the patch-o-matic DOC, but I can not apply =
-the patch.=20
+but i still have some questions.  can you teach me how to configure a 
+subnetwork in kernel 2.4.  im a newbie with Linux networking.
 
-I have kernel 2.4.18 installed.
-I get all patches from CVS=20
-I follow your documentation to do that=20
+I want to set up a private network in my TurboLinux using 1 network interface 
+card.  I read this can be achieved with Ip Alias.  so i did, but to no avail.
 
-but ...=20
+can you please give me some pointers, where to begin and how to troubleshoot. 
 
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] t
-...
-FAILED...
-...
-
-This very important for me ! HELP !!!
+thank you very much!
 
 
-------=_NextPart_000_0012_01C211DF.F0385CC0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Dangca, Gerard II G.
+Furukawa Elec. Japan
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hello, I am a serious problem =
-this&nbsp;my gateway.=20
-I must apply&nbsp;the newnat/h323 patch for use netmetting. <BR>I have =
-following=20
-the steps of the patch-o-matic DOC, but&nbsp;I can not apply =
-the&nbsp;patch.=20
-</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have kernel 2.4.18 =
-installed.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I get all patches from CVS =
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I follow your documentation to do that=20
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>but ... <BR><BR>Do you want to apply =
-this patch=20
-[N/y/t/f/a/r/b/w/v/q/?] t</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>FAILED...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>This very important for me ! HELP=20
-!!!<BR></DIV></FONT></BODY></HTML>
-
-------=_NextPart_000_0012_01C211DF.F0385CC0--
 
 
