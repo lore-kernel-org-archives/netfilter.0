@@ -1,8 +1,8 @@
 From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: Weird TCP flags?
-Date: Thu, 11 Dec 2003 23:46:41 -0500
+Date: Thu, 11 Dec 2003 23:51:18 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312112346.41936.JALaramie@Loudoun-Fairfax.com>
+Message-ID: <200312112351.18680.JALaramie@Loudoun-Fairfax.com>
 References: <003101c3c065$f61ad790$13fea8c0@melita.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -31,11 +31,9 @@ On Thursday 11 December 2003 23:11, Ian Hunter wrote:
 > ID=56169 DF PROTO=TCP SPT=80 DPT=56319 WINDOW=32476 RES=0x00 ACK SYN URGP=0
 >
 
-These have ACK SYN set so I doubt they have anything to do with established 
-connections. I would guess that this is a browser on the webserver itself 
-trying to connect to an outside site which your rules don't allow. In this 
-case: bart.routesys.com.
+Let me correct my previous post. It's coming from port 80 but it's not trying 
+to connect to port 80 so it's probably not a browser. Disregard, I need 
+sleep.
 
 Jeff
-
 
