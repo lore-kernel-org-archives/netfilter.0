@@ -1,14 +1,10 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: NetBIOS browsing across subnets
-Date: Thu, 04 Jul 2002 14:52:48 -0700
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: RE: Natted IRC "inherently insecure"?
+Date: Fri, 5 Jul 2002 08:10:09 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPEEJICHAA.stewart.thompson@shaw.ca>
-References: <20020704204621.JNSG295.mta03-svc.ntlworld.com@there>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA22A@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020704204621.JNSG295.mta03-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,46 +15,39 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: "'Jesse W. Asher'" <jasher1@tampabay.rr.com>, netfilter@lists.samba.org
 
-Antony:
+It is insecure if you use the older IRC module as there was a flaw..
 
-	This subject came up on the list previously. There was a link
-to a Microsoft Article addressing it. Perhaps if he looked through the
-archives he might find it.
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
 
-
-Stu......
 
 
 -----Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
-Sent: July 4, 2002 1:46 PM
+From: Jesse W. Asher [mailto:jasher1@tampabay.rr.com]
+Sent: Thursday, 04 July 2002 9:42 PM
 To: netfilter@lists.samba.org
-Subject: Re: NetBIOS browsing across subnets
-
-On Thursday 04 July 2002 9:44 pm, John Jones wrote:
-
-> I have a need to allow NetBIOS/Network Neighborhood browsing across a
-> firewall between one internal LAN segment (192.168.0.0/23) to another
-> (192.168.10.0/24).  The two networks are on interfaces eth2 and eth3,
-> respectively, off of the corporate firewall.
-
-As far as I am aware you cannot do Network Neighbourhood browsing across a
-router - it works by using broadcast packets, so unless you bridge your
-networks together you will not be able to browse one side from the other.
-
-You can certainly make Windows / SMB / NetBios connections from one network
-to another, but only if you know in advance the IP address/es of the
-machine/s you want to connect to.
-
-If anyone knows a way of supporting Windows browsing across a router, please
-speak up :-)
+Subject: Natted IRC "inherently insecure"?
 
 
 
-Antony.
+Someone recently indicated to me that they believed that natting IRC 
+through a firewall was "inherently insecure" and I wanted to get 
+opinions on that statement.  I guess, in my mind, it isn't any more or 
+less secure than any other service natted through the firewall - it all 
+depends on how comfortable you feel with the inherent security of the 
+client/tool that you're using.
+
+Comments?
+
+-- 
+Jesse W. Asher              jasher1@tampabay.rr.com
+
 
 
 
