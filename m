@@ -1,11 +1,11 @@
-From: "Linux" <linuxrobotsstayaway@usermail.com>
-Subject: Re: portforwarding-HOWTO
-Date: Tue, 7 Jan 2003 15:06:34 -0700
+From: "Juliano Dapper" <juliano@dualcon.com.br>
+Subject: tcp-window-tracking in kernel 2.4.20
+Date: Thu, 9 Jan 2003 13:25:08 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <024e01c2b699$0b9b64e0$d318b2a1@IBMCMDCTR004>
-References: <2132.192.168.0.1.1041835837.squirrel@mail.intermediacorp.com>
+Message-ID: <000f01c2b7f3$4d15b780$3200a8c0@dualcon.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000C_01C2B7E2.876C2A60"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,62 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: oarojo@intermediacorp.com, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Did you turn on Masquerading?
+This is a multi-part message in MIME format.
 
-Linux303
------ Original Message -----
-From: <oarojo@intermediacorp.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, January 05, 2003 11:50 PM
-Subject: portforwarding-HOWTO
+------=_NextPart_000_000C_01C2B7E2.876C2A60
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+I have problems when applying patch tcp-window-tracking in kernel
+2.4.20,exist some especific procedures for apply this patch ?
+Patchs quota,time,psd,string it applies without problems.
+Error is:
+FAILED TO APPLY THIS PATCH.
+Kernel 2.4.20 + patch-o-matic 20030107.
 
-> Hello people!!!
->
-> I have set-up a linux box firewall with two ethernet cards; eth0 facing
-the
-> internet and eth1 facing the internal network. Inside my network is my
-mail
-> server with an IP of 192.168.0.5. Now since my ISP had only given me one
-> valid IP address for my network, I wish to do port-forwarding for ports 25
-> and 110. I did something like:
->
-> # iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx --dport
-25
-> -j DNAT --to 192.168.0.5:25
->
-> # iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx --dport
-> 110 -j DNAT --to 192.168.0.5:110
->
-> # iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 25 -j ACCEPT
-> # iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 110 -j ACCEPT
->
-> # iptables-save > /etc/sysconfig/iptables
->
->
-> When i used nmap to determine if ports 25 and 110 are open, it says:
->
-> 25/tcp     filtered    smtp
-> 110/tcp    filtered    pop-3
->
-> and when i try telnetting its valid ip
->
-> #telnet xxx.xxx.xxx.xxx 25
->
->
-> it says "trying...." and can't connect at all...
->
-> How's this? Did I missed something here? Please Help!!!
->
->
-> Oliver
->
->
->
->
->
+Tkz.
+------=_NextPart_000_000C_01C2B7E2.876C2A60
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I have problems when applying patch=20
+tcp-window-tracking in kernel<BR>2.4.20,exist some especific procedures =
+for=20
+apply this patch ?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Patchs quota,time,psd,string it applies =
+without=20
+problems.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Error is:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>FAILED TO APPLY THIS =
+PATCH.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Kernel 2.4.20 + patch-o-matic=20
+20030107.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Tkz.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000C_01C2B7E2.876C2A60--
 
 
