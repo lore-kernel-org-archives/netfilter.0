@@ -1,10 +1,12 @@
-From: John Mathey <jmathey@attbi.com>
-Subject: using iptables and masquerade to change IP in data portion
-Date: Thu, 27 Mar 2003 10:56:18 -0600
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: using iptables and masquerade to change IP in data portion
+Date: Thu, 27 Mar 2003 09:29:11 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.2.20030327104706.01c2fff8@mail>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DA3@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,42 +16,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all,
-I don't even think this is possible, but I have an application which I 
-believe is embedding the source IP address in the data portion of the 
-packets. The masquerading is doing it's job and modifying the source IP on 
-the way out, but that is only the header portion of the packet. Are there 
-any utilities out there that will allow me to parse the the data portion of 
-the packet for IP addresses and replace them with the masqueraded IP? I 
-believe I may be able to write something myself to do it, but before I head 
-down that path, I thought I'd see if anyone else had run into this? The 
-problem is that when the recipient receives this, ( this is a proprietary 
-application), he pulls the senders IP out of the data portion, not the 
-header. Also, what utilities are available to dump the packet completely, 
-including the data portion? Something like tcpdump would be nice, just for 
-udp?
+Some protocols like Net8 or T3 like to include hostnames / IP addresses
+in their data segments, like you said, but in order to do a replace, you
+need to interpret the application protocol. You can perform this two
+ways, one easy and bad, and one difficult and elegant.
 
-My Network:
+1. Write iptables NAT and conntrack modules for the protocol that you
+are using. This will allow mangling of anything you like. Although, the
+work involved can be inhibitive of whatever you are doing this for.
 
-------------------------------- 
------------------------------------------------------------
-|                       |                         | 
-eth0                                        |
-|                       |---------------------------->| 
-192.168.1.1                             |
-|    192.168.1.0/24    |                          |             N A 
-T     eth1          |
-|                       |                         | 
-    12.238.44.52     | ---------------------------> INTERNET
-------------------------------- 
------------------------------------------------------------
+2. You could always hack this and just write a userspace proxy that
+mangles the packet as it is going through, but this isn't that elegant
+at all. I tried doing this and it does break some protocols.
 
-Thanks in advance
-John
-
+If you say your protocol, maybe there are other workarounds which we can
+suggest.
 
 
