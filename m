@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: logging mac address
-Date: Wed, 16 Jul 2003 09:23:38 +1000
+From: David Coulson <david@davidcoulson.net>
+Subject: Re: IPTables articles
+Date: Tue, 15 Jul 2003 20:03:54 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0192BE@wardrive.citadelcomputer.com.au>
+Message-ID: <3F14966A.3000304@davidcoulson.net>
+References: <3F0C543F.8040407@davidcoulson.net> <20030715162116.GR7198@naboo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20030715162116.GR7198@naboo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>, Antonio Paulo Salgado Forster <aforster@br.ibm.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Harald Welte <laforge@netfilter.org>
+Cc: netfilter@lists.netfilter.org, webmaster@netfilter.org
 
->>It makes sense though that you don't get that in FORWARD since the =
-routing
-decision has not yet been made.
+Harald Welte wrote:
+> Thanks, I will add them with the next homepage update.
 
-Sorry, that's not true, routing decision HAS been made which is why it's =
-FORWARDing onto another interface. But remember that MAC addresses are =
-visible only as they come off the wire.. that's what I've found.. so =
-INPUT and PREROUTING see it but once they are in, the macs are dropped =
-off into limbo...
+Thanks, Harald :-)
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+David
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
+-- 
+David Coulson                                    email: d@vidcoulson.com
+Linux Developer /                          web: http://davidcoulson.net/
+Network Engineer                                   phone: (216) 533-6967
 
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
 
