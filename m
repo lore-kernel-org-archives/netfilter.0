@@ -1,13 +1,12 @@
-From: John Mathey <jmathey@attbi.com>
-Subject: =?iso-8859-1?Q?Re:_I_don=B4t_want_anyone_can_scan_my_server_?=
-Date: Mon, 19 May 2003 17:49:11 -0500
+From: Bob Keyes <bob@sinister.com>
+Subject: =?iso-8859-1?Q?RE:_I_don=B4t_want_anyone_can_scan_my_server_?=
+Date: Mon, 19 May 2003 18:15:15 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.1.1.2.20030519174844.01ce8a10@mail.attbi.com>
-References: <20030430210501.9656.40740.Mailman@kashyyyk>
+Message-ID: <Pine.LNX.4.44.0305191814470.9796-100000@Sinister.Com>
+References: <ABEKJILKOKKGGDJKHKDFCEFPCBAA.patrick@vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007901c31e4a$158cfb80$0f00a8c0@juancarlitos>
+In-Reply-To: <ABEKJILKOKKGGDJKHKDFCEFPCBAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +16,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: juanca <juanca@sat.com.py>, netfilter@lists.netfilter.org
-
-What do you mean by scan, do you mean ping, attempt telnet, , can you be=20
-more specific.
-
-John
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick Ahler <patrick@vikus.com>
+Cc: netfilter EMAIL <netfilter@lists.netfilter.org>, juanca <juanca@sat.com.py>
 
 
 
-At 02:03 PM 5/19/2003 -0700, juanca wrote:
->What rulset should implement?
->I don=B4t want anyone can scan my server?
->I need that all requests been rejected
->
->Thanks in advance
+On Mon, 19 May 2003, Patrick Ahler wrote:
+
+> drop all ICMP Packets... that'll be a good start.
+
+How about just unplugging your system from the Internet? That's been
+proven the most effective.
+
+-Bob
 
 
