@@ -1,9 +1,8 @@
-From: "Ivano Proietti Mucci" <ipmucci@yahoo.com.br>
-Subject: Re: iptables wishes
-Date: Tue, 1 Apr 2003 11:32:25 -0300
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: patch-o-matic compile
+Date: Tue, 1 Apr 2003 11:35:24 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006c01c2f85b$9b2d8800$1e0110ac@ausland.net.br>
-References: <65F646CE24EBF24AA3714070D537988E017F04@gargoyle.seaan.net>
+Message-ID: <ABEKJILKOKKGGDJKHKDFKEHCCAAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,12 +16,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-like most peaple, i have a gateway to internet, and the thing is: how to
-limit bandwidth per internal-ip?
+Hi, I just patched my kernel for h323 and string. Now it says that I'm ready
+to compile. Being a bit of a linux newbie, only been using since august, I'm
+a bit confused on what to do next. If someone could give some kind of
+specific step by step procedure that'd be great. I've re-compiled once
+before, but had problems.
 
-thanks,
-Ivano
+Thanks, Patrick
+
+
 
 
