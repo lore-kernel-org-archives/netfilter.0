@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
+From: Michael Gale <michael.gale@utilitran.com>
 Subject: Re: iptables script file
-Date: Thu, 28 Oct 2004 11:05:35 -0400
+Date: Thu, 28 Oct 2004 09:14:19 -0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041028150535.GA4228@bender.817west.com>
-References: <B069AFB1CBDE6F6A01A304D9@[10.169.6.246]>
-	<200410281351.i9SDpdoL058208@jkcpub.iserver.net>
+Message-ID: <41810CCB.1040808@utilitran.com>
+References: <200410281351.i9SDpdoL058208@jkcpub.iserver.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <200410281351.i9SDpdoL058208@jkcpub.iserver.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,71 +17,124 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Deepak Seshadri <dseshadri@broadbandmaritime.com>, netfilter@lists.netfilter.org
 
-On Thu, Oct 28, 2004 at 09:56:36AM -0400, Deepak Seshadri wrote:
+Hello,
+
+	I am not to worried about speed as so much the administrative headache. 
+You should try breaking your rules up, for example I have done the 
+following:
+
+rc.firewall
+  - loads standard / global options (ip_forward, sets up user chains,..)
+  - executes all other files.
+
+
+We have a number of MAT addresses on our firewall - so each interface 
+has it's own file and each MAT address has it's own file as well.
+
+Also each MAT address and interface have it's own user defined chain. 
+ From my perspective this provides the best efficient for the firewall 
+because a packet gets passed to only 1 or 2 user chains and is only 
+compared with rules that need to be applied.
+
+Also if some one is making changes to a MAT address and they accidently 
+break something, when they execute the file for updates to take affect 
+they are only affecting that user defined chain (unless they really 
+don't following the instructions). So the odds of affecting other 
+network traffic go down.
+
+Michael.
+
+
+
+Deepak Seshadri wrote:
 > Hello everybody,
 > 
 > Kenneth: Thank you very much for the reply. I'll look into this option.
 > 
 > Does anybody have any other suggestion? How does everyone load their
 > rule-set?
-
-here's the state-of-the-union:
-
-loading rules from a script that issues "iptables -A ..." commands over
-& over again is not "efficient."  whether this inefficiency is a problem
-or not depends on the number of rules being loaded.  the firewall i'm
-testing with uses an actual ruleset of ~100 rules and takes less than 5
-seconds to load:
-
-  time ./fw start
-
-  real    0m4.632s
-  user    0m0.300s
-  sys     0m4.310s
-
-here's an example using a script that loads 1024 rules of the form:
-
-  iptables -A INPUT -i eth0 -p tcp --syn -m state --state NEW \
-    -s 10.x.y.1/24 -j ACCEPT
-
-  (where x and y are incremented via a for loop)
-
-  # time ./addrules
-
-  real    0m20.855s
-  user    0m0.410s
-  sys     0m20.440s
-
-now, let's do an "iptables-save" on those loaded rules, and see how long
-an "iptables-restore" takes:
-
-  # time iptables-restore 1000rules.save
-
-  real    0m1.253s
-  user    0m0.080s
-  sys     0m1.130s
-
-all these tests are performed on the same machine:
-
-Linux vmg2 2.4.26-gentoo-r9 #2 Fri Sep 3 07:13:35 EDT 2004 i686 Intel(R)
-Pentium(R) M processor 1.70GHz GenuineIntel GNU/Linux
-
-192 MB RAM
-
-so, the upshot is this--if your ruleset is sufficiently large to make
-the inefficiency of scripted "iptables" commands a problem--you'll need
-to use "iptables-restore" to load your rules.  once you get the hang of
-it, it really isn't that hard to just edit the "iptables-restore" file
-format (even though this isn't "recommended").
-
-hope this helps...
-
--j
+> 
+> My original mail:
+> "So far I have been writing all the iptables commands in a file & ran it in
+> a terminal (bash filename). Then I do the "service iptables save" to save &
+> load the configuration during boot-up. Pretty soon the configuration file is
+> going to have around 800 commands & this file is modified quite often. So
+> for the changes to reflect in run-time I do a "bash <script-file>".
+> Somewhere I read that loading that many commands using "bash <script-file>"
+> is not recommended (Is this true?). So I started searching in Google for
+> other alternatives. I came across the following:
+> 
+> - Use rc.firewall (I don't know if its in /etc or /etc/init.d or what)
+> - Use /etc/firewall.conf
+> - Use /etc/init.d/firewall
+> 
+> Could someone tell me which file to use? In Fedora core 2 I found only
+> /etc/rc.d/init.d/iptables.
+> Which way would be easy to load a huge script that would be modified quite
+> often?
+> 
+> OS specs:
+> Fedora Core 2
+> Kernel 2.6.8.1
+> Iptables 1.2.11"
+> 
+> Any help will be greatly appreciated.
+> Thank you,
+> 
+> Deepak Seshadri
+> 
+> 
+>>-----Original Message-----
+>>From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+>>bounces@lists.netfilter.org] On Behalf Of Kenneth Porter
+>>Sent: Monday, October 25, 2004 5:29 PM
+>>To: 'Netfilter Group'
+>>Subject: Re: iptables script file
+>>
+>>
+>>>Which way would be easy to load a huge script that would be modified
+>>
+>>quite
+>>
+>>>often?
+>>
+>>iptables-restore
+>>
+>>The save format is a little weird at first but it's not too hard to see
+>>how
+>>it matches your iptables commands. I now modify /etc/sysconfig/iptables
+>>directly. (This is the save file used on Red Hat systems to reload the
+>>firewall at boot time.)
+>>
+>>If I understand things correctly, iptables-restore makes a single kernel
+>>call with only one lock, so it's very efficient at loading the tables into
+>>the kernel.
+>>
+>>Change your script to write your rules into the save format and then
+>>invoke
+>>iptables-restore to load it. This is actually pretty simple, as most of
+>>your iptables commands will be replaced with "echo ${RULEBODY} >
+>>${SAVEFILE}" (where RULEBODY is the parameters to your old iptables
+>>command).
+>>
+>>
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
 
 -- 
-Jason Opperisano <opie@817west.com>
+Michael Gale
+Lan Administrator
+Utilitran Corp.
+
+The best part is when the people who know the least are the ones ranting 
+and raving.
 
