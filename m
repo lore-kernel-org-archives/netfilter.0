@@ -1,59 +1,42 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: How to stop imesh with iptables
-Date: Wed, 11 Jun 2003 09:49:37 +1000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E23@wardrive.citadelcomputer.com.au>
+From: Esteban Ribicic <eribicic@UolSinectis.com>
+Subject: kazaaa is making me crazy!
+Date: 10 Jun 2003 21:35:39 -0300
+Sender: lartc-admin@mailman.ds9a.nl
+Message-ID: <1055291739.829.16.camel@dejawu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <lartc-admin@mailman.ds9a.nl>
+Errors-To: lartc-admin@mailman.ds9a.nl
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
 Content-Type: text/plain; charset="us-ascii"
-To: Fernando La Gamba <fernando.lagamba@fastrack.com.br>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, LARTC <lartc@mailman.ds9a.nl>
+Cc: winfield@freegates.be
 
-Argh these P2P software... What ports does it use? Did you research it's =
-protocol so you can block it's commands to the server/users?
+im trying to debug how cpu consuming could be the string match.
+is it a lineal function? i mean..
 
-Have you googled for any information about it?
+1 Mbit -> 1024/8 Kbytes
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+supossaing mtu payload is 1500 bytes, i have in 1 megabit
+[(1024/8)*1000]*1500 = 1920000000 packets
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
+anorther thing..this rule just filter the initial download request..that
+would be okay if oyu want filter completely, but if you want to slwo
+down (i mean using tc/htb/fwmarks) you wouldnt be matching the hole
+download, only the request...
 
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
-
------Original Message-----
-From: Fernando La Gamba [mailto:fernando.lagamba@fastrack.com.br]
-Sent: Wednesday, June 11, 2003 3:30 AM
-To: netfilter@lists.netfilter.org; coreteam@netfilter.org
-Subject: How to stop imesh with iptables
+iptables -t mangle -A PREROUTING -p tcp -m --string "Kazaa" -j DROP
 
 
-Hi, How to stop imesh with iptables?
+any comment, any idea?
 
-Thaks!!
-
-Fernando La Gamba
-
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.487 / Virus Database: 286 - Release Date: 1/6/2003
-
-
+_______________________________________________
+LARTC mailing list / LARTC@mailman.ds9a.nl
+http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
