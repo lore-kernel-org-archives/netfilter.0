@@ -1,11 +1,14 @@
-From: Shashidhar Lakkavalli <lakkavas@yahoo.com>
-Subject: High speed filtering using RAW sockets and NetFilter
-Date: Sun, 11 Apr 2004 16:47:13 -0700 (PDT)
+From: Sutono <sutono@jakarta.sns.slb.com>
+Subject: Firewall script by Iptables in redhat 9
+Date: Mon, 12 Apr 2004 09:58:41 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040411234713.98707.qmail@web41811.mail.yahoo.com>
+Message-ID: <5.1.1.1.2.20040412095542.02ce11d8@jakarta.omnes.slb.com>
+References: <200404081128.i38BSdG20380@omail1.walla.co.il>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1002485539-1081727233=:98705"
+Content-Type: multipart/alternative;
+ boundary="Boundary_(ID_iPcM6OxHf77RmCsdN9hOSA)"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <200404081128.i38BSdG20380@omail1.walla.co.il>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +20,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
---0-1002485539-1081727233=:98705
-Content-Type: text/plain; charset=us-ascii
 
-Hi,
- 
-I am trying to use iptables to drop all packets received by my interface, so that there could be no IP stack processing. I am then trying to filter specific packets using RAW sockets. For up to 10-12Mbps, my filter accepts 90% of the packets... but increasing the data rate, causes my filter to accept negligible number of packets... I am using IXIA to generate packets, and a LINUX box (2.4 kernel), with a Pentium II CPU.
- 
-Is my CPU a bottleneck for my filtering??? If someone can guide me on this, it would be very helpful.
- 
-Thanks,
-Lakkavas.
- 
+--Boundary_(ID_iPcM6OxHf77RmCsdN9hOSA)
+Content-type: text/plain; charset=us-ascii; format=flowed
+Content-transfer-encoding: 7BIT
+
+Hi Alll,
+
+Are some of you have a firewall script use iptables in linux redhat 9?
+If you have, could you share to me please ....
+
+Thank you
+
+Regards
+sutono
 
 
----------------------------------
-Do you Yahoo!?
-Yahoo! Tax Center - File online by April 15th
---0-1002485539-1081727233=:98705
-Content-Type: text/html; charset=us-ascii
 
-<DIV>Hi,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I am trying to use iptables to drop all packets received by my interface, so that there could be no IP stack processing. I am then trying to filter specific packets using RAW sockets. For up to 10-12Mbps, my filter accepts 90% of the packets... but increasing the data rate, causes my filter to accept negligible number of packets... I am using IXIA to generate packets, and a LINUX box (2.4 kernel), with a Pentium II CPU.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Is my CPU a bottleneck for my filtering??? If someone can guide me on this, it would be very helpful.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanks,</DIV>
-<DIV>Lakkavas.</DIV>
-<DIV>&nbsp;</DIV><p><hr size=1><font face=arial size=-1>Do you Yahoo!?<br>
-Yahoo! Tax Center - <a href="http://taxes.yahoo.com/filing.html">File online by April 15th</a>
---0-1002485539-1081727233=:98705--
+-----------------------------------------
+Schlumberger
+WORLDWIDE IT PARTNER
+
+Ph      : (62) (761) 46514
+Fax     : (62) (761) 46523
+email: Sutono@jakarta.sns.slb.com
+-----------------------------------------
+
+
+
+--Boundary_(ID_iPcM6OxHf77RmCsdN9hOSA)
+Content-type: text/html; charset=us-ascii
+Content-transfer-encoding: 7BIT
+
+<html>
+Hi Alll,<br><br>
+Are some of you have a firewall script use iptables in linux redhat
+9?<br>
+If you have, could you share to me please ....<br><br>
+Thank you<br><br>
+Regards<br>
+sutono<br><br>
+<br>
+<x-sigsep><p></x-sigsep>
+-----------------------------------------<br>
+<font size=5 color="#000080"><b>Schlumberger<br>
+</font><font size=2>WORLDWIDE IT PARTNER<br><br>
+</b></font>Ph<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>: (62)
+(761) 46514<br>
+Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>: (62) (761) 46523<br>
+email: Sutono@jakarta.sns.slb.com<br>
+-----------------------------------------<br><br>
+<br>
+</html>
+
+--Boundary_(ID_iPcM6OxHf77RmCsdN9hOSA)--
 
