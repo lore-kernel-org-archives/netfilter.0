@@ -1,12 +1,13 @@
-From: "pengjie" <bill@acamar.com.cn>
-Subject: Re: Confusion about QUEUE and NETLINK
-Date: Mon, 21 Jul 2003 09:31:28 +0800
+From: Shawn <core@enodev.com>
+Subject: Re: port 25 & 110 forward
+Date: 14 Jul 2003 13:55:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000701c34f27$ce9d25b0$0f640a0a@acamarpeng>
-References: <000201c34e29$44671da0$0200a8c0@basti79>
+Message-ID: <1058208934.24132.60.camel@localhost>
+References: <091A6DF13847F44395B31658ED61C19C63A449@yellowstone.medclaim.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <091A6DF13847F44395B31658ED61C19C63A449@yellowstone.medclaim.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Sebastian <netfilter@basti79.de>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: "Brei, Matt" <mbrei@medclaiminc.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-SSB0aGluayBORVRMSU5LIGlzIHRoZSBtZWNoYW5pc20gY29tbXVuaWNhdGlvbiBiZXR3ZWVuIHVz
-ZXJzcGFjZSBhbmQga2VybmVsIHNwYWNlLiBpcHF1ZXVlIGlzIGFuIGFwcGxpY2F0aW9uIGJhc2Vk
-IG9uIGl0LiBpbiBhbiBvdGhlciB3b3JkcywgaXBxdWV1ZSB1c2VzIE5FVExJTksgdG8gZGVsaXZl
-ciBwYWNrZXRzIGJldHdlZW4gdXNlciBzcGFjZSBhbmQga2VybmVsIHNwYWNlLg0KDQoNCi0tLS0t
-IE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gDQpGcm9tOiAiU2ViYXN0aWFuIiA8bmV0ZmlsdGVyQGJh
-c3RpNzkuZGU+DQpUbzogIk5ldGZpbHRlciBNYWlsaW5nbGlzdCIgPG5ldGZpbHRlckBsaXN0cy5u
-ZXRmaWx0ZXIub3JnPg0KU2VudDogU3VuZGF5LCBKdWx5IDIwLCAyMDAzIDM6MDkgQU0NClN1Ympl
-Y3Q6IENvbmZ1c2lvbiBhYm91dCBRVUVVRSBhbmQgTkVUTElOSw0KDQoNCj4gSGkgbGlzdC4uLg0K
-PiANCj4gSSdtIGJ5IG5vdyBhIGxpdHRsZSBjb25mdXNlZCBhYm91dCBRVUVVRSBhbmQgTkVUTElO
-SyB0YXJnZXRzLg0KPiBCb3RoIGFyZSBmb3IgcXVldWluZyB0byB1c2Vyc3BhY2UgaWYgSSB1ZGVy
-c3RhbmQgaXQgY29ycmVjdGx5LiBCdXQgd2hlcmUNCj4gaXMgdGhlIGRpZmZyZW5jZSBiZXR3ZWVu
-IHRob3NlIHR3bz8gQXJlIHRoZXkgdXNlZCBmb3IgZGlmZnJlbnQgcHVycG9zZQ0KPiBvciBpcyBq
-dXN0IHRoZSB1c2Vyc3BhY2UgaW50ZXJmYWNlIGRpZmZyZW50Pw0KPiANCj4gQWRkaXRpb25hbHkg
-aSd2ZSBmb3VuZCB0d28gb3B0aW9ucyBpbiBrZXJuZWwgLmNvbmZpZyBmaWxlIHdoaWNoIGFyZSBu
-b3QNCj4gZG9jdW1lbnRlZCB1bmRlciBEb2N1bWVudGF0aW9uL0NvbmZpZ3VyZS5oZWxwOg0KPiBD
-T05GSUdfSVBfTkZfTkVUTElOSw0KPiBDT05GSUdfSVBfTkZfTkVUTElOS19DT05OVFJBQ0sNCj4g
-V2hhdCBpcyB0aGVpcmUgcHVycG9zZT8NCj4gDQo+IFRoYW5rcyBmb3IgYW55IGFuc3dlcnMuDQo+
-IA0KPiBHcmVldHMNCj4gU2ViYXN0aWFuLg0KPiANCj4gDQo+IA0K
+Can you telnet to port 25, and does it connect you to your private host?
 
+If so, you have an SMTP issue.
+
+On Mon, 2003-07-14 at 13:43, Brei, Matt wrote:
+> I=E2=80=99m trying to forward smtp and pop3 from my router to my mail ser=
+ver
+> at 10.13.110.1.  I=E2=80=99ve tried both of the following iptables comman=
+ds,
+> neither has worked.
+>=20
+> =20
+>=20
+> $IPTABLES -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j DNAT --to
+> 10.13.110.1
+>=20
+> $IPTABLES -t nat -A PREROUTING -i eth1 -p tcp --dport 110 -j DNAT --to
+> 10.13.110.1
+>=20
+> $IPTABLES -A FORWARD -p tcp -d 10.13.110.1 --dport 25 -j ACCEPT
+>=20
+> $IPTABLES -A FORWARD -p tcp -d 10.13.110.1 --dport 110 -j ACCEPT
+>=20
+> =20
+>=20
+> =20
+>=20
+> $IPTABLES -t nat -A PREROUTING -d <public_ip> -p tcp --dport 25 -j
+> DNAT --to 10.13.110.1:25
+>=20
+> $IPTABLES -A FORWARD -p tcp --dport 25 -j ACCEPT
+>=20
+> $IPTABLES -t nat -A PREROUTING -d <public_ip> -p tcp --dport 110 -j
+> DNAT --to 10.13.110.1:110
+>=20
+> $IPTABLES -A FORWARD -p tcp --dport 110 -j ACCEPT
+>=20
+> =20
+>=20
+> The later works great for ftp and http forwards.  Why won=E2=80=99t it wo=
+rk
+> for 25 and 110?
+>=20
+> =20
+>=20
+> eth0=3D 10.13.110.1
+>=20
+> eth2=3D <public_ip>
+>=20
+> =20
+>=20
+> Matt Brei
+>=20
+> =20
+>=20
+>=20
 
