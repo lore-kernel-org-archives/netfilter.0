@@ -1,9 +1,12 @@
-From: funny guy <asteriskmail@yahoo.com>
-Subject: Multiple PPTP clients behind NAT
-Date: Wed, 20 Oct 2004 00:42:45 -0700 (PDT)
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: weird message in logs
+Date: Wed, 20 Oct 2004 08:30:21 -0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041020074245.44129.qmail@web52502.mail.yahoo.com>
+Message-ID: <11e601c4b698$2f88b870$49caa8c0@caris.priv>
+References: <116401c4b5fc$0485cc40$49caa8c0@caris.priv>
+	<41755F42.3050802@pbl.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,158 +18,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>, netfilter <netfilter@lists.netfilter.org>
 
-Dear Everyone,
+Thanks very much for the detailed reply.  It was very clear.  My question
+now is  .. don't I want it to redirect ?  I assume letting icmp type 5
+through would allow this ?  Is that a problem ?
 
-I am configuring a Linux NAT box that allows multiple
-PPTP tunnels pass through with kernel version 2.4.26
-However, I cannot make it work. I am a very newbie in
-PPTP and iptables. Can anyone give me some help???
-Thanks a LOT in advance. 
 
-I patched kernel 2.4.26 with
-patch-o-matic-ng-20040919.tar.bz2 which a snapshot. 
+----- Original Message ----- 
+From: "Aleksandar Milivojevic" <amilivojevic@pbl.ca>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Tuesday, October 19, 2004 3:38 PM
+Subject: Re: weird message in logs
 
-I only applied the base options (./runme base) 
-and then I applied extra (./runme extra) with the
-PPTP, RTSP conntrack and transparent proxy patches.
-They seem to apply without problems.
 
-I successfully compiled the kernel, after reboot, I
-loaded the required modules:
+Peter Marshall wrote:
+> Below is a message I get in my messages file.  Basically, there is a
+company
+> going to lease space from us.  I know it would have been easier to just
+> stick another card in my firewall and give them a subnet, however, that is
+> not possible for our setup (long story).  Anyway, I bult another firewall
+> for them.  This firewall sits within our internal network (physically) and
+> has 2 network cards.  The firewalls internal network card is for their
+> netowrk; 192.168.90.0/24,  The external card has a network of its own
+> 10.90.0.2.  My internal firewall has a sub interface eth0:1 with the
+number
+> 10.90.0.1  (eth0 is 192.168.200.1 and is the gateway to my companys
+internal
+> network).
+>
+> What I am doing at the moment is ssh'ing to the newly created firewall
+> called rubidium on port 15422.  I get the following in my messages file.
+> Does anyone know how to correct this problem.  It does not prevent me from
+> sshing, however, I would prefer to not have errors in my log files.
+>
+> Oct 19 14:46:05 rubidium kernel: REJECT: INPUT IN=eth1 OUT=
+> MAC=00:50:04:9b:7a:ee:00:50:04:68:df:06:08:00 SRC=10.90.0.1 DST=10.90.0.2
+> LEN=484 TOS=0x10 PREC=0xC0 TTL=64 ID=58050 PROTO=ICMP TYPE=5 CODE=1
+> GATEWAY=192.168.202.73 [SRC=10.90.0.2 DST=192.168.202.73 LEN=456 TOS=0x10
+> PREC=0x00 TTL=64 ID=7787 DF PROTO=TCP SPT=15422 DPT=2510 WINDOW=8576
+> RES=0x00 ACK PSH URGP=0 ]
 
-ipt_REDIRECT
-ipt_MASQUERADE
-iptable_filter
-ip_tables
-iptable_nat
-ip_nat_pptp
-ip_nat_proto_gre
-ip_conntrack_pptp
-ip_conntrack_proto_gre
-ip_conntrack
+What happened is that your internal firewall got packet from rubidium
+for a host on your local network.  It found out that it needs to route
+it back to the interface it came from (eth0), so it generated ICMP host
+redirect packet (PROTO=ICMP TYPE=5 CODE=1) telling rubidium to talk to
+192.168.202.73 directly (GATEWAY=192.168.202.73).  The thing in square
+brackets is copy of the packet that caused this ICMP redirect (it is
+part of it).
 
-my machines configuration is as follows:
+If putting 10.90.0.1 onto separate physical interface is not an option,
+than the only thing you could do is disabling generation of ICMP
+redirects on your internal firewall.
 
-192.168.10.0/24
-PPTP     |
-client1->|
-         |                                129.94.133.1
-PPTP     |
-client2->|                                   |->PPTP
-         |       Linux                       |  Server
-         |->eth1->NAT->eth0->...Internet...->|
-... ...->|                                   |->...
-         |                                   |
-PPTP     |
-client n->|
+To disable them on the running host, do:
 
-configuration parameters:
-A. eth1 IP = 192.168.10.1
-B. eth0 IP = 129.94.60.128
-C. PPTP Server IP = 129.94.133.1
-D. Clients in PPTP Server network: 129.94.182.130,
-129.94.182.131 (These IPs cannot be accessed without a
-VPN)
-E. All clients in the 192.168.10.0/24 LAN are windows
-or Mac machines. After the VPN is setup, they will be
-assigned with IP addresses of 129.94.165.3 and
-129.94.165.4 etc
-F. The PPTP Server is not firewalled
+for a in /proc/sys/net/ipv4/conf/*/send_redirects
+do
+    echo 0 > $a
+done
 
-I only applied two NAT rules for the above settings:
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-iptables -A FORWARD -i eth1 -j ACCEPT
-echo 1 > /proc/sys/net/ipv4/ip_forward
+To have them disabled on next reboot, place this into /etc/sysctl.conf:
 
-However, I cannot establish multiple connections. The
-problem is as following:
-I. I setup one connection from client 1 to the PPTP
-server, then I tried to test the connection by ping
-either 129.94.182.130 or 129.94.182.131. It works.
-II. I setup the other connection from client 2 to the
-same PPTP server. Then two cases will happen:
-   a) if the client 1 (a Mac machine) keep pinging,
-the
-connection for client 2 will fail;
-   b) if client 1 stop pinging, the connection can be
-established.
-III. After the second connection is setup. Client 2
-cannot ping if client 1 keeps pinging, but the status
-shows that the connection is still there.
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
 
-I donot know whether it is a problem of the kernel
-patch or I did not set the iptables rules correctly.
+Of course, instead of disabling them on all interfaces, you can disable
+them per interface too.
 
-Can anyone please tell me the exact rules according to
-my figure if I did not set the correct rules?
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
-If the problem is the kernel patch, the following is
-my
-.config file, can anyone please tell me which option I
-did not apply correctly?
-
-[.config]
-# Networking options
-#
-CONFIG_PACKET=y
-CONFIG_NETFILTER=y
-CONFIG_FILTER=y
-CONFIG_UNIX=y
-CONFIG_INET=y
-CONFIG_IP_MULTICAST=y
-CONFIG_IP_ADVANCED_ROUTER=y
-CONFIG_IP_MULTIPLE_TABLES=y
-CONFIG_IP_ROUTE_FWMARK=y
-CONFIG_IP_ROUTE_NAT=y
-CONFIG_IP_ROUTE_TOS=y
-CONFIG_NET_IPIP=m
-
-#   IP: Netfilter Configuration
-#
-CONFIG_IP_NF_CONNTRACK=m
-CONFIG_IP_NF_FTP=m
-CONFIG_IP_NF_CT_PROTO_GRE=m
-CONFIG_IP_NF_PPTP=m
-CONFIG_IP_NF_PPTP_DEBUG=y
-CONFIG_IP_NF_H323=m
-CONFIG_IP_NF_TFTP=m
-CONFIG_IP_NF_IRC=m
-CONFIG_IP_NF_MMS=m
-CONFIG_IP_NF_IPTABLES=m
-CONFIG_IP_NF_MATCH_MAC=m
-CONFIG_IP_NF_MATCH_PKTTYPE=m
-CONFIG_IP_NF_MATCH_MARK=m
-CONFIG_IP_NF_MATCH_MULTIPORT=m
-CONFIG_IP_NF_MATCH_TOS=m
-CONFIG_IP_NF_MATCH_RECENT=m
-CONFIG_IP_NF_MATCH_DSCP=m
-CONFIG_IP_NF_MATCH_AH_ESP=m
-CONFIG_IP_NF_MATCH_STATE=m
-CONFIG_IP_NF_MATCH_CONNTRACK=m
-CONFIG_IP_NF_FILTER=m
-CONFIG_IP_NF_NAT=m
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=m
-CONFIG_IP_NF_TARGET_REDIRECT=m
-CONFIG_IP_NF_NAT_H323=m
-CONFIG_IP_NF_NAT_LOCAL=y
-CONFIG_IP_NF_NAT_PPTP=m
-CONFIG_IP_NF_NAT_PROTO_GRE=m
-CONFIG_IP_NF_NAT_IRC=m
-CONFIG_IP_NF_NAT_MMS=m
-CONFIG_IP_NF_NAT_FTP=m
-CONFIG_IP_NF_NAT_TFTP=m
-CONFIG_IP_NF_MANGLE=m
-CONFIG_IP_NF_TARGET_TOS=m
-CONFIG_IP_NF_TARGET_ECN=m
-CONFIG_IP_NF_TARGET_DSCP=m
-CONFIG_IP_NF_TARGET_MARK=m
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
