@@ -1,12 +1,11 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: MSN Voice chat with Iptables
-Date: Sun, 8 Jun 2003 08:31:05 +0530
+From: "Calvin" <calvinproject@ihug.com.au>
+Subject: why packet get through the netfilter even if i drop all in FORWARD
+Date: Sun, 8 Jun 2003 16:07:11 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <032b01c32d6a$343556c0$c2bf09ca@Housecall>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA0@wardrive.citadelcomputer.com.au> <3EDDEDA1.9030801@phreaker.net> <00d301c32ad5$25bb2c10$0100a8c0@windows> <00ac01c32b14$09c128e0$c2bf09ca@Housecall> <001c01c32b89$3b960ff0$0100a8c0@windows>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <001e01c32d84$34f4fe70$95dc6f89@wonderland>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001B_01C32DD8.04DB4290"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,67 +16,98 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.samba.org
+To: netfilter-devel-request@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi all
+This is a multi-part message in MIME format.
 
-Iam working on iptables+msn Voice chat+ UPNP
+------=_NextPart_000_001B_01C32DD8.04DB4290
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-after installed and  run upnpd daemon too
+Dear all,
 
-but still iam not able to solve the Voice chat Problem
+I got a funny problem here and got no idea why it happen.
+my simple network is
+A
+ |(eth0)
+GWa
+||(eth1)
+||
+||(eth1)
+GWb
+|(eth0)
 
-Does any Successfully install on REDHAT
-if so Guidance will be appreciate
+I running netfilter with freeswan, I add a rule in FORWARD chain to drop =
+all packets forward from
+internal iface(eth0) to public iface(eth1).
+    iptables - A FORWARD -i eth0 -i eth1 -j DROP
 
-hare
------ Original Message -----
-From: "Cornu Nicolas" <n.cornu@ifrance.com>
-To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.samba.org>
-Sent: Thursday, June 05, 2003 11:08 PM
-Subject: Re: MSN Voice chat with Iptables
+it works fine when , when i try to ping GWb's eth0 from machine A, it =
+get blocked.
+
+however once I start up the IPSEC, I do the ping again and A can ping =
+GWb's eth0. The rule in FORWARD chain is still there.
+
+Why does this happen? Is that anyway I can fix this?
+
+Thanks very much
+Calvin
 
 
-> no succes for me
-> if i find something i will let u know
->
-> NC
->
-> ----- Original Message -----
-> From: "hare ram" <hareram@sol.net.in>
-> To: <netfilter@lists.samba.org>
-> Sent: Thursday, June 05, 2003 5:39 AM
-> Subject: Re: MSN Voice chat with Iptables
->
->
-> > Hi  all
-> > Does any one installed
-> >
-> > Upnp Successfully in REDHAT
-> > i been doing this practice more than 30 days now
-> > but no luck, any expert can guide me how can i process
-> > even i have posted in to linux-igd group, looks like the news group
-dead,
-> no
-> > responce also for the same
-> >
-> > any help will be great
-> >
-> > hare
-> >
-> >
-> > _____________________________________________________________________
-> > Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN Messeng=
-er
-> > http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de F=
-rance
->
-> _____________________________________________________________________
-> Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN Messenger
-> http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de Fra=
-nce
->
->
+------=_NextPart_000_001B_01C32DD8.04DB4290
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Dear all,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I got a funny problem here and got no =
+idea why it=20
+happen.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>my simple network is</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;|(eth0)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>GWa</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>||(eth1)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>||</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>||(eth1)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>GWb</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>|(eth0)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I running netfilter with freeswan, I =
+add a rule in=20
+FORWARD chain to drop all packets forward from</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>internal iface(eth0) to public=20
+iface(eth1).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; iptables - A FORWARD =
+-i eth0 -i=20
+eth1 -j DROP</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>it works fine when , when i try to ping =
+GWb's eth0=20
+from machine A, it get blocked.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>however once I start up the IPSEC, I do =
+the ping=20
+again and A can ping GWb's eth0. The rule in FORWARD chain is still=20
+there.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Why does this happen? Is that anyway I =
+can fix=20
+this?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks very much</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Calvin</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_001B_01C32DD8.04DB4290--
 
 
