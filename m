@@ -1,9 +1,14 @@
-From: "Joe Clark" <joeclark@iastate.edu>
-Subject: Re: Problems Compiling userspace NF_QUEUE handler
-Date: Sun, 12 Sep 2004 23:00:34 -0500 (CDT)
+From: active <activeNO@SPAMdespammed.com>
+Subject: Re: MAC addresses
+Date: Sat, 11 Sep 2004 22:01:59 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <3402312810402551@webmail.iastate.edu>
+Message-ID: <20040911220159.4cee40bb@oldskool.actisystem.nix>
+References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
+Reply-To: activeNO@SPAMdespammed.com
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200409111150.50506.bulliver@badcomputer.no-ip.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,51 +18,18 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: JC <solemnphoenix@yahoo.co.uk>, Joe Clark <joeclark@iastate.edu>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Well, this will be like the blind leading the blind here, but... this site was
-helpful to me: http://www.linuxjournal.com/article.php?sid=7184 (although it
-didn't address the NF_QUEUE issues that I needed to know about).  My end goal
-here, by the way, is to introduce artificial delay in all outgoing packets to
-simulate a slow link, so I don't need to do any mangling of anything, so I
-didn't look into that very much.
+On "Sat 11 of September 2004" Darren Kirby wrote:
 
-I have noticed too that the documentation for netfilter seems to
-be...um...scattered a little, and not exactly complete.  Maybe I'm just looking
-in the wrong places.  But a good page with a simple description of what the
-absolute basic necessities are would be nice (kernel_module.c & userspace.c
-files, for example, including dependencies on, say, libipq).
-- Joe
+> Are MAC addresses unique for all ethernet cards? What I would like to
+> know is could I use this rule to allow ssh connections ONLY from my
+> notebook no matter what its current IP address happens to be, and drop
+> all other connection requests?
 
-> Hi,
->  
-> I couldnt help replying to this message, although it is not really to offer any
-help but to ask for help myself...
->  
-> I am currently trying to implement a kernel module that does some packet
-mangling and all I can say is that I'm really lost in some issues.
->  
-> Could you please point out some references? 
-> Maybe there are some code snippets/examples of how to read things off the packet
-header (like source/destination port)?
->  
-> thanx for any help in advance
->  
-> regards,
-> JC
->  
-> 
-> 
-> Destroying all hope... one line of code at a time.
-> 		
-> ---------------------------------
->  ALL-NEW Yahoo! Messenger - all new features - even more fun!  
+Yes. MAC addresses are set in the card by the manufacturer. This is a
+good method to control input traffic.
 
-
-
-
-
+For more info: http://www.webopedia.com/TERM/M/MAC_address.html
 
