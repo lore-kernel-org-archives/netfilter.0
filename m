@@ -1,15 +1,12 @@
-From: Joerg Mayer <jmayer@loplof.de>
+From: "Iced Tea" <Iced_tea@gmx.net>
 Subject: Re: MS Windows domain logon via netfilter NAT
-Date: Sun, 12 May 2002 20:30:27 +0200
+Date: Mon, 13 May 2002 05:41:47 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020512203027.I623@thot.informatik.uni-kl.de>
+Message-ID: <002501c1fa30$1ec53760$0501a8c0@lennet.de>
 References: <3CDEA665.5040605@ufl.edu>
-Reply-To: Joerg Mayer <jmayer@loplof.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <3CDEA665.5040605@ufl.edu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,30 +16,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: Kramer <kramer@ufl.edu>
 Cc: netfilter@lists.samba.org
 
-On Sun, May 12, 2002 at 01:29:09PM -0400, Kramer wrote:
-> Windows client hosts on the NATed LAN can't find the NT4 Domain for=20
-> logon.  Therefore Network Neighborhood browsing doesn't work.  Strangely =
 
+----- Original Message -----
+From: "Kramer" <kramer@ufl.edu>
+To: <netfilter@lists.samba.org>
+Sent: Sunday, May 12, 2002 7:29 PM
+Subject: MS Windows domain logon via netfilter NAT
+
+
+> I have gotten a RedHat 7.3 box operating as a router/filter to a private
+> (192.168.132.0/24) with dhcp without too much trouble.  One major
+> problem remains that I can't find any info on.  The fixes for the NAT
+> public address reverse routing and the broadcast address fixes are
+> already applied.
+>
+> Windows client hosts on the NATed LAN can't find the NT4 Domain for
+> logon.  Therefore Network Neighborhood browsing doesn't work.  Strangely
 > direct UNC connections will work if logon credentials are not required.
+>
+> I am sure I am not the first to run into this.  Can anyone help?
+>
+> Jack Kramer
+> University of Florida
+> Fort Lauderdale
 
-In normal IP networks running windows, the DC is found via the WINS service.
-WINS is the pre win2k version of DNS. WINS is used to map host- and service-
-names to IP-addresses. AFAIK, there is currently no support for WINS in
-iptables/netfilter, thus the answer your win client gets back points to
-the not-NATed address, which is unreachable. By directly specifying the
-machine you work around that problem (you manually to what the wins service
-would have done otherwise).
+Windows usually build its browselist via broadcasting.
+If the clients are not on the same network they need a domain master in each
+network that knows the other network. That cannot work if the domains are
+the same.
+Then set up fine routing and start a wins server a machine, and all other
+machines have to use wins.
+works fine here, im'm migrating a network to an other ip range without
+interrupting client users ...
 
-  ciao
-        J=F6rg
+bye
 
---
-Joerg Mayer                                          <jmayer@loplof.de>
-I found out that "pro" means "instead of" (as in proconsul). Now I know
-what proactive means.
+    Iced_tea
 
 
