@@ -1,13 +1,13 @@
-From: "Joel n.solanki" <zealous@bonbon.net>
-Subject: Re: allowing connection
-Date: 11 Sep 2004 09:37:44 +0530
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Conntrack helpers for ICQ and MSN Messenger
+Date: Sat, 11 Sep 2004 10:17:51 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094875664.1436.21.camel@joel.d2visp.com>
-References: <20040910181819.GA31430@tranquility.scriptkitchen.com>
+Message-ID: <20040911081751.6799773DD@sterenborg.info>
+References: <20040910210728.7056.qmail@web50206.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040910181819.GA31430@tranquility.scriptkitchen.com>
+In-Reply-To: <20040910210728.7056.qmail@web50206.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-If you have 2 lan cards.
-eth0 --connected to internet
-eth1 --connected to lan
+netfilter-bounces@lists.netfilter.org wrote:
+> Hello.
+> I have some clients in my LAN that need to access ICQ and MSN
+> Messenger. Reading some iptables tutorials, I discovered that ICQ and
+> MSN Messenger protocols are some kind of "complex protocols"
+> because they send some information about openning new
+> connections back inside the payload of the packets.
+> So, iptables needs some CONNTRACK and/or NAT helpers to let this
+> protocols work properly. I looked for it on NETFILTER home page but I
+> didn't find it. So, I need some help about it!
 
-then ..
-Make the default policy of FORWARD to DROP
-Just FORWARD the client's ip so that it can get internet access.
-All other machines will communicated with each other but not with the
-internet.
+AFAIK, there are no ICQ or MSN helpers for Netfilter.
 
-Without mac binding.
-iptables -A FORWARD -i eth1 -s 192.168.1.x -j ACCEPT
-iptables -A FORWARD -i eth0 -d 192.168.1.x -j ACCEPT
-
-With mac binding.
-iptables -A FORWARD -i eth1 -s 192.168.1.x -m mac --mac-source
-00:00:00:00:00:00 -j ACCEPT
-iptables -A FORWARD -i eth0 -d 192.168.1.x -m mac --mac-source
-00:00:00:00:00:00 -j ACCEPT
-
-
-Regards,
-On Fri, 2004-09-10 at 23:48, Payal Rathod wrote:
-> Hi,
-> Right now I am allowing only my client's LAN access one of my 
-> design's machine from the internet. Their LAN is a simple network,
-> with a single IP and other machines are masqueraded. Now I want to allow
-> only one of their machine to access my machine. Can I do it? I mean 
-> the machine is on 192.168.1.x series of IP, but can I restrict it
-> on mac address basis? If yes, how do I do it?
-> 
-> With warm regards,
-> -Payal
--- 
-Joel N.Solanki
-Network Administrator
-Phone No: 0265-550001/2/3/4/5 Ext: 211/212
-Digtial 2 Virtual Internet Service Provider.
-http://www.packetraptor.com/
-http://www.d2visp.com/
-Gujarat (India)
+You can use portforwarding for one ICQ or MSN client for direct access
+like filetransfer.
+OTOH if you want to use these capabilities with multiple clients you
+could setup a socks proxy, like the old one from NEC (the source should
+be available somewhere), and configure the clients to use it.
 
 
+Gr,
+Rob
 
 
