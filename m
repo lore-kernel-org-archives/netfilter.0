@@ -1,11 +1,13 @@
-From: Rakotomandimby Mihamina <mrakotom@free.fr>
-Subject: compiling on kernel 2.4.22 ( /usr/src/linux/include/asm )
-Date: Sun, 7 Sep 2003 18:01:55 +0200
+From: Cody Harris <hchs@ns.sympatico.ca>
+Subject: Re: Hostname Routing
+Date: Sun, 7 Sep 2003 15:39:51 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309071801.55405.mrakotom@free.fr>
+Message-ID: <200309071539.51550.hchs@ns.sympatico.ca>
+References: <200309062053.43929.hchs@ns.sympatico.ca> <1062925865.1617.1.camel@kermit>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1062925865.1617.1.camel@kermit>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,15 +21,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all 
-I just switched to kernel 2.4.22 and i got an error saying that "somthing is 
-wrong" about /usr/src/linux/include/asm/errno.h .
-
-What there is no /usr/src/linux/include/asm folder into the kernel sources , 
-but there are "/usr/src/linux/include/asm-*" folders ( have a look yourselves 
-)
-so i just made a symlink : /usr/src/linux/include/asm that point on my 
-archtecture and then it works .
-Thanks .
+On Sunday 07 September 2003 6:11 am, Ralf Spenneberg wrote:
+> Am Son, 2003-09-07 um 01.53 schrieb Cody Harris:
+> > Hello. I have researched your database on this subject (hostname
+> > routing), but found nothing much. What i want is to take domain.com:* and
+> > deliver that to the local machine (127.0.0.1), but i want
+> > alt.domain.com:* to go to 192.0.0.2. How is this done?
+>
+> Am I missing something?
+> What about the following in /etc/hosts:
+> 127.0.0.1 localhost localhost.localdomain domain.com
+> 192.0.0.2 alt.domain.com
+>
+> Or do it on you DNS server.
+>
+> Cheers,
+>
+> Ralf
 
 
