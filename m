@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: MSN Voice chat with Iptables
-Date: Wed, 4 Jun 2003 08:14:21 +1000
+Subject: RE: broadcasting netbios into a dmz
+Date: Wed, 4 Jun 2003 08:23:05 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA0@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA2@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,13 +16,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cornu Nicolas <n.cornu@ifrance.com>, hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: chad@isolv.net, netfilter@lists.netfilter.org
 
-No, MSN uses Proxy but Netmeeting still uses H323 protocol..
+You can't forward broadcasts...argh, funny how questions get repeated in =
+blocks ey.. ;) he he
 
-Read it up. there's like 5-7 ports needing opening on the firewall and =
-forwarding.. and even then it breaks unless you use the H323 patch.
+try using Samba on the firewall and block all sharing on it but allow it =
+to broadcast/relay to the other network using "remote announce" on the =
+firewall..
+
+Just another thought, this usually means that the firewall MUST be the =
+master browser of the domain/workgroup.. forget this if you have a PDC =
+as it always wants to win the election and this method will not then =
+work... but you could try it..
 
 Thanks,
 ____________________________________________
@@ -35,230 +42,37 @@ http://www.citadelcomputer.com.au
 =20
 
 -----Original Message-----
-From: Cornu Nicolas [mailto:n.cornu@ifrance.com]
-Sent: Tuesday, June 03, 2003 9:29 PM
-To: George Vieira; hare ram; netfilter@lists.samba.org
-Subject: Re: MSN Voice chat with Iptables
+From: chad@isolv.net [mailto:chad@isolv.net]
+Sent: Tuesday, June 03, 2003 12:23 AM
+To: netfilter@lists.netfilter.org
+Subject: broadcasting netbios into a dmz
 
 
-MSN support proxy , don't that help ?
-I prefer to install a proxy than recompile the kernel
+I have an interesting problem.  We are trying to forward NetBIOS packets =
+from a=20
+single host to our dmz, with out much success.  We have our protected =
+network=20
+on eth1 and the DMZ is attached to eth0.  We have one host that we would =
+like=20
+to broadcast via both apple talk and NetBIOS, but we don't want to let =
+all=20
+netbios/appple talk traffic out to the DMZ. =20
 
-NC
+I came up with the following statements:
 
------ Original Message -----=20
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-To: "hare ram" <hareram@sol.net.in>; "Cornu Nicolas" =
-<n.cornu@ifrance.com>;
-<netfilter@lists.samba.org>
-Sent: Tuesday, June 03, 2003 8:39 AM
-Subject: RE: MSN Voice chat with Iptables
+$IPT  -A FORWARD -i $localnet -o eth0+ -p udp --sport 137:139 -d =
+128.59.47.127 -
+-dport 137:139 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
+$IPT -t nat -A PREROUTING -p udp -s 10.0.0.137 --sport 137:139 -j DNAT =
+--to=20
+128.59.47.127:137:139
 
-I think they can make outgoing calls but it's the incomming that's the
-problem.. i'm mena think about it.. the poor firewall gets a incomming =
-call,
-it doesn't know who to put it through the poort damn blonde =
-receiptionist...
-;)
+but it doesn't work.  Any ideas?
 
-If someone wrote some sort of H323 version of the old ICQ module for
-ipchains that would be great because it could track MSN user logins and =
-know
-where they are, possibly some sort of connection tracking RELATED
-connections and redirect to te right user.... yeah admin heaven I'm in =
-at
-the mo'... ;P he he
-
-it's too complicated for incoming calls...
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-
------Original Message-----
-From: hare ram [mailto:hareram@sol.net.in]
-Sent: Tuesday, June 03, 2003 4:37 PM
-To: George Vieira; Cornu Nicolas; netfilter@lists.samba.org
-Subject: Re: MSN Voice chat with Iptables
-
-
-Hi
-
-If only one client can only use Voice chat in whole network
-then there is no use, if only one customer uses, like every one want to
-voice chat
-
-how are this setup going to achive,
-one public IP with lot of private Clients
-all want MSN Voice chat
-
-hare
------ Original Message -----
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-To: "Cornu Nicolas" <n.cornu@ifrance.com>; <netfilter@lists.samba.org>
-Sent: Tuesday, June 03, 2003 8:34 AM
-Subject: RE: MSN Voice chat with Iptables
-
-
-Not really.. the only few things I can suggest it to grab all
-sources(kernel,iptables,etc) and to backup your original source if any =
-found
-in /usr/src/linux. Then copy the .config found in that directory and =
-copy to
-the new kernel source and use 'make oldconfig' which will help heaps.
-
-if .config doesn't exist then you'll have to configure your kernel =
-yourself
-and it'll probably take a few goes before you get it working. he he
-
-Also in /boot/ directory, don't replace any entries but make new ones..
-
-here's my one as an example below (/etc/lilo.conf). So if the kernel =
-fails,
-you can go back to an earlier one.. ;)
-
-boot=3D/dev/md0
-map=3D/boot/map
-install=3D/boot/boot.b
-prompt
-timeout=3D50
-message=3D/boot/message
-linear
-default=3DSG1-2.4.19
-#default=3DSG2-2.4.18-new
-
-image=3D/boot/vmlinuz-2.4.19
-        label=3DSG1-2.4.19
-        read-only
-        root=3D/dev/md5
-
-image=3D/boot/vmlinuz-2.4.19-at
-        label=3DSG2-2.4.19-at
-        read-only
-        root=3D/dev/md5
-
-image=3D/boot/vmlinuz-2.4.18-3
-        label=3DSG2-2.4.18-new
-        read-only
-        root=3D/dev/md5
-
-image=3D/boot/vmlinuz-2.4.18-2
-        label=3DSG3-2.4.18
-        read-only
-        root=3D/dev/md5
-
-image=3D/boot/vmlinuz-2.4.2-2
-        label=3DSG4-2.4.2
-        initrd=3D/boot/initrd-2.4.2-2.img
-        read-only
-        root=3D/dev/md5
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-
-
------Original Message-----
-From: Cornu Nicolas [mailto:n.cornu@ifrance.com]
-Sent: Tuesday, June 03, 2003 12:48 PM
-To: netfilter@lists.samba.org
-Subject: Re: MSN Voice chat with Iptables
-
-
-That mean i need to compile patch o matic and recompile the kernel with
-patch ?
-Do u have some tips, i am new to linux and like Hare Ram i want to use =
-MSN
-voice chat
-
-NC
-
------ Original Message -----
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.samba.org>
-Sent: Tuesday, June 03, 2003 12:37 AM
-Subject: RE: MSN Voice chat with Iptables
-
-
-If I'm not wrong, I think MSN uses Net Meeting for chatting and if this =
-is
-correct, you need the patch-o-matic patch for H323 to allow incoming =
-H323
-calls.
-The bad side to this is that it only supports 1 machine behind the =
-firewall
-because you have to DNAT to a specified machine to receive any outside
-calls.. AFAIK, this is what I had to do for Net Meeting..
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
+C =20
 
 
 
------Original Message-----
-From: hare ram [mailto:hareram@sol.net.in]
-Sent: Tuesday, June 03, 2003 12:49 AM
-To: netfilter@lists.samba.org
-Subject: MSN Voice chat with Iptables
-
-
-Hi all
-
-Does any one have Good URL to work
-MSN Voice chat with IPTABLES+NAT
-
-thanks
-hare
-
-
-
-_____________________________________________________________________
-Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
-Messenger
-http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
-France
-
-_____________________________________________________________________
-Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
-Messenger
-http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
-France
-
-
-
-
-
-_____________________________________________________________________
-Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
-Messenger
-http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
-France
-
-_____________________________________________________________________
-Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN =
-Messenger
-http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de =
-France
 
 
