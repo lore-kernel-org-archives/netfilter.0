@@ -1,12 +1,10 @@
-From: "Jerry Rasmussen" <jerry@cheesymouse.com>
-Subject: RE: H323 NAT
-Date: Thu, 20 Nov 2003 17:21:39 -0500
+From: Arona Ann Pearlstein <aronapearl@yahoo.com>
+Subject: Forward udp broadcasts (directed broadcasts - 192.168.2.255)
+Date: Wed, 19 Nov 2003 01:31:50 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <217D777D3789FC4591199BA41FB0617AB0A3@nemo.scriptthis.net>
+Message-ID: <20031119093150.42837.qmail@web10108.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +15,60 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Can you give us a better idea of what kinds of problem you are =
-experiencing. =20
-=20
-And for one thing at the least you will have to have H.323 exposed as a =
-public IP address or the person you are connecting to will need a public =
-IP address.
+Hello all,
 
-________________________________
+I need to forward udp broadcasts for a particular project.   I know it's not a
+good thing security-wise, but that's a different discussion! 
 
-From: netfilter-admin@lists.netfilter.org on behalf of German Viera
-Sent: Thu 11/20/2003 7:49 AM
-To: netfilter@lists.netfilter.org
-Subject: H323 NAT
+Essentially, on network 10.0.2.0/24 there is a special program that generates
+udp broadcast packets for network 192.168.2.0/24 (this program then, is sending
+packets with a destination address 192.168.2.255).  
+
+My Linux 2.4.22 based firewall/router does its job well and normally drops
+these broadcast packets.  I have since found a couple (partial) solutions, but
+I'm curious as to what the Linux 2.4 kernel can do.
+
+From the research I've done, it seems that directed broadcasts (that is,
+addresses with the form 192.168.2.255) are not supposed to be routed.
+
+An RFC even proposes that routers include the directed broadcast routing
+option, but that this routing option should be turned off by default:
+
+http://www.faqs.org/rfcs/rfc2644.html 
+
+Here's my question:  Is there anything in the Linux 2.4 kernel that allows
+forwarding directed broadcasts?  That is, is there an option that can be
+enabled in the Linux 2.4 kernel to allow forwarding directed broadcasts?
+
+From the tests I've done using DNAT, I can route these packets, but as unicast
+packets only (not as broadcast packets).  This means that only *one* machine on
+the destination network receives these packets (the goal is for *all* the
+machines to receive the udp packets).
+
+I've also found that using a udp proxy type program allows me to forward these
+packets.  
+
+There is, of course, the option of implementing a bridge, but we want to avoid
+bridging the two networks.
+
+For this particular project, we'd like to find a kernel based solution (if at
+all possible).
+
+Any ideas? :-)
+
+Thank you in advance for any information,
+
+Ann
+
+Arona Ann Pearlstein
+aronapearl@yahoo.com
 
 
-Hi everybody......
-=20
-    I had been using iptables for almost a year ...I am administering a =
-linux box that works as a router....I am maquins source routing and NAT =
-..but I am having problem with some H323 equipement to make nat with =
-them.....
-=20
-some one has any idea ???
-=20
-=20
-PS: Please reply to this mail becuase I am not yet subscriber to the =
-list.
-=20
-Regards ,
-=20
-Geman Viera
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
