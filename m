@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Strange log info from iptables ?
-Date: Sun, 29 Feb 2004 10:31:04 +0000
+Subject: Re: SNAT not working
+Date: Sun, 29 Feb 2004 10:32:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402291031.04792.Antony@Soft-Solutions.co.uk>
-References: <20040227175608.666a0e38.Information-Cascade@ntlworld.com> <20040227190555.214cbc6e.Information-Cascade@ntlworld.com> <000d01c3fea4$ea271f70$de0aa8c0@comp>
+Message-ID: <200402291032.50839.Antony@Soft-Solutions.co.uk>
+References: <1078047284.4041b234e0530@milliweb.millicom.com.pe>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000d01c3fea4$ea271f70$de0aa8c0@comp>
+In-Reply-To: <1078047284.4041b234e0530@milliweb.millicom.com.pe>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,39 +20,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 29 February 2004 9:17 am, Bo Jacobsen wrote:
+On Sunday 29 February 2004 9:34 am, Felipe wrote:
 
-> What is the following log info. It looks like some kind of combined ICMP
-> and DNS ?
+> I've tried to set up SNAT to match INTERNAL network to a external ip,
+>
+> /usr/local/sbin/iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/16 -j
+> SNAT --to-source 200.110.2.179
+>
+> But that's working, it only works when i put:
+>
+> /usr/local/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>
+> eth0= external interface
+> eth1= internal interface
 
-Log entries for ICMP packets include the data in the body of the ICMP packet, 
-which is the header of the packet the ICMP is about.
+Is 200.110.2.179 the address of the external interface eth0?
 
-Remember that ICMP provides the error messages on the Internet, about other 
-(usually UDP) packets, so they contain information about the packet which 
-caused the error.
-
-> Feb 29 10:02:03 WFx-SH kernel:
-> DROP-OUT:IN= OUT=eth0 SRC=192.168.1.2 DST=212.54.64.171
-> LEN=198 TOS=0x00 PREC=0xC0 TTL=64 ID=30626
-> PROTO=ICMP TYPE=3 CODE=3 [SRC=212.54.64.171 DST=192.168.1.2 LEN=170
-> TOS=0x00 PREC=0x40 TTL=59 ID=53582
-> PROTO=UDP SPT=53 DPT=59554
-> LEN=150 ]
-
-Everything up to the [ is info about the ICMP packet.
-
-Everything between [ and ] is info about the UDP packet which the ICMP is in 
-response to.
+If it isn't, then reply packets have no interface to come back to, so 
+connections won't work.
 
 Regards,
 
 Antony.
 
 -- 
-Anything that improbable is effectively impossible.
+"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
+line program, and it ends up depending on the entire known universe."
 
- - Murray Gell-Mann, Novel Prizewinner in Physics
+ - Philip Hands
 
                                                      Please reply to the list;
                                                            please don't CC me.
