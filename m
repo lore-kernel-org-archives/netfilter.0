@@ -1,12 +1,14 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: IPSec through my firewall
-Date: Wed, 16 Feb 2005 12:27:24 +0200
-Message-ID: <4213200C.9060108@hotpop.com>
-References: <200502151715.j1FHFtfO029324@pepsi.fishpuppy.com>
-	<200502160129.26423.rowdy@com>
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: Multiple subnets of the same IP space, different VLANs,
+	same box...
+Date: Wed, 16 Feb 2005 07:27:01 -0500
+Message-ID: <876ef97a0502160427328bd3be@mail.gmail.com>
+References: <42122E91.2000707@joyner.ws>
+	<20050215220356.GA20635@bender.817west.com>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200502160129.26423.rowdy@com>
+In-Reply-To: <20050215220356.GA20635@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,55 +19,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-rowdy wrote:
-
->On Tuesday 15 February 2005 09:15, Ola Nilsson wrote:
->  
->
->>I've got problems with getting IPSec (using NAT-T) traffic through my
->>Linux 2.6.10 based firewall. I've now changed my iptables script to
->>something rather simple:
->>
->>iptables -P INPUT ACCEPT
->>iptables -P OUTPUT ACCEPT
->>iptables -P FORWARD ACCEPT
->>iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
->>    
->>
->
->I've been struggling with this as well.  Take a look at 
->http://www.freeswan.org/freeswan_snaps/CURRENT-SNAP/doc/firewall.html .
->
->I used this query to find this link and a number of others that could be 
->helpful: "esp ipsec firewall rule"
->
->I added rules like the following (but to user chains that I then added to the 
->input, output and forward chains) to solve my hassles (clipped from the 
->freeswan link above):
+On Tue, 15 Feb 2005 17:03:56 -0500, Jason Opperisano <opie@817west.com> wrote:
+> i can't *believe* i'm actually going to link to this, but the last
+> time someone asked something similar (k--so it was over a week ago),
+> i posted this:
 > 
-># allow IPsec
->#
-># IKE negotiations
->iptables -I INPUT  -p udp --sport 500 --dport 500 -j ACCEPT
->iptables -I OUTPUT -p udp --sport 500 --dport 500 -j ACCEPT
-># ESP encryption and authentication
->iptables -I INPUT  -p 50 -j ACCEPT
->iptables -I OUTPUT -p 50 -j ACCEPT
->
->Good luck.
->
->
->  
->
-hello,
+>   http://marc.theaimsgroup.com/?l=netfilter&m=110737820716813&w=2
+[...] 
+> as the OP never responded as to whether this suggestion worked, or ate
+> his dog, i still have no idea as to whether it works or not; as i never
+> tried it myself...so YMMV.
 
-that's more than pointless as he has INPUT, OUTPUT and FORWARD policies 
-set to ACCEPT and no other rules.
+The contents of that post will work. We do iproute2 policy routing of
+that nature around my office all the time with configurations that are
+similar and even-more whacked out. ;-)
 
-
-regards,
-Georgi Alexandrov
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
