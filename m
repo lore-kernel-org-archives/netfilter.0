@@ -1,16 +1,15 @@
 From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Fwd: set up my DMZ
-Date: Sun, 19 Sep 2004 11:12:41 +0300
+Subject: Re: Blocking Netranges Based on IP-to-Country CSV
+Date: Sun, 19 Sep 2004 12:09:53 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a040919011254781075@mail.gmail.com>
-References: <web-3246067@infinito.it>
-	<1095356390.2489.70.camel@wolfpack.ljm.dom>
-	<1403218a0409190112632977da@mail.gmail.com>
+Message-ID: <1403218a0409190209416c12b9@mail.gmail.com>
+References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
+	<20040917114613.GP452@metastasis.org.uk>
 Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a0409190112632977da@mail.gmail.com>
+In-Reply-To: <20040917114613.GP452@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,57 +22,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
----------- Forwarded message ----------
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Date: Sun, 19 Sep 2004 11:12:13 +0300
-Subject: Re: set up my DMZ
-To: Jason Opperisano <opie@817west.com>
+On Fri, 17 Sep 2004 12:46:13 +0100, Nick Drage <nickd@metastasis.org.uk> wrote:
+> On Thu, Sep 16, 2004 at 09:33:03AM -0700, Hudson Delbert J Contr 61 CS/SCBN wrote:
+> >
+> > why do this ?
+> 
+> There's a good set of reasons on:
+> 
+> http://ip-to-country.webhosting.info/
+> 
+> > seems a bit nasty in nature.
+> 
+> Depends how you use the information.  And to be honest considering the
+> reputation of some sources of traffic, such as Korea and South America,
+> which might be unlikely to have legitimate connections to your site, it
+> would be handy to block them all.
+> 
 
-On Thu, 16 Sep 2004 13:39:51 -0400, Jason Opperisano <opie@817west.com> wrote:
-> On Thu, 2004-09-16 at 10:44, hamals@infinito.it wrote:
-> > I've a DMZ with two server, I would like to acces them
-> > through my iptables firewall.
-> >
-> > IP_serve1_DMZ =192.168.2.2
-> > IP_serve2_DMZ =192.168.2.3
-> >
-> > IP_server1_public = x.x.x.52
-> > IP_server2_public = x.x.x.53   (x is for privacy..)
-> >
-> >
-> > My firewall has
-> >
-> > eth1 internet interface = x.x.x.50
-> > eth0 dmz interface = 192.168.2.1
-> >
-> > I need to have my server access with their pubbic IP, but
-> > I've only eth1 as inteface to internet.
-> >
-> > I read that I can't use alias in iptables rules (like
-> > eth1:1 etc) , then what kind of rules have I to write to
-> > solve my problem?
->
->   ip address add x.x.x.52 dev eth1
->   ip address add x.x.x.53 dev eth1
->
+I don't like this reason at all, but let me agree with you temporarily.
+What if a client with good reputation "ie, from your country :-)" is
+spending his vacation in South America, and wanted to check something
+in your website ??
 
-He really needs to do this step ????
-The firewall is his gateway !!
-
-
-
-
+> > we dont even do this sort of thing? see email addy...
+> 
+> But you're a worldwide organisation, and I think there's much more that
+> you can do with this than just block.  For example, has anything figured
+> out a way to tie this into logging rules, it would great to see which
+> countries I'm being attacked from.
+> 
 > --
-> Jason Opperisano <opie@817west.com>
->
->
-
-
---
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
-
+> mors omnia vincit
+> 
+> 
 
 
 
