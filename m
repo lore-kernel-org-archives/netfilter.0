@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: (SOLVED) URGENT: Some TCP connection halting at SYN
-Date: Tue, 11 Jun 2002 20:57:23 +0100
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: Controlling bandwith rate on port 80
+Date: 11 Jun 2002 22:10:03 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206111957.g5BJvOA18648@Networker.rockstone.co.uk>
-References: <3A5DC36EC1506C40825C05BE65E62AEF0E8B2E@neptuno.idea.com.mx>
+Message-ID: <1023826204.4183.71.camel@billy.demon.nl>
+References: <001501c1b33a$7b9238e0$0200a8c0@terr1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-Z8Mih/ys6k4WFmUbrb2f"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3A5DC36EC1506C40825C05BE65E62AEF0E8B2E@neptuno.idea.com.mx>
+In-Reply-To: <001501c1b33a$7b9238e0$0200a8c0@terr1>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,30 +18,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: iptables <iptables@linuxgeek.dk>
+Cc: netfilter@lists.samba.org
 
-On Tuesday 11 June 2002 8:51 pm, Omar Castaneda Acosta wrote:
 
-> I was selecting:
->
-> CONFIG_IP_ADVANCED_ROUTER
-> CONFIG_IP_PNP
-> CONFIG_IP_MROUTE
-> CONFIG_INET_ECN
-> CONFIG_SYN_COOKIES
->
-> on my kernel setup, just disabled those and it's working now. Guess I'll
-> need to test one by one (most of them weren't needed after all)
->
-> It's working now.
->
-> Thanks everyone!
+--=-Z8Mih/ys6k4WFmUbrb2f
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-When did you last build your kernel ?   I mean, was it soon before the 
-problems started, or longer ago ?
+man, 2002-02-11 kl. 21:27 skrev iptables:
+> Im using debian unstable, kernel 2.4.18, iptables 1.2.6a.
+>  My max upload bandwith is 30kb, i want to limit the traffic
+> on port 80 to around 25kb. Is this possible and how? any HOWTO's on
+> this subject?`
 
- 
+Definitely. But not with iptables.
 
-Antony
+http://www.tldp.org/HOWTO/Adv-Routing-HOWTO.html
+
+You might wish to bookmark this site. It's where many HOWTOs are at.
+
+Tony
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-Z8Mih/ys6k4WFmUbrb2f
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9Blkb99dgUTvnuYERAk5CAJ42qhaGSq5VcKwCu2MHxacF1L0qMACfafkZ
+zmtO5/mJsF3zkAkvxPMDU4E=
+=GfOn
+-----END PGP SIGNATURE-----
+
+--=-Z8Mih/ys6k4WFmUbrb2f--
+
 
