@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewall structure and more (Newbie)
-Date: Thu, 8 Jul 2004 19:16:34 +0100
+From: "John A. Sullivan III" <John.Sullivan@nexusmgmt.com>
+Subject: Re: how to automate ip_forward
+Date: Thu, 08 Jul 2004 15:44:51 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407081916.34953.Antony@Soft-Solutions.co.uk>
-References: <20040708171016.GA16115@itstud.chalmers.se> <200407081828.49545.Antony@Soft-Solutions.co.uk> <20040708180732.GA16355@itstud.chalmers.se>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <40EDA433.40900@nexusmgmt.com>
+References: <Pine.LNX.4.44.0407081443070.3962-100000@Megathlon.ESI>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040708180732.GA16355@itstud.chalmers.se>
+In-Reply-To: <Pine.LNX.4.44.0407081443070.3962-100000@Megathlon.ESI>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +17,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Marco Colombo <netfilter@esiway.net>
+Cc: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 08 July 2004 7:07 pm, Erik Wikstr=F6m wrote:
 
-> On Thu, Jul 08, 2004 at 06:28:49PM +0100, Antony Stone wrote:
-> > On Thursday 08 July 2004 6:10 pm, Erik Wikstr=F6m wrote:
-> >
-> > I would turn the question around to you: why do you think it is bette=
-r to
-> > have the rules arranged into different chains as you have suggested? =
-  Do
-> > you think that is easier to understand?   (If you *do* find it easier=
- to
-> > understand, then go ahead and do it, don't do what *I* find easy to w=
-ork
-> > with.)
->
-> My thought was that by sorting the packets by type at first and then
-> make a more througout filtering I would avoid the overhead of having,
-> for example, a UDP packet go through a lot of rules concerning TCP-
-> packets. But, as you say it leads to a quite complicated structure, but
-> since the firewall is quite old (75MHz) and a lot of P2P traffic is
-> passing through I thought that it might have some value.
 
-Well, a good policy is to have the rules which match the most packets at =
-the=20
-top of the ruleset (so that most packets pass through a small number of r=
-ules=20
-before being matched).   This is why the stateful rule "-m state --state=20
-ESTABLISHED,RELATED" is the very first rule in most people's rulesets.
-
-A good way to find out what order to put the rules in is to guess, and th=
-en=20
-after some reasonable amount of traffic has passed through the firewall, =
-use=20
-"iptables -L -nvx" to see the packet / byte counters in the first two=20
-columns.   Rearrange your rules so that the ones with the highest packet =
-(not=20
-byte) counts come first, and you have a pretty optimum design.
-
-Regards,
-
-Antony.
-
---=20
-There's no such thing as bad weather - only the wrong clothes.
-
- - Billy Connolly
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+Marco Colombo wrote:
+> On Thu, 8 Jul 2004, Peter Marshall wrote:
+> 
+> 
+>>Hey guys, I know this sounds stupid, but I can not seem to get the value of
+>>/proc/sys/net/ipv4/ip_forward to be 1 after boot.  I tried putting the echo
+>>1 > /pro...../ip_forward in my iptables script .... (BTW, I have a bash
+>>script with my rules in it and a startup script in rc2.d that calls it)
+>>
+>>I also tried making a separate starup script just for the ip_forward and set
+>>it to run in as the last thing in rc2,d .....
+>>
+>>If anyone has any suggestions, I would greatly appreciate it.
+>>
+>>Thanks.
+>>Peter
+> 
+> 
+> That depends on the distro you're running. On Red Hat / Fedora distros,
+> add (or change) the following line to /etc/sysctl.conf:
+> 
+> net.ipv4.ip_forward = 1
+> 
+> The echo you're using should work, just make sure nothing else
+> (i.e. sysctl) resets it to 0 later at boot time (but on RH and
+> Fedora, sysctl -p occurs in rc.sysinit, so before any rc.[2345]
+> script).
+> 
+> As an alternative to the echo approach, you can use the sysctl
+> command directly in your script. My iptables scripts start with:
+> 
+>   sysctl -w net.ipv4.ip_forward=0
+> 
+> and end with:
+> 
+>   sysctl -w net.ipv4.ip_forward=1
+> 
+> so that forwarding is disabled while the scripts are messing with rules:
+> I tend to use the scripts at runtime now and then, disabling forwarding
+> is just safer.
+> 
+> .TM.
+Exactly.  Plus, I believe you'll find that sysctl is called in 
+/etc/init.d/network.
+As recommended, I tend to set the /etc/sysctl.conf setting to 0.  While 
+I am there, I also disable redirects and source routing.  I then enable 
+forwarding with the echo command (for platform independence) in my 
+scripts after all the security scripts have successfully run.  This way, 
+if one of the iptables or *swan scripts fails, I fail safe and the 
+gateway does not forward - John
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net
 
