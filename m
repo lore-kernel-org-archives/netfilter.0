@@ -1,9 +1,10 @@
-From: chin chin <cool_talk_cafe@yahoo.com>
-Subject: Status of the patch
-Date: Tue, 15 Jun 2004 21:36:18 -0700 (PDT)
+From: sandra hernandez <sandra@fib.upc.es>
+Subject: problem with VPN and iptables redirect
+Date: Wed, 16 Jun 2004 10:10:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040616043618.20673.qmail@web20703.mail.yahoo.com>
+Message-ID: <1087373437.1085.1.camel@akasha.fib.upc.es>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,47 +16,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear All,
+Hi there!
 
-(1) Patch Status Identification.
+I've been doing some research on using VPN (kernel 2.6.x) with iptables
+and I'm having trouble with both of them:
+Having two PCs, one Windows XP and another with linux, IPsec seems to
+work fine on both and all comunications between them are encrypted.
 
-Please tell me how to identify the patch status before
-including it in the kernel.
+The problem is when I execute this command with iptables in linux box:
+  iptables -t nat -I PREROUTING 1 -d x.x.x.x -j REDIRECT --to-port 80
+   (and all the policies are to ALLOW)
+The redirection fails...
+If I deactivate VPN, the redirection works ok.
 
-I have come across so many status:
+What problem could be between VPN and iptables redirections?
+Any suggestions would be very appreciated.
 
-Works for me,
-Working,
-will not go into main kernel,
-Experimental In Development, 
-Works,
-Stable,
-Under development,but works.
+Sandra
 
-I want to use them in my firewall script, but before
-that i want to know the actual status , whether its
-reliable or still under observation.
-
-(2) Pom Categories:
-There are 3 different categories in pom: 
-patch-o-matic base repository
-patch-o-matic extra repository
-patch-o-matic pending repository
-
-what is the significance of each of these categories ?
-
-Thanks in Advance,
-regards,
-Rohit.
-
-
-
-		
-__________________________________
-Do you Yahoo!?
-New and Improved Yahoo! Mail - Send 10MB messages!
-http://promotions.yahoo.com/new_mail 
 
