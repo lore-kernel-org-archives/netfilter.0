@@ -1,13 +1,12 @@
-From: Pavlos Parissis <p_pavlos@freemail.gr>
-Subject: Re: Port 723?
-Date: Tue, 5 Nov 2002 21:30:44 +0200
+From: Chris Poupart <cpoupart@canada.com>
+Subject: Re: How will I mesure my bandwith
+Date: Tue, 05 Nov 2002 14:33:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021105213044.3d2ab609.p_pavlos@freemail.gr>
-References: <E2913D4A-F0E6-11D6-AEC7-0030656EDEF8@art-ad.se>
+Message-ID: <3DC81D0C.8090908@canada.com>
+References: <Pine.GSO.4.40.0211041029270.5446-100000@amazonas.robotic.dlr.de> <200211051350.gA5DoHe19092@vulcan.rissington.net> <3DC7E34D.96EBAF22@abcbtx.de> <200211051550.gA5Fo8e19394@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms000009070001090404000806"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E2913D4A-F0E6-11D6-AEC7-0030656EDEF8@art-ad.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +16,110 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-On Tue, 5 Nov 2002 18:49:08 +0100 pi <pi@art-ad.se> wrote:
->  Can anyone tell me what runs  on port 723?
->  After nmap <interface> i got this:
->  
->  723/tcp open unknown
-Are you sure about that???
-If it is 1723 then it is pptp service port.
-After a quick search in google i found that
 
-MOSIX uses:
+This is a cryptographically signed message in MIME format.
 
-TCP port 4660 for migration;
+--------------ms000009070001090404000806
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-UDP port 5428 for information dessimination;
+Antony Stone wrote:
+>>try bing
+>>
+>>bing localhost remotehost
+> 
+> 
+> bash: bing: command not found
+> 
+> Google for bing displays lots of stuff about Mr Crosby, plus some links to 
+> getting the source from ftp://ftp.ibp.fr which doesn't seem to exist...
+> 
+> Looks like an intriguing way to measure bandwidth - I'd be interested to test 
+> it and see how reliable the results are - can you suggest where I can get it 
+> from ?
+> 
+> Antony.
 
-MFS uses TCP port 723.
+Debian has a pacakge for it, (apt-get install bing), so if you can 
+install DEBs you can get it from 
+http://packages.debian.org/stable/net/bing.html
 
-Pavlos
+Reading the README that came with, you can get new releases at 
+http://www.freenix.org/reseau/outils.html
 
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-I love having the feeling of being in control
-while i have the sensation of speed
+The site might be in French mind you.
 
-The surfer of life
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Chris
+
+--------------ms000009070001090404000806
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJTDCC
+AwQwggJtoAMCAQICAwhdjDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
+BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
+HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
+bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkyNzE3MTczOVoXDTAzMDkyNzE3MTczOVowRTEf
+MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEiMCAGCSqGSIb3DQEJARYTY3BvdXBh
+cnRAY2FuYWRhLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJxvXubeyOSw
+dlHEWmpfZpAOBgK9gIMSLp9O6R1pbkQROknwci9bRKPlKwOtFfs/RDq5uF59YCz04BVb58tP
+dLM0lvNmNjBFCmMlq0yv0Lii1ZBkGRWb49eRU6+9xe2VQ7VdWTJzqy1wFRhIn9BQY1oDkhvn
+Y12mtMg22VYGY3CVG0EhZE4oDPYxjZ2z7tEk0PSktTgRf9AB0XgGTQRXCMs7RiO+zOhScvy8
+yzBCD8RHLRA87w+vKz67T65ccQlPHK14rcVEOYoD0/IF3u0CQEoKIJWBKMVHf5xv1xZWZtRS
+BI553z7rLczZC9juC9olbgZrelNljIb9FfW9d6tx5SsCAwEAAaMwMC4wHgYDVR0RBBcwFYET
+Y3BvdXBhcnRAY2FuYWRhLmNvbTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBAHkU
+7+jMkZkFifxaGGgxshfiyeUssMzFzbVsqwobXwtQOgKWxz/fpFIljKCj+cCs+Hldd0O09kED
+al3oy4C9drdBHlbvEiuXqmL+glR8quUTd+IeopOPN70dGxYxx88r7zBMm8cDSvSikPcIC+p4
+/asf2AcPE+56lqP9KWNcJRi8MIIDBDCCAm2gAwIBAgIDCF2MMA0GCSqGSIb3DQEBBAUAMIGS
+MQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRv
+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
+nU1fAAAAAAAA
+--------------ms000009070001090404000806--
 
 
