@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: Patch-o-matic
-Date: Mon, 25 Nov 2002 10:22:11 +0100
+From: Henti Smith <bain@tcsn.co.za>
+Subject: transparent squid with internal sites as well
+Date: Mon, 25 Nov 2002 12:19:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B3210199D0@hslex01.hslbz.local>
-References: <FD8F124A387AD6119F7900A0D218B3215414A3@hslex01.hslbz.local>
+Message-ID: <20021125121935.0adac911.bain@tcsn.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FD8F124A387AD6119F7900A0D218B3215414A3@hslex01.hslbz.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +16,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'George Vieira' <GeorgeV@citadelcomputer.com.au>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> get a latest copy of iptables with it's patch-o-matic
-> version, I am never able to patch the newnat stuff including
-> the H323 patches..
->
-> What is missing???
->
-> I'm on (soon to be running, patching atm) Linux 2.4.19 with
-> iptables 1.2.7a and it's patch-o-matic version....
->
-> I get this every damn time....
->
-> Testing... z-newnat16.patch NOT APPLIED (106 rejects out of 110 hunks)
+Hi there 
 
-<snip>
+I have a little problem I'm hoping somebody can help me with.
 
-> what the hell is going on!?
+We are running a WAN here with firewall and tranparent proxy. I have some webservers on the inside of the firewall (yes I know .. this is not my choice... *sigh*)
+which I'm forwarding all data to ip's to those machines. 
 
-Don't know ; it works for me, but..
+The problem is:
 
-I once had a problem patching the kernel which made me do a make menuconfig
-(or make xconfig or make config, whatever). I configured nothing and saved
-the "changes", after which patching worked.
+With transparent proxy working the way it should, nobody on the internal network can see the internal websites.
+With transparent proxy off, all works but I have no way of seeing who browses where anor content control.
 
-Another solution could be the following ; I read somewhere sometime that you
-might have to patch the kernel twice before some patch can be applied.
+here is firewall rules that pertain to setup.
 
-Maybe this helps ?..
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+REDIRECT   tcp  --  10.0.0.0/8           0.0.0.0            tcp dpt:www redir ports 3128 
+REDIRECT   tcp  --  10.0.0.0/8           0.0.0.0            tcp dpt:3128 redir ports 3128 
+DNAT       tcp  --  anywhere             web1		    tcp dpt:www to:10.0.0.10:80 
+DNAT       tcp  --  anywhere             web1               tcp dpt:https to:10.0.0.10:443 
 
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+SNAT       all  --  10.0.0.0/8          !10.2.0.0/16        to:liveip
+SNAT       all  --  192.168.1.0/24       anywhere           to:liveip
 
-Rob
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
 
+as off right now .. transparent proxy is not logging any internal traffic ... but I need to have tranparent proxy but still allow internal users to browse to web1
+
+any suggestions ? 
+
+Henti Smith
 
