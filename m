@@ -1,13 +1,12 @@
-From: Cody Harris <hchs@ns.sympatico.ca>
+From: SBlaze <dagent.geo@yahoo.com>
 Subject: Re: Mailing List Guidelines
-Date: Tue, 25 Nov 2003 18:34:33 -0400
+Date: Tue, 25 Nov 2003 15:07:48 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031125183433.08352adc.hchs@ns.sympatico.ca>
-References: <3FC3609D.4030509@Loudoun-Fairfax.com>
+Message-ID: <20031125230748.40926.qmail@web40201.mail.yahoo.com>
+References: <20031125183433.08352adc.hchs@ns.sympatico.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FC3609D.4030509@Loudoun-Fairfax.com>
+In-Reply-To: <20031125183433.08352adc.hchs@ns.sympatico.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Content-Transfer-Encoding: 7bit
+To: Cody Harris <hchs@ns.sympatico.ca>, Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Cc: nf <netfilter@lists.netfilter.org>, QT mail group <qt-interest@trolltech.com>, xmail@xmailserver.org
 
-On Tue, 25 Nov 2003 09:01:01 -0500,
-Someone named Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
+Kudos Jeff.
 
-> Hi All,
-> 
-> In an effort to provide some guidance to people who use mailing lists 
-> I've created a short list of guidelines. Some of you may have seen parts 
-> of this in my previous "Jeff's Rules" posting.
-> 
-> http://www.ubaight.com/JeffsRules
-> 
-> If you wish you may quote them, share them, link to the page, or ignore 
-> them altogether. I welcome any comments, suggestions, or criticisms.
+    Good luck getting people to use it though. :}}
 
-Good job. I think this should be included in all server welcome messages. Do you mind if i use it for that purpose (Basicly copy and paste w/credit)
+SBlaze
 
-Cody
+=====
+In the absence of order there will be chaos.
 
-> 
-> Jeff
-> 
-> 
-
-
--- 
-+------------------+-----------------------------+
-| Cody Harris      | Signed with GnuPG signature |
-| KeyID: 610031E2A | vectec.net/~cody/key.asc    |
-+------------------+-----------------------------+
+__________________________________
+Do you Yahoo!?
+Free Pop-Up Blocker - Get it now
+http://companion.yahoo.com/
 
