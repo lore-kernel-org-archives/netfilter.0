@@ -1,10 +1,8 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: MSN Voice chat with Iptables
-Date: Thu, 5 Jun 2003 10:37:04 +0530
+From: "calvin" <calvinproject@ihug.com.au>
+Subject: silly question, how to block all outgoing traffic?
+Date: Thu, 5 Jun 2003 18:27:32 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <014101c32b20$4e4b2040$c2bf09ca@Housecall>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DD1@wardrive.citadelcomputer.com.au>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <001e01c32b3c$4f98c530$010aa8c0@toowoomba>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,70 +16,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-Hi
+Dear all,
 
-Are you able to successfully compile
-upnp SDK
-and linux-igd
+Sorry about my silly question here but I just can't figure out why it
+doesn;t work.
 
-if yes, can you forward me the steps and pre-requisites
+I have a net with 4 pcs connect with each other. 2 gateways and 2 clients.
 
-thanks
-hare
------ Original Message -----
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.samba.org>
-Sent: Thursday, June 05, 2003 10:32 AM
-Subject: RE: MSN Voice chat with Iptables
+I try to setup some very simple rule on one of the gateway machines and
+somehow i can;t get it works. My network setup is like that.
 
+C1 (137.112.220.166)
+ |
+ |   (137.112.220.165 = eth0)
+G1
+ ||  (192.168.10.2 = eth1)
+ ||
+ ||  (192.168.10.1 = eth1)
+G2
+  |  (137.111.220.150 = eth0)
+  |
+C2 (137.111.220.156)
 
-I have successfully used NetMeeting between 2 users both behind a redhat
-firewall.. We had gotten video,voice and paint all working working fine
-using the H323 patch.
+at the moment i jsut try to BLOCK all the outgoing traffic from C1 to
+leaving G1's eth1. I add rules in G1 iptables ,however I can;t get it work.
+i jsut try with ping, I try with few different rules, it still allow the
+outgoing traffic fmor C1.
 
-The only thing we noticed as a glitch is that he could not connect to me
-unless I hosted a Meeting which only then he could connect to. Connecting to
-other non firewalled users was a piece of cake. It could not be just a
-simple listening host but had to be in a meeting which I found weird..
-Maybe it was just my luck but at least I got them both working as we both
-were behind iptables machines..
+I try like:
+at G1 iptables:
+case1:    iptables -A output -j DROP
 
-Hope this boosts your confidence in iptables ;)
+case2:   iptables -A output -s 137.112.220.165 -j DROP
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+case3:   iptables -A input -i 137.112.220.165 -s 137.112.220.165 -j DROP
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
+case4: iptables -A output -s ! 137.112.220.165 -j ACCEPT
 
+Maybe iget confuse about the chain. May I ask, when we add the rules to
+iptables of a gateway machine, like G1 here, the rules are applied to eth0
+or eth1?
+when rules add to OUTPUT, that is refer to "output form eth0 to internat
+network" or "output  from eth1 to public network"?
 
-
------Original Message-----
-From: hare ram [mailto:hareram@sol.net.in]
-Sent: Thursday, June 05, 2003 1:39 PM
-To: netfilter@lists.samba.org
-Subject: Re: MSN Voice chat with Iptables
-
-
-Hi  all
-Does any one installed
-
-Upnp Successfully in REDHAT
-i been doing this practice more than 30 days now
-but no luck, any expert can guide me how can i process
-even i have posted in to linux-igd group, looks like the news group dead, no
-responce also for the same
-
-any help will be great
-
-hare
-
-
-
+Thanks very much for your advice
 
 
