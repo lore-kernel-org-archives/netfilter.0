@@ -1,11 +1,14 @@
-From: Dimitris Kounalakis <dcoun@galinos.med.uoc.gr>
-Subject: NAT in a special case
-Date: Fri, 09 Apr 2004 14:56:36 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: opening connection for Tomcat
+Date: Fri, 9 Apr 2004 23:59:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40768F74.2050005@fammed.med.uoc.gr>
+Message-ID: <200404092359.02317.Antony@Soft-Solutions.co.uk>
+References: <40756C19.3010606@tin.it> <407642A3.1040700@tin.it> <54466.212.17.209.220.1081493787.squirrel@www.zarrelli.org>
+Reply-To: "Netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <54466.212.17.209.220.1081493787.squirrel@www.zarrelli.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,33 +18,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+On Friday 09 April 2004 7:56 am, giorgio.zarrelli@mammaitalia.com wrote:
 
-I need a special case and I am not sure it can exist with NAT (SNAT or DNAT)
+> Hi,
+>
+> > Well, I'm not a firewall guru, but I think that 0.0.0.0 address is often
+> > used to indicate "every address", isn't it?
+>
+> Yes, it is.
 
-I have two lan networks with IP range : 10.10.1.1/24 and 10.10.2.1/24. 
-The connection between then is done with a linux machine with two 
-ethernet cards.
-The first network has a mix of computer and VoIp devices and and the 
-second only computers.
-In the second network a pptp vpn server providing internet access (the 
-first nat) is in action and selected computers from both networks are 
-connected and take a 192.168.0.1/24 address in a virtual interface and 
-have Internet access.
-I want to give access to the internet to some VoIP and other hardware 
-that can not use the pptp vpn server in the first network (10.10.1.1/24).
-I have the idea to configure the linux machine to connect to the pptp 
-vpn server and then have it acting as a NAT machine for the machines in 
-the first network (10.10.1.1/24) using the same IP address range. In 
-other words, the linux machine has to simply route ip traffic to the 
-ethernet interface with destination the subnet 10.10.2.1/24 and acting 
-as NAT if the destination is the internet.
-Is that possible? Do you know where I can find an examlple close to that 
-to start with ?
+"0.0.0.0" is very different from "0.0.0.0/0".
 
-Thank you in advance
-Dimitris
+The first means "one specific IP address, which you will never find on a real 
+device".
+
+The second means "any IP address at all".
+
+The reason is simply because if you do not specify a netmask, /32 is assumed, 
+which means all bits must match exactly.   On the other hand /0 means that no 
+bits have to match at all (which is why 0.0.0.0/0 corresponds to all 
+addresses).
+
+Regards,
+
+Antony.
+
+-- 
+If you can't find an Open Source solution for it, then it isn't a real 
+problem.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
