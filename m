@@ -1,13 +1,10 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: firewall problem continued
-Date: Wed, 11 Aug 2004 03:18:08 -0400
+From: "Monty Ree" <chulmin2@hotmail.com>
+Subject: what's the difference between patch-o-matic and patch-o-matic-ng?
+Date: Wed, 11 Aug 2004 11:42:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040811071808.GA27273@tranquility.scriptkitchen.com>
-References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408101014.22969.Antony@Soft-Solutions.co.uk> <20040810114645.GA27182@tranquility.scriptkitchen.com> <200408101945.46837.Antony@Soft-Solutions.co.uk>
+Message-ID: <BAY10-F3KekpdBR5npz00014b36@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200408101945.46837.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +14,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="euc-kr"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
-On Tue, Aug 10, 2004 at 07:45:46PM +0100, Antony Stone wrote:
-> > > an IP on this machine's interface.
-> >
-> > Let me rephrase it. A mail server needs to connect to any IP in the world
-> > so why cannot it connect to an IP which is in its subnet.
-> 
-> Because the public IP is not in its own subnet.
-
-Ok still the public IP is like a normal internet IP for it, right? If it can
-connect to other IPs like that of yahoo.com, rediffmail.com  there seems to be no
-reason why it shouldn't connect to this.
-
-Thanks a lot for the help.
-With warm regards,
--Payal
-
+SGVsbG8sIGFsbC4KCkkgd291bGQgbGlrZSB0byB1c2UgcGF0Y2gtby1tYXRpYy4KQnV0IHRoZXJl
+IGFyZSBwYXRjaC1vLW1hdGljLW5nIGFuZCBwYXRjaC1vLW1hdGljLW5nIGF0IG5ldGZpbHRlciBo
+b21lcGFnZS4KV2hhdCdzIHRoZSAgZGlmZmVyZW5jZSBiZXR3ZWVuIHBhdGNoLW8tbWF0aWMgYW5k
+IHBhdGNoLW8tbWF0aWMtbmc/CmFuZCB3aGF0IHNob3VsZCBJIHVzZT8KClRoYW5rcyBpbiBhZHZh
+bmNlLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KwPy8vLDowM7AzCDH1LKyx8+0wiDApSC43sDPILytuvG9usDOIE1TTiBI
+b3RtYWlswLsguLizqiC6uLy8v+QuICAgIApodHRwOi8vbG9naW5uZXQucGFzc3BvcnQuY29tL2xv
+Z2luLnNyZj9pZD0yJnN2Yz1tYWlsJmNiaWQ9MjQzMjUmbXNwcGpwaD0xJmxjPTEwNDIgCiAKCgo=
