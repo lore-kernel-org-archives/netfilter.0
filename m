@@ -1,12 +1,14 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: is there a way to discriminate the ESTABLISHED traffic?
-Date: Mon, 04 Apr 2005 12:00:29 +0300
-Message-ID: <4251022D.9090504@hotpop.com>
-References: <4250ABAC.5010207@lorenzutti.com.ar>
+From: Askar <askarali@gmail.com>
+Subject: Re: IPTables & HTTPD Conflict
+Date: Mon, 4 Apr 2005 15:40:21 +0600
+Message-ID: <a0f69e5050404024079ea9980@mail.gmail.com>
+References: <200504031339.j33DdR2X003262@osprey.tkevans.com>
+	<249c202905040319115c97c290@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4250ABAC.5010207@lorenzutti.com.ar>
+In-Reply-To: <249c202905040319115c97c290@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +19,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: J A <jake.lists@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Guido Lorenzutti wrote:
+how should we suggest something without watchen your iptables rules set?
 
-> How can i discriminate the traffic that my firewall is answering from 
-> a NEW request from a network from the ESTABLISHED traffic that my 
-> firewall is making from a NEW request from him?
->
-> In rules, to allow traffic TO my box from the lan 10.0.0.0/32
->
-> 1 ipt -A INPUT -s 10.0.0.0/32 -m state --state NEW -j ACCEPT
-> 2 ipt -A INPUT -s 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
-> 3 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
->
-> Now, to allow traffic FROM my box to the lan 10.0.0.0/32
->
-> 4 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state NEW -j ACCEPT
-> 5 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
-> 6 ipt -A INPUT -s 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
->
-> The 3 and 5 rules are exactly the same. Is there a way to discriminate 
-> this or the things are just like this and there is nothing to do about 
-> it?
->
-> Tnxs in advance.
->
->
-btw 10.0.0.0/32 ?!
+regards
+
+
+On Apr 4, 2005 8:11 AM, J A <jake.lists@gmail.com> wrote:
+> Hello All,
+> 
+> We're using Redhat 9
+> We've been running a Web Server (Apache & Tomcat), and were told to
+> run a firewall, in this case IPTables.  When we enabled IPTables, many
+> of our web sites (BUT not all) could no longer be browsed from the
+> Internet.
+> 
+> Could you tell us which specific IPTables parameter is doing this, so
+> we could disable only the specific parameter?
+> Or is it not advisable to run IPTables side-by-side with Web services?
+> 
+> Thanks, appreciate your ideas.
+> 
+> ---jake
+> 
+> 
+
+
+-- 
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
 
