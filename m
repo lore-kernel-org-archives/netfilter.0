@@ -1,13 +1,12 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Additional user for iptables
-Date: Thu, 20 Jun 2002 20:26:51 -0400
+From: "Daniel Curry" <dcurry@cariocas.com>
+Subject: New FW install
+Date: Thu, 20 Jun 2002 19:14:42 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020621002651.GB2453@cannon.eng.us.uu.net>
-References: <MBBBJHGKAGOKDNNIMPJHMEPKJGAA.davemiller@comcast.net>
+Message-ID: <731E36372B5FD248AF790189519A32C19E4F85@mailhub.cgtime.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <MBBBJHGKAGOKDNNIMPJHMEPKJGAA.davemiller@comcast.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,31 +17,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Dave Miller <davemiller@comcast.net>
-Cc: netfilter@lists.samba.org
+To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
 
-On Thu, Jun 20, 2002 at 07:58:55PM -0400, Dave Miller wrote:
+Hey Everyone!
 
-> Hello ?
-> 
-> Is there a way to allow an additional (non root) user to access the iptables
-> tool without using sudo or similar?
+Yep, another newbie is here with questions.
 
-There is always the setuid-bit solution but why do you want to do this? If
-you trust the user to play with your netfilter part of the system you can
-trust them for more, no? Or do you want to only trust an application? In
-which case, sudo is still a better solution, IMO.
+I have a machine with a RH7.2 Install on it.  It has working web server
+and e-mail.  I need to configure it to be a firewall for Natted systems
+connecting via a Wireless card.  I also need SSH and VPN into the
+machine for the world.  VPN pass-thru for the wireless machines.  Can
+someone point me to some sample scripts or script segments that
+implement these desired functions? =20
 
-Ramin
+Thanks
 
-> 
-> Thank you.
-> 
-> 
-> David S. Miller
-> Strategic Services Group, Inc.
-> 
+Daniel Curry
+dcurry@cariocas.com
 
 
 
