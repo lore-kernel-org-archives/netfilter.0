@@ -1,13 +1,11 @@
 From: "Nicolas" <nmeillet@wanadoo.Fr>
-Subject: RE: rtsp-conntrack help needed...
-Date: Sat, 17 Jan 2004 16:09:34 +0100
+Subject: TR: rtsp-conntrack help needed...
+Date: Sat, 17 Jan 2004 16:12:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040117150943.38AE2A400195@mwinf0202.wanadoo.fr>
-References: <200401171208.57545.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040117151211.AE5A83000476@mwinf0201.wanadoo.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401171208.57545.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,141 +18,59 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Antony,
+Hello Antony,
 
-Here is my ruleset. Hope this helps... As I told you, the rules I use =
-are
-really basics.
+And thanks for your answer.
 
-There you go :
+I'll try to give you more details. First of all, my network =
+configuration.
+In fact, I'm the manager of a UMTS validation platform. That means that =
+my
+clients won't be any computers but rather some 3G mobile phones.
 
-#!/bin/sh
-#
-# FORWARDING activation
+However, it doesn't make a big difference because when these handsets =
+access
+the IP world, they are assigned with an IP address (typically :
+10.150.33.xx). So on my LAN, this client is, for example, 10.150.33.41. =
+This
+is the first point.
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Now, I browse on the WEB to a streaming server (Packet Video platform) =
+and
+this servers 'sees' me with my public IP address (as the firewall is =
+doing
+NAT and Masquerading) : IP_PUB.xxx.xxx so it replies to this address. In =
+an
+Ethereal log, I can see that RTSP and RTCP packets (which transit over =
+TCP)
+go through my firewall without any problem. But in this log, all RTP =
+packets
+(coming over UDP) are missing =3D> that's why I assume they are dropped =
+by the
+FW.
 
+Moreover, I think that I'm not missing the appropriate rule (well, in =
+fact,
+yes, but that's not the main point now) but rather that my Redhat kernel
+doesn't have the possibility to track this streaming connection. That's =
+why
+I'd like to install the appropriate rtsp-conntrack.
 
-# No spoofing (pings are blocked)
+I've tried once to install it but I couldn't compile my kernel. =
+Installing
+the patch was OK though... the readme was clear enough ;o)
 
-if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]
-then
-	for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
-	do
-		echo 1 > $filtre
-	done
-fi
+I don't know if this gives you more details... I'm at home now and I =
+won't
+be able to post my rules here before Monday. Anyway, they are really =
+simple
+: IF public source IP:port THEN private IP:port. Really nothing
+extraordinary...
 
+Hope this helps a bit.
 
-# no icmp
-#echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-#echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-
-
-# loading the ip_tables module
-
-modprobe ip_tables
-
-
-# NAT modules
-
-modprobe ip_nat_ftp
-modprobe ip_nat_irc
-modprobe iptable_filter
-modprobe iptable_nat
-
-
-# Aliases
-
-ifconfig eth1:1 IP_PUB..XXX.XX6 netmask 255.255.255.248
-ifconfig eth1:2 IP_PUB..XXX.XX7 netmask 255.255.255.248
-ifconfig eth1:3 IP_PUB..XXX.XX8 netmask 255.255.255.248
-ifconfig eth1:4 IP_PUB..XXX.XX9 netmask 255.255.255.248
-
-
-# Default : all packets dropped
-
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-
-
-# For LAN : all packets accepted
-
-iptables -A INPUT -s 10.254.254.0/12 -j ACCEPT
-iptables -A OUTPUT -d 10.254.254.0/12 -j ACCEPT
-iptables -A FORWARD -s 10.254.254.0/12 -j ACCEPT
-
-# For 3G handsets : all packets accepted
-
-iptables -A INPUT -s 10.150.33.0/24 -j ACCEPT
-iptables -A OUTPUT -d 10.150.33.0/24 -j ACCEPT
-iptables -A FORWARD -s 10.150.33.0/24 -j ACCEPT
-
-
-# Loopback interface : all accepted
-
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
-
-
-# LAN: internet access OK
-
-#iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-iptables -A FORWARD -o eth0 -i eth1 -j ACCEPT
-
-
-# translation d'adresse filtr=E9e en entr=E9e: IMAI
-
-iptables -t nat -A PREROUTING -s IP_SRC_THRD-PARTY -d IP_PUB..XXX.XX7 -p =
-tcp
--j DNAT --to-destination 10.254.254.32
-
-
-# NAT rules
-
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX7 -p udp --dport 9201 -j =
-DNAT
---to-destination10.254.254.11
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX8 -p tcp --dport 8080 -j =
-DNAT
---to-destination10.254.254.12
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX9 -p tcp --dport 80 -j =
-DNAT
---to-destination10.254.254.25
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX9 -p tcp --dport 22 -j =
-DNAT
---to-destination10.254.254.25
-
-
-# Telnet forbidden
-
-iptables -A FORWARD -d IP_PUB..XXX.XX6 -p tcp  --dport 23 -j DROP
-iptables -A FORWARD -d IP_PUB..XXX.XX7 -p tcp  --dport 23 -j DROP
-iptables -A FORWARD -d IP_PUB..XXX.XX8 -p tcp  --dport 23 -j DROP
-iptables -A FORWARD -d IP_PUB..XXX.XX9 -p tcp  --dport 23 -j DROP
-
-
-# On accepte les ping dans la translation
-
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX6 -p icmp  -j DNAT
---to-destination 10.254.254.31
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX7 -p icmp  -j DNAT
---to-destination 10.254.254.41
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX8 -p icmp  -j DNAT
---to-destination 10.254.254.42
-iptables -t nat -A PREROUTING -d IP_PUB..XXX.XX9 -p icmp  -j DNAT
---to-destination 10.254.254.25
-
-
-# Masquerading rules
-
-iptables -t nat -A POSTROUTING -s 10.254.254.0/12 -o eth1 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.150.33.0/24 -o eth1 -j MASQUERADE
-
-
-Thanks a lot for your help.
-Nicolas
+Regards,
+Nicolas=20
 
 -----Message d'origine-----
 De=A0: netfilter-admin@lists.netfilter.org
