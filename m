@@ -1,12 +1,14 @@
-From: "david" <david@suarapembaruan.co.id>
-Subject: Re: block port 137
-Date: Wed, 4 Aug 2004 17:01:19 +0700
+From: Raido Kurel <raido@elin.ttu.ee>
+Subject: Re: dnat problem in transparent firewall
+Date: Wed, 4 Aug 2004 14:14:51 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006f01c47a09$fdc3d2e0$858310ac@suarapembaruan.com>
-References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <200408030717.59289.Antony@Soft-Solutions.co.uk> <00d601c479cf$352a91f0$858310ac@suarapembaruan.com> <200408040803.02568.Antony@Soft-Solutions.co.uk>
+Message-ID: <200408041414.51486.raido@elin.ttu.ee>
+References: <200408041010.32442.raido@elin.ttu.ee> <200408040945.19567.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200408040945.19567.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,96 +21,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thank's a lot.
+> That's because the DNAT target does not return to the chain.   The LOG
+> target is almost the only target I can think of which *does* return back to
+> the chain for further processing - all other targets are the "final
+> outcome" for the packet.
+>
+> Put the two rules the other way round and you'll get both LOGging and
+> DNATting.
 
-Rgds,
-David
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, August 04, 2004 2:03 PM
-Subject: Re: block port 137
+Thanks, I have been missed that. Now I can ask my question in other words:
 
+I presume, that http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png is 
+correct.
 
-> On Wednesday 04 August 2004 4:00 am, david wrote:
->
-> > Dear Antony,
-> > I agree with you, i must block all traffic and accept one-by-one rules
-that
-> > i want, but the problem is i don't know how to do this
->
-> 1. Here's the basic idea:
->
-> iptables -P FORWARD DROP
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -i $INTIF -p tcp --dport 80 -j ACCEPT
-> iptables -A FORWARD -i $INTIF -p udp --dport 53 -j ACCEPT
-> iptables -A FORWARD -i $INTIF -p tcp --dport 53 -j ACCEPT
-> iptables -A FORWARD -j LOG
->
-> These rules mean "DROP any packets which I don't have a rule to ACCEPT,
-then
-> ACCEPT all packets except the first of any connection, then ACCEPT the
-first
-> packets for web browsing and DNS, then LOG any other packets which try to
-get
-> through."
->
-> 2. The important part of the above ruleset, for someone like you who is
-not
-> quite sure what rules to use to ACCEPT the packets you want (and you don't
-> want to default DROP any packets by omission), is the final LOG rule.
->
-> That rule will tell you what packets are trying to get through the
-ruleset,
-> but haven't been ACCEPTed by one of the previous rules - and you may want
-to
-> add a rule to specifically ACCEPT some of them.   Of course, you may *not*
-> want to accept some of them either, so you're happy for those to continue
-> being DROPped.   In that case (packets you know that you don't want), the
-> next refinement of the ruleset is:
->
-> 3. Add some specific DROP rules just before the final LOG rule, so that
-the
-> packets you know about and do not want get DROPped without being logged.
->
-> The final outcome of this is a ruleset which:
-> a) ACCEPTs the packets you know you want
-> b) DROPs the packets you know you don't want
-> c) LOGs any other packets you haven't thought about or weren't expecting
->
-> As you can see, you can build such a ruleset gradually - if you don't want
-to
-> disrupt communications through the firewall as you do it, just leave the
-> default policy on ACCEPT as you add the specific ACCEPT rules, and then
-once
-> you have no more wanted packets being DROPped, you can set the policy to
-DROP
-> and concentrate on cutting down what gets LOGged.
->
-> I do recommend studying one of the netfilter tutorials such as Oskar
-> Andreasson's at http://iptables-tutorial.frozentux.net so that you get a
-> better understanding of how packets make their way through netfilter, and
-> also what packets are necessary for correct and efficient operation of a
-> network (some of them may be non-obvious, such as TCP DNS in my
-mini-ruleset
-> above, or certain types of ICMP packets etc).
->
-> Regards,
->
-> Antony.
->
-> -- 
-> Anyone that's normal doesn't really achieve much.
->
->  - Mark Blair, Australian rocket engineer
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
->
+According to this picture, my packets should flow in lowest path.
+To be sure it is so, I have made rules to log incoming packet in 3 points:
+a)iptables nat table prerouting chain 
+b)ebtables filter table forward chain
+c)iptables mangle table forward chain 
+d)ebtables filter table input chain
+
+I try to connect fron Internet to aaa.aaa.aaa.12
+
+In case of rule:
+iptables -t nat -A PREROUTING -d aaa.aaa.aaa.12 -j DNAT --to-dest 
+aaa.aaa.aaa.13
+
+I see packet only in point a)
+
+In case of no rule or rule
+iptables -t nat -A PREROUTING -d aaa.aaa.aaa.12 -j DNAT --to-dest 
+aaa.aaa.aaa.12
+
+I see packet in a), b) and c) points.
+
+I see also packet in a), b) and c) points if I connect from internet to 
+aaa.aaa.aaa.13
+
+It's just like DNAT rule drops packet, but it can't be, because DNAT to the 
+same address works fine. I know I have missed something important, but what 
+could it be?
+
+Raido
 
 
