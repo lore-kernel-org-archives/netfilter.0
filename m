@@ -1,12 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: "Daniel Wittenberg" <daniel-wittenberg@starken.com>
 Subject: Re: state table not working
-Date: Fri, 18 Jun 2004 22:09:42 +0200 (CEST)
+Date: Fri, 18 Jun 2004 15:16:31 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0406182201160.25898-100000@blackhole.kfki.hu>
-References: <1087588098.40d3470246775@securemail.starken.com>
+Message-ID: <1087589791.40d34d9f4907f@securemail.starken.com>
+References: <Pine.LNX.4.33.0406182201160.25898-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1087588098.40d3470246775@securemail.starken.com>
+In-Reply-To: <Pine.LNX.4.33.0406182201160.25898-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Daniel Wittenberg <daniel-wittenberg@starken.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Fri, 18 Jun 2004, Daniel Wittenberg wrote:
+tcpdump I won't be able to get until it fails again, but it's 
+2.4.22-1.2188.nptl (did it with kernel-2.4.22-1.2174.nptl too).
 
-> I've got a firewall I've been supporting for awhile, and few months
-> things have been screwy, and I think I've narrowed it down.
-> Originally it looked like a bug in proftpd, but now it looks like
-> connections that are stateful stop working.  What seems to happen is
-> that after a period of time (almost 2 weeks now), passive mode ftp
-> stops working, but active mode still works.  Is there anything that
-> can be checked/traced to check what the connection table is like?  I
-> have watched for errors in dmesg and /var/log/message (fedora core 1
-> box), about connection table full, but nothing there.  Here's part of
-> the trace when things broke:
->
-> 1.2.3.4 is outside host
->
->  0.181007 192.168.254.7 -> 1.2.3.4 FTP Response: 230 User <user> logged in.
->   0.214498 1.2.3.4 -> 192.168.254.7 FTP Request: TYPE I
->   0.215631 192.168.254.7 -> 1.2.3.4 FTP Response: 200 Type set to I
->   0.260922 1.2.3.4 -> 192.168.254.7 FTP Request: PWD
->   0.262036 192.168.254.7 -> 1.2.3.4 FTP Response: 257 "/" is current directory.
->   0.344486 1.2.3.4 -> 192.168.254.7 TCP 56178 > ftp [ACK] Seq=39 Ack=147
-> Win=5840 Len=0 TSV=250989004 TSER=112409764
->   0.362754 1.2.3.4 -> 192.168.254.7 FTP Request: PASV
->   0.363917 192.168.254.7 -> 1.2.3.4 FTP Response: 227 Entering Passive Mode
-> (192,168,254,7,8,202).
->   0.407829 1.2.3.4 -> 192.168.254.7 TCP 56178 > ftp [ACK] Seq=45 Ack=197
-> Win=5840 Len=0 TSV=250989010 TSER=112409774
->   0.407907 1.2.3.4 -> 192.168.254.7 TCP 56179 > 2250 [SYN] Seq=0 Ack=0 Win=5840
-> Len=0 MSS=1460 TSV=250989010 TSER=0 WS=0
->   3.400629 1.2.3.4 -> 192.168.254.7 TCP 56179 > 2250 [SYN] Seq=0 Ack=0 Win=5840
-> Len=0 MSS=1460 TSV=250989310 TSER=0 WS=0
->   9.400613 1.2.3.4 -> 192.168.254.7 TCP 56179 > 2250 [SYN] Seq=0 Ack=0 Win=5840
-> Len=0 MSS=1460 TSV=250989910 TSER=0 WS=0
->  11.114693 1.2.3.4 -> 192.168.254.7 TCP 56178 > ftp [FIN, ACK] Seq=45 Ack=197
-> Win=5840 Len=0 TSV=250990074 TSER=112409774
-
-Please post your exact kernel version number, loaded in kernel modules,
-your complete ruleset *and* a real tcpdump output.
-
-Server SYN/ACK response does not reach the client: that's all one can say.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+The full ruleset is almost 200 lines, and will take awhile for me to sanitize
+it, but will work on it (not a static script, dynamically generated).
+ 
+# lsmod
+Module                  Size  Used by    Not tainted
+iptable_filter          2444   1  (autoclean)
+ipt_state               1080   8
+ipt_REJECT              4248   2
+ipt_REDIRECT            1400   0  (unused)
+ipt_MASQUERADE          2200   2
+ipt_mark                 984   0  (unused)
+ipt_LOG                 4248  62
+ipt_limit               1560  28
+ip_nat_ftp              3728   0  (unused)
+iptable_nat            21848   2  [ipt_REDIRECT ipt_MASQUERADE ip_nat_ftp]
+ip_tables              15136  11  [iptable_filter ipt_state ipt_REJECT
+ipt_REDIRECT ipt_MASQUERADE ipt_mark ipt_LOG ipt_limit iptable_nat]
+ip_conntrack_ftp        4944   1
+ip_conntrack           28552   3  [ipt_state ipt_REDIRECT ipt_MASQUERADE
+ip_nat_ftp iptable_nat ip_conntrack_ftp]
+natsemi                19232   3
+keybdev                 2656   0  (unused)
+mousedev                5268   0  (unused)
+hid                    23908   0  (unused)
+input                   5888   0  [keybdev mousedev hid]
+usb-uhci               26124   0  (unused)
+usbcore                78752   1  [hid usb-uhci]
+ext3                   71620   2
+jbd                    51276   2  [ext3]
 
 
+
+Quoting Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>:
+
+> 
+> Please post your exact kernel version number, loaded in kernel modules,
+> your complete ruleset *and* a real tcpdump output.
+> 
+> Server SYN/ACK response does not reach the client: that's all one can say.
+> 
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
+> 
+> 
 
