@@ -1,13 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: telnet question
-Date: Wed, 7 Jul 2004 14:08:36 +0100
+Subject: Re: Different routes for different src addresses
+Date: Wed, 7 Jul 2004 14:10:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407071408.36725.Antony@Soft-Solutions.co.uk>
-References: <a0f69e5040706225576326815@mail.gmail.com> <20040707084358.4c25c38b.leslie.polzer@gmx.net> <a0f69e50407070232540b8014@mail.gmail.com>
+Message-ID: <200407071410.02752.Antony@Soft-Solutions.co.uk>
+References: <20040707120502.GA23120@nihil>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <a0f69e50407070232540b8014@mail.gmail.com>
+In-Reply-To: <20040707120502.GA23120@nihil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +19,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 07 July 2004 10:32 am, Askar Ali Khan wrote:
+On Wednesday 07 July 2004 1:05 pm, Alpt wrote:
 
-> On Wed, 7 Jul 2004 08:43:58 +0200, Patrick Leslie Polzer
+> Hi all,
+> is it possible to create a route for a single src address?
+> For example these are some routes I'd like to use:
 >
-> <leslie.polzer@gmx.net> wrote:
-> > On Wed, 7 Jul 2004 10:55:21 +0500
-> >
-> > Askar Ali Khan <askarali@gmail.com> wrote:
-> > > my question is that how to makes Linux Box (B) direct to machine C i-e
-> > > like that Linux Box A.
-> >
-> > That depends on your network architecture. Could you please provide
-> > more information? Use dummy IPs and network ranges that resemble the real
-> > setup and maybe draw some ASCII stuff.
+> 1) "All the pkts coming from hostA with dst=hostX are routed to eth1".
+> 2) "All the pkts coming from hostB with dst=hostT are routed to eth0"
+> /*Normal routes start here*/
+> 3) "All the pkts (that are not pkts of type 1) and 2)) with dst=hostX
+> are routed to eth3"
+> 4) "All the pkts (that are not pkts of type 1) and 2)) with dst=hostU
+> are routed to eth2"
+> 5) And so on...
 >
-> okay i will try with dumy IPs, I don't know whats more information you
-> are asking for :)?
+> I mean _routing_, not natting. If I nat the pkts their destination will
+> change and I need to keep it intact.
 
-We need to understand  how your computers are connected together - ie: what 
-shape your network is.   Imagine one of us had to recreate your network 
-layout in our own office - give us enough information that we'd be able to do 
-that.
+As you say, you mean _routing_, therefore this a routing question, not a 
+netfilter question.
+
+You need iproute2 (see http://lartc.org)
 
 Regards,
 
-Antony.
+Antony
+
 
 -- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
+"It is easy to be blinded to the essential uselessness of them by the sense of 
+achievement you get from getting them to work at all. In other words - and 
+this is the rock solid principle on which the whole of the Corporation's 
+Galaxy-wide success is founded - their fundamental design flaws are 
+completely hidden by their superficial design flaws."
+
+ - Douglas Noel Adams
 
                                                      Please reply to the list;
                                                            please don't CC me.
