@@ -1,8 +1,8 @@
-From: Eric Leblond <eric@inl.fr>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Can anyone tell me how to do this?
-Date: Wed, 22 Sep 2004 16:25:10 +0200
+Date: Wed, 22 Sep 2004 10:29:43 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095863109.4393.9.camel@coati>
+Message-ID: <1095863383.1891.18.camel@wolfpack.ljm.dom>
 References: <20040922140922.36826.qmail@web51301.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,36 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Dominic Iadicicco <sctylib2004@yahoo.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-22 at 16:09, Dominic Iadicicco wrote:
+On Wed, 2004-09-22 at 10:09, Dominic Iadicicco wrote:
 > Hello all,
+> 
+> Can anyone tell me how to do this so that I may ask
+> some questions afterword's in hopes to learn a little
+> more about iptables.
+
+learning more about iptables is a nice goal to have.  sometimes i wish
+it was just as glamorous for people to want to learn more about routing
+and the OSI model, before becoming super l33t firewall gurus...but i
+digress...
+
+> This is what I would like to try. I think this would
+> get me to the next level.
+> 
 > My devil-Box is at 172.16.12.130 and I want all ssh
 > request to this .130 address, to go to address
-> 172.16.12.212.   
+> 172.16.12.212.   How do I do this?  All machines are
+> on the 172.16.12.x subnet for right now.
 
-go to : it's the easy part : 
-iptables -A PREROUTING -t nat -d 172.16.12.130 -p tcp -dport 22 \\
--j DNAT --to 172.16.12.212
+  iptables -t nat -A PREROUTING -p tcp --dport 22 \
+    -d 172.16.12.130 -j DNAT --to-destination 172.16.12.212
 
-well that's for go to. But let say A try to connect to 172.16.12.130 then
-172.16.12.212 receive a connection from 1 and answer to A which wait
-answer from 172.16.12.130. bad day for him.
-The solution is to change source address of packets going to
-172.16.12.212 :
-iptables -A POSTROUTING -t nat -d 172.16.12.212 -p tcp --dport 22 \\ 
--j SNAT --to 172.16.12.130
+  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-thus we have the following :
- A talks to 172.16.12.130
- packet arrive to 172.16.12.212 with source 172.16.12.130
-packet return to 172.16.12.130
-which reemit to A.
+  iptables -A FORWARD -p tcp -d 172.16.12.212 -j ACCEPT
 
-BR,
+  iptables -t nat -A POSTROUTING -p tcp --dport 22 \
+    -d 172.16.12.212 -j SNAT --to-source 172.16.12.130
+
+  sysctl -w net.ipv4.ip_forward=1
+
+-j
+
 -- 
-Eric Leblond <eric@inl.fr>
-INL
+Jason Opperisano <opie@817west.com>
 
 
