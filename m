@@ -1,13 +1,11 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: conntrack records not going away?
-Date: Wed, 22 Dec 2004 08:41:07 +0100
-Message-ID: <1103701266.3634.3.camel@bibo.spenneberg.de>
-References: <876ef97a041220111947fbeff5@mail.gmail.com>
-	<1103596432.6589.8.camel@hubcap.ljm.dom>
+From: Jean Hoderd <jhoderd@yahoo.com>
+Subject: Re: Accounting for national/international traffic
+Date: Wed, 22 Dec 2004 00:24:41 -0800 (PST)
+Message-ID: <20041222082441.57205.qmail@web42101.mail.yahoo.com>
+References: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103596432.6589.8.camel@hubcap.ljm.dom>
+In-Reply-To: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Am Di, den 21.12.2004 schrieb Jason Opperisano um 3:33:
-> On Mon, 2004-12-20 at 14:19, Tobias DiPasquale wrote:
-> > Hi all,
-> > 
-> > We have a box running 2.4.26 (from kernel.org) over here that's
-> > serving as a sink for test SMTP traffic. The box sits behind a Linux
-> > box that is doing ProxyARP. The weird thing is, sometimes after
-> > sending tons of traffic to the sink, conntrack records hang around in
-> > the ESTABLISHED state, even though the sink process (the endpoint for
-> > the connections in question) has been shut down. Has anyone ever seen
-> > this before? TIA :)
-> 
-> once a TCP connection gets to ESTABLISHED [ASSURED] state--it will not
-> be removed from conntrack until it times out (after 5 days by default
-> (432000 seconds)), or one side sends a FIN-ACK packet requesting that
-> the connection be torn down.
-> 
-Or a TCP-Reset.
+Hi,
+
+And thanks to both people who have answered my question! Accounting for
+national/international traffic using the "ipt_account" module seems
+quite straightforward now. However, since the list of national IP
+ranges is quite long, it might introduce a serious performance penalty.
+In that respect, the "dscp" module seems to be a better option -- if
+supported by my ISP. (It also has the advantage that the classification
+is always up-to-date with the list of national IP ranges).
+
+Anyway, looking at the long list of IP ranges, it occurred to me that
+this is essentially a decision tree problem, which could be optimised
+using known algorithms.  My googling has returned empty-handed, so my
+question is: does someone know of any project which aims at optimising
+iptables rules based on decision trees?  If not, I would gladly take a
+look at the problem when I find some time.
 
 Cheers,
+Jean
 
-Ralf
--- 
-Ralf Spenneberg <lists@spenneberg.org>
 
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - now with 250MB free storage. Learn more.
+http://info.mail.yahoo.com/mail_250
 
