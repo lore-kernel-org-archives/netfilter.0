@@ -1,12 +1,13 @@
-From: uniplex <uniplex@maximum-linux.net>
-Subject: Re: question on rating SYN packets
-Date: Sat, 08 Feb 2003 18:44:00 +0000
+From: Fabrice MARIE <fabrice@netfilter.org>
+Subject: Fwd: IPTables stops logging after long uptime
+Date: Sun, 9 Feb 2003 22:47:20 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E454FF0.4050803@maximum-linux.net>
-References: <002b01c2cef4$74f9b860$3201a8c0@ESTACAO> <3E440D73.6010107@maximum-linux.net> <009501c2cfa7$95624a50$3201a8c0@ESTACAO>
+Message-ID: <200302092247.20930.fabrice@netfilter.org>
+Reply-To: fabrice@netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solucoesip.net>
-Cc: netfilter ML <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Leonardo Rodrigues Magalh=E3es wrote:
->     I already do limit of parallel connections. But I'd also like to li=
-mit
-> the number of NEW connections from EACH host.
->=20
->     Let's suppose I'll allow 10 parallel connections per host per port.=
 
-> That's easy with iplimit. But I'd also like to limit 1 new connection p=
-er
-> second. So a single host wouldnt establish 10 new connections in 1 seco=
-nd,
-> for example. I'd like to allow 10 connections in parallel ( iplimit doe=
-s
-> this ) and 1 new connection per second PER host ( this I dont know how =
-to
-> do ).
->=20
->     Is this possible, somehow, with iptables ?
->=20
->     Sincerily,
->     Leonardo Rodrigues
+Anybody had this problem ?
 
-iptables -N synlimit
-iptables -A INPUT -i eth0 -p tcp --dport 80 -j synlimit
-iptables -A synlimit -m recent --rcheck --seconds 1 --name onesec -j DROP=
+[I don't have this problem since my
+uptime is never that long..]
 
-iptables -A synlimit -m iplimit --iplimit-above 10 -j DROP
-iptables -A synlimit -m recent --update --name onesec -j ACCEPT
+Have a nice day,
 
-I don't know if this would work, but it's my best guess.. gl.
+Fabrice.
 
+----------  Forwarded Message  ----------
+
+Subject: IPTables stops logging after long uptime
+Date: Saturday 08 February 2003 01:21
+From: Chris Travers <chris@travelamericas.com>
+To: focus-linux@securityfocus.com
+
+Hi all--
+
+I was wondering if anyone has seen similar problems with IPTables/Netfilter.
+
+I am running a firewall which consists of a small system (AMD K5 @133MHz
+w/32 MB Ram).  It has 2 3c509 ethernet cards, is running FreeS/wan, and
+IPTables.  It also has all QoS options enabled.  The kernel is compiled
+without support for LKM so all of these are statically linked.  I am
+running the Linux Kernel 2.4.18.
+
+If the system has been up for a month or so and I try to reapply the
+firewall rules, something odd happens.  Instead of getting the normal
+IPTables entries:
+Feb  2  18:29:47 fwhost -- MARK --
+
+Rebooting solves the problem.  As the kernel is entirely statically
+linked, I can't remove and reinstall the IPTables module into the
+kernel.  Note that restarting Syslog does not solve the problem, and
+syslog does log everything else correctly. so the problem appears to be
+with the kernel at this point.
+
+Any ideas what causes this?  Or should I file a bug with the Linux
+Kernel email list?
+
+Best Wishes,
+Chris Travers
+-----------------------------------------
+
+--
+Fabrice MARIE
+
+"Silly hacker, root is for administrators"
+       -Unknown
 
