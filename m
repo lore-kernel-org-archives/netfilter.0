@@ -1,12 +1,11 @@
-From: "David Boone" <netfilter@wizdom.net>
-Subject: netfilter and multiple virtual interfaces
-Date: Fri, 20 Dec 2002 17:21:58 -0500
+From: Craig Davison <cd@securityfocus.com>
+Subject: Link time problems with libipq example code
+Date: Fri, 20 Dec 2002 15:44:05 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7ED10BBB6654124E9AFFF27155322BBBB74E@corp03.nc.ehomecare.com>
+Message-ID: <20021220224405.GB28191@securityfocus.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000E_01C2A84C.4CFA2D00"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +15,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello,
+I've been trying to compile the libipq example code in the libipq man page.
 
-------=_NextPart_000_000E_01C2A84C.4CFA2D00
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+My kernel is 2.4.18, distributed by RedHat as 2.4.18-14. I made a symlink to the kernel source at /usr/src/linux.
+I built ipchains 1.2.7a as follows:
+make
+su
+make install-devel
 
-Hi,
- 
-I know you can apply a + (plus sign) to adapters in the form eth+ or
-ppp+, but I'm setting up a firewall that will have several web servers
-behind it and I would like to do something like eth0+ and/or eth0:+ in
-the rules.  Does anyone know if this will work or do I have to enter
-every single virtual adapter by hand?
+I copied the code from the man page into a file called ipqtst.c and compiled:
+gcc -I/usr/local/include -L/usr/local/lib -lipq -o ipqtst ipqtst.c
+/tmp/ccGDqSOi.o: In function `die':
+/tmp/ccGDqSOi.o(.text+0xf): undefined reference to `ipq_perror'
+/tmp/ccGDqSOi.o(.text+0x1d): undefined reference to `ipq_destroy_handle'
+/tmp/ccGDqSOi.o: In function `main':
+/tmp/ccGDqSOi.o(.text+0x49): undefined reference to `ipq_create_handle'
+/tmp/ccGDqSOi.o(.text+0x81): undefined reference to `ipq_set_mode'
+/tmp/ccGDqSOi.o(.text+0xb8): undefined reference to `ipq_read'
+/tmp/ccGDqSOi.o(.text+0xe4): undefined reference to `ipq_message_type'
+/tmp/ccGDqSOi.o(.text+0x116): undefined reference to `ipq_get_msgerr'
+/tmp/ccGDqSOi.o(.text+0x141): undefined reference to `ipq_get_packet'
+/tmp/ccGDqSOi.o(.text+0x166): undefined reference to `ipq_set_verdict'
+collect2: ld returned 1 exit status
 
-Thanks, 
-Dave Boone 
+I get the same errors when I compile statically:
+gcc -static -I/usr/local/include -L/usr/local/lib -lipq -o ipqtst ipqtst.c
 
+Is libipq not the right thing to link against? Am I doing something else wrong (did I build ipchains incorrectly?)
 
-
-------=_NextPart_000_000E_01C2A84C.4CFA2D00
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>Message</TITLE>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D807171922-20122002><FONT face=3D"Comic Sans MS"=20
-size=3D2>Hi,</FONT></SPAN></DIV>
-<DIV><SPAN class=3D807171922-20122002><FONT face=3D"Comic Sans MS"=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D807171922-20122002><FONT face=3D"Comic Sans MS" =
-size=3D2>I know you=20
-can apply a + (plus sign) to adapters in the form eth+ or ppp+, but I'm =
-setting=20
-up a firewall that will have several web servers behind it and I would =
-like to=20
-do something like eth0+ and/or eth0:+ in the rules.&nbsp; Does anyone =
-know if=20
-this will work or do I have to enter every single virtual adapter by=20
-hand?</FONT></SPAN></DIV>
-<P><FONT face=3DArial size=3D2>Thanks,</FONT> <BR><FONT face=3DArial =
-size=3D2>Dav<SPAN=20
-class=3D807171922-20122002>e</SPAN> Boone</FONT> <BR></P></BODY></HTML>
-
-------=_NextPart_000_000E_01C2A84C.4CFA2D00--
-
+-- 
+Craig Davison
+Symantec Corporation
++1 (403) 213-3939 ext. 228
 
