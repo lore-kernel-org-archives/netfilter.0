@@ -1,15 +1,13 @@
-From: Jim Laurino <JimLaur@acm.org>
-Subject: Re: icmp messages to spoofed address acceptedby -m conntrack --ctstate ESTABLISHED,RELATED
-Date: Fri, 19 Mar 2004 19:22:14 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: can i log and alter body of forwarded packet?
+Date: Sat, 20 Mar 2004 01:40:46 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040320002214.GA3373@salty>
-References: <20040319204142.GA3294@salty> <200403192125.45552.Antony@Soft-Solutions.co.uk>
-Reply-To: JimLaur@acm.org
+Message-ID: <200403200140.46643.Antony@Soft-Solutions.co.uk>
+References: <BAY1-F793OBvB8J0QLB0001d9bf@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200403192125.45552.Antony@Soft-Solutions.co.uk> (from +nfcan+jimlaur+0fd5a9955d.Antony#Soft-Solutions.co.uk@spamgourmet.com on Fri, Mar 19, 2004 at 16:25:45 -0500)
+In-Reply-To: <BAY1-F793OBvB8J0QLB0001d9bf@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,41 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
-To: netfilter list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+On Friday 19 March 2004 9:39 pm, Pierre Gillet wrote:
 
-Well, yes, but my question is not whether
-someone is spoofing my ip, but whether
-the iptables connection tracking code
-should match the icmp packet if there
-was no packet sent out.
+> how can i log, in a first time, body of a packet,
 
-Will someone explain whether the
-match is the expected behavior of this rule,
-or if this match is a misuse of the conntrack
-module by me.
+See the ULOG target.
 
-Or is this possibly a bug in connection tracking?
+> and in a 2nd time, alter this body for replace a part of the packet (a
+> string) by an other? is it possible?
 
-What is this icmp packet related to?
-What established connection does it match?
-Could this rule match other protocols?
-Could this be a risk?
+No.
 
-If it is a bug,
-or if no one knows,
-I will report it.
+Antony.
 
-I am grateful for the effort that the developers
-have put into creating and maintaining iptables,
-and I am simply trying to do my part to help
-with the maintainence.
+-- 
+All matter in the Universe can be placed into one of two categories:
 
-By the way, Antony, thanks for the jokes.
-I have been trying to recall that last one
-for years. It never gets old, only I do.
+1. Things which need to be fixed.
+2. Things which need to be fixed once you've had a few minutes to play with 
+them.
 
-Jim Laurino
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
