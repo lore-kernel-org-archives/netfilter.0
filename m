@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: routing mail on a different gateway
-Date: Fri, 23 Jul 2004 15:54:29 +0200
+From: "Gonzalez, Federico" <fgonzalez@goyaike.com.ar>
+Subject: TTL target
+Date: Fri, 23 Jul 2004 14:56:12 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <TBEXEDU01BBsQwY6YHk00000046@smtp.maurickcollege.nl>
-References: <41010B14.7000206@tri-oxyde.org>
+Message-ID: <001201c470de$5775b900$1e00000a@goyaike.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <41010B14.7000206@tri-oxyde.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,17 +18,12 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> > Maybe this will do ; use ppp+ instead of ppp0 or ppp1.
-> > ppp+ matches any ppp.
+Hi,
 
-> Where should I use it ? iproute2 doesn't understand ppp+
+I have iptables 1.2.9, red hat kernel 2.4.22 and i need to use the TTL
+target to change the packets TTL.
 
-Sorry, I thought you were using netfilter to match an interface...
-Netfilter/iptables does understand it.
+How do i enable this functionality ?
 
-
-Gr,
-Rob
-
-
+Thank you.
 
