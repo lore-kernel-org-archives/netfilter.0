@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: LAN Proxy - iptables gateway
-Date: 10 Sep 2004 18:37:51 +0200
+Subject: Re: assigning alias ip address
+Date: 10 Sep 2004 18:37:55 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094820617.30362.16.camel@nostromo.bgsecm.com>
-References: <20040910053613.5C11C576@smtp-01.piensasolutions.com>
+Message-ID: <1094820804.26973.20.camel@nostromo.bgsecm.com>
+References: <003c01c496e3$b6416c60$f82ffea9@black>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040910053613.5C11C576@smtp-01.piensasolutions.com>
+In-Reply-To: <003c01c496e3$b6416c60$f82ffea9@black>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,58 +20,41 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El vie, 10 de 09 de 2004 a las 07:36, Manikandan escribi=C3=B3:
-> Hi all,
+El vie, 10 de 09 de 2004 a las 05:10, John Black escribi=C3=B3:
+> How does assigning alias IP address work?
 >=20
-> =20
+> I have one network jack coming into my server room.=20
+> eth0  10.10.10.10
 >=20
-> I have a local LAN (10.35.50.0/24) which is connected to my linux
-> firewall/gateway running iptables for internet access using an internet
-> link. My LAN is connected to other subnets using a leased line.=20
+> I have two servers with public IP address.
+> this assigns them, right?
+> ifconfig eth0:10 192.168.1.10 netmask 255.255.255.0
+> ifconfig eth0:11 192.168.2.11 netmask 255.255.255.0
 >=20
-> =20
+> iptables -t nat -A PREROUTING -d 192.168.1.10 -i eth0 \
+>                 -j DNAT --to-destination 10.10.10.11
+> iptables -t nat -A PREROUTING -d 192.168.2.11 -i eth0 \
+>                 -j DNAT --to-destination 10.10.10.12
 >=20
-> I had to add a few routes in my linux gateway (running iptables) to ena=
-ble
-> my LAN clients to access servers in other subnets and networks which ar=
-e in
-> the range of 10.0.0.0/8 and 97.0.0.0/8.=20
+> When a mail or web request is made from the internet. =20
+> How does it know where the servers are?
 >=20
->            =20
->=20
-> Everything seems to be working fine. But recently I found that one of m=
-y LAN
-> clients is running an Analog proxy. Few users sitting in other networks=
- are
-> using this proxy and able to access internet.=20
->=20
-> =20
->=20
-> My firewall is configured to allow traffic to internet from LAN only
-> (10.35.50.0/24). As the proxy is inside this network, firewall allows t=
-he
-> traffic.
->=20
-> =20
->=20
-> How do I stop this? I don't want users in other network to access inter=
-net
-> through my iptables. Please help me. Thanks in advance.=20
->=20
-> =20
+> thanks
+> John
 
-You could look at your logs and find the port analog is using. If it's
-not a port you want to have opened then you should close it in the
-firewall. If it's a port you need, let's say port 80, then it's a little
-more complicated. You could use some kind of application proxy to stop
-people from using this kind of applications.
+The new kernel networking code named iproute2 doesn't make
+any differences between IPs assigned to an interfaces or
+aliased IPs. You can assign any number of IPs to an interface,
+and this can be primary IPs or secundary IPs, but for the
+kernel it's just another IP assigned to the machine (really
+it's more complex, the IPs are assigned to services, not any
+hardware in particular).
 
->=20
-> Regards,
->=20
-> Manikandan
->=20
-> =20
+So when a request is made from the internet the routing code
+just looks in it's tables what routes it have to use, and
+as the IPs are assigned to the same machine it sends the
+request to the machine you have assigned the IPs.
+
 --=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
