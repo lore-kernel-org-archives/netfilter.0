@@ -1,13 +1,14 @@
-From: Batstru <batstru@email.it>
+From: Jamie Pratt <jamie@nucdc.org>
 Subject: Re: problems with alias
-Date: Fri, 16 Jul 2004 14:47:46 +0200
+Date: Fri, 16 Jul 2004 09:05:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <e70eba33cefa6ce158ba012abe8e1a82@147.162.2.222>
-Reply-To: Batstru <batstru@email.it>
+Message-ID: <40F7D299.8010803@nucdc.org>
+References: <12a1fd421dcf7411b2acdd8a5da18f59@147.162.2.222>
+Reply-To: jamie@nucdc.org
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="b1_e70eba33cefa6ce158ba012abe8e1a82"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <12a1fd421dcf7411b2acdd8a5da18f59@147.162.2.222>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,134 +18,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 
---b1_e70eba33cefa6ce158ba012abe8e1a82
-Content-Type: text/plain; charset = "iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-sorry..=20
-the correct subnet mask is the following...
-
-eth0 --> 192.168.1.254 / 255.255.255.0
-eth1 --> 82.186.92.90 / 255.255.255.248
-eth1:1 --> 82.186.92.91 / 255.255.255.248
-eth1:2 --> 82.186.92.92 / 255.255.255.248
-eth1:3 --> 82.186.92.93 / 255.255.255.248
-eth1:4 --> 82.186.92.93 / 255.255.255.248
-
-marco
-
-
---------- Original Message --------
-Da: netfilter@lists.netfilter.org
-To: \"netfilter@lists.netfilter.org\" <netfilter@lists.netfilter.org>
-Oggetto: Re: problems with alias
-Data: 16/07/04 12:48
-
-
-
-On Friday 16 July 2004 11:00 am, Batstru wrote:
+Batstru wrote:
 
 > Hi all!
 > I changed my server running redhat9 (kernel 2.4.x) with a new one with
-> fedora core 2 (kernel 2.6.x): each one has 2 ethernet interfaces, so I
-> copy network configuration fron rh9 to fc2
->
+> fedora core 2 (kernel 2.6.x): each one has  2 ethernet interfaces, so I copy
+> network configuration fron rh9 to fc2 
+> 
 > eth0 --> 192.168.1.254 / 255.255.255.0
 > eth1 --> 82.186.92.90 / 255.255.255.254
 > eth1:1 --> 82.186.92.91 / 255.255.255.254
 > eth1:2 --> 82.186.92.92 / 255.255.255.254
 > eth1:3 --> 82.186.92.93 / 255.255.255.254
 > eth1:4 --> 82.186.92.93 / 255.255.255.254
+> also, I copy and apply iptables configuration but it does not work well.
+> now iptables doesn\'t apply rules to virtual interfaces, eth1...eth4.
+> a line of my configiguration files is:
+> -A INPUT -p tcp -m tcp -m state -d 82.186.92.91 --dport 20 --state NEW -j
+> ACCEPT
+> I tried different rules configuration but it still not work.
+> 
+> can you help me? 
+>  --
+>  Email.it, the professional e-mail, gratis per te: http://www.email.it/f
+>  
+>  Sponsor:
+>  Lerboristeria.biz: per la tua bellezza e salute il miglior assortimento 
+> di prodotti erboristici ed oggettistica online
+> 
+>  Clicca qui: http://adv.email.it/cgi-bin/foclick.cgi?mid=2152&d=20040716
+> 
+> 
 
-These combinations of address/netmask make no sense to me.
+Have you tried to use the iproute2 suite for aliasing instead of 
+ifconfig? I believe the ifconfig way is considered "deprecated". Then, 
+specify your rules by interface and/or ip and it should work properly - 
+maybe the old method only works in iptables using the interface name now?
 
-The netmask 255.255.255.254 defines a 2-host subnet (basically, a=20
-point-to-point link, although those are normally specified using a full=20
-32-bit all-1\'s netmask). Therefore if you have 82.186.92.90 on an interf=
-ace
+example:
 
-with a 255.255.255.254 netmask, the only machine it will be capable of=20
-talking to at the other end of the cable is 82.186.92.91.
+## old ip aliasing
+##/sbin/ifconfig eth0:0 192.168.0.1
+##/sbin/ifconfig eth0:1 192.168.0.2
 
-Putting that address (.91), as well as several others which fall in
-different=20
-address ranges, onto the same phyical interface makes no sense to me.
+## New IP aliasing using ip tool from iproute2 package:
+/sbin/ip addr add 192.168.0.1/24 brd + dev eth0
+/sbin/ip addr add 192.168.0.2/24 brd + dev eth0
 
-Regards,
-
-Antony.
-
---=20
-Anyone that\'s normal doesn\'t really achieve much.
-
-- Mark Blair, Australian rocket engineer
-
-Please reply to the list;
-please don\'t CC me.=20
- --
- Email.it, the professional e-mail, gratis per te: http://www.email.it/f
-=20
- Sponsor:
- I migliori vini a prezzi imbattibili e per ogni acquisto speciali omaggi=
-!
-Clicca e prova la convenienza ora!
- Clicca qui: http://adv.email.it/cgi-bin/foclick.cgi?mid=3D2624&d=3D20040=
-716
-
-
---b1_e70eba33cefa6ce158ba012abe8e1a82
-Content-Type: text/html; charset = "iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-sorry.. <BR>the correct subnet mask is the following...<BR><BR><FONT face=
-=3D"Courier New">eth0 --&gt; 192.168.1.254 / 255.255.255.0<BR>eth1 --&gt;=
- 82.186.92.90 / 255.255.255.248<BR>eth1:1 --&gt; 82.186.92.91 / 255.255.2=
-55.248<BR>eth1:2 --&gt; 82.186.92.92 / 255.255.255.248<BR>eth1:3 --&gt; 8=
-2.186.92.93 / 255.255.255.248<BR>eth1:4 --&gt; 82.186.92.93 / 255.255.255=
-.248<BR></FONT><BR>marco<BR><BR>
-<BLOCKQUOTE dir=3Dltr style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MAR=
-GIN-LEFT: 5px; BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-<DIV style=3D"FONT: 10pt arial">--------- Original Message --------<BR>Da=
-: netfilter@lists.netfilter.org<BR>To: "netfilter@lists.netfilter.org" &l=
-t;netfilter@lists.netfilter.org&gt;<BR>Oggetto: Re: problems with alias<B=
-R>Data: 16/07/04 12:48<BR><BR><FONT face=3D"Courier New" size=3D2><BR><BR=
->On Friday 16 July 2004 11:00 am, Batstru wrote:<BR><BR>&gt; Hi all!<BR>&=
-gt; I changed my server running redhat9 (kernel 2.4.x) with a new one wit=
-h<BR>&gt; fedora core 2 (kernel 2.6.x): each one has 2 ethernet interface=
-s, so I<BR>&gt; copy network configuration fron rh9 to fc2<BR>&gt;<BR>&gt=
-; eth0 --&gt; 192.168.1.254 / 255.255.255.0<BR>&gt; eth1 --&gt; 82.186.92=
-.90 / 255.255.255.254<BR>&gt; eth1:1 --&gt; 82.186.92.91 / 255.255.255.25=
-4<BR>&gt; eth1:2 --&gt; 82.186.92.92 / 255.255.255.254<BR>&gt; eth1:3 --&=
-gt; 82.186.92.93 / 255.255.255.254<BR>&gt; eth1:4 --&gt; 82.186.92.93 / 2=
-55.255.255.254<BR><BR>These combinations of address/netmask make no sense=
- to me.<BR><BR>The netmask 255.255.255.254 defines a
-2-host subnet (basically, a <BR>point-to-point link, although those are n=
-ormally specified using a full <BR>32-bit all-1's netmask). Therefore if =
-you have 82.186.92.90 on an interface <BR>with a 255.255.255.254 netmask,=
- the only machine it will be capable of <BR>talking to at the other end o=
-f the cable is 82.186.92.91.<BR><BR>Putting that address (.91), as well a=
-s several others which fall in different <BR>address ranges, onto the sam=
-e phyical interface makes no sense to me.<BR><BR>Regards,<BR><BR>Antony.<=
-BR><BR>-- <BR>Anyone that's normal doesn't really achieve much.<BR><BR>- =
-Mark Blair, Australian rocket engineer<BR><BR>Please reply to the list;<B=
-R>please don't CC me.<BR><BR><BR></FONT></DIV></BLOCKQUOTE><br><p><font f=
-ace=3DVerdana,Arial size=3D2>----<br>
- Email.it, the professional e-mail, gratis per te: <a href=3D"http://www.=
-email.it/cgi-bin/start?sid=3D3"=20
- target=3D"_blank" >clicca qui</a> <br>
- <br>
- Sponsor:<br>
- I migliori vini a prezzi imbattibili e per ogni acquisto speciali omaggi=
-! Clicca e prova la convenienza ora!<br>
- <a href=3D"http://adv.email.it/cgi-bin/foclick.cgi?mid=3D2624&d=3D200407=
-16" target=3D"_blank" >Clicca qui</a> </font><br>
-
-
-
---b1_e70eba33cefa6ce158ba012abe8e1a82--
-
+regards,
+jamie
 
 
