@@ -1,12 +1,13 @@
-From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
-Subject: Re: bandwidth monitoring
-Date: Wed, 26 Jan 2005 10:33:31 -0800
-Message-ID: <20050126183331.GA25316@ranjeet-pc2.zultys.com>
-References: <200501061128.04741.patrick.leduc@novipro.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: what protocols need UDP instead of just TCP?? DNS, IMAP, SSH,
+	etc.?
+Date: Wed, 26 Jan 2005 13:47:21 -0500
+Message-ID: <20050126184721.GA7134@bender.817west.com>
+References: <20050126000550.GB15359@spawar.navy.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200501061128.04741.patrick.leduc@novipro.com>
+In-Reply-To: <20050126000550.GB15359@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,30 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-* patrick.leduc@novipro.com (patrick.leduc@novipro.com) wrote:
-> Hello
+On Tue, Jan 25, 2005 at 04:05:50PM -0800, seberino@spawar.navy.mil wrote:
+> I'm only allowing TCP out of my firewall.
 > 
-> Does somebody know a program for monitoring bandwidth by ip? I have one 
-> internet interface and I must monitor many ips adresses on this interface. I 
-> tried Ipac-ng and, I worked a lot to do this config but it seems not working 
-> this way.
+> What apps/protocls need UDP?
 > 
-> thanx
-> 
+> DNS, IMAP, SSH, etc.?
 
-Long term bandwidth usage can be tracked using MRTG. (stored data +
-daemon + http server + web based gui)
+DNS--yes.  IMAP and SSH--no.
 
-Instantaneous bandwidth usage can be tracked using iftop. (ncurses)
+> I dunno if I need to allow UDP for anything.
 
--- 
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-Ranjeet dot Shetye at Zultys dot com
-http://www.zultys.com/
- 
-The views, opinions, and judgements expressed in this message are solely those of
-the author. The message contents have not been reviewed or approved by Zultys.
+other common UDP ports i allow out:
 
+Port	Service
+---------------
+123	NTP
+500	IKE
+
+-j
+
+--
+"I never passed Remedial Science 1A.
+ And you're a nuclear technician?"
+        --The Simpsons
 
