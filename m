@@ -1,12 +1,10 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: a problem about NAT.
-Date: Thu, 25 Sep 2003 22:11:02 -0700 (PDT)
+From: "Wu Nick" <chundawu@hotmail.com>
+Subject: What is the limitation of iptables's limit option?
+Date: Fri, 26 Sep 2003 06:52:01 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309252206510.3632@xena.cft.ca.us>
-References: <DEEOLEFPFOLKFJHILOGBCEEOCAAA.ChenJ@yztech.com.cn>
+Message-ID: <Law14-F491WYi3NndsD00022915@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <DEEOLEFPFOLKFJHILOGBCEEOCAAA.ChenJ@yztech.com.cn>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Chen Jian <ChenJ@yztech.com.cn>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="big5"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
-On Wed, 24 Sep 2003, Chen Jian wrote:
-
-> There are 3 machine behind the NAT server. When the 3 machine request the
-> same Web server outside, NAT use 3 different source port to distinguish
-> the 3 connection.
-
-> My problem is when the 3 machine have the same source port , how
-> netfilter handle it ? I also want to know where the handle code is .
-> Thanks .
-
-I can't help with the source code reference, but I can answer the first
-question.  The three machines necessarily have different IP addresses.
-Connections are identified by (IP address, port), so even if they happen to
-all pick the same port, they are still uniquely identified.
-
-Similarly for returning packets after NAT: conntrack uses the same IP
-address but different ports for each connection, so it can identify which
-connection the replies belong to, and rewrite the destination IP and port
-correctly.
-
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
-
+IEhpIGd1eXMsCiAKIEkgaGFkIGFkZGVkIGEgcnVsZSB0byBteSBsaW51eCBib3ggdG8gcHJldmVu
+dCAiUGluZyBmbG9vZGluZyIuCiBBY3R1YWxseSwgaSBsaW1pdCBJQ01QIHBhY2tldCB0byBiZSBh
+Y2NlcHRlZCAyNTMgdGltZXMgYXQgbWF4aW11bQogd2l0aGluIGEgc2Vjb25kIGJ5IHRoZSBsaW1p
+dCBleHRlbnNpb24gb3B0aW9uLiBUaGUgcnVsZSBsb29rcyBsaWtlIHRoaXMKICJpcGF0YmxlcyAt
+QSBJTlBVVCAtcCBpY21wIC1tIGxpbWl0IC0tbGltaXQgMjUzL3MgLWogQUNDRVBUIgogImlwYXRi
+bGVzIC1BIElOUFVUIC1wIGljbXAgLWogRFJPUCIKIEJ1dCB3aGVuIGkgdXNlIHBhY2tldCBnZW5l
+cmF0b3Igd2l0aCBzbmlmZmVyIHRvIHRlc3QgdGhpcyBmdWNudGlvbiwgaXQKIGRvZXNuJ3QgYWx3
+YXlzIHdvcmsuIElmIGkgc2VuZCBlYWNoIGljbXAgcGFja2V0cyB3aXRoIDEwIG1pbGxpc2Vjb25k
+CiBkZWxheSB3aXRoaW4gYSBzZWNvbmQsIGl0IHdvcmtzIGZpbmUsIGJ1dCB3aGVuIGkgZG9pbmcg
+dGhpcyB3aXRoIGVhY2ggCnBhY2tldCBsZXNzIHRoYW4gMTAKIG1pbGxpc2Vjb25kIGRlbGF5IHdp
+dGhpbiBhIHNlY29uZCwgaXQgc2VlbXMgY3Jhc2gob25seSBmZXcgcGFja2V0cyBtYXRjaCAKdGhl
+IGZpcnN0IHJ1bGUsCiBvdGhlcnMgd2lsbCBiZSBtYXRjaGVkIGJ5IHRoZSBzZWNvbmQgcnVsZSAp
+LlRoaXMgc2VlbXMgdGhhdCBsaW1pdCBtb2R1bGUgCmNhbiBvbmx5IHNlZSAKcGFja2V0IGV2ZXJ5
+IDEwIG1pbGxpc2Vjb25kLiBBbnkgaWRlYXM/CgpBbnkgY29tbWVudHMgd2lsbCBiZSB2ZXJ5IGFw
+cHJlY2lhdGVkIQoKTmljayBXdQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KsnumYrROpFcgTVNOILLhpNGrx6FHpmK9daRX
+tbKl5rdzqkKkzaFBu1CmaKRIp1muyaSssMq5773NIApodHRwOi8vY2hhdC5tc24uY29tP3BnbWFy
+a2V0PXpoLXR3IAoKCg==
