@@ -1,14 +1,13 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: sendto: Operation not permitted
-Date: Wed, 5 Jun 2002 22:25:50 +0100
+From: Andras Kis-Szabo <kisza@securityaudit.hu>
+Subject: Re: alternate tables and ipv6
+Date: 05 Jun 2002 23:36:15 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020605222550.F2090@funkyjesus.org>
-References: <20020531005832.K27307@funkyjesus.org> <NJEFLNJDIFFNMHDEBKMJGEDLDOAA.jpatterson@asgardgroup.com>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <1023312983.28008.25.camel@hoi>
+References: <20020604122434.A667@rainbow>  <3CFCC1CB.DF79783F@sics.se>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <NJEFLNJDIFFNMHDEBKMJGEDLDOAA.jpatterson@asgardgroup.com>; from jpatterson@asgardgroup.com on Thu, May 30, 2002 at 09:01:32PM -0400
+In-Reply-To: <3CFCC1CB.DF79783F@sics.se>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,35 +18,52 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: gabriel@sics.se
+Cc: Netfilter <netfilter@lists.samba.org>
 
-On Thu, May 30, 2002 at 09:01:32PM -0400, Joe Patterson wrote:
-> kind of the same way that a system determines what an ICMP message relates
-> to.  For example, the format of an ICMP unreachable message, which includes
-> such messages as the fragmentation needed and all the network/host/port
-> unreachables, is:
+Hi,
 
-<snip>
+> iptables -A PREROUTING -i eth0 -t mangle -m tos --tos 0 -j MARK --set-mark 1
+> ip rule add fwmark 1 table host2.out
+> ip route add default via 192.168.2.3 dev eth2 table host2.out
+> 
+> All is working fine in the IPv6 case except the last statement (slightly altered
+> for IPv6):
+> #ip -6 route add default via fec0::192.168.2.3 dev eth2 table host2.out
+> RTNETLINK answers: File exists
+> 
+> Is this approach incompatible with IPv6 in any way? Is there any problems with
+> using IPv6-addresses and the "table" object?
+I think this is not a Netfilter-related question, but I try to answer.
 
-Thank you very much for this detailed explanation, much appreciated.
+The basic rtnetlink functions are supported in IPv6 too, but not all.
+Configuration options for IPv4:
+- TCP/IP networking
+-   IP: multicasting
+-     IP: advanced router
+-       IP: policy routing
+-         IP: use netfilter MARK value as routing key
+With this You set the CONFIG_IP_ROUTE_FWMARK flag in the configuration.
+This flag is interperted in the IPv4 code, but its whole function is
+missing from the IPv6 code.
 
-> Excellent documentation on all of this is in "TCP/IP Illustrated, Volume
-> 1: The Protocols" by W. Richard Stevens.  If you really want to know
-> everything about IP and don't care that your brain might explode, read it
-> cover to cover.  :)
+The related files and structures:
+/usr/src/linux/net/ipv4/devinet.c
+static struct rtnetlink_link inet_rtnetlink_table[RTM_MAX-RTM_BASE+1]
+/usr/src/linux/net/ipv6/addrconf.c
+static struct rtnetlink_link inet6_rtnetlink_table[RTM_MAX-RTM_BASE+1]
+And severeal other functions and structures in the routing code.
 
-Heh, I have two copies of this around, one at work and one at home.  I've
-yet to read it all the way through, but it's at the top of the "to read"
-pile.
+When you try to add a rule with a 'table' object, the 'ip' command -
+maybe - simply discards the 'table' tag.
 
-Actually I know this book has been mentioned before - I commute by train a
-lot, is it a good book to read on the train, or best to read while I'm sat
-online so I can watch "live" what it describes?
+Regards,
 
-Thank you.
-
+	kisza
+ 
 -- 
-FunkyJesus System Administration Team
+    Andras Kis-Szabo       Security Development, Design and Audit
+-------------------------/        Zorp, NetFilter and IPv6
+ kisza@SecurityAudit.hu /-----Member of the BUTE-MIS-SEARCHlab------>
 
 
