@@ -1,13 +1,13 @@
-From: "Intercom@x" <intercomax@yahoo.com.br>
-Subject: Re: "connection tracking" and "Connection state"?
-Date: Wed, 2 Apr 2003 12:33:12 -0300
+From: Carlos Ble <carlosble@terra.es>
+Subject: Problems with firewall and emule
+Date: Wed, 2 Apr 2003 17:05:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d301c2f92d$2e7b9210$2700a8c0@video>
-References: <F9fFM7FJ5l7rOwSbiqW0000601a@hotmail.com>
-Reply-To: "Intercom@x" <intercomax@yahoo.com.br>
+Message-ID: <200304021705.07896.carlosble@terra.es>
+Reply-To: carlosble@terra.es
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi all,
-
-Is it possible to redirect any url request to another address, from an
-internal nat address requesting a valid url to a internal specific address?
-Something like  iptables -t nat -A PREROUTING -p tcp -d
-192.168.0.0/255.255.0.0 --dport 80 -j DNAT --to-destination 192.168.5.254:80
-?
-
-Thanks.
-
-Mauricio S. Mudrik
-IT Director
-Intercomax - Your Office in Transit
-Cybertools - Tools for Cyber Spaces
-Aeroshopping.net - The (future) Brazilian Airports Portal Services
-55 11 6445-2399 / 2388 / 2622
-
+Hi all. Some users from my lan complains to me about emule.
+They have a LOWID and can't use their machines as emule servers.
+I had checked my firewall and i think all its ok. I went to 
+http://www.thedonkeynetwork.com/connection_test 
+from one computer of the lan to test my conection (using even port 80)
+and i got a time out message "time out, this means that even did not receibe a 
+RESET signal; maybe due to a stealth firewal". But.... the http port is open 
+because iam browsing !!!.  Needs emule a special conntrack ?.
+I dont know so much about emule, can somebody help me please? 
+Thanks in advance. 
+-- 
+Carlos Ble
+email:
+ carlosble@terra.es
+ alu2388@csi.ull.es
+jabber_id: 
+ kharly@jabber.com
+msn:
+ carlosble@terra.es
+irc: kharly_
+----------------
+Impulsado por Debian/GNU Linux
 
