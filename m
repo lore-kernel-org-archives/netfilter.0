@@ -1,9 +1,10 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: ip_conntrack: table full, dropping packet. SAY WHA????
-Date: Tue, 9 Sep 2003 15:53:50 -0700 (PDT)
+From: Sylvain BERTRAND <jowy@2001-space-odyssey.net>
+Subject: M$ Messenger 6 behind a linux router/firewall
+Date: Wed, 10 Sep 2003 01:06:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909225350.6002.qmail@web40209.mail.yahoo.com>
+Message-ID: <3F5E5D08.5040704@2001-space-odyssey.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,57 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: nf <netfilter@lists.netfilter.org>
 
-I have a single windows machine NATED behind my Linux router/gateway/firewall.
-I use iptables 1.2.8
+Hi everyone,
 
-info on the module I found is this
+I'm the admin for 193.48.225.0/24 and I would like if it were possible 
+for my users to chat with Messenger 6 (got complaints already). I've 
+read a few M$ tech notes, and they suggest the use of Port Triggering or 
+UPnP firewall. AFAIK it would not be a good thing in security terms. Do 
+any of you know a solution to my problem?
 
-root@kingscross:/var/www/n00b# modinfo ip_conntrack
-filename:    /lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_conntrack.o
-description: <none>
-author:      <none>
-license:     "GPL"
-parm:        hashsize int
+TIA
 
-I like to play CounterStrike. When I update the list from Master Servers 
-I get this in my /var/log/messages file and it's sent to STDOUT
+Sylvain
 
-Sep  8 22:18:06 kingscross kernel: NET: 347 messages suppressed.
-Sep  8 22:18:06 kingscross kernel: ip_conntrack: table full, dropping packet.
-Sep  8 22:18:11 kingscross kernel: NET: 392 messages suppressed.
-Sep  8 22:18:11 kingscross kernel: ip_conntrack: table full, dropping packet.
-Sep  8 22:18:16 kingscross kernel: NET: 371 messages suppressed.
-Sep  8 22:18:16 kingscross kernel: ip_conntrack: table full, dropping packet.
-Sep  8 22:18:21 kingscross kernel: NET: 414 messages suppressed.
-Sep  8 22:18:21 kingscross kernel: ip_conntrack: table full, dropping packet.
-Sep  8 22:18:26 kingscross kernel: NET: 467 messages suppressed.
-Sep  8 22:18:26 kingscross kernel: ip_conntrack: table full, dropping packet.
-Sep  8 22:18:31 kingscross kernel: NET: 436 messages suppressed.
-Sep  8 22:18:31 kingscross kernel: ip_conntrack: table full, dropping packet.
-
-The suppressed messages vary..but what gives here? Here are my UDP rules for
-refference.
-
-# UDP Filters
-#
-#iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j LOG
-iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j DROP
-iptables -A INPUT -p udp -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-If someone could explain thhis to me I would appreciate it.
-
-Thanks 
-SBlaze
-
-=====
-In the absence of order there will be chaos.
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
