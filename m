@@ -1,14 +1,14 @@
-From: Julian Gomez <kluivert@tm.net.my>
+From: Gavin Hamill <gdh@acentral.co.uk>
 Subject: Re: Linux firewall hardware specs
-Date: Fri, 5 Sep 2003 21:02:54 +0800
+Date: Fri, 5 Sep 2003 13:55:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030905130254.GA2790@propaganda.localdomain>
+Message-ID: <200309051355.15499.gdh@acentral.co.uk>
 References: <20030905121050.88228.qmail@web11605.mail.yahoo.com>
-Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <20030905121050.88228.qmail@web11605.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,26 +19,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Sep 05, 2003 at 05:10:50AM -0700, Grant Moby spoke thusly:
+On Friday 05 September 2003 13:10, Grant Moby wrote:
+> There are about 100 users surfing the web, sending and
+> receiving email over a 256k line, a couple of subnets,
+> a DMZ, etc.
 
->I need to setup a NetFilter/Linux firewall at my company, but I'm not sure
->what spec hardware box I need.
-> 
->There are about 100 users surfing the web, sending and receiving email
->over a 256k line, a couple of subnets, a DMZ, etc.
+Okies, we're running a fully stateful netfilter firewall on an old P233 with a 
+2Mbps leased line, 10 very busy servers, another 50 desktop machines, and the 
+loadaverage is typically about 0.01.
 
-OK. 256k line will be easily handled by a 486/Pentium 100Mhz host. How many
-subnets and what is their interconnectivity ? Very high traffic Mbits/s ?
+With 'fprobe' running for more accurate 'NetFlow' traffic reporting, the 
+loadavg rises to 0.10, typically.
 
-How many connections per second are initiated (to keep up with conntrack) ?
-Short / long lived ?
+Even adding snort to the equation, the load settles at only 0.60 :)
 
-The only way to be sure is to benchmark it in your own network, that said
--- I'll be surprised is a PII 266Mhz, 128Mb of RAM won't be able to handle
-your setup. Unless you've got funky going-ons in your network :-)
+I don't know how much extra load would be added by using cheap network cards, 
+but we have a pair of Intel 10/100s in the firewall, and the box has been 
+running flawlessly for months...
 
-(snip remaining)
+Cheers,
+Gavin.
 
