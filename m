@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: dnat problem in transparent firewall
-Date: Tue, 3 Aug 2004 13:33:26 +0100
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: [OT] Was: ESP does not hit the nat table
+Date: Tue, 3 Aug 2004 08:42:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408031333.26952.Antony@Soft-Solutions.co.uk>
-References: <200408031436.08494.raido@elin.ttu.ee>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051228@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408031436.08494.raido@elin.ttu.ee>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,32 +19,37 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 03 August 2004 12:36 pm, Raido Kurel wrote:
-
-> Hello!
+> Hi all,
+> Thanks for the reply, I know I messed up the iptables syntax - I did =
+not include the chain...
 >
-> I want to change destination ip in incoming packets.
->
-> Needs:
-> To change destination IP of some packets coming from Internet. ie to change
-> dastination IP from aaa.aaa.aaa.12 to aaa.aaa.aaa.13
->
-> What I have done:
-> iptables rule:
->
-> iptables -t nat -A PREROUTING -d aaa.aaa.aaa.12 -j DNAT --to-dest
-> aaa.aaa.aaa.13
+> My main problem however was that ESP packets do not hit the nat table, =
+but it does traverse mangle/filter table. Is this normal? I am mainly =
+looking at SNAT/MASQUERADING ipsec traffic and I am not able to find any =
+documentation on doing this, especially since there is no point in =
+putting a "iptables -t nat -A PREROUTING -p 50 -j SNAT --to-source =
+<me>". -p 50 means ESP as you can already guess.
+> Am I missing something here? How do I masquerade ipsec traffic? =
+(assuming my ipsec-VPN client/server is fine with it...)
 
-Do you have a FORWARD rule allowing packets through to aaa.aaa.aaa.13 after 
-they've been NATted?
+it would be helpful if you
 
-Antony.
+a) posted your rules (iptables -vxnL && iptables -vxnL -t nat && =
+iptables -vxnL -t mangle)
+b) explained what you're trying to do specifically
+c) describe how you're testing
 
--- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
+as far as the generic "can i nat ESP traffic with iptables" the answer =
+is "surely."  i do it on one of my gateways where it's necessary for the =
+LAN behind the gateway to appear differently when it goes through the =
+VPN tunnel.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+if i had to take a stab in the dark as to why you're having trouble--i =
+would say that it's related to the fact that the outbound interface of =
+your IPSec traffic needs to be specified as "-o ipsec0" (or whatever =
+number your actual ipsec interface is), not ethX...
 
+you *did* say you were using frees/wan, right?
+
+-j
 
