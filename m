@@ -1,8 +1,8 @@
-From: MT <info@open2web.com>
+From: MT <mt@open2web.com>
 Subject: Nefilter problem
-Date: Fri, 20 Jun 2003 19:31:11 -0400
+Date: Thu, 19 Jun 2003 19:50:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030620193111.32225411.info@open2web.com>
+Message-ID: <20030619195020.3d3da7d7.mt@open2web.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
