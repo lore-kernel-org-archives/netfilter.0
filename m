@@ -1,11 +1,9 @@
-From: a.ledvinka@promon.cz
-Subject: Re: RFC 1035 Bind
-Date: Tue, 9 Nov 2004 22:10:06 +0100
-Message-ID: <OF126E9AEB.2741841F-ONC1256F47.006CCB1D-C1256F47.0074485C@promon.cz>
-References: <20041109190202.GB18755@marschmellow.homeunix.net>
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: RFC 1035 Bind
+Date: Tue, 9 Nov 2004 13:42:32 -0800
+Message-ID: <29F6FAF7F2C0D41190980002A513591E0E473236@FSNSAB30>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041109190202.GB18755@marschmellow.homeunix.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,8 +16,30 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: "'a.ledvinka@promon.cz'" <a.ledvinka@promon.cz>, Mark-Walter@t-online.de
+Cc: netfilter@lists.netfilter.org
+
+Mr. Ledvinka,
+
+> Isn't it the comparing this document the best way while using 
+> UDP to DROP TCP packets over port 53 and to allow only UDP port 
+> 53 at it does not use the IP protocol ?
+
+> Isn't it the comparing this document the best way while using 
+> UDP to DROP TCP packets over port 53 and to allow only UDP port 
+> 53 at it does not use the IP protocol ?
+
+~piranha
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of
+a.ledvinka@promon.cz
+Sent: Tuesday, November 09, 2004 1:10 PM
 To: Mark-Walter@t-online.de
 Cc: netfilter@lists.netfilter.org
+Subject: Re: RFC 1035 Bind
+
 
 > As I understand RFC 1035 answering packet's over TCP are truncated
 > at a limit of 512 bytes but it could be more ...
