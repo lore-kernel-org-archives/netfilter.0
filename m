@@ -1,11 +1,13 @@
-From: Marian Stepka <marians@itdimensions.com>
-Subject: NAT problem with iptables...
-Date: Wed, 11 Sep 2002 10:43:11 -0400
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Filtering Nimda, Code Red and Code Red II
+Date: Wed, 11 Sep 2002 10:40:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D7F567F.3437E5C7@itdimensions.com>
+Message-ID: <20020911144045.GU7289@cannon.eng.us.uu.net>
+References: <Pine.LNX.4.44.0209111237190.32463-100000@dns.toxicfilms.tv> <200209111248.g8BCmAv08513@vulcan.rissington.net> <20020911135903.GT7289@cannon.eng.us.uu.net> <200209111608.26999.roy@karlsbakk.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200209111608.26999.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,24 +18,60 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Cc: Ramin Alidousti <ramin@cannon.eng.us.uu.net>, Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-Hi Guys;
+On Wed, Sep 11, 2002 at 04:08:26PM +0200, Roy Sigurd Karlsbakk wrote:
 
-I'm fighthing almost second day with NAT problem. I need to translate
-local IP to 'normal' Inet IPs. I set up one box which have two NIC
-cards. One side is connected to local LAN with IP 192.168.0.x and other
-side is connected to 'copy' of firewall which is used in production. I
-would like to simulate situation as on Inet. I don't want to change IP
-of firewall which I would like to debug. I need to setup iptables on
-linux translating box as follows:
+> > > Folks: don't try looking up the 5th layer of the TCP networking model :-)
+> >
+> > What's wrong with his statement? As Maciej said the 5th layer of the IP
+> > model is the application layer:
+> >
+> >                  --------------
+> >       layer 5   |  application |
+> >                  --------------
+> >       layer 4   |  TCP / UDP   |
+> >                  --------------
+> >       layer 3   |      IP      |
+> >                  --------------
+> >       layer 2   |  data link   |
+> >                  --------------
+> >       layer 1   |   physical   |
+> >                  --------------
+> 
+> 
+> You don't have any separate data link and physical layers in the IP model, as 
+> far as I remember. It's a 4-layer model, and goes something like this
+> 
+> +-------------+
+> | Application |
+> +-------------+
+> | Transport   |
+> +-------------+
+> | Network     |
+> +-------------+
+> | Physical    |
+> +-------------+
 
-192.168.0.230 <-> 64.124.175.104
-192.168.0.231 <-> 64.124.175.105
-192.168.0.232 <-> 208.184.248.9
+Yes. What it meant (IMO) is that IP doen't care about the layers below it.
+It can be plugged into any LAN/WAN structure. But in the lowest layer in
+your ASCII art there is still the seperation of the physical properties of
+your medium (like electrical or optical properties) and link layer data
+transfer (like framing, encoding, ...). Another reason for me to believe that
+IP is at the third layer is the terminologies like "layer three switching",
+L2TP ...
 
+Ramin
 
---
-*IN ROOT WE TRUST*
-Marian Stepka <mailto:stepka@tris.sk>
+> 
+> roy
+> -- 
+> Roy Sigurd Karlsbakk, Datavaktmester
+> ProntoTV AS - http://www.pronto.tv/
+> Tel: +47 9801 3356
+> 
+> Computers are like air conditioners.
+> They stop working when you open Windows.
 
