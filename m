@@ -1,8 +1,10 @@
-From: Ola Nilsson <ola@fam-nilsson.org>
-Subject: Re: IPSec through my firewall (SOLVED!!)
-Date: Sun, 20 Feb 2005 09:23:37 +0100
-Message-ID: <877jl3wsfq.fsf@helmut.nilsson.homedns.org>
+From: Christopher Sagayam <dbadmin@gmail.com>
+Subject: Is this mapping possible in netfilter or socks 5 proxy ?
+Date: Sun, 20 Feb 2005 15:17:10 +0530
+Message-ID: <8c19c242050220014742e91a0c@mail.gmail.com>
+Reply-To: Christopher Sagayam <dbadmin@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,80 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-"Samuel Jean" <sj-netfilter@cookinglinux.org> writes:
+Is this possible using netfilter ?
 
-> On Wed, February 16, 2005 7:46 am, Ola Nilsson said:
->> So, going back to my initial question; How can I go about finding out
->> where my packets are droped? Since it's most likelly not because of
->> any netfilter rule entry, who else can decide that a packet can not be
->> NATed?
->
-> Sorry, I haven't followed the thread at all.
->
-> To answer this question, some malformed, suspicious packets can be dropped
-> by the netfilter code itself, and even the networking code.
+Can it be a proxy for ssh or sftp too ?
 
-First, a big thanks to Samuel for that reply. It got me started
-debugging the issue. Drop-table didn't help me though. After making a
-lame effort to port it to 2.6.10, the kernel compiled ok, but iptables
-did not. However, it gave me directions where to look.
+here is the setup that I need:
 
-Yesterday I could conclude that the packets where dropped here:
+many client computers C1 to C30 connect to the 
+internet using ONE
+gateway computer server running socks5 or netfilter proxy S1
 
-code from ip_nat_standalone.c line 92, function ip_nat_fn():
+client C1 connects to  local LAN Socks/netfilter proxy S1 
+and authenticates using
+username U1
 
-	ct = ip_conntrack_get(*pskb, &ctinfo);
-	/* Can't track?  It's not due to stress, or conntrack would
-	   have dropped it.  Hence it's the user's responsibilty to
-	   packet filter it out, or implement conntrack/NAT for that
-	   protocol. 8) --RR */
-	if (!ct) {
-		/* Exception: ICMP redirect to new connection (not in
-                   hash table yet).  We must not let this through, in
-                   case we're doing NAT to the same network. */
-		if ((*pskb)->nh.iph->protocol == IPPROTO_ICMP) {
-			struct icmphdr _hdr, *hp;
+S1 connects to SSH server external server ES1 
+authenticates using
+username EU1.
 
-			hp = skb_header_pointer(*pskb,
-						(*pskb)->nh.iph->ihl*4,
-						sizeof(_hdr), &_hdr);
-			if (hp != NULL &&
-			    hp->type == ICMP_REDIRECT)
-				return NF_DROP;
-		}
-		return NF_ACCEPT;
-	}
+client C1 can transfer files, upload and download 
+or do SSH or SFTP to
+ES1 now
 
-So since connection tracking didn't recognize the ESPinUDP packets,
-they where never routed by ip_nat_fn().
+client C1 has NO knowledge of the usernames and 
+passwords needed for
+ES1
 
-The ESPinUDP packets where seen as bad packets by
-ip_conntrack_proto_udp.c on line 105 function udp_error():
+a mapping file or some mechanism defines to the 
+Socks proxy S1 that it
+needs to connect to ES1 using username EU1 if a 
+client logs into it
+using username U1
 
-	/* Truncated/malformed packets */
-	if (ntohs(hdr->len) > udplen || ntohs(hdr->len) < sizeof(*hdr)) {
-		if (LOG_INVALID(IPPROTO_UDP))
-			nf_log_packet(PF_INET, 0, skb, NULL, NULL, 
-				  "ip_ct_udp: truncated/malformed packet ");
-		return -NF_ACCEPT;
-	}
+Is the above possible in socks 5/netfilter or is it 
+possible in squid or any
+other Linux proxy server for that matter ?
 
-By removing this code from udp_error() I can successfully connect my
-IPSec tunnel.
+Any help will be greatly appreciated
 
-Now, what would be the correct fix? To write a new connection tracking
-module that handles the ESPinUDP packets? Or can the code in
-udp_error() be changed in some safe way? I'm new to the netfilter
-code, so I might need some advice.
+Thanks
 
-For now I'm happy since with all your help, I now have a IPSec tunnel
-:-)
-
-Regards,
--- 
-/Ola Nilsson
-
+chris
 
