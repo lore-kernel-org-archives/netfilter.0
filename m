@@ -1,8 +1,7 @@
-From: Osama Hashmi <osamahashmi@gmail.com>
-Subject: IP+MAC based firewall rule
-Date: Mon, 28 Feb 2005 15:14:52 +0500
-Message-ID: <d0f833ec05022802142bae59d1@mail.gmail.com>
-Reply-To: Osama Hashmi <osamahashmi@gmail.com>
+From: Vinicius <cviniciusm@terra.com.br>
+Subject: Doubt about ulog and postgresql?
+Date: Sun, 27 Feb 2005 23:37:46 -0300
+Message-ID: <cvtvtc$bkv$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -15,20 +14,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi Everyone,
+Hello,
 
-Can anyone tell me that how can i place firewall rule based on both IP
-Address and the Network Card's MAC Address. I want to do so because i
-want to limit my clients that if any of my clients changes his
-ipaddress his packets start dropping and he is unable to connect the
-server.
--- 
-Oliging
-Superior
-Ambitious
-Marvellous
-Attrahent
+I did put the followed rule in the iptables "iptables -I 
+RH-Firewall-1-INPUT 8 -p tcp -j ULOG --ulog-prefix "Firewall: "", just 
+before the last rule (rulenum 8) that rejects all packets.
+
+I did set up the file /etc/ulogd.conf to use a postgresql table such as 
+the example at /usr/share/doc/ulogd-1.21/, and I have created the 
+database ulogd and the table ulog as suggested there, with the same user 
+and password than the ones on ulogd.conf.
+
+So, when I did do "/etc/init.d/ulogd restart" the system entered an 
+endeless loop.
+
+Where could I find information about how to use postgresql with ulog 
+propely, please?
+
+The relevants info:
+kernel-2.6.10-1.766_FC3
+kernel-utils-2.4-13.1.49_FC3
+iptables-1.2.11-3.1.FC3
+ulogd-1.21-1
+ulogd-mysql-1.21-1
+ulogd-pgsql-1.21-1
+postgresql-7.4.7-3.FC3.1
+postgresql-libs-7.4.7-3.FC3.1
+postgresql-server-7.4.7-3.FC3.1
+
+TIA,
+Vinicius.
+
 
