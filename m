@@ -1,14 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Start Up Script
-Date: Thu, 6 Mar 2003 18:36:33 +0100
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Forwarding Problems
+Date: Thu, 6 Mar 2003 19:17:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030306183633.18c428a9.arnt@c2i.net>
-References: <NHBBICNKELBGKGHPCFMPOEMFCAAA.bbunnell@iastate.edu>
-	<3E676F72.1060702@pcxperience.com>
+Message-ID: <000401c2e40c$a9280d30$0401000a@sterenborg.info>
+References: <ABEKJILKOKKGGDJKHKDFOEBGCAAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E676F72.1060702@pcxperience.com>
+In-Reply-To: <ABEKJILKOKKGGDJKHKDFOEBGCAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,58 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'netfilter EMAIL' <netfilter@lists.netfilter.org>
 
-On Thu, 06 Mar 2003 09:55:30 -0600, 
-"James A. Pattie" <james@pcxperience.com> wrote in message 
-<3E676F72.1060702@pcxperience.com>:
-
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
+> accepted. The problem
+> is, if I use
 > 
-> Brian Bunnell wrote:
-> > Hello
-> >
-> > Thank you very much for helping me.  I have a perfectly good
-> > netfilter script that I run from the command line and everything
-> > works fine.  I
-> would
-> > like this script to run when I boot up the computer.  I am having a
-> > lot of trouble finding quality resources on the net about this.
-> >
-> > There are great resources for learning how to use netfilter. 
-> > However,
-> when
-> > it comes to startup scripts, all the examples seem to be 25 pages
-> > long and incomprehensible or wnat me to completely rewrite the
-> > script I already
-> have.
-> >
-> > Why can't I just tell the computer to run my script instead of the
-> "Let the
-> > world in" script it runs at boot?
-> >
-> > Does anyone have any recommendations, resources or better yet, a
-> > good concise example for run level 3?
+> iptables -A FORWARD -j DROP
+> or
+> iptables -P FORWARD DROP
 > 
-> If you are on a chkconfig/sysv system just add the necessary chkconfig
-> entries to the top of your script, drop it in /etc/init.d and
-> chkconfig{script name} on.  Make sure you disable the iptables scripts
-> if on a redhat box.
+> they will drop all packets including the ones I already ACCEPTed.
+
+I don't see any rule that makes the filter stateful.
+When it's stateful, you don't have to worry about all the returning
+packets.
+I think that will make it work.
+
 > 
-> The PCX Firewall project will generate a redhat init script.
-> http://pcxfirewall.sf.net/  Use that for examples on how to modify
-> your script.
+> example (want to allow all incoming and outgoing www traffic):
+> iptables -A FORWARD -p tcp -d 192.168.1.0/24 --dport 80 -j ACCEPT
+> iptables -A FORWARD -p tcp -d 192.168.1.0/24 --sport 80 -j ACCEPT
 
-..the classic bsd approach is move your script to /etc/rc.d/rc.firewall 
-and call it from /etc/rc.d/rc.local, just before rc.local runs you
-online at boot time.
+Packets sent *to* a webserver will most likely not come *from* port
+80/tcp.
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+> iptables -A FORWARD -p tcp -s 192.168.1.0/24 --dport 80 -j ACCEPT
+> iptables -A FORWARD -p tcp -s 192.168.1.0/24 --sport 80 -j ACCEPT
+> iptables -A FORWARD -j DROP
 
+So, making it stateful, it would look like this :
+
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.1.0/24 -p tcp --dport 80 -j ACCEPT
+
+
+Gr,
+Rob
 
 
