@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I still have no idea why this doesn't work...(further  details)
-Date: Sun, 25 Apr 2004 09:28:47 +0100
+From: "Manikandan" <mani@manikandan.org>
+Subject: RE: Multiple PPTP clients behind iptables.
+Date: Sun, 25 Apr 2004 18:41:43 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404250928.47760.Antony@Soft-Solutions.co.uk>
-References: <web-294871830@mail01.infosat.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <GHEILNONPACCGBGKBEKKOEGNCFAA.mani@manikandan.org>
+References: <BC9C1881.6F2F%luke@westaironline.com>
+Reply-To: <manikandan@manikandan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <web-294871830@mail01.infosat.net>
+In-Reply-To: <BC9C1881.6F2F%luke@westaironline.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +19,102 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter list <netfilter@lists.netfilter.org>
+Cc: Luke Deryckx <luke@westaironline.com>, rob@sterenborg.info
 
-On Sunday 25 April 2004 7:59 am, IT Clown wrote:
 
-> have you tried: modprobe ip_nat_ftp
+Somehow I managed to patch my kernel with pptp patch. But everytime when I
+load modules like ip_conntrack_pptp, ip_nat_pptp, I am getting an error like
+"ip_conntrack_pptp.c: bad csum" in the log file.
 
-Why would he need ip_nat_ftp with rules in the INPUT chain?   There's no nat 
-going on.
+Also the pptp connections are not stable. The pptp sessions are getting
+disconnected very often say every 2 mins.
 
-However, you have raised the question of whether he has compiled in or loaded 
-as a module ip_conntrack_ftp support?   That would be needed in this 
-situation.
+Kernel = 2.4.20-30.9 and iptables version 1.2.9 .
+
+Please help.
 
 Regards,
+Manikandan.
 
-Antony.
+ -----Original Message-----
+From: 	Luke Deryckx [mailto:luke@westaironline.com]
+Sent:	Friday, April 09, 2004 9:38 PM
+To:	manikandan@manikandan.org
+Cc:	Netfilter list
+Subject:	Re: Multiple PPTP clients behind iptables.
 
-> On Sat, 24 Apr 2004 18:53:43 -1000
+This patch worked very nicely for me as well. Keep in mind you also need to
+recompile iptables after you've patched your kernel.
+
+Cheers
+
+
+
+
+On 4/9/04 8:55 AM, "Alexis" <alexis@tpys.com.ar> wrote:
+
+> yes, you need the pptp patch
 >
->  Garison Piatt <todo@garisonpiatt.com> wrote:
+> ive been in the same situation, and applying the patch made it work just
+> fine.-
 >
-> >    i Control connection successfully established.
-> >    < 220 ProFTPD FTP Server ready.
-> >    i Time zone of server could not be determined.
-> >    > USER admin
-> >    < 331 Password required for admin.
-> >    > PASS <password>
-> >    < 230 User admin logged in.
-> >    > SYST
-> >    < 215 UNIX Type: L8
-> >    > PWD
-> >    < 257 "/home/admin" is current directory.
-> >    > PASV
-> >    < 227 Entering Passive Mode (207,36,232,90,132,36).
-> >    i Data connection A8 could not be established (10060).
-> > followed by a notice that the connection timed out.
+> see
+>
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-5.h
+tm
+> l#ss5.6
+>
+> ----- Original Message -----
+> From: "Manikandan" <mani@manikandan.org>
+> To: "Netfilter" <netfilter@lists.netfilter.org>
+> Sent: Friday, April 09, 2004 12:08 PM
+> Subject: Multiple PPTP clients behind iptables.
+>
+>
+>> Dear friends,
+>>
+>> As I am getting more confused about VPN masq., request your help on
+>> this.
+>>
+>> My local LAN is 10.35.0.0/24
+>> My Linux box running red hat linux 9.0 with kernel 2.4.20-8. acting as
+the
+>> gateway for my LAN to Internet.
+>>
+>> I need to allow my LAN clients to access Microsoft windows VPN (Windows
+> 2000
+>> Adv. Server) using PPTP over Internet.
+>> I am not able to make more than one connection to the VPN server as my
+LAN
+>> outgoing traffic to Internet is getting SNAT to single public IP.
+>>
+>>
+>> I read few guides and howtos to configure my firewall to allow multiple
+> PPTP
+>> sessions. But still I couldn't get through.
+>>
+>> Do I need to patch my kernel? What support do I need to enable this
+> multiple
+>> PPTP traffic.
+>>
+>> Request your views and help on this.
+>>
+>>
+>> Have a nice day
+>>
+>> Regards,
+>> Manikandan.
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>
 
--- 
-Late in 1972 President Richard Nixon announced that the rate of increase of 
-inflation was decreasing.   This was the first time a sitting president used 
-a third derivative to advance his case for re-election.
 
- - Hugo Rossi, Notices of the American Mathematical Society
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
