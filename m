@@ -1,13 +1,11 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: disconnection from LAN
-Date: 07 Sep 2004 20:50:40 +0200
+From: Jacob Friis Larsen <jfl@list.idg.dk>
+Subject: Port is open but I am unable to connect
+Date: Tue, 07 Sep 2004 21:27:26 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094583039.9687.33.camel@nostromo.bgsecm.com>
-References: <20040907175403.GC21613@tranquility.scriptkitchen.com>
+Message-ID: <413E0B9E.8010708@list.idg.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040907175403.GC21613@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +15,54 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-El mar, 07 de 09 de 2004 a las 19:54, Payal Rathod escribi=C3=B3:
-> Hi,
-> I am conecting to internet via. my Mandrake Linux 10 box. But
-> whenever I connect to my client's VPN from my windows machine (using
-> CISCO client) the windows machine is disconnected from the LAN
-> immediately after the client gets connected. I have even tried this
-> with no firwall except simple MASQUERADE rule for my 192.168.x.x series
-> machine. But the same problem. As soon as I disconnect VPN I can
-> get in LAN.
-> Can someone suggest anything? I am very very bad in VPN and firewalls.
->=20
-> With warm regards,
-> -Payal
+When I add -s 1.2.3.4 I am unable to connect to my server.
+nmap shows that the correct ports are open.
+Any ideas?
 
-I think you should forget the firewall part of the problem and
-look at the VPN. It's just a problem of configuring the VPN in
-the right way.
+iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 22 -m state 
+--state NEW
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+This is my script:
+<script>
+#!/bin/sh
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+# Modules
+modprobe ip_conntrack_ftp
 
+# Defaults
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+# Flush
+iptables -t nat -F POSTROUTING
+iptables -t nat -F PREROUTING
+iptables -t nat -F OUTPUT
+iptables -F
+
+# STATE RELATED for router
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Localhost
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Open ports on router for server/services
+iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 20 -m state 
+--state NEW
+iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 21 -m state 
+--state NEW
+iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 22 -m state 
+--state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 25 -m state --state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 80 -m state --state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 143 -m state --state NEW
+iptables -A INPUT -j ACCEPT -p tcp --dport 993 -m state --state NEW
+</script>
+
+Thanks,
+Jacob
 
