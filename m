@@ -1,9 +1,9 @@
 From: "Andrew J. Meader" <ameader@corp.lcom.net>
-Subject: Re: transparent squid & iptables
-Date: Mon, 16 Dec 2002 08:23:53 -0600
+Subject: Re: Changing MAC Addresses
+Date: Mon, 16 Dec 2002 08:24:10 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DFDE1F9.6020507@corp.lcom.net>
-References: <008201c2a420$487f82a0$8902010a@alkaloid>
+Message-ID: <3DFDE20A.7040106@corp.lcom.net>
+References: <3DF16CDD.5000400@aos.net.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,40 +17,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Abylai Ospan <aospan@netup.ru>, netfilter@lists.netfilter.org
+To: Sam Johnston <samj@aos.net.au>, netfilter@lists.netfilter.org
 
-Hi,
+Sam,
 
-Here is how I am doing it and it works nicely:
-
-  iptables -t nat -A PREROUTING -i $LOCAL -p tcp --dport 80 -j REDIRECT \
-  --to-port 3128
-echo "PREROUTING: enableling transparent http proxy"
-
-Have fun!
+What does /sbin/ifconfig -a tell you?
 
 Andy
 
-Abylai Ospan wrote:
+Sam Johnston wrote:
 
- > Hello, All.
+ > Afternoon all,
  >
- > We tried to make transparent squid on 127.0.0.1 and REDIRECT (or DNAT)
- > in iptables but iptables redirect pakets to the received interface IP.
+ > I'm not sure if this is the best forum for this question as it is not
+ > necessarily directly related to Netfilter, but I can't think of
+ > anywhere else I might find anyone capable of answering it, so here goes.
  >
- > In the iptables:
- > iptables -t nat -A PREROUTING -p TCP --dport 80 -j REDIRECT 3128
+ > I have a bunch of xboxes running linux which all have the same MAC
+ > address: 00:00:00:00:00:00. This causes obvious problems when more
+ > than 1 machine is on any one segment. I'm led to believe I can work
+ > around the problem by putting something like:
  >
- > For example:
- > packet from user (IP: 10.0.0.5) to www.ru <http://www.ru>:80 received
- > on eth0 (IP: 10.0.0.1). Packet redirected to the 10.0.0.1:3128 but
- > squid listen on 127.0.0.1:3128 so nothing work ;-(
+ > /sbin/ifconfig eth0 hw ether 00:50:f2:ab:cd:ef up
  >
- > How we can redirect packet to the 127.0.0.1 port 3128 in iptables ?!
+ > fairly early in the boot process (specifically, I've chosen the pre-up
+ > directive in /etc/network/interfaces as they're running Debian).
  >
- > wbr, Abylai
- > NetUP Systems
- > Moscow, Russia
+ > When I do this I'm able to see the MAC<->IP mapping in the ARP table
+ > of another machine, but it doesn't respond. I figure that something
+ > somewhere is remembering the old MAC address and dropping anything
+ > that doesn't match, although I don't know enough about low level
+ > networking in linux to be sure.
+ >
+ > Any suggestions would be appreciated.
+ >
+ > Sam
 
 
 
