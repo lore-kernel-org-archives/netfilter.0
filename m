@@ -1,13 +1,13 @@
-From: "Brad Morgan" <B-Morgan@concentric.net>
-Subject: RE: SSH and NAT
-Date: Mon, 24 Mar 2003 13:27:54 -0700
+From: Kim Jensen <kimj@dawn.dk>
+Subject: Re: using iptables for "route mapping"
+Date: Mon, 24 Mar 2003 21:53:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NABBJOOEOFODEALNMJAJCEFEHOAA.B-Morgan@concentric.net>
-References: <20030324182922.GF8391@netinertia.co.uk>
+Message-ID: <200303242153.17159.kimj@dawn.dk>
+References: <200303241349.41852.marks@crvinc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030324182922.GF8391@netinertia.co.uk>
+In-Reply-To: <200303241349.41852.marks@crvinc.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +18,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: James O'Gorman <james@netinertia.co.uk>, netfilter@lists.netfilter.org
+To: Mark Seamans <marks@crvinc.com>, netfilter@lists.netfilter.org
 
-> I'm having a slight problem with SSH and NAT. I've got an ADSL
-> connection with a single static IP, and I'd like to be able to SSH to
-> any of my boxes within my network, but without having to use separate
-> ports to do it. Is this possible?
+Hi Mark,
+
+Using the following lines it is possible to copy the default routing tabl=
+e=20
+into a second. With the fwmark rule you can trigger the routing table fro=
+m=20
+iptables.
+
+$ ip route flush table 4 > /dev/null 2>&1
+$ ip route show table main | grep -Ev '^default' \
+| while read ROUTE ; do
+    ip route add table 4 $ROUTE
+done
+$ ip rule add fwmark 4 table 4
+$ ip route add default via xxx.xxx.xxx.xxx table 4
+
+Iptables part
+$ iptables -t mangle -A PREROUTING -s aaa.bbb.ccc.ddd -j MARK --set-mark =
+4
+
+If your source is matching the rule, it will be send via the alternative=20
+route, otherwise it will go via your normal route. Feel free to add more=20
+hosts.
+
+In case you wish to use loadsharing, then you have to use a different=20
+approach. Read more about this at:
+http://linux-ip.net/html/adv-multi-internet.html
+http://www.ssi.bg/~ja/nano.txt
+
+My problem here is that I still haven't heard about a solution where you =
+have=20
+a mixture of MASQUERAD'ing and NAT'ing.
+
+At least I hope this will help you.
+
+Regards
+Kim
+
+
+On Monday 24 March 2003 20:49, Mark Seamans wrote:
+> Has anyone used iptables (realm support) to act like Cisco's route mapp=
+ing?
+> IE:  Using it as a core ISP router with multiple uplinks.  Route source=
+ ip
+> A to gateway X, while routing source ip B to gateway Y.
 >
-> My setup is:
-> 
-> Internet -> ZyXEL ADSL router (192.168.0.1) -> Debian Server
-> (192.168.0.2) -> box1 (0.3) / box2 (0.4)
-
-I assume you mean from the Internet.  If that's the case, then the
-answer is no.  Your box1 and box2 are in a private address space which
-by definition, isn't routed to the outside world.  What your router
-sees is packets with resolved IP addresses.  There are no names in
-the packets at this point.  You only have one public IP address.
-
-You have two choices.  One you've mentioned which is to use separate
-ports for each machine which are then DNATed from the server to the
-right box.  The second is to use ssh twice, once from the outside to
-the Debian server, and then from there to the box of your choice.
-
-Regards,
-
-Brad Morgan
-
-
+> I have played around with iproute2's tables and rules with no success.
+>
+> Mark
 
 
