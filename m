@@ -1,13 +1,13 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: VPN software behind iptables
-Date: 27 Dec 2002 18:10:45 +0530
+From: Andrea Rossato <mailing_list@istitutocolli.org>
+Subject: Re: ECN mangling
+Date: Fri, 27 Dec 2002 14:54:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040992851.894.5.camel@india>
-References: <3E0C426B.3010306@bol.com.br>
+Message-ID: <3E0C5B9C.80505@istitutocolli.org>
+References: <20021227073624.GA1878@miggy.org> <20021227091659.GB1878@miggy.org> <3E0C361A.6040603@istitutocolli.org> <20021227113422.GE1878@miggy.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E0C426B.3010306@bol.com.br>
+In-Reply-To: <20021227113422.GE1878@miggy.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +17,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Julio Cesar Ody <julioody@bol.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-It could be< just mentioning the trouble shooting :
+Athanasius wrote:
+>   Thanks, that works, although I can't find any mention of it in the
+> netfilter-devel archive. 
+http://lists.netfilter.org/pipermail/netfilter-devel/2002-December/009989.html
 
-1) Log all the packets coming from that ip
-2) try to connect from the client
-3) see whether you receive all the packets you receive?
-4) If yes, run sniffer to see actually what happens.
+>  I trust a patch is being pushed to
+> Linus/whoever to get this fixed in mainstream kernels?
 
--- 
-Dharmendra.T
-Linux Security Expert
-On Fri, 2002-12-27 at 17:37, Julio Cesar Ody wrote:
-> Hello. I have a software in my store who uses a VPN connection to 
-> exchange data with a server outside my network. The software is able to 
-> make the connection, however, once it's done, nothing else happens, and 
-> I'm not able to do nothing. I'm pretty sure it's not a bug in the 
-> software, because I tried to connect directly to outside using the WiFi 
-> card located in my server (slackware 8.1, kernel 2.4.19, iptables 1.26) 
-> and it worked just fine.
-> Is there anhy issue regarding VPN routing with iptables ? Thanks.
-> 
-> 
-> Julio Cesar Ody
-> 
-> 
+I hope. It did not show up in 2.4.21-preX so far, though..
 
+andrea
 
 
