@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipfilter on satellite receive only PC
-Date: Sat, 26 Jun 2004 09:15:01 +0100
+Subject: Re: Ip accounting Help--> Urgent
+Date: Sat, 26 Jun 2004 09:22:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406260915.01035.Antony@Soft-Solutions.co.uk>
-References: <40DD28BA.82DEE8DA@neduet.edu.pk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200406260922.14221.Antony@Soft-Solutions.co.uk>
+References: <1087962571.2041.10.camel@joel.d2visp.com> <200406231241.29378.Antony@Soft-Solutions.co.uk> <1088224225.3133.20.camel@joel.d2visp.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40DD28BA.82DEE8DA@neduet.edu.pk>
+In-Reply-To: <1088224225.3133.20.camel@joel.d2visp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +19,70 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Saturday 26 June 2004 8:41 am, yunus wrote:
+On Saturday 26 June 2004 5:30 am, Joel Solanki wrote:
 
-> Dear netfilter gurus,
+> Hello all, ANTONY ...hoping something from u :)
+
+Good morning :)
+
+> I am testing ip accounting on my production server for last 2 days but i
+> can sort the things. Any body if u could throw little light that would
+> be really helpful to me.
+> This is my testing results.
 >
-> I am new to iptables. The computer on which I want to use iptables is a
-> Redhat linux 7.3 with satellite pentanet card. I want to filter the
-> traffice forwarded to our LAN. When I use:
+> # $IPT -t mangle -i eth1 -A FORWARD -s 192.168.0.2
+> # $IPT -t mangle -o eth0 -A FORWARD -d 192.168.0.2
 >
-> iptables -P Forward DROP
-> iptables -A INPUT -m state --state RELATED, ESTABLISHED -j ACCEPT
-> iptables -A Forward -m state --state RELATED, ESTABLISHED -j ACCEPT
+> Results:-
 >
-> It still does not allow me to browse from the LAN. Outgoing is through
-> router serial port.
+> Chain FORWARD (policy ACCEPT 6853 packets, 2981K bytes)
+>  pkts bytes target     prot opt in     out     source        destination
+>  3267 1483K            all  --  eth1   *       192.168.0.2   0.0.0.0/0
+>     0     0            all  --  *      eth0    0.0.0.0/0     192.168.0.2
+>
+> I download squid-2.5.STABLE5.tar.gz from my ftp server.
+> The size of squid is 1.3M
+>
+> Now when i did upload same squid package from local machine to remote
+> ftp server it doesnt show any bytes counter in second command :--you can
+> see that above ...counters bytes are 0.
 
-Well, if that's your complete ruleset, the main problem is that you are 
-allowing established connections, but you have no way to establish them (ie: 
-you are not allowing any NEW packets through).
+Two very obvious questions first - I don't think these will be the problem, 
+but I might as well check:
 
-If that's not your complete ruleset, then please post it so we can see what 
-your firewall is being told to do.
+1. Is the machine you are uploading to connected via eth0?
+2. Does the machine you are uploading to have IP address 192.168.0.2?
+
+Both the above must be "yes" for the second rule you have (the one that's not 
+apparently working properly) to count packets.
+
+Now for the suggestion where I think you *may* have an error:
+
+3. Do you have any PREROUTING nat rules which mean that by the time packets 
+hit the FORWARD chain, they're no longer addressed to 192.168.0.2?
+
+A good way to answer this would be to show us the rule in your FORWARDing 
+filter table which allows the connection (the upload connection which you are 
+having problems measuring) to work.
+
+I cannot think of any reason why a rule in the FORWARD mangle table would not 
+see packets which are correctly being processed by the FORWARD filter table.
 
 Regards,
 
 Antony.
 
 -- 
-All matter in the Universe can be placed into one of two categories:
+"There has always been an underlying argument that we should open up our 
+source code more broadly. The fact is that we are learning from open source 
+and we are opening our code more broadly through Shared Source.
 
-1. Things which need to be fixed.
-2. Things which need to be fixed once you've had a few minutes to play with 
-them.
+Is there value to providing source code? The answer is unequivocally yes."
+
+ - Jason Matusow, head of Microsoft's Shared Source Program, in response to 
+recent leaks of Windows source code on the Internet.
 
                                                      Please reply to the list;
                                                            please don't CC me.
