@@ -1,8 +1,8 @@
 From: Marcin Sura <slacklist@op.pl>
 Subject: Re[2]: Counting traffic - another question
-Date: Tue, 27 Jul 2004 15:52:07 +0200
+Date: Tue, 27 Jul 2004 15:57:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <74231959.20040727155207@op.pl>
+Message-ID: <1368880926.20040727155717@op.pl>
 References: <1304297675.20040727143400@op.pl>
  <200407271359.13020.Antony@Soft-Solutions.co.uk>
 Reply-To: Marcin Sura <slacklist@op.pl>
@@ -24,6 +24,8 @@ To: Antony Stone <netfilter@lists.netfilter.org>
 
 Witam
 
+Sorry for my previous mail ;) I press enter in wrong time :)
+
 Tuesday, July 27, 2004, 2:59:13 PM, you wrote:
 
 > No need to MARK the packets (unless you want the MARKs for something else?),
@@ -33,10 +35,16 @@ Yes, I need MARKs for traffic shaping. Sorry, I forgot to mention this.
 > and you can specify input & output interface in the FORWARD table to identify
 > which way through your firewall the packets are going.
 
+Ok, so I change the rules (i still use statsin and statsout for ...
+hmm ... order :)
+
  $IPTABLES -t mangle -A FORWARD -i $LOCAL_IF -o $INET_IF  -j statsout
  $IPTABLES -t mangle -A FORWARD -i $INET_IF -o $LOCAL_IF -j statsin
 
+And this dont work :( I mean rules in statsout statsin incorrectly
+count trafic :(
 
+What's wrong?
 
 -- 
 Pozdrawiam
