@@ -1,13 +1,13 @@
-From: Abraham van der Merwe <abz@frogfoot.net>
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: clearing dont-fragment bit
-Date: Thu, 9 Oct 2003 20:11:23 +0200
+Date: Thu, 9 Oct 2003 15:44:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031009181123.GA8403@oasis.frogfoot.net>
-References: <20031009134311.GA25685@oasis.frogfoot.net> <1065716586.5873.23.camel@kermit> <20031009165049.GA4043@oasis.frogfoot.net> <1065719570.5873.31.camel@kermit>
+Message-ID: <20031009194449.GD14078@cannon.eng.us.uu.net>
+References: <20031009134311.GA25685@oasis.frogfoot.net> <Pine.LNX.4.51.0310091554380.26697@dns.toxicfilms.tv> <20031009140819.GA25984@oasis.frogfoot.net> <20031009144334.GB14078@cannon.eng.us.uu.net> <20031009145248.GA26549@oasis.frogfoot.net> <20031009154906.GC14078@cannon.eng.us.uu.net> <20031009161344.GA3303@oasis.frogfoot.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1065719570.5873.31.camel@kermit>
+In-Reply-To: <20031009161344.GA3303@oasis.frogfoot.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,50 +19,77 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: Netfilter Discussions <netfilter@lists.netfilter.org>
+To: Netfilter Discussions <netfilter@lists.netfilter.org>
 
-Hi Ralf                                          >@2003.10.09_19:12:51_+0200
+> > Use conntrack on both sides at the entrance. It'll ensure the reassembly of
+> > the fragments...
+> 
+> I'm not sure I understand? You're saying that given the following scenario:
+> 
+>  +---+
+>  | A |
+>  +---+
+>    | eth0 (mtu=1500)
+>    |
+>    |
+>    | eth0 (mtu=1500)   
+>  +---+
+>  | B |
+>  +---+
+>    | eth1 (mtu=1500), gre-tunnel-side-a (mtu=1476)
+>    |
+>    |
+>    | eth1 (mtu=1500), gre-tunnel-side-b (mtu=1476)
+>  +---+
+>  | C |
+>  +---+
+>    | eth0 (mtu=1500)
+>    |
+>    |
+>    | eth0 (mtu=1500)
+>  +---+
+>  | D |
+>  +---+
+> 
+> Given that B and C have conntrack enabled, if A sends a 1500 byte packet to
+> D with DF=1 then B will fragment the packet, send it to C which will then
+> assemble it (in such a way that the packet that arrived at B will be
+> identical to the one at C with just the ttl updated) and send it to D?
+> 
+> If not, then please explain. The above behaviour is what I meant.
 
-> > > > Are there any iptables extensions out there that allow you to clear the DF
-> > > > (Dont Fragment) bit in ip headers?
-> > > If you clear the DF-Bit and use Linux on either side of the tunnel where
-> > > the packets are fragmented you are in deep trouble, because Linux 2.4
-> > > (when using PMTU) not only sets the DF-Bit but also clears the IP-ID
-> > > which is needed to defragment the packets again. So, when clearing the
-> > > DF-Bit you have to ensure unique numbers in the IP-ID field, too.
-> > 
-> > Surely if I clear the DF-bit in the mangle table then the ipstack should
-> > only defragment the packet later on when it made a routing decision and
-> > decided over which interface to send the packet(s) and set the IP-ID fields
-> > and MF-bit accordingly?
-> Usually the IP-ID field is set by the sender and not by the router
-> fragmenting the packet. You have to set the IP-ID field and clear the
-> DF-Bit at the same time. 
+No, what I was meaning to say was that if the conntrack in enabled on, say C,
+then the reassembly takes place on C.
 
-Yes, I know, but as long as all the fragments have unique ids it shouldn't
-matter. Also, if the packet is fragmented along the way under normal
-circumstances (i.e. DF=0), then the IP-ID field would have to be incremented
-by the router fragmenting the packet.
+But for the above situation, I'd suggest you (according to the Cisco page
+you sent in another email) to increase the MTU on the GRE interface and have
+it just fragment the encapsulating packets on B and defragment it on C without
+any involvement of the tunneled packets. Give it a go and see if it works.
 
-Have a look at this: http://www.cisco.com/warp/public/105/56.html
+> > Neither TFTP nor SNMP set the DF bit and as you said DNS enforces the
+> > packet size itself. NFS might do that though (not sure) but one would
+> > think that NFS should not span over the Internet. So, what other UDP-based
+> > applications use the DF bit?
+> 
+> Unless I'm missing something setting/clearing the DF bit is up to the
+> kernel, not the application. So if I do
+> 
+>  fd = socket(PF_INET, SOCK_DGRAM, 0);
+>  sendto(fd, buf, 1500, 0, ...);
+> 
+> from my shiny snmp server and buf contains a 1500 byte PDU, then it is up to
+> the kernel to decide whether to set DF or not...
 
-On IOS you can clear the DF-bit and Cisco actually recommends it for this
-particular problem so as long as IP-ID is unique for the fragments (which
-should be the case) I don't see any problems doing it on Linux other than
-degraded performance.
+I think we're confusing two things here:
 
--- 
+1) It is up to the IP stack to fragment based on the MTU of the interface,
+   size of the packet and the DF bit.
 
-Regards
- Abraham
+2) It is up to the application to ask for the setting of the DF bit.
+   I believe you need to work on a SOCK_RAW socket to (un)set this.
+   But I leave this discussion to the programming guru's. A good source
+   is Van Jacobson's traceroute.
 
-Why is it taking so long for her to bring out all the good in you?
 
-___________________________________________________
- Abraham vd Merwe - Frogfoot Networks CC
- 9 Kinnaird Court, 33 Main Street, Newlands, 7700
- Phone: +27 21 686 1665 Cell: +27 82 565 4451
- Http: http://www.frogfoot.net/ Email: abz@frogfoot.net
-
+Ramin
 
