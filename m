@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: More H.323 questions
-Date: Thu, 4 Sep 2003 08:44:29 +1000
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: More H.323 questions
+Date: Wed, 3 Sep 2003 21:12:52 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C236@wardrive.citadelcomputer.com.au>
+Message-ID: <20030904011252.GA30116@cannon.eng.us.uu.net>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15C236@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C236@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Mark Goldberg <goldber@globalcrossing.net>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: George Vieira <georgev@citadelcomputer.com.au>
+Cc: Mark Goldberg <goldber@globalcrossing.net>, netfilter@lists.netfilter.org
 
-You need:
+On Thu, Sep 04, 2003 at 08:44:29AM +1000, George Vieira wrote:
 
-insmod ip_conntrack_h323
-insmod ip_nat_h323
+> You need:
+> 
+> insmod ip_conntrack_h323
+> insmod ip_nat_h323
+> 
+> or something like that... I have it and it works..
 
-or something like that... I have it and it works..
+If you have it and it works then we expect to not hear "or something like that"
+but a more specific answer...
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+Ramin
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
------Original Message-----
-From: Mark Goldberg [mailto:goldber@globalcrossing.net]
-Sent: Tuesday, September 02, 2003 3:37 PM
-To: netfilter@lists.netfilter.org
-Subject: More H.323 questions
-
-
+> 
+> Thanks,
 
