@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: redirect a HTTP-connection only once
-Date: Sat, 16 Nov 2002 12:11:31 -0500
+From: Rahul Jadhav <rahul@iatp.org>
+Subject: nat problem...
+Date: Fri, 15 Nov 2002 14:45:08 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211161211.31119.netfilter@newkirk.us>
-References: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
-Reply-To: netfilter@newkirk.us
+Message-ID: <3DD55CD4.70704@iatp.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +15,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Karl Gruber <sysadmin@hnoe1.sth.ac.at>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Friday 15 November 2002 03:28 pm, Karl Gruber wrote:
-> Hi!
->
-> I want to know if it is possible that an iptables-rule matches only onc=
-e. I
-> want to implement a redirection of the first http-request of an user.
->
-> thanx,
->      Karl
+I have a setup without a dmz, ie, the servers (http, mail, ssh) share the same subnet as my intranet clients (dhcp). The iptables script I am struggling with allows clients to browse the net but refuses them connections to the servers. Somehow the firewall refuses tcp/udp connections meant for the servers. The firewall machine runs no public services (forwards traffic only).
+the forward and nat rules that i use are 
 
-disclaimer - I've never done this before...
+public_ip=external web ip
+intra_dev=internal iface
+extra_dev=external iface
+intra_ip=internal ip
+extra_ip=external ip
+http=http server ip
+mail=mail server ip
 
-Do you mean the first ever (IE only catch one, then never again) or the f=
-irst=20
-to a given destination, or what?=20
+# forward
+$iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+# do I need these 2 lines
+$iptables -A FORWARD -p tcp -i $intra_dev -o $extra_dev -j ACCEPT
+$iptables -A FORWARD -p udp -i $intra_dev -o $extra_dev -j ACCEPT
 
-Matching TCP80 from a user with state NEW and TCP flag SYN without ACK or=
- RST=20
-should catch the initial HTTP request in a given transaction, and repeat=20
-every time a new request is initiated.  I believe a LIMIT match (1/day) w=
-ith=20
-no burst watching for these would catch only the first HTTP transaction=20
-requested by a user each day. (or until the firewall is reset, whichever =
-is=20
-sooner) =20
+$iptables -A FORWARD -p tcp -i $extra_dev -m state --state NEW,ESTABLISHED,RELATED --dport 80 -j ACCEPT
+$iptables -A FORWARD -p tcp -i $extra_dev -m state --state NEW,ESTABLISHED,RELATED --dport 81 -j ACCEPT
 
-But the packet itself will probably be effectively lost if you redirect o=
-nly=20
-the first, leaving the client to re-request.  If you divert a single pack=
-et=20
-then reinsert it somehow, I think netfilter will not properly handle=20
-forwarding of subsequent packets that are part of the transaction.
+$iptables -A FORWARD -p tcp -i $extra_dev -o $intra_dev --dport 80 -d $http -j ACCEPT
+$iptables -A FORWARD -p tcp -i $extra_dev -o $intra_dev --dport 81 -d $mail -j ACCEPT
 
-Something like:
+# prerouting
+$iptables -A PREROUTING -t nat -p tcp -i $extra_dev -d $public_ip --dport 80 -j DNAT --to $http
+$iptables -A PREROUTING -t nat -p tcp -i $extra_dev -d $public_ip --dport 81 -j DNAT --to $mail
 
-/sbin/iptables -A FORWARD -s w.x.y.z -p tcp --dport 80 --state NEW --tcp-=
-flags=20
-SYN,RST,ACK SYN -m limit --limit 1/day --limit-burst 1 -j {whatever targe=
-t}
+# postrouting
+# either these 2 rules or the masquerade rule works
 
-Should match ONLY the first request from w.x.y.z for an HTTP connection p=
-er=20
-day.  Would that suit your use?
+$iptables -A POSTROUTING -t nat -p tcp -o $extra_dev -s $intra_lan -d $universe -j SNAT --to $extra_ip
+$iptables -A POSTROUTING -t nat -p tcp -o $extra_dev -s $intra_lan -d $universe -j SNAT --to $extra_ip
 
-j
+$iptables -A POSTROUTING -t nat -o $extra_dev -j MASQUERADE
+
+does someone see a problem that I can't. Also, could someone enlighten me about the output chain and whether or not I need it here.
+Thanks
+
+Rahul
+
+
 
