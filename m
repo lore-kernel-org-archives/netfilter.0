@@ -1,12 +1,11 @@
-From: "Ian C. Sison" <ian.s@qsr.com.ph>
-Subject: Re: VPN software
-Date: Mon, 1 Jul 2002 21:18:40 +0800 (PHT)
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: PPTP through iptables FW...
+Date: Mon, 1 Jul 2002 09:59:20 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33L2.0207012117120.21430-100000@jeprox.qsr.com.ph>
-References: <003101c220ff$3c566740$0601a8c0@sundaram>
+Message-ID: <002601c22107$7f39fe70$3864a8c0@discmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <003101c220ff$3c566740$0601a8c0@sundaram>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,27 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sundaram Ramasamy <sun@percipia.com>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
+I haven't looked into this, but is there a method to connect to a pptp
+server from behind an iptables firewall?  I have seen glimpses of
+persons using something called ip_conntrack_pptp (sp?) and that seems it
+will fit the bill...not sure..here is ASCII art:
 
-You can try tinc, http://tinc.nl.linux.org
+Client-----IPTABLES Firewall------INTERNET--------Remote PPTP
+server------Server
 
-I use it, it's very good and configurable.  It uses the tap/tun driver of
-the kernel.
-
-
-On Mon, 1 Jul 2002, Sundaram Ramasamy wrote:
-
-> Hi,
->
-> I wanted to setup the linux based VPN server for my office. which software
-> is good for ppt protocal.
->
-> Thanks
->
->
+I am currently using IPTables 1.2.5
 
 
