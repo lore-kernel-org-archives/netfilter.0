@@ -1,11 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
+From: Eric Leblond <eric@inl.fr>
 Subject: Re: how to match connection tracker's flows?
-Date: Wed, 3 Nov 2004 14:02:21 -0500
-Message-ID: <20041103190221.GA27201@bender.817west.com>
+Date: Wed, 03 Nov 2004 20:07:48 +0100
+Message-ID: <1099508868.24863.8.camel@porky>
 References: <20041103181718.GA16850@oasis.frogfoot.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-W/PLQk1BkpTIyj9tX20i"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <20041103181718.GA16850@oasis.frogfoot.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,39 +19,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Nov 03, 2004 at 08:17:18PM +0200, Abraham van der Merwe wrote:
+
+--=-W/PLQk1BkpTIyj9tX20i
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2004-11-03 at 20:17 +0200, Abraham van der Merwe wrote:
 > Hi!
-> 
+>=20
 > If I add
-> 
+>=20
 > # rules to track ftp
 > iptables -t mangle -A POSTROUTING -p tcp -j CONNMARK --restore-mark
 > iptables -t mangle -A POSTROUTING -p tcp -m mark ! --mark 0 -j RETURN
-> iptables -t mangle -A POSTROUTING -p tcp --dport 21 -j MARK --set-mark 2
-> iptables -t mangle -A POSTROUTING -j CONNMARK --save-mark
-> 
+
+If packet are marked they return so leave mangle, so if CONNMARK works
+leave mangle.
+
 > # a rule to see how much ftp traffic is matched
 > iptables -t mangle -A POSTROUTING -m mark --mark 2
-> 
-> Now if I ftp some data I can see that all of the traffic is not matched by
-> looking at the byte counter of the rule above.
-> 
-> What am I doing wrong? I am pretty sure the ftp-data connection is not being
-> tracked, but surely the conntrack_ftp module should do all the hard work for
-> me?
 
-try using helper to match FTP traffic:
+This line is never reached if CONNMARK works.
 
-  iptables -t mangle -A POSTROUTING -m helper --helper ftp
+BR,
+--=20
+Eric Leblond <eric@regit.org>
+NuFW, Now User Filtering Works : http://www.nufw.org
 
--j
+--=-W/PLQk1BkpTIyj9tX20i
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
---
-"Dear Mr. President, there are too many states nowadays, please
- eliminate three. I am not a crackpot."
-        --The Simpsons
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQBBiSyDnxA7CdMWjzIRAifNAJ46roQzgULuq50iaA7V4O8u0G4emgCfbkMt
+KX/4d+sl3IZu8kxciWaEN8w=
+=GWzX
+-----END PGP SIGNATURE-----
+
+--=-W/PLQk1BkpTIyj9tX20i--
+
 
