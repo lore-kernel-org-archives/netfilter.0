@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bad Argument error
-Date: Mon, 8 Jul 2002 22:18:40 +0100
+From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
+Subject: Re: HTTP Port forwarding issues
+Date: Mon, 8 Jul 2002 22:20:23 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708211842.FLFJ19225.mta07-svc.ntlworld.com@there>
-References: <956DDDA708487D498B43C36EA4DEA4050B5C50@SFEXCH01>
+Message-ID: <086201c226c5$4567f990$3200a8c0@jungle.funkybadger.org>
+References: <40c701c226bd$a51c87a0$2901a8c0@amos> <20020708205030.ECXA4119.mta06-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <956DDDA708487D498B43C36EA4DEA4050B5C50@SFEXCH01>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,71 +17,38 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Monday 08 July 2002 10:08 pm, Mike G. Hammonds wrote:
+Antony Stone wrote:
 
-> Attached is a sample of my iptables script file located in the
-> /etc/sysconfig/ <dir>
-
-Well, I can't see anything wrong with the line
-LOOPBACK="lo"
-which is the only place I can see the variable defined, but then I can't see 
-any use of the variable $LOOPBACK either.
-
-Does the error occur on that line of the script, or later on (try commenting 
-it out and see if the error goes away) ?
-
-How do you run the script ?
-
-Antony.
-
-> -----Original Message-----
-> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-> Sent: Monday, July 08, 2002 4:38 PM
-> To: netfilter
-> Subject: Re: Bad Argument error
+> On Monday 08 July 2002 9:25 pm, Nathan Cassano wrote:
 >
-> On Monday 08 July 2002 9:29 pm, Mike G. Hammonds wrote:
-> > Thanks
-> > I'm also getting this error
-> > Bad Argument 'LOOPBACK="lo"
+> > Remember HTTP runs over UDP protocol also.
 >
-> If the script you are running is reasonably short, post it here and we'll
-> try
-> and tell you why this error occurs.
+> WHAT ?????
 >
-> However, you should be able to find the problem for yourself by doing a
-> grep
->
-> on the script for LOOPBACK and spot the line with the mistake ?
->
-> Antony.
->
-> > -----Original Message-----
-> > From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-> > Sent: Monday, July 08, 2002 4:18 PM
-> > To: netfilter
-> > Subject: Re: Bad Argument error
-> >
-> > On Monday 08 July 2002 9:00 pm, Mike G. Hammonds wrote:
-> > > I'm running RH7.2 with iptables1.2.4-2
-> > > every time I start iptables I get the following error
-> > > Bad Argument 'LOG_LEVEL="notice" [FAILED]
-> > >
-> > > any ideas on how to fix this?
-> >
-> > Use a numeric argument to --log-level instead
-> >
-> > "notice"=5
-> >
-> > So you would use
-> >
-> > iptables -A FORWARD -s 192.168.1.0/24 -j LOG --log-level=5
-> >
-> > or whatever....
-> >
-> >
-> >
-> > Antony.
+> RFC # ?
+
+I'd disagree with that statement as well, but as a side note HTTP is
+not limited to TCP. RFC2616 (HTTP/1.1) says:
+
+<quote>
+1.4 Overall Operation
+[...]
+HTTP communication usually takes place over TCP/IP connections. The
+default port is TCP 80 [19], but other ports can be used. This does
+not preclude HTTP from being implemented on top of any other protocol
+on the Internet, or on other networks. HTTP only presumes a reliable
+transport; any protocol that provides such guarantees can be used;
+[...]
+19.6.3 Changes from RFC 2068
+[...]
+4. Modified some TCP-specific language, to make it clearer that
+non-TCP transports are possible for HTTP.
+</quote>
+
+UDP, however, doesn't fit the definition of "reliable transport", IMO.
+
+Adam
+
 
