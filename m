@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: from iptable user
-Date: 20 Feb 2003 13:22:50 +0100
+From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
+Subject: RE: from iptable user
+Date: Thu, 20 Feb 2003 13:58:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045743770.15853.89.camel@elendil.intranet.cartel-securite.net>
-References: <200302171909.23866.admin@getsense.net>
+Message-ID: <E131E9F1848D0148813EAF06A846608FD77845@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2D8DF.BA0A41FA"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302171909.23866.admin@getsense.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +17,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: nikita <admin@getsense.net>
-Cc: netfilter@lists.netfilter.org
+To: nikita <admin@getsense.net>, netfilter@lists.netfilter.org
 
-Le lun 17/02/2003 =E0 17:09, nikita a =E9crit :
-> iptable -A FORWARD -m mac -mac-source 00:C0:DF:10:4D:99 -j REJECT
->=20
-> and=20
->=20
-> i have been answered the following
->=20
->=20
-> Couldn't load match ac-source:
-> /lib/iptables/libipt_ac-source.so ....
->=20
-> Please,
-> What shell i do in that case?
+This is a multi-part message in MIME format.
 
-"man" would be a great idea...
+------_=_NextPart_001_01C2D8DF.BA0A41FA
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-iptable -A FORWARD -m mac --mac-source 00:C0:DF:10:4D:99 -j REJECT
-			  ^^
-			  Much better...
+Hi,
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+>Hello,
+>My name is Nikita
+>I have made the following command
+>
+>iptable -A FORWARD -m mac -mac-source 00:C0:DF:10:4D:99 -j REJECT
+>
+>and=20
+>
+>i have been answered the following
+>
+>
+>Couldn't load match ac-source:
+>/lib/iptables/libipt_ac-source.so ....
+>
+>Please,
+>What shell i do in that case?
+>
+You need to use two dashes '--', not one, like this: "--mac-source"
 
+Regards,
+Filip
+
+
+
+
+------_=_NextPart_001_01C2D8DF.BA0A41FA
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DWindows-1252">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6249.1">
+<TITLE>RE: from iptable user</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>Hi,<BR>
+<BR>
+&gt;Hello,<BR>
+&gt;My name is Nikita<BR>
+&gt;I have made the following command<BR>
+&gt;<BR>
+&gt;iptable -A FORWARD -m mac -mac-source 00:C0:DF:10:4D:99 -j =
+REJECT<BR>
+&gt;<BR>
+&gt;and<BR>
+&gt;<BR>
+&gt;i have been answered the following<BR>
+&gt;<BR>
+&gt;<BR>
+&gt;Couldn't load match ac-source:<BR>
+&gt;/lib/iptables/libipt_ac-source.so ....<BR>
+&gt;<BR>
+&gt;Please,<BR>
+&gt;What shell i do in that case?<BR>
+&gt;<BR>
+You need to use two dashes '--', not one, like this: =
+&quot;--mac-source&quot;<BR>
+<BR>
+Regards,<BR>
+Filip<BR>
+<BR>
+<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2D8DF.BA0A41FA--
 
