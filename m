@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip_conntrack_ftp doesn't work
-Date: Mon, 24 Jun 2002 20:30:26 +0100
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: Re: iptables -F & iptables -X good enough *for all* tables/chains?
+Date: Mon, 24 Jun 2002 12:57:13 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020624193028.RXJI295.mta03-svc.ntlworld.com@there>
-References: <20020614194204.A232@rainbow> <20020624151606.07c61b2c.adam@vbfx.com>
+Message-ID: <20020624125713.A3624@spawar.navy.mil>
+References: <20020624114108.A3305@spawar.navy.mil> <001b01c21baf$a4450a50$0a01a8c0@ed>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020624151606.07c61b2c.adam@vbfx.com>
+Content-Disposition: inline
+In-Reply-To: <001b01c21baf$a4450a50$0a01a8c0@ed>; from blacknet@simplyaquatics.com on Mon, Jun 24, 2002 at 02:47:50PM -0400
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,34 +18,97 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Ed Street <blacknet@simplyaquatics.com>
+Cc: netfilter@lists.samba.org
 
-On Monday 24 June 2002 8:16 pm, Adam Young wrote:
+Ed
 
-> On Fri, 14 Jun 2002 19:42:04 +0200
->
-> Giovanni Cardone <g_cardone@libero.it> wrote:
-> > On 2.4.18 with 1.2.7(1.2.6a too) ftp conntrack module doesn't work.
-> > I'm trying to understand this using a simple script:
+Thanks for the reply.  I can accept that -F is necessary
+*for every single table separately*.
 
-[script snipped]
+User defined chains are *not* tied to specific tables
+as far as I can tell.  Is there any value in doing
 
-> > The logs shows up some entries like these:
-> >
-> > Jun 14 19:10:44 darkstar kernel: IN=ppp0 OUT= MAC= SRC=195.210.93.107
-> > DST=151.26.80.131 LEN=60 TOS=0x08 PREC=0x00 TTL=58 ID=40516 DF
-> > PROTO=TCP SPT=20 DPT=1039 WINDOW=32120 RES=0x00 SYN URGP=0
+iptables -t nat -X
+iptables -t mangle -X
+iptables -t filter -X
 
-> > What do I need to do?
->
-> 	perhaps modprobe'ing ip_nat_ftp ? I believe that's the module name,
-> that you may need.
+rather than just iptables -X???
 
-But the script is not doing any NAT, and the log entry shows valid addresses 
-for both source and destination, so I don't think an FTP NAT module is going 
-to help ?
+Linux Firewalls book has the three line method instead if iptables -X.
 
- 
+Chris
 
-Antony.
+
+On Mon, Jun 24, 2002 at 02:47:50PM -0400, Ed Street wrote:
+> Hello,
+> 
+> Well first off the regular expression of Iptables -F will NOT flush the
+> specific tables i.e. nat/manglefilter.  However, if you are NOT using
+> those tables it's pointless to -F as there's nothing there.  In general
+> it's a good idea and a good habit to get into using.
+> 
+> To test your theory you need some rules in any of those three tables.
+> Do the iptables -F and then run iptables -t nat -L -n you will see the
+> rules are still there.
+> 
+> Ed
+> 
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Christian Seberino
+> Sent: Monday, June 24, 2002 2:41 PM
+> To: netfilter@lists.samba.org
+> Subject: iptables -F & iptables -X good enough *for all* tables/chains?
+> 
+> iptables -F
+> iptables -X
+> 
+> These simple 2 lines seem good enough to
+> nuke *all* rules and *all* user defined chains.....
+> 
+> Yet, in print (like Linux Firewalls book) I often
+> see people wanting to apply -F and -X to 
+> *every single table one by one*
+> 
+> (e.g. iptables -t nat    -F
+>       iptables -t filter -F
+>       iptables -t mangle -F
+>  etc.)
+> 
+> Am I missing something? My simple 2 lines above
+> seem good enough to do the trick.
+> 
+> Chris
+> -- 
+> _______________________________________
+> 
+> Dr. Christian Seberino
+> SPAWAR Systems Center San Diego
+> Code 2363
+> 53560 Hull Street
+> San Diego, CA 92152-5001
+> U.S.A.
+> 
+> Phone: (619) 553-7940
+> Fax:   (619) 553-2836
+> Email: seberino@spawar.navy.mil
+> _______________________________________
+> 
+
+-- 
+_______________________________________
+
+Dr. Christian Seberino
+SPAWAR Systems Center San Diego
+Code 2363
+53560 Hull Street
+San Diego, CA 92152-5001
+U.S.A.
+
+Phone: (619) 553-7940
+Fax:   (619) 553-2836
+Email: seberino@spawar.navy.mil
+_______________________________________
 
