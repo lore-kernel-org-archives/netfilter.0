@@ -1,55 +1,28 @@
-From: Navneet Choudhary <navneetkc@gmail.com>
-Subject: Re: Linux as router (Gateway Server) [Revisited]
-Date: Tue, 1 Feb 2005 18:39:43 +0530
-Message-ID: <1dceb012050201050950468551@mail.gmail.com>
-References: <00a601c4fe34$5e74bd80$eaab9385@gagan>
-	<1106851960.14748.6.camel@localhost.localdomain>
-	<005701c507a8$f84e5330$eaab9385@gagan>
-	<20050131163755.GA25101@bender.817west.com>
-Reply-To: Navneet Choudhary <navneetkc@gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: iptables and ip_conntrack_tuple.h compile fix
+Date: Tue, 01 Feb 2005 14:18:50 +0100
+Message-ID: <41FF81BA.5020208@trash.net>
+References: <Pine.LNX.4.58.0502011255020.24684@cj.onrc.ro>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050131163755.GA25101@bender.817west.com>
+In-Reply-To: <Pine.LNX.4.58.0502011255020.24684@cj.onrc.ro>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Tompa Septimius Paul <subzero@cj.onrc.ro>
+Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
 
-On Mon, 31 Jan 2005 11:37:55 -0500, Jason Opperisano <opie@817west.com> wrote:
-> On Mon, Jan 31, 2005 at 08:54:10PM +0530, Navneet wrote:
-> > Below is my working tables rules.But i can't able to successfully establish
-> > external ftp sites/servers.
-> >
-> > i even loaded ip_conntrack_ftp
-> 
-> but you didn't load ip_nat_ftp.
+Tompa Septimius Paul wrote:
 
-thanks it solved my FTP problem.
+>Hi,
+>
+>I try to recompile iptables iptables-1.2.11 with kernel 2.6.11-rc2
+>(and mm2) running and I don't succeed. It complains about
+>/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_tuple.h
+>after this small changes iptables is compiling again.
+>  
+>
+I just added a similar patch from Pablo Neira to my tree.
 
-
-> -j
-> 
-> --
-> "Here are your messages: 'You have thirty minutes to move your
->  car.' 'You have ten minutes to move your car.' 'Your car has been
->  impounded.' 'Your car has been crushed into a cube.' 'You have thirty
->  minutes to move your cube.'"
->         --The Simpsons
-> 
-> 
-
-
--- 
-  | / /_____ ___   ____________________  /_
-__   |/ /_  __ `/_ | / /_  __ \  _ \  _ \  __/
-_  /|  / / /_/ /__ |/ /_  / / /  __/  __/ /_  
-/_/ |_/  \__,_/ _____/ /_/ /_/\___/\___/\__/
-
+Regards
+Patrick
