@@ -1,11 +1,13 @@
-From: "Julio Cesar Ody" <julioody@bol.com.br>
-Subject: rules for logging
-Date: Thu, 27 Mar 2003 00:18:35 -0300
+From: vic ismakaev <viclists@mail.esoo.ru>
+Subject: test
+Date: Thu, 27 Mar 2003 11:05:59 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HCE16Z$IAlto1xcbp9cVkEoYEgcf9o8LZNEhNlmpREspFFm@bol.com.br>
+Message-ID: <200303271105.59532.viclists@mail.esoo.ru>
+Reply-To: viclists@mail.esoo.ru
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,18 +17,10 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi. I would like to implement some rules to log nmap 
-(and other scanners such nmap) scans. Any tips/help ? 
-Thanks.
+Sorry,test.
 
- 
-__________________________________________________________________________
-E-mail Premium BOL
-Antiv=EDrus, anti-spam e at=E9 100 MB de espa=E7o. Assine j=E1!
-http://email.bol.com.br/
-
-
+Victor V Ismakaev
 
