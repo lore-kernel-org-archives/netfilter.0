@@ -1,16 +1,11 @@
-From: "Aaron P. Martinez" <ml@proficuous.com>
-Subject: Re: vpn under linux
-Date: 10 Apr 2004 19:09:03 -0500
+From: "Philipp Stader" <me@ph1l.de>
+Subject: pptp_conntrack_nat - patch-o-matic-ng-20040409 - kernel 2.4.25
+Date: Sun, 11 Apr 2004 02:44:14 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081642143.2079.1.camel@aaron-rh9-ws.proficuous.com>
-References: <4077B7EF.5070805@tin.it>
-	 <200404101018.38664.Antony@Soft-Solutions.co.uk> <4077C15E.9080701@tin.it>
-	 <200404101100.25648.Antony@Soft-Solutions.co.uk>
-	 <20040410234127.GD14988@samad.com.au>
+Message-ID: <3340.217.83.169.111.1081644254.squirrel@217.83.169.111>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040410234127.GD14988@samad.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,29 +16,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
----snip----
-> 
-> Development has moved to openswan 
+Hello list,
 
-I believe openvpm is another good choice for ipsec vpn solution
-> 
-> > 
-> > Regards,
-> > 
-> > Antony.
-> > 
-> > -- 
-> > The difference between theory and practice is that in theory there is no 
-> > difference, whereas in practice there is.
-> > 
-> >                                                      Please reply to the list;
-> >                                                            please don't CC me.
-> > 
-> > 
-> > 
+i downloaded linux 2.4.25 from kernel.org, patch-o-matic-ng-20040409 and
+iptables 1.2.9. Unpacked all in /usr/src/ created links linux and iptables
+then applied the pptp_conntrack_nat patch which applied without errors.
+When  i try to compile the kernel i get the following errors.
 
-Aaron P. Martinez
+net/network.o: In function `pptp_expectfn':
+net/network.o(.text+0x3e899): undefined reference to
+`ip_ct_gre_keymap_destroy'
+net/network.o: In function `pptp_timeout_related':
+net/network.o(.text+0x3e8cc): undefined reference to
+`ip_ct_gre_keymap_destroy'
+net/network.o: In function `conntrack_pptp_help':
+net/network.o(.text+0x3ed09): undefined reference to `ip_ct_gre_keymap_add'
+net/network.o(.text+0x3ed2e): undefined reference to `ip_ct_gre_keymap_add'
+net/network.o(.text+0x3ed96): undefined reference to `ip_ct_gre_keymap_add'
+net/network.o(.text+0x3edaa): undefined reference to `ip_ct_gre_keymap_add'
+net/network.o(.text+0x3edc8): undefined reference to
+`ip_ct_gre_keymap_destroy'
+net/network.o: In function `tcp_help':
+net/network.o(.text+0x3fd66): undefined reference to
+`ip_ct_gre_keymap_change'
+net/network.o(.text+0x3fd73): undefined reference to
+`ip_ct_gre_keymap_change'
 
+I'd be happy for any suggestions. If you need any more information please
+let me know.
+
+Thank you very much in advance,
+
+Kind regards
+
+Phil
 
