@@ -1,14 +1,14 @@
-From: =?utf-8?q?Fr=C3=A9d=C3=A9ric=20Gonzatti?= <fred99@libertysurf.fr>
-Subject: Re: Firewall IP change
-Date: Mon, 26 Jul 2004 15:20:57 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: speed connection problem
+Date: Mon, 26 Jul 2004 14:27:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407261520.57942.fred99@libertysurf.fr>
-References: <40FEE340.8090907@ctwa.com> <200407261413.27558.fred99@libertysurf.fr> <200407261327.43786.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407261427.24092.Antony@Soft-Solutions.co.uk>
+References: <41051990.9070208@yahoo.fr>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407261327.43786.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <41051990.9070208@yahoo.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,25 +21,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks Antony,
+On Monday 26 July 2004 3:47 pm, stephane durieux wrote:
 
-According to your explanations I think I 'd rather to include the following 
-line in my iptable script :
-iptables -A POSTROUTING -t nat -o eth2 -j SNAT --to 62.160.X.Y
+> Hi everybody,
+>
+> I am a newbie using netfilter
 
-But to be sure : I've got two computers on my DMZ which have IP included in 
-192.168.2.0/255.255.255.0 and other computers on my LAN which have IP 
-included in 172.16.0.0/255.255.0.0  and static public IP on my WAN Firewall.
-So the best way is to use the line you advice me ?
-Where on my script do I have to add this line ? At the beginning, just after a 
-modprobe iptable_nat line ?
+I recommend two things:
 
-Last question : Do you see some clumsy things or errors in my script ?
-Unfortunately I think there are .... ;-(
+1. Start simple, and build up the rules gradually.
 
-Thanks again for your help
+2. Read Oskar Andreasson's tutorial at http://iptables-tutorial.frozentux.net
 
-Frederic
+Regards,
 
+Antony.
+
+-- 
+Wanted: telepath.   You know where to apply.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
