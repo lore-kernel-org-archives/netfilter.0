@@ -1,11 +1,12 @@
-From: "hard__ware" <hard__ware@hotmail.com>
+From: Warwick Mitchell <wmitchell@glug.org.au>
 Subject: re:Connection accounting stats
-Date: Wed, 2 Oct 2002 20:07:08 +1000
+Date: Wed, 2 Oct 2002 20:04:34 +1000 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE33EhBZsGcZuRbr5mL000077a3@hotmail.com>
+Message-ID: <Pine.LNX.4.44.0210022003090.1569-100000@crux.geek>
+References: <OE33EhBZsGcZuRbr5mL000077a3@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OE33EhBZsGcZuRbr5mL000077a3@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,35 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: wmitchell@glug.org.au
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: hard__ware <hard__ware@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello Warwick,
+On Wed, 2 Oct 2002, hard__ware wrote:
 
-> Just wondering if there is anyway to log how many bytes are transfered in
-> a connection? Not of a rule, but of an actual connection. The PIX
-> firewalls do something similar to this. Additionly it would be good to
-> know the total time of the connection, but that's not necessary.
+> Hello Warwick,
 
-it depennds on weather you using a Network (ethernet) or dialup connection .
+Hi :)
 
-you could have something in /etc/ppp/ip-down.local
-to outout the stats to a file and maybee even firewall stats before they may
-reset
-(especially with dhcp connections)
+> > Just wondering if there is anyway to log how many bytes are transfered in
+> > a connection? Not of a rule, but of an actual connection. The PIX
+> > firewalls do something similar to this. Additionly it would be good to
+> > know the total time of the connection, but that's not necessary.
+>
+> it depennds on weather you using a Network (ethernet) or dialup connection .
 
-pppstats
-ifconfig
-iptables -L -n -v
-iptables -L -n -v -t nat
-(add mangle if you use it)
+Sorry, didn't make myself clear. I meant tcp connections. The
+connections that conntrack module keeps track of.
 
-you can also specify certain line No, in your firewall tables so only they
-are exported, ect
-Refer to the iptables man pages for help on line numbering ect ..
+	Warwick
 
-Hope This Helps
 
-:D
 
