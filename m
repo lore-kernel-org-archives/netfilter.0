@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: sub interface filtering
-Date: Wed, 2 Apr 2003 12:45:13 -0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: sub interface filtering
+Date: Wed, 2 Apr 2003 15:56:00 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C6FF0@alderaan.smgtec.com>
+Message-ID: <200304021556.00113.netfilter@newkirk.us>
+References: <000b01c2f947$feb84a80$8b01a8c0@win2k.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <000b01c2f947$feb84a80$8b01a8c0@win2k.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +19,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Mike <mikeeo@msn.com>, netfilter@lists.netfilter.org
 
-The Advanced Traffic and Routing Howto had everything I needed. It can
-show you how to setup its IP settings etc.. If you want to integrate
-into IPTables, the following example shows how simply this can be
-accomplished.
+On Wednesday 02 April 2003 01:45 pm, Mike wrote:
+> Hi guys I have the following setup and rules. And I cant seem to get
+> the filtering to work.
 
-$ ip address list
-1: lo: <LOOPBACK,UP> mtu 16436 qdisc noqueue=20
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 brd 127.255.255.255 scope host lo
-2: eth0: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
-    link/ether 11:11:11:11:11:11 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.1.2/24 brd 192.168.1.255 scope global eth0
-    inet 192.168.1.111/32 scope global eth0
-3: eth1: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
-    link/ether 11:11:11:11:11:11 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.2.1/24 brd 192.168.1.255 scope global eth1
+> iptables -t nat -A PREROUTING -p tcp <routeable internetIP/28> --dport
+> 80 -j DNAT --to 192.168.1.197
+>
+> iptables -t nat -A PREROUTING -p tcp <routeable internetIP/28> --dport
+> 443 -j DNAT --to 192.168.1.197
+> iptables -t nat -A POSTROUTING -o eth2 -s 192.168.1.197 -j SNAT --to
+> <routeable internetIP/28
 
-You notice that there are 2 addresses on the same interface eth0. I want
-to forward each IP address to a separate machine on a different subnet
-in this case, so I would do the following:
+> but when I scan eth2:1 or eth2:2 from an outside machine I can see ALL
+> the local services (ssh, ptptp,dns etc..) Is connection not passing
+> the forwading chain?
 
-iptables -t nat -A PREROUTING -j DNAT --destination 192.168.1.2 --to-
-destination 192.168.2.2
+You are DNATting dport 80 and dport 443, but the remainder of the ports=20
+are not being DNATted, so they still target the firewall box.  You'd=20
+need to DNAT all connections to the specified IP, then DROP all except=20
+ports 80 and 443 in FORWARD to avoid this.
 
-iptables -t nat -A PREROUTING -j DNAT --destination 192.168.1.111 --to-
-destination 192.168.2.111
+Of course, this also shows that you are letting lots of (all?!?) ports=20
+through the INPUT chain to the box itself from outside, which you should=20
+lock down as well...  A DROP policy on INPUT is called for, then ACCEPT=20
+required ports from eth2 for externally-accessed services (if any) and=20
+ACCEPT required (or all if desired) ports from the LAN machines.
 
-You could have included "-i eth0" if you really wanted to, but unless
-you have the same IP address bolted to different interfaces, I don't see
-that mattering much.=20
-
-
------Original Message-----
-From: Mike [mailto:mikeeo@msn.com]=20
-Sent: Wednesday, April 02, 2003 12:34 PM
-To: Daniel Chemko; netfilter@lists.netfilter.org
-Subject: Re: sub interface filtering
-
-I hate to ask but do you have and example of using iproute2 for IP
-address aliases?
-
-Thanks,
-Mike
+j
 
 
