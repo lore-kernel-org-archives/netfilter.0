@@ -1,11 +1,11 @@
-From: Simone Sestini <simone.sestini@plugit.net>
-Subject: iptables and ULOG
-Date: Wed, 13 Aug 2003 17:38:30 +0200
+From: Glenn Hancock <ghancock@softeksoftware.com>
+Subject: Iptables problem
+Date: 13 Aug 2003 13:09:57 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.0.20030813173340.02455328@imap4.plugit.net>
+Message-ID: <1060794597.2054.2.camel@localhost.localdomain>
+Reply-To: ghancock@softeksoftware.com
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="=====================_192534780==.ALT"
+Content-Type: multipart/alternative; boundary="=-S4gBe3IBsT7Ip2G0Z3E5"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,107 +18,109 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
---=====================_192534780==.ALT
-Content-Type: text/plain; charset="us-ascii"; format=flowed
 
-Hi all..
+--=-S4gBe3IBsT7Ip2G0Z3E5
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-I'm trying to use ULOG with iptables for log all the nat traslation done by 
-my nat box..
-I would like to see something like a proxy server..
+I have the following setup in my /etc/sysconfig/iptables file.  I start
+the iptables service and do a --list and see all my rules.  I can attach
+to the computer from outside so I know that the incoming rules work,
+however, I can not perform any outgoing tasks.  No pings, no ssh no
+nothing.
 
-My iptables is something like
+Can someone please explain why this is not working?
 
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0 -j 
-ULOG --ulog-nlgroup 32 --ulog-prefix "ULOG"
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0 -j 
-SNAT --to 1.1.1.1
-
-
-I run ulogd and all is correct but with nlgroup 32 i can see only the dns 
-request and nothing more.. well is see..
-
-Aug 13 19:18:27 gw2-709nat Userspace-LOG:  IN= OUT=eth0 
-MAC=a7:5f:78:4b:d0:36:d9:36:bd:d3:dc:8a:81:a5:03:e7:10:7f:df:66:39:f9:ec:1c:39:2d:e1:2d:05:db:bd:c8:a7:ee:2f:a3:8a:f6:7e:30:ed:60:d2:ae:2b:6f:97:3e:fb:35:99:7d:1f:9d:96:96:72:45:49:4b:4b:d6:bd:50:25:ef:87:ec:2c:75:7f:cb:65:3c:d4:9b:6b:56:2e:71:45:00:00:41:26:2d:00:00:7e:11:1e:07:0a:32:48:04:c3:3e:e3:03:06:84:00:35:00:2d:d6:25:00:01:01:00:00:01:00:00:00:00:00:00:03:77:77:77:0b:63:6f:6e:6e:65:74:74:69:6f:72:61:03:63:6f:6d:00:00:01:00:01:0c:00:01:33:07:9d:00:00:00 
-SRC=10.50.72.4 DST=1.1.1.3 LEN=65 TOS=00 PREC=0x00 TTL=126 ID=9773 
-PROTO=UDP SPT=1668 DPT=53 LEN=45
-
-
-I would like to use ulog for get something like.
-
-Aug 13 19:18:27 gw2-709nat Userspace-LOG: SRC=10.50.72.4  DST=1.2.3.4 
-/index.html
-
-for examples...
-
-Something like the normal squid logging options..
-
-I can't use transparent proxy for my nt box so i have to use ulog for get 
-directly the data..
-
-Any idea ?
+*filter
+-A INPUT -p tcp --dport 110 --syn -j ACCEPT
+-A INPUT -p tcp --dport 42 --syn -j ACCEPT
+-A INPUT -p tcp --dport 7777 --syn -j ACCEPT
+-A INPUT -p tcp --dport 7775 --syn -j ACCEPT
+-A INPUT -p tcp --dport 22 --syn -j ACCEPT
+-A INPUT -p tcp --dport 80 --syn -j ACCEPT
+-A INPUT -p udp --dport 53 -j ACCEPT
+-A INPUT -p udp --dport 42 -j ACCEPT
+-A INPUT -p tcp --syn -j REJECT
+-A INPUT -p udp -j REJECT
+COMMIT
 
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Thanks,
 
-Simone Sestini [ SS971-RIPE ]
+-- 
+Glenn Hancock
+SofTek Software International, Inc.
+813 Pavilion Court
+T: 678-583-5720
+I: ghancock@softeksoftware.com
+www.softeksoftware.com
+www.Spambite.com
+NOTE: My email address is currently protected by Spambite. If
+you send me an email, you will be asked to validate your email
+address on the Spambite network AND re-send you original email
+to me. Or, you can pro-actively register your email address on
+the Spambite network by visiting the website:
+www.spambite.com
+When visiting the website, please feel free to look around to
+learn about this exciting new technology.
 
-Plug IT s.p.a. - Technical Office
-Via Ernesto Rossi
-52100 Arezzo
+--=-S4gBe3IBsT7Ip2G0Z3E5
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Fax             +39-199-440088
-E-mail  simone.sestini@plugit.net
-Web             http://www.plugit.it
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.7">
+</HEAD>
+<BODY>
+I have the following setup in my /etc/sysconfig/iptables file.&nbsp; I start the iptables service and do a --list and see all my rules.&nbsp; I can attach to the computer from outside so I know that the incoming rules work, however, I can not perform any outgoing tasks.&nbsp; No pings, no ssh no nothing.<BR>
+<BR>
+Can someone please explain why this is not working?<BR>
+<BR>
+*filter<BR>
+-A INPUT -p tcp --dport 110 --syn -j ACCEPT<BR>
+-A INPUT -p tcp --dport 42 --syn -j ACCEPT<BR>
+-A INPUT -p tcp --dport 7777 --syn -j ACCEPT<BR>
+-A INPUT -p tcp --dport 7775 --syn -j ACCEPT<BR>
+-A INPUT -p tcp --dport 22 --syn -j ACCEPT<BR>
+-A INPUT -p tcp --dport 80 --syn -j ACCEPT<BR>
+-A INPUT -p udp --dport 53 -j ACCEPT<BR>
+-A INPUT -p udp --dport 42 -j ACCEPT<BR>
+-A INPUT -p tcp --syn -j REJECT<BR>
+-A INPUT -p udp -j REJECT<BR>
+COMMIT<BR>
+<BR>
+<BR>
+Thanks,<BR>
+<BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<PRE>-- 
+Glenn Hancock
+SofTek Software International, Inc.
+813 Pavilion Court
+T: 678-583-5720
+I: ghancock@softeksoftware.com
+www.softeksoftware.com
+www.Spambite.com
+NOTE: My email address is currently protected by Spambite. If
+you send me an email, you will be asked to validate your email
+address on the Spambite network AND re-send you original email
+to me. Or, you can pro-actively register your email address on
+the Spambite network by visiting the website:
+www.spambite.com
+When visiting the website, please feel free to look around to
+learn about this exciting new technology.</PRE>
+</TD>
+</TR>
+</TABLE>
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+</BODY>
+</HTML>
 
---=====================_192534780==.ALT
-Content-Type: text/html; charset="us-ascii"
-
-<html>
-<body>
-Hi all..<br><br>
-I'm trying to use ULOG with iptables for log all the nat traslation done
-by my nat box..<br>
-I would like to see something like a proxy server..<br><br>
-My iptables is something like<br><br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0
--j ULOG --ulog-nlgroup 32 --ulog-prefix &quot;ULOG&quot;<br>
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0
--j SNAT --to 1.1.1.1<br><br>
-<br>
-I run ulogd and all is correct but with nlgroup 32 i can see only the dns
-request and nothing more.. well is see..<br><br>
-Aug 13 19:18:27 gw2-709nat Userspace-LOG:&nbsp; IN= OUT=eth0
-MAC=a7:5f:78:4b:d0:36:d9:36:bd:d3:dc:8a:81:a5:03:e7:10:7f:df:66:39:f9:ec:1c:39:2d:e1:2d:05:db:bd:c8:a7:ee:2f:a3:8a:f6:7e:30:ed:60:d2:ae:2b:6f:97:3e:fb:35:99:7d:1f:9d:96:96:72:45:49:4b:4b:d6:bd:50:25:ef:87:ec:2c:75:7f:cb:65:3c:d4:9b:6b:56:2e:71:45:00:00:41:26:2d:00:00:7e:11:1e:07:0a:32:48:04:c3:3e:e3:03:06:84:00:35:00:2d:d6:25:00:01:01:00:00:01:00:00:00:00:00:00:03:77:77:77:0b:63:6f:6e:6e:65:74:74:69:6f:72:61:03:63:6f:6d:00:00:01:00:01:0c:00:01:33:07:9d:00:00:00&nbsp;
-SRC=10.50.72.4 DST=1.1.1.3 LEN=65 TOS=00 PREC=0x00 TTL=126 ID=9773
-PROTO=UDP SPT=1668 DPT=53 LEN=45 <br><br>
-<br>
-I would like to use ulog for get something like.<br><br>
-Aug 13 19:18:27 gw2-709nat Userspace-LOG: SRC=10.50.72.4&nbsp;
-DST=1.2.3.4 /index.html <br><br>
-for examples...<br><br>
-Something like the normal squid logging options..<br><br>
-I can't use transparent proxy for my nt box so i have to use ulog for get
-directly the data..<br><br>
-Any idea ?<br><br>
-<x-sigsep><p></x-sigsep>
-<font face="Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::<br><br>
-</font><font face="Verdana" color="#FF0000"><b>Simone Sestini
-</font><font face="Verdana" size=2 color="#FF0000">[ SS971-RIPE
-]<br><br>
-</b></font>Plug IT s.p.a. - Technical Office<br>
-Via Ernesto Rossi<br>
-52100 Arezzo<br><br>
-<tt><font face="Courier New, Courier" color="#0000FF">Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39-199-440088<br>
-E-mail<x-tab>&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
-Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href="http://www.plugit.it/" eudora="autourl">http://www.plugit.it</a><br><br>
-</font></tt><font face="Verdana"><u>::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-<br>
-</font></u></body>
-</html>
-
---=====================_192534780==.ALT--
+--=-S4gBe3IBsT7Ip2G0Z3E5--
 
 
