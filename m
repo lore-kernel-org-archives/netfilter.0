@@ -1,9 +1,9 @@
 From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: change TTL value
-Date: Fri, 9 Apr 2004 09:06:00 +0200
+Subject: Re: opening connection for Tomcat
+Date: Fri, 9 Apr 2004 09:23:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001301c41e01$1d3e4fc0$1202a8c0@admin>
-References: <20040408161334.GA2396@home.be>
+Message-ID: <002c01c41e03$9a4736b0$1202a8c0@admin>
+References: <40756C19.3010606@tin.it> <1081446600.2453.63.camel@katala.sterenborg.info> <4075B24D.1020601@tin.it> <200404082253.44301.Antony@Soft-Solutions.co.uk> <407642A3.1040700@tin.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,33 +17,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Roeland Moors <roelandmoors@pandora.be>, netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-> I'm trying to change the value of the TTL field with this line:
-> $IPTABLES -t mangle -A PREROUTING -i $INET_IFACE -p igmp -j TTL --ttl-inc
-1
+> >>Ok, I've fixed the problem: it seems that the address 0.0.0.0 is no
+good.
+> >
+> >
+> > You are certainly very unlikely to receive packets from that address, as
+it
+> > does not exist.
 >
-> But when I try to execute this I have this error:
-> iptables: No chain/target/match by that name
+> Well, I'm not a firewall guru, but I think that 0.0.0.0 address is often
+> used to indicate "every address", isn't it?
 
-Did you compile TTL target support as a module ?
-I don't see it in the module list (non-targets deleted), which means you
-don't have TTL target support, unless you compiled it into the kernel (but I
-don't think so).
+Neither am I ;o). I overlooked that one too.
 
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ULOG.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_TOS.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_TCPMSS.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_SAME.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_REJECT.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_REDIRECT.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_NETMAP.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_MASQUERADE.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_MARK.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_LOG.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ECN.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_DSCP.ko
-> /lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_CLASSIFY.ko
+0.0.0.0 = 0.0.0.0/32. 0.0.0.0 as a host does not exist.
+What you meant is 0.0.0.0/0, which is the same as not specifying it.
 
 
 Gr,
