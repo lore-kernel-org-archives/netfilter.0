@@ -1,12 +1,13 @@
-From: =?GB2312?Q?=B2=CC=D6=BE=B7=E5?= <zhfcai@scut.edu.cn>
-Subject: (no subject)
-Date: Wed, 6 Sep 2000 11:29:57 +0800
+From: "Rob" <rwideman@austin.rr.com>
+Subject: RE: ftp server issue, trying to DL 1.2.7a
+Date: Thu, 5 Sep 2002 22:49:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209060330.g863UpL9029994@letterbox.scut.edu.cn>
+Message-ID: <NEENJAPFEAIEMGMNIGFLAELBCCAA.rwideman@austin.rr.com>
+References: <000a01c2552c$d39e63d0$0401000a@win2k>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-      boundary="=====002_Dragon711077855184_====="
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000a01c2552c$d39e63d0$0401000a@win2k>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+>>Do a make menuconfig or make xconfig or whatever.
+>>Configure nothing, just exit with saving the .config
+>>Now go ahead and do ./runme pending etc.
+>>It should work now.
 
-This is a multi-part message in MIME format.
-
---=====002_Dragon711077855184_=====
-Content-Type: text/plain;
-      charset="GB2312"
-Content-Transfer-Encoding: base64
-
-SSB3YW50IHRvIGxvZyBhbGwgbWVzc2FnZXMgaW4gYSBzcGVjaWFsIGZpbGUgLHN1Y2ggYXMgdGhl
-IGZpbGUgL3Zhci9sb2cvaXB0YWJsZSxub3QgaW4gZGVmYXVsdCBmaWxlLA0KSSBoYXZlIHJlYWQg
-SXB0YWJsZXMndHV0b3JpYWwgLGl0IHNheXMgdGhhdCAiQWxsIG1lc3NhZ2VzIGFyZSBsb2dnZWQg
-dGhyb3VnaCB0aGUga2VybmVsIGZhY2lsaXR5LiBJbiBvdGhlciB3b3Jkcywgc2V0dGluZyBrZXJu
-Lj1pbmZvIC92YXIvbG9nL2lwdGFibGVzIGluIHlvdXIgc3lzbG9nLmNvbmYgZmlsZSBhbmQgdGhl
-biBsZXR0aW5nIGFsbCB5b3VyIExPRyBtZXNzYWdlcyBpbiBpcHRhYmxlcyB1c2UgbG9nIGxldmVs
-IGluZm8sIHdvdWxkIG1ha2UgYWxsIG1lc3NhZ2VzIGFwcGVhciBpbiB0aGUgL3Zhci9sb2cvaXB0
-YWJsZXMgZmlsZS4iLGJ1dCBhdCB0aGUgc2FtZSB0aW1lLCB0aGVyZSBtYXkgYmUgb3RoZXIgbWVz
-c2FnZXMgaGVyZSBhcyB3ZWxsIGZyb20gb3RoZXIgcGFydHMgb2YgdGhlIGtlcm5lbCB0aGF0IHVz
-ZXMgdGhlIGluZm8gcHJpb3JpdHkuDQpob3cgY2FuIEkgb25seSBsb2cgYWxsIGlwdGFibGVzIG1l
-c3NhZ2UgaW4gbXkgc3BlY2lhbCBmaWxlPw0K
-
---=====002_Dragon711077855184_=====
-Content-Type: text/html;
-      charset="GB2312"
-Content-Transfer-Encoding: base64
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
-MC4yNjAwLjAiIG5hbWU9R0VORVJBVE9SPjwvSEVBRD4NCjxCT0RZPkkgd2FudCB0byBsb2cgYWxs
-IG1lc3NhZ2VzIGluIGEgc3BlY2lhbCBmaWxlICxzdWNoIGFzIHRoZSBmaWxlIA0KL3Zhci9sb2cv
-aXB0YWJsZSxub3QgaW4gZGVmYXVsdCBmaWxlLDxCUj5JIGhhdmUgcmVhZCBJcHRhYmxlcyd0dXRv
-cmlhbCAsaXQgc2F5cyANCnRoYXQgIkFsbCBtZXNzYWdlcyBhcmUgbG9nZ2VkIHRocm91Z2ggdGhl
-IGtlcm5lbCBmYWNpbGl0eS4gSW4gb3RoZXIgd29yZHMsIA0Kc2V0dGluZyBrZXJuLj1pbmZvIC92
-YXIvbG9nL2lwdGFibGVzIGluIHlvdXIgc3lzbG9nLmNvbmYgZmlsZSBhbmQgdGhlbiBsZXR0aW5n
-IA0KYWxsIHlvdXIgTE9HIG1lc3NhZ2VzIGluIGlwdGFibGVzIHVzZSBsb2cgbGV2ZWwgaW5mbywg
-d291bGQgbWFrZSBhbGwgbWVzc2FnZXMgDQphcHBlYXIgaW4gdGhlIC92YXIvbG9nL2lwdGFibGVz
-IGZpbGUuIixidXQgYXQgdGhlIHNhbWUgdGltZSwgdGhlcmUgbWF5IGJlIG90aGVyIA0KbWVzc2Fn
-ZXMgaGVyZSBhcyB3ZWxsIGZyb20gb3RoZXIgcGFydHMgb2YgdGhlIGtlcm5lbCB0aGF0IHVzZXMg
-dGhlIGluZm8gDQpwcmlvcml0eS48QlI+aG93IGNhbiBJIG9ubHkgbG9nIGFsbCBpcHRhYmxlcyBt
-ZXNzYWdlIGluIG15IHNwZWNpYWwgDQpmaWxlPzwvQk9EWT48L0hUTUw+DQo=
-
---=====002_Dragon711077855184_=====--
-
-
+GREAT, Thanks
+new problem...i compiled the kernel and i get these errors:
+**the first few lines are the actual compilation to show you where it is**
+--------------
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
+graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
+ferred-stack-boundary=2 -march=i586   -nostdinc -I
+/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ip_nat_pro
+to_tcp  -c -o ip_nat_proto_tcp.o ip_nat_proto_tcp.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
+graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
+ferred-stack-boundary=2 -march=i586   -nostdinc -I
+/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ip_nat_pro
+to_udp  -c -o ip_nat_proto_udp.o ip_nat_proto_udp.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
+graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
+ferred-stack-boundary=2 -march=i586   -nostdinc -I
+/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ip_nat_pro
+to_icmp  -c -o ip_nat_proto_icmp.o ip_nat_proto_icmp.c
+ld -m elf_i386 -r -o iptable_nat.o ip_nat_standalone.o ip_nat_rule.o
+ip_nat_helper.o ip_nat_core.o ip_nat_proto_unknown.o ip_nat_proto_tcp.o
+ip_nat_proto_udp.o ip_nat_proto_icmp.o
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
+graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
+ferred-stack-boundary=2 -march=i586   -nostdinc -I
+/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ipt_helper
+  -c -o ipt_helper.o ipt_helper.c
+ipt_helper.c: In function `match':
+ipt_helper.c:46: wrong type argument to unary exclamation mark
+ipt_helper.c:51: incompatible types in assignment
+ipt_helper.c:67: structure has no member named `name'
+ipt_helper.c:68: structure has no member named `name'
+make[3]: *** [ipt_helper.o] Error 1
+make[3]: Leaving directory `/usr/src/linux/net/ipv4/netfilter'
+make[2]: *** [first_rule] Error 2
+make[2]: Leaving directory `/usr/src/linux/net/ipv4/netfilter'
+make[1]: *** [_subdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux/net'
+make: *** [_dir_net] Error 2
 
 
