@@ -1,14 +1,14 @@
-From: Joel Newkirk <firewalldude@newkirk.us>
-Subject: Re: iptables logs going to all ttys
-Date: Mon, 13 Oct 2003 22:34:22 -0400
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Re: Excluding IP ranges from masquerade rules
+Date: Mon, 13 Oct 2003 22:39:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066098862.2384.36.camel@alpha.newkirk.us>
-References: <3F8B2E19.7090601@webone.com.au>
-Reply-To: firewalldude@newkirk.us
+Message-ID: <1066099141.22093.28.camel@tarkus>
+References: <1066038290.5801.35.camel@tarkus> <1066051471.4193.63.camel@kermit>
+Reply-To: tedkaz@optonline.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F8B2E19.7090601@webone.com.au>
+In-reply-to: <1066051471.4193.63.camel@kermit>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +19,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: lucas <lucas@webone.com.au>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+To: Ralf Spenneberg <lists@spenneberg.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 2003-10-13 at 18:58, lucas wrote:
-> Morning all,
+Thanks to all for the great reponses and choices, but I like 
+Ulrich Gebauer's way the best :-)
+
+iptables -t nat -A POSTROUTING -s x.x.x.x/x -j ACCEPT
+iptables -t nat -A POSTROUTING -s y.y.y.y -j ACCEPT
+iptables -t nat -A POSTROUTING -j MASQUERADE
+
+Makes the most sense to me and will be the easiest way for me to teach
+others.
+
+Thanks again,
+Ted
+
+
+
+On Mon, 2003-10-13 at 09:24, Ralf Spenneberg wrote:
+> Am Mon, 2003-10-13 um 11.44 schrieb Ted Kaczmarek:
+> > I presently exclude 1 ip block in POSTROUTING using
+> > "! X.X.X.X/24" . Is their a way to specify multiple ranges that are 
+> > excluded?
+> Only if you can combine them in one network, like:
+> 10.0.0.0/8 and 11.0.0.0/8 can be written as 10.0.0.0/7
 > 
-> I have the following in my firewall script, and to my knowledge this is 
-> meant to stop all logs from going to all ttys but this is not the case 
-> and its a real *pain* in the ass.
->
-> $IPTABLES -N drop-and-log-it
-> $IPTABLES -A drop-and-log-it -j LOG --log-level info
-> $IPTABLES -A drop-and-log-it -j DROP
+> > or
+> > Is their a way to have POSTROUTING only have affect on a certain
+> > interface?
+> You can use -o eth0 to specify the interface in you rules.
 > 
-> If someone could give me a hint as to what i have overlooked that would 
-> be much appreciated, thanks
-
-Syslog configuration is probably what you missed.  check
-/etc/syslog.conf.  Very likely you have something like:
-kern.*      /dev/console
-in there, which states that all kernel messages of whatever level will
-be sent to /dev/console.
-
-For myself, I disable the /dev/console setting, then add:
-kern.=debug  /var/log/firewall
-kern.=warning /var/log/firewalladmin
-
-Unless you're running a custom kernel with debugging enabled, the first
-channel (debug) should be almost empty of traffic, ideal for redirection
-to a firewall-only log file with "--log-level debug".  Everything of
-level 'info' or higher usually goes to /var/log/messages as well.
-
-j
-
+> Cheers,
+> 
+> Ralf
 
 
