@@ -1,14 +1,13 @@
-From: Andrew Beekhof <beekhof@gmail.com>
-Subject: Re: Masquerade difficulties
-Date: Sat, 8 Jan 2005 21:56:58 +0100
-Message-ID: <26ef5e70501081256335bfd02@mail.gmail.com>
-References: <20050107221238.GA10943@pog.tecnopolis.ca>
-	<26ef5e7050108020312386f9c@mail.gmail.com>
-Reply-To: Andrew Beekhof <beekhof@gmail.com>
+From: Igor Tsinman <igort@go-wlan.com>
+Subject: Re: NAT FROM public ip TO public ip
+Date: Sat, 08 Jan 2005 10:43:58 +0200
+Message-ID: <41DF9D4E.3040809@go-wlan.com>
+References: <10459.1105072608@www72.gmx.net> <41DCE77F.4020503@go-wlan.com>
+	<1105102641.5112.0.camel@linux.site>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <26ef5e7050108020312386f9c@mail.gmail.com>
+In-Reply-To: <1105102641.5112.0.camel@linux.site>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,99 +18,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Trevor Cordes <trevor@tecnopolis.ca>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mario Ohnewald <mario.ohnewald@gmx.de>
 Cc: netfilter@lists.netfilter.org
 
-Looks like there is something going awry when 2.6, ipsec/openswan and
-iptables are combined.
+Mario Ohnewald wrote:
 
-With further tinkering I was able to get ipsec working and
-masquerading working separately, however masquerading through ipsec
-still wouldnt work.  Just to be clear, I used www.google.com instead
-of BoxC in the tests for which masquerading worked.
-
-Anyway, I've reverted to a 2.4 kernel now and everything seems to be
-working nicely.
-
-I dont mind running some tests with my 2.6 setup if anyone is
-interested though...
-
-Andrew
-
-On Sat, 8 Jan 2005 11:03:22 +0100, Andrew Beekhof <beekhof@gmail.com> wrote:
-> On Fri, 7 Jan 2005 16:12:38 -0600, Trevor Cordes <trevor@tecnopolis.ca> wrote:
-> > > I'm having some difficulties getting masquerading to work and hoping
-> > > for some pointers...
-> >
-> > I can try to help.  But you'll need to better describe your network
-> > layout.  Can you draw a little diagram showing where A, B & C are?
-> 
-> Sure, A & B are connected directly to a netgear DSL modem/hub.  C is
-> part of my company's network which I'm accessing over the internet
-> with ipsec.  I've also tried replacing C with google.com (after
-> specifying an appropriate routing rule) with no success.
-> 
-> Does that clear things up?
-> 
-> >
-> > Are you sure that BoxC doesn't have some firewall on (XP SP2) that is
-> > eating the ping packets?
-> 
-> XP? God no!  All the machines are linux boxes running either SLES9 or
-> Gentoo :)  No firewall on B or C.
-> 
-> From what I can tell, the packets from BoxB are getting lost on BoxA.
-> I just tried using telnet and tcpdump and although I get logs like
-> this:
-> 
-> Jan  8 08:35:55 BoxA IN=eth0 OUT=eth0 SRC=192.168.9.22 DST=10.10.2.86
-> LEN=60 TOS=0x10 PREC=0x00 TTL=63 ID=48952 DF PROTO=TCP SPT=34452
-> DPT=69 WINDOW=3840 RES=0x00 SYN URGP=0
-> 
-> ... the packets never actually arrive at BoxC (10.10.2.86).  I dont
-> think they ever leave BoxA but I'm not sure I understand the tcpdump
-> output enough to say for sure.
-> 
-> A dump of my iptables in case it helps...
-> 
-> mayo linux # iptables -L -t nat
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> LOG        all  --  anywhere             anywhere            LOG level warning
-> MASQUERADE  all  --  anywhere             anywhere
-> 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> mayo linux # iptables -L -t filter
-> Chain INPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> mayo linux # iptables -L -t mangle
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain INPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination
-> LOG        all  --  anywhere             anywhere            LOG level debug
-> 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination
+>On Thu, 2005-01-06 at 08:23, Igor Tsinman wrote:
+>  
 >
+>>Mario Ohnewald wrote:
+>>    
+>>
+>
+>  
+>
+>>>This is a real easy question, but i will explain it in detail so that you
+>>>know what i am on about ;)
+>>>
+>>>I have two internet boxes, both have only one nic.
+>>>Box A is my root box.
+>>>Box B is a ftp server (where i am not admin, but i have an ftp account).
+>>>
+>>>Both, Box A and B have a public ip address.
+>>>You can NOT access the ftp server from the outside.
+>>>ONLY Box A can connect to that ftp server (Box B).
+>>>
+>>>So i though i could simply nat a connection through my Box A, to Box B.
+>>>If i connect from the real bad world, to my Box A, port 2121. Box A could
+>>>forward/NAT that to the internal ftp box.
+>>>
+>>>I have tried it with this rule:
+>>>$IPT -t nat -A PREROUTING -i eth0 -p tcp -d 123.123.123.123 -m helper
+>>>--helper ftp-2121 -j DNAT --to-destination 123.123.123.111
+>>>
+>>>and
+>>>
+>>>modprobe ip_conntrack_ftp ports=21,2121
+>>>
+>>>
+>>>But it looks like its not working.
+>>>I did a tcpdump -i eth0 -n host 123.123.123.111
+>>>
+>>>
+>>>And no packages where transfered to the ftp box (123.123.123.111).
+>>>Any idea why? Am i going the right way at all?
+>>>
+>>>Thanks, Mario
+>>>
+>>> 
+>>>
+>>>      
+>>>
+>>You have to add an additional rule:
+>>$IPT -A FORWARD -p tcp -i eth1 -d 23.123.123.123 --dport 2121 -j ACCEPT
+>>
+>>For this example, eth0 is external and eth1 is internal.
+>>    
+>>
+>
+>I only have one network card.
+>
+>
+>
+>Cheers, Mario
+>
+>
+>
+>  
+>
+See  "DNAT forwarding on same interface":
+http://lists.netfilter.org/pipermail/netfilter/2002-July/036620.html
+
+Cheers, Igor Tsinman
 
