@@ -1,11 +1,11 @@
-From: lst_hoe01@kwsoft.de
-Subject: Re: Firewall did not block SSH - what is wrong
-Date: Wed, 23 Feb 2005 08:42:59 +0100
-Message-ID: <1109144579.421c34033a74f@webmail.kwsoft.de>
-References: <17870.1109099790@www17.gmx.net>
+From: Ola Nilsson <ola@fam-nilsson.org>
+Subject: Re: IPSec through my firewall (SOLVED!!)
+Date: Wed, 23 Feb 2005 09:24:17 +0100
+Message-ID: <87u0o3wuoe.fsf@helmut.nilsson.homedns.org>
+References: <877jl3wsfq.fsf@helmut.nilsson.homedns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <17870.1109099790@www17.gmx.net>
+In-Reply-To: <877jl3wsfq.fsf@helmut.nilsson.homedns.org> (Ola Nilsson's
+	message of "Sun, 20 Feb 2005 09:23:37 +0100")
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Zitat von ju0815nk@gmx.net:
+Ola Nilsson <ola@fam-nilsson.org> writes:
 
-> Hi,
+> The ESPinUDP packets where seen as bad packets by
+> ip_conntrack_proto_udp.c on line 105 function udp_error():
 >
-> thanks for your help. Actually, I wanted to block all incoming traffic =
-that
-> is not related to connections originating from my machine. Should a def=
-ault
-> policy of dropping all packets plus allowing only related packages be
-> sufficient ?
+> 	/* Truncated/malformed packets */
+> 	if (ntohs(hdr->len) > udplen || ntohs(hdr->len) < sizeof(*hdr)) {
+> 		if (LOG_INVALID(IPPROTO_UDP))
+> 			nf_log_packet(PF_INET, 0, skb, NULL, NULL, 
+> 				  "ip_ct_udp: truncated/malformed packet ");
+> 		return -NF_ACCEPT;
+> 	}
 >
-> e.g.
->
-> $IPTABLES -P INPUT DROP
-> $IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state \
->  ESTABLISHED,RELATED -j ACCEPT
+> By removing this code from udp_error() I can successfully connect my
+> IPSec tunnel.
 
-I would loose the "-d $EXTIP" because you want ESTABLISHED and RELATED al=
-so on
-your internal IFs. Traffic coming in your external IF for your internal n=
-et or
-your internal IF should be checked in the FORWARD chain.
+Answering myself (again...) I have now confirmed that it is the
+clients UDP packets that are wrong. A nice sysop at the other end of
+the tunnel has also started working on getting it fixed in the client.
 
-> Is there any way to test iptables-based firewalls without access to a s=
-econd
-> machine ?
-> I installed the rule you told me and commented out the one allowing
-> connections to the firewall - but how can I test that it works for me
-> (except testing if my email/mozilla works)?
+Stange, if I where to write an application using UDP, I would use the
+TCP/IP stack of the machine. What I saw here was that the ISAKMP
+packets had the correct length in the header, but the ESP in UDP did
+not. That has to mean that someone used raw sockets, and wrote their
+own UDP/IP packets to it.
 
-There are many online scanners available at the net. For example
-http://scan.sygatetech.com/. Choose one and see what's happening.
-
-Regards
-
-Andreas
+Anyhow, don't take any more notice of me, of cause netfilter should
+not be changed since the client sends bad UDP packets...
+-- 
+/Ola Nilsson
 
 
