@@ -1,13 +1,12 @@
-From: Ben Yerushalmi <beny@pd.verio.net>
+From: forum@users.pc9.org
 Subject: Re: Redirect ports on localhost
-Date: Thu, 25 Mar 2004 22:35:48 -0700
+Date: Fri, 26 Mar 2004 00:07:30 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6FF54B22-7EE7-11D8-98D9-000A957E9214@pd.verio.net>
+Message-ID: <jbm.20040326000730.287ca32c@alkaid.pc9>
 References: <406099AD.2070403@verio.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+  <6FF54B22-7EE7-11D8-98D9-000A957E9214@pd.verio.net>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <406099AD.2070403@verio.net>
+In-Reply-To: <6FF54B22-7EE7-11D8-98D9-000A957E9214@pd.verio.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,15 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Here's what I did:
+> Here's what I did:
+> 
+> iptables -A OUTPUT -t nat -p udp -o lo -d localhost --dport 53 -j
+> REDIRECT --to-ports 5300
+> 
+> Should work for you.
 
-iptables -A OUTPUT -t nat -p udp -o lo -d localhost --dport 53 -j 
-REDIRECT --to-ports 5300
+Thanks, works for me too!
 
-Should work for you.
-Ben
+-- 
+forum@users.pc9.org
+
 
 
