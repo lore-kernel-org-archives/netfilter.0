@@ -1,12 +1,13 @@
-From: "Christian Gmeiner" <christian@visual-page.de>
-Subject: Re: Problem with passiv FTP
-Date: Wed, 25 Feb 2004 22:56:12 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: postrouting and dmz
+Date: Wed, 25 Feb 2004 22:08:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002701c3fbea$307db690$0600a8c0@blackbox>
-References: <7C9884991ADAE0479C14F10C858BCDF567918C@alderaan.smgtec.com>
+Message-ID: <200402252208.51113.Antony@Soft-Solutions.co.uk>
+References: <20040225065803.40555.qmail@web20730.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040225065803.40555.qmail@web20730.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,150 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>
-Cc: netfilter@lists.netfilter.org
+To: ip tables <netfilter@lists.netfilter.org>
 
+On Wednesday 25 February 2004 6:58 am, ip tables wrote:
 
------ Original Message ----- 
-From: "Daniel Chemko" <dchemko@smgtec.com>
-To: "Christian Gmeiner" <christian@visual-page.de>;
-<netfilter@lists.netfilter.org>
-Sent: Wednesday, February 25, 2004 10:31 PM
-Subject: RE: Problem with passiv FTP
-
-
+> Hello,
 >
-> Run these shell commands at boot, or any time before you want FTP to
-> work properly
-> modprobe ip_conntrack_ftp
-> modprobe ip_nat_ftp
->
-> For the an FTP server on the firewall itself, use
-> # Allow anyone to inbound to the FTP server
-> iptables -A INPUT -p tcp --dport 21 -j ACCEPT
-> # ALWAYS HAVE THIS RULE & FIRST IN LIST
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> For machines behind your firewall connecting to the internet, use
-> # You should tighten up this rule a bit specifying -i
-> <internal_interface_address> as well as the following
-> iptables -A FORWARD -p tcp --dport 21 -j ACCEPT
-> # ALWAYS HAVE THIS RULE & FIRST IN LIST
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
-> ACCEPT
->
-> For internet clients connecting to an internal server, use
-> # This forwards the FTP request to the right internal FTP server
-> iptables -t nat -A PREROUTING --destination
-> <external_ftp_address> -p tcp --dport 21 -j DNAT --to
-> <internal_ftp_server>
-> # Allow traffic to DNAT'd IP address
-> iptables -A FORWARD --destination <internal_ftp_server> -p tcp
-> --dport 21 -j ACCEPT
-> # ALWAYS HAVE THIS RULE & FIRST IN LIST
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
-> ACCEPT
->
-> That is all!
+> I use iptables 1.2.7a on RH 9.0 when i enable
+> iptables -t nat --policy PREROUTING DROP
+> it stops my connecting to the services offerd @ the
+> natted dmz. Also nmap shows the ports opened when i do
+> a "connect" scan. I have no user defined chanins. Any
+> idea?
 
-I have chaned my ftp rules now to:
-     # Port 21
-    iptables -A INPUT     -p tcp --sport 21 -m state --state ESTABLISHED -j
-ACCEPT
-    #iptables -A OUTPUT -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT
+Don't use the nat table for filtering rules (DROP is a filtering action).
 
-    # aktiv - works
-    iptables -A INPUT     -p tcp --sport 20 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-    #iptables -A OUTPUT -p tcp --dport 20 -m state --state ESTABLISHED -j
-ACCEPT
+The nat tables are for SNAT and DNAT rules.
 
-    # passiv
-    iptables -A INPUT     -p tcp --sport ${UNPRIVPORTS} --dport
-${UNPRIVPORTS}  -m state --state ESTABLISHED -j ACCEPT
-    #iptables -A OUTPUT -p tcp --sport ${UNPRIVPORTS} --dport
-{UNPRIVPORTS}  -m state --state ESTABLISHED,RELATED -j ACCEPT
+If you want to DROP packets, do it in INPUT, OUTPUT or FORWARD.
 
+Regards,
 
-    iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+Antony.
 
-And active and passive ftp works :)
+-- 
+Anything that improbable is effectively impossible.
 
+ - Murray Gell-Mann, Novel Prizewinner in Physics
 
-This rule allows all connections on every protocol and port., if the
-connections was made bevore or it is related to an
-other allows port. is this correct?
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-Thanks, Christian Gmeiner
->
-> PS: Never fck around with OUTPUT unless you're a pro.
-> FORWARD goes through the firewall INPUT/OUTPUT are just for local
-> firewall PC connections.
->
->
-> Christian Gmeiner wrote:
-> > Hi people.
-> >
-> > I got active FTP working, but i also need the passive one.
-> >
-> > Here is my stuff:
-> >
-> >     # Port 21
-> >
-> >     iptables -A INPUT     -p tcp --sport 21 -m state --state
-> >     ESTABLISHED -j ACCEPT iptables -A OUTPUT -p tcp --dport 21 -m
-> > state --state NEW,ESTABLISHED -j ACCEPT
-> >
-> >     # aktiv - works
-> >     iptables -A INPUT     -p tcp --sport 20 -m state --state
-> >     ESTABLISHED,RELATED -j ACCEPT iptables -A OUTPUT -p tcp --dport
-> > 20 -m state --state ESTABLISHED -j ACCEPT
-> >
-> >     # passiv
-> >     iptables -A INPUT     -p tcp --sport ${UNPRIVPORTS} --dport
-> >     ${UNPRIVPORTS}  -m state --state ESTABLISHED -j ACCEPT iptables
-> > -A OUTPUT -p tcp --sport ${UNPRIVPORTS} --dport ${UNPRIVPORTS}  -m
-> > state --state ESTABLISHED,RELATED -j ACCEPT
-> >
-> > I have everything set to drop and i am alowing this protocols and
-> > ports:
-> >
-> > # TCP in+out
-> > #
-> > #
-> > TCP_IN_OUT="ssh"
-> >
-> > # TCP out
-> > #
-> > # 5190 = ICQ
-> > #
-> > TCP_OUT="5190 http https 25 ftp ftp-data pop3 smtp"
-> >
-> > # TCP in
-> > #
-> > TCP_IN=""
-> >
-> > # UDP in+out
-> > #
-> > UDP_IN_OUT="domain ssh"
-> >
-> > # UDP out
-> > #
-> > #
-> > UDP_OUT="https"
-> >
-> > # UDP in
-> > #
-> > UDP_IN=""
-> >
-> > UNPRIVPORTS="1024:65535"
-> >
-> > So.. i must now allow the UNPRIVPORTS, but how i am doing this?
-> >
-> > Thanks, Christian Gmeiner
->
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
