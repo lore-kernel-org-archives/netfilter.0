@@ -1,11 +1,13 @@
-From: MaXxX <maxxx@anime-h.com>
-Subject: terminating connections when an interface goes down
-Date: Tue, 2 Mar 2004 13:39:05 +0100
+From: Stephen Satchell <list@satchell.net>
+Subject: Re: Macimum number of rules?
+Date: Tue, 02 Mar 2004 06:29:57 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1401726562.20040302133905@anime-h.com>
+Message-ID: <1078237796.11375.3.camel@ssatchell1.pyramid.net>
+References: <47D438A0510BD611B9470002A58EDAE704DE64CF@mchh2a6e.mchh.siemens.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <47D438A0510BD611B9470002A58EDAE704DE64CF@mchh2a6e.mchh.siemens.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Stindl Wolfgang EXT <Wolfgang.Stindl.extern@icn.siemens.de>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hello.
+Why so many rules?  Are you using a single rule per IP address to
+implement a blocking filter?
 
-Having recently switched to a faster ISP but with dynamically assigned
-(and forcibly changed every 24h) IP, I'd like the conntrack module to
-TERMINATE all active connections when the IP changes. Some programs
-behave very badly when their connections are left to time out.
+My logic for dealing with the problem is simple:
 
-So far I've been using the MASQUERADE target, but all the difference
-between it and SNAT is that it forgets its connections. What I'd like
-is that it terminated them (immediate RST to all connections).
+Allow up to three rules per /24
+On the fourth rule applied to a particular /24, assume that the whole
+neighborhood has gone to pot and collapse four rules to one /24 rule.
 
-Is there an option I can use for that, or should I go try to make a
-patch for it (if so, then what source file should I be mostly looking
-at?)
+As you find multiple rules blocking adjacent /24 rules, consolidate
+them.
 
--- 
- |\  /|      \~~~/     \~~~/
- | \/ |  /\   > <  \~/  > <    ICQ# 3146019
- |____| /__\ /___\ /_\ /___\    IQ# 3.14159
-"This is Pearl Harbor! Japanese aircraft incom-" NO CARRIER
+Pretty soon you will find you have ONE rule for 200.0.0.0/8, or perhaps
+even 200.0.0.0/7.  There are other large blocks that will come out of
+the process.
 
+And you won't miss 'em, either.
+
+On Tue, 2004-03-02 at 01:35, Stindl Wolfgang EXT wrote:
+> Hi,
+> 
+> We are running a quite big iptables-Firewall with about 34000 rules.
+> Since today we cannot add any new rules.
+> All we get is a Memory allocation Problem.
+> 
+> When we delete a rule, we can add 1 new rule. So is there a maximum
+> number?
+> 
+> The firewall box is an dual xeon with 1 GB memory (most is still free)
+> 
+> So is there anything we can do?
+> 
+> Thanks a lot
+> Wolfgang
+> 
 
 
