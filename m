@@ -1,11 +1,13 @@
-From: Rahul Hirve <rahulhirve@gmail.com>
-Subject: Problem in setting NAT using IP tables for kernel 2.4.x
-Date: Sun, 3 Apr 2005 11:11:47 +0530
-Message-ID: <54d79d81050402214135b12fa5@mail.gmail.com>
-Reply-To: Rahul Hirve <rahulhirve@gmail.com>
+From: Dave Cinege <dcinege-mlists-dated-1112942287.e58b6f@psychosis.com>
+Subject: Captive DNS REDIRECT problems. Need a stateless/fast timeout udp
+	connection.
+Date: Sun, 3 Apr 2005 01:38:03 -0500
+Message-ID: <200504030138.03902.dcinege-mlists@psychosis.com>
+Reply-To: dcinege-mlists@psychosis.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,84 +21,36 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi all 
-	I am using uClinux to test nat on IXDP425 the setup is use is as shown below
+I working on a dynamic rules firewall that has the ability to do captive 
+portal redirection for login purposes. Right now I've got a problem dealing 
+with DNS redirection (udp connection timeout) I'm not sure how to best 
+handle.
 
-LAN
-with subnet <-------------[ixp0:10.0.10.11/23 (IXDP425) ixp1:
-192.168.0.1/24]----------->PC with 10.0.10.0/23					 				             
-            IP 192.168.0.4/24
-                                                                      
-                          Default Gateway 192.168.0.1
+There are 2 DNS forwarders. One for authorized hosts on port 53 and one for 
+unauthorized hosts on 5353. The latter feeds hosts dummy DNS replies in order 
+to allow browser redirection back to the portal. 
 
-                                                        
-now here th IXDP425 acting as router with ip_forward = 1
-ixp0(eth1) with IP 10.0.10.11 is acting as WAN port connecting to LAN
-of subnet 10.0.10.0/23 and
+My default rules look like this:
+iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 5353
+iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5353
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 80
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 443
 
-ixp1(eth0) is acting as LAN port connecting to PC of IP 192.168.0.4
-with default gateway as 192.168.0.1
+When a host is authorized a rule for such host is inserted before these rules, 
+thus diverting them from the redirection.
 
-I have inserted all modules required for filter and nat applications viz.
+Here in lies the problem. When an unauthorized host first hits port 53 and is 
+redirected to 5353 a udp connection track stream is tacked up. Once they 
+become authorized their 'ACCEPT' rule in inserted, however the original 
+53->5353 REDIRECT stream is still alive, and will continued to be used until 
+it times out. During this time the host is dead in the water with no 'real' 
+DNS.
 
-insmod ip_tables.o
-insmod ip_conntrack.o
-insmod iptable_filter.o
-insmod iptable_nat.o
-insmod ipt_LOG.o
-insmod ipt_limit.o
-insmod ipt_state.o
-insmod ipt_MASQUERADE.o
-insmod ip_conntrack_ftp.o
-insmod ip_conntrack_irc.o
-insmod ip_nat_ftp.o
-insmod ip_nat_irc.o
-insmod iptable_mangle.o
+It looks like dropping the ip_conntrack_udp_timeout down to 1 second, 
+effectively solves this. But that is not ideal for all other udp connections. 
+It doesn't appear I have a way set a per connection rule timeout, or force a 
+rule to be stateless, so I'm wondering the best way to solve this. 
 
-now the scrip i have done for nat is 
+Dave
 
-LOOPBACK=lo
-LAN=ixp1
-WAN=ixp0
-
-#Flush any rules that may still be configured
-iptables -t filter -F INPUT
-iptables -t filter -F OUTPUT
-iptables -t filter -F FORWARD
-iptables -t nat -F PREROUTING
-iptables -t nat -F POSTROUTING
-iptables -t nat -F OUTPUT
-
-# Set the default policies for the chains
-iptables -t filter -P INPUT DROP
-iptables -t filter -P OUTPUT ACCEPT
-iptables -t filter -P FORWARD DROP
-iptables -t nat -P PREROUTING ACCEPT
-iptables -t nat -P POSTROUTING ACCEPT
-iptables -t nat -P OUTPUT ACCEPT
-
-# Set up the firewall rules
-iptables -t filter -A INPUT -i ${LOOPBACK} -j ACCEPT
-iptables -t filter -A INPUT -i ${LAN} -j ACCEPT
-iptables -t filter -A INPUT -i ${WAN} -j ACCEPT
-
-# Set up the ip forwarding
-echo "1" > /proc/sys/net/ipv4/ip_forward
-iptables -t filter -A FORWARD -i ${LAN} -o ${WAN} -j ACCEPT
-iptables -t filter -A FORWARD -i ${WAN} -o ${LAN} -j ACCEPT
-
-iptables -t nat -A POSTROUTING -s 192.168.0.4 -o ${LAN} -j SNAT --to 10.0.10.11
-
- 
-now i am pinging 10.0.10.x/23 machine from 192.168.0.4 machine but it
-is not doing it WHY?
-I have captured the packets using ethereal at 10.0.10.x/23 (the
-machine to which i am pinging)
-and the result is The IP of 192.168.0.4 is the same in packet but
-according to me it should change to 10.0.10.11
-
-can anyone help me to solve this problem?
-
-thanks 
-rahul
 
