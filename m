@@ -1,13 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Default routing setup
-Date: Fri, 03 Sep 2004 19:17:12 -0400
+From: Banszki Gabor <banszki.gabor@chello.hu>
+Subject: Re: queue buffer size increasing howto?
+Date: Sat, 04 Sep 2004 10:16:14 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094253431.1745.2.camel@wolfpack.ljm.dom>
-References: <200409032138.i83Lc6cn011411@melmac.stargate.ca>
+Message-ID: <1094285774.6293.44.camel@debian>
+References: <1093182015.17276.24.camel@debian>
+	<876ef97a0408220750591cc852@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409032138.i83Lc6cn011411@melmac.stargate.ca>
+In-Reply-To: <876ef97a0408220750591cc852@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +19,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Fri, 2004-09-03 at 17:38, Sunny Shum wrote:
-> Hi all,
->  
-> I am a newbie into the Linux world, and I recently built a firewall box (2
-> NICs, internal network as 192.168.1.xxx) with RedHat 9.  Everything works
-> fine, except the routing table.  Every time when the system has reboot, I
-> have to do the following command:
->  
-> prompt>route del default
->  
-> prompt>route add default gateway xxx.xxx.xxx.xxx [external gateway IP]
->  
-> Because I don't do that, and if I just type "route" at the prompt, the
-> default is point back to the internal NIC.  Is there a way to make this
-> permanent?  I tried to edit the file /etc/sysconfig/network by adding the
-> line "GATEWAY=xxx.xxx.xxx.xxx" but it doesn't work.
->  
-> Thanks!
->  
-> Sunny Shum
->  
+Hi Everybody!
 
-look for a "GATEWAY=192.168.1.xxx" entry in one of your:
+Thank for answer of Tobias!!
 
-  /etc/sysconfig/network-scripts/ifcfg-eth?
+I could get the buffer size by the getsockopt (107520).
 
-files.
+After this I was able to increase the size of buffer to 215040 by your
+suggestion:
 
--j
+   int size, size_len;
+   size_len = sizeof(size);
+   rv = getsockopt (fd, SOL_SOCKET, SO_RCVBUF, &size, &size_len); 
+   printf ("Oldsize of buffer: %i \n",size); { I've got 107520)
 
--- 
-Jason Opperisano <opie@817west.com>
+   size = 1256000;
+   rv = setsockopt (fd, SOL_SOCKET, SO_RCVBUF, &size, size_len); 
 
+   rv = getsockopt (fd, SOL_SOCKET, SO_RCVBUF, &size, &size_len); 
+   printf ("New size of buffer: %i \n",size); ( I've got 215040 )
+
+After this I can see the same situation with this command....
+
+ watch -n 0 "cat /proc/net/ip_queue"
+
+...like earlier... 
+The maximum number is around 252 - 258, and I still get the netlink
+error message "No buffer space....."
+
+I think it didn't help... Why?
+Maybee I should increase the SO_RCVBUF by more? But how?
+
+Thnx..
+
+G.
+
+On Sun, 2004-08-22 at 16:50, Tobias DiPasquale wrote:
+> On Sun, 22 Aug 2004 15:40:16 +0200, Banszki Gabor
+> setsockopt(2):
+> 
+> int fd, rv, size = LARGE_SOCKET_BUFFER;
+> 
+> fd = socket( PF_NETLINK, SOCK_RAW, NETLINK_FIREWALL);
+> rv = setsockopt( fd, SOL_SOCKET, SO_RCVBUF, &size, sizeof( size));
+> ...
+> 
+> > With this command: watch -n 0 "cat /proc/net/ip_queue" during my
+> > application running the biggest number of "Queue length" is 255.
+> > 
+> > I don't understand it, because the "Queue max. length" is 2048.
+> 
+> See above. You should be able to increase the size of the socket
+> receive buffer in your userspace process without changing the length
+> of ip_queue's internal packet queue, but test that out to make sure.
+> You will probably need to run the process with root privileges to
+> change your socket receive buffer size, however.
 
