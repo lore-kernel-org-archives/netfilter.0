@@ -1,11 +1,11 @@
-From: Eric Leblond <eric@regit.org>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: cannot ping loopback address
-Date: Wed, 05 Nov 2003 09:41:34 +0100
+Date: Wed, 05 Nov 2003 09:48:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068021693.26225.4.camel@porky>
+Message-ID: <1068022085.803.52.camel@elendil.intranet.cartel-securite.net>
 References: <JKELJHHMDHPOLKFBOEGHKEGLDAAA.cldavis@speakeasy.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-rPL48DzRjPi0E8B3kQSX"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <JKELJHHMDHPOLKFBOEGHKEGLDAAA.cldavis@speakeasy.net>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,62 +17,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
 To: cldavis@speakeasy.net
 Cc: netfilter@lists.netfilter.org
 
-
---=-rPL48DzRjPi0E8B3kQSX
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Le mer 05/11/2003 =C3=A0 09:18, Christopher Davis a =C3=A9crit :
-> Hello everyone!
-> =20
+Le mer 05/11/2003 =E0 09:18, Christopher Davis a =E9crit :
 > I have setup an iptables script that will not allow me to ping
 > 127.0.0.1 for some reason --=20
-> =20
 > Input policy is drop
 > Forward and output policy is accept.  (Egress filtering on the way!)
-> =20
+
+INPUT policy is DROP. So unless you explicitly accept connections in
+INPUT, anything will get dropped.
+=20
 > I have in the rules to allow established or related connections -- "-A
 > INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 > Can ping everything else.
-> ifconfig does have information on the lo @ 127.0.0.1
-> =20
-> Any ideas?
 
-The fw receives a ping on INPUT : a ping has to be unrelated to the
-connection open by the emission of the ping. So it cames as new on the
-INPUT chains and it is dropped.
-Add=20
-	iptables -A INPUT -p icmp -m state --state NEW -j LOG
-to check. It ping is logged, that's it.
+When you ping someone, echo request goes through OUTPUT chain (state
+NEW). Echo reply comes in INPUT, with ESTABLISHED state, so is accepted.
 
-The standard way to do is to have :
-iptables -I INPUT -i lo -j ACCEPT
-iptables -I OUTPUT -o lo -j ACCEPT
+If you ping yourself (127.0.0.1 or any of your interfaces address),
+packet goes through loopback (i.e. lo interface). Echo request goes to
+OUTPUT with state NEW and you get it back later on INPUT chain, still on
+NEW state. Because you don't have any rule to accept it, it is dropped.
 
-BR,
-> =20
-> Thanks!!
-> Christopher Davis
+It is most of the time safe to accept trafic that is coming from lo
+interface (unless you want to filter local redirections). So you should
+add something like this :
+
+	iptables -A INPUT -i lo -j ACCEPT
+
+Just after your "ESTABLISHED,RELATED" rule.
+
 --=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
-
---=-rPL48DzRjPi0E8B3kQSX
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQA/qLe9nxA7CdMWjzIRAlLKAJ9L/w997S8a8OQNIDc52CR4LUj2XgCfQzyy
-DLEQmrtYZMK+BU+Qh3SZzI8=
-=+p62
------END PGP SIGNATURE-----
-
---=-rPL48DzRjPi0E8B3kQSX--
-
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
