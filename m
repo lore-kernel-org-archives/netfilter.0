@@ -1,10 +1,10 @@
-From: "hard__ware" <hard__ware@hotmail.com>
-Subject: Getting rid of the masses of ip_conntrack messages
-Date: Mon, 2 Dec 2002 09:22:30 +1000
+From: ricp@ricp.net
+Subject: Load Balance using SNAT or nth?
+Date: Sun,  1 Dec 2002 23:37:15 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE28J3Ih7jtrSByh133000043af@hotmail.com>
+Message-ID: <1038803835.3deae37b42c91@webmail.ricp.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,20 +16,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Othmar Pasteka <pasteka@kabsi.at>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-have you made sure that the ip_conntrack_ftp module is loaded as well , #>
-lsmod
 
-If so the only thing i can suggest is disableing DROP on
-your output for a while and remove the output rules.
-(set its CHAIN to default of ACCEPT)
 
-did this stop the messages ? other than that im not sure .
-ive tried to follow the entire Kernel Source .c kode,
-and to me it looks like you may have a problem in your output and maybe
-contrack_ftp problems ...
+Hello,
 
-cya...
+I have a box that with one WAN interface (T-1) that is my router and DNS 
+currently. I'm adding a Second T-1 and I am planning on the best way to "load 
+balance" between the Wan connections.
+
+
+My first thought was to have a cronjob to change the SNAT rule for new 
+connections periodicly but to me this has a couple of problems.
+
+1) is based on time not on traffic
+2) I'm not sure what will happen to ESTABLISHED connections.. I haven't 
+experimented yet (New T isn't in), but I'm assuming that if I change the SNAT 
+address on NEW connections.. any ESTABLISHED connections will be maintained to 
+their normal termination(?).
+
+
+I then found the Nth extension, and it appears to be exactly what I am looking 
+for.
+
+
+I would appreciate any comments on my SNAT idea or any information on your 
+experience with the Nth extension.
+
+
+TIA,
+Ric
+
+-------------------------------------------------
+This mail sent through IMP: http://horde.org/imp/
 
