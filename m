@@ -1,9 +1,12 @@
-From: Christian Lambert <clambert@sgi.com>
-Subject: local NAT of connections conflicts with ftp conntrack?
-Date: Sat, 25 May 2002 11:36:02 -0700 (PDT)
+From: John Holman <jaholman@eastax.com>
+Subject: Re: Accuracy of packet counting?
+Date: Sun, 26 May 2002 08:16:55 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0205251129250.6374-100000@onyx4.dhs.org>
+Message-ID: <3CF00D57.F2399EBE@eastax.com>
+References: <3CE4352B.36C46B79@john.holman.name> <20020525120020.O30908@sunbeam.de.gnumonks.org>
+Reply-To: mail@john.holman.name
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,42 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: Harald Welte <laforge@gnumonks.org>
+Cc: John Holman <mail@john.holman.name>, netfilter@lists.samba.org
 
 
-I enabled "local natting of connections" in the kernel so that I can
-do transparent proxy from the local host itself running squid, and
-I only use these two rules in the new table called "OUTPUT" for nat.
 
-# transparent proxy for localhost
-iptables -t nat -A OUTPUT -p tcp --dport 80 -m owner --uid-owner squid -j ACCEPT
-iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-port 3128
+Harald Welte wrote:
+> 
+> On Fri, May 17, 2002 at 08:39:39AM +1000, John Holman wrote:
+> > My question:
+> >
+> > Is there ANY reason to suppose that the ACCOUNTING total is not an
+> > accurate count of all IP traffic into and out of eth0?
+> 
+> yes, since you only count locally-generated and locally-targeted traffic,
+> not the traffic forwarded by your machine.
+> 
+> use your accounting rules in the mangle table (PREROUTING and POSTROUTING)
+> to cover all traffic.
+> 
 
-Now the problem that I have is that when the box itself tries to ftp
-to the outside world, it just hangs as soon as it does the PORT command.
 
-Then in syslog I see a couple of these messages:
+Thank you for that, Harald, it was a RTFM problem :(
 
-ip_conntrack: max number of expected connections 1 of ftp reached for 
-<hideen ip>-><hidden ip>, reusing
+[I eventually managed to work out the reason for the discrepancies
+byself, by checking against a detailed traffic report supplied by my
+ISP.]
 
-Is there any way I could configure iptables to not use ftp conntrack
-for the local nat or is this a bug?
-
-I'm using kernel 2.4.19-pre7 with the newnat patch applied and h323,
-but no other patches.   Iptables userspace 1.2.6a.    My POSTROUTING
-of nat contains a typical SNAT setting to let my internal machines
-access the internet.   
-
-That machine running squid/iptables has direct access to the internet
-and is also my a machine that I use for working on it too.  I provide access
-to my laptop from it on a 2nd interface. 
-
-I have not tested with other plugins, so I'm wondering if it might
-do the same thing for IRC conntrack.
-
-Thanks
-
+-- 
+Best regards,
+John Holman
+Eastax WWW
+Melbourne, Australia
 
