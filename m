@@ -1,13 +1,13 @@
 From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: Netfilter vs commercial
-Date: Wed, 11 Aug 2004 16:31:26 -0500
+Date: Wed, 11 Aug 2004 16:40:05 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411A902E.1010404@pbl.ca>
-References: <20040809093022.5842e85e@mgalepc.utilitran.com>
+Message-ID: <411A9235.7010608@pbl.ca>
+References: <D5C9032B2B09C64EA2409D6214E91AC9051255@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040809093022.5842e85e@mgalepc.utilitran.com>
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9051255@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,30 +20,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Michael Gale wrote:
-> Hello,
-> 
-> 	I know this question has most likely come up a few times and most people ask about performance and through put. But my
-> question seems to me a little different.
-> 
-> I would like to know how people on this list ... which I know might be a biased opinion feel how a Netfilter firewall
-> box .. properly configured would compare in security to a commercial firewall. 
+Jason Opperisano wrote:
+> and as an aside--i find it hard to believe that there are people out there
+> saying something along the lines of "we use commercial software becuase we
+> can sue the manufacturer if it breaks."  i know no one actual reads those
+> EULA's that are presented at install time--but they say "if this software
+> breaks, you can't sue us."  where was that big lawsuit against microsoft for
+> damages resulting from <insert favorite ms exploit here>?
 
-I'd say that security is at about same level, if you keep the products 
-updated to the latest release, and if you do not have applications 
-running on the firewall itself (like you do, squid is appliaction).
-
-Use product that you feel comfortable with, and that has features you 
-need.  No point in using Netfilter if it lacks a feature from CheckPoint 
-that you need.  Or using CheckPoint if it lacks a feature from Netfilter 
-that you need.
-
-Sadly, at some places that I used to work in the past (luckily not 
-working there anymore), the two main arguments (usually used by higher 
-management) for going commercial was that "if we pay, we will have 
-someboy to blame when things are not working".  And "commercial looks 
-more professional".  Totally stupid and neither of those has anything 
-with common sense.  Hope it will not be the case at your place.
+It is more along the lines "we can blame them".  In (some of the) 
+manager's heads, if you donwload something from the network for free and 
+it breaks, it's your fault (and manager's for allowing you to do so). 
+If you pay for it, it is vendor's fault.  And if you blame somebody, 
+there's always somewhere at the back of the head that you can sue them 
+too (althogh it is not true).  Stupid and ignorant, I know.
 
 -- 
 Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
