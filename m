@@ -1,12 +1,14 @@
-From: Rakotomandimby Mihamina <mrakotom@free.fr>
-Subject: Corrupted packets + Logs
-Date: Wed, 17 Sep 2003 12:56:49 +0200
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: destinations interface must be eth0?
+Date: Wed, 17 Sep 2003 19:30:43 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309171256.49551.mrakotom@free.fr>
+Message-ID: <20030917113043.GL3850@propaganda.localdomain>
+References: <1063637259.2318.3.camel@dod-secure.e-masi.com> <Pine.LNX.4.53.0309161049310.4397@xena.cft.ca.us>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.53.0309161049310.4397@xena.cft.ca.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,87 +19,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi all ,
+On Tue, Sep 16, 2003 at 11:10:41AM -0700, Jim Carter spoke thusly:
+>On Mon, 15 Sep 2003, Jim Burnett wrote:
 
-( As far as possible please answer to my 2 questions :-)  )
+(snip)
 
-My stuff :
--1 single Computer hosting an FTP server and an HTTP one . that's all . ( no 
-NAT nor FORWARD )
+>To save a round of back-and forth, let me make a guess...  You have two
+>independent web sites and each is assigned a different IP address.
+>Perhaps you even have two independent instances of Apache, each listening
+>to its own interface.  This is kind of overkill.  If I were setting it up,
+>I would have DNS CNAMEs mapping both alphabetic names to the same IP
+>address, and just one interface on the box, and just one instance of
+>Apache.  Then I would set up a virtual host for each client site (the main
+>instance would be just for administration).  Apache distinguishes the sites
+>by the name in the URL, not the IP address.  This is the preferred method
+>for commercial web hosting companies.  I use it for my HTTPS service.
 
-#1 
-I'm learning networks and i saw that there are some tools that send 
-"corrupted" packets to a host to have an idea of the local OS ( an exemple is 
-nmap ) .
-I would like my firewall to drop all corrupted packets .
-I made a search on google with the words " iptables drop corrupted packets" 
-but i cannot find any clear-enough documentation . 
-Would you help me ?
-Perhaps you want to see NETFILTER-about configuration of my kernel ?
-Here you are :
-CONFIG_IP_NF_CONNTRACK=y
-CONFIG_IP_NF_FTP=y
-# CONFIG_IP_NF_AMANDA is not set
-# CONFIG_IP_NF_TFTP is not set
-CONFIG_IP_NF_IRC=y
-CONFIG_IP_NF_QUEUE=y
-CONFIG_IP_NF_IPTABLES=y
-CONFIG_IP_NF_MATCH_LIMIT=y
-CONFIG_IP_NF_MATCH_MAC=y
-CONFIG_IP_NF_MATCH_PKTTYPE=y
-CONFIG_IP_NF_MATCH_MARK=y
-CONFIG_IP_NF_MATCH_MULTIPORT=y
-CONFIG_IP_NF_MATCH_TOS=y
-# CONFIG_IP_NF_MATCH_RECENT is not set
-# CONFIG_IP_NF_MATCH_ECN is not set
-# CONFIG_IP_NF_MATCH_DSCP is not set
-CONFIG_IP_NF_MATCH_AH_ESP=y
-CONFIG_IP_NF_MATCH_LENGTH=y
-CONFIG_IP_NF_MATCH_TTL=y
-CONFIG_IP_NF_MATCH_TCPMSS=y
-# CONFIG_IP_NF_MATCH_HELPER is not set
-CONFIG_IP_NF_MATCH_STATE=y
-CONFIG_IP_NF_MATCH_CONNTRACK=y
-CONFIG_IP_NF_MATCH_UNCLEAN=y
-CONFIG_IP_NF_MATCH_OWNER=y
-CONFIG_IP_NF_FILTER=y
-CONFIG_IP_NF_TARGET_REJECT=y
-CONFIG_IP_NF_TARGET_MIRROR=y
-CONFIG_IP_NF_NAT=y
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=y
-CONFIG_IP_NF_TARGET_REDIRECT=y
-CONFIG_IP_NF_NAT_LOCAL=y
-CONFIG_IP_NF_NAT_SNMP_BASIC=m
-CONFIG_IP_NF_NAT_IRC=y
-CONFIG_IP_NF_NAT_FTP=y
-CONFIG_IP_NF_MANGLE=y
-CONFIG_IP_NF_TARGET_TOS=y
-CONFIG_IP_NF_TARGET_ECN=y
-CONFIG_IP_NF_TARGET_DSCP=y
-CONFIG_IP_NF_TARGET_MARK=y
-CONFIG_IP_NF_TARGET_LOG=y
-CONFIG_IP_NF_TARGET_ULOG=y
-CONFIG_IP_NF_TARGET_TCPMSS=y
-CONFIG_IP_NF_ARPTABLES=y
-# CONFIG_IP_NF_ARPFILTER is not set
-# CONFIG_IP_NF_ARP_MANGLE is not set
-
-
-#2
-I would like iptables to log into /var/log/messages .
-What have a got to configure into syslogd && iptables to do it ?
-What rules have i got ad apply ?
-
-If there is a better solution than making it into messages ,
-how should i manage it ?
-
-I already saw, after a google search , tha tkind of questions but the answers 
-are un little bit complicated for me .
-Would you have i link ( at least ) tha texplain it to me ?
-
-Thanks for all , in advance .
-
+Your setup of 1 IP hosting multiple websites will work if its only dealing
+with HTTP. With HTTPS - you have to split the IP or port numbers, because
+the SSL tunnel gets established prior to parsing of the HTTP/1.1 Host:
+header. You could still do it, but you'd get bogus certs for different
+FQDNs which might not look nice if you are a e-commerce site.
 
