@@ -1,12 +1,11 @@
-From: "Natarajan E" <nataraj_e@india.com>
-Subject: DNAT on iptables
-Date: Mon, 04 Aug 2003 23:17:25 +0800
+From: =?ISO-8859-15?B?SmVz+nMgR2FyY+1hIENyZXNwbyAoYWthIFNldmVpbik=?= <correo@sevein.com>
+Subject: Where libipt_MASQ.so (???)
+Date: Mon, 4 Aug 2003 18:48:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030804151726.13388.qmail@india.com>
+Message-ID: <1211419607.20030804184812@sevein.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +15,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi Harald,
-  
-  i use iptables 1.2.8 , &  i have to give a static nat for three different ip in my internal network  with 3 different external IPs for example
 
+Hi! Im tired because I have tryed to run iptables on my system too
+times. The problem is that I dont have the dynamic library
+/lib/iptables/libipt_MASQ.so, but anybody have it!
 
-    172.16.0.134  --> mapped to 210.x.x.2
-    172.16.0.138 -->  mapped to 210.x.x.3
-     172.16.0.139 --> mapped to 210.x.x.4, 
- 
-i added the following in PREROUTING
-iptables -t nat -A PREROUTING -d 210.x.x.2 -j DNAT --to-destination 172.16.0.134, similarly for other 2 also..
-when i tried this , i was not able to reach the internal ip.
+I use Gentoo Linux on kernel 2.4.20. I have compiled all netfilter
+options as modules althoun I tried also installing it into the kernel
+system.
 
-Inside segment 172.16.0.0/24--eth1
-outside ip address 202.x.x.212--eth0
+I only want, by now, this rules for the iptables tool:
 
-Please Help ME ! ! ! .
-Thanks in advance
+ iptables -P INPUT ACCEPT
+ iptables -F INPUT
+ iptables -P OUTPUT ACCEPT
+ iptables -F OUTPUT
+ iptables -P FORWARD DROP
+ iptables -F FORWARD
+ iptables -A FORWARD --match mac --mac-source 00:c0:49:c9:d3:f1 -j MASQ
+ iptables -A FORWARD --match mac --mac-source 00:c0:49:bc:9f:08 -j MASQ
+ iptables -A FORWARD --match mac --mac-source 00:02:8a:3a:77:b7 -j MASQ
+ iptables -A FORWARD --match mac --mac-source 00:90:d1:08:19:8d -j MASQ
 
-Regards
-Natraj.E
-SIFY LTD.,
-Tidal Park
-Chennai
+But the problem is when iptables execute '-j MASQ', telling me that
+libipt_MASQ.so doesn't exist. What should I do? I can't find an
+explication.
 
-Ph    : 91-44- 
-Mobile: 98402-65831
+Sorry, but I am from Spain and my English could be poor for you. Try
+to understand me, :).
 
+--
+Jes=FAs Garc=EDa Crespo (aka Sevein)
+http://www.sevein.com
+correo@sevein.com
 
--- 
-______________________________________________
-http://www.india.com
-Now with POP3/SMTP access for only US$14.95/yr
-
-Powered by Outblaze
 
