@@ -1,50 +1,115 @@
-From: Rick Kennell <kennell@ecn.purdue.edu>
-Subject: port-based filtering of ESP packets with in-kernel IPsec?
-Date: 29 Jul 2003 23:44:57 -0500
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <1059540296.16545.305.camel@k7.localnet>
-Reply-To: netfilter-devel@lists.netfilter.org
+From: Fabio Bastiglia Oliva <fboliva@safenetworks.com>
+Subject: SNAT/DNAT + IP Alias problem?
+Date: Wed, 30 Jul 2003 02:35:16 -0300
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1644259315.20030730023516@safenetworks.com>
+Reply-To: Fabio Bastiglia Oliva <fboliva@safenetworks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I asked about this last week in the general netfilter list, but it
-appears that most folks are still using FreeS/WAN for IPsec.
+Hi guys,
 
-I'm using the in-kernel IPsec and want to be able to filter ESP packets
-based on protocol or port number.  These values are encapsulated in the
-ESP payload and are unavailable to netfilter.  If I were using
-FreeS/WAN, I could use standard netfilter techniques on the ipsec0
-device.  With the in-kernel IPsec, there's no extra pseudo-device with
-which to examine unencapsulated ESP packets.
+I'm  posting  this message once again... I know that my english is not
+so  good,  sorry,  but  I'll try to explain the problem the best way I
+can.
 
-It looks too me like netfilter sees the packet as ESP in all chains in
-all tables.  (I'd be delighted to be corrected.)
+I  have  used  all  my  aspirin supply trying to understand/solve this
+problem... Please Help... otherwise Bayer will get all my money. :)
 
-Since ESP packets that reach the mangle INPUT chain are destined for a
-local process, why not unencapsulate them just before that point?  It
-might still be nice to have an indication that this was once an ESP
-packet for filtering, but that could be done by setting a mark in the
-mangle PREROUTING chain.
+The  problem:  I'm  using  two  netfilter  firewalls  in two different
+networks.  Both  networks are using SNAT/DNAT to provide access to the
+servers   protected   by  these  firewalls,  but  I'm  geting  a  poor
+comunication  performance  (slowness)  when  I'm  accessing a NATed IP
+address from one network to another.
 
-I realize that this would probably require some heavy lifting in the
-network layer to accomplish this nesting of functionality.
 
-Am I missing something obvious?
+The enviroment:
+===============
 
--- 
-Rick Kennell <kennell@ecn.purdue.edu>
-Purdue University School of Electrical and Computer Engineering
+ +-------------+
+ |  Network A  |
+ +------+------+
+        |
+ +------+YA----+
+ | Firewall A  |
+ +------+XA----+
+        |
+        |
+        |
+ +------+XB----+
+ | Firewall B  |
+ +------+YB----+
+        |
+ +------+------+
+ |  Network B  |
+ +-------------+
+
+XA = eth0 (intrernet)
+
+YA = eth1 (intranet)
+
+XB = eth0 (intrernet)
+ \_ 1 IP address plus 2 more IP addresses using the same NIC
+    (eth0, eth0:0, eth0:1)
+
+YB = eth1 (intranet)
+
+Both Firewalls configuration:
+    - Slackware 9.0
+    - Kernel 2.4.21-ac4
+    - iptables 1.2.8
+
+
+This is what happens:
+=====================
+    
+Ping  the Firewall B interface eth0 from Firewall A... No problem, the
+round-trip is OK... 17 ms avg.
+ 
+Ping  the  Firewall B interface eth0 from Network A... No problem, the
+round-trip is OK... 17 ms avg.
+
+Ping  the  Firewall  B  aliased interface eth0:0 from Network A... the
+round-trip increases a lot... 150-300 ms avg.
+
+Ping  the  Firewall  B aliased interface eth0:0 from Firewall A... the
+round-trip is OK again... 17 ms avg.
+ 
+
+
+Iptables DNAT/SNAT configuration (eth0:0 eth0:1) (network B)
+============================================================
+
+iptables -t nat -A PREROUTING -d 123.123.123.123 -j DNAT --to 10.0.0.1
+iptables -t nat -A POSTROUTING -s 10.0.0.1 -j SNAT --to 123.123.123.123
+iptables -A FORWARD -i eth0 -mstate --state ESTABLISHED,RELATED -j ACCEPT
+
+123.123.123.123 = eth0:0 aliased IP address
+10.0.0.1 = network B intranet IP address
+
+
+I  think  the  problem  is  at  the SNAT/DNAT configuration, or even a
+problem with the IP alias... but I wasn't able to find it yet.
+
+
+Thanks indeed (in advance) for any help.
+
+
+Best regards
+________________________
+Fabio Bastiglia Oliva
+fboliva@safenetworks.com
 
 
