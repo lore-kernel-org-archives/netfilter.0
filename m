@@ -1,14 +1,9 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: Accounting for national/international traffic
-Date: Wed, 22 Dec 2004 00:36:01 +0200
-Message-ID: <3063e5041221143655fc9644@mail.gmail.com>
-References: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
-	<200412211333.00841.Alistair@nerdnet.ca>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Trevor Cordes <netfilter@tecnopolis.ca>
+Subject: success story using native 2.6 ipsec with NAT/MASQ
+Date: Tue, 21 Dec 2004 20:50:14 -0600 (CST)
+Message-ID: <200412220250.iBM2oEXv002652@pog.tecnopolis.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200412211333.00841.Alistair@nerdnet.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,89 +14,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Alistair Tonner <Alistair@nerdnet.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Such ISPs use a different dscp in tos parameter in IP header. Here
-some ISPs uses tos 0x80 or 0x84 or 0x21 . If you see tos 0x80 you can
-match it with -m dscp --dscp 0x20 . For such details, better ask your
-ISP.
+I just wanted to drop a line to this list after having much trouble with
+the new 2.6 native ipsec (ie: setkey-based).  (NONE OF THIS APPLIES TO
+free/openSWAN setups!)  I finally have it working! Here's some tips for
+others:
 
+1. SNAT/MASQUERADE targets don't work as expected with stock FC3 (as of
+   the time of this writing: 2.6.9-1.681) kernels without some kernel
+   patches. The guys on the netfilter-devel list have the patches and
+   there's some good discussions of the issue from Jan 2004 archives.
+   Without MASQ, it's tough to do privatesubnet->gw->gw traffic.
 
-On Tue, 21 Dec 2004 13:33:00 -0500, Alistair Tonner <Alistair@nerdnet.ca> wrote:
-> On December 21, 2004 03:55 am, Jean Hoderd wrote:
-> > Hi,
-> >
-> > Here's the situation: in many countries it is customary for IPS's to
-> > have separate quotas for national/international traffic (in my case the
-> > limits are 20GB/2GB per month).
-> >
-> > Now, given an IP address, knowing whether it is national or
-> > international is a solved problem: there are publicly available lists
-> > with the ranges of national IP addresses.
-> >
-> > The problem: how to keep track of the monthly internet usage divided
-> > into national/international traffic.
-> >
-> > Please note that I am not interested in enforcing quotas per se (the
-> > "quota" module, I believe).  Rather, I would simply like to know what
-> > is the total traffic per category since the beginning of the month.
-> >
-> > I have searched netfilter's repository, and it seems that the
-> > ipt_account module might do the trick.  However, since I am still a
-> > newbie with netfilter, I am having some trouble defining the actual
-> > rules to make it work.  Let us imagine, for instance, that I have n
-> > ranges of national IP addresses.  Adding them to a "national" counter
-> > seems easy:
-> >
-> > iptables -A INPUT -m account --addr "range1" --aname national
-> > iptables -A INPUT -m account --addr "range2" --aname national
-> > ...
-> > iptables -A INPUT -m account --addr "rangen" --aname national
-> >
-> > The question is: how do I implement the logic for all non-matching
-> > ranges, which should be added to an "international" counter?
-> > Furthermore, I have already plenty of rules in my firewall, and I wish
-> > that the traffic accounting would not interfere with them.
-> 
->  You want to have two user chains to do this.
->  create the 'accounting' chain in which you will account the packets with the
-> rules you've given, and *AFTER* each accounting rule put a matching rule that
-> RETURNS the packets to the calling chain.  At the end of the 'accounting'
-> chain add one rule to an 'international' chain that accounts for all non
-> returned packets.  At the end of the 'international chain the packets will
-> return to the 'accounting'  chain and since they are already on the end of
-> that they will RETURN to the calling chain.
-> 
-> iptables -A accounting -m account --addr 'range1' --aname national
-> iptables -A accounting -d range1 -j RETURN
-> iptables -A accounting -m account --addr 'range2' --aname national
-> iptables -A accounting -d range2 -j RETURN
-> iptables-A accounting -j international
-> iptables -A international -m account --aname international
-> 
-> 
->  Alistair Tonner
-> 
-> 
-> >
-> > Thanks in advance for any help you can give me!
-> > Regards,
-> > Jean
-> >
-> >
-> >
-> >
-> >
-> > __________________________________
-> > Do you Yahoo!?
-> > Send a seasonal email greeting and help others. Do good.
-> > http://celebrity.mail.yahoo.com
-> 
-> 
+2. What happens in the unpatched kernel is ipsec will gobble the packet
+   packet before it hits POSTROUTING where MASQing gets done.  The
+   result is no MASQing and weird packets coming in at the other side of
+   the ipsec tunnel.
 
+3. The patches (not yet in the netfilter PoM for the latest 2.6.9
+   kernels?) work perfectly if applied to the stock FC3 kernel srcrpm by
+   inserting them into the SPEC file and running rpmbuild.  I was scared
+   of this part, but it was actually really easy!
 
--- 
-Bla bla
+4. Make sure you setup a transport ipsec for your gw->gw (including
+   MASQ'd) traffic.  ipsec tunnel mode isn't the correct thing here(?).
+
+5. The ipsec worked at first but then I noticed large packets were being
+   eaten and I was showing ICMP 3 CODE 4 packets on the sending side.
+   Turns out MTU size and fragmentation were important here.  If your
+   app connects at first then goes dead or haywire, you probably have
+   this problem.
+
+   Putting the following rule in fixed the problem:
+
+   # must force a lower mtu for packets to be ipsec'd
+   # 1492-36-40=1416
+   # (36=apparent ipsec overhead based on empirical tests) (40=mtu to
+   # mss conversion) (1492=mtu for pppoe)
+   iptables -A fsec -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss \
+	1416
+
+   Where fsec is a chain that gets executed for all FORWARD traffic out
+   the ispec VPN (based on destination IP).
+
+   I'm really not sure if this is a "bug" or just a fact of life.  It
+   kind of makes sense, but seems a little unruly that one must manually
+   make a rule for it.
+
+6. QoS (using HTB et al.) (see lartc) work great and easy over native
+   ipsec.  Big contrast to the hellish QoS over freeS/WAN over PPPoE
+   which never worked and frequently kernel panic'd (with HTB on
+   ipsec0).
+
+7. I've opened a RH bugzilla bug with regards to the ipsec/nat patch
+   issue:
+   https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=143374
+
+   I hope to see the patches in a future FC update soon!
+
+Thanks to all the guys who helped, esp the guys on netfilter-devel!
+
 
