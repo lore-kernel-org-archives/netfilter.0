@@ -1,15 +1,13 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: what filtering to do on the OUTPUT chain?
-Date: Wed, 23 Oct 2002 00:31:46 +0100
+From: "Andrew Smith" <nfml@k1k2.com>
+Subject: Re: 2.4.20-pre7: ip_conntrack: table full, dropping packet.
+Date: Wed, 23 Oct 2002 10:15:50 +1000 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021023003146.D8681@funkyjesus.org>
-References: <1035317344.8858.14.camel@elendil> <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <38948.192.168.7.14.1035332150.squirrel@iw.k1k2.com>
+References: <20021021215534.GB3039@naboo.club.berlin.ccc.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain>; from rpjday@mindspring.com on Tue, Oct 22, 2002 at 04:10:46PM -0400
+In-Reply-To: <20021021215534.GB3039@naboo.club.berlin.ccc.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Tue, Oct 22, 2002 at 04:10:46PM -0400, Robert P. J. Day wrote:
-> On 22 Oct 2002, Cedric Blancher wrote:
-> > > Le mar 22/10/2002 =E0 20:57, Robert P. J. Day a =E9crit :
-> > >   i've had a number of people tell me that, while they put a good deal
-> > > of thought into their INPUT filtering, they simply ACCEPT all outgoing
-> > > traffic since, if their input filtering is working properly, there's
-> > > no reason to stop outgoing packets.
-> > >   comments?
-> >=20
-> > Once you have accepted the fact that your box can get compromised, you
-> > easily understand why you should filter outgoing traffic. Moreover,
-> > maximum security relies on the "lesser privilege rule" which specifies
-> > that an object must not be allowed to do more than he has to. According
-> > to this, you have to filter network output.
+> On Mon, Oct 21, 2002 at 08:16:44PM +0200, Stephan von Krawczynski
+> wrote:
+>> Hello all,
+> 
+> Hi Stephan. Don't know if you remember me, but we've met at some IN
+> e.V. meetings in the past ;)
+> 
+>> After several days running kernel 2.4.20-pre7 I came across the
+>> syslogged message:
+>> 
+>> kernel: ip_conntrack: table full, dropping packet.
+>> 
+>> This box runs about 10 rules for destination nat. My simple question:
+>> is this a bug, or a need to tune something? If it is a bug, is there a
+>> later kernel that has it fixed?
+> 
+> it's not about the number of NAT rules, but the number of connections
+> going on through your machine.
+> 
+> the FAQ (to be found at www.netfilter.org) describes how to raise the
+> number of connection tracking table entries.
 
-Agreed.
+Stephan,
+The problem is that you will need to effectively allocate more memory
+to iptables (increase the size of ip_conntrack_max)
 
-> i understand that, for extra security, you should also filter on the
-> OUTPUT chain.  but someone suggested to me that, if i get hacked because
-> someone gets through my INPUT filter rules, they have a good chance of
-> being able to change my ruleset anyway and remove the filtering.
+If that is a problem, then you fall into a well known and much ignored
+issue with iptables - connection timeout - that according to the
+developers, is set to a value that will handle all possible networks
+But funnily enough, as in your case, that isn't true, you must be
+doing something wrong :-) :-) :-) like me :-)
 
-Not true.  Compromising some user level application, or some chrooted
-server, does not automatically allow the malicious third party to alter your
-firewall rules.
+Either increase ip_conntrack_max or modify the timeout constant for all
+connections and recompile ... 
 
-> this is why this person suggested that i should concentrate my efforts on
-> hardening my INPUT filter, and not worry a whole lot about the OUTPUT
-> ruleset.
+It would be good to be able to shorten the timeout for certain
+services, but alas that won't happen unless you code/patch each release
+yourself.
 
-Security is achieved through strength in depth.  If you're running any kind
-of server you will have to allow packets in, to a webserver say.  However,
-not allowing that webserver to do anything but send replies, rather than
-permitting it to do anything ( DoS the Net, download files to the local
-system, and so on ) will greatly restrict the options at the malicious third
-party's disposal.
+>> Regards,
+>> Stephan
 
-> in other words, if i get hacked, i'm pretty much toast anyway,
+-- 
+-Cheers
+-Andrew
 
-Not true.
-
-> and can't trust *anything* about my system anymore.
-
-Not true.
-
-> i realize it sounds like having sloppier security not worrying about the
-> OUTPUT ruleset.  i guess it would help me if someone could provide
-> *specific* examples of how OUTPUT filtering adds to security beyond what
-> would be provided by a well-designed INPUT ruleset.  a pointer to an FAQ
-> or some other link would be fine.
-
-"--cmd-owner" is your friend, your close, personal, bestest friend.
-
---=20
-FunkyJesus System Administration Team
+MS ... if only he hadn't been hang gliding!
 
 
