@@ -1,9 +1,9 @@
 From: "hare ram" <hareram@sol.net.in>
-Subject: Re: iptables -m time does not work
-Date: Wed, 6 Nov 2002 10:11:02 +0530
+Subject: Re: IPTable Help !
+Date: Wed, 6 Nov 2002 10:23:02 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006001c2854e$b630f400$43723fca@nextto>
-References: <E187c2V-0001ft-00@kashyyyk.netfilter.org> <aq1b78$lc5$1@hermes.vibe.ac>
+Message-ID: <00e501c28550$6362ea60$43723fca@nextto>
+References: <NGBBJIEMADMKCHCLFBLKKECOCBAA.bishop@pacbell.net>
 Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,53 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Udo Rader <spamtrash2@vibe.ac>
-Cc: netfilter@lists.samba.org
+To: Louie <bishop@pacbell.net>, Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-Hi
-
-even i too have same problem
-iam able to see .o file and .so file
-and when i say make manuconfig, it show the the limit and time in netfilter
-
-but when i give this option iam not able to
-but iam using redhat 7.3
+go to Linuxgurz
 
 hare
 ----- Original Message -----
-From: "Udo Rader" <spamtrash2@vibe.ac>
-Newsgroups: netfilter.users
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, November 03, 2002 1:36 AM
-Subject: Re: iptables -m time does not work
+From: "Louie" <bishop@pacbell.net>
+To: "Antony Stone" <Antony@Soft-Solutions.co.uk>;
+<netfilter@lists.netfilter.org>
+Sent: Wednesday, November 06, 2002 1:21 AM
+Subject: IPTable Help !
 
 
-> hi,
+> Hello all!
 >
-> I bet you have the same problem that I had with the string-module.
+> Hope that everyone had a good weekend. I
+> was wondering does anyone know a site
+> that has simple explains on iptables
+> like "Iptables for dummies"
 >
-> look at your /var/log/syslog and check if there are complains about
-> a missing ipt_time module.
+> Thank you,
 >
-> If so, the solution is simple: Your kernel is very probably not patched
-> for the time module.
+> Louie
 >
-> udo
->
-> On Fri, 01 Nov 2002 14:20:15 +0000, Torsten Puls wrote:
->
-> > Hello
-> >
-> > My Problem
-> > After input of dis order I get the following error message:
-> >
-> > iptables -A INPUT -m time --timestart 08:00 --timestop 16:00 --days
-Mon -j ACCEPT
-> > iptables: No chain/target/match by that name
-> >
-> > Why?
-> >
-> > Regards
 >
 >
 >
