@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ping to internet hosta through NameServer of provider
-Date: Tue, 9 Mar 2004 13:22:50 +0000
+From: "Tarek W." <mailinglists1@hotpop.com>
+Subject: Re: Being selective about traffic and interfaces
+Date: Tue, 09 Mar 2004 17:25:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403091322.50154.Antony@Soft-Solutions.co.uk>
-References: <E1B0gpe-0004V7-9P@vishnu.netfilter.org>
+Message-ID: <1078845947.3802.35.camel@carve.personal.localdomain>
+References: <20040308150758.GB16848@virgin.net>
+ <1078832443.3802.31.camel@carve.personal.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1B0gpe-0004V7-9P@vishnu.netfilter.org>
+In-reply-to: <1078832443.3802.31.camel@carve.personal.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +18,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 09 March 2004 1:00 pm, Stanislav Puffler DiS. wrote:
+On Tue, 2004-03-09 at 13:46, Tarek W. wrote:
+> On Mon, 2004-03-08 at 17:07, Richard Bellamy wrote:
+> > Hi
+> > 
+> > I have just set up an ecrypted connection (with OpenVPN) between my laptop and router currently all traffic goes down the vpn. I would like to allow ssh traffic to bypass the vpn.
+> > 
+> > The situation is this:
+> > 
+> > Router:							Laptop:
+> > 192.168.0.1 - tun0					192.168.0.2 - tun0
+> > 	|							|
+> > 10.44.10.1 - eth0					10.44.10.2 - eth0
+> > 	|							|
+> > 	---------------------------------------------------------
+> > 
+> > The default route on the laptop is set to 192.168.0.1 so all traffic is automatically sent encrypted. I need to be able to send everything but ssh down the vpn(with the possibility for https later on). I beleive that this would have to happen before routing took place. OpenVPN is on udp/5000.
+> 
+> on the laptop:
+> 
+> edit /etc/iproute2/rt_tables (or wherever rt_tables is at) and add the
+> following:
+> 
+> <snip>
+> 50	unencrypted
+> </snip>
+> 
+> without <snip> and </snip>
+> 
+> then issue the following commands:
+> 
+> <snip>
+> ip route add dev eth0
+> ip rule add pref 50 fwmark 2 table unencrypted
+> </snip>
 
-> It seems like anything you=B4ve described. Here is the ruleset :
->
-> iptables -L -nv
+should be:
 
 <snip>
+ip route add dev eth0 table unencrypted
+ip rule add pref 50 fwmark 2 table unencrypted
+</snip>
 
-If this is your ruleset, where is the LOG rule which produced the output =
-you=20
-posted earlier?
-
-> > IN=3Deth0 OUT=3D MAC=3D.............. SRC=3D"my_providers_nameserver_=
-ip"
-> > DST=3D"ip_on_my_eth0" LEN=3D127 TOS=3D0x00 PREC=3D0x00 TTL=3D61 ID=3D=
-3268 DF
-> > PROTO=3DUDP SPT=3D53 DPT=3D32792 LEN=3D107
-
-Antony.
-
---=20
-People who use Microsoft software should be certified.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+> 
+> now iptables comes in to play and glues everything up:
+> 
+> <snip>
+> iptables -t mangle -I OUTPUT -p tcp --dport 22 -j MARK --set-mark 0x02
+> iptables -t nat -I POSTROUTING -o dev eth0 -j SNAT --to 192.168.0.2
+> </snip>
+> 
+> 
+> 
 
 
