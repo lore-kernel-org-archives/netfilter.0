@@ -1,14 +1,12 @@
-From: Daniel Wittenberg <daniel-wittenberg@starken.com>
-Subject: Re: help on DMZ project
-Date: 13 Mar 2003 12:54:43 -0600
+From: Bill Davidsen <davidsen@tmr.com>
+Subject: Re: iptables problems with SuSE 8.0
+Date: Thu, 13 Mar 2003 14:48:42 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1047581684.1686.4.camel@runabout.noc.starken.com>
-References: <20030313114142.2704C1BB2FE@mail.powweb.com> 
-	<20030313145842.44367092.arnt@c2i.net>
+Message-ID: <Pine.LNX.3.96.1030313144018.32436D-100000@gatekeeper.tmr.com>
+References: <FFEKLFAFFPMEICKNCBGAMEFKCDAA.trenkler@syn-con.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030313145842.44367092.arnt@c2i.net>
+In-Reply-To: <FFEKLFAFFPMEICKNCBGAMEFKCDAA.trenkler@syn-con.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +16,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org, Chris Partsenidis <Chris@Firewall.cx>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Steffen Trenkler <trenkler@syn-con.de>
+Cc: "(iptables) English Mailing-List Netfilter" <netfilter@lists.netfilter.org>
 
-I personally would avoid ipcop because the last time I checked it was
-still 2.2 based and was not a stateful firewall.  I can't speak for
-shorewall, I haven't had a chance to play with it yet (we wrote our own
-firewall code + web interface so I haven't kept up too much on some of
-these other projects).
+On Thu, 13 Mar 2003, Steffen Trenkler wrote:
 
-Dan
-
-On Thu, 2003-03-13 at 07:58, Arnt Karlsen wrote:
-> On Thu, 13 Mar 2003 11:41:42 -0000, 
-> "Chris Partsenidis" <Chris@Firewall.cx> top posted in message 
-> <20030313114142.2704C1BB2FE@mail.powweb.com>:
-> > > 
-> > > ---------- Original Message -------------
-> > > Subject: help on DMZ project
-> > > Date: Thu, 13 Mar 2003 17:16:27 +0800
-> > > From: "louie miranda" <lmiranda@chikka.com>
-> > > To: <netfilter@lists.samba.org>
-> > > 
-> > > 
-> > > I currently have a project to make a DMZ farm of servers. I actually
-> > > want to make this firewall
-> > > be splitted in to 4 or more networks. I'll be trying to host 3
-> > > different company, I would like to
-> > > try using Iptables as my main firewall and gateway before the
-> > > internet.
-> > > 
-> > > Could this be done? And which documents should i read? I currently
+> My English is not so very well, but I try to explain my problem with
+> iptables:
 > 
-> ..piece of cake, several ways:  http://ipcop.org/  needs its 
-> own box, http://shorewall.net/ does really does too in your 
-> case, add in http://webmin.com/ to control it too, from a web 
-> browser, or, you can control both from ssh.  
+> I got a system with SuSE 8.0. It works as a router with an iptables script
+> between 2 static LANs. The Script does it very well, but sometimes it
+> happens that all connections from one LAN to the other are blocked suddenly.
 
+The output below shows clearly shows that you are having system problems,
+not iptables problems. In approximate order of probability:
+  1 - hardware problem in the NIC
+	If the driver was bad it would probably happen on both NICs.
+	If it does happen on both NICs skip this idea.
+	Can you swap NICs and see if the problem moves?
+  2 - driver problem
+	Unless there is a newer driver or kernel available, you may have
+	to change to another brand of NIC. Sorry.
+  3 - cable problem
+	I had a bad cable cause the connection to drop once in a while.
+	Check that all cables are firmly plugged in.
+
+> /var/log/messages and /var/log/firewall shows the following:
+> 
+> fw  kernel: eth0: Transmit timed out, status 00, resetting...
+> fw kernel:      Rx ring c071a000: 00000000 00000000 00000000 00000000 ...
+> fw kernel:      Tx ring c071b000: 80008001 80008005 80008009 8000800d
+> 80008011 ...
+> 
+> and then:
+> 
+> fw kernel: PACKET DROPPED: .....
+> fw kernel: PACKET DROPPED: .....
+> fw kernel: PACKET DROPPED: .....
+> ...
+> 
+> The error-message repeats periodically for a few seconds.
+> 
+> There are 2 same NICs in that system: D-Link DFE-550TX.
+> 
+> After rebooting the system, the firewall works fine again, 'cause the script
+> is loaded at booting the system.
+> 
+> Thx 4 help
+> 
+> Steffen Trenkler
+> 
+> Note: Is there any german-language iptables list?
+> 
+> 
+> 
+
+-- 
+bill davidsen <davidsen@tmr.com>
+  CTO, TMR Associates, Inc
+Doing interesting things with little computers since 1979.
 
 
