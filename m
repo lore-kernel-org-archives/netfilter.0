@@ -1,12 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Debian Error?
-Date: Fri, 25 Oct 2002 13:36:07 +0200 (CEST)
+From: "=?iso-8859-1?Q?yves.metivier?=" <yves.metivier@laposte.net>
+Subject: =?iso-8859-1?Q?H323_and_Traffic_Control__?=
+Date: Fri, 25 Oct 2002 13:36:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210251330380.1308-100000@dns.toxicfilms.tv>
-References: <004601c27c08$4186c890$0200000a@parseerror.dk>
+Message-ID: <H4JC9N$8B17FEF3457390EDE1EF6BC9A0A4266D@laposte.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004601c27c08$4186c890$0200000a@parseerror.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@ncparty.dk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"
+To: =?utf-8?Q?netfilter?= <netfilter@lists.netfilter.org>
 
-Hi
+Hi!
 
-> What module do i need to modconf for the -m string --string option will
-> work, so i can drop specific packets on their data.
-I'm a debian user, but i do not know what modconf is. I never rely on
-magical software from distros and their packages, simply try the
-patch-o-matic on your kernel sources, and then make the string match as a
-module, install it, and use it with iptables.
+I recently installed h323 netfilter extension on my home
+firewall/gateway and it works fine! Thanks!
 
-> and why are my traffic control utility so noncompatible, it don't even
-> have tbf fair quering, i don't understand it. It all worked well under
-> Mandrake?
-Again, i don't use magical kernel packages. Maybe tbf in debian is not
-compiled in.
+But I have a problem with traffic control :
+I want to give highest priority to real time traffic, like 
+h323.
 
-I recommend you downloaded the kernel, configure it (including TBF +
-whatever you need in QoS section) then, after saving the changes, patching
-it with netfilter patch-o-matic to get the patches applied to the kernel.
-and then make it.
+I use HTB queuing discipline with four different priority 
+classes. I use packet marking in netfilter through the mangle 
+table and fw mark option in "tc filter add ..." to send 
+packets in one of the four classes depending on the mark
 
-I always rely on compiling the stuff myself from the sources, and it
-works.
+I was expecting that h323 netfilter module should mark all 
+h323 traffic, including RTP and RTCP UDP packets, but it seems 
+that it only marks packets from known ports (those explicitely 
+declared in iptables), and not UDP related packets.
 
-Regards,
-Maciej Soltysiak
+Is my analyse right?
+
+Thanks in advance for any answer.
+
+Yves
+
+ 
+
+
+Acc=E9dez au courrier =E9lectronique de La Poste : www.laposte.net ; 3615 LAPOSTENET (0,13 =80/mn) ; t=E9l : 08 92 68 13 50 (0,34=80/mn)"
+
 
 
 
