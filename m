@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables together with kernel version 2.4.17
-Date: Thu, 19 Feb 2004 19:17:55 +0000
+From: "John Black" <black@arbbs.net>
+Subject: Re: netfilter question
+Date: Thu, 19 Feb 2004 14:25:36 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402191917.55280.Antony@Soft-Solutions.co.uk>
-References: <4034E14E.8050204@siemens.com>
+Message-ID: <40351bc0.48d2.0@arbbs.net>
+Reply-To: black@arbbs.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4034E14E.8050204@siemens.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +19,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 19 February 2004 4:16 pm, Simon Pelckmans wrote:
 
-> Hi,
+>I think you simply need to remove the "-d 161.x.x.x/21" from your rule and
+
+>things will start working the way you want.
 >
-> I'm trying to upgrade my iptables code in the kernel (version 2.4.17)
-> but this fails
-
-How does it fail?   What is the problem?
-
-> I want to bring my iptables code on the same level as the latest code.
+>Regards,
 >
-> Is there a specific patch for the 2.4.17 kernel, on the website I see
-> only 2.4.18 kernel references.
 
-Why not bring your kernel up to date as well?   2.4.17 is just over 2 years 
-old (21st December 2001)....
+just wanted to make sure this is right.
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o eth0  -j SNAT --to 161.x.x.x
 
-Regards,
 
-Antony.
+<iptables -t nat -L -n> gives me
 
--- 
-Documentation is like sex.
-When it's good, it's very very good.
-When it's bad, it's still better than nothing.
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+ 
+Chain POSTROUTING (policy ACCEPT) 
+target     prot opt source               destination
+SNAT       all  --  192.168.0.0/24       0.0.0.0/0          to:161.x.x.x
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+is that right? so that should mask my internetwork?  
 
+john
+ 
+
+http://www.arbbs.net/
 
