@@ -1,11 +1,13 @@
-From: Oskar Andreasson <blueflux@koffein.net>
-Subject: iptables-tutorial 1.1.17 released
-Date: 07 Apr 2003 11:45:35 +0200
+From: Vincent Lim <vincent.lim@nestac.com>
+Subject: Re: connection tracking query
+Date: 07 Apr 2003 17:51:38 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049708735.2559.161.camel@staring.direct2internet.com>
+Message-ID: <1049709098.1231.169.camel@vincentlim>
+References: <7497DCA1C240C042B28F6657ADFD8E0926876C@i2km11-ukbr.domain1.systemhost.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E0926876C@i2km11-ukbr.domain1.systemhost.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: dhiraj.2.bhuyan@bt.com
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+On Mon, 2003-04-07 at 17:02, dhiraj.2.bhuyan@bt.com wrote:
 
-First of all, sorry for the delay. I've had it up over my head with
-work, so I haven't been able to keep up with any of the private projects
-as of late. This goes especially to all of those who mailed me back in
-december, and who I didn't get back to until the last 3 weeks or so.
+<snip rest>
 
-The iptables-tutorial has finally been released in a new version. This
-version contains several minor updates, such as fixed admonition images,
-spelling errors, garbled programlistings and some variables to cohere
-with the explanations in the tutorial. This version also adds a
-prerequisites section, more detailed explanations on how to list
-rulesets, and some minor explanations. For a detailed list of the new
-changes, have have a look at the ChangeLog. The tutorial is available at
-http://iptables-tutorial.frozentux.net.
+> but also in INPUT and POSTROUTING chain. What I find strange with this is
+> that for a packet that goes through the "FORWARD" chain, "conntrack" is done
+> twice on the same packet - first in the "PREROUTING" chain and second in the
+> "POSTROUTING" chain. Does anyone have any explanation for this?
 
-The ipsysctl-tutorial should also be out in a couple of days in a new
-version. Not much new there, but a couple of bugfixes, rewrites, etc. 
+I think the first packet goes thru POSTROUTING, subsequent packets
+(after their routes determined) goes straight to FORWARD.
+> 
+> 2. If a packet is found to belong to an already ESTABLISHED connection, does
+> it still have to go through the filter rules again?
 
-Have a nice day,
+I would think so. You need to explicitly have "-m state --state
+ESTABLISHED, RELATED -j ACCEPT" to process those packets.
 
+My $0.02
+*awaits flame galore*
 -- 
-Oskar Andreasson <blueflux@koffein.net>
+Vincent Lim <vincent.lim@nestac.com>
+NESTAC Solution Sdn Bhd
 
 
