@@ -1,13 +1,16 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Problem with iptables module
-Date: 05 Oct 2004 19:33:01 +0200
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: What is the diference between ipfw of *bsd and netfilter of
+	linux?
+Date: Tue, 05 Oct 2004 14:24:15 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096997525.13686.7.camel@nostromo.bgsecm.com>
-References: <014a01c4aaef$5d500f10$bf07a8c0@civicXp>
+Message-ID: <1097000655.4415.4.camel@wolfpack.ljm.dom>
+References: <1096920404.658.4.camel@pretorian>
+	<1096979251.668.2.camel@nostromo.bgsecm.com>
+	<20041005172315.GA22610@legolas.on.net.mk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <014a01c4aaef$5d500f10$bf07a8c0@civicXp>
+In-Reply-To: <20041005172315.GA22610@legolas.on.net.mk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +20,23 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El mar, 05 de 10 de 2004 a las 17:23, Nicolas Ross escribi=C3=B3:
-> The current system I have this problem is a RedHat 7.1, kernel 2.4.20-2=
-4.7,=20
-> iptables 1.2.8.
-> It does it also on a RedHat 7.3, custum kernel 2.4.24, patched (with on=
-ly=20
-> pptp_conntrack_patch) iptables 1.2.10.
->=20
-> Any hints on this ?=20
+On Tue, 2004-10-05 at 13:23, Damjan wrote:
+> However I agree with you that netfilter is easier to use and has more
+> capabilities, I still can't beleive that netfilter (iptables actually)
+> doesn't have a way to identify rules uniquely (via an ID). So simple
+> feaure, so powerfull, and still iptables doesn't have this.
+> 
+> And no, linenumbers don't identify rules uniquely, they can change at
+> any moment.
 
-The only thing I can think it's that you can try the last kernel,
-userspace tools (iptables and patch-o-matic) and the last modutils.
-Maybe it solves your problem.
+check out the comment patch from POM.
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+-j
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+-- 
+Jason Opperisano <opie@817west.com>
 
 
