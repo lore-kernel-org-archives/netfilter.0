@@ -1,49 +1,84 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Netfilter and SCTP
-Date: Sat, 3 May 2003 17:14:39 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030503151439.GD29373@sunbeam.de.gnumonks.org>
-References: <Law8-F94rhYQYx3G5aY000150f0@hotmail.com> <1051712682.8215.135.camel@tux.rsn.bth.se>
+From: Netfilter Core Team <coreteam@netfilter.org>
+Subject: [ANNOUNCE] Netfilter Developer Workshop 2003
+Date: Sat, 3 May 2003 21:20:31 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030503192031.GK29373@sunbeam.de.gnumonks.org>
+Reply-To: workshop@netfilter.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
-Return-path: <netfilter-admin@lists.netfilter.org>
+	protocol="application/pgp-signature"; boundary="lHuqAdgBYNjQz/wy"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1051712682.8215.135.camel@tux.rsn.bth.se>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Martin Josefsson <gandalf@wlug.westbo.se>
-Cc: Cyrille Colin <shishico@hotmail.com>, Netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, lwn@lwn.net
 
 
---wULyF7TL5taEdwHz
+--lHuqAdgBYNjQz/wy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 30, 2003 at 04:24:42PM +0200, Martin Josefsson wrote:
-> iptables doesn't have support for SCTP yet, noone has sent a patch for
-> it :)
+http://www.netfilter.org/events/workshop-2003-budapest.html
 
-yes, but I am very interested in SCTP (I've read all the specs some time
-ago)... unfortunately there is way too much high-priority stuff on my
-TODO list, so I don't think that I'll be able to provide a patch soon.
+The netfilter core team is pleased to announce the second
 
-What we would need is an implementation of the following modules:
+             netfilter/iptables developer workshop 2003
 
-ip_conntrack_sctp.c
-ip_nat_sctp.c
-ipt_sctp.c
-libipt_sctp.c
+		 Aug 18 - Aug 20, Budapest, Hungary
 
-> /Martin
+
+ Following the successful netfilter developer workshop 2001 (Enschede,
+NL), we are now planning to organize netfilter developer meetings in=20
+a regular manner.
+
+ The workshop will be held in Budapest, Hungary on Aug 18 - Aug 20, 2003.
+The invited participants are the netfilter coreteam members and about=20
+10 developers.=20
+
+ The conference discussions are open to the public, so this is your ideal
+chance of getting in touch with the technical people behind the project.
+If you want to attend the workshop as non-invited (non-sponsored) guest,
+please contact us at workshop@netfilter.org.
+
+The planned agenda for the workshop is
+
+	iptables2/pkttables design
+	nfnetlink/ctnetlink/pkttnetlink
+	connection tracking issues
+	tc + packet filtering
+	bridging packet filters
+	stateful failover
+	profiling/benchmarking
+	nf-hipac
+	netfilter in other protocols (ARP, MPLS, SCTP, ...)
+	(... to be continued)
+
+Schedule:
+	Aug 17		arrival
+	Aug 18 		workshop
+	Aug 19 		workshop
+	Aug 20 morning	excursion to the Danube-bend
+	Aug 20 evening	departure
+
+We have created a mailinglist for further discussion of the
+Agenda and general coordination.  Feel free to subscribe at
+http(s)://lists.netfilter.org/mailman/listinfo/netfilter-workshop
+
+Please direct all further questions regarding the workshop to
+<workshop@netfilter.org>
+
+The netfilter core team wants to thank:
+	KFKI RMKI (http://www.rmki.kfki.hu) for the local organization
+	Astaro AG (http://www.astaro.com/) for sponsoring this workshop
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -55,7 +90,7 @@ libipt_sctp.c
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---wULyF7TL5taEdwHz
+--lHuqAdgBYNjQz/wy
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
@@ -63,10 +98,10 @@ Content-Disposition: inline
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQE+s9zfXaXGVTD0i/8RAt0iAJsE1kquhMpjqhwkRkhdRntpJLz8SACeIHlv
-Xu+z+z/9QLSJYvAAjl9dt38=
-=acEw
+iD8DBQE+tBZ/NfqJzMqajVsRAjAYAJ4zS42wY4b1vZddX/h2RekwlmqkMgCeJVL0
+7W9X5l9TxlOeTpbzbPIf19k=
+=0t7D
 -----END PGP SIGNATURE-----
 
---wULyF7TL5taEdwHz--
+--lHuqAdgBYNjQz/wy--
 
