@@ -1,11 +1,10 @@
-From: =?iso-8859-1?Q?Oriol_Magran=E9?= <omagrane@mediapro.es>
-Subject: Re: Newbie question about nat
-Date: Mon, 3 May 2004 17:33:50 +0200
+From: Kevin White <ml-kevin@kevbo.org>
+Subject: Connection stats logging?
+Date: Mon, 03 May 2004 11:44:44 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001b01c43124$0c9d36f0$a704a8c0@mpro4167>
-References: <004901c42edf$c73c77b0$a704a8c0@mpro4167> <200404301937.33366.Antony@Soft-Solutions.co.uk>
+Message-ID: <409668EC.7050804@kevbo.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,90 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hello all,
 
-    Thank you!
-    Now I'd like to set up an ftp server inside with private ip
-192.168.1.111 and public ip a.b.c.k
-    So the nat rules will be:
+We had a firewall application using an old OpenBSD (2.9).  One of the
+things it did on NAT was log lines like this when connections closed:
 
-        iptables -t nat -A PREROUTING -d a.b.c.k -j DNAT --to 192.168.1.111
-        iptables -t nat -A POSTROUTING -s 192.168.1.111 -j SNAT --to a.b.c.k
+Apr 29 23:25:46 si000AmerSh ipmon[3122]: 23:25:46.021102 STATE:CLOSE
+216.65.19.55,53505 -> 192.168.0.82,25 PR tcp Pkts 60 Bytes 22144
 
-    However I don't know how to use the ip_conntrack_ftp and ip_nat_ftp
-modules when it comes to write the accept/drop rules.
-    If the server was a web server, I would use these rules:
+We used this line to do statistics.
 
-        iptables -A FORWARD -d 192.168.1.111 -p tcp --destination-port 80 -m
-state --state NEW,ESTABLISHED -j ACCEPT
-        iptables -A FORWARD -s 192.168.1.111 -p tcp --source-port 80 -m
-state --state ESTABLISHED -j ACCEPT
+I'm trying to figure out how to get something similar with Netfilter.
 
-    But how should they be to allow active ftp access to 192.168.1.111 using
-the ip_conntrack_ftp and ip_nat_ftp modules?
+Basically, what I need is a report of the connection: where it was to,
+how many bytes and packets it had, when it closes.
 
-    Thank you very much in advance!!
+I've looked at ulogd, but I'm not sure that would be ideal.  Basically,
+I'd have to build my own connection tracker DB to assign every packet
+to, so I'd be at least doubling the memory footprint.
 
-    Oriol
+I'm wondering if there's something built in that I can get to to give me
+these kinds of statistics.  Or if I should be writing an extension.
+(I'd like to get this data for every connection that goes through the
+firewall.)
 
+Thoughts, or pointers?  I'm looking for input before I waste too much
+time barking up the wrong tree.
 
+Thanks,
 
------ Original Message -----=20
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Friday, April 30, 2004 8:37 PM
-Subject: Re: Newbie question about nat
+Kevin
 
 
-On Friday 30 April 2004 7:20 pm, Oriol Magran=E9 wrote:
 
->     Hello!
->     I'm trying to set up a firewall with two ethernets to be installed
-> between the internet and a pool of servers.
->
->     I have some public ips available (a.b.c.e, a.b.c.f, a.b.c.g,...) so
-now
-> I want to map the external ip 'a.b.c.e' with the internal ip 192.168.1.100
->
-> The only solution I've found is to define an ip alias in the firewall
-itself
-> so that eth0:1 will respond to the external ip a.b.c.e Thus when the
-router
-> of my ISP asks "who has ip a.b.c.e?", the firewall will answer "me" and it
-> will process the packet and deliver it to the internal server 1.
->
->     But this solution means defining an alias for every external ip I want
-> to firewall. So if I have eight servers firewalled I will need eight ip
-> alias in the firewall.
-
-Correct.   This is not a problem.
-
-However, it is recommended that you use the new (well, not that new, but
-more
-recent) "ip" commands to add addresses to interfaces, rather than the
-deprecated ethn:x alias method.
-
-Try: "ip addr add a.b.c.e dev eth0" instead of the ifconfig eth0:1 command.
-
-Regards,
-
-Antony.
-
---=20
-"It would appear we have reached the limits of what it is possible to
-achieve
-with computer technology, although one should be careful with such
-statements; they tend to sound pretty silly in five years."
-
- - John von Neumann (1949)
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
 
 
 
