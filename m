@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Filtering encrypted vs. unencrypted packages?
-Date: Sun, 31 Oct 2004 13:43:42 -0500
-Message-ID: <1099248085.3271.7.camel@hubcap.ljm.dom>
-References: <41840BB2.6020904@danisch.de>
+Subject: Re: Problem with NAT and ipsec (freeswan)
+Date: Sun, 31 Oct 2004 13:47:19 -0500
+Message-ID: <1099248439.3271.9.camel@hubcap.ljm.dom>
+References: <Pine.LNX.4.58.0410292141120.628@lgh3812534.vittran.norrnod.se>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41840BB2.6020904@danisch.de>
+In-Reply-To: <Pine.LNX.4.58.0410292141120.628@lgh3812534.vittran.norrnod.se>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,52 +20,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 2004-10-30 at 17:46, Hadmut Danisch wrote:
-> Hi,
+On Fri, 2004-10-29 at 15:49, netfilter@lgh3812534.vittran.norrnod.se
+wrote:
+> I have a linux box (redhat 9.0) that I want to use for NAT and VPN tunnel.
+> The netfilter setup is very simple, just this line:
+> iptables -t nat -A POSTROUTING -s 192.168.167.0/24 -o eth1 -j
+> SNAT --to my_external_ip
 > 
-> I was just playing around with 2.6 IPSec and isakmpd and ran into a problem:
+> Everyting works fine and the linux box does nat for internal subnet. But
+> when I start ipsec (freeswan) (service ipsec start) nat stops forwarding
+> packets.
 > 
-> In order to have the packets from the peer IPSEC network accepted,
-> I need to have an entry like
-> 
-> iptables -A INPUT -s 192.168.19.0/24 -j ACCEPT
-> 
-> where 192.168.19.0 is the network behind the ipsec peer.
-> 
-> But if I do this, the machine would also accept unencrypted packages
-> from the Internet (except for the fact that packets to RFC1918-Adresses 
-> are not
-> routed, but assume that the LAN has official addresses).
-> 
-> I can't even distinguish them by the interface, because from an
-> iptables point of view, the packages are incoming on the external 
-> interface,
-> as if they were coming unencrypted.
-> 
-> How do I treat packets from IPSec and unencrypted plain packets from the
-> Internet differently with iptables?
+> Any tips?
 
-the packets pass through the netfilter tables twice--once encrypted, and
-once unencrypted.  the 'common' way to filter IPSec traffic with the 2.6
-kernel is to mark the IPSec packets:
-
-  # mark ipsec packets from vpn peer 1
-  iptables -t mangle -A PREROUTING -p 50 -s $vpn_peer1 \
-    -j MARK --set-mark 1
-
-  # accept IKE & ESP packets from vpn peer 1
-  iptables -A INPUT -i $extif -p udp -s $vpn_peer1 \
-    --sport 500 --dport 500 -j ACCEPT
-  iptables -A INPUT -i $extif -p 50 -s $vpn_peer1 -j ACCEPT
-
-  # accept packets from the remote vpn net that have the mark
-  iptables -A FORWARD -s $vpn_peer_net1 -m mark --mark 1 -j ACCEPT
+there's a problem with your ipsec.conf.
 
 -j
 
 --
-"That's it! You people have stood in my way long enough. I'm going
-to clown college!"
+"What's the point of going out, we're just going to end up back
+here anyway?"
 	--The Simpsons
 
 
