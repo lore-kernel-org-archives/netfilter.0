@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: ip_conntrack_tcp Errors
-Date: Tue, 29 Jun 2004 09:46:18 +0200 (CEST)
+Date: Tue, 29 Jun 2004 09:55:07 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0406290938140.22926-100000@blackhole.kfki.hu>
-References: <1088437519.13933.218.camel@spudgun.dhcp.internal>
+Message-ID: <Pine.LNX.4.33.0406290947300.22926-100000@blackhole.kfki.hu>
+References: <1088433615.13925.206.camel@spudgun.dhcp.internal>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088437519.13933.218.camel@spudgun.dhcp.internal>
+In-Reply-To: <1088433615.13925.206.camel@spudgun.dhcp.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,25 +23,36 @@ Cc: netfilter@lists.netfilter.org
 
 On 28 Jun 2004, Evgeni Vachkov wrote:
 
-> > > patch? ...Or perhaps it is some other problem with other parts of the
-> > > kernel?
-> > It seems to me that you have applied the tcp window tracking patch from pom-ng.
-> > The problem is that the client and the server have done the first step of the
-> > three way handshake, and are in sync, but the firewall for some reason is not.
-> > So it drops the SYN/ACK, and thus forcing the client to retransmit its SYN and
-> > initiate a new session (as descibed in the source code of the patch)
-> >
-> > My advice is if you have applied this patch, to remove it, and test the load on the
-> > firewall again.
->
-> As far as I can figure out we are running with
-> patch-o-matic-ng-20040302. I can see that the latest is
-> patch-o-matic-ng-20040621. Is this problem present at the version we are
-> running and is the new version still having the window tracking issues?
+> I understand the need to identify the problem and I am more than willing
+> to help. It would be appreciated if you could adise me on the tcpdump
+> command switches to run, since I dont want to scan through thousands of
+> packets to identify the missing one. Also I am not an expert in tcpdump,
+> so I will need your help.
 
-SACK support was added to the patch in patch-o-matic-ng-20040621 with some
-minor fixes, compared to patch-o-matic-ng-20040302. It does not hurt to
-upgrade but I don't expect that it'd behave differently in your test.
+Assuming that eth0 faces with the client machine, issue the
+following command before starting the test:
+
+# tcpdump -i eth0 -w capture.log tcp
+
+If the machine is short in disk space you can compress the log on the fly
+instead:
+
+# tcpdump -i eth0 -w - tcp | gzip -c9 > capture.log.gz
+
+and then you can stop tcpdump by
+
+# killall -INT tcpdump
+
+> Note that this problem occurs only when ip_conntrack table reaches
+> arround 25000 connections. The software I am running is using ab (a
+> shell script incorporatring ab).
+
+I assume you run Linux on the client machine running ab as well, don't
+you? What it the output of
+
+# cat /proc/sys/net/ipv4/ip_local_port_range
+
+on that machine?
 
 Best regards,
 Jozsef
