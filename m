@@ -1,14 +1,14 @@
 From: Zoilo <zoilo@xs4all.nl>
-Subject: Re: First iptables script - comments please
-Date: Thu, 3 Oct 2002 20:58:42 +0200
+Subject: Re: iptables is giving me probs
+Date: Thu, 3 Oct 2002 20:53:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02100320584201.02373@Lms>
-References: <20021003172228.GC7407@gentoo.coot.net>
+Message-ID: <02100320534300.02373@Lms>
+References: <003801c26b07$2eb25f20$68287bd5@p4226>
 Reply-To: zoilo@xs4all.nl
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021003172228.GC7407@gentoo.coot.net>
+In-Reply-To: <003801c26b07$2eb25f20$68287bd5@p4226>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +19,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Craig H. Anderson" <craigha@attbi.com>, netfilter@lists.netfilter.org
+To: Sarkis Gabriel <sarky@raycon.net>, netfilter@lists.netfilter.org
 
-On Thursday 03 October 2002 19:22, Craig H. Anderson wrote:
-> I've just tried iptables for the first time
-> and would like comments on this simiple
-> script.
+On Thursday 03 October 2002 20:03, Sarkis Gabriel wrote:
+> Hi all
+> Well i am new to this list, and i have been trying to fix this problem for
+> a while but i dont know what is causing this problem in the first place. i
+> installed RH 7.2 and when i wanted to use iptables it gave me this error :
+> /lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o: init_module:
+> Device or resource busy
+> Hint: insmod errors can be caused by incorrect module parameters, including
+> invalid IO or IRQ parameters
+> /lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+> /lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o failed
+> /lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+> ip_tables failed
+> iptables v1.2.5: can't initialize iptables table `filter': iptables who?
+> (do you need to insmod?)
+> Perhaps iptables or your kernel needs to be upgraded.
 >
-> Gateway box with
->    cable modem on one NIC (eth2)
->    2 NIC's connected to local hubs.
->    local subnets are 10.0.0.0/24 and 10.0..1.0/24
->    only 10.0.0.0 is currently in use
->
-> I am successful in getting to the internet
-> with this script.
->
-> # $Id: localFirewall,v 1.1 2002/10/03 16:31:21 craig Exp $
-> iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
-> iptables -A FORWARD -s 10.0.0.0/24 -j ACCEPT
-> iptables -A FORWARD -d 10.0.0.0/24 -j ACCEPT
-> iptables -A FORWARD -j DROP
+> well it is driving me crazy i didnt do anything it is like that with a
+> fresh install even on 7.3
+> and i upgraded to that version to see if it will fix it but nope no luck..
 
-I would say that it's somewhat minimalistic, but OK.
+RH comes with ipchains enabled i.o. iptables; you must disable ipchains in 
+order to load iptables.
 
-Better to use "iptables -P FORWARD DROP" to establish default DROP-policy for 
-the FORWARD chain, although you effectively achieve the same result by 
-putting your DROP-rule at the end of the list.
-
-A little further improvement may be obtained by adding "-i eth0" and "-o 
-eth0" to your FORWARD rules.
-
-And don't forget to handle INPUT and OUTPUT chains as well (default DROP 
-policy).
+See last months' list archives for further details.
 
 -- 
 Z.
