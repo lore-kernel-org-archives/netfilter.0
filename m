@@ -1,9 +1,10 @@
-From: COUSIN Marc <mcousin@sigma.fr>
-Subject: mangling, marking
-Date: Thu, 14 Nov 2002 12:07:27 +0100
+From: "Fabricio Veloso" <fabricio_veloso@yahoo.com.br>
+Subject: ip_conntrack_core
+Date: Thu, 14 Nov 2002 10:50:59 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B5D7C6B6D020D511838A0060082D4CC90299BB92@kheops.sigma.fr>
+Message-ID: <005701c28be4$e1023da0$0207a8c0@FVeloso>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,48 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Hi,
-I'm having trouve using mangling on NATed packets:
+What is this?
 
-Here's what we're trying to do:
-We're trying to build a system to test the behaviour of our web applications
-with slow links. For that, we decided to use the Linux QoS, and SNAT+DNAT to
-redirect the packets from the linux system to the webserver. The idea behind
-this is that someone contacting the linux on the 8081 port will be
-transparently redirected to the 8080 of the real web server, simulating a
-56k modem. on the 8082 port, it could be a 128 link, etc ...
+ip_conntrack_core.c: In function `ip_conntrack_init':
+ip_conntrack_core.c:1118: `ip_conntrack_sysctl_header' undeclared (first
+use in this function)
+ip_conntrack_core.c:1118: (Each undeclared identifier is reported only
+once
+ip_conntrack_core.c:1118: for each function it appears in.)
+ip_conntrack_core.c:1118: `ip_conntrack_root_table' undeclared (first
+use in this function)
+make[2]: *** [ip_conntrack_core.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.19/net/ipv4/netfilter'
+make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.19/net'
+make: *** [_mod_net] Error 2
 
-The system is a Redhat 7.3
+Thanks
 
-To create this, I used:
-- DNAT and SNAT rules to redirect the packets from my port to the web
-server, and SNAT the packet (so that it is returned to me and i can shape it
-too) [these are OK]
-- a QoS script (simple, using fwmarks) [ok too]
-- And I wanted to mangle the packets to put the marks on the NATed pakets
-[here comes the trouble]
-I'll continue on the above example :
+Fabr=3DEDcio Veloso
+S=3DE3o Paulo - Brazil
 
-# For the NAT
-iptables -t nat -A PREROUTING -p tcp --destination-port 8081:8090 -j DNAT
---to-destination 89.131.0.7:8080
-iptables -t nat -A POSTROUTING -p tcp --destination 89.131.0.7 -j SNAT
---to-source 89.131.0.58
-# For the marks
-iptables -A PREROUTING -t mangle -p tcp --destination-port 8081 -j MARK
---set-mark 10 
-iptables -A POSTROUTING -t mangle -p tcp --source-port 8081 -j MARK
---set-mark 11 # Trying to match the return NATed packet
-
-
-The --set-mark 10 works (no surprise, very simple rule in fact)
-the --set-mark 11 doesn't match. It may be normal, as I'm trying to match a
-return packet on a NAT connexion. How am I supposed to match the return
-packet in such a situation ?
-
-Thanks fof helping
+_______________________________________________________________________
+Yahoo! Encontros
+O lugar certo para encontrar a sua alma g=EAmea.
+http://br.encontros.yahoo.com/
 
