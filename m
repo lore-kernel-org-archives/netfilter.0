@@ -1,13 +1,15 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Problem Found! - Firewall Rule
-Date: Fri, 6 Jun 2003 10:56:18 +1000
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Two IP add
+Date: Thu, 5 Jun 2003 21:10:47 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019266@wardrive.citadelcomputer.com.au>
+Message-ID: <200306052110.47892.Alistair@nerdnet.ca>
+References: <200306051156.45624.pandre@darkstar.nom.za> <200306051856.48803.Alistair@nerdnet.ca> <200306060156.08079.pc-secure@home.nl>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C32BC6.70390F54"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200306060156.08079.pc-secure@home.nl>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,201 +19,100 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: John Paul <john@pinoylinux.sytes.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Pascal Italiaander <pc-secure@home.nl>, Netfilter <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+On June 5, 2003 07:56 pm, Pascal Italiaander wrote:
+> Op vrijdag 6 juni 2003 00:56, schreef u:
+> > On June 5, 2003 01:54 pm, Pascal Italiaander wrote:
+> > > Op donderdag 5 juni 2003 19:51, schreef u:
+> > > > Op donderdag 5 juni 2003 15:29, schreef Ray Leach:
+> > > > > On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
+> > > > > > On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
+> > > > > >         I would like to do the following:
+> > > > > >
+> > > > > >         Stop MASQUESRADING to two servers say. 10.10.10.5 and
+> > > > > > 10.10.10.8, how would i do this with a rule.
+> > > > > >
+> > > > > >         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers
+> > > > > > ip' -j MASQUERADE now how would i put in two ip address's ?
+> > > >
+> > > > Ok , you could do something like this:
+> > >
+> > > sorry in the first reply was an error !!
+> > > this is fixed now.
+> > >
+> > >  NO_MASK="10.10.10.5 10.10.10.8"
+> > >
+> > >  if [ ${NO_MASK} != "" ] ; then
+> > >    for nomask in ${NO_MASK}; do
+> > >   	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j
+> > > MASQUERADE done;
+> > >  fi
+> > >
+> > > > this is a bit more flexible, cause , you can ad more ip's the NO_MASK
+> > > > easily without changing the rule itself, or have to write a new line.
+> > >
+> > >  Pascal
+> >
+> > 	I somehow don't think this will do what we want here.
+> > 	rule 1 from this loop will MASQUERADE any ip that is
+> > 	NOT 10.10.10.5, which unfortunately includes 10.10.10.8
+> > 	and rule #2 will never be hit by the 10.10.10.8 packet.
+> >
+> > 	I would suggest that we want to take the entire segment
+> > 	and manage it separately, but I have no experience with
+> > 	creating user chains in the nat table, although this *might*
+> > 	work -- ymmv
+> >
+> >
+> > iptables -t nat -N masq_filter
+> > iptables -t nat -A POSTROUTING -s x.x.x.x -d 10.10.10.0/24 -j masq_filter
+> > # the above line includes an assumption that MIGHT BE WRONG!!!! I dont
+> > know # what your netmask is!!!!!!!!!
+> > iptables -t nat -A masq_filter -d 10.10.10.5 -j RETURN
+> > iptables -t nat -A masq_filter -d 10.10.10.8 -j RETURN
+> > iptables -t nat -A masq_filter -j MASQUERADE
+> >
+> > 	filling in out the ips to NOT masquerade one at a time, perhaps with a
+> > loop as pascal suggests above, with appropriate modifications...
+>
+> Yes correct , now you mention it , I see it also.
+> 2 lines where added to the filter-list and would not traverse the firewall
+> if IP was 10.10.10.8
+>
+> however the syntax could be reused, with this modification.
+> So combined the information together we get this example;
+>
+> MASQ="yes' #Do you need masquerading ?
+> NO_MASK="10.10.10.5 10.10.10.8" #IP's who don't need masquerading(watch the
+> single-space)
+> INET="10.10.10.0/24" #Local network + subnet
+> EX_IF="eth0" #External interface
+>
+> if [ ${MASQ} == "yes" ]; then
+>    if [ ${NO_MASK} != "" ] ; then
+>         for nomask in ${NO_MASK}; do
+>  		iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j RETURN
+> 		iptables -A POSTROUTING -t nat -s ${INET} -o ${EX_IF} -j MASQUERADE
+>  	done;
+> 		else
+> 			iptables -A POSTROUTING -t nat -s ${INET} -o ${EX_IF} -j MASQUERADE
+>  fi
+>
+> greetings Pascal
+> have fun
 
-------_=_NextPart_001_01C32BC6.70390F54
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	Now we're getting somewhere, but you need to take out the !
+	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j RETURN
+	should be
+	iptables -t nat -A POSTROUTING -s x.x.x.x -d  ${nomask} -j RETURN
+-- 
 
-Your local IP is the same as the remote networks IP.. so how is the =
-local machine to know that 192.168.0.55 or 66 or 32 is on the VPN!?
-=20
-The only way I know is to proxyarp the ppp device that the vpn is =
-running on.. I'm assuming it's PPTP so you could try this command when =
-the VPN comes up :
-echo 1 > /proc/sys/net/ipv4/conf/$VPNDEV/proxy_arp
-=20
-and this must be done on the VPN server too..
-I've never done it this way with a VPN.. but you can only try it..
-=20
-I'm surprised that anything really works properly the way you've done it =
-because the firewall has 2 network devices with the same IP range.
-
-Thanks,
-
-=20
-____________________________________________
-George Vieira
-Citadel Computer Systems Pty Ltd Systems Manager georgev AT =
-citadelcomputer DOT com DOT au=20
-Citadel Computer Systems Pty Ltd
-Phone : +61 2 9955 2644 HelpDesk: +61 2 9955 2698  =
-<http://www.citadelcomputer.com.au/> http://www.citadelcomputer.com.au
-=20
-=20
------Original Message-----
-From: John Paul [mailto:john@pinoylinux.sytes.net]
-Sent: Friday, June 06, 2003 9:56 AM
-To: netfilter@lists.netfilter.org
-Subject: Problem Found! - Firewall Rule
-
-
-Hello Folks, its me again :(
-=20
-Below is my config. My problem is, I can connect to VPN but for some =
-reason, I cannot see machines inside the network after being connected. =
-Can somebody give me the simpliest firewall rule on this? just for me to =
-see the machines inside the network.
-=20
-Thanks!
-/JP
-=20
-
-------_=_NextPart_001_01C32BC6.70390F54
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-
-
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#edfefc>
-<DIV><SPAN class=3D560554800-06062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>Your=20
-local IP is the same as the remote networks IP.. so how is the local =
-machine to=20
-know that 192.168.0.55 or 66 or 32 is on the VPN!?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D560554800-06062003><FONT face=3DArial color=3D#0000ff =
-
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D560554800-06062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>The=20
-only way I know is to proxyarp the ppp device that the vpn is running =
-on.. I'm=20
-assuming it's PPTP so you could try this command when the VPN comes up=20
-:</FONT></SPAN></DIV>
-<DIV><SPAN class=3D560554800-06062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>echo 1=20
-&gt; /proc/sys/net/ipv4/conf/$VPNDEV/proxy_arp</FONT></SPAN></DIV>
-<DIV><SPAN class=3D560554800-06062003><FONT face=3DArial color=3D#0000ff =
-
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D560554800-06062003></SPAN><FONT face=3DArial =
-color=3D#0000ff=20
-size=3D2><SPAN class=3D560554800-06062003>and this must be done on the =
-VPN server=20
-too..</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
-class=3D560554800-06062003>I've=20
-never done it this way with a VPN.. but you can only try=20
-it..</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
-class=3D560554800-06062003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
-class=3D560554800-06062003>I'm=20
-surprised that anything really works properly the way you've done it =
-because the=20
-firewall has 2 network devices with the same IP =
-range.</SPAN></FONT></DIV>
-<DIV>
-<P><FONT face=3DArial size=3D2><SPAN=20
-class=3D674251008-03092002>Thanks,</SPAN></FONT></P></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D674251008-03092002></SPAN></FONT>&nbsp;</DIV>
-<DIV style=3D"WIDTH: 305px; HEIGHT: 232px">
-<MARQUEE id=3DMarquee1 style=3D"WIDTH: 220px; HEIGHT: 57px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D20 direction=3Ddown behavior=3Dslide loop=3D1 =
-border=3D"2"><FONT=20
-size=3D1>____________________________________________</FONT></MARQUEE><BR=
-><B><FONT=20
-color=3D#000066 size=3D2></FONT><FONT face=3DVerdana color=3D#000066 =
-size=3D2>George=20
-Vieira<BR></FONT></B>
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D3 behavior=3Dslide loop=3D1 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
-size=3D1><B>Citadel=20
-Computer Systems Pty Ltd</B></FONT></MARQUEE>
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D3 behavior=3Dslide loop=3D1 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
-size=3D1><B>Systems=20
-Manager</B></FONT></MARQUEE><FONT face=3DVerdana>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 255px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D2 scrollDelay=3D5 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-width=3D300 height=3D16 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
-size=3D1>georgev AT=20
-citadelcomputer DOT com DOT au</FONT></MARQUEE>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1=20
-border=3D"0"></MARQUEE></FONT>
-<DIV><FONT face=3D"Verdana, Verdana, Helvetica, sans-serif" =
-color=3Dblack=20
-size=3D1>Citadel Computer Systems Pty Ltd</FONT><FONT =
-face=3DVerdana></DIV>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><FONT color=3Dblack size=3D1>Phone : +61 2 9955=20
-2644</FONT></MARQUEE></FONT><FONT face=3DVerdana>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><FONT color=3Dblack size=3D1>HelpDesk: +61 2 9955=20
-2698</FONT></MARQUEE></FONT>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D4 scrollDelay=3D5 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><A href=3D"http://www.citadelcomputer.com.au/"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
-size=3D1><A=20
-href=3D"http://www.citadelcomputer.com.au/">http://www.citadelcomputer.co=
-m.au</FONT></A></MARQUEE></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2></FONT>&nbsp;</DIV>
-<DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
-face=3DTahoma=20
-size=3D2>-----Original Message-----<BR><B>From:</B> John Paul=20
-[mailto:john@pinoylinux.sytes.net]<BR><B>Sent:</B> Friday, June 06, 2003 =
-9:56=20
-AM<BR><B>To:</B> netfilter@lists.netfilter.org<BR><B>Subject:</B> =
-Problem Found!=20
-- Firewall Rule<BR><BR></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>Hello Folks, its me again =
-:(</FONT></DIV>
-<DIV><FONT color=3D#0000ff></FONT>&nbsp;</DIV>
-<DIV>Below is my config. My problem is, I can connect to VPN but for =
-some=20
-reason, I cannot see machines inside the network after being connected. =
-Can=20
-somebody give me&nbsp;the simpliest&nbsp;firewall rule on this? just for =
-me to=20
-see the machines inside the network.</DIV>
-<DIV><FONT color=3D#0000ff></FONT>&nbsp;</DIV>
-<DIV>Thanks!</DIV>
-<DIV>/JP</DIV>
-<DIV><FONT =
-color=3D#0000ff></FONT>&nbsp;</DIV></FONT></DIV></BODY></HTML>
-
-------_=_NextPart_001_01C32BC6.70390F54--
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
