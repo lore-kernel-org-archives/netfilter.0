@@ -1,15 +1,13 @@
-From: David Cannings <lists@edeca.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Firewall Script Help
-Date: Mon, 8 Mar 2004 20:12:34 +0000
+Date: Mon, 8 Mar 2004 20:32:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403082012.34162.lists@edeca.net>
-References: <JKELJHHMDHPOLKFBOEGHMECLFDAA.cldavis@speakeasy.net>
-Reply-To: david@edeca.net
+Message-ID: <200403082032.57107.Antony@Soft-Solutions.co.uk>
+References: <JKELJHHMDHPOLKFBOEGHMECLFDAA.cldavis@speakeasy.net> <200403082012.34162.lists@edeca.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <JKELJHHMDHPOLKFBOEGHMECLFDAA.cldavis@speakeasy.net>
-Content-Disposition: inline
+In-Reply-To: <200403082012.34162.lists@edeca.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,66 +20,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 08 March 2004 19:19, Christopher Davis wrote:
-> David:
-> > Just a quick point, it is (in my opinion at
-> > least) far easier to read your
-> > firewall rules if they're output from iptables
-> > itself.  Following through
-> > the script is harder.
-> Here it is!  If it is easier to read, I can forward indivual
-> txt docs with the same information -- I didn't want to
-> attach anything being sent to the list.
+On Monday 08 March 2004 8:12 pm, David Cannings wrote:
 
-Only a few comments, your script seems fairly comprehensive.
+> >     0     0 DROP       tcp  --  any    any     anywhere
+> > anywhere           tcp flags:FIN,ACK/FIN
+>
+> As I understand it, this means "check the flags FIN and ACK, only match if
+> FIN is set and ACK isn't".  This would match packets that only have the
+> FIN flag set, which I am fairly sure are valid.  I may need correcting on
+> this issue, however.
 
-> Chain INPUT (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->     0     0 DROP       all  --  any    any     anywhere
-> anywhere           state INVALID
->     0     0 ACCEPT     all  --  any    any     anywhere
-> anywhere           state RELATED,ESTABLISHED
->     0     0 ACCEPT     all  --  lo     any     anywhere
-> anywhere
->     0     0 DROP       tcp  --  any    any     anywhere
-> anywhere           tcp flags:FIN,ACK/FIN
->     0     0 DROP       tcp  --  any    any     anywhere
+You are correct.
 
-As I understand it, this means "check the flags FIN and ACK, only match if 
-FIN is set and ACK isn't".  This would match packets that only have the 
-FIN flag set, which I am fairly sure are valid.  I may need correcting on 
-this issure, however.
+TCP connections start with:
+packet 1: SYN (only) from the client
+packet 2: SYN/ACK from the server
+packet 3: ACK from the client
+all further packets have the ACK flag set from both client and server
 
-> anywhere           tcp dpt:ssh
->     0     0 DROP       tcp  --  any    any     anywhere
+and then they end with
+packet n-3: FIN (only) from the side which wants to stop talking
+packet n-2: FIN/ACK from the other side
+packet n-1: FIN (only) from the other side (to confirm it will stop talking 
+too)
+packet n: FIN/ACK from the side which ended the communication
 
-Do you really want anybody in the world able to connect to your SSH 
-server?  Personally, I only allow from IP addresses ranges that I know.  
-If you're on DHCP on your home connection, allow the whole /24 or 
-even /16 address pool the IP comes from.  That still leaves a few billion 
-hosts unable to connect to you.
+(Although note that the final two packets are optional and often not seen, 
+indeed often blocked by netfilter because by that time it thinks the 
+connection is no longer ESTABLSIHED.)
 
-I say this purely from a paranoid point of view.  As soon as a remote 
-exploit is found in SSH malicious people can possibly take advantage of 
-it.
+Regards,
 
-> anywhere           tcp flags:SYN/SYN
->     0     0 DROP       tcp  --  any    any     anywhere
+Antony.
 
-Perhaps use the NEW keyword here, it might help.
+-- 
+What is this talk of "software release"?
+Our software evolves and matures until it is capable of escape, leaving a 
+bloody trail of designers and quality assurance people in its wake.
 
-> Chain BADIP (0 references)
->  pkts bytes target     prot opt in     out     source
->   destination
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-You don't reference this chain anywhere.  Perhaps you should -I a 
-reference to it at the top of the INPUT and OUTPUT chains.
-
-Blocking INVALID packets may do what you do with manual --tcp-flags 
-checks, as I do not know the specific internals of it.  In short, it 
-blocks packets that aren't related to existing connections but I am 
-unsure whether it will also block "illegal" packets so I cannot comment.
-
-David
 
