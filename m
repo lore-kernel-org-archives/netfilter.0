@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: inner workings of IP tables
-Date: Mon, 30 Sep 2002 14:36:26 +0100
+From: "Mitesh P Choksi" <murli@icafe.co.tz>
+Subject: Re: SNAT matching question
+Date: Sun, 29 Sep 2002 21:43:53 +0300 (EAT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209301337.g8UDb1L04062@vulcan.rissington.net>
-References: <Pine.LNX.4.40.0209300905060.19596-100000@klepto.security.algx.lan>
+Message-ID: <55282.64.86.49.17.1033325033.squirrel@www.icafe.co.tz>
+References: <20020929171804.GPIU2092.mta07-svc.ntlworld.com@there>
+Reply-To: murli@icafe.co.tz
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.40.0209300905060.19596-100000@klepto.security.algx.lan>
+In-Reply-To: <20020929171804.GPIU2092.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +19,80 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony@Soft-Solutions.co.uk
+Cc: netfilter@lists.netfilter.org
 
-On Monday 30 September 2002 2:21 pm, Kevin Dwyer wrote:
+I have tried and tested this alternative of 2 private IP addresses and it
+works brilliant in conjunction with iproute2.
 
-> > Cluefullness of firewall administrator has almost nothing to do with a
-> > type of user interface firewall he prefers to use. Like we never saw
-> > wrong firewall configurations done in iptables, or in ipfilter, or PIX
-> > using their CLI. In the end, what matters is how much time one needs to
-> > spend building rules and verifying them, and what is the proprability of
-> > an error still slipping through. Anything that can help reduce this
-> > probablility is useful, even if it is a GUI.
+Mitesh
+
+Antony Stone said:
+> On Sunday 29 September 2002 6:09 pm, Mohan Khurana wrote:
 >
-> Again, I didn't mean to, though I certainly did, imply that GUI user ==
-> dumb user.  I think there are GUIs that make dumb users, however.
+>> On Sun, 29 Sep 2002, Antony Stone wrote:
+>
+>> > Reply packets should not be a problem unless your ISPs block packets
+>> > with source addresses which don't match the network range you have
+>> > from them.
+>>
+>> This is also true, but what if they do block?  I was hoping there was
+>> a way to maintain connection tracking such that if there is a machine
+>> on the internet that connects to an internally hosted server, it would
+>> maintain the incoming gateway and interface, and then ensure that the
+>> equalize command would ensure that the outgoing packet going to the
+>> right gateway.
+>
+> I do not know enough about equalise-routing to know how to do this.
+>
+>> Lets say some internet machine contact my webserver, which happens to
+>> be at 1.2.3.33.  It would come in on 1.2.3.4.  Now the webserver needs
+>> to send IP packets back out to the internet, so it does a routing
+>> table lookup.  Because ISP1 would block ISP2 traffic and vice-versa,
+>> if the selected gateway (as a result of the equalize statement above)
+>> is 5.6.7.8, then the only way to get that IP packet out would be to
+>> NAT it on an IP from ISP2.  Post-NAT, this would change the source
+>> field of the IP packet, and break communication (the machine on the
+>> internet wanted a source of 1.2.3.33).
+>
+> Correct.   If that happened, the communication would break.
+>
+>> I think the solution is for incoming packets destined to servers
+>> marked as state NEW to have their gateway and source address placed in
+>> a table. When 1.2.3.33 wants to go out, the equalize flag should look
+>> up the table, see if the destination host is in there, and if it is,
+>> it should return the proper corresponding gateway.
+>
+> If you can implement such a table then yes I agree this system should
+> work.
+>
+> There is an alternative, and that is to run your web server with two
+> private  IP addresses, and have the public address from ISP 1 translate
+> to private IP  1, and the public address from ISP 2 translate to
+> private IP 2.   The web  server is configured to provide precisely the
+> same content for either IP  address.
+>
+> If you do that, then the web server will reply from the same source
+> address  as the original request used for its destination address, and
+> you can use  source-based routing in iproute2 to make sure that replies
+> from private IP 1  always go via ISP 1, and replies from private IP 2
+> always go via ISP 2.
+>
+> Antony.
+>
+> --
+>
+> Normal people think "if it ain't broke, don't fix it".
+> Engineers think "if it ain't broke, it doesn't have enough features
+> yet".
 
-I agree with these sentiments.   The best way I can express it is that dumb 
-users will go for a GUI because they think they can get to use it quicker 
-than learning a CLI.
 
-Users who know what they're doing will use the right tool for the job at the 
-time.
 
-Antony.
 
--- 
+Regards,
 
-Perfection in design is achieved not when there is nothing left to add,
-but rather when there is nothing left to take away.
+Cyberdude Murli
+The Earth
 
- - Antoine de Saint-Exupery
+
 
