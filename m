@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Please help me with iptables/NAT
-Date: Mon, 16 Feb 2004 15:33:48 +0000
+From: Hideaki Nemoto <eme@bg8.so-net.ne.jp>
+Subject: Re: can't delete with iptables
+Date: Tue, 17 Feb 2004 00:35:26 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402161533.48922.Antony@Soft-Solutions.co.uk>
-References: <4030E03D.6050502@ciaolab.com>
+Message-ID: <200402161533.i1GFXPJ10058@mail.bg8.so-net.ne.jp>
+References: <200402070721.i177LxJ09969@mail.bg8.so-net.ne.jp>
+	<20040215155955.GQ15567@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4030E03D.6050502@ciaolab.com>
+In-Reply-To: <20040215155955.GQ15567@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+To: Harald Welte <laforge@netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 16 February 2004 3:22 pm, Matteo Pampolini wrote:
+Hi Harald,
 
-> Hi everybody,
+I've noticed that.
+And I've also found the reason, but I guess it be better not to
+post that here.
+Thanks anyway.
+
+Harald Welteさんの<20040215155955.GQ15567@sunbeam.de.gnumonks.org>から
+>On Sat, Feb 07, 2004 at 04:23:07PM +0900, Hideaki Nemoto wrote:
+>> Hi,
+>> 
+>> I can't delete the rule by iptables, that I inserted
+>> with my program using libiptc.
+>> 
+>> I've managed to insert, replace, and delete the rulesfrom my program.
+>> But I can't delete that rule by iptables, or the ip6tables.
 >
-> I have a Linux box running kernel 2.4.17 and iptables 1.2.5 where
-> a DNAT rule is applied and I'm experiencing a strange behaviour.
+>Please note that libiptc is not meant as a public API for 3rd party
+>applications.  We do not encourage people to do so, and it is not
+>supported at all.
 >
-> If I delete the rule while no connections related to it are active,
-> then everything works fine, otherwise rule is apparently deleted
-> but network traffic is still active while it shouldn't.
->
-> Same thing with another box doing masquerading: if a start a ping
-> from the inside private network to the outside and the remove the
-> rule, then the rules listing is OK but ping still works.
-
-If you are using connection tracking (which most people do, because it is the 
-'stateful' bit about netfilter), then once a connection has been ESTABLISHED, 
-further packets in the same connection get processed automatically in the 
-background without having to match on the current ruleset.
-
-A good way to think about it is: "the ruleset specifies which NEW packets are 
-allowed to become ESTABLISHED.   Once a connection is ESTABLISHED, further 
-packets are processed as efficiently as possible, withing having to get 
-processed through the rules all over again."
-
-If you don't like this behaviour, and you want each packet to match against 
-the ruleset, disabling connection tracking on your firewall will achieve what 
-you want.
-
-Hope this helps,
-
-Regards,
-
-Antony.
+>-- 
+>- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+>============================================================================
+>  "Fragmentation is like classful addressing -- an interesting early
+>   architectural error that shows how much experimentation was going
+>   on while IP was being designed."                    -- Paul Vixie
 
 -- 
-Wanted: telepath.   You know where to apply.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Hideaki mailto:eme@bg8.so-net.ne.jp
 
