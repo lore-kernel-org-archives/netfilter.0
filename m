@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: nat table not working - 'iptables -L nat' (do you need to insmod?)
-Date: Tue, 22 Apr 2003 20:02:48 -0400 (EDT)
+From: NetSnake <netsnake@963.net>
+Subject: Re: block downloads on file type
+Date: Wed, 23 Apr 2003 08:25:47 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304222002150.6448-100000@dell>
-References: <002301c30926$e310eb90$0100a8c0@yogi>
+Message-ID: <3EA64E0B.7090105@963.net>
+References: <20030420104842.28848.qmail@web40208.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002301c30926$e310eb90$0100a8c0@yogi>
+In-Reply-To: <20030420104842.28848.qmail@web40208.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,24 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stuart Clark <netfilter@spacelink.com.au>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.samba.org
 
-On Wed, 23 Apr 2003, Stuart Clark wrote:
+May be you can use iptables string match patch, or use Squid + iptables.
 
-> Hi
-> 
-> When I try and add a rule to the nat table it seems to work but when I
-> do 'iptables -L nat' I get the error 
-> 
-> 'iptables: Table does not exist (do you need to insmod?)'
-> 
-> All the other tables are there when I do 'iptables -L' but no nat table.
+>hi guys,
+> is there anyway in which we can block a certain file
+>from being downloaded ? i mean i need to block mp3
+>downloads, is there anyway the linux box can
+>understand the file type while downloading it ... 
+>
+>please put some light on it even if u have the
+>slightest idea, it might lead me to some result
+>
+>thanks a lot
+>hemant
+>
+>=====
+>Hemant
+>GNS Team
+>Mumbai.
+>
+>Pace My Passion . . . . ! ! !
+>
+>__________________________________________________
+>Do you Yahoo!?
+>The New Yahoo! Search - Faster. Easier. Bingo
+>http://search.yahoo.com
+>
+>
+>  
+>
 
-# iptables -t nat -L
-
-rday
 
 
