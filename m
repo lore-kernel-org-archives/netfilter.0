@@ -1,13 +1,11 @@
-From: Othmar Pasteka <pasteka@kabsi.at>
-Subject: Re: Getting rid of the masses of ip_conntrack messages
-Date: Sun, 1 Dec 2002 21:13:44 +0100
+From: "hard__ware" <hard__ware@hotmail.com>
+Subject: How to write NAT rules for FTP,IRC and other application layer protocols ?
+Date: Mon, 2 Dec 2002 05:46:35 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021201201344.GA29485@davinci>
-References: <OE33LTrpwACkWHZqYW800004167@hotmail.com>
+Message-ID: <OE512oHzGkzMcvsq9Ic0000183a@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <OE33LTrpwACkWHZqYW800004167@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +16,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: hard__ware <hard__ware@hotmail.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-hi,
+> Hi ,
+>
+>   How to write NAT rules for FTP,IRC and other
+> application layer protocols
+> ?
+>
+> Orca
 
-[Btw. what about getting a proper E-Mail client, who does things
-like adding a Re: to the subject line and replying to the email
-and keep the thread instead of posting a completely new message.]
+Gday Orca,
 
-On Mon, Dec 02, 2002 at 05:07:27AM +1000, hard__ware wrote:
-> Please try to give a more detailed info on your setup
-> like Rules ect . Because i use DNAT / SNAT / with FTP
-> and  ip_conntrack_ftp & ip_nat_ftp  allot with IPTables
-> and have never found / seen those messages ? 
+How you going .. :D
 
-ftp server which permits ftp connections from the outside. that's
-basically it.
-I don't have a log target or sucha thing. it originates from the kernel
-but couldn'T find a way yet, like through syslog, to disable it or
-log it seperately.
-my rule sets look as follows:
+I belive what you might be looking for, is the USE of the new Patch-o-Matic
+module called 'Helper' you can use this to find packets assoicatted with a
+given Conntrack Helper (usually a Protocol at the Application Layer)
+like ip_conntrack_ftp or ip_conntrack_irc so you could then maybee
+successfully block all FTP transactions that
+are not 'pasive' therefore allowing us protection against
+ports that the FTP_conntracker does not track ...
 
-:INPUT DROP [1732:89835]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
-[0:0] -A INPUT -i eth0 -p udp -m udp --dport 22 -j ACCEPT 
-[0:0] -A INPUT -i eth0 -p tcp -m tcp --dport 22 -j ACCEPT 
-[3016:4082458] -A INPUT -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
-[138:12024] -A INPUT -i lo -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT 
-[136:12210] -A INPUT -p icmp -j ACCEPT 
-[810:43752] -A INPUT -p tcp -m tcp --dport 20:21 -j ACCEPT 
-[12:720] -A INPUT -p tcp -m tcp --dport 873 -j ACCEPT 
-[0:0] -A INPUT -p udp -m udp --dport 873 -j ACCEPT 
-[0:0] -A INPUT -s 62.116.33.11 -p tcp -m tcp --dport 111 -j ACCEPT 
-[0:0] -A INPUT -s 62.116.33.11 -p udp -m udp --dport 111 -j ACCEPT 
-[2753:169858] -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT 
-[0:0] -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT 
+by defualt its set to 21, you can change this , and it can be multiple
+ports, No more than 8 is Highly Recommened .
 
+My only problem is i can barley get this module working properly , and not
+to mention the large amount errors i got
+compiling the new Patch-o-Matic Module  ...
 
-so long
-Othmar
+Question: Has anyone else had luck with the new Helper
+module, Please let me know ...
 
+Have Phun ....
+
+Hard__warE
 
