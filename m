@@ -1,11 +1,12 @@
-From: Jeff Mesch <mesch@NanoTech.Wisc.EDU>
-Subject: Newbie - Default Deny Setup
-Date: Wed, 07 May 2003 14:52:15 -0500
+From: Myles Uyema <mlists@uyema.net>
+Subject: Re: Newbie - Default Deny Setup
+Date: Wed, 7 May 2003 14:18:42 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EB963EF.2060506@nanotech.wisc.edu>
+Message-ID: <Pine.LNX.4.44.0305071323220.8400-100000@marx.gruntwerk.net>
+References: <3EB963EF.2060506@nanotech.wisc.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3EB963EF.2060506@nanotech.wisc.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,8 +16,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jeff Mesch <mesch@NanoTech.Wisc.EDU>
+Cc: netfilter@lists.netfilter.org
+
+Are your masquerading rules getting hit at all?
+
+I'm curious to see what your FORWARD chain looks like after you make a few 
+attempts to connect out to the internet from your private lan hosts.
+iptables -nvL FORWARD
+
+What's the purpose of those RETURN rules?
+
+On Wed, 7 May 2003, Jeff Mesch wrote:
 
 I'm completely new to iptables, and am having a problem setting up a 
 basic firewall, that follows default deny. I'm guessing it's a very 
@@ -143,5 +156,9 @@ $IPTABLES -A RULE_4  -j DROP
 #
 #
 echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+
+
 
 
