@@ -1,10 +1,13 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: Blocking Netranges Based on IP-to-Country CSV
-Date: Fri, 17 Sep 2004 13:16:00 -0700
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: SNAT question
+Date: Fri, 17 Sep 2004 16:48:28 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <7EACCDBB65D37443912D80713CC1245D02382B0D@fsnsab20.losangeles.af.mil>
+Message-ID: <1095454108.2522.27.camel@localhost>
+References: <20040916172012.68861.qmail@web61101.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20040916172012.68861.qmail@web61101.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,52 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+To: darmian martinez <darmianm@yahoo.com.ar>
+Cc: netfilter@lists.netfilter.org
 
+On Thu, 2004-09-16 at 13:20, darmian martinez wrote:
+> Hello,
+>  
+> I am trying to change the source ip address of icmp reply packets of the
+> firewall, just because i am trying to hide the firewall ip address in the case someone makes a traceroute to my protected network. I dont want
+> to block the icmp packet, just to change the source ip address.
+> i try it with:
+>  
+> iptables -t nat -I POSTROUTING -s [FIREWALL_IP] -d [TRACEROUTE_ORIGINATOR] -m state --state RELATED,NEW,ESTABLISHED -j SNAT --to [FAKE_IP_ADDRESS]
+>  
+> it's does not work. anyone know how to make it?
+<snip>
+We handle this a little differently in the ISCS project
+(http://iscs.sourceforge.net).  Instead, we have a drop rule in the
+mangle table to drop any packet with a TTL of 1 rather than sending back
+a TTL expired ICMP packet.  At least I think that's what I remember
+doing :-)
 
-depends on what you call a 'legitimate' connection.
-if the guy is browsing the web and comes upon say perhaps .....your website
-why would he not be considered 'legitimate' because you dont like the
-'reputation'...
-
-####################################
-# delbert.hudson@losangeles.af.mil #
-#        61cs/scbn, 3-0182         #
-####################################
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Nick Drage
-Sent: Friday, September 17, 2004 4:46 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Blocking Netranges Based on IP-to-Country CSV
-
-
-On Thu, Sep 16, 2004 at 09:33:03AM -0700, Hudson Delbert J Contr 61 CS/SCBN
-wrote:
-> 
-> why do this ?
-
-There's a good set of reasons on:
-
-http://ip-to-country.webhosting.info/
-
-> seems a bit nasty in nature.
-
-Depends how you use the information.  And to be honest considering the
-reputation of some sources of traffic, such as Korea and South America,
-which might be unlikely to have legitimate connections to your site, it
-would be handy to block them all.
-
-> we dont even do this sort of thing? see email addy...
-
-But you're a worldwide organisation, and I think there's much more that
-you can do with this than just block.  For example, has anything figured
-out a way to tie this into logging rules, it would great to see which
-countries I'm being attacked from.
-
+We had originally planned to simply increment the TTL by 1 so that a
+packet would never expire on the gateway but then decided that was a bad
+way to go about it.
 -- 
-mors omnia vincit
+John A. Sullivan III
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
 
