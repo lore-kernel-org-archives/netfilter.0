@@ -1,11 +1,11 @@
-From: "Rimas" <rmocius@auste.elnet.lt>
-Subject: MASQUERADE for 2 Internet connections
-Date: Mon, 9 Sep 2002 12:56:06 +0100
+From: "Kaddouch Guillaume" <kaddouch.guillaume@wanadoo.fr>
+Subject: update to 1.2.7a
+Date: Sun, 8 Sep 2002 15:13:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005a01c257f7$e2e51dc0$6e69690a@rimas>
+Message-ID: <003101c25739$8e392fa0$0100a8c0@poste1>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0057_01C25800.4324E190"
+	boundary="----=_NextPart_000_002E_01C2574A.513D1830"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,33 +20,22 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0057_01C25800.4324E190
+------=_NextPart_000_002E_01C2574A.513D1830
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi folks,
+I had with v1.2.6a the special feature "REJECT --fake-source", i was =
+rebuild my kernel for this.=20
+But after a bad update to v1.2.7a (not done properly by me...) all work, =
+but not this feature.=20
+My kernel is ready to manage that feature, not need to rebuild. How to =
+make iptables recognize the feature "--fake-source" ?=20
+It's only I think a file path problem.
 
-I have configured NAT for 1 Inet connection :=20
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE - working solution
+Thanks.
 
-I use 10.105.105.x internal IP addresing
-
-Now I have a second one Inet connection (eth2).
-
-How to make MASQUERADE like this:
-1st Inet - MASQUERADE for 10.105.105.100-105
-2nd Inet - MASQUERADE for 10.105.105.xx for all except 100-105
-
-Basicly to use the same IP addresing for both Inet connections
-
-
-
-Thanks in advance
-
-Rimas
-
-------=_NextPart_000_0057_01C25800.4324E190
+------=_NextPart_000_002E_01C2574A.513D1830
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -55,46 +44,29 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi folks,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have configured NAT for 1 Inet =
-connection :=20
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>I had with v1.2.6a the special feature =
+"REJECT=20
+--fake-source", i was rebuild my kernel for this. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>But after a bad update to v1.2.7a (not =
+done=20
+properly by me...) all work, but not this feature. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>My kernel is ready to manage that =
+feature, not need=20
+to rebuild. How to make iptables recognize the feature "--fake-source" ? =
+
 </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -t nat -A POSTROUTING =
--o&nbsp;eth0 -j=20
-MASQUERADE - working solution</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It's only I think a file path =
+problem.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I use 10.105.105.x internal IP=20
-addresing</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Now I have a second one Inet connection =
+<DIV><FONT face=3DArial=20
+size=3D2>Thanks.</FONT></DIV></FONT></DIV></FONT></DIV></BODY></HTML>
 
-(eth2).</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>How to make MASQUERADE like =
-this:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>1st Inet - MASQUERADE for=20
-10.105.105.100-105</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>2nd Inet - MASQUERADE for 10.105.105.xx =
-for all=20
-except 100-105</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Basicly to use the same IP addresing =
-for both Inet=20
-connections</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks in advance</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Rimas</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0057_01C25800.4324E190--
-
+------=_NextPart_000_002E_01C2574A.513D1830--
 
 
