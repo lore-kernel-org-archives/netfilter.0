@@ -1,13 +1,12 @@
-From: "Rowan Reid" <rreid@studio3arc.com>
-Subject: RE: PPTP through masquerading gateway
-Date: Tue, 9 Jul 2002 15:35:38 -0700
+From: "Travis Crook" <travis@visionsbeyond.com>
+Subject: Re: Speed Issues through NAT Firewall
+Date: Tue, 9 Jul 2002 17:08:57 -0600
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000201c22798$f2ffd540$6b01a8c0@s3ac>
-References: <000a01c22798$9a5773d0$0401000a@win2k>
+Message-ID: <000401c2279d$a6591580$6702a8c0@mindtrip.com>
+References: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com> <200207091808.g69I8R810149@vulcan.rissington.net> <1026239145.804.56.camel@tux> <20020709193231.DGDB19225.mta07-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000a01c22798$9a5773d0$0401000a@win2k>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,42 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1254"
-To: "'R. Sterenborg'" <rsterenborg@xs4all.nl>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-First off thanks for taking the time.
+> I agree with several people here that Travis should check the hardware
+first,
+> and I would also recommend testing the bandwidth by doing several
+downloads
+> simultaneously from sites with high-bandwidth links, as close (in hops) to
+> his machine as possible.
+>
+> Antony.
 
+I checked the hardware.  Everything is running 100baseTx-FD (100 mb full
+duplex).  I used several different workstations and found the problem.  If I
+test with a Windows 98 box I get 500Kb.  If I test with a Windows 2000 box I
+get 1Mb, if I test with a Linux box I get 3.5Mb.  Windows must have some
+kind of internet throttling.
 
-> Anyway, PPTP forwarding with kernel 2.4.18 works, so you=20
-> should be able to do it too (and use ReiserFS) :o)
+Yet another reason to use Linux.
 
+Thanks Everyone for your help!
 
-ftp://ftp.rubyriver.com/pub/jhardin/masquerade/ip_masq_vpn.html
-
-I'm assuming you used the above patch with the
-
-zcat patchfile.gz | patch -l -p1=20
-
-Patch this is the only way I got it to work.
-
-
-
-> If you portscan port tcp/1723 to your external gateway IP=20
-> from *another external IP*, what is the state of the port  ?=20
-> Don't portscan to the external IP from the machine itself or=20
-> from any host behind iptables being NATted on that gateway.=20
-> The results will be meaningless, it's like if there's no=20
-> iptables running at all.
-
-My test situation is basically two networks 192.168.2.0/24
-And 192.168.1.0/24 with my Firewall playing router. I test
-From a single machine on 192.168.1.0/24. knowing that you got this
-To work I'll put some more time into trouble shooting it.
-
-
-> Hope this helps,
->=20
-
-It=92s a great start
+Travis Crook
+Visions Beyond
 
 
