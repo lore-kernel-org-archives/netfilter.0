@@ -1,15 +1,14 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
 Subject: Re: OT: Switch packet leakage
-Date: Mon, 28 Mar 2005 13:34:30 +0200
-Message-ID: <1403218a05032803345ddd21ed@mail.gmail.com>
+Date: Mon, 28 Mar 2005 06:42:16 -0500 (EST)
+Message-ID: <Pine.LNX.4.60.0503280641230.26438@darkstar.sysinfo.com>
 References: <1403218a05032703237431b6a4@mail.gmail.com>
 	<1111944083.4316.3.camel@hubcap.ljm.dom>
 	<1111951460.5199.7.camel@anduril.intranet.cartel-securite.net>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+	<1403218a05032803345ddd21ed@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1111951460.5199.7.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <1403218a05032803345ddd21ed@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,38 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Cc: netfilter <netfilter@lists.netfilter.org>, Cedric Blancher <blancher@cartel-securite.fr>
 
-I faced that problem with many switches from cisco, foundry, 3com !!!
-The last switch I have tested was catalyst 3650 !!!
-It is not a bad switch, I guess !!!
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
+On Mon, 28 Mar 2005, Mohamed Eldesoky wrote:
 
-On Sun, 27 Mar 2005 21:24:20 +0200, Cedric Blancher
-<blancher@cartel-securite.fr> wrote:
-> Le dimanche 27 mars 2005 =E0 12:21 -0500, Jason Opperisano a =E9crit :
-> > http://ettercap.sourceforge.net/
->=20
-> Imho, ARP cache poisoning attacks are nothing related with potential
-> switch leakage.
->=20
-> For the OP, I could experience leakage on old switches that turned to
-> "hub mode" when flooded, but nowadays, serious products don't seem to
-> have this kind of behaviour. Furthermore, you have plenty of options to
-> tweak so they can't hit such situation, such as port security stuff.
->=20
-> --
-> http://sid.rstack.org/
-> PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
-> >> Hi! I'm your friendly neighbourhood signature virus.
-> >> Copy me to your signature file and help me spread!
->=20
->=20
+> I faced that problem with many switches from cisco, foundry, 3com !!!
+> The last switch I have tested was catalyst 3650 !!!
+> It is not a bad switch, I guess !!!
+>
 
+Examples, can they be provided?
 
---=20
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                         -Tom Robins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCR+2cst+vzJSwZikRAlYFAJ9bmH/NKDTpnF9BvYITCNSekXLzfgCfZX8m
+d/FexS62VxsbQQUb9/2hiGc=
+=obvf
+-----END PGP SIGNATURE-----
 
