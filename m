@@ -1,9 +1,9 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: Re: ip_queue_maxlen
-Date: Fri, 7 May 2004 17:57:31 +0100
+From: Barry Skidmore <skidmore@worldvenue.org>
+Subject: iptables and smtp
+Date: Fri, 07 May 2004 12:10:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c43454$6326a230$68892090@grouse>
-References: <OFF3757E9C.8AD303A0-ON65256E8D.00226C14@hss.hns.com>
+Message-ID: <1083949806.710.239.camel@worldvenue.org>
+Reply-To: skidmore@worldvenue.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,45 +17,82 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: aksingh@hss.hns.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Amit,
+I am experimenting with Trustix-2.1 Linux on a home machine connected
+directly to the Internet.  I am using Postfix as the MTA and mutt as the
+email client.
 
-Please check this out:
+The problem is that I am not able to receive mail, although I can send,
+when the iptables rules below are implemented.  I have tried a couple of
+rules (see below) to open port 25, but these have not helped.
 
-line 32, 53, and 72 in /usr/src/linux/net/ipv4/netfilter/ip_queue.c.
+Thanks,
+Barry Skidmore
 
-I'm not sure this is what you want, but hope it helps a bit.
+====================================================================
 
-Jee
+# Set up iptables firewall
+#clean up existing rules to start with a clean slate.
+ #flush existing rules
+iptables -t filter -F
+iptables -t nat -F
+iptables -t mangle -F
+ #delete custom chains.
+iptables -X
+ #reset packet counters.
+iptables -t filter -Z
+iptables -t nat -Z
+iptables -t mangle -Z
+ #set default policies.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
 
+#INPUT rules.
+ #drop all invalid incoming packets regardless of source or interface.
+iptables -A INPUT -m state --state INVALID -j DROP
+ #accept all input from the loopback device.
+iptables -A INPUT -i lo -j ACCEPT
+ #accept traffic from all other interfaces only if it's already
+established.
+ #or related to existing connections.
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+ #drop everything else.
+iptables -A INPUT -j DROP
 
-> hi,
->
->  Whats the maximum number of packets that are queued by ip_queue for the
-> user space to handle ... is it 1024 as defined in
-> /proc/sys/net/ipv4/ip_queue_maxlen ? That is a max of 1024 packets are
-> queued by the kernel, and can we change this value somehow ?
->
->
-> thanks
-> Amit
->
-> "DISCLAIMER: This message is proprietary to Hughes Software Systems
-Limited
-> (HSS) and is intended solely for the use of the individual to whom it is
-> addressed. It may contain  privileged or confidential information and
-> should not be circulated or used for any purpose other than for what it is
-> intended. If you have received this message in error, please notify the
-> originator immediately. If you are not the intended recipient, you are
-> notified that you are strictly prohibited from using, copying, altering,
-or
-> disclosing the contents of this message. HSS accepts no responsibility for
-> loss or damage arising from the use of the information transmitted by this
-> email including damage from virus."
->
->
->
+#FORWARD rules
+ #drop all invalid forward packets regardless of source or destination.
+iptables -A FORWARD -m state --state INVALID -j DROP
+ #forward all from the loopback device.
+iptables -A FORWARD -i lo -j ACCEPT
+ #forward traffic from all other interfaces only if it's already
+established
+ #or related to existing connections.
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+ #drop everything else.
+iptables -A FORWARD -j DROP
+
+#OUTPUT rules
+ #drop all outgoing invalid packets.
+iptables -A OUTPUT -m state --state INVALID -j DROP
+ #outgoing traffic is allowed without restriction.
+iptables -A OUTPUT -j ACCEPT
+#===============================================================
+# The following uncommented did not help
+#Set up smtp server and client
+ #server
+#iptables -A INPUT -p TCP --dport 25 -j ACCEPT
+#iptables -A OUTPUT -p TCP --sport 25 -j ACCEPT
+ #client
+#iptables -A OUTPUT -p TCP --dport 25 -j ACCEPT 
+#
+#===============================================================
+# The following uncommented did not help
+#iptables -A INPUT -p tcp -m tcp --dport smtp -m state --state
+NEW,ESTABLISHED -j ACCEPT
+#iptables -A INPUT -p tcp -m tcp --sport auth -m state --state
+ESTABLISHED -j ACCEPT
+
 
 
