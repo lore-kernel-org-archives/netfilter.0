@@ -1,9 +1,10 @@
-From: Vilmos Branyik <vbranyik@piopc.com>
-Subject: RE: Forward UDP broadcast
-Date: Mon, 2 Jun 2003 23:31:34 -0600
+From: Phil Dibowitz <phil@ipom.com>
+Subject: IP Tables State 1.3
+Date: Mon, 02 Jun 2003 23:11:48 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <30E7B49F378ED711AC0F00E02917CD8B0DA8@POLLY>
+Message-ID: <3EDC3C24.70509@ipom.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,49 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+IPTables Users,
 
-> -----Original Message-----
-> From: Rommy Taslim [mailto:rommyt@transportservices.com.au]
-> Sent: Monday, June 02, 2003 11:29 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Forward UDP broadcast
-> 
-> 
-> Hi,
-> 
-> Anyone knows how to forward UDP broadcast using iptables ?
-> I need to do something like ipportfw does:
-> ipportfw -A -u 192.168.4.255/699 -R 192.168.2.255/699
-> 
-> which forward all the broadcast on network 4 for port 699 to 
-> network 2.
-> 
-> I have something like this for iptables:
-> 
-> iptables -t nat -A PREROUTING -p udp \
->         -d 192.168.4.255 --dport 699 \
->         --to-destination 192.168.2.255:699
-> 
-> But it didn't work.
-> 
-> Anyone can give me some pointers ??
-> 
-> Thanks in advance.
-> 
-> Rommy
+I have released IP Tables State (IPTState) 1.3. For those not familiar 
+with the project, its simply "top" for your state table. Users have 
+often said "you don't know your firewall until you can see it in real 
+time"... and that's exactly what the aim is.
 
-This works for me:
-EXTIP=External IP address
-PORTFWIP=IP address to forward to
+The new release includes dynamic width column size, DNS reverse lookups, 
+all kinds of sorting options, and much more. You can check out the 
+project here:
 
-# Service at port 645 udp
-$IPTABLES -A FORWARD -i eth0 -o eth1 -p udp --dport 645 -j ACCEPT
-$IPTABLES -A PREROUTING -t nat -p udp -d $EXTIP --dport 645 \
-  -j DNAT --to $PORTFWIP:645
+http://www.phildev.net/iptstate/
 
-Vilmos
+Its very small and very clean. Enjoy.
+
+(Note: I sent this once before but wasn't a member so its held for 
+moderation... so this may eventually come through again).
+
+Thanks,
+-- 
+Phil Dibowitz                             phil@ipom.com
+Freeware and Technical Pages              Insanity Palace of Metallica
+http://www.phildev.net/                   http://www.ipom.com/
+
+"They that can give up essential liberty to obtain a little temporary
+safety deserve neither liberty nor safety."
+  - Benjamin Franklin, 1759
+
+
 
