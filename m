@@ -1,13 +1,13 @@
-From: Marc Williams <marcw@onlymooo.com>
-Subject: RE: h.323 compatibility
-Date: Tue, 18 Nov 2003 20:48:48 -0600
+From: "Dharmendra T." <dharmu@nsecure.net>
+Subject: Re: Another Foolish Question
+Date: 19 Nov 2003 09:50:57 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069210128.9755.93.camel@fred.williams.etc>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A28AD21@wardrive.citadelcomputer.com.au>
+Message-ID: <1069215663.959.0.camel@localhost.localdomain>
+References: <200311161654.11145.bikrant@wlink.com.np>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A28AD21@wardrive.citadelcomputer.com.au>
+In-Reply-To: <200311161654.11145.bikrant@wlink.com.np>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,62 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: netfilter list <netfilter@lists.netfilter.org>
+To: bikrant@wlink.com.np
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2003-11-18 at 20:21, George Vieira wrote:
-> >And if you're banning my ISP - Comcast - you've just banned the majority of broadband users in the US.
-> Hoah!!  How cool.. :)
+Hi,
+
+Are you running any other application other than iptables on the
+machine?
+
+Regards
+Dharmendra T.
+
+On Sun, 2003-11-16 at 16:39, bikrant@wlink.com.np wrote:
+> Hi,
+>         Is it possible to know how much system resources (cpu/memory load) 
+> that the 
+> netfilter module(s) is using? We are using HTB to shape our client traffic 
+> and there are 4 iptables rule for each client in the mangle table. I think it 
+> will be helpful to gather such data and graph it using mrtg.
+> 
+> I'm really sorry if someone has already asked about it.
+> Thanks a lot.
+> 
+> with regards,
+> Rohit Nepali
 > 
 
-:-)
 
-
-> I have no problems with H323 and using NetMeeting behind a 2.4.19 kernel firewall. The only thing that was needed to get 2 people who are both behind linux firewalls was that 1 had to Host a Meeting for someone outside to connect. I found that part weird..
-> 
-> Have you tried this patch at all yet. Just remember there's 2 modules neededing to be loaded a I forgot one the first time around.
-> 
-
-The issue isn't with Netmeeting.  Rather it's with two other apps I run
-that use openh323 - Gnomemeeting and GNUgk both running behind an
-iptables FW.  I am indeed having problems, particularly with the
-gatekeeper.  Thus my question about compatibility.
-
-
-
-> > -----Original Message-----
-> > From: Marc Williams [mailto:marcw@onlymooo.com]
-> > Sent: Wednesday, 19 November 2003 1:13 PM
-> > To: netfilter list
-> > Subject: h.323 compatibility
-> > 
-> > 
-> > Even though I'm new to this list, I think that this should probably be
-> > addressed by Jozsef Kadlecsik.
-> > 
-> > Jozsef, I've read a couple of your posts on this list that seem to
-> > indicate that there is a known incompatibility between your h323
-> > conntrack module and the openh323 libraries.
-> > 
-> > Is this accurate?  If so, are there any plans to address this
-> > incompatibility?  I've been unable to get the GNU gatekeeper 
-> > functioning
-> > correctly behind an iptables firewall for possibly this reason.
-> > 
-> > Thanks!
-> > 
-> > 
-> > p.s.
-> > Btw, I tried emailing you about this but it was bounced 
-> > saying that your
-> > MTA rejected my email saying my site was banned because of unsolicited
-> > email.  I can assure you that there has never been one single spam
-> > emanating from my site ever.  And if you're banning my ISP - Comcast -
-> > you've just banned the majority of broadband users in the US.
-> > 
-> > 
-> > 
-> 
-> 
 
 
