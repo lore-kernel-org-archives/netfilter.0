@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Allow active and passive FTP connections
-Date: Thu, 17 Jun 2004 16:27:02 +0100
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: deleting a conntrack record
+Date: Thu, 17 Jun 2004 11:31:04 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406171627.02092.Antony@Soft-Solutions.co.uk>
-References: <20040617151309.68677.qmail@web14710.mail.yahoo.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <876ef97a040617083152c643b4@mail.gmail.com>
+References: <876ef97a0406170807663b89e0@mail.gmail.com> <200406171620.24232.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040617151309.68677.qmail@web14710.mail.yahoo.com>
+In-Reply-To: <200406171620.24232.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 17 June 2004 4:13 pm, Sagara Wijetunga wrote:
+On Thu, 17 Jun 2004 16:20:23 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
+> Why not just use the built-in timeouts to delete stale entries from the
+> conntrack table?
+> 
+> You can adjust the timeout settings using entries in
+> /proc/sys/net/ipv4/netfilter and I believe there may be a p-o-m update to
+> give even further fine-grained control.
 
-> Thanks very much for everybody's comments on this.
->
-> In my Linux kernel, the =93FTP protocol support=94 under
-> =93IP: Netfilter Configuration=94 is build into the
-> kernel. Therefore, there is no ip_conntrack_ftp module
-> to load.
->
-> I use Linux kernel 2.6.5, I don't use NAT and I use
-> iptables v1.2.10.
->
->
-> Is it necessary to build ip_conntrack_ftp as a module?
-
-Certainly not.   I always build firewall kernels as monolithic (everythin=
-g I=20
-need compiled-in, no module support, so nothing can be loaded or unloaded=
-=20
-afterwards).
-
-There must be some reason why the conntrack table isn't recognising the=20
-reverse connection (I assume you *do* have connection tracking support=20
-compiled in as well?   I can't recall if you have to have this before you=
-=20
-even see the FTP question when building the kernel...)
-
-What do you see in /proc/net/ip_conntrack when the connection is half-ope=
-n=20
-(ie: about the same time as the log entry you posted appears)?
-
-This seems strange.
-
-Regards,
-
-Antony.
-
---=20
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+Because I only want to delete conntrack records for certain
+connections, so timing out all TCP connections early is no good. As
+well, I can't just do that alone also because other operations have to
+be performed aside from deleting the conntrack record.
+ 
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
