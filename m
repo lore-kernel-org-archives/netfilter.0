@@ -1,13 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: IP range
-Date: Thu, 25 Sep 2003 15:52:04 +0200
+From: "emiliano" <emiliano@amc.com.ar>
+Subject: question
+Date: Thu, 25 Sep 2003 11:04:24 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064497924.31340.161.camel@raylinux.internal>
-References: <20030925130213.58577.qmail@web9904.mail.yahoo.com>
+Message-ID: <000001c3836d$ed89f0a0$191d29c8@soporte>
+Reply-To: emiliano@amc.com.ar
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-oqJjAh+vy91isuOdFNlf"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C38354.C83E3F40"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030925130213.58577.qmail@web9904.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +17,157 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---=-oqJjAh+vy91isuOdFNlf
-Content-Type: text/plain
+------=_NextPart_000_0001_01C38354.C83E3F40
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2003-09-25 at 15:02, Andy Samuel wrote:
-> Dear All
->=20
-> I follow the example of ip range feature to block my
-> incoming connection starting from IP 192.168.0.76 to
-> 254, but allowing 192.168.0.1 to 75 to pass.
-> So I use :
-> iptables -A FORWARD -m iprange --src-range
-> 192.168.0.76-192.168.0.254 -p TCP -j DROP.
->=20
-> It shows error that iptables can not find
-> libipt_iprange.
-> I've check /lib/iptables and no any file about
-> iprange.
-> But I know my kernel already compiled with iprange
-> enabled and ipt_iprange is already loaded as module (
-> I can see it from lsmod ).
->=20
-> How do I get libipt_iprange.so ?
-> What is the connection of the file with the kernel
-> module of ipt_iprange.so ?
->=20
-You need to recompile the iptables source code. The kernel module
-basically lists the entry points for the functions in the shared object
-file (.so).
+Hi, could you give me some help about the question below?
 
-> Thank you so much
->=20
-> __________________________________
-> Do you Yahoo!?
-> The New Yahoo! Shopping - with improved product search
-> http://shopping.yahoo.com
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+=20
 
---=-oqJjAh+vy91isuOdFNlf
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+I have  a Total Control with a private pool of IPs. I=92m using IPTables =
+with
+NAT and HT23 modules. My trouble is that while I get a perfect video =
+stream,
+I=92m unable to transmitt/receive audio (through the instant Messenger =
+from
+Microsoft, MSN Messenger ).=20
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
+=20
 
-iD8DBQA/cvMDh1fuR/Bv+ygRAiZrAJ9VtACOhfHsFkMZ101/vkqE0aVxcgCfbKLi
-E204ksYsHeC7dWYkjEsM/nI=
-=ydCW
------END PGP SIGNATURE-----
+Some sugesti=F3n about? I really will be greateful with you if you can =
+give me
+some idea =85
 
---=-oqJjAh+vy91isuOdFNlf--
+=20
+
+Thanks!!=20
+
+=20
+
+Best regards
+
+=20
+
+Emiliano Barbat
+
+Argentina
+
+
+------=_NextPart_000_0001_01C38354.C83E3F40
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EstiloCorreo17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 3.0cm 70.85pt 3.0cm;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DES link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi, could you give me some help about the question =
+below?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have=A0 a Total Control with a private pool of IPs. =
+I&#8217;m
+using IPTables with NAT and HT23 modules. My trouble is that while I get =
+a perfect
+video stream, I&#8217;m unable to transmitt/receive audio (through the =
+instant Messenger
+from Microsoft, MSN Messenger ). </span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Some sugesti=F3n about? I really will be greateful =
+with you if
+you can give me some idea &#8230;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks!! </span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Best regards</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Emiliano Barbat</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Argentina</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0001_01C38354.C83E3F40--
+
 
 
