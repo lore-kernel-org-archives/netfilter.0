@@ -1,13 +1,14 @@
-From: "Stuart J. Browne" <stuart@promed.com.au>
-Subject: RE: Redirecting Traffic Locally
-Date: Wed, 29 Oct 2003 12:24:20 +1100
+From: "Edmund Turner" <eturner@monash.edu.my>
+Subject: RE: HELP!!! (ip_conntrack: table full)
+Date: Wed, 29 Oct 2003 09:34:46 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008a01c39dbb$60b51070$2288e7c0@promed.com.au>
-References: <3F9F1163.9070008@riovia.net>
+Message-ID: <007e01c39dbc$d606fae0$de0018ac@admin.monash.edu.my>
+References: <200310271522.00341.nighthawk@easyservermanagement.com>
+Reply-To: <eturner@monash.edu.my>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F9F1163.9070008@riovia.net>
+In-Reply-To: <200310271522.00341.nighthawk@easyservermanagement.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +19,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "'Paul J. Caritj'" <pcaritj@riovia.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
->-----Original Message-----
->From: netfilter-admin@lists.netfilter.org 
->[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Paul 
->J. Caritj
->Sent: Wednesday, 29 October 2003 11:01
->To: netfilter@lists.netfilter.org
->Subject: Redirecting Traffic Locally
->
->
->Gents,
->Hopefully this is an easy question :)
->
->I have a firewall with a built in webserver. I want all traffic going 
->through this firewall, not to (or from) a proscribed list of IPs to be 
->redirected to the Site hosted on the firewall itself (its a signup 
->page). At present, I'm using redirection of this form:
->
->iptables -t nat -A UNREGISTERED -s 0/0 -d 0/0 -j DNAT --to-destination 
->XXXXXXX;
 
-Have you tried using 'REDIERCT' instead of 'DNAT' ?
+Hey guys, its been awhile,(im getting old and my memory seems to escape
+me.) so please bear with me. :)
 
-iptables -t nat -A UNREGISTERED -j REDIRECT --to <localport>
+TO remove the module
+ rmmod ip_conntrack.o
+How do I reinstate the module?????
 
+
+Regards
+edmund
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of NightHawk
+Sent: Tuesday, October 28, 2003 4:22 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: HELP!!! (ip_conntrack: table full)
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Warren,
+   I would only raise the value in /proc/net/ip_conntrack a little bit
+at a
+time till you find the lowest number that works for your situation.
+Once you
+have everything under control, the number shouldn't have to be too high,
+at
+least this has been my experience.  I only raise the number when having
+a
+"situation", and then lower it back down once things are calmed down.
+
+And yes, I did mean to rmmod ip_conntack, when I mentioned dropping
+ip_conntrack.  Although, this tends to require dropping a few other
+modules
+as well, and also tends to require stopping iptables while you do so.
+(due to
+some of the modules that you have to remove.)  Which is why it is not
+the
+best solution for all situations....
+
+NH
+
+On Monday 27 October 2003 2:52 pm, Warren P wrote:
+> hi
 >
->A rule in the PREROUTING chain bounces traffic to the UNREGISTERED 
->chain. The system works fine when XXXXXXX is outside the network. 
->However, I cannot DNAT to the firewall itself. Thoughts, anyone?
+> WRT echo ## > /proc/net/ip_conntrack
+>
+> Considering i've got 1gig of RAM ... what is a safe value i
+> can set ip_conntrack_max to? The current value is 65528
+>
+> Also when you refer to dropping ip_conntrack ... do mean
+> like rmmod ip_conntrack.o?
+>
+> Regards,
+> Warren P
+>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-Stuart
+iD8DBQE/nX5nb58ZIoF+byQRAjirAJ0VZcgBII3m44m2F3e6pAKvtV1D6ACfQjBI
+3i8JEcIIT7f24e0/TeaKo3E=
+=m+9W
+-----END PGP SIGNATURE-----
 
 
