@@ -1,13 +1,14 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: standby port at the bridge firewall ?
-Date: Mon, 17 Feb 2003 07:46:52 +0100
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Block for MAC Address
+Date: 17 Feb 2003 08:28:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030217074652.458aa329.arnt@c2i.net>
-References: <F93GsRbHozNNrUIY7Hp0001b6f5@hotmail.com>
+Message-ID: <1045463298.17705.15.camel@rayw.knowledgefactory.co.za>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAFXnZnPTWmEuxnKJINDeV5MKAAAAQAAAAbn072oWMbEu2LnhUyjfPEwEAAAAA@prodigy.net.mx>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Pi50rkBtOchX6E1icqW6"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F93GsRbHozNNrUIY7Hp0001b6f5@hotmail.com>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAFXnZnPTWmEuxnKJINDeV5MKAAAAQAAAAbn072oWMbEu2LnhUyjfPEwEAAAAA@prodigy.net.mx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,75 +18,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-...oi, forget my first message, I screwed up.
-
-On Mon, 17 Feb 2003 04:31:30 +0000, 
-"SB CH" <chulmin2@hotmail.com> wrote in message 
-<F93GsRbHozNNrUIY7Hp0001b6f5@hotmail.com>:
-
-> 
-> Hello, all.
-> 
-> I would like to set standby switch like this.
-> So if a main switch is down, I would like to service with standby
-> switch instead of main switch.
-> (traffic using only main switch and just connects with standby switch
-> at normal state)
-> and I connected main switch with eth0, Sub switch with eth1,
-> and additionally connects standby switch with eth2 at the bridge
-> firewall.
-> 
-> 
->        Main Switch               Standby Switch 
->             |                         |
->             |                         |
->             ---------------------------
->                         |
->                    Bridge Firewall
->   
->                         |
->                      Sub Switch 
- 
-..<snip old setup/>
-
-> ## modified configuration using eth0, eth1 and eth2.
->  
-> brctl addbr br0
-> brctl stp br0 off
-> brctl addif br0 eth0
-> brctl addif br0 eth1
-> brctl addif br0 eth2
-> ifconfig eth0 down
-> ifconfig eth1 down
-> ifconfig eth2 down
-> ifconfig eth0 0.0.0.0 promisc up
-> ifconfig eth1 0.0.0.0 promisc up
-> ifconfig eth2 0.0.0.0 promisc up
-> ifconfig br0 211.1.1.1 promisc up
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-..try 'brctl --help' for syntax, you want to set the "path cost" 
-low to the main switch, and high to the standby switch, and let 
-the bridge _learn_ about the two routes, as they change.
+--=-Pi50rkBtOchX6E1icqW6
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: quoted-printable
 
-..to avoid bridging between the two switches outside your firewall
-bridge, set the cost impossibly high, or make this thread on-topic
-using iptables to reject (or drop) all packages going between them. 
+You need to get the POM (patch-o-matic) from the netfilter site and
+apply the MAC address match patch for netfilter to your kernel source
+and then recompile your kernel and select the MAC address matching in
+the netfilter section of the kernel config.
 
-..drop this, use it on boxes inside your sub switch:
-> route add default gw 211.1.1.1
-> 
-> So sorry my poor english.
 
-..heh, it was me not reading your 2'nd setup properly.  ;-)
+On Wed, 2003-02-12 at 20:31, Juan Carlos Hernandez Gonzalez wrote:
+> Hi list:
+>=20
+> =20
+>=20
+> I have a linux red hat and need configure my iptables for permit only
+> mac address of clients =85=85 some know how make this .. Thanks
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+--=-Pi50rkBtOchX6E1icqW6
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA+UIECh1fuR/Bv+ygRAiuMAKCutzu170Y0r7e2utXQeeN8yTcEjgCeKiXk
+nd+szpi8iZEEnj6QzowrCKQ=
+=8Jo1
+-----END PGP SIGNATURE-----
+
+--=-Pi50rkBtOchX6E1icqW6--
 
 
