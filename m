@@ -1,11 +1,15 @@
-From: =?ISO-8859-1?Q?Andr=E9?= Aun <andre_aun@terra.com.br>
-Subject: Redirecting ports - not working
-Date: Thu, 17 Jul 2003 06:41:54 -0300
+From: Eric Leblond <eric@regit.org>
+Subject: Re: Iptables as auth ?
+Date: 17 Jul 2003 13:59:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030717064154.3b6c5f38.andre_aun@terra.com.br>
+Message-ID: <1058443158.30327.8.camel@tech004.alphalink.fr>
+References: <200307151738.53777.rio@martin.mu>
+	 <20030715135821.GA24604@cannon.eng.us.uu.net>
+	 <200307171447.26226.rio@martin.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-/6PMtlAEdt2eGXbvwL1M"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200307171447.26226.rio@martin.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,40 +19,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi all,
 
-Here is my situation: i have a slackware box running a virtual machine unde=
-r vmware. The virtual machine is a Windows 2003 server. In my server, i hav=
-e 2 devices: eth0, vith the static/valid ip adress, and eth1 with my local =
-network adress (192.168.0.0). The virtual machine gets the following ip adr=
-ess: 192.168.237.128 and can ping the internet (i configure the virtual mac=
-hine bridged with eth1, no problem).
+--=-/6PMtlAEdt2eGXbvwL1M
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-What i want: redirect the traffic from port 80 of my linux (eth0, valid adr=
-ess) to the virtual machine (192.168.237.128).
+On Thu, 2003-07-17 at 09:47, Rio Martin. wrote:
 
-I've tryed the following solution:
+> INTERNET ----> Linux NAT Gateway + RADIUS ----> PC Client 1, 2, 3.. 100
+>=20
+> Users in PC Client 1 .. 100 must authenticate with RADIUS before its traf=
+fic=20
+> goes to Internet. I dont know how its going to work, but what i have in m=
+y=20
+> mind for now is RADIUS must cooperate with somekind of daemon that should=
+=20
+> execute iptables to perform NAT to client IP.
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to 192.16=
-8.237.128:80
-iptables -t nat -A POSTROUTING -s 192.168.237.128 -p tcp -j SNAT --to <my v=
-alid ip adress>
+I'm actually working on such a solution, project is for the moment named
+gnufw. Some information can be found at http://www.gnufw.org
 
-But it doesn't work. I see this in the /proc/net/ip_conntrack :
+I planned to release the first version around the beginning of september
+(sooner if possible).
 
-tcp      6 111 SYN_SENT src=3D<ip_of_my_remote_box> dst=3D<ip_of_eth0(valid=
- adress)> sport=3D42560 dport=3D80 [UNREPLIED] src=3D192.168.237.128 dst=3D=
-<ip_of_my_remote_box> sport=3D80 dport=3D42560 use=3D1
+For the moment we've got a generic framework and a communication
+protocol :
+	A daemon that send queued packet to an external server doing auth.
 
-Please... who can welp me? I spent 2 days in this problem ;)
+Work is now done on the auth server.
 
-Thanx in advance... and sorry for the bad english :)
+Any contributers are welcome.
 
-Andr=E9 Aun
+BR,
+--=20
+Eric Leblond <eric@regit.org>
+Regit.org
 
+--=-/6PMtlAEdt2eGXbvwL1M
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQA/Fo+WnxA7CdMWjzIRAg8NAJ9P/Xeo1UnwpSemdml16mfoTABoLQCfUMN0
+BXMZ74KjxDOx0B3OJYyV2UU=
+=aRyj
+-----END PGP SIGNATURE-----
+
+--=-/6PMtlAEdt2eGXbvwL1M--
 
 
