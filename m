@@ -1,14 +1,13 @@
-From: lartc@ssi.bg
-Subject: Re: netfilter CPU usage
-Date: Sun, 13 Jun 2004 21:16:49 +0300 (EEST)
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: IPs blocked still able to connect
+Date: Sun, 13 Jun 2004 13:22:45 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <32855.212.36.22.250.1087150609.squirrel@mail.ssi.bg>
-References: <33105.217.79.71.234.1087126250.squirrel@mail.ssi.bg>
-    <200406131626.17416.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040613132245.07a9fbb7@mgalepc.utilitran.com>
+References: <200406122017.i5CKHpnI030899@ylpvm01.prodigy.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406131626.17416.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200406122017.i5CKHpnI030899@ylpvm01.prodigy.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,19 +20,48 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> On Sunday 13 June 2004 12:30 pm, lartc@ssi.bg wrote:
->
->> Hello
->>
->> Can someone tell me just how intensive netfilter is towards CPU?
->>
->> Is it posible for 6000 rules with no target set in the FORWARD chain to
->> eat up about 60% of my P4 2.4 GHz?
->
-> I would be very surprised at this, however you haven't said what sort of
-> bandwidth you're shovelling through the machine, and this will clearly
-> make a difference to the CPU usage.
+Hello,
 
-yes - the bandwidth was the issue. thanks for the help.
+	You are using "iptables -A" ... this will append this rule to your list. If you
+have an accept rule further up that this connection would match then it will be
+accepted but it hits this rule.
 
+You should do a "iptables -I" to insert the rule at the top.
+
+Michael.
+
+
+
+On Sat, 12 Jun 2004 13:18:15 -0700
+"Spiro Azkoul" <spiro@snacorp.net> wrote:
+
+> Hello
+> 
+> I blocked a subnet by using the following command:
+> iptables -A INPUT -s 222.0.0.0/8 -j DROP
+> I then saved it to file
+> iptables-save > /etc/sysconfig/iptables
+> and did an iptables -L INPUT to verify that it is in
+> DROP       all  --  222.0.0.0/8          anywhere
+> 
+> However, i am still receiving SPAM from IPs within that subnet (and others)
+> long after I thought I completely blocked them from connecting to my server.
+> 
+> I am using RedHat 9 with sendmail, no outgoing SMTP allowed. 
+> 
+> Does anyone have any feedback on this?
+> Thank you
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
