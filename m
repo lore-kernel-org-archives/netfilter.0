@@ -1,17 +1,18 @@
 From: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
-Subject: Re[4]: Problem with Port forwarding
-Date: Fri, 9 Apr 2004 16:25:13 +0400
+Subject: Fwd: Re[4]: Problem with Port forwarding
+Date: Fri, 9 Apr 2004 16:33:59 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <325389781.20040409162513@internetplustravel.ru>
+Message-ID: <1715916171.20040409163359@internetplustravel.ru>
 References: <146373237921.20040405211401@internetplustravel.ru>
  <200404051854.13708.Antony@Soft-Solutions.co.uk>
  <1825056156.20040406114126@internetplustravel.ru>
  <200404061344.23168.Antony@Soft-Solutions.co.uk>
+ <325389781.20040409162513@internetplustravel.ru>
 Reply-To: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404061344.23168.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <325389781.20040409162513@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,8 +23,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+This is a forwarded message
+From: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
+To: Antony Stone <netfilter@lists.netfilter.org>
+Date: Friday, April 9, 2004, 4:25:13 PM
+Subject: Problem with Port forwarding
+
+===8<==============Original message text===============
 Hello Antony,
 
 
@@ -69,10 +77,10 @@ iptables -L -nvx
 iptables -L -t nat -nvx
 
 Chain PREROUTING (policy ACCEPT 207941 packets, 25904040 bytes)
-pkts      bytes target     prot opt in     out     source               destination
+pkts      bytes target     prot optin     out     source               destination
 185  8964 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25 to:10.10.10.252
 Chain PREROUTING (policy ACCEPT 207933 packets, 25903472 bytes)
-pkts      bytes target     prot opt in     out     source               destination
+pkts      bytes target     prot optin     out     source               destination
 184  8904 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25 to:10.10.10.252
 
 
