@@ -1,12 +1,11 @@
-From: "Roger Villavicencio" <roger@decaos.com>
-Subject: unknown config key 'Repository:'
-Date: Sat, 6 Nov 2004 13:18:29 -0500
-Message-ID: <20041106180826.EC40375418A@perucamaras.com>
-References: <000101c4c413$f014bc50$0b0210ac@mangesh>
+From: "=?UTF-8?B?ZGF2b3Iga3JhYsWhZQ==?=" <davork@email.si>
+Subject: Ipsec-l2tp-Iptables trouble
+Date: Sun,  7 Nov 2004 02:21:17 +0100
+Message-ID: <200411070121.iA71LHaW023909@www2.email.si>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000101c4c413$f014bc50$0b0210ac@mangesh>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter users list' <netfilter@lists.netfilter.org>
-
-I'm compiling the patch-o-matic and give me this error:
-
-root@fw:/usr/src/patch-o-matic-ng-20040621# KERNEL_DIR=/usr/src/linux
-IPTABLES_DIR=/usr/src/iptables/ ./runme base
-Loading patchlet
-definitions.................................................................
-.............................................unknown config key
-'Repository:' in ./patch-o-matic-ng/info at ./runme line 216
+To: netfilter@lists.netfilter.org
 
 
-What can I do?
+Hi,
+
+I have read some posts on that list about my problem, but I do not now how =
+to=20
+solve it. I have the following configuration:
+
+    winXp L2TP Client(Internet) ---> Linux FW --> WIn2K Server[RAS](Lan)
+
+If I disable ipsec on xp, on Linux FW and on RAS Server, I can succesfuly=
+=20
+connect from xp to RAS server over L2TP using only this:
+
+ iptables -t nat -A PREROUTING -i eth1 -p udp --dport 1701 -j DNAT --to=20
+192.168.0.111:1701
+
+where eth1 is Internet nic in Linux FW.=20
+If I enable ipsec on xp and on Linux (openswan, kernel 2.4.27), while RAS s=
+till=20
+accepts only unencrypted packets, xp and Linux FW connects over ipsec with =
+no=20
+problem. The problem is, unencrypted packets don't destinate to RAS server.=
+=20
+AFAIK, I get unencrypted packets on ipsec0 device, so I just transform the=
+=20
+previous rule into:
+
+iptables -t nat -A PREROUTING -i ipsec0 -p udp --dport 1701 -j DNAT --to=20
+192.168.0.111:1701.
+
+But it does not work. Ipsec session is between xp and Linux is established,=
+ but=20
+RAS server timeouts. I suspect that my prerouting rule is causing me troubl=
+es...
 
 
-I have:
-- linux-2.6.9
-- patch-o-matic-ng-20040621
-- iptables-1.2.11
+Can anyone help?
+
+
+Regards, Davor
 
 
 
+____________________
+http://www.email.si/
 
