@@ -1,13 +1,13 @@
-From: =?iso-8859-1?Q?CPD_-_David_Carde=F1osa_Rubio?=
-	 <dcardenosa@cac.retecal.es>
-Subject: RE: iptables and samba
-Date: Wed, 26 May 2004 10:29:56 +0200
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Subject: RE: FTP over NAT problem
+Date: Wed, 26 May 2004 10:08:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7528A97D83FBD411BEF40003471B905B05D8FF1B@ZAR1>
+Message-ID: <5D3C2276FD64424297729EB733ED1F76061007BA@email1.mitretek.org>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C442FB.A0464200"
+	boundary="----_=_NextPart_001_01C4432A.F58BBC50"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,256 +17,420 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: "Vanderveer, Derek" <Derek.Vanderveer@McKesson.com>, netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C442FB.A0464200
+------_=_NextPart_001_01C4432A.F58BBC50
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 
-Hi
+This is very strange, have you given iptables 1.2.9 a try?
 
-This seems to be related to inverse name resolution.
-You can try put the client computer name in /etc/hosts and try the =
-conection
-again.
-In some cases samba try to resolv the client computer name, make a DNS
-query, until the DNS query finish the conection not be establised =
-correctly.
+Also, I compile everything iptables-wise into the kernel except
+ftp/nat_ftp (incase you want to run an ftp/access one on a port other
+than 21), then I do not need to worry about having the appropriate
+module loaded. What kernel do you run btw? 2.4.26 here for my fw box.
 
-Gratings=20
+=20
 
-David Carde=F1osa
+________________________________
 
------Mensaje original-----
-De: azeem ahmad [mailto:azeem484@hotmail.com]
-Enviado el: domingo, 23 de mayo de 2004 11:21
-Para: netfilter@lists.netfilter.org
-Asunto: iptables and samba
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Vanderveer,
+Derek
+Sent: Tuesday, May 25, 2004 12:42 PM
+To: 'netfilter@lists.netfilter.org'
+Subject: FTP over NAT problem
 
+=20
 
-hi
-i m using the script below
-------------------------------------------------------------------------=
-----
----------------------------------------------------------
-iptables -F
-iptables -t nat -F
-iptables -P INPUT DROP
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
+Hey all,
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port =
-8080
-#iptables -t nat -A PREROUTING -p udp --dport 80 -j REDIRECT --to-port =
-8080
+=20
+
+I've been fighting with this problem for over a week, and I've made no
+headway.  I have a server with a bank of serial ports, all attached to
+modems.  We use scripts to raise and drop lines to various customer
+sites that we support.  In the past, we've had great success using
+iptables to handle forwarding and NAT of LAN traffic going out over the
+wire to the customer's servers.  My latest server, however, doesn't
+handle FTP, PCAnywhere or RDP at all, using the same iptables commands
+as the older servers.  It has a slightly newer (v1.2.6a vs. 1.2.5)
+version of iptables, but otherwise isn't much different.
+
+=20
+
+Telnet and ICMP work fine, but PCA and RDP never connect.  You can
+connect to a server using FTP, and browse in Active or Passive mode
+without any problems.  As soon as you try to transfer a file, however,
+the transfer hangs immediately, regardless of whether you use Active or
+Passive.  I've pared my iptables script down to the bare minimum that
+gets me to this state after a full reboot, and here it is:
+
+=20
+
+modprobe ip_conntrack_ftp
+
+modprobe ip_nat_ftp
 
 iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
 
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-------------------------------------------------------------------------=
-----
----------------------------------------------------------
+iptables -F FORWARD
 
-i have two shares on samba server "Soft and linux" in these shares =
-there are
+iptables -t nat -P POSTROUTING ACCEPT
 
-many folders. whenever i run the above script and then i open the share =
-it=20
-takes atleast 4  minutes to open the share. but it doesnt take time =
-while=20
-browsing inside share.
-mean there is a folder on soft share like soft/adobe/acrobat/acrobat6
-when i double click on soft it takes atleast 4 minutes but after that =
-when i
+iptables -t nat -F POSTROUTING
 
-click on adobe then acrobat then acrobat6 it takes now time it just =
-brose=20
-them normally. same problem is with the other share named linux.
-but if i dont run this script then all shares work fine with no delay
+iptables -t nat -A POSTROUTING -o ppp+ -j MASQUERADE
 
-i dont know what is the udp port 80 for but i just saw its traffic on =
-my=20
-network in iptraf so i included it in my script
+iptables -A FORWARD -i eth0 -o ppp+ -j ACCEPT
 
-Regards
-Azeem
+iptables -A FORWARD -i ppp+ -o eth0 -m state --state ESTABLISHED,RELATED
+-j ACCEPT
 
-_________________________________________________________________
-Add photos to your e-mail with MSN 8. Get 2 months FREE*.=20
-http://join.msn.com/?page=3Dfeatures/featuredemail
+Distro is Debian 3.0r2, kernel is 2.4.26.  All non-experimental
+netfilter kernel options are compiled as modules; except for
+ip_conntrack_ftp and ip_nat_ftp, I just let the others autoload as I
+issue the iptables statements above.  Can anyone shed any light on why
+this is happening??  The same iptables ruleset works fine on my other
+servers, and I'm stumped!
+
+     Derek V.
 
 
-------_=_NextPart_001_01C442FB.A0464200
+------_=_NextPart_001_01C4432A.F58BBC50
 Content-Type: text/html;
-	charset="iso-8859-1"
+	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>RE: iptables and samba</TITLE>
-</HEAD>
-<BODY>
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:Arial;
+	color:navy;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-<P><FONT SIZE=3D2>Hi</FONT>
-</P>
+</head>
 
-<P><FONT SIZE=3D2>This seems to be related to inverse name =
-resolution.</FONT>
-<BR><FONT SIZE=3D2>You can try put the client computer name in =
-/etc/hosts and try the conection again.</FONT>
-<BR><FONT SIZE=3D2>In some cases samba try to resolv the client =
-computer name, make a DNS query, until the DNS query finish the =
-conection not be establised correctly.</FONT></P>
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
-<P><FONT SIZE=3D2>Gratings </FONT>
-</P>
+<div class=3DSection1>
 
-<P><FONT SIZE=3D2>David Carde=F1osa</FONT>
-</P>
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>This is very strange, have you =
+given
+iptables 1.2.9 a try?<o:p></o:p></span></font></p>
 
-<P><FONT SIZE=3D2>-----Mensaje original-----</FONT>
-<BR><FONT SIZE=3D2>De: azeem ahmad [<A =
-HREF=3D"mailto:azeem484@hotmail.com">mailto:azeem484@hotmail.com</A>]</F=
-ONT>
-<BR><FONT SIZE=3D2>Enviado el: domingo, 23 de mayo de 2004 11:21</FONT>
-<BR><FONT SIZE=3D2>Para: netfilter@lists.netfilter.org</FONT>
-<BR><FONT SIZE=3D2>Asunto: iptables and samba</FONT>
-</P>
-<BR>
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Also, I compile everything =
+iptables-wise
+into the kernel except ftp/nat_ftp (incase you want to run an ftp/access =
+one on
+a port other than 21), then I do not need to worry about having the =
+appropriate
+module loaded. What kernel do you run btw? 2.4.26 here for my fw =
+box.<o:p></o:p></span></font></p>
 
-<P><FONT SIZE=3D2>hi</FONT>
-<BR><FONT SIZE=3D2>i m using the script below</FONT>
-<BR><FONT =
-SIZE=3D2>---------------------------------------------------------------=
-----------------------------------------------------------------------</=
-FONT></P>
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'><o:p>&nbsp;</o:p></span></font></p>
 
-<P><FONT SIZE=3D2>iptables -F</FONT>
-<BR><FONT SIZE=3D2>iptables -t nat -F</FONT>
-<BR><FONT SIZE=3D2>iptables -P INPUT DROP</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -m state --state =
-ESTABLISHED,RELATED -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport 8080 -j =
-ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport =
-22&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport =
-53&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p udp --dport =
-53&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p udp --dport 137&nbsp; =
--j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p udp --dport 138&nbsp; =
--j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A INPUT -i eth0 -p tcp --dport 139&nbsp; =
--j ACCEPT</FONT>
-</P>
+<div>
 
-<P><FONT SIZE=3D2>iptables -t nat -A PREROUTING -p tcp --dport 80 -j =
-REDIRECT --to-port 8080</FONT>
-<BR><FONT SIZE=3D2>#iptables -t nat -A PREROUTING -p udp --dport 80 -j =
-REDIRECT --to-port 8080</FONT>
-</P>
+<div class=3DMsoNormal align=3Dcenter style=3D'text-align:center'><font =
+size=3D3
+face=3D"Times New Roman"><span style=3D'font-size:12.0pt'>
 
-<P><FONT SIZE=3D2>iptables -P FORWARD DROP</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -m state --state =
-ESTABLISHED,RELATED -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-21&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-443&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-5000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-5001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-5005&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-5050&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 =
--j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-7000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-28805&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-<BR><FONT SIZE=3D2>iptables -A FORWARD -i eth0 -p tcp --dport =
-51215&nbsp;&nbsp;&nbsp;&nbsp; -j ACCEPT</FONT>
-</P>
+<hr size=3D2 width=3D"100%" align=3Dcenter tabindex=3D-1>
 
-<P><FONT SIZE=3D2>iptables -t nat -A POSTROUTING -o ppp0 -j =
-MASQUERADE</FONT>
-<BR><FONT =
-SIZE=3D2>---------------------------------------------------------------=
-----------------------------------------------------------------------</=
-FONT></P>
+</span></font></div>
 
-<P><FONT SIZE=3D2>i have two shares on samba server &quot;Soft and =
-linux&quot; in these shares there are </FONT>
-<BR><FONT SIZE=3D2>many folders. whenever i run the above script and =
-then i open the share it </FONT>
-<BR><FONT SIZE=3D2>takes atleast 4&nbsp; minutes to open the share. but =
-it doesnt take time while </FONT>
-<BR><FONT SIZE=3D2>browsing inside share.</FONT>
-<BR><FONT SIZE=3D2>mean there is a folder on soft share like =
-soft/adobe/acrobat/acrobat6</FONT>
-<BR><FONT SIZE=3D2>when i double click on soft it takes atleast 4 =
-minutes but after that when i </FONT>
-<BR><FONT SIZE=3D2>click on adobe then acrobat then acrobat6 it takes =
-now time it just brose </FONT>
-<BR><FONT SIZE=3D2>them normally. same problem is with the other share =
-named linux.</FONT>
-<BR><FONT SIZE=3D2>but if i dont run this script then all shares work =
-fine with no delay</FONT>
-</P>
+<p class=3DMsoNormal><b><font size=3D2 face=3DTahoma><span =
+style=3D'font-size:10.0pt;
+font-family:Tahoma;font-weight:bold'>From:</span></font></b><font =
+size=3D2
+face=3DTahoma><span style=3D'font-size:10.0pt;font-family:Tahoma'>
+netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] <b><span =
+style=3D'font-weight:bold'>On
+Behalf Of </span></b>Vanderveer, Derek<br>
+<b><span style=3D'font-weight:bold'>Sent:</span></b> Tuesday, May 25, =
+2004 12:42
+PM<br>
+<b><span style=3D'font-weight:bold'>To:</span></b>
+'netfilter@lists.netfilter.org'<br>
+<b><span style=3D'font-weight:bold'>Subject:</span></b> FTP over NAT =
+problem</span></font><o:p></o:p></p>
 
-<P><FONT SIZE=3D2>i dont know what is the udp port 80 for but i just =
-saw its traffic on my </FONT>
-<BR><FONT SIZE=3D2>network in iptraf so i included it in my =
-script</FONT>
-</P>
+</div>
 
-<P><FONT SIZE=3D2>Regards</FONT>
-<BR><FONT SIZE=3D2>Azeem</FONT>
-</P>
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
 
-<P><FONT =
-SIZE=3D2>_______________________________________________________________=
-__</FONT>
-<BR><FONT SIZE=3D2>Add photos to your e-mail with MSN 8. Get 2 months =
-FREE*. </FONT>
-<BR><FONT SIZE=3D2><A =
-HREF=3D"http://join.msn.com/?page=3Dfeatures/featuredemail" =
-TARGET=3D"_blank">http://join.msn.com/?page=3Dfeatures/featuredemail</A>=
-</FONT>
-</P>
+<div>
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C442FB.A0464200--
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hey all,<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I've been fighting with this problem for over a week, =
+and
+I've made no headway.&nbsp; I have a server with a bank of serial ports, =
+all
+attached to modems.&nbsp; We use scripts to raise and drop lines to =
+various
+customer sites that we support.&nbsp; In the past, we've had great =
+success
+using iptables to handle forwarding and NAT of LAN traffic going out =
+over the
+wire to the customer's servers.&nbsp;&nbsp;My latest server, however, =
+doesn't
+handle FTP, PCAnywhere or RDP&nbsp;at all, using the same iptables =
+commands as
+the older servers.&nbsp; It has a slightly newer (v1.2.6a vs. 1.2.5) =
+version of
+iptables, but otherwise isn't much =
+different.<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Telnet and ICMP work fine, but PCA and RDP never
+connect.&nbsp; You can connect to a server using FTP, and browse in =
+Active or
+Passive mode without any problems.&nbsp; As soon as you try to transfer =
+a file,
+however, the transfer hangs immediately, regardless of whether you use =
+Active
+or Passive.&nbsp; I've pared my iptables script down to the bare minimum =
+that
+gets me to this state after a full reboot, and here it =
+is:<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>modprobe =
+ip_conntrack_ftp<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>modprobe =
+ip_nat_ftp<o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>iptables -P FORWARD DROP</span></font><font =
+size=3D2
+face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>iptables -F FORWARD</span></font><font =
+size=3D2
+face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>iptables -t nat -P POSTROUTING =
+ACCEPT</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>iptables -t nat -F =
+POSTROUTING</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>iptables -t nat -A POSTROUTING -o ppp+ -j =
+MASQUERADE</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>iptables -A FORWARD -i eth0 -o ppp+ -j =
+ACCEPT</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>iptables -A FORWARD -i ppp+ -o eth0 -m state =
+--state
+ESTABLISHED,RELATED -j ACCEPT</span></font><font size=3D2 =
+face=3DArial><span
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Distro is Debian 3.0r2, kernel is 2.4.26.&nbsp; All
+non-experimental netfilter kernel options are compiled as modules; =
+except for
+ip_conntrack_ftp and ip_nat_ftp, I just let the others autoload as I =
+issue the
+iptables statements above.&nbsp; Can anyone shed any light on why this =
+is
+happening??&nbsp; The same iptables ruleset works fine on my other =
+servers, and
+I'm stumped!<o:p></o:p></span></font></p>
+
+</div>
+
+<p><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;
+Derek V.<o:p></o:p></span></font></p>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C4432A.F58BBC50--
 
