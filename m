@@ -1,8 +1,8 @@
-From: "gkweb" <gkweb@wanadoo.fr>
-Subject: iprange patch failed
-Date: Sun, 27 Jul 2003 04:07:22 +0200
+From: Adam Young <adam@vbfx.com>
+Subject: FTP Connection Tracking with FXP support.
+Date: Sun, 27 Jul 2003 01:07:01 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001001c353e3$d13467a0$0100a8c0@poste1>
+Message-ID: <20030727010701.5619869f.adam@vbfx.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,24 +18,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+	Hi List,
 
-i would really need of the "iprange" feature for personal purpose, but i
-can't make it to patch my kernel.
-I download the patch with all his files on my patch-o-matic directory, on
-his own folder "iprange", i ran runme ./iprange, the patch failed.
-So i edited the patch to replace "linux-2.4.20-base" by "linux.orig" but one
-again the same error :
+	I'm currently using:
 
-Testing patch ./iprange...
-patch : **** read error : Is a directory
-Failed to patch copy of /usr/src/linux-2.4.21
+	Linux Kernel:	2.4.21
+	IP Tables:	  1.2.8
 
-How can i patch successfully my kernel 2.4.21 with this feature ?
+	My situation is this...I've attempted to apply the ftp-fxp.patch from oldnat in
+patch-o-matic to the 2.4.21 kernel without success.  It produces a fairly
+straight forward rej file, however the way certain things are referenced and
+with the changes, I'm not sure if I should go ahead with the patch or not. 
+Especially since I haven't had any kernel module coding experience.
 
-Thanks.
+	What I'm wondering is, is there an updated patch? or would someone be willing
+to supply me with some information about creating a new patch for fxp support?
 
-Guillaume.
+	Any help would be much appreciated, Thanks.
 
+-- 
+    Adam Young	<adam_at_vbfx_dot_com>
+    http://www.vbfx.com/
+    GPG Key - ACE3F958
 
 
