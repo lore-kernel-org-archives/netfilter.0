@@ -1,13 +1,13 @@
-From: Daniel Chemko <dchemko@smgtec.com>
-Subject: Re: related to -z option
-Date: Wed, 10 Mar 2004 11:02:47 -0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IPTables Flow Chart
+Date: Wed, 10 Mar 2004 19:08:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <404F6657.4020101@smgtec.com>
-References: <BAY12-F12shalxyPyF10000278a@hotmail.com>
+Message-ID: <200403101908.37569.Antony@Soft-Solutions.co.uk>
+References: <404E7C72.3040500@ynsgroup.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY12-F12shalxyPyF10000278a@hotmail.com>
+In-Reply-To: <404E7C72.3040500@ynsgroup.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: rohit persaie <persaie@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-If you have an accouting tool which doesn't handle accumulative 
-statistics gathering, you will have to zero the counters right after the 
-probe. Not ideal, but a hack to make some acocunting packages work.
+On Wednesday 10 March 2004 2:24 am, Jim Cliver wrote:
 
-Eg:
-I probe an ipables rule ever 5 min.
-
-
-Minute 0
-    iptables -Z
-    iptables -nvxL | grep ... | awk '{print $2}'
-    5345
-    iptables -Z
-Minute 5
-    iptables -nvxL | grep ... | awk '{print $2}'
-    5454
-    iptables -Z
-Accounting with a non-acumulative counter == 5345,5454
-Accounting with an acumulative counter == 5345,109 (wrong)
-
-
-Minute 0
-    iptables -Z
-    iptables -nvxL | grep ... | awk '{print $2}'
-    5345
-Minute 5
-    iptables -nvxL | grep ... | awk '{print $2}'
-    10799
-Accounting with a non-acumulative counter == 5345,10799 (wrong)
-Accounting with an acumulative counter == 5345,5454
-
-
-rohit persaie wrote:
-
-> Dear All,
+> Hello All,
 >
-> There is one option in iptables .....-Z , used for  the  packet  and 
-> byte counters in all the chains.
+> Attached is a drawing that I thought might be useful to the list, it is
+> intended to help visualize the traffic flows on a routing host
+> configured with Netfilter.
 >
-> Please tell me the use of this option, with example.
->
-> with regards ,
->
-> persaie
->
-> _________________________________________________________________
-> Take a loan. Win great prizes! Handsome prizes to be won!  Take a loan 
-> & win TV, Fridge & many more prizes ! 
-> http://go.msnserver.com/IN/44044.asp
->
->
+> I have checked it carefully for errors, but can't warrant their
+> non-existance.  I welcome comments and suggestions for improving or
+> correcting the drawing.
+
+My first comment is that the very centre element of the diagram, labelled 
+"Routing Process", suggests that IP_Forwarding needs to be = 1 for packets to 
+successfully enter the INPUT chain.   This is not the case - it might be 
+better if the red and green lines bypassed this box, and only the blue lines 
+(which are the "routed" packets) actually go through it.
+
+I then got slightly confused trying to follow the path of a blue packet; after 
+entering the logical interface and passing through PREROUTING, it arrives at 
+the routing process, but then appears to have a choice of two FORWARD chains 
+(one at the top of the diagram, one at the bottom) through which it could 
+pass.   I'm not sure this is a helpful representation of netfilter, as there 
+is only one FORWARD chain, and all packets, no matter where they are being 
+routed to, go through it.
+
+I appreciate that you have used the dotted outline of these boxes to indicate 
+"part of", however I think it would be clearer to show simply a single 
+netfilter FORWARD chain, followed by a routing decision which leads to the 
+two different interfaces?
+
+Regards,
+
+Antony.
+
+-- 
+This email was created using 100% recycled electrons.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
