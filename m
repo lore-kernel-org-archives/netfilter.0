@@ -1,15 +1,13 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Re: limiting bandwidth with iptables or squid?
-Date: Mon, 25 Oct 2004 10:15:42 +1000
+From: Jason Opperisano <opie@817west.com>
+Subject: RE: iptables source net and layer7
+Date: Sun, 24 Oct 2004 21:42:34 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041025001542.GN4247@samad.com.au>
-References: <web-486910273@mail01.infosat.net>
+Message-ID: <1098668553.9024.40.camel@hubcap.ljm.dom>
+References: <200410241528.i9OFSXnn021412@post.webmailer.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JVu9XMG6uEpKCPDY"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <web-486910273@mail01.infosat.net>
+In-Reply-To: <200410241528.i9OFSXnn021412@post.webmailer.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,52 +17,42 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Sun, 2004-10-24 at 11:28, Marco wrote:
+> Hello!
+> 
+> Thanks for your answer. I tried this but do not work.
+> I used tcpdump to verify the packets and saw the problem.
 
---JVu9XMG6uEpKCPDY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[ snip ]
 
-You could look at iproute2 the command tc
+you're trying to change horses mid-stream.  a normal TCP session looks
+like:
 
-lets you do traffic shapping!
+CLIENT		SERVER
+---------------------------
+1) SYN ->
+2) 		<- SYN-ACK
+3) ACK ->
+4) GET / ->
 
-So you could mark up packets in iptables and then traffic shape based on
-that
+my questions for you:
 
-A
+at which point in this conversation does your firewall make a routing
+decision for the session flow, choose a SNAT, and enter the connection
+into the conntrack table?  (my answer is step 1)
 
-On Sun, Oct 24, 2004 at 04:20:25PM +0200, it clown wrote:
-> Hi All,
->=20
-> I would like to know how to limit bandwidth with iptables.I
-> would like to limit bandwidth to ip's and mac address.Do i
-> need another program to work with iptables or can iptables
-> do it on its own?Does any one know where i can find
-> something to read up on this?
->=20
-> If iptables can not do it can i do it with squid?
->=20
-> Regards
-> _____________________________________________________________________
-> For super low premiums ,click here http://www.dialdirect.co.za/quote
->=20
->=20
+at which point in this conversation can it be determined what layer 7
+protocol is being spoken over this port?  (my answer is step 4)
 
---JVu9XMG6uEpKCPDY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+you are applying a SNAT to a connection at packet 1, and then trying to
+change the source IP of the connection at packet 4.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+-j
 
-iD8DBQFBfEWukZz88chpJ2MRArniAKCqrqtIZzhM4IOTMw0eHHyAOrt3xgCfb5bL
-FvvxJX2uyxpFdy1dLRLJlTY=
-=cqcq
------END PGP SIGNATURE-----
+-- 
+Jason Opperisano <opie@817west.com>
 
---JVu9XMG6uEpKCPDY--
 
