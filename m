@@ -1,12 +1,17 @@
-From: <netfilter@drbroyles.com>
-Subject: Re: Time changes
-Date: Wed, 22 Oct 2003 16:13:02 -0400
+From: Fernando Barrocal <fbarrocal@uol.com.br>
+Subject: RE: Trouble with PPTP
+Date: Wed, 22 Oct 2003 18:35:59 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000a01c398d8$e5b13660$73593a42@drbroyles.com>
-References: <NEBBICCJKLGJHMMNBPIKAENKFLAA.sbisgaard@xtrasource.com>
+Message-ID: <6.0.0.22.0.20031022183505.01b4f688@pop3.uol.com.br>
+References: <E26ABBCB14D369428125D23DF8BE94E52CD0BD@DGEXCH06.mcilink.com> <E26ABBCB14D369428125D23DF8BE94E52CD0BD@DGEXCH06.mcilink.co
+ m>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="=====================_506767583==.ALT"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <E26ABBCB14D369428125D23DF8BE94E52CD0BD@DGEXCH06.mcilink.co
+ m>
+References: <E26ABBCB14D369428125D23DF8BE94E52CD0BD@DGEXCH06.mcilink.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +21,129 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: sbisgaard@xtrasource.com
-Cc: "[netfilter] Mailing List" <netfilter@lists.netfilter.org>
+To: "Regalado, Ron" <Ron.Regalado@mci.com>, Andrzej Kozak <kozak@manager.ae.wroc.pl>, kernel@linuxace.com
+Cc: netfilter@lists.netfilter.org
 
-Yes, you would need to utilize the time patch.  Go to the following Howto to
-read up about it.
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-3.h
-tml#ss3.19
-
-Brandon Broyles
-  ----- Original Message -----
-  From: Steffen Bisgaard - Xtrasource
-  To: netfilter@lists.netfilter.org
-  Sent: Wednesday, October 22, 2003 3:44 PM
-  Subject: Time changes
+--=====================_506767583==.ALT
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 
 
-  Hallo list,
+I used the RPMs, if you need I can send you the How-to I did
 
-  A quick question: Is it possible to block access to and from a PC (say
-10.2.0.3) at a specific time, for example 21:00, and re-enable it at 08:00
-the next day using iptables - and if so how?? Yes this is the kids PC...
-  It used to be real simple with ipfw - I can't remember the syntax but
-something along the lines of ipfw -add (or -remove) deny (or allow) 10.2.0.3
-all
+At 17:06 22/10/2003, Regalado, Ron wrote:
+>
+>Should I use the rpm package from Redhat or compile the package from 
+>netfilter.org?
+>
+>
+>
+>----------
+>From: netfilter-admin@lists.netfilter.org 
+>[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Fernando Barrocal
+>Sent: Wednesday, October 22, 2003 12:23 PM
+>To: Andrzej Kozak; kernel@linuxace.com
+>Cc: netfilter@lists.netfilter.org
+>Subject: Re: Trouble with PPTP
+>
+>
+>You will need to compile iptables after the kernel then reboot
+>
+>--
+>F.Barrocal
+>
+>At 14:38 22/10/2003, Andrzej Kozak wrote:
+>>Thanks Phil,
+>>Is better but not excellent.
+>>After when I :
+>>Patched kernel (pptp-conntrack-nat from p-o-m)
+>>Recompiled iptables v 1.2.8
+>>Recompiled kernel
+>>i get the same message: iptables: Invalid argument
+>>but only if firewall script is automated executing from 
+>>/etc/rc.boot/firewallscript (DEBIAN 3.0 distribution) when linux is 
+>>booting or rebooting.
+>>If I log into system and executing this script manually is everything OK !
+>>What is wrong ?
+>>
+>>best regards
+>>Andrew Kozak
+>>
+>>
+>> > Rebuild iptables userspace using the patched kernel for the headers.
+>> >
+>> > Phil Oester
+>> >
+>> > On Wed, Oct 15, 2003 at 03:46:49PM +0200, Andrzej Kozak wrote:
+>> > > Hello!
+>> > > When I patched my 2.4.22 kernel with pptp-conntrack-nat -DNAT and -SNAT
+>>is broken if I use iptables with -t nat
+>> > > I get message: iptables: Invalid argument
+>> > > Iptables v. 1.2.8
+>> > > I need establish connect from my security network to outside VPN server.
+>> > >
+>> > > best regards
+>> > >
+>> > > Andrew Kozak
 
-  Any ideas? Or do I need two separate iptables scripts?
+
+--=====================_506767583==.ALT
+Content-Type: text/html; charset="us-ascii"
+
+<html>
+<body>
+<br>
+I used the RPMs, if you need I can send you the How-to I did<br><br>
+At 17:06 22/10/2003, Regalado, Ron wrote:<br>
+<blockquote type=cite class=cite cite>&nbsp;<br>
+<font face="arial" size=2 color="#0000FF">Should I use the rpm package
+from Redhat or compile the package from netfilter.org?<br>
+</font><br>
+&nbsp;<br>
+<hr>
+<font face="tahoma" size=2><b>From:</b>
+netfilter-admin@lists.netfilter.org [<a href="mailto:netfilter-admin@lists.netfilter.org" eudora="autourl">mailto:netfilter-admin@lists.netfilter.org</a>] <b>On Behalf Of </b>Fernando Barrocal<br>
+<b>Sent:</b> Wednesday, October 22, 2003 12:23 PM<br>
+<b>To:</b> Andrzej Kozak; kernel@linuxace.com<br>
+<b>Cc:</b> netfilter@lists.netfilter.org<br>
+<b>Subject:</b> Re: Trouble with PPTP<br>
+</font><br><br>
+You will need to compile iptables after the kernel then reboot<br><br>
+--<br>
+F.Barrocal<br><br>
+At 14:38 22/10/2003, Andrzej Kozak wrote:<br>
+<blockquote type=cite class=cite cite><font size=2>Thanks Phil,<br>
+Is better but not excellent.<br>
+After when I :<br>
+Patched kernel (pptp-conntrack-nat from p-o-m)<br>
+Recompiled iptables v 1.2.8<br>
+Recompiled kernel<br>
+i get the same message: iptables: Invalid argument<br>
+but only if firewall script is automated executing from /etc/rc.boot/firewallscript (DEBIAN 3.0 distribution) when linux is booting or rebooting.<br>
+If I log into system and executing this script manually is everything OK !<br>
+What is wrong ?</font> <br>
+&nbsp;<br>
+<font size=2>best regards<br>
+Andrew Kozak<br>
+</font>&nbsp;<br>
+&nbsp;<br>
+&gt; Rebuild iptables userspace using the patched kernel for the headers.<br>
+&gt;<br>
+&gt; Phil Oester<br>
+&gt;<br>
+&gt; On Wed, Oct 15, 2003 at 03:46:49PM +0200, Andrzej Kozak wrote:<br>
+&gt; &gt; Hello!<br>
+&gt; &gt; When I patched my 2.4.22 kernel with pptp-conntrack-nat -DNAT and -SNAT<br>
+is broken if I use iptables with -t nat<br>
+&gt; &gt; I get message: iptables: Invalid argument<br>
+&gt; &gt; Iptables v. 1.2.8<br>
+&gt; &gt; I need establish connect from my security network to outside VPN server.<br>
+&gt; &gt;<br>
+&gt; &gt; best regards<br>
+&gt; &gt;<br>
+&gt; &gt; Andrew Kozak</blockquote></blockquote></body>
+<br>
+</html>
+
+--=====================_506767583==.ALT--
 
 
