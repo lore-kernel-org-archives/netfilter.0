@@ -1,13 +1,15 @@
-From: George Garvey <tmwg-netfilter@inxservices.com>
+From: Tony Earnshaw <tonni@billy.demon.nl>
 Subject: Re: Requestion for help with GRE tunnel
-Date: Tue, 18 Jun 2002 14:00:08 -0700
+Date: 18 Jun 2002 23:03:02 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020618140008.B4767@inxservices.com>
-References: <20020618063945.A2662@inxservices.com> <20020618085953.C2662@inxservices.com> <20020618175336.GB26150@cannon.eng.us.uu.net>
+Message-ID: <1024434182.1918.146.camel@billy.demon.nl>
+References: <20020618063945.A2662@inxservices.com> 
+	<1024433743.2763.141.camel@billy.demon.nl>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-WG3sIH4wvVq6BPzLIa9C"
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020618175336.GB26150@cannon.eng.us.uu.net>; from ramin@cannon.eng.us.uu.net on Tue, Jun 18, 2002 at 01:53:36PM -0400
+In-Reply-To: <1024433743.2763.141.camel@billy.demon.nl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,21 +19,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-   Thanks very much. I hadn't noticed that I still had that tunnel on
-dev eth0. It appears to be working now. (Appears because I have a lot of
-work to do with the tunnel to be sure yet). But I can ping through the
-tunnel to the private LAN IPs on either side now.
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- ----------     Custom Programming                           (323) 255-7949
-|   inX    | EDI Translation/Mapping/VAN Services
-| Services |      EDI Consulting
- ----------       Network Design                       tmwg@inxservices.com
-             Distributed Web Applications       http://www.inxservices.com/
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                   Improving Your Business Is Our Business!
+
+--=-WG3sIH4wvVq6BPzLIa9C
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+tir, 2002-06-18 kl. 22:55 skrev Tony Earnshaw:
+
+> [Off list, because off topic]
+
+Sorry list, I pressed the wrong button ...
+
+Tony
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-WG3sIH4wvVq6BPzLIa9C
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9D6AG99dgUTvnuYERAkdiAKCpQEWyaxH3fOroAfqdmwObUvnAuwCcCocR
+9guB8jd/zvPTmwLDAKjVox0=
+=wuDR
+-----END PGP SIGNATURE-----
+
+--=-WG3sIH4wvVq6BPzLIa9C--
+
 
