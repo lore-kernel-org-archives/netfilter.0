@@ -1,9 +1,9 @@
-From: Rickard Eriksson <riceri@home.se>
-Subject: Re: PPTP
-Date: Fri, 11 Oct 2002 11:27:55 +0200
+From: "Gavin" <gavin@raha.com>
+Subject: Re: iptables, voip, mac match
+Date: Fri, 11 Oct 2002 13:06:54 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DA6999B.80609@home.se>
-References: <E131E9F1848D0148813EAF06A846608F615F73@w2ks-e2k.iconos.be>
+Message-ID: <06fd01c2710d$ed9ae4a0$583a29c4@ghome>
+References: <Pine.LNX.4.44.0210110549010.29137-100000@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,39 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sneppe Filip <Filip.Sneppe@cronos.be>
+Content-Type: text/plain; charset="us-ascii"
+To: "Robert P. J. Day" <rpjday@mindspring.com>
 Cc: netfilter@lists.netfilter.org
 
-Sneppe Filip wrote:
-
-> Rickard Eriksson [mailto:riceri@home.se] wrote:
+> On Fri, 11 Oct 2002, Gavin wrote:
+>
+> > hello,
 > >
+> > just reporting a funny one:
 > >
-> >Do i need newest iptables to get the modules to work?
+> > One of our clients was trying to use a VOIP application through a linux
+> > gateway (iptables-1.2.3). The client had a MAC address of a:b:c:d:e:f
+and an
+> > IP address of 1.2.3.4
 > >
+> > When I used this rule on the gateway (FORWARD policy DROP):
+> > iptables -A INPUT -i eth1 -m mac --mac a:b:c:d:e:f -j ACCEPT
 >
-> Hi,
->
-> No, not with these types of modules (conntrack/nat helpers).
-> We're only talking kernel code here. You need to run the
-> correct iptables if you are adding match and target extensions.
->
-> Regards,
-> Filip
->
->
->
->
-When i try to restart and load the modules i get a error, i didn't copy 
-it but it was something about "unresolved ... helper"
-And i can't find any setting in "make config" so that it shall make the 
-helper in any way.
+>                                    --mac-source ???
 
-Do you know what i am talking  about :)
-
-/Rickard
-
+                                            = same command, works as an
+abbreviation.
+>
+> >      -     the client could not establish an audio channel to his VOIP
+> > server
+>
+>
+> rday
+>
+>
 
 
 
