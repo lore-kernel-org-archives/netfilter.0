@@ -1,12 +1,14 @@
-From: "Gonzalez, Federico" <fgonzalez@goyaike.com.ar>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: TTL target
-Date: Fri, 23 Jul 2004 15:50:10 -0300
+Date: Fri, 23 Jul 2004 19:43:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001e01c470e5$e14b32c0$1e00000a@goyaike.com>
-References: <D5C9032B2B09C64EA2409D6214E91AC90511EA@asimail2.alphanumeric.com>
+Message-ID: <200407231943.52783.Antony@Soft-Solutions.co.uk>
+References: <D5C9032B2B09C64EA2409D6214E91AC90511E9@asimail2.alphanumeric.com> <000f01c470e2$fb4f1400$1e00000a@goyaike.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000f01c470e2$fb4f1400$1e00000a@goyaike.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,101 +19,81 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <Jopperisano@alphanumeric.com>, netfilter@lists.netfilter.org
-
-The output of "lsmod | grep ip" is :
-[root@firewall rc.d]# lsmod | grep ip
-ipt_ttl                  592   0  (unused)
-ipsec                 262336   2
-ipt_state                576   6  (autoclean)
-ipt_MASQUERADE          1408   1  (autoclean)
-iptable_nat            17616   1  (autoclean) [ipt_MASQUERADE]
-ip_conntrack           19648   2  (autoclean) [ipt_state ipt_MASQUERADE
-iptable_nat]
-iptable_mangle          2128   0  (autoclean) (unused)
-iptable_filter          1680   1  (autoclean)
-ip_tables              12160   8  [ipt_ttl ipt_state ipt_MASQUERADE
-iptable_nat
-iptable_mangle iptable_filter]
-[root@firewall rc.d]#
-
-I have redhat 7.2 and kernel 2.4.22   iptables 1.2.9 compiled in the kernel.
-
-Thank you.
-
------ Original Message ----- 
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-To: "Gonzalez, Federico" <fgonzalez@goyaike.com.ar>;
-<netfilter@lists.netfilter.org>
-Sent: Friday, July 23, 2004 3:34 PM
-Subject: RE: TTL target
-
-
-hmmm...  can you provide the output of "lsmod | grep ip"
-
-are you running the stock kernel/iptables?  what distro/version are you
-running?  sounds like you're missing something module-wise.
-
--j
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Gonzalez,
-Federico
-Sent: Friday, July 23, 2004 2:29 PM
-To: Jason Opperisano; netfilter@lists.netfilter.org
-Subject: Re: TTL target
-
-
-I get the following error:
-
-iptables: No chain/target/match by that name
-
-Thanks
------ Original Message ----- 
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-To: "Gonzalez, Federico" <fgonzalez@goyaike.com.ar>;
-<netfilter@lists.netfilter.org>
-Sent: Friday, July 23, 2004 3:21 PM
-Subject: RE: TTL target
-
-
-um--on fedora core 1--which seems to match the versions you provide, the TTL
-match target is there.
-
-$ uname -r
-2.4.22-1.2197.nptl
-
-$ iptables -V
-iptables v1.2.9
-
-# iptables -A INPUT -m ttl --ttl-eq 1 -j DROP
-#
-
-# iptables -vnL INPUT
-Chain INPUT (policy DROP 184 packets, 19161 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-    0     0 DROP       all  --  *      *       0.0.0.0/0
-0.0.0.0/0           TTL match TTL == 1
-
--j
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Gonzalez,
-Federico
-Sent: Friday, July 23, 2004 1:52 PM
 To: netfilter@lists.netfilter.org
-Subject: TTL target
 
+On Friday 23 July 2004 7:29 pm, Gonzalez, Federico wrote:
 
-Hi,
+> I get the following error:
+>
+> iptables: No chain/target/match by that name
 
-I have iptables 1.2.9, red hat kernel 2.4.22 and i need to use the TTL
-target to change the packets TTL.
+I think two people may be talking about two different things here without 
+realising it:
 
-How do i enable this functionality ?
+The ttl *match* (lowercase) is for matching packets by value of the TTL field.
 
-Thank you.
+The TTL *target* (uppercase) is for altering the TTL value in a packet.
+
+Sorry I can't answer the actual question, because I don't use Fedora, but 
+hopefully this might help to avoid some confusion, at least...
+
+Regards,
+
+Antony.
+
+> ----- Original Message -----
+> From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+> To: "Gonzalez, Federico" <fgonzalez@goyaike.com.ar>;
+> <netfilter@lists.netfilter.org>
+> Sent: Friday, July 23, 2004 3:21 PM
+> Subject: RE: TTL target
+>
+>
+> um--on fedora core 1--which seems to match the versions you provide, the
+> TTL match target is there.
+>
+> $ uname -r
+> 2.4.22-1.2197.nptl
+>
+> $ iptables -V
+> iptables v1.2.9
+>
+> # iptables -A INPUT -m ttl --ttl-eq 1 -j DROP
+> #
+>
+> # iptables -vnL INPUT
+> Chain INPUT (policy DROP 184 packets, 19161 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     0     0 DROP       all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0           TTL match TTL == 1
+>
+> -j
+>
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Gonzalez,
+> Federico
+> Sent: Friday, July 23, 2004 1:52 PM
+> To: netfilter@lists.netfilter.org
+> Subject: TTL target
+>
+>
+> Hi,
+>
+> I have iptables 1.2.9, red hat kernel 2.4.22 and i need to use the TTL
+> target to change the packets TTL.
+>
+> How do i enable this functionality ?
+>
+> Thank you.
+
+-- 
+"Black holes are where God divided by zero."
+
+ - Steven Wright
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
