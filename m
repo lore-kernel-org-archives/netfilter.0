@@ -1,12 +1,13 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: Re: opening connection for Tomcat
-Date: Thu, 8 Apr 2004 22:05:59 -0300
+From: "danyvip (at) pattco.ro" <danyvip@pattco.ro>
+Subject: Re: High CPU usage + Kernel option
+Date: Thu, 08 Apr 2004 22:24:35 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001101c41dce$d2b5ba10$51a2fea9@heretic>
-References: <40756C19.3010606@tin.it>	 <006f01c41d86$c82d6d60$51a2fea9@heretic> <1081446600.2453.63.camel@katala.sterenborg.info> <4075B24D.1020601@tin.it>
+Message-ID: <4075A6F3.8040607@pattco.ro>
+References: <4072B238.6050509@xana.ro> <1081262572.24338.37.camel@raylinux.internal> <4072C5E1.60306@xana.ro>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4072C5E1.60306@xana.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,80 +17,97 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Gianni Pucciani <gp.puccio@tin.it>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-oh, i thought you mean all addresses with 0.0.0.0 (as an example) and not
-you was setting the rule with explicilt 0.0.0.0
+you could always use arp -f filename to have few rules in iptables.. 
+alitle bit less cpu consumtion..
+if the main problem is ssh logging try port shaping and alocate 5kbfor 
+ssh..
+hope it helps,
 
-doing this, you are saying 0.0.0.0/32 , this means only this IP address. For
-match all ip addresses, leave the modif (-d) without set or use 0.0.0.0/0
-
-
-regards
-
------ Original Message ----- 
-From: "Gianni Pucciani" <gp.puccio@tin.it>
-To: "Rob Sterenborg" <rob@sterenborg.info>
-Cc: "Netfilter" <netfilter@lists.netfilter.org>
-Sent: Thursday, April 08, 2004 5:13 PM
-Subject: Re: opening connection for Tomcat
+danyvip
+-- 
 
 
-> Ok, I've fixed the problem: it seems that the address 0.0.0.0 is no good.
+
+Vlad Adomnicai wrote:
+
+> With vmstat the sys is at 100%. User process is 1-2%.
+> The machine doesn't do anything except routing and filtering with 
+> iptables.
+> There is also a script that runs every minute that updates the 
+> iptables rules, but it only lasts for about 1 second under medium cpu 
+> load.
 >
-> Many thanks
+> Vlad Adomnicai
 >
-> Gianni
-> Rob Sterenborg wrote:
 >
-> >On Thu, 2004-04-08 at 18:30, Alexis wrote:
-> >
-> >
-> >>you must change to OUTPUT the first rule at least. you're filtering all
-> >>outgoing packets.
-> >>
-> >>
-> >>
-> >
-> >In these rules I only see policy ACCEPT for the OUTPUT chain, so IMHO
-> >there's no filtering there.
-> >
-> >
-> >
-> >>>Hi all,
-> >>>I was in trouble opening a port for services with tomcat:
-> >>>Is this rule right? I'm behind an adsl router that forward every
-> >>>connection on port 8080 to <myprivateip>.
-> >>>
-> >>>iptables -P INPUT DROP
-> >>>iptables -P OUTPUT ACCEPT
-> >>>iptables -P FORWARD DROP
-> >>>
-> >>>iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> >>>iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -s 0.0.0.0 -m
-> >>>state --state NEW -j ACCEPT
-> >>>
-> >>>
-> >
-> >Is your Tomcat listening on 8080/tcp ? (netstat -an|grep 8080)
-> >Are you sure that your router is forwarding all connections ?
-> >
-> >Check with a logging rule between the -m state and the -p tcp rules to
-> >see what's going on (if there is) :
-> >
-> >iptables -A INPUT -j LOG --log-prefix "_ipt:check"
-> >
-> >
-> >Gr,
-> >Rob
-> >
-> >
-> >
-> >
-> >
-> >
+> Ray Leach wrote:
+>
+>> On Tue, 2004-04-06 at 15:35, Vlad Adomnicai wrote:
+>>  
+>>
+>>> Hi,
+>>>   I have a K6/2 333 machine with 64Mb of RAM and two network cards. 
+>>> (3c509 and an Intel one both with TCP cheksum offloading and Cpu )
+>>>   I use Fedora Core 1 with the default kernel    and iptables 1.2.9.
+>>>
+>>>   At high traffic through the router (6-7Mbytes/second) the CPU goes 
+>>> to 100% and I can't even log on to it through SSH:
+>>> [root@root web]# ssh 192.168.200.1 -C -v
+>>> OpenSSH_3.5p1, SSH protocols 1.5/2.0, OpenSSL 0x0090701f
+>>> debug1: Reading configuration data /etc/ssh/ssh_config
+>>> debug1: Applying options for *
+>>> debug1: Rhosts Authentication disabled, originating port will not be 
+>>> trusted.
+>>> debug1: ssh_connect: needpriv 0
+>>> debug1: Connecting to 192.168.200.1 [192.168.200.1] port 22.
+>>> debug1: Connection established.
+>>> debug1: identity file /root/.ssh/identity type -1
+>>> debug1: identity file /root/.ssh/id_rsa type -1
+>>> debug1: identity file /root/.ssh/id_dsa type -1
+>>>    and stands there until a timeout occures.
+>>>   On the network behind the router are aproxymately 200 users for 
+>>> which I have about 200 iptables rules  like this iptables -A FORWARD 
+>>> -s <ip> -m mac --mac-source <mac> -j ACCEPT and 200   iptables -A 
+>>> FORWARD -d <ip> -j ACCEPT, to allow passage only for the machines 
+>>> with the corect pair of ip/mac. I could give up the last 200 rules, 
+>>> as they don't serve a real purpose in limiting the access but they 
+>>> are used only for bandwidth monitoring / ip.
+>>>   Does anyone know how to lower the cpu usage with this 
+>>> configuration?   
+>>
+>> It should be very low ...
+>>
+>>  
+>>
+>>> tweaks of any kind? Would a 2.6 kernel improve the situation? I have 
+>>> also seen an option in the 2.4 kernels CONFIG_NET_HW_FLOWCONTROL 
+>>> (Forwarding between high speed interfaces) but there it is written 
+>>> that it supports only some network devices and I don't know about 
+>>> 3coms or intel ones.
+>>>
+>>>  Any one has any ideas? another way of setting the rules? another 
+>>> filtering method? tweaking parameters? or at least what kind of 
+>>> system will it be necessary for this setup to be able to at least 
+>>> log on to the machine and do something on it. Also, would a FreeBSD 
+>>> be more suitable for this on the same configuration?
+>>>
+>>>   
+>>
+>> Run something like sar, vmstat, top on the machine during high usage to
+>> see if there is another proc running that may be causing the high cpu
+>> usage. Do you run squid on that machine? If so, check the memory config
+>> ...
+>>
+>>  
+>>
+>>> Thanks in advance for any informations.
+>>> Vlad Adomnicai
+>>>
+>>>   
+>>
 >
 >
 >
