@@ -1,11 +1,15 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: Re: PPTP through iptables firewall
-Date: Fri, 7 Feb 2003 20:20:06 +0100
+From: "Alexander W. Janssen" <yalla@ynfonatic.de>
+Subject: Re: Some webpages inaccessible through IPTables
+Date: Fri, 7 Feb 2003 22:21:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001501c2cedd$ec0d3ce0$0401000a@robbysan.org>
+Message-ID: <20030207212108.GB2023@ynfonatic.de>
+References: <20030207184027.346DC232BA@www.fastmail.fm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20030207184027.346DC232BA@www.fastmail.fm>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,49 +19,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> NB> connections involving GRE has changed from UNKNOWN to GRE. But=20
-> NB> with this patch it is not possible to connect, now the windows=20
-> NB> client only reach "verifying username and password" and then
-> NB> times out.
->=20
-> I had the same problem. I also tried to connect from external IP
-> located behind firewall without any rules. I couldnt connect to
-> pptp server also [with timeout]. Then I recognized then unloading=20
-> ip_nat_pptp module causes the connection could be achieved correct.=20
-> [Other related modules ie. ip_conntrack_pptp,=20
-> ip_conntrack_proto_gre doesn't influence connection].
 
-Here too. I can compile the thing, but it won't work.
-I get messages in syslog like :
+--+g7M9IMkV8truYOl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Feb  1 16:21:01 router kernel: ip_conntrack_pptp.c: bad csum
-Feb  1 16:21:50 router last message repeated 3 times
+Can you access this pages from the firewall itself? Is your
+internet-connection some flavour of DSL? It could be a MTU problem. Especia=
+lly
+some Windows Clients tend to have problems with the MTU (Windows ME for
+instance).
 
-The ip_conntrack|nat_pptp patch downloaded from www.impsec.org for
-kernel 2.4.17 worked for me, but I need to compile a newer kernel and I
-can't get it done anymore.
-
-Is there someone who has got this working ??
+Alex.
 
 
-Besides, isn't there anyone that hasn't got problems when compiling
-iptables-1.2.7a ? It complains about not having if_name and if_index
-defined in ipt_ROUTE.h. (plain kernel-2.4.20, patched with
-pom-20030107).
-In ipt_ROUTE.h I don't see an if_index nor if_name, however there is an
-ifname. So I created the ifindex myself (unsigned int ifindex, it was
-somewhere in the past pom's). And in the libipt_ROUTE.c file (iptables
-package) I changed all instances if_name and if_index to ifname and
-ifindex.
+--=20
+"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
+l."
+Instructions for use of this post: Insert tounge in cheek. Read as normal.
 
-I don't know if that was the right thing to do, but now iptables
-compiles and so far I don't have any problems with it.
+--+g7M9IMkV8truYOl
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: Weitere Infos: siehe http://www.gnupg.org
 
-Gr,
-Rob
+iEYEARECAAYFAj5EI0QACgkQEMMZKORQoYLf8gCfUdzkA9fHtAmdhZEI/vt8LYqt
+2gAAni4woyr7uw2Jx5/iy9jLtRqNgjzO
+=vENP
+-----END PGP SIGNATURE-----
 
+--+g7M9IMkV8truYOl--
 
