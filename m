@@ -1,17 +1,13 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: Re: IP Spoofing
-Date: Fri, 07 Nov 2003 07:26:50 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: adsl modem and LAN
+Date: Fri, 7 Nov 2003 12:29:12 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068208010.29753.10.camel@tarkus>
-References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>
- <200311051951.hA5Jpdr13332@agate.rockstone.co.uk>
- <60250.200.180.160.130.1068063541.squirrel@www.alcidesmaya.com.br>
- <200311052039.hA5KdYr13351@agate.rockstone.co.uk>
-Reply-To: tedkaz@optonline.net
+Message-ID: <200311071229.hA7CTFj14666@agate.rockstone.co.uk>
+References: <004e01c3a529$989d8c90$47741769@jazzy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200311052039.hA5KdYr13351@agate.rockstone.co.uk>
+In-Reply-To: <004e01c3a529$989d8c90$47741769@jazzy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,57 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: Lista de Mail netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I would add an input established on that as well, makes it easier to do
-upgrades.
+On Friday 07 November 2003 12:20 pm, Aziz Sasmaz wrote:
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> I have an ADSL router.. My network is like below
+>
+> TELECOM --  ( 212.174.55.172 ) ADSL_ROUTER ( 10.0.0.2 ) -- (10.0.0.15 )
+> GATEWAY ( 192.168.0.6 ) -- SWITCH - (192.168.0.0/24) LAN
+>
+> I have a
+>                 cvs server at 192.168.0.222
+>                 https server at 192.168.0.111
+>
+> I can not connect to my LAN using my real ip ( 212.174.55.172 ) when i am
+> in my LAN. I want when i type in my explorer https://212.174.55.172  i can
+> see the site.. I dont want to type the https servers LAN IP when i am in MY
+> LAN..
+>
+> what should i do to see the https site when I use my real ip (
+> 212.174.55.172  )  in my LAN...
 
-I wish everyone did implicit DROP's, it would make the web a safer
-place.
+Best solution is to put your https and cvs servers on their own network 
+segment (a DMZ, if you like), so that traffic from both the outside world and 
+your internal LAN have to pass through the gateway machine running netfilter 
+in order to reach the https & cvs servers.
 
-:-)
+If yoou don't want to do that, you end up with horrible combinations of SNAT 
+and DNAT on the gateway machine, and every time you access the https / cvs 
+server from a LAN client, the server will think it's the gateway which is 
+connecting (which may mess up the authentication of your X.509 certificates?)
 
+For the cost of a single LAN card (or two if you don't want to have another 
+switch / hub), this is by far the easiest solution.
 
+Antony.
 
-Ted
+-- 
 
-
-On Wed, 2003-11-05 at 15:39, Antony Stone wrote:
-> On Wednesday 05 November 2003 8:19 pm, Leandro Takashi Hirano wrote:
-> 
-> > Thanks Antony...
-> >
-> > Do you have a script or something where I can find protection rules?
-> 
-> You tell us what protection you want and we can suggest some rules to do it.
-> 
-> There's no single "magic ruleset" for netfilter / iptables which "protects 
-> your network", otherwise every distribution would include it as standard.
-> 
-> It depends what you want to do.
-> 
-> A good starting point is:
-> 
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -P FORWARD DROP
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -i $intIF -o $extIF -j ACCEPT
-> 
-> That will allow nothing in or out of the firewall machine itself, and will 
-> allow all access from your internal network to the Internet, blocking 
-> everything except reply packets from the Internet to your network.
-> 
-> I do not recommend that you simply implement the above rules before you 
-> understand what they are designed to do.
-> 
-> Check Oskar Andreasson's excellent tutorial for more information about this 
-> sort of configuration, or any of the other documentation at 
-> http://www.netfilter.org
-> 
-> Antony.
-
+I vote "no" to this proposal to form a committee to investigate whether we 
+should or should not hold a ballot on whether to vote yet.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
