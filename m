@@ -1,10 +1,15 @@
-From: Lars Brinkhoff <lars.spam@nocrew.org>
-Subject: Re: Translating between local and global IP address
-Date: 23 Jan 2003 14:14:48 +0100
+From: cbaker@bbbscentralohio.org
+Subject: Re: can't surf windows 2k and XP
+Date: Thu, 23 Jan 2003 09:06:27 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <85iswg9fef.fsf@junk.nocrew.org>
+Message-ID: <3E2FB093.12332.4D51D1C@localhost>
+References: <5.1.0.14.0.20030123160248.00a884c8@mailsrv.teamlbc.com.ph>
+Reply-To: cbaker@bbbscentralohio.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <5.1.0.14.0.20030123160248.00a884c8@mailsrv.teamlbc.com.ph>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +20,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Rob Sterenborg wrote:
-> > I want packets originating from internet to $OUT to be accepted by
-> > the gateway and redirected to $IN.  Without the ifconfig, the
-> > gateway appears to accept only packets to itself.
-> 
-> Yes.  The gateway has 2 IP addresses, 1 public ($OUT) and 1 private
-> ($IN).
+What operating system is running on the dial-up modem server? 
+Could it be that the Win2000 and WinXP boxes are trying to connect 
+to the Net through the LAN? What web browser are they using?
 
-No, I want the gateway to have a public address other than $OUT, and
-the private address shouldn't be $IN, because that's what COMPUTER's
-address.
+Why would you want to surf the web using a shared dial-up 
+connection when you apparently have a better connection?
 
-Maybe an example help explain what I want.  Say, GATEWAY has public
-address 200.1.1.1 and private address 192.168.1.1.  COMPUTER is
-connected to the private network and has private address 192.168.1.2.
-However, I want to make it appear that COMPUTER exists as a node on
-the internet, on the same subnet as GATEWAY.  The public address of
-COMPUTER should be 200.1.1.2.  When a packet to 200.1.1.2 reaches
-GATEWAY, it should be NAT'ed to 192.1.1.2 and passed to COMPUTER, and
-vice versa.
+> I have 2 router, I will call router A and router B. The router A is
+> facing to Internet and the router B is the one cater our Intranet. So
+> I configure a linux firewall using IPTABLES and I put it in between of
+> router A and B to filter the packets. My firewall have 2 Lan Card and
+> I'm not using NAT. I have also dialup server which inside our
+> Intranet. Now this is my problem, If I'm using windows 98 and connect
+> using dialup I don't have any problem to access Internet but If I'm
+> using windows 2K or XP and connect using dialup, i cannot surf to any
+> website except www.microsoft.com only. but I can chat using MSN or
+> Yahoo messenger. But if my windows 2k or XP is connected to Lan i can
+> surf and do anything I want. Need help please.========================================
+Chris Baker -- technical specialist
+614-839-2447x108
+cbaker@bbbscentralohio.org
+Big Brothers Big Sisters
+Association of Central Ohio
+www.bbbscentralohio.org
 
-> > I want the gateway to have an IP address of its own, distinct from
-> > $OUT.
-> 
-> I don't see the point in "appearing to come from another IP", because
-> reply packets would not reach you anymore (private IP), or you'd have
-> asymmetric routing (2nd public IP).
-
-Yes, there is a second public IP.
 
