@@ -1,14 +1,14 @@
-From: peter frischknecht <peter@empoweringsolutions.com>
-Subject: Official IMQ support
-Date: Thu, 08 Apr 2004 13:59:12 -0400
+From: Rob Sterenborg <rob@sterenborg.info>
+Subject: Re: opening connection for Tomcat
+Date: Thu, 08 Apr 2004 19:50:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081447150.10056.60.camel@linux.local>
-References: <20040408162803.3624.39959.Mailman@vishnu.netfilter.org>
-Reply-To: peter@empoweringsolutions.com
+Message-ID: <1081446600.2453.63.camel@katala.sterenborg.info>
+References: <40756C19.3010606@tin.it>
+	 <006f01c41d86$c82d6d60$51a2fea9@heretic>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040408162803.3624.39959.Mailman@vishnu.netfilter.org>
+In-Reply-To: <006f01c41d86$c82d6d60$51a2fea9@heretic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,23 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Is there any chance that we will get IMQ incorporated in future releases of netfilter/kernel?
+On Thu, 2004-04-08 at 18:30, Alexis wrote:
+> you must change to OUTPUT the first rule at least. you're filtering all
+> outgoing packets.
+> 
 
-The development was picked up again (it was unmaintained).
-You can see it here:
-www.linuximq.net
+In these rules I only see policy ACCEPT for the OUTPUT chain, so IMHO
+there's no filtering there.
 
-They have patches for 2.4 and 2.6 kernels.
+> > Hi all,
+> > I was in trouble opening a port for services with tomcat:
+> > Is this rule right? I'm behind an adsl router that forward every
+> > connection on port 8080 to <myprivateip>.
+> >
+> > iptables -P INPUT DROP
+> > iptables -P OUTPUT ACCEPT
+> > iptables -P FORWARD DROP
+> >
+> > iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -s 0.0.0.0 -m
+> > state --state NEW -j ACCEPT
 
-IMQ, for those who don't already know, IMQ allows for NATting AND providing Bandwidth Control up/downstream.  It Creates an Intermediate Queueing Device that can be used to do the QoS stuff, while the regular Ethernet adapter can perform the NAT.
+Is your Tomcat listening on 8080/tcp ? (netstat -an|grep 8080)
+Are you sure that your router is forwarding all connections ?
 
-I have been using IMQ for a very long time (Network with 500 users), and I can vouch for its stability.  It keeps me from having 2 daisy-chained routers on site.
+Check with a logging rule between the -m state and the -p tcp rules to
+see what's going on (if there is) :
 
-Flames or comments are welcome...C'mon, anybody else out there uses IMQ?
+iptables -A INPUT -j LOG --log-prefix "_ipt:check"
 
-Have a great day,
 
-Peter Frischknecht
+Gr,
+Rob
+
+
 
