@@ -1,15 +1,13 @@
-From: "Alexander W. Janssen" <yalla@ynfonatic.de>
-Subject: Re: off topic: routing question
-Date: Tue, 11 Mar 2003 08:13:56 +0100
+From: David <dmarchan@supelec-rennes.fr>
+Subject: Re: Incomming packets
+Date: Tue, 11 Mar 2003 09:01:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030311071356.GA27882@ynfonatic.de>
-References: <006101c2e737$3b8c8e80$3864a8c0@discmail.com>
+Message-ID: <20030311090151.2d1a9c70.dmarchan@supelec-rennes.fr>
+References: <20030311022151.022CCBFD2@webserver.emelytours.com.do>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <006101c2e737$3b8c8e80$3864a8c0@discmail.com>
+In-Reply-To: <20030311022151.022CCBFD2@webserver.emelytours.com.do>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Aldo S. Lagana" <alagana@discmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
+
+Le Mon, 10 Mar 2003 22:21:51 -0400 (AST)
+serguey.forcade@emelytours.com.do a =E9crit:
+
+> Hello:
+>=20
+>     I'm trying to set a rule in my iptables configuration to accept incom=
+ming connections from an specific host, (ie. iptables -A input -i eth0 -p t=
+cp --dport 21 -s test.host -j ACCEPT ) and I keep getting the error:
+>=20
+> iptables v1.2.6a: host/network `test.host' not found
+> Try `iptables -h' or 'iptables --help' for more information.
+>=20
+> Does anyone know about it?
+>=20
+> Thanks
+>=20
 
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 10, 2003 at 01:59:52PM -0500, Aldo S. Lagana wrote:
-> How do I (using iproute2, etc.) get one linux gateway to forward packets
-> to another linux gateway based on port?
-
-The simplest solution would be maybe fwmark:
-
-# Mark all 80/tcp traffic with 0x42
-iptables -t mangle -A PREROUTING -p tcp --dport 80 -j MARK --set-mark 0x42
-# Create new routingtable with new default-route where $NEW_GW is IP of
-# gateway
-ip route add default via $NEW_GW table 42
-# Now force marked traffic to use this brandnew routingtable
-ip rule add fwmark 0x42 lookup table 0x42
-
-> I just want to do policy based routing by port to another router.  I've
-> read the Advanced Routing HOWTO and I cannot find the answer there -
-> please someone enlighten me!
-
-Hope this illuminates you :)
-=20
-Alex.
+I'm quite a newbie but I really think it's a dns problem. I had this proble=
+m and I, then, realised that my "dns provider" had filtered port 53...
 
 --=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
-
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
-
-iEYEARECAAYFAj5tjLMACgkQEMMZKORQoYJDagCfRjPqPh37Op02xcZjrJBnSapY
-kWgAn0o0tuzAS8udBx2yCEnRICDyh3HU
-=DSNj
------END PGP SIGNATURE-----
-
---NzB8fVQJ5HfG6fxh--
+Guitou
 
