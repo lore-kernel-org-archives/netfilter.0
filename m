@@ -1,8 +1,8 @@
 From: "Steffen Trenkler" <trenkler@syn-con.de>
 Subject: iptables problems with SuSE 8.0
-Date: Thu, 13 Mar 2003 10:41:10 +0100
+Date: Thu, 13 Mar 2003 11:21:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FFEKLFAFFPMEICKNCBGACEFKCDAA.trenkler@syn-con.de>
+Message-ID: <FFEKLFAFFPMEICKNCBGAMEFKCDAA.trenkler@syn-con.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
