@@ -1,15 +1,12 @@
-From: Eric Leblond <eric@regit.org>
+From: "Jee J.Z." <jz105@york.ac.uk>
 Subject: Re: Modify packets using netfilter
-Date: Sat, 13 Dec 2003 21:21:25 +0100
+Date: Sat, 13 Dec 2003 23:11:04 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071346885.1309.3.camel@porky>
-References: <007101c3c190$0b3d6450$cb0210ac@jz105>
-	 <200312131549.45158.Antony@Soft-Solutions.co.uk>
-	 <007d01c3c198$873df440$cb0210ac@jz105>
+Message-ID: <025c01c3c1ce$61f202e0$68892090@grouse>
+References: <007101c3c190$0b3d6450$cb0210ac@jz105> <200312131549.45158.Antony@Soft-Solutions.co.uk> <007d01c3c198$873df440$cb0210ac@jz105> <1071346885.1309.3.camel@porky>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-r8HdRIBG0U8/OXmX72yV"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007d01c3c198$873df440$cb0210ac@jz105>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,22 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@lists.netfilter.org
+
+Hi Eric and all,
+
+Thank you again. I have a few further questions:
+1. How many packets can ip_queue queue for userspace? How can we change t=
+he
+size of QUEUE?
+2. Can we use ipq_read() and ipq_set_verdict() to access and process queu=
+ed
+packets in any order?
+    More specifically, for example, I wish to ipq_read() a number of pack=
+ets
+from QUEUE before ipq_set_verdict() any of them, and then ipq_set_verdict=
+()
+in whichever order I want. It is possible?
+
+Cheers,
+Jee
+
+
+----- Original Message -----=20
+From: "Eric Leblond" <eric@regit.org>
 To: "Jee J.Z." <jz105@york.ac.uk>
-Cc: netfilter@lists.netfilter.org
-
-
---=-r8HdRIBG0U8/OXmX72yV
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Cc: <netfilter@lists.netfilter.org>
+Sent: Saturday, December 13, 2003 8:21 PM
+Subject: Re: Modify packets using netfilter
 
 Le sam 13/12/2003 =C3=A0 17:45, Jee J.Z. a =C3=A9crit :
 > Hi Antony and all,
->=20
-> Thanks for your reply. What I am trying to do is to get the whole packets=
- including their payloads and store them into a self defined queue, and ran=
-domly modify some bits in each packet.=20
-> I am using iptables userspace programming. Does anybody have some good id=
-ea how to achieve this? Thank you.
+>
+> Thanks for your reply. What I am trying to do is to get the whole packe=
+ts
+including their payloads and store them into a self defined queue, and
+randomly modify some bits in each packet.
+> I am using iptables userspace programming. Does anybody have some good
+idea how to achieve this? Thank you.
 
 with libipq you can modify the payload of the packet :
 
@@ -50,18 +69,4 @@ BR,
 Eric Leblond
 Nufw, Now User Filtering Works (http://www.nufw.org)
 
---=-r8HdRIBG0U8/OXmX72yV
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQA/23TFnxA7CdMWjzIRAr71AJ9h7zrthjVdm/R5Vcb+xyjYrYcD3QCeL9zL
-pL4dSWfpNY38t5Kc206s2uU=
-=0tgz
------END PGP SIGNATURE-----
-
---=-r8HdRIBG0U8/OXmX72yV--
 
