@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: cbq.init and iptables NAT routing
-Date: 04 Oct 2002 02:30:56 +0200
+From: Michael <mutk@iprimus.com.au>
+Subject: Re: understanding ip_conntrack entry
+Date: Fri, 04 Oct 2002 12:45:04 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033691456.3545.22.camel@elendil>
-References: <Pine.LNX.4.33.0210031314220.27868-100000@ts1.alberni.net>
+Message-ID: <3D9D00B0.8080901@iprimus.com.au>
+References: <000f01c26b18$2d114990$3201a8c0@leonardo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0210031314220.27868-100000@ts1.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +16,78 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Aaron Clausen <maureen-taocow@alberni.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter ML <netfilter@lists.samba.org>
 
-I checked the code, and discovered I was wrong. Shaping is done _after_
-Netfilter, i.e. after POSTROUTING chain.
+netstat uses files in /proc/net (from netstat man page) :
+/proc/net/dev -- device information
 
-I just tried this :
+/proc/net/raw -- raw socket information
 
-RULE=3D192.168.10.1/32
+/proc/net/tcp -- TCP socket information
 
-I ping 192.168.10.1 and stats are growing, so it matches.
-Then, I'll DNAT in OUTPUT 192.168.10.1 to 192.168.10.12
+/proc/net/udp -- UDP socket information
 
-iptables -t nat -A OUTPUT -d 192.168.10.1 -j DNAT --to 192.168.10.12
+/proc/net/igmp -- IGMP multicast information
 
-It does not match anymore =3D> DNAT is done _before_ shaping.
+/proc/net/unix -- Unix domain socket information
 
-No I flush
+/proc/net/ipx -- IPX socket information
 
-iptables -t nat -F
+/proc/net/ax25 -- AX25 socket information
 
-then set
+/proc/net/appletalk -- DDP (appletalk) socket information
 
-RULE=3D192.168.10.11/32,
+/proc/net/nr -- NET/ROM socket information
 
-I ping 192.168.10.1, and counters are growing. It matches. Then I set
-SNAT :
+/proc/net/route -- IP routing information
 
-iptables -t nat -A POSTROUTING -d 192.168.10.1 -j SNAT --to 192.168.10.2
-ip addr add 192.168.10.2 dev eth0
+/proc/net/ax25_route -- AX25 routing information
 
-So I use 192.168.10.2 to emit py pings. And my class is no more reached
-=3D> SNAT is done _before_ shaping also...
+/proc/net/ipx_route -- IPX routing information
 
-If I set :
+/proc/net/nr_nodes -- NET/ROM nodelist
 
-RULE=3D192.168.10.2/32,
+/proc/net/nr_neigh -- NET/ROM neighbours
 
-Class is reached again. So I was wrong... Sorry.
+/proc/net/ip_masquerade -- masqueraded connections
 
-To answer your message :
+/proc/net/snmp -- statistics
 
-Le jeu 03/10/2002 =E0 22:15, Aaron Clausen a =E9crit :
-> iptables -t nat -A PREROUTING -i eth0 -d 64.251.69.2 -j DNAT --to 10.10=
-2.106.2
+It doesn't use or know anything about ip_conntrack
+Therefore any statefull activity cannot be shown in netstat. Maybe it 
+needs re-writing ?? :)
 
-eth0 : RULE=3D64.251.69.2,
-eth1 : RULE=3D10.102.106.2
+Cheers,
+Michael
 
-> iptables -t nat -A POSTROUTING -o eth0 -s 10.102.106.2 -j SNAT --to 64.=
-251.69.2
 
-eth0 : RULE=3D64.251.69.2,
-eth1 : RULE=3D10.102.106.2
 
-[...]
+Leonardo Rodrigues ( listas ) wrote:
 
-> iptables -t nat -A POSTROUTING -o eth0 -s 10.101.104.0/21 -j MASQUERADE
+>    Hello Guys,
+>
+>    I'd like your help to understand this entry from /proc/net/ip_conntrack:
+>
+>tcp      6 325849 ESTABLISHED src=192.168.10.1 dst=192.168.229.25
+>sport=53699 dport=80 [UNREPLIED] \
+>    src=192.168.229.25 dst=192.168.10.1 sport=80 dport=53699 use=1
+>
+>
+>    Well ...... 192.168.10.1 is my iptables box and 192.168.229.25 is one of
+>my remote machines. My question is .... if this connection is marked as
+>ESTABLISHED, shouldnt it appear on 'netstat -an' entries ??? I think it
+>should, but it's not appearing there .....
+>
+>    Sincerily,
+>    Leonardo Rodrigues
+>
+>
+>
+>
+>  
+>
 
-eth0 : RULE=3D<eth0_IP>,
-eth1 : RULE=3D10.101.104.0/21
 
-Hope this will help you at last, and sorry again for the mistake. Going
-to bed now, seems to be high time ;)
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
