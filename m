@@ -1,12 +1,12 @@
-From: "Mike Walker" <mhwalker@telus.net>
-Subject: IPTables Script
-Date: Thu, 25 Sep 2003 22:00:45 -0700
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: a problem about NAT.
+Date: Thu, 25 Sep 2003 22:11:02 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c383eb$256b2d40$0101a8c0@A4A74546>
+Message-ID: <Pine.LNX.4.53.0309252206510.3632@xena.cft.ca.us>
+References: <DEEOLEFPFOLKFJHILOGBCEEOCAAA.ChenJ@yztech.com.cn>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C383B0.790C5540"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <DEEOLEFPFOLKFJHILOGBCEEOCAAA.ChenJ@yztech.com.cn>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,106 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01C383B0.790C5540
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Chen Jian <ChenJ@yztech.com.cn>
+Cc: netfilter@lists.netfilter.org
 
-Any comments on this script as a starting point? I'm sure its no where
-near as secure as it should be but I was looking for a good example to
-learn from and improve on. =)
+On Wed, 24 Sep 2003, Chen Jian wrote:
 
- 
+> There are 3 machine behind the NAT server. When the 3 machine request the
+> same Web server outside, NAT use 3 different source port to distinguish
+> the 3 connection.
 
-http://www.linuxhelp.ca/guides/iptables/iptables-script
+> My problem is when the 3 machine have the same source port , how
+> netfilter handle it ? I also want to know where the handle code is .
+> Thanks .
 
- 
+I can't help with the source code reference, but I can answer the first
+question.  The three machines necessarily have different IP addresses.
+Connections are identified by (IP address, port), so even if they happen to
+all pick the same port, they are still uniquely identified.
 
-            Mike..
+Similarly for returning packets after NAT: conntrack uses the same IP
+address but different ports for each connection, so it can identify which
+connection the replies belong to, and rewrite the destination IP and port
+correctly.
 
-
-------=_NextPart_000_0001_01C383B0.790C5540
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-
-
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Any comments on this script as a starting point? =
-I&#8217;m
-sure its no where near as secure as it should be but I was looking for a =
-good
-example to learn from and improve on. =3D)</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><a
-href=3D"http://www.linuxhelp.ca/guides/iptables/iptables-script">http://w=
-ww.linuxhelp.ca/guides/iptables/iptables-script</a></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp; Mike&#8230;.</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0001_01C383B0.790C5540--
-
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
