@@ -1,10 +1,14 @@
-From: "Simpson, Doug" <dsimpson@friedmancorp.com>
-Subject: RE: SMTP external
-Date: Fri, 3 Jan 2003 09:55:48 -0600
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Trying to setup two ethernet cards with two websites
+Date: Fri, 3 Jan 2003 11:25:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20ED00AA0BC135449469D6EF0AE79C970FB3@ozlan.fcdomain.net>
+Message-ID: <200301031125.59596.netfilter@newkirk.us>
+References: <2762500A-1F16-11D7-97EA-000393950CC2@karlsbakk.net>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <2762500A-1F16-11D7-97EA-000393950CC2@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,60 +19,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Linux' <linux@usermail.com>, netfilter@lists.netfilter.org
+To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Cc: JUSTIN GERRY <JGERRY@butchers.com>, netfilter@lists.netfilter.org
 
-I thought about this but they already have a pop3 connection out on the
-internet.  They just need to send their mail when they are remote.
-Thanks
-
------Original Message-----
-From: Linux [mailto:linux@usermail.com]
-Sent: Thursday, January 02, 2003 5:38 PM
-To: Simpson, Doug; netfilter@lists.netfilter.org
-Subject: Re: SMTP external
-
-
-Do they only need pop3 or pop3 and smtp?  If they need both, you may want to
-consider installing a web based email client for remote access.
-
-Linux303
------ Original Message -----
-From: "Simpson, Doug" <dsimpson@friedmancorp.com>
-To: "'Linux'" <linux@usermail.com>; <netfilter@lists.netfilter.org>
-Sent: Thursday, January 02, 2003 4:34 PM
-Subject: RE: SMTP external
-
-
-> Yes, thank you.  This is one thing I am trying to avoid but there are
-those
-> who want remote access via their pop3 clients, etc.
->
-> -----Original Message-----
-> From: Linux [mailto:linux@usermail.com]
-> Sent: Thursday, January 02, 2003 5:32 PM
-> To: Simpson, Doug; netfilter@lists.netfilter.org
-> Subject: Re: SMTP external
->
->
-> Before doing this, make sure you are not an open relay
->
-> Linux303
->
-> ----- Original Message -----
-> From: "Simpson, Doug" <dsimpson@friedmancorp.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Thursday, January 02, 2003 3:40 PM
-> Subject: SMTP external
->
->
-> > I do not really want to do it but I need to open my firewall to allow
-smtp
-> > access from the internet.
-> > First is there a safe way to do it? (HA)
-> > Second, what is the correct command to do this?
-> > Thanks,
-> > Doug
+On Friday 03 January 2003 07:23 am, Roy Sigurd Karlsbakk wrote:
+> > If you trust that nothing on the box is or ever will connect that
+> > you don't want to, then output chain can just have an ACCEPT policy.
+> >  If you
+> > want to lock down to make it harder for a trojan or such to
+> > communicate back from the box, you can set a DROP policy, then:
 > >
+> > iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 >
+> just remember to allow incoming ICMP. Please? ICMP _is_ an integral
+> part of IP, and shouldn't be blocked out!
+
+The RELATED state does just this.  If you allow absolutely nothing in but=
+=20
+tcp 80 and established, and absolutely nothing out but established, only=20
+the port 80 request and reply will get through.  If you also allow=20
+related out then so long as an 'established' connection exists then=20
+supplementary connections are accepted as well, like ICMP fragmentation=20
+control stuff.  The only /initial/ connection allowed in this=20
+mini-scenario is to destination port 80 with TCP, but once that=20
+connection is flowing then the server would be allowed to send related=20
+packets to the same client, even other ports or protocols, and they will=20
+get through regardless of whether they are explicitly accepted or=20
+explicitly dropped by the firewall.  That is the basic purpose of the=20
+RELATED state.  It's extended with helpers too consider things like FTP=20
+data to be related to FTP control, and the NAT functions are extended as=20
+well, but the whole idea of RELATED is to let through stuff that is,=20
+well, related.
+
+j
+
 
