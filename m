@@ -1,12 +1,13 @@
-From: "Caracal - G. Hostettler" <100112_2660@bluewin.ch>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Multihomed firewall and port forwarding nightmare ))):-(
-Date: Wed, 14 Jan 2004 23:43:57 +0100
+Date: Wed, 14 Jan 2004 23:42:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c3daef$e5a2b370$017ca8c0@lucens.caracal.ch>
-References: <004301c3dae3$17238120$017ca8c0@lucens.caracal.ch> <200401142124.33954.Antony@Soft-Solutions.co.uk>
+Message-ID: <200401142342.16355.Antony@Soft-Solutions.co.uk>
+References: <004301c3dae3$17238120$017ca8c0@lucens.caracal.ch> <200401142124.33954.Antony@Soft-Solutions.co.uk> <000d01c3daef$e5a2b370$017ca8c0@lucens.caracal.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000d01c3daef$e5a2b370$017ca8c0@lucens.caracal.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +18,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I did, just to be sure, removed two NICs and assigned the three IPs to the
-remaining one.
-Changed rules accordingly (just changing the ifaces names).
+On Wednesday 14 January 2004 10:43 pm, Caracal - G. Hostettler wrote:
 
-Got exactly the same behavior. So the problem do not seem to be a routing
-problem.
-My idea to have three separate interfaces is:
-a) if one crashes, not all services are down
-b) if I need an express and physical break, I can stop smtp (for example)
-traffic by simply disconnecting or downing one interface
+> I did, just to be sure, removed two NICs and assigned the three IPs to the
+> remaining one.
+> Changed rules accordingly (just changing the ifaces names).
+>
+> Got exactly the same behavior. So the problem do not seem to be a routing
+> problem.
 
-Any suggestion on the rules previously posted ?
+I'm not convinced (sorry).   Why do you have defaults routes pointing both 
+internally and externally?   That seems wrong to me.
 
-Thank you !
+(From your original email...)
 
-GH
+> Kernel IP routing table
+> Destination Gateway Genmask Flags Metric Ref Use Iface
+> 195.65.176.160 * 255.255.255.248 U 0 0 0 eth1
+> 195.65.176.160 * 255.255.255.248 U 0 0 0 eth2
+> 195.65.176.160 * 255.255.255.248 U 0 0 0 eth3
+> localnet * 255.255.255.0 U 0 0 0 eth0
+> default 195.65.176.161 0.0.0.0 UG 0 0 0 eth3
+> default 195.65.176.161 0.0.0.0 UG 0 0 0 eth2
+> default 195.65.176.161 0.0.0.0 UG 0 0 0 eth1
+> default 192.168.124.253 0.0.0.0 UG 0 0 0 eth0
 
-> On Wednesday 14 January 2004 9:12 pm, Caracal - G. Hostettler wrote:
->
-> > Hi!
-> >
-> > Using ipchains for a while and relatively new to iptables.
->
-> Welcome to the 21st Century :)
->
-> > I have to setup a somewhat special multihomed firewall:
-> > It has three external interfaces with public addresses, one for http,
-one
-> > for both smtp and pop3 and the third for ftp. These are real hardware
-NICS,
-> > not virtual.
->
-> Why?   What is the purpose of having three external IP addresses (in the
-same
-> subnet range) on three separate interface cards?   I think it makes your
-> routing setup unecessarily complicated.
->
-> I would recommend one external interface and one internal interface, with
-> however many IP addresses you need on each.
->
-> Regards,
->
-> Antony.
->
-> -- 
-> This is not a rehearsal.
-> This is Real Life.
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
+Antony.
+
+-- 
+Programming is a Dark Art, and it will always be. The programmer is
+fighting against the two most destructive forces in the universe:
+entropy and human stupidity. They're not things you can always
+overcome with a "methodology" or on a schedule.
+
+ - Damian Conway, Perl God
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
