@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Log Problem
-Date: Mon, 9 Aug 2004 18:37:05 +0100
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: Netfilter vs commercial
+Date: Mon, 09 Aug 2004 13:39:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408091837.05112.Antony@Soft-Solutions.co.uk>
-References: <200408091311314.SM01376@Hope>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <1092073140.18387.109.camel@localhost>
+References: <BAY4-F16p4k1Cz5WqET0000e7bd@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408091311314.SM01376@Hope>
+In-Reply-To: <BAY4-F16p4k1Cz5WqET0000e7bd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,41 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Mike O <mikeeo@msn.com>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 09 August 2004 6:11 pm, David Ashwood wrote:
+On Mon, 2004-08-09 at 12:48, Mike O wrote:
+> John,
+> 
+> Would you mind elaborating on your comment about Netfilter's stateful engine 
+> being weaker than Checkpoint's? and how would the window tracking patch make 
+> it more secure. We have checkpoint here and have ran into problems, where 
+> checkpoint has limited us in the way we do things here and I have always 
+> wanted to implement netfilter but couldn't because it's open source.
+<snip>
+Sure, although it may reflect more of my ignorance than my sagacity :-)
 
-> Thanks for responding Antony,
->
-> 1) Same problem as before ' iptables: No chain/target/match by that name'
->
-> 2) User defined chains work - and I can put a drop rule without problems.
->
-> Kernel:
-> A new box just bought - I thought the kernel was old - but I had to demo a
-> product for a client - and wanted to get that done before I pester the VPS
-> hosts to upgrade the kernel.
+From what I understand, the out of the box netfilter connection tracking
+sets timers for the dataflow and matches source and destination
+information and, for TCP, session states.  It does not match the
+acknowledgment and sequence numbers for TCP packets unless one adds the
+window tracking patch.  Someone please correct me if I am wrong.
 
-VPS?
-
-My recommendation is a kernel recompile (without changing the version for 
-now).   Should take about 15 minutes.
-
-Once you've done the demo and have time to think about things, get a current 
-kernel, do a "make oldconfig", and build something up-to-date.
-
-Hope this helps,
-
-Antony.
-
+I cannot say so authoritatively but I believe out of the box Checkpoint
+does match ACK and SEQ - John
 -- 
-Late in 1972 President Richard Nixon announced that the rate of increase of 
-inflation was decreasing.   This was the first time a sitting president used 
-a third derivative to advance his case for re-election.
-
- - Hugo Rossi, Notices of the American Mathematical Society
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+John A. Sullivan III
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevelopmentcorp.com
 
 
