@@ -1,8 +1,8 @@
 From: "Jonathan Villa" <jvilla@e37.net>
 Subject: Re: allow range syntax - perplexed
-Date: Tue, 15 Jun 2004 12:47:06 -0500 (CDT)
+Date: Tue, 15 Jun 2004 12:52:02 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1707.64.2.245.108.1087321626.squirrel@64.2.245.108>
+Message-ID: <1724.64.2.245.108.1087321922.squirrel@64.2.245.108>
 References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108>
     <1087319969.3576.12.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
@@ -28,11 +28,13 @@ To: netfilter@lists.netfilter.org
 >
 > http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-iprange
 >
+> --
 
-thanks, I saw that post.  However I just started working with iptables an=
-d
-have never patched it.  I've just updated when new RPMS became available.=
-=20
-I guess I'll look into it.
+
+I've just read that using POM is not considered safe by the dev team.=20
+http://www.lowth.com/howto/add-iptables-modules.php
+
+This is for a running system that needs to stay up right now. Any other
+options?
 
 
