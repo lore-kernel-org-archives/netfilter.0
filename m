@@ -1,11 +1,10 @@
-From: iptables@sisbaires.com.ar
-Subject: Iptables disconnect users
-Date: Fri, 14 Mar 1997 13:28:44 -0300
+From: George Chacon <please.help.me@comcast.net>
+Subject: RE: How to keep record of repeat attackers?
+Date: Fri, 14 Mar 2003 08:50:44 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <10119081651.19970314132844@sisbaires.com.ar>
-Reply-To: iptables@sisbaires.com.ar
+Message-ID: <PKEJLPJCFBFLJJPHMGPICECOCAAA.please.help.me@comcast.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,22 +15,13 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+I would like to say thank you to all who responded to this question.  The
+information I received via the mailing list will be put to good use.
 
-Hi, I=B4m having a problem with my iptables.
-Some users  lost connection  when they use the iptables as the
-gateway.
-Example, they connect with the msn messenger and after some time (a
-few minuts) the conection go down, and then after a few minuts they
-reconnect automatically. This happend with others applications too, not
-only with messenger.
-Can this be a problem with ram memory?
-May be someone had experienced the same problem and can help me.
-Thanks in advance.
-
-Pablo.
+George Chacon
 
 
 
