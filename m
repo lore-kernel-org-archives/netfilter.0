@@ -1,12 +1,11 @@
-From: "Narendra Prabhu. B" <naren@deeproot.co.in>
-Subject: Re: how to delete a piece of rule in iptables?
-Date: Thu, 19 Dec 2002 10:55:33 +0530 (IST)
+From: "markooff" <markooff@interia.pl>
+Subject: A bug with using limit match - nobody knows???
+Date: Thu, 19 Dec 2002 06:50:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0212191050280.317-100000@abodh.pesit.deeproot.co.in>
-References: <4165816408.20021218165236@complexsystem.ru>
+Message-ID: <003501c2a722$796cdf20$0400a8c0@1>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4165816408.20021218165236@complexsystem.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +15,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>
-Cc: "netfilter @ lists . netfilter . org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hello!
 
-Hello,
+Perhaps it's not a really new topic on this board, but i've found this
+problem recently
+I share my DSL connection with 4 other people and
+i was just trying to limit one of them (who used to download lots of films,
+mp3s )
+and when i tried to use inverted match limit just like
 
-There is a option --line-numbers, which can be used with -L in iptables.
-Knowing the line/rule numbers ... u can later delete the specific rule.
+     iptables -I FORWARD -p tcp -d 192.168.0.3 -m ! limit --limit 5/s -j
+DROP
 
-Commands :
+i received an error message :
 
-      #iptables -nL --line-numbers ---> this will show you the rulenumbers
+iptables v1.2.6a: Couldn't load match `!':/usr/lib/iptables/libipt_!.so:
+cannot open shared object file: No such file or directory
 
-      #iptables -D <chain-name> <rule-number>
+Try `iptables -h' or 'iptables --help' for more information.
 
-Bye,
-Narendra.
+This looks like iptables treats an "!" after "-m" like an sparate match ,
+not connected with limit expression
+But in the Iptables Tutorial 1.1.15 by Oskar Andreasson  there is written :
+"The limit match may also be inverted by adding a ! flag in front of the
+limit match. It would then be expressed as -m ! limit. This means that all
+packets will be matched after they have broken the limit."
 
+I don't know, perhaps i've did somethig wrong (what it could be ??? ), but i
+tried every possible combination of
+m, limit and  ! expressions, without any results.
 
-In the middle of difficulty..... lies Opportunity. (Albert Einstein)
---------------------------------------------------------------------
-Narendra Prabhu. B             Free Software at its product-ive best.
-DeepRoot Linux                             http://www.deeproot.co.in
-                ---- Server Appliances ----
-             ---- Linux Support and Services ----
--------------------------------------------------------------------
+Ofcourse i'd managed to solve my problem by
+root@horus:/etc# iptables -I FORWARD -p tcp -d 192.168.0.3 -j DROP
+root@horus:/etc# iptables -I FORWARD -p tcp -d 192.168.0.3 -m limit --limit
+5/s -j allowed
 
-On Wed, 18 Dec 2002, ITM CS Ruslan O. Nesterov wrote:
+but it's not a proper solvation :))
 
-> Hello bobo,
->
-> Wednesday, December 18, 2002, 3:30:18 PM, you wrote:
->
-> b>              i have insert some rules to iptables firewall.now,i would
-> b> like to delete it  .
-> b> but i only know to use iptalbes -L to empty them.
-> b> but it lead to delete all the rules in it.
-> b> how to do ??
->
->
-> Try to use
-> iptables -D INPUT 1
-> this will delete rule 1 in input chain
->
-> --
-> Best regards,
->  ITM                            mailto:ruslan@complexsystem.ru
+Thanks a LOT
+
+Pawel Markowski
+markooff@interia.pl
+markooff@uj.edu.pl
+Linux Registered User
+         #289621
+
 
 
 
