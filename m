@@ -1,13 +1,12 @@
-From: Les Mikesell <les@futuresource.com>
-Subject: Re: help route private traffic to 10.x.x.x and everything else to
-	the 'net
-Date: Mon, 15 Nov 2004 15:02:10 -0600
-Message-ID: <1100552529.13413.33.camel@moola.futuresource.com>
-References: <1100550589.5398.26.camel@localhost.localdomain>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: How to debug nfmarking
+Date: Mon, 15 Nov 2004 21:44:10 +0100
+Message-ID: <1100551451.3612.2.camel@coati>
+References: <1100540726.2796.23.camel@laserite>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1100550589.5398.26.camel@localhost.localdomain>
+In-Reply-To: <1100540726.2796.23.camel@laserite>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: David Williamson <nospam1@nullcutter.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-11-15 at 14:29, David Williamson wrote:
-> I've got a debian box with broadband access via ethernet to a wireless
-> link.  The gateway to the public net is 192.168.0.1, via my box,
-> 192.168.0.2.  I've got Firestarter on it, and everything works.  On
-> another box, I have access to our private WAN, mostly 10.130.x.x and
-> 172.21.x.x and the like via a Cisco router at 10.130.80.1.  I'd like to
-> set things up so that any box on our LAN can access the private WAN, and
-> if it's not on the WAN, the packets go out on the 192.168.0.1 gateway to
-> the internet.  This way, stuff that's blocked on our WAN (like ftp,
-> email, jabber) will still work, since they'll have another route to the
-> 'net.
-> 
-> But every time I start trying to write the rule I get lost not long
-> after "iptables -"  <g>
+On Mon, 2004-11-15 at 18:45 +0100, Eduardo Fern=E1ndez wrote:
+> Hi all,
+>=20
+> i'm trying to debug packet marking like this:
+>=20
+> iptables -t mangle -A PREROUTING -p icmp -j MARK --set-mark 0x1
+> (...)
+> But I don't know how to check if the packets are really being marked.
+> ip_conntrack shows all packets with mark=3D0, and that's not possible.
 
-That sounds like ordinary routing.  Why not set the default route on
-your lan boxes to send to the internet gateway first, and add a
-route on it for the private ranges through the WAN gateway?  Why
-would you need iptables for this?
+yes, you need to explicitly save mark with CONNMARK to have the mark
+being propagated through the connection.
+See http://home.regit.org/connmark.html for details.
 
----
-  Les Mikesell
-   les@futuresource.com
-
+BR,
+--=20
+Eric Leblond <eric@inl.fr>
+INL
 
 
