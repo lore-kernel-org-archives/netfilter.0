@@ -1,9 +1,9 @@
-From: BERTRAND =?iso-8859-1?Q?Jo=EBl?= <mt1@systella.fr>
-Subject: ROUTE target and --continue
-Date: Tue, 22 Feb 2005 11:50:12 +0100
-Message-ID: <20050222105012.GA16180@rayleigh.systella.fr>
+From: "Dan Flett" <conhoolio@hotmail.com>
+Subject: Exit interface of packets in QUEUE
+Date: Tue, 22 Feb 2005 23:01:36 +1100
+Message-ID: <BAY16-DAV6BA9AF411ACCCFCF3CE0EAF620@phx.gbl>
 Mime-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-	Hello,
+Hi all,
 
-	I'm trying to use ROUTE target with SNAT. For me, ROUTE works very
-	fine without --continue, but I need to add SNAT. Without SNAT, all
-	routed packets come from 192.168.0.130 and they have to come from
-	192.168.1.1...
+I'm helping out with the development of a wireless traffic QoS application
+that uses the QUEUE target.  I'm looking for a way for the userspace
+application to be able to discriminate between packets in the QUEUE based on
+their outgoing network interface.
 
-	Without --continue, they are good routed. To do SNAT, I have added
-	--continue and I obtain :
+At first I thought that putting packets from the POSTROUTING chain into the
+QUEUE would allow me to see their "hw_addr" and I would be able to tell
+their exit interface based on their source MAC address.  Reading up some
+more tells me that packets in the POSTROUTING chain don't have their
+(outgoing) Ethernet headers on them, so the "hw_addr" will be blank.
 
-Root kant:[/var/lib/iptables] > iptables -t mangle -n -v -L | grep ROUTE
-    7   280 ROUTE      tcp  --  *      *       192.168.0.130
-	0.0.0.0/0           tcp spts:3000:3001 ROUTE gw:192.168.1.254
-	continue
+Can anyone suggest a possible way to do this?  I've thought of reading a
+packets' destination IP address and then doing a lookup of the routing table
+- but this seems messy and I don't like it.  I'd really like to be able to
+read the source MAC of an outgoing packet (in the QUEUE), but as far as I
+can tell this is beyond the reach of iptables.
 
-Root kant:[/var/lib/iptables] > iptables -t nat -n -v -L | grep LOG  
-    0     0 LOG        tcp  --  *      *       192.168.0.130
-	0.0.0.0/0           tcp spts:3000:3001 LOG flags 0 level 4 prefix
-	`SNAT : ' 
+An alternate way to do what I want to do is setup a separately controllable
+QUEUE for each interface - but again, as far as I can tell, this capability
+doesn't exist.
 
-	Look at "0" on the nat table... And without --continue, I can see my
-	packets on eth2 (192.168.1.1). With continue, no one packet... Where
-	is the mistake ?
+Any suggestions are welcome...
 
-	Regards,
+Cheers,
 
-	JKB
+Dan
 
