@@ -1,10 +1,12 @@
-From: Dinil Divakaran <dinil@lantana.tenet.res.in>
-Subject: Problem patching IMQ
-Date: Sat, 7 Aug 2004 09:20:49 +0530 (IST)
+From: "Don Hughes" <support@sannotes.org>
+Subject: Mark match an Tarpit failure
+Date: Fri, 06 Aug 2004 10:10:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.60.0408070916030.1057@lantana.cs.iitm.ernet.in>
+Message-ID: <411358FF.28304.998D63@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,22 +16,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+The following work for me:
 
-I am trying to patch IMQ for kernel 2.6.7.
+iptables -A INPUT -m mark --mark 13 -j DROP
+iptables -A INPUT -p tcp -j TARPIT
 
-I got the latest IMQ patch from http://www.linuximq.net/
-The patch is actually for 2.6.2, but site says that it
-will work for 2.6.7. But, I got compilation errors, after
-I patched and compiled my kernel.
+but the following does not and returns "Invalid 
+Argument":
 
-Can anyone point to me the correct IMQ patch for 2.6.7 ?
+iptables -A INPUT -m mark --mark 13 -j TARPIT
 
-Thanks in advance,
-Dinil
+what am I missing?
+
+..don
+
+support@microtechniques.com
+White Plains, NY
+
 
 
