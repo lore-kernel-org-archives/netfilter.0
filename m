@@ -1,13 +1,14 @@
-From: Axel Heinrici <heinrici76@gmx.de>
-Subject: Re: passive ftp and file sharing
-Date: Wed, 11 Jun 2003 15:21:45 +0200
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Question regarding unclean match support!
+Date: Wed, 11 Jun 2003 09:54:16 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306111521.45814.heinrici76@gmx.de>
-References: <3EE063BC000042A9@mail-4.tiscali.it>
+Message-ID: <200306110954.16270.Alistair@nerdnet.ca>
+References: <00a601c32e4a$577181a0$6828010a@telxsi.com>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EE063BC000042A9@mail-4.tiscali.it>
+In-Reply-To: <00a601c32e4a$577181a0$6828010a@telxsi.com>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,29 +20,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Rahul  Gulati <rgulati@tataelxsi.co.in>, netfilter@lists.netfilter.org
 
-Hello
-
-On Monday 09 June 2003 11:42, Leonardo Lombardo wrote:
-> Hi all,
+On June 9, 2003 01:45 am, Rahul Gulati wrote:
+> Hi, All,
 >
-> a question for you: how can I set my iptables firewall so that natted
-> lan users can use ftp in passive mode and have winmx, dc,
-> audiogalaxy, .... blocked ? I've tried out all that scripts/lists of
-> ip/... i've found on the net but nothing... the only way I found to
-> block file sharing is to close all ports 800:65535 but this way
-> passive ftp is blocked too.... :(( I'm a very beginner with iptables
-> so please be patient...
-You should use the nat- and conntrack modules for ftp. Not 100% sure of 
-the names (ip_nat_ftp ip_conntrack_ftp). Then add a rule which allows 
-related and established traffic (iptables -A FORWARD -m --state 
-RELATED,ESTABLISHED -j ACCEPT). It is important that this rule comes 
-before the rule blocking ports 800:65535. Use iptables -I ... if 
-unsure. If the control connection for ftp is done on port 21 passive 
-and active ftp should work then. 
+> I had a question regarding support for "unclean" match in Linux 2.4.18
+> kernel.
+> I am not able to see "unclean" match as an option under IP: Netfilter
+> Configuration.
+>
+> I would like to know if I need to down load some patch for unclean match
+> support,
+> if yes would appreciate if anyone could direct me to the location where the
+> patch might be available.
+>
+> TIA...
+> Rahul
 
-greetings 
-	Axel
 
+
+	Get the most recent Patch O  Matic  -- Unclean is NOT in kernel yet.
+	you need to have kernel source, iptables and POM and in the POM 
+	dir:
+	KERNEL_DIR=/where/you/have/kernelsource ./runme
+	(hit me if I'm wrong folks ... I've been on iptables 1.2.7a and POM from 
+February of this year for ages)
+	and apply the unclean match from there.
+-- 
+
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
