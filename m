@@ -1,14 +1,18 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Re[2]: Counting traffic - another question
-Date: Tue, 27 Jul 2004 15:26:15 +0100
+From: Marcin Sura <slacklist@op.pl>
+Subject: Re[4]: Counting traffic - another question
+Date: Tue, 27 Jul 2004 17:27:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407271526.15564.Antony@Soft-Solutions.co.uk>
-References: <1304297675.20040727143400@op.pl> <200407271359.13020.Antony@Soft-Solutions.co.uk> <1368880926.20040727155717@op.pl>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1829603002.20040727172731@op.pl>
+References: <1304297675.20040727143400@op.pl>
+ <200407271359.13020.Antony@Soft-Solutions.co.uk>
+ <1368880926.20040727155717@op.pl>
+ <200407271526.15564.Antony@Soft-Solutions.co.uk>
+Reply-To: Marcin Sura <slacklist@op.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+ boundary="----------E51EE463379A0A"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1368880926.20040727155717@op.pl>
+In-Reply-To: <200407271526.15564.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +22,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <netfilter@lists.netfilter.org>
 
-On Tuesday 27 July 2004 2:57 pm, Marcin Sura wrote:
+------------E51EE463379A0A
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-> Tuesday, July 27, 2004, 2:59:13 PM, you wrote:
-> > No need to MARK the packets (unless you want the MARKs for something
-> > else?),
->
-> Yes, I need MARKs for traffic shaping. Sorry, I forgot to mention this.
+Witam
 
-Okay, no problem, continue MARKing them then, but I still think you can count 
-them in FORWARD mangle.
+Tuesday, July 27, 2004, 4:26:15 PM, you wrote:
 
-> > and you can specify input & output interface in the FORWARD table to
-> > identify which way through your firewall the packets are going.
->
-> Ok, so I change the rules (i still use statsin and statsout for ...
-> hmm ... order :)
->
->  $IPTABLES -t mangle -A FORWARD -i $LOCAL_IF -o $INET_IF  -j statsout
->  $IPTABLES -t mangle -A FORWARD -i $INET_IF -o $LOCAL_IF -j statsin
+>>  $IPTABLES -t mangle -A FORWARD -i $LOCAL_IF -o $INET_IF  -j statsout
+>>  $IPTABLES -t mangle -A FORWARD -i $INET_IF -o $LOCAL_IF -j statsin
 
-No, don't put the "-j statsout" or "-j statsin" at the end.   The rule I 
-suggested previously is actually complete:
+> You do not need to have a "-j target" at the end of a rule if you don't want
+> one.   The above rule will still count the packets, and you can see the
+> packet/byte counters with "iptables -L FORWARD -t mangle -nvx".
 
-iptables -A FORWARD -t mangle -i eth0 -o ppp0 -p tcp --dport ssh
+Ok, i'll try this, but im still wondering why my rules works
+incorrectly. In theory (my theory :) first rule redirects packets
+lan -> internet to statsout, and in statsout chain they are counted by
+type of traffic.
 
-You do not need to have a "-j target" at the end of a rule if you don't want 
-one.   The above rule will still count the packets, and you can see the 
-packet/byte counters with "iptables -L FORWARD -t mangle -nvx".
+The same goes to second rule, but there is internet -> lan traffic
+redirected.
 
-Regards,
+But unfortunately this won't work that way. Why? Output form iptables
+-t mangle -L -vn is attached.
 
-Antony.
+
+
+
 
 -- 
-"It would appear we have reached the limits of what it is possible to achieve 
-with computer technology, although one should be careful with such 
-statements; they tend to sound pretty silly in five years."
+Pozdrawiam
+ Marcin                            mailto:slacklist@op.pl
+------------E51EE463379A0A
+Content-Type: text/plain; name="output.txt"
+Content-transfer-encoding: base64
+Content-Disposition: attachment; filename="output.txt"
 
- - John von Neumann (1949)
+cm9vdEBzZXJ3ZXI6L2V0Yy9yYy5kIyBpcHRhYmxlcyAtdCBtYW5nbGUgLUwgLXZuDQpDaGFp
+biBQUkVST1VUSU5HIChwb2xpY3kgQUNDRVBUIDI3OUsgcGFja2V0cywgNTJNIGJ5dGVzKQ0K
+IHBrdHMgYnl0ZXMgdGFyZ2V0ICAgICBwcm90IG9wdCBpbiAgICAgb3V0ICAgICBzb3VyY2Ug
+ICAgICAgICAgICAgICBkZXN0aW5hdGlvbg0KDQpDaGFpbiBJTlBVVCAocG9saWN5IEFDQ0VQ
+VCAxOTMzOSBwYWNrZXRzLCAyMTE4SyBieXRlcykNCiBwa3RzIGJ5dGVzIHRhcmdldCAgICAg
+cHJvdCBvcHQgaW4gICAgIG91dCAgICAgc291cmNlICAgICAgICAgICAgICAgZGVzdGluYXRp
+b24NCg0KQ2hhaW4gRk9SV0FSRCAocG9saWN5IEFDQ0VQVCAxOTBLIHBhY2tldHMsIDE2TSBi
+eXRlcykNCiBwa3RzIGJ5dGVzIHRhcmdldCAgICAgcHJvdCBvcHQgaW4gICAgIG91dCAgICAg
+c291cmNlICAgICAgICAgICAgICAgZGVzdGluYXRpb24NCjUwMTQ1ICAgMjVNIENPTk5NQVJL
+ICAgdGNwICAtLSAgKiAgICAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAu
+MC8wICAgICAgICAgICBDT05OTUFSSyByZXN0b3JlDQo0NzkzOCAgIDI1TSBBQ0NFUFQgICAg
+IHRjcCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAv
+MCAgICAgICAgICAgTUFSSyBtYXRjaCAhMHgwDQogICAgMCAgICAgMCBNQVJLICAgICAgIHRj
+cCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAg
+ICAgICAgICAgaXBwMnAgdjAuNiAtLWlwcDJwIE1BUksgc2V0IDB4MQ0KICAgIDMgICAxNDQg
+TUFSSyAgICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAg
+ICAwLjAuMC4wLzAgICAgICAgICAgIHRjcCBkcHQ6MjEgTUFSSyBzZXQgMHg0DQogICAgMCAg
+ICAgMCBNQVJLICAgICAgIHRjcCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAg
+ICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgdGNwIGRwdDoyMiBNQVJLIHNldCAweDMNCiAg
+ICAwICAgICAwIE1BUksgICAgICAgdGNwICAtLSAgKiAgICAgICogICAgICAgMC4wLjAuMC8w
+ICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICB0Y3AgZHB0OjIzIE1BUksgc2V0IDB4
+Mw0KICAgIDIgICAgOTYgTUFSSyAgICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAu
+MC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIHRjcCBkcHQ6MjUgTUFSSyBz
+ZXQgMHg1DQogMTQ5MSA3MTQ4OCBNQVJLICAgICAgIHRjcCAgLS0gICogICAgICAqICAgICAg
+IDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgdGNwIGRwdDo4MCBN
+QVJLIHNldCAweDINCiAgICA4ICAgMzg0IE1BUksgICAgICAgdGNwICAtLSAgKiAgICAgICog
+ICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICB0Y3AgZHB0
+OjQ0MyBNQVJLIHNldCAweDINCiAgMTAwICA0ODAwIE1BUksgICAgICAgdGNwICAtLSAgKiAg
+ICAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICB0
+Y3AgZHB0OjExMCBNQVJLIHNldCAweDYNCiAgICAwICAgICAwIE1BUksgICAgICAgdGNwICAt
+LSAgKiAgICAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAg
+ICAgICB0Y3AgZHB0OjY2NjcgTUFSSyBzZXQgMHg3DQogMjIwNyAgMTIySyBDT05OTUFSSyAg
+IHRjcCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAv
+MCAgICAgICAgICAgQ09OTk1BUksgc2F2ZQ0KIDIxNTAgIDEwN0sgc3RhdHNvdXQgICBhbGwg
+IC0tICBldGgwICAgcHBwMCAgICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAuMC4wLzANCiAg
+NTYyIDgxNTI0IHN0YXRzaW4gICAgYWxsICAtLSAgcHBwMCAgIGV0aDAgICAgMC4wLjAuMC8w
+ICAgICAgICAgICAgMC4wLjAuMC8wDQoNCkNoYWluIE9VVFBVVCAocG9saWN5IEFDQ0VQVCAy
+MTI4MiBwYWNrZXRzLCAxMzEzSyBieXRlcykNCiBwa3RzIGJ5dGVzIHRhcmdldCAgICAgcHJv
+dCBvcHQgaW4gICAgIG91dCAgICAgc291cmNlICAgICAgICAgICAgICAgZGVzdGluYXRpb24N
+Cg0KQ2hhaW4gUE9TVFJPVVRJTkcgKHBvbGljeSBBQ0NFUFQgMjgxSyBwYWNrZXRzLCA1MU0g
+Ynl0ZXMpDQogcGt0cyBieXRlcyB0YXJnZXQgICAgIHByb3Qgb3B0IGluICAgICBvdXQgICAg
+IHNvdXJjZSAgICAgICAgICAgICAgIGRlc3RpbmF0aW9uDQo2MTY4MSAgIDI1TSBUVEwgICAg
+ICAgIGFsbCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4w
+LjAvMCAgICAgICAgICAgVFRMIHNldCB0byAxMjgNCg0KQ2hhaW4gc3RhdHNpbiAoMSByZWZl
+cmVuY2VzKQ0KIHBrdHMgYnl0ZXMgdGFyZ2V0ICAgICBwcm90IG9wdCBpbiAgICAgb3V0ICAg
+ICBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5hdGlvbg0KICAgIDAgICAgIDAgICAgICAg
+ICAgICBhbGwgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAu
+MC4wLzAgICAgICAgICAgIE1BUksgbWF0Y2ggMHgxDQogICAgMCAgICAgMCAgICAgICAgICAg
+IGFsbCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAv
+MCAgICAgICAgICAgTUFSSyBtYXRjaCAweDQNCiAgICAwICAgICAwICAgICAgICAgICAgYWxs
+ICAtLSAgKiAgICAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAg
+ICAgICAgICBNQVJLIG1hdGNoIDB4Mw0KICAgIDAgICAgIDAgICAgICAgICAgICBhbGwgIC0t
+ICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAg
+ICAgIE1BUksgbWF0Y2ggMHg1DQogICAgMCAgICAgMCAgICAgICAgICAgIGFsbCAgLS0gICog
+ICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAg
+TUFSSyBtYXRjaCAweDINCiAgICAwICAgICAwICAgICAgICAgICAgYWxsICAtLSAgKiAgICAg
+ICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICBNQVJL
+IG1hdGNoIDB4Ng0KICAgIDAgICAgIDAgICAgICAgICAgICBhbGwgIC0tICAqICAgICAgKiAg
+ICAgICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIE1BUksgbWF0
+Y2ggMHg3DQogIDU2MiA4MTUyNCAgICAgICAgICAgIGFsbCAgLS0gICogICAgICAqICAgICAg
+IDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgTUFSSyBtYXRjaCAw
+eDANCg0KQ2hhaW4gc3RhdHNvdXQgKDEgcmVmZXJlbmNlcykNCiBwa3RzIGJ5dGVzIHRhcmdl
+dCAgICAgcHJvdCBvcHQgaW4gICAgIG91dCAgICAgc291cmNlICAgICAgICAgICAgICAgZGVz
+dGluYXRpb24NCiAgICAwICAgICAwICAgICAgICAgICAgYWxsICAtLSAgKiAgICAgICogICAg
+ICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICBNQVJLIG1hdGNo
+IDB4MQ0KICAgIDMgICAxNDQgICAgICAgICAgICBhbGwgIC0tICAqICAgICAgKiAgICAgICAw
+LjAuMC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIE1BUksgbWF0Y2ggMHg0
+DQogICAgMCAgICAgMCAgICAgICAgICAgIGFsbCAgLS0gICogICAgICAqICAgICAgIDAuMC4w
+LjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgTUFSSyBtYXRjaCAweDMNCiAg
+ICAyICAgIDk2ICAgICAgICAgICAgYWxsICAtLSAgKiAgICAgICogICAgICAgMC4wLjAuMC8w
+ICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICBNQVJLIG1hdGNoIDB4NQ0KIDE0OTkg
+NzE4NzIgICAgICAgICAgICBhbGwgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAg
+ICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIE1BUksgbWF0Y2ggMHgyDQogIDEwMCAgNDgw
+MCAgICAgICAgICAgIGFsbCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAg
+ICAgIDAuMC4wLjAvMCAgICAgICAgICAgTUFSSyBtYXRjaCAweDYNCiAgICAwICAgICAwICAg
+ICAgICAgICAgYWxsICAtLSAgKiAgICAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAg
+MC4wLjAuMC8wICAgICAgICAgICBNQVJLIG1hdGNoIDB4Nw0KICA1NDYgMjk5OTkgICAgICAg
+ICAgICBhbGwgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAu
+MC4wLzAgICAgICAgICAgIE1BUksgbWF0Y2ggMHgwDQo=
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+------------E51EE463379A0A--
 
 
