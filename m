@@ -1,8 +1,9 @@
-From: Frank <Frank@duranicub.sytes.net>
-Subject: active Ftp Problems on different Port
-Date: 27 Sep 2002 17:22:51 +0000
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Memory leak problem
+Date: Fri, 27 Sep 2002 18:07:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033147370.979.16.camel@duranicub.duranicub.sytes.net>
+Message-ID: <3D948244.1040407@fugmann.dhs.org>
+References: <7F2740B50D94FD4B9EAF9AAC33016C3C45382C@lascar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,50 +16,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jean Cantarutti <jcantarutti@subtel.cl>
+Cc: netfilter@lists.netfilter.org
 
-Hi
+Jean Cantarutti wrote:
+> Hi, im using iptables 1.2.5 on a HP machine working like firewall, it 
+> has 512 MB of RAM and every 30 seconds eats 6 kb of RAM, in 48 hours 
+> only left 8300 kb of available RAM.
+Do remember that unused ram is used for disc cache and buffers, so 
+watching top does not give nessesarly an accurate picture of how ram is 
+used.
 
-i have an FTP Server on the Firewall Machine itself but listen to Port
-21 and 210. For Port 21 active/passive Mode works fine, but for the Port
-210 it works only with passive Mode. My Question is, how can i enable
-active Mode for Port 210 ?
+Could you please describe why you think that iptabels/netfilter has a 
+memory leak? Also printouts og memory usage would help us understand 
+what is happening.
 
-modprobe ip_nat_ftp ports=21,210
-modprobe ip_conntrack_ftp ports=21,210
-#
-$IPTABLES -t filter -P INPUT DROP
-$IPTABLES -t filter -P OUTPUT DROP
-$IPTABLES -t filter -P FORWARD DROP
-#
-$IPTABLES -A INPUT -p tcp ! --syn -m state --state NEW,INVALID -j DROP
-#
-$IPTABLES -A INPUT  -i ppp0 -p tcp --sport 21 -m state --state
-ESTABLISHED -j ACCEPT
-$IPTABLES -A OUTPUT -o ppp0 -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-$IPTABLES -A INPUT  -i ppp0 -p tcp --sport 20 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT -o ppp0 -p tcp --dport 20 -m state --state
-ESTABLISHED -j ACCEP
-#
-#
-$IPTABLES -A INPUT -t filter -i ppp0 -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-$IPTABLES -A OUTPUT -t filter -o ppp0 -p tcp --sport 21 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-#
-$IPTABLES -A INPUT -t filter -i ppp0 -p tcp --dport 20 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT -t filter -o ppp0 -p tcp --sport 20 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-#
-
-Any Suggestions what wrong here ?
+Btw. What kernel are you using?
 
 
 Regards
-Frank
+Anders Fugmann
+
 
 
