@@ -1,10 +1,9 @@
-From: Henry Ritzlmayr <h.ritzlmayr@gmx.at>
-Subject: Redirecting incoming traffic to 127.0.0.1
-Date: 21 Mar 2003 15:31:05 +0100
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: state matching vrs prerouting.... ???
+Date: Fri, 21 Mar 2003 06:53:11 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048257065.1493.137.camel@localhost.localdomain>
+Message-ID: <20030321145311.14296.qmail@web40203.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,25 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-I have a service running on a box wich is only able to bind to 127.0.0.1
-(hardcoded and I can=B4t get the source to change it). Since I want to use
-it from any other box the only way to solve that I think is to nat
-incoming packets to 127.0.0.1.
+Firewall Snipet
 
-IPTABLES -t nat -A PREROUTING -p tcp -d 172.16.172.12 -j DNAT
---to-destination 127.0.0.1
+# Experimental UDP Filters
+#
+# iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j DROP
+# iptables -A INPUT -p udp -i eth0 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
 
-and many others wich I tried don=B4t work.=20
+# CounterStrike NAT Line
+#
+iptables -t nat -A PREROUTING -p udp --dport 27015 -i eth0 -j DNAT
+--to-destination 192.168.1.25:27015
 
-If I understood REDIRECT correctly it only changes to the local IP where
-the packet came in (in my situation 172.16.172.12) wich also not solves
-the problem.=20
+Ok the UDP filters physically come before my CounterStrike line. In reading
+Oskar's tutorial I as under the impression that the nat tables rules took
+precedence before the filter tables.... However the UDP rules drop the incoming
+CS       
+requests before they are prerouted... What gives? 
 
-any ideas?
+=====
+"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
 
-Henry
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
+http://platinum.yahoo.com
 
