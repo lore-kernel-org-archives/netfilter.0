@@ -1,9 +1,8 @@
-From: Sujith Chennupati <sujith.chennupati@gmail.com>
-Subject: problem in finding and patching iptables
-Date: Wed, 20 Oct 2004 11:03:41 +0100
+From: "Danyel Leon Toledo" <danyel@tesla.cujae.edu.cu>
+Subject: Abot libipq
+Date: Tue, 19 Oct 2004 18:56:40 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <62916e504102003035441a009@mail.gmail.com>
-Reply-To: Sujith Chennupati <sujith.chennupati@gmail.com>
+Message-ID: <200410191856493.SM01604@FERRARI>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,49 +15,35 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
-Hey can any one help me
+Hy
 
-I am using fedora core 2 installation
-Now I want to work on traffic control using layer7 filter
-So for that I need to patch iptables
-I am new to linux
+=20
 
-But in my installation I cant find source code for iptables.. I am
-confused where to patch it=E2=80=A6 bcoz I cant find that directory =E2=80=
-=A6 I can
-see the iptables as an executable file in /sbin directory=E2=80=A6 is it th=
-e
-location to patch??????? I did so but it didn't work out
+I need write one aplication for look into pakets I recive in my linux
+router. I found that libipq can help me. But, ?can any body tell me =
+where I
+find documentation about it? Really is hard to find it=85
 
-Then when I downloaded a new iptables files from netfilter.org and
-placed in /usr/src/linux and when I executed the commands as given in
-a documentation page
+=20
 
+Thanks in advance.
 
-Next up we will compile the IPtables package. To do so, enter in the
-following commands from the IPtables directory.
-make pending-patches KERNEL_DIR=3D/usr/src/linux
-make KERNEL_DIR=3D/usr/src/linux
-make install KERNEL_DIR=3D/usr/src/linux
+=20
 
-it shows the following error
+Ing. Danyel Le=F3n Toledo
 
-/usr/src/linux/include/linux/config.h:6:2: #error including kernel
-header in userspace; use the glibc headers instead.
+Responsable de los servicios de operaci=F3n de la Red-Cujae
 
-What does it mean? How exactly to patch iptables and where I can find
-iptables directory in my installation
+=20
 
-Help greatly appreciated ;
+__________________________________________
 
-Looking for rescue
-
-sujith
-
-
---=20
-sujith chandra chowdhary CHENNUPATI
-
+Aniversario 40 de la CUJAE
+ 
+Visite:
+ 
+XII Convencion de Ingenieria y Arquitectura
+http://www.cujae.edu.cu/eventos/convencion/
