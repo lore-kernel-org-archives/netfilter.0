@@ -1,8 +1,8 @@
-From: Michael Gale <michael@bluesuperman.com>
-Subject: Sharing ip_conntrack ?
-Date: Mon, 22 Dec 2003 21:19:14 -0700
+From: "Matthew Simpson" <matthew@txlink.net>
+Subject: using iptables to route between public networks
+Date: Mon, 22 Dec 2003 22:30:48 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031222211914.313f10b8.michael@bluesuperman.com>
+Message-ID: <00ca01c3c90d$8aafa2f0$6600a8c0@KARI>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,33 +18,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+I'm having trouble adjusting to using iptables instead of Cisco IOS.
 
-	I have two firewalls using linux-HA so one is always master the other
-slave. The monitoring in done over a serial cable.
+I have a "router" linux box with a very simple ruleset, I'm accepting INPUT,
+OUTPUT, and FORWARD chains.
 
-The slave box does not accept any network traffic until it becomes
-master except for ssh on the internal side.
+I have two ethernet cards in this box.  One card has a public IP going to my
+internet provider [255.255.255.252 subnet].  The other card also has a
+public IP that is routed to me by my Internet provider [255.255.255.240
+subnet].
 
-I know that /proc/net/ip_conntrack is where all the established or
-related connections are kept.
+Right now with my simple ruleset, packets forward properly.  If I ping a box
+that is connected behind the "router", it works.  If I change the FORWARD
+accept policy to deny the packets, then it quits working.
 
-What I want to know if anyone has any idea how to keep the state on the
-second box so NO connections will be lost if a fail over occurs.
+My first question, however... if I do a traceroute to a box connected behind
+the router, the "router" interface IP address does not show up in the
+traceroute.  It skips directly from my internet provider's gateway address
+to the final destination address.  Why?  How can I make my router IP show up
+in the traceroute?
 
-I was thinking that I could use DRBD on the /proc/net directory so it
-always writes to the master slave. But I then thought it would fail
-because the kernel can not write to that directory ... but the second
-box is not doing any network traffic so....
+Second question, it's not a good idea to blindly forward all packets is it?
+I tried to set up an append rule to the FORWARD chain to drop all packets
+that did not have a destination of $myiprange/28, but iptables seems to
+ignore the rule [it doesn't work and it doesn't show up in an iptables -L]
+Unless forwarding all packets is okay, what should I do to fix this?
 
-?????
+Thanks,
+Matthew
 
-
--- 
-Hand over the Slackware CD's and back AWAY from the computer, your geek
-rights have been revoked !!!
-
-Michael Gale
-Slackware user :)
-Bluesuperman.com 
 
