@@ -1,13 +1,14 @@
 From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: RFC 3514 support?
-Date: Wed, 2 Apr 2003 01:28:04 +0200
+Subject: Re: patch-o-matic compile
+Date: Wed, 2 Apr 2003 01:32:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030402012804.2d306f91.arnt@c2i.net>
-References: <7C9884991ADAE0479C14F10C858BCDF50C6FEA@alderaan.smgtec.com>
+Message-ID: <20030402013205.28c21c48.arnt@c2i.net>
+References: <20030401193849.239665a9.arnt@c2i.net>
+	<ABEKJILKOKKGGDJKHKDFOEHFCAAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF50C6FEA@alderaan.smgtec.com>
+In-Reply-To: <ABEKJILKOKKGGDJKHKDFOEHFCAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,57 +19,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>
+To: Patrick Ahler <patrick@vikus.com>
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 1 Apr 2003 14:54:04 -0800, 
-"Daniel Chemko" <dchemko@smgtec.com> wrote in message 
-<7C9884991ADAE0479C14F10C858BCDF50C6FEA@alderaan.smgtec.com>:
+On Tue, 1 Apr 2003 17:02:46 -0500, 
+"Patrick Ahler" <patrick@vikus.com> wrote in message 
+<ABEKJILKOKKGGDJKHKDFOEHFCAAA.patrick@vikus.com>:
 
-> http://news.com.com/2100-1001-257064.html?legacy=cnet&tag=nbs
-
-..looks like the RFC-3514 Implementation Team has started 
-the fun quicker, the 2549 team took a year or so.  ;-)
-
+> 
 > -----Original Message-----
-> From: Arnt Karlsen [mailto:arnt@c2i.net] 
-> Sent: Tuesday, April 01, 2003 1:13 PM
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Arnt Karlsen
+> Sent: Tuesday, April 01, 2003 12:39 PM
 > To: netfilter@lists.netfilter.org
-> Subject: Re: RFC 3514 support?
-> 
-> On Tue, 1 Apr 2003 10:36:11 -0800 (PST), 
-> Scott MacKay <scottmackay@yahoo.com> wrote in message 
-> <20030401183611.37140.qmail@web13904.mail.yahoo.com>:
-> 
-> will this enhance quality of service for avian carrier 
-> grade links too? (http://www.faqs.org/ftp/rfc/rfc2549.txt)
-> 
-> > I plan to add it into my userspace mangler, but only
-> > for suspicious source IP addresses (like ones which
-> > resolve with dangerous works like 'sinister')   :)
-> > 
-> > I also intend to shortcut some of the design for item
-> > (4) by simply having a toggled bit to determine if it
-> > should be on or off (thus achieving true, pure, even
-> > randomness)...
-> > 
-> > -Scott
-> > 
-> > --- Bob Keyes <bob@sinister.com> wrote:
-> > > I am wondering if there are any plans to support RFC
-> > > 3514 in netfilter?
-> > > ftp://ftp.rfc-editor.org/in-notes/rfc3514.txt
-> > > 
-> > > Specifically, I'd like to tag all kazaa packets.
+> Subject: Re: patch-o-matic compile
 > > 
 > > 
-> > __________________________________________________
-> > Do you Yahoo!?
-> > Yahoo! Tax Center - File online, calculators, forms, and more
-> > http://platinum.yahoo.com
+> > On Tue, 1 Apr 2003 11:35:24 -0500, 
+> > "Patrick Ahler" <patrick@vikus.com> wrote in message 
+> > <ABEKJILKOKKGGDJKHKDFKEHCCAAA.patrick@vikus.com>:
 > > 
+> > > Hi, I just patched my kernel for h323 and string. Now it says that
+> > > I'm ready to compile. Being a bit of a linux newbie, only been
+> > > using since august, I'm a bit confused on what to do next. If
+> > > someone could give some kind of specific step by step procedure
+> > > that'd be great. I've re-compiled once before, but had problems.
+> > 
+> > ..cd back home to your kernel tree, read the README.  You may want 
+> > to edit the Makefile to name your new custom kernel, to, say, 
+> > 2.4.20-telefon-pom or somesuch and to drop your new kernel home 
+> > into /boot.
+> > 
+> > ..I prefer to use an old .config and run 'make oldconfig', 
+> > or start from scratch with 'make menuconfig', then 'make dep',
+> > 'make modules', 'make modules_install', and then 'make install'.
 > 
 > 
+> when I do a "make oldconfig" I get an error saying ... 
+> 
+> make: *** No rule to make target 'oldconfig'. Stop.
+> 
+
+..no error, feature; from /usr/src/linux/README:
+
+ - Alternate configuration commands are:
+     "make menuconfig"  Text based color menus, radiolists & dialogs.
+     "make xconfig"     X windows based configuration tool.
+     "make oldconfig"   Default all questions based on the contents of  
+                         your existing ./.config file.
+
+..and lets keep the discussion _on_ the list, off-list offers 
+opportunities to lure people into do _dumb_ things.
+
+ 
+> > ..to simplify matters, a new and intuitive programming language
+> > interface is gaining momentum over at the FlightGear(.org), see
+> > http://seneca.me.umn.edu/pipermail/flightgear-devel/2003-April/016690.html
+> > 
 
 
 -- 
