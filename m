@@ -1,8 +1,8 @@
 From: "anantharaman.iyer" <ananth@mail.mynetsec.com>
 Subject: Re: a doubt about INPUT rule
-Date: Wed, 13 Aug 2003 13:44:04 +0530
+Date: Wed, 13 Aug 2003 13:59:47 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030813081404.M44308@mail.mynetsec.com>
+Message-ID: <20030813082947.M47631@mail.mynetsec.com>
 References: <20030814064610.GA1701@linux.local>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
