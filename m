@@ -1,8 +1,8 @@
-From: "Raymond A. Khan" <a809bc@rogers.com>
-Subject: Iptables (opening port ranges)
-Date: Sat, 23 Nov 2002 16:20:09 -0500
+From: "Gorm Jensen" <gjensen@magma.ca>
+Subject: Erratic Logging - References to User Defined Chains
+Date: Fri, 15 Nov 2002 17:40:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DDFF109.2000102@rogers.com>
+Message-ID: <000501c28cf8$138e8300$0201a8c0@gorm>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,23 +15,13 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hey guys,
+Logging of packets on my RH 7.2 system, using kernel 2.4.19 is
+erratic.  Some blocked packets are not logged.  I block and log
+packets through a user defined chain, which now has 63 references.
 
-I'm having a problem with iptables opening a range. Its for Mechwarrior 
-4 mercs and it requires port ranges 28800-29100 open. I'm using DNAT  so 
-i'm able to host games as well. my problem is i cant seem to get those 
-ports opened and since i dont want to write 300 lines of iptables port 
-info. is there a way to open those port ranges
-in my rc.iptables in one line or as few as possible.
-
-i'm using an xp box to connect to the linux for internet. basically my 
-linux box is my dhcp server.  I've assigned a static ip address to the 
-mac address of my xp box.  and i'm trying to get to the open ports 
-through my linux box.
-
-thanks!
+Is there a limit to the number of references to a user defined chain?
 
 
