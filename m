@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how to install iptables on redhat linux AS 2.1
-Date: Tue, 9 Mar 2004 10:56:25 +0000
+Subject: Re: Logging with INPUT & FORWARD set to DROP
+Date: Tue, 9 Mar 2004 10:59:54 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403091056.25207.Antony@Soft-Solutions.co.uk>
-References: <20040309104749.52675.qmail@web80807.mail.yahoo.com>
+Message-ID: <200403091059.54342.Antony@Soft-Solutions.co.uk>
+References: <000f01c405c4$06559f20$6a02a8c0@klemen>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040309104749.52675.qmail@web80807.mail.yahoo.com>
+In-Reply-To: <000f01c405c4$06559f20$6a02a8c0@klemen>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,34 +20,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 09 March 2004 10:47 am, Kashif Awan wrote:
+On Tuesday 09 March 2004 10:48 am, Klemen Kecman wrote:
 
-> hello everyone
->
-> i have installed redhat linux AS 2.1 and I was using ipchains as a firewall
->
-> but i need to switch to iptables iptables package is already installed but
-> i want to install it from scratch can somebody tell me the path of
-> documentation how to install if from the scratch
+> Is there a way to log packets that get dropped due to default policy set to
+> drop.
 
-This seems more like a RedHat question than a netfilter question?
-
-How to get the package installed is distribution-specific (unless you just rip 
-everything out and compile from source, but I don't think that's what you're 
-asking?).
-
-Maybe someone here knows the answer to your question, but you might be better 
-off asking on an RH AS list, I think.
-
-Regards,
+Sure.   Place a LOG rule at the end of the chain in question.
 
 Antony.
 
 -- 
-It is also possible that putting the birds in a laboratory setting 
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennet
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
 
                                                      Please reply to the list;
                                                            please don't CC me.
