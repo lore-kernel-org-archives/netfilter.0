@@ -1,14 +1,12 @@
-From: <pf.vd.vlugt@hccnet.nl>
-Subject: Re: about iptables log messages
-Date: Tue, 10 Sep 2002 11:04:06 +0100
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: mangle tables.
+Date: Tue, 10 Sep 2002 12:05:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D7DD1A6.29826.78D9F68@localhost>
-References: <F188RTiCSR9OgSNnByU00005d52@hotmail.com>
+Message-ID: <3D7DC3EF.6060709@fugmann.dhs.org>
+References: <3D7D9614.1040205@fugmann.dhs.org> <200209100939.g8A9d0v06610@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: Quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <F188RTiCSR9OgSNnByU00005d52@hotmail.com>
-Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"
-To: chulmin2@hotmail.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-check www.snort.org
-i'm told that the latest version(s) are able to output into mysql.
+Hi Antony
 
-you also could try 
-ACID at www.cert.org/kb/acid
-or
-SnortSnarf at www.silicondefense.com/snortsnarf
+Many thanks for your reply.
+I see that I understand most of it.
 
-regards,
-pieter frans
-
-On 10 Sep 2002 at 8:17, SB CH wrote:
-
+Antony Stone wrote:
+> On Tuesday 10 September 2002 7:49 am, Anders Fugmann wrote:
+> 
+>>Next, if the above is correct, when does packets hit the chains,
+>>e.g. what chains are traversed between PREROUTING and FORWARD and
+>>POSTROUTING, in the forwarding example?
 > 
 > 
-> Hello all.
-> I would like to save iptables log messages into mysql database and see t=
-he 
-> result via php or cgi web site.
-> Do you have any solutions or related site?
-> 
-> Please let me know.
-> 
-> Thanks in advance.
-> 
-> _________________________________________________________________
-> =B0=ED / =B0=A8 / =B5=B5 / =BB=E7 / =B6=FB / =B8=B8 / =B5=E9 / =B1=E2 MS=
-N =B7=AF=BA=EA http://www.msn.co.kr/love/
-> 
-> 
+> I don't know the answer to this for the latest version of netfilter, however 
+> it is very easy to find out for yourself, for the specific version you are 
+> running (which is usually the important thing).
+Is this true - can someone please confirm this. It seems strange that 
+only the order of chain traversal is specified within a table, but not 
+across tables (If I understand you correctly, Antony).
+This means, for example, that the mark cannot be used to to mark packets 
+for later processing. (Mark in mangle and match in filter).
 
+> 
+> Simply set up a series of LOGging rules in the different chains & tables, 
+> send some packets through the system, and the log file will tell you what 
+> order the packets went through the different parts of netfilter.
+> 
+> Try this:
+> 
+> for chain in INPUT OUTPUT FORWARD PREROUTING POSTROUTING
+> do
+>   for table in filter mangle nat
+>   do
+>     iptables -I $chain -t $table -j LOG --log-prefix="$chain $table "
+>   done
+> done
+Yes, but I was hoping to avoid it :-)
 
+-- 
+Neo: 'Can you fly that thing?'
+Trinity: 'Not yet'.
+$ apt-get install pilot-prg-v212helicopter.
 
 
