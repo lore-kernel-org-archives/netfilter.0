@@ -1,11 +1,12 @@
-From: "Burak Sahin" <burak.sahin@is.net.tr>
-Subject: iptables + access-list
-Date: Wed, 28 May 2003 09:38:36 +0300
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: vpn between networks with private ip network segment conflicts
+Date: Wed, 28 May 2003 16:48:47 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <043101c324e3$c4832110$6b0262d4@is.net.tr>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D24@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Ray Leach <raymondl@knowledgefactory.co.za>, Drew Einhorn <drew.einhorn@starband.net>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi to all,
+That's what I already said in my last post on this thread.. it's a =
+virtual network which is basically known only to the 2 firewall and not =
+assigned to any specific host, hence virtual ;)
 
-I am using squid as transparent proxy. So I use iptables.Command I use is:
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-REDIRECT --to-port 3128
+but best use the NETMAP module otherwise you'll have a whole lot of =
+rules to make....
 
-I want to use such an access-list: For instance if you want a page from
-network A.B.C.D/a.b.c.d, you do not use squid. It is possible doing with
-squid, however I need to do this with iptables. I changed my command such
-that:
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
-A.B.C.D/a.b.c.d -j REDIRECT --to-port 3128
-it worked.
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
 
-
-MY QUESTION is;
-
-For two networks, A.B.C.D/a.b.c.d and E.F.G.H/e.f.g.h how can I do this?
-
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
-A.B.C.D/a.b.c.d -j REDIRECT --to-port 3128
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
-E.F.G.H/e.f.g.h -j REDIRECT --to-port 3128
-
-This does not work. Because, when a request comes for an ip in the network
-E.F.G.H/e.f.g.h, it is forwarded to squid, because of the iptabes first
-rule...
-
-How can I do access-list with iptables?
-
-I need help
-
-Thanks for your attention
+-----Original Message-----
+From: Ray Leach [mailto:raymondl@knowledgefactory.co.za]
+Sent: Wednesday, May 28, 2003 4:38 PM
+To: Drew Einhorn
+Cc: Netfilter Mailing List
+Subject: Re: vpn between networks with private ip network segment
+conflicts
 
 
+Yes.
 
+I had another thought (those are rare for me)
 
+What if you created a network between the two networks. Like this:
 
+Net1 <-> VPN (CIPE) <-> New NET <-> VPN (CIPE) <-> Net2
 
+Then your routing would be to the new network.
+
+Maybe use some kind of NAT rules to map the new net back to the dest
+net. For example:
+
+Net1.host1 (192.168.0.1) wants to connect to net2.host1 (192.168.0.1)
+He actually connects to 10.0.0.1 and the VPN/Router1 does a SNAT to its
+IP.
+VPN/Router2 does a DNAT for the traffic from 10.0.0.1 back to
+192.168.0.1
+
+VPN/Router1 has to have a route for 10.0.0.1 pointing to VPN/Router2
+
+Do the same on the other side.
+
+I was thinking of something along the lines of the P-O-M 1:1 NAT patch.
+
+Does this make sense, and might it work?
+
+Ray
 
 
