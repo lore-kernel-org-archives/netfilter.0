@@ -1,15 +1,10 @@
-From: "i.t" <i.t@ithum.de>
-Subject: Re: How is Kazaa getting out without a rule?
-Date: Sat, 8 Mar 2003 20:08:54 +0100
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Counter Strike FOWARDING?
+Date: Sat, 8 Mar 2003 12:34:34 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303082008.54695.i.t@ithum.de>
-References: <20030307233027.80633.qmail@web80410.mail.yahoo.com>
-Reply-To: i.t@ithum.de
+Message-ID: <20030308203434.17890.qmail@web40209.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030307233027.80633.qmail@web80410.mail.yahoo.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,21 +14,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Tasha Smith <tashamaillist@yahoo.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-msg Samstag 08 M=E4rz 2003 00:30 by Tasha Smith:
-> without creating rule. How is this possible? and does that mean if i ha=
-ve a
+iptables -t nat -A PREROUTING -p TCP --dport 27015 -j DNAT --to-destination
+192.168.1.25:27015
 
-if ip_forwarding is set to 1
-kazaa comes out if not further restricted on a very lot of ports (startin=
-g=20
-with 1214 and so on...)
 
-Regards
---=20
- . ___
- |  |  Irmund     Thum
- |  |=20
+I'm trying to route incoming attempts into my internal windows machine to host
+a Half Life Counter Strike game every now and then. This is what I come up
+with! Could everyone take a look and see if this is correct? Thanks Muchly
+
+=====
+"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - forms, calculators, tips, more
+http://taxes.yahoo.com/
 
