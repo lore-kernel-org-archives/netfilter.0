@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Iptables forwarding
-Date: Wed, 26 Jun 2002 10:35:55 +0100
+From: LuisMi <luismi@adpsoft.com>
+Subject: what traffic is this?
+Date: Wed, 26 Jun 2002 13:23:18 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206260936.g5Q9a3U11320@vulcan.rissington.net>
-References: <1C61B9073EBFBD40B45FA90B8265B2DD1BDF@MELXCHW01.oz.quest.com>
+Message-ID: <Pine.LNX.4.44.0206261322180.24216-100000@ns2.adpsoft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1C61B9073EBFBD40B45FA90B8265B2DD1BDF@MELXCHW01.oz.quest.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,33 +14,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Wednesday 26 June 2002 8:41 am, Loc Huynh wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Hi all,
->
-> I finally had the iptables 1.2.6a installed and it's working great (on
-> Redhat 7.3)
-> However, I have a small problem.
-> I have the following setup for forwarding on port 80 to our IIS web server.
->
-> $IPTABLES -A FORWARD -i $INTERNALIF -p tcp --dport 80 -j ACCEPT
-> $IPTABLES -A PREROUTING -t nat -p tcp -d $INTERNALIP --dport 80 -j DNAT
-> --to-destination $HTTPFWDIP:80
->
-> The above worked fine if I have the "FORWARD" to be open to ACCEPT
-> ie: $IPTABLES -P FORWARD ACCEPT
->
-> Of course, I don't want the default is open to "ACCEPT", is there anyway to
-> avoid this please ?
+This traffic comes from a cisco router.
+what type of traffic is ?
 
-$IPTABLES -A FORWARD -i $EXTERNALIF -d $HTTPFWDIP -p tcp --dport 80 -j ACCEPT
+[root@cuelebre root]# tcpdump -i eth2
+tcpdump: listening on eth2
 
-ie: Allow packets from the external interface in to your web server.
+13:19:12.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+                         0000 0100 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000
+13:19:22.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+                         0000 0100 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000
+13:19:32.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+                         0000 0100 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000
+13:19:42.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+                         0000 0100 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000
+13:19:52.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+                         0000 0100 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000
+13:20:02.660000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+                         0000 0100 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000 0000
+                         0000 0000 0000 0000 0000 0000 0000
 
- 
+6 packets received by filter
+0 packets dropped by kernel
 
-Antony.
+
+- -- 
+Luis Miguel Cruz.  
+
+PGP KEY: 0x3AC52657   |   [ADPSOFT] http://www.adpsoft.com
+		      |      "Connecting your business"
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj0ZpCoACgkQvQHLTzrFJleWvQCfXENyDw/upk4JZcfUdx6SbQPT
+V7YAn2Gy1o9vhmTJXq7Livz++cAgJ7DM
+=anWn
+-----END PGP SIGNATURE-----
+
 
