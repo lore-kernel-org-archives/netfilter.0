@@ -1,35 +1,49 @@
-From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: Re: Netfilter ipt_hashlimit
-Date: Fri, 11 Mar 2005 23:05:11 +1100
-Message-ID: <E1D9itD-00039G-00@gondolin.me.apana.org.au>
-References: <20050310222934.C1044@flint.arm.linux.org.uk>
-In-Reply-To: <20050310222934.C1044@flint.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+From: "Dimitri Yioulos" <dyioulos@firstbhph.com>
+Subject: NAT question
+Date: Fri, 11 Mar 2005 07:43:41 -0500
+Message-ID: <200503111243.j2BCheOj003886@mail1.firstbhph.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="hz-gb-2312"
-Content-Transfer-Encoding: base64
-To: Russell King <rmk+lkml@arm.linux.org.uk>
-Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org, davem@davemloft.net
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-UnVzc2VsbCBLaW5nIDxybWsrbGttbEBhcm0ubGludXgub3JnLnVrPiB3cm90ZToKPiBXaXRoIGN1
-cnJlbnQtaXNoIExpbnVzIDIuNiBCSywgSSdtIHNlZWluZyB0aGlzOgo+IAo+IG5ldC9pcHY0L25l
-dGZpbHRlci9pcHRfaGFzaGxpbWl0LmM6OTY6IHdhcm5pbmc6IHR5cGUgZGVmYXVsdHMgdG8gYGlu
-dCcgaW4gZGVjbGFyYXRpb24gb2YgYERFQ0xBUkVfTE9DSycKPiBuZXQvaXB2NC9uZXRmaWx0ZXIv
-aXB0X2hhc2hsaW1pdC5jOjk2OiB3YXJuaW5nOiBwYXJhbWV0ZXIgbmFtZXMgKHdpdGhvdXQgdHlw
-ZXMpIGluIGZ1bmN0aW9uIGRlY2xhcmF0aW9uCj4gCj4gTG9va3MgbGlrZSBpcHRfaGFzaGxpbWl0
-LmMgaXMgbWlzc2luZyBhbiBpbmNsdWRlPwoKSW5kZWVkLiAgSXQgc2hvdWxkIGluY2x1ZGUgbG9j
-a2hlbHAuaCBkaXJlY3RseS4KClNpZ25lZC1vZmYtYnk6IEhlcmJlcnQgWHUgPGhlcmJlcnRAZ29u
-ZG9yLmFwYW5hLm9yZy5hdT4KCkNoZWVycywKLS0gClZpc2l0IE9wZW5zd2FuIGF0IGh0dHA6Ly93
-d3cub3BlbnN3YW4ub3JnLwpFbWFpbDogSGVyYmVydCBYdSB+e1BtVj5ISX59IDxoZXJiZXJ0QGdv
-bmRvci5hcGFuYS5vcmcuYXU+CkhvbWUgUGFnZTogaHR0cDovL2dvbmRvci5hcGFuYS5vcmcuYXUv
-fmhlcmJlcnQvClBHUCBLZXk6IGh0dHA6Ly9nb25kb3IuYXBhbmEub3JnLmF1L35oZXJiZXJ0L3B1
-YmtleS50eHQKLS0KPT09PT0gbmV0L2lwdjQvbmV0ZmlsdGVyL2lwdF9oYXNobGltaXQuYyAxLjEw
-IHZzIGVkaXRlZCA9PT09PQotLS0gMS4xMC9uZXQvaXB2NC9uZXRmaWx0ZXIvaXB0X2hhc2hsaW1p
-dC5jCTIwMDUtMDMtMTEgMDc6MDY6MjIgKzExOjAwCisrKyBlZGl0ZWQvbmV0L2lwdjQvbmV0Zmls
-dGVyL2lwdF9oYXNobGltaXQuYwkyMDA1LTAzLTExIDIyOjU2OjI0ICsxMTowMApAQCAtMzcsNiAr
-MzcsNyBAQAogCiAjaW5jbHVkZSA8bGludXgvbmV0ZmlsdGVyX2lwdjQvaXBfdGFibGVzLmg+CiAj
-aW5jbHVkZSA8bGludXgvbmV0ZmlsdGVyX2lwdjQvaXB0X2hhc2hsaW1pdC5oPgorI2luY2x1ZGUg
-PGxpbnV4L25ldGZpbHRlcl9pcHY0L2xvY2toZWxwLmg+CiAKIC8qIEZJWE1FOiB0aGlzIGlzIGp1
-c3QgZm9yIElQX05GX0FTU0VSUlQgKi8KICNpbmNsdWRlIDxsaW51eC9uZXRmaWx0ZXJfaXB2NC9p
-cF9jb25udHJhY2suaD4=
+Hello, all.
+
+ 
+
+I've recently set up iptables-1.2.8-12.3 on a CentOS 3.4 (RHEL AS 3) box.
+Among other things, I've created a DMZ where my Web and mail servers live.
+My problem is that my Web and mail servers identify themselves with the NAT
+ip address that I've assigned   Here's my NAT rule:
+
+ 
+
+ IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
+
+ 
+
+How can I get these two servers to identify themselves by their own ip
+addresses and still provide NAT for my users?
+
+ 
+
+Hope I've provided enough info., and my question isn't too lame.
+
+ 
+
+Many thanks.
+
+ 
+
+Dimitri
+
