@@ -1,15 +1,12 @@
-From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: Re: Redirecting ports on localhost
-Date: Wed, 31 Mar 2004 02:40:31 +0200
+From: "Manikandan" <manikandan@manikandan.org>
+Subject: PPTP clients behind iptables firewall.
+Date: Tue, 30 Mar 2004 19:27:32 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080693630.2471.158.camel@localhost>
-References: <20040330133505.22298.90925.Mailman@vishnu.netfilter.org>
-	 <200403302013.40298.lists@edeca.net> <1080684198.2471.106.camel@localhost>
-	 <200403302331.04982.lists@edeca.net>
+Message-ID: <JFEPKPDIGFAKJOGHOICDOECFCAAA.manikandan@manikandan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0015_01C4168D.0BF6F3F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403302331.04982.lists@edeca.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +16,105 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-ons, 31.03.2004 kl. 00.31 skrev David Cannings:
-> avid,
-> > Dunno if you're the one responsible for the general Netfilter HOWTO.
-> > But if so, could you please change "iplimit" to "connlimit"? I've used
-> > vi to great effect after txt2html for my own copy, but I frigged around
-> > with iplimit for a while with the non-existent iplimit first. I was
-> > *not* pleased.
-> 
-> Definitely not, the only way I contribute to netfilter is helping out on 
-> the users mailing list.  I am unsure whether the source to the HOWTO 
-> documents is available, perhaps you could submit diff's for what you 
-> believe needs changing.
+This is a multi-part message in MIME format.
 
-:g/iplimit/s//connlimit/g
+------=_NextPart_000_0015_01C4168D.0BF6F3F0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
---Tonni
+Dear all,
 
--- 
+	I am running RedHat Linux 9 with kernel 2.4.20-8, with iptables
+iptables-1.2.7a-2, which acts as a gateway/firewall for my LAN
+10.35.57.0/24. 
 
-mail: billy - at - billy.demon.nl
-http://www.billy.demon.nl
+	I do  SNAT to one public IP in my firewall to allow traffic from LAN
+to Internet.
+
+	My LAN PPTP clients are not able to establish more than one
+connection at a time to my VPN server (Internet).
+
+		Please assist me in resolving this issue.
+
+Advance thanks.
+
+Regards,
+Manikandan
+
+
+------=_NextPart_000_0015_01C4168D.0BF6F3F0
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+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
+CoAIIAYAAAAAAMAAAAAAAABGAAAAADaFAAABAAAAAQAAAAAAAAAeAAuACCAGAAAAAADAAAAAAAAA
+RgAAAAA3hQAAAQAAAAEAAAAAAAAAHgAMgAggBgAAAAAAwAAAAAAAAEYAAAAAOIUAAAEAAAABAAAA
+AAAAAAsADYAIIAYAAAAAAMAAAAAAAABGAAAAAIKFAAABAAAACwA6gAggBgAAAAAAwAAAAAAAAEYA
+AAAADoUAAAAAAAADADyACCAGAAAAAADAAAAAAAAARgAAAAARhQAAAAAAAAMAPYAIIAYAAAAAAMAA
+AAAAAABGAAAAABiFAAAAAAAACwBSgAggBgAAAAAAwAAAAAAAAEYAAAAABoUAAAAAAAADAFOACCAG
+AAAAAADAAAAAAAAARgAAAAABhQAAAAAAAAIB+A8BAAAAEAAAABG4Tkjz9pVPrzh0stAvG9UCAfoP
+AQAAABAAAAARuE5I8/aVT684dLLQLxvVAgH7DwEAAACcAAAAAAAAADihuxAF5RAaobsIACsqVsIA
+AFBTVFBSWC5ETEwAAAAAAAAAAE5JVEH5v7gBAKoAN9luAAAAQzpcRG9jdW1lbnRzIGFuZCBTZXR0
+aW5nc1xNYW5pa2FuZGFuXExvY2FsIFNldHRpbmdzXEFwcGxpY2F0aW9uIERhdGFcTWljcm9zb2Z0
+XE91dGxvb2tcb3V0bG9vay5wc3QAAwD+DwUAAAADAA00/TcAAAIBfwABAAAAOQAAADxKRkVQS1BE
+SUdGQUtKT0dIT0lDRE9FQ0ZDQUFBLm1hbmlrYW5kYW5AbWFuaWthbmRhbi5vcmc+AAAAAAMABhCD
+JIeJAwAHEFEBAAADABAQAAAAAAMAERAAAAAAHgAIEAEAAABlAAAAREVBUkFMTCxJQU1SVU5OSU5H
+UkVESEFUTElOVVg5V0lUSEtFUk5FTDI0MjAtOCxXSVRISVBUQUJMRVNJUFRBQkxFUy0xMjdBLTIs
+V0hJQ0hBQ1RTQVNBR0FURVdBWS9GSVJFVwAAAAA3bg==
+
+------=_NextPart_000_0015_01C4168D.0BF6F3F0--
 
 
