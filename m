@@ -1,13 +1,10 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: MRTG and IPTABLES
-Date: Wed, 07 Jan 2004 03:03:42 -0500
+From: Eugene Joubert <EugeneJ@centratel.co.za>
+Subject: RE: MRTG and IPTABLES
+Date: Wed, 7 Jan 2004 10:28:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073462622.18988.20.camel@jasiiitosh.nexusmgmt.com>
-References: <83055D4B014C9E478D2F04624B9E82CFD4D5@noveldc.novelgmt.mu>
+Message-ID: <D82D57585EE0D711AC8700508BECE9BF03A8@CENTRATEL01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFD4D5@noveldc.novelgmt.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,15 +15,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Gilles Yue <gyue@novelgmt.intnet.mu>
+Content-Transfer-Encoding: 7bit
 Cc: netfilter@lists.netfilter.org
+
+Hi,
+
+It uses SNMP protocol. I think this is built on top of the UDP protocol. I
+am not sure. Try opening up UDP port 1491. 
+
+Hope this helps
+
+Eugene
+
+-----Original Message-----
+From: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com] 
+Sent: 07/01/2004 10:04 AM
+To: Gilles Yue
+Cc: netfilter@lists.netfilter.org
+Subject: Re: MRTG and IPTABLES
+
 
 On Wed, 2004-01-07 at 01:54, Gilles Yue wrote:
 > MRTG cannot work properly due to iptables running.
 > 
 >  
 > 
-> Anybody knows which port number to open to enable MRTG to work
+> Anybody knows which port number to open to enable MRTG to work 
 > properly.
 > 
 >  
