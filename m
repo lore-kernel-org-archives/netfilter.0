@@ -1,17 +1,20 @@
-From: Jason <baker@cyborgworkshop.com>
+From: Arnt Karlsen <arnt@c2i.net>
 Subject: Re: chance to impress the suits
-Date: Fri, 28 Feb 2003 06:53:45 -0600 (CST)
+Date: Fri, 28 Feb 2003 20:24:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.com>
+Message-ID: <20030228202435.62be6828.arnt@c2i.net>
 References: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
- <200302270201.04762.netfilter@newkirk.us> <20030227134810.7728c8d5.arnt@c2i.net>
- <Pine.LNX.4.50.0302270811550.19694-100000@alfred.home.cyborgworkshop.com>
- <20030228014041.7394bcfa.arnt@c2i.net>
- <Pine.LNX.4.50.0302271518100.19962-100000@alfred.home.cyborgworkshop.com>
- <20030228173420.1a1bdc11.arnt@c2i.net>
+	<200302270201.04762.netfilter@newkirk.us>
+	<20030227134810.7728c8d5.arnt@c2i.net>
+	<Pine.LNX.4.50.0302270811550.19694-100000@alfred.home.cyborgworkshop.com>
+	<20030228014041.7394bcfa.arnt@c2i.net>
+	<Pine.LNX.4.50.0302271518100.19962-100000@alfred.home.cyborgworkshop.com>
+	<20030228173420.1a1bdc11.arnt@c2i.net>
+	<Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030228173420.1a1bdc11.arnt@c2i.net>
+In-Reply-To: <Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,44 +24,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arnt Karlsen <arnt@c2i.net>
+Content-Type: text/plain; charset="us-ascii"
+To: Jason <baker@cyborgworkshop.com>
 Cc: netfilter@lists.netfilter.org
 
-well remember, them getting bigger boxes are to handle the number of
-connections that I am giving to them.  Its not a matter of TCP slowing
-down, its us waiting on their application to finish and their app just
-handles waits very poorly.
+On Fri, 28 Feb 2003 06:53:45 -0600 (CST), 
+Jason <baker@cyborgworkshop.com> wrote in message 
+<Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.co
+m>:
+
+> well remember, them getting bigger boxes are to handle the number of
+> connections that I am giving to them.  Its not a matter of TCP slowing
+> down, its us waiting on their application to finish and their app just
+> handles waits very poorly.
+
+...effectively dos attacking itself, and with authority?  How is 
+it controlled?  There must have been a control philosophy somewhere 
+between the design stage and the upgrade of this application?   
+
+..an idea: limit the number of connections to a level the authorized 
+dos attack app _can_ handle, and to reject or reset rather than 
+dropping connections?
 
 -- 
-Jason Baker
-baker@cyborgworkshop.com
-www.cyborgworkshop.com
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-On Fri, 28 Feb 2003, Arnt Karlsen wrote:
 
-> On Thu, 27 Feb 2003 15:21:02 -0600 (CST),
-> Jason <baker@cyborgworkshop.com> wrote in message
-> <Pine.LNX.4.50.0302271518100.19962-100000@alfred.home.cyborgworkshop.co
-> m>:
->
-> > They need a bigger box.   The whole app on their end is 6 boxes,  two
-> > front end web servers, two application servers and then the database.
-> > They upgraded the database, which used to be the bottleneck, and we
-> > then maxed out their web servers. They upgraded their web servers and
-> > now we max out their app servers. They have more hardware on order,
-> > but Sun is claiming a month lead time for Sunfires.  But I figure in
-> > the meantime, this should work out pretty well.
-> >
->
-> ..ok, I'm still deep in the dark:  How is a bigger set of iron, that can
-> spew _more_ connections, gonna help avoid the authorized dos attack???
->
-> ..the 6-too-small-boxes understands ipcm, and will back off when you
-> drop packages or connection?
->
-> ..I _think_ a _short!_ timeout on these connections, could work.
->
->
 
