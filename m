@@ -1,15 +1,12 @@
-From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
-Subject: RE: iptables2.spec
-Date: Thu, 13 Mar 2003 11:06:34 +0100
+From: "Chris Partsenidis" <Chris@Firewall.cx>
+Subject: Re: help on DMZ project
+Date: Thu, 13 Mar 2003 11:41:42 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.2.20030313110550.01f8d908@172.26.0.8>
-References: <7F9067FBD7B14F4387EA63434CE260033F844C@hyd-mdp-msg.wipro.c
- om>
+Message-ID: <20030313114142.2704C1BB2FE@mail.powweb.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7F9067FBD7B14F4387EA63434CE260033F844C@hyd-mdp-msg.wipro.c
- om>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,102 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Prasanta kumar Panda <prasanta.kumar@wipro.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: louie miranda <lmiranda@chikka.com>, netfilter@lists.samba.org
 
-Same problem here :(
+Louie,
 
-[root@luismi iptables2]# make
-Making all in .
-make[1]: Cambiando a directorio `/root/temp/netfilter/iptables2'
-make[1]: No se hace nada para `all-am'.
-make[1]: Saliendo directorio `/root/temp/netfilter/iptables2'
-Making all in include
-make[1]: Cambiando a directorio `/root/temp/netfilter/iptables2/include'
-cd .. && autoheader
-cd .. \
-   && CONFIG_FILES=3D CONFIG_HEADERS=3Dinclude/config.h \
-      /bin/sh ./config.status
-creating include/config.h
-make[1]: Saliendo directorio `/root/temp/netfilter/iptables2/include'
-Making all in libnfnetlink
-make[1]: Cambiando a directorio `/root/temp/netfilter/iptables2/libnfnetl=
-ink'
-cd . && aclocal
-/bin/sh ./config.status --recheck
-./config.status: ./config.status: No existe el fichero o el directorio
-make[1]: *** [config.status] Error 127
-make[1]: Saliendo directorio `/root/temp/netfilter/iptables2/libnfnetlink=
-'
-make: *** [all-recursive] Error 1
+If you would like to see a few different DMZ configurations, please visit my website : www.firewall.cx 
 
-Did you report it to bugzilla.netfilter.org?
+Under the "Firewalls" menu you will find the DMZ topic.
 
-At 23:40 12/03/2003 +0530, Prasanta kumar Panda wrote:
+Also, under 'Firewalls-->NAT-->Static NAT--> Concepts and Examples' you will find a nice DMZ example to help you, should you decide to implement it.
 
->Hi Luis
->
->But before that you should be able to build it manually. When I run make=
-=20
->after a normal configure got this error
->
->
->make[1]: Entering directory=20
->`/usr/src/redhat/BUILD/iptables2-pra1/libnfnetlink'
->cd . && aclocal
->/bin/sh ./config.status --recheck
->./config.status: ./config.status: No such file or directory
->make[1]: *** [config.status] Error 127
->make[1]: Leaving directory `/usr/src/redhat/BUILD/iptables2-pra1/libnfne=
-tlink'
->make: *** [all-recursive] Error 1
->
->
->Other wise this is the way to make the rpm
->
->Move the iptables2 directory to iptables2-VERSION directory and put to=20
->tar+gzip as iptables2-VERSION.tar.gz
->Next
->rpmbuild -tb iptables2-VERSION.tar.gz
->Or
->rpmbuild -ts iptables2-VERSION.tar.gz to get a srpm package which you ca=
-n=20
->compile later on with rpmbuild --rebuild command.
->
->Reg.
->Prasanta
->
->
->
->
->-----Original Message-----
->From: Luis Miguel Cruz Miranda [mailto:luismi@b2bi.es]
->Sent: Wednesday, March 12, 2003 10:26 PM
->To: netfilter@lists.netfilter.org
->Subject: iptables2.spec
->
->
->I downloaded netfilter code from cvs.
->I discover it cames with a iptables2.spec.
->I tried to use it in order to create an iptables rpm, but I couldn't!!.=20
->How can I use it? rpm -ba iptables2.spec doesn't run for me.
->
->Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
->CCNA - Systems Administrator            |       Pol. Ind. de Asipo
->                                          |       C/A - Parcela 86-C
->Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
->Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN=
-)
->
->
->
->
+Cheers,
 
-Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
-CCNA - Systems Administrator            |       Pol. Ind. de Asipo
-                                         |       C/A - Parcela 86-C
-Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
-Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
+Chris P.
+www.Firewall.cx
+
+---------- Original Message -------------
+Subject: help on DMZ project
+Date: Thu, 13 Mar 2003 17:16:27 +0800
+From: "louie miranda" <lmiranda@chikka.com>
+To: <netfilter@lists.samba.org>
+
+
+I currently have a project to make a DMZ farm of servers. I actually want to
+make this firewall
+be splitted in to 4 or more networks. I'll be trying to host 3 different
+company, I would like to
+try using Iptables as my main firewall and gateway before the internet.
+
+Could this be done? And which documents should i read? I currently have a
+different network that i am masquerading right now. But i had never tried a
+dmz type that is so complicated yet for me.
+
+Hope i could have feedback on my problem!
+
+
+--
+thanks,
+louie miranda
+
+
+
+
+
 
 
 
