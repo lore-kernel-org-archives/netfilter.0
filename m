@@ -1,14 +1,11 @@
-From: Marcin Sura <slacklist@op.pl>
-Subject: Re: iptables + MRTG
-Date: Sat, 28 Aug 2004 17:23:55 +0200
+From: Fernando Montenegro <fsmontenegro@yahoo.ca>
+Subject: Help needed with ESP and DNAT on Debian 2.4.26 / iptables 1.2.9-10
+Date: Sat, 28 Aug 2004 12:37:48 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1910446864.20040828172355@op.pl>
-References: <a0f69e5040828042815b5e61e@mail.gmail.com>
-Reply-To: Marcin Sura <slacklist@op.pl>
+Message-ID: <4130B4DC.30504@yahoo.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e5040828042815b5e61e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +15,48 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Witam
+Hi there!
 
-Saturday, August 28, 2004, 1:28:27 PM, you wrote:
+I need help getting DNAT to work with ESP packets on a Debian box
+('testing/sarge' release, 2.4.26 kernel, iptables 1.2.9-10). This used 
+to work fine on a RH90...
 
-> Anyone here using MRTG with iptables? for example to check iptables -L
-> -nvx things graphical using mrtg... or any other statistics
-> any possibility ?
+This is used to suport a laptop running XP Pro logging in to a corporate
+VPN with the Nortel VPN client. Company policy and authentication
+requirements prevent me from changing anything in that setup (so I can't
+change the VPN to terminate AT the Linux box for example).
 
-With MRTG you can graph temperature even this how many times your dog
-go outside, so also you can make charts of iptables output. Simply,
-you must parse iptables -L -vnx output, and provide what you want to
-graph to MRTG.
+My problem is: incoming ESP packets are not being DNATed as I wanted
+them to. The rule I use is:
+-A PREROUTING -p esp -s <VPN server> -j DNAT --to-destination <laptop>
 
-You can also try a rrdtool. This is a (imo better) successor of MRTG.
+The rule does get hit into (I have a mirror rule with -j LOG), but the
+translation does NOT happen.
 
-Try to google. There is a lot of examples for both - MRTG and rrdtool
+Like I said, it used to work fine when the server was a RH90.
 
+How do I begin troubleshooting this? Some things I tried so far are:
+- try to DNAT ALL traffic (not just -p esp)
+- force ipt_esp to load (modprobe ipt_esp and yes, it is under
+/lib/modules/<kernel>/kernel/ipv4/netfilter)
+- tried doing an SNAT on the preceding UDP/500 connection to maybe trick
+netfilter into understanding the ESP part later
+
+Naturally, I have tcpdump logs, syslogs, etc... for further analysis,
+but I'm weak when it comes to netfilter troubleshooting...
+
+Help!
+
+Thanks in advance.
+
+Cheers,
+Fernando
 -- 
-Pozdrawiam
- Marcin                            mailto:slacklist@op.pl
+Fernando Montenegro, CISSP  -  fsmontenegro@yahoo.ca
+Markham, Ontario, Canada
+
 
 
