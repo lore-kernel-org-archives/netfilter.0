@@ -1,11 +1,14 @@
-From: Mark Ord <netfilter-list@losthorizons.mailshell.com>
-Subject: iptables local port forwarding
-Date: Sat, 3 Apr 2004 19:50:05 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables local port forwarding
+Date: Sat, 3 Apr 2004 11:27:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040403095005.GA4511@scholars.home>
+Message-ID: <200404031127.02648.Antony@Soft-Solutions.co.uk>
+References: <20040403095005.GA4511@scholars.home>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20040403095005.GA4511@scholars.home>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,44 +19,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm sure the answer to this is out there somewhere on the internet,
-however numberous searches since I installed Debian a couple of months
-ago haven't provided the exact answer to what I want.
+On Saturday 03 April 2004 10:50 am, Mark Ord wrote:
 
-My setup is:
+> I have iptables setup, firewalling eth0 (the internet) extensively, and
+> doing NAT for my lan, and some custom port forwards.
+>
+> One is forwarding port 81 -> 80 - due to my provider firewalling port
+> 80:
+>      iptables -t nat -I PREROUTING -p tcp --dport 81 -j REDIRECT --to 80
+>
+> This works for connections coming in on both eth0, and eth1. However, I
+> can't connect to port 81 on the iptables machine (no matter what
+> iptables rules I try).
 
-Debian woody
-uname: Linux scholars 2.4.18-mppe #1 Sat Dec 20 13:42:14 EST 2003 i686 unknown
-iptables: iptables v1.2.6a
-eth0: 10.0.13.192 (-> internet)
-eth1: 192.168.0.1 (-> lan)
+That rule looks fine to me, and you must obviously have an appropriate INPUT 
+rule allowing the connection to port 80 after the REDIRECT has completed, 
+otherwise you wouldn't be able to connect directly to port 80 which you say 
+works fine.
 
-I have iptables setup, firewalling eth0 (the internet) extensively, and
-doing NAT for my lan, and some custom port forwards.
+The only thing I can think to ask is whether "iptables -L -t nat -nvx" shows 
+the packet/byte counters for this rule incrementing when you do try to access 
+port 81?
 
-One is forwarding port 81 -> 80 - due to my provider firewalling port
-80:
-     iptables -t nat -I PREROUTING -p tcp --dport 81 -j REDIRECT --to 80
+Perhaps a few judicious LOGging rules (before and after the REDIRECT in the 
+nat table, before and after the ACCEPT in the INPUT chain) will tell you 
+something useful?
 
-This works for connections coming in on both eth0, and eth1. However, I
-can't connect to port 81 on the iptables machine (no matter what
-iptables rules I try). On the lan side, I use a http proxy residing on
-the iptables machine, hence can not connect to port 81 from the lan when
-going through the proxy. It's not a huge problem (since I can and do use
-port 80 from the lan side), I'm moreso just really interested in whether this
-actually IS possible, and if not, why?
+Regards,
 
-While making this work isn't critical, I would like to do some other
-fancy forwarding which requires the same sort of thing. (ssh port
-forwarding on the iptables machine, then forwarding ports on specific
-nic interfaces to the ssh forwarded port on lo, to avoid having to bind ssh
-forwarded ports with 'GatewayPorts yes'). Basically I'd like to know if
-this crazy type of setup is acheivable.
+Antony.
 
-TIA.
-Mark.
+-- 
+Most people have more than the average number of legs.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
