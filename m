@@ -1,13 +1,10 @@
-From: "Michael" <michael@klintan.cjb.net>
-Subject: RE: discard TCP SYN
-Date: Wed, 6 Aug 2003 18:43:38 +0200
+From: Jean Wolter <jean.wolter@inf.tu-dresden.de>
+Subject: Wrong patch in Netfilter Security Advisory: Conntrack list_del() DoS ?
+Date: 10 Aug 2003 00:49:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000101c35c39$e29babd0$c800a8c0@klintan.local>
-References: <1060172871.712.13.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <86zniia1k8.fsf@os.inf.tu-dresden.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1060172871.712.13.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +14,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-9"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hello,
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org=20
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of=20
-> Cedric Blancher
-> Sent: Wednesday, August 06, 2003 2:28 PM
-> To: Michael K
-> Cc: netfilter@lists.netfilter.org
-> Subject: Re: discard TCP SYN
->=20
->=20
-> Le mer 06/08/2003 =E0 13:32, Michael K a =E9crit :
-> > Then I use stateful inspection, accepting=20
-> estabished,related. However,=20
-> > the nessus scanner is reporting this:
-> > -----
-> > The remote host does not discard TCP SYN packets which
-> > have the FIN flag set.
->=20
-> SYN/FIN packets are valid according to RFC793. RFC specify=20
-> that if RST and ACK are not set, and SYN is set, packet must=20
-> get treated as opening a connection without examining other flags.
->=20
-> > Depending on the kind of firewall you are using, an
-> > attacker may use this flaw to bypass its rules.
->=20
-> Some people say that some firewalls may accept this kind of=20
-> packets through closed ports. That is not Netfilter's behaviour.
->=20
-> > Should I be worried?
->=20
-> Not with Netfilter.
->=20
+I just tried to apply the recommended patch to a pristine 2.4.20
+kernel and the following part fails:
 
-Again, hurray for iptables :-)
+diff -urN --exclude-from=diff.exclude linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+--- linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c Tue Feb 18 17:07:26 2003
++++ linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c Fri Feb 21 17:03:35 2003
+@@ -192,7 +192,7 @@
+	  have an established connection: this is a fairly common
+	  problem case, so we can delete the conntrack
+	  immediately.  --RR */
+-	if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
++	if (!test_bit(IPS_SEEN_REPLY_BIT, &conntrack->status) && tcph->rst) {
+        	WRITE_UNLOCK(&tcp_lock);
+        	if (del_timer(&conntrack->timeout))
+            		conntrack->timeout.function((unsigned long)conntrack);
 
-And thank you!
+In the original 2.4.20 ip_contrack_prot_tcp the code looks like
+follows (starting at line 189):
 
-/Klintan
+        WRITE_UNLOCK(&tcp_lock);
 
+        /* If only reply is a RST, we can consider ourselves not to
+           have an established connection: this is a fairly common
+           problem case, so we can delete the conntrack
+           immediately.  --RR */
+        if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
+                if (del_timer(&conntrack->timeout))
+                        conntrack->timeout.function((unsigned long)conntrack);
 
+The WRITE_UNLOCK ist not part of the if clause, it is done before
+checking the conntrack state. Therefore the patch fails at this point.
+
+Is this a bug in the patch, in the linux archive or did I do anything
+wrong?
+
+regards, 
+Jean
 
