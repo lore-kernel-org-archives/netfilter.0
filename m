@@ -1,13 +1,15 @@
-From: Alexis <alexis@attla.net.ar>
-Subject: Re: netfilter question
-Date: Thu, 19 Feb 2004 11:51:49 -0300
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Mirror!!
+Date: Thu, 19 Feb 2004 15:48:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077202309.1578.10.camel@pepelui.baicom>
-References: <4034c46c.4a64.0@arbbs.net>
+Message-ID: <20040219144825.GJ28197@sunbeam.de.gnumonks.org>
+References: <108e01c3f6ed$6fb6aa30$fe01000a@estacion1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cN519qCC4CN1mUcX"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4034c46c.4a64.0@arbbs.net>
+Content-Disposition: inline
+In-Reply-To: <108e01c3f6ed$6fb6aa30$fe01000a@estacion1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,54 +19,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: black@arbbs.net
-Cc: Netfilter <netfilter@lists.netfilter.org>
-
-On Thu, 2004-02-19 at 11:13, John Black wrote:
-> >
-> >Okay, so that rule is going to hide your 192.168.0.0/24 >network behind the
-> public address of the firewall for all >packets going to addresses in the range
-> 161.x.x.x/21 (ie 8 >Class C's in size).
-> 8 Class C's?
-
-if 24 bits define a mask that is considered as Class C
-
-24-21 = 3 
-2 power 3 = 8 
-
-so, its 8 /24 or 8 Class C networks.
+To: XMundo - Soporte Tecnico <soporte@xmundo.net>
+Cc: netfilter@lists.netfilter.org
 
 
+--cN519qCC4CN1mUcX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> >How are you testing this and deciding it doesn't work?
-> im testing it with my windows machine going to the msn chat rooms, because i
-> know i will show you what ip address you are coming from.  is there a better
-> way to check it.
+On Thu, Feb 19, 2004 at 10:36:51AM -0300, XMundo - Soporte Tecnico wrote:
+> o the person responsible for managing the mirrors.
+>=20
+> I have been sending messages for almost a month to the following emails:
+>=20
+> coreteam@netfilter.org
+> webmaster@netfilter.org
+> laforge@netfilter.org
 
-www.whatsmyipaddress.com is a lazy but effective way :)
+mh, I don't remember seeing anything prominent in those two folders.
+Maybe the subject made it look like spam ;(
 
-or just simply log or sniff output packets
+> netfilter-mirrors@lists.netfilter.org
 
+A typo in my mail-sync configuration file resulted in no mails from that
+folder being transferred to my local imap repository.  I am now reading
+all pending email in that folder.
 
-> >(By the way, why are you only translating packets which are >going to (presumably)
-> your ISP?   What about packets going >anywhere else on the Internet?).
-> 
-> I thought that translated all of the packets?  How is it only translating packets
-> to the ISP?
-> 
+> Could you read netfilter-mirrors and make the change I'm asking you for?
 
-this assumption is because you're saying 161.x.x.x/21  as destination,
-all other destinations that doesnt belong to 161.x.x.x to
-161.x.x+8.x+255 will be not nat'ed
+I'll respond to you seperately.
 
+Sorry for any inconvenience.
 
+> Regards.
+> Cristian Merz
 
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-> john
-> http://www.arbbs.net/
--- 
-Alexis <alexis@attla.net.ar>
+--cN519qCC4CN1mUcX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFANMy5XaXGVTD0i/8RAhpoAKCyUxBYYrjNfbmJYyKuuaU46jwFIQCeIdWZ
+OCSS36HG+BsnXSUqt3xHPac=
+=Pp9h
+-----END PGP SIGNATURE-----
+
+--cN519qCC4CN1mUcX--
 
