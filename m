@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT
-Date: Tue, 26 Oct 2004 08:42:14 -0400
+From: Lopsch <lopsch@lopsch.com>
+Subject: IPSec with 2.6.9 and Windows clients
+Date: Tue, 26 Oct 2004 15:40:52 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1098794534.5877.32.camel@hubcap.ljm.dom>
-References: <20041026102023.GA7941@tranquility.scriptkitchen.com>
+Message-ID: <417E53E4.6000208@lopsch.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041026102023.GA7941@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +15,28 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Netfilter-Mailinglist <netfilter@lists.netfilter.org>
 
-On Tue, 2004-10-26 at 06:20, Payal Rathod wrote:
-> Hi,
-> I want to access my internal machine from outside. But I am unable to do 
-> so. I tried,
-> # iptables -t nat -I PREROUTING -d <my_ext_ip> -p tcp --dport
-> 8081 -j DNAT --to-destination 192.168.0.16:80
+Hi,
 
-that looks ok...keep in mind you'll need to go to: 
-http://<my_ext_ip>:8081 to hit the server from the outside
+is there a good howto for a Linux VPN-Gateway using racoon and IPSec
+provided with the actual kernel 2.6.9? Also one for how to set up a
+connection to the gateway using Windows XP and the client shipped with=20
+it? I=B4m a bit confused, when do I need also the L2TP (l2tpd)? I thought=
+=20
+IPSec would be enough to secure a connection over ethernet but also over=20
+internet via ppp (pppoe). But I=B4ve read that over the internet L2TP is=20
+also needed. If someone could explain me what is needed when it would be=20
+great for the examples
 
-> # iptables -I INPUT -p tcp --dport 8081 -j ACCEPT
+Linux ------ internet ------ Linux
+Linux ------ ethernet ------ Linux
+Windows ------ internet ------ Linux
+Windows ------ ethernet ------ Linux
 
-nope--try:
+Thank=B4s in advance.
 
-  iptables -A FORWARD -p tcp -d 192.168.0.16 --dport 80 -j ACCEPT
 
-once PREROUTING is traversed--the packet is forever changed from the
-perspective of all remaining chains.
-
-> # iptables -I FORWARD -s 192.168.0.16 -j ACCEPT
-
-i guess the point of that is to allow the replies back?  ok, i guess...
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
 
 
