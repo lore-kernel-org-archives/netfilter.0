@@ -1,8 +1,8 @@
-From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: FWIW
-Date: Sun, 23 May 2004 14:40:33 +0200
+From: Marc Remijn <marc@dubhead.xs4all.nl>
+Subject: New functionality not showing up in kernel config
+Date: Sat, 22 May 2004 23:22:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1085316030.3072.23.camel@localhost>
+Message-ID: <40AFC4B2.3000505@dubhead.xs4all.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,40 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Maybe it could help someone :)
+Hi Netfilter list members,
 
-RedHat RHEL3 ES
+I installed:
 
-Kernel was kernel.org 2.6.4 + iptables 1.2.9, pom-ng-20040302
+Kernel 2.4.26 sources (Slackware).
+Patch-o-matic-ng-20040302
+Iptables-1.2.9/
 
-Wanted kernel 2.6.6, have it, it works with Netfilter pom-ng :)
+I went into the kernel source dir. I did 'make dep'
+I went into the patch-o-matic dir. I did ./runme extra
 
-But: pom-ng-20040302 had to be replaced with the CVS pom-ng tarball;
-iptables had to be replaced with 1.2.10 (CVS tarball).
+	- I chose amongst others h323 conn tracking and 'limit match'
+I went back into the kernel source dir and did 'make xconfig'.
 
-Setting make "KERNEL_DIR=" to the 2.6.6 source dir caused iptables (both
-1.2.9 and 1.2.10) to abort the make, with all kinds of inconsistencies.
-However, cheating by setting "KERNEL_DIR=" to the (obviously pom-ng
-patched) 2.6.4 source worked. All the iptables kernel stuff works,
-iptables libipt_* libraries all work. So I'm happy.
 
-Unrelated to Netfilter: 'make xconfig' in Gnome 2.2 for the kernel
-resulted in no fonts (just small "squares"), so I had to use 'make
-menuconfig" for the first time. No skin off my nose, though.
+The entries for limit match didn't have a help text when I clicked 
+'help' in the kernel config menu.
 
-Best, and thanks for a *fine* mailing list.
+I couldn't find H323 anywhere in the kernel config menu. In 'make 
+xconfig' I saved the config and then searched for '323' in the .config 
+file. Not found.
 
---Tonni
+I even tried another 'make dep', but this didn't help.
 
--- 
+With the 2.4.23 and the older path-o-matic I succesfully added H323 
+connection tracking functionality.
 
-We make out of the quarrel with others rhetoric
-but out of the quarrel with ourselves, poetry.
+What's going on here?
 
-mail: tonni@billy.demon.nl
-http://www.billy.demon.nl
+Marc
 
 
