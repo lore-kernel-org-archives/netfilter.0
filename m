@@ -1,14 +1,10 @@
-From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Subject: Re: GRE problem
-Date: Thu, 13 Jan 2005 15:08:17 +0100
-Message-ID: <200501131508.17418.marcin.giedz@eulerhermes.pl>
-References: <200501131013.17416.marcin.giedz@eulerhermes.pl>
-	<1105616014.2985.6.camel@e500>
+From: Brent Clark <bclark@rocketseed.us>
+Subject: port 113 ?
+Date: Thu, 13 Jan 2005 09:59:54 +0200
+Message-ID: <41E62A7A.2020605@rocketseed.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1105616014.2985.6.camel@e500>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,57 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"
-To: netfilter@lists.netfilter.org
-Cc: Craig Steadman <cste9198@bigpond.net.au>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: iptables <netfilter@lists.netfilter.org>
 
-Dnia czwartek, 13 stycznia 2005 12:33, Craig Steadman napisa=B3:
-> Hi Marcin
->
-> Sounds like an issue with the nic drivers.  Check if there are any
-> updates ... failing that try some intel nics which are well supported.
-I use e1000 from kernel. Guys from my VPN support told about some /proc/xxx=
-x=20
-changes but they really didn't know where exactly should I change it.
+Hi all
 
-> Also check your /proc/sys/net/ipv4/ip_forward is "1".
-It's set.
+on my debian fw, im running virtually no services (as to which is the
+law) on my fw:
 
-> Does this problem only effect GRE traffic ?
-Yes only GRE
+gate:~# netstat -ln
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 0.0.0.0:113             0.0.0.0:*               LISTEN
+tcp        0      0 192.168.111.10:22       0.0.0.0:*               LISTEN
+tcp        0      0 192.168.111.10:3128     0.0.0.0:*               LISTEN
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
+udp        0      0 0.0.0.0:33644           0.0.0.0:*
+Active UNIX domain sockets (only servers)
+Proto RefCnt Flags       Type       State         I-Node Path
+gate:~#
 
-Thx
-Marcin
 
->
-> Cheers
->    Craig
->
-> On Thu, 2005-01-13 at 10:13 +0100, Marcin Giedz wrote:
-> > Hello all,
-> >
-> > I've posted this message on several news groups without any results,
-> > maybe here someone can help me...
-> >
-> > I still have problem with GRE through Linux router and Win2k clients but
-> > additional information have occured. Let's start from the beginning:
-> >
-> > My subnet is as follows:
-> > 192.168.49.0 ----- linux router ------ 172.19.1.0 ------> Win2k clients
-> >
-> > When first client is trying to connect to VPN server out side our office
-> > all packets are sent through "linux router". When he finishes the
-> > connection and second client wants to make a new connection no GRE
-> > packets are sent through router. If I down and up interfaces on "linux
-> > router" everything works OK as earlier - GRE packets are transmitted
-> > through router. If I don't down and up interfaces but wait eg. for next
-> > day everything also works OK. It seems for me that some "timeout"
-> > variable is set on my linux router but I didn't set anything.
-> >
-> > Can you tell me where I can change this "timeout" on my router? For me =
-it
-> > should stay in /proc/xxxx? but what next?
-> >
-> > Thanks,
-> > Marcin
+Soo I would like to know, if it is advisable to stop identd. I have
+googled abit and from what I gather, its considered as dangerous and
+basically pointless to run. By removing / stopping this service, will it
+hamper hinder my users, other servers in any other way. I only run a
+mail and ftp server.
+
+Kind Regards and thanks inadvance
+Brent Clark
+
 
