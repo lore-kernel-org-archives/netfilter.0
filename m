@@ -1,10 +1,13 @@
-From: "ding dang" <jiadeip@hotmail.com>
-Subject: Re: Could someone tell me the rules of port translation in SNAT ?
-Date: Thu, 08 Jan 2004 01:55:56 +0000
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Problem behind my DMZ
+Date: Wed, 07 Jan 2004 21:27:42 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY10-F966xG0eYfJcy0003d929@hotmail.com>
+Message-ID: <1073528862.2049.825.camel@grendel>
+References: <001b01c3d57d$15123950$0296a8c0@martin>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001b01c3d57d$15123950$0296a8c0@martin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,18 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"; format="flowed"
-Content-Transfer-Encoding: base64
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Martin Leduc <marled3@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Pj5UaGVyZWZvcmUgdW5sZXNzIHlvdSBzcGVjaWZ5IHRoZSBwb3J0IHRvIGJlIHVzZWQsIGl0IHdp
-bGwgbm90IGJlIGNoYW5nZWQKPnVubGVzcyBuZWNlc3NhcnksIGFuZCBpZiBpdCBpcyBjaGFuZ2Vk
-IHlvdSBjYW5ub3QgcHJlZGljdCB3aGF0IGl0IHdpbGwKPmJlY29tZS4KCkknbSByZWFkaW5nIHNv
-bWUgc291cmNlIGNvZGUgZm9yIG1vcmUgZGV0YWlscywgYnUgaSBzdG9wcGVkIGF0CgogICAgICBy
-ZXR1cm4gTkZfSE9PSyhQRl9JTkVULCBORl9JUF9QT1NUX1JPVVRJTkcsIHNrYiwgTlVMTCwgCmRl
-dixpcF9maW5pc2hfb3V0cHV0Mik7CgppbiAgICBpcF9vdXRwdXQuYzo6aXBfZmluaXNoX291dHB1
-dCgpCgpjYXVzZSBpIGRvbid0IGtub3cgd2hhdCBwYXJ0IG9mIGNvZGUgZG9lcyBQT1NUX1JPVVRJ
-Tkcgd29yayBhbmQgU05BVCAKaW1wbGVtZW50YXRpb24uCgpOZWVkIHlvdXIgaGVscCwgdGhhbmtz
-LgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18K0+vBqrv6tcTF89PRvfjQ0L27wfejrMfryrnTwyBNU04gTWVzc2VuZ2VyOiAg
-aHR0cDovL21lc3Nlbmdlci5tc24uY29tL2NuICAKCgo=
+Greetings!
+
+On Wed, 2004-01-07 at 19:19, Martin Leduc wrote:
+>
+> One of my server is DNS.  My trouble is if I tried to send Email FROM
+> one of this third server, my DNS return to sender server the public IP
+> and my Email as send to my firewall, not my internal Server.
+
+Common problem. You have two potential solutions:
+
+1) Use public IPs on your DMZ/service network. This will also give you a
+performance boost as you will drop the NAT overhead. You don't mention
+how many legal IPs you have, but if you have enough address space to
+carve off a /29 or /28 for your DMZ, this would be your best bet.
+
+2) Use split DNS. Setup another name server that is accessible only from
+internal systems and populate it with your private addresses.
+
+HTH,
+C
+
+
+
