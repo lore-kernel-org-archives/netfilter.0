@@ -1,13 +1,14 @@
-From: Nox <pheusion@snet.net>
-Subject: Re: why must linux for halted firewall?
-Date: Tue, 16 Sep 2003 17:58:31 -0400
+From: "James Miller" <jimm@simutronics.com>
+Subject: RE: LVS and fault-tolerant Firewall.
+Date: Tue, 16 Sep 2003 17:41:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063749510.11520.36.camel@shaolin.gridlocksecurity.com>
-References: <BAY8-F93nZtpNHH7nqd000177b8@hotmail.com>
+Message-ID: <NDBBKABJBJCIJNAELLKEIECJJDAA.jimm@simutronics.com>
+References: <1063747546.3f677fdab3817@webmail.datafx.com.au>
+Reply-To: <jimm@simutronics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY8-F93nZtpNHH7nqd000177b8@hotmail.com>
+In-Reply-To: <1063747546.3f677fdab3817@webmail.datafx.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,98 +18,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Chua Boon Ping <nitb@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "LinuxVirtualServer.org users mailing list." <lvs-users@linuxvirtualserver.org>
+Cc: netfilter@lists.samba.org
 
-From personal experience, I couldnt tell you that OpenBSD will support
-it, as we have yet to try it.
+Yes, but you can not run iptables/netfilter and maintain connection tracking
+with keepalived(vrrp).. so if you fail over, established/related traffic
+will not be known to .
 
-But I see no reason as to why it couldnt be "Figured out"
-It would just be a matter of fiddling with files, like the article said,
-alot of trial and error.
-
-
-
->Le mar 16/09/2003 =E0 21:33, Nox a =E9crit :
-> the drawback is we currently have no logging enabled.
-> (We are working on it.
-
->LIDS guys have developped a kernel side SMTP client so their system
->can >send alerts without interaction with userland. I don't think they
-have kernel side syslog.
-
-Using an MTA was what was suggested to me, and that is what we are
-currently investigating..
-Thanks for the heads up
+For some folks this isn't an issue.  For me is a show-stopper.  I'm sure
+there are good reasons why the netfilter folks can't come up with conntrack
+state-sharing mechanism.
 
 
-Nox
-GenMicro systems
-Bioinformatics applications and devices
-(Website in development)
+just my $0.02,
+->Jim
 
-On Tue, 2003-09-16 at 15:43, Chua Boon Ping wrote:
-> well... i am currently doing a research paper on Halted Firewall on Lin=
-ux=20
-> platform. I would like to know can OpenBSD implement such a firewall? c=
-an=20
-> OpenBSD halted just like Linux kernel does?
->=20
-> i had read the article. thanks.
->=20
->=20
-> >From: Nox <pheusion@snet.net>
-> >To: Chua Boon Ping <nitb@hotmail.com>
-> >CC: netfilter@lists.netfilter.org
-> >Subject: Re: why must linux for halted firewall?
-> >Date: Tue, 16 Sep 2003 15:33:36 -0400
-> >
-> >For us,
-> >We have a runlevel 0 firewall, from Debian
-> >it was developed in house, fine tuned by this article:
-> >
-> >http://www.samag.com/documents/s=3D1824/sam0201d/0201d.htm
-> >
-> >For us, this FW protects a Bioinformatics cluster,
-> >which rarely changes on the rules side of things,
-> >the benefit form our standpoint is the non-access into the machine,
-> >(No user priv escalation due to no logon)
-> >the drawback is we currently have no logging enabled.
-> >(We are working on it.
-> >
-> >Hope that helps
-> >
-> >Nox
-> >GenMicro systems
-> >Bioinformatics applications and devices
-> >(Website in development)
-> >
-> >On Sun, 2003-09-14 at 23:16, Chua Boon Ping wrote:
-> > > dear all,
-> > >    I am newbie in open source and recently i am busy on some assign=
-ment
-> > > concerning "why opts for Linux(netfilter/iptables) rather than Open=
-BSD=20
-> >to
-> > > implement a Halted Firewall". actually, can OpenBSD be halted just =
-like
-> > > Linux kernel do? As i mentioned, i am newbie and would like have so=
-me
-> > > guidance from you guys. Thanks.
-> > >
-> > > Chua
-> > >
-> > > _________________________________________________________________
-> > > Using a handphone prepaid card? Reload your credit online!
-> > > http://www.msn.com.my/reloadredir/default.asp
-> > >
-> > >
-> >
->=20
-> _________________________________________________________________
-> Are you in love? Find a date on MSN Personals http://match.msn.com.my/
->=20
->=20
+
+
+-----Original Message-----
+From: lvs-users-bounces+jimm=simutronics.com@linuxvirtualserver.org
+[mailto:lvs-users-bounces+jimm=simutronics.com@linuxvirtualserver.org]On
+Behalf Of mb@os.datafx.com.au
+Sent: Tuesday, September 16, 2003 4:26 PM
+To: LinuxVirtualServer.org users mailing list.
+Subject: Re: LVS and fault-tolerant Firewall.
+
+
+Quoting Kjetil Torgrim Homme <kjetilho@ifi.uio.no>:
+
+> do you really need LVS?  you only need failover, not load balancing,
+> right?
+
+Correct.
+
+>
+> keepalived does the failover bit nicely.
+>
+
+Excellent! - Exactly what I was looking for.
+
+Regards,
+MB
+
+> (Julian Anastasov is working on making LVS integrate with Netfilter.
+> LVS passes on the packets before firewall rules are applied.  if the
+> code is completed, Netfilter integration will be an option since the
+> performance penalty is quite noticable.)
+> --
+> Kjetil T.			|  read and make up your own mind
+> 				|  http://www.cactus48.com/truth.html
+> _______________________________________________
+> LinuxVirtualServer.org mailing list - lvs-users@LinuxVirtualServer.org
+> Send requests to lvs-users-request@LinuxVirtualServer.org
+> or go to http://www.in-addr.de/mailman/listinfo/lvs-users
+>
+
+
+
+
+-------------------------------------------------------------------------
+This e-mail was sent via Data FX Online WebMail http://www.datafx.com.au/
+
+_______________________________________________
+LinuxVirtualServer.org mailing list - lvs-users@LinuxVirtualServer.org
+Send requests to lvs-users-request@LinuxVirtualServer.org
+or go to http://www.in-addr.de/mailman/listinfo/lvs-users
 
 
