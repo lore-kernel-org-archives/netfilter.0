@@ -1,13 +1,11 @@
-From: Stephane Delcroix <stephane@delcroix.org>
-Subject: --mac-dest matching
-Date: Wed, 15 Sep 2004 11:56:30 +0200
+From: Sandro Dentella <sandro@e-den.it>
+Subject: ip ro get problem
+Date: Wed, 15 Sep 2004 12:45:01 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095242190.2267.24.camel@tartiflette>
+Message-ID: <20040915104501.GA10207@bluff>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-/eOulUtpIdPfKIm6XAj/"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +15,60 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: iptables <netfilter@lists.netfilter.org>
+
+Hi all,
+
+I'm using ip route get to debug a routing probelm and I get:
+
+    root@fw-euronet argo # ip route get 192.168.254.10 
+    192.168.254.10 dev eth0  src 192.168.254.1 
+	cache  mtu 1500 advmss 1460
+    root@fw-euronet argo # ip route get 192.168.254.10 from 192.168.5.2
+    RTNETLINK answers: Invalid argument
 
 
---=-/eOulUtpIdPfKIm6XAj/
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+What does really mean "RTNETLINK answers: Invalid argument", 
 
-Hi,
-for a particular firewall, I need to match packet by mac-dest.
-I didnt find anything neither in netfilter doc nor in the kernel
-sources :(
 
-Is there a patch or an extension for netfilter to do that?
+I get the same error w/
 
-regards,
+    root@fw-euronet argo # ip route get 192.168.254.10 iif tun0
+    RTNETLINK answers: Invalid argument
 
-Stephane
+My rules are:
+    root@fw-euronet argo # ip ru li
+    0:      from all lookup local 
+    30:     from all iif tun0 lookup adsl 
+    38:     from 192.168.254.10 lookup hdsl 
+    40:     from 217.58.51.160/27 lookup hdsl 
+    41:     from 81.121.243.248/30 lookup adsl 
+    52:     from all iif eth0 lookup adsl 
+    53:     from all iif eth2 lookup adsl 
+    32766:  from all lookup main 
+    32767:  from all lookup default 
 
---=20
-Stephane Delcroix <stephane@delcroix.org>
+where you can see that tun0, where 192.168.5.0/24 is, should look table adsl
+that is define this way:
 
---=-/eOulUtpIdPfKIm6XAj/
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+    root@fw-euronet argo # ip ro ls table adsl
+    81.121.243.248/30 dev eth3  scope link  src 81.121.243.250 
+    217.58.51.160/27 dev eth1  scope link  src 217.58.51.162 
+    192.168.5.0/24 dev tun0  scope link 
+    192.168.1.0/24 dev eth2  scope link  src 192.168.1.1 
+    192.168.254.0/24 dev eth0  scope link  src 192.168.254.1 
+    default via 81.121.243.249 dev eth3 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+   
+TYA
+sandro
+*:-)
 
-iD8DBQBBSBHOSfiQDLvtSM8RAmYRAKCBvLMr7VOMcsrInNzEKTxg5cRH9QCfX0Mw
-6yTCF39WbVsKHMGx9zwzQa0=
-=R319
------END PGP SIGNATURE-----
 
---=-/eOulUtpIdPfKIm6XAj/--
-
+-- 
+Sandro Dentella  *:-)
+e-mail: sandro@e-den.it 
+http://www.tksql.org                    TkSQL Home page - My GPL work
 
