@@ -1,10 +1,10 @@
-From: "Justin Piszcz" <jpiszcz@servervault.com>
-Subject: RE: pom-ng h323-conntrack-nat failure
-Date: Tue, 22 Mar 2005 06:39:43 -0500
-Message-ID: <F8B974E70BDE1745ABB27AF04788FA0025AE74@mail1.dulles.sv.int>
+From: "Igor Osin" <osin@vita-samara.ru>
+Subject: Re: pom-ng h323-conntrack-nat failure
+Date: Tue, 22 Mar 2005 15:48:13 +0400
+Message-ID: <003401c52ed5$0721bb10$7900000a@vita.local>
+References: <F8B974E70BDE1745ABB27AF04788FA0025AE74@mail1.dulles.sv.int>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,57 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: =?koi8-r?B?6cfP0tgg79PJzg==?= <osin@vita-samara.ru>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="koi8-r"; reply-type="original"
+To: netfilter@lists.netfilter.org
+
+$ls -l patch-o-matic-ng-20050320/h323-conntrack-nat
+total 20
+-rw-r--r--  1 5500 5100  864 =E4=C5=CB 18  2003 help
+-rw-r--r--  1 5500 5100  195 =E6=C5=D7 22 00:05 info
+drwxr-xr-x  5 5500 5100 4096 =ED=C1=D2 21 02:55 linux
+drwxr-xr-x  4 5500 5100 4096 =ED=C1=D2 21 02:55 linux-2.6
+drwxr-xr-x  4 5500 5100 4096 =ED=C1=D2 21 02:55 linux-2.6.11
+
+$cat patch-o-matic-ng-20050320/h323-conntrack-nat/info
+Title: h323 connection tracking and NAT helper
+Author: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Max Kellermann=20
+<max@duempel.org>
+Status: Alpha
+Repository: extra
+Requires: linux-2.6 >=3D 2.6.11
+
+
+----- Original Message -----=20
+From: "Justin Piszcz" <jpiszcz@servervault.com>
+To: "=E9=C7=CF=D2=D8 =EF=D3=C9=CE" <osin@vita-samara.ru>; <netfilter@list=
+s.netfilter.org>
+Sent: Tuesday, March 22, 2005 3:39 PM
+Subject: RE: pom-ng h323-conntrack-nat failure
+
 
 This patch is for 2.4.x kernels only.
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of ????? ????
-Sent: Monday, March 21, 2005 11:23 PM
-To: netfilter@lists.netfilter.org
-Subject: pom-ng h323-conntrack-nat failure
-
-kernel 2.6.11
-iptables-1.3.1.
-patch-o-matic-ng-20050320
-
-
-# ./runme h323-conntrack-nat
-Hey! KERNEL_DIR is not set.
-Where is your kernel source directory? [/usr/src/linux]
-Hey! IPTABLES_DIR is not set.
-Where is your iptables source code directory? [/usr/src/iptables]
-Loading patchlet
-definitions..............................................................=
-...............................
-done
-Welcome to Patch-o-matic ($Revision: 3733 $)!
-
-Kernel:   2.6.11, /usr/src/linux
-Iptables: 1.3.1, /usr/src/iptables
-Each patch is a new feature: many have minimal impact, some do not.
-Almost every one has bugs, so don't apply what you don't need!
--------------------------------------------------------
-Already applied:
-
-Testing h323-conntrack-nat... not applied
-The h323-conntrack-nat patch:
-   Author: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Max Kellermann
-<max@duempel.org>
-   Status: Alpha
-
-[...]
-
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] Y
-unable to find ladd slot in src
-/tmp/pom-19236/include/linux/netfilter_ipv4/ip_conntrack.h
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?]
-...
-
 
 
 
