@@ -1,17 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ip_conntrack_ftp problem
-Date: 28 Mar 2003 18:06:30 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Are there any good tools to analyze iptalbes log?
+Date: Wed, 28 Mar 2001 08:53:23 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048871187.4872.13.camel@elendil.intranet.cartel-securite.net>
-References: <3E83FC78.7080801@ms.sapientia.ro>
-	 <1048840079.1236.45.camel@vincentlim>  <3E841938.3050708@ms.sapientia.ro>
-	 <1048846747.1476.57.camel@vincentlim>
-	 <1048848182.17526.30.camel@elendil.intranet.cartel-securite.net>
-	 <1048849173.1476.62.camel@vincentlim>
+Message-ID: <001b01c0b7a7$9a71e1f0$1001a8c0@s3ac>
+References: <20030328102714.DF82D1C59B4DA@sm212.163.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048849173.1476.62.camel@vincentlim>
+In-reply-to: <20030328102714.DF82D1C59B4DA@sm212.163.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,33 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Vincent Lim <vincent.lim@nestac.com>
-Cc: Budai Laszlo <lbudai@ms.sapientia.ro>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Bobo' <boboaq@163.com>, netfilter@lists.netfilter.org
 
-Le ven 28/03/2003 =E0 11:59, Vincent Lim a =E9crit :
-> So, initially..the replying packets need to match the ESTABLISHED?
-> (I'm asking this because Budai's initial rules only had RELATED and his
-> ftp wasn't working)
-> Then after establishing the RELATED ftp-data, subsequent packets match
-> the ESTABLISHED again?
 
-You have two connections :
 
-	ftp
-	ftp-data
 
-First ftp connection packet is NEW, others are ESTABLISHED. Then, a
-ftp-data connection is built. First ftp-data connection packet is
-RELATED, others are ESTABLISHED.
 
-Problem with Budai's ruleset is that it does not accept ESTABLISHED
-packet in FORWARD chain, as you told him at first with the rule that
-fixes the issue.
+>     I am a new user of IPtables.Now,I need a tool to 
+> analysize the log of iptables.
+>   Would you please recommend some tools written in perl or 
+> shell language?
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+http://logi.cc/linux/NetfilterLogAnalyzer.php3#1
+
+cheers
+
 
