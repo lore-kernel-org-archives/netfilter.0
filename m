@@ -1,14 +1,14 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: NTP
-Date: Fri, 2 Jul 2004 12:06:41 +0100
+Date: Fri, 2 Jul 2004 12:08:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407021206.41670.gdh@acentral.co.uk>
+Message-ID: <200407021208.16907.Antony@Soft-Solutions.co.uk>
 References: <40E53FAE.1070007@4Dllc.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <40E53FAE.1070007@4Dllc.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,17 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Friday 02 July 2004 11:57, Steve Comfort wrote:
+On Friday 02 July 2004 11:57 am, Steve Comfort wrote:
+
 > Hi all,
 >
 > Could someone tell me what rules I need in order to enable NTP?
 
-Simply allow incoming UDP on port 123. The 'normal' way is for both the source 
-and destination ports to be 123, but it is common (esp. with debugging) for 
-the source port to be >1024.
+NTP uses UDP port 123.
 
-Cheers,
-Gavin.
+What rules you need depends on what you're trying to do - run an NTP server 
+(allow UDP 123 in the INPUT chain), access an NTP server (allow UDP 123 in 
+the OUTPUT chain), or allow clients and servers to talk to each other through 
+a router (allow UDP 123 through the FORWARD chain).
+
+If in doubt, add a LOG rule, try using the protocol, and see what gets logged 
+- that will tell you what sort of packets you need to ACCEPT instead.
+
+Regards,
+
+Antony.
+
+-- 
+Software development can be quick, high quality, or low cost.
+
+The customer gets to pick any two out of three.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
