@@ -1,15 +1,12 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: ip_conntrack_pptp
-Date: Mon, 26 Jan 2004 17:19:51 +0100
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: iptables routing help
+Date: Mon, 26 Jan 2004 10:29:22 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040126161951.GD19250@sunbeam.de.gnumonks.org>
-References: <20040122175345.GN1810@obroa-skai.de.gnumonks.org> <000d01c3e3ed$9875b0f0$2d64a8c0@pcjka>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731014BE9CF@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2hMgfIw2X+zgXrFs"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000d01c3e3ed$9875b0f0$2d64a8c0@pcjka>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +16,87 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Jan Kaastrup <jka@protego.dk>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: john.sullivan@nexusmgmt.com, w_knop@hotmail.com
+Cc: netfilter@lists.netfilter.org
 
 
---2hMgfIw2X+zgXrFs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I was about to suggest the exact same thing.
 
-On Mon, Jan 26, 2004 at 10:20:10AM +0100, Jan Kaastrup wrote:
-> Hi Harald
+
+Bob
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of John A.
+Sullivan III
+Sent: Monday, January 26, 2004 6:06 AM
+To: William Knop
+Cc: netfilter@lists.netfilter.org
+Subject: Re: iptables routing help
+
+
+On Sun, 2004-01-25 at 13:53, William Knop wrote:
+> Okay, the problem is that we don't want to do nat (as I said in my
+> original plee for help). We need external ips on all of the machines.
+> Additionally, The ISP's DHCP server specifies it's own gateway, so I
+> can't do normal routing, without spoofing the gateway's address and
+> doing all sorts of ugly stuff (please correct me if I'm wrong).=20
 >=20
-> I have read the README file for POM - and I cannot find anything that
-> could tell what is wrong:(
+>=20
+> I was under the impression one could have iptables drop a packet from
+> the prerouting or brouting table and it would go through the machine's
+> routing table, without being specified on all the lan machines as the
+> gateway.=20
+>=20
+>=20
+> The physical layout we have are a bunch of boxes connected to a
+> switch, and the dsl modem connected to the switch's uplink port. I
+> could have the modem jack into a firewall box, or something, however
+> the linux ethernet bridge seems to do very odd things to arps, and
+> also iptables. Would bridging be necessary?=20
+>=20
+>=20
+>=20
+<snip>
+This may not be as bad as it sounds and it my be a netfilter issue.=20
+Looking at the topology, I would assume that there are several devices
+on the same public subnet connect through the switch to the DSL modem in
+which case they should talk to each other directly on that subnet
+without sending the data across the DSL modem.  But am I correct to
+understand that even though these devices share the same switch and the
+same DSL modem that they are allocated public addresses out of different
+IP subnets?
 
-The README doesn't tell you anywhere to apply that patchc manually.  It
-tells you to run the './runme' script.
+If that is the case, the best solution is to install a second NIC into
+each device and create a separate private network as already suggested.=20
+Barring that, you can create a second, logical network on the same
+media.  Use iproute2 to bind a second address to each of the public
+interfaces.  These will all come from the same subnet and should be able
+to communicate with each other.  Just be sure to use the secondary
+address when sending data between those devices.
 
-However, you are telling me, that you are manually applying the patch.
-Witch will only give you about 90% of the required changes, not all of
-them.
+ip address add dev0 192.168.1.4/24
+ip address add dev0 192.168.1.5/24
+ip address add dev0 192.168.1.6/24 . . . etc.
 
-> >I do something like this for patching my kernel (2.4.21):
-> >patch -p1 < ./path-o-mat.../ip_conntrack_pptp.patch, and everything
-> >seems allright.
+This is a bit dangerous as these devices are still publicly exposed and
+the ISP may allow traffic on RFC1918 addresses on their internal
+networks so you may want to tightly secure the devices even for traffic
+from these "private" addresses using iptables.
 
+This is the sort of set up that we use on our internal routers to
+participate in the worldwide VPN project (http://www.worldwidevpn.com).=20
+Good luck - John
 --=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net=20
 
---2hMgfIw2X+zgXrFs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFAFT4nXaXGVTD0i/8RApJxAJ9zfhMx+IQXPKlilDMo4o/7/Q+y3ACfWjBE
-1HNjHX8m005ZUofhVoVpg/M=
-=TrXD
------END PGP SIGNATURE-----
-
---2hMgfIw2X+zgXrFs--
 
