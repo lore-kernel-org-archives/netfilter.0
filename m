@@ -1,14 +1,11 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: iptables msn messenger
-Date: Thu, 14 Oct 2004 08:29:54 -0500
+From: "Claudio Lavecchia" <Claudio.Lavecchia@eurecom.fr>
+Subject: Blocking forwarding of packets in WLAN
+Date: Thu, 14 Oct 2004 15:48:50 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <416E7F52.8010909@pbl.ca>
-References: <1097725760.1580.9.camel@joel.d2visp.com>	<1097729354.1931.1.camel@alucard.kanux.com>
-	<1097730290.1578.24.camel@joel.d2visp.com>
+Message-ID: <000501c4b1f4$89506360$db0a11ac@eurecom.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1097730290.1578.24.camel@joel.d2visp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +15,32 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Joel n.solanki wrote:
-> Is there any way to sort out this problem with iptables ...or any tune
-> up parameter ?????
-> Coz i have to solve this else we need to replace with commercial router
-> which i dont want to do.
+ Hello you ppl, 
 
-In a last couple of days MSN was down several times.  Nothing you, or 
-anybody else can do about it.  Switching to different firewall would 
-have no effect.  On the other hand, switching to different instant 
-messaging program (ICQ, AIM, Yahoo, just to name few of the bigger 
-names) would probably solve the problem.  Which is supposedly solved by 
-MS by now anyhow.
+I am a real newbie to iptables/ipchains/netfilter issues, so please if any
+of you can help me, please consider my illetteracy. 
+I have a really simple question for which I did not find an answer browsing
+the website. 
 
-Thierry mentioned uPnP.  MSN *does not* need uPnP to work.  You can 
-safely turn uPnP off by setting appropriate registry entry.  Should be 
-fairly trivial to find which one using Google.  It might be good idea to 
-do it anyhow, since if you search for info on uPnP you'll find that 
-everybody is suggesting to turn it off because it's unsecure.  I've 
-never tried to dig more info about uPnP, but if what Thierry wrote was 
-correct, I'd turn it off immediatelly (applications being able to 
-uncontrollably punch holes in firewall, not likely in my shop, virus 
-writers would surely *love* that feature).
+If I understood correctly there are no C APIs to iptables and this leads me
+to troubles: I am writing a linux daemon that monitors network traffic and
+does something when some conditions occur. I work with mobile ad-hoc
+networks where each node acts as a relay for other nodes traffic, so the
+background are WLANs. 
+I need to write a C function that blocks forwarding of packets that come
+from a given node of the network, identified by its MAC address. 
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Prototype for my function is then: 
+
+void block_forwarding(char * MAC_address); 
+
+Is this feasible someway using iptables? Can anyone give me a precise hint
+on how to do that? I would be truly grateful if someone could help me. 
+
+Thanks 
+
+Claudio 
 
