@@ -1,12 +1,11 @@
-From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: External only Nat?
-Date: Fri, 15 Aug 2003 17:06:17 +0100 (BST)
+From: "Landon Chelf" <landonc@starrobbins.com>
+Subject: Multi NIC Gateway and HostAP Box
+Date: Fri, 15 Aug 2003 14:32:59 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308151704350.31438-100000@localhost>
-References: <43605.199.89.234.122.1060962952.squirrel@mail.seaplace.org>
+Message-ID: <006b01c3635b$a7d0ab30$6901a8c0@Station13>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <43605.199.89.234.122.1060962952.squirrel@mail.seaplace.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +15,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: kevinc@seaplace.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi Kevin,
+Hello,
 
-> What I'd like to do is NAT mangle packets ONLY when they are destined for
-> the Internet (e.g. my default gateway box) and not when they are destined
-> for other boxes in my public address space.
-> 
-> I currently use the well-exampled command:
-> 
-> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+I've been working on getting HostAP up an running on my redhat 9 box.  I
+can see my access point from other wireless clients but I can't seem to
+get inet access through hostap.  I know it has something to do with
+iptables and I'm not an iptables guru or anything.  
 
-Try these two rules:
+Ok here is my setup:
+Eth0 = Internet
+Eth1 = Private Net1
+Wlan0 = Access Point
 
-  iptables -t nat -A POSTROUTING -o eth0 -d <public-subnet> -j ACCEPT
-  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+I can access the internet locally fine but I can't access it from the
+wireless clients.  Below is what I currently have as my iptables setup.
+Thanx to anyone who can help me get this up.
 
-This should prevent masquerading to your public subnet, but allow it to 
-all other destinations on your external interface.
+*filter
 
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# Accept all traffic from the loopback interface.
+-A INPUT -i lo -j ACCEPT
+
+# Accept legitimate responses to traffic we generate.
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Allow inbound DNS requests from the wireless network.
+-A INPUT -s 0/0 -p udp --dport 53 -j ACCEPT
+-A INPUT -s 0/0 -p tcp --dport 53 -j ACCEPT
+
+# Allow inbound DHCP from the Local wireless network
+-A INPUT -i wlan0 -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+
+# Allow all traffic from the LAN to be forwarded to the WLAN. 
+-A FORWARD -i eth0 -o wlan0 -j ACCEPT
+
+# Forward all legitimate responses to forwarded traffic.
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+------------------------------------------------
+
+Sincerely,
+Landon
 
 
