@@ -1,13 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Difficulties in stopping mass advertisement IP directed broadcast
-  popup windows
-Date: Fri, 05 Sep 2003 12:47:51 -0400
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Nat with a dynamic IP
+Date: Fri, 5 Sep 2003 13:11:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F58BE37.6090601@chrisbrenton.org>
-References: <88116A11E9DFD411870900508BEC3831803CB6@CPQ01>
+Message-ID: <20030905171100.GA2100@cannon.eng.us.uu.net>
+References: <032001c373b2$5daabf70$49caa8c0@caris.priv> <200309051605.36015.tscherf@web.de> <035101c373bb$0c2b9fd0$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <035101c373bb$0c2b9fd0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Deshwal Chand <CDD@kampsax.co.in>
-Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Peter Marshall <peter.marshall@caris.com>
+Cc: Thorsten Scherf <tscherf@web.de>, netfilter@lists.netfilter.org
 
-Deshwal Chand wrote:
-> 
-> We used to receive ip directed popup windows mass messages. I blocked 
-> 135,137-39, 445 ports and they stopped. Now they have started to come again.
+On Fri, Sep 05, 2003 at 11:36:09AM -0300, Peter Marshall wrote:
 
-Check your Windoze boxes, you'll see they are listening on one or more 
-ports in the TCP/1024 - TCP/1027 range as well. These ports can also be 
-used to send pop-ups.
+> That is a pretty good solution for the SNAT.  I never thought about MASQ.
+> However .... I am not sure if the DNAT is the best solution ....  WHat if
+> you had multiple ip numbers on the external card ....
 
-As a side note however, it sounds like you are trying to block what you 
-are worried about and let everything else through, rather than only 
-letting through what you need and blocking everything else. If you had 
-taken the latter stance with your perimeter, this would be a mute issue 
-as you would not have the ports open anyway.
+and they're all dynamic? Give us an example...
 
-Just my $.02,
-C
+Ramin
 
+> More importantly, what about trying to connect directly to the firewall from
+> an external address.
 
