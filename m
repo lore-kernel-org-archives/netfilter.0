@@ -1,10 +1,12 @@
-From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
-Subject: NAT question
-Date: Wed, 9 Apr 2003 11:51:44 +0200
+From: "zze-Proxy_Corveller ball001 exterieur FTRD" <proxycorveller.ball001@rd.francetelecom.com>
+Subject: Problem of NAT with VLAN
+Date: Wed, 9 Apr 2003 11:16:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6CA01@server10>
+Message-ID: <8C19E3FBB6467846AFF97E366D34CB6055A017@lanmhs20.rd.francetelecom.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,28 +17,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I added 
-$IPTABLES -t nat -A POSTROUTING -j SNAT --to-source 10.165.165.165 
+Hello,
 
-Now when i ping from 10.51.13.13 on eth0 side to 10.165.1.60 then i can see
-via tcpdump that on eth1 the 10.165.1.60 is seeking the 10.165.165.165 
-"arp who-has 10.165.165.165 tell 10.165.1.60" is what i get.
-So i guess that this means that iptables changed the address ?
-So the firewall doesn't knows that it converted the ip number before and
-can't send a reply to the correct ip address where it originally came from
+I've got n VLANs that arrive on a Linux machine. I'm using vconfig to
+receive packets from those VLANs.
 
-How can i make this work so that if i ping to 10.165.1.60 that i can get a
-reply ?
-AND that the NAT thing did its work ?
-And no, i can't use ipforwarding because of a security issue.
+I want to perform DNAT on packets between my physical interface (eth2)
+and the virtuals devices
+created by vconfig (vlan00xx, where xx is the VLAN ID of the associated
+VLAN).
+I've place some rules at the PREROUTING chain in the nat table to
+perform the address
+translation.
 
-Regards,
+My problem is that netfilter seems don't see packets between eth2 and
+vlan00xx.=20
 
+I've tried some rules such as '-A PREROUTING -i eth2' or '-A PREROUTING
+-i vlan0010' but
+the packet counters stay equal to 0.
 
-	--tronstr@xsomic--
-
-
+Any idea ?
 
