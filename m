@@ -1,13 +1,14 @@
-From: "Danila Octavian" <octavian@service.agress.ro>
-Subject: thanks Antony ... and one more thing ...
-Date: Fri, 9 Apr 2004 10:34:44 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: thanks Antony ... and one more thing ...
+Date: Fri, 9 Apr 2004 09:28:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007801c41e05$2681d850$da0da8c0@pisic>
-Reply-To: "Danila Octavian" <octavian@service.agress.ro>
+Message-ID: <200404090928.33558.Antony@Soft-Solutions.co.uk>
+References: <007801c41e05$2681d850$da0da8c0@pisic>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_006D_01C41E1E.45C495E0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <007801c41e05$2681d850$da0da8c0@pisic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,86 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Friday 09 April 2004 8:34 am, Danila Octavian wrote:
 
-------=_NextPart_000_006D_01C41E1E.45C495E0
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+> Hi,
 
-Hi,
+Good morning.
 
-Thank You very much for your help ( i bet you are already bored :-) )...
+> Thank You very much for your help ( i bet you are already bored :-) )...
 
- ... and the other thing ... in fact I want to log together every =
-destination my computer 192.168.13.222 goes ( except =
-intip,extip,localnet) AND bytecount...
+Bored?   No, I subscribed to the netfilter mailing list to stop me getting 
+bored :)
 
-ex.:  i want to be able to get a report like : 192.168.13.222 =
-transferred xxxxxxxxxxbytes in 24h time and sepperately something like a =
-list of destinations with how much is transferred to or from that =
-particular destination.
- I know that will generate a lot of logs ... but i have a huge harddisk =
-:-)
+>  ... and the other thing ... in fact I want to log together every
+> destination my computer 192.168.13.222 goes ( except intip,extip,localnet)
+> AND bytecount...
+>
+> ex.:  i want to be able to get a report like : 192.168.13.222 transferred
+> xxxxxxxxxxbytes in 24h time and sepperately something like a list of
+> destinations with how much is transferred to or from that particular
+> destination. I know that will generate a lot of logs ... but i have a huge
+> harddisk :-)
+>
+> also i know that request of mine seems exagerate ... but i wonder if is
+> possible using only IPTABLES ...
 
-also i know that request of mine seems exagerate ... but i wonder if is =
-possible using only IPTABLES ...
+No, not using netfilter (unless you wanted to create a rule for each possible 
+destination, just in case some packets got sent there (but then you'd want to 
+know what protocol was used, too, so you'd need even more rules....)).
 
-Thanks again and sorry for bothering you ...
+I suggest you investigate something like iptraf, netwatch or snort.
 
 Regards,
-Octavian DANILA
-------=_NextPart_000_006D_01C41E1E.45C495E0
-Content-Type: text/html;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thank You very much for your help ( i =
-bet you are=20
-already bored :-) )...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;... and the other thing ... in =
-fact I want to=20
-log together every destination my computer 192.168.13.222 goes ( except=20
-intip,extip,localnet) AND bytecount...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>ex.:&nbsp; i want to be able to get a =
-report like :=20
-192.168.13.222 transferred xxxxxxxxxxbytes&nbsp;in 24h time and =
-sepperately=20
-something like a list of destinations with how much is transferred to or =
-from=20
-that particular destination.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;I know that will generate a lot =
-of logs ...=20
-but i have a huge harddisk :-)</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>also i know that request of mine seems=20
-exagerate</FONT>&nbsp;<FONT face=3DArial size=3D2>... but i wonder if is =
-possible=20
-using only IPTABLES ...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks again and sorry for bothering =
-you=20
-...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Octavian =
-DANILA</FONT></DIV></BODY></HTML>
+Antony.
 
-------=_NextPart_000_006D_01C41E1E.45C495E0--
+-- 
+One good tern deserves another.
 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
