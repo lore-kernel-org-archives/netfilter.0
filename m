@@ -1,17 +1,17 @@
-From: Les Mikesell <les@futuresource.com>
+From: Tobias DiPasquale <codeslinger@gmail.com>
 Subject: Re: kernel-2.6: ipsec without devices
-Date: Thu, 05 Aug 2004 10:48:43 -0500
+Date: Thu, 5 Aug 2004 12:35:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1091720922.14493.16.camel@moola.futuresource.com>
+Message-ID: <876ef97a040805093570c8d2c@mail.gmail.com>
 References: <20040805113320.5a1ade04.netfilter@lucassen.org>
 	 <200408051109.34290.Antony@Soft-Solutions.co.uk>
 	 <20040805122501.7bd24f63.netfilter@lucassen.org>
 	 <1091709309.28776.9.camel@les-home.futuresource.com>
-	 <876ef97a04080506051db8a52f@mail.gmail.com>
+	 <876ef97a04080506051db8a52f@mail.gmail.com> <1091720922.14493.16.camel@moola.futuresource.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <876ef97a04080506051db8a52f@mail.gmail.com>
+In-Reply-To: <1091720922.14493.16.camel@moola.futuresource.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,51 +22,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Tobias DiPasquale <codeslinger@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2004-08-05 at 08:05, Tobias DiPasquale wrote:
-> On Thu, 05 Aug 2004 07:35:09 -0500, Les Mikesell <les@futuresource.com> wrote:
-> > A more fundamental question: does anyone know why Linux uses
-> > pseudo devices for networking instead of having real names
-> > in /dev with associated permissions and inodes connected
-> > to drivers by major/minor numbers?  It seems odd not to
-> > be able to control access to /dev/tcp by group permisions
-> > like you can every other device.
-> 
-> Because network devices aren't easily manipulated using the standard
-> UNIX "everything is a file" methodology. They are packet-oriented, as
-> opposed to character- or block-oriented and as such, the normal
-> read()/write()/close()/etc suite of system calls doesn't make sense
-> for network devices (therefore, there's no reason to have a /dev file
-> for them).
+On Thu, 05 Aug 2004 10:48:43 -0500, Les Mikesell <les@futuresource.com> wrote:
+> But it still makes as much sense to require open() to pass the
+> access control restrictions as it does for every other device.
 
-But it still makes as much sense to require open() to pass the
-access control restrictions as it does for every other device.
+It ceases to make sense once you realize that you are not opening the
+"device", per se, but simply a socket that is bourne by said device.
+Character and block devices use open() to open the device itself. A
+network device is "always on", so to speak, and you use socket() to
+create a communications channel through that device.
 
->  Also, network devices push packets towards the kernel
-> asynchronously (as far as the kernel's concerned, anyway);
-> chrdev/blkdev devices do so in response to some kind of request. No
-> UNIX(-alike) that I know of has /dev files that correspond to network
-> devices.
+> I was very surprised when I first saw that Linux
+> omitted such a basic basic security concept of unix (all the
+> magic happens in open()).  As far as the network goes, it is
+> the same thing as Lindows/Linspire defaulting to letting everyone
+> run as root.
 
-I've forgotten the details because it was years ago, but I'm sure
-the last 'real' SysVr4 I used (perhaps Dell's, or AT&T's) had a
-/dev/tcp or similar device that was opened as a step in opening
-a socket and subject to the same rules as every other unix device.
-A local ISP back in the days when people would telnet in to
-access character-mode email/news, etc. used this to distinguish
-accounts that could make direct outbound connections from those
-that could only run programs to access the local mailbox and
-news spool.  I was very surprised when I first saw that Linux
-omitted such a basic basic security concept of unix (all the
-magic happens in open()).  As far as the network goes, it is
-the same thing as Lindows/Linspire defaulting to letting everyone
-run as root.
+I see your point. But this interface was designed over 20 years ago by
+the BSD team and it certainly made sense from their perspective to
+create a new set of system calls because this type of device did not
+neatly fit into the "everything is a file" paradigm that UNIX uses.
+But, clearly, it would be a great benefit if you could set your eth0
+to 0600 root:root and prevent regular users from abusing the network
+card.
 
----
-  Les Mikesell
-   les@futuresource.com
+The question is, though, what would doing that actually mean? I
+believe the impediment to this solution is that the card signals the
+kernel of incoming packets with no warning, and thus checking the user
+permissions is not possible since the handling of network devices
+happens all in interrupt context (i.e. not on behalf of a particular
+user). As well, the datalink, network and transport layers have no
+concept of user permissions or ownership and you couldn't tack one on
+without implementing a global authentication scheme that everyone
+involved adheres to.
 
-
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
