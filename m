@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Needing some help to check iptables configuration
-Date: Mon, 3 Jun 2002 19:39:15 +0100
+From: "John Jones" <jjones@merlintechnologies.com>
+Subject: Help needed understanding what I am doing wrong.
+Date: Mon, 3 Jun 2002 11:59:04 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206031839.g53IdFA13473@Networker.rockstone.co.uk>
-References: <HCEEIHCIBILHEDFLFOKFGEGMCIAA.mailings@peyron.nom.fr>
+Message-ID: <002101c20b30$bb406310$6301a8c0@JJONES1>
+References: <200206031839.g53IdFA13473@Networker.rockstone.co.uk>
+Reply-To: <jjones@merlintechnologies.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <HCEEIHCIBILHEDFLFOKFGEGMCIAA.mailings@peyron.nom.fr>
+In-Reply-To: <200206031839.g53IdFA13473@Networker.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,80 +19,66 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: Iptables <netfilter@lists.samba.org>
 
-On Monday 03 June 2002 6:28 pm, Francois Peyron wrote:
+I have banged my head for too long, and now it is no longer an exercise
+in learning IPTABLES, but an exercise in frustration.
 
-> Hi there,
->
-> I did setup a classical linux firewall box with two private ip segment, one
-> for the intranet(192.168.1.0/24), the other one for dmz (10.0.0.0/8).
+Can someone please help me here? 
 
-> DMZ_LAN="10.0.0.1/8"
+  What I need to do is set up a DMZ firewall that forwards all DNS
+requests to an internal server (10.0.0.10).
 
-This is not good - it should be 10.0.0.0/8
+Once I am shown what I -should- be doing, I can translate all of the
+other rules that I need to implement, such as the forwarding of HTTP
+requests on the various external IPs into that same server (10.0.0.10),
+on different ports.  
 
-> # Activation de la NAT
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-
-Not a very accurate comment, however the command is important :-)
-
-> iptables -A SSH_FW -p tcp --dport ssh -j ACCEPT
-> iptables -A SSH_FW -p udp --dport ssh -j ACCEPT
-
-Why do you allow UDP port 22 ?   What's the point ?
-
-> iptables -A TRA_NET -p udp --dport http -j ACCEPT #http
-> iptables -A TRA_NET -p udp --dport https -j ACCEPT #https
-> iptables -A TRA_NET -p udp --dport ftp -j ACCEPT #ftp
-> iptables -A TRA_NET -p udp --dport ftp-data -j ACCEPT #ftp-data
-
-Same for all of these - why do yu allow UDP ?
-
-> iptables -A TRA_NET -p tcp --dport domain -j ACCEPT #dns
-> iptables -A TRA_NET -p udp --dport domain -j ACCEPT #dns
-
-Now this one's okay - you *should* allow both TCP and UDP for DNS.
-
-> # Remove des regles bloquantes
-> ###########################################################################
-># ###
-> iptables -D INPUT 1
-> iptables -D FORWARD 1
-> iptables -D OUTPUT 1
-
-It would be a good idea to set the default policy on all three tables to DROP:
-
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-
-This way you include rules to allow the packets you know you want, and 
-anything you didn't think of gets thrown away, just the way you want it.
-
-> Not all the tables are written but no matter, what I need is to connect to
-> this box using sshd.
-
-So why is your SSH rule in the FORWARD chain ?:
-
-iptables -A FORWARD -s *ip adress allowed to connect* -d $IP_NET -i
-$NET_IFACE -j SSH_FW
-
-If $IP_NET is on this box itself then this should be in the INPUT chain, 
-because it's a packet coming IN to the box.
-
-> The problem I've got is that I can connect on this box with ssh but from
-> whatever the ip is ...
-
-> ______________________________________________________________________
-> Chain INPUT (policy ACCEPT)
-> target     prot opt source               destination
-
-That is why.   You have a completely open policy on your INPUT chain, so 
-anyone can connect from anywhere using any service :-)
-
-Not a secure system (yet).....
+It's that simple.  I am not sure what I am doing wrong, I have used
+example rules from both the Netfilter HOWTOs, a few of the tutorials I
+have found, etc.  I am just not able to understand this, it seems.  I am
+dense.  I apologize if this is a stupid request, but I need to get this
+firewall replacement finished so that I can move on to more critical
+issues.  Below is a sample of what I have been trying.
 
 
-Antony.
+iptables -t nat -I PREROUTING 1 -p udp -d 66.38.133.113 --dport 53 -j
+DNAT --to 10.0.0.10:53
+iptables -I FORWARD 1 -p udp -s 0.0.0.0 -d 10.0.0.10 -j ACCEPT
+iptables -t nat -I PREROUTING 1 -p udp -d 66.38.133.114 --dport 53 -j
+DNAT --to 10.0.0.10:53 
+iptables -t nat -I POSTROUTING 1 -p udp -s 10.0.0.10 -j SNAT --to
+66.38.133.113:53
+(( The above is my first attempt ruleset.  This list reminded me to NAT
+the outgoing packets again, hence the last line entry. ))
+
+(( That didn't work, so I wiped the rules clean and went in search of
+more learning and advice.  I found this: ))
+
+iptables -t nat -A PREROUTING -d 66.38.133.120 -p tcp --dport 53 -j DNAT
+--to-destination 10.0.0.10:53
+iptables -t nat -A POSTROUTING -o eth1 -s 10.0.0.0/24 -j SNAT
+--to-source 66.38.133.120
+
+(( The above is copied and pasted from a Tutorial, all I have done is
+replace IPs. ))
+
+None of this works, and while it is obvious to you guys why, it is not
+obvious to me. :(  I don't want to appear like an idiot, but I -have-
+read the HOWTOs and such.  I -know- that the nat table is called first
+for PREROUTING, then the filter table for FORWARD (INPUT is only used
+for localhost destinations, right?), then the POSTROUTING.  I also know
+that POSTROUTING does the SNAT, while PREROUTING does DNAT.  So, I
+-have- been reading, I just cannot get this to work and need help.
+
+While I have been reading the list, other list archives, etc.  I have
+stumbled across a few references to IP Aliasing on NICs being a bad
+thing.  This concerns me, since our firewall has 5 external IPs, all
+aliased to the same NIC.  The firewall rules then forward the various
+requests, depending on the destination address, to the correct port on
+the DMZ server, which has multiple 10.0.0.x addresses aliased as well.
+
+I would appreciate any help or input.  I am at my wit's end, and it is
+really starting to affect my work.
+
 
