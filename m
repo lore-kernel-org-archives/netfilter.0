@@ -1,12 +1,13 @@
-From: "Jin Gu, Kim" <lilia21@postech.ac.kr>
-Subject: execute iptables via web browsers?
-Date: Fri, 24 Oct 2003 16:25:55 +0900
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: securing windows farm  using iptables
+Date: Fri, 24 Oct 2003 09:49:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310240725.h9O7PuE23633@smtp.postech.ac.kr>
+Message-ID: <20031024104021.34E141B9B9@smtp.ttp.nl>
+References: <F22386C3FEB012449238672E38ED61E706C257@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0000_01C39A4B.80D95FA0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F22386C3FEB012449238672E38ED61E706C257@overlord.overturemedia.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,98 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+> How can I protect a windows exchange server and domain controller?
+> windows farm --- linux iptables -- internet
+> 
+> Again, I cannot change the windows exchange to linux postfix. 
+> Although it is within my authority to move to linux, hundreds 
+> of people using the windows farm won't be glad for a drastic 
+> change. I am slowly moving some people to linux though. :D
 
-------=_NextPart_000_0000_01C39A4B.80D95FA0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+You don't have to. Put a Linux/Postfix mail relay between Exchange and
+the internet and firewall the machine. Then you can also do spam/virus
+filtering, etc.
+Your people won't notice it (well, smart ones maybe).
 
-Hi all.
- 
-I made this file to view "nat" rules, but nothing was there. How can I see
-the results via web?
- 
-(SSI setting was done in httpd.conf. Other environmental variables were
-shown)
- 
-----------------------------------------------------------------------------
--------------------------------------
-<html>
-<head><title> cgi test</title></head>
- 
-<body>
- 
-<h1> Server Side Includes TEST </h1>
- 
-<hr>
-<p>
-iptables' rule ("nat" table)<p>
-<!--#exec cmd="/sbin/iptables -t nat -L"-->
- 
+> For the exchange server, what ports do I need to open? Do I 
+> need some port forwarding? I want to create some sort of 
+> routing through iptables so I can secure the windows server as well.
 
-</body>
- 
-</html>
- 
+For pop/imap/ldap access you could do portforwarding, but also proxying.
+In that case maybe Delegate is what you want but there could be better
+options than Delegate. (http://www.delegate.org/delegate/)
 
- 
+> For the domain controller, people said I need to make sure dns 
+> is open. What else do I need to open up? Again, can I just do 
+> some routing for the dns?
 
-------=_NextPart_000_0000_01C39A4B.80D95FA0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+If the DC requires DNS and has a DNS service ; yes. That can be covered
+with NAT.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D914281907-24102003><FONT size=3D2>Hi =
-all.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT size=3D2>I made this file to =
-view "nat"=20
-rules, but nothing was there. How can I see the results via=20
-web?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT size=3D2>(SSI setting was =
-done in=20
-httpd.conf. Other environmental variables were =
-shown)</FONT></SPAN></DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT=20
-size=3D2>----------------------------------------------------------------=
--------------------------------------------------</FONT></SPAN></DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548;=20
-size=3D2>&lt;html&gt;<BR>&lt;head&gt;&lt;title&gt; cgi=20
-test&lt;/title&gt;&lt;/head&gt;</FONT></SPAN></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548;=20
-size=3D2>&lt;body&gt;</FONT></SPAN></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548; =
-size=3D2>&lt;h1&gt; Server Side=20
-Includes TEST &lt;/h1&gt;</FONT></SPAN></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548;=20
-size=3D2>&lt;hr&gt;<BR>&lt;p&gt;<BR>iptables' rule ("nat"=20
-table)&lt;p&gt;<BR>&lt;!--#exec cmd=3D"/sbin/iptables -t nat=20
--L"--&gt;</FONT></SPAN></DIV>
-<DIV>&nbsp;</DIV><SPAN class=3D914281907-24102003><FONT =
-face=3D&#44404;&#47548; size=3D2>
-<DIV><BR>&lt;/body&gt;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&lt;/html&gt;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><BR></FONT></SPAN>&nbsp;</DIV></BODY></HTML>
+You can configure Exchange to use a smart host (in the above example :
+Postfix) which does the actual sending of email on the internet. Then,
+local DNS is enough for Exchange.
 
-------=_NextPart_000_0000_01C39A4B.80D95FA0--
+
+Gr,
+Rob
 
 
