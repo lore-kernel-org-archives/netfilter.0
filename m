@@ -1,15 +1,9 @@
-From: "Nicolas Ross" <rossnick-lists@cybercat.ca>
-Subject: Re: Altering a packet's port
-Date: Tue, 22 Mar 2005 10:15:09 -0500
-Message-ID: <01f501c52ef1$f0400290$bf07a8c0@civicXp>
-References: <00c501c52e56$acbe6070$bf07a8c0@civicXp><opsn0cqeu476nf2y@xonix>
-	<002201c52e7e$4fe76950$6500a8c0@DEFIANT>
-	<1111490995.4267.18.camel@hubcap.ljm.dom>
-	<01a401c52eed$67fd5670$bf07a8c0@civicXp>
-	<Pine.LNX.4.60.0503220959020.6816@darkstar.sysinfo.com>
-	<Pine.LNX.4.60.0503221011390.6816@darkstar.sysinfo.com>
+From: Toby <tobia.conforto@linux.it>
+Subject: Filtering in the nat table
+Date: Tue, 22 Mar 2005 17:06:39 +0100
+Message-ID: <20050322160638.GA347@ikkoku.ath.cx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,57 +14,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: "R. DuFresne" <dufresne@sysinfo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+
+Dear netfilter users,
+
+	I've found it handy to put filtering rules in the nat table,
+precisely in the PREROUTING chain.  Is it ok to do that?  What are the
+complications or inefficiencies I should expect to come across?  
+
+The fact that the filter table is called like that suggests that it's
+the "right" place to put filtering rules, but putting them in the nat
+table makes things considerably easier--and shorter.  
+
+I'm wondering what are the drawbacks, if any.
 
 
-Yes, I have 2 sshd, on both ports 22 and 8022.
-
-As a return rule, I tried :
-
--A POSTROUTING -d 192.168.7.0/24 -s e.f.g.h -p tcp --sport 8022 -j 
-SNAT --to-source e.f.g.h:22
-
-but that rule doesn't have any hits.
-
------ Original Message ----- 
-From: "R. DuFresne" <dufresne@sysinfo.com>
-To: "Nicolas Ross" <rossnick-lists@cybercat.ca>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Tuesday, March 22, 2005 10:12 AM
-Subject: Re: Altering a packet's port
+Here is a simple set of rules I just made up as a simple example.  
+They do NAT for an internal LAN (all outgoing connections are allowed)
+and restrict packets incoming from an external interface.  Incoming
+external tcp connections on port 80 are forwarded to an internal WWW
+server, ssh ones are accepted for the firewall box itself, everything
+else (external) is discarded.  As I said, this is a very simple example.
 
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->
->
-> if sshd is there listening on port 8022, do you have rules setup for the 
-> packets that are returned as well?
->
-> Thanks,
->
-> Ron DuFresne
->
-> On Tue, 22 Mar 2005, R. DuFresne wrote:
->
->> --[PinePGP]--------------------------------------------------[begin]--
->>
->>
->> do you have sshd listening on port 8022 on e.f.g.h?
->>
->> Thanks,
->>
->> Ron DuFresne
->>
->> On Tue, 22 Mar 2005, Nicolas Ross wrote:
->>
->>> What I'm trying to do isn't working...
->>>
->>> In my nat table I have :
->>>
->>> -A PREROUTING -s 192.168.7.0/24 -d e.f.g.h -p tcp \
->>> --dport 22 -j DNAT --to-destination e.f.g.h:8022
+"Canonical" version:
 
+    iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 80 -j DNAT \
+             --to-destination $INT_SERVER
+
+    iptables -t nat -A POSTROUTING -o $EXT_IF -j SNAT \
+             --to-source $EXT_ADDR
+
+    iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+    iptables -A FORWARD -i $EXT_IF -p tcp --dport 80 -j ACCEPT
+    iptables -A FORWARD -i $EXT_IF -j DROP
+
+    iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+    iptables -A INPUT -i $EXT_IF -p tcp --dport 22 -j ACCEPT
+    iptables -A INPUT -i $EXT_IF -j DROP
+
+
+Nat-only version:
+
+    iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 80 -j DNAT \
+             --to-destination $INT_SERVER
+    iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 22 -j ACCEPT
+    iptables -t nat -A PREROUTING -i $EXT_IF -j DROP
+
+    iptables -t nat -A POSTROUTING -o $EXT_IF -j SNAT \
+             --to-source $EXT_ADDR
+
+
+What are your thoughts on this?  May I go on writing my firewalls like
+this, or should I expect them to be broken into in some subtle way?
+
+Consider that in a real firewall I would insert rules against address
+spoofing (private classes, localhost class) in both versions.
+
+
+Toby
 
