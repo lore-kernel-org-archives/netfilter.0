@@ -1,12 +1,12 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
+From: "R. DuFresne" <dufresne@sysinfo.com>
 Subject: Re: Dynamic DNS
-Date: Wed, 09 Mar 2005 15:58:14 -0500
-Message-ID: <422F6366.5000500@SCampbell.net>
+Date: Wed, 9 Mar 2005 17:35:29 -0500 (EST)
+Message-ID: <Pine.LNX.4.60.0503091729300.11874@darkstar.sysinfo.com>
 References: <20050309062542.GA27660@gw.home.tux-labor.de>
-	<422F5F90.6080005@SCampbell.net>
+	<422E97C3.7040009@eccotours.dyndns.org>
+	<fad9d48405030900048e01e6a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <422F5F90.6080005@SCampbell.net>
+In-Reply-To: <fad9d48405030900048e01e6a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +17,92 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Cc: Brent Clark <bclark@eccotours.dyndns.org>, netfilter@lists.netfilter.org
 
-Steven M Campbell wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Sebastian Docktor wrote:
->
->> Hi,
->>
->> I want to allow a Dynamic DNS Client to Access the SSH-Server on my=20
->> Firewall. But I don't want to open SSH for all IPs,
->> Is it possible that iptables always looks up the ip address from the=20
->> hostname, so that only the ip has access which is registrated under
->> the dyndns?
->>
->>
->>
->
-> IMO, it's a very bad idea to lower the security of iptables firewall=20
-> by making it dependent on DNS for any portion of authorization=20
-> certification. DNS isn't exactly known for it's stellar security :)=20
-> Allow me to suggest an alternate path. Use RSA keyfiles and disallow=20
-> ssh password authentication, this way you can leave the port open but=20
-> user's without public keys installed on the server cannot gain access.=20
-> Generally speaking DNS should have nothing to do with anyone's=20
-> firewall because DNS would then become the weak link in the security=20
-> chain and SSH has methods that are better applied to these needs.
->
->
-A quick look at the sshd_config man pages reveals
+On Wed, 9 Mar 2005, Kenneth Kalmer wrote:
 
-AllowUsers
-This keyword can be followed by a list of user name patterns, separated=20
-by spaces. If specified, login is
-allowed only for user names that match one of the patterns. =E2=80=98*=E2=
-=80=99 and =E2=80=98?=E2=80=99=20
-can be used as wildcards in the pat=E2=80=90
-terns. Only user names are valid; a numerical user ID is not recognized.=20
-By default, login is allowed for
-all users. If the pattern takes the form USER@HOST then USER and HOST=20
-are separately checked, restricting
-logins to particular users from particular hosts.
+> On Wed, 09 Mar 2005 08:29:23 +0200, Brent Clark
+> <bclark@eccotours.dyndns.org> wrote:
+>> Sebastian Docktor wrote:
+>>> Hi,
+>>>
+>>> I want to allow a Dynamic DNS Client to Access the SSH-Server
+>>> on my Firewall. But I don't want to open SSH for all IPs,
+>>> Is it possible that iptables always looks up the ip address from the
+>>> hostname, so that only the ip has access which is registrated under
+>>> the dyndns?
+>>>
+>>>
+>>
+>> Hi
+>>
+>> This may be a ridiculous suggestion.
+>>
+>> How about basing it on MAC address.
+>>
+>> Stupid I know.
+>>
+>> Buts all I could think off.
+>>
+>> Brent Clark
+>>
+>>
+>
+> I'm not too sure either, but I do know that iptables resolve the names
+> the moment the rule is added, not again. Unless you run the rule every
+> minute to make sure it's updated constantly.
+>
+> Can't you setup SSHD to only allow connections from certain hosts?
+> Then again sshd might use the reverse lookup of the ip, which isn't
+> always the dyndns name...
+>
+> Will you let us know how you achieve this?
+>
+>
 
-Sorry for straying off the topic folks, I think you might care to take=20
-this route.
+Most systems, at least linux based dists now have ssh compiled with tcpd 
+support <also, ssh did, and still should have an acce3ss list allowed in 
+the sshd_config file, unless that was removed in openssh due to the tcpd 
+issues>, so the way I might deal with this is to only allow the dynamic 
+apddress space through via a hosts.allow file with a default deny all in 
+hosts.deny for sshd. Actually, since all the access to/through my firewall 
+comes from static IP's, I do this in both tcpd and iptables with a list of 
+allowed hosts at present and in the recent past.  This give me two layers 
+of protection should the firewall be taken down, or not comeup and all 
+that.
+
+
+This issue is easiest if you know up front what the dyn address space 
+consits of <you control the dynaic address space>, it is tougher if one 
+has to guess at the low and top ends of what addresses might get passed to 
+systems on boot.
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                         -Tom Robins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFCL3o0st+vzJSwZikRAu5RAJ9eOStR8ujT7TFthrJ2SXmElndCrACgyjFt
+jm3SWenK9jyHU1NQ7xHNLA0=
+=TXR9
+-----END PGP SIGNATURE-----
 
