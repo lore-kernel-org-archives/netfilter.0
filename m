@@ -1,12 +1,23 @@
-From: Frank Gruellich <frank@der-frank.org>
-Subject: Re: bad tcp packets
-Date: Tue, 23 Nov 2004 14:59:10 +0100
-Message-ID: <20041123135910.GT21819@der-frank.org>
-References: <web-23112413@infinito.it>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: state: INVALID
+Date: Tue, 23 Nov 2004 09:05:54 -0500
+Message-ID: <1101218753.12981.18.camel@hubcap.ljm.dom>
+References: <419E75B1.3030406@uni-paderborn.de>
+	<1100990773.3501.9.camel@hubcap.ljm.dom>
+	<419FD0BD.6000906@uni-paderborn.de>
+	<1101061543.3501.18.camel@hubcap.ljm.dom>
+	<41A11AD5.3080401@uni-paderborn.de>
+	<1101131121.13662.17.camel@hubcap.ljm.dom>
+	<41A2010A.9090601@uni-paderborn.de>
+	<20041122175440.GA31032@bender.817west.com>
+	<41A23EE6.4080804@uni-paderborn.de>
+	<20041122213910.GA31537@bender.817west.com>
+	<41A3007B.7090009@uni-paderborn.de>
+	<1101202285.3503.5.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <web-23112413@infinito.it>
+In-Reply-To: <1101202285.3503.5.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +28,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
+Cc: bj-schmidt@uni-paderborn.de
 
-* hamals@infinito.it <hamals@infinito.it> 23. Nov 04:
-> Hello to everyone
+On Tue, 2004-11-23 at 04:31, Jason Opperisano wrote:
+> On Tue, 2004-11-23 at 04:18, Bj=C3=B6rn Schmidt wrote:
+> > Does not work. I only changed "-J LOG -log-prefix" to "-j ULOG -ulog-=
+prefix"
+>=20
+> then either i'm an idiot or there's something horribly wrong with your
+> kernel.  both are about equally likely at this point.
 
-Hi,
+just for my own edification--i installed that rule base on my wireless
+laptop, which runs a VPN tunnel for all its traffic (but normally does
+not use connection tracking), and it does work--so i don't think this is
+a "bug" per se.
 
-> I'm reading "Iptables Tutorial 1.1.19" by Oskar 
-> Andreasoon, and I cant understand these bad packets rules
+this is on Fedora Core 2, kernel 2.6.9-1.3, iptables version 1.2.9
 
-Well choosen.  Please, don't wrap commands.  I'll fix in quoting.
+(sorry about the line mangling)
 
-> $IPTABLES -N bad_tcp_packets
-> #
-> #
-> # bad_tcp_packets chain
-> #
-> $IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK \
-> -m state --state NEW -j REJECT --reject-with tcp-reset
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out   =20
+source               destination
+     878   656329 ACCEPT     all  --  *      *     =20
+0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+     883   718600 ACCEPT     all  --  *      *     =20
+0.0.0.0/0            0.0.0.0/0           MARK match 0x1 state NEW
+       0        0 ACCEPT     udp  --  eth1   *     =20
+192.168.1.125         0.0.0.0/0           udp spt:500 dpt:500
+       0        0 ACCEPT     esp  --  eth1   *     =20
+192.168.1.125         0.0.0.0/0
+       0        0 ACCEPT     all  --  lo     *     =20
+0.0.0.0/0            0.0.0.0/0
 
-Conntrack treats a packet as state NEW, if it hits netfilter the first
-time.  The first packet of a TCP stream will never have set both of SYN
-and ACK.  This is the correct answer after a connection request (SYN)
-from your network, but then it wouldn't be the first packet in stream.
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out   =20
+source               destination
 
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG \
-> --log-prefix "New not syn:"
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out   =20
+source               destination
+     778    88999 ACCEPT     all  --  *      *     =20
+0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+      26     2037 ACCEPT     all  --  *      *     =20
+0.0.0.0/0            0.0.0.0/0           state NEW
+       0        0 ACCEPT     udp  --  *      eth1  =20
+0.0.0.0/0            192.168.1.125        udp spt:500 dpt:500
+       0        0 ACCEPT     esp  --  *      eth1  =20
+0.0.0.0/0            192.168.1.125
 
-Same goes here: NEW in conntrack, but synflag not set should never
-occure.  So LOG...
+-j
 
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+--
+"I'm better than dirt. Well, most kinds of dirt... not that fancy
+ store-bought dirt... that stuff's loaded with nutrients, I... I
+ can't compete with that stuff."
+	--The Simpsons
 
-... and DROP it.
-
-> someone could explain me why that are bad tcp packets?
-
-HTH,
- regards, Frank.
--- 
-Sigmentation fault
 
