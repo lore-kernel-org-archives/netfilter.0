@@ -1,11 +1,14 @@
-From: <yves@famillemetivier.net>
-Subject: H323 and Traffic Control
-Date: Fri, 25 Oct 2002 09:33:36 +0200 (CEST)
+From: murphy@murphyslantech.de
+Subject: Re: How to bind 2 WAN 1 LAN ?
+Date: Thu, 24 Oct 2002 21:15:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <64227.193.110.152.118.1035531216.squirrel@munshine.famillemetivier.net>
+Message-ID: <3DB8630C.29807.8A31B4@localhost>
+References: <000b01c27b1e$36efdd80$5101a8c0@dinyi.com.tw>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: Quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <000b01c27b1e$36efdd80$5101a8c0@dinyi.com.tw>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +18,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: kadlec@blackhole.kfki.hu
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?=A7N=A4=E9?= <raykey@dinyi.com.tw>
+Cc: netfilter@lists.samba.org
 
-Hi!
+> Dear all...
+> 
+> I'm a Chinese and I don't think that my English is well .
+> But I have a big problem in use IPTABLES .
+> I've looked all the documents and FAQs , but I can't find a solution to
+> solve my problem .
+> At last I decide to ask you in my poor English ...^^||
+> 
+> I have a Linux server (Turbo Linux7.0 in kernel 2.4.9-3) to be my NAT se=
+rver
+> .
+> I have make it running iptables-1.2.2-6 .
+> It have 3 NIC(Network interface Card) eth0.eth1.eth2 .
+> I have 1 LAN and 2 WAN interface they are 192.168.1.0/255.255.255.0 and =
+2
+> ADSL (one of my ADSL is pppoe another one is static IP) .
+> Now I want to bind thy all in my NAT server .
+> I rty to cut my LAN to 4 part are 192.168.1.0/255.255.255.192 &
+> 192.168.1.64/255.255.255.192 & 192.168.1.128/255.255.255.192 &
+> 192.168.1.192/255.255.255.192 .
+> 
+> That I wish the preceding 3 part go out and in with the pppoe ADSL (ppp0=
+)
+> and the final part go through with static IP(because they are my servers=
+) .
+> 
+> My biggest problem is in Linux I can't set the default gateway otherwise=
+ the
+> ppp0 will not work .
+> But if ppp0 is working I can't find who to make my final part
+> (192.168.1.192/26) go through the eth0 out or aome in  ...-.-"
+> 
+> I have do my best to explain my problem .
+> If you can't understand my question maybe can find somebody who know my
+> English or can talk in Chinese will better .
 
-I recently installed h323 netfilter extension on my home
-firewall/gateway and it works fine! Thanks!
+I think the problem may be solved by the newer version of route, it 
+is calles iproute2, with this you can set the routing according to 
+sources or destination.
 
-But I have a problem with traffic control :
-I want to give highest priority to real time traffic, like h323.
-
-I use HTB queuing discipline with four different priority classes. I use
-packet marking in netfilter through the mangle table and fw mark option
-in "tc filter add" to send packets in one of the four classes depending
-on the mark
-
-I was expecting that h323 netfilter module should mark all h323 traffic,
-including RTP and RTCP UDP packets, but it seems that it only marks
-packets from known ports (those explicitely declared in iptables) and
-not UDP related packets.
-
-Is my analyse right?
-
-Thank you in advance for your answer.
-
-Regards
-
-Yves
+Hope this helps ...
 
 
+ 
+> Sincerely yours
+> thanks a lot...^^
+> 
+> ------------------------------
+> =B9=A9=A9=F6=A6L=A8=EA=B8=EA=B0T=AB=C7
+> Dinyi Printing CO. LTD
+> RaykeySu
+> raykey@dinyi.com.tw
+> ------------------------------
+> 
+
+C.U. MC Murphy
+PGP-fingerprint: 8640 43BF 0807 8349 67F4  C0CE CBA9 83BA 197B 3ED4
 
 
