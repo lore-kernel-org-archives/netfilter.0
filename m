@@ -1,14 +1,15 @@
-From: Nick Taylor <nickt@lightlink.com>
-Subject: Re: Help need :) How to delete all rules in chain ?
-Date: Tue, 28 Sep 2004 16:38:55 -0400 (EDT)
+From: Robert Olsson <Robert.Olsson@data.slu.se>
+Subject: Re: [ANNOUNCE] Proceedings of Netfilter Developer Workshop 2004
+Date: Mon, 27 Sep 2004 20:11:41 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <Pine.GSU.4.58.0409281634060.17424@adore.lightlink.com>
-References: <1096400937.3163.134.camel@alkaloid.netup.ru>
-	<1096399581.1940.0.camel@alucard.kanux.com>
-	<1096414103.3163.151.camel@alkaloid.netup.ru>
+Message-ID: <16728.22493.546099.392454@robur.slu.se>
+References: <20040925213322.GJ3236@sunbeam.de.gnumonks.org>
+	<4158452F.1040904@lanl.gov>
+	<20040927172007.GY3236@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1096414103.3163.151.camel@alkaloid.netup.ru>
+In-Reply-To: <20040927172007.GY3236@sunbeam.de.gnumonks.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +19,52 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Abylai Ospan <aospan@netup.ru>
-Cc: netfilter@lists.netfilter.org, Juan Hernandez <alucard@kanux.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Harald Welte <laforge@netfilter.org>
+Cc: Stephen J Smoogen <smoogen@lanl.gov>, netfilter@lists.netfilter.org, Robert Olsson <Robert.Olsson@data.slu.se>
 
-> > > May be this question in FAQ but I can't find it ;-( I have 3 (or more)
-> > > identical rules in one (for example - INPUT) chain.
-> > > If I do command:
-> > > iptables -D FORWARD -s 10.0.0.10 -d 10.0.0.20 -j ACCEPT
-> > >
-> > > the first rule is deleted only. Is there any command line option to
-> > > remove all identical rules in one chain ?
-> > >
-> > iptables -F
-> >
-> oh, no :) I don't need delete all rules in chain :) I need to delete
-> identical rules specified by rule.
->
-Er, maybe this is a silly question, but how is it that your firewall
-chain ended up with three copies of the same rule?  Maybe it's easier to
-prevent this from happening in the first place?  Does a second or third
-copy of a rule have any use to you?  As far as I can think this would only
-make sense in non-terminating rules (like LOG) and rules which match
-against something internal to netfilter, like -m mark.  Maybe you could
-provide more info on the source and content of the rules?
+
+Harald Welte writes:
+ > On Mon, Sep 27, 2004 at 10:51:59AM -0600, Stephen J Smoogen wrote:
+ > 
+ > > Is there more publishing on Rober Olsson's benchmarks and findings. We 
+ > > are doing various testing here and while the numbers look similar, I 
+ > > would like to get an established testing methodology so that we can 
+ > > confirm/help results from baseline tests.
+ > 
+ > http://robur.slu.se/Linux/net-development/experiments/2004/
+ > http://robur.slu.se/Linux/net-development/experiments/10G.html
+ > http://robur.slu.se/Linux/net-development/experiments/
+
+ Yeep I keep notes of some my test here. Not alwayes to well organized 
+ or documented I suffer from this myself.
+
+ > > Our next line of testing is to find out which network cards will give us 
+ > > the best bang for the buck on 10 gig testing. We currently have 300kpps 
+ > > at 1 gig (E1000 + 2.4.2x kernel) but not sure if we are reaching the 
+ > > limitations of the E1000 fibre optics or the PCI-X bus.
+
+
+ > 300kpps is bad, even for a 32bit/33MHz  PCI bus, and definitely way too
+ > bad for any kind of PCI-X
+
+ I think Harald and I booth seen ~800 kpps pure forwarding with Opteron 
+ and e1000 w. UP-kernel and I've seen aggregated performance of 1.3 Mpps 
+ from dual Opteron in a dual flow experiment. 
+
+ Yes in the long run method/benchmark would be needed but simple tests just 
+ as adding fw-rules is enough to meditate about improvements. 
+
+ The lookup code is getting cleaned up now to get pluggable lookups. With
+ faster lookup and w/o route hash at least some filters could be very 
+ fast but it probably break the currents semantics. Maybe replacing all 
+ lookup with general classifier bitvector>/hi-pac as discussed at the 
+ workshop could be possible when the times comes...
+
+ Anyway have the LC-trie todo prefix lookup up now but not interfaced to
+ the kernel yet. A lot of work happens in the hash chains which makes it 
+ hard to replace current route lookup.
+
+ Cheers.
+						--ro
 
