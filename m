@@ -1,12 +1,13 @@
-From: "Mauricio Portilho Cavalcanti" <mauricio@hpcnetworks.com.br>
-Subject: Limit simultaneous connections with iptables
-Date: Wed, 3 Dec 2003 12:03:36 -0200
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Re[2]: Invalid argument in -j SNAT
+Date: Wed, 3 Dec 2003 15:16:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006f01c3b9a6$3f24ec80$2c00fc0a@NotebookHPC>
-References: <13211830200.20031202215027@internetplustravel.ru> <20031202201831.EAB3C1710@sterenborg.info> <19067494521.20031203164055@internetplustravel.ru>
+Message-ID: <20031203170322.1569A1B9B8@smtp.ttp.nl>
+References: <19067494521.20031203164055@internetplustravel.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <19067494521.20031203164055@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Oleg Savostyanov' <savostyanov@internetplustravel.ru>, netfilter@lists.netfilter.org
 
-Hi,
-i have a proxy configured to share internet access and i want to limit
-simultaneous connections to 10 (for each ip address in my LAN). I made this
-limitation in squid.conf and now a want to limit all connections to 10.
+> >> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 
+> >> XXX.XXX.XXX.XXX with an error "iptables: Invalid argument" 
+> I suspect, 
+> >> that an argument is XXX.XXX.XXX.XXX
+> 
+> RS> Did you compile and load the module iptable_nat ?
+> RS> Gr,
+> RS> Rob
+> Thank you for your answers
+> 
+> I compiled the kernel without modules
+> 
+> yes, NAT is on
+> this is my kernel .config
 
-Anyone can help me to make it works?
-
-Thanks any help,
-Mauricio.
+Yes, but did you also load iptable_nat (modprobe iptable_nat) ?
+What is the output of "lsmod | grep nat" ?
 
 
-
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.547 / Virus Database: 340 - Release Date: 2/12/2003
+Gr,
+Rob
 
 
