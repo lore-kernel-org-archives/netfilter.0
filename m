@@ -1,13 +1,11 @@
-From: "Aldo S. Lagana" <alagana@discmail.com>
-Subject: RE: Is iptables available for Mac OS 10.X
-Date: Thu, 19 Jun 2003 15:48:22 -0400
+From: Shawn <core@enodev.com>
+Subject: Is this correct?
+Date: 19 Jun 2003 16:07:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306191948.h5JJmawG010031@discmail.com>
-References: <000101c3369a$b1025750$020201c0@sweethome>
+Message-ID: <1056056839.18406.21.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c3369a$b1025750$020201c0@sweethome>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: alex_chen@sbcglobal.net, netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-I would think it may be easier to get ipfw (the BSD firewall equivalent to
-iptables) since as you say the Mac OSX is a BSD derivative
+I have a, iptables statement I would just like someone to say if I have
+it right.
 
+Let's say I have a linux box with eth0=10.0.0.250 and
+eth1=192.168.0.250, and there's a host (192.168.0.1) connected to eth1.
+I want to route connections from hosts in 10.0.0.0/24 land to 10.0.0.1
+onto the linux box's eth0, and have them NATed to 192.168.0.1
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Alex Chen
-Sent: Thursday, June 19, 2003 3:41 PM
-To: netfilter@lists.netfilter.org
+Will the following statement do that?
 
-Is there a port of iptables done on Mac OS 10.X anywhere?
-If not, is it easy to do the port ourselves?
-
-If I understand correctly, there are two parts of iptables,
-kernel space and user space and what we use in the RPM is
-only user space.  It need the kernel space change compiled
-into the kernel, e.g. Linux.  If so, does anyone know if
-the Mac OS kernel, based on BSD I believe, supports the user
-space part of the iptables?
-
-Any help is appreciated.
-
-Alex Chen
-
+iptables -t nat -I PREROUTING -i eth0 -d 10.0.0.1 -J DNAT \
+	--to 192.168.0.1
 
 
