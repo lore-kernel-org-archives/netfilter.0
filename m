@@ -1,9 +1,8 @@
-From: "Michael J. Tubby B.Sc. \(Hons\) G8TIC" <mike@thorcom.com>
-Subject: NAT of TFTP sessions
-Date: Sun, 26 Jan 2003 11:26:24 -0000
+From: Chris <chris@imi.com.au>
+Subject: Traffic accounting
+Date: 27 Jan 2003 00:18:59 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001901c2c52d$c2457fd0$0a90a8c0@boris>
-References: <1043539676.5018.19.camel@underworld> <20030126024127.5ab3f927.arnt@c2i.net>
+Message-ID: <1043587138.2372.4.camel@athlon-boxen>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,28 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, mb@ozaba.mine.nu
+To: netfilter@lists.netfilter.org
 
-Magnus et al,
+Hi all,
 
-I have several Linux firewall/gateway machines dotted around the
-UK and Europe which are basically RedHat 7.3 + Kernet 2.4.20
-+ iptables 1.2.7a.
+I've got a Linux box set up acting as a mail server, web server and
+firewall. There are a few other boxes sitting on the same rack that this
+Linux box firewalls off from the net. 
 
-We have things on the inside like Cisco VoIP phones, print servers,
-etc. that need to be able to TFTP code or configs in from a
-server on the outside (public internet).
+My question is this - how can I come up with an appraisal of how much
+traffic each box that we act as a firewall for has received and sent
+over a given period? The only thing I can think of that might complicate
+the process is this fact:
 
-TFTP appears not to work and when I search google I find
-information which refers to patches to "oldnat" but not to "newnat".
+	We are using Proxy ARP and everything's on the same subnet.
 
-Is there something that I am missing? Is there a configuiration
-module, helper, patch or something for iptables 1.2.7a which will
-fix this?
+All thoughts greatly appreciated! All amusing flames stuck to my wall.
 
-Mike
-
-
-
+Chris
 
 
