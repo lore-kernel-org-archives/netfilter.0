@@ -1,14 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: iptables and SMP performance
-Date: 25 Jan 2005 13:50:45 +0100
-Message-ID: <1106655752.16306.75.camel@nostromo.bgsecm.com>
-References: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
-	<1106594540.28221.44.camel@nostromo.bgsecm.com>
-	<1106603598.13691.2.camel@d-phiggins-lnx.rovingplanet.com>
+Subject: Re: ftp contrack
+Date: 25 Jan 2005 13:53:29 +0100
+Message-ID: <1106657609.22125.78.camel@nostromo.bgsecm.com>
+References: <22793.1106524634@www29.gmx.net>
+	<9151ac2a05012504156caf097b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1106603598.13691.2.camel@d-phiggins-lnx.rovingplanet.com>
+In-Reply-To: <9151ac2a05012504156caf097b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: Patrick Higgins <phiggins@rovingplanet.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El lun, 24 de 01 de 2005 a las 22:53, Patrick Higgins escribi=C3=B3:
-> We know that there are ways to optimize the rules themselves, but they
-> will mostly require new netfilter modules or at least revive some of th=
-e
-> nf-hipac work. The fact is, our firewall is inherently complex and will
-> probably always be our bottleneck. We're just looking for generic ways
-> to leverage hardware for short-term speed gains, and are running into a
-> wall.
+El mar, 25 de 01 de 2005 a las 13:15, Filip Sneppe escribi=C3=B3:
+> On Mon, 24 Jan 2005 00:57:14 +0100 (MET), Mario Ohnewald
+> <mario.Ohnewald@gmx.de> wrote:
+> > Hello List!
+> >=20
+> > I am trying to redirect (NAT) to a internal ftp box (but both have a =
+public
+> > ip).
+> > I am using those rules:
+> >=20
+> > modprobe ip_conntrack_ftp ports=3D21,2121
+> > modprobe ip_nat_ftp
+>=20
+> Hi Mario,=20
+>=20
+> Add "ports=3D21,2121" to the "modprobe ip_nat_ftp" command.
+> That should do the trick.
+>=20
+> modprobe ip_nat_ftp ports=3D21,2121
+>=20
+> Regards,
+> Filip
 
-Reading my own post I have realize that maybe I have not explained
-myself well. What I propose it's to separate the traffic in multiple
-chains, so the traverse of the packets through the chains makes the
-Netfilter system have to test the minimum number of rules. We've
-did some test while we were designing our bastion-firewall GPL software
-and it sure improves the performance of the firewall a lot.
-
-Probably you had understand me, but I wanted to make it clear.
+Maybe it's a stupid question, but...
+Why are you using port 2121 for ftp?
+I couldn't find any information on it being used.
 
 Regards.
 
