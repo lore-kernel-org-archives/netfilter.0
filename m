@@ -1,12 +1,12 @@
-From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
-Subject: FW: Yahoo Messenger
-Date: Mon, 7 Oct 2002 09:19:35 +0200
+From: Unknown <unknown@unknown.invalid>
+Subject: NAT and messenger voice communications
+Date: Fri, 4 Oct 2002 00:46:09 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B3210198DC@hslex01.hsl-brabantzuid.nl>
+Message-ID: <200210040046.09698.root@jcl-pc-lxdsl>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C26DD1.E37519D0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+From: root <root@jcl-pc-lxdsl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,111 +16,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'harvey@hnu.edu.ph'" <harvey@hnu.edu.ph>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Hi,
 
-------_=_NextPart_001_01C26DD1.E37519D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+I am trying to use a messenger service with voice chat on a windows box b=
+ehind=20
+an iptables based firewall.  While i can send voice out, i cannot receive=
+=20
+voice in.  Any suggestions as to what is reuired in my configuration?
 
-Also take a look here :
-
-http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/22/pid/43/qid/12602
-
-
------Original Message-----
-From: Rob Sterenborg 
-Sent: maandag 7 oktober 2002 09:09
-To: 'harvey@hnu.edu.ph'
-Cc: 'netfilter@lists.netfilter.org'
-Subject: RE: Yahoo Messenger
-
-
-> Ive already tried this about a month ago and but theres an 
-> error saying that "host/network 'cs1.yahoo.com' not found" 
-> ... this is also treu with cs2 and cs3 ...hmmm am i the only 
-> one getting this kind of error? Pls tell me
-
-Right. I should have checked that.
-
-Aren't there any servers mentioned in the messenger setup (I don't use it
-myself) ?
-
-I just checked on cs.yahoo.com and that one exists but everytime I ping that
-server I'm redirected to cs41.msg.sc5.yahoo.com (216.136.233.128).
-I don't know if that's the same one for you ?
-
-
-Rob
-
-------_=_NextPart_001_01C26DD1.E37519D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>FW: Yahoo Messenger</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=3D2>Also take a look here :</FONT>
-</P>
-
-<P><FONT SIZE=3D2><A =
-HREF=3D"http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/22/pid/43/qi=
-d/12602" =
-TARGET=3D"_blank">http://www.tek-tips.com/gviewthread.cfm/lev2/3/lev3/22=
-/pid/43/qid/12602</A></FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>-----Original Message-----</FONT>
-<BR><FONT SIZE=3D2>From: Rob Sterenborg </FONT>
-<BR><FONT SIZE=3D2>Sent: maandag 7 oktober 2002 09:09</FONT>
-<BR><FONT SIZE=3D2>To: 'harvey@hnu.edu.ph'</FONT>
-<BR><FONT SIZE=3D2>Cc: 'netfilter@lists.netfilter.org'</FONT>
-<BR><FONT SIZE=3D2>Subject: RE: Yahoo Messenger</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>&gt; Ive already tried this about a month ago and but =
-theres an </FONT>
-<BR><FONT SIZE=3D2>&gt; error saying that &quot;host/network =
-'cs1.yahoo.com' not found&quot; </FONT>
-<BR><FONT SIZE=3D2>&gt; ... this is also treu with cs2 and cs3 ...hmmm =
-am i the only </FONT>
-<BR><FONT SIZE=3D2>&gt; one getting this kind of error? Pls tell =
-me</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Right. I should have checked that.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>Aren't there any servers mentioned in the messenger =
-setup (I don't use it myself) ?</FONT>
-</P>
-
-<P><FONT SIZE=3D2>I just checked on cs.yahoo.com and that one exists =
-but everytime I ping that server I'm redirected to =
-cs41.msg.sc5.yahoo.com (216.136.233.128).</FONT></P>
-
-<P><FONT SIZE=3D2>I don't know if that's the same one for you ?</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2>Rob</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C26DD1.E37519D0--
+Thanks,
+John
 
