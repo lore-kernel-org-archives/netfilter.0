@@ -1,12 +1,12 @@
-From: "Urban Spielmann" <spielmann@it-insourcing.ch>
-Subject: AW: Multi PPTP clients behind iptables firewall
-Date: Tue, 27 May 2003 10:10:12 +0200
+From: "phadell" <fadel@siteplanet.com.br>
+Subject: ADSL + RADIO
+Date: Mon, 26 May 2003 10:40:24 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <A9B668705BE3754790A3C32C7682149463C8@pluto.insourcing.local>
+Message-ID: <200305261232.h4QCWdOv007668@plutao.siteplanet.com.br>
+Reply-To: "phadell" <fadel@siteplanet.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; 
+To: "netfilter@lists.netfilter.org"@plutao.siteplanet.com.br
 
-Now it works, but I had to do not only
-modprobe ip_nat_pptp
-also
-modprobe ip_nat_proto_gre
+Hello all,
 
-I do not know why. But im lucky it works.
+I have a internet server with 2 NICs
+eth0 : wireless radio link
+eth1 : private network
 
-Regards,
-Urban
+I added a third NIC on the system to receive a ADSL connection, so
+eth2 : ADSL
 
------Urspr=FCngliche Nachricht-----
-Von: Ralf Spenneberg [mailto:lists@spenneberg.org]=20
-Gesendet: Dienstag, 20. Mai 2003 08:16
-An: Urban Spielmann
-Cc: Netfilter
-Betreff: Re: Multi PPTP clients behind iptables firewall
+the problem:
+if I start the nics in the sequence eth0,eth1,eth2 -- I can access the
+server from outside only through ADSL
+if I start the NICs in the sequence eth2,eth1,eth0 -- I can ssh the server
+from outside only through RADIO
 
 
-Am Sam, 2003-05-17 um 05.41 schrieb Urban Spielmann:
-> Hi
-> =20
-> I have Windows-XP-Clients behind a linux firewall ( kernal 2.4.20). I=20
-> do VPN over PPTP to a VPN-Server on the internet.
-> =20
-> I configured the iptables and it works fine for ONE client.
-> =20
-> But a second client at the same time does not :-(
-> =20
-> Do I have to use any patches for kernal 2.4.20?
-Yes.
-You have to use the nat_pptp module. Depending on your kernel you have =
-to patch and recompile your kernel. You will find the patch on=20
-http://www.netfilter.org.
-Then do a=20
-modprobe ip_nat_pptp
-And it should work.
+what I need:
+I want 2 internet connections (RADIO + ADSL) and:
+ADSL  : only for ssh connections
+RADIO : for others applications
 
-Cheers,
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+What I think that is missing?
+I think that is missing some route rule because just one device is making
+web connections.
+Can someone help me?
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                   =20
-http://honeynet.spenneberg.org
+thanks in advance.
+phadell
+
+-------------------------------------------------
+Esta mensagem foi
+enviada por Siteplanet WebMail.
 
 
