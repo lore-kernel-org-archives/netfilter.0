@@ -1,14 +1,12 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: tcpdump behavior not getting all packets in promisc mode
-Date: Mon, 3 Jun 2002 23:13:40 +0100
+From: =?unknown-8bit?q?J=F6rgen?= Danielsson <jorgen_d@yahoo.com>
+Subject: Re: alias
+Date: Mon, 3 Jun 2002 15:15:58 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020603231340.R27307@funkyjesus.org>
-References: <007a01c20ac1$3071b780$4000a8c0@thought> <20020603133612.47251.qmail@web10404.mail.yahoo.com>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <20020603221558.71090.qmail@web9907.mail.yahoo.com>
+References: <200206032209.g53M9DA25322@Networker.rockstone.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020603133612.47251.qmail@web10404.mail.yahoo.com>; from astormchaser2002@yahoo.com on Mon, Jun 03, 2002 at 06:36:12AM -0700
+In-Reply-To: <200206032209.g53M9DA25322@Networker.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,39 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.samba.org
 
-On Mon, Jun 03, 2002 at 06:36:12AM -0700, Art Reisman wrote:
+The problem is that on 2 of the nics have to have 2
+ip's each, and the only way to have more than one ip
+on a nic is by using alias, as far as i know, and then
+they get names like eth1:0 and so on. I have not seen
+any other possibility for names in slack.
 
-> Yes I know this is not quite on topic , but I'm geting there, before I can
-> use iptables the way I wanted , this was sort of background work.
+But would it work if i specify it as eth1 in the rule
+and use the ip aswell, sounds weird if that would
+work.
 
-Fair enough :)
+/J=F6rgen
 
-> Here is my topology
-> 
-> 
-> T1----->Gateway---->Hub-------Wireless----->PC1
->                      |
->                      |------>eth0---->PC2--->TCPDUMP
->                                      (SUSE Linux)
-> 
-> 
-> The hub is stupid, not switched.
+--- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> On Monday 03 June 2002 11:03 pm, "J=F6rgen" Danielsson
+> wrote:
+>=20
+> > Running a firewall with 6 diff networks, and using
+> a
+> > default policy that is drop, then as far as i know
+> you
+> > have to add -i and -o option to forward rules in
+> order
+> > for them to work. Or am I wrong there ?
+>=20
+> Well, you don't *have* to, but it's a good idea.
+>=20
+> However, I still think you can do everything you
+> want to just by calling them=20
+> eth1, and not trying to use eth1:0, eth1:1 etc.
+>=20
+>=20
+> Antony.
+>=20
 
-Are "Hub" and "Wireless" the same device?  If so I'm wondering if it's not
-quite as stupid as you think.
 
-> I see ARP packets, but nothing specific for host PC1 in the tcpdump on
-> PC2.
-> 
-> PC1 and PC2 have static IP addresses.
-
-Like you say, maddening :)
-
--- 
-FunkyJesus System Administration Team
-
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
