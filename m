@@ -1,13 +1,13 @@
-From: Torsten Luettgert <t.luettgert@pressestimmen.de>
-Subject: RE: A simple question
-Date: Thu, 19 Aug 2004 10:39:44 +0200
+From: =?ISO-8859-1?Q?S=F6ren_Lorenz?= <soeren.lorenz@web.de>
+Subject: Re: How to start external script when ipfilter rule matches
+Date: Thu, 19 Aug 2004 11:40:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1092904784.9327.11.camel@scaramouche>
-References: <SERVER7QYx3G5aYY61L00000074@server7.bandwidthco.com>
+Message-ID: <41247591.9000902@web.de>
+References: <20040806042631.5824.39404.Mailman@vishnu.netfilter.org> <1089.216.239.71.162.1091820833.squirrel@216.239.71.162> <411DF2E0.3020304@web.de> <200408141220.03743.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <SERVER7QYx3G5aYY61L00000074@server7.bandwidthco.com>
+In-Reply-To: <200408141220.03743.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Don, 2004-08-19 at 06:18, Mark E. Donaldson wrote:
-> As you might expect, it is quite easy to DOS the firewall itself
-> when OUTPUT is set to DROP. And that is not a real good idea.
+Yes, that's the  way to go. But I need a lightweight userspace program=20
+to trigger the actions I want to execute based on specific log events.=20
+I've only come across perl solutions for this which is not suitable for=20
+a router.
 
-Please elaborate - why is it easy to DOS the firewall if the output
-policy is DROP? You don't mean icmp/source-quench not getting
-delivered or something?
+Regards,
 
-> However, having said that, close scrutiny must be paid to what you
-> allow out of the firewall and the necessary rules must be in place.
+S=F6ren Lorenz
 
-...which is why I personally use DROP as default policy for all
-chains and explicitly allow everything I think necessary :-)
+Antony Stone schrieb:
 
-The only exception is in the mangle table, where I use ACCEPT
-policies and just filter out the obvious spoofs, unclean frames
-etc.
-
-Greetings,
-Torsten
+>
+>Try investigating the ULOG target perhaps?
+>
+>Antony.
+>
+> =20
+>
 
 
