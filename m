@@ -1,13 +1,13 @@
-From: Torsten Luettgert <t.luettgert@pressestimmen.de>
-Subject: Re: Dropping Malicious Packets in -t mangle
-Date: 31 Jul 2003 15:47:56 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: ftp
+Date: 31 Jul 2003 15:50:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059659276.3107.14.camel@scaramouche.combox.de>
-References: <1059631347.4280.27.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <1059659423.2375.42.camel@elendil.intranet.cartel-securite.net>
+References: <3F26B8F7.9040806@lou-telecom.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1059631347.4280.27.camel@jasiiitosh.nexusmgmt.com>
+In-Reply-To: <3F26B8F7.9040806@lou-telecom.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Gary Metcalf <gtm@lou-telecom.net>
 Cc: netfilter@lists.netfilter.org
 
-On Don, 2003-07-31 at 08:02, John A. Sullivan III via COM.BOX TEMA
-wrote:
-> Our idea was to filter malicious packets - spoofs, ping floods,
-> suspicious tcp flags - in the mangle table.  We were concerned that we
-> wanted to intercept these packets before they hit the connection
-> tracking table for DNAT'd devices in case someone initiated a valid
-> session and then tried to turn it foul.  We also noticed that the mangle
-> table was the first all packets hit.
-> 
-> So we jumped various, possibly malicious, packets from -t mangle
-> PREROUTING to -t mangle ProtectionMangle where they are examined for
-> possible malice.  Are we being foolish or is this the best place to weed
-> out possible problems?
+Le mar 29/07/2003 =E0 20:12, Gary Metcalf a =E9crit :
+> I set my INPUT tables to DROP all tcp entries. Before that line I put i=
+n=20
+> some ports to ACCEPT such as port 80 for http. This works as I had a=20
+> friend run nmap to my ip and it came back with all blocked except for=20
+> port 80. He could also get my Web page via a browser. I Have one proble=
+m=20
+> still. When I try to ftp out to a site I can get loged in but if I ente=
+r=20
+> any command such as 'ls' or '?' I get the message back that 200 PORT=20
+> command successfull but I never see the list of files or commands. I=20
+> can't even execute a 'bye' command and get out. What port do I need=20
+> opened up to use ftp from my computer to another.
+>    I tried ports 20, 21, 69 and 115 but they did no good. I found these=
+=20
+> in the /etc/services file.
 
-I'm using that chain (mangle/PREROUTING) for exactly this kind of
-stuff on all my servers.
+This a VFAQ...
 
-Indeed, I sometime fantasize about writing a single netfilter match
-which contains these matches, thus increasing performance. Probably,
-I'd just extend unclean, which already is a kind of unified trash
-matcher, and a good one.
+	modprobe ip_conntrack_ftp.
 
-So no, you're not being foolish, but not doing "something of
-extraordinary creativity" either, I'm afraid ;-)
+Then use state matching aginst ESTABLISHED and RELATED packets to let
+them get in.
 
-- Torsten
+	iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+(quick and dirty, but it works ;)).
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
