@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Possible huge iptables memory leakage
-Date: Thu, 31 Jul 2003 13:14:51 -0700
+From: Peteris Krumins <newsgroups@lf.lv>
+Subject: iptables icmp protocol match bug.
+Date: Thu, 31 Jul 2003 23:26:35 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E14@alderaan.smgtec.com>
+Message-ID: <68268272785.20030731232635@lf.lv>
+Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Resent-Message-Id: <200307312029.h6VKTM5l021296@mail.lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +18,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peteris Krumins <newsgroups@lf.lv>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I am not sure what everyone else's environments are like, but I am
-definitely getting memory infinitely swallowed into Netfilter somewhere.
-I have userspace programs, but put together they take less than 5% of
-the system memory.
+Hello,
 
-I forced myself to reboot once the ACTIVE memory takes 95% of the CPU,
-which was every 3 weeks with 196mb of RAM. This server averaged 200 -
-250 connection tracks during office hours. The ramping active memory
-usage went up in a very linear pattern until it took all the system, at
-which point I would have to reboot due to performance degradation.
+ A quick bug report:
+ (sorry for crossposting to devel and user list, but i am interested
+ if anyone else can reproduce)
 
-The last reboot, I decided to play with the machine's settings and add
-some memory totaling 256MB. I also disabled my SWAP partition because I
-have a few database servers that perform fantastically when kswapd isn't
-used much.=20
+ iptables -A INPUT -p icmp --icmp-type 255 -i lo -j REJECT
 
-The result: Active memory 'seems' to have stabilized around 75MB at
-least for the few days that it has been stable. I cannot tell if this
-was totally kswap's fault, or even if the problem has been fixed at all.
-It does look promising though.
+ this rule also denies icmp ping and i think anything else of icmp.
 
+ Works for me at least on 2.4.22-pre6 and patch-o-matic-20030714
+ havent tried w/ newer versions.
+ 
+ Does not work on base 2.4.20 and iptables 1.2.7a
+
+proof:
+--
+z@xor:/[1032]# iptables -A INPUT -p icmp --icmp-type 255 -i lo -j REJECT
+z@xor:/[1033]# ping localhost -c 5
+PING localhost (127.0.0.1): 56 octets data
+
+--- localhost ping statistics ---
+5 packets transmitted, 0 packets received, 100% packet loss
+
+z@xor:/[1034]# iptables -D INPUT -p icmp --icmp-type 255 -i lo -j REJECT
+z@xor:/[1035]# ping localhost -c 5
+PING localhost (127.0.0.1): 56 octets data
+64 octets from 127.0.0.1: icmp_seq=0 ttl=128 time=0.3 ms
+64 octets from 127.0.0.1: icmp_seq=1 ttl=128 time=0.3 ms
+^C
+
+
+P.Krumins
+
+
+
+
+
+
+
+netfilter-devel@lists.netfilter.org
 
 
