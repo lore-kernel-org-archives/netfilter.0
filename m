@@ -1,12 +1,12 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: RE: Is it possible to Jam windows network neighbour?
-Date: Wed, 25 Aug 2004 01:01:04 -0700 (PDT)
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: Iptables error
+Date: Wed, 25 Aug 2004 10:19:46 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040825080104.94531.qmail@web60403.mail.yahoo.com>
-References: <1093372602.3704.71.camel@Sewak.Asr.Lan>
+Message-ID: <200408251019.46720.pandre@darkstar.nom.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1093372602.3704.71.camel@Sewak.Asr.Lan>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,98 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: skpobox@hotpop.com, Jason Opperisano <Jopperisano@alphanumeric.com>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-O.K. 
-I am putting a fictitious situation as follows :
+This morning I rebooted one of our firewalls, I have created a new kernel for 
+it (2.4.20, patched kernel with latest p-o-m ng). 
+When I run my firewall script, all I get is errors, seems to be a problem with 
+iptables 'tables' as none of the rules are create but the default policies 
+are in place, in dmesg I have the following error:
 
-Linux server with iptables firewall acts as Gateway
-for internet configured as DHCP server with only mac
-address setup in DHCP configuration file, having win
-98 clients. 
-Another Linux server acts as File server, having it's
-owm iptables rules to block unwanted mac-addresses
-same win 98 clients also acts as DHCP server.
+ip_tables: table screwed up!
 
-Now win client setup have Gateway IP as IP of Internet
-Gateway and WIN server IP as IP of file server.
+This firewall is a production server and I can only really take it down 
+tonight to check it, anyone had something like this before?
 
-DHCP HOWTO asks to add following lines for individual
-clients in DHCP configuration file.
+Paulo
 
-####
-host xyz {
-   hardware ethernet 08:00:2b:4c:59:23;
-   fixed-address 192.168.1.222;
-}
-
-####
-In this case Can i use above setting by eliminating
-line specifying IP address (fixed-address
-192.168.1.222;
-)?
-
-so that IP addrress/subnet of client will not be known
-to anybody.
-
-Now if outside user with Laptop try to connect to this
-network with one of the network switch, with concent
-of any win 98 client user and in absence of
-administator by assigning any IP address of any subnet
-(By trying permutation combination of 192.0.0.0,
-10.0.0.0, 172.0.0.0) then will not get access to any
-win 98 machine by netbour neighbour.
-
-I am not sure whether this will work, I should try but
-in the mean time is it feasible?
-
-Hope i have made requirements clear.
-
-Thanks for support.
-
---- Sanjay Arora <skpobox@hotpop.com> wrote:
-
-> On Tue, 2004-08-24 at 23:00, Jason Opperisano wrote:
-> 
-> > 
-> > so, essentially, put every machine on its own
-> dedicated subnet and have all traffic routed through
-> the firewall?  that sounds scalable...
-> > 
-> > -j
-> > 
-> Never claimed scalable ;-) 
-> 
-> Sanjay.
-> 
-> 
-> 
-> 
-
---- Sanjay Arora <skpobox@hotpop.com> wrote:
-
-> On Tue, 2004-08-24 at 23:00, Jason Opperisano wrote:
-> 
-> > 
-> > so, essentially, put every machine on its own
-> dedicated subnet and have all traffic routed through
-> the firewall?  that sounds scalable...
-> > 
-> > -j
-> > 
-> Never claimed scalable ;-) 
-> 
-> Sanjay.
-> 
-> 
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
