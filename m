@@ -1,12 +1,13 @@
-From: "Lawrence Tang" <ingsiong@daltron.com.pg>
-Subject: Block MSN Messenger & Yahoo Messenger
-Date: Thu, 11 Dec 2003 10:43:28 +1000
+From: Michael Gale <mgale@utilitran.com>
+Subject: Re: Help with iptables
+Date: Wed, 10 Dec 2003 17:46:24 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01a301c3bf7f$cb941fe0$7700000a@lawrencewin2k>
+Message-ID: <20031210174624.010db97c.mgale@utilitran.com>
+References: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_019E_01C3BFD3.9C8BFB10"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello,
 
-------=_NextPart_000_019E_01C3BFD3.9C8BFB10
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+	Why not run squid only on the internal interface .. can you not provide squid with the IP or interface to listen on ?
 
-Hi,
-    I have an RH9 with NAT access for the client. I would like to block =
-MSN & Yahoo messenger from the client to access.
-    Can any body advice me ? Thanks in advance.
+Also iptables -A INPUT -i external_interface -p tcp --dport 3128 -j DROP
 
-Best Regards,
-=20
-Lawrence Tang=20
+should do the trick .... if you set a default policy to DROP and only pass the things you want. That would be better :)
 
-------=_NextPart_000_019E_01C3BFD3.9C8BFB10
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+iptables --policy INPUT ACCEPT
+iptables --policy OUTPUT ACCEPT
+iptables --policy FORWARD ACCEPT 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I have an RH9 with =
-NAT access=20
-for the client. I would like to block MSN &amp; Yahoo messenger from the =
-client=20
-to access.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Can any body advice =
-me ? Thanks=20
-in advance.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Best Regards,<BR>&nbsp;<BR>Lawrence =
-Tang=20
-<BR></FONT></DIV></BODY></HTML>
+Michael.
 
-------=_NextPart_000_019E_01C3BFD3.9C8BFB10--
 
+On Wed, 10 Dec 2003 15:45:52 -0800
+"Bryan Dyson" <lan_administrator@solanapres.org> wrote:
+
+> 
+> Hi folks,
+> 
+> I've got my iptables setup and working with one small glitch. My ISP
+> says I'm an open proxy.
+> What I'm trying to do is set a rule in iptables that will drop port 3128
+> requests coming from the outside but still allow my internal network to
+> use the proxy on this port.
+> I've tried the following, but they seem to shut down routing of e-mail
+> from the internal mail server:
+> 
+> -A PREROUTING -I eth1 -p tcp -m tcp --dport 3128 -j DROP
+> And
+> -A PREROUTING -I x.x.x.x (public IP) -p tcp -m -tcp --dport 3128 -j DROP
+> 
+> 
+> If anyone could help I'd appreciate it.
+> 
+> Bryan Dyson
+> LAN/db Administrator
+> Solana Beach Presbyterian Church
+> 858-509-2580
+> Shelby 5.4.1472
+> 
+> 
+> 
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
