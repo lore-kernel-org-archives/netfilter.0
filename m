@@ -1,12 +1,15 @@
-From: "Wyburn, Marc Anil" <Marc.Wyburn@gb.unisys.com>
-Subject: XP DNS requests
-Date: Mon, 14 Jun 2004 14:25:33 +0100
+From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
+Subject: Re: XP DNS requests (nfcan: addressed to exclusive sender for this address)
+Date: Mon, 14 Jun 2004 19:46:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E9E5BFC4DD34D511B79900104B939D780325D27D@GB-CSC-EXCH-8>
+Message-ID: <20040614234629.GA30800@salty>
+References: <E9E5BFC4DD34D511B79900104B939D780325D27D@GB-CSC-EXCH-8>
+Reply-To: nfcan.x.jimlaur@dfgh.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <E9E5BFC4DD34D511B79900104B939D780325D27D@GB-CSC-EXCH-8> (from +nfcan+jimlaur+f0b122d971.Marc.Wyburn#gb.unisys.com@spamgourmet.com on Mon, Jun 14, 2004 at 09:25:33 -0400)
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,24 +19,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This problem has go tme stumped!!!!  I have netfilter setup (v 1.2.8.13) =
-on a Fedora Core 1 box.  It seems to be working fine except that I it is =
-dropping DNS requesets from XP clients.  Win2K and NT clients work fine. =
- If I do an NSlookup on the XP box it resolves names fine.  If I try to =
-connect ot the pages it will connect once or twice but then iptables =
-starts dropping all the DNS requests on their way out.  Heres a syslog =
-entry.
+On 2004.06.14 09:25, Wyburn Marc Anil  - Marc.Wyburn@gb. 
+unisys.com wrote:
 
-Jun	14	10:00:31	fw	kernel:	IN=3Deth1	OUT=3D	eth0 SRC=3D192.168.0.19 =
-DST=3D***.***.***.*** LEN=3D61	TOS=3D0x00 PREC=3D0x00 TTL=3D127 =
-ID=3D26601 PROTO=3DUDP SPT=3D1029 DPT=3D53 LEN=3D41=09
+> This problem has got me stumped!!!!  I have netfilter
+> setup (v 1.2.8.13) on a Fedora Core 1 box.  It seems to  
+> be working fine except that I it is dropping DNS  
+> requesets from XP clients.  Win2K and NT clients work  
+> fine.  If I do an NSlookup on the XP box it resolves  
+> names fine.  If I try to connect it will connect once
+> or twice but then iptables starts dropping all the DNS  
+> requests on their way out.
+> Heres a syslog entry.
+> 
+> Jun 14 10:00:31 fw kernel: IN=eth1 OUT=eth0
+> SRC=192.168.0.19 DST=***.***.***.***
+> LEN=61 TOS=0x00 PREC=0x00 TTL=127 ID=26601
+> PROTO=UDP SPT=1029 DPT=53 LEN=41	
+>
+Well, it seems that you are logging it.
+Why do you think iptables is not the source
+of the log message you showed above?
 
-I don't think that iptables is the problem since every other PC works =
-fine.  I've even looked at the packets in Ethereal but can't work out =
-why this is happening. Has anyone else come across this??
+If you are logging this from iptables,
+then you could add something like:
+... -j LOG --log-prefix "IPT DNS REJ "
+to confirm the rule involved.
 
-Cheers for any help Marc.
+Perhaps knowing the rule involved would
+provide some insight?
+
+You could also look at the counts, using:
+  iptables -L -nvx
+to see if you can identify the rule that way.
+
+I think I had an XP related problem that
+resulted from being very fussy about dns
+connections. I think XP uses a varying high
+source port, like the 1029 your log shows,
+and I think that may be unusual.
+
+Is it possible that you have rules that
+might block upd source ports in this range?
+
+Jim
 
