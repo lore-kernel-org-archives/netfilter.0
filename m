@@ -1,10 +1,9 @@
-From: "E-GIM Security" <security@e-gim.es>
-Subject: Problemas with ULOG
-Date: Thu, 21 Nov 2002 14:18:58 -0000
+From: =?iso-8859-1?B?SOlsaW8gRHViZXV4?= <hdubeux@hotmail.com>
+Subject: Problem with FTP trought iptables.
+Date: Tue, 19 Nov 2002 16:00:19 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NEBBKLENIBMGHGCLGBPIGEPBCCAA.security@e-gim.es>
+Message-ID: <F171brl26XyrAaDJs2L00017900@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,32 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
+I has a Linux box act as a gateway eith iptables, i had already enabled the=
+=20
+ftp and irc conntrack modules, NAT is configured too. I have a windows 98=20
+connected to this gateway and i have about 5 machines connected by a HUB to=
+=20
+this W98 machine sharing the internet connection. I trie to use a program=20
+called CuteFTP to access remote ftp sites and i can not download or upload =
 
-	Hi,
-
-	I'm using RH 8.0 and i think kernel is ok (ULOG Target support, ....). I
-test with ulog 0.97 and 0.98. I test with kernel 2.4.18 and 2.4.19
-
-	 If I try use ULOG target, for example: iptables -A INPUT -s 192.168.0.1 -p
-tcp -j ULOG --log-prfix "test", the command fails and say "Bad argument
-'test'". Why? What it not work?
-
-	Thanks
-
-Jos=E9 Antonio Garc=EDa Garc=EDa
-Jefe Departamento Desarrollo
-
-GIM - IT Deusto	+34 952700010
-	+34 952700670
-C/ Merecillas, 54. Bajo	+34 952702928
-29200 Antequera (M=E1laga)* security@e-gim.es
-ESPA=D1A		http://www.e-gim.es
+files. What=B4s wrong? Do i have to enable some other module in my kernel??=
+? I=20
+set transfer module in DOS to binary and didn=B4t work as well.
 
 
 
 
+
+----------------------
+H=E9lio Dubeux Neto
+
+
+
+
+_________________________________________________________________
+MSN Messenger: converse com os seus amigos online.=20
+http://messenger.msn.com.br
 
 
