@@ -1,11 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: falling off custom chains [WAS Re: No Internet Connection]
-Date: Fri, 10 Sep 2004 15:46:43 -0400
+From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
+Subject: RE: allowing connection
+Date: Fri, 10 Sep 2004 16:11:45 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094845603.1900.175.camel@wolfpack.ljm.dom>
+Message-ID: <200409102007.i8AK7ddg036736@jkcpub.iserver.net>
+References: <20040910181819.GA31430@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20040910181819.GA31430@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,96 +18,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Payal Rathod' <payal-netfilter@scriptkitchen.com>, 'Netfilter ML' <netfilter@lists.netfilter.org>
 
-thought i would just go ahead and test this, to make sure i wasn't
-batty.  for those of you not following the "No Internet Connection"
-thread--the question was, if i set the default policy of a chain (like
-OUTPUT) to DROP, and jump to a custom chain from that chain--what
-happens to packets that reach the end of the custom chain?
+Hi Payal,
 
-answer:  they *do* continue traversing the calling chain where they left
-off.  i set up this simple test to confirm:
+You can use the MAC match to restrict access.
 
-- set the default policy of OUTPUT to drop
-- jump to two custom chains in OUTPUT that only match TCP packets
-- create OUTPUT rules after the custom chains that log & accept ICMP
-packets
-- ping the default gateway from this firewall
+Something like this:
 
-details of the test machine:
+iptables -t mangle -A PREROUTING -s (Masqueraded_IP) -m mac --mac-source
+(MAC_ADDR_MACHINE) -j ACCEPT
 
-# uname -a
-Linux vmg2 2.4.26-gentoo-r9 #2 Fri Sep 3 07:13:35 EDT 2004 i686 Intel(R)
-Pentium(R) 4 CPU 2.20GHz GenuineIntel GNU/Linux
+Please follow the link below and read 6.4.3.2 for further understanding:
 
-# iptables -V
-iptables v1.2.11
+http://iptables-tutorial.frozentux.net/chunkyhtml/matches.html#GENERICMATCHE
+S
 
-------------------
--- SCRIPT BEGIN --
-------------------
-#!/bin/bash
+Hope this helps!
 
-# start clean
-iptables -F
-iptables -X
-iptables -F -t nat
-iptables -X -t nat
-iptables -F -t mangle
-iptables -X -t mangle
+Regards,
 
-# set all policies to drop
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+Deepak Seshadri
 
-# custom chain--drop SYN-FIN Scans
-iptables -N badstuff
-iptables -A badstuff -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
 
-# custom chain--allow new, tcp SYN packets
-iptables -N tcpstuff
-iptables -A tcpstuff -p tcp --syn -m state --state NEW -j ACCEPT
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Payal Rathod
+Sent: Friday, September 10, 2004 2:18 PM
+To: Netfilter ML
+Subject: allowing connection
 
-# allow stateful replies in & log dropped packets
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -j LOG --log-prefix "FW DROP IN: "
+Hi,
+Right now I am allowing only my client's LAN access one of my 
+design's machine from the internet. Their LAN is a simple network,
+with a single IP and other machines are masqueraded. Now I want to allow
+only one of their machine to access my machine. Can I do it? I mean 
+the machine is on 192.168.1.x series of IP, but can I restrict it
+on mac address basis? If yes, how do I do it?
 
-iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -j badstuff
-iptables -A OUTPUT -j tcpstuff
-iptables -A OUTPUT -p icmp -j LOG --log-prefix "FW OUT ICMP: "
-iptables -A OUTPUT -p icmp -j ACCEPT
-iptables -A OUTPUT -j LOG --log-prefix "FW DROP OUT: "
-----------------
--- SCRIPT END --
-----------------
+With warm regards,
+-Payal
 
-i then pinged out from this firewall, which means we have to make it
-through "badstuff" and "tcpstuff" in the OUTPUT chain before we get to
-the pair of rules that log & allow ICMP packets out:
-
-# ping -n -c1 172.30.30.2
-PING 172.30.30.2 (172.30.30.2) 56(84) bytes of data.
-64 bytes from 172.30.30.2: icmp_seq=1 ttl=128 time=0.548 ms
-
---- 172.30.30.2 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.548/0.548/0.548/0.000 ms
-
-and the resulting log entry, confirming this:
-
-Sep 10 19:39:26 vmg2 FW OUT ICMP: IN= OUT=eth0 SRC=172.30.30.12
-DST=172.30.30.2 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP
-TYPE=8 CODE=0 ID=34341 SEQ=1
-
-Hope this helps clear this up for anyone reading that thread (or
-googling the archives in the future).
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
 
 
