@@ -1,12 +1,12 @@
-From: "Muhammad Talha" <talha@worldcall.net.pk>
-Subject: Re: kernel 2.6.x and iptables
-Date: Tue, 13 Jan 2004 16:53:19 +0500
+From: Rakotomandimby Mihamina <mrakotom@free.fr>
+Subject: What order ? I'm confused ...
+Date: Tue, 13 Jan 2004 12:57:26 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008401c3d9cb$d634aa30$23c051cb@ns3.worldcall.net.pk>
-References: <00cb01c3d9b6$cd9b2d00$23c051cb@ns3.worldcall.net.pk> <200401130503.39528.Alistair Tonner <>>
+Message-ID: <200401131257.26388.mrakotom@free.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,52 +19,55 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi all ,
+I run Iptables 1.2.9 on a 2.4.24 kernel :
 
->
->   for both users with the 'failed to initialize' error -- 1) did you build
-iptables as modules or
->  into the kernel?
+I dont understand the way a (network) packet follows through the iptables rules .
 
-as module
+For example , for the INPUT  table , i have this set of rules (in this order) :
+#========================================
+iptables -P INPUT DROP
 
--- 2) are you *certain* you disabled ipchains
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -i eth0 -j ACCEPT
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 8090 -j ACCEPT
+iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+iptables -A INPUT -p tcp --dport 10080 -j ACCEPT
+iptables -A INPUT -p tcp --dport 9000 -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
 
-Yes i disable ipchains
-.
-> 3) are you *certain* that you built iptables with the correct kernel?
->    -- if you change kernels you usually have to rebuilt the iptables
-code -- 
-> export KERNEL_DIR=xxxxx make
-> where xxxxx is the full path to your appropriate kernel source code.
->
+iptables -A INPUT -j REJECT
 
-yes i select correct kernel
+iptables -A INPUT -j LOG --log-level info --log-prefix "iptables_rktmb : "
+iptables -A INPUT -p tcp --syn -m limit --limit 1/s -j ACCEPT
+iptables -A INPUT -i ppp0 -m unclean -j DROP
+#========================================
 
-export KERNEL_DIR=/usr/src/linux-2.6.1
-then
-make & make install
+well , my questions are :
 
->   this is usually caused after a kernel rebuild by building modules and
-NOT loading them, especially
-> if the iptables stuff was built into the kernel in the previous kernel.
-> -- try
-> insmod ip_tables
->  you might get yet another error ...
->
+If a packet arrives ( fromt the Net , ppp0 interface ) , what rule does he meet first ? 
+( "iptables -P INPUT DROP" or "iptables -A INPUT -i ppp0 -m unclean -j DROP") 
 
-Yes u r right :(
+I am tempted to answer : "iptables -A INPUT -i ppp0 -m unclean -j DROP" ...
+so that the filtering process begins from the last rule to the first .
+Am I right ?
 
-insmod ip_tables
+So . 
+On the other hand , when i read man iptables about logging ( LOG target ) : i see that
+the LOG target should be _after_ the DROP ( or REJECT ) so that I understand that if the packet comes from the net , 
+it meets the first rule first and the last one at last .
 
-Can't open 'ip_tables' : No such file or directory
+What's the truth ?
 
-there is no module ip_module i have search the system
-
-> Ummm ...anyone know off the top if RedHat puts iptables in as modules or
-builds it in?
->
->
-> Alistair
->
+i put the rule about the "unclean" stuff at the end because i read somewhere in a tutorial that its best place is there ...
+-- 
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
 
