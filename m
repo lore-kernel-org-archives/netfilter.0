@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Samba "Leak"
-Date: Wed, 7 Jul 2004 23:03:51 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Problem compiling Iptables 1.2.11 on Kernel 2.6.7 <Resolved,
+ but other problem>
+Date: Thu, 8 Jul 2004 00:21:23 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407072303.51085.Antony@Soft-Solutions.co.uk>
-References: <1089228185.30076.14.camel@localhost> <200407072035.48484.Antony@Soft-Solutions.co.uk> <1089237164.30076.23.camel@localhost>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <Pine.LNX.4.33.0407080018070.13450-100000@blackhole.kfki.hu>
+References: <035101c46432$19e49650$800101df@lvl.digidyne.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1089237164.30076.23.camel@localhost>
+In-Reply-To: <035101c46432$19e49650$800101df@lvl.digidyne.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eric Poulin <epoulin@onepost.net>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 07 July 2004 10:52 pm, David Cary Hart wrote:
+On Wed, 7 Jul 2004, Eric Poulin wrote:
 
-> On Wed, 2004-07-07 at 15:35, Antony Stone wrote:
-> >
-> > Here are my comments / thoughts:
-> >
-> > 1. Just because you're seeing WAN addresses doesn't mean they aren't
-> > spoofed (they could be packets from the LAN, but with external source
-> > addresses?)
+> Hum, I'm getting a new problem thought while compiling iptables as modules
+> inside my new kernel...
 >
-> ??
+> net/ipv4/netfilter/ip_conntrack_standalone.c:222: error: redefinition of
+> `ip_conntrack_defrag'
+> net/ipv4/netfilter/ip_conntrack_standalone.c:202: error:
+> `ip_conntrack_defrag' previously defined here
+> net/ipv4/netfilter/ip_conntrack_standalone.c:303: error: redefinition of
+> `ip_conntrack_defrag_local_out_ops'
+> net/ipv4/netfilter/ip_conntrack_standalone.c:295: error:
+> `ip_conntrack_defrag_local_out_ops' previously defined here
+> net/ipv4/netfilter/ip_conntrack_standalone.c:202: warning:
+> `ip_conntrack_defrag' defined but not used
+> net/ipv4/netfilter/ip_conntrack_standalone.c:295: warning:
+> `ip_conntrack_defrag_local_out_ops' defined but not used
+> {standard input}: Assembler messages:
+> {standard input}:745: Error: symbol `ip_conntrack_defrag_local_out_ops' is
+> already defined
+> make[3]: *** [net/ipv4/netfilter/ip_conntrack_standalone.o] Error 1
+> make[2]: *** [net/ipv4/netfilter] Error 2
+> make[1]: *** [net/ipv4] Error 2
+> make: *** [net] Error 2
 
-I can't think of a good reason why, but it seems quite possible to me that 
-some Trojan / malware on an internal machine might generate packets with 
-false source IPs?
+I'm unable to reproduce this. Linux 2.6.7 kernel patched with
+08_linux-2.6.7-user_attr.patch (which does not touch
+ip_conntrack_standalone.c at all) from pom-ng cvs compiles cleanly.
 
-I was just trying to think up an explanation for you seeing packets on your 
-LAN with public IPs which didn't come through your firewall...
+What do you *exactly* do?
 
-> > 2. Do you have any wireless involved anywhere, as a means for unknown
-> > clients to access the network?
->
-> Yes. Security is through the MAC of the client card. It's hard coded for
-> our two cards. Encryption is still a challenge for MadWifi. I assumed
-> that only the MAC of the router is sent out with packets.
-
-Most Access Points are operated as bridges; therefore the MAC addresses will 
-be the real MAC addresses of the communicating devices - you will never see 
-the MAC address of the AP on packets unless someone is communicating with it 
-directly (eg: SNMP?).
-
-> > 3. A packet sniffer / IDS on the external firewall link + the Samba
-> > subnet (DMZ?) should tell you what is really going on.   Maybe a chance
-> > to play with Snort :)
->
-> That's the simplest solution. I never could quite get the hang of The
-> Pig but I suppose that Ethereal should get it done.
-
-Yup - ethereal listening on both an external and an internal interface should 
-do a perfectly good job.
-
-Regards,
-
-Antony.
-
--- 
-Perfection in design is achieved not when there is nothing left to add, but 
-rather when there is nothing left to take away.
-
- - Antoine de Saint-Exupery
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
