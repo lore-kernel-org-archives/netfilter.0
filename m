@@ -1,12 +1,16 @@
-From: "bino_oetomo" <bino@indoakses-online.com>
-Subject: Re: iptables + MRTG
-Date: Tue, 31 Aug 2004 20:17:06 +0700
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: list delete bug: kernel crash
+Date: Tue, 31 Aug 2004 14:24:54 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <00c301c48f5e$69b53e80$0300a8c0@indoaksesbno>
-References: <a0f69e5040828042815b5e61e@mail.gmail.com>
+Message-ID: <200408311424.54003.gdh@acentral.co.uk>
+References: <003701c48ee9$e1ad1f40$0a00a8c0@aziz>
+	<001c01c48f4f$2a7f7140$0a00a8c0@aziz>
+	<000a01c48f5c$e8560050$0a00a8c0@aziz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <000a01c48f5c$e8560050$0a00a8c0@aziz>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +21,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+On Tuesday 31 August 2004 14:17, security wrote:
 
------ Original Message ----- 
-From: "Askar" <askarali@gmail.com>
-To: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Saturday, August 28, 2004 6:28 PM
-Subject: iptables + MRTG
+> Hum still have crash. I have test again my memory, made 10 pass with
+> memtest86 without error found.
 
+This may be a long shot, but there may exist the possibility of the files on 
+disk being corrupted when they were installed, due to your faulty memory?
 
-> hi,
-> 
-> Anyone here using MRTG with iptables? for example to check iptables -L
-> -nvx things graphical using mrtg... or any other statistics
-> any possibility ?
-> 
+Try to reinstall the kernel / modules and iptables userspace?
 
-Take a look at "Passtrough" methode of extending netsnmp.
-all you need is just a simple bash script
-and you can "call" your snmp via MRTG and other snmp-manager.
-
-Sincerely
--bino-
-
+Cheers,
+Gavin.
 
