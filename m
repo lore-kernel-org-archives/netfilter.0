@@ -1,16 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: OT: Switch packet leakage
-Date: Tue, 29 Mar 2005 12:37:29 -0500 (EST)
-Message-ID: <Pine.LNX.4.60.0503291234250.13347@darkstar.sysinfo.com>
-References: <1403218a05032703237431b6a4@mail.gmail.com> 
-	<1111944083.4316.3.camel@hubcap.ljm.dom>
-	<1111951460.5199.7.camel@anduril.intranet.cartel-securite.net>
-	<1403218a05032803345ddd21ed@mail.gmail.com>
-	<Pine.LNX.4.60.0503280641230.26438@darkstar.sysinfo.com>
-	<1403218a050329063111d8c60f@mail.gmail.com>
+From: =?iso-8859-1?Q?"Bj=F6rn=20Eberth"?= <Bjoern.Eberth@web.de>
+Subject: Re: Changing the ip_ct_tcp_timeout_established value
+Date: Tue, 29 Mar 2005 20:54:15 +0100
+Message-ID: <1138392081@web.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a050329063111d8c60f@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,94 +16,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi there,
 
-On Tue, 29 Mar 2005, Mohamed Eldesoky wrote:
+thx for the answer, but it seems as this doesnt fix my problem.
+It seems as if the value in "ip=5Fconntrack=5Ftcp=5Ftimeout=5Festablished" isnt in=
+terpreted, cause i see lots of entries like this in the ip=5Fconntrack table=
+:
+tcp      6 231752 ESTABLISHED src=3Dyyy.yyy.yyy.yyy dst=3Dxxx.xxx.xxx.xxx spor=
+t=3D3139 dport=3D6881 src=3Dxxx.xxx.xxx.xxx dst=3Dzzz.zzz.zzz.zzz sport=3D6881 dport=
+=3D3139 [ASSURED] use=3D1
 
-> Examples of what ??
-> You mean packet captures ??
-> No need to provide it, since the source and destinations of those
-> packets, are not the machine from where I do sniffing, and it is not
-> the gateway, and these are not broadcasts, but TCP connections.
->
+The third field is the timeout value i think=3F So this would be 231752 seco=
+nds, which is much larger then the value in ip=5Fconntrack=5Ftcp=5Ftimeout=5Festab=
+lished.
+Im running a 2.4.27 kernel with iptables 1.2.11. Is the value ignored in t=
+his versions by design=3F
+Any advices=3F
 
-examples of exactly what kind of packet leakage you experienced on which 
-vendors switches running what specific switch software.  Packet traces 
-would be nice, but are not required.  You made the statement you commonly 
-ran into these issues on various vendors products, I'm merely asking that 
-you share specifics of the information you claim.
+Regards
+Bjoern
 
-Thanks,
+Moritz Gartenmeister <moritz@uplink-verein.ch> schrieb am 27.03.05 19:36:2=
+1:
+>=20
+> hi bjoern
+>=20
+> i changed this value to ten minutes. this reduced the ip=5Fconntrack=5Fcount=
+ from 8000 to 3000 and it=20
+> saves memory.
+>=20
+> i don't notice any problems. it's possible that if you are using connect=
+ions without keepalive=20
+> function, that they will probably suffer. but i assume, that connections=
+ without traffic for ten=20
+> minutes are anormal closed.
+>=20
+> regards
+> moritz
+>=20
+> Bj=F6rn Eberth wrote:
+> > Hi there,
+> >=20
+> > the default value for "ip=5Fconntrack=5Ftcp=5Ftimeout=5Festablished" is set to=
+ 5 days.
+> > My problem is, that after about 2 days of using a filesharing client t=
+he ip=5Fconntrack table runs full.
+> > Im using a dial-up connection with 24 hours reconnect.
+> > So my question is: Could i run into problems, if i set this value to 2=
+4 hours or something like this=3F
+> >=20
+> > Regards
+> > Bjoern
+> >=20
+> >=20
 
-Ron DuFresne
 
-> On Mon, 28 Mar 2005 06:42:16 -0500 (EST), R. DuFresne
-> <dufresne@sysinfo.com> wrote:
->> -----BEGIN PGP SIGNED MESSAGE-----
->> Hash: SHA1
->>
->> On Mon, 28 Mar 2005, Mohamed Eldesoky wrote:
->>
->>> I faced that problem with many switches from cisco, foundry, 3com !!!
->>> The last switch I have tested was catalyst 3650 !!!
->>> It is not a bad switch, I guess !!!
->>>
->>
->> Examples, can they be provided?
->>
->> Thanks,
->>
->> Ron DuFresne
->> - --
->> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>          admin & senior security consultant:  sysinfo.com
->>                          http://sysinfo.com
->>
->> ...Love is the ultimate outlaw.  It just won't adhere to rules.
->> The most any of us can do is sign on as it's accomplice.  Instead
->> of vowing to honor and obey, maybe we should swear to aid and abet.
->> That would mean that security is out of the question.  The words
->> "make" and "stay" become inappropriate.  My love for you has no
->> strings attached.  I love you for free...
->>                          -Tom Robins <Still Life With Woodpecker>
->> -----BEGIN PGP SIGNATURE-----
->> Version: GnuPG v1.2.4 (GNU/Linux)
->>
->> iD8DBQFCR+2cst+vzJSwZikRAlYFAJ9bmH/NKDTpnF9BvYITCNSekXLzfgCfZX8m
->> d/FexS62VxsbQQUb9/2hiGc=
->> =obvf
->> -----END PGP SIGNATURE-----
->>
->
->
-> --
-> Mohamed Eldesoky
-> www.eldesoky.net
->
+=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
+Verschicken Sie romantische, coole und witzige Bilder per SMS!
+Jetzt bei WEB.DE FreeMail: http://f.web.de/=3Fmc=3D021193
 
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                         -Tom Robins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCSZJest+vzJSwZikRAjpKAKDQYlKAsExY3mCuSLnOcul94Yi2jACgynJZ
-cotDVf79FOS8detCKmEz6mg=
-=IQUw
------END PGP SIGNATURE-----
 
