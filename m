@@ -1,17 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: "selective" connection tracking?
-Date: Fri, 31 Oct 2003 14:18:21 +0100
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: iptables scripts
+Date: Fri, 31 Oct 2003 08:22:27 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067606301.4568.11.camel@elendil.intranet.cartel-securite.net>
-References: <3F9EA786.5060401@otaku42.de>
-	 <1067591422.812.13.camel@elendil.intranet.cartel-securite.net>
-	 <3FA23DB7.3010300@otaku42.de>
-	 <1067598149.4557.7.camel@elendil.intranet.cartel-securite.net>
-	 <3FA252E2.4010304@otaku42.de>
+Message-ID: <Pine.LNX.4.44.0310310819220.6460-100000@localhost.localdomain>
+References: <1067605873.1137.62.camel@valhalla>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FA252E2.4010304@otaku42.de>
+In-Reply-To: <1067605873.1137.62.camel@valhalla>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,28 +16,95 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Michael Renzmann <mrenzmann@otaku42.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Chris Brenton <cbrenton@chrisbrenton.org>
+Cc: Gilles Yue <gyue@novelgmt.intnet.mu>, iptables mailing list <netfilter@lists.netfilter.org>
 
-Le ven 31/10/2003 =E0 13:17, Michael Renzmann a =E9crit :
-> > You're able to do anything you want, as you have to explicitly implem=
-ent
-> > which traffic you do not want to track. Suppose your local IP is
-> > A.B.C.D, then doing something like this should do the trick :
-> > 	iptables -t raw -A PREROUTING -d ! A.B.C.D -j NOTRACK
-> > Do this to exclude all traffic destined to local box.
-> You mean "not destined to the local box", right? :)
+On 31 Oct 2003, Chris Brenton wrote:
 
-I do mean "destined to the local box". You exclude from NOTRACK target
-al traffic destined to the local box, meaning you include it in
-conntrack ;)))
+> On Fri, 2003-10-31 at 07:26, Robert P. J. Day wrote:
+> >
+> > for the iptables tutorial i was talking about that i'm giving on monday,
+> > here's the first part of my script, just to show folks what they can do:
+> 
+> This is *totally* cool. Thank you for sharing this with the list! :)
+> 
+> The only thing I would add would be:
+> iptables -F INPUT
+> iptables -F OUTPUT
+> iptables -F FORWARD
+> iptables --table nat --flush
+> 
+> or what ever you need. This way you can run it from the command line and
+> clear out all existing rules before you write everything back in.
 
-We do agree, for sure.
+ah, grasshopper, i didn't show you the other two scripts i'm going
+to demo.  first, there's the lockdown script, to be run if you realize
+you've been hacked:
+---------------------------------------------------------
+#!/bin/sh
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!=20
+# PANIC!  Lock the machine down.
+
+IPT="/sbin/iptables"
+
+# Flush all chains.
+
+$IPT -F			# by default filter
+$IPT -t nat -F
+$IPT -t mangle -F
+
+# Delete all user-defined chains.
+
+for table in filter nat mangle ; do
+	$IPT -t $table -X
+done
+
+# Reset all policies to DROP.
+
+for chain in INPUT OUTPUT FORWARD ; do
+	$IPT -P $chain DROP
+done
+
+echo "System totally locked down."
+-----------------------------------------------------------
+
+  and then there's the "clear all" script, which you would run
+if you made a total mess of your rules and just want to clear
+them out:
+
+----------------------------------------------------------
+#!/bin/sh
+
+# PANIC!  We've screwed up our tables.
+
+IPT="/sbin/iptables"
+
+# Flush all chains.
+
+$IPT -F
+$IPT -t nat -F
+$IPT -t mangle -F
+
+# Delete all user-defined chains.
+
+for table in filter nat mangle ; do
+	$IPT -t $table -X
+done
+
+# Reset all policies to ACCEPT.
+
+for chain in INPUT OUTPUT FORWARD ; do
+	$IPT -P $chain ACCEPT
+done
+
+echo "System totally open, you are now fair game."
+-------------------------------------------------
+
+  the tutorial will suggest that users can incorporate 
+the above in their main script any way they want.
+
+rday
+
 
