@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FreeS/WAN + static NAT + 2 machines
-Date: Mon, 23 Sep 2002 11:48:07 +0100
+Subject: Re: Multiple conditions for logging packets
+Date: Mon, 23 Sep 2002 13:15:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209231048.g8NAmDv24210@vulcan.rissington.net>
-References: <OF4CF55ADA.1F646FD5-ONC1256C3D.003385BB-C1256C3D.003482E1@GEHAG-DSK.DE>
+Message-ID: <200209231215.g8NCFbv24344@vulcan.rissington.net>
+References: <09d001c262f1$50f418d0$0200a8c0@bart>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF4CF55ADA.1F646FD5-ONC1256C3D.003385BB-C1256C3D.003482E1@GEHAG-DSK.DE>
+In-Reply-To: <09d001c262f1$50f418d0$0200a8c0@bart>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,100 +20,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 23 September 2002 10:33 am, Walther@gehag-dsk.de wrote:
+On Monday 23 September 2002 12:06 pm, Matt Parlane wrote:
 
-> my setup is this one:
+> Hi list...
 >
-> <LAN>---<firewall>---<freeswan gateway>---<firewall with static
-> nat>--<cisco(only routing)>---<internet>
-
-Interesting.   Why do you have two separate firewalls, plus a FreeS/WAN 
-gateway ?   I would have thought:
-
-a) one firewall would be sufficient (obviously the one inside the IPsec 
-gateway, so it can filter unencrypted traffic)
-
-b) you should be able to run the firewalling, the NAT, and IPsec all on a 
-single machine (what speed is your Internet link ?)
-
-c) if necessary, you could put the IPsec machine on a DMZ interface of the 
-firewall to keep its traffic separate from the internal LAN
-
-Anyway, given the setup you have:
-
-> I want to nat incoming connections for the freeswan gateway. but up to now
-> I wasn't able to do this.
-
-I assume you are running IPsec in tunnel mode (network at both ends, Security 
-Gateways encrypting traffic and acting as routers, not endpoints), rather 
-than transport mode (one or both Security Gateways is an endpoint of the data 
-communication).
-
-Provided you are using tunnel mode, you can NAT IPsec traffic.   The ESP 
-protocol works through NAT.
-
-If you are using transport mode, you cannot NAT IPsec traffic.   The AH 
-protocol breaks under NAT.
-
-> I tried the following:
+> I have a simple linux machine acting as a firewall/gateway, and I'm after a
+> way to specify multiple conditions for rules.  Basically I want to create a
+> rule for packets which are either coming from or going to the internet -
+> not packets which are both sourced and destined for the local network.
 >
-> <--snip-->
->
-> iptables -t nat -A POSTROUTING -o $EXT -s <internal_ip_for_freeswan> -j
-> SNAT --to <external_ip_for_freeswan>
-> iptables -t nat -A PREROUTING -i $EXT -d <external_ip_for_freeswan> -j
-> DNAT --to <internal_ip_for_freeswan>
-> iptables -A FORWARD -p 50 -d <internal_ip_for_freeswan> -j ACCEPT
-> iptables -A FORWARD -p 51 -d <internal_ip_for_freeswan> -j ACCEPT
-> iptables -A FORWARD -p udp --dport 500 -d <internal_ip_for_freeswan> -j
-> ACCEPT
+> I haven't been able to do this so far using iptables rules.  Does anyone
+> have any ideas about how this might be achieved?
 
-Those rules are okay, but do you also have FORWARDing rules to allow data 
-*out* from the FreeS/WAN machine as well as into it:
+Intriguing question.
 
-iptables -A FORWARD -p udp --dport 500 -s <internal_ip_for_freeswan> -j ACCEPT
+1. Why would you have packets both sourced from and destined to the local 
+network going through your firewall anyway (maybe you have multiple internal 
+networks) ?
 
-etc. ?
+2. What's the problem with simply having two rules one after another, the 
+first of which logs packets coming in from the Internet, the second of which 
+logs packets going to the Internet ?   Both rules together end up doing the 
+job you want, and no packet is ever going to match both rules.
 
-(By the way, you could tighten that rule slightly because you know the source 
-port is 500 as well as the destination port, so specify both --sport 500 and 
---dport 500 to make sure it really is IKE traffic).
+3. Depending on what you want to do, can you handle the problem by first 
+getting rid of packets both from & to the internal network, then logging 
+what's left ?
+eg:
+iptables -N log-stuff-to-or-from-internet
+iptables -A log-stuff-to-or-from-internet -i $intIF -o $intIF -j RETURN
+any packets which get this far are not local-to-local
+iptables -A FORWARD -j log-stuff-to-or-from-internet
 
-> but this won't work for me. maybe somebody of you can help me with fixing
-> this issue.
+alternatively if you have one external interface and more than one internal 
+interface, then you can identify local packets by the fact they do not go 
+through the external internface, instead of by the fact that they do go 
+through the internal interface:
 
-The other thing which might be relevant is your ipsec.conf files on the two 
-Security Gateways: the standard FreeS/WAN instructions tell you to put the 
-same configuration file on both ends, however when you are using NAT in 
-between the two Gateways, the rule becomes:
+iptables -N log-stuff-to-or-from-internet
+iptables -A log-stuff-to-or-from-internet -i ! $extIF -o ! $extIF -j RETURN
+any packets which get this far must have either -i or -o = $extIF
 
-the configuration file on each IPsec machine must contain the addresses for 
-the local and remote machines, as known to the local machine.
-
-Thus the machine in your diagram above would have its internal IP address in 
-its own configuration file, but the IPsec machine at the other end would have 
-this machine's external IP address in its configuration file.
-
-Does that help?
-
-What do you see in your /var/log/messages when you try to start FreeS/WAN 
-running ?
-
+Does this help ?
 
 Antony.
 
-
-By the way, I have a really complicated diagram on a whiteboard which shows 
-how packets travel through the various chains / tables of netfilter on a 
-machine also running FreeS/WAN - if you ever consider setting up a single 
-machine to do your filtering, NAT and IPsec I'll figure out a way to get you 
-a copy so you can understand what rules you need and what addresses to expect 
-where.....
-
 -- 
 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
+The first ninety percent of an engineering project takes ninety percent
+of the time, and the last ten percent takes the remaining ninety percent.
 
