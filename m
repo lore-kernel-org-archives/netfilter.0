@@ -1,8 +1,8 @@
 From: =?iso-8859-1?B?SOVrYW4gRW5nYmxvbQ==?= <cynic_0@hotmail.com>
 Subject: Re: source-mac filtering
-Date: Sun, 11 Jan 2004 18:36:15 +0100
+Date: Sun, 11 Jan 2004 18:39:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea1-F70KoMFYsDSzhx00053a6c@hotmail.com>
+Message-ID: <Sea1-F167vrztUmdyB400051e33@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,46 +18,30 @@ Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Hi,
+Yes, I've come to realize that.
 
-Tried this (REDIRECT to another non-dhcp-standard udp-port) as well now, an=
-d=20
-the test indicates the same thing as before.
-Started the dhcp deamon at udp/54356 and redirected everything coming in to=
-=20
-the machine on upd/67 (normal dhcp) to port 54356.
-What happaned was that the dhcp-server did not respond. When using strace=20
-one could see that there in nothing coming in on the socket.
+Is it technically necessary for the dhcp-server to do so, or could it be=20
+that some other dhcpd behaves different ?
 
-The redirect-rule seems to work fine, pkts increasing every time something =
-
-is received on port 67 :
-# iptables -L -v -n -t nat
-Chain PREROUTING (policy ACCEPT 11 packets, 756 bytes)
-pkts bytes target     prot opt in     out     source              =20
-destination
-   27  8856 REDIRECT   udp  --  *      *       0.0.0.0/0           =20
-0.0.0.0/0          udp dpt:67 MAC 00:B0:D0:BF:27:E8 redir ports 54356
-
-
-However, when starting the dhcpd on port 67 again (still with the=20
-redirect-rule in the nat-table) the dhcp server responds, indicating (as fa=
-r=20
-as I can see, I'm a tester not a designer) tha the dhcpd is somehow=20
-"listening on a lower level" than the iptables are working.
-
-I'll try with another dhcpd.
+A work with test normally, so I don't know very much about the internal=20
+structure in Linux.
 
 br H=E5kan E.
 
 
-
->From: Alistair Tonner <>
->To: H=E5kan Engblom <cynic_0@hotmail.com>,  netfilter@lists.netfilter.org
+>From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+>To: H=E5kan Engblom <cynic_0@hotmail.com>
+>CC: netfilter@lists.netfilter.org
 >Subject: Re: source-mac filtering
->Date: Sun, 11 Jan 2004 00:55:44 -0500
+>Date: Sun, 11 Jan 2004 11:37:56 -0500
 >
->On January 10, 2004 06:20 pm, H=E5kan Engblom wrote:
+>dhcpd takes and puts packets by netlink sockets which bypass the whole
+>IP stack. So in short, you cannot filter the requests nor the response.
+>
+>Ramin
+>
+>On Sun, Jan 11, 2004 at 12:20:06AM +0100, H=E5kan Engblom wrote:
+>
 > > Hi,
 > >
 > > I've run in to a strange problem. I have a dhcp-server on a 2.4.22=20
@@ -66,32 +50,146 @@ br H=E5kan E.
 > > IP-addresses to one single mac-address (it is a single host on a private
 > > network)
 > >
+> > However I'd like to block all other mac-addresses on this interface=20
+>since I
+> > plan to have a W-LAN here as well. (to prevent attackers from using
+> > potential exploits in the dhcp-server)
+> >
+> > The mac-filter works fine for http, telnet, ssh aso, I can see the
+> > drop-counter increasing and no traffic is let through (when I change the
+> > mac-address in the iptables-config to something else than what I have o=
+n=20
+>my
+> > "dhcp-client-host"). BUT the dhcp-server keeps sending offers and ack's
+> > evethough the incoming discover/request is blocked by iptables.
+> >
+> > What makes this even more strange is that the "DROP-counters" when using
+> > "iptables -L -v" increases, and at the same time the dhcp server=20
+>responds
+> > to the requests.
+> >
+> > I'm using Internet Software Consortium DHCP Server V3.0.1rc11
+> >
+> > The machine has only one physical interface whith two IP's one private =
+
+>and
+> > one for public. The IP-address offered by the dhcp-server is private (as
+> > seen below)
 > >
 > > Does anyone have a clue ?
 > >
 > > br H=E5kan Engblom
 > >
 > > Some "logs" :
->
->	<relevant info snipped, since it has been through the list several times>
->
->	Can I think out loud for a moment???
->
->	have dhcpd listen on a *different* port than normal
->	have iptables grab relevant mac address broadcasts and redirect to=20
->appropriate port?
->
->	drop anything not in relevant mac address range?
->
->	Perhaps this might work???
->	anyone care to try?? --my personal net is static ... thankgod its only 5 =
+> >
+> > 00:30:88:00:63:10 is my DSL-connection (having to accepted packets=20
+>during
+> > this test)
+> >
+> > X.X.X.X is my public IP.
+> >
+> > (This is not the complete iptables, but it is teh interesting part for =
 
->boxen
->
->	Alistair Tonner
->
+>this
+> > matter)
+> >
+> > 00:08:29.540872      0.0.0.0 -> 255.255.255.255 DHCP DHCP Discover -
+> > Transaction ID 0xae749e48
+> > 00:08:29.541303 X.X.X.X -> 10.0.0.217   DHCP DHCP Offer    - Transactio=
+n=20
+>ID
+> > 0xae749e48
+> > 00:08:29.542117      0.0.0.0 -> 255.255.255.255 DHCP DHCP Request  -
+> > Transaction ID 0xae749e48
+> > 00:08:29.542299 X.X.X.X -> 10.0.0.217   DHCP DHCP ACK      - Transactio=
+n=20
+>ID
+> > 0xae749e48
+> >
+> >
+> >
+> > # date
+> > Sun Jan 11 00:08:08 CET 2004
+> > # iptables -L -v
+> > Chain INPUT (policy DROP 0 packets, 0 bytes)
+> > pkts bytes target     prot opt in     out     source
+> > destination
+> >    0     0 mactable   all  --  eth0   any     anywhere            =20
+>anywhere
+> >    0     0 ACCEPT     all  --  lo     any     anywhere            =20
+>anywhere
+> >    0     0 DROP      !icmp --  any    any     anywhere            =20
+>anywhere
+> >           state INVALID
+> >    0     0 eth0_in    all  --  eth0   any    !10.0.0.0/24         =20
+>anywhere
+> >    0     0 eth0_1_in  all  --  eth0   any     anywhere            =20
+>anywhere
+> >    0     0 common     all  --  any    any     anywhere            =20
+>anywhere
+> >
+> > Chain mactable (2 references)
+> > pkts bytes target     prot opt in     out     source
+> > destination
+> >    0     0 ACCEPT     all  --  any    any     anywhere            =20
+>anywhere
+> >           MAC 01:01:01:01:01:01
+> >    0     0 RETURN     all  --  any    any     anywhere            =20
+>anywhere
+> >           MAC 00:30:88:00:63:10
+> >    0     0 RETURN     all  --  any    any     anywhere            =20
+>anywhere
+> >           MAC 00:90:D0:AF:A3:F1
+> >    0     0 LOG        all  --  any    any     anywhere            =20
+>anywhere
+> >           LOG level info prefix `Shorewall:mac:DROP:'
+> >    0     0 DROP       all  --  any    any     anywhere            =20
+>anywhere
+> >
+> > # date
+> > Sun Jan 11 00:08:36 CET 2004
+> > # iptables -L -v
+> > Chain INPUT (policy DROP 0 packets, 0 bytes)
+> > pkts bytes target     prot opt in     out     source
+> > destination
+> >    4   948 mactable   all  --  eth0   any     anywhere            =20
+>anywhere
+> >    0     0 ACCEPT     all  --  lo     any     anywhere            =20
+>anywhere
+> >    0     0 DROP      !icmp --  any    any     anywhere            =20
+>anywhere
+> >           state INVALID
+> >    2   288 eth0_in    all  --  eth0   any    !10.0.0.0/24         =20
+>anywhere
+> >    0     0 eth0_1_in  all  --  eth0   any     anywhere            =20
+>anywhere
+> >    0     0 common     all  --  any    any     anywhere            =20
+>anywhere
+> >
+> > Chain mactable (2 references)
+> > pkts bytes target     prot opt in     out     source
+> > destination
+> >    0     0 ACCEPT     all  --  any    any     anywhere            =20
+>anywhere
+> >           MAC 01:01:01:01:01:01
+> >    2   288 RETURN     all  --  any    any     anywhere            =20
+>anywhere
+> >           MAC 00:30:88:00:63:10
+> >    0     0 RETURN     all  --  any    any     anywhere            =20
+>anywhere
+> >           MAC 00:90:D0:AF:A3:F1
+> >    2   660 LOG        all  --  any    any     anywhere            =20
+>anywhere
+> >           LOG level info prefix `Shorewall:mac:DROP:'
+> >    2   660 DROP       all  --  any    any     anywhere            =20
+>anywhere
+> > #
+> >
+> > _________________________________________________________________
+> > L=E4ttare att hitta dr=F6mresan med MSN Resor http://www.msn.se/resor/
+> >
 
 _________________________________________________________________
-Hitta r=E4tt p=E5 n=E4tet med MSN S=F6k http://search.msn.se/
+L=E4ttare att hitta dr=F6mresan med MSN Resor http://www.msn.se/resor/
 
 
