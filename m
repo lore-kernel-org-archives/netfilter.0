@@ -1,12 +1,11 @@
-From: Joel Newkirk <firewalldude@newkirk.us>
-Subject: Re: iptables with policy routing
-Date: Sat, 13 Nov 2004 02:45:04 -0500
-Message-ID: <4195BB80.5060702@newkirk.us>
-References: <41939AD2.602@phreaker.net>
+From: David Williamson <nospam1@nullcutter.com>
+Subject: newbie question - what is the iptables equivalent of a Linksys
+	"DMZ" ?
+Date: Sat, 13 Nov 2004 19:42:35 -0500
+Message-ID: <1100392955.4894.25.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41939AD2.602@phreaker.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,65 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: ro0ot <ro0ot@phreaker.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-ro0ot wrote:
-> Hi,
-> 
-> Below is my Linux firewall network configuration: -
-> 
+I'm brand new at this but have managed to get my Ubuntu Debian box
+routing for my home LAN.  The point for me was to replace my little blue
+Linksys router, and it's working fine so far.  About all I had to do was
+apt-get install ipmasq and dnsmasq.  
 
-> iptables -t nat -A POSTROUTING -s 172.16.0.1 -j SNAT --to-source 1.1.1.10
-> iptables -t nat -A POSTROUTING -s 192.168.0.1 -j SNAT --to-source 2.2.2.10
-> 
-> 
-> Below is my split access routing for multiple providers: -
-> 
-> # First ISP
-> ip route add 1.1.1.8/30 dev eth0 src 1.1.1.10 table 1
-> ip route add default via 1.1.1.9 table 1
-> 
-> # Second ISP
-> ip route add 2.2.2.8/30 dev eth1 src 2.2.2.10 table 2
-> ip route add default via 2.2.2.9 table 2
-> 
-> #
-> ip rule add from 1.1.1.8/30 lookup 1
-> ip rule add from 2.2.2.8/30 lookup 2
-> 
-> # My default choice of gateway
-> ip route add default via 1.1.1.9
+There's a feature on the Linksys box, however, that I can't figure out
+how to implement, because I don't know how it worked on the Linksys box,
+and that is the DMZ function.  When a machine behind the router was
+going to serve as a, for example, game server (like Unreal Tournament
+2004), the only way I could get it to work was to put that particular IP
+on the DMZ, which, I gather, meant that it looked like it was right on
+the net, unprotected, unrouted, unmasqed, et cetera.  
 
+Since I'm trying to understand what the Linksys box did and give the new
+router box the same abilities, it would help if I knew what the heck
+that feature was really called, and/or how to implement that in
+iptables. 
 
-> When I perform a traceroute from a workstation with the IP address of 
-> 192.168.0.1 and gateway 192.168.0.254, I can see the result of the 
-> traceroute going through the 1.1.1.9 gateway, why?  It suppose to SNAT 
-> to 2.2.2.10 via 2.2.2.9 gateway.
+Looking through the archives I see a lot of Linksys-related questions;
+please forgive yet another one.
 
-Happens because your default gateway is 1.1.1.9.  2.2.2.9 is only chosen 
-when the source IP is 2.2.2.8/30.  Problem is, the routing decision is 
-made BEFORE iptables->nat->POSTROUTING changes the source IP.  You will 
-have to key your routing rules on the private IPs, like so:
-
-ip rule add from 172.16.0.0/24 lookup 1
-ip r a from 192.168.0.0/24 lookup 2
-
-(I've gone through various configurations of a linux gateway router 
-connecting multiple private networks to three T1s: bridge and plain 
-router, load-balanced and source-routed, and with shaping/routing based 
-on fwmarks)
-
-j
-
-
-
-> Regards,
-> ro0ot
-> 
-> 
-> 
-> 
+david williamson
 
 
