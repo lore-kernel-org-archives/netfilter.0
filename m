@@ -1,73 +1,78 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: TTL patch buggy?
-Date: Wed, 7 Jan 2004 15:44:22 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040107204422.GB20346@cannon.eng.us.uu.net>
-References: <Pine.LNX.4.44.0401071709030.4717-100000@filer.marasystems.com> <1073502275.16972.10.camel@jasiiitosh.nexusmgmt.com> <200401071918.26902.Antony@Soft-Solutions.co.uk>
+Date: Wed, 07 Jan 2004 15:07:22 -0500
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <1073506041.16972.25.camel@jasiiitosh.nexusmgmt.com>
+References: <Pine.LNX.4.44.0401071709030.4717-100000@filer.marasystems.com>
+	 <1073502275.16972.10.camel@jasiiitosh.nexusmgmt.com>
+	 <20040107193547.GF6629@obroa-skai.de.gnumonks.org>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200401071918.26902.Antony@Soft-Solutions.co.uk>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <20040107193547.GF6629@obroa-skai.de.gnumonks.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"
+To: Harald Welte <laforge@netfilter.org>
+Cc: Henrik Nordstrom <hno@marasystems.com>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-On Wed, Jan 07, 2004 at 07:18:26PM +0000, Antony Stone wrote:
-
-> The whole point of the TTL field in IP headers in the first place was to avoid 
-> routing loops (small or large).
-
-Absolutely.
-
+On Wed, 2004-01-07 at 14:35, Harald Welte wrote:
+> On Wed, Jan 07, 2004 at 02:04:36PM -0500, John A. Sullivan III wrote:
+> > Thank you very much but could you please explain this a bit more.  Oskar
+> > Andreasson's tutorial explicitly mentions doing this, i.e., incrementing
+> > TTL and we thought it was a good idea.  We certainly want to change our
+> > ways if this is dangerous.  Here is the excerpt from the tutorial:
 > 
-> TTL gets decremented by every router a packet passes through, so that 
-> eventually after passing through some (larger than is reasonable for a normal 
-> journey) number of routers, the packet gets discarded.   In normal 
-> circumstances this does not happen, however when it does happen it is 
-> important that it happens correctly.
+> Well, as indicated in my last emai:
 > 
-> If you ever increase the value of TTL on a packet's journey through a router, 
-> then a routing loop involving that router will not be detected unless the 
-> number of other routers involved in the loop is at least as many as the 
-> amount you have increased the TTL by.
-
-Good point. I like the formulation :-)
-
-> Therefore I would suggest that leaving TTL as it is (ie: not decrementing it, 
-> but not incrementing it either) on its way through a router is just about 
-> acceptable (and this will prevent the machien from showing up in traceroutes, 
-> which I understand is the requirement here?)
-
-All that said, I believe there is no harm in incrementing the TTL for the
-inbound packets __iff__ one's network is not that deep and most definitely not
-a transit network.
-
-Ramin
-
-
-
-> but incrementing it so that its 
-> value on leaving a machine is any higher than it was on arriving at the 
-> machine is a Very Bad Idea(TM).
+> 1) it is dangerous to increment the TTL
+> 2) still, there are vallid uses.
 > 
-> IMHO & YMMV, etc...
+> In gerneral, incrementing packets heading towards your internal network
+> shouldn't be a problem.  If people want to hide their internal network
+> structure from traceroute, they have two options:
 > 
-> Antony.
+> a) drop all packets that have a ttl < number_of_hops_in_internal_net
+> b) increment the TTL by number_of_hops_in_internal_net
 > 
-> -- 
-> This is not a rehearsal.
-> This is Real Life.
+> Both ways make sure that the TTL never expires on a router in the
+> internal network.
 > 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
+> Where 'a' would interrupt traffic, and 'b' would make sure traffic
+> passes.
+<snip>
+Thanks to all of you for such insightful replies.  As I synthesize them,
+I see some problems and a possible solution.
+1) Incrementing does create the possibility of routing loops although
+this is minimal for end points.
+2) Dropping packets with ttl < number_of_internal_hops may be safer but
+requires a knowledge of the internal environment and incurs an overhead
+with every internal change.
+3) sysctl seems to provide no way to simply not send ttl expired
+messages
+4) If the goal is simply to hide the firewall, could one just drop all
+packets where ttl == 1.  These packets would never make it only the
+internal network anyway; it does not require incrementing ttl and 
+requires no knowledge of the internal network.  I assume that, since one
+can prevent the ttl expired from being sent by incrementing, that
+netfilter will grab and drop the packet before the ttl expired
+notification is sent.  Is there a problem with this approach?
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
+
 
