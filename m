@@ -1,12 +1,13 @@
-From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
-Subject: Re: UDP port closed in an http request
-Date: Tue, 21 Jan 2003 17:38:19 +0100
+From: "Michael P. Ryan" <mryan@mail.arc.nasa.gov>
+Subject: Re: strange problem.
+Date: Tue, 21 Jan 2003 14:38:26 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004f01c2c16b$81808460$026410ac@honor>
-References: <002101c2c15e$5bb17bc0$0c1ca8c0@LionelDuboeuf>
-Mime-Version: 1.0
+Message-ID: <0E88F7C6-2D91-11D7-9D04-0003934AB744@mail.arc.nasa.gov>
+References: <200301172045.02921.Alistair@nerdnet.ca>
+Mime-Version: 1.0 (Apple Message framework v551)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200301172045.02921.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Lionel Duboeuf <lionel.duboeuf@adpsa12.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Alistair@nerdnet.ca
+Cc: netfilter@lists.netfilter.org
 
-From: "Lionel Duboeuf" <lionel.duboeuf@adpsa12.org>
+My Mistake, thank you for clarifying that.
 
-> i can ping 193.252.19.189 but not www.wanadoo.fr
-> i can dig or nslookup www.wanadoo.fr which reports me 193.252.19.189
-> of course while i'm doing http://193.252.19.189 everythings works fine but
-> http://www.wanadoo.fr not.
+  I have managed to make it a bit further with my problem. I can get a 
+forward working locally from external ip to internal ip on the same 
+box, but when I try to create a forward to a system on the internal lan 
+I run into problems.
 
-enigma@gate:/home/enigma > dig www.wanadoo.fr
+I run:
 
-;; ANSWER SECTION:
-www.wanadoo.fr.         86400   IN      A       193.252.19.142
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --dport 223 -m state --state 
+NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A PREROUTING -t  nat -p tcp -d my.external.ip --dport 223 -j 
+DNAT --to 192.168.0.13:5800
 
-and i can't ping neither the fqdn nor the ip...
+when I try:
+telnet my.external.ip 22it hangs and I see the following via dmesg:
 
-enigma@gate:/home/enigma > telnet www.wanadoo.fr 80
-Trying 193.252.19.142...
-Connected to www.wanadoo.fr.
-Escape character is '^]'.
-GET / HTTP/1.1
-Host: www.wanadoo.fr
+IN=eth0 OUT=eth1 SRC=my.external.ip DST=192.168.0.13 LEN=44 TOS=0x10 
+PREC=0x00 TTL=56 ID=63199 DF PROTO=TCP SPT=50082 DPT=5800 WINDOW=32768 
+RES=0x00 SYN URGP=0
 
-HTTP/1.1 200 OK
+eventually the connection times out.
 
-works like charm here..
 
-maybe got a poisoned ns, or something strange in your hosts file?
+Any ideas?
 
+
+Thanks,
+Mike
+
+On Friday, January 17, 2003, at 05:45 PM, Alistair Tonner wrote:
+
+>
+>
+> 	Why would it show as open in netstat? .. .there is no *service*
+> 	listening on that port.   The prerouting will simply mangle the
+> 	packet so that it gets routed to the destination ... You are not 
+> opening
+> 	a port on the firewall, you are telling the firewall to take packets 
+> that
+> 	show up at that port and ip and punt them around the corner ....
+>
+> 	Alistair
+>
+>
+> On January 17, 2003 01:31 pm, Michael P. Ryan wrote:
 
 
