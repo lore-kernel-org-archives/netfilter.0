@@ -1,13 +1,15 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: DNAT and promiscuous mode
-Date: Mon, 26 Apr 2004 19:30:28 +0200
+Date: Mon, 26 Apr 2004 19:43:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1083000628.1795.4.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <1083001435.1795.8.camel@anduril.intranet.cartel-securite.net>
 References: <408D40DC.2010201@ida.net>
+	 <1083000628.1795.4.camel@anduril.intranet.cartel-securite.net>
+	 <408D4875.2030407@ida.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <408D40DC.2010201@ida.net>
+In-Reply-To: <408D4875.2030407@ida.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,19 +23,20 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: Travis Johnson <tlj@ida.net>
 Cc: netfilter@lists.netfilter.org
 
-Le lun 26/04/2004 =E0 19:03, Travis Johnson a =E9crit :
-> Is it possible to use DNAT on an interface that only runs in promiscuou=
-s=20
-> mode to redirect web traffic to a different IP address?
-> Traffic does not pass thru the firewall, only a single ethernet=20
-> interface in promiscuous mode.
+Le lun 26/04/2004 =E0 19:35, Travis Johnson a =E9crit :
+> The traffic would not be destined to that MAC address, it would simply
+> be going past this machine.
 
-Yes, you can handle traffic with a promisc interface just the way you
-handle it with a normal one as long as it is destined to its MAC
-address.
+Do you mean this machine is bridge ?
 
-But you may describe your setting and will a bit more, for I don't
-really understand the purpose of promisc there.
+> I am looking to re-direct my customers that are past due to a
+> different web page.
+
+Then transparent proxying is what you need and do not require
+promiscuous mode.
+
+
+PS : you should reply to the list (at least Cc)
 
 --=20
 http://www.netexit.com/~sid/
