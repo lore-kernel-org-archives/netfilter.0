@@ -1,12 +1,12 @@
-From: "Rimas" <rmocius@auste.elnet.lt>
-Subject: routing with the iptables
-Date: Fri, 22 Nov 2002 16:54:28 -0000
+From: ATest@sbsdk12.org (Coutts, Ashe (Testing Account))
+Subject: Linux with NAT -- Also needing web access to postgres on same box
+Date: Fri, 22 Nov 2002 10:26:29 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002c01c29247$d30c57d0$6e69690a@rimas>
-References: <200211152128.58239.sysadmin@hnoe1.sth.ac.at> <047701c28f97$895afb30$ac01a8c0@monday> <1037960290.8909.1.camel@elendil.intranet.cartel-securite.net> <1037980891.14335.5.camel@ben.mis.tnsi.com>
+Message-ID: <3DDE0655.3406.2E6F78CF@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +19,73 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I am using RedHat 7.3 with iptables 1.2.6a, 
+Apache 1.3.27 compiled with PHP 4.2.3 and mod_perl 1.27, 
+and running postgresql.
 
-Hi guys,
+I want to access data stored within postgresql from a php script.
+The exact line used for connection to postgresql is this:
+$database = pg_connect ("host=localhost  user=postgres  dbname=xbase");
 
-I have a Linux box (Redhat 7.3) with two network cards.
-eth0 is connection to my wireless ISP and eth1 is to my Firewalls (I have
-them two one is main Fw and the second one backup, just in case if a first
-one gets faulty ).
-I want to route eth0<-->eht1. Both NICs have real Internet IPs and FWs as
-well.
-FWS NICs and router eth1 are on the same subnet and router is default
-gateway for my FWs.
-I need no NAT (no needs to hide my real IP, because it have to be seen from
-Internet and will be accessible with all ports).
+If I temporarily reset the NAT process all is good, i.e. a web page displays with 
+the data correctly extracted from postgresql.
 
+Alas, when the system is functioning in its normal, NAT, mode I get the 
+following error message rather than the correct web page display:
 
-What iptables commands I have to use of it.
+=====  Begin web error message =======
+Warning: pg_connect() unable to connect to PostgreSQL server: 
+         could not connect to server: Connection timed out 
+         Is the server running on host localhost and accepting 
+         TCP/IP connections on port 5432? in 
+         /usr/www/site.admin/htdocs/sasixp/DPHS.php on line 21
+An error occured with the connection.
+=====  End web error message =======
 
-Thank you
+My thought is that a few correct addition(s) to my iptables script should allow 
+the internal connection to postgresql.
 
-Remus
+Unfortuneately, I don't yet have the skill to determine what those line(s) should 
+be.
+
+Any help and or suggestions would be very much appreciate and, I'm sure, 
+instructive.
+THANKS
+ 
+====== Begin current script for NAT ========
+# Nat Reset 
+/sbin/iptables --flush  INPUT
+/sbin/iptables --policy INPUT ACCEPT
+/sbin/iptables --flush  FORWARD
+/sbin/iptables --policy FORWARD ACCEPT
+/sbin/iptables --flush  OUTPUT
+/sbin/iptables --policy OUTPUT ACCEPT
+
+/sbin/iptables --table nat --flush  PREROUTING
+/sbin/iptables --table nat --policy PREROUTING ACCEPT
+/sbin/iptables --table nat --flush  POSTROUTING
+/sbin/iptables --table nat --policy POSTROUTING ACCEPT
+/sbin/iptables --table nat --flush  OUTPUT
+/sbin/iptables --table nat --policy OUTPUT ACCEPT
+
+# Nat SetUp
+/sbin/iptables   --table nat  --flush  POSTROUTING
+/sbin/iptables   --table nat  --policy POSTROUTING DROP
+/sbin/iptables   --table nat   \
+                        --append POSTROUTING \
+                        --source 172.16.0.0/16 \
+                        --jump SNAT \
+                        --to 204.48.xxx.yyyI
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+====== End current script for NAT ========
+
+"Experience is not what happens to you, it
+ is what you do with what happens to you"
+       -- Aldous Huxley (1894-1963)
+
+   Ashe Coutts (ashe@sbceo.k12.ca.us)
+   805.963.7751 Ext 260
+   Fax 805.884.1557
 
 
