@@ -1,11 +1,11 @@
-From: "Sean Oh" <oh@storageone.co.kr>
-Subject: Re: IP MASQ and IPROUTE2?
-Date: Tue, 15 Oct 2002 23:59:31 +0900
+From: Carles Xavier Munyoz =?iso-8859-1?q?Bald=F3?= <carles@descom.es>
+Subject: H323 NAT.
+Date: Tue, 15 Oct 2002 18:06:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <015401c2745b$777be750$f800a8c0@COMPAQ>
-References: <001101c273f5$fc2c5220$c300a8c0@COMPAQ> <01d201c27444$113613b0$6e69690a@rimas>
+Message-ID: <200210151806.05183.carles@descom.es>
+Reply-To: carles@descom.es
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,68 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Rimas <rmocius@auste.elnet.lt>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter <netfilter@lists.netfilter.org>
 
-UmltYXMsDQoNCkkgdHJpZWQgd2hhdCB5b3Ugc2FpZCwgYnV0IEkgc3RpbCBjYW4gbm90IGFjY2Vz
-cyB0aGUgc2VydmVyIHVzaW5nIGlwIGFkZHJlc3NlcyBvZiBldGgxIGFuZCBldGgyLg0KDQotLS0t
-LSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KRnJvbTogIlJpbWFzIiA8cm1vY2l1c0BhdXN0ZS5l
-bG5ldC5sdD4NClRvOiA8bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmc+DQpDYzogIlNlYW4g
-T2giIDxvaEBzdG9yYWdlb25lLmNvLmtyPg0KU2VudDogVHVlc2RheSwgT2N0b2JlciAxNSwgMjAw
-MiA5OjExIFBNDQpTdWJqZWN0OiBSZTogSVAgTUFTUSBhbmQgSVBST1VURTI/DQoNCg0KPiBTZWFu
-LA0KPiANCj4gWW91IG5lZWQgdG8gYm90aCBldGggY2FyZHMuDQo+IExpa2UgdGhpczoNCj4gDQo+
-IGlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyAkRVhURVJOQUxfSU5URVJGQUNFXzEg
-LWogTUFTUVVFUkFERQ0KPiBpcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gJEVYVEVS
-TkFMX0lOVEVSRkFDRV8yIC1qIE1BU1FVRVJBREUNCj4gDQo+IFJpbWFzDQo+IA0KPiANCj4gDQo+
-IA0KPiAtLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tDQo+IEZyb206ICJTZWFuIE9oIiA8b2hA
-c3RvcmFnZW9uZS5jby5rcj4NCj4gVG86IDxuZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZz4N
-Cj4gU2VudDogVHVlc2RheSwgT2N0b2JlciAxNSwgMjAwMiAzOjUzIEFNDQo+IFN1YmplY3Q6IElQ
-IE1BU1EgYW5kIElQUk9VVEUyPw0KPiANCj4gDQo+ID4gSGkNCj4gPg0KPiA+IEkgYW0gaGF2aW5n
-IGEgbGl0dGxlIHByb2JsZW0gd2l0aCBJUCBNQVNRIGFuZCBJUFJPVVRFMi4NCj4gPiBJIGFtIHVz
-aW5nIFJlZEhhdCA3LjMgd2l0aCBJUFRBQkxFUy4NCj4gPg0KPiA+IEkgaGF2ZSBhIGxpbnV4IGdh
-dGV3YXkgc2VydmVyIHdpdGggMyBOSUNzLg0KPiA+IFRoZSBlbnZpcm9ubWVudCBpcyBhcyBmb2xs
-b3dzOg0KPiA+DQo+ID4NCj4gPiBMb2NhbCBOZXR3b3JrICAgICAgKy0tLS0tLS0tLS0tLSsgZXRo
-MSgyMTgueC54LjIwKSAtLT4gSVNQMQ0KPiA+ICgxOTIuMTY4LjAueCkgLS0tIHwgTGludXggU2Vy
-dmVyIHwtLS0tLS0tLQ0KPiA+ICAgICAgICAgICAgICAgICBldGgwICAgfCAgICAgICAgICAgICAg
-ICAgICAgfA0KPiA+ICAgICAgIDE5Mi4xNjguMC4xICB8ICAgICAgICAgICAgICAgICAgICB8LS0t
-LS0tLS0NCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgKy0tLS0tLS0tLS0tLS0rIGV0aDIo
-MjExLngueC4xNTUpIC0tPklTUDINCj4gPg0KPiA+DQo+ID4gVGhlIGV0aDEgYW5kIGV0aDIgYXJl
-IHRoZSBsaW5rcyB0byBpbnRlcm5ldC4gSSAgaGF2ZSAyIHByb3ZpZGVycyB0bw0KPiBJbnRlcm5l
-dA0KPiA+IGFuZCBJIHdvdWxkIGxpa2UgdG8gdXNlIGV0aDIgYXMgdGhlIGRlZmF1bHQgcm91dGUg
-dG8gaW50ZXJuZXQgZnJvbSBMb2NhbA0KPiA+IE5ldHdvcmsoMTkyLjE2OC4wLngpIGFuZCBldGgx
-IGFzIGZvciB0aGUgc2VydmVycyhETlMsIG1haWwsIHdlYikgdGhhdA0KPiBwZW9wbGUgZnJvbSBl
-eHRlcm5hbCBJbnRlcm5ldA0KPiA+IHRvIGFjY2Vzcy4gVGhlIHJlYXNvbiBiZWhpbmQgdGhhdCBp
-cyB0aGF0IHByb3ZpZGVyIElTUDIgYXJlIG5vdA0KPiA+IGFsbG93aW5nIG1lIHRvIHJ1biBzZXJ2
-ZXJzIG9uIHRoYXQgbGluaywgc28gSSBoYWQgdG8gc2V0dXAgYW5vdGhlciBsaW5rDQo+IGZvcg0K
-PiA+IHNlcnZlcnMoZXRoMSkuDQo+ID4NCj4gPiBUaGUgSVAgbWFzcXVyYWRpbmcgaXMgdXNlZCBh
-bmQgaXAgZm9yd2FyZGluZyBpcyB0dXJuZWQgb24uDQo+ID4NCj4gPiBlY2hvIDEgPiAvcHJvYy9z
-eXMvbmV0L2lwdjQvaXBfZm9yd2FyZA0KPiA+DQo+ID4gL3NiaW4vaXAgcm91dGUgYWRkIDIxMS54
-LnguMTI4IGRldiBldGgyIHNyYyAyMTEueC54LjE1NSB0YWJsZSBTSQ0KPiA+IC9zYmluL2lwIHJv
-dXRlIGFkZCBkZWZhdWx0IHZpYSAyMTEueC54LjEyOSB0YWJsZSBTSQ0KPiA+IC9zYmluL2lwIHJv
-dXRlIGFkZCAyMTgueC54LjAgZGV2IGV0aDEgc3JjIDIxOC54LnguMjAgdGFibGUgS1QNCj4gPiAv
-c2Jpbi9pcCByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgMjE4LngueC4xIHRhYmxlIEtUDQo+ID4NCj4g
-PiAvc2Jpbi9pcCByb3V0ZSBhZGQgMjExLngueC4xMjggZGV2IGV0aDIgc3JjIDIxMS54LnguMTU1
-DQo+ID4gL3NiaW4vaXAgcm91dGUgYWRkIDIxOC54LnguMCBkZXYgZXRoMSBzcmMgMjE4LngueC4y
-MA0KPiA+DQo+ID4gL3NiaW4vaXAgcm91dGUgYWRkIGRlZmF1bHQgdmlhIDIxMS54LnguMTI5DQo+
-ID4NCj4gPiAvc2Jpbi9pcCBydWxlIGFkZCBmcm9tIDIxMS54LnguMTU1IHRhYmxlIFNJDQo+ID4g
-L3NiaW4vaXAgcnVsZSBhZGQgZnJvbSAyMTgueC54LjIwIHRhYmxlIEtUDQo+ID4NCj4gPiAvc2Jp
-bi9pcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLXMgMTkyLjE2OC4wLjAvMjQgLWogTUFT
-UVVFUkFERQ0KPiA+IC9zYmluL2lwdGFibGVzIC1QIEZPUldBUkQgQUNDRVBUDQo+ID4gL3NiaW4v
-aXB0YWJsZXMgLVAgSU5QVVQgQUNDRVBUDQo+ID4gL3NiaW4vaXB0YWJsZXMgLVAgT1VUUFVUIEFD
-Q0VQVA0KPiA+DQo+ID4NCj4gPiBbcm9vdEB3d3cgcm9vdF0jIGlwIHJvdXRlIHNob3cNCj4gPiAy
-MTEueC54LjEyOCBkZXYgZXRoMiAgc2NvcGUgbGluayAgc3JjIDIxMS54LnguMTU1DQo+ID4gMjE4
-LngueC4wIGRldiBldGgxICBzY29wZSBsaW5rICBzcmMgMjE4LngueC4yMA0KPiA+IDIxMS54Lngu
-MTI4LzI1IGRldiBldGgyICBzY29wZSBsaW5rDQo+ID4gMTkyLjE2OC4wLjAvMjQgZGV2IGV0aDAg
-IHNjb3BlIGxpbmsNCj4gPiAyMTgueC54LjAvMjQgZGV2IGV0aDEgIHNjb3BlIGxpbmsNCj4gPiAx
-MjcuMC4wLjAvOCBkZXYgbG8gIHNjb3BlIGxpbmsNCj4gPiBkZWZhdWx0IHZpYSAyMTEueC54LjEy
-OSBkZXYgZXRoMg0KPiA+DQo+ID4NCj4gPiBpdCB3b3JrcyBmaW5lKCAxOTIuMTY4LjAueCBjYW4g
-YWNjZXNzIHRoZSBpbnRlcm5ldCBieSBtYXNxdWVyYWRpbmcgdmlhDQo+IGV0aDIgYW5kIGV4dGVy
-bmFsIGludGVybmV0IGNhbiBhY2Nlc3MgdGhlIGV0aDEgYW5kIGV0aDIpLg0KPiA+IEJ1dCB0aGUg
-cHJvYmxlbSBpcyB0aGF0IHRoZSBob3N0cyBpbiB0aGUgbG9jYWwgbmV0d29yayAoMTkyLjE2OC4w
-LngpIGNhbg0KPiBub3QgYWNjZXNzIDIxMS54LnguMTU1KGV0aDIpIGFuZCAyMTgueC54LjIwKGV0
-aDEpLCBldmVuIHRob3VnaCBpcCBmb3J3YXJkaW5nDQo+IGlzIHR1cm5lZCBvbi4gSXQgY2FuIG9u
-bHkgYWNjZXNzIDE5Mi4xNjguMC4xDQo+ID4NCj4gPiBDb3VsZCBzb21lb25lIHBsZWFzZSBzdWdn
-dWVzdGVkIG1lIHRoZSBzb2x1dGlvbnM/DQo+ID4NCj4gPiBUaGFua3MgaW4gYWR2YW5jZS4NCj4g
-Pg0KPiA+DQo+IA0KPiANCj4gDQo+IA==
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi,
+I'm having lot of problems with the ip_nat_h323 and ip_conntrack_h323=20
+netfilter modules.
+
+I have applied the patch-o-matic to the 2.4.19 kernel source and compile =
+it in=20
+my firewall.
+I can load the modules with:
+# modprobe ip_nat_h323
+
+I have a h323 VoIP device behind my firewall and another one in the inter=
+net.=20
+When I call from the device behind the NAT-firewall, I can reach the devi=
+ce=20
+in the Internet. All VoIP data from the device behind the firewall arrive=
+s to=20
+the device in the internet, but all de VoIP data from the device in the=20
+internet is sent to the private addres of the device behind the firewall,=
+ and=20
+never arrives to it.
+
+It seems that the ip_nat_h323 module is not making its work. It is not=20
+changing the source IP at the h323 aplication level.
+
+I have seen the next logs in the /var/log/messages file:
+Oct 15 17:47:47 fwtemplate kernel: ASSERT: ip_nat_core.c:838=20
+&ip_conntrack_lock not readlocked
+Oct 15 17:47:47 fwtemplate kernel: ASSERT ip_conntrack_core.c:93=20
+&ip_conntrack_lock_R71150de5 readlocked
+
+I'm using the last iptables version (1.2.7a).
+
+May anyone help me with this ?
+Any suggestions ?
+
+Greetings.
+- ---
+Carles Xavier Munyoz Bald=F3
+carles@descom.es
+Descom Consulting
+Telf: +34 965861024
+Fax: +34 965861024
+http://www.descom.es/
+- ---
+-----BEGIN PGP SIGNATURE-----
+Version: PGP 6.5.8
+
+iQA/AwUBPaw86jvYAf7VZNaaEQLZNACgn3lsxB5m17khtlSzfRd+OUpMy4gAn0E+
+Or8bWYQESsQnb1QK8EFyaGB9
+=3Dyrw1
+-----END PGP SIGNATURE-----
 
 
