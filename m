@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: RE: Logging the whole packet
-Date: Wed, 24 Nov 2004 09:58:42 -0500
-Message-ID: <1101308322.3687.11.camel@hubcap.ljm.dom>
-References: <000001c4d215$3d4cb540$939a5a3e@il.sangate.com>
+Subject: Re: confused fw block int and ext traffic ..
+Date: Wed, 24 Nov 2004 10:08:45 -0500
+Message-ID: <1101308924.3687.17.camel@hubcap.ljm.dom>
+References: <41A48567.9070507@genion.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c4d215$3d4cb540$939a5a3e@il.sangate.com>
+In-Reply-To: <41A48567.9070507@genion.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,35 +20,64 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-11-24 at 06:03, israel Gold wrote:
-> Jason Opperisano wrote:
+On Wed, 2004-11-24 at 07:58, Lars Nixdorf wrote:
+> hi,
 > 
-> >>AFAIK, the normal LOG target cannot actually do this.  instead, use
-> the ULOG target which will copy the entire packet to the
-> >>userspace ulogd daemon where you can use the ulogd_PCAP.so plugin to
-> create a tcpdump file of the packets you are 
-> >>interested in.
+> i want to make a ruleset, that protect the intranet. Ok, no Problem. But 
+> it should also protect the "internet". That means only .. simple :
 > 
-> I also would like to log the packet data. In fact, I would like to
-> monitor NFS Write calls.
-> However, using ULOG and copying all packets to user space is time
-> consuming. 
-> I have no interest in Read calls which is most of the traffic.
-> Does iptables provide a tool to filtering packets by looking at the data
-> ?
+> ruleset extern_to_intern:
+> 	allow some ports to fw
+> 	allow some ports through fw to some hosts / subnets
+> 	deny all
 > 
-> Thanks,
-> Israel   
+> ruleset intern_to extern:
+> 	allow some ports (most of them) to fw
+> 	allow some ports trough fw to some hosts in internet
+> 	deny all
+> 
+> ruleset vpn-connections
+> 	allow all to intranet and fw
+> 	deny all (also traffic to internet)
+> 
+> ruleset for special handling
+> 	some nats / port forwards intern <--> intern
+> 
+> ruleset for masquarading
+> 	masq. all behind offical ip
+> 
+> My interfaces are:
+> 	eth0 - intranet interface
+> 	eth1 - internet interface
+> 
+> 
+> .. short lines from my configs :
+> -----------------------------------------------------------------------
+> -N extern
+> -A extern -m state --state ESTABLISHED,RELATED -j ACCEPT
+> -A extern -i $INTERNET -m state --state NEW -p tcp --dport 22 -j ACCEPT
+> -A extern -i $INTERNET -m state --state NEW -p tcp --dport 25 -j ACCEPT
+> -A extern -i $INTERNET -p 50 -j ACCEPT 
+> 
+> -A extern -i $INTERNET -p 51 -j ACCEPT
+> -A extern -i $INTERNET -m state --state NEW -p udp --dport 500 -j ACCEPT
+> -A extern -j DROP
 
-iptables is a firewall; not a high performance packet capturing tool.
+at this point all your traffic gets dropped and nothing else you've
+typed is worth the screen space it's taking up.
 
-you guys ever heard of tcpdump?  snort?
+> -A INPUT -j extern
+> -A FORWARD -j extern
+
+see?
+
+<snip>
 
 -j
 
 --
-"They think they're so high and mighty, just because they never got
- caught driving without pants."
+"It is better to remain silent and thought a fool, than open your
+ mouth and remove all doubt."
 	--The Simpsons
 
 
