@@ -1,12 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: OT: curious about eth0/eth1
-Date: Wed, 8 Jan 2003 12:40:20 +0100 (CET)
+From: mdew <mdew@mdew.dyndns.org>
+Subject: opening a port..
+Date: 09 Jan 2003 01:12:37 +1300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0301081236290.27534-100000@dns.toxicfilms.tv>
-References: <6620000.1041983993@leverage>
+Message-ID: <1042027958.606.7.camel@nirvana>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6620000.1041983993@leverage>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tommy McNeely <Tommy.McNeely@Sun.COM>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-> Again.. I am just curious as to why some do it one way.. and some the
-> other... the above is only MY opinion, and could be dreadfully wrong :)
-Well, i never care for which is internal or external, sometimes i set up
-eth1 as external, sometimes it's eth0 or ppp0. What is funny,
-on my experimentalbox i have the network with default route on eth1, and
-eth0 is connected to a roaming port in a 3com corebuilder (== i get a copy
-of the whole Internet<->LAN traffic), it's unusual, and i very often have
-to reconfigure programs that make this assumption that eth0 is the
-Internet interface.
-I take it as totally free to choose, and propably random.
 
-Anyway i alwyas refer to interfaces as EXT, INT, not their names.
+Hi,
+Just *testing* this out..
 
-Regards,
-Maciej Soltysiak
+iptables -A INPUT -i eth0 -p tcp --dport 4662 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 4662 -j ACCEPT
+iptables -A INPUT -i eth1 -p udp --dport 4662 -j ACCEPT
+iptables -A INPUT -i eth1 -p tcp --dport 4662 -j ACCEPT
+iptables -A INPUT -i eth1 -p tcp --sport 4662 -j ACCEPT
+iptables -A INPUT -i eth1 -p udp --sport 4662 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --sport 4662 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --sport 4662 -j ACCEPT
+
+iptables -A FORWARD -o eth0 -p tcp --dport 4662 -j ACCEPT
+iptables -A FORWARD -o eth1 -p tcp --dport 4662 -j ACCEPT
+iptables -A FORWARD -o eth1 -p udp --dport 4662 -j ACCEPT
+iptables -A FORWARD -o eth0 -p udp --dport 4662 -j ACCEPT
+iptables -A FORWARD -o eth0 -p udp --sport 4662 -j ACCEPT
+iptables -A FORWARD -o eth1 -p udp --sport 4662 -j ACCEPT
+iptables -A FORWARD -o eth1 -p tcp --sport 4662 -j ACCEPT
+iptables -A FORWARD -o eth0 -p tcp --sport 4662 -j ACCEPT
+
+yet, when i try to telnet to it,
+
+mdew:~# telnet 127.0.0.1 4662
+Trying 127.0.0.1...
+telnet: Unable to connect to remote host: Connection refused
+
+Yeah I know I have lots of unnessary rules, but im only testing 'em...it
+just seems a little strange that i cant see 4662 (Edonkey port) on the
+router.
+
+-mdew
+
+
 
 
