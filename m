@@ -1,13 +1,11 @@
-From: Bob Tellefson <bob@zooid.com>
-Subject: Re: Two NICS with same IP and same client IP
-Date: Wed, 2 Feb 2005 18:41:35 +0000
-Message-ID: <200502021841.35410.bob@zooid.com>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F019948@pxtvjoexd01.pxt.primeexalia.com>
-	<18348031.1107363459685.JavaMail.rct@kale>
+From: "Emilio Lombardo" <emiliokatia@terra.com.br>
+Subject: Re: Fw: Upgrading kernel 2.4.26 cuts out DNAT --to rules.....!!??
+Date: Wed, 2 Feb 2005 16:51:51 -0200
+Message-ID: <007701c50958$41a45d30$1d01000a@cingo.net>
+References: <004c01c50940$a5c53950$1d01000a@cingo.net>
+	<20050202162051.GA331@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <18348031.1107363459685.JavaMail.rct@kale>
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +16,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: RODRlGO <ro.garcia@gmail.com>, netfilter@lists.netfilter.org, Jason Opperisano <opie@817west.com>
 
-On Wednesday 02 February 2005 16:57, Herv=E9 wrote:
+thanks Jason :-)
 
-> Basically, the network interface where the packet originated has to
-> somehow be remembered at the routing stage. I only see source address
-> mangling to do that...
+this procedure you passed  was exactly what the people did....
+I'm beginning to think that the bug could be originated from the fact that 
+we installed the new iptables up on the other and probably this merging 
+didn't fit good or some /bin directory of the old one still stands there
+The idea was to remove the content of all the iptables and reinstall the new 
+one with the apt-get after having deleted all manually
+You guess it may work out ?
+I hope so...:-)
+Any suggestion is well accepted !
+
+thanks again!!
+
+
+----- Original Message ----- 
+From: "Jason Opperisano" <opie@817west.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, February 02, 2005 2:20 PM
+Subject: Re: Fw: Upgrading kernel 2.4.26 cuts out DNAT --to rules.....!!??
+
+
+> On Wed, Feb 02, 2005 at 02:02:51PM -0200, Emilio Lombardo wrote:
+>> So what we did was upgrading to iptables 1.2.11 on kernel 2.4.26  and 
+>> recompiling it whithin patch-o-matic and it worked out !
+>> Now we got simultaneous and various vpn on gre protocol perfectly working 
+>> passing by the firewall whitout any problem (and of course it was really 
+>> the firewall because we tested the vpn's bypassing it and they worked.all 
+>> toghether...)
+>> Well...now when everithing looked working but than debugging the internal 
+>> rules we saw that any attempt to add a "DNAT --to" always got an answer 
+>> of
+>> Invalid Argument ..........the same rules that before was working 
+>> ....!!!!!And here came the problem.....
+>> How is it possible for us making both instances (The VPN's and the 
+>> DNAT --to rules) work togheter...is there any linux guru...:-) who can 
+>> lend a hand and help us to find a way out in this maze ?
 >
+> it sounds like you didn't compile iptables *after* applying POM and
+> recompiling your kernel.  steps are:
+>
+> apply patches from POM
+> recompile kernel
+> recompile iptables
+>
+> -j
+>
+> --
+> "Simpson, Homer Simpson, he's the greatest guy in his-tor-y. From
+> the town of Springfield, he's about to hit a chestnut tree....D'oh!"
+>        --The Simpsons
+>
+>
+>
+>
+> -- 
+> No virus found in this incoming message.
+> Checked by AVG Anti-Virus.
+> Version: 7.0.300 / Virus Database: 265.8.1 - Release Date: 27/1/2005
+>
+> 
 
-It would seem that if you add two additional IPs to the NFS machine (on a=20
-dummy interface) and do a local DNAT to those IPs based on the incoming nic=
-,=20
-that the correct routing tables/rules would be all that is needed to route=
-=20
-the return packets to the correct network.
-
-Have a look at
-
-   http://www.policyrouting.org/PolicyRoutingBook/ONLINE/TOC.html
-
-for the concepts and examples.  Chapter 5, in particular, covers the routin=
-g=20
-concepts your solution will need.
-
-Note that ProxyARP uses the same ip on two interfaces and depends on the=20
-proper routing table entries to do the right thing.
 
 
-=2D-=20
+-- 
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.300 / Virus Database: 265.8.1 - Release Date: 27/1/2005
 
-Bob Tellefson
-Java network application development & hosting
 
