@@ -1,10 +1,9 @@
-From: <david@suarapembaruan.co.id>
-Subject: iptables for backup connection
-Date: Mon, 14 Jun 2004 16:56:44 +0700 (WIT)
+From: Juerg.Oehler@idzedi.admin.ch
+Subject: filter rpc pgm#
+Date: Mon, 14 Jun 2004 08:36:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1171.172.16.128.100.1087207004.squirrel@mail.suarapembaruan.co.id>
+Message-ID: <516423986E18D511B0A700508BB85789027F2A83@edi002ex.idzedi.admin.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,103 +15,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear all,
-In my office i using 2 connection (Wireless connection direct to ISP "A"
-and backup connection to ISP "B" with ADSL Modem), how to configure Linux
-iptables (gateway) so when connection to ISP "A" down client can still
-work with ISP "B" without reconfiguration at client computer (see network
-diagram B).
+hi,
 
+we are working with some tools based on rpc (such as nfs, legato, stornext
+....). the authorisation based on ports forces us to open the firewall for
+huge port-ranges. but there are only a few known rpc programnumbers, which
+are linked to the right rpc-servers.
 
-Network diagram "A" (current)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
+i am wondering if i could configure netfilter using these programnumbers?
+are there already features in the core or extensions? 
 
-     ISP "A"
-       :
-       :
-       :
-       \/
-:-----------------:
-:LINUX ROUTER/GW  :
-:eth0 202.x.x.1   :
-:eth1 172.16.x.100:
-:-----------------:
-       /\
-       :
-       :
-       \/
-:-----------------:
-:Client computer's:
-:-----------------:
-       /\
-       :
-       :
-       \/
-:--------------------:
-:ADSL MODEM/ROUTER/GW:
-:eth0 Dynamic        :
-:eth1 172.16.x.200   :
-:--------------------:
-       /\
-       :
-       :
-     ISP "B"
+could look like <iptables -A INPUT -p rpc --pgmnum 1073741827 -j ACCEPT>
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Network Diagram "B"
-
-     ISP "A"                   ISP "B"
-       :                          :
-       :                          :
-       :                          :
-       \/                         \/
-:-----------------:        :-----------------:
-:LINUX ROUTER     :        :ADSL MODEM/ROUTER:
-:eth0 202.x.x.1   :        :eth0 Dynamic     :
-:eth1 172.16.x.100:        :eth1 172.16.x.200:
-:-----------------:        :-----------------:
-        :                           :
-        :                           :
-        :                           :
-        -----------------------------
-                     :
-                     :
-                     :
-            :-----------------:
-            :LINUX GATEWAY    :
-            :eth0 172.16.x.1  :
-            :-----------------:
-                     :
-                     :
-                     :
-              Client Computer's
-
-Regards,
-David Kandou
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+thanks
+have fun
+juerg
 
