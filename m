@@ -1,13 +1,12 @@
-From: Payal Rathod <payal-iptables@staticky.com>
-Subject: Re: natting help needed urgently.
-Date: Tue, 9 Sep 2003 08:49:22 +0530
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: Kazaa Ports
+Date: Mon, 8 Sep 2003 20:53:35 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909031922.GB2818@linux.local>
-References: <20030907110417.GA1463@linux.local> <1062996575.831.4.camel@india.nsecure.net>
+Message-ID: <20030909035335.32534.qmail@web40205.mail.yahoo.com>
+References: <3F5D06F6.20408@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1062996575.831.4.camel@india.nsecure.net>
+In-Reply-To: <3F5D06F6.20408@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,23 +18,85 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Dharmendra.T" <dharmu@nsecure.net>
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, Sep 08, 2003 at 10:19:30AM +0530, Dharmendra.T wrote:
-> Hi Payal,
+
+--- Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
+> Thanks for answering
 > 
-> What error you get while connecting from outside? This info will help us
-> in solving your problem.
+> >Assuming that you are running the Kazza on a Internal windows machine the
+> >POSTROUTING should handle all of the out going of the Kazza Client...
+> >  
+> >
+> 
+> hmmm . . . I revised my rule set recently using the iptables tutorial  
+> by Oskar Andreasson as a guide, and he recommends again doing any 
+> filtering in the nat tables.
+> 
+You would not be doing any filtering in the nat table. You are simply passing
+the packets destined for a Kazza client onto another machine and ports.
+PRE/POST  ROUTING always supercede INPUT and OUTPUT filters.
+>
+http://iptables-tutorial.frozentux.net/chunkyhtml/traversingoftables.html#TRAVERSINGGENERAL
+> 
+> 
+> >what is probably not making it through is the returning connection attempts
+> of
+> >the Kazza servers? In which case... you shouldn't be using FORWARD lines at
+> all
+> >sinnce these are supposedly destined for the local machine(as in the Linux
+> box
+> >itself and not anything in your lan).
+> >
+> 
+> If you look further down in the link I posted, there is a diagram that 
+> shows INPUT going to the localhost and the FORWARD being used for 
+> packets destined for other hosts.  Hmmm again . . .  :-)
 
-Thanks but I solved it myself. I will get back on this in case of more
-difficulties.
+Again I don't think FORWARD is your answer here... best bet is nat (imho that
+is)
+> 
+> > What I think is needed here is the
+> >PREROUTING of a range or specific ports. I think this will solve your
+> problem
+> >for Kazza but it offers very little as in the way of security for those
+> ports.
+> >
+> >An example of this is when I used to run my Half-Life Deadicated Server on
+> my
+> >internal Windows Machine I used a PREROUTING line such as...
+> >
+> >iptables -t nat -A PREROUTING -p udp --dport 27015 -i eth0 -j DNAT
+> >--to-destination 192.168.1.25:27015
+> >
+> >While my scenerio was alot simpler than yours it's similar I think. Your
+> >problem will be of course finding the range of ports. I would also say take
+> >note of the use of limiting it to one protocol(if you can). Better to have a
+> >straw open to the world than a big ol sewer pipe!
+> >
+> >  
+> >
+> Absolutely! That's what makes this an issue for me. I can't nail down 
+> the ports Kazaa needs and the more I open up the less protection I have. 
+> I need to find a better strategy and I'm open to suggestions.
+> 
+Ok I might can help with this... You may need something like ethereal or
+ettercap fired up on your internal device (eth1 I'm guessing?) As the requests
+go out you should be able to view source and destination ips/ports. An even
+simpler method that might work is fire up Kazza and do a netstat -a from a
+DOS/CMD window. mayb a netstat -al too.
 
-With warm regards,
--Payal
+> Jeff
+> 
+> 
 
--- 
-"Visit GNU/Linux Success Stories"
-http://payal.staticky.com
-Guest-Book Section Updated.
+
+=====
+"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
