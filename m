@@ -1,12 +1,13 @@
-From: Erdal Mutlu <emutlu@fonts.de>
-Subject: Test (I am not recieving mails since 15.11.2002)
-Date: Tue, 19 Nov 2002 18:03:27 +0100 (CET)
+From: Alasdair Ramsay <alasdair.ramsay@cdc.uk.net>
+Subject: Related but general question. (WAS:Re: ip_conntrack_ftp doesn't work
+ with ftp proxy)
+Date: Tue, 19 Nov 2002 14:16:49 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0211191801300.17365-100000@bhows40003.fonts.de>
-References: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
+Message-ID: <3DDA47D1.9040801@cdc.uk.net>
+References: <61127EF4BF2E9C4C8DA4E358CFD4E52D7A406A@olga.chs.chalmers.se>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,17 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Kim Leandersson <kim.leandersson@chs.chalmers.se>, netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-is this list dead?
+If you can pass additional information to the modules as you load them,
+can you pass the same information to a module that is statically built
+into the kernel?  How is such information passed?
 
-Erdal Mutlu
+Regards
 
+Alasdair Ramsay
 
+Kim Leandersson wrote:
+| Try loading the ip_conntrack_ftp module with the option ports instead.
+|
+| ip_conntrack_ftp ports=8082 should do the trick for you!
+|
+| //kim
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.0 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQE92kfO4+7BX0uR648RAqWWAJ9DFe+ts78YiTIZQiHaAu7ANlNdSQCfR5Mx
+cWTAQ8VRAoz2gkZ4mq3WbLA=
+=RGSK
+-----END PGP SIGNATURE-----
 
 
 
