@@ -1,10 +1,9 @@
-From: <hamals@infinito.it>
-Subject: set up my DMZ
-Date: Thu, 16 Sep 2004 16:44:32 +0200
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: Blocking Netranges Based on IP-to-Country CSV
+Date: Thu, 16 Sep 2004 09:33:03 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <web-3246067@infinito.it>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,39 +14,55 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'McFall, Gary'" <Gary.McFall@dfi.state.wi.us>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
 
-I've a DMZ with two server, I would like to acces them 
-through my iptables firewall.
+	why do this ?
 
-IP_serve1_DMZ =192.168.2.2
-IP_serve2_DMZ =192.168.2.3
+	seems a bit nasty in nature.
 
-IP_server1_public = x.x.x.52
-IP_server2_public = x.x.x.53   (x is for privacy..)
+	we dont even do this sort of thing? see email addy...
+
+~piranha
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of McFall, Gary
+Sent: Wednesday, September 15, 2004 5:58 AM
+To: 'netfilter@lists.netfilter.org'
+Subject: Blocking Netranges Based on IP-to-Country CSV
 
 
-My firewall has
+Due to a number of issues, my organization is looking at being able to block
+certain country domains at the firewall.  To be proactive, we want to
+automate that process via iptables & the CSV available at
+<http://ip-to-country.webhosting.info <http://ip-to-country.webhosting.info>
+>.
 
-eth1 internet interface = x.x.x.50
-eth0 dmz interface = 192.168.2.1
+We have created a C program (IPCheck) in the /bin directory which, when
+given an IP long number, checks the ip-to-country CSV and returns a value
+for permit or not.  We want to process the packet based on that return.  
 
-I need to have my server access with their pubbic IP, but 
-I've only eth1 as inteface to internet.
+I'm a relative newbie with iptables & scripts.  Listed below is some very
+crude code, some of which is a verbal description of intent.  Any
+suggestions on how to shore this up so that it will work?  Or should this
+concept be a new module in iptables?
 
-I read that I can't use alias in iptables rules (like 
-eth1:1 etc) , then what kind of rules have I to write to 
-solve my problem?
+#
+#    ***** DROP BAD IPS *****
+#
+/bin/IPCheck `grep -w "SRC =" | cut -d = -f 2`
+if return = "Bad IP"
+$IPT -A INPUT -$ETH0 $RATELIMIT -j INBADIPS
 
-Thanks
-_______________________________________
-Connessione ed e-mail gratuita da 10 mb
-consultabile tramite web e tramite pop.
-www.infinito.it vieni a scoprire tutti 
-i nostri servizi!
+      ***** RULES - DROP  BAD IPS *****
+#    ***** REVIEW LOG AT /var/log/iptables.log *****
+#
+$IPT -A  INBADIPS -j LOG --log-level debug --log-prefix "BADIP:  " -j DROP
 
-http://www.infinito.it/xmail
+Thanks in advance for your help.
 
+Gary McFall
 
