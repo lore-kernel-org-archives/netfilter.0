@@ -1,8 +1,8 @@
 From: suresh k <suresh@pisem.net>
-Subject: Passing packet to IP layer
-Date: Wed, 28 Jan 2004 07:00:52 +0300 (MSK)
+Subject: IP address of the interface
+Date: Wed, 28 Jan 2004 07:04:31 +0300 (MSK)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401280400.i0S40qEW082694@www3.hotbox.ru>
+Message-ID: <200401280404.i0S44VRA083094@www3.hotbox.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,13 +19,10 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi,
-I am capturing packets using netfilters. I am modifying the packets and I want to give 
-it "up the linux IP stack" in the kernel. The implementation has to been done as a 
-loadable module. I have a problem here, I don't find any kernel exported symbol which 
-can be used to send the modified stack up the stack and give it to the IP module. Kindly 
-tell me if there is any way to do that. I thought abt compiling the code which I have 
-written along with the kernel and use the kernel functions directly, but it is not 
-portable. Kindly tell me how to proceed. 
-cheers
+I want to get the IP address of the interface in the kernel. I have seen the mail list 
+archives discussing this. I want to implement the code as a loadable module. I don't 
+think the suggested in the archives work, as those functions are not exported. Is there 
+any other way to handle this. Kindly help me out.
+regards
 Suresh
 
