@@ -1,14 +1,14 @@
 From: "Mitesh P Choksi" <murli@icafe.co.tz>
 Subject: Re: [Fwd: SNAT to allocat IP from an IP Pool]
-Date: Mon, 30 Sep 2002 22:04:50 +0300 (EAT)
+Date: Tue, 1 Oct 2002 00:17:26 +0300 (EAT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40391.64.86.49.17.1033412690.squirrel@www.icafe.co.tz>
-References: <200209301224.g8UCOLL03868@vulcan.rissington.net>
+Message-ID: <43876.64.86.49.17.1033420646.squirrel@www.icafe.co.tz>
+References: <20020930191759.YMUT13996.mta05-svc.ntlworld.com@there>
 Reply-To: murli@icafe.co.tz
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209301224.g8UCOLL03868@vulcan.rissington.net>
+In-Reply-To: <20020930191759.YMUT13996.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,90 +22,67 @@ Content-Type: text/plain; charset="us-ascii"
 To: Antony@Soft-Solutions.co.uk
 Cc: netfilter@lists.netfilter.org
 
-So, how does -SNAT --to 23.23.23.0-23.23.23.16 work.
+I keep changing my question based on what I learn from this list and from
+the other articles on the net regarding netfilter.
 
-How does this work? I have now tried it but did not dare to go beyond a few
-seconds.
+As I mentioned in my first email, I had dial-up users, then I mentioned that
+I had LAN users, actually I have dial-up users on the RAS being allocated
+private ip along with other LAN users who have private IP as well. All in
+all I have /24 for all the users.
+But, I have only 16 public IP address to spare and share among the /24
+private IP addresses.
 
-Does anybody have some documentation / pointers on how to use -SNAT and give
-a range of IP addresses? I will give it a try and see how does -SNAT handle
-the range of IP addresses.
+I have seen several ways to rectify this situation:
+1. Use DHCP for LAN and dial-up, with a minute or two as lease time
+2. Try out LEASE target netfilter extention, and check if it works for me
+3. Try out multiple address SNAT, and check if it works for me
+4. Try out your suggestion of using logs and dynamically creating and
+removing SNAT rules
+
+The need to do this is various public IP address requiring application used
+by the combination of users on the LAN as well as dial-up.
+
+Since not all LAN + Dial-up users use public IP requiring applications at
+the same time, I don't want to spend all my public IP addresses and only
+have 16 to spare for users. Any further requests from users for public IP
+addresses can be denied access/failover to single IP SNAT.
+
+The idea is to find an intelligent way to share the small set of public IP
+addresses among the larger set of private IP addresses.
+
+Hope this gives all a still clearer picture of the situation.
+
+Mitesh
 
 Antony Stone said:
-> On Monday 30 September 2002 1:05 pm, Mitesh P Choksi wrote:
+> On Monday 30 September 2002 8:04 pm, Mitesh P Choksi wrote:
 >
->> On Mon, Sep 30, 2002 at 12:51:51PM +0100, Antony Stone wrote:
->> > On Monday 30 September 2002 12:06 pm, Mitesh P Choksi wrote:
->> > > Let me explain more to add clarifications here.
->> > >
->> > > 1. I have 16 public IP addresses
->> > > 2. I have LAN with almost 200 private IP addresses
->> > > 3. I need to give one-to-one relation to a private IP with a
->> > > public IP at any given time, automatically. something like -SNAT
->> > > --to
->> > > 23.23.23.0/255.255.255.240
->> > > 4. I need to make sure that all connections from on private IP map
->> > > to one public IP, connection to public IP should be forwarded to
->> > > the private IP NATted FOR THAT PARTICULAR TIME.
->> > > 5. Once the set of connections are over then the public IP should
->> > > be releived for some other private IP asking for the connections.
->> > > 6. I could do one-to-one SNAT for all 254 IPs, but I don't have
->> > > any more than 16.
->> >
->> > Okay, I think I understand now.
->> >
->> > What determines (a) when you need to create the public to private
->> > association, (b) when you can release it ?
->
->> answers
->> a. when a private IP asks for a connection to the outside world
->> b. All connections from that private IP closes all the connections.
+>> So, how does -SNAT --to 23.23.23.0-23.23.23.16 work.
 >>
->> Maybe SNAT does the job but i have not understood from documentation.
->> I did not test since I don;t know the outcome and dont want to run it
->> on live users
+>> How does this work? I have now tried it but did not dare to go beyond
+>> a few seconds.
+>>
+>> Does anybody have some documentation / pointers on how to use -SNAT
+>> and give a range of IP addresses? I will give it a try and see how
+>> does -SNAT handle the range of IP addresses.
 >
-> The standard SNAT mechanism will share multiple internal users on a
-> single  public IP address, it will allow unrestricted access from the
-> client to the  Internet, but it will not allow any traffic initiated on
-> the Internet to  reach the client.   Therefore it does not sound as
-> though this will do what  you want.
+> I cannot answer that - hopefully someone else here is more familiar
+> with  mutliple address SNAT; however please can we clarify something
+> about your  original question ?
 >
-> My only thought is that you may be able to log all new outbound
-> connections,  and all FIN/RST packets, and have some process watching
-> the log file, and  creating and destroying SNAT / DNAT rules on the fly
-> as needed - however this  would only work for TCP connections, not UDP.
+> Are you merely trying to do SNAT, to allow internal clients out to the
+> Internet, or are you also trying to do DNAT to enable Internet access
+> in to  your internal machines as well ?
 >
-> Alternatively you could have a process which continually reads the
-> connection  tracking table, and adds the SNAT / DNAT rules when a
-> connection appears (you  could look for the SYN SENT state for TCP -
-> again UDP would be more tricky),  keeps it for the duration of any
-> ESTABLISHED connections, and then removes it  again when the
-> ESTABLISHED state disappears from the table ?
->
-> You should be aware that any automatic system could get blocked by
-> someone  setting up a TCP connection and then simply leaving it to time
-> out - because  that will take 5 days, and I don't think you want to
-> have one of your IP  addresses tied up but unused for that length of
-> time ?
->
-> Antony.
+> Antony
 >
 > --
 >
-> All matter in the Universe can be placed into one of two categories:
+> Success is a lousy teacher.   It seduces smart people into thinking
+> they  can't lose.
 >
-> 1. things which need to be fixed
-> 2. things which will need to be fixed once you've had a few minutes to
-> play  with them
+> - William H Gates III
 
-
-
-
-Regards,
-
-Cyberdude Murli
-The Earth
 
 
 
