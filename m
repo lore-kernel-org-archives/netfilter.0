@@ -1,9 +1,9 @@
 From: "hare ram" <hareram@sol.net.in>
 Subject: Re: [LARTC] Performanace fo the Iptables Server
-Date: Wed, 27 Aug 2003 23:20:33 +0530
+Date: Wed, 27 Aug 2003 23:01:37 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <026101c36cc3$b6b76280$c2bf09ca__2758.08266965232$1062078096@Housecall>
-References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall> <200308271917.00121.stef.coene@docum.org> <015d01c36cc1$11fbabe0$c2bf09ca@Housecall> <200308271941.53445.stef.coene@docum.org>
+Message-ID: <015d01c36cc1$11fbabe0$c2bf09ca__19371.8426199213$1062078111@Housecall>
+References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall> <200308271730.07228.stef.coene@docum.org> <011601c36cbd$185a5da0$c2bf09ca@Housecall> <200308271917.00121.stef.coene@docum.org>
 Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -23,55 +23,62 @@ Cc: lartc@mailman.ds9a.nl
 
 Hi Stef
 
-Thats right, if i make cron job run every 5min, so i will loose only 5min of
-data.
+How about Source and Desitination port, and protocol wise bytes transfer (
+like http, ftp, icmp, udp), if i want to track.
 
-i was not understand
-" You can record the difference between the 2 reads and discard
-negative values. "
+next limitation, if the Server goes down, the traffic will be zero, that
+will be another Limitation
 
-you mean to say first 5min and next 5min bytes increasing ok
-if not i will discard and take new values you mean.
+If i send the all the traffic to Mysql, so i can get the old data to.
 
-If i make the log to mysql, so it will be 24hours right
-is there anything i can make every 5min dump the data to Mysql using ULOG
+may be you can correct me if, i may be wrong thinking
 
+correct me with the best methods to do
 
 hare
+
 ----- Original Message -----
 From: "Stef Coene" <stef.coene@docum.org>
 To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.samba.org>
 Cc: <lartc@mailman.ds9a.nl>
-Sent: Wednesday, August 27, 2003 11:11 PM
+Sent: Wednesday, August 27, 2003 10:47 PM
 Subject: Re: [LARTC] Performanace fo the Iptables Server
 
 
-> On Wednesday 27 August 2003 19:31, hare ram wrote:
+> On Wednesday 27 August 2003 19:03, hare ram wrote:
 > > Hi Stef
 > >
-> > How about Source and Desitination port, and protocol wise bytes transfer
-(
-> > like http, ftp, icmp, udp), if i want to track.
+> > thanks for the reply
 > >
-> > next limitation, if the Server goes down, the traffic will be zero, that
-> > will be another Limitation
-> Not true.  If you record the counters each 5 minutes, you loose max 5
-minutes
-> of counters.  You can record the difference between the 2 reads and
-discard
-> negative values.
+> > yes i would like to do accounting the source IP
+> > so i need to log them all the traffic,
+> > so i will know each IP how much transfering DATA
+> >
+> > with my configuration, is there any performance issue
+> > i may have more than thousands of passing through this firewall or qos
+> > server
+> >
+> > so my PC will have any performance issue or,
+> > this configuration need any modification
+> You don't have to log each packet to do accounting.  If you create 1
+iptables
+> rule for each src address, you know how many packets and bytes that that
+src
+> address transmitted.
 >
-> > If i send the all the traffic to Mysql, so i can get the old data to.
-> >
-> > may be you can correct me if, i may be wrong thinking
-> >
-> > correct me with the best methods to do
-> If you really want it very detailed (src/dst - address/port), you indeed
-have
-> to log it to mysql or so.
-> You can calulcate the number of updates you have to do mysql and simulate
-this
-> on a test box.
+> iptables -A INPUT -s 192.168.1.0
+> iptables -A INPUT -s 192.168.1.1
+> iptables -A INPUT -s 192.168.1.2
+>
+> iptables -L -v -n
+> Chain INPUT (policy DROP 47 packets, 5842 bytes)
+>  pkts bytes target     prot opt in     out     source   destination
+>     0     0            all  --  *      *       192.168.1.0
+0.0.0.0/0
+>     0     0            all  --  *      *       192.168.1.1
+0.0.0.0/0
+>     0     0            all  --  *      *       192.168.1.2
+0.0.0.0/0
 >
 > Stef
 >
