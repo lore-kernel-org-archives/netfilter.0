@@ -1,14 +1,12 @@
-From: "John Jones" <jjones@merlintechnologies.com>
-Subject: RE: Strange misunderstandings
-Date: Fri, 31 May 2002 14:16:19 -0700
+From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
+Subject: Re: Strange misunderstandings
+Date: Fri, 31 May 2002 23:23:49 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001c01c208e8$68205720$6301a8c0@JJONES1>
-References: <000d01c208e7$b36ba8c0$026410ac@winxp>
-Reply-To: <jjones@merlintechnologies.com>
+Message-ID: <001a01c208e9$74fac970$026410ac@winxp>
+References: <001b01c208e8$2b289530$6301a8c0@JJONES1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000d01c208e7$b36ba8c0$026410ac@winxp>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,45 +17,35 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Iptables' <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org, jjones@merlintechnologies.com
 
-[gemini:~] iptables -C
-iptables v1.2.6a: Unknown arg `-C'
-Try `iptables -h' or 'iptables --help' for more information.
+From: "John Jones" <jjones@merlintechnologies.com>
 
+as iptables -h states :
 
+--check   -C chain
 
-> -----Original Message-----
-> From: Sascha Reissner [mailto:sascha.reissner@toxicnet.de] 
-> Sent: Friday, May 31, 2002 2:11 PM
-> To: jjones@merlintechnologies.com; 'Iptables'
-> Subject: Re: Strange misunderstandings
-> 
-> 
-> From: "John Jones" <jjones@merlintechnologies.com>
-> 
-> > Two issues, first issue is a simple question:
-> >
-> > [root] iptables -h
-> > ...
-> >   --check   -C chain            Test this packet on chain
-> > ...
-> >
-> > [root] iptables --check
-> > iptables v1.2.6a: Unknown arg `--check'
-> >
-> > What's up with that?  The help screen shows me it is a 
-> command, but it 
-> > doesn't exist?  Is this an optional kernel compilation 
-> thing that is 
-> > missing, or has it been removed from the distro?
-> 
-> if you try it with iptables -C it will work.. and result in.. tataaaa
-> 
-> "iptables: Will be implemented real soon.  I promise ;)" so 
-> it aint in there yet.
-> 
-> 
-> 
+so its: iptables -C <chain name>
+
+and then it works pretty fine.. results into:
+
+iptables v1.2.6a: You need to supply the `-s' option for this command
+
+once you add a -s with value you get:
+
+iptables v1.2.6a: You need to supply the `-d' option for this command
+
+if you add that you get
+
+iptables v1.2.6a: You need to supply the `-p' option for this command
+
+if you add that you get 
+
+iptables v1.2.6a: Need -i with INPUT
+
+and finally you get 
+
+iptables: Will be implemented real soon.  I promise ;)
+
 
 
