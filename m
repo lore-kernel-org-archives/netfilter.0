@@ -1,13 +1,12 @@
-From: Dax Kelson <dax@gurulabs.com>
-Subject: Re: Is dropping all ICMP traffic valid?
-Date: 12 Nov 2002 17:36:12 -0700
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Bad Filter Set?
+Date: Wed, 13 Nov 2002 01:31:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037147772.25372.6.camel@aramis>
-References: <1037143537.8023.4.camel@trent.nin>
+Message-ID: <3DD19D4F.8050703@fugmann.dhs.org>
+References: <Pine.LNX.4.44.0211121629140.19945-100000@shortcircuit.dyndns.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1037143537.8023.4.camel@trent.nin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: alex <alex@bennee.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Dan Egli <dan@shortcircuit.dyndns.org>
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 2002-11-12 at 16:25, alex wrote:
-> I'm still trying to figure out why I'm losing connection on my
-> portforwarded webserver. One thing I have noticed is the gateway is
-> dropping ICMP packets back to the webserver:
-> 
-> Nov 12 23:01:16 gateway kernel: [Dropped to-lan]IN= OUT=eth0
-> SRC=192.168.1.250 DST=192.168.1.110 LEN=576 TOS=0x00 PREC=0xC0 TTL=64
-> ID=13411 PROTO=ICMP TYPE=3 CODE=4 [SRC=192.168.1.110 DST=213.155.151.41
-> LEN=1500 TOS=0x00 PREC=0x00 TTL=63 ID=8806 DF PROTO=TCP SPT=80 DPT=4776
-> WINDOW=7504 RES=0x00 ACK URGP=0 ] MTU=1478 
-> 
-> which seem to be related to the web connection. I thought ICMP packets
-> were not needed for general operation, and even if they where they would
-> be covered by the nat and FORWARD tables not being dropped on the local
-> process OUTPUT chain.
-> 
-> Any ideas?
+Dan Egli wrote:
+> Ok. This is true, so let me clarify. the INTERNAL net should have access 
+> to all those. The EXTERNAL side needs:
+> SMTP, FTP, TELNET, SSH, 4000 & 5000
+Ok. I have modified the sctipt to accomodate this.
+--------------------------------
 
-Yes. This is a classic beginner/expert mistake.
+# Set default policies.
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD DROP
 
-ICMP *is* needed for general operation, specifically ICMP Type 3, Code
-4.
+# Flush all tables.
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables -t NAT -F PREROUTING
+iptables -t NAT -F POSTROUTING
+iptables -t NAT -F OUTPUT
 
-This is needed for proper MTU path discovery (PMTU). Go google and learn
-about this.
+iptables -A INPUT -p tcp -m multiport --dports \
+     smtp,ftp,telnet,ssh,4000,5000
+iptables -A INPUT -p tcp -i eth0 -m multiport --dports \
+    telnet,domain,nntp,ntp,printer,pop3,imap,http,https \
+    -j ACCEPT
+iptables -A INPUT -p udp -i eth0 -m multiport --dports \
+    domain,ntp,route  -j ACCEPT
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -j LOG
 
-If you are doing stateful filtering, then "RELATED" will automatically
-match those ICMP packets. For example as the first rule in your INPUT,
-or OUTPUT, and/or FORWARD chain (depending on how you have stuff
-configured) have:
+iptables -A FORWARD -i eth0 -j ACCEPT
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -j LOG
 
-iptables -A INPUT/FORWARD/OUTPUT -m state --state ESTABLISHED,RELATED -j
-ACCEPT
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 5000 \
+    -j DNAT --to-destination 192.168.0.5:5000
 
+iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 64.122.31.38
 
+echo 1 > /proc/sys/net/ipv4/ip_forward
+-------------------------
+
+Regards
+Anders Fugmann
 
 
