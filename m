@@ -1,11 +1,13 @@
-From: "hard__ware" <hard__ware@hotmail.com>
-Subject: RE: SSH dnat
-Date: Mon, 2 Dec 2002 05:06:48 +1000
+From: Othmar Pasteka <pasteka@kabsi.at>
+Subject: Re: Getting rid of the masses of ip_conntrack messages
+Date: Sun, 1 Dec 2002 21:13:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE31m7A5NgBxfBOnLFU00004041@hotmail.com>
+Message-ID: <20021201201344.GA29485@davinci>
+References: <OE33LTrpwACkWHZqYW800004167@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <OE33LTrpwACkWHZqYW800004167@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,89 +18,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: hard__ware <hard__ware@hotmail.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hello Ambor,
+hi,
 
-Im not to sure how much you know about gateways / dns
-so im going to assume ...
+[Btw. what about getting a proper E-Mail client, who does things
+like adding a Re: to the subject line and replying to the email
+and keep the thread instead of posting a completely new message.]
 
-1.) Have you made sure that The Internal SSH Server on
-the local lan can use DNS correctly & has internet access
-through the IPTables Gateway ( does "route -Nve" on the SSH Server show any
-default routes ? )
+On Mon, Dec 02, 2002 at 05:07:27AM +1000, hard__ware wrote:
+> Please try to give a more detailed info on your setup
+> like Rules ect . Because i use DNAT / SNAT / with FTP
+> and  ip_conntrack_ftp & ip_nat_ftp  allot with IPTables
+> and have never found / seen those messages ? 
 
-2.) Have you set up any other kind of DNAT / Hosted services that sit behind
-the Firewall that are working ???
+ftp server which permits ftp connections from the outside. that's
+basically it.
+I don't have a log target or sucha thing. it originates from the kernel
+but couldn'T find a way yet, like through syslog, to disable it or
+log it seperately.
+my rule sets look as follows:
 
-3.) Also is your SSH Server Service even running on the right Port (ie in
-your case Port: 2323)
-you can display all Servers listen Ports with #> netstat -l --inet -nve
+:INPUT DROP [1732:89835]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+[0:0] -A INPUT -i eth0 -p udp -m udp --dport 22 -j ACCEPT 
+[0:0] -A INPUT -i eth0 -p tcp -m tcp --dport 22 -j ACCEPT 
+[3016:4082458] -A INPUT -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+[138:12024] -A INPUT -i lo -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT 
+[136:12210] -A INPUT -p icmp -j ACCEPT 
+[810:43752] -A INPUT -p tcp -m tcp --dport 20:21 -j ACCEPT 
+[12:720] -A INPUT -p tcp -m tcp --dport 873 -j ACCEPT 
+[0:0] -A INPUT -p udp -m udp --dport 873 -j ACCEPT 
+[0:0] -A INPUT -s 62.116.33.11 -p tcp -m tcp --dport 111 -j ACCEPT 
+[0:0] -A INPUT -s 62.116.33.11 -p udp -m udp --dport 111 -j ACCEPT 
+[2753:169858] -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT 
+[0:0] -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT 
 
-anyway good luck with IPTables & NetFilter
 
-cyas...
-
-Hard__warE
-
-( here is a little laugh from a call that i got from a fool that upgraded a
-Router / Net Connection On-Site of one of my Clients,
-   because of contract reasons they had to the installation, and my company
-was not allowed (but we are there Network Administrators ???  )
-
-| MCSE  Tech |: ' No the problem is your fault, this box now needs a
-reinstall '
-
-]  MySelf  [: ' What's the problem ?'
-
-| MCSE  Tech |: ' it cant access the internet but all the other machines can
-
-]  MySelf  [: did you check the network settings , i.e, Default Gateway ,
-DNS Entires , Subnets ect ect ???
-
-| MCSE  Tech |: what do you think i am,  stupid ?
-
-]  MySelf  [:  Not at all , (Yeah Right) i just have to make sure so i dont
-have to come onsite for nothing...
-anyway, well if you believe its all the same as the other machines and not
-working ill come out within the Hour ...
-
-40 Mins Later OnSite:   | MCSE  Tech |:  You must be the network technician
-correct ?
-
-]  MySelf  [:  Indeed i am, Please to meet you .. lets take alook at this
-problem shall we ...
-
-"I get straight on the Problem machine, go straight to Network Neighbour
-Hood , Right Clicked -> Properties --> TCP/IP / LAN NDIS Device ..."
-
-]  MySelf  [:  Why does this machine have its DNS set as the Gateway ?
-
-| MCSE  Tech |: Because thats hows its ment to work ...
-
-]  MySelf  [:  Well not unless your doing DNAT on that Basic Arse Router
-for DNS Requests on Port: 53 too lets say like the ISP's DNS Servers (which
-this router could not do)
-
-| MCSE  Tech |:  Why didnt i think of that ... o well ...
-
-]  MySelf  [:  Huh ??? (me all confused at this person's ability to use his
-brain) no you stupid Microsoft Cisco Boy look at my certificate i can do
-anyting ... it needs to be set on all machines to the ISP's DNS servers, as
-we dont have any Internal DNS Servers ...
-
-]  MySelf  [: Actually by the way, why isnt this machine set to Assign
-Dynamic IP Address ??? becuase thats where it gets its Gateway / DNS info
-from ?
-
-| MCSE  Tech |: But you have to use Static IP's with this Router ... it wont
-except Dynamic Address's
-
-]  MySelf  [: Look go home , OMG , what do you know it actually works now ,
-i wonder why ....
-
-can yo belive that, what nerv of that guy ... Absoloute Windowz Tosser ....
-LOL ... cyas
-
+so long
+Othmar
 
 
