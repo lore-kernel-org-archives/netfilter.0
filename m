@@ -1,9 +1,10 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: snat dnat question
-Date: Sat, 6 Jul 2002 11:55:46 +1000
+From: "Dennis Cardinale" <dennis@core-enterprises.com>
+Subject: Help with invalid argument
+Date: Fri, 5 Jul 2002 22:03:03 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA254@JUPITER>
+Message-ID: <EPEHIDPIPEBFNAHLCHPGAEMCCEAA.dennis@core-enterprises.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,74 +16,89 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Thomas Hilgert' <Thomas.Hilgert@hilgert.de>, netfilter@lists.samba.org
-
-Can you tell more about where your testing the telnet.. from outside or LAN
-etc..
-
-Can you list it more verbosely
-
-iptables -L -v -n -x
-iptables -L -v -n -x -t nat
-
-I usually don't POSTROUTE anywhere to anywhere.. dunno about you but I at
-least specify a source address so it doesn't snat something your not aware
-of...
-
------Original Message-----
-From: Thomas Hilgert [mailto:Thomas.Hilgert@hilgert.de]
-Sent: Saturday, 06 July 2002 8:57 AM
 To: netfilter@lists.samba.org
-Subject: snat dnat question
+
+I have Mandrake Linux 8.2 (kernel 2.4.18) installed in a box I use as a
+router for my DSL connection.  I use a firewall script that I have been
+running since 2.4.3 using netfilter.
+
+Lately, I have had a need to run Netmeeting from behind my router, so I
+pom'd the h323 conntrack and rebuilt my kernel.  Here are the steps I used:
 
 
-Hi guys,
+cd /usr/src
+cp -R linux-2.4.18-6mdk linux-2.4.18-6h323   	#copy old src installation
+ln -s linux-2.4.18-6h323 linux		   	#link to new source tree
+cd linux
+vi Makefile						   	#and change EXTRAVERSION = -6h323
+make mrproper					   	#clean (also erases .config)
+cp arch/i386/defconfig .config			#restore Mandrake default configuration
+make oldconfig
+make dep
+cd /root/pom/netfilter/userspace			#POM userspace
+make patch-o-matic
+	apply:	arptables
+			config-cleanup
+			conntrack+nat-helper-unregister
+			ip_conntrack_protocol_unregister
+			macro-trailing-semicolon-fix
+			nat-export_symbols
+			netfilter-arp
+			REJECT-don't fragment
+			pptp_conntrack_nat		#just in case
+			h323_conntrack_nat		#this patch done last
+cd /usr/src/linux
+make oldconfig						#answer <m>odule for pptp & h323
+make dep
+make clean
+make bzImage && make modules && make modules_install
+make install						#Mandrake automated script for setting up /boot & lilo
+lilo
+cd /root/pom/netfilter/userspace
+make install all						#install netfilter stuff
 
-I have some question regarding snat / dnat witch iptables. Here is what
-I do
-1. setup a packetfilter linuxbox with 3 interfaces.
-   ETH0: Connected to the internet (public ip)
-   ETH1: DMZ with stmp server 10.2.0.0/24
-   ETH2: Internal LAN with ip address 10.1.0.0/24
+and reboot!
 
-   Snat all to the official ip address
-   Dnat all incoming to the smtp server
-See the and of mail for a iptables -t nat -L
-And now the question :-) 
-If I do a telnet to mail.mailwatch.com 25 (simulating smtp) is all I get
-SYN_SENT and that is no connection from the DMZ. The packet filter has
-no problem to establish a connection. 
-PLEASE explain me why
+The new kernel boots fine.  Unfortunately, the following happens:
 
-Thanks in advance
+[root@...]# iptables -t nat -A POSTROUTING -o eth0 -s 192.168.10.0/24 -j
+SNAT --to-source $INET_IP
+iptables: Invalid Argument
 
-Thomas Hilgert
------------------
-Here are the rules to play: 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       all  --  anywhere             anywhere           to:10.2.0.2
+The same happens if I change SNAT to MASQUERADE (w/o --to-source).
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  anywhere             anywhere
-to:212.23.129.186
+If I do:
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-[root@gw1 iproute2]# iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       all  --  anywhere             anywhere           to:10.2.0.2
+[root@...]# iptables -t nat -I POSTROUTING 1 -o eth0 -s 192.168.10.0/24 -j
+SNAT --to-source $INET_IP
+iptables: Target Problem
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  anywhere             anywhere
-to:212.23.129.186
+I've spent hours on Google & found similar problems with different targets,
+but not exactly this one.  The rest of the firewall script runs fine. This
+is the only problem I have.
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+The following modules are loaded, by the way:
 
+ip_nat_h323
+ip_conntrack_h323
+ip_nat_ftp
+ip_conntrack_ftp
+ipt_LOG
+ipt_MASQUERADE
+iptable_nat
+ip_conntrack
+iptable_filter
+iptable_mangle
+ip_tables
+
+Please keep in mind that the SNAT target worked just fine (for a very long
+time) until I pom'd the kernel.  Now I can't nat at all, even if I unload
+the h323 stuff.  All I can do to make things work is to reboot into the old
+kernel.  I would like the get the h323 to work.  All help would be
+appreciated.
+
+Thank you,
+
+Dennis Cardinale
 
 
