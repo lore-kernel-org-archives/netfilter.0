@@ -1,8 +1,10 @@
-From: Linux Query <linux_query@yahoo.com>
-Subject: limiting outgoing connections
-Date: Mon, 21 Mar 2005 22:19:12 -0800 (PST)
-Message-ID: <20050322061913.21052.qmail@web30801.mail.mud.yahoo.com>
+From: Shavian Shakes <shavian78@gmail.com>
+Subject: netfilter logging at the NF_IP_POST_ROUTING hook ?
+Date: Mon, 21 Mar 2005 22:49:42 -0800
+Message-ID: <a7243e5e0503212249cd84cdf@mail.gmail.com>
+Reply-To: Shavian Shakes <shavian78@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,30 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+New to netfilter/iptables. I am writing a small kernel module using
+netfilter hooks. For debugging I need to log the packets at the hooks
+NF_IP_POST_ROUTING and NF_IP_PRE_ROUTING.
 
-Hi All!
+From what I understand, the iptables chains "INPUT" and "OUTPUT" in
+the "filter" table are hooked in at NF_IP_LOCAL_IN and NF_IP_LOCAL_OUT
+respectively. So if I try to do something like :
 
-I want to limit each clients outgoing connections.
-Will the following be ok ?
+iptables -A OUTPUT  -j ULOG --ulog-nlgroup 1 --ulog-prefix foo 
 
-iptables -A FORWARD -i $internal_interface -s $ip -m
-limit --limit 10/s -j ACCEPT
-iptables -A FORWARD  -i $internal_interface -s $ip -j
-DROP
+this will log the packets from the NF_IP_LOCAL_OUT hook. But I would
+like to log them from the NF_IP_POST_ROUTING (and  NF_IP_PRE_ROUTING
+too) hooks. Is there a simple way to achieve this using
+iptables/netfilter?
 
-What is a good limit figure ?
+thanks for any help/pointers.
 
-regards to all,
-jim
+Shavian. 
 
-
- 
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+ps: I tried to do this (without fully understanding if it will work ):
+iptables -A POSTROUTING -t nat  -j ULOG --ulog-nlgroup 1 --ulog-prefix foo
+but it didnt..
 
