@@ -1,12 +1,12 @@
-From: =?unknown-8bit?q?J=F6rgen?= Danielsson <jorgen_d@yahoo.com>
-Subject: Re: problem with forward and iptables (added one more prob in here)
-Date: Wed, 3 Jul 2002 09:39:07 -0700 (PDT)
+From: Carlos Lopez <chlopezl@yahoo.com>
+Subject: Re: 2 ISPs on firewall
+Date: Wed, 3 Jul 2002 10:46:52 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020703163907.99011.qmail@web9904.mail.yahoo.com>
-References: <200207031620.g63GKhU29698@vulcan.rissington.net>
+Message-ID: <20020703174652.26572.qmail@web13905.mail.yahoo.com>
+References: <200207030229.WAA23566@onevista.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207031620.g63GKhU29698@vulcan.rissington.net>
+In-Reply-To: <200207030229.WAA23566@onevista.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,112 +16,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-Thanks for the reply
+I did the same but have a problem actually trying to
+make a DNAT with two ips to one destination. ie:
+iptables -A PREROUTING -t nat -i eth0 -d 1.2.3.4 -j
+DNAT --to 172.28.16.4 
+iptables -A PREROUTING -t nat -i eth1 -d 5.6.7.8 -j
+DNAT --to 172.28.16.4 
 
-I asked the company earlier why they don't put it on
-the 172 net they have aswell, the explanation will be
-abit too long to get here, but the answer is that they
-must have a real c-net behind the firewall since they
-are connected to another net aswell that requires real
-ips (short version).
+and using iproute the same way as described by John.
+But I can see only one of the addresses from the
+outside working right.
 
-And they don't want the iii.iii.iii.iii net to be
-accessible from the outside, thats why i am stuck.
+any clues?
 
-Checking a little more and we hava similair rule for
-port 80 and 443, and just noticed that other hosts on
-the iii.iii.iii.iii net is now accessible from the
-outside on port 80, not just iii.iii.iii.*15, even
-though i added the destination part for that one
-aswell, isn't that even more weird.
+Thanks,
+Carlos.
 
-
---- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> On Wednesday 03 July 2002 4:57 pm, "J=F6rgen"
-> Danielsson wrote:
->=20
-> > This is part of the rules
+--- John Adams <johna@onevista.com> wrote:
+> On Tuesday 02 July 2002 09:53 pm, Matthias Kattanek
+> wrote:
+> > There seems to be lots of question about
+> multihomed firewall/routers.
+> > I am in similiar situation. Having 2 ISP, where to
+> provide services too.
 > >
-> > $PROG  -t nat -A PREROUTING -p tcp -d
-> ooo.ooo.*17.*54
-> > --dport 25 -j DNAT --to iii.iii.iii.*15:25
->=20
-> Any packets coming in to ooo.oo.*17.*54 TCP port 25
-> get destination=20
-> translated to iii.iii.iii.*15 port 25.
->=20
-> > $PROG -A FORWARD -p tcp -d iii.iii.iii.*15 --dport
-> 25
-> > -j ACCEPT
->=20
-> Any packets for iii.iii.iii.*15 TCP port 25 are
-> allowed through.
->=20
-> > $PROG -A INPUT -p tcp --destination
-> ooo.ooo.*17.*54
-> > --destination-port 25 -j ACCEPT
->=20
-> I don't think you want this rule - you're not
-> running a mail server on the=20
-> Firewall, are you ?
->=20
-> > both ooo.ooo.ooo.ooo and iii.iii.iii.iii is real
-> class
-> > c-net (even though iii.iii.iii.iii is being
-> masqed),
-> > which mean no net is a 192.168.0.0/255.255.0.0 or
-> > 10.0.0.0/255.0.0.0 or 172.16.0.0/255.255.255.0
->=20
-> This means that ooo.ooo.ooo.ooo is routable across
-> the Internet (and will get=20
-> translated by your DNAT rule and sent on the
-> iii.iii.iii.iii), and also=20
-> iii.iii.iii.iii is routable across the Internet, so
-> when it arrives at the=20
-> Firewall it will simply get forwarded through to the
-> server with that address.
->=20
-> > The problem:
+> > I managed to forward traffic to e.g. a web server
+> in the DMZ zone.
+> > Main problem I encounter is that the response is
+> always going out
+> > via the DEFAULT gateway on the router.
+> > (In my case one ISP doesn't like it and drops the
+> response.)
 > >
-> > Telnet from the outside to ooo.ooo.*17.*54 : 25
-> does
-> > what its supposed to do, i get a reply from a smtp
-> > server. But then i noticed that iii.iii.iii.*15 :
-> 25
-> > gives the same reply. How come ?
->=20
-> Hopefully the above explains why ?
->=20
-> > No other ip on the
-> > iii.iii.iii.iii net is reachable. Is the forward
-> rule
-> > opening for access directly to the masqed ip ? and
-> how
-> > do i stop that ?
->=20
-> Why do you want to stop it ?   If the mail server is
-> accessible from the=20
-> outside (as ooo.ooo.*17.*54), then why are you
-> bothered about it also being=20
-> accessible as iii.iii.iii.*15 ?   No-one can do any
-> more damage to it on one=20
-> IP than the other, so there's no loss of security
-> here.
->=20
-> If you don't want its real IP address to be
-> accessible from the outside, why=20
-> have you given it a routable IP address at all,
-> instead of a private=20
-> 10.0.0.0, 172.16.0.0 or 192.168.0.0 address ?
->=20
-> =20
->=20
-> Antony.
->=20
+> > I was under the impression that connection
+> tracking of Netfilter keeps
+> > "track" which interface the traffic came in and
+> anticipated it would go
+> > out the same route it came from.
+> >
+> > What am I missing here?
+> > What does it take to make it happen?
+> > Do I just need additional rules for Netfilter?
+> > Would something like "ip_conntrack_isp" work out?
+> Understood such module
+> > needs to be developed. Q just arises is that a way
+> to go?
+> 
+> Here's a script I use with iproute2.  It gives two
+> default routes with 
+> different weightings for different speed lines.
+> johna
+> 
+> GATEWAY0=216.254.97.1
+> GATEWAY1=65.185.37.22
+> NIC0=216.254.97.15
+> NIC1=65.185.37.21
+> route del default
+> ip route add 0.0.0.0/0 via $GATEWAY0 table E0
+> ip route add 0.0.0.0/0 via $GATEWAY1 table E1 
+> ip rule add from $NIC0 table E0
+> ip rule add from $NIC1 table E1
+> ip route add default scope global \
+> 	nexthop via $GATEWAY0 weight 6 \
+> 	nexthop via $GATEWAY1 weight 1
+> ip route flush cache
+> 
 
 
 __________________________________________________
