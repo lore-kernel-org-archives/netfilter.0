@@ -1,13 +1,11 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Linux Query <linux_query@yahoo.com>
 Subject: Re: ip + mac authentication
-Date: Wed, 19 Jan 2005 12:57:23 +0200
-Message-ID: <3063e50501190257de42d67@mail.gmail.com>
-References: <20050119103603.82231.qmail@web30810.mail.mud.yahoo.com>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+Date: Wed, 19 Jan 2005 03:48:04 -0800 (PST)
+Message-ID: <20050119114804.13549.qmail@web30806.mail.mud.yahoo.com>
+References: <3063e50501190257de42d67@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050119103603.82231.qmail@web30810.mail.mud.yahoo.com>
+In-Reply-To: <3063e50501190257de42d67@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,43 +17,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Linux Query <linux_query@yahoo.com>
-Cc: netfilter@lists.netfilter.org
-
-You can make a file with pairs of <ip> <mac> and load it with arp -f ,
-or man ethers then you can make firewall rules based on ips only, of
-course don;t forget to drop traffic in FORWARD which not match your
-clients's source ip.
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-On Wed, 19 Jan 2005 02:36:03 -0800 (PST), Linux Query
-<linux_query@yahoo.com> wrote:
-> 
-> Hi all!
-> 
-> I want to ensure that each of my clients can have
-> access to the net only with the ip address which is
-> specifically assigned to him / her. Is the following
-> going to work ?
-> 
-> iptables -I FORWARD -o externalinterface -s
-> xx.xx.xx.xx -m mac --mac-source yy:yy:yy:yy:yy -j
-> ACCEPT
-> 
-> or is it required to be done in some other way ?
-> 
-> thanks and regards to all,
-> jim.
-> 
-> 
-> __________________________________
-> Do you Yahoo!?
-> The all-new My Yahoo! - Get yours free!
-> http://my.yahoo.com
-> 
+--- George Alexandru Dragoi <waruiinu@gmail.com>
+wrote:
+
+> You can make a file with pairs of <ip> <mac> and
+> load it with arp -f ,
+> or man ethers then you can make firewall rules based
+> on ips only, of
+> course don;t forget to drop traffic in FORWARD which
+> not match your
+> clients's source ip.
 > 
 
+Thank you! I didnt know about the /etc/ethers file. Is
+it possible to assign two ips for a single mac in that
+file and a single ip for two macs ?
 
--- 
-Bla bla
+e.g.   ip1   <mac1>
+       ip2   <mac1> 
+
+and
+       ip3   <mac2>
+       ip3   <mac3>  
+      
+Besides, if i leave out some of the clients from the
+/etc/ethers file (I dont know all mac addresses right
+now) , will it create problems for those who are not
+included ?
+
+Thanks and regards,
+jim
+
+
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Meet the all-new My Yahoo! - Try it today! 
+http://my.yahoo.com 
+ 
+
 
