@@ -1,10 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Netfilter on 2.0.x kernel !?
-Date: Wed, 10 Jul 2002 14:29:42 +0100
+From: "Mark Ayad" <mark@javamark.com>
+Subject: Destination NAT Onto the Same Network Problem
+Date: Wed, 10 Jul 2002 15:54:02 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207101329.g6ADTw812515@vulcan.rissington.net>
+Message-ID: <001601c22819$406b6a30$0300a8c0@W2KP01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,38 +16,35 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-I am posting this message on behalf of Jeff Muntel <jeffm@nova-eng.com> who 
-seems to be having some problems with his subscription to the list.
+I have a problem with the following Firewall Script which works fine apart
+from when I try to INTERNALLY connect to the webserver 192.168.0.3:80
+using the public IP which if I'm right should be the same as $EXTIF. The
+internal machine I'm launching the request from is actually the webserver
+(but that shouldn't matter).
 
-I must admit it sounds like a pretty unlikely possibility to me....
+I know I'm missing a line from what I read in
+http://netfilter.samba.org/unreliable-guides/NAT-HOWTO/NAT-HOWTO.linuxdoc-10
+.html and I've tried nearly every combination I can think of except the one
+that works that is.
 
-----------  Forwarded Message  ----------
+So whats the missing line ?
 
-"Is there any way to patch a Linux 2.0.x kernel to add netfilter
-functionality, or would it be best just to use ipfwadm to do packet
-filtering with this kernel?  I'm working on an embedded application which
-must use Linux 2.0.38, but my application needs netfilter support.  I will
-need to have the capability to drop some packets, allow some to pass through
-to the next phase of the network processing, and queue others to my
-application in the userspace.  I have already determined that I cannot use
-the 2.4 kernel in this embedded environment, so I have two options;
-modify/patch the 2.0.38 kernel to add some (limited) netfilter support
-(artificially insert hooks), or use ipfwadm with the 2.0.38 kernel.  FYI,
-the only hooks used are NF_IP_PRE_ROUTING, NF_IP_LOCAL_OUT, and
-NF_IP_POST_ROUTING with verdicts of NF_ACCEPT, NF_DROP, and NF_QUEUE.
+$IPTABLES -A INPUT -p tcp --syn --destination-port 80 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --syn -j DROP
 
-I have done some research and it seems that ipfwadm will not work too well,
-since I need to queue packets to the userspace.  It looks as if inserting
-the artificial netfilter hooks would not be too terribly difficult, but I
-would also have to reimplement ip_queue and any associated files, which
-would probably be a big pain.
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
 
-Any advice, words of wisdom, or solutions would be greatly appreciated.
+$IPTABLES -t nat -A PREROUTING -p tcp -i eth0 --dport 80 -j
+DNAT --to-destination 192.168.0.3:80
 
-Thanks,
-Jeff
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
 
--------------------------------------------------------
+Best Regards
+
+Mark
+
 
