@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FTP failed
-Date: Sat, 6 Jul 2002 11:52:53 +0100
+From: alexander.swann@synetics.fr
+Subject: LOG flags 0 (second post) ;-)
+Date: Sat, 6 Jul 2002 13:39:46 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207061052.g66Aqw803352@vulcan.rissington.net>
-References: <200FAA488DE0D41194F10010B597610D2BA25C@JUPITER>
+Message-ID: <OF66699DD4.943C2F61-ONC1256BED.0060744D-C1256BEE.00403447@synetics.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA25C@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,44 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.samba.org
 
-On Saturday 06 July 2002 11:40 am, George Vieira wrote:
 
-> Because then you're not running a firewall, you're running a router..
->
-> why bother doing that, just don't run any rules at all..
+Hello,
 
-I think you're missing the point here - which was the benefits of using the ! 
-negation operator in order to simplify the ruleset.
+the rule :
+$PATH -A FORWARD -d 192.168.252.0/22 -p all -s 10.1.1.0/24 -j LOG
+--log-level DEBUG --log-prefix "FWlogDMZLAN : "
 
-For example, suppose I have a firewall with six ethernet interfaces (which I 
-regularly do, for connecting five customers to a single Internet link without 
-each customer being able to access the others' networks).
+When I do a
+# iptables -L -v -n
 
-Suppose that I want all the internal interfaces to be able to access the 
-firewall by http (for some performance monitoring for example), but I do not 
-want to allow such access from the Internet.
+I get this result
+610 29280 LOG        all  --  *      *       10.1.1.0/24
+192.168.252.0/22   LOG flags 0 level 7 prefix `FWlogDMZLAN : '
 
-I can think of three rulesets to allow this (assuming there is a default DROP 
-policy on the INPUT chain):
+My question is :
+What meens the "flags 0" in "LOG flags 0 level 7 prefix `FWlogDMZLAN : =
+' "
 
-1: iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -i eth2 -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -i eth3 -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -i eth4 -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -i eth5 -p tcp --dport 80 -j ACCEPT
+Thx
 
-2: iptables -A INPUT -i eth0 -p tcp --dport 80 -j DROP
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+Alexander SWANN
+Administrateur Syst=E8mes et R=E9seaux
+SYNETICS Groupe Soft-Computing=
 
-3: iptables -A INPUT -i ! eth0 -p tcp --dport 80 -j ACCEPT
 
-I know which I find easiest to understand, and least prone to mistakes when 
-maintaining the ruleset in six months' time....
-
- 
-
-Antony.
 
