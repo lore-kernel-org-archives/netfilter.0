@@ -1,12 +1,15 @@
-From: michael@heimic.net
-Subject: Strange problem with iptables and ip ranges with leading 0's 
-     (works sometimes, but not other times)
-Date: Tue, 30 Sep 2003 20:26:45 -0500 (CDT)
+From: Joel Newkirk <firewalldude@newkirk.us>
+Subject: Re: Strange problem with iptables and ip ranges with leading 0's 
+	(works sometimes, but not other times)
+Date: Tue, 30 Sep 2003 21:56:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <51395.202.95.92.167.1064971605.squirrel@webmail.heimic.net>
+Message-ID: <1064973377.9055.580.camel@alpha.newkirk.us>
+References: <51395.202.95.92.167.1064971605.squirrel@webmail.heimic.net>
+Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <51395.202.95.92.167.1064971605.squirrel@webmail.heimic.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,103 +20,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: michael@heimic.net
+Cc: netfilter@lists.netfilter.org
 
-Hi everyone,
+On Tue, 2003-09-30 at 21:26, michael@heimic.net wrote:
 
-I've been a longtime user of linux and more recently big fan of iptables
-since its introduction. Its so much more powerfull then what we have had
-previously.
+> Basically if we enter in a rule like so; (notice leading 0's 007.0xx.0/24)
 
-A friend and I just recently been playing around with some rules and found
-a slight bug, and wished to email the list and get it
-checked/investigated. Is it indeed a bug or a misconfiguration on our
-part.
+> ACCEPT springer:~# iptables -A mule -p tcp --dport 4661 -s
+> 202.007.077.0/24 -j ACCEPT
+> 
+> Above works perfect no errors. Now see below.. Continuing on with further
+> ranges.
+> 
+> springer:~# iptables -A mule -p tcp --dport 4661 -s 202.007.078.0/24 -j
+> ACCEPT
+> iptables v1.2.8: host/network `202.007.078.0' not found
 
-I am not currently a member of the list, so if anyone replies to this
-post, please kindly CC me via private email.
+The leading 0's are interpreted as indicating an octal number, rather
+than decimal.  (This means your 202.007.077.0 that was accepted, if you
+list the rule back, will show 202.7.63.0/24 being ACCEPTed)  I don't see
+it documented anywhere as behaving this way, but that's clearly what is
+happening.  077=63, 0100=64, 078=Undefined, like trying to interpret
+0x1A (the 'x' indicates hexadecimal) in decimal - the 'A' has no
+meaning, just like any digit 8 or higher has no meaning in octal.
 
-Problem is;
+This is an artifact, I presume, of the function parsing the IP - it
+presumes an IP, and tries to decode one based on standard notations used
+to represent numbers in programming.  If this fails then it tries to
+interpret it as a URL instead of an IP, which also fails.
 
-We found some strange behave from iptables (v1.2.8, 1.2.7a and I believe
-also 1.2.6).
+For your current situation, I presume you have a program generating
+these rules - try to drop the leading 0's.  (if you're using %3d for
+instance)  Or, try your sprintf or whatever with octal (%0) or hex (%x)
+notation for the octets - they both work... ;^)  (unfortunately they
+don't work for netmask octets - which would make netmasks easier)
 
-Basically if we enter in a rule like so; (notice leading 0's 007.0xx.0/24)
+j
 
-springer:~# iptables -N mule
-springer:~# iptables -F mule
-springer:~# iptables -A mule -p tcp --dport 4661 -s 202.007.076.0/24 -j
-ACCEPT springer:~# iptables -A mule -p tcp --dport 4661 -s
-202.007.077.0/24 -j ACCEPT
-
-Above works perfect no errors. Now see below.. Continuing on with further
-ranges.
-
-springer:~# iptables -A mule -p tcp --dport 4661 -s 202.007.078.0/24 -j
-ACCEPT
-iptables v1.2.8: host/network `202.007.078.0' not found
-Try `iptables -h' or 'iptables --help' for more information. springer:~#
-iptables -A mule -p tcp --dport 4661 -s 202.007.079.0/24 -j ACCEPT
-iptables v1.2.8: host/network `202.007.079.0' not found
-Try `iptables -h' or 'iptables --help' for more information. springer:~#
-iptables -A mule -p tcp --dport 4661 -s 202.007.080.0/24 -j ACCEPT
-iptables v1.2.8: host/network `202.007.080.0' not found
-Try `iptables -h' or 'iptables --help' for more information.
-
-As you can see it fails.
-
-If I remove the leading zeros for the above ones that failed;
-
-springer:~# iptables -A mule -p tcp --dport 4661 -s 202.7.78.0/24 -j ACCEPT
-springer:~# iptables -A mule -p tcp --dport 4661 -s 202.7.79.0/24 -j ACCEPT
-springer:~# iptables -A mule -p tcp --dport 4661 -s 202.7.80.0/24 -j ACCEPT
-
-It works.
-
-Why does the first few work (with leading 0's, and then the next few fail)
-it would appear some code in iptables evaluating the command line only
-works upto a certain range or values)
-
-Just to be certain it wasn't our chain causing the problem, I used the
-INPUT chain (as seen below) and same problem occurs.
-
-springer:~# iptables -A INPUT -p tcp --dport 4661 -s 202.007.076.0/24 -j
-ACCEPT
-springer:~# iptables -A INPUT -p tcp --dport 4661 -s 202.007.077.0/24 -j
-ACCEPT
-springer:~# iptables -A INPUT -p tcp --dport 4661 -s 202.007.078.0/24 -j
-ACCEPT
-iptables v1.2.8: host/network `202.007.078.0' not found
-Try `iptables -h' or 'iptables --help' for more information. springer:~#
-iptables -A INPUT -p tcp --dport 4661 -s 202.007.079.0/24 -j ACCEPT
-iptables v1.2.8: host/network `202.007.079.0' not found
-Try `iptables -h' or 'iptables --help' for more information. springer:~#
-iptables -A INPUT -p tcp --dport 4661 -s 202.007.080.0/24 -j ACCEPT
-iptables v1.2.8: host/network `202.007.080.0' not found
-Try `iptables -h' or 'iptables --help' for more information.
-
-# drop leading 0's for those who don't work, and it now works. Why does
-iptables accept it certain ranges
-# and then other times not. I would of thought if it accepts leading 0's
-at all it should work all the time.
-
-springer:~# iptables -A INPUT -p tcp --dport 4661 -s 202.7.78.0/24 -j ACCEPT
-springer:~# iptables -A INPUT -p tcp --dport 4661 -s 202.7.79.0/24 -j ACCEPT
-springer:~# iptables -A INPUT -p tcp --dport 4661 -s 202.7.80.0/24 -j ACCEPT
-
-As you can see its not our chain causing the problem.
-
-Anyone like to explain why it works with leading 0's sometimes and then
-hit a certain range of octets and it don't. Did we indeed find a bug?
-
-I look forward to hearing from anyone in regards to this strange find.
-Atleast we can get around it by dropping the leading 0's for the ip ranges
-that fail. But still, thought it might be important to bring it up. Since
-it might get fixed in the next release of iptables if indeed being found
-to be a bug.
-
---
-Thanks
-Michael Fox
 
 
