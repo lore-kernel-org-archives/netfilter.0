@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Sven Burgener <sburgener@objeng.ch>
 Subject: Re: iptables abilities
-Date: Fri, 23 Jan 2004 09:11:08 +0000
+Date: Fri, 23 Jan 2004 11:23:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401230911.08584.Antony@Soft-Solutions.co.uk>
-References: <400FC047.4010208@objeng.ch> <1089.12.75.166.13.1074782849.squirrel@nmibwkrf1.nexusmgmt.com> <4010E263.1080902@objeng.ch>
+Message-ID: <4010F62A.7090403@objeng.ch>
+References: <400FC047.4010208@objeng.ch> <1089.12.75.166.13.1074782849.squirrel@nmibwkrf1.nexusmgmt.com> <4010E263.1080902@objeng.ch> <200401230911.08584.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4010E263.1080902@objeng.ch>
+In-Reply-To: <200401230911.08584.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Friday 23 January 2004 8:59 am, Sven Burgener wrote:
+Antony Stone wrote:
+> The only reason you can't route private addresses across the Internet is that 
+> all ISP routers drop packets sent to these address ranges.
 
-> Dear John
->
-> John A. Sullivan III wrote:
-> > Is there any point at which you could use DNAT/SNAT to change each
-> > private address to a public address? Alternately, can you build a VPN
-> > tunnel between the two and tunnel the private addresses through the
-> > tunnel?
->
-> Perhaps a VPN tunnel would be the best solution. How would such a thing
-> be established though, given that both A and B have private addresses?
->
-> The two connections between A <--> X and X <--> B need to somehow be
-> interconnected. Can this be done with VPN?
+Right.
 
-You can connect anything you like with a VPN, because the whole point about 
-the P part of a VPN is that you are in charge of what it will route and what 
-it won't - it is your Private network, not part of the open public Internet.
+> You would set up your VPN system to forward these packets, just the same as 
+> you can set up your own firewalls and routers to forward them if you want to.
+> 
+> A VPN with two RFC1918 ranges at each end is a very common setup.
 
-The only reason you can't route private addresses across the Internet is that 
-all ISP routers drop packets sent to these address ranges.
+Yes, indeed.
 
-You would set up your VPN system to forward these packets, just the same as 
-you can set up your own firewalls and routers to forward them if you want to.
+My question, though, is how can a connection be established between two 
+parties where one of them has a private address (A) and where you want 
+to connect _to_ the server having the private address (A, see below).
 
-A VPN with two RFC1918 ranges at each end is a very common setup.
+The problem is, you can't establish a connection to the private address 
+(A), so there has to be a means of 'hijacking' the established session 
+(from X, see diagram below).
 
-Regards,
 
-Antony.
+         (Internet)       (Internet)
+     A <------------> X <------------> B
 
--- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
+A: 192.168.X.X
+B: 192.168.X.X
+X: public IP address
 
- - Philip Hands
+The end result is to get from B to A, securely.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Cheers
+Sven
 
