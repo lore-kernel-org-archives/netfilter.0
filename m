@@ -1,14 +1,14 @@
 From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: How to filter Kazaa?
-Date: Sat, 27 Sep 2003 20:18:43 -0700
+Subject: RE: Problems with NAT
+Date: Sat, 27 Sep 2003 20:30:17 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LFEHKEBEBHAFGJBMNKAOMEOBCBAA.markee@bandwidthco.com>
-References: <3F758C7A.2090400@Loudoun-Fairfax.com>
+Message-ID: <LFEHKEBEBHAFGJBMNKAOCEOCCBAA.markee@bandwidthco.com>
+References: <20030927164414.GA16146@skymoo.dyndns.org>
 Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F758C7A.2090400@Loudoun-Fairfax.com>
+In-Reply-To: <20030927164414.GA16146@skymoo.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +19,78 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>, Ivan <fcovadonga@telecable.es>
-Cc: netfilter@lists.netfilter.org
+To: Adam Mercer <r.a.mercer@blueyonder.co.uk>, netfilter@lists.netfilter.org
 
-Take a look at ftwall at http://www.lowth.com/p2pwall/.
-ftwall is essentially an extension for IPTables designed to filter KaZaa.
+Adam - You have a mixture of "stateless" and "stateful" rules.  SSH is
+passing in both directions because you have an explicit ACCEPT for it.  DNS
+is blocked so you are unable to resolve.  Although you need to do more than
+this for long term function and security, here is a quick fix so your system
+should work.  Add:
+
+${IPTABLES} -A INPUT -m state --state NEW -j ACCEPT
+${IPTABLES} -A FORWARD -m state --state NEW -j ACCEPT
 
 -----Original Message-----
 From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Jeffrey Laramie
-Sent: Saturday, September 27, 2003 6:11 AM
-To: Ivan
-Cc: netfilter@lists.netfilter.org
-Subject: Re: How to filter Kazaa?
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Adam Mercer
+Sent: Saturday, September 27, 2003 9:44 AM
+To: netfilter@lists.netfilter.org
+Subject: Problems with NAT
 
 
-Ivan wrote:
+Hi
 
->  
->  Hello there
->  
->   I want to know how to filter Kazaa, my version is Kazaa Lite 2.3
-> Can e-mail me at my adress fcovadonga@telecable.es 
-> <mailto:fcovadonga@telecable.es>
-> or at lightupmylife3@hotmail.com <mailto:lightupmylife3@hotmail.com>
->  
->  Emilio Ivan Fernandez (Spain)
->
-> 	
-> 	
->
-Hi Ivan
+I'm trying to set up my firwall so that I can plug my laptop into eth1
+of my desktop and use NAT to access the outside world on the laptop
 
-Kazaalite uses udp port 1214 to make connection by default although 
-users can change that to other ports. Once connected, Kazaalite clients 
-will start making connections from --sport 1024  to random --dports 
- >1024. It will then start another connection from --sport 1025, 1026, 
-etc. until it's reached it's max connection count. The key to blocking 
-it is stopping udp 1214 and the key to making it work (reliably) is to 
-not filter anything above port 1024.
+I've followed the NAT Howto and my firewall contains the following rules
 
-Jeff
+    # allow local-only connections
+    ${IPTABLES} -A INPUT -i lo -j ACCEPT
 
+    # free output on any interface to any ip for any service
+    ${IPTABLES} -A OUTPUT -j ACCEPT
+
+    # permit answers on already established connections
+    # and permit new connections related to established ones
+    ${IPTABLES} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+    ${IPTABLES} -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+    # allow incomg ssh connections
+    ${IPTABLES} -A INPUT -p tcp  --dport ssh -j ACCEPT
+
+    # NAT
+    ${IPTABLES} -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    ${IPTABLES} -A FORWARD -s 10.0.0.0/24 -j ACCEPT
+
+    # everything not accepted > /dev/null
+    ${IPTABLES} -P INPUT DROP
+    ${IPTABLES} -P FORWARD DROP
+    ${IPTABLES} -P OUTPUT DROP
+
+    # be verbose on dynamic ip-addresses
+    echo 2 > /proc/sys/net/ipv4/ip_dynaddr
+
+    # disable ExplicitCongestionNotification
+    echo 0 > /proc/sys/net/ipv4/tcp_ecn
+
+    # turn on IP forwarding
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+
+The laptop (PowerBook G4) is assigned an ip address in the range
+10.0.0.2-.10
+by a DHCP server. eth1 has an ip address 10.0.0.1, and eth0 is the
+connection
+to the outside world. After running ethereal it appears that no packets from
+the local network are making it to eth0. However I can ssh into the server
+if I
+use ip address, but not hostname.
+
+Can anyone help me out with this?
+
+Thanks in advance
+
+Adam
 
 
 
