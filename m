@@ -1,14 +1,12 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: Can't forward Win2k VPN through NAT
-Date: Fri, 06 Sep 2002 14:46:04 -0700
+From: Martin Stricker <shugal@gmx.de>
+Subject: Re: how to block files with specific extensions
+Date: Fri, 06 Sep 2002 23:31:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPCENGCNAA.stewart.thompson@shaw.ca>
-References: <20020906212224.ZHIL13709.mta07-svc.ntlworld.com@there>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <3D791EA1.E962D99D@gmx.de>
+References: <FLEKIPPLAEDMJMOOBBDPEEMGCNAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020906212224.ZHIL13709.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +17,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <antony@soft-solutions.co.uk>, Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: saravanan sakthi <lxsara@yahoo.com>, netfilter@lists.samba.org
 
-HI Antony:
+Stewart Thompson wrote:
+> 
+> Hi Saravanian:
+> 
+>         Netfilter is a packet based system. So, it don't think
+> you can do what your proposing with it. There may be other
+> applications that could that operate at a higher level in the
+> OSI stack. If you give the list a better description of  your
+> exact requirements. Someone might be able to make a
+> suggestions.
 
-	I have seen the same posts, and judging by the replies,
-or lack thereof. It is generally been a dismal failure. I don't have
-a pressing need for VPN right now, but I can see the possibility
-in the future, so I have been following the discussion. Thanks.
+Depending on what kind of files you want to filter, you will have to do
+it in different software: To prevent downloading certain files with the
+web browser or via FTP (which most browsers can do also), you need to
+set up a web cache/proxy. Popular software for that on Linux is squid.
+Then configure squid to deny the file extensions you don't like, and
+configure netfilter to only accept HTTP/FTP connections from your proxy.
 
-Stu..........
+If you want to deny certain file types as e-mail attachments you have to
+do so in your e-mail server software. Procmail should be able to, and
+several ant-virus software can do this also.
 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: September 6, 2002 2:22 PM
-To: Netfilter mailinglist
-Subject: Re: Can't forward Win2k VPN through NAT
-
-On Friday 06 September 2002 10:13 pm, Stewart Thompson wrote:
-
-> Hi Antony:
->
->       Off the top of your head, do you know what the first
-> Version of iptables that pptp_conntrack_nat was implemented?
-
-No idea - sorry.
-
-All I can say is that I've seen many postings on this list over the weeks
-and
-months about people trying to get PPTP working effectively (especially
-through iptables and NAT), so you should be able to find plenty of
-information in the archives at
-http://lists.netfilter.org/pipermail/netfilter
-
-Antony.
-
---
-
-This is not a rehearsal.
-This is Real Life.
-
+Best regards,
+Martin Stricker
+-- 
+Homepage: http://www.martin-stricker.de/
+Linux Migration Project: http://www.linux-migration.org/
+Red Hat Linux 7.3 for low memory: http://www.rule-project.org/
+Registered Linux user #210635: http://counter.li.org/
 
