@@ -1,12 +1,12 @@
-From: Jesper Lund <jesper@ballbreaker.dk>
-Subject: Re: problem
-Date: Mon, 20 Dec 2004 13:45:29 +0100
-Message-ID: <20041220134529.5786acac.jesper@ballbreaker.dk>
-References: <000501c4e68c$f0044c80$0200a8c0@vss>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: INPUT or FORWARD;;
+Date: Mon, 20 Dec 2004 07:58:45 -0500
+Message-ID: <1103547524.2932.6.camel@hubcap.ljm.dom>
+References: <Pine.LNX.4.05.10412200158240.18976-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000501c4e68c$f0044c80$0200a8c0@vss>
+In-Reply-To: <Pine.LNX.4.05.10412200158240.18976-100000@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,19 +20,54 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hi, i'm nikolai from Bulgaria.
-> When i run script "runme pending" from "patch-o-matic-ng-20040621"
-> i look this mesage
-> ---------------------------------------------------------
-> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
-> cannot apply (1 rejects out of 1 hunks)
-> ---------------------------------------------------------
-> my os is debian 3.0-r3 with recompile version of kernel 2.4.28 and
-> i have install iptables v1.2.11. I have source of kernel  2.4.28
-> and source of iptables v.1.2.11. Sorry for my english, if in email
-> have any syntax errors:). My e_mail is niki@unicoders.biz
+On Mon, 2004-12-20 at 02:10, R. DuFresne wrote:
+> I see in the FAQ on the netfilter website this under  section 7.3
+> FILTERING SPECIFICATIONS;
+> 
+> <quote>
+> 
+> Specifying an Interface
+> 
+> ...
+> 
+>  Packets traversing the INPUT chain don't have an output interface,
+>           so any rule using `-o' in this chain will never match.
+> 	  Similarly, packets traversing the OUTPUT chain don't have an
+> 	  input interface, so any rule using `-i' in this chain will never
+> 	  match.
+>  Only packets traversing the FORWARD chain have both an input and
+>           output interface.
+> 
+> 
+> </quote>
+> 
+> 
+> My question is this, and it may well have been answered many times
+> already, I'll take the slap to the back of the head if it's one of the
+> common list questions that folks tend to get irritated in repeatedly
+> answering;
+> 
+> A multi-homed firewall having at least two interfaces, is known, at least
+> to itself by those IP/hostnames combos assinged to its interfaces.  <i.e.
+> ppp0 and eth0>  So say rules coming from the ppp0 interface into the
+> firewall <INPUT rules> are directed to it's other name/interface
+> 
+> -i /dev/ppp0 -d /dev/eth0
 
-What is the question ?
+well--those values make no sense whatsoever, but if you're asking if the
+following is valid:
 
-//Jesper
+  iptables -A INPUT -i ppp0 -d $IP_OF_ETH0 -j ACCEPT
+
+then yes.  the INPUT chain is traversed by packets destined for a local
+process (IP addresses).  the input interface is just a tag attached to
+the packet.
+
+-j
+
+--
+"If I wanted smoke blown up my ass, I'd be at home with a pack of
+ cigarettes and a short length of hose."
+	--The Simpsons
+
 
