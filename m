@@ -1,8 +1,8 @@
 From: Mihael Kukec <mkukec@public.srce.hr>
 Subject: Re: newbie question : ip_conntrack_ftp
-Date: Wed, 24 Mar 2004 08:25:02 +0100
+Date: Wed, 24 Mar 2004 08:28:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <406137CE.4000203@public.srce.hr>
+Message-ID: <4061389C.6020703@public.srce.hr>
 References: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr> <406070EC.3010601@nk.nl>
 Reply-To: mihael.kukec@public.srce.hr
 Mime-Version: 1.0
@@ -19,7 +19,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: Netfilter List <netfilter@lists.netfilter.org>
+To: Netfilter List <netfilter@lists.netfilter.org>
 
 Victor Julien wrote:
 
@@ -36,6 +36,8 @@ will try with that...
 
 
 Mihael
+
+
 
 
 
