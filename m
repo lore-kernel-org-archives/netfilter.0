@@ -1,9 +1,12 @@
-From: Jason Williams <jwilliams@courtesymortgage.com>
-Subject: Second shot at IPTables script
-Date: Fri, 17 Dec 2004 13:14:40 -0800
-Message-ID: <6.1.2.0.0.20041217130746.026796b0@corpmail.courtesymortgage.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Second shot at IPTables script
+Date: Fri, 17 Dec 2004 16:41:25 -0500
+Message-ID: <1103319685.3262.34.camel@hubcap.ljm.dom>
+References: <6.1.2.0.0.20041217130746.026796b0@corpmail.courtesymortgage.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <6.1.2.0.0.20041217130746.026796b0@corpmail.courtesymortgage.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,112 +17,84 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thought i'd post my second attempt at a script here, with comments to make 
-sure I am on the right path.
-Spent the better part of the last two days reading up on IPTables and 
-finally understand the whole INPUT,OUTPUT,FORWARD chain. That helped a lot.
+On Fri, 2004-12-17 at 16:14, Jason Williams wrote:
+> #Accept loopback interface
+> $IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
 
-Here it is: Simple script to just setup a firewall to protect a private LAN.
+you really want to allow unlimited access to your firewall from your
+internal network?
 
-#External interface
-INET_IP="xxx.xxx.xxx.xxx"
-INET_IFACE="eth0"
+stylistic note:  the "-p ALL" is unnecessary.  seems to be awfully
+popular amongst those that post their rules here, but it's just more
+stuff to read, type, and possibly mistype...no biggie, though.
 
-Usually variables.
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
+> 
+> 
+> # Rules for incoming packets from the internet.
+> 
+> $IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state ESTABLISHED,RELATED 
+> -j ACCEPT
+> 
+> This rule, should only work when the host (firewall) initiate connections 
+> first. Nothing should be accepted back unless a connection originated from 
+> the firewall, correct? 
 
-#Internal/Private LAN
-LAN_IP="192.168.0.2"
-LAN_IP_RANGE="192.168.0.0/24"
-LAN_IFACE="eth1"
+yes.  another stylistic thing:  a "-i $INET_IFACE" would make this rule
+more consistent with what i believe to be your intent.
 
-Same.
+> This would allow pings to work, ftp, package 
+> grabbing, patches etc. Am I correct?
 
-#LOOPback
-LO_IFACE="lo"
-LO_IP="127.0.0.1"
+as long as your allowing the connection initiation to happen in OUTPUT
+(which you are below), yes.
 
-Same.
+personally--i use something more along the lines of:
 
-# 1.5 IPTables Configuration.
+  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-IPTABLES="/usr/sbin/iptables"
+as my first rule to make it interface and IP agnostic, and handle
+source/destination verification in a separate chain.
 
+> # Accept the packets we actually want to forward
+> 
+> $IPTABLES -A FORWARD -i $LAN_IFACE -o $INET_IFACE -s $LAN_IP -j ACCEPT
 
-#Default Policy Setting
+i think you meant to have "$LAN_IP_RANGE" not "$LAN_IP" there.
 
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -P FORWARD DROP
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Default drops.
+90% of you packets will match the state rule.  a good performance-tuning
+habit to get into is to make this the first rule in the chain.
 
-#Custom chain
+> Accept traffic from my private LAN.
+> 
+> # Special OUTPUT rules to decide which IP's to allow.
+> 
+> $IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
+> 
+> To allow outbound traffic. This correct? I had question here.
 
-$IPTABLES -N tcp_packets
+errr...how about:
 
-Custom chain, so I can specify later what to drop:
+  iptables -A OUTPUT -j ACCEPT
 
-# bad_tcp_packets chain
+or just:
 
-$IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK -m state 
---state NEW -j REJECT --reject-with tcp-reset
-$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG 
---log-prefix "New not syn:"
-$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+  iptables -P OUTPUT ACCEPT
 
-Something i've been looking into. May change it. Looking to drop packets 
-that scan, probe, etc on the firewall.
+if someone can change the source IP of packets associated with
+locally-generated packets, you have bigger problems than a firewall rule
+that checks source IPs.
 
-#Accept loopback interface
-$IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
-$IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
-
-
-# Rules for incoming packets from the internet.
-
-$IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state ESTABLISHED,RELATED 
--j ACCEPT
-
-This rule, should only work when the host (firewall) initiate connections 
-first. Nothing should be accepted back unless a connection originated from 
-the firewall, correct? This would allow pings to work, ftp, package 
-grabbing, patches etc. Am I correct?
-
-# Accept the packets we actually want to forward
-
-$IPTABLES -A FORWARD -i $LAN_IFACE -o $INET_IFACE -s $LAN_IP -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-Accept traffic from my private LAN.
-
-# Special OUTPUT rules to decide which IP's to allow.
-
-$IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
-
-To allow outbound traffic. This correct? I had question here.
-
-#NAT SETUP
-
-$IPTABLES -t nat -A POSTROUTING -s $LAN_IP -o $INET_IFACE -j SNAT 
---to-source $INET_IP
-
-Simple enough: Do SNAT.
-
-I appreciate the help and feedback here. I look forward to your responses.
-
-CHeers,
-
-Jason
-
-
-
-
-
+--
+"Getting out of jury duty is easy. The trick is to say you're
+ prejudiced against all races."
+	--The Simpsons
 
 
