@@ -1,15 +1,10 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: IPTables, Linksys BEFSR41 and PCAnywhere
-Date: Thu, 15 Jan 2004 17:07:30 -0500
+From: "Minh Cao" <caom@statsus.com>
+Subject: Re: Help: Iptables rules
+Date: Thu, 15 Jan 2004 15:13:53 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <41891.2435336553$1074204571@news.gmane.org>
-References: <000a01c3db92$465416d0$0f00a8c0@tandem> <000401c3db95$9d0a8bf0$0f00a8c0@tandem> <1074192725.1572.26.camel@pepelui.baicom>
+Message-ID: <OFA9978756.6595C97C-ON88256E1C.007F4A93-88256E1C.007F9D29@statsus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <1074192725.1572.26.camel@pepelui.baicom>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,45 +15,102 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alexis <alexis@attla.net.ar>, Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On January 15, 2004 01:52 pm, Alexis wrote:
-> i have a lot of customers with linksys devices and the port fowarding
-> works fine.
+
+Most of the net applications are working fine,  web browser, ftp, telnet,
+ssh, ping, Cisco VPN.
+I only have problem with VPN using PPTP protocol.
+
+Please let me know which modules to get pptp to work.
+
+Thanks
+Minh
+
+
+
+
+                                                                                                                           
+                      Antony Stone                                                                                         
+                      <Antony@Soft-Solutions.c        To:       netfilter@lists.netfilter.org                              
+                      o.uk>                           cc:                                                                  
+                      Sent by:                        Subject:  Re: Help: Iptables rules                                   
+                      netfilter-admin@lists.ne                                                                             
+                      tfilter.org                                                                                          
+                                                                                                                           
+                                                                                                                           
+                      01/15/2004 01:53 PM                                                                                  
+                                                                                                                           
+                                                                                                                           
+
+
+
+
+On Thursday 15 January 2004 7:57 pm, Minh Cao wrote:
+
+> > 3. You say the above has not worked - how have you tested it?
 >
-> i dont know why they said that linksys will not work.
+> Yes, I tested
+> I used VPN client, which connected to remote side. After connected, the
+> password authentication is timeout in 2 minutes.
+
+I really would recommend testing the setup with something a lot simpler
+than a
+VPN client :)
+
+For example, a web browser, email, ssh, ftp - something which uses fairly
+standard TCP connections, and is likely to work through NAT.
+
+Depending on what sort of VPN you are trying to use, you may have
+significant
+problems getting it work (but then again you may not - as I say it depends
+what sort of VPN it is).   For example, IPsec ESP (tunnel mode) is not too
+difficult to get working, IPsec AH (transport mode) will not work across
+NAT.
+PPTP requires a special helper module, and there are other sorts of VPN
+about
+which I have no idea.
+
+Start with something easy and work your way up to a VPN gradually.
+
+> > 6. Did the machine work as a simple router before you tried adding
+> > netfilter rules?
 >
-> On Thu, 2004-01-15 at 15:30, A. Clausen wrote:
-> > ----- Original Message -----
-> > From: "Alexis" <alexis@attla.net.ar>
-> > To: <netfilter@lists.netfilter.org>
-> > Sent: Thursday, January 15, 2004 10:18
-> > Subject: Re: IPTables, Linksys BEFSR41 and PCAnywhere
-> >
-> > > youre right, just dont forget that pc anywhere uses 2 ports, that i
-> > > think they are 5631 and 5631 tcp
-> > >
-> > > the linksys is with nat enabled? (its just to know, forwarding the
-> > > ports is enough to work)
-> >
-> > That's good to hear.  The problem is that it was another company that
-> > administrates their network and some specialized software, and he's
-> > insisting that the Linksys won't do this, when I've seen D-links and
-> > Livingstons work quite well.  I did research, and PCAnywhere works fine
-> > through NAT networks, and I thought the claim pretty dubious, but
-> > sometimes dubious claims are right.
+> Two NICs are on different subnet. Can I config as a router w/o using
+> netfilter ?
+
+Er, yes :)   You really should make sure the machine will route packets
+properly before setting up netfilter, which (basically) blocks things.
+
+It sounds as though you might benefit from reading the standard Linux
+Networking HOWTO befoer tackling Oska Andreassen's netfilter tutorial which
+I
+recommended to you yesterday.
+
+Regards,
+
+Antony.
+
+--
+"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+Blaster].   However, these products are no longer supported.   Users of
+these
+products are strongly encouraged to upgrade to later versions."
+
+(which *are* affected by MS Blaster...)
+
+http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
 
 
-	Unh.
-	the company I work for has over 50 of these in the field supporting *both* 
-	VPN and pcanywhere connections to remote sites.  -- I don't use these connections
-	myself, but I've seen them used by the support staff for the devices on the other end.
-
-	Once programmed and locked up correctly they work wonderfully.
-
-	-- could be our network support staff *might* have done something interesting to the 
-	code on board by I *highly* doubt that....
 
 
-	Alistair
+
+
+
 
