@@ -1,12 +1,13 @@
-From: "Simon McLeod" <Simon.McLeod@inspireit.com.au>
-Subject: Help on port forwarding
-Date: Thu, 4 Jul 2002 08:24:32 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ipchains to iptables NAT/MASQ conversion question.
+Date: Wed, 3 Jul 2002 23:28:04 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F23E54D22310BE448D4630B1BB02C1583068@armadillo.inspireit.com.au>
+Message-ID: <20020703222806.RNQT295.mta03-svc.ntlworld.com@there>
+References: <OJEKLLDJMPFGONMBIJEFOEHECEAA.karl@unfiw.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-content-class: urn:content-classes:message
+In-Reply-To: <OJEKLLDJMPFGONMBIJEFOEHECEAA.karl@unfiw.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,31 +20,39 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-I currently have a linux machine with a perm modem connection to the
-net.  I'm using iptables to port forward from this machine to other
-machines in my private network.  All is working fine. =20
+On Wednesday 03 July 2002 10:27 pm, Karl Kopper wrote:
 
-I've now just installed ADSL in bridged mode and want to do exactly the
-same thing.  I've installed the ADSL modem on a second ethernet card in
-the linux machine, and it's talking to the net fine.  When I setup port
-forwarding for the IP address of the ADSL connection, it doesn't work.
-For example, if I don't have any iptables rules, I can telnet to the IP
-address of the ADSL connection and get to the linux machine fine.  If I
-add a port forward rule for telnet to another host, when I try and
-telnet to it from the net, it just says "trying" and doesn't go
-anywhere.  Both connections have static IP's, and I disconnected the
-modem link and flushed the iptables rules before trying it with the ADSL
-link.
+> I am trying upgrade a long list of ipchains rules to iptables and am stuck.
+> On ipchains I was able to create "ACCEPT" rules in the forward chain that
+> would cause some packets (based usually on source IP address AND port
+> number) to simply pass through the firewall unmasqueraded (they were kicked
+> out of the chain before the MASQ rule).
+>
+> How can I accomplish the same thing using iptables?
 
-I used the following line to do the port forwarding - works fine on the
-modem link, but doesn't work on the adsl link - can anyone tell me why?
+The FORWARD chain in IPtables allows or blocks packets going through the 
+firewall, nothing to do with NAT.
 
-(obviously x.x.x.x was substituted with the appropriate connection IP
-address)
+The nat table in the POSTROUTING chain handles all Source NAT, so if you want 
+some packets to be SNATted, and others not, put a rule into the POSTROUTING 
+chain which only matches the packets you want NATted, with a target of SNAT.
 
--A PREROUTING -d x.x.x.x -p tcp -m tcp --dport 23 -j DNAT
---to-destination 10.20.0.1:23
+eg suppose you have two internal network ranges, one routable and one 
+private, and you want to SNAT packets from the private network, but not 
+packets from the routable network:
 
-Thanks
+# allow packets from inside net to outside
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+# allow replies back again
+iptables -A FORWARD -i eth0 -m state --state ESTABLISHED, RELATED -j ACCEPT
 
+# NAT the private range on the way out
+iptables -A POSTROUTING -t nat -s 192.168.0.0/16 -o eth0 -j SNAT --to 
+12.34.56.78
+
+Should do what you need...
+
+ 
+
+Antony.
 
