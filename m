@@ -1,11 +1,10 @@
-From: Bryan Waters <bryanw@abwaters.com>
-Subject: Re: anyone know how to use clusterip
-Date: Thu, 24 Mar 2005 15:03:41 -0700
-Message-ID: <4243393D.9010705@abwaters.com>
-References: <42432676.2010701@bus.okstate.edu>
+From: shardul Adhikari <free2squid@gmail.com>
+Subject: iptables query
+Date: Fri, 25 Mar 2005 11:07:06 +0530
+Message-ID: <6c2d1c9d05032421374d594338@mail.gmail.com>
+Reply-To: shardul Adhikari <free2squid@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42432676.2010701@bus.okstate.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,61 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Joines <support@bus.okstate.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Jason...i've asked the same question already.  It seems that this is new 
-enough that absolutely nobody has any experience with it...at least 
-nobody on this list.  I'm setting up machines to experiment with this 
-now...i'll post my test results to the list.
+Hi list, 
+I am relatively new to iptables 
 
--bryanw
+i am trying this 
 
-Jason Joines wrote:
->    I recently noticed the clusterip target extension in my iptables man 
-> page.  It looks really interesting but I have no idea how how to go 
-> about trying  it out as I'm not exactly sure what it is supposed to do 
-> and don't understand exactly what all these options mean.  I've 
-> consoulted the netfilter website and googled far and wide but haven't 
-> had any luck finding any examples or more documentation.  Is anyone 
-> using this thing?
-> 
-> ~> man iptables
-> <--- snip --->
->   CLUSTERIP
->       This  module allows you to configure a simple cluster of nodes 
-> that share a certain IP and MAC address without an explicit load
->       balancer in front of them.  Connections are statically distributed 
-> between the nodes in this cluster.
-> 
->       --new  Create a new ClusterIP.  You always have to set this on the 
-> first rule for a given ClusterIP.
-> 
->       --hashmode mode
->              Specify the hashing mode.  Has to be one of sourceip, 
-> sourceip-sourceport, sourceip-sourceport-destport
-> 
->       --clustermac mac
->              Specify the ClusterIP MAC address.  Has to be a link-layer 
-> multicast address
-> 
->       --total-nodes num
->              Number of total nodes within this cluster.
-> 
->       --local-node num
->              Local node number within this cluster.
-> 
->       --hash-init rnd
->              Specify the random seed used for hash initialization
-> <--- snip --->
-> ~>
-> 
-> 
-> Jason Joines
-> =================================
-> 
-> 
-> 
-> 
+iptables -A PREROUTING -t nat -i eth0 -d 202.75.112.3 --dport 8080 -j
+REDIRECT --to-port 3128 .
+Now the problem is it does not get redirected , 
+if i remove the -d part , it works just fine 
+but i do not want to redirect for any destination , but only if
+request comes for a particular destination .
+Is there any thing wrong that i am doing , or do i have to use some
+different chain or ruleset ,
+
+please help
 
