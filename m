@@ -1,13 +1,13 @@
-From: Stephen Satchell <list@satchell.net>
-Subject: Re: Linux kernel IP fragmentation
-Date: Wed, 14 Jan 2004 20:49:11 -0800
+From: "GoMi" <gomi@perezoso.net>
+Subject: RE: Netmeeting support
+Date: Thu, 15 Jan 2004 10:47:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1074142151.4135.42.camel@ssatchell1.pyramid.net>
-References: <1074102090.11499.38.camel@psylocke>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAVhTao1u2JUiWOw5FpPz2mgEAAAAA@perezoso.net>
+References: <1074119521.3053.2.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1074102090.11499.38.camel@psylocke>
+In-Reply-To: <1074119521.3053.2.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Alain FORCIOLI <Alain.Forcioli@cyber-networks.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "'John A. Sullivan III'" <john.sullivan@nexusmgmt.com>
+Cc: 'Ramin Dousti' <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
 
-On Wed, 2004-01-14 at 09:41, Alain FORCIOLI wrote:
-> It seems that the default linux kernel behavior, in case of IP
-> fragmentation, is to start to send the last ip fragmented packet first.
-> 
-> Does someone can confirm this behavior ?
+What i mean is, i have the patch applied, and built-in the kernel (not
+as a module) When i try to make a call to initialise a web-cam
+connection using netmeeting, unstead of saying ip 80.33.22.11 (a random
+public ip) the dialog box states: Trying to connect to 192.168.x.x.=20
 
-Depends on the situation.  Both 2.2 and 2.4 in the most common case
-would send packets last to first.  Some reports here indicate that 2.6
-sends them first to last.
+PD: This happens when i try to connect to a friend abroad :) I also have
+a fw setup with ports over 1024 closed to my clients.
 
-TCPDUMP is your friend here.
+-----Mensaje original-----
+De: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com]=20
+Enviado el: mi=E9rcoles, 14 de enero de 2004 23:32
+Para: GoMi
+CC: 'Ramin Dousti'; netfilter@lists.netfilter.org
+Asunto: RE: Netmeeting support
 
-Satch
+
+On Wed, 2004-01-14 at 17:09, GoMi wrote:
+<snip>
+> On Wed, Jan 14, 2004 at 09:43:06PM +0100, GoMi wrote:
+>=20
+> > Hi there, i have protocol h232 support patched by patch-o-matic, and
+> > my kernel recompiled with it, but when i try to have a webcam=20
+> > conversation via netmeeting, it tries to connect to local addresses=20
+> > unstead of public addresses. Any help?
+<snip>
+Could you explain further what you mean by it tries to connect to local
+addresses? My set up works fine.  I assume you are not trying to connect
+to a public address from your internal computer and it is magically
+changing the destination address to something local but I'm not sure
+what you do mean - John
+--=20
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net=20
+
+
 
 
 
