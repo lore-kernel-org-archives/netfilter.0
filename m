@@ -1,12 +1,13 @@
-From: "Martin Bene" <martin.bene@icomedias.com>
-Subject: Problem with pptp nat/contrack
-Date: Thu, 23 Oct 2003 00:20:56 +0200
+From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
+Subject: Re: Trouble with PPTP
+Date: Wed, 22 Oct 2003 16:16:36 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4D618F6493CE064A844A5D496733D66704E247@freedom.icomedias.com>
+Message-ID: <1066850242.3919.32.camel@ranjeet-pc2.zultys.com>
+References: <002501c398ba$fcf59dc0$01d2a8c0@adm.ae.wroc.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <002501c398ba$fcf59dc0$01d2a8c0@adm.ae.wroc.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +18,74 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Andrzej Kozak <kozak@manager.ae.wroc.pl>
+Cc: kernel@linuxace.com, netfilter@lists.netfilter.org
 
-Trying to use pptp nat/contrack modules to access VPN server on the =
-internet
-from a client(W2k, SP2) behind my nat/firewall iptables machine.
+On Wed, 2003-10-22 at 09:38, Andrzej Kozak wrote:
+> Thanks Phil,
+> Is better but not excellent.
+> After when I :
+> Patched kernel (pptp-conntrack-nat from p-o-m)
+> Recompiled iptables v 1.2.8
+> Recompiled kernel
+> i get the same message: iptables: Invalid argument
+> but only if firewall script is automated executing from
+> /etc/rc.boot/firewallscript (DEBIAN 3.0 distribution) when linux is
+> booting or rebooting.
+> If I log into system and executing this script manually is everything
+> OK !
+> What is wrong ? 
+>  
+> best regards
+> Andrew Kozak
+>  
+>  
+> > Rebuild iptables userspace using the patched kernel for the headers.
+> >
+> > Phil Oester
+> >
+> > On Wed, Oct 15, 2003 at 03:46:49PM +0200, Andrzej Kozak wrote:
+> > > Hello!
+> > > When I patched my 2.4.22 kernel with pptp-conntrack-nat -DNAT and
+> -SNAT
+> is broken if I use iptables with -t nat
+> > > I get message: iptables: Invalid argument
+> > > Iptables v. 1.2.8
+> > > I need establish connect from my security network to outside VPN
+> server.
+> > >
+> > > best regards
+> > >
+> > > Andrew Kozak
 
-Versions used: iptables 1.2.9rc1
-pom from cvs snapshot (20031007)
+1. make sure your /usr/src/linux link points to the correct linux kernel
+source. I dont think this is the problem, just verify this.
 
-Network setup:
-192.168.168.175 (netmask 255.255.255.0) =3D=3D> cisco1 192.168.168.1 =
-=3D=3D>
-cisco2 192.168.120.2 =3D=3D> linux nat box 192.168.120.1 =3D=3D> =
-(internet) =3D=3D> VPN
-PPTP Server (WatchGuard Technologies, Inc.)
+2. it sounds like you've got iptables installed in 2 seperate locations.
+the older version (compiled against old kernel) is hardcoded or picked
+up by the init scripts but when you log in, your $PATH picks up the
+newer one (compiled against correct kernel).
 
-WITHOUT ip_nat_pptp, ip_conntrack_pptp, ip_conntrack_proto_gre,
-ip_nat_proto_gre loaded:=20
-Connection to external VPN Server works, but just one client at a time =
-may
-access the VPN server.
+I think this is what your problem is.
 
-WITH the above modules loaded:=20
-Connection can't be established. Packet dump shows: gre encapsulated ppp =
-conf
-req going out; returning (ppp conf rej) packets show up on the firewall
-external interface, but don't show up on  the internal =
-interface/network;
-instead they end up being blocked by INPUT firewall - rules; looks like =
-they
-aren't correctly associated with the gre expectation and end up being =
-treated
-as destined for the firewall locally. iptables configuration/rules were =
-not
-changed from previous test, so I'd expect the ruleset to be OK.
+"locate iptables | grep bin" should identify this problem very quickly.
+If not, then you need to dig into the /etc/init.d script that is used on
+botup and see where its picking up its iptables from. "which iptables"
+should tell you where your login copy is coming from.
 
-Any Idea where to start looking?
+HTH,
 
+-- 
 
-Yours, Martin
+Ranjeet Shetye
+Senior Software Engineer
+Zultys Technologies
+Ranjeet dot Shetye2 at Zultys dot com
+http://www.zultys.com/
+ 
+The views, opinions, and judgements expressed in this message are solely
+those of the author. The message contents have not been reviewed or
+approved by Zultys.
+
 
 
