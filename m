@@ -1,13 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Matching UDP broadcasts using RELATED
-Date: Mon, 5 Jan 2004 16:16:15 +0000
+From: Erik Bourget <erik@midmaine.com>
+Subject: Re: Three kernel Oops/panic/BUG ksymoopses (kernel BUG at
+ buffer.c:539)
+Date: Mon, 05 Jan 2004 16:28:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401051616.15414.Antony@Soft-Solutions.co.uk>
-References: <xiwu88jw8c.fsf@random-node.example.org>
+Message-ID: <87oetidqzo.fsf@midmaine.com>
+References: <Pine.LNX.4.44.0401031352040.2301-100000@poirot.grange>
+	<87ekugzopi.fsf@midmaine.com>
+	<Pine.LNX.4.58L.0401051359330.1188@logos.cnet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <xiwu88jw8c.fsf@random-node.example.org>
+In-Reply-To: <Pine.LNX.4.58L.0401051359330.1188@logos.cnet> (Marcelo
+ Tosatti's message of "Mon, 5 Jan 2004 13:59:58 -0200 (BRST)")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +21,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Marcelo Tosatti <marcelo.tosatti@cyclades.com>
+Cc: netfilter@lists.netfilter.org
 
-On Sunday 04 January 2004 2:14 am, yu5p97f02@sneakemail.com wrote:
+Marcelo Tosatti <marcelo.tosatti@cyclades.com> writes:
 
-> For protocols which work by initiating a request using a UDP broadcast and
-> expecting a reply for a specific host, is there any way to match the reply
-> back to the original broadcast.
+> On Sat, 3 Jan 2004, Erik Bourget wrote:
+>> I had a very bizarre situation where four boxes in the same rack all
+>> simultaneously (within 30 minutes) hard-locked with Oops messages.  The
+>> boxes
 >
-> An example of something that does this is smbmount, a request is broadcast
-> to the localnet with a port set to the netbios-ns port, and then smbmount
-> expects a reply from a particular host to the initiating port.
+> Are you using ipchains ?
+>
+> There is a known problem with 2.4.23 and ipchains compatibility.
 
-Not with the existing connection tracking code, no.
+I'm not /using/ it, but it was compiled as a module (and is not loaded).
+Would this perhaps cause the problematic code to be compiled as a dependancy?
 
-It shouldn't be too hard to write a conntrack helper for such a protocol which 
-enables reply packets to be recognised as Related, however - all it would 
-need to do is match:
+ipt related modules loaded:
+ipt_state
+ipt_REJECT
+ipt_connlimit (latest patchomatic)
+ip_conntrack
+iptable_filter
+iptable_filter
+ip_tables
 
-  destination IP = original source IP
-  destination port = original source port
-  source IP is within network range of original broadcast destination IP
-  source port = original destination port
+Thanks, 
 
-If you wanted to do a 'quick and dirty' version then you could even not bother 
-about the source IP, and match packets where just the other three were 
-correct - this would then be an almost trivial hack of the current conntrack 
-code, I expect.
-
-Regards,
-
-Antony.
-
--- 
-Ramdisk is not an installation procedure.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+- Erik Bourget
 
 
