@@ -1,13 +1,13 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: External Resolved IPs
-Date: 16 Jun 2003 18:33:33 -0400
+Subject: Re: IP Tables: starting slowly..
+Date: 16 Jun 2003 19:21:13 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055802812.19430.188.camel@alpha.newkirk.us>
-References: <003001c3344a$5d220240$093010ac@power>
+Message-ID: <1055805673.19438.236.camel@alpha.newkirk.us>
+References: <20030616161137.GA7125@tweedle.finchhaven.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003001c3344a$5d220240$093010ac@power>
+In-Reply-To: <20030616161137.GA7125@tweedle.finchhaven.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +18,110 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Herbert G. Fischer" <manager@trama.com>
-Cc: NetFilter Users <netfilter@lists.netfilter.org>
+To: John Sage <jsage@finchhaven.com>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 2003-06-16 at 17:00, Herbert G. Fischer wrote:
-
-> My problem is that, when I try to connect to a internal server, using the
-> external and real
-> IP, I cannot because my FW/NAT appears to be confused or misconfigured.
+On Mon, 2003-06-16 at 12:11, John Sage wrote:
+> hmm..  iptables itself isn't starting slowly, I'm slowly starting to
+> implement iptables.
 > 
-> For example:
-> 
-> Internal Network: 172.16.48.0/24
-> 
-> My IP: 172.16.48.10
-> Server Internal IP: 172.16.48.20
-> * Both are on the same network
-> 
-> Server External IP: 200.180.180.20 (IP alias on FW/NAT machine, that
-> redirects to 172.16.48.20)
-> DNS name of Server: server.domain.com, points to 200.180.180.20
+> I'm (finally..) migrating from ipchains, and would appreciate some
+> comment on my overall approach.
 
-> # server
-> iptables -t nat -A POSTROUTING -s 172.16.48.20 -j SNAT --to-source
-> 200.180.180.20
-> iptables -t nat -A PREROUTING -s 0/0 -d 200.180.180.20 -j
-> DNAT --to-destination 172.16.48.20
+Keep in mind that FORWARD traffic goes only through the FORWARD filter
+chain, never INPUT or OUTPUT.  Those two are strictly for the iptables
+box itself.  (#1 confusion source it seems for ipchains emigrees)
+
+> Context: dialup, ppp, source NAT/masquerading various boxen behind the
+> firewall/router, KRUD Linux 2.4-18.5 
 > 
-> # NAT for the rest of the world
-> iptables -t nat -A POSTROUTING -o eth1 -s 172.16.48.0/24 -j SNAT --to-source
-> 200.180.180.22
+> 1) I'm writing a minimal set of rules to account for every packet within
+> a specific chain, and not let any fall through to the default policy
+> -- which at the moment is ACCEPT -- after I'm certain there aren't any
+> packets dropping through to the policies, the default policies will
+> become DROP.
+> 
+> Good idea? Bad idea?
 
-When a request from a local client arrives at the iptables box addressed
-to 200.180.180.20, it hits PREROUTING and is DNATted to the appropriate
-server.  Problem is that the server tries to reply directly to the
-client, (since it's a local IP) which sees a 'new' connection from
-172.16.48.20, which it ignores.  Try adding:
+Not necessarily bad, but cautious is always safer.  If you log
+everything as the last rule in the chain, then the DROP policy takes
+effect, you may have communications problems occasionally, but a quick
+look at the log will usually tell you what was dropped, so you can craft
+a rule to deal with it.  BTW, policy is an attribute of the chain
+itself, not a rule at the end. just:
 
-iptables -t nat -A POSTROUTING -d 172.16.48.20 -s 172.16.48.0/24 -j SNAT
---to iptables.box.local.ip
+iptables -P FORWARD DROP
 
-With this additional rule in place, requests from local clients hit the
-iptables box and are DNATted to the local server, then before leaving
-the iptables box they are SNATted so that the server sends its reply
-back to the iptables box.  When that reply is received by the iptables
-box, it unSNATs and restores the correct destination IP (the local
-client) then before it leaves the box it unDNATs to restore the correct
-source IP (the local server's public IP).
+> Example:
+> 
+> # OUTPUT:
+> /sbin/iptables -t filter -A OUTPUT \
+>  -o lo -j ACCEPT
+> /sbin/iptables -t filter -A OUTPUT \
+>  -o eth0 -j ACCEPT
+> /sbin/iptables -t filter -A OUTPUT \
+>  -o ppp0 -j ACCEPT
+
+
+Well, this pretty much lets anything out from the firewall box itself...
+
+> 2) Is a default DROP rule (a rule that will catch any/everthing)
+> irrelevant on the FORWARD chain?
+
+Far from it - most people treat a DROP rule on FORWARD and INPUT chains
+as the basic starting point.  Set a DROP policy on INPUT and FORWARD and
+then add rules to ACCEPT the desired traffic - INPUT for traffic to the
+firewall box, FORWARD for traffic from/to the machines behind it. 
+OUTPUT is less of a concern to most people, but for myself I've set a
+DROP policy there as well, and set up a dozen or so rules for the
+connections that the firewall itself needs to initiate.
+
+> 3) Can someone point me to a quick lesson on logging? At the moment
+> I've got the following:
+
+http://iptables-tutorial.frozentux.net is the best tutorial around on
+iptables.  The quick and dirty:
+
+iptables -A FORWARD -i eth0 -j LOG --log-prefix "FORWARDLogs:"
+
+The log prefix is any string you want (within reason) and helps you find
+the log entries from a particular LOG rule with grep, among other uses. 
+
+
+> Module                  Size  Used by    Not tainted
+> ipt_MASQUERADE          2368   1  (autoclean)
+> ipt_state               1440   4  (autoclean)
+> iptable_filter          2656   1  (autoclean)
+> iptable_mangle          3040   0  (autoclean) (unused)
+> ipt_LOG                 4544   0  (unused)
+> iptable_nat            20948   1  [ipt_MASQUERADE]
+> ip_conntrack           21484   2  [ipt_MASQUERADE ipt_state iptable_nat]
+> ip_tables              14176   8  [ipt_MASQUERADE ipt_state iptable_filter iptable_mangle ipt_LOG iptable_nat]
+> <snip>
+> 
+> so I think I've got a start, but have no clue as to the rules needed.
+
+First suggestion - DROP policy on INPUT and FORWARD.
+
+Second suggestion:
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+these two rules will allow replies and related traffic (like FTP data
+related to FTP control).
+
+Third suggestion - set up basic ACCEPT rules for the ports you know you
+need to allow and a LOG rule at the end of INPUT and FORWARD chains to
+let you see what is being discarded, until you get all the ports you
+need opened.
 
 j
 
+
+> TIA..
+> 
+> 
+> - John
 
 
