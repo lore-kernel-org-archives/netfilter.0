@@ -1,8 +1,8 @@
 From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: "iptables -h" seems to be overly verbose
-Date: Wed, 29 Oct 2003 13:25:34 -0500 (EST)
+Subject: how to negate a limit match?
+Date: Wed, 29 Oct 2003 13:31:10 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310291324230.27971-100000@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0310291330000.27971-100000@localhost.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,13 +19,12 @@ Content-Transfer-Encoding: 7bit
 To: iptables mailing list <netfilter@lists.netfilter.org>
 
 
-  following the man page, i wanted to see just the information
-about symbolic names for ICMP types with:
+  it's not clear from the man page how to reverse the meaning
+of a limit match.  if i want to accept everything *over* a given
+limit, i'm supposed to use the "!".  but where?  is it like
+this?
 
-  $ iptables -p icmp -h
-
-but i got what looks like the full online help.  should i have
-expected this?
+  -m ! limit -- limit ... etc etc ...
 
 rday
 
