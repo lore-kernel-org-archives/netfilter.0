@@ -1,14 +1,15 @@
-From: Nick Drage <nickd@metastasis.org.uk>
+From: Gavin Hamill <gdh@acentral.co.uk>
 Subject: Re: failure when using --string
-Date: Fri, 27 Aug 2004 10:14:46 +0100
+Date: Fri, 27 Aug 2004 10:21:48 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040827091446.GH22322@metastasis.org.uk>
+Message-ID: <200408271021.48984.gdh@acentral.co.uk>
 References: <D5C9032B2B09C64EA2409D6214E91AC906420B@asimail2.alphanumeric.com>
-Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+	<20040827091446.GH22322@metastasis.org.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20040827091446.GH22322@metastasis.org.uk>
 Content-Disposition: inline
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC906420B@asimail2.alphanumeric.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +20,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, Aug 26, 2004 at 06:54:21PM -0400, Jason Opperisano wrote:
+On Friday 27 August 2004 10:14, Nick Drage wrote:
 
-> yup--most distros do not compile the string match (i *think* suse
-> does).  try:
-> 
-> ls /lib/modules/`uname -r`/kernel/net/ipv4/netfilter/ipt_string.o
-> 
-> and make sure you have the actual module.  if not, grab p-o-m and
-> follow the instructions:
-> 
->   http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.html
+> I'm not sure about upgrading netfilter on a distribution like Debian,
+> apt-get trundles along nicely, I'm kind of loathe to play.  Is anyone
+> else here using a more recent version of netfilter on Debian?
 
-Yes, I thought that was the case, not seeing "string" anywhere in
-/lib/modules... sorry, I should have said that I'd looked.
+Yep, works just fine.. 
 
-I'm not sure about upgrading netfilter on a distribution like Debian,
-apt-get trundles along nicely, I'm kind of loathe to play.  Is anyone
-else here using a more recent version of netfilter on Debian?
+http://backports.hands.com/debian/dists/stable/iptables/binary-i386/
 
--- 
-mors omnia vincit
+OK it's not cutting edge 1.2.11, but it's at least progress from that shipped 
+with woody :)
+
+Cheers,
+Gavin.
 
