@@ -1,12 +1,14 @@
-From: "blkcore" <netfilter@blackcore.net>
-Subject: Re: 2.4.20 - ntfilter (owner) problems
-Date: Tue, 7 Jan 2003 17:26:49 -0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: portforwarding-HOWTO
+Date: Tue, 7 Jan 2003 22:59:25 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009701c2b6b5$04580b90$0200a8c0@void>
-References: <006301c2b61f$9f88cfa0$0200a8c0@void> <200301071852.00836.tscherf@web.de>
+Message-ID: <200301072259.25845.netfilter@newkirk.us>
+References: <2132.192.168.0.1.1041835837.squirrel@mail.intermediacorp.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <2132.192.168.0.1.1041835837.squirrel@mail.intermediacorp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +19,60 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: oarojo@intermediacorp.com, netfilter@lists.netfilter.org
 
-You don't need a -j target to use the owner module, I use it for bandwidth
-byte/counter logging, but heres some output for you to read.
-
-[root@scsi1 root]# uname -r
-2.4.20-grsec
-[root@scsi1 root]# iptables -I OUTPUT -m owner --uid-owner root -j ACCEPT
-iptables: Target problem
-
-laptop:~# uname -r
-2.4.19
-laptop:~# iptables -I OUTPUT -m owner --uid-owner root
-laptop:~# iptables -I OUTPUT -m owner --uid-owner root -j ACCEPT
-laptop:~#
-
------ Original Message -----
-From: "Thorsten Scherf" <tscherf@web.de>
-To: "blkcore" <netfilter@blackcore.net>; <netfilter@lists.netfilter.org>
-Sent: Tuesday, January 07, 2003 3:19 PM
-Subject: Re: 2.4.20 - ntfilter (owner) problems
-
-
-> I recently compiled 2.4.20 with netfilter support, with the owner module
-> (-m owner), and after several attempts of trying to use it (worked for
-> 2.4.18), it gives an error.
+On Monday 06 January 2003 01:50 am, oarojo@intermediacorp.com wrote:
+> Hello people!!!
 >
-> [root@scsi1 slinksi]# iptables -I OUTPUT -m owner --uid-owner root
-> iptables: Target problem
+> I have set-up a linux box firewall with two ethernet cards; eth0
+> facing the internet and eth1 facing the internal network. Inside my
+> network is my mail server with an IP of 192.168.0.5. Now since my ISP
+> had only given me one valid IP address for my network, I wish to do
+> port-forwarding for ports 25 and 110. I did something like:
+>
+> # iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx
+> --dport 25 -j DNAT --to 192.168.0.5:25
+>
+> # iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx
+> --dport 110 -j DNAT --to 192.168.0.5:110
+>
+> # iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 25=20
+> -j ACCEPT=20
+> # iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 110
+> -j ACCEPT
+>
+> # iptables-save > /etc/sysconfig/iptables
+>
+> When i used nmap to determine if ports 25 and 110 are open, it says:
+>
+> 25/tcp     filtered    smtp
+> 110/tcp    filtered    pop-3
+>
+> and when i try telnetting its valid ip
+>
+> #telnet xxx.xxx.xxx.xxx 25
+>
+>
+> it says "trying...." and can't connect at all...
+>
+> How's this? Did I missed something here? Please Help!!!
 
-Where is your target?! Is see no one!
+Do you have a FORWARD rule to allow return traffic back out?  You don't=20
+mention one, so I have to ask.  Something like this would work, if no=20
+other more general rule allows it:
 
+iptables -A FORWARD -p tcp -o eth0 -s 192.168.0.5 -m multiport  \
+--sport 25,110 -j ACCEPT
 
+Are you trying to telnet from outside the network?  If you are trying to=20
+do it from the firewall box or from anywhere on the 192.168 network it=20
+will fail unless you have other rules to help 'guide' the traffic back=20
+through the firewall.  (of course the rules you list are presumably for=20
+traffice from outside...)  See Oskar's tutorial's DNAT info at:
+http://iptables-tutorial.frozentux.net/chunkyhtml/targets.html#DNATTARGET
+where he explains the problem and the solution, if you need to allow=20
+access from the local network or firewall.
+
+j
 
 
