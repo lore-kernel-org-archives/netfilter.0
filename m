@@ -1,11 +1,10 @@
-From: Bhasker Allam <allambhasker@yahoo.com>
-Subject: Re: input filter
-Date: Wed, 5 Jan 2005 14:30:43 -0800 (PST)
-Message-ID: <20050105223043.94871.qmail@web53908.mail.yahoo.com>
-References: <41DC212C.4050106@hotpop.com>
+From: "Marius Mertens" <marius.mertens@gmx.de>
+Subject: Packets that should have been DNATted appearing in INPUT table
+Date: Wed, 5 Jan 2005 19:00:40 +0100
+Message-ID: <000901c4f350$7b3d1370$4206a8c0@loki>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41DC212C.4050106@hotpop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,120 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Georgi Alexandrov <tehlists@hotpop.com>, netfilter@lists.netfilter.org
-Cc: allambhasker@yahoo.com
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-There are a few situations that I can think of:
+Hi everybody,
 
-- A spurious host/hosts sending garbage packets. If I
-know either source IP/subnet or mac address I can put
-in a filter and drop all the packets from spurious
-souces with minimal effort. Why should I spend cycles
-doing the route lookup ?
-- I could do policy based routing. That is, I want
-packets from interface X or subnet S to go out on
-interface Y all the rest go via the normal routing
-path. From what I read this is not possible now.
-- If I use my linux box a router I could have policies
-on different interface to do different things. For
-example, I might not want packets arriving from
-certain sources to reach certain destinations. It does
-not matter whether I am forwarding or not. You could
-say I could put that in the output filter, but my
-argument why should I have go through route lookup if
-I don't have to ?
+first of all, please cc me in your answer as I am not a subscriber of this 
+list.
+I have a problem in understanding how the packet flow really works, as my 
+setup is not completely working as expected.
+I want to redirect all traffic coming from the internet to (for example) 
+port 4664 to the same port on a box in my LAN and I use the following rule 
+to accomplish this:
+iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 4664 -j DNAT --to 
+192.168.6.10
+From what I read, I thought that with this rule packets go to PREROUTING, 
+get their new destination and then through FORWARD and POSTROUTING right to 
+eth0 and out to my LAN.
+The only thing I have in my POSTROUTING is
+iptables -t nat -A POSTROUTING -o ppp0 -s 192.168.6.0/24 -j MASQUERADE
+What I find really weird is that the packet counter of
+iptables -A INPUT -i ppp0 -p tcp --dport 4664 -j DROP
+is not zero, in fact the value is growing and about 10% of the number of 
+packets successfully redirected to the other box in my LAN.
+An example of a packet which should have been redirected but was logged in 
+the INPUT chain is
+IN=ppp0 OUT= MAC= SRC=217.30.133.213 DST=217.225.50.178 LEN=40 TOS=0x00 
+PREC=0x00 TTL=120 ID=5272 DF PROTO=TCP SPT=2214 DPT=4664 WINDOW=10094 
+RES=0x00 ACK FIN URGP=0
+DST correctly shows my internet IP, but I thought that it should have been 
+replaced with 192.168.6.10 in PREROUTING...
+Now my questions are: Is there something I misunderstood with packet flow? 
+Or should it be OK in theory and I screwed something up during 
+implementation?
+And finally: How do I get it to work in a way, that really every single 
+packet coming in for a specific port on a specific interface is redirected 
+to another host?
 
-Hope these requirements make sense to you. As I said
-earlier, I am a newbie to linux networking. Pardon me
-if there are other ways of doing the above using
-netfilter.
+Thank you very much,
 
-bhasker.
+Marius 
 
---- Georgi Alexandrov <tehlists@hotpop.com> wrote:
-
-> Bhasker Allam wrote:
-> 
-> >Hi,
-> >I am a newbie and I was reading the howto for
-> packet
-> >filter. The howto has the following picture:
-> >
-> >Incoming                 /     \         Outgoing
-> >       -->[Routing ]--->|FORWARD|------->
-> >          [Decision]     \_____/        ^
-> >               |                        |
-> >               v                       ____
-> >              ___                     /    \
-> >             /   \                   |OUTPUT|
-> >            |INPUT|                   \____/
-> >             \___/                      ^
-> >               |                        |
-> >                ----> Local Process ----
-> >
-> >The input filtering is done only for local bound
-> >packets and after the routing decision. Is the
-> above
-> >true ? 
-> >
-> yes.
-> 
-> >Is there a facility to perform input filtering
-> >before the routing decision ? Thanks.
-> >
-> >  
-> >
-> How come you know if it is INPUT or FORWARD before
-> the routing decision ?
-> Won't the "routing decision" decide if the packet(s)
-> will be destined 
-> for INPUT (to the local machine) or FORWARD (for the
-> machines behind 
-> you/gw/fw).
-> 
-> The two chains and tables that are hit by incoming
-> packets before the 
-> routing decision are:
-> 1. table mangle, chain PREROUTING (from the
-> iptables-tutorial: "This 
-> chain is normally used for mangling packets, i.e.,
-> changing TOS and so on.")
-> then:
-> 2: table nat, chain PREROUTING (from the
-> iptables-tutorial: "This chain 
-> is used for DNAT mainly. Avoid filtering in this
-> chain since it will be 
-> bypassed in certain cases.")
-> 
-> If you explain better your situation i'm sure we'll
-> find reasonable 
-> solution for your filtering needs ;-)
-> 
-> >Bhasker.
-> >
-> >  
-> >
-> Georgi Alexandrov.
-> 
-> >__________________________________________________
-> >Do You Yahoo!?
-> >Tired of spam?  Yahoo! Mail has the best spam
-> protection around 
-> >http://mail.yahoo.com 
-> >
-> >
-> >  
-> >
-> 
-> 
-
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Take Yahoo! Mail with you! Get it on your mobile phone. 
-http://mobile.yahoo.com/maildemo 
 
