@@ -1,11 +1,12 @@
-From: Jean Hoderd <jhoderd@yahoo.com>
-Subject: Re: Accounting for national/international traffic
-Date: Wed, 22 Dec 2004 00:24:41 -0800 (PST)
-Message-ID: <20041222082441.57205.qmail@web42101.mail.yahoo.com>
-References: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
+From: Sujith Chennupati <sujith.chennupati@gmail.com>
+Subject: does the inbound traffic affect the outbound on 2 different
+	interfaces
+Date: Wed, 22 Dec 2004 09:52:41 +0100
+Message-ID: <62916e504122200524d824825@mail.gmail.com>
+Reply-To: Sujith Chennupati <sujith.chennupati@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +18,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+hey guys
 
-And thanks to both people who have answered my question! Accounting for
-national/international traffic using the "ipt_account" module seems
-quite straightforward now. However, since the list of national IP
-ranges is quite long, it might introduce a serious performance penalty.
-In that respect, the "dscp" module seems to be a better option -- if
-supported by my ISP. (It also has the advantage that the classification
-is always up-to-date with the list of national IP ranges).
+     i am regulating the traffic to & fro by my network through a
+linux gateway , its behaving strange. i regulated Downlink to 2Mbps &
+UPlLINK to 500Kbps. both perform well when those are done independent
+i.e. one at a time
 
-Anyway, looking at the long list of IP ranges, it occurred to me that
-this is essentially a decision tree problem, which could be optimised
-using known algorithms.  My googling has returned empty-handed, so my
-question is: does someone know of any project which aims at optimising
-iptables rules based on decision trees?  If not, I would gladly take a
-look at the problem when I find some time.
+but when i do both from a client system ..the downlink however
+continues at 2mbps but the uplink falls down to 100kbps?
 
-Cheers,
-Jean
+is something wrong with my script or is there some other reason to
+explain this ?????
+
+downlink regulated on eth0, uplink on eth1
+-----------------------------------------------------------------------------------------------------------------------
+tc qdisc del dev eth0 root
+
+tc qdisc add dev eth0 root handle 1: cbq bandwidth 30Mbit cell 8 avpkt
+1000 mpu 64
+
+tc class add dev eth0 parent 1:0 classid 1:1 cbq bandwidth 2000kbit
+rate 2000kbit allot 1514 cell 8 weight 100kbit prio 2 maxburst 20
+avpkt 1000 bounded isolated
+
+tc class add dev eth0 parent 1:1 classid 1:2 cbq bandwidth 2000kbit
+rate 300kbit allot 1514 cell 8 weight 30kbit prio 1 maxburst 20 avpkt
+1000 split 1:0
+
+tc class add dev eth0 parent 1:1 classid 1:3 cbq bandwidth 2000kbit
+rate 300kbit allot 1514 cell 8 weight 30kbit prio 7 maxburst 20 avpkt
+1000 split 1:0
+
+tc filter add dev eth0 parent 1: prio 2 protocol ip u32 match ip dst
+192.168.8.3 flowid 1:2
+tc filter add dev eth0 parent 1: prio 2 protocol ip u32 match ip dst
+192.168.8.4 flowid 1:3
+
+tc qdisc del dev eth1 root
+
+tc qdisc add dev eth1 root handle 2: cbq bandwidth 30Mbit cell 8 avpkt
+1000 mpu 64
+tc class add dev eth1 parent 2:0 classid 2:1 cbq bandwidth 700kbit
+rate 700kbit allot 1514 cell 8 weight 70kbit prio 2 maxburst 20 avpkt
+1000 bounded isolated
+                                                                      
+                                                            tc class
+add dev eth1 parent 2:1 classid 2:2 cbq bandwidth 700kbit rate 100kbit
+allot 1514 cell 8 weight 10kbit prio 1 maxburst 20 avpkt 1000 split
+1:0
+tc class add dev eth1 parent 2:1 classid 2:3 cbq bandwidth 700kbit
+rate 100kbit allot 1514 cell 8 weight 10kbit prio 7 maxburst 20 avpkt
+1000 split 1:0
+
+tc filter add dev eth1 parent 2: prio 2 protocol ip u32 match ip src
+192.168.8.3 flowid 2:2
+tc filter add dev eth1 parent 2: prio 2 protocol ip u32 match ip src
+192.168.8.4 flowid 2:3
+----------------------------------------------------------------------------------------------------------------------
+
+     expecting some help from any one
 
 
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - now with 250MB free storage. Learn more.
-http://info.mail.yahoo.com/mail_250
+                                                 
+                                                    -- 
+                                                   sujith chandra
+chowdhary CHENNUPATI
 
