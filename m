@@ -1,12 +1,12 @@
-From: "linux@openware" <linux@openware.nl>
-Subject: MSN access with a webcam
-Date: Wed, 11 Aug 2004 22:20:46 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Question about REJECT in FORWARD rule
+Date: Wed, 11 Aug 2004 16:24:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1811517141.20040811222046@openware.nl>
-Reply-To: "linux@openware" <linux@openware.nl>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051272@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hello listmembers,
+> On Wed, Aug 11, 2004 at 12:30:50PM -0400, Jason Opperisano wrote:
+> > is not narrowing down the interface/source, and is hit before any =
+connection tracking occurs.  i've never used "-j REJECT --reject-with =
+tcp-reset" without also specifying "--syn" as it could have very odd =
+results (and also doesn't make sense from a TCP perspective)...
+>
+> Really? I thought "-j REJECT --reject-with tcp-reset" would always do
+> the right thing, even without specifying --syn (of course, it wouldn't
+> be a bad idea to specify it anyway). I have several systems running =
+fine
+> without the --syn option explicitly mentioned. Could any of the "core"
+> guys say if my assumption is wrong?
+>
+> Carlos
 
-I build myself a firewall on a gateway Suse 9.1 server
+i should probably clarify my statement.  i suggested "--syn" to the OP =
+because the desired outcome he had was for the client to receive a =
+"Connection Refused" instead of a timeout--like you would get with no =
+firewall in place and a host not listening on the requested destination =
+port.  that is:
 
-eth0 = DSL(WAN)
-eth1 = LAN
-net-lan = 192.168.0.1/24
+Client	Server
+ SYN ->
+		<- RST
 
-On the LAN 3 Windowsclients are talking to Internet via a switch.
+in the generic case, either side of an established TCP session can =
+choose to reset the connection at any time; so "--syn" in that sense is =
+not required.
 
-I can use Microsoft's MSN(chat) but using a webcam wont work.
+i am surely no coder--and would be interested in hearing the answer to =
+this from the gurus myself as well.  perusing =
+/usr/src/linux/net/ipv4/netfilter/ipt_REJECT.c leads me to believe the =
+only TCP-flag-related sanity check is to not send a RST to a RST (~ line =
+98 on the version i have).
 
-Here's a part listings of my firewall MSN rules:
+i guess i got gunshy back in my IPF days, when if you didn't use "flags =
+S/SA" with a "return-rst" you would end up blowing away connections all =
+over the place...old habits die hard.
 
-echo "MSN Messenger..."
-iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 1863 -s $net_lan -j ACCEPT
-iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 1863 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 443 -s $net_lan -j ACCEPT
-iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 443 -m state --state ESTABLISHED,RELATED -d $net_lan -j ACCEPT
-
-Is a webcam using another TCP port?
-
-
-
--- 
-regards,
-
-Jan Rozema
-Kortenhoef-Holland
-linux@openware.nl
-
-
+-j
 
