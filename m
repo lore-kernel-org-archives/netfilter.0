@@ -1,11 +1,13 @@
-From: leolistas@solucoesip.net
-Subject: question on mdev patch
-Date: Mon, 20 Jan 2003 07:32:27 -0300
+From: Mark Vevers <mark@vevers.net>
+Subject: Where's the website gone?
+Date: Mon, 20 Jan 2003 10:52:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043058747.3e2bd03b26b6f@www.solucoesip.net>
+Message-ID: <200301201052.51886.mark@vevers.net>
+Reply-To: mark@vevers.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Description: clearsigned data
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,64 +18,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
+I'm getting an http redirect from www.netfilter.org to lists.netfilter.org -
+where's the website gone?
 
-    Hello Guys,
+Mark
+=2D --=20
+Mark Vevers.    mark@ifl.net / mark@vevers.net
+Principal Internet Engineer, Internet for Learning,
+Research Machines Plc. (AS5503)
+=2D --
+GPG Key: http://pgp.mit.edu:11371/pks/lookup?op=3Dget&search=3D0xB08F3CA3
+=46ingerprint: 85BA 30C4 9EC8 1792 4C8C   C31E 58B5 3D1C B08F 3CA3
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-    I got some question about mdev netfilter patch. I've tried to contact 
-its author ( Jay ) but message couldnt be delivered, seems some DNS 
-problems on his domain. So, here it is ... hope Jay subscribes this 
-mailing with another address :)
-
-    And if some other persons uses mdev patch and could give me some 
-advices too, I'll be thankful.
-
-    Sincerily,
-    Leonardo Rodrigues
-
--------
-
-    Hi Jay,
-
-    I'm trying to use your mdev patch posted on netfilter mailing list ( =
-http://marc.theaimsgroup.com/?l=3Dnetfilter&m=3D103242357315342&w=3D2 ). =
-It seems to work, but I'm having some problems with it and I'd your =
-opinion about that :)
-
-    Let's suppose I have this set of rules on FORWARD chain:
-
--A FORWARD -m mdev --i eth0:eth4 --o eth1:eth2 -j ACCEPT
--A FORWARD -m mdev --i eth0:eth4 --o eth3 -j DROP
-
-    Well ....... what I want is:
-1st rule: allow all traffic to flow from eth0-4 to eth1-2
-1nd rule: deny ALL traffic from eth0-4 to eth3
-
-    It's not working as desired. Seems that ALL traffic from eth0-4 is =
-getting ACCEPTED on first rule because of the --i option, no matter what =
-the --o is.
-
-    As a workaround, I've build these rules:
-
--A FORWARD -m mdev --i eth0:eth4 -o eth1 -j ACCEPT
--A FORWARD -m mdev --i eth0:eth4 -o eth2 -j ACCEPT
--A FORWARD -m mdev --i eth0:eth4 -o eth3 -j DROP
-
-    ( note I've used single -o not --o . These rules works as expected )
-
-    Question: do your patch handle the situation where --i AND --o are =
-specified ? Seems that if I specify ONLY --i OR --o your patch works =
-fine, but specifying both seems, at least on my tests, to not work as =
-expected. Would you mind in check this ?
-
-    And thanks for mdev patch, it's a very great idea and, at least for =
-me, will be very useful :)
-
-    Sincerily,
-    Leonardo Rodrigues
-
+iD8DBQE+K9UCWLU9HLCPPKMRAvlRAJ9BbLedzDJAjVb9JGnopWo/sXlmrwCgoxdD
+r+1/FKgbA28B1t6SOpXEfSQ=3D
+=3D4mnU
+=2D----END PGP SIGNATURE-----
 
 
