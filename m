@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is DIVERT w/o forwarding feasible?
-Date: Wed, 11 Sep 2002 16:37:06 +0100
+Subject: Re: Multiple firewalls
+Date: Wed, 11 Sep 2002 16:17:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209111537.g8BFbCv08909@vulcan.rissington.net>
-References: <Pine.LNX.4.33.0209111953130.19450-100000@panda.center-f1.ru>
+Message-ID: <200209111517.g8BFHuv08855@vulcan.rissington.net>
+References: <1031749586.345.26.camel@bigblue> <200209111407.g8BE7av08714@vulcan.rissington.net> <1031757171.345.31.camel@bigblue>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0209111953130.19450-100000@panda.center-f1.ru>
+In-Reply-To: <1031757171.345.31.camel@bigblue>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,39 +20,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 11 September 2002 2:39 pm, Yury Bokhoncovich wrote:
+On Wednesday 11 September 2002 4:12 pm, darkstar wrote:
 
-> > Err, please explain why you do not want forwarding enabled.
->
-> Because rule #1: "People makes mistakes". Disabled forwarding gives more
-> strict and reliable control under possible traffic.
+> On Wed, 2002-09-11 at 16:07, Antony Stone wrote:
+> > On Wednesday 11 September 2002 2:06 pm, darkstar wrote:
+> > > I have two seperate iptables firewalls for two lines for our
+> > > company.Both machines have two network cards.
+> > > Would it be advisable to combine the two into one machine with three
+> > > cards..???
+> >
+> > What are you trying to do with the two external links ?
+> >
+> > How have you got your internal network set up ?
+> >
+> > Is there any sort of redundancy / load balancing / failover going on here
+> > ?
+> No just two simple firewalls going into a internal network, no fail over
+> and no load balancing
 
-People make mistakes.   Agreed.
+In that case I agree with Roy.
 
-But why does disabling forwarding in the kernel, and then providing some 
-other mechanism for packets to get between the inside & outside, make 
-mistakes any less likely ?   Surely there's still plenty of opportunities to 
-make mistakes in whatever system you *do* set up to allow connectivity to the 
-Internet, and if it's not as clear and standard as using netfilter, you might 
-find it a lot less simple to locate and correct those mistakes ?
+1 interface for ext1
+1 interface for ext2
+1 interface for int LAN
+1 interface for DMZ
 
-> > When there are Ferraris out there for
-> > free, why build your own skoda?
->
-> I didn't catch exactly what you mean as "skoda"
+It'll give a good opportunity to play with iproute2 as well :-)
 
-Try Skoda = Trabant.   Does that help :-) ?
-
-> And ole good ipchain was more suitable to tweak packets as I want, right?8-)
-
-ipchains is not stateful.   iptables is stateful.   Stateful inspection is 
-regarded as a Good Thing(TM).   Therefore we now use iptables.
+How are your internal clients set up to route to the Internet at present ?   
+What determines whether they go via ext1 or ext2 ?
 
 Antony.
 
 -- 
 
-Documentation is like sex:
-when it's good, it's very very good;
-when it's bad, it's still better than nothing.
+There are two possible outcomes.
+
+If the result confirms the hypothesis, then you've made a measurement.
+If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
 
