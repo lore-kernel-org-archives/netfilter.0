@@ -1,12 +1,11 @@
-From: Myles Uyema <mlists@uyema.net>
-Subject: Re: problem with DNS server behind nat/packet filter
-Date: Fri, 9 May 2003 08:04:34 -0700 (PDT)
+From: Mark Tessier <info@open2web.com>
+Subject: Enabling Samba
+Date: Fri, 9 May 2003 13:36:27 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0305090802240.8400-100000@marx.gruntwerk.net>
-References: <20030509134820.4146.qmail@zero.sukkonet.it>
+Message-ID: <20030509133627.75bc22ca.info@open2web.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030509134820.4146.qmail@zero.sukkonet.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: enjoy.the.silence@iol.it
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Quite possible.  For PREROUTING DNAT stuff, I generally recommend 
-specifying -i ppp0 to narrow the rule down even further.  That way only 
-DNS requests coming in through the PPP interface get DNAT'ed.
+Hi,
 
-Do you have any other POSTROUTING rules?
+I'm running iptables v1.2.1a on Red Hat 7.1 as a gateway/firewall, and have been doing so for the past year without problems. Recently, it has become necessary to run Samba on the server as well. (Note: I realize that it is not recommended to have Samba operating on a firewall, but in my case - a small home/office with limited space for servers - it's the only plausible solution.) Naturally, running a Samba server on a firewall means adding new rules to the rc.firewall script to enable access to the Samba server. I have added the following rules:
 
-On Fri, 9 May 2003 enjoy.the.silence@iol.it wrote:
+# Enable SAMBA ports (TCP/UDP Ports 137-139)
 
-i have the following roules in nat/PREROUTING: 
+iptables -A INPUT -p tcp -m tcp --dport 137 --syn -j ACCEPT
+iptables -A INPUT -p udp -m udp --dport 137 -j ACCEPT
 
-Chain PREROUTING (policy ACCEPT 89 packets, 5600 bytes)
-pkts bytes target     prot opt in     out     source               
-destination
-   0     0 DNAT       tcp  --  any    any     anywhere             anywhere  
-tcp dpt:webcache to:10.0.6.6:80
-   0     0 DNAT       tcp  --  any    any     anywhere             anywhere  
-tcp dpt:domain to:10.0.6.5
-   3   193 DNAT       udp  --  any    any     anywhere             anywhere  
-udp dpt:domain to:10.0.6.5 
+iptables -A INPUT -p tcp -m tcp --dport 138 --syn -j ACCEPT
+iptables -A INPUT -p udp -m udp --dport 138 -j ACCEPT
 
-i guess the third one might be the one that is doing the wrong job. 
-although, it should only alter incoming packets on port 53 to my external ip 
-so that they go to the internal box which is running the dns server. it 
-should not touch the source address which will be become the destination 
-address of the dns replies. or am i wrong? 
+iptables -A INPUT -p tcp -m tcp --dport 139 --syn -j ACCEPT
+iptables -A INPUT -p udp -m udp --dport 139 -j ACCEPT
 
-thank for now!
+These rules don't work, unfortunately. When I attempt to access the server with my Windows 98 machine, the server starts spewing a bunch of error packets such as:
 
+IN= OUT=eth1 SRC=192.168.0.254 DST 192.168.0.255 LEN=240 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=138 DPT=138 LEN=220
 
+I also get a strange error packet, as if the Win98 client wants to send UDP packets to the name server from sport 137 to dport 53...
+
+To get Samba working, I have to flush the firewall and restart the Samba servers.
+
+Could anyone recommend rules to get Samba working on my firewall?
+
+Thanks in advance,
+
+Mark
 
