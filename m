@@ -1,11 +1,10 @@
-From: Pablo Allietti <pablo@lacnic.net>
-Subject: snat,dnat anything
-Date: Thu, 13 Feb 2003 18:56:15 +0300
+From: Zhi-Wei Lu <zwluxx@alegre.cipic.ucdavis.edu>
+Subject: Problem loading ip_tables
+Date: Thu, 13 Feb 2003 13:51:41 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030213155615.GB20004@omega.lacnic.net.uy>
+Message-ID: <200302132151.h1DLpff02343@alegre.cipic.ucdavis.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +18,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi people i need your help again!
+Dear Netfilter/iptables guru,
 
+On a Raidzone OpenNas box, I compiled the kernel (generic 2.4.18 based kernel from 
+Raidzone) with netfilter enabled and all iptables stuffs in modules.
 
-have a Network 200.40.227.66/255.255.255.240
+However, the kernel fail to load iptables.
 
-i assign ips via DHCP and all machines connect to the server with
-iptables as gateway 200.40.227.66 but i have one problem.
+Here are some of the error messags:
 
-All machine go outside with the .66 IP
+Flushing all current rules and user defined chains: /lib/modules/2.4.18-i37smp/kernel/net/ipv4/netfilter/ip_tables.o: unresolved symbol nf_unregister_sockopt
+/lib/modules/2.4.18-i37smp/kernel/net/ipv4/netfilter/ip_tables.o: unresolved symbol nf_register_sockopt
+/lib/modules/2.4.18-i37smp/kernel/net/ipv4/netfilter/ip_tables.o: insmod /lib/modules/2.4.18-i37smp/kernel/net/ipv4/netfilter/ip_tables.o failed
+/lib/modules/2.4.18-i37smp/kernel/net/ipv4/netfilter/ip_tables.o: insmod ip_tables failed
+iptables v1.2.5: can't initialize iptables table `filter': iptables who? (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-I need this if my machine get via dhcp 200.40.227.71 go outside with .71
-indiferent how is the gateway ip.
+However, if I do a
 
-.71 go outside .71
-.75 go outside .75
+cat /proc/ksyms |grep nf_register_sockopt
 
-and all the same form, i test with snat and dnat but nothing when i put
-snat 77 to 77 the conecction dead.
+802e79a0 nf_register_sockopt_R__ver_nf_register_sockopt
 
-If any help me please????
+Does anyone encounter similar problem before?  
+Thank you.
 
- Thanks in advance.
-
-Pablo
+-- 
+Zhi-Wei Lu 		
+CIPIC (Center for Image Processing and Integrated Computing)
+UC Davis 	  	Phone:	(530)-752-0494
+Davis, CA 95616		Fax:   	(530)-752-8894
 
 
 
