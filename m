@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to upgrade iptables
-Date: Tue, 29 Jun 2004 16:02:37 +0100
+From: <listuser@sally.epygi.de>
+Subject: RE: (no subject)
+Date: Tue, 29 Jun 2004 16:29:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406291602.37397.Antony@Soft-Solutions.co.uk>
-References: <40E18057.5060807@sto-procent.art.pl>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <BDEHJGPIKNLKJJBCCFPLAEIICOAA.listuser@sally.epygi.de>
+References: <200406291508.45532.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40E18057.5060807@sto-procent.art.pl>
+In-Reply-To: <200406291508.45532.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,44 +20,92 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 29 June 2004 3:44 pm, boka wrote:
+HiHo!
 
-> Hi !
->
-> After sucessfully build of new version of iptables, i have checked if
-> the rules are ok to new version. My previous version was 1.2.10.
+If you still want to log, try to change you LD to this:
 
-Did you previously build 1.2.10 on your system in the same way?
+Stop macro:
+$IPT -N LD
+$IPT -A LD -m limit --limit 2/minute -j LOG
+$IPT -A LD -j DROP
 
-If not (eg: if you installed one from a package manager, and you build the 
-other from source), then you may have two different binaries (plus various 
-bits of libraries) in more than one place on your system.
+This will drop everything put into LD, but log only a few.
+Be aware that quite a lot packets will be dropped silently.
+I assume you used the limit to prevent your log from flodding
 
-As a quick check, what does "whereis iptables" suggest?
+Actually i would prefer Antony's version. Just drop 'em, without
+logging :)
 
-For a longer list of files involved, see whether "locate iptables" seems to 
-show duplicates etc.
+ciao
+  markus 
 
-If you do have more than one version installed, I suggest removing the older 
-one (using the same method as was used to install it), and then reinstalling 
-the new one.
-
-If you built them both from source, make sure the install paths are the same 
-on both occasions.
-
-I've commonly seen iptables in either /sbin or /usr/sbin, and sometimes even 
-/usr/local/sbin
-
-Hope this helps,
-
-Regards,
-
-Antony.
-
--- 
-Most people have more than the average number of legs.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+> Sent: Dienstag, 29. Juni 2004 16:09
+> To: netfilter@lists.netfilter.org
+> Subject: Re: (no subject)
+> 
+> 
+> On Tuesday 29 June 2004 2:49 pm, Richard Gutery wrote:
+> 
+> > Stop macro:
+> > $IPT -N LD
+> > $IPT -A LD -j LOG
+> > $IPT -A LD -j DROP
+> 
+> That has me really confused.   I was expecting you to say that $STOP expanded 
+> to the word DROP, or some other valid target for the -j option on the 
+> netfilter command line.
+> 
+> > $STOP=LD (LD = Log and Drop)
+> 
+> I don;t quite see how you can use this after -j on an iptables rule, 
+> however...
+> 
+> > $IPT = /sbin/iptables
+> >
+> > I need to totally block all packets to and from this address 64.246.26.185.
+> > So BLOCK means BLOCK.
+> >
+> > We OpenBSD users usually mean blocking as dropping the silly thing on the
+> > floor. No ifs, ands or buts. Just gone...
+> 
+> Oh, I understood what you meant by "block" - I wasn't sure which packets you 
+> wanted to block, though, since it wasn't clear whether we were talking about 
+> source or destination addresses, and forwarding through the firewall or going 
+> to/from it directly.
+> 
+> > As for the limiting, I simply copied a rule that was already in a
+> > firestarter script. So if I need to change the rule, I would be more than
+> > willing. Am I to assume that this is a bad rule?
+> 
+> Well, it certainly won't BLOCK (using your definition above) - it will rate 
+> limit - which means that some packets will still come through.
+> 
+> I suggest the following:
+> 
+> iptables -I INPUT -s 64.246.26.185 -j DROP
+> iptables -I OUTPUT -d 64.246.26.185 -j DROP
+> iptables -I FORWARD -s 64.246.26.185 -j DROP
+> iptables -I FORWARD -d 64.246.26.185 -j DROP
+> 
+> Regards,
+> 
+> Antony.
+> 
+> -- 
+> In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
+> the mechanics are German, the lovers are French, the entertainment is 
+> American, and everything is organised by the Swiss.
+> 
+> In Hell, the police are German, the chefs are British, the beer is American, 
+> the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
+> and everything is organised by the Italians.
+> 
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+> 
+> 
 
