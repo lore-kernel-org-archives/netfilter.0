@@ -1,10 +1,13 @@
-From: Roberto Jung Drebes <drebes@inf.ufrgs.br>
-Subject: Simple sk_buff question
-Date: Sun, 28 Nov 2004 22:53:09 -0200
-Message-ID: <09BEF1EC-41A1-11D9-B8CC-000A957B2B6C@inf.ufrgs.br>
-Mime-Version: 1.0 (Apple Message framework v619)
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Newbie Q: Forcing p2p traffic via one interface on a dual
+	homed system.
+Date: Sun, 28 Nov 2004 20:33:46 -0500
+Message-ID: <1101692026.10064.32.camel@hubcap.ljm.dom>
+References: <1bcb81340411281238368cf6b3@mail.gmail.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1bcb81340411281238368cf6b3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello there,
+On Sun, 2004-11-28 at 15:38, hArTh0 hArTh0 wrote:
+> Hi all,
+> 
+> My first post to this group and be warned I am a new linux user ;)
+> 
+> My setup:
+> 
+> -----ISP1---ppp0----Router-----MainPC
+> -----ISP2---ppp1-------|
+> 
+> Router ip: 192.168.0.1
+> MainPC ip: 192.168.0.10
+> ppp0: 165.165.89.171
+> ppp1: 165.146.132.124
+> 
+> What I want to achieve is that all p2p traffic passes through ppp1
+> while everthing else goes through ppp0.
+> 
+> My approach to date: Use http://www.ipp2p.org to mark all p2p packets
+> and then attempt to use this mark to get these packets to leave via
+> ppp1.
 
-I am working in a simple netfilter module, and in some situations it 
-has to duplicate received IP packets. It does this with something like:
+your question sounds just like:
 
-clone_skb = skb_clone(skb, GFP_ATOMIC);
-ip_rcv(clone_skb, clone_skb->dev, NULL);
-return NF_ACCEPT;
+  http://marc.theaimsgroup.com/?l=netfilter&m=109853391328421&w=2
 
-Should I call kfree_skb(clone_skb) after the ip_rcv(), or will the 
-cloned sk_buff be freed when it reaches upper level protocols?
+answer is still the same:
 
-Sorry if the question is really not netfilter specific, but it is 
-related to another question I will do next.
+  http://marc.theaimsgroup.com/?l=netfilter&m=109866874632386&w=2
 
-Thanks in advance,
+-j
 
-
--- 
-Roberto Jung Drebes <drebes@inf.ufrgs.br>
-Porto Alegre, RS - Brasil
-http://www.inf.ufrgs.br/~drebes/
+--
+"Me lose brain? Uh, oh! Ha ha ha! Why I laugh?"
+	--The Simpsons
 
 
