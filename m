@@ -1,10 +1,13 @@
-From: "Steven M. Carter" <scarter@ornl.gov>
-Subject: iptables-save and netlink question.
-Date: Fri, 05 Mar 2004 09:09:45 -0500 (EST)
+From: "Technical" <technical@sojourn.dyndns.org>
+Subject: Re: how can i combine these 2 iprules
+Date: Fri, 5 Mar 2004 13:53:45 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0403050834550.1135-100000@localhost.localdomain>
+Message-ID: <3590.128.59.176.161.1078512825.squirrel@sojourn.dyndns.org>
+References: <3405.128.59.176.161.1078511273.squirrel@sojourn.dyndns.org> 
+     <200403051833.16893.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200403051833.16893.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,33 +17,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
+What is -j Return doing
 
-I have a piece of code that proxies connections in front of one of our
-supercomputers.  The code uses REDIRECT to intercept the packet, then
-SNAT's it on the way out.  Currently, it is using a system() call to add
-the rules.  I read that a pipe open to iptables-save is more efficient for
-adding a batch of rules, but is it efficient for adding many single 
-rules over the long haul?  Would I have to worry about the process dying 
-over days?
-
-Another related question, I would like to make sure that there is
-something listening on the destination addr/port before I proxy the
-connection (or at least before finishing the negotiation on the ingress
-side).  I can intercept the initial SYN packet with netlink, then try the
-destination machine.  If the destination addr/port does not answer, I can
-reject the connection.  If it does answer, is there a way to inject the
-initial SYN packet back into the stack to finish the handshake on the 
-ingress side?  Something along these lines would be nice since it allows me 
-to avoid a kernel change.
-
-Steven.
-
--- 
-scarter@ornl.gov
-Oak Ridge National Laboratory
+> On Friday 05 March 2004 6:27 pm, Technical wrote:
+>
+>> -A RH-Firewall-1-INPUT ! -s cnnp1.com  -j LOG --log-prefix "IPTABLES: "
+>> -A RH-Firewall-1-INPUT ! -s cnnp2.com  -j LOG --log-prefix "IPTABLES: "
+>
+> iptables -N mychain
+> iptables -A mychain -s cnnp1.com  -j RETURN
+> iptables -A mychain -s cnnp2.com  -j RETURN
+> iptables -A mychain -j LOG --log-prefix "IPTABLES: "
+> iptables -A RH-Firewall-1-INPUT -j mychain
+>
+> Note that it is not recommended to use hostnames in netfilter rules -
+> better
+> to identify the IP addresses and put them in yourself, to avoid possibly
+> hidden problems.
+>
+> Antony.
+>
+> --
+> Behind the counter a boy with a shaven head stared vacantly into space,
+> a dozen spikes of microsoft protruding from the socket behind his ear.
+>
+>  - William Gibson, Neuromancer (1984)
+>
+>                                                      Please reply to the
+> list;
+>                                                            please don't CC
+> me.
+>
+>
 
 
