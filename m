@@ -1,10 +1,11 @@
-From: =?iso-8859-1?B?SOlsaW8gRHViZXV4?= <hdubeux@hotmail.com>
-Subject: Ping With Iptables.
-Date: Tue, 29 Oct 2002 11:51:38 -0200
+From: Thomas Kirk <thomas@arkena.com>
+Subject: PPTP and netfilter
+Date: Tue, 29 Oct 2002 13:58:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F136m4qBbs8ltIzn9rZ00010163@hotmail.com>
+Message-ID: <20021029125857.GD32153@thomas.arkena.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,24 +15,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi, everybody. This is my first message here and i hope you can help me.
-I have a Linux Box as a Gateway of my network. And i want do allow internal=
-=20
-machines to ping the Internet but i also want to block external machines to=
-=20
-ping my Gateway. Is this is possible plz send me something... Thanx.
+Hey there listmembers!
 
-----------------------
-H=E9lio Dubeux Neto
+I know this issue has been discussed alot but im still abit
+confused. Let me say that if i get this to work i will write a
+detailed describtion on how i did it, kind of a hands-on howto :)
+
+Ive managed sucessfully to patch 2.4.18 kernel with the newest
+patch-o-matic and get it to compile. The linuxkernel was a vanillatype
+thing downloaded from kernel.org and patch-o-matic was downloaded from
+here :
+
+ftp://ftp.netfilter.org/pub/patch-o-matic/snapshot/patch-o-matic-20021028.tar.bz2
+
+ive loaded the modules :
+
+ip_conntrack_pptp		2400   0  (unused)
+ip_conntrack_proto_gre		2432   0  [ip_conntrack_pptp]
+
+Now im abit confused on the rules i need to apply to my firewall to
+make it work.
+
+Case is this : 
+
+Client<------>[Firewall/NAT]<------>[INTERNET]<------>[SERVER]
+
+So my only worry is howto "translate" GRE packets and allow clients on
+inside of firewall to establish PPTP to server on internet through
+firewall.
+
+So fare ive added these rules to firewall :
+
+$IPTABLES -A lan_chain -p 47 -s $LAN_NET2 -j ACCEPT
+$IPTABLES -A lan_chain -p tcp --dport 1723 -s $LAN_NET2 -j ACCEPT
+
+lan_chain are outgoing chain. Is this all i need to add to firewall to
+make it work or am i overlooking something? 
+
+Please let me know if you need additional information on
+setup/configuration to help me solve this puzzle!
+
+Thanks in advance
+
+-- 
+Venlig hilsen/Kind regards
+Thomas Kirk
+ARKENA
+thomas(at)arkena(dot)com
+Http://www.arkena.com
 
 
+BOFH excuse #345:
 
-
-_________________________________________________________________
-MSN Hotmail, o maior webmail do Brasil. http://www.hotmail.com
-
+Having to manually track the satellite.
 
