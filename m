@@ -1,15 +1,13 @@
 From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: where is libipt_match.so?
-Date: 29 May 2003 07:31:17 +0200
+Subject: Re: lots of ACK/FIN filtering (DPT=80) at web server.
+Date: 29 May 2003 07:25:38 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054186276.13296.186.camel@raylinux.internal>
-References: <20030529034344.GF33081@justpickone.org>
-	 <09B04A55822EFF4DA48D2E0BB2941D4A0D6D40@wardrive.citadelcomputer.com.au>
-	 <20030529035602.GG33081@justpickone.org>
+Message-ID: <1054185938.13730.183.camel@raylinux.internal>
+References: <Sea1-F98nnh99RhOQmI000379a3@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-U/OoFHaRnajTWCOwI5nP"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-NjtTpN1SBsQrtAW39sdw"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030529035602.GG33081@justpickone.org>
+In-Reply-To: <Sea1-F98nnh99RhOQmI000379a3@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,65 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: NetFilter Users' List <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-U/OoFHaRnajTWCOwI5nP
-Content-Type: text/plain
+--=-NjtTpN1SBsQrtAW39sdw
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2003-05-29 at 05:56, David T-G wrote:
-> George, et al --
+Hi there
+
+On Wed, 2003-05-28 at 10:46, SB CH wrote:
+> Hello, all.
 >=20
-> ...and then George Vieira said...
-> %=20
-> % Have you searched for the file?
+> I have operated linux web server and executed iptables 1.2.8.
 >=20
-> I hadn't yet, but I did, and it truly isn't on the system.
+> and I have found so lots of logs like this ACK,FIN filtering.
+> Surely, ACK-FIN is a connection closing step, so there is no problem for=20
+> customers but I would like to know why this happens!!
+> I guess that the timeout of the connection tracking related.
 >=20
-> What is it?  From where does (er, should) it come?
+Those are 'broken' browsers that do not follow the http standard
+properly.
 >=20
-It's a netfilter module, and it comes from the iptables distribution
-(also in the 2.4 kernel distro). You get it by compiling and installing
-the iptables distro, or selecting match support in the netfilter kernel
-config section and compiling the kernel.
+> May 25 12:33:05 www kernel: IN=3Deth0 OUT=3D SRC=3D210.126.xxx.xx=20
+> DST=3D211.10.xx.xx LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D118 ID=3D3376 DF=
+ PROTO=3DTCP=20
+> SPT=3D3608 DPT=3D80 WINDOW=3D63520 RES=3D0x00 ACK FIN URGP=3D0
+>=20
+> Do you have any problems like me?
+Yes
+
+> and what's the problem and how can I solve this problem?
+>=20
+Stop using non-standards complient browsers. Sometimes changes to
+standards are not 'enhancements'.
 
 >=20
-> %=20
-> % # Unix compatible search. ;)
-> % find / -name libipt_match.so -exec ls -l {} \;
+> Thanks in advance for your kind opinios!!
 >=20
-> The only kind -- although I wouldn't bother with the extra overhead of
-> the exec ;-)
->=20
->=20
->=20
-> %=20
-> % if it's in a different location just symbolic link it to where ever it'=
-s
-> % looking for it.. ;) cheap way out..
->=20
-> If only it were that simple!
->=20
->=20
-> %=20
-> % Thanks,
->=20
-> Thanks, anyway.
->=20
->=20
-> % ____________________________________________
-> % George Vieira
-> % Systems Manager
-> % georgev@citadelcomputer.com.au
-> %=20
-> % Citadel Computer Systems Pty Ltd
-> % http://www.citadelcomputer.com.au
->=20
->=20
-> HAND
->=20
-> :-D
+> _________________________________________________________________
+> =ED=99=95=EC=9D=B8=ED=95=98=EC=9E=90. =EC=98=A4=EB=8A=98=EC=9D=98 =EC=9A=
+=B4=EC=84=B8 =EB=AC=B4=EB=A3=8C =EC=82=AC=EC=A3=BC, =EA=B6=81=ED=95=A9, =EC=
+=9E=91=EB=AA=85, =EC=A0=84=EC=83=9D =EA=B0=80=EC=9D=B4=EB=93=9C  =20
+> http://www.msn.co.kr/fortune/default.asp =20
 --=20
 --
 Raymond Leach <raymondl@knowledgefactory.co.za>
@@ -87,18 +69,18 @@ http://www.knowledgefactory.co.za
 Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
 --
 
---=-U/OoFHaRnajTWCOwI5nP
+--=-NjtTpN1SBsQrtAW39sdw
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQA+1Zskh1fuR/Bv+ygRAgE6AJ0ftVLKGcDvU7FBZPnJBvs6XpQwMACcCGJ8
-NBRuqKLwTZEaSFu7EOb4fYY=
-=VuNp
+iD8DBQA+1ZnRh1fuR/Bv+ygRAm2RAJ9jPHn2qS9zlcrpv7u2YjsKU4PNBwCggjTl
+5zWrwyG68aVx/NPUSKtI3vg=
+=q557
 -----END PGP SIGNATURE-----
 
---=-U/OoFHaRnajTWCOwI5nP--
+--=-NjtTpN1SBsQrtAW39sdw--
 
 
