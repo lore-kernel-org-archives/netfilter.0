@@ -1,7 +1,7 @@
-From: Michael Gale <michael.gale@utilitran.com>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: Two connections shared by ports
-Date: Wed, 03 Nov 2004 09:33:45 -0700
-Message-ID: <41890869.6040605@utilitran.com>
+Date: Wed, 03 Nov 2004 10:44:34 -0600
+Message-ID: <41890AF2.9050402@pbl.ca>
 References: <41890694.8070706@treedesign.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,22 +18,7 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tony VanScoy <tony@treedesign.com>, netfilter@lists.netfilter.org
-
-Hello,
-
-	I do not believe this is possible with ipfilter, iproute2 maybe be able 
-to help, by routing traffic based on source IP address.
-
-Why not use multiple internal nics and network addresses or limit the 
-amount of bandwidth available to FTP / SMTP traffic.
-
-If you only allowed FTP to use a maximum of 10% of the total bandwidth, 
-that would solve the problem.
-
-Michael.
-
-
+To: netfilter@lists.netfilter.org
 
 Tony VanScoy wrote:
 > My Goal:  Setup ipfilter to share two Internet connections.
@@ -51,16 +36,17 @@ Tony VanScoy wrote:
 > troubles.
 > 
 > Is it possible?
-> 
-> 
-> 
-> 
-> 
+
+Look at Linux Advanced Routing howto (www.lartc.org).  It will show you 
+how.  Chapter 11 is what you need.  In short, you'd mark packets for 
+ports 21,25,110, and so on using Netfilter and than you would route them 
+thruogh one connection, and route everything else through another. 
+While you are at LARTC, you can do more interesting things, like traffic 
+shaping, to solve your problems (of some types of traffic getting too 
+much of your bandwith).
 
 -- 
-Michael Gale
-Lan Administrator
-Utilitran Corp.
-
-We Pledge Allegiance to the Penguin
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
