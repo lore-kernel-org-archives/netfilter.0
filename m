@@ -1,14 +1,13 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Strange MAC address
-Date: Tue, 20 May 2003 11:34:57 +0200 (CEST)
+From: "Aris  Santillan" <aris@femalenetwork.com>
+Subject: Im new
+Date: Tue, 20 May 2003 17:50:57 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0305201132580.17800@dns.toxicfilms.tv>
-References: <Pine.OSF.3.91.1030518215213.1714B-100000@delta.ntu.ac.sg> 
- <Pine.LNX.4.51.0305192026090.897@dns.toxicfilms.tv>
- <1053411035.2024.14.camel@kermit.spenneberg.de>
+Message-ID: <831411C4CBD37C4A91DBEC9B98A64C8B6C42CB@spmail.summitmedia.com.ph>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C31EB5.4FCAED1E"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1053411035.2024.14.camel@kermit.spenneberg.de>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +17,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> > > MAC=00:a0:cc:28:56:c4:00:09:b6:13:9a:7c:08:00
-> > There are 12 octets here, so it is:
-> > Source MAC: 00:a0:cc:28:56:c4:00
-> > Dest   MAC: 09:b6:13:9a:7c:08:00
-> Unfortunately this is not fully correct. The first 12 octetts are the
-> MAC addresses. The last two specify the protocol. All in all it is the
-> *whole* ethernet header:
-> Source MAC 00:a0:cc:28:56:c4
-> Dest MAC   00:09:b6:13:9a:7c
-> Protocol   08:00  (see RFC894)
-Thanks, i knew there was something wrong about these MACs.
+This is a multi-part message in MIME format.
 
-Regards,
-Maciej
+------_=_NextPart_001_01C31EB5.4FCAED1E
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+
+------_=_NextPart_001_01C31EB5.4FCAED1E
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+------_=_NextPart_001_01C31EB5.4FCAED1E--
 
