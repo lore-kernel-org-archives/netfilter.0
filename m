@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: (no subject)
-Date: Wed, 26 Nov 2003 14:17:22 +0000
+Date: Wed, 26 Nov 2003 10:54:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311261417.22501.Antony@Soft-Solutions.co.uk>
-References: <1069853846.3fc4ac966be15@paris-hme1> <20031126151015.GB4486@cannon.eng.us.uu.net>
+Message-ID: <20031126155448.GC4486@cannon.eng.us.uu.net>
+References: <1069853846.3fc4ac966be15@paris-hme1> <20031126151015.GB4486@cannon.eng.us.uu.net> <200311261417.22501.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031126151015.GB4486@cannon.eng.us.uu.net>
+Content-Disposition: inline
+In-Reply-To: <200311261417.22501.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wednesday 26 November 2003 3:10 pm, Ramin Dousti wrote:
+On Wed, Nov 26, 2003 at 02:17:22PM +0000, Antony Stone wrote:
 
-{MX DNS records snipped}
->
-> I don't know what you're asking but these are the mx records
-> for yahoo and hotmail. Like the following which is the mx for
-> megamail.pt
->
-> mx.vodafone.pt. 86400   A       212.18.167.163
+> I suspect (although one can never be sure) that this person is not looking for 
+> the IPs of the inbound mail servers for Yahoo & Hotmail, but wants to know 
+> from which IPs mail from those domains will be sent.
+> 
+> I guess this simply because of the word "prerouting" in the question - it 
+> implies to me packets coming in to the netfilter machine, rather than those 
+> leaving it and going to the MX systems.
 
-I suspect (although one can never be sure) that this person is not looking for 
-the IPs of the inbound mail servers for Yahoo & Hotmail, but wants to know 
-from which IPs mail from those domains will be sent.
+Yes. Your explanation sounds logical and I just examined the incoming emails
+from yahoo and they seem to come from webXXXXX.mail.yahoo.com. And, hey, they
+run qmail (another victory for qmail).
 
-I guess this simply because of the word "prerouting" in the question - it 
-implies to me packets coming in to the netfilter machine, rather than those 
-leaving it and going to the MX systems.
+Ramin
 
-Any further information from zynkx would be useful :)
-
-Antony.
-
-> On Wed, Nov 26, 2003 at 01:37:26PM +0000, zynkx wrote:
-> > yahoo and hotmail ip ranges? does anyone knows this ip
-> > ranges? need to allow them in my smtp prerouting
-> > rulez  :))
-> >
-> > danke !
-
--- 
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> 
+> Any further information from zynkx would be useful :)
+> 
+> Antony.
 
