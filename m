@@ -1,11 +1,9 @@
-From: "Amy" <amyyang@w-ibeda.com>
-Subject: Re: *****SPAM***** p-o-m for kernel]
-Date: Wed, 23 Oct 2002 10:54:56 +0800
+From: harish.k@lntinfotech.com
+Subject: IPTables Query
+Date: Wed, 23 Oct 2002 12:07:08 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005b01c27a3f$91cc2a40$0814a8c0@yy>
-References: <1035330209.3126.71.camel@server.cs-el.sytes.net>
+Message-ID: <OF61962908.A658CCF9-ON65256C5B.0023060F-65256C5B.00245CCC@lntinfotech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,19 +15,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Erik Leupold <spam@cs-el.sytes.net>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-c29ycnkgZm9yIEkgcG9zdCB0aGlzIG9uIHRoZSBsaXN0LkFuZCBzYXkgc29ycnkgdG8gRXJpY2su
-QnV0IEkgZG9uJ3QgdW5kZXJzdGFuZCB1ciBtZWFuaW5nLiBJdCdzIG15IGZpcnN0IHRpbWUgdG8g
-dXNlIHRoaXMgbWFpbGluZyBsaXN0LiBBbmQgSSdtIHdvcnJ5IGFib3V0IG15IHF1ZXN0aW9uLiBB
-cmUgdGhlcmUgc29tZXRoaW5nIHdvcnJ5IGluIG15IHF1ZXN0aW9uPyBPciBJIGNhbid0IGFzayBz
-dWNoIHF1ZXN0aW9uIG9uIHRoZSBsaXN0PyBXb3VsZCB1IHBscyBnaXZlIG1lIGEgcmVhc29uPyBU
-aGFua3MgYSBsb3QuDQoNClJlZ2FyZHMsDQpBbXkNCg0KDQotLS0tLSBPcmlnaW5hbCBNZXNzYWdl
-IC0tLS0tIA0KRnJvbTogIkVyaWsgTGV1cG9sZCIgPHNwYW1AY3MtZWwuc3l0ZXMubmV0Pg0KVG86
-IDxhbXl5YW5nQHctaWJlZGEuY29tPg0KU2VudDogV2VkbmVzZGF5LCBPY3RvYmVyIDIzLCAyMDAy
-IDc6NDMgQU0NClN1YmplY3Q6IFtGd2Q6ICoqKioqU1BBTSoqKioqIHAtby1tIGZvciBrZXJuZWxd
-DQoNCg0KPiB5b3VyIG1haWwgaXMgcmF0ZWQgYXMgc3BhbQ0KPiANCj4gLS0gDQo+IEVyaWsgTGV1
-cG9sZCA8c3BhbUBjcy1lbC5zeXRlcy5uZXQ+DQo+IA0K
+Hello List,
 
+This is my first mail to the Netfilter List. I am a newbie to
+IPTables, so please be gentle :-)
+
+I have a Red Hat Linux 7.3 box running iptables-1.2.5-3.
+I am using iptables primarily for Source NAT.
+The machine has two IP Addresses
+
+eth0      : 172.25.8.130
+eth0:0    : 172.25.8.125
+
+I am terribly confused with the OUTPUT chain. I have read from 
+the documentation that the OUTPUT chain is used for locally 
+generated packets. The machine always uses the IP Add of eth0
+for any locally generated packets. How do I configure the OUTPUT
+chain such that the machine uses the IP Add 172.25.8.125 when it
+requests for specific ports or protocols.
+For eg, I want the machine to use the Source IP as 172.25.8.125
+whenever it runs a DNS query. How do I go about this?
+
+TIA
+Rgds
+-- 
+---------------------------------------------------------------
+Harish K                             <harish.k@lntinfotech.com>
+Systems Engineer                            Tel - 91-22-6948065
+Don't drink and drive. You might hit a bump and spill your beer
+---------------------------------------------------------------
 
