@@ -1,14 +1,11 @@
-From: Thierry ITTY <thierry.itty@besancon.org>
-Subject: Re: bad interpreter
-Date: Wed, 27 Nov 2002 14:12:58
+From: "Thomas Ruecker" <mls@fl-base.de>
+Subject: First masqueraded Connection Error
+Date: Wed, 27 Nov 2002 15:18:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3.0.1.16.20021127141258.1af7ba26@s-net-04.besancon.org>
-References: <20021127115344.59352.qmail@web9606.mail.yahoo.com>
+Message-ID: <GEEAJNIDCCJEAICPEENHMEGKDHAA.mls@fl-base.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021127115344.59352.qmail@web9606.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: at@4ix.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-this happens when you get a script file from dos (with cr/lf eol)
-the first line may look normal=20
+Hi,
+I'm new to iptables and got a small problem with masquerading.
+I'm using most parts of the iptables-script from TLDP.org. The masquerading
+ist work fine, but if I start the first connection to a host, like ssh, I
+get an error. If I try it again, everything works fine. This happen to all
+hosts, I'm trying to connect.
+This connection is not a connection to the internet, it's just for
+administrating some host with dialin, but I have to masquerade my network.
 
-#!/bin/sh
+Thomas
 
-but the CR (which remains invisible within a text editor that silently
-adapts itself) is misunderstood by shell=20
-
-just edit the file using vi, then ":set ff=3Dunix" and ":wq". this will
-remove the CRs
-
-hth
+--
+Linux is like a wigwam - no windows, no gates, apache inside.
 
 
-A 11:53 27/11/2002 +0000, vous avez =E9crit :
->I am new to iptables. Starting up iptables I receive
->the error
->
->: bad interpreter: No such file or directory.
->
->I would be grateful for any ideas. Thanks in advance
->
->Taniform
->
->__________________________________________________
->Do You Yahoo!?
->Everything you'll ever need on one web page
->from News and Sport to Email and Music Charts
->http://uk.my.yahoo.com
->
->
->
-			- * - * - * - * - * - * -
-Bien s=FBr que je suis perfectionniste !
-Mais ne pourrais-je pas l'=EAtre mieux ?
-	Thierry ITTY
-eMail : Thierry.Itty@Besancon.org		FRANCE
 
