@@ -1,14 +1,10 @@
-From: "Shazad Malik" <smalik@vistawiz.com>
-Subject: FIXED PROBLEM!!! Re: My findings on H323 ..... feedback welcome
-Date: Sat, 8 Jun 2002 11:48:53 -0400 (EDT)
+From: "Linux Rulz" <linuxtek2002@hotmail.com>
+Subject: Help with understanding MASQ and packet flow through iptables
+Date: Sat, 08 Jun 2002 18:05:08 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <2033.24.168.132.35.1023551333.squirrel@mail.vistawiz.com>
-References: <1608.24.168.132.35.1023490906.squirrel@mail.vistawiz.com>
-Reply-To: smalik@vistawiz.com
+Message-ID: <F556i14bcLMqvsyRbHy0002025d@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1608.24.168.132.35.1023490906.squirrel@mail.vistawiz.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,98 +14,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: smalik@vistawiz.com
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-everyone,
+I'll make this short.  I'm running RedHat 7.1, kernel 2.4, and iptables with 
+MASQ modules.  I'm having trouble understanding the flow of a packet coming 
+into my box, so I'm confused as to which chains to use.
+Since my packets are MASQed, does that handle the forwarding for me, and all 
+I need to use is INPUT/OUTPUT...or do I need to use the FORWARD chain too?  
+I'm trying to get POP3 and FTP (on high ports) running...maybe understanding 
+the basics will help me understand what rules I need to make.
 
-I'm glad to state that I have been able to get H323 working and what a
-pain! I will write the instructions on how I implemented it and I used the
-snapshot which If I do iptables -v, shows me 1.2.7!
-
-cheers,
-shazad!
-PS: finally, had a good night sleep!
-
-> everyone,
->
-> I have working my ass on trying to get this thing working....... and
-> this is what I have conculded.
->
-> Scenario 1:
-> kernel: 2.4.18, iptables: 1.2.6a:
->
-> H323 will not work.  I installed a new kernel and a good .config file
-> and selected the patches but the nat, h323 does not work. NO MATTER
-> WHAT YOU DO IT WILL NOT WORK!
->
-> Scenario 2:
-> kernel: 2.4.18, iptables: iptables--20020605 (latest snapshot) I felt
-> there is no harm!
->
-> Well, I had huge success with it!  When I added the patched and checked
-> my .config file, all the entries were present as I expected. I thought
-> I was done till I had to to a "make  KERNEL=/usr/src/linux"
->
-> This is the error message I'm getting:
->
-> ========================================
-> Extensions found: IPv4:connmark IPv4:CONNMARK IPv4:ipv4options
-> IPv4:IPV4OPTSSTRIP IPv4:mport IPv4:nth IPv4:quota IPv4:random IPv4:time
-> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -
-> DIPTABLES_VERSION=\"1.2.7\"  -fPIC -o extensions/libipt_conntrack_sh.o
-> -c extensions/libipt_conntrack.c
-> ld -shared -o extensions/libipt_conntrack.so
-> extensions/libipt_conntrack_sh.o
-> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -
-> DIPTABLES_VERSION=\"1.2.7\"  -fPIC -o extensions/libipt_mark_sh.o -c
-> extensions/libipt_mark.c
-> extensions/libipt_mark.c: In function `parse':
-> extensions/libipt_mark.c:67: structure has no member named `bit_op'
-> extensions/libipt_mark.c:67: `IPT_MARK_BIT_OP_NONE' undeclared (first
-> use in this function)
-> extensions/libipt_mark.c:67: (Each undeclared identifier is reported
-> only once
-> extensions/libipt_mark.c:67: for each function it appears in.)
-> extensions/libipt_mark.c:77: structure has no member named `bit_op'
-> extensions/libipt_mark.c:77: `IPT_MARK_BIT_OP_OR' undeclared (first use
-> in this function)
-> extensions/libipt_mark.c:86: structure has no member named `bit_op'
-> extensions/libipt_mark.c:86: `IPT_MARK_BIT_OP_AND' undeclared (first
-> use in this function)
-> extensions/libipt_mark.c: In function `print':
-> extensions/libipt_mark.c:113: structure has no member named `bit_op'
-> extensions/libipt_mark.c:113: `IPT_MARK_BIT_OP_AND' undeclared (first
-> use in this function)
-> extensions/libipt_mark.c:116: structure has no member named `bit_op'
-> extensions/libipt_mark.c:116: `IPT_MARK_BIT_OP_OR' undeclared (first
-> use in this function)
-> extensions/libipt_mark.c: In function `save':
-> extensions/libipt_mark.c:131: structure has no member named `bit_op'
-> extensions/libipt_mark.c:133: `IPT_MARK_BIT_OP_AND' undeclared (first
-> use in this function)
-> extensions/libipt_mark.c:135: break statement not within loop or switch
-> extensions/libipt_mark.c:136: `IPT_MARK_BIT_OP_OR' undeclared (first
-> use in this function)
-> extensions/libipt_mark.c:138: break statement not within loop or switch
-> extensions/libipt_mark.c:139: `IPT_MARK_BIT_OP_NONE' undeclared (first
-> use in this function)
-> extensions/libipt_mark.c:141: break statement not within loop or switch
-> make: *** [extensions/libipt_mark_sh.o] Error 1
->
->
->
-> --
-> Shazad Malik
-> work: (845)623-2161
-> fax: (845) 623-1154
+I've scoured the net and HOWTOs, still don't fully understand the flow.
+Thanks everyone!
 
 
--- 
-Shazad Malik
-work: (845)623-2161
-fax: (845) 623-1154
-
+_________________________________________________________________
+Send and receive Hotmail on your mobile device: http://mobile.msn.com
 
 
