@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: syslogging firewall data to an external file
-Date: Tue, 22 Mar 2005 06:27:40 -0500
-Message-ID: <1111490859.4267.16.camel@hubcap.ljm.dom>
-References: <20050320210235.0CBD0F9D7EF@mx2.hotpop.com>
-	<423DEDC3.1000902@hotpop.com>
+Subject: Re: Altering a packet's port
+Date: Tue, 22 Mar 2005 06:29:56 -0500
+Message-ID: <1111490995.4267.18.camel@hubcap.ljm.dom>
+References: <00c501c52e56$acbe6070$bf07a8c0@civicXp>
+	<opsn0cqeu476nf2y@xonix>  <002201c52e7e$4fe76950$6500a8c0@DEFIANT>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <423DEDC3.1000902@hotpop.com>
+In-Reply-To: <002201c52e7e$4fe76950$6500a8c0@DEFIANT>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,20 +20,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 2005-03-20 at 16:40, Georgi Alexandrov wrote:
-> Use the ULOG (userspace logging) target and the ulogd deamon. That way 
-> you may specify logging to a particular file (supports sql logging too).
-> More at: http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+On Mon, 2005-03-21 at 20:27, Nicolas Ross wrote:
+> I saw that in the man page, but I need to do this for ALL hosts to specific 
+> subnets, and many hosts. So I'll have to define one rule for EACH host I 
+> need a redirect (something like 50 to 75) ?
 
-in addition to the ULOG target/ulogd solution (which is the easier way
-to go), you could also use syslog-ng as your syslog daemon and use its
-filtering capabilities to say, dump all logs entries with the string
-"FIREWALL" into /var/log/firewall.
+for loop?
 
 -j
 
 --
-"Asleep at the switch?  I wasn't asleep, I was drunk!"
+"How much is your penny candy?
+ Surprisingly expensive."
 	--The Simpsons
 
 
