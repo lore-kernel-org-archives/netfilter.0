@@ -1,12 +1,14 @@
-From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
-Subject: RE: Yahoo Messenger
-Date: Mon, 7 Oct 2002 09:09:06 +0200
+From: Alistair Tonner <Alistair@alistairt.ath.cx>
+Subject: Re: are these enough now?
+Date: Fri, 4 Oct 2002 16:32:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B3210198DB@hslex01.hsl-brabantzuid.nl>
+Message-ID: <20021004203205.GA21206@Ajftl1.ajfthome.on.ca>
+References: <200210041218.26636@.> <200210041309.g94D9ML10904@vulcan.rissington.net> <200210042048.36993@.> <20021004191400.YGEY459.mta02-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C26DD0.6CFB5130"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20021004191400.YGEY459.mta02-svc.ntlworld.com@there>; from Antony@Soft-Solutions.co.uk on Fri, Oct 04, 2002 at 15:13:58 -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,78 +18,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'harvey@hnu.edu.ph'" <harvey@hnu.edu.ph>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On 2002.10.04 15:13 Antony Stone wrote:
+> On Friday 04 October 2002 4:22 pm, PayalR wrote:
+> 
 
-------_=_NextPart_001_01C26DD0.6CFB5130
-Content-Type: text/plain;
-	charset="iso-8859-1"
-
-> Ive already tried this about a month ago and but theres an 
-> error saying that "host/network 'cs1.yahoo.com' not found" 
-> ... this is also treu with cs2 and cs3 ...hmmm am i the only 
-> one getting this kind of error? Pls tell me
-
-Right. I should have checked that.
-
-Aren't there any servers mentioned in the messenger setup (I don't use it
-myself) ?
-
-I just checked on cs.yahoo.com and that one exists but everytime I ping that
-server I'm redirected to cs41.msg.sc5.yahoo.com (216.136.233.128).
-I don't know if that's the same one for you ?
+	Bulk of message snipped for brevity.
 
 
-Rob
+> being
+> monitored but not monitoring anything else.
+> 
+> > Shall I block ICMP?
+> 
+> No !!!   ICMP is a very important part of traffic management, and you
+> should
+> not block it outright.   However, I cannot think of any ICMP message
+> codes
+> you should explicitly allow on this system, since everything you need
+> should
+> be handled by you ESTABLISHED,RELATED rules (ICMP forms the bulk of
+> the
+> RELATED category, except for things like ftp).
 
-------_=_NextPart_001_01C26DD0.6CFB5130
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	Anthony ... My icmp chain ... (seems to work for me,
+	and you can toss in limit rules as well)
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>RE: Yahoo Messenger</TITLE>
-</HEAD>
-<BODY>
+	 
+# $IPTABLES -A icmp_packets -j LOG --log-level 4 --log-prefix "IPT icmp 
+IN:"
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 0 -j ACCEPT
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 3 -j ACCEPT
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 5 -j ACCEPT
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
+# $IPTABLES -A icmp_packets -j LOG --log-level DEBUG --log-prefix "IPT 
+icmp DROP :"
+$IPTABLES -A icmp_packets -j DROP
 
-<P><FONT SIZE=3D2>&gt; Ive already tried this about a month ago and but =
-theres an </FONT>
-<BR><FONT SIZE=3D2>&gt; error saying that &quot;host/network =
-'cs1.yahoo.com' not found&quot; </FONT>
-<BR><FONT SIZE=3D2>&gt; ... this is also treu with cs2 and cs3 ...hmmm =
-am i the only </FONT>
-<BR><FONT SIZE=3D2>&gt; one getting this kind of error? Pls tell =
-me</FONT>
-</P>
 
-<P><FONT SIZE=3D2>Right. I should have checked that.</FONT>
-</P>
 
-<P><FONT SIZE=3D2>Aren't there any servers mentioned in the messenger =
-setup (I don't use it myself) ?</FONT>
-</P>
+    With debugging rules commented out above,  ... I don't get hammered 
+on
+	all that often, but once in a while it helps to use both the 
+logging rules,
+	and I've on occasion had to put in limit rules....
 
-<P><FONT SIZE=3D2>I just checked on cs.yahoo.com and that one exists =
-but everytime I ping that server I'm redirected to =
-cs41.msg.sc5.yahoo.com (216.136.233.128).</FONT></P>
+	(P.S. this block is straight out of one of Oskar's HOWTO 
+guides...
+	thanks for the good tips Oskar)
 
-<P><FONT SIZE=3D2>I don't know if that's the same one for you ?</FONT>
-</P>
-<BR>
+	Alistair
 
-<P><FONT SIZE=3D2>Rob</FONT>
-</P>
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C26DD0.6CFB5130--
+
+
+
+
+> 
+> > I intend to have some logging for SMTP, HTTP and POP3.
+> > I have yet to formulate the rules for them. I will do it in day or
+> two and
+> > let ask here for opinion.
+> 
+> If you use syslogd to send log messages to a remote machine you will
+> need to
+> allow UDP port 514 out of your server.
+> 
+> > p.s I will drop the telnet also in a day or two :)
+> 
+> Good :-)
+> 
+> 
+> Antony.
+> 
+> --
+> 
+> Perfection in design is achieved not when there is nothing left to
+> add,
+> but rather when there is nothing left to take away.
+> 
+>  - Antoine de Saint-Exupery
+> 
+> 
+
 
