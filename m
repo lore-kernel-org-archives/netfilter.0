@@ -1,13 +1,14 @@
-From: xavier renaut <list.netfilter@natch.dyndns.org>
-Subject: Re: How to block the real IP rather than an entire proxy?
-Date: Wed, 28 May 2003 21:50:19 -0400
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Static compile issues
+Date: Thu, 29 May 2003 03:48:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030529015019.GM4866@natch.8d.com>
-References: <Law15-F579atA2PrCsP0001d012@hotmail.com> <Pine.LNX.4.44.0305132003290.13227-100000@marx.gruntwerk.net>
+Message-ID: <20030529034828.0cb748aa.arnt@c2i.net>
+References: <1054158893.21086.62.camel@dejawu>
+	<Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0305132003290.13227-100000@marx.gruntwerk.net>
+In-Reply-To: <Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, May 13, 2003 at 08:05:45PM -0700, Myles Uyema wrote:
-|It's the job of the proxy to block out the offender.  There's nothing you 
-|can do with netfilter to prevent him from accessing your website through 
-|other proxies.
+On Wed, 28 May 2003 17:11:42 -0400 (EDT), 
+Cory Visi <merlin@phear.lwz.org> wrote in message 
+<Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>:
 
-what about scanning the content of the packet (-m string)
-to find thee http header ?
+> When I compile the kernel statically and enable IP Tables support,
+> ipchains compatibilty is becomes no longer available. I have the
+> Invalid Argument problem with the static kernel.
+> 
+> When I compile the kernel with module support, I do _not_ enable
+> the ipchains compatibility module.
+> 
+> Should I try enabling this? Obviously, I cannot insert it when the IP
+> tables module is loaded. Also, this doesn't help my situation with the
+> static kernel.
 
-bye
-
-
-|
-|On Tue, 13 May 2003, J and T wrote:
-|
-|My question is about blocking IPs from my network. It's a piece of cake to 
-|block static IPs. But there are times when someone sitting behind a proxy 
-|whos IP doesn't change, but the proxy in which he is accessing us does. 
-|There's no way I can figure out how to keep these people out. For example; 
-|Apache only shows the IP of the visitor and not the real IP of the visitor. 
-|Here's an example of what I mean using environment variables:
-|
-|$ENV{'REMOTE_ADDR'};
-|
-|One might believe this is the IP of the visitor. But...
-|
-|$ENV{'HTTP_X_FORWARDED_FOR'}
-|
-|if the above is present it is most likely the true IP of the visitor and the 
-|"REMOTE_ADDR" is just the proxy in which they are accessing the Net with.
-|
-|$ENV{'HTTP_CLIENT_IP'}
-|
-|Which you may need to deal with as well.
-|
-|So how can I block a visitor who is jumping around through proxies? I don't 
-|want to block out the proxy as this could ultimately block out all AOL users 
-|for example.
-|
-|Thanks!
-|John
-|
-|_________________________________________________________________
-|STOP MORE SPAM with the new MSN 8 and get 2 months FREE*  
-|http://join.msn.com/?page=features/junkmail
-|
-|
-|
-|
-|
+.._no_ and no.  Ipchains would require the removal of iptables and that 
+on top of all the good reasons not to, makes it off-topic here.  ;-)
 
 -- 
-xavier renaut, 514 906 1212 x226  
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
+
+
 
