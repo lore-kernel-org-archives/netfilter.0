@@ -1,12 +1,12 @@
-From: "=?iso-8859-15?q?Nicol=E1s_Vel=E1squez?= O." <spidyno@yahoo.es>
-Subject: custom redirector
-Date: Thu, 12 Aug 2004 11:58:17 -0500
+From: Jason <jason@jasonandjessi.com>
+Subject: Re: Primordial tool missing
+Date: Thu, 12 Aug 2004 10:47:54 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408121158.17197.spidyno@yahoo.es>
+Message-ID: <Pine.LNX.4.58.0408121047300.29216@shinobi.jasonandjessi.com>
+References: <200408120947.40823.nadim@khemir.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200408120947.40823.nadim@khemir.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: nadim <nadim@khemir.net>
+Cc: netfilter@lists.netfilter.org
 
+Their is a trace target in POM that does something akin to what you are
+looking for.
 
-Hello there,
+-- 
+       Jason
+www.jasonandjessi.com
+It gimme the jibblies
 
-I want to do some custom redirection rules, I've searched the web with
-no success.
+On Thu, 12 Aug 2004, nadim wrote:
 
-What I want to do is to set the forward policy a redirect.
-
-Here is what I was trying without success:
-$IPTABLES -t nat -N MY_REDIRECTOR_POLICY
-$IPTABLES -t nat -A PREROUTING -i $LAN_IFACE -p TCP --dport 80 -j
-MY_REDIRECTOR_POLICY --to-port 81
-$IPTABLES -A MY_REDIRECTOR_POLICY -j REDIRECT --to-port 81
-$IPTABLES -A FORWARD -j MY_REDIRECTOR_POLICY
-
-That snip would go at the end of the rules. so it will work like a
-policy.
-
-=46irst of all, is it possible to do what I want to do??
-
-Squid is not an option as no body has to be doing any configuration
-changes on the machines. Transparent Proxy won't do the job, as the
-objective of the project is to do direct connection. Besides the
-connections can happen on non web ports.
-
-=2D-=20
-
-Atentamente,
-Nicol=E1s Vel=E1squez
-Bogot=E1, Colombia
-
-(^) =A0 ASCII Ribbon Campaign
- X =A0 =A0NO HTML/RTF in e-mail
-/ \ =A0 NO Word docs in e-mail
+> Hi,
+>
+> For you gurus this might be superfluous but for the lambda user a tool which
+> given an input packet (xxx.xxx.xxx.xxx:tcp:25) and a set of rules, show how
+> the packet goes from one rule to the other and finally make it to it's
+> destination , gets tansformed or dropped.
+>
+> This would help enormously in understanding how this stuff works (no it's not
+> that obvious) and I also think it would be a great help when adding rules.
+>
+> Does such a utility exist?
+>
+> Cheers, Nadim.
+>
 
