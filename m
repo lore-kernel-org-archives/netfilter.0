@@ -1,15 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: FTP Forwarding
-Date: Fri, 14 Jan 2005 09:27:30 -0500
-Message-ID: <1105712849.3661.24.camel@hubcap.ljm.dom>
-References: <20041228171949.35308.qmail@web53109.mail.yahoo.com>
-	<1104255053.7318.28.camel@hubcap.ljm.dom>
-	<001301c4fa17$03de2b20$0200a8c0@etpi>
-	<008c01c4fa2d$92edd930$051ea8c0@floydian>
+Subject: Re: not sure if 'iptables -Z' needed/useful/superfluous here..
+Date: Fri, 14 Jan 2005 09:18:45 -0500
+Message-ID: <1105712325.3661.14.camel@hubcap.ljm.dom>
+References: <20050114060327.GA8917@spawar.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <008c01c4fa2d$92edd930$051ea8c0@floydian>
+In-Reply-To: <20050114060327.GA8917@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,21 +20,53 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2005-01-14 at 06:38, Deepak Seshadri wrote:
-> iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -s $PublicIPAdd -d 
-> 202.147.167.99 \
->    --dport 21 -j DNAT --to-destination 192.168.0.5
+On Fri, 2005-01-14 at 01:03, seberino@spawar.navy.mil wrote:
+> When I want to start from scratch in my firewall
+> script I usually do this:
+> 
+> $IPTABLES -t filter -F
+> $IPTABLES -t mangle -F
+> $IPTABLES -t nat    -F
 
-personally--i don't believe in filtering in NAT.  nat in NAT, and filter
-in FILTER; that's why they're there.  it makes the rule set much easier
-to troubleshoot, and it saves you time a year from now when you look at
-your rules and can't figure out why you can't FTP to that server from
-some random IP address, since the FILTER rule is wide open.
+which flushes all the rules out of those tables
+
+> $IPTABLES -t filter -X
+> $IPTABLES -t mangle -X
+> $IPTABLES -t nat    -X
+
+which deletes all chains in those tables.
+
+> I'm not sure if -Z switch does anything useful after this violent
+> scrubbing of my iptables...
+
+it still does what it would do any other time.
+
+> $IPTABLES -Z
+> 
+> By the way... is this correct/better/wrong??
+
+if your intention is to zero your byte counters--then it's correct.  if
+your intention is to retain your byte counters across reloads--then it's
+wrong.
+
+> $IPTABLES -t filter -Z
+> $IPTABLES -t mangle -Z
+> $IPTABLES -t nat    -Z
+> 
+> I read man page on iptables but it still was not clear if I need
+> -Z to 'reset the byte count' and other stuff like it says it will do.
+
+people that rely on byte counters for accounting type uses probably
+don't use -Z when they reload their rules.  i only use the counters as
+an indication of rule hits--so i do reset the counters every time i
+reload my rules.  but it's not a question of right or wrong.
 
 -j
 
 --
-"Let us all bask in television's warm glowing warming glow."
+"The only monster here is the gambling monster that has enslaved your
+ mother! I call him Gamblor, and it's time to snatch your mother from
+ his neon claws!"
 	--The Simpsons
 
 
