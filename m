@@ -1,12 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
 Subject: Re: Weird routing problem?
-Date: Wed, 01 Dec 2004 08:43:25 -0500
-Message-ID: <1101908605.3251.30.camel@hubcap.ljm.dom>
+Date: Wed, 01 Dec 2004 08:45:41 -0500
+Message-ID: <1101908741.3251.33.camel@hubcap.ljm.dom>
 References: <200412010418.41288.hancock@anansispaceworks.com>
+	<002101c4d7a9$f00c4f80$e167aec1@wsidipl05>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200412010418.41288.hancock@anansispaceworks.com>
+In-Reply-To: <002101c4d7a9$f00c4f80$e167aec1@wsidipl05>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,49 +21,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-01 at 05:18, Terry Hancock wrote:
-<snip>
->    "Fragments"?
+On Wed, 2004-12-01 at 08:30, Robert Schimansky wrote:
+> hello,
+> 
+> when using an ethernet-dsl-modem - and maybe with some other devices too - 
+> you have to set the MTU of your NAT-ed computers. see 
+> http://www.annoyances.org/exec/show/article04-107
+> 
+> I would appreciate if somebody could tell how I could solve this on the 
+> router insteasd of reconfiguring the "clients"
 
-bingo.
+search the list archives--i *think* that question came up once before.
 
-> Why only from certain web servers?
->    e.g.:
->    http://www.tera-byte.com
->    http://www.poalo.com
->    http://www.paypal.com
+...or type 'man iptables' as the exact command needed is in there.
 
-because the reply packets form those sites break the "need-to-frag"
-threshold.
-
-> How can I verify what is and is not being dropped?
-
-tcpdump on your firewall's external interface for ICMP Type 3 Code 4
-packets.
-
-> Some details:
-
-<snip>
-
-one detail that would've been nice would be the output of "ip link show"
-so that we could see the MTU of ppp0...
-
-generically--try this:
-
-  iptables -I FORWARD -p tcp --tcp-flags --syn \
-    -j TCPMSS --clamp-mss-to-pmtu
-
-if that doesn't help:
-
-$MYMSS="$MTU_OF_PPP0 - 40"
-
-  iptables -I FORWARD -p tcp --tcp-flags --syn \
-    -j TCPMSS --set-mss $MYMSS
+...or read my last post.
 
 -j
 
 --
-"Me lose brain? Uh, oh! Ha ha ha! Why I laugh?"
+"No jury in the world is going to convict a baby ... Maybe Texas."
 	--The Simpsons
 
 
