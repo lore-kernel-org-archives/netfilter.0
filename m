@@ -1,14 +1,13 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: DHCP related problem
-Date: Tue, 17 Jun 2003 20:46:11 +0800
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: radius
+Date: 17 Jun 2003 17:39:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030617124611.GA1360@floyd>
-References: <001001c334aa$bcef4d30$c80da8c0@pisic> <200306171130.h5HBUUWF027705@nycsmtp3out.rdc-nyc.rr.com>
-Reply-To: kluivert@tm.net.my
+Message-ID: <1055864356.701.1.camel@elendil.intranet.cartel-securite.net>
+References: <20030617181021.274a7ee5.esteban@alstec.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200306171130.h5HBUUWF027705@nycsmtp3out.rdc-nyc.rr.com>
+In-Reply-To: <20030617181021.274a7ee5.esteban@alstec.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Esteban <esteban@alstec.fr>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, Jun 17, 2003 at 07:24:16AM -0400, Matt Grogan spoke thusly:
->If you want to go further than that, like stop someone from getting their
->information from DHCP and then statically defining it and keeping that
->address, it gets a little more involved. Maybe reducing the lease time and
->scripting to check that all the stations in the DHCP range are also in the
->list of DHCP clients on the server would help.
+Le mar 17/06/2003 =E0 18:10, Esteban a =E9crit :
+> is there a patch for netfilter which implements radius authentication ?
 
-A slightly different angle, which just came up on the redhat-users ML a
-couple of days ago; which might work is :
+You mean something to alter rules according to a RADIUS authentication ?
+If so, you have to implement a userland tool to interact with Netfilter.
 
-	-> All DHCP leases get an account created on your internal DNS
-	   resolver.
-	-> Your firewall refreshes your ruleset by only allowing a range
-	   of DHCP IP ranges, which have a corresponding DNS forward &&
-	   reverse entry.
-
-This is similar to Win2K functionality whereby all DHCP addresses get an
-automatic DNS entry created. Someone mentioned that ISC's DHCP package
-supports such functionality, you might want to take a look.
-
-There will be some scripting involved, as Matt has already allured to.
-
-(snip rest)
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux - Cartel S=E9curit=
+=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
