@@ -1,13 +1,14 @@
-From: Raileanu Grigore <grisha@unixro.net>
+From: Rakotomandimby Mihamina <rktmb.list@wanadoo.fr>
 Subject: Re: port scan identification
-Date: Wed, 9 Jun 2004 19:22:48 +0300
+Date: Wed, 09 Jun 2004 18:37:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040609192248.0cf52066.grisha@unixro.net>
-References: <7EACCDBB65D37443912D80713CC1245D472828@fsnsab20.losangeles.af.mil>
+Message-ID: <40C73CCA.4070804@wanadoo.fr>
+References: <40C6D987.9050805@wanadoo.fr> <1086781430.14426.5.camel@localhost>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7EACCDBB65D37443912D80713CC1245D472828@fsnsab20.losangeles.af.mil>
+In-Reply-To: <1086781430.14426.5.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,78 +18,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, 9 Jun 2004 08:43:08 -0700 
-Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL> wrote:
+John A. Sullivan III wrote:
+ > Hope this helps - John
 
-> Why would one care about ho many ports get scanned as long as your rulesets
-> cover the ones you care about + other ports discovered as you go.
-> as long as you CYA, it wong get sunburned.
-> 
-> ~piranha
-> 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Raileanu
-> Grigore
-> Sent: Wednesday, June 09, 2004 3:32 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: port scan identification
-> 
-> 
-> On Wed, 09 Jun 2004 11:33:59 +0200
-> Rakotomandimby Mihamina <rktmb.list@wanadoo.fr> wrote:
-> 
-> > Hello
-> > 
-> > I try to set correctly up my firewall ans would need your help on one
-> > thing :
-> > 
-> > I have this rule :
-> > [...]
-> > iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST \
-> > -j LOG --log-level debug --log-prefix 'p_scan_: '
-> > [...]
-> > 
-> > and i see this when i tail the output file :
-> > 
-> > [...]
-> > Jun  8 22:52:32 milina kernel: p_scan_: IN=ppp0 OUT= MAC=
-> > SRC=81.220.171.201 DST=81.248.95.56 LEN=40 TOS=0x00 PREC=0x00 TTL=54
-> > ID=45424 PROTO=TCP SPT=4391 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
-> > [...]
-> > 
-> > Well . According to me, a port scan is the action to scan _all_ the
-> > ports ... why is the port scan identified as only scaning the 80th port
-> > ? I mean, a port scan should not be on one port only ... isn't it ?
-> > 
-> > -- 
-> > Rakotomandimby Mihamina Andrianifaharana
-> > Tel : +33 2 38 76 43 65
-> > http://stko.dyndns.info/site_principal/Members/mihamina
-> > 
-> > 
-> 
-> Try to use psd , from patch-o-matic patches.
-> 
-> http://www.iptables.org/downloads.html#pomng-20040302
-> 
-> You can create a rule like this: 
-> 
-> iptables -A INPUT -p ALL -m psd -j LOG --log-level DEBUG --log-prefix
-> "PORTSCAN:"
-> 
+it does !
+but :
 
+if i 'tail -f' my web server access log and the iptables log, I notice 
+those "port_scan" are done when visitors are visiting my site : same 
+time, same IP. I dont think each visitor would want to hack me.
 
-
-You can tune PSD accuracy, and other parameters.
-Look at this: http://www.iptables.org/patch-o-matic/pom-base.html#pom-base-psd
-
+My conclusion is my rule is not very good, as well as the logged packet 
+is dropped, it would decrease accuracy of the website. What should i do 
+to make it better ? I still want to keep port scan prevention, but want 
+to avoid dropping non-offending packets ... but if you think the website 
+accuracy wouldnt be down for that reason, i will keep it as it is ...
 -- 
-Best regards,
-Raileanu Grigore
-mail: grisha at unixro dot net
-phone: +40 742759147
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
