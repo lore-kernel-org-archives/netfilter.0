@@ -1,16 +1,11 @@
-From: Martin Tomasek <mtd@mk.cvut.cz>
-Subject: Re: how to delete *some* netfilter rules?
-Date: Fri, 5 Jul 2002 15:57:43 +0200
+From: "Uwe A. P. Wuerdinger" <wuerdinger@x-tec.de>
+Subject: iptables problem with multible routes [sum]
+Date: Fri, 05 Jul 2002 13:09:42 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020705135743.GB4851@mt.mk.cvut.cz>
-References: <20020614161800.GA6137@kostra.uh.cz> <02070513492203.14428@Lms>
-Reply-To: mtd@mk.cvut.cz
+Message-ID: <3D257E76.4080400@x-tec.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <02070513492203.14428@Lms>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,69 +15,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Pavel Mores <pvl@uh.cz>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.samba.org
+
+Hi list,
+I have aproblem originally posted to debian-firewall@lists.debian.org
+maybe you guys can help me
+
+---snip---
+
+-------- Original Message --------
+Subject: iptables problem with multible routes
+Date: Fri, 05 Jul 2002 12:10:07 +0200
+From: "Uwe A. P. Wuerdinger" <wuerdinger@x-tec.de>
+Organization: X-tec Institute for Computer and network Security GmbH
+Newsgroups: mailinglist.debian.firewall
+
+Hi List,
+I have a problem with iptables (kernel 2.4.18)
+and multible routes.
+
+Setup:
+My Firewall (FW) has 3 interfaces
+eth0 =3D Internal
+eth1 =3D dedicatet router connection
+ppp0 (PPPoE DSL link on eth2)
+
+a kernel default route pointing to ppp0
+an a second routingtable (me-prov) with an other default route
+pointing to the router connected to eth1.
+I have a NAT rule in place for MASQing the networks on eth0.
+For the nat Traffic I mark my packets that should use
+the me-prov defaulttable with a 0x1
+
+# iptables -t mangle -I PREROUTING 1 -p tcp -i eth0 --dport 22 \
+-j MARK --set-mark 0x01
+
+works like expected.
+The packet gets NATed end send out to eth1.
+
+My problem is when I do the same for localy generated packets
+(e.g. the mailserver running on the FW) with
+# iptables -t mangle -I OUTPUT 1 -p tcp --dport 25 \
+-j MARK --set-mark 0x01
+
+The packed got routed out to eth1, as expected but has the Source IP
+of ppp0.
+What can I do to get that packets the right source IP for eth1?
+
+-------- Original Message --------
+Subject: Re: iptables problem with multible routes
+Date: Fri, 05 Jul 2002 12:36:12 +0200
+From: "Uwe A. P. Wuerdinger" <wuerdinger@x-tec.de>
+Organization: X-tec Institute for Computer and network Security GmbH
+Newsgroups: mailinglist.debian.firewall
+References: <3D25707F.8020002@x-tec.de> <20020705100805.GT31085@virus.home>
+
+Jean Christophe ANDR=C30/00 wrote:
+
+ > mlist-debianfirewall@x-tec.de =E9crivait :
+ >
+ >>The packed got routed out to eth1, as expected but has the Source IP of
+ >>ppp0. What can I do to get that packets the right source IP for eth1
+ >>
+ >
+ > Check your NAT rule: you probably need to precise the output interface as
+ > "-o ppp0" to only NAT when it goes thought the DSL line.
 
 
---5I6of5zJg18YgZEa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+NOP that would break the NATing of the internal traffic that should go
+out to eth1:
 
-using iptables without full path is insecure, I would modify this script
-this way:
+iptables -t mangle -I PREROUTING 4 -p tcp -i eth0 --dport 22 \
+-j MARK --set-mark 0x01
 
-> Your bash script could look like this:
->=20
-> #!/bin/bash
-+IPT=3D/usr/sbin/iptables
->=20
--> ADD=3D-A
-+ADD=3D"$IPT -A"
--> INS=3D-I
-+INS=3D"$IPT -I"
->=20
-> if [ -n "$1" ]; then
-> 	if [  "$1" !=3D "delete" ]; then
-> 		echo usage: $0 [delete]
-> 		exit 1
-> 	fi
+---snip---
 
-these two too:
-> 	ADD=3D-D
-> 	INS=3D-D
-
-> fi
->=20
-> #examples:
--> iptables $ADD INPUT -i eth0 10.0.0.0/8 -j DROP
-+$ADD INPUT -i eth0 10.0.0.0/8 -j DROP
--> iptables $INS OUTPUT -i eth0 192.168.0.0/16 -j DROP
-+$INS OUTPUT -i eth0 192.168.0.0/16 -j DROP
->=20
-
-there is other way of rules deletion:
-
-iptables -D chain num
-
-where num is rule number in chain. in some cases it is better to
-use this command.
-
+greets Uwe
 --=20
-Martin Tomasek, mtd@email.cz
-BOFH excuse #27:
-radiosity depletion
+X-Tec GmbH
+Institute for Computer and Network Security
+WWW : http://www.x-tec.de/
 
---5I6of5zJg18YgZEa
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE9JaXXzWKqGie3rqoRAs0+AJ44dPal85oIdqlPQuIlXHXpX4FVbgCePexg
-QpVQ1Y5ZfzgADDf75XiSajI=
-=84xd
------END PGP SIGNATURE-----
-
---5I6of5zJg18YgZEa--
 
