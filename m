@@ -1,15 +1,12 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Multiple instances of match extensions
-Date: Tue, 24 Jun 2003 19:06:22 +0200
+From: "Tony Thompson" <tony.thompson@stone-ware.com>
+Subject: Re: Do I need to write a module?
+Date: Tue, 24 Jun 2003 11:08:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030624170622.GV2645@sunbeam.de.gnumonks.org>
-References: <200306231449.09703.arvanit@ellemedia.com>
+Message-ID: <sef83134.027@mail.stone-ware.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0786ZyFfTSxuegBe"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200306231449.09703.arvanit@ellemedia.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +16,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Arvanitis Kostas <arvanit@ellemedia.com>
+Content-Type: text/plain; charset="us-ascii"
+To: ramin@cannon.eng.us.uu.net
 Cc: netfilter@lists.netfilter.org
 
+So, to do the HTTP redirect before authentication, it sounds like I will
+need a module or ????
 
---0786ZyFfTSxuegBe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What is the best way to control netfilter from Java, JNI or ????
 
-On Mon, Jun 23, 2003 at 02:49:09PM +0300, Arvanitis Kostas wrote:
-> Is it possible to specify more than one instance of a match extension for=
- a=20
-> given rule? The code seems to accept this, but when I try giving two TCP=
-=20
-> match options using iptables, it exits with an unclear error:
-> root@home# iptables -t nat -A POSTROUTING --source 10.0.0.0/8 -mtcp=20
-> --destination-port 8080 --syn -mtcp --destination-port 80 -j MASQUERADE
+This type of project is certain to have tricky little issues lurking
+about but, should be interesting!
 
-> I know that my example can be accomplished using multiport, but it is jus=
-t=20
-> used to clarify my question, which is: Can more than one instance of a ma=
-tch=20
-> extension exist for a single rule? Even if not, is this something possibl=
-e in=20
-> a future version of iptables?
+>>> Ramin Dousti <ramin@cannon.eng.us.uu.net> 06/24/03 10:55AM >>>
+On Tue, Jun 24, 2003 at 10:22:52AM -0500, Tony Thompson wrote:
 
-no, this is not possible due to some architectural limitations.  I
-think in the early development this was something optionally to be
-implemented (there are some comments in the code), but never was
-followed.  It is unlikely that this is going to change, since I'm not
-aware of anybody being in urgent need to have that feature, and it would
-involve lots of code change.
+> Thanks for the response.  Maybe I should give a better picture of
+what I
+> am trying to do.  I have a private network that I am trying to route
+> through a Linux box.  I want to deny all traffic (from a MAC
+address)
+> until a user authenticates, with their browser, to a Java application
+on
+> the Linux server (when they authenticate, something has to happen to
+let
+> netfilter know that the MAC address is allowed to pass).  There has
+to
+> be some level of coordination at that point between the Java app and
+> netfilter so that session timeouts, etc. can be handled.  I would
+like
+> to have all of this happen as close to real time (i.e. not batched)
+as
+> possible.
+> 
+> After writing this out, maybe I don't even need a module but, just a
+> way to control netfilter from a Java app.  I am still open to
+> suggestions...
 
-btw: since this is a development question, why didn't you ask it on the
-developer list?
+Yes, what you need is to control netfilter from a Java app.
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+Before the authentication, redirect his web traffic to your java app.
 
---0786ZyFfTSxuegBe
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+After the authentication, remove the MAC restriction for the client,
+add the necessary rules for his service.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+Also, I'd implement some kind of timer to go off after certain period
+of inactivity and remove the permission of his MAC.
 
-iD8DBQE++IUOXaXGVTD0i/8RAiEWAJ9B2D88oHnLW6nGLzbzmyxlAsOwZACeOMUk
-b4ZLd8clp4+4m86AT+iAF3U=
-=L06+
------END PGP SIGNATURE-----
+It sounds easy but I'm sure it's gonna be fun implementing it ;-)
 
---0786ZyFfTSxuegBe--
+
+Ramin
+
+> 
+> Thanks.
+> Tony
 
