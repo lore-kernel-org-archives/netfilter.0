@@ -1,13 +1,12 @@
-From: cc <cc@kdtc.net>
-Subject: Re: Adding Telnet to a Working Setup
-Date: Fri, 29 Aug 2003 16:33:15 +0800
+From: Chris Lowth <chris@lowth.com>
+Subject: How to block Kazaa with IPTables
+Date: Fri, 29 Aug 2003 10:11:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4F0FCB.3050402@kdtc.net>
-References: <023a01c36ca1$54a1f320$0500a8c0@emph05>
+Message-ID: <200308291011.55478.chris@lowth.com>
+Reply-To: chris@lowth.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <023a01c36ca1$54a1f320$0500a8c0@emph05>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Group <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Alyn Ashworth wrote:
+The "p2pwall" project has released a "user mode" add-in for IPTables that 
+blocks Kazaa. Recent Kazaas use random ports and encrypted traffic in an 
+attempt to "break through" firewalls. P2PWall solves these problems for the 
+current Kazaa versions.
 
-> I have a working iptables setup that uses the following script, and that I
-> would like to change to allow telnet connexions from the local network
-> (eth0) but nor from ppp0. Can anyone suggest the best way to do this
+P2PWall currently uses the "QUEUE" target of iptables to pass packets to the 
+daemon for verification. A future enhancement is planned to bring the logic 
+into iptables as kernel "match module".
 
-Telnet connections into your firewall from the local net?
+http://www.lowth.com/p2pwall
 
-But haven't you already done that already with your first INPUT rule and
-your  3rd Output rule?
-
-> iptables -A INPUT -p ALL -i eth0 -s 192.168.0.0/16 -j ACCEPT
-> iptables -A OUTPUT -p ALL -s 192.168.0.0/24 -j ACCEPT
-
-Or did I completely miss the point?
-
-> # (3) INPUT chain rules
-> 
-> # Rules for incoming pakets from LAN
-> iptables -A INPUT -p ALL -i eth0 -s 192.168.0.0/16 -j ACCEPT
-> iptables -A INPUT -p ALL -i lo -s 127.0.0.1 -j ACCEPT
-> iptables -A INPUT -p ALL -i lo -s 192.168.0.0/16 -j ACCEPT
-
-I don't understand why or how packets from 'lo' could
-come from anything but 127.0.0.1?  Isn't the 3rd rule meaningless?
-Or am I seriously mistaken?
-
-> # (5) OUTPUT chain rules
-> # only output packets with local addreses (no spoofing)
-> iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
-> iptables -A OUTPUT -p ALL -s 192.168.0.88 -j ACCEPT
-> iptables -A OUTPUT -p ALL -s 192.168.0.0/24 -j ACCEPT
-
-Isn't the 2nd made redundant by the 3rd rule?  If given
-rule #3, you don't need rule #2.
-
-It's definitely a good way to learn if someone can correct
-my mistakes in understanding your scripts.
-
-Thanks
-
-
-
-
-
-
-
-
+Chris
+-- 
+From Chris Lowth
+chris@lowth.com
 
