@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: 2.6.0-test9, bridge firewall, interface specification
-Date: Thu, 06 Nov 2003 22:52:53 +0100
+From: "Regalado, Ron" <Ron.Regalado@mci.com>
+Subject: RE: TARPIT Documentation?
+Date: Thu, 06 Nov 2003 21:53:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068155572.818.19.camel@elendil.intranet.cartel-securite.net>
-References: <200311061407.23335.timg@tpi.com>
+Message-ID: <E26ABBCB14D369428125D23DF8BE94E5033116F7@DGEXCH06.mcilink.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311061407.23335.timg@tpi.com>
+Content-return: allowed
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +15,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: timg@tpi.com
-Cc: netfilter@lists.netfilter.org
-
-Le jeu 06/11/2003 =E0 22:07, Tim Gardner a =E9crit :
-> I have a well behaved bridge firewall using 2.4.22 with the relevant P-=
-O-M=20
-> patches applied. In testing 2.6.0-test9 I have determined that interfac=
-e=20
-> specification on a rule no longer works. For example, the first rule in=
- the=20
-> set that should catch 99% of all inbound TCP packets is
->=20
-> iptables -A FORWARD -i $EXTIF -m state --state ESTABLISHED,RELATED -j A=
-CCEPT
->=20
-> If the interface is specifed, then this rule does not accrue any packet=
-s. Is=20
-> this an expected change in behavior from 2.4.22?
-
-When using a bridged firewall with 2.6 kernels, inbound interface is
-bridge interface, i.e. br0, and it is outbound one as well...
-That's why you have physdev match that allows one to match the
-_physical_ interface, among all ones belonging to the bridge, that
-actually received the packet.
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-cbr@elendil:~$ iptables -m physdev --help
-iptables v1.2.8
-[...]
-physdev v1.2.8 options:
- --physdev-in [!] input name[+] bridge port name ([+] for wildcard)
- --physdev-out [!] output name[+] bridge port name ([+] for wildcard)
+I installed the patch to the kernel.  I still can't get tarpit to work.  I
+am using Redhat 9 with the rpm package from redhat.  How can I remove the
+rpm and install directly from the netfilter source?
 
+Thanks,
 
-So, in your case :
+Ron 
 
-	iptables -A FORWARD -i br0 -m physdev --physdev-in $EXTIF \
-		-m state --state ESTABLISHED,RELATED -j ACCEPT
+-----Original Message-----
+From: Alistair Tonner [mailto:Alistair@nerdnet.ca]
+Sent: Wednesday, November 05, 2003 4:56 PM
+To: Regalado, Ron; netfilter@lists.netfilter.org
+Subject: Re: TARPIT Documentation?
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!=20
+On November 5, 2003 03:39 pm, Regalado, Ron wrote:
+> Are there step by step instructions anywhere on setting up the TARPIT 
+> module for iptables?  I have tried recompiling the kernel and the 
+> iptables source.. No luck..
+>
+>
+> Thanks,
+>
+> Ron
+	
+	You need to add it to the kernel source from Patch-O-Matic -- which
+no longer comes bundled with iptables. --- 
+	http://www.netfilter.org/downloads.html#pom-20030912
+
+	once added from there ... rebuild kernel and iptables and away you
+go 
+	(okay ... you might not have to rebuild iptables --- but is good
+policy)
+-- 
+
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
