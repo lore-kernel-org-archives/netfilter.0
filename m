@@ -1,14 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: trying to document/understand the iptables kernel config
-	options
-Date: 08 Apr 2003 13:23:12 +0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: POP/SMTP traffic graphics.
+Date: Tue, 8 Apr 2003 13:25:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049800992.11712.62.camel@elendil.intranet.cartel-securite.net>
-References: <Pine.LNX.4.44.0304080639320.25860-100000@dell>
+Message-ID: <20030408132516.6dae6b83.arnt@c2i.net>
+References: <200304081053.15957.carles@descom.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0304080639320.25860-100000@dell>
+In-Reply-To: <200304081053.15957.carles@descom.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: Joel Newkirk <netfilter@newkirk.us>, iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mar 08/04/2003 =E0 12:43, Robert P. J. Day a =E9crit :
-> > Yes.  If you select "IP tables support" but no further options within=
-=20
-> > that set, you can still perform filtering.  For example, you could st=
-ill=20
-> > ACCEPT or DROP based on source or destination IP.
-> i don't think so, tim.  if you look down that list of options,
-> past all the "match" options, you'll see "Packet filtering",
-> whose help screen claims that it defines the "filter" table.
+On Tue, 8 Apr 2003 10:53:10 +0200, 
+<200304081053.15957.carles@descom.es>:
 
-You're right.
-This option defines if you want (or not) filter table.
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> Hello,
+> I'm using MRTG to monitor muy Internet link traffic.
+> My bulk traffic is POP and SMTP.
+> 
+> Is there any way using NetFilter to get the bandwidth usage of this
+> kind of traffic data to build the corresponding MRTG traffic graphics
+> ?
+> 
+> I would like to have one MRTG traffic graph for POP traffic and
+> another for SMTP traffic.
+> Is it possible with the NetFilter help ?
+> Any other solution for it ?
 
-> without that filter table, i would have assumed that you can't
-> do *any* filtering of any kind, since the filter table wouldn't
-> even exist.
+..yep, yep, chk the Netfilter Mailing List
+<netfilter@lists.netfilter.org>,  Message-Id:
+<1049733245.4867.13.camel@raylinux.internal> for the _how_ 
+to "Create an accounting chain:".  ;-)
 
-You should not be able to do this. In practice, you still can ACCEPT or
-DROP in nat and mangle table, but they're not intended to, and this
-should not be done.
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-> i get the feeling that, if you select only "IP tables support"
-> and nothing else, you might be able to set up ACCEPT or DROP
-> policies on the three chains, and that's about it.
 
-IP tables support is the support of tables (nat, mangle and filter at
-the time) for IPv4 protocole. Under this option, you can see all matches
-that are available for all the tables, then the 3 tables and their
-specific targets, and at the end of section, targets that are usable
-within all tables (well, it should be the case, but it's not, as TTL
-target is only valid for mangle table, as an exemple). Without table
-support, you can't do anything as nothing will be attached to
-Netfilter's hooks, except conntack is selected.
-
-This how I understand things, may be wrong...
-
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
