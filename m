@@ -1,11 +1,11 @@
-From: "Olexandr O. Galay" <root@e-mail.te.ua>
+From: "Olexandr O. Galay" <macros@e-mail.te.ua>
 Subject: Re[2]: ipt_connlimit trouble
-Date: Sun, 1 Feb 2004 13:21:48 +0200
+Date: Sun, 1 Feb 2004 13:16:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <13687727281.20040201132148@e-mail.te.ua>
+Message-ID: <6487409109.20040201131630@e-mail.te.ua>
 References: <19730527125.20040131212831@e-mail.te.ua>
  <GFEPJIHHFOJDOFDMNAJDAECIFEAA.mark@npsl.co.uk>
-Reply-To: "Olexandr O. Galay" <root@e-mail.te.ua>
+Reply-To: "Olexandr O. Galay" <macros@e-mail.te.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -22,35 +22,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter List <netfilter@lists.netfilter.org>
 
-Hello, Mark!
-
-Replying to your letter:
-
-
-
 >> 4. compile and install kernel with all options of iptables sets
 >> to M (module)
 M> Missing a reboot step here?
-No, i reboot machine when installed new kernel
-
+No, installing new kernel i always reboot machine :)
 >> so, now when i trying to # modprobe ipt_connlimit i get:
 >> [root@test /]# modprobe ipt_connlimit
 >> /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o:
 >> unresolved symbol ip_conntrack_find_get
 M> Also try depmod -e -F /<path>/System.map and see if you still get the same
 M> problem.
-I make depmod -e -F /usr/src/linux-2.4.24/System.map
-But ipt_connlimit not loads :(
+so, i make depmod -e -F /usr/src/linux-2.4.24/System.map
+but problem exists - i can't load module ipt_connlimit
 
 
 
 -- 
-Best Regards, Mark!
+Best regards, Mark!
 
-Sunday, February 1, 2004, 13:20
+February, 1, 2004, 13:11
 
 Olexandr O. Galay
-mailto:root@e-mail.te.ua
+mailto:macros@e-mail.te.ua
 http://www.macros.org.ua
 ICQ: 29292281
 
