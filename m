@@ -1,9 +1,10 @@
-From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
-Subject: QoS on dynamic port allocation protocols
-Date: Wed, 12 Mar 2003 22:09:16 -0300
+From: George Chacon <please.help.me@comcast.net>
+Subject: How to keep record of repeat attackers?
+Date: Wed, 12 Mar 2003 17:20:44 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFA83BF598.09B2B5B9-ON83256CE8.000228A8@LocalDomain>
+Message-ID: <PKEJLPJCFBFLJJPHMGPIGEBBCAAA.please.help.me@comcast.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,21 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hello all,
+Hi,
 
-      I'm trying to apply QoS rules on protocols that use dynamic port
-allocation on secondary connections such as ftp or H323 that have a
-specific iptables helper to handle them, and the problem begins when the
-secondary connections startup.  Would the connmark module mark also the
-seconday connections if you tells it to mark the main flow?  Or, is there
-any way to to match a packet using, at the same time, the -m state --state
-RELATED match and check if the related connection belongs to a ftp session?
+I'm an iptables newbie, and have a question about logging repeat offenders.
+Is it possible to have my firewall box remember incoming IP addresses, and
+generate a report showing which attackers keep coming back?
 
-Any ideas are appreciated. Thanks in advance.
+Thank you,
 
-Forster
+George Chacon
+
 
 
