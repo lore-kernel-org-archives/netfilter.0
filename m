@@ -1,13 +1,14 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: publishing 2 web server on one valid IP
-Date: Mon, 29 Sep 2003 14:38:47 +0200
+From: Mickael DILY <woksy@ether.net1.nerim.net>
+Subject: Re: iptables masquerade cache  problems
+Date: Mon, 29 Sep 2003 15:17:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064839127.16244.36.camel@raylinux.internal>
-References: <Law15-F11L2m9lHiu3f0003d05e@hotmail.com>
+Message-ID: <200309291517.25281.woksy@ether.net1.nerim.net>
+References: <001e01c38662$f2a93bc0$01070a0a@858sxt07> <200309291304.46583.woksy@ether.net1.nerim.net> <1064834366.16245.24.camel@raylinux.internal>
+Reply-To: woksy@ether.net1.nerim.net
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-0qCUTt01udoWIOXtGKHR"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Law15-F11L2m9lHiu3f0003d05e@hotmail.com>
+In-Reply-To: <1064834366.16245.24.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +18,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Ray Leach <raymondl@knowledgefactory.co.za>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Thanks for your help, but i think it's something more vicious thant ipcon=
+fig.
+When I boot the win2000 client, he's got an ip via dhcp. all is correct.
+Now, i disconnect it physically from the network, ipconfig /renew, same t=
+hing.
+I reboot it without cable, same thing : the same ip, and it also find a d=
+hcp=20
+(remember it is not connected).
+3 or 4 reboot later, everything is correct.... I don't know where it come=
+s=20
+from, but it is from windows, and i don't have time to find an answer
 
 
---=-0qCUTt01udoWIOXtGKHR
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Le Lundi 29 Septembre 2003 13:19, Ray Leach a =E9crit :
+ On Mon, 2003-09-29 at 13:04, Mickael DILY wrote:
+ > -----BEGIN PGP SIGNED MESSAGE-----
+ > Hash: SHA1
+ >
+ > Hi, i have already had this problem with windows clients. It seems it'=
+s
+ > not a bug from your linux box, but only from the windows client, whose
+ > still have your old ip in cache. For my part, i don't know how to work
+ > around for this bug
 
-On Mon, 2003-09-29 at 14:12, Afshin Lamei wrote:
-> hi
-> I have 2 web servers in my DMZ. when there was one, I used DNAT to publis=
-h=20
-> the single web server on port 80 of the external interface of my firewall=
-.=20
-> now I don't know how to distinguish between the requests of 2 web servers=
-,=20
-> because I have only one IP address available for the external interface.
-> Is there any solution using iptables, to know that which http request mus=
-t=20
-> be DNAT to which web server?
-> regards,
-> afshin
->=20
-How about adding an ip alias to the xt iface of your firewall for the
-second web server?
-
-> _________________________________________________________________
-> Add photos to your e-mail with MSN 8. Get 2 months FREE*.=20
-> http://join.msn.com/?page=3Dfeatures/featuredemail
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-0qCUTt01udoWIOXtGKHR
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+ You need to use ipconfig on the windows clients to flush the dns and
+ routing cache. See the docs on ipconfig /? on winblows.
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-iD8DBQA/eCfWh1fuR/Bv+ygRAplRAKCxPFxNc2XkaOzrveFk/YJrgqxBPACgiNJe
-rbXaCHpRLn2iY/veaazOids=
-=HRcU
+iD8DBQE/eDDhzEzekoYhlpsRAmM3AKDI6n6ygpj9m+O62GxawR5RP9TTqACfSlV3
+U0F3OQlw30moaF20r+hkQOM=3D
+=3DBkse
 -----END PGP SIGNATURE-----
-
---=-0qCUTt01udoWIOXtGKHR--
 
 
