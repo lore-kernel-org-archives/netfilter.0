@@ -1,10 +1,13 @@
-From: xiong.xiaochun%ZTE_LTD@zte.com.cn
-Subject: can not install iptables-1.2.7a to 2.4.18 kernel successfully ?
-Date: Tue, 15 Oct 2002 09:25:31 +0800
+From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
+Subject: RE: ip_conntrack_lock not readlocked ? anyone ....
+Date: Thu, 17 Oct 2002 01:42:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFDB5E2B55.4E27625B-ON48256C53.00035BB2@zte.com.cn>
+Message-ID: <E131E9F1848D0148813EAF06A846608F615F98@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2756D.B3702934"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,74 +17,128 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: smalik@vistawiz.com, netfilter@lists.netfilter.org
 
-  I am trying to apply iptables-1.2.7a to Red Hat 7.3 /2.4.18 kernel;
+This is a multi-part message in MIME format.
 
-the first ,i download patch-o-matic-20020825.tar.bz2 and install the patch,
+------_=_NextPart_001_01C2756D.B3702934
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-i read the README file and do as follows:
-                                                                            
-                                                                            
-   1) # ./runme pending ;                                                   
-   2) # ./runme extra   ;                                                   
-                                                                            
-   in these steps i seleted almost all the patchs to be install ,           
-   but the true is the two steps have some same patchs and the are  break   
-   each                                                                     
-   other ;                                                                  
-                                                                            
-   after these,i begin to install iptables-1.2.7a as follows:               
-   3) # make KERNEL_DIR=/usr/src/linux                                      
-   4) # make install KERNEL_DIR=/usr/src/linux                              
-   5) # make install-devel                                                  
-                                                                            
-   6) # make menuconfig                                                     
-      i selected almost all the modules i can select about Netfilter        
-   options;                                                                 
-   go to my kernel dir to make new kernel                                   
-                                                                            
-   7) # make dep  clean bzImage modules modules_install install             
-                                                                            
-   8) edit the grub  menu.lst ,copy bzImage                                 
-                                                                            
-   after reboot the system ,i input :                                       
-                                                                            
-    9) # modproe ipt_string ;                                               
-    no prompt ;                                                             
-    10) # lsmod                                                             
-    11) i can see ipt_string ;                                              
-                                                                            
-    12) # iptabes -m string --help ;                                        
-                                                                            
-   the prompt is as follow:                                                 
-                                                                            
-   iptables v1.2.7a: Couldn't load match                                    
-   `string':/usr/local/lib/iptables/libipt_string.so: cannot open           
-    shared object file: No such file or directory                           
-   Try `iptables -h' or 'iptables --help' for more information.             
-                                                                            
-                                                                            
-   why?                                                                     
-   i can see the string module when i make menuconfig and truely i have     
-   selected it ;                                                            
-   but the truly there are no libipt_string.so in dir                       
-   /usr/local/lib/iptables/ ,                                               
-   what's wrong ?                                                           
-                                                                            
-                                                                            
-                                                                            
-                                                                            
-                                                                            
-                                                                            
-                                                                            
-                                                                            
-                                                                            
-                                                                            
-                                                                            
+Hi,
+
+smalik@vistawiz.com [mailto:smalik@vistawiz.com] wrote:
+>hello everyone -
+>
+>I was wondering if someone has seen this error message before.  Prt =
+what
+>does is mean? I am running iptables 1.2.7.
+>
+>Oct 13 11:50:18 fire kernel: ASSERT ip_nat_core.c:739
+>&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+>Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:91
+>&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+>Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:743 =
+&ip_conntrack_lock
+>not readlocked
+>Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:977
+>&ip_conntrack_lock not readlocked
+>Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:840 =
+&ip_conntrack_lock
+>not readlocked
+>Oct 13 11:50:18 fire kernel: ASSERT ip_nat_core.c:739
+>&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+>Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:91
+>&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+>Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:743 =
+&ip_conntrack_lock
+>not readlocked
+>Oct 13 11:50:18 firekernel: ASSERT: ip_nat_core.c:840 =
+&ip_conntrack_lock
+>not readlocked
+>
+
+Is that on a kernel with newnat, like 2.4.20-pre something ?
+
+It's harmless but annoying - check the archives of netfilter-devel
+for the discussion and fix by Martin Josefsson. That fix is already
+in 2.4.20-pre11.
+
+Regards,
+Filip
 
 
 
+
+
+------_=_NextPart_001_01C2756D.B3702934
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DWindows-1252">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6249.1">
+<TITLE>RE: ip_conntrack_lock not readlocked ? anyone ....</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>Hi,<BR>
+<BR>
+smalik@vistawiz.com [<A =
+HREF=3D"mailto:smalik@vistawiz.com">mailto:smalik@vistawiz.com</A>] =
+wrote:<BR>
+&gt;hello everyone -<BR>
+&gt;<BR>
+&gt;I was wondering if someone has seen this error message before.&nbsp; =
+Prt what<BR>
+&gt;does is mean? I am running iptables 1.2.7.<BR>
+&gt;<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT ip_nat_core.c:739<BR>
+&gt;&amp;ip_conntrack_lock_Rsmp_4193d6ac readlocked<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:91<BR>
+&gt;&amp;ip_conntrack_lock_Rsmp_4193d6ac readlocked<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:743 =
+&amp;ip_conntrack_lock<BR>
+&gt;not readlocked<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:977<BR>
+&gt;&amp;ip_conntrack_lock not readlocked<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:840 =
+&amp;ip_conntrack_lock<BR>
+&gt;not readlocked<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT ip_nat_core.c:739<BR>
+&gt;&amp;ip_conntrack_lock_Rsmp_4193d6ac readlocked<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:91<BR>
+&gt;&amp;ip_conntrack_lock_Rsmp_4193d6ac readlocked<BR>
+&gt;Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:743 =
+&amp;ip_conntrack_lock<BR>
+&gt;not readlocked<BR>
+&gt;Oct 13 11:50:18 firekernel: ASSERT: ip_nat_core.c:840 =
+&amp;ip_conntrack_lock<BR>
+&gt;not readlocked<BR>
+&gt;<BR>
+<BR>
+Is that on a kernel with newnat, like 2.4.20-pre something ?<BR>
+<BR>
+It's harmless but annoying - check the archives of netfilter-devel<BR>
+for the discussion and fix by Martin Josefsson. That fix is already<BR>
+in 2.4.20-pre11.<BR>
+<BR>
+Regards,<BR>
+Filip<BR>
+<BR>
+<BR>
+<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2756D.B3702934--
 
