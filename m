@@ -1,16 +1,10 @@
-From: Cody Harris <hchs@ns.sympatico.ca>
-Subject: Adding a flag to a packet
-Date: Tue, 30 Mar 2004 16:01:58 -0400
+From: "K. H. Braun" <kbraun@dgrunt.sneakernet.com>
+Subject: TARPIT error - What am I doing wrong?
+Date: Tue, 30 Mar 2004 15:12:39 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040330160158.2e247c46@darna.vectec.net>
-References: <20040328155231.32b07799@darna.vectec.net>
-	<200403300848.16537.Antony@Soft-Solutions.co.uk>
-	<20040330073347.65b31438@darna.vectec.net>
-	<200403301253.18383.Antony@Soft-Solutions.co.uk>
+Message-ID: <Pine.LNX.4.58.0403301500440.1698@dgrunt.sneakernet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403301253.18383.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,47 +14,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, 30 Mar 2004 12:53:18 +0100,
-Someone named Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> > If we've covered the NAT table, what's the mangle table?
-> 
-> Tha mangle table is aptly named, and allows you to fiddle about with bits of 
-> the packets headers which most people wouldn't even think of changing - 
-> things like the TTL (Time To Live) field, the TOS (Type Of Service) field, 
-> and for MARKing packets (which doesn't actually change the packet, but allows 
-> netfilter to carry a special marker around with the packet during further 
-> processing).
 
-Is it possible, with the mangling table, to edit the packet to have a special flag? So that when it hits another firewall that's setup correctly, it sends it to a pre-configured ip? Example:
+Hi Folks
 
-On my internet network, the ip range is 192.168.0.0 to 255. If a computer sent a packet to 192.168.1.5, the computer used the gateway, slapped a flag on it, sent it to 1.2.3.4, the firewall there saw the flag, changed the ip on it to 192.168.1.5 coming from 192.168.0.6. When the computer sent a response, it just revered the process.
+I am trying to get TARPIT to work. I am using linux kernel 2.4.24 with the
+below listed POM patches applied and iptables-1.2.9.
 
-(I'm implying that the flag does NOT carry the dest-ip information, but simply has a numerical number, or something unquie to tell the firewalls to do this.)
+Whenever I try to use TARPIT as a target I get the following error
+message (showing a simple test case):
 
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> The truth is rarely pure, and never simple.
-> 
->  - Oscar Wilde
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+root@dgrunt:/etc/rc.d# iptables -A FORWARD -j TARPIT
+iptables: Invalid argument
+
+I get the same error if I change just one target to TARPIT in an otherwise
+working script.
+
+This is AFTER re-compiling the kernel AND the user-space tools.
+
+Can someone tell me what sort of bone-headed thing I am doing wrong?
 
 
--- 
-+------------------+-----------------------------+
-| Cody Harris      | --------------------------- |
-| ---------------- | --------------------------- |
-+------------------+-------+---------------------+---+
-| *Sigh*. No key.                                    |
-+----------------------------------------------------+
+Thanks
+-- Ken --
+
+
+
+Welcome to Rusty's Patch-o-matic!
+
+Kernel:    /usr/src/linux
+Userspace: /usr/local/src/Security/Iptables-POM
+
+Each patch is a new feature: many have minimal impact, some do not.
+Almost every one has bugs, so I don't recommend applying them all!
+-------------------------------------------------------
+Already applied: submitted/01_2.4.19
+                 submitted/02_2.4.20
+                 submitted/03_2.4.21
+                 submitted/04_2.4.22
+                 submitted/05_2.4.23
+                 submitted/61-remove-memsets
+                 submitted/64_masquerade-sameip-noflush
+                 submitted/69_amanda-helpers
+                 submitted/70_expect-evict-order
+                 submitted/72_recent_procfs_fix
+                 submitted/74_listhelp
+                 submitted/75_selective_cleanup
+                 submitted/76_conntrack_bucket_sysctl
+                 submitted/88_ip_queue-maxlen
+                 submitted/90_fw_compat_local-nullbinding
+                 pending/40_nf-log
+                 pending/40_nf-log-ipv6
+                 pending/59_ip_nat_h-unused-var
+                 pending/60_ecn_raw_unclone
+                 extra/ipt_TARPIT
+
+-----------------------------------------------------------------
+No more patches to apply! Q to Quit or ? for options [Q/a/r/b/?] q
+
 
