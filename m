@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Iptables forwarding
-Date: Thu, 27 Jun 2002 08:39:59 +0100
+From: "Mika Ullgren" <mika.ullgren@lemonplanet.com>
+Subject: Nat with virtual interfaces
+Date: Thu, 27 Jun 2002 14:03:13 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627074001.ZVG2755.mta05-svc.ntlworld.com@there>
-References: <1C61B9073EBFBD40B45FA90B8265B2DD1BE8@MELXCHW01.oz.quest.com>
+Message-ID: <BACC2B29B574704A8494EAD86EDBB9501C6130@stosrv-0003.lemonplanet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1C61B9073EBFBD40B45FA90B8265B2DD1BE8@MELXCHW01.oz.quest.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,74 +17,95 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Thursday 27 June 2002 4:53 am, Loc Huynh wrote:
+Hello Netfilter@
 
-> Hi Antony,
->
-> I have tried this b4, it didn't work with my script, I might missing
-> something !!!!!
+I have a litlle question that i was unable to find the answer to. I am
+running linux machine 2.4.9 kernel with iptables v1.2.1a. And I cant
+figure out what I am doing wrong. I'll try to explain.
 
-Okay - in that case put a LOG rule into your FORWARD chain just before the 
-end where packets get DROPped, put some packets through to demonstrate the 
-problem, and then see what got logged.   This should help you identify what 
-rule you need to pass the appropriate packets.
+The machine is running a apache server with two virtual hosts (both on
+IP basis) Note that these two IP's are on the same interface (virtual
+interfaces) see ifconfig output at the end of this mail. These two
+vhosts have different DocumentRoot's. Each of them are listening on two
+ports 8080 and 8443.=20
 
-> I should say from beginning that: on a live firewall, I have two NICs, and
-> the testing for port forwarding has one NIC, I don't think it make much
-> different, doesn't it ?
+To nat to the correct ports I have the following nat rules that i run
+from a script.=20
 
-I might do - it depends what addresses you've applied to the NIC.   If you're 
-saying that you have an internal client and an internal webserver on the same 
-network range, and you're trying to access the webserver from the client 
-using the webserver's external address (which given your above description is 
-a possibility, I can't really tell), then you need to read
-http://www.iptables.org/documentation/HOWTO/NAT-HOWTO-10.html
 
-If that's not the case, and the LOGging suggestion doesn't help, then post a 
-clear description of your network configuration, and the smallest ruleset 
-which demonstrates the problem, and we'll see what we can do.
+--- script start ---
+#! /bin/sh
 
- 
+export IPTABLES=3D"/usr/local/sbin/iptables";
 
-Antony.
+$IPTABLES -t nat -I PREROUTING --dst 192.168.64.59 --protocol tcp
+--destination-port 80 -j\ REDIRECT --to-ports 8080;
 
-> -----Original Message-----
-> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-> Sent: Wednesday, 26 June 2002 7:36 PM
-> To: netfilter@lists.samba.org
-> Subject: Re: Iptables forwarding
->
-> On Wednesday 26 June 2002 8:41 am, Loc Huynh wrote:
-> > Hi all,
-> >
-> > I finally had the iptables 1.2.6a installed and it's working great (on
-> > Redhat 7.3)
-> > However, I have a small problem.
-> > I have the following setup for forwarding on port 80 to our IIS web
->
-> server.
->
-> > $IPTABLES -A FORWARD -i $INTERNALIF -p tcp --dport 80 -j ACCEPT
-> > $IPTABLES -A PREROUTING -t nat -p tcp -d $INTERNALIP --dport 80 -j DNAT
-> > --to-destination $HTTPFWDIP:80
-> >
-> > The above worked fine if I have the "FORWARD" to be open to ACCEPT
-> > ie: $IPTABLES -P FORWARD ACCEPT
-> >
-> > Of course, I don't want the default is open to "ACCEPT", is there anyway
->
-> to
->
-> > avoid this please ?
->
-> $IPTABLES -A FORWARD -i $EXTERNALIF -d $HTTPFWDIP -p tcp --dport 80 -j
-> ACCEPT
->
-> ie: Allow packets from the external interface in to your web server.
->
->
->
-> Antony.
+$IPTABLES -t nat -I PREROUTING --dst 192.168.64.59 --protocol tcp
+--destination-port 443 -j\ REDIRECT --to-ports 8443;
+
+$IPTABLES -t nat -I PREROUTING --dst 192.168.64.75 --protocol tcp
+--destination-port 80 -j\ REDIRECT --to-ports 8080;
+
+$IPTABLES -t nat -I PREROUTING --dst 192.168.64.75 --protocol tcp
+--destination-port 443 -j\ REDIRECT --to-ports 8443;
+
+--- script end ---
+
+After that I issue "iptables -t nat -L" and can see that all lines are
+in the table. I then try to connect to http://192.168.64.59 and I get
+redirected to port 8443 and I get the page in that vhosts DocumentRoot
+but when i connect to the virtual interface (http://192.168.64.75) i get
+a "unable to connect to server" in Netscape 4.75".=20
+
+In my httpd.conf I have=20
+
+Listen 192.168.64.59:8080
+Listen 192.168.64.59:8443
+Listen 192.168.64.75:8080
+Listen 192.168.64.75:8443
+
+Please note that I have also tried to change 75's Listen port to
+something else. Also note that eth0 =3D 192.168.64.59 and eth0:0 =3D
+192.168.64.75.=20
+
+Ifconfig output:
+
+eth0      Link encap:Ethernet  HWaddr 00:30:6E:05:F1:C0
+          inet addr:192.168.64.59  Bcast:192.168.64.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:645931 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:438897 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:100
+          Interrupt:22
+
+eth0:0    Link encap:Ethernet  HWaddr 00:30:6E:05:F1:C0
+          inet addr:192.168.64.75  Bcast:192.168.64.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          Interrupt:22
+
+eth0:1    Link encap:Ethernet  HWaddr 00:30:6E:05:F1:C0
+          inet addr:192.168.64.76  Bcast:192.168.64.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          Interrupt:22
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:24610 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:24610 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+
+I hope that someone knows the answer to my question. If i have left out
+important info please mail me and I will give you the information
+needed. Sorry to bother you all.=20
+
+Thanks in advance.
+
+// Mika
 
