@@ -1,13 +1,11 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: unknown arg --syn
-Date: Thu, 2 Jan 2003 16:07:32 +0530
+From: "JUSTIN GERRY" <JGERRY@butchers.com>
+Subject: Re: Trying to setup two ethernet cards with two websites
+Date: Thu, 02 Jan 2003 09:49:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <011e01c2b24a$f7b2a800$13fcc5cb@Housecall>
-References: <Pine.LNX.4.44.0212311833100.20073-100000@soldier.beechtree.ca>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <se140b47.055@butchers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,67 +16,96 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Keith Mastin <kmastin@beechtree.ca>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: roy@karlsbakk.net
+Cc: netfilter@lists.netfilter.org
 
-Hi
+I tried your suggestions below and yes, I finally have two websites
+working on the same box. Simplifying things does indeed work.
 
-iam using redhat 8.0
-better u upgrate Iptables to 1.2.7
-its works fine
+Is there a way to, by default drop everything on the output chain, but
+insert a rule to allow only http requests that were initialed by a
+client to either website? 
 
-hare
------ Original Message -----
-From: "Keith Mastin" <kmastin@beechtree.ca>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, January 01, 2003 5:07 AM
-Subject: unknown arg --syn
+Or if my input rules are sufficient, do I really need to do anything on
+the output chain other than let everthing out?
 
+Thanks,
+Justin
 
-> This should be so simple, yet it's eluding me... a simple iptables script
-> on a protected machine, with a few rules where the syn flag is set
-> returns an error:
+>>> Roy Sigurd Karlsbakk <roy@karlsbakk.net> 12/31 1:49 PM >>>
+
+On Tuesday, December 31, 2002, at 05:29 PM, JUSTIN GERRY wrote:
+
+> I am attempting to setup two websites with two ip address, each one
+on 
+> a
+> different ethernet card/interface.
 >
-> rule example (lives all on one line in script):
->  iptables -A INPUT -p tcp -s 0/0 -d 192.168.0.167/32 --destination-port 22
->   --syn -j ACCEPT
+> It only seems to work for the first rule (first listed ip address)
+that
+> gets matched up, so I can get one website to work but not the other.
+
+> How
+> do I write this so it covers both address and allows httpd to go to
+> either interface or either address? Can I write a single rule to
+match 
+> a
+> range of ip addresses (.93 and .94) instead of writing one for each
+> individual address?
 >
-> the error when the script is run:
->  [root@spy root]# sh ./iptables-rules
->  iptables v1.2.5: Unknown arg `--syn'
->  Try `iptables -h' or 'iptables --help' for more information.
+> This is what I have so far for testing.....
 >
-> sure enough, no mention of --syn in iptables -h
+> IF1="eth0"
+> IF2="eth1"
+> IP2="172.30.12.93"
+> IP1="172.30.12.94"
+> UNPRIVPORTS="1024:65535"
 >
-> from man iptables:
->  [!] --syn
->  Only match TCP packets with the SYN bit set and the ACK and FIN bits
->  cleared.  Such packets are used to  request  TCP  connection initiation;
->  for  example,  blocking  such packets coming in an interface will prevent
->  incoming TCP connections, but outgoing TCP connections will be
->  unaffected.  It is equivalent to --tcp-flags SYN,RST,ACK SYN. If the "!"
->  flag  precedes  the  "--syn", the sense of the option is inverted.
+> iptables -F
+> iptables -P INPUT DROP
+> iptables -P FORWARD DROP
+> iptables -P OUTPUT DROP
 >
-> I also replaced --syn with --tcp-flags SYN,RST,ACK SYN, which resulted in
-> the error:
->  [root@spy root]# sh ./iptables-rules
->  iptables v1.2.5: Unknown arg `--tcp-flags'
->  Try `iptables -h' or 'iptables --help' for more information.
->
-> I think I'm too close to see the solution, so if anybody can see it right
-> off, it would be much appreciated...
->
-> System info:
-> Redhat 7.3
-> kernel-2.4.18-19.7.x.athlon
->
-> Also tried on another system with similar results:
-> Redhat 7.3
-> kernel-2.4.18-3smp
->
-> TIA
->
->
->
->
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+the two below...
+> iptables -A INPUT -i $IF1 -p tcp --sport $UNPRIVPORTS -d $IP1
+--dport
+> 80 -m state --state NEW -j ACCEPT
+> iptables -A INPUT -i $IF2 -p tcp --sport $UNPRIVPORTS -d $IP2
+--dport
+> 80 -m state --state NEW -j ACCEPT
+
+...are included in these two, so you won't need both. You probably 
+don't want those below, as they accept anything regardless to state.
+
+> iptables -A INPUT -i $IF1 -p tcp --sport $UNPRIVPORTS -d $IP1
+--dport
+> 80 -j ACCEPT
+> iptables -A INPUT -i $IF2 -p tcp --sport $UNPRIVPORTS -d $IP2
+--dport
+> 80 -j ACCEPT
+
+are these really nessecary? with -P DROP, this'll deny any outgoing 
+connections at all, regardless of protocol. It'll even drop ICMP 
+packets, something you probably don't want.
+
+> iptables -A OUTPUT -o $IF2 -p tcp ! --syn -s $IP2 --sport 80 --dport
+> $UNPRIVPORTS -j ACCEPT
+> iptables -A OUTPUT -o $IF1 -p tcp ! --syn -s $IP1 --sport 80 --dport
+> $UNPRIVPORTS -j ACCEPT
+
+To allow for multiple hosts in a rule, you can specify a mask (or 
+number of bits). For instance:
+# iptables -s 10.0.0.0/31
+will match 10.0.0.0 and 10.0.0.1. .93 and .94, however, overlaps this 
+and needs to be allowed for specifically.
+
+so - try first with -P OUTPUT -j ACCEPT, and no rules in the OUTPUT 
+chain. It shouldn't be any problem then.
+
+roy
+
 
 
