@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: sparc64 match module - bug id 94
-Date: Tue, 4 May 2004 15:32:45 +0100
+From: =?iso-8859-1?Q?Oriol_Magran=E9?= <omagrane@mediapro.es>
+Subject: Re: Newbie question about nat
+Date: Tue, 4 May 2004 17:55:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405041532.45653.Antony@Soft-Solutions.co.uk>
-References: <20040504121426.GG16487@hamachi.radom.org>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <001401c431f0$3c172b80$a704a8c0@mpro4167>
+References: <004901c42edf$c73c77b0$a704a8c0@mpro4167> <200404301937.33366.Antony@Soft-Solutions.co.uk> <001b01c43124$0c9d36f0$a704a8c0@mpro4167> <200405031654.14566.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040504121426.GG16487@hamachi.radom.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +16,84 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 04 May 2004 1:14 pm, dan radom wrote:
 
-> Is there plans to ever fix this problem?  There hasn't been any updates
-> to the bug's bugzilla page since the bug was reported.
+    Thank you very much!! It works perfectly!! :-)
 
-I suspect you may get a better response asking the netfilter development list 
-about this, rather than the users' list.
+    And now one last question: from a security point of view, what do you
+think is better; discarding packets with DROP or with REJECT?
+    Regards,
+
+    Oriol
+
+
+----- Original Message -----=20
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Monday, May 03, 2004 5:54 PM
+Subject: Re: Newbie question about nat
+
+
+On Monday 03 May 2004 4:33 pm, Oriol Magran=E9 wrote:
+
+>     Thank you!
+>     Now I'd like to set up an ftp server inside with private ip
+> 192.168.1.111 and public ip a.b.c.k
+>     So the nat rules will be:
+>
+>         iptables -t nat -A PREROUTING -d a.b.c.k -j DNAT --to
+192.168.1.111
+>         iptables -t nat -A POSTROUTING -s 192.168.1.111 -j SNAT --to
+> a.b.c.k
+>
+>     However I don't know how to use the ip_conntrack_ftp and ip_nat_ftp
+> modules when it comes to write the accept/drop rules.
+>     If the server was a web server, I would use these rules:
+>
+>         iptables -A FORWARD -d 192.168.1.111 -p tcp --destination-port 80
+> -m state --state NEW,ESTABLISHED -j ACCEPT
+>         iptables -A FORWARD -s 192.168.1.111 -p tcp --source-port 80 -m
+> state --state ESTABLISHED -j ACCEPT
+
+I don't normally write an ESTABLISHED rule for each protocol (specifying the
+source port) - I would normally have just one rule on a firewall allowing
+reply packets for all protocols:
+
+iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+You don't need to bother about securing the machines it's supposed to allow
+connections from (-s) or the protocols it's supposed to allow (-p tcp,
+--sport) because those have already been taken care of by the rule allowing
+the connection to get set up in the first place.   Note the -I (insert) to
+make sure this rule appears at the top of the FORWARD chain for efficiency.
+
+>     But how should they be to allow active ftp access to 192.168.1.111
+> using the ip_conntrack_ftp and ip_nat_ftp modules?
+
+iptables -A FORWARD -d 192.168.1.111 -p tcp --dport 21 -j ACCEPT
+
+along with the single system-wide rule I gave above.
 
 Regards,
 
 Antony.
 
--- 
-"Reports that say that something hasn't happened are always interesting to me, 
-because as we know, there are known knowns; there are things we know we know. 
-We also know there are known unknowns; that is to say we know there are some 
-things we do not know. But there are also unknown unknowns - the ones we 
-don't know we don't know."
+--=20
+"There has always been an underlying argument that we should open up our
+source code more broadly. The fact is that we are learning from open source
+and we are opening our code more broadly through Shared Source.
 
- - Donald Rumsfeld, US Secretary of Defence
+Is there value to providing source code? The answer is unequivocally yes."
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+ - Jason Matusow, head of Microsoft's Shared Source Program, in response to
+recent leaks of Windows source code on the Internet.
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
+
 
 
