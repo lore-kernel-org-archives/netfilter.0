@@ -1,13 +1,15 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Dropping network "noise"
-Date: Sun, 13 Feb 2005 14:56:26 +0100
-Message-ID: <1108302986.10876.40.camel@nostromo.bgsecm.com>
-References: <200502130928.41225.e-boogie@yandex.ru>
-	<1108296226.10876.16.camel@nostromo.bgsecm.com>
-	<420F5186.5060703@hotpop.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Allow particular website/port
+Date: Sun, 13 Feb 2005 10:18:19 -0500
+Message-ID: <1108307899.4604.71.camel@hubcap.ljm.dom>
+References: <1108064090.420bb75ac0009@mail.gnvfc.net>
+	<1108065714.8043.0.camel@porky>
+	<1108081685.420bfc1516440@mail.gnvfc.net>
+	<a0f69e5050210211124a0269@mail.gmail.com>
+	<1108277638.420ef986ae964@mail.gnvfc.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <420F5186.5060703@hotpop.com>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1108277638.420ef986ae964@mail.gnvfc.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,80 +20,122 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-El dom, 13-02-2005 a las 15:09 +0200, Georgi Alexandrov escribi=C3=B3:
-> Jose Maria Lopez Hernandez wrote:
->=20
-> >El dom, 13-02-2005 a las 09:28 +0300, Mikhail Zotov escribi=C3=B3:
-> > =20
-> >
-> >>Hello everybody,
-> >>
-> >>I have a Linux machine (with a static routable IP address)
-> >>connected to a windoops LAN.  As is known, there is certain
-> >>"noise" in windoops networks, which can be silently dropped
-> >>by a rule like this:
-> >>
-> >>iptables -A INPUT -p udp --dport 135:139 -j DROP
-> >>   =20
-> >>
-> >
-> >That's OK, but also DROP port 445 because there's also a great
-> >amount of traffic in that port.
-> >
-> > =20
-> >
-> How exactly is that OK ? i guess you don't have anything listening on=20
-> 135-139/udp, right ?
+On Sun, 2005-02-13 at 01:53, spdesai@gnvfc.net wrote:
+> Hi all...particularly Askar,Eric Leblond,Jason Opperisano (which help me)
+> 
+> I have tried to restrict particular website through IPTABLE and its working 
+> file .i have use below rules for that..
+> 
+> Suppose we want to open only www.ndtv.com,www.cnn.com ....then i gave rules as 
+> per below order only...
+> 
+> iptables -A FORWARD -s 192.168.1.2 -d www.ndtv.com -p tcp --dport 80 -j ACCEPT
+> iptables -A FORWARD -s 192.168.1.2 -d www.cnn.com -p tcp --dport 80 -j ACCEPT
+> iptables -A FORWARD -p tcp --dport 80 -j DROP
 
-The OP *wanted* to DROP that ports, and their rules were OK. That's
-all I said. And have in mind that even if you are not listening in
-those ports you are responding RST-ACK packets if you don't DROP the
-connections. I have to DROP the 445 packets from the Internet because
-they cause my machine to send traffic I don't want to be sent.
+ok--this is exactly why *i* personally don't think this is a good way to
+do this.  i'm not trying to say i'm right, but let me at least explain
+why i feel the way i do.  let's go to http://www.cnn.com/ shall we?
 
-> So you won't "save" any traffic with a rule like that, that's how=20
-> ethernet works.
+first off; at this moment in time, www.cnn.com resolves to:
 
-You save the RST-ACK responses, if I'm not wrong.
+  64.236.16.20
+  64.236.16.52
+  64.236.16.84
+  64.236.16.116
+  64.236.24.4
+  64.236.24.12
+  64.236.24.20
+  64.236.24.28
 
-> The only point in a rule like that maybe is - if you are logging not=20
-> matched packets at the end of the filter table/INPUT chain and don't=20
-> want your logs flooded by that broadcast traffic.
+your rule that specifies "-d www.cnn.com" will resolve that name to IP
+address(es) at the time the rule is loaded.  if cnn decides to
+add/change the IP's for that FQDN--you will need to reload your rules to
+pick up the change.  IMHO:  strike one.
 
-That's right. But if you want to DROP the Netbios packets also
-there's nothing wrong with it.
+k--now we have our 8 filter rules in place for those IP's--let's
+actually fire up our trusty web browser (mosaic...natch).  when i browse
+to http://www.cnn.com/ i make requests to:
 
-> >If you are don't want to receive traffic your broadcast it's OK.
-> > =20
-> >
-> same thing here ... you will receive that broadcast traffic no matter=20
-> what. dropping it won't help.
+  www.cnn.com
+  i.a.cnn.net
+  i.cnn.net
+  cnn.dyn.cnn.com
 
-Same reason that before. You receive the packets, but you don't
-answer to them.
+we already have the first one accounted for in our filter rules
+(obviously)--so now, i.a.cnn.net (at this moment in time) resolves to:
 
-> regards,
-> Georgi Alexandrov
+  64.236.40.64
+  64.236.40.5
+  64.236.40.8
+  64.236.40.21
+  64.236.40.32
+  64.236.40.46
+  64.236.40.53
+  64.236.40.63
 
-Regards.
+note that these are akamai addresses and they *will* change frequently.
 
---=20
+next up is i.cnn.net, which currently resolves to:
 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+  64.236.16.138
+  64.236.16.139
+  64.236.24.136
+  64.236.24.137
+  64.236.24.138
+  64.236.24.139
+  64.236.16.136
+  64.236.16.137
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+and lastly, we have cnn.dyn.cnn.com (which judging from its name is
+probably a dynamic; i.e. changing, address):
 
+  64.236.22.20
+  64.236.22.21
+  64.236.29.20
+  64.236.29.21
+
+alright--so to allow access to cnn.com requires 28 rules to allow access
+to 28 IP addresses (generated from the 4 -d $FQDN rules) that can change
+whenever they gosh darn feel like and it's up to me to figure all this
+out...i s'pose we could just allow access to the entire 64.236.0.0/16
+net and be done, right?  one rule, *should* cover whatever IP changes
+they decide, right?  it *is* kind of a shame that we would be allowing
+web browsing into a network owned by AOL though, huh?  sorta defeats the
+purpose.  IMHO:  strike two
+
+let's also keep in mind--i have not clicked through anything on the site
+yet (and i don't plan to, as this is getting a bit ridiculous), but i'm
+guessing i'd need to analyze more traffic, and add more hosts if i
+wanted to watch one of their videos, or listen to their radio etc...
+
+but there no easier way to do this, right?  when all you have is a
+hammer, every problem starts to look like a nail, or something like
+that.
+
+i personally am not willing to go through that much effort for my users
+(or myself, actually).  i also prefer not not implement solutions that
+require constant care and feeding like the above.  not when i can add:
+
+  acl cnn dstdomain .cnn.com .cnn.net
+  http_access allow cnn
+
+to my squid.conf and move on with my life.
+
+-j
+
+ps - i'm aware there was never a strike three.  if you want to put in
+the effort to do this, more power to you.  in my experience people that
+start down this path either (a) give up on it and decide to use a
+app-level filter (b) give up on it and just allow everything or (c) let
+it rot away to the point where users lose faith that the admin has any
+clue as to what he/she is doing.
+
+--
+"It takes two to lie. One to lie and one to listen."
+	--The Simpsons
 
 
