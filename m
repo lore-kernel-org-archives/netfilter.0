@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to bind 2 WAN 1 LAN ?
-Date: Mon, 28 Oct 2002 16:15:32 +0000
+From: Anthony Liu <anthony@nexus-online.com>
+Subject: Re: Purely NAT
+Date: Tue, 29 Oct 2002 02:37:55 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210281615.g9SGFbe08878@vulcan.rissington.net>
-References: <200FAA488DE0D41194F10010B597610D445ECF@JUPITER>
+Message-ID: <20021028183756.34671877D8@defiant.starfleet.net>
+References: <005401c27e43$73946990$0bc8c80a@dolphin>
+	<200210281444.g9SEime08636@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200FAA488DE0D41194F10010B597610D445ECF@JUPITER>
+In-Reply-To: <200210281444.g9SEime08636@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +19,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: Netfilter Mailing List <netfilter@lists.samba.org>
 
-On Thursday 24 October 2002 11:01 pm, George Vieira wrote:
+On Mon, 28 Oct 2002 14:44:43 +0000 Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
 
-> I'm totally confused on your problem and maybe a drawing using TEXT
-> characters might be better. Sounds like your problem is NOT an IPtables
-> problem but more a routing issue.
+> On Monday 28 October 2002 5:32 am, yenjet.chan@eglobal.com.my wrote:
+> 
+> > Hi all,
+> >
+> > This is my first post to the list, so please bare with me.
+> > I have a requirement here. Is there possible to create a purely NAT
+> > iptables rules for certain IP addresses?
+> 
+> No.   You can turn off stateful inspection by not loading or compiling the 
+> connection tracking support, but you cannot use it for some addresses but not 
+> others.
 
-I agree with this diagnosis.
+Are you sure? By not using "-m state" it might actually work, how about:
+iptables -A FORWARD -o ppp0 -s aaa.bbb.ccc.eee -j ACCEPT
+iptables -A FORWARD -o ppp0 -s aaa.bbb.ccc.ddd -m state --state ! INVALID -j ACCEPT
 
-> You talk about parts which I have no idea what they are.. ie "preceding 3
-> part go" can you explain further without using words like "it", "they",
-> "that" ..etc..
-
-I believe what the original poster is trying to do is to split his internal 
-network into 4 ranges of IP addresses, each containing 64 IPs, and to route 
-three of them via one ISP, and the other one via his other ISP.
-
-Here is what I posted in reply to this last Thursday:
-____
-
-You need to use iproute2 to set up source-based policy routing.
-
-Netfilter will not change the routing of your packets for you, therefore it 
-will not help you do what you want.
-
-Iproute2 will let you set up a more complicated routing table than the 
-standard 'route' command, and then netfilter will happily process the packets 
-as they go through.
- 
-
-Antony.
-
--- 
-
-Ramdisk is not an installation procedure.
 
