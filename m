@@ -1,14 +1,10 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: Re: how to delete *some* netfilter rules?
-Date: Fri, 5 Jul 2002 13:49:22 +0200
+From: Cygnus - Flirttown Coder <cygnus@talker.com>
+Subject: moving old ips to new ips..forwarding
+Date: Fri, 5 Jul 2002 13:27:44 +0000 (UTC)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02070513492203.14428@Lms>
-References: <20020614161800.GA6137@kostra.uh.cz>
-Reply-To: jan.humme@xs4all.nl
+Message-ID: <Pine.LNX.4.21.0207051257520.5181-100000@grabak.talker.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020614161800.GA6137@kostra.uh.cz>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,60 +14,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pavel Mores <pvl@uh.cz>, netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-On Friday 14 June 2002 18:18, Pavel Mores wrote:
-> Hello,
->
-> the problem I'm facing now might well be already solved by someone else
-> so I thought I'd better ask.
->
-> My filter table is filled by several separate independent scripts, each
-> serving a distinct purpose.  Say that I use one script to generate
-> firewalling rules and another to enter a couple of packet accounting
-> rules needed by a monitoring subsystem.  Now, what if I want to flush
-> the firewalling rules *without* disturbing the traffic monitoring rules?
->
-> It certainly is possible to add to the firewall script a "delete_rules"
-> function that would basically mimic my "insert_rules" function, only
-> with -D instead of -A or -I.  But this tends to be ugly and avoiding the
-> need to edit 2 places for every single change is not easy in bash (can't
-> use perl there).
 
-Your bash script could look like this:
+Scenario:
+X number of clients (with 1 or more ips bound to a box)
+behind Cisco Catalysts, behind Cisco 3600, behind Internet
 
-#!/bin/bash
+Problem:
+We want to move clients off our non-portable IP range and onto our arin
+range.
 
-ADD=3D-A
-INS=3D-I
+I was thinking of setting up a linux box with iptables (call it
+'forwarder'), and pointing the old ips, inbound, to 'forwarder' on the
+cisco 3600 (forwarder is not a pass-through, just a box hanging off a
+switch port), then using iptables to forward each old ip to the new
+one.
 
-if [ -n "$1" ]; then
-	if [  "$1" !=3D "delete" ]; then
-		echo usage: $0 [delete]
-		exit 1
-	fi
-	ADD=3D-D
-	INS=3D-D
-fi
+1. Is there a better or easier way to do this?
+2. Is there a way to get the forwarder to route the old
+   ips to the client even if, especially if, they haven't changed them
+   yet? i.e. say the client has an old ip of x.x.x.x and is moving to a
+   new one of y.y.y.y, the forwarder would say, ok, traffic for x.x.x.x
+   send to x.x.x.x AND y.y.y.y (because the forwarder doesn't know if the
+   ip has moved yet). Maybe i'm overcomplicating it?
+3. iptable rules to do this?
+4. will outbound traffic from the new ipcs need to go through 'forwarder',
+   or do programs not care if they receive answers from ips other than the
+   one they sent them too?
+5. any other caveats?
 
-#examples:
-iptables $ADD INPUT -i eth0 10.0.0.0/8 -j DROP
-iptables $INS OUTPUT -i eth0 192.168.0.0/16 -j DROP
+Thanx for the help,
 
-# etc etc etc
+-Tony
 
-Now:
-1) If you run your script w/o any parameter, it works like today.
-2) If your provide the text "delete" as the second parameter, it deletes al=
-l=20
-the rules.
-3) In all other cases, it prints an error message.
 
->P.S. =A0Please Cc: your replies to me since I'm not subscribed to this
-list.
-
-Please do.
-
-Jan Humme.
 
