@@ -1,11 +1,11 @@
-From: =?UTF-8?B?SsO2cmcgSGFybXV0aA==?= <harmuth@mnemon.de>
-Subject: Re: Virtual services cannot been reached from the LAN side
-Date: Fri, 11 Mar 2005 15:20:39 +0100
-Message-ID: <4231A937.8070001@mnemon.de>
-References: <000c01c5261d$92448bc0$3ca8a8c0@gracec>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: NAT question
+Date: Fri, 11 Mar 2005 10:13:01 -0500
+Message-ID: <1110553981.4767.28.camel@hubcap.ljm.dom>
+References: <200503111356.j2BDuTHV004706@mail1.firstbhph.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <000c01c5261d$92448bc0$3ca8a8c0@gracec>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <200503111356.j2BDuTHV004706@mail1.firstbhph.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,89 +16,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-=20
-Hi Grace,
+On Fri, 2005-03-11 at 08:56, Dimitri Yioulos wrote:
+> >> Hello, all.
+> >>  
+> >> I've recently set up iptables-1.2.8-12.3 on a CentOS 3.4 (RHEL AS 3) box.
+> >> Among other things, I've created a DMZ where my Web and mail servers
+> >>live.
+> >> My problem is that my Web and mail servers identify themselves with the
+> >> NAT
+> >> ip address that I've assigned   Here's my NAT rule: 
+> >> 
+> >>  IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source 
+> >> $INET_IP 
+> >> 
+> >> How can I get these two servers to identify themselves by their own ip
+> >> addresses and still provide NAT for my users?
+> 
+> >specify the source address so that only packets from the inside network
+> >match the SNAT rule:
+> 
+> >  iptables -t nat -A POSTROUTING -o $INET_IFACE -s $INSIDE_NET \
+> >    -j SNAT --to-source $INET_IP
+> 
+> 
+> Thanks to all for your replies!
+> 
+> I was hopeful about applying the above rule.  Internet connectivity is fine;
+> inbound mail is fine; outbound mail seems not to make it (if the list
+> receives this, it's because I rolled back to the original rule).  Does that
+> make any sense?
+> 
+> Dimitri
 
-first of all, I can't see any reason for this setup. FTP server and
-clients are on the same network - so everything should be fine with
-direct connections. Anyway.
+are your web and mail servers NAT-ed as well?  it was unclear from your
+original post, an i assumed that you were using Internet-routed IP space
+in your DMZ.  if this is not the case--you need to put your rules in the
+proper order.
 
-Grace Chung schrieb: <-- sorry, had to remove these nice signs :(
+if you have a static (one-to-one) NAT for a DMZ machine, and also want
+to perform a hide NAT (many-to-one) NAT for your internal net's outbound
+traffic--you'd have something like:
 
-| Hi everyone,
-|
-| I have a FTP server on LAN side (192.168. 1.210), and a local host
-| PC A(192.168.1.2). My gateway has two interface,  eth0 (10.1.1.1)
-| and eth1 (192.168.1.1).
-|
-| I configure NAT as: iptables -t nat -A POSTROUTING -o  eth0 -j
-| MASQUERADE iptables -t nat -A PREROUTING -p tcp -d 10.1.1.1 --dport
-| 21 -j DNAT --to-destination 192.168.1.210 iptabled -t nat -A
-| POSTROUTING -p tcp --dport 21 -j SNAT --to_source 192.168.1.1
-|
-| PC A try to connect to FTP server using : ftp 10.1.1.1 I monitor
-| the traffic on the LAN 192.168.1.2     ->10.1.1.1             TCP
-| SYN 10.1.1.1            ->192.168.1.210     TCP SYN
+  # inbound one-to-one NAT for web server
+  iptables -t nat -A PREROUTING -i $INET_IFACE -d $WEB_SRV_PUB_IP \
+    -j DNAT --to-destination $WEB_SRV_PRIV_IP
 
-| 192.168.1.210    ->10.1.1.1         TCP SYN ACK
+  # outbound one-to-one NAT for web server
+  iptables -t nat -A POSTROUTING -o $INET_IFACE -s $WEB_SRV_PRIV_IP \
+    -j SNAT --to-source $WEB_SRV_PUB_IP
 
-Really ? Aussuming that "iptabled" and "to_source" are just typos, I
-don't believe that. According to your rule #3 each tcp packet with
-destination port 21 is SNATed to 192.168.1.1, so the dest address for
-the SYN-ACK packet should be 19.168.1.1.
+  # outbound many-to-one NAT for inside net
+  iptables -t nat -A POSTROUTING -o $INET_IFACE -s $INSIDE_NET \
+    -j SNAT --to-source $INET_IP
 
-I build this situation (with a non existing FTP server), so here is
-the connection-table entry resulting of the the SYN packet:
+order matters--place the one-to-one SNAT rules before any many-to-one
+SNAT rules.
 
-tcp      6 68 SYN_SENT src=3D192.168.0.2 dst=3D10.10.10.1 sport=3D2727
-dport=3D21 [UNREPLIED] src=3D192.168.0.210 \
-~          dst=3D192.168.0.100 sport=3D21 dport=3D2727 use=3D1
+in order for packets destined for $WEB_SRV_PUB_IP to make it to your
+firewall's $INET_IFACE, it either needs to be routed that way by your
+upstream Internet router, or you need to add it as an alias:
 
-If my assumption is correct, then the next packet below is as it is.
-And of course, this results in a RST. Could you please verify (or
-falsify) this ?
+  ip addr add $WEB_SRV_PUB_IP dev $INET_IFACE
 
-| 192.168.1.1        ->192.168.1.2     TCP SYN ACK    <- should
-| 10.1.1.1 ->192.168.1.2 192.168.1.2        ->192.168.1.1    TCP RST
+HTH...   any sorry for misleading before.
 
-HTH. have a nice time
+-j
 
-J=C3=B6rg
-
-- --
-- -----------------------------------------------------------------------
-mnemon
-J=C3=B6rg Harmuth
-Marie-Curie.Str. 1
-53359 Rheinbach
-
-Tel.: (+49) 22 26  87 18 12
-Fax:  (+49) 22 26 87 18 19
-mail: harmuth@mnemon.de
-Web:  http://www.mnemon.de
-PGP-Key: http://www.mnemon.de/keys/harmuth_mnemon.asc
-PGP-Fingerprint: 692E 4476 0838 60F8 99E2  7F5D B7D7 E48E 267B 204F
-- -----------------------------------------------------------------------
-Diese Mail wurde vor dem Versenden auf Viren und andere sch=C3=A4dliche
-Software untersucht. Es wurde keine malizi=C3=B6se Software gefunden.
-
-This Mail was checked for virusses and other malicious software before
-sending. No malicious software was detected.
-- -----------------------------------------------------------------------
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (MingW32)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-=20
-iD8DBQFCMak2t9fkjiZ7IE8RApYsAKDAbU74gzmE09PuqRy0fuxfI7kA7QCaA0o+
-0Jx34lawIQlOIQtvYsLBQD8=3D
-=3DpRHx
------END PGP SIGNATURE-----
-
+--
+"Do you want to change your name to Homer Junior? The kids can call
+ you Hoju!"
+	--The Simpsons
 
 
