@@ -1,11 +1,12 @@
-From: Srinath Mantripragada <srinathm@terra.com.br>
-Subject: 3 outside networks
-Date: Mon, 17 Jun 2002 11:34:59 -0300
+From: <skmail@mcewen.wcnet.org>
+Subject: (no subject)
+Date: Mon, 17 Jun 2002 11:46:20 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D0DF393.6050203@terra.com.br>
+Message-ID: <Pine.LNX.4.33.0206171138510.29840-100000@mcewen.wcnet.org>
+References: <01f701c215ed$fca7c100$9300a8c0@edapter.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <01f701c215ed$fca7c100$9300a8c0@edapter.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,45 +16,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hi,
+Hi all-
 
-I need some help with iptables and SNAT.
+I'm trying to patch a stock 2.4.18 kernel with a few extras from the
+current patch-o-matic.  The only one that seems to have trouble so far
+(kernel compile in progress) is the string match support.  Here is the
+output of my kernel compile.  Can somebody help?  TIA
 
-
-I have one inside net 172.16.0.0/24  and 3 outside nets  10.28.0.0/16 ,
-   172.18.0.0/24 and Internet.
-The 3 nets are routed by one router that i do not have control.
-
-I have valid internet Addresses and i want to use NAT with one of them
-but not for 10.28 and 172.18 networks.
-
-
-i tried this:
-
-iptables -t nat -I POSTROUTING -o eth1 -d ! 10.28.0.0/16 -j SNAT --to
-MY.VALID.ADDR
-iptables -t nat -I POSTROUTING -o eth1 -d ! 172.18.0.0/24 -j SNAT
---to MY.VALID.ADDR
-
-
-I guess that i need something like :   "-d  ! 10.28.0.0/16  OR ! 
-172.18.0.0./24"
-but i dont  know how  to do that.
-
-
-Can someone helpme ?
-
-
-Thanks
-
-
-
-
-
-
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   
+-DKBUILD_BASENAME=ipt_limit  -c -o ipt_limit.o ipt_limit.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   -DKBUILD_BASENAME=ipt_mac  
+-c -o ipt_mac.o ipt_mac.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   
+-DKBUILD_BASENAME=ipt_multiport  -c -o ipt_multiport.o ipt_multiport.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   
+-DKBUILD_BASENAME=ipt_time  -c -o ipt_time.o ipt_time.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   
+-DKBUILD_BASENAME=ipt_state  -c -o ipt_state.o ipt_state.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   
+-DKBUILD_BASENAME=ipt_iplimit  -c -o ipt_iplimit.o ipt_iplimit.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   
+-DKBUILD_BASENAME=ipt_unclean  -c -o ipt_unclean.o ipt_unclean.c
+gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes 
+-Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
+-pipe -mpreferred-stack-boundary=2 -march=i486   
+-DKBUILD_BASENAME=ipt_string  -c -o ipt_string.o ipt_string.c
+ipt_string.c:80:72: macro "max" passed 3 arguments, but takes just 2
+ipt_string.c: In function `search_sublinear':
+ipt_string.c:53: warning: subscript has type `char'
+ipt_string.c:78: warning: subscript has type `char'
+ipt_string.c:80: `max' undeclared (first use in this function)
+ipt_string.c:80: (Each undeclared identifier is reported only once
+ipt_string.c:80: for each function it appears in.)
+make[3]: *** [ipt_string.o] Error 1
+make[3]: Leaving directory `/usr/src/linux/net/ipv4/netfilter'
+make[2]: *** [first_rule] Error 2
+make[2]: Leaving directory `/usr/src/linux/net/ipv4/netfilter'
+make[1]: *** [_subdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux/net'
+make: *** [_dir_net] Error 2
 
 
 
