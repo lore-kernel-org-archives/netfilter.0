@@ -1,13 +1,12 @@
-From: "Spiro Azkoul" <spiro@snacorp.net>
-Subject: RE: IPs blocked still able to connect
-Date: Mon, 14 Jun 2004 01:54:19 -0700
+From: "bino_oetomo" <bino@indoakses-online.com>
+Subject: Re: iptables for backup connection
+Date: Mon, 14 Jun 2004 16:05:27 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406140853.i5E8rsqE031321@ylpvm43.prodigy.net>
-References: <20040613135859.51704919@mgalepc.utilitran.com>
+Message-ID: <006d01c451ee$c47736f0$0300a8c0@indoaksesbno>
+References: <1171.172.16.128.100.1087207004.squirrel@mail.suarapembaruan.co.id> <200406140905.53992.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040613135859.51704919@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,29 +19,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-By doing the -I transition no one could connect to my server anymore. 
 
-Knowing that I had a bunch of rules such as 
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Monday, June 14, 2004 3:05 PM
+Subject: Re: iptables for backup connection
 
-[root@linux root]# iptables -L INPUT 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
-DROP       all  --  YahooBB219000000000.bbtec.net/8  anywhere           
-DROP       all  --  AAnnecy-204-1-27-120.w81-249.abo.wanadoo.fr  anywhere
 
-DROP       all  --  61.178.0.0/16        anywhere           
-DROP       all  --  53-bem-10.acn.waw.pl  anywhere           
-DROP       all  --  216.155.64.0/19      anywhere    
-RH-Lokkit-0-50-INPUT  all  --  anywhere             anywhere           
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:smtp 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:pop3
+> On Monday 14 June 2004 10:56 am, david@suarapembaruan.co.id wrote:
+>
+> > Dear all,
+> > In my office i using 2 connection (Wireless connection direct to ISP "A"
+> > and backup connection to ISP "B" with ADSL Modem), how to configure
+Linux
+> > iptables (gateway) so when connection to ISP "A" down client can still
+> > work with ISP "B" without reconfiguration at client computer.
+>
+> This is not a firewalling question; this is a routing question.
+>
+> The tool you need to set this up is iproute2.   See http://lartc.org for
+> details.
+>
 
-That did not work
-No one could connect for POP or SMTP. 
-What is wrong with that config?
-Thanks
-       
+Yup ...
+iproute2 , for routing path definition
+iptables , for NAT change
+and BASH for connection testing and "puting it all together"
+
+Sincerely
+-bino-
 
 
