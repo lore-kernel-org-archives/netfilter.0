@@ -1,14 +1,12 @@
-From: "Edmund Turner" <eturner@monash.edu.my>
-Subject: RE: MAtching packets
-Date: Thu, 30 Oct 2003 10:06:23 +0800
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: -j SNAT question
+Date: Wed, 29 Oct 2003 21:42:15 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006e01c39e8a$6b782fe0$de0018ac@admin.monash.edu.my>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A28AC90@wardrive.citadelcomputer.com.au>
-Reply-To: <eturner@monash.edu.my>
+Message-ID: <Pine.LNX.4.53.0310292119590.6554@xena.cft.ca.us>
+References: <D5A9EB3555F2D04AB1EE3DD6C748C4758BB863@qlmail.qlogitek.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A28AC90@wardrive.citadelcomputer.com.au>
+In-Reply-To: <D5A9EB3555F2D04AB1EE3DD6C748C4758BB863@qlmail.qlogitek.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,109 +16,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'George Vieira' <georgev@citadelcomputer.com.au>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Miguel Laborde <Miguel.Laborde@qlogitek.com>
 Cc: netfilter@lists.netfilter.org
 
-Hey George!
-I think youre right! I forgot to recompile my 2.4.20 kernel after I
-patched it.
-I now recall reading something similar to that before. I will look it
-up. THANKS!
+On Wed, 29 Oct 2003, Miguel Laborde wrote:
 
-Regards
-edmund
+> the DMZ such as web/ftp/etc. What I currently do is DNAT in the
+> PREROUTING chain to my DMZ addresses for these machines, and then in the
+> POSTROUTING chain i -J SNAT to my main firewall IP. This is where the
+> question arises.
+--snip--
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of George Vieira
-Sent: Thursday, October 30, 2003 9:52 AM
-To: eturner@monash.edu.my; netfilter@lists.netfilter.org
-Subject: RE: MAtching packets
+> So everything that goes out through my firewall is source nat'd to the
+> firewall's IP. This is where I'm confused.. mostly by the fact that this
+> kind of setup appears to work while I think it shouldn't. If a client
+> sends a SYN packet with the destination IP of EXT_IP_WEB and then gets a
+> ACK packet back with the source IP set to EXT_IP_FW won't it wonder what
+> the heck is going on and just ignore it?!
 
-not sure but don't you need something patched/enabled in the kernel to
-allow the marked packets to work with tc??
+No, because the internal webserver acks to the external (?) firewall, which
+de-SNATs it (so the ack's destination is now the client) and then de-DNATs
+it (so the ack's source is the external web address), so the client thinks
+there is a real machine at the external web address which is talking to it.
 
-something possibly like this?
+If the objective is to ensure that the internal webserver sends responses
+to the firewall and not some strange alternative route that doesn't know to
+undo the DNAT transformation, I think it would be safer to SNAT to the
+firewall's internal (DMZ) address, which is what the webserver is supposed
+to send the packet to anyway, as a gateway to the external firewall
+address.  But if the only way to the Internet (at least, the only way known
+to the webserver) is through that one firewall, I think most people don't
+bother with the SNAT step.
 
-[*]       IP: use netfilter MARK value as routing key
+On the other hand, traffic *originating* on the internal net, which
+presumably is not routeable, needs SNAT as it goes out the external
+firewall interface, so replies from the wide world will return to the
+firewall.
 
-or something..
+Or is this actually what you're doing -- did I misunderstand your rules?
+When an outside client originates the connection, subsequent packets will
+not get SNAT treatment in the outgoing direction -- only originating (SYN
+and not RST) packets lead to creation of a SNAT conntrack, in this
+scenario.
 
-Thanks,
-____________________________________________
-George Vieira
-
-> -----Original Message-----
-> From: Edmund Turner [mailto:eturner@monash.edu.my]
-> Sent: Thursday, 30 October 2003 12:34 PM
-> To: netfilter@lists.netfilter.org
-> Subject: MAtching packets
-> 
-> 
-> 
-> 
-> Hey guys and girls, how ur day?
-> I got a slight problem configuring tc on my firewall (traffic 
-> control).
-> Before I get kicked out the door and sent to the LARTC forum, I would
-> like to add that the problem im facing is MARKING the packets via
-> iptables.
-> 
-> Situation is as such
-> LAN --> Firewall --> Router -->Internet
-> 		|
-> 		|
-> 		--> DMZ
-> 
-> So much for the Ascii artist in me. :)
-> The firewall has 3 interfaces:
-> Eth0 = LAN --> 100Mbps NIC
-> Eth1 = DMZ --> 100Mbps NIC 
-> Eth2 = Internet --> 4MB link to internet
-> 
-> Background:
-> DMZ Zone Eth1: Web/FTP, and SMTP servers. (100Mbps switches and NICs) 
-> WEB/FTP server :10.100.1.1/24
-> SMTP server:10.100.1.2/24
-> 
-> I need to mark packets for the LAN (192.168.0.0/16) to the DMZ server
-> (10.100.1.1) to classify them in classes.
-> 
-> This is what I tried :
-> /sbin/iptables -A PREROUTING -i eth1 -d 10.100.1.1 -t mangle -j MARK
-> --set-mark 9
-> /sbin/iptables -A PREROUTING -i eth1 -s 10.100.1.1 -t mangle -j MARK
-> --set-mark 9
-> 
-> 
-> Traffic control does not seem to work when I mark the packets 
-> as above.
-> It appears that the 'tc' does not recognize the marked packets. I
-> eventually marked them like this :
-> 
-> Tc filter add dev eth2 parent 2:1 protocol ip prio 7 u32 match ip src
-> 10.100.1.1 classid 2:1
-> 
-> I would hope someone could point out my error in marking the packets.
-> 
-> Another question, there shouldn't be any problem with marking 
-> different
-> IPs with the same numerical mark, right?
-> Eg:
-> 
-> /sbin/iptables -A PREROUTING -i eth1 -d 10.100.1.1 -t mangle -j MARK
-> --set-mark 9
-> /sbin/iptables -A PREROUTING -i eth1 -d 10.100.1.2 -t mangle -j MARK
-> --set-mark 9
-> 
-> Any help is appreciated!
-> 
-> 
-> Regards
-> edmund
-> 
-> 
-> 
-
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
