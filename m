@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: How multiple PCs on private LAN possible if incoming is DNAT'd
-	to *same* server *always*?
-Date: Thu, 3 Feb 2005 12:35:06 -0500
-Message-ID: <20050203173506.GA4619@bender.817west.com>
-References: <20050203172500.GB29677@spawar.navy.mil>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: netfilter logiing
+Date: Thu, 3 Feb 2005 13:22:09 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502031318040.24964-100000@darkstar.sysinfo.com>
+References: <42023802.5060403@linuon.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20050203172500.GB29677@spawar.navy.mil>
+In-Reply-To: <42023802.5060403@linuon.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +15,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Junji Kanemaru <linux@linuon.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, Feb 03, 2005 at 09:25:00AM -0800, seberino@spawar.navy.mil wrote:
-> I got an iptables script for a NAT-ing firewall that
-> forwards packets between Internat and a private LAN.
+On Thu, 3 Feb 2005, Junji Kanemaru wrote:
+
+> Hi,
 > 
-> All incoming packets are destination NAT'd to end up
-> at a single server on the private LAN.
+> I have a quick question regarding netfilter logging. I'm working on
+> some unified system logging interface and want to get netfilter
+> log when some netfilter policy violation occurred.
+> How I can get that kind of logs? Maybe I need to write ULog filter
+> for that? I could be showing my ignorance though...
 
-so you have a rule that says:
+It would be hard for netfilter or any app to self police itself.  This
+would be what an IDS would do, sit behind the netfilter firewall and sound
+loud alarms and spew e-mails to all staff when somethig got past the
+firewall and into terriroy it was not meant to hit.
 
-  iptables -t nat -A PREROUTING -i $EXT_IF \
-    -j DNAT --to-destination $SINGLE_SERVER_IP
+You could log every rule or all drops and rejects, but, that tends to make
+big logs and consume lots of time and be of little use unless you are
+tracing a problem.  Most folks should pay more attention to logging what
+has been alowed to pass the firewall then what has been blocked by it.
+But a well tuned IDS can enhanced ones warm fuuzzies.  A poorly tuned IDS
+will spew so many falsies that it will be ignored, so YMMV.
 
-> **I don't understand how ANY packets can ever arrive
-> at ANY other PC on the private LAN since they
-> are ALL destination NAT'd to go to same private server IP
-> address!?!?**
+Thanks,
 
-um--any NEW packets arriving inbound on $EXT_IF would have their
-destination IP translated to $SINGLE_SERVER_IP, yes.
- 
-> If some arbitrary client on private LAN wants to visit
-> a web page, somehow his traffic arrives back at himself
-> without any specific NAT rules to get packets to him!??
+Ron DuFresne
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-ah--it seems you are confusing DNAT and SNAT.  when a machine on the
-inside makes an outbound request (that passes all your filter rules) it
-is probably hitting some sort of SNAT rule like:
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
-  iptables -t nat -A POSTROUTING -o $EXT_IF -j SNAT --to-source $EXT_IP
-
-this will create a conntrack entry that will be able to map the reply
-packet back to the correct client by matching:
-
-  src_ip,src_port,dst_ip,dst_port
-
-> I know it has something to do with ESTABLISHED,RELATED
-> state ACCEPT-ing rules but this has always confused me.
-
-sorta.  keep in mind that rules in "-t nat" are only applied to packets
-with state NEW--this is probably the piece you're missing.
-
-> Do you understand the question?
-
-maybe.
-
--j
-
---
-"Please do not offer my god a peanut"
-        --The Simpsons
 
