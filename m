@@ -1,14 +1,12 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: not sure if 'iptables -Z' needed/useful/superfluous here..
-Date: 17 Jan 2005 14:15:11 +0100
-Message-ID: <1105963142.26574.6.camel@nostromo.bgsecm.com>
-References: <20050114060327.GA8917@spawar.navy.mil>
-	<1105728837.25584.63.camel@nostromo.bgsecm.com>
-	<1105831929.8208.1.camel@hubcap.ljm.dom>
+Subject: Re: insmod: can't read 'ip_queue': No such file or directory?
+Date: 17 Jan 2005 14:15:07 +0100
+Message-ID: <1105962971.26574.3.camel@nostromo.bgsecm.com>
+References: <41EA944C.8090904@lazarusalliance.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1105831929.8208.1.camel@hubcap.ljm.dom>
+In-Reply-To: <41EA944C.8090904@lazarusalliance.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,27 +20,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El dom, 16 de 01 de 2005 a las 00:32, Jason Opperisano escribi=C3=B3:
-> On Fri, 2005-01-14 at 16:38, Jose Maria Lopez wrote:
-> > i	El vie, 14 de 01 de 2005 a las 07:03, seberino@spawar.navy.mil
-> > escribi=C3=B3:
-> >=20
-> > > I read man page on iptables but it still was not clear if I need
-> > > -Z to 'reset the byte count' and other stuff like it says it will d=
-o.
-> >=20
-> > If you delete your rules there are no counters, so you don't need
-> > to reset them.
+El dom, 16 de 01 de 2005 a las 17:20, mdpeters escribi=C3=B3:
+> Does anyone know how I might fix this error? I am running Fedora Core 2=
+=20
+> fully patched and iptables-1.2.11, kernel vmlinuz-2.6.10-1.9_FC2smp.
 >=20
-> it will still reset the built-in chain counters.
->=20
-> -j
+> # ./insmod ip_queue
+> insmod: can't read 'ip_queue': No such file or directory
 
-You are right. I didn't have in mind that. I will change it in
-our bastion-firewall GPL software, because it uses the counters
-to get statisticals.
-
-Thanks for the information and regards.
+Try: modprobe ip_queue
+and check that you have the ip_queue.ko file and it's
+readable.
 
 --=20
 Jose Maria Lopez Hernandez
