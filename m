@@ -1,10 +1,12 @@
-From: =?iso-8859-1?q?Luis=20GUSTAVO?= <lgpcf@yahoo.com.br>
-Subject: spyware
-Date: Fri, 11 Jun 2004 13:00:47 -0300 (ART)
+From: "Syed Faisal Gillani" <faisal@clickonlinenetworks.com>
+Subject: deleting specific rule ...
+Date: Sat, 12 Jun 2004 01:13:26 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040611160047.73593.qmail@web50210.mail.yahoo.com>
+Message-ID: <001001c44ff0$8ec113a0$0300000a@serverxx>
+References: <20040611160047.73593.qmail@web50210.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000D_01C4501A.76D50420"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,45 +17,124 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-how can i add rules for block spyware with iptables,
-or some program for block spyware in my linux router.
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_000D_01C4501A.76D50420
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-example:
+here is the list of rule in my iptables=20
 
-router ---------------> clients ---> windows 9x
-Linux                 | 
-iptables              |
-blocking spyware      |
-_______________________ 
+-------------------------------------------------------------------------=
+-------
 
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+DROP       all  --  anywhere             anywhere           MAC =
+00:A0:C9:A0:B8:A5
+DROP       all  --  anywhere             anywhere           MAC =
+00:10:A4:9F:B5:27
+DROP       all  --  anywhere             anywhere           MAC =
+00:C0:26:78:04:D2
 
-ok.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
-
-
-
-=====
-
-Luis GUSTAVO         lgpcf(arroba)yahoo(ponto)com(ponto)br
-+55 (21) 9891-3560    
----------------------------------------------------------------------------------
- 
-
-
-
-
-
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
 
 
+-------------------------------------------------------------------------=
+-------
 
+now i want to delete this rule ..
 
-______________________________________________________________________
+DROP       all  --  anywhere             anywhere           MAC =
+00:A0:C9:A0:B8:A5
 
-Yahoo! Messenger - Fale com seus amigos online. Instale agora! 
-http://br.download.yahoo.com/messenger/
+wat will be the command in doing so ?
+
+thanks
+Faisal
+
+------=_NextPart_000_000D_01C4501A.76D50420
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.3790.118" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>here is the list of rule in my iptables =
+
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>
+<HR>
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Chain INPUT (policy=20
+ACCEPT)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
+--&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MAC =
+
+00:A0:C9:A0:B8:A5<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
+--&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MAC =
+
+00:10:A4:9F:B5:27<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
+--&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MAC =
+
+00:C0:26:78:04:D2</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Chain FORWARD (policy=20
+ACCEPT)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Chain OUTPUT (policy=20
+ACCEPT)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV><FONT face=3DArial =
+size=3D2>
+<DIV>
+<HR>
+</DIV>
+<DIV>now i want to delete this rule ..</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; --&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MAC =
+
+00:A0:C9:A0:B8:A5<BR></DIV>
+<DIV>wat will be the command in doing so ?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>thanks</DIV>
+<DIV>Faisal</DIV></FONT>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_000D_01C4501A.76D50420--
+
 
