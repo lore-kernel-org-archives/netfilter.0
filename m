@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
+From: Helge Weissig <helgew@grajagan.org>
 Subject: Re: protocol 50 unreachable
-Date: Thu, 2 Dec 2004 15:11:02 -0500
-Message-ID: <20041202201102.GA5915@bender.817west.com>
-References: <20041202172531.GA5363@bender.817west.com>
-	<Pine.LNX.4.44.0412021019060.25230-100000@gollum.grajagan.net>
+Date: Thu, 2 Dec 2004 11:26:22 -0800 (PST)
+Message-ID: <Pine.LNX.4.44.0412021120210.25230-100000@gollum.grajagan.net>
+References: <20041202201102.GA5915@bender.817west.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0412021019060.25230-100000@gollum.grajagan.net>
+In-Reply-To: <20041202201102.GA5915@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,78 +16,91 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, Dec 02, 2004 at 10:22:27AM -0800, Helge Weissig wrote:
-> The iptable logs are not complete
+I mean with "incomplete" that the tcpdump traffic I see does not show up 
+in the logs. I used your rules at the end of your reply and see the same 
+thing: ESP from VPN_SERVER hits $EXTIF, triggers the "protocol 50 
+unreachable" icmp response and no log entry ever shows up in the kernel 
+log from the iptables log rule. I am suspecting that your option 3) is 
+indeed the problem.
 
-if you're not providing all the details, i'm not sure how we're supposed
-to be able to help.  the information i was going on was:
+h.
 
-Chain PREROUTING (policy ACCEPT 1380 packets, 95540 bytes)
- pkts bytes target     prot opt in     out     source
-destination         
-    0     0 LOG        all  --  *      *       0.0.0.0/0
-0.0.0.0/0          LOG flags 0 level 6 prefix `all preroute: ' 
+On Thu, 2 Dec 2004 at 15:11 -0500, netfilter-bounces@lists.netfilter.org wrote:
 
-and the log entries:
+JO> On Thu, Dec 02, 2004 at 10:22:27AM -0800, Helge Weissig wrote:
+JO> > The iptable logs are not complete
+JO> 
+JO> if you're not providing all the details, i'm not sure how we're supposed
+JO> to be able to help.  the information i was going on was:
+JO> 
+JO> Chain PREROUTING (policy ACCEPT 1380 packets, 95540 bytes)
+JO>  pkts bytes target     prot opt in     out     source
+JO> destination         
+JO>     0     0 LOG        all  --  *      *       0.0.0.0/0
+JO> 0.0.0.0/0          LOG flags 0 level 6 prefix `all preroute: ' 
+JO> 
+JO> and the log entries:
+JO> 
+JO> Dec  1 21:38:37 gollum kernel: all preroute: IN=eth1 OUT=
+JO> MAC=00:c0:4f:22:05:03:00:30:65:1f:ed:0a:08:00 SRC=10.0.0.200 DST=(VPN
+JO> SERVER IP) LEN=136 TOS=0x00 PREC=0x00 TTL=64 ID=8977 PROTO=ESP
+JO> SPI=0x2e9dc0d2 
+JO> 
+JO> your log rule in PREROUTING of the nat table should catch every single
+JO> packet, before any filtering (or even routing) takes place (unless you
+JO> have filter rules in mangle).  the fact that every log entry you provided
+JO> (like the above) shows ESP from client->server means:
+JO> 
+JO> 1)  there are zero ESP packets coming from server->client
+JO> 2)  you removed those log entries from your post
+JO> 3)  packets from server->client disappear somewhere between the pcap
+JO> layer and the netfilter PREROUTING hook
+JO> 
+JO> are you saying it's #2?
+JO> 
+JO> > and as I mentioned, I may need help with 
+JO> > setting that up. I can see the packets coming from the server with tcpdump 
+JO> > as I showed in my original post but then an immediate reply is sent back 
+JO> > and nothing goes through to the internal interface.
+JO> 
+JO> if you can see ESP packets hitting your external interface from the
+JO> VPN server with tcpdump, but a log rule in PREROUTING of the nat table
+JO> doesn't see them--you have something horribly, horribly wrong with your
+JO> firewall machine.
+JO> 
+JO> > The same thing happens 
+JO> > when I use nmap to scan ip protocols. Conversely, my internal ESP traffic 
+JO> > ends at the internal interface of my firewall. It never reaches the 
+JO> > external interface or the outside. TCP traffic works fine as you can see 
+JO> > from the ping logs from the internal client. Could this indicate that 
+JO> > there is a problem before anything gets to iptables?
+JO> 
+JO> yes.
+JO> 
+JO> if you use these rules:
+JO> 
+JO>   iptables -t nat -A PREROUTING -p 50 -j LOG \
+JO>     --log-prefix "PREROUTE ESP: "
+JO> 
+JO>   iptables -A FORWARD -p 50 -j LOG --log-prefix "FWD ESP: "
+JO> 
+JO>   iptables -t nat -A POSTROUTING -o $EXT_IF -j MASQUERADE
+JO> 
+JO> you should get logs in both directions (client->server and
+JO> server->client).  if not...well, let's assume for now that you will...
+JO> 
+JO> it would also greatly help if you made sure to post all the logs
+JO> generated by the above, so as not to mislead us.
+JO> 
+JO> -j
+JO> 
+JO> --
+JO> "Ah, beer, my one weakness. My Achilles heel, if you will."
+JO>         --The Simpsons
+JO> 
 
-Dec  1 21:38:37 gollum kernel: all preroute: IN=eth1 OUT=
-MAC=00:c0:4f:22:05:03:00:30:65:1f:ed:0a:08:00 SRC=10.0.0.200 DST=(VPN
-SERVER IP) LEN=136 TOS=0x00 PREC=0x00 TTL=64 ID=8977 PROTO=ESP
-SPI=0x2e9dc0d2 
-
-your log rule in PREROUTING of the nat table should catch every single
-packet, before any filtering (or even routing) takes place (unless you
-have filter rules in mangle).  the fact that every log entry you provided
-(like the above) shows ESP from client->server means:
-
-1)  there are zero ESP packets coming from server->client
-2)  you removed those log entries from your post
-3)  packets from server->client disappear somewhere between the pcap
-layer and the netfilter PREROUTING hook
-
-are you saying it's #2?
-
-> and as I mentioned, I may need help with 
-> setting that up. I can see the packets coming from the server with tcpdump 
-> as I showed in my original post but then an immediate reply is sent back 
-> and nothing goes through to the internal interface.
-
-if you can see ESP packets hitting your external interface from the VPN
-server with tcpdump, but a log rule in PREROUTING of the nat table
-doesn't see them--you have something horribly, horribly wrong with your
-firewall machine.
-
-> The same thing happens 
-> when I use nmap to scan ip protocols. Conversely, my internal ESP traffic 
-> ends at the internal interface of my firewall. It never reaches the 
-> external interface or the outside. TCP traffic works fine as you can see 
-> from the ping logs from the internal client. Could this indicate that 
-> there is a problem before anything gets to iptables?
-
-yes.
-
-if you use these rules:
-
-  iptables -t nat -A PREROUTING -p 50 -j LOG \
-    --log-prefix "PREROUTE ESP: "
-
-  iptables -A FORWARD -p 50 -j LOG --log-prefix "FWD ESP: "
-
-  iptables -t nat -A POSTROUTING -o $EXT_IF -j MASQUERADE
-
-you should get logs in both directions (client->server and
-server->client).  if not...well, let's assume for now that you will...
-
-it would also greatly help if you made sure to post all the logs
-generated by the above, so as not to mislead us.
-
--j
-
---
-"Ah, beer, my one weakness. My Achilles heel, if you will."
-        --The Simpsons
 
