@@ -1,10 +1,10 @@
-From: =?iso-8859-1?q?Jo?= <jo0oj63@yahoo.com>
-Subject: bootp problems
-Date: Tue, 6 Apr 2004 16:11:59 +0200 (CEST)
+From: Madhav Diwan <madhav@diwancomputing.com>
+Subject: where did ipt_unclean go in kernel 2.6.5 ?
+Date: Tue, 06 Apr 2004 17:45:06 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040406141159.752.qmail@web13121.mail.yahoo.com>
+Message-ID: <407324E2.5080408@diwancomputing.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,27 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org, mvdiwan@hotmail.com
 
-hi,
+Hi Everyone,
 
-i have the following problem
+I recently compiled and applied kernel 2.6.5 from kernel.org , building 
+it as an rpm using `make rpm` on a RedHat 9 system. The build process 
+went so smoothly i was astonished.
 
-[DialIn]2.2.2.2----2.2.2.1[FW]1.1.1.1---1.1.1.2[DHCP]
+Of course there are always the little nagging things left to clean up.
 
-the DialIn tries to get an IP from the DHCP Server.
-the firewall opened for 67/udp with logging
+Just curious but where did the unclean match target disappear to? I 
+thought that was part of the base iptables target set.
 
-with tcpdump on 2.1 i can see 0.0.0.0:68 > 1.1.1.2:67
-in the firewall log i can see nothing
-with tcpdump on 1.1 i can see nothing
-
-thx for help
-jo
+I use firestarter to apply iptables rule sets to this upgraded machine 
+and I see the following:
 
 
-=09
-	=09
-Mit sch=F6nen Gr=FC=DFen von Yahoo! Mail - http://mail.yahoo.de
+Apr  6 17:31:31 shreya1 firestarter: Zeroing all current rules: succeeded
+Apr  6 17:31:31 shreya1 modprobe: FATAL: Module ipt_unclean not found.
+Apr  6 17:31:32 shreya1 last message repeated 2 times
+Apr  6 17:31:32 shreya1 firestarter: Applying Firestarter configuration 
+succeeded
+
+Was UNCLEAN dropped as a standard target? I don t see it anywhere in the 
+standard kernel config in the 2.6 series.
+
+patchomatic-ng was no help either.
+
+
+By the way , as a side note, just which iptables patches DO apply to the 
+kernel 2.6 series? its at version 2.6.5 now and severely needs some 
+firewalling support. , for instance h323 and the failover connection 
+tracking?
+
+Sincerely
+
+Madhav Diwan
 
