@@ -1,9 +1,9 @@
-From: "www.piratehosting.net" <webmazter@gmail.com>
-Subject: ipconntrack
-Date: Sun, 3 Oct 2004 17:48:31 -0600
+From: "Gregory Gerard" <ggerard@ggerard.com>
+Subject: Network mapping from internal and external
+Date: Sun, 3 Oct 2004 20:42:12 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <e73cec800410031648724ed04b@mail.gmail.com>
-Reply-To: "www.piratehosting.net" <webmazter@gmail.com>
+Message-ID: <200410040342.i943gOqM012108@ylpvm15.prodigy.net>
+Reply-To: ggerard@mac.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,9 +19,47 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-no but they dont seem to expire for 5 days so with many ircds on one
-server they fill up fast from the traffic they pull in
+I'm not sure how to describe my setup and intended network in iptables
+parlance. Have searched much and can't find anything that matches my
+situation.
 
--- 
-www.piratehosting.net
+ 
+
+I have 5 static IPs from my ISP. Out the Ethernet end of my DSL box I see
+those 5 IPs directly. I have no control over the router but that's fine.
+
+ 
+
+I have many more than 5 machines in my network.
+
+ 
+
+Internally, I have 10.9.x.x (255.255.0.0).
+
+ 
+
+I would like to setup iptables such that 4 of the external IP addresses map
+completely map onto exactly 4 internal IP addresses. The fifth external
+address will simply be used to NAT for internal only machines.
+
+ 
+
+What's the right mix of NICs and settings?
+
+ 
+
+I was thinking about bringing up several eth0:1..4 interfaces to accept
+those 4 external addresses and map them that way.
+
+ 
+
+Suggestions?
+
+ 
+
+Thanks!
+
+greg
+
+ 
 
