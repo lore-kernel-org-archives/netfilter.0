@@ -1,66 +1,44 @@
-From: paridhi bansal <paridhibansal@yahoo.com>
-Subject: Problem with ICMP NAT
-Date: Wed, 5 Feb 2003 01:48:40 -0800 (PST)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030205094840.15787.qmail@web10806.mail.yahoo.com>
+From: "Miguel A. Rasero \(Barea Comunicaciones\)" <tecnico@betanetgeb.com>
+Subject: Fw: rtsp problem
+Date: Wed, 5 Feb 2003 11:47:27 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <004301c2cd03$fa634180$0c00a8c0@deptecnico>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
-
-Hi!!!
-
-I am developing an application whereby i am
-implementing NAT..I am using iptables..Using libipq i
-am queuing the pkts. I am queueing the pkts at
-following hooks:
-Input
-Prerouting
-Postrouting
-Output(nat)
-
-Now my nat is working fine with TCP pkts..let's say
-we have a situation like:
-m/c A on LAN with ip say 172.10.1.12
-m/c B that is doing NAT with ips 172.10.1.13 and
-151.2.125.6
-m/c C on Internet with Ip 151.2.125.78
-
-Now A sends a TCP req to C..the request goes natted
-and the return pkt comes at B's 151 interface, it nats
-it back to m/c A's ip..This retuurn pkt enters
-PREROUTING hook, then postrouing hook..All this is
-working fine..
-
-Problem is here:
-If A sends an ICMP request to C, iCMP requst gets
-natted so that it appears to come from B..Now C sends
-back the ICMP reply to C..HOWEVER, this ICMP pkt does
-not enter prerouting hook..it directly entrs INPUT
-hook..so my application cannot do natting and m/c A
-shows request timed out..
-
-Can this problem be solved somehow?????Is it possible
-to redirect a pkt from Input hook to some other
-hook???
-
-Regards,
-Paridhi
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
 
+----- Original Message -----
+From: "Miguel A. Rasero (Barea Comunicaciones)" <tecnico@betanetgeb.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, February 05, 2003 11:41 AM
+Subject: rtsp problem
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+
+> hi, i have an linux 2.4.20 router and problem with a remote Darwin
+Streaming
+> Server, if i try to connect from quicktime to
+> rtsp://iprouter/samplemovie.mp4 from the machines nat=B4ed behind the lin=
+ux
+> router quicktime never connect, in my office where the nat is done by an
+> router 3com 812 adsl all works fine and from other routers thant i have
+> tested it works too, i have loaded all the modules from the ipv4 netfilter
+> config and i have tested the newnat patch too, i have tested with -SNAT
+> and -MASQUERADE in iptables, and the version that i use in iptables is
+> 1.27a, anyone can say me what can be my problem? or is a limitation of
+> netfilter? I am testing all this with the router firewall policy to accept
+> all packets. thanks in advance.
+>
+
 
