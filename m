@@ -1,11 +1,12 @@
-From: Steve Snodgrass <ssnodgra@pheran.com>
-Subject: Disappearing DNS packets
-Date: Fri, 13 Dec 2002 12:05:03 -0500
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Unauthorized Activity Detection using IPTables
+Date: Fri, 13 Dec 2002 16:46:39 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021213120503.A8206@cruncher.pheran.com>
+Message-ID: <Pine.LNX.4.44.0212131643480.28712-100000@dns.toxicfilms.tv>
+References: <4223A04BF7D1B941A25246ADD0462FF559A362@blr-m3-msg.wipro.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4223A04BF7D1B941A25246ADD0462FF559A362@blr-m3-msg.wipro.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,56 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Amit Kumar Gupta <amitkumar.gupta@wipro.com>
+Cc: netfilter@lists.netfilter.org
 
-I'm having a very strange problem and I was hoping that maybe someone has
-seen this before.  Note that IP addresses have been sanitized.
+Hello,
 
-I have a Red Hat 7.3 firewall using iptables 1.2.5 and kernel 2.4.18-10
-separating two subnets.  The eth0 subnet contains a DNS server and the eth1
-subnet contains a DNS client.  The firewall uses connection tracking and the
-ruleset permits DNS queries from the client to the server.
+If you construct your firewall like this:
+- allow what's allow
+- log and drop everything else.
 
-192.168.10.20 ------ eth0-FIREWALL-eth1 ------ 192.168.3.8
-DNS Server                                     DNS Client
+You will have what you need.
 
-Rule fragement from FORWARD chain:
-ACCEPT   all  --  0.0.0.0/0     0.0.0.0/0        state RELATED,ESTABLISHED 
-LOG      udp  --  192.168.3.8   192.168.10.20    udp dpt:53 LOG flags 0 level 4 
-ACCEPT   udp  --  192.168.3.8   192.168.10.20    udp dpt:53 
+you can use something like:
+iptables -N logdrop
+iptables -A logdrop -j LOG
+iptables -A logdrop -j DROP
 
-The DNS client box is running squid, which happens to generate pairs of
-similar DNS queries for some reason.  What is happening is that *one* of
-the two queries gets dropped most of the time as it crosses the firewall.
-Observe these tcpdumps:
+and at the end of your chains add:
+iptables -A FORWARD -j logdrop
 
-firewall# tcpdump -i eth1 host 192.168.3.8 and port 53
-tcpdump: listening on eth1
-11:54:15.132008 192.168.3.8.32772 > 192.168.10.20.domain:  18+ A? www.google.com. (32) (DF)
-11:54:15.132034 192.168.3.8.32772 > 192.168.10.20.domain:  19+ A? www.google.com. (32) (DF)
-11:54:15.171377 192.168.10.20.domain > 192.168.3.8.32772:  18 1/4/2 A www.google.com (152) (DF)
+This is for FORWARD chain, change it to whatever you need.
 
-firewall# tcpdump -i eth0 host 192.168.3.8 and port 53
-tcpdump: listening on eth0
-11:54:15.156014 192.168.3.8.32772 > 192.168.10.20.domain:  18+ A? www.google.com. (32) (DF)
-11:54:15.171337 192.168.10.20.domain > 192.168.3.8.32772:  18 1/4/2 A www.google.com (152) (DF)
+Regards,
+Maciej Soltysiak
 
-Note that the DNS query with query ID 19 has disappeared somewhere between
-coming into eth1 and exiting eth0.
 
-The logging rule I have in iptables does show both of those packets right
-before they hit the ACCEPT rule:
-
-IN=eth1 OUT=eth0 SRC=192.168.3.8 DST=192.168.10.20 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF PROTO=UDP SPT=32772 DPT=53 LEN=40 
-IN=eth1 OUT=eth0 SRC=192.168.3.8 DST=192.168.10.20 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF PROTO=UDP SPT=32772 DPT=53 LEN=40 
-
-I'm kind of at a loss here, does anyone have any idea what could be going on?
-I'll be happy to provide any additional info that I can.  Thanks!
-
--- 
-Steve Snodgrass * ssnodgra@pheran.com * Network and Unix Guru(?) at Large
-Geek Code: GCS d? s: a C++ U++++$ P+++ L++ w PS+ 5++ b++ DI+ D++ e++ r+++ y+*
-"If you want to be somebody else, change your mind."  -Sister Hazel
 
