@@ -1,12 +1,14 @@
-From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: Round Robin Load Balancing
-Date: Sun, 27 Jul 2003 19:51:51 +0100 (BST)
+From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
+Subject: Re: new nat target extension --jump rt_lookup
+Date: 27 Jul 2003 21:54:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0307271949050.3242-100000@localhost>
-References: <200307271740.h6RHeV1F001051@webmail1.magma.ca>
+Message-ID: <1059335645.1447.6.camel@drs0.manchotnetworks.net>
+References: <1059223007.1604.11.camel@drs0.manchotnetworks.net> 
+	<20030727004019.GB2152@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307271740.h6RHeV1F001051@webmail1.magma.ca>
+In-Reply-To: <20030727004019.GB2152@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Javier Govea <jgovea@magma.ca>
-Cc: Daniel Chemko <dchemko@smgtec.com>, George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org, Ramin Dousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hi Javier,
+Hi Ramin,
 
-Try something like this:
+On Sun, 2003-07-27 at 02:40, Ramin Dousti wrote:
 
-iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 0 \
-	-j ROUTE --oif ppp0
-iptables -t mangle -A POSTROUTING -m nth --every 4 --packet 1 \
-        -j ROUTE --oif ppp1
-...
+> > can anyone comment on potential problems/dangers/issues from such a
+> > --jump?
+> 
+> An infinite loop, maybe? Also, OUTPUT is before routing anyway...
+Actually it is not [1], and thusly, the source of many of my problems. I
+am very curious though, about your thought of a loop -- could you give a
+bit more detail? i *thought* that a lookup would have been independant
+from netfilter -- that is -- that the packet would be checked with its
+fwmark, src ip, dst, ip, etc, and an interface determined (and perhaps a
+new src ip) ...
 
-iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ip-of-ppp0>
-iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to-source <ip-of-ppp1>
-...
+many thanks for your thoughts
 
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+charles
+
+[1] http://www.docum.org/stef.coene/qos/kptd/
 
 
