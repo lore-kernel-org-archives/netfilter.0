@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Access from Internet ??
-Date: Fri, 6 Sep 2002 09:42:27 +0100
+From: =?iso-8859-1?Q?Mattias_R=F6nnblom?= <hofors@lysator.liu.se>
+Subject: Re: packets dropped when using MASQ and QUEUE
+Date: 05 Sep 2002 13:07:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020906084229.IKIK1968.mta05-svc.ntlworld.com@there>
-References: <000201c25535$5dab24c0$6b01a8c0@s3ac>
+Message-ID: <m34rd43dag.fsf@isengard.firemission.org>
+References: <m3znv08kup.fsf@isengard.firemission.org>
+	<008801c25446$89c61820$3303a8c0@p951>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000201c25535$5dab24c0$6b01a8c0@s3ac>
+In-Reply-To: <008801c25446$89c61820$3303a8c0@p951>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +19,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: sufcrusher <sufcrusher@zonnet.nl>
+Cc: netfilter@lists.samba.org
 
-On Friday 06 September 2002 12:38 am, Rowan Reid wrote:
+"sufcrusher" <sufcrusher@zonnet.nl> writes:
 
-> Open SSH - Secure Shell Login
->
-> A quick question: what tools are available to be able to access the
-> Iptables/Netfilter box securely from the Internet in order to remotely
-> manage iptables. I know of ssh, is there any other(s)?
+> I've had the exact same problem. I did a google search on this and found out
+> pretty quickly that this is how it's supposed to be. For a really technical
+> explanation you might want to do a google search yourself, but it comes down
+> to the fact that the userspace program can only completely ACCEPT or
+> DENY/REJECT a packet. It can *not* let the packet continue traversing the
+> chains/tables.
 
-SSH is almost certainly your best bet.   It gives you a command-line login, 
-which is just what you need for iptables.   You can also tunnel other things 
-through it if you decide you need some other connection as well.
+Cannot continue traversing that particular chain (FORWARD, in my case),
+or any chain? My MASQ rules are on the POSTROUTING chain.
 
-Alternatives might be:
+And if it's a design flaw i QUEUE, how come it works for some of
+the packets, but not all?
 
-https if you have some way to manage iptables through a browser (!?)
-IPsec if you want to have a secure connection to your box for all protocols
-
-Both of these are probably more trouble than they're worth to set up, 
-compared to SSH, though.
-
-Antony.
-
--- 
-
-It is also possible that putting the birds in a laboratory setting
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennett
+Kind regards,
+        Mattias
 
