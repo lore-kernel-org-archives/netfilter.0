@@ -1,12 +1,13 @@
-From: "mailinglists" <mailinglists@belfin.ch>
-Subject: AW: iptables wishes
-Date: Tue, 1 Apr 2003 11:48:30 +0200
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: iptables wishes
+Date: 01 Apr 2003 12:17:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <65F646CE24EBF24AA3714070D537988E017F04@gargoyle.seaan.net>
+Message-ID: <1049192271.9857.49.camel@tux.rsn.bth.se>
+References: <200304010341.48281.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200304010341.48281.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +18,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@newkirk.us
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-PiA0IC0gYWRkaXRpb24gb2Ygc3VwcG9ydCBmb3IgYSBSRU0gZmllbGQgaW4gcnVsZXMuICBXb3Vs
-ZCBkbyBub3RoaW5nIA0KPiB3aGF0c29ldmVyIGV4Y2VwdCBwcmludCB0aGUgc3BlY2lmaWVkIFJF
-TWFyayB0ZXh0IGF0IHRoZSBlbmQgDQo+IG9mIHRoZSBydWxlIA0KPiBpbiAtTCBsaXN0aW5ncy4g
-IFNvbWV0aGluZyBsaWtlOg0KPiBpcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLS1kcG9ydCAyMiAt
-cyBhLmIuYy5kIC1qIEFDQ0VQVCAtUkVNIEpvZWxTU0gNCj4gU28gdGhhdCBhIC1MIGxpc3Rpbmcg
-Y291bGQgYmUgZWFzaWVyICYgcXVpY2tlciB0byBkZWNpcGhlciANCj4gc29tZXRpbWVzLiAgSXQg
-DQo+IHdvdWxkIGFsc28gYWxsb3cgImlwdGFibGVzIC1MIC12IC1uIHwgZ3JlcCBKb2VsIiB0byBs
-aXN0IG9ubHkgDQo+IHJ1bGVzLCBpbiANCj4gYWxsIGNoYWlucywgd2l0aCAiSm9lbCIgaW4gdGhl
-IGNvbW1lbnQuDQoNCk9oIHllcywgdGhhdCBpcyBhIGdvb2QgaWRlYS4gDQoNCnR3byB3aXNoZXMg
-ZnJvbSBtZToNCg0KY291bGQgaXQgYmUgcG9zc2libGUgdG8gZGlzcGxheSB0aGUgbGluZSBudW1i
-ZXIgb2YgYSBjZXJ0YWluIHJ1bGUgaW4gaXB0YWJsZXMgLUwgLW4gLXYgYWRkaXRpb25hbCB0byAt
-UkVNIHRhcmdldD8NCkkgdGhpbmsgdGhpcyB3b3VsZCB2ZXJ5IG11Y2ggaGVscCB0byBmaW5kIHRo
-ZSBydWxlcyBxdWlja2VyIGluIHRoZSBpcHRhYmxlcyBzY3JpcHRzIHdoZW4gZWRpdGluZyB3aXRo
-IGEgdGV4dCBlZGl0b3IuDQoNCkdlbmVyYWxseSBJIHRoaW5rIHRoaXMgaXMgYSBwcm9ibGVtIG9m
-IHRvbyBsYXJnZSBydWxlIHNldHMuIElzIHRoZXJlIGEgd2F5IHRvIG1ha2UgY29udGFpbmVycyBv
-ZiBzcmMvZHN0IGFkZHJlc3Nlcz8gZS5nLiBsaWtlIHRoaXM6DQoNCmNvbnRhaW5lcl91bnRydXN0
-ZWRfZG5zPSJpcC5hZGRyLkEsIGlwLmFkZHIuQiwgaXAuYWRkci5DIg0KY29udGFpbmVyX3RydXN0
-ZWRfZG5zImlwLmFkZHIuRCwgaXAuYWRkci5FIg0KDQppcHRhYmxlcyAtQSBGT1JXQVJEIC1wIDYg
-LW0gc3RhdGUgLXMgJGNvbnRhaW5lcl90cnVzdGVkX2RucyAtLXNwb3J0IDEwMjQ6IC1kICRjb250
-YWluZXJfdW50cnVzdGVkX2RucyAtLWRwb3J0IDUzIC1vICR3YW5ldGggLS1zdGF0ZSBORVcsRVNU
-QUJMSVNIRUQgLWogQUNDRVBUDQoNCg0KDQpUaGFua3MsDQpQaGlsaXBwIA0K
+On Tue, 2003-04-01 at 10:41, Joel Newkirk wrote:
+
+> Personally I have four:
+> 
+> 1 - revamped LOG entry format, especially cleaning up MAC.
+
+see the next remark.
+
+> 2 - completely separate netfilter logging from kernel log streams.  (not 
+> just redirecting infrequently-used kernel streams, but actual dedicated 
+> netfilter streams)
+
+use ULOG
+you can easily modify the format it uses for the logfile.
+that part of the source isn't complicated at all.
+ 
+> 3 - Ability to match "original DestinationIP" of a DNATted packet in 
+> subsequent chains.  Useful with a single physical interface but multiple 
+> IPs bound to it.
+
+Already there, look at the conntrack match (ipt_conntrack)
+
+iptables -A FORWARD -m conntrack --ctorigdst 1.1.1.1 -j ACCEPT
+
+> 4 - addition of support for a REM field in rules.  Would do nothing 
+> whatsoever except print the specified REMark text at the end of the rule 
+> in -L listings.  Something like:
+> iptables -A INPUT -p tcp --dport 22 -s a.b.c.d -j ACCEPT -REM JoelSSH
+> So that a -L listing could be easier & quicker to decipher sometimes.  It 
+> would also allow "iptables -L -v -n | grep Joel" to list only rules, in 
+> all chains, with "Joel" in the comment.
+
+Has been debated frequently, you can probably find some of the
+discussions by using google.
+
+-- 
+/Martin
 
