@@ -1,11 +1,13 @@
-From: Thomas Kirk <thomas@arkena.com>
-Subject: PPTP and netfilter
-Date: Tue, 29 Oct 2002 13:58:57 +0100
+From: "R. Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: SNAT?
+Date: Tue, 29 Oct 2002 14:17:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021029125857.GD32153@thomas.arkena.com>
+Message-ID: <001901c27f4d$87579af0$0401000a@robbysan.org>
+References: <003f01c27f47$60e06740$c800640a@grooverider>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <003f01c27f47$60e06740$c800640a@grooverider>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'NetFilter Mailing List' <netfilter@lists.samba.org>
 
-Hey there listmembers!
+> The thing is, is there any way to SNAT a individual computer on my
+> internal network to a different public ip address?
 
-I know this issue has been discussed alot but im still abit
-confused. Let me say that if i get this to work i will write a
-detailed describtion on how i did it, kind of a hands-on howto :)
+Sure.
 
-Ive managed sucessfully to patch 2.4.18 kernel with the newest
-patch-o-matic and get it to compile. The linuxkernel was a vanillatype
-thing downloaded from kernel.org and patch-o-matic was downloaded from
-here :
+> All my internal network is masqueraded as the x.x.x.98/24 ip
+> address. I
+> want to SNAT my internal IP address 10.100.0.200 to
+> x.x.x.99/24 Is that
+> possible?
 
-ftp://ftp.netfilter.org/pub/patch-o-matic/snapshot/patch-o-matic-20021028.tar.bz2
+Create the rules in this order :
 
-ive loaded the modules :
+# iptables -t nat -A POSTROUTING -s 10.100.0.200 -j SNAT --to-source
+x.x.x.99
+# iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -j SNAT --to-source
+x.x.x.98
 
-ip_conntrack_pptp		2400   0  (unused)
-ip_conntrack_proto_gre		2432   0  [ip_conntrack_pptp]
+# iptables -A FORWARD -s 10.100.0.200 -d x.x.x.99 -j ACCEPT
+# iptables -A FORWARD -s 10.100.0.0/24 -d x.x.x.98 -j ACCEPT
 
-Now im abit confused on the rules i need to apply to my firewall to
-make it work.
-
-Case is this : 
-
-Client<------>[Firewall/NAT]<------>[INTERNET]<------>[SERVER]
-
-So my only worry is howto "translate" GRE packets and allow clients on
-inside of firewall to establish PPTP to server on internet through
-firewall.
-
-So fare ive added these rules to firewall :
-
-$IPTABLES -A lan_chain -p 47 -s $LAN_NET2 -j ACCEPT
-$IPTABLES -A lan_chain -p tcp --dport 1723 -s $LAN_NET2 -j ACCEPT
-
-lan_chain are outgoing chain. Is this all i need to add to firewall to
-make it work or am i overlooking something? 
-
-Please let me know if you need additional information on
-setup/configuration to help me solve this puzzle!
-
-Thanks in advance
-
--- 
-Venlig hilsen/Kind regards
-Thomas Kirk
-ARKENA
-thomas(at)arkena(dot)com
-Http://www.arkena.com
+When the first rule is matched, it is executed.
+So your PC on 10.100.0.200 hits first its own rule so never hits the
+subnet rule.
+The other PC's don't hit the specific rule and match the subnet rule.
+Of course the PC would have to have a static IP address, because
+otherwise another PC could be 10.100.0.200...
 
 
-BOFH excuse #345:
+Rob
 
-Having to manually track the satellite.
 
