@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Yet another FTP connection problem
-Date: Thu, 6 Jun 2002 17:06:20 +0100
+From: Erik Pagel <erik.pagel@gmx.de>
+Subject: Yet another FTP connection problem
+Date: Thu, 06 Jun 2002 17:41:52 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206061606.g56G6SA31895@vulcan.rissington.net>
-References: <373560121.1023385312@[192.168.13.4]>
+Message-ID: <ado218$88i$2@main.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <373560121.1023385312@[192.168.13.4]>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,31 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.samba.org
 
-On Thursday 06 June 2002 4:41 pm, Erik Pagel wrote:
+Hi,
 
-> iptables -N ftp
-> iptables -A ftp -p tcp --dport 20:21 -o $I_EXTERN -j ACCEPT
-> iptables -A ftp -p tcp --sport 20:21 -i $I_EXTERN -m state --state
-> ESTABLISHED,RELATED -j ACCEPT
-> iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state
-> NEW,INVALID -j LOG --log-level warning --log-prefix "DROP:FTP Incomming"
-> iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state
-> NEW,INVALID -j DROP
+there seems to be a problem within my FTP rules. I'm not able to make any 
+ftp connection.
+I'm able to send but not to recevie any package.
+Maybe someone can point me to my mistake.
 
-> iptables -A INPUT   -j ftp
-> iptables -A OUTPUT  -j ftp
-> iptables -A FORWARD -j ftp
+iptables -N ftp
+#No incomming connections, only outgoing and only in PASV mode.
+iptables -A ftp -p tcp --dport 20:21 -o $I_EXTERN -j ACCEPT
+iptables -A ftp -p tcp --sport 20:21 -i $I_EXTERN -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state 
+NEW,INVALID -j LOG --log-level warning --log-prefix "DROP:FTP Incomming"
+iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state 
+NEW,INVALID -j DROP
+iptables -A INPUT   -j ftp
+iptables -A OUTPUT  -j ftp
+iptables -A FORWARD -j ftp
 
-That is a very strange set of rules to try applying to all three of INPUT, 
-FORWARD and OUTPUT chains !
+all I get after some tries to establish a connection from my firewall to 
+ftp.funet.fi:
 
-Please can you tell us whether you are trying to ftp from this machine with 
-the netfilter rules on, or is the netfilter machine acting as a router 
-between the ftp client and server ?
+iptables -v -L ftp
+ pkts bytes target prot opt in     out   source    destination
+   20  1200 ACCEPT tcp  --  any    ppp+  anywhere  anywhere  tcp 
+dpts:ftp-data:ftp
+    0     0 ACCEPT tcp  --  ppp+   any   anywhere  anywhere  tcp 
+spts:ftp-data:ftp state RELATED,ESTABLISHED
+    0     0 ACCEPT tcp  --  ppp+   any   anywhere  anywhere  tcp 
+dpts:ftp-data:ftp state RELATED,ESTABLISHED
+    0     0 LOG    tcp  --  ppp+   any   anywhere  anywhere  tcp 
+dpts:ftp-data:ftp state INVALID,NEW LOG level warning prefix `DROP:FTP 
+Incomming'
+    0     0 DROP   tcp  --  ppp+   any   anywhere  anywhere  tcp 
+dpts:ftp-data:ftp state INVALID,NEW
+--------------------------
 
-
-Antony.
+Thanks in advance
+Erik Pagel
 
