@@ -1,13 +1,13 @@
 From: Ruslan Spivak <alienoid@is.lg.ua>
 Subject: Re: REDIRECT question
-Date: Wed, 02 Jul 2003 14:14:20 +0300
+Date: Wed, 02 Jul 2003 16:13:09 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F02BE8C.7020701@is.lg.ua>
-References: <Pine.LNX.4.44.0307021159470.16552-100000@localhost>
+Message-ID: <3F02DA65.60904@is.lg.ua>
+References: <Pine.LNX.4.44.0307021216100.16552-100000@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0307021159470.16552-100000@localhost>
+In-Reply-To: <Pine.LNX.4.44.0307021216100.16552-100000@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -27,31 +27,48 @@ Chris Wilson wrote:
 >
 >  
 >
->>i want make transaparent proxy on localhost and want to disabe access 
->>after redirecting to port 3128 if destination address in net other then 
->>193.108.240.0/22.
->>Does REDIRECT target send packet to INPUT chain and i should disable 
->>access in INPUT chain or should i disable access in '-t nat -A 
->>POSTROUTING' chain?
+>>I just want to be sure that after redirecting, the packet is going to 
+>>input chain where i can filter it. (am i right?)
 >>    
 >>
 >
->You will not be able to disable access in the POSTROUTING chain, since 
->after reading the REDIRECT rule, no further rules in that chain are 
->processed. In any case, it is not recommended to filter in the nat table. 
->The best place to put your filtering rule is in the INPUT chain.
+>As far as I know, that's right.
 >
 >Cheers, Chris.
+>  
 >
-Hello, Chris.
+One more question, please.
 
-I just want to be sure that after redirecting, the packet is going to 
-input chain where i can filter it. (am i right?)
+I have three nets that located in our city and i treat them as local, 
+cause we have direct connection with that networks.
+i need to redirect traffic that is going to outside world to port 
+3128(squid) and traffic to local nets leave alone.
+Following your previous advices, i have made suggestions about how it 
+should look:
 
-Thanks for your reply.
+LOCAL_NET_1=193.108.240.0/22
+LOCAL_NET_2=193.220.70.32/27
+LOCAL_NET_3=193.220.70.64/27
+
+iptables -t nat -N REDIRECT_CHAIN
+iptables -t nat -A REDIRECT_CHAIN -p tcp -d  $LOCAL_NET_1 --dport 80 -j 
+RETURN
+iptables -t nat -A REDIRECT_CHAIN -p tcp -d  $LOCAL_NET_2 --dport 80 -j 
+RETURN
+iptables -t nat -A REDIRECT_CHAIN -p tcp -d  $LOCAL_NET_3 --dport 80 -j 
+RETURN
+iptables -t nat -A REDIRECT_CHAIN -p tcp --dport 80 -j REDIRECT 
+--to-port 3128
+iptables -t nat -A PREROUTING -j REDIRECT_CHAIN
+
+Can you tell me if i'm on on a right way?
+
+Again, thanks in advance.
 
 Best regards,
 Ruslan
+
+
 
 
 
