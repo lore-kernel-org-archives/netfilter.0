@@ -1,11 +1,12 @@
 From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Is this possible?
-Date: Sun, 13 Feb 2005 13:18:38 +0100
-Message-ID: <1108297118.10876.20.camel@nostromo.bgsecm.com>
-References: <420CD815.1000806@thompsonmike.co.uk>
+Subject: Re: ip_conntrack limit && stateless firewalls
+Date: Sun, 13 Feb 2005 13:22:38 +0100
+Message-ID: <1108297358.10876.23.camel@nostromo.bgsecm.com>
+References: <Pine.CYG.4.62.0502110943440.2348@MI340a.chem.mathsci.usna.edu>
+	<876ef97a05021106551fb5dacb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <420CD815.1000806@thompsonmike.co.uk>
+In-Reply-To: <876ef97a05021106551fb5dacb@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,30 +20,38 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-El vie, 11-02-2005 a las 16:06 +0000, Michael Thompson escribi=C3=B3:
-> I have a issue where I cannot connect to my server because the firewall=
-=20
-> only allows ports 80 and 443 out.
+El vie, 11-02-2005 a las 09:55 -0500, Tobias DiPasquale escribi=C3=B3:
+> On Fri, 11 Feb 2005 09:49:40 -0500, Kevin Van Workum <vanw@usna.edu> wr=
+ote:
+> > I'm having a problem with my firewall where packets are being dropped=
+ due
+> > to the ip_conntrack limit. I could up the limit, but my users need 30=
+k+
+> > connections simultaneously and with the minimum overhead. And I only =
+have
+> > 1 firewall box. So I'd like to disable or by-pass ip_conntrack some h=
+ow to
+> > avoid dropped packets and reduce over head. How can I do this, and mo=
+re
+> > importantly, would it be helpful.
 >=20
-> I previously ran SSH on port 443 to overcome this, but I have had to=20
-> implement a HTTPS solution for users who wanted secure access, so that=20
-> is now gone.
+> You can use the NOTRACK target on the traffic that is causing the
+> problem (which will disable using ip_conntrack on that traffic), or
+> you can decompile conntrack altogether. The latter would basically
+> make the firewall stateless. man iptables for more info on using
+> NOTRACK.
 >=20
-> This system has DNS records for ssh.server.co.uk and www.server.co.uk,=20
-> so can I use IPTables or similar to recognise if it is being connected=20
-> to via ssh.server.co.uk on port 443 and forward the traffic to port 22?=
-=20
-> If www.server.co.uk:443 is used apache gets the traffic? Or is this (As=
-=20
-> I suspect) Impossible?
 
-I think the DNS trick it's impossible.
-You should ask the administrator to open you the ssh port, if he
-let you use the 443 to run sshd then why he doesn't let you do the
-same in port 22/tcp or at least any other port he has open in his
-firewall.
+I just wanted to note that changing from CONNTRACK enabled
+rules to stateless rules implies changing all your rules
+and scripts.
+
+Maybe just limiting with NOTRACK the problematic protocols
+can be enough to solve the problem. And surely more computing
+power will be useful (CPU and RAM).
 
 Regards.
+
 
 --=20
 
