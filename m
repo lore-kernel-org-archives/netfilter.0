@@ -1,13 +1,13 @@
-From: Paul Frieden <pfrieden@users.sourceforge.net>
+From: Marcello Scacchetti <marcello.scacchetti@nextrem.it>
 Subject: Re: Firewall help
-Date: Wed, 11 Dec 2002 16:00:02 -0600
+Date: 11 Dec 2002 21:01:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DF7B562.70902@users.sourceforge.net>
-References: <000301c2a14e$7733f510$0114a8c0@CyberDawn.Net> <358420000.1039638027@wookie.shorewall.net>
+Message-ID: <1039636895.24853.12.camel@nxitmirms1>
+References: <000301c2a14e$7733f510$0114a8c0@CyberDawn.Net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <358420000.1039638027@wookie.shorewall.net>
+In-Reply-To: <000301c2a14e$7733f510$0114a8c0@CyberDawn.Net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I would also recommend looking at my project PacketFlow Firewall 
-Generator.  You can download it from 
-http://packetflowfw.sourceforge.net.  It generates rules from a simple 
-XML configuration format.  It includes several examples, including 
-single and multi DMZ configs.  It should be simple to modify one of 
-these to your purposes.  It doesn't currently generate NAT rules, but 
-I've found that they are fairly easy to make by hand.
+Hi,
+make sure you have enabled ip forwarding into
+/proc/sys/net/ipv4/ip_forward, if this file contains 0 do an:
+echo "1" > /proc/sys/net/ipv4/ip_forward. This should solve the problem
+between internal network and dmz. For the external network you probably
+need nat or masq. This is because each machine on dmz and internal
+network should have default gateway set to firewall interfaces suppose
+for dmz the gateway could be: 192.168.1.1 and for internal network could
+be: 192.168.2.1. Each of this addresses should be configured on firewall
+interfaces as (for example) eth0 and eth1. To be able to talk with
+public services you must use nat or set on all public servers something
+like: route add -net 192.168.1.0 netmask 255.255.255.0 gw
+xxx.xxx.xxx.xxx
+and
+route add -net 192.168.2.0 netmask 255.255.255.0 gw xxx.xxx.xxx.xxx
+where xxx.xxx.xxx.xxx is your firewall external interface ip address (in
+my example eth2 interface address).
+This of course could lead to many security risks, so i can't suggest
+this to you, really. Better could be to set a masq on packets coming
+from your dmz and internal network going to external networks. This
+could be done on the firewall using something like:
+iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
+where eth2 is your external firewall interface.
+Hope to have solved your problem,
 
-PacketFlow is written in Python and uses libxml2.  Both of these should 
-be included in RH8, so it shouldn't be any trouble.  If you have any 
-questions, you can post them on the site and I'll help if I can.
-
-Paul
-
-Tom Eastep wrote:
-
->
->
-> --On Wednesday, December 11, 2002 09:49:49 PM +0200 DeWet van Rooyen 
-> <dewet@cyberdawn.co.za> wrote:
->
->> I installed a machine with Redhat 8 and are trying to set up a iptables
->> firewall with 2 internal segments (DMZ and internal network).
->> My machine have 3 Network cards.
->>
->>  Is this possible ?
->>
->>  I can seem to get all the segments to see each other. Can you give 
->> me an
->>  idea on how to do this. Is it just a question of routes / Nat and Arp
->>  entries ?
->>
->> DMZ - 192.168.1.0 / 255.255.255.0
->> Internal Network / 192.168.2.0 / 255.255.255.0
->> For the external interface, I have 64 ip addresses - 255.255.255.192
->>
->
-> If you would be willing to forego using iptables directly, take a look 
-> at http://shorewall.sf.net/three-interface.htm.
->
-> -Tom
-> -- 
-> Tom Eastep   \ Shorewall - iptables made easy
-> Shoreline,    \ http://shorewall.sf.net
-> Washington USA \ teastep@shorewall.net
->
->
+			Marcello
 
 
+Il mer, 2002-12-11 alle 20:49, DeWet van Rooyen ha scritto:
+> I installed a machine with Redhat 8 and are trying to set up a iptables
+> firewall with 2 internal segments (DMZ and internal network).
+> My machine have 3 Network cards.
+>  
+>  Is this possible ?
+>  
+>  I can seem to get all the segments to see each other. Can you give me an
+>  idea on how to do this. Is it just a question of routes / Nat and Arp
+>  entries ?
+>  
+> DMZ - 192.168.1.0 / 255.255.255.0
+> Internal Network / 192.168.2.0 / 255.255.255.0
+> For the external interface, I have 64 ip addresses - 255.255.255.192
+-- 
+Marcello Scacchetti <marcello.scacchetti@nextrem.it>
 
