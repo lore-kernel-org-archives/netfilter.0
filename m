@@ -1,10 +1,11 @@
-From: =?GB2312?B?0e67qg==?= <youngh0702@21cn.com>
-Subject: clear the ip_conntrack entry
-Date: Wed, 25 Jun 2003 10:46:51 +0800
+From: "Jeremy" <jeremy@paradise.net.nz>
+Subject: Re: PPTP server behind firewall
+Date: Thu, 26 Jun 2003 11:09:22 +1200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030625103542.38F9.YOUNGH0702@21cn.com>
+Message-ID: <04e201c33b6e$d04eeaa0$3964a8c0@comsol.co.nz>
+References: <23b26c23ece5.23ece523b26c@hawaii.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,45 +17,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Johnoel Ancheta <johnoel@hawaii.edu>, netfilter@lists.netfilter.org
 
-Hi everyone :
-	I have notice that many request about how to clear the
-/proc/net/ip_conntrack entry , and someone suggest that it have no
-resolution except restart the interface .
-	I think the answer : send a fake ip packet (with RST set) to
-firewall , to let it think the connection terminate .
-	By this methode , I have the following script written , it work
-well for me.
-	To use this script , you must have hping2 installed , it can be
-download from http://www.hping.org 
---------- clr_conns start  ------------------
-echo
-echo "############################"
-echo "# Edit by Youngh 2003.06.24 v1.1 "
-echo "# Usage : clr_conns IpAddress"
-echo "#    	This will clear all connections from this IP_Address"
-echo "# Example:/root/clr_conns  10.0.3.3 "
-echo "############################"
-echo
+you will need this if you have a pptp server (im guessing windows) behind
+iptables
+
+# pass packets on port 1723 straight through to vpn server
+$IPTABLES -A FORWARD -p TCP -s 0/0 --dport 1723 -j ACCEPT
+# also need to pass GRE
+$IPTABLES -A FORWARD -p 47 -s 0/0 -j ACCEPT
+
+#pre-routing stuff
+
+$IPTABLES -t nat -A PREROUTING -p 47 -i $INET_IFACE -j DNAT --to
+192.168.100.7  (your server ip)
+
+HTH! :D
 
 
+----- Original Message -----
+From: "Johnoel Ancheta" <johnoel@hawaii.edu>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, June 25, 2003 11:15 AM
+Subject: RE: PPTP server behind firewall
 
-if [ -z $1 ] ; then 
-	exit
-fi
 
+> > Have you used the pptp connection tracking modules? are they loaded?
+>
+> > > compiled the kernel with GRE and PPTP support
+>     built in no modules.
+>
+> i building a floppy router.  it works except for the vpn
+> support.  i've had this working before using Brian Kuschak
+> pptp kernel patches a long time ago.  since then i lost my notes.
+>
+> what are some minumum rules that would completely open up the firewall
+> and forward port 1723 and ip 47 to the internal private vpn server?
+>
+> i am going to try
+>
+> iptables -P INPUT ACCEPT
+> iptables -P OUTPUT ACCEPT
+> iptables -P FORWARD MASQ
+>
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1723 -j DNAT
+> --to-destination 192.168.0.200:1723
+> iptables -t nat -A PREROUTING -i eth0 -p 47 -j DNAT --to-destination
+> 192.168.0.200
+>
+> any advice would be appreciated,
+> johnoel@hawaii.edu
+>
+>
+>
 
-grep -E "^tcp .{10,25}ESTABLISHED src=$1 " /proc/net/ip_conntrack | while read line ; do 
-	S_IP=`echo $line | awk '{print substr($5,5)}'`
-	S_SOCK=`echo $line | awk '{print substr($7,7)}'`
-	D_IP=`echo $line | awk '{print substr($6,5)}'`
-	D_SOCK=`echo $line | awk '{print substr($8,7)}'`	
-	echo "$S_IP:$S_SOCK $D_IP:$D_SOCK"
-
-	hping2 $D_IP -R -s $S_SOCK -p $D_SOCK -a $S_IP -k -c 1 >/dev/null 2>/dev/null &
-
-done	
-
-----------------clr_conns end --------------------------------
 
