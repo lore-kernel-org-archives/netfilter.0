@@ -1,10 +1,8 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: How to stop SPAM from Internal users
-Date: Mon, 24 Feb 2003 12:44:21 +0530
+From: "louie miranda" <lmiranda@chikka.com>
+Subject: Forwarding problem, :( port redirection!
+Date: Mon, 24 Feb 2003 16:12:51 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <07c601c2dbd4$5ab5aa80$13fcc5cb@Housecall>
-References: <033201c2dbbf$92ef54b0$0b00000a@nocpc3>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <045a01c2dbdc$8964ae00$0b00000a@nocpc3>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,22 +18,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi all
+Im trying just to forward simple ftp, 21 request into my internal machine.
+Im typing this but it does not work..
 
-I have One Public IP assigned to eth0
-i have Private network 192.168.1.0/24 connected to eth1
+any ideas?
 
-how can stop, some one spamming from internal IP
-i get from lot queries from other host saying that
-my Public IP is spamming .....
 
-1 ) how do i stop them spaming or relaying mails from internal PC
-2) how to stop scanning from internal ip to any external IP
-3) how do i kick the user who is infected with the virus and block them and
-notify to admin
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 10.0.0.11 --dport 21 -j
+DNAT --to 203.190.72.108:21
+iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 203.190.72.108 --dport 21 -j
+ACCEPT
 
-thanks
-hare
+
+eth0: Internet
+eth1: LAN
+
+
+Doc: http://www.knowplace.org/netfilter/syntax.html#conf6
+================================
+Destination NAT the packets (changes the destination IP address in the IP
+header and port number in the TCP/UDP header)
+    iptables -t nat -A PREROUTING -i eth0 -p protocol -d
+ip_address_of_eth0 --dport original_port_number -j DNAT --to
+destination_ip_address:destination_port_number
+Forward the natted packets (allow the natted packet to be forwarded)
+    iptables -A FORWARD -i eth0 -o eth1 -p protocol -d
+destination_ip_address --dport destination_port_number -j ACCEPT
+================================
+
+
+
+
+
+
+
+
+
+--
+thanks,
+louie miranda
 
 
 
