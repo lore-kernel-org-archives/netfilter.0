@@ -1,12 +1,10 @@
-From: Ishwar Rattan <ishwar@pali.cps.cmich.edu>
-Subject: Re: disconnection from LAN
-Date: Tue, 7 Sep 2004 14:37:23 -0400 (EDT)
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: disconnection from LAN
+Date: Tue, 7 Sep 2004 11:33:51 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <Pine.LNX.4.56.0409071435580.27635@pali.cps.cmich.edu>
-References: <20040907175403.GC21613@tranquility.scriptkitchen.com>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382AF0@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040907175403.GC21613@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,15 +14,32 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Cc: Netfilter ML <netfilter@lists.netfilter.org>
+To: 'Jason Opperisano' <opie@817west.com>, netfilter@lists.netfilter.org
+
+i would think that prohibition against split-tunneling would be a corporate
+security decision as such IS behaving as configured.
+
+when you want to access the open internet DONT use the VPN.
+dont change any of your other boxes as this makes since.
+
+when you want to access the intranet, DO USE the VPN
+
+v/r,
+
+~piranha
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Jason
+Opperisano
+Sent: Tuesday, September 07, 2004 11:01 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: disconnection from LAN
 
 
-
-On Tue, 7 Sep 2004, Payal Rathod wrote:
-
+On Tue, 2004-09-07 at 13:54, Payal Rathod wrote:
 > Hi,
 > I am conecting to internet via. my Mandrake Linux 10 box. But
 > whenever I connect to my client's VPN from my windows machine (using
@@ -34,9 +49,19 @@ On Tue, 7 Sep 2004, Payal Rathod wrote:
 > machine. But the same problem. As soon as I disconnect VPN I can
 > get in LAN.
 > Can someone suggest anything? I am very very bad in VPN and firewalls.
+> 
+> With warm regards,
+> -Payal
 
-How can that be? People (from this group) have been trying to remedy
-your deficiencies for quite some time now..
+your cisco VPN client is configured (at the VPN gateway end) not to
+allow "split-tunneling" and is working as designed.
 
--ishwar
+contact the administrator of the VPN gateway and ask to have
+split-tunneling enabled so that you may access your LAN simultaneously.
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
+
 
