@@ -1,9 +1,10 @@
-From: <indio@interlap.com.ar>
-Subject: who are begin NATted?
-Date: Fri, 25 Apr 2003 16:10:29 -0300
+From: "Alex Nee" <hard__ware@dynamicaccess.biz>
+Subject: Re: RE Problem
+Date: Mon, 28 Apr 2003 14:28:26 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002101c30b5e$60ae8fb0$fe0101c0@wsta02>
-Reply-To: <indio@interlap.com.ar>
+Message-ID: <000901c30dcd$1a8a8bd0$7b7b10ac@hardware>
+References: <20030422021216.26459.70618.Mailman@digital>
+Reply-To: "Alex Nee" <alex@dynamicaccess.biz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,9 +18,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "lists.netfilter" <netfilter@lists.netfilter.org>
 
-i wanna know what computers are being natted. is there any command/tool to
-see it?
+well ive checked those options and they are set ,
+
+how do i reply to messages in the Archive if i dont recieve them from the
+mailing list itself ..
+
+e.g,  looking at questions via HTTP then responding with my mail client ....
+hrmmm
 
 
