@@ -1,12 +1,11 @@
-From: Rasmus Reinholdt Nielsen <rasmus@narani.dk>
-Subject: Re: What ports need to be open to allow for mail?
-Date: Thu, 10 Apr 2003 12:24:54 +0200
+From: Payal Rathod <linux@rpayal.cjb.net>
+Subject: clearing basics: semi-OT
+Date: Thu, 10 Apr 2003 13:36:51 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.2.20030410122405.02794440@of23sm3.kadnet.dom>
-References: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
+Message-ID: <20030410080650.GA1720@linux.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: James Marcinek <james_marcinek@yahoo.com>, netfilter@lists.netfilter.org
-Cc: jmarc1@eckerd.com
+To: netfilter@lists.netfilter.org
 
-port 25 tcp will do for smtp, but you will need 110 tcp as well if you need 
-pop3 access from the Internet.
+Hi,
+I am trying to clear some of my basics. I am reading IP-Masquerading HOWTO. 
+In it these things were mentioned,
 
-/Rasmus
+UNIVERSE="0.0.0.0/0"
+$IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
 
-At 02:39 10-04-2003 -0700, James Marcinek wrote:
->Hello All,
->
->I'm trying to set up my mail server; however I want to
->make sure that I have the correct port(s) open. I
->already have TCP port 25 open; however do I also have
->to have UDP port 25 open as well? Any help would be
->appreciated.
->
->Thanks,
->James
->
->__________________________________________________
->Do you Yahoo!?
->Yahoo! Tax Center - File online, calculators, forms, and more
->http://tax.yahoo.com
+What exactly does 0.0.0.0/0 mean? And why should we be concerned with
+it? And what is the use of rule given after it?
 
+INTNET="192.168.1.0/24"
+INTIP="192.168.1.1/24"
+
+The first one means the entire network of 192.168.1.x? What exactly is
+the second one. Does it just means 192.168.1.1 then why "/24"?
+And lastly,
+
+$IPTABLES -N drop-and-log-it
+$IPTABLES -A drop-and-log-it -j DROP
+
+Why was this rule made? And why was it "dropped"? What is the logic
+behind this? Shouldn't it be,
+$IPTABLES -P drop-and-log-it DROP
+
+
+Thanks a lot for the patience and bye.
+With warm regards,
+-Payal
+
+p.s please make a cc to me too.
+
+-- 
+"Visit GNU/Linux Success Stories"
+www.geocities.com/rpayal99
+Guest-Book Section Updated.
 
