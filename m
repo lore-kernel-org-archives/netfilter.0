@@ -1,8 +1,8 @@
 From: zynkx <skydive@megamail.pt>
-Subject: limit outgoing *-*-*-*-*-*-*-*
-Date: Sun, 07 Dec 2003 15:55:47 +0000
+Subject: hi alistair ;))
+Date: Sun, 07 Dec 2003 16:07:58 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070812547.3fd34d8339437@paris-hme1>
+Message-ID: <1070813278.3fd3505e4ef9f@paris-hme1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,31 +16,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: Alistair Tonner <Alistair@nerdnet.ca>
+Cc: netfilter@lists.netfilter.org
 
-hi all and tanx in advance for reading this ;))
+i am just about to try it but the project i should=20
+lead concerning this is not being done yet :) i think=20
+it will be running very very soon!=20
 
-i got two questions:
+by that time i will be in a position to negotiate ;)))
 
-1st
+hehe!!
 
-is it possible to limit outgoing smtp traffic with=20
-iptables? let's say i got a smtp running and i don't=20
-want anybody to send more than 3 mb of mail, each time=20
-a user sends an email somewhere. each email i send, i=20
-will not be able to send no more than 3 mb.is this=20
-possible to limit?
+tanx a lot for caring" i really apreciate it!!
 
-2nd
+[][][]'s to you all ;))
 
-got two gateways. the first routing outcoming and=20
-incoming web traffic. the second firewalling my=20
-personal pc's ;) ...
-ok... i better draw the lan... so you can understand=20
-what i'm saying ;))) and then i'll make the question=20
-in a more accurate way
-
-[][]
 
 
 unix is user friendly. it's just selective when=20
