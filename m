@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IP Alias with iptables
-Date: Wed, 21 Apr 2004 08:50:03 +0100
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: PPTP conntrack patch.
+Date: Wed, 21 Apr 2004 10:00:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404210850.03709.Antony@Soft-Solutions.co.uk>
-References: <EMEKLOMJOPNJPAFKHEDJOEDGCDAA.rhaces_chistes@yahoo.com.mx>
-Reply-To: "Netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <001c01c42776$b1f627e0$1202a8c0@admin>
+References: <GHEILNONPACCGBGKBEKKMEFFCFAA.mani@manikandan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <EMEKLOMJOPNJPAFKHEDJOEDGCDAA.rhaces_chistes@yahoo.com.mx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,103 +19,66 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 21 April 2004 12:39 am, Rodrigo Haces wrote:
-
-> Thanks for this, hope this is my last post:
+> I am trying to configure my gateway/firewall RH 9 linux-2.4.20-30.9,
+> to allow multiple LAN pptp client sessions. I applied pptp conntrack
+patch
+> which I downloaded from iptables.org.
 >
-> assuming this will allow all 192.168.1.0/24 go to 192.168.0.0/24 how could
-> i do if i want not all the subnet, but only 192.168.1.10, i suppose is with
-> the -s option, but im not sure of how to use this.
+> When I apply the patch on my kernel linux-2.4.20-30.9, I am getting
+> a message
+>
+> Testing patch extra/pptp-conntrack-nat.patch...
+>    Placed new Config.in line
+>    Placed new Configure.help entry
+>    Placed new Makefile line
+>    Placed new Makefile line
+>    Placed new ip_conntrack.h line
+>    Placed new ip_conntrack.h line
+>    Placed new ip_conntrack.h line
+>    Placed new ip_conntrack.h line
+>    Placed new ip_conntrack.h line
+>    Placed new ip_conntrack.h line
+>    Placed new ip_conntrack.h line
+>    Placed new ip_conntrack.h line
+> Failed to patch copy of /usr/src/linux-2.4.20-30.9
+>
+> But I am able to see files like ,
 
-iptables -A FORWARD -i eth0 -o eth1 -s 192.168.1.10 -j ACCEPT
+Try patching a recent vanilla 2.4 kernel from www.kernel.org.
 
-Regards,
+> ip_conntrack_pptp.c
+> ip_conntrack_proto_gre.c
+>
+> but there are no files ending with .o for ip_conntrack_pptp.c
+> ip_conntrack_proto_gre.c .
+>
+> I went ahead and recompiled and installed my new  kernel.
+>
+> Still I am not able to find any modules for gre or pptp inside
+> /lib/modules/'uname-r'/net/ipv4/netfilter directory.
+>
+> What could be the problem. Please assist me. I have already spent few
+weeks
+> on this.
 
-Antony
+I guess when installing your kernel and modules you get depmod errors
+(anyway, I got them when installing kernel 2.4.26) :
 
-> > -----Mensaje original-----
-> > De: netfilter-admin@lists.netfilter.org
-> > [mailto:netfilter-admin@lists.netfilter.org]En nombre de Antony Stone
-> > Enviado el: Martes, 20 de Abril de 2004 01:33 a.m.
-> > Para: Netfilter
-> > Asunto: Re: IP Alias with iptables
-> >
-> > On Tuesday 20 April 2004 4:08 am, Rodrigo Haces wrote:
-> > > New Situation:
-> > >
-> > > eth0: 192.168.1.1 Connected to hub 1
-> > > eth1: 192.168.0.1 Connected to hub 2
-> > >
-> > > hub 1 is for guests
-> > > hub 2 is for administrative porposes, and MUST be able to use network
-> > > 192.168.0.x and 192.168.1.x
-> >
-> > So, the firewall needs to allow 192.168.1.0/24 addresses to connect to
-> > 192.168.0.0/24 but not the other way round.
-> >
-> > > so this is something i thought.
-> > >
-> > > eth0... 192.168.1.1 netmask 255.255.255.0
-> > > eth1... 192.168.0.1 netmask 255.255.0.0
-> >
-> > Doesn't look good.
-> >
-> > > eth1:1. 192.168.1.101 netmask 255.255.0.0
-> >
-> > Looks as bad as the first idea, with only one interface.
-> >
-> > > my laptop is part of the administrative sector, i have
-> >
-> > 192.168.0.10 ip, but
-> >
-> > > i need to be able to use also 192.168.1.10 so i can monitor guests,
-> >
-> > What is wrong with yur laptop havign just one IP address (that *is*
-> > conventional, after all), and the firewall allowing it to
-> > "monitor" addresses
-> > in the other subnet?   Perhaps you should explain more about what
-> > you mean by
-> > "monitor"?
-> >
-> > > Any ideas
-> >
-> > Yes.   Have two subnets with separate address ranges, a firewall
-> > in between,
-> > and allow one subnet to connect to the other, but not the other way
-> > round.
-> >
-> > eg:
-> > eth0 192.168.1.1 netmask 255.255.255.0
-> > eth1 192.168.0.1 netmask 255.255.255.0
-> >
-> > iptables -P FORWARD DROP
-> > iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> > iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-> >
-> > Regards,
-> >
-> > Antony.
-> >
-> > --
-> > Success is a lousy teacher.  It seduces smart people into
-> > thinking they can't
-> > lose.
-> >
-> >  - William H Gates III
-> >
-> >                                                      Please reply
-> > to the list;
-> >                                                            please
-> > don't CC me.
+> depmod: *** Unresolved symbols in
+> /lib/modules/2.4.26-4/kernel/net/ipv4/netfilter/ip_conntrack_pptp.o
+> depmod:         ip_ct_gre_keymap_add
+> depmod:         ip_ct_gre_keymap_destroy
+> depmod: *** Unresolved symbols in
+> /lib/modules/2.4.26-4/kernel/net/ipv4/netfilter/ip_nat_pptp.o
+> depmod:         ip_ct_gre_keymap_change
 
--- 
-"It would appear we have reached the limits of what it is possible to achieve 
-with computer technology, although one should be careful with such 
-statements; they tend to sound pretty silly in five years."
+Philip Craig's answer fixed that for me :
+http://lists.netfilter.org/pipermail/netfilter-devel/2004-March/014618.html
 
- - John von Neumann (1949)
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Gr,
+Rob
+
+
 
 
