@@ -1,15 +1,11 @@
-From: "Martinez, Michael" <MMARTINEZ@CSREES.USDA.GOV>
+From: =?ISO-8859-1?Q?Sven-=C5ke_Larsson?= <Sven-Ake.Larsson@hiq.se>
 Subject: RE: Instructions on how to redirect port 80 to port 8080
-Date: Wed, 18 Feb 2004 09:31:11 -0500
+Date: Wed, 18 Feb 2004 15:41:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9908FCB837A50642B74E2BEC198843095CC654@csrees-exchsrvb.csrees.usda.gov>
+Message-ID: <31A473DBB655D21180850008C71E251A07D3D60A@mail.kebne.se>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	boundary="----=_NextPart_000_0031_01C3F601.F0F27E90";
-	protocol="application/x-pkcs7-signature";
-	micalg=SHA1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,165 +15,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: 'Netfilter ' <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+=20
+Hi,=20
 
-------=_NextPart_000_0031_01C3F601.F0F27E90
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+This is almost off topic, but...
+When you finally have the ruleset working, you will still tear your =
+hair of
+when you try to look at the web site in a MicroWhatever Internet =
+Explorer -
+especially when the "The page cannot be displayed" message hits your =
+face.
+Why? Because IE cannot resolve your address if your server is listening =
+on
+another port than 80, so every time someone tries to connect to your =
+site by
+typing www.your.domain:8080 without "http://" in the beginning, they =
+will
+get the error message.=20
+Actually, the error appers even if someone types your.domain:80 without =
+http
+but it almost never happens. Funny, isn't it?
 
---> On Wednesday 18 February 2004 2:06 pm, Martinez, Michael wrote:
---> 
---> > --> iptables -A PREROUTING -t nat -d a.b.c.d -p tcp --dport 80
---> > --> -j REDIRECT --to 8080
---> >
---> > This isn't working. I can "telnet `hostname` 8080" and get an http
---> > response, but when I do "telnet `hostname` 80" the 
---> response I get is
---> > "telnet: Unable to connect to remote host: Connection refused."
---> 
---> Given the ruleset you've posted, I don't see how a telnet 
---> to 8080 can work, 
---> since you have no INPUT rule allowing packets to that port...
---> 
---> Please flush the counters on your rules using "iptables -Z; 
---> iptables -Z -t 
---> nat", 
+And yes, I have a uge chunk of hair ripped of just above my ears. ;-)
 
-Done
+Regards,
+S-=C5
 
---> connect to port 8080, and then tell us the output of 
---> "iptables -L -nvx;
 
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-     131    10661 RH-Firewall-1-INPUT  all  --  *      *       0.0.0.0/0
-0.0.0.0/0
 
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-       0        0 RH-Firewall-1-INPUT  all  --  *      *       0.0.0.0/0
-0.0.0.0/0
+-----Original Message-----
+From: Antony Stone
+To: Netfilter
+Sent: 2004-02-18 15:19
+Subject: Re: Instructions on how to redirect port 80 to port 8080
 
-Chain OUTPUT (policy ACCEPT 102 packets, 8080 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
+On Wednesday 18 February 2004 2:06 pm, Martinez, Michael wrote:
 
-Chain RH-Firewall-1-INPUT (2 references)
-    pkts      bytes target     prot opt in     out     source
-destination
-      36     1828 ACCEPT     all  --  lo     *       0.0.0.0/0
-0.0.0.0/0
-       0        0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0          icmp type 255
-       0        0 ACCEPT     esp  --  *      *       0.0.0.0/0
-0.0.0.0/0
-       0        0 ACCEPT     ah   --  *      *       0.0.0.0/0
-0.0.0.0/0
-      82     5404 ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0          state RELATED,ESTABLISHED
-       1       48 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          state NEW tcp dpt:22
-       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          state NEW tcp dpt:80
-      12     3381 REJECT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0          reject-with icmp-host-prohibited
- 
---> iptables -L -t nat -nvx".
+> --> iptables -A PREROUTING -t nat -d a.b.c.d -p tcp --dport 80
+> --> -j REDIRECT --to 8080
+>
+> This isn't working. I can "telnet `hostname` 8080" and get an http
+> response, but when I do "telnet `hostname` 80" the response I get is
+> "telnet: Unable to connect to remote host: Connection refused."
 
-Chain PREROUTING (policy ACCEPT 19 packets, 4845 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-       0        0 REDIRECT   tcp  --  *      *       0.0.0.0/0
-199.128.238.12     tcp dpt:80 redir ports 8080
+Given the ruleset you've posted, I don't see how a telnet to 8080 can
+work,=20
+since you have no INPUT rule allowing packets to that port...
 
-Chain POSTROUTING (policy ACCEPT 34 packets, 2054 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-
-Chain OUTPUT (policy ACCEPT 34 packets, 2054 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-
-Mike Martinez
-
-------=_NextPart_000_0031_01C3F601.F0F27E90
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIKGTCCAjww
-ggGlAhAyUDPPUNFW81yBrWVcT8glMA0GCSqGSIb3DQEBAgUAMF8xCzAJBgNVBAYTAlVTMRcwFQYD
-VQQKEw5WZXJpU2lnbiwgSW5jLjE3MDUGA1UECxMuQ2xhc3MgMSBQdWJsaWMgUHJpbWFyeSBDZXJ0
-aWZpY2F0aW9uIEF1dGhvcml0eTAeFw05NjAxMjkwMDAwMDBaFw0yMDAxMDcyMzU5NTlaMF8xCzAJ
-BgNVBAYTAlVTMRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjE3MDUGA1UECxMuQ2xhc3MgMSBQdWJs
-aWMgUHJpbWFyeSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTCBnzANBgkqhkiG9w0BAQEFAAOBjQAw
-gYkCgYEA5Rm/baNWYS2ZSHH2Z965jeu3noaACpEO+jglr0aIguVzqKCbJF0NH8xlbgyw0FaEGIea
-BpsQoXPftFg5a27B9hXVqKg/qhIGjTGsf7A01480Z4gJzRQR4k5FVmkfeAKA2txHkSm7NsljXMXg
-1y2He6G3MrB7MLoqLzGq7qNn2tsCAwEAATANBgkqhkiG9w0BAQIFAAOBgQBLRGZgaGTkmBvzsHLm
-lYl83XuzlcAdLtjYGdAtND3GUJoQhoyqPzuoBPw3UpXD2cnbzfKGBsSxG/CCiDBCjhdQHGR6uD6Z
-SXSX/KwCQ/uWDFYEJQx8fIedJKfY8DIptaTfXaJMxRYyqEL2Raa2Nrngv2U2k8LS12vc3lnWojX4
-RTCCA2IwggLLoAMCAQICEAvaCxfBP4mOqwl0erTOLjMwDQYJKoZIhvcNAQECBQAwXzELMAkGA1UE
-BhMCVVMxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMTcwNQYDVQQLEy5DbGFzcyAxIFB1YmxpYyBQ
-cmltYXJ5IENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTk4MDUxMjAwMDAwMFoXDTA4MDUxMjIz
-NTk1OVowgcwxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVz
-dCBOZXR3b3JrMUYwRAYDVQQLEz13d3cudmVyaXNpZ24uY29tL3JlcG9zaXRvcnkvUlBBIEluY29y
-cC4gQnkgUmVmLixMSUFCLkxURChjKTk4MUgwRgYDVQQDEz9WZXJpU2lnbiBDbGFzcyAxIENBIElu
-ZGl2aWR1YWwgU3Vic2NyaWJlci1QZXJzb25hIE5vdCBWYWxpZGF0ZWQwgZ8wDQYJKoZIhvcNAQEB
-BQADgY0AMIGJAoGBALtaRIoEFrtV/QN6ii2UTxV4NrgNSrJvnFS/vOh3Kp258Gi7ldkxQXB6gUu5
-SBNWLccI4YRCq8CikqtEXKpC8IIOAukv+8I7u77JJwpdtrA2QjO1blSIT4dKvxna+RXoD4e2HOPM
-xpqOf2okkuP84GW6p7F+78nbN2rISsgJBuSZAgMBAAGjgbAwga0wDwYDVR0TBAgwBgEB/wIBADBH
-BgNVHSAEQDA+MDwGC2CGSAGG+EUBBwEBMC0wKwYIKwYBBQUHAgEWH3d3dy52ZXJpc2lnbi5jb20v
-cmVwb3NpdG9yeS9SUEEwMQYDVR0fBCowKDAmoCSgIoYgaHR0cDovL2NybC52ZXJpc2lnbi5jb20v
-cGNhMS5jcmwwCwYDVR0PBAQDAgEGMBEGCWCGSAGG+EIBAQQEAwIBBjANBgkqhkiG9w0BAQIFAAOB
-gQACfZ5vRUs4oLje6VNkIbzkTCuPHv6SQKzYCjlqoTIhLAebq1n+0mIafVU4sDdz3PQHZmNiveFT
-cFKH56jYUulbLarh3s+sMVTUixnI2COo7wQrMn0sGBzIfImoLnfyRNFlCk10te7TG5JzdC6JOzUT
-cudAMZrTssSr51a+i+P7FTCCBG8wggPYoAMCAQICEHD8Ga/sdmdUIXET5JOiIyMwDQYJKoZIhvcN
-AQEEBQAwgcwxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVz
-dCBOZXR3b3JrMUYwRAYDVQQLEz13d3cudmVyaXNpZ24uY29tL3JlcG9zaXRvcnkvUlBBIEluY29y
-cC4gQnkgUmVmLixMSUFCLkxURChjKTk4MUgwRgYDVQQDEz9WZXJpU2lnbiBDbGFzcyAxIENBIElu
-ZGl2aWR1YWwgU3Vic2NyaWJlci1QZXJzb25hIE5vdCBWYWxpZGF0ZWQwHhcNMDQwMjA2MDAwMDAw
-WhcNMDQwNDA2MjM1OTU5WjCCARMxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMR8wHQYDVQQLExZW
-ZXJpU2lnbiBUcnVzdCBOZXR3b3JrMUYwRAYDVQQLEz13d3cudmVyaXNpZ24uY29tL3JlcG9zaXRv
-cnkvUlBBIEluY29ycC4gYnkgUmVmLixMSUFCLkxURChjKTk4MR4wHAYDVQQLExVQZXJzb25hIE5v
-dCBWYWxpZGF0ZWQxJzAlBgNVBAsTHkRpZ2l0YWwgSUQgQ2xhc3MgMSAtIE1pY3Jvc29mdDEcMBoG
-A1UEAxQTTWljaGFlbCBXLiBNYXJ0aW5lejEoMCYGCSqGSIb3DQEJARYZbW1hcnRpbmV6QGNzcmVl
-cy51c2RhLmdvdjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAw3Sav+mTJtEJY34KPyuDG31E
-LfhH9NT2hqzWoi/irp3S4RuW0ViUKFxF1gT6oTxW2lcniPVn2Y1BShrblbng2cqxQVwb9ZVbKOwP
-mBiMucAl2JvfSnpTOMt8/pHULeviqWh2D+vpD13Pj1och841YAhLVM2maIjCuxavkXBKpF8CAwEA
-AaOCAQYwggECMAkGA1UdEwQCMAAwgawGA1UdIASBpDCBoTCBngYLYIZIAYb4RQEHAQEwgY4wKAYI
-KwYBBQUHAgEWHGh0dHBzOi8vd3d3LnZlcmlzaWduLmNvbS9DUFMwYgYIKwYBBQUHAgIwVjAVFg5W
-ZXJpU2lnbiwgSW5jLjADAgEBGj1WZXJpU2lnbidzIENQUyBpbmNvcnAuIGJ5IHJlZmVyZW5jZSBs
-aWFiLiBsdGQuIChjKTk3IFZlcmlTaWduMBEGCWCGSAGG+EIBAQQEAwIHgDAzBgNVHR8ELDAqMCig
-JqAkhiJodHRwOi8vY3JsLnZlcmlzaWduLmNvbS9jbGFzczEuY3JsMA0GCSqGSIb3DQEBBAUAA4GB
-AIJL0QQOXZAXkAmA8T4rHs4n710i9Izpv8ABBUDLGN9mkSxnW+HJpvnif+3bf4dZBVHXIIlWvpMf
-YElZsvlVyGFM7Y6V1N7gufDq9Sk/oVJr0ScT7a4iHMODQqNP+M3elQVBliIQbMtl7RtW3MT2YePx
-OUCaPGWG1DWE506KRpaSMYIEPjCCBDoCAQEwgeEwgcwxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMu
-MR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMUYwRAYDVQQLEz13d3cudmVyaXNpZ24u
-Y29tL3JlcG9zaXRvcnkvUlBBIEluY29ycC4gQnkgUmVmLixMSUFCLkxURChjKTk4MUgwRgYDVQQD
-Ez9WZXJpU2lnbiBDbGFzcyAxIENBIEluZGl2aWR1YWwgU3Vic2NyaWJlci1QZXJzb25hIE5vdCBW
-YWxpZGF0ZWQCEHD8Ga/sdmdUIXET5JOiIyMwCQYFKw4DAhoFAKCCArIwGAYJKoZIhvcNAQkDMQsG
-CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDQwMjE4MTQzMTA5WjAjBgkqhkiG9w0BCQQxFgQU
-1BQi9VPdMCACO1nt4VO/0PYqZP0wZwYJKoZIhvcNAQkPMVowWDAKBggqhkiG9w0DBzAHBgUrDgMC
-GjAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgw
-CgYIKoZIhvcNAgUwgfIGCSsGAQQBgjcQBDGB5DCB4TCBzDEXMBUGA1UEChMOVmVyaVNpZ24sIElu
-Yy4xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxRjBEBgNVBAsTPXd3dy52ZXJpc2ln
-bi5jb20vcmVwb3NpdG9yeS9SUEEgSW5jb3JwLiBCeSBSZWYuLExJQUIuTFREKGMpOTgxSDBGBgNV
-BAMTP1ZlcmlTaWduIENsYXNzIDEgQ0EgSW5kaXZpZHVhbCBTdWJzY3JpYmVyLVBlcnNvbmEgTm90
-IFZhbGlkYXRlZAIQcPwZr+x2Z1QhcRPkk6IjIzCB9AYLKoZIhvcNAQkQAgsxgeSggeEwgcwxFzAV
-BgNVBAoTDlZlcmlTaWduLCBJbmMuMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMUYw
-RAYDVQQLEz13d3cudmVyaXNpZ24uY29tL3JlcG9zaXRvcnkvUlBBIEluY29ycC4gQnkgUmVmLixM
-SUFCLkxURChjKTk4MUgwRgYDVQQDEz9WZXJpU2lnbiBDbGFzcyAxIENBIEluZGl2aWR1YWwgU3Vi
-c2NyaWJlci1QZXJzb25hIE5vdCBWYWxpZGF0ZWQCEHD8Ga/sdmdUIXET5JOiIyMwDQYJKoZIhvcN
-AQEBBQAEgYCj1s7LPDHEta1CtgeMpwHSz34rfySlaWwzaHCysTR9ymENtAwEbkOhy3uk7RU8HVGc
-QwDLC8VM1TKROfrQ796nbG8Jtst1JcA3U2yy30zOaUwv4PnKaodNNj6M3ZMSAC3vv36roLhsnsbc
-5pW0HHXujJnMQBdiSKdyWHwMRg0ucwAAAAAAAA==
-
-------=_NextPart_000_0031_01C3F601.F0F27E90--
+Please flush the counters on your rules using "iptables -Z; iptables -Z
+-t=20
+nat", connect to port 8080, and then tell us the output of "iptables -L
+-nvx;=20
+iptables -L -t nat -nvx".
 
