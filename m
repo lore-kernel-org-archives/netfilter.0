@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Hello -- kind of of topic -- but still related
-Date: Thu, 4 Dec 2003 00:48:07 +0000
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: open ports 25/tcp and 110/tcp
+Date: Wed, 3 Dec 2003 20:14:00 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312040048.07123.Antony@Soft-Solutions.co.uk>
-References: <20031203151030.31eaeacd.mgale@utilitran.com> <200312040027.46440.Antony@Soft-Solutions.co.uk> <20031203173641.47118b92.mgale@utilitran.com>
+Message-ID: <200312032014.00103.JALaramie@Loudoun-Fairfax.com>
+References: <002101c3b9ef$53e5d780$0201a8c0@OurPC> <200312031928.32914.JALaramie@Loudoun-Fairfax.com> <20031203173755.060e42c5.mgale@utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031203173641.47118b92.mgale@utilitran.com>
+In-Reply-To: <20031203173755.060e42c5.mgale@utilitran.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,28 +21,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 04 December 2003 12:36 am, Michael Gale wrote:
-
-> Hello,
+On Wednesday 03 December 2003 19:37, Michael Gale wrote:
+> I meant to say have you tried a linux box ?
 >
-> 	I can turn off the tcpwrapper but I was hoping there would be away around
-> it.
+
+I know, but I couldn't resist :-)
+
+
+> Michael
 >
-> ftp     stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd
+> On Wed, 3 Dec 2003 19:28:32 -0500
 >
-> It is a largely used FTP server and I have been contemplating running it as
-> a stand alone daemon.
-
-For a busy server this could be an excellent solution - and you should find 
-how to do it in "man proftpd" and/or "man /etc/proftpd.conf".   It can 
-definitely be run as a standalone daemon without using inetd.
-
-Antony.
-
--- 
-Ramdisk is not an installation procedure.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
+> > On Wednesday 03 December 2003 19:14, Michael Gale wrote:
+> > > Hello,
+> > >
+> > > 	Maybe because you are running nmap from a windows box ?
+> > >
+> > > Have you tried a windows machine ?
+> >
+> > Yes, and it tasted like chicken.
+> >
+> >
+> >
+> > Seriously, that may be a good point. Make sure there isn't anything
+> > running on the sending box that might interfere with the test. I've had
+> > screwed up nmap tests when the sending box filtered certain ports.
+> >
+> > Jeff
 
 
