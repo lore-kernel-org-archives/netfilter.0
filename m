@@ -1,13 +1,12 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: A simple question
-Date: Thu, 19 Aug 2004 18:31:51 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: netfilter and iproute2
+Date: Thu, 19 Aug 2004 10:34:21 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040819173151.GD4818@metastasis.org.uk>
-References: <7C9884991ADAE0479C14F10C858BCDF567948D@alderaan.smgtec.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E358@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF567948D@alderaan.smgtec.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Gavin Hamill <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
 
-On Thu, Aug 19, 2004 at 10:14:48AM -0700, Daniel Chemko wrote:
-> Hudson Delbert J Contr 61 CS/SCBN wrote:
-> > this should be a basic rule of netsec 101 ...
-> > 
-> > one should have to 'turn' on any allowed traffic out of the box.
-> > 
-> > i.e......the firewall should not allow ANY traffic by default until
-> > specifically
-> > 		TOLD TO DO SO BY THE ADMIN.
-> > 
-> > this is a good thing.
 
-> Just my two cents on this:
+> Any ideas? :)
 
-My two pennies :)
+From your description, you didn't convey what networks you have. One
+question would be is 213.2.4.37 bound to the firewall itself or is it a
+machine behind it?
 
-> If your firewall is designed correctly, there shouldn't be any network
-> available services running baring SSH.
+If it's a firewall IP, prerouting won't assign locally sourced packets
+in PREROUTING, only in OUTPUT. Even then there's no guarantee that
+OUTPUT has been assigned an IP. The  'src <ip>' clause in iproute2
+assigns the default IP if the program itself hasn't.
 
-If you're using IPTables as a seperate firewall then wouldn't you just
-want SSHD listening on the internal interface?
+If it's a machine's behind your firewall (on eth1), it seems kind of
+strange that it doesn't work. When you say it doesn't work, do you mean
+that no traffic traverses the new interfacen that some traffic goes to
+each, or that all of the traffic goes out the original interface? Once
+again, this doesn't really make sence to me if why this wouldn't work.
 
-> Because of this, if a hacker gets into your firewall I assume that
-> 99.9999% of the time, they'll have root access. Any hacker that could
-> hack into your Linux box will be able to disable any iptables rules in
-> a second. Hence, blocking the OUTPUT chain on a firewall does NOT
-> secure you against hackers.
-
-You're presuming that IPTables isn't protecting a single host.  If
-you're using it on a desktop or a server filtering on the OUTPUT chain
-gives you a huge gain in security.
-
--- 
-"I think a church with a lightning rod shows a decided lack of confidence"
 
