@@ -1,13 +1,11 @@
-From: Andrea Rossato <mailing_list@istitutocolli.org>
-Subject: Re: how to forward packets to another gateway, if i'm one
-Date: Tue, 17 Dec 2002 17:07:09 +0100
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: packet analysis....
+Date: Tue, 17 Dec 2002 23:11:03 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DFF4BAD.6080306@istitutocolli.org>
-References: <ISPFE7vXn10A5fpk965000657df@mail.takas.lt>
+Message-ID: <3DFF61AF.3080304@inbox.lv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ISPFE7vXn10A5fpk965000657df@mail.takas.lt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +16,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: NETFILTER <netfilter@lists.netfilter.org>
 
-Saulius Menkevicius wrote:
->   Now, I want to make some traffic that comes from some client and 
-> that should go through gateway 10.0.0.1 to be forwarded to 10.0.0.2 
-> (without any changes). The need is to make the forwarding transparent 
-> to both 10.0.0.2 and the client.
+hi all,
 
-in 10.0.0.1
+what the folowwing tcpdump messages mean ??...
 
-ip rule add from YOUR_CLIENT [to DESTINATION] table fbsd.out
-ip route add default via 10.0.0.2 dev $DEV table fbsd.out
+802.1d--does this packet related to wireless ??
 
-I think this should do the job (for more information http://lartc.org/)
-you create a routing table (fbsd.out) that will use 10.0.0.2 as gateaway 
-for packets comming from your client.
+23:11:47.946515 0:40:96:51:ef:74 1:80:c2:0:0:0 0026 60: 802.1d config 
+8000.00:40:96:51:ef:74.8001 root 8000.00:40:96:51:ef:74 pathcost 0 age 0 
+max 20 hello 2 fdelay 15
+23:11:49.948042 0:40:96:51:ef:74 1:80:c2:0:0:0 0026 60: 802.1d config 
+8000.00:40:96:51:ef:74.8001 root 8000.00:40:96:51:ef:74 pathcost 0 age 0 
+max 20 hello 2 fdelay 15
 
-I did not test this config, since I'm marking packets in the FORWARD 
-chain of the mangle table and use
-ip rule add fwmark to route them.
-
-hope this helps.
-andrea
+thanking in advance...
+A.H
 
 
