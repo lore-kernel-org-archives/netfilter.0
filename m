@@ -1,10 +1,14 @@
-From: "nilesh_cne" <nilesh_cne@indiatimes.com>
-Subject: upload form uplink and download different downlink
-Date: Tue, 29 Jul 2003 18:11:23 +0530
+From: Axel Heinrici <heinrici76@gmx.de>
+Subject: Re: ftp connection tracking
+Date: Tue, 29 Jul 2003 15:58:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307291246.SAA01959@WS0005.indiatimes.com>
-Reply-To: "nilesh_cne"<nilesh_cne@indiatimes.com>
+Message-ID: <200307291558.31734.heinrici76@gmx.de>
+References: <200307291322.04698.heinrici76@gmx.de> <3F266E03.7050106@corp.lcom.net>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F266E03.7050106@corp.lcom.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,44 +18,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all'
-can some one help me
+Hi
 
-1. i have vsat downlink (only downlink) 128 kbps
-2. i have leased line of 128kbps uplink/downlink (both uplink as well as downlink)
+On Tuesday 29 July 2003 14:52, Andrew J. Meader wrote:
+> Hi,
+>
+> I just ran into this just yesterday. I was forgetting to load
+> ip_conntrack_ftp in my iptables init script. For grins, here is a
+> snip from my init script:
 
-vsat terminates in to my linux box through capture card
-and my leased line terminates it into another  lancard on same machine.
+That is not the problem. The module is loaded. But the module doesn't 
+track FTP-connections on non-standard ports. So FTP-connections to 
+theses servers are not "allowed" by the "iptables .... -m --state 
+RELATED,ESTABLISHED ...."-stuff.
 
-i want such that my all traffic coming from internal lan
-should go through uplink of leased line and come back from vsat downlink .
-pls send me the rules of iptables
-so that i can utilize my downlink.
+>
+> # Firewall Modules ~ assuming modularized kernel
+>     /sbin/modprobe ip_tables
+>     /sbin/modprobe iptable_nat
+>     /sbin/modprobe ip_conntrack
+>     /sbin/modprobe ip_conntrack_ftp
+>
+> YMMV - your modules may vary :)
 
-
-
-vsat(downlink)
--->--------|  
-128k	   |
-	   LinuxBox ------local lan-----192.168.1.*
-128k	   |
------<->---|
-leasedline(uplink/downlink)
-
-
-thanx in advance 
-niel
-
-
-Get Your Private, Free E-mail from Indiatimes at http://email.indiatimes.com
-
- Buy The Best In BOOKS at http://www.bestsellers.indiatimes.com
-
-Bid for for Air Tickets on Air Sahara Flights at Prices Lower Than Before. Just log on to http://airsahara.indiatimes.com and Bid Now !
+greetings 
+	Axel
 
 
