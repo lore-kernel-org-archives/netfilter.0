@@ -1,12 +1,15 @@
-From: Ulysses Almeida <ulysses.almeida@gmail.com>
-Subject: Re: Two links and a SMTP sever.
-Date: Mon, 7 Feb 2005 19:53:44 -0300
-Message-ID: <d64535605020714533faf8400@mail.gmail.com>
-References: <d645356050118053928226673@mail.gmail.com>
-Reply-To: Ulysses Almeida <ulysses.almeida@gmail.com>
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: ever block *outgoing* packets on your firewall?
+Date: Tue, 8 Feb 2005 01:08:00 +0000
+Message-ID: <20050208010800.GE14572@metastasis.org.uk>
+References: <20050114200228.GA21562@spawar.navy.mil>
+	<20050114201404.GA27341@bender.817west.com>
+	<20050207174427.GZ14572@metastasis.org.uk>
+	<20050207182846.GL31268@spawar.navy.mil>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <d645356050118053928226673@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20050207182846.GL31268@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,51 +21,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-  Some time ago, I wrote this e-mail below.  A lot of people tried to
-help-me (thanks guys), but I couldn't find the problem. A week ago,
-with help from someone on IRC I solved my problem (simple one). And I
-finished my MiniHowTo.
-http://munky.maluco.com.br/lar_with_smtp.html
-  Maybe it won't tell you something new. But it's shorter do read
-instead the whole LARTC documentation.
-  This miniHowTo shows how to use iproute2 with iptables mark rule. I
-think it's nice. If someone has something to say about it (in
-private), I would thanks.
+On Mon, Feb 07, 2005 at 10:28:46AM -0800, seberino@spawar.navy.mil wrote:
 
-  PS: The problem was just Reverse Path Filtering enabled.
+> > > i run a default DROP policy on the OUTPUT chain of my firewalls
+> > > and only allow out necessary traffic (DNS, HTTP/FTP to update
+> > > servers, NTP, etc).  but i'm pretty odd when it comes to these
+> > > things--i don't know how necessary it is.  the one nice
+> > > side-effect is that is keeps me from doing something stupid when
+> > > i'm ssh-ed into a firewall.
+> >
+> > Out of interest why "DROP" rather than "REJECT"?  With reject users,
+> > hosts or programs on the inside tend to fail straight away rather
+> > than taking a while to time out annoyingly.
+>
+> please remind me of difference between REJECT and DROP.
+> 
+> Perhaps I should use REJECT then!
 
-On Tue, 18 Jan 2005 10:39:04 -0300, Ulysses Almeida
-<ulysses.almeida@gmail.com> wrote:
-> Hi folks,
-> 
->   I have an unsolved problem with iptables + iproute2 that I can't
-> figure out how to solve it.
-> 
->   I explaint it on the attachment (i sent this attachment, because I
-> don't thin it will cause any trouble, since it's text/plain, if does,
-> say and I won't send again). I wrote this as a mini-HowTo, and I
-> pretend to publish this, but I need to solve the problem before doing
-> this ;)
-> 
->   The strange thing. I have almost the same scenario on other host,
-> What differs is the fact that on the other host I have 4 Internet
-> links, not only two, and everything works as I expected.  I tried the
-> same solution on another two hosts, and on both I had this releated
-> problem.
-> 
->   If some one can help-me track this problem, I thank in advance.
-> 
->   Regars.
-> 
-> --
->  - Ulysses Almeida
-> 
-> 
-> 
+From the "man iptables" pages ;)
 
+DROP means to drop the packet on the floor.
+
+REJECT
+This is used to send back an error packet in response to the matched
+packet.
+
+Really that's it, a DROP rule with just eat the packet and not do
+anything else or tell anyone or anything, hence the remote end of the
+connection will presume the packet or its reply got lost along the way
+and try again.  A REJECT rule will send something back saying "I don't
+talk that protocol".
 
 -- 
- - Ulysses Almeida
+Where are we going and what's with the hand basket?
 
