@@ -1,11 +1,13 @@
-From: "riffraff" <riffraff@mail.ev1.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: foward ing specific ports
-Date: Fri, 28 Jun 2002 16:08:13 -0500
+Date: Fri, 28 Jun 2002 22:07:16 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206281608.AA87687286@mail.ev1.net>
-Reply-To: <riffraff@mail.ev1.net>
+Message-ID: <20020628210718.IFV16050.mta01-svc.ntlworld.com@there>
+References: <3BC9CB95BC7EE44587FFFEAB0499147001E2F80F@KMCLUSTER.abcdistributing.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <3BC9CB95BC7EE44587FFFEAB0499147001E2F80F@KMCLUSTER.abcdistributing.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,33 +18,31 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org, Anthony Cesar <Anthony.Cesar@abcdistributing.com>
+To: netfilter@lists.samba.org
 
----------- Original Message ----------------------------------
-From: "Anthony Cesar" <Anthony.Cesar@abcdistributing.com>
-Date: Fri, 28 Jun 2002 16:55:54 -0400
+On Friday 28 June 2002 9:55 pm, Anthony Cesar wrote:
 
->is it possible to tell iptables to allow forwarding of specific ports
->that are staggered, in one entry?  for example, i know that you can do a
->range of ports ( --sport 1024:65535) but what if i have only three ports
->like 25,110, and 53?
+> is it possible to tell iptables to allow forwarding of specific ports
+> that are staggered, in one entry?  for example, i know that you can do a
+> range of ports ( --sport 1024:65535) but what if i have only three ports
+> like 25,110, and 53?
 >
->does the syntax allow for me to list these ports in just one chain
->(hypothetical: --sport 25-53-110)?
->
-example:
+> does the syntax allow for me to list these ports in just one chain
+> (hypothetical: --sport 25-53-110)?
 
-iptables -A FORWARD -p tcp -m multiport -d 1.2.3.4 --dport 50,51,71,8101 -j ACCEPT
+No :-(
 
-yes, you can, with the -m multiport --dport x,y,z options
+> or do i have to generate a chain for each one?  it would help my typing
+> fingers a lot if what i'm asking was possible....
 
+Best I can suggest is something like:
 
->or do i have to generate a chain for each one?  it would help my typing
->fingers a lot if what i'm asking was possible....
->
-> 
->
->--Anthony C--
->
+for a in 25 53 110
+do
+iptables -A FORWARD -i eth0 -p tcp --dport $a -j ACCEPT
+done
+
+ 
+
+Antony.
 
