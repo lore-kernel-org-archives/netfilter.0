@@ -1,13 +1,11 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: port translation on the same network
-Date: Mon, 19 Jul 2004 06:39:20 +0300
+From: "Joel n.solanki" <zealous@bonbon.net>
+Subject: Logging src/dst ip ftp
+Date: 19 Jul 2004 10:10:01 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3063e5040718203923f5edaf@mail.gmail.com>
-References: <001701c46caa$6d99c290$d802d98a@smaug>
+Message-ID: <1090212001.2721.14.camel@joel.d2visp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001701c46caa$6d99c290$d802d98a@smaug>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +16,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-iptables -t nat -A PREROUTING -i eth0 -d <my ip> -p tcp --dport 10001
--j SNAT --to <my ip>:9100
+Dear all,
 
-On Sun, 18 Jul 2004 19:34:28 +1000, gene bene <phacoboy@hotpop.com> wrote:
-> I have a print job in my network which comes in on port 10001 raw packets
-> (from a citrix server)
-> 
-> I need to use iptables to translate the port number to 9100
-> 
-> I have tried to set up a virtual ip (eth0:0) and use DNAT and SNAT to
-> translate the port with no success.
-> 
-> Can anyone help me with the correct settings?
-> 
-> Gene
-> 
->
+Again with some doughts and want to implement on iptables.
+
+I have redhat 9.0 working as a gateway. around 80 to 90 users connect
+uses this server.
+lets say 10.0.0.2 is the client user.
+For this we just take ftp protocol.
+
+I want to keep a soft copy of 10.0.0.2 ip about his ftp connection.
+
+10.0.0.2 ---ftp out ---> some internet ftp site.
+10.0.0.2 ---ftp in <<<-----some internet friend.
+
+I want to keep track of this things so that no users can say me that i
+havent use ftp service ..or i havent use internet connection.
+
+
+Any ideas about this. Anyone here have implemented this ?
+
+Joel n.solanki
+Systems Administrator
+D2V ISP PVT LTD.
+
+
+
 
