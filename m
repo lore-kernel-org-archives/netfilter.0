@@ -1,11 +1,11 @@
-From: "Len L." <len@euler.com>
-Subject: RE: Blocking access to UDP port 53 (DNS) - Solution
-Date: Mon, 11 Aug 2003 12:48:22 -0500
+From: "Morrison, Trevor (Trevor)" <tmorrison@avaya.com>
+Subject: h323
+Date: Mon, 11 Aug 2003 11:50:22 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <12CC60849165134FB7DF8570B621F4D51C89CD@mailxserver.euler.com>
+Message-ID: <2C8B3976EDADFD41950F8C628F3E255A06B56626@co9510avexu2.global.avaya.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C36030.C207BC00"
+	boundary="----_=_NextPart_001_01C36031.097F00FD"
 Return-path: <netfilter-admin@lists.netfilter.org>
 content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -21,34 +21,40 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C36030.C207BC00
+------_=_NextPart_001_01C36031.097F00FD
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-OK,=20
-I got it. Here is the rule set I tried and had success (b.t.w. The DNS =
-server is fire walled but is a standalone machine - no forwarding)=20
-The answer was to reference DNS requests for port 25 only.=20
-iptables -A INPUT --protocol udp --source-port 25 -s 63.143.210.0/24 -j =
-LOG --log-prefix "XXX LOCAL UDP DNS XXX "
-iptables -A INPUT --protocol udp --source-port 25 -s 63.143.210.0/24 -j =
-ACCEPT
-iptables -A INPUT --protocol udp --source-port 25 -j LOG --log-prefix =
-"XXX EXTERNAL UDP LOG XXX "
-iptables -A INPUT --protocol udp --source-port 25 -j ACCEPT
-iptables -A INPUT -p udp -j LOG --log-prefix "XXX UDP DROP XXX "
-iptables -A INPUT -p udp -j DROP=20
-Also will drop the 25 sport reference on the internal side along with =
-the logging as a final solution
+Hi,
+
+I have a RH 9.0 box running iptables-1.2.8 and a 2.4.20 kernel with the =
+h323 patch applied and recompiled.  My network looks like this:
+
+				    dhcp from ISP
+Win 2000 box <--------------------------->RH 9.0 =
+Box<---------------------->Internet
+192.168.1.0/24				NAT       12.207.X.X/32
 
 
-Len Laulainen=20
+I have searched the archives back to September of last year trying to =
+find what rules I need to apply to my iptables to allow h323 traffic =
+through my NAT'd box.  I am now more confused then before because the =
+threads mentioned something about a gatekeeper that I need to run on a =
+NAT box?
+
+What I am looking for is what are the rules that I need to put into my =
+filter file and what other programs or procedures do I need to add to =
+that I have the full features and functionality of Microsoft's Net =
+Meeting from my Win 2k box. =20
+
+Thanks in Advance and sorry for bring this subject up again but I could =
+not find the information in the previous threads.
+
+Trevor Morrison
 
 
-
-
-------_=_NextPart_001_01C36030.C207BC00
+------_=_NextPart_001_01C36031.097F00FD
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -59,49 +65,57 @@ Content-Transfer-Encoding: quoted-printable
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
 charset=3Diso-8859-1">
 <META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: Blocking access to UDP port 53 (DNS) - Solution</TITLE>
+6.0.6389.0">
+<TITLE>h323</TITLE>
 </HEAD>
 <BODY>
 <!-- Converted from text/rtf format -->
 
-<P><FONT COLOR=3D"#0000FF" SIZE=3D2 FACE=3D"Arial">OK,</FONT><FONT =
-FACE=3D"Times New Roman"> </FONT>
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
+</P>
 
-<BR><FONT COLOR=3D"#0000FF" SIZE=3D2 FACE=3D"Arial">I got it. Here is =
-the rule set I tried and had success (b.t.w. The DNS server is fire =
-walled but is a standalone machine - no forwarding)</FONT><FONT =
-FACE=3D"Times New Roman"> </FONT></P>
+<P><FONT SIZE=3D2 FACE=3D"Arial">I have a RH 9.0 box running =
+iptables-1.2.8 and a 2.4.20 kernel with the h323 patch applied and =
+recompiled.&nbsp; My network looks like this:</FONT></P>
 
-<P><FONT COLOR=3D"#0000FF" SIZE=3D2 FACE=3D"Arial">The answer was to =
-reference DNS requests for port 25 only.</FONT><FONT FACE=3D"Times New =
-Roman"> </FONT>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">&nbsp;&nbsp;&nbsp; dhcp from ISP</FONT>
 
-<BR><FONT COLOR=3D"#0000FF" SIZE=3D2 FACE=3D"Arial">iptables -A INPUT =
---protocol udp --source-port 25 -s 63.143.210.0/24 -j LOG --log-prefix =
-&quot;XXX LOCAL UDP DNS XXX &quot;<BR>
-iptables -A INPUT --protocol udp --source-port 25 -s 63.143.210.0/24 -j =
-ACCEPT<BR>
-iptables -A INPUT --protocol udp --source-port 25 -j LOG --log-prefix =
-&quot;XXX EXTERNAL UDP LOG XXX &quot;<BR>
-iptables -A INPUT --protocol udp --source-port 25 -j ACCEPT<BR>
-iptables -A INPUT -p udp -j LOG --log-prefix &quot;XXX UDP DROP XXX =
-&quot;<BR>
-iptables -A INPUT -p udp -j DROP</FONT><FONT FACE=3D"Times New Roman"> =
-</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Win 2000 box =
+&lt;---------------------------&gt;RH 9.0 =
+Box&lt;----------------------&gt;Internet</FONT>
 
-<BR><FONT FACE=3D"Times New Roman">Also will drop the 25 sport reference =
-on the internal side along with the logging as a final solution</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">192.168.1.0/24&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+NAT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12.207.X.X/32</FONT>
 </P>
 <BR>
 
-<P><B><FONT FACE=3D"Arial">Len Laulainen</FONT></B><FONT FACE=3D"Times =
-New Roman"> </FONT>
+<P><FONT SIZE=3D2 FACE=3D"Arial">I have searched the archives back to =
+September of last year trying to find what rules I need to apply to my =
+iptables to allow h323 traffic through my NAT'd box.&nbsp; I am now more =
+confused then before because the threads mentioned something about a =
+gatekeeper that I need to run on a NAT box?</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">What I am looking for is what are the =
+rules that I need to put into my filter file and what other programs or =
+procedures do I need to add to that I have the full features and =
+functionality of Microsoft's Net Meeting from my Win 2k box.&nbsp; =
+</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Thanks in Advance and sorry for bring =
+this subject up again but I could not find the information in the =
+previous threads.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Trevor Morrison</FONT>
 </P>
-<BR>
-<BR>
 
 </BODY>
 </HTML>
-------_=_NextPart_001_01C36030.C207BC00--
+------_=_NextPart_001_01C36031.097F00FD--
 
