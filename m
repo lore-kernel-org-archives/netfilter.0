@@ -1,14 +1,14 @@
 From: "Edmund Turner" <eturner@monash.edu.my>
 Subject: RE: Configuration question...
-Date: Mon, 3 Nov 2003 14:59:59 +0800
+Date: Mon, 3 Nov 2003 15:06:25 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <010301c3a1d8$18d86ab0$de0018ac@admin.monash.edu.my>
-References: <oprx1ox5f3pvmot6@192.168.2.1>
+Message-ID: <011401c3a1d8$ff6ae7f0$de0018ac@admin.monash.edu.my>
+References: <010301c3a1d8$18d86ab0$de0018ac@admin.monash.edu.my>
 Reply-To: <eturner@monash.edu.my>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <oprx1ox5f3pvmot6@192.168.2.1>
+In-Reply-To: <010301c3a1d8$18d86ab0$de0018ac@admin.monash.edu.my>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,7 +19,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?'Mart=EDn'?= <martin@familia-fiumara.com.ar>, netfilter@lists.netfilter.org
+To: =?iso-8859-1?Q?'Mart=EDn'?= <martin@familia-fiumara.com.ar>
+Cc: netfilter@lists.netfilter.org
+
+Sorry, previous email was incomplete. This should work.
+
+/iptables -t nat -A PREROUTING -i eth1 -d 192.168.2.1 -p tcp --dport
+10329 -j DNAT --to (the real server IP):(port)
+
+regards
+edmund
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Edmund Turner
+Sent: Monday, November 03, 2003 3:00 PM
+To: 'Mart=EDn'; netfilter@lists.netfilter.org
+Subject: RE: Configuration question...
 
 Martin,
 
