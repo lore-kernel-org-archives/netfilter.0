@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: traceroute
-Date: Sun, 13 Jun 2004 16:53:13 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: netfilter CPU usage
+Date: Sun, 13 Jun 2004 16:26:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087138393.1891.14.camel@anduril.intranet.cartel-securite.net>
-References: <1087134949.24620.61.camel@hand2.loc.gv.co.uk>
+Message-ID: <200406131626.17416.Antony@Soft-Solutions.co.uk>
+References: <33105.217.79.71.234.1087126250.squirrel@mail.ssi.bg>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1087134949.24620.61.camel@hand2.loc.gv.co.uk>
+In-Reply-To: <33105.217.79.71.234.1087126250.squirrel@mail.ssi.bg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Prash <prashk@staff.btltd.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le dim 13/06/2004 =E0 15:55, Prash a =E9crit :
-> A weird problem. See my rules below on the INPUT chain. I have NOT
-> allowed 33434:33523 for traceroute on UDP but some people can and some
-> people can't do a traceroute. Any ideas? Traceroute should be accepted
-> only if I open 33434:33523 .. isn't it? Then why is it allowing some in.
+On Sunday 13 June 2004 12:30 pm, lartc@ssi.bg wrote:
 
-There's a lot of way of performing a "traceroute". Speaking of classical
-traceroute tools, you have two approaches :
+> Hello
+>
+> Can someone tell me just how intensive netfilter is towards CPU?
+>
+> Is it posible for 6000 rules with no target set in the FORWARD chain to
+> eat up about 60% of my P4 2.4 GHz?
 
-	. the Unix traceroute that uses an UDP packet to a high port
-	. the Windows traceroute that uses an ICMP echo
+I would be very surprised at this, however you haven't said what sort of 
+bandwidth you're shovelling through the machine, and this will clearly make a 
+difference to the CPU usage.
 
-So, in your approach, you only block the Unix approach, not the Windows
-one.
+Also, when you say "6000 rules with no target set", I assume this means that 
+each packet is traversing all 6000 rules (presumably for some sort of 
+accounting process), and then getting to the bottom of the table and doing 
+something more interesting...
 
-Moreover, one can perform traceroute using any type of message that will
-trigger an answer on target, such as TCP SYN on open port. The only way
-to detect a traceroute is to examine TTL and decide you block packets
-with TTL under a given value, say your internal network depth. But I do
-not think this to be a very good idea, has it may break legitimate
-communications.
+One simple way of identifying whether it's the 6000 rules which are consuming 
+60% of your CPU would be to temporarily reduce the ruleset to 2000 or 3000 
+and see if you get a noticeable reduction in CPU usage (I wouldn't expect it 
+to be proportional, so don't look for 20% or 30%, but if it doesn't go down 
+by much, you know it's not the 6000 rules causing the load).
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+How memory is in the machine?
+
+Are you using connection tracking (if so, how many connections are in 
+/proc/net./ip_conntrack)?
+
+Regards,
+
+Antony.
+
+-- 
+The difference between theory and practice is that in theory there is no 
+difference, whereas in practice there is.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
