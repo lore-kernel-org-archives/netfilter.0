@@ -1,9 +1,8 @@
-From: "Joaquin Henriquez Alzola (REE)"
-	 <Joaquin.Henriquez-Alzola@ree.ericsson.se>
-Subject: netfilter/iptables problems on solaris
-Date: Wed, 12 Mar 2003 20:06:28 +0100
+From: Patrick Nelson <pnelson@neatech.com>
+Subject: PF Jabber
+Date: Wed, 12 Mar 2003 11:26:50 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <8C1856C372A7574291A56C3B7000A7AEF58254@eestqnt104>
+Message-ID: <4165C48DE9A0D211B6400800095C585F172F98@WASHINGTON>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,20 +16,8 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: "Netfilter List (E-mail)" <netfilter@lists.netfilter.org>
 
-Hi, 
-
-I have problems on the compilation of netfilter/iptables on Solaris 8.
-When I do a make it appears me the error in line 12 that is
-KERNEL_DIR=/usr/src/linux
-
-I just wanted to compile it for Solaris but I am not able to fiond the
-kernel source in the Solaris. Can you tell me wher eis it.
-
-I have search in google but I can't find it.
-
-BR,
-
-Joaquin
+Anyone have any luck port forwarding jabber?  For some reason I just can't
+get it to connect.
 
