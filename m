@@ -1,11 +1,14 @@
-From: Christian Weber <Weber@InfoTech.de>
-Subject: Packets get dropped
-Date: Fri, 04 Jun 2004 23:20:59 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: --mac-destination possible ?
+Date: Sat, 5 Jun 2004 13:17:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C0E7BB.2010308@InfoTech.de>
+Message-ID: <200406051317.24886.Antony@Soft-Solutions.co.uk>
+References: <a995ba701b.a701ba995b@teleline.es>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <a995ba701b.a701ba995b@teleline.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,89 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="johab"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear list=B4s members,
+On Friday 04 June 2004 4:26 pm, PETER-MULLER wrote:
 
-we recently found tcp packets to get dropped an a machine
-behind a firewall with only 1 physical nic doing 'Y' routing
-between IPSEC tunnel an LAN.
+> Hello,
+>
+> do you know if
+>
+> 1. Is there any plans to include a --mac-destination parameter for the
+> MAC module to check package destinated to a certain MAC address (like as
+> --mac-source)
+>
+> or
+>
+> 2. Is there any impediments to implement such a parameter
 
-The machine is located in a dmz but was granted to be the end
-of a (2.6.5 kernel ipsec) tunnel. The ipsec interface is unvisible.
+I do not think this is possible in iptables / netfilter (but it may be a 
+feature, or a possibility, for ebtables?).
 
-The sole connection to any other relevant host goes to a firewall
-the box is connected with.
+The reason I think this is because netfilter works with IP packets, and can 
+see the TCP / UDP / ICMP headers within them; it is also handed the MAC 
+address for incoming packets by the networking stack as a kind of bonus bit 
+of information.
 
-We want to pass packets from <remote_net> to <local_net> through
-the tunnel, as if they came from from the y-router itself.
+However, for outgoing packets, netfilter (at the IP layer) knows nothing about 
+the MAC address of the destination machine (it doesn't even know whether it 
+is a local machine or on the other side of a router, which will make a big 
+difference to the MAC address which gets associated with a specific IP 
+address).   It's not until netfilter releases the packet to the networking 
+code and says "send this out on the wire please" that an ARP lookup gets done 
+and a MAC address is discovered.   By then it's too late to send the packet 
+back to netfilter to tell it what the MAC address was and ask what to 
+*really* do with the packet.
 
-So we configured:
-# iptables -I FORWARD -s <remote_net> -d <local_net> -j ACCEPT
-# iptables -I FORWARD -d <remote_net> -s <local_net> -j ACCEPT
-# iptables -P FORWARD DROP  ; # REJECT does not work here ..
+If anyone else thinks this is wrong, and netfilter can know about the 
+destination MAC, please correct me.
 
-# echo "1" > /proc/sys/net/ipv4/ip_forward
-# iptables -t nat -I POSTROUTING -s <remote_net> -j MASQUERADE
+Regards,
 
-Trying some ssh to a machine (let=B4s call it "dest") located in local_ne=
-t
-fails. The SYN goes through, leaves the <-router=B4s interface, gets answ=
-ered
-(ACK from dest) comes in and ... is being dropped without a trace.
+Antony.
 
-There is an entry in the conntrack table:
-tcp      6 25 SYN_RECV src=3Dxx.xx.xx.111 dst=3D192.168.250.228 sport=3D1=
-714 dport=3D22
-	src=3D192.168.250.228 dst=3Dyy.yy.yy.5 sport=3D22 dport=3D1714 use=3D1
+-- 
+Ramdisk is not an installation procedure.
 
-The answered packet (SYN ACK) came from 192.168.250.228:22 (according to =
-tcpdump)
-and was destined to yy.yy.yy.5:1714
-
-In some list we found a hint according masquerading problems with ipsec. =
-The
-possible solution presented there was to add (and we tried):
-
-# iptables -t nat -I POSTROUTING -p 50 -j ACCEPT
-
-That cound avoid confusion, but that didn=B4t help.
-
-Any help appreciated.
-
----
-
-BTW: on another machine (same hardware but two nic=B4s) with same config =
-(but the nic
-and tunnel adresses) and the same kernel, there is no problem when really=
- routing
-through the machine, i.e. when the packet comes throuh the ipsec tunnel w=
-hich is
-connected over the outer interface, is masqueraded and emiited through th=
-e inner
-interface, aswered by dest and send back....
-
-Any idea?
-
----
-
-Oh, one more question - just for understandig the system a bit better (si=
-nce i couldn=B4t
-find the answer in any howto i read) .
-
-How is the incoming packet picked up when it comes in. When it comes in i=
-t gets examined
-by the kernel. OK so far. Who looks up the conntrack table if it matches =
-an associated
-connection and rewrites the headers if it does match - performing the rev=
-erse nat of
-masquerading?
-
-Thanks in advance
---=20
-Christian Weber
-mailto:Weber@InfoTech.de    Tel: 02361/91300
-For information on InfoTech visit http://www.InfoTech.de/
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
