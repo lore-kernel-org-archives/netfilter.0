@@ -1,11 +1,11 @@
-From: "Peter Marshall" <pmarshal@caris.com>
-Subject: Re: Mail Through Firewall
-Date: Wed, 18 Feb 2004 11:07:05 -0400
+From: "Dariusz" <darkmartin@interia.pl>
+Subject: CLASSIFY on bridge ?
+Date: Wed, 18 Feb 2004 23:06:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <018c01c3f630$decdacb0$49caa8c0@caris.priv>
-References: <012201c3f627$18eabbe0$49caa8c0@caris.priv> <200402181405.01680.Antony@Soft-Solutions.co.uk>
+Message-ID: <000f01c3f66b$7f9439e0$64d6600a@area51.katowice.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000C_01C3F673.DB8B5780"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,72 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-How do I tell outlook to look up using DNS instead of NetBIOS ... ?
+This is a multi-part message in MIME format.
 
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, February 18, 2004 10:05 AM
-Subject: Re: Mail Through Firewall
+------=_NextPart_000_000C_01C3F673.DB8B5780
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
+CLASSIFY work on bridge ?
 
-> On Wednesday 18 February 2004 1:57 pm, Peter Marshall wrote:
->
-> > Hey, I am sure this question is going to seem trivial to everyone here
-..
-> > but I will ask anyway.
-> > I want to get outlook to work on my inside box .... I have it all set up
-> > correctly, but it can't find the pop / smtp servers ...
-> >
-> > I ran ethereal to see what the problem was ...
-> > When I try to connect I get 3 requests
-> > source 10.0.0.2
-> > dest 10.0.0.255
->
-> That's a broadcast address...
->
-> > Protocol NBNS
->
-> Ugh.   M$ Outlook trying to use NetBios Name Resolution instead of DNS :(
->
-> > source and dest ports: 137
->
-> NetBios....
->
-> > and I get no reply's ... ( well, I get an arp request after the 3rd try
-> > ...) Any ideas how to get this working ?
->
-> Tell the client machine (or Outlook, if this is one of those things which
-> Outlook tries to look after by itself, never mind how the rest of the
-machine
-> has been configured), to resolve names by DNS, not by using NetBios.
->
-> Then it might sensibly look up the IP address of your POP3 server and send
-a
-> TCP packet to port 110 on it....
->
-> Regards,
->
-> Antony.
->
-> -- 
-> "Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
-> Blaster].   However, these products are no longer supported.   Users of
-these
-> products are strongly encouraged to upgrade to later versions."
->
-> (which *are* affected by MS Blaster...)
->
-> http://www.microsoft.com/security/security_bulletins/ms03-026.asp
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
+I write
+iptables -t mangle -A POSTROUTING -o br0 -p tcp - m mark --mark 0x2000 =
+-j
+CLASSIFY --set-class 1:10
+
+but packet no go to class
+
+Dark
+------=_NextPart_000_000C_01C3F673.DB8B5780
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>CLASSIFY work on bridge ?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I write</FONT></DIV>
+<DIV>iptables -t mangle -A POSTROUTING -o br0 -p tcp - m mark --mark =
+0x2000=20
+-j<BR>CLASSIFY --set-class 1:10</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>but packet no go to class</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Dark</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000C_01C3F673.DB8B5780--
+
 
 
