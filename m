@@ -1,15 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables -j REDIRECT
-Date: Sat, 10 Jul 2004 17:37:26 +0200
+From: =?ISO-8859-1?Q?Fr=E9d=E9ric_Gonzatti?= <fred99@libertysurf.fr>
+Subject: How to Forward a port (DNAT) ?
+Date: Sat, 10 Jul 2004 23:39:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1089473846.1925.11.camel@anduril.intranet.cartel-securite.net>
-References: <1276578354.20040706010841@dinfo.ru>
-	 <1089212276.3299.19.camel@anduril.intranet.cartel-securite.net>
-	 <40ED7189.2070408@rtij.nl>
+Message-ID: <40F0622F.6090500@libertysurf.fr>
+Reply-To: fred99@libertysurf.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40ED7189.2070408@rtij.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +16,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Martijn Lievaart <m@rtij.nl>
-Cc: =?koi8-r?Q?=F3=C5=D2=C7=C5=C5=D7_?= =?koi8-r?Q?=F3=C5=D2=C7=C5=CA_?= =?koi8-r?Q?=EE=C9=CB=CF=CC=C1=C5=D7=C9=DE?= <serg@dinfo.ru>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le jeu 08/07/2004 =E0 18:08, Martijn Lievaart a =E9crit :
-> I don't think it will help. There is no nat going on after the=20
-> port-redirect. Squid will open a new tcp connection so the source-ip=20
-> will always be squids. Nothing you can do about that, but you can maybe=
-=20
-> account for the traffic by using the squid logs.
+Hi all,
 
-You're right if OP wants to filter communication between Squid and
-destination webservers (most probable). I understood he wanted to spot
-comminucations between Squid and his LAN.
+Actually I'm using a routeur which is forwarding some ports on my DMZ 
+(25,110 etc...). My firewall just allow or some some ports to pass or not.
+In few days my Firewall (iptables 1.2.9) which have actually a private 
+IP (192.168.3.1) will have a public IP.
+So my firewall will have to replace my routeur and to forward ports 25 
+and 110 to my DMZ.
+To test I've done this  (this configuration is not connected to the 
+internet)
+
+                      62.160.1.2 eth2 (WAN Firewall)
+                                          |
+192.168.2.151                - | 192.168.2.1 eth1(DMZ firewall)
+    (with port 25 open)         |
+                                           |
+                                     172.16.2.1 (eth0) LAN Firewall
+I've configured a computer with IP 62.160.1.3 (to simultate an internet 
+connection).
+I try to make a telnet 62.160.1.2 25 on this computer but it doesn't work.
+If I make a telnet on the public IP of my firewall (port 25)  I must see 
+the sendmail on my 192.168.2.151 server.
+
+My iptables rules are :
+##########################################"
+iptables -F
+iptables -X
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+iptables -t filter -A INPUT -i lo -j ACCEPT
+iptables -t filter -A OUTPUT -o lo -j ACCEPT
+
+iptables -t nat -A PREROUTING -p tcp --dport 25 -i eth2 -j DNAT --to 
+192.168.2.151:25
+
+#################################################"
+
+It's a very simple test. But unfortunately it doesn't work.
+
+Thanks for your help
+
+Frederic
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+
+
 
