@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ever block *outgoing* packets on your firewall?
-Date: Fri, 14 Jan 2005 15:14:04 -0500
-Message-ID: <20050114201404.GA27341@bender.817west.com>
-References: <20050114200228.GA21562@spawar.navy.mil>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: not sure if 'iptables -Z' needed/useful/superfluous here..
+Date: 14 Jan 2005 22:38:28 +0100
+Message-ID: <1105728837.25584.63.camel@nostromo.bgsecm.com>
+References: <20050114060327.GA8917@spawar.navy.mil>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050114200228.GA21562@spawar.navy.mil>
+In-Reply-To: <20050114060327.GA8917@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Fri, Jan 14, 2005 at 12:02:28PM -0800, seberino@spawar.navy.mil wrote:
-> 
-> I'm wondering if it is ever necessary to block
-> *outgoing* packets at your firewall.
-> 
-> As long as you block /incoming/ carefully no hacker
-> on the Internet can send spam through a node on
-> your network or anything nasty like that right?
-> 
-> (I'm wondering for a wifi hotspot if any nastiness
-> will happen if I don't block outgoing.  I block
-> virtually all incoming except ssh.)
+i	El vie, 14 de 01 de 2005 a las 07:03, seberino@spawar.navy.mil
+escribi=C3=B3:
 
-i run a default DROP policy on the OUTPUT chain of my firewalls and only
-allow out necessary traffic (DNS, HTTP/FTP to update servers, NTP, etc).
-but i'm pretty odd when it comes to these things--i don't know how
-necessary it is.  the one nice side-effect is that is keeps me from
-doing something stupid when i'm ssh-ed into a firewall.
+> I read man page on iptables but it still was not clear if I need
+> -Z to 'reset the byte count' and other stuff like it says it will do.
 
--j
+If you delete your rules there are no counters, so you don't need
+to reset them.
+
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
 
