@@ -1,12 +1,12 @@
-From: "David Benigni" <dbenigni@lutron.com>
-Subject: Redirecting ports
-Date: Thu, 17 Jul 2003 18:36:05 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Round Robin Load Balancing
+Date: Thu, 17 Jul 2003 15:36:38 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sf16eca7.062@lutron.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DFC@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,14 +17,194 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Javier Govea <jgovea@magma.ca>, Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.netfilter.org
 
-Currently I have a need to forward port 26 to port 25 for tcp only.  The
-machine does not function as a NAT box.  So, the machine has 1 ip
-address to the internet.  I still need to be able to connect to 25 as
-well.  I'm having no luck doing so.  I've playing around with the rules
-without completely success.  Has anyone come across a rule that might
-help me out?  TIA
+There is an extension that says something like every N packets, execute
+this rule. I forgot what it was called though.. *doh*
 
-David Benigni
+Try looking back ~ 1 month ago. I know I saw it there somewhere.
+
+-----Original Message-----
+From: Javier Govea [mailto:jgovea@magma.ca]=20
+Sent: Thursday, July 17, 2003 1:30 PM
+To: Ramin Dousti; Daniel Chemko
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Round Robin Load Balancing
+
+I undesrtand what you mean about perfect load balancing (i'm not
+actually looking for a
+perfect load balancer) I have two examples below, but first i will
+responde some of the
+questions.
+
+> Do these two ppp accounts belong to the same ISP?=20
+Yes. I have four accounts, all of them with the same ISP
+>Does the ISP drop forign src?
+?????
+> Is the gateway doing nat?=20
+Yes, im using iptables to setup the nat
+> Do you have any preference on one of the ppp's than the other?=20
+No
+>Can you bond (mppp)?
+I haven't tried multilink ppp...i will look into this...
+
+> You could also setup something like BGP to allow multiple routes
+to....
+I don't know if this would be the best approach. I already tried to
+setup BGP and OSPF=20
+routes using zebra (http://zebra.org) and i never made it work....
+I found a tool called EQLPlus
+(http://www.cwareco.com/download/eqlplus.html) but i was
+never able to compile it. Has anybody has tried eqlplus before???????
+
+> If one user makes a request out of line X then the return packet HAS
+to come back     =20
+ > through line X. So, if one guy sends a huge request taking minutes to
+fulfill, he / she
+> will tie up the line until the job is finished
+
+Absolutely. I can live with that, but here is my problem. I have 4 ppp
+links on my router
+(which is doing nat). Then if in a host, located in my LAN which
+connected to my router, i
+open four browsers and each browser is pointing to the same site then
+i'm expepecting each
+web page to be requested and returned in a different link. But that
+doesn't happen. Some
+times it does happen but most of the time i get three of the responses
+on one link, one in
+another and the other two links do nothing. Sometimes i get 2,1,1,0 ....
+
+I did another test...i have website with has in its main web page has
+only 4 images
+(differnt images but all of them of exactely the same size). if i point
+my browser to that
+site, then i'm believe the browser is sending four http requests (one
+for each image),
+well i would expect one image on each link....but again sometimes i get
+the four images on
+the same link...some times i get 2 images in one link...
+
+So, i don't want a perfect load balancer but i would like to fix the
+problems on my two
+examples... i thought about implementing a round robin algorithm for
+load balancing where
+my first request goes on my first available link, the second one on the
+second available
+link and so on....this idea fixes my problems in my two previous
+examples, but i'm open to
+suggestions....
+
+any tips, pointer, ideas are all welcome...
+
+cheers...
+X
+
+
+
+> Absolutely. Perfect load balancing needs to be coordinated on _all_
+the
+> endpoints of the links involved. In this case, 4 endpoints.
+>=20
+> For a regular load balancing (which is going to be the case here)
+> we still have lots of unknown variables. Do these two ppp
+> accounts belong to the same ISP? Does the ISP drop forign src?
+> Is the gateway doing nat? Do you have any preference on one of
+> the ppp's than the other? Can you bond (mppp)? And so on.
+> But a fun project, though, for someone who has time...
+>=20
+> Ramin
+>=20
+> On Tue, Jul 15, 2003 at 12:44:40PM -0700, Daniel Chemko wrote:
+>=20
+> > Because of the nature of your setup, you cannot have a perfect equal
+> > load balance setup. This is because you cannot control the inbound
+flow
+> > of data. If one user makes a request out of line X then the return
+> > packet HAS to come back through line X. So, if one guy sends a huge
+> > request taking minutes to fulfill, he / she will tie up the line
+until
+> > the job is finished. The load balancer should be smart enough to not
+> > send any more requests to that line, but you are still seeing the
+line
+> > being monopolized by this single connection, hence it is not
+balanced
+> > over all lines equally.
+> >=20
+> > In order to have fair balancing of all lines, I think you need to
+set up
+> > a deal with your ISP to load balance on their end as well.
+> >=20
+> > You could also setup something like BGP to allow multiple routes to
+the
+> > same return address, but I am not familiar enough with BGP to be
+much
+> > help in this area. In all likelihood, you are better off with your
+> > current solution or maybe the ISP solution if it is supported by
+them
+> > (more money usually).
+> >=20
+> >=20
+> >=20
+> > -----Original Message-----
+> > From: Javier Govea [mailto:jgovea@magma.ca]=20
+> > Sent: Tuesday, July 15, 2003 12:34 PM
+> > To: netfilter@lists.netfilter.org
+> > Subject: Round Robin Load Balancing=20
+> >=20
+> > Hi,
+> >=20
+> > I'm trying to do some load balancing with four ppp connections. Here
+is
+> > what i have: a LAN
+> > connected to a redhat box which has four ppp interfaces. All the
+boxes
+> > in the LAN are
+> > accesing internet through the ppp interfaces in the redhat box. I'm
+> > using iproute2, in my
+> > redhat box, to setup the the four ppp interfaces as my default out
+going
+> > route (as
+> > described in LART <a
+href=3D'http://lartc.org/howto/index.html'>http://lartc.org/howto/index.h=
+t
+ml</a>) and I'm using
+> > iptables to masquerade
+> > all the traffic comming from the LAN.=20
+> >=20
+> > My setup is working fine, ie. my LAN can access the net throught the
+> > four ppp interfaces.
+> > My problem is that i don't know how is the load balancing working.
+Some
+> > times one of the
+> > ppp interfaces is used more than the others (and that is my
+problem).
+> > According to LART
+> > the routes are cached, can someone go a bit into more details in
+this
+> > caching thing??? how
+> > does it work?  which particular files in the kernel are doing this?
+
+> >=20
+> > I would like to implement a simple round robing algorithm (with no
+> > caching) for doing the
+> > laod balancing. That is first connection established gose through
+ppp0,
+> > the second
+> > connection on ppp1 and so on.=20
+> >=20
+> > I could hack iproute2 and/or iptables, but i'm not sure about which
+> > particular files i
+> > should hack in order to implement this round robin algorithm. I
+actually
+> > don't know if
+> > what i want makes any sense
+> >=20
+> > Any ideas or pointers are all very well appreaciated.
+> > Thanx to all
+> > X
+> >=20
+> >=20
+>=20
 
