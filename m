@@ -1,10 +1,10 @@
-From: "Johannes Kleimola" <johannes@kleimola.fi>
-Subject: Where does linux kernel ipsec hook in
-Date: Wed, 20 Oct 2004 14:31:47 +0300 (EEST)
+From: "Eduardo Diego Fonseca da Silva" <diegofs@dcc.ufmg.br>
+Subject: Warning - no help text file could be found
+Date: Wed, 20 Oct 2004 18:35:41 -0300 (BRST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20683.194.211.242.140.1098271907.squirrel@194.211.242.140>
+Message-ID: <43382.200.198.41.73.1098308141.squirrel@200.198.41.73>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,19 +18,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi there!
 
-Hi!
+When I try to use POM I get the following message:
 
-This may have been asked before, but could somebody tell me where does
+Warning - no help text file could be found in either
+/usr/src/linux/net/ipv4/netfilter/Config.help
+or /usr/src/linux/Documentation/Configure.help
+Failed to patch copy of /usr/src/linux
+TEST FAILED: patch NOT applied.
 
-  1) linux 2.6 kernel ipsec (encrypt and decrypt) and
-  2) linux packet sniffers (tcpdump, ethereal)
+Where do I get those files?
 
-hook in all the diagrams of page:
+Thanks!
+Eduardo
 
-http://www.faqs.org/docs/iptables/traversingoftables.html
-
-Thank you very much for help!
-
-  >> Johannes <<
 
