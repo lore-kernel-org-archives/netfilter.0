@@ -1,11 +1,12 @@
-From: "Sathi" <sathiyan@gmx.net>
-Subject: need to forward req between same network ip within same machine
-Date: Thu, 20 Jun 2002 18:44:04 +0530
+From: James Morris <jmorris@intercode.com.au>
+Subject: Re: Where did netfilter.org/iptables.org go?
+Date: Thu, 20 Jun 2002 23:09:11 +1000 (EST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <026701c2185c$5da22340$870110ac@samsi>
+Message-ID: <Mutt.LNX.4.44.0206202307490.1561-100000@blackbird.intercode.com.au>
+References: <20020620123208.83253.qmail@web10905.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020620123208.83253.qmail@web10905.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,43 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Brad Chapman <kakadu_croc@yahoo.com>
+Cc: netfilter <netfilter@lists.samba.org>
 
-Hello All,
+On Thu, 20 Jun 2002, Brad Chapman wrote:
 
-I have a Redhat linux box with two NIC which i am going to use as firewall
-machine.
+> Everyone,
+> 
+>      Does anyone know why www.netfilter.org and www.iptables.org point to
+> lists.netfilter.org/mailman/listinfo? Fortunately netfilter.samba.org and
+> netfilter.gnumonks.org are still OK.
+> 
 
-Foe some reason i want to assign a ip address for these 2 NIC in same
-network say
+Harald has just moved the server to a new IP, so it's possibly just a 
+temporary DNS issue.
 
-eth0: 10.10.10.1/24----------> to router
-eth1: 10.10.10.2/24<---------- from client
 
-eth0 and eth1 are connected in different switch
+- James
+-- 
+James Morris
+<jmorris@intercode.com.au>
 
-All clients are connected through eth1.I did not want any masquerading to
-happen here.i want to just forward the request from eth1 to eth0 and
-response from eth0 to eth1
-
-i test with these rules as
-
-iptables -A FORWARD -i eth1 -o eth0 -p all -s 10.10.10.0/24 -d 0/0 -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -p all -s 0/0 -d 10.10.10.0/24 -j ACCEPT
-
-but this doesn't work
-clients are unable to connect internet
-
-I enabled ip_forward in kernel also.
-
-What should be the exact rule to make clients use internet through this
-linux box.
-
-Do i need to change anything do with routing table
-What should be a entry in the routing table
-
-Thanks
-Sathi
 
 
