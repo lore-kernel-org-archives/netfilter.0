@@ -1,9 +1,11 @@
-From: =?ISO-8859-9?Q?=DDhsan__Turkmen?= <iturkmen@ifk.com.tr>
-Subject: Netfilter vs Cisco PIX
-Date: Wed, 16 Oct 2002 23:54:42 +0300
+From: "Juliano Dapper" <juliano@dualcon.com.br>
+Subject: Failed to patch tcp-window-tracking.patch...
+Date: Wed, 16 Oct 2002 19:04:24 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <A758C299015FD411887B0000E2131186C21447@TRUVA>
+Message-ID: <000a01c2755f$fd1749e0$2200a8c0@dualcon.com.br>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0007_01C27546.D79F5860"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,26 +16,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi..
-I am using netfilter (iptables) for about 5 months time, and like it very
-much. When it comes to comparison to other vendor solutions,  I would always
-be in favour of iptables because it will be one and maybe the only firewall
-in the future.It deserves this reputation even today.
+This is a multi-part message in MIME format.
 
-I am expected to CONVINCE one of my personal customers to give up buying PIX
-and use iptables instead. Since, I did not have personal experience with
-PIX, I am not armored with necessary information that will be needed for
-such a duty. I once heard it was not a statefull firewall, but a packet
-filter only. Can u give me a comparision table , or links about this issue?.
-Please answer to my e-mail becouse I am not a member of the list.
+------=_NextPart_000_0007_01C27546.D79F5860
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Best regards..
+Hello,
 
-Ihsan Turkmen
+I trying apply tcp-window-tracking in kernel 2.4.19......
 
- 
+[root@test]# ls -al /usr/src/linux
+lrwxrwxrwx    1 root     root           13 Out  4 11:03 /usr/src/linux =
+-> linux-2.4.19/
+
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
+Testing patch extra/tcp-window-tracking.patch...
+   Placed new Makefile line
+Failed to patch copy of /usr/src/linux
+TEST FAILED: patch NOT applied.
+
+I testing with patch-o-matic-20020825 and patch-o-matic-20021015.
+
+
+------=_NextPart_000_0007_01C27546.D79F5860
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I trying apply tcp-window-tracking in =
+kernel=20
+2.4.19......</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>[root@test]# ls -al=20
+/usr/src/linux<BR>lrwxrwxrwx&nbsp;&nbsp;&nbsp; 1 =
+root&nbsp;&nbsp;&nbsp;&nbsp;=20
+root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 13 =
+Out&nbsp; 4=20
+11:03 /usr/src/linux -&gt; linux-2.4.19/</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Do you want to apply this patch=20
+[N/y/t/f/a/r/b/w/v/q/?] y<BR>Testing patch=20
+extra/tcp-window-tracking.patch...<BR>&nbsp;&nbsp; Placed new Makefile=20
+line<BR>Failed to patch copy of /usr/src/linux<BR>TEST FAILED: patch NOT =
+
+applied.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I testing with patch-o-matic-20020825 =
+and=20
+patch-o-matic-20021015.</DIV>
+<DIV><BR></DIV></FONT></BODY></HTML>
+
+------=_NextPart_000_0007_01C27546.D79F5860--
+
 
