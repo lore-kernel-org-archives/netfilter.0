@@ -1,14 +1,9 @@
-From: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
-Subject: Re: ip_conntrack table is full with razor requests. Something	isn't
- timing out.
-Date: Wed, 2 Mar 2005 18:15:16 +0100 (CET)
-Message-ID: <Pine.LNX.4.62.0503021812120.4923@L01.THNET>
-References: <4224A715.8030907@aptalaska.net>
-	<Pine.LNX.4.62.0503012324020.3992@L01.THNET>
-	<4224FF04.90205@aptalaska.net>
-	<1109758459.3574.10.camel@nienna.balabit>
+From: odanes@free.fr
+Subject: REDIRECT to more than one port does not work
+Date: Wed,  2 Mar 2005 18:35:29 +0100
+Message-ID: <1109784929.4225f9611dd4a@imp2-q.free.fr>
 Mime-Version: 1.0
-In-Reply-To: <1109758459.3574.10.camel@nienna.balabit>
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +14,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: KOVACS Krisztian <hidden@sch.bme.hu>
-Cc: netfilter@lists.netfilter.org, Matthew Schumacher <matt.s@aptalaska.net>
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
->>
->> Thanks for your note on this... looks like a netfilter bug to me.  Did
->> you have any problems running 2.6.9?  I am looking at the diffs and it
->> looks like there are a number of changes to the ip_conntrack code in
->> 2.6.10.  When reading though the changelog for 2.6.11-rc5 it doesn't
->> appear that any of these issues are resolved, so I may have to go back
->> to 2.6.9 if it is known to work.
->
->  Could you try whether or not the following patch fixes your problem?
->
-> https://lists.netfilter.org/pipermail/netfilter-devel/2004-December/017908.html
->
-Thanks - it seems as if it did the trick! Connections are set up properly 
-and marked as CLOSE afterwards, and cleaned out properly. Great!
+Hi,
 
-Thank you very much,
-Michael
+I would like to forward tcp connection to port 8000 to ports 8080 and 808=
+1 on
+the same machine in order to load balance HTTP request to two processes. =
+So
+I'va add the following rule
+
+iptables -t nat -A  PREROUTING -p tcp --dport 8000 -m state --state NEW -=
+j
+REDIRECT --to-ports 8080-8081
+
+I think that the first connection will be forwarded to 8080 and the senco=
+nd to
+8081 and so on. But when I connect to the port 8000 the connection is alw=
+ays
+redirected to the same port 8080.
+
+Is my thought wrong ?
+
+regads, olivier.
+
+here is some information on my linux box
+# uname -a
+Linux mowgli.lannion.citypassenger.com 2.4.20-8 #1 Thu Mar 13 17:18:24 ES=
+T 2003
+i686 athlon i386 GNU/Linux
+# iptables --version
+iptables v1.2.7a
 
