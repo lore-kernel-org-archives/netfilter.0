@@ -1,14 +1,15 @@
-From: "Alexander Konovalenko" <a-konovalenko@yandex.ru>
-Subject: Re: Internet Servers behind firewall (passthrough)
-Date: Wed, 11 Feb 2004 20:24:23 +0300 (MSK)
+From: cbaker@bbbscentralohio.org
+Subject: Windows Update through Mandrake firewall
+Date: Wed, 11 Feb 2004 14:02:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <402A6547.000003.12994@soapbox.yandex.ru>
-References: <E1AqjCT-0004ja-FZ@vishnu.netfilter.org> <1076479135.2747.44.camel@raylinux.internal>
-Reply-To: a-konovalenko@yandex.ru
+Message-ID: <402A35FA.11068.EBAD7F@localhost>
+References: <1076479135.2747.44.camel@raylinux.internal>
+Reply-To: cbaker@bbbscentralohio.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1076479135.2747.44.camel@raylinux.internal>
+In-reply-to: <402A6547.000003.12994@soapbox.yandex.ru>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +20,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, sceotjp@ybb.ne.jp
-Cc: raymondl@knowledgefactory.co.za
+To: netfilter@lists.netfilter.org
 
-[ ... ]
->> I have 10 public(internet) IP addresses, each for a server.
-[ ... ]
->> I would like this Linux "routing machine" to take all traffic to the 10
->> internet IP's
->> and pass them straight on to the servers connected on the other side of this
->> machine.
->> 
->You need to investigate DNAT.
+I am having trouble running Windows Update through a Mandrake 
+Multi Network Firewall. I have already asked for help in several other 
+forums.
 
-No, you don't.
+I am able to browse other web sites just fine. The Windows Update site 
+appears to fail up when I checks my PC for updates. Microsoft's site 
+support site said that I should "disable the firewall."
 
-DNAT is a form of Network Address Translation which would be necessary if you didn't have enough public IP addresses.
+What ports do I need to open? What rules do I need to have? Could 
+this be a Squid issue (our web proxy server)?
 
-What you need is to set up your Red Hat machine (one that is directly connected to the internet) to be a router, that is, to forward IP packets it gets from both sides in the right direction.
+Thanks,
 
-You can read how IP routing works in the Linux Network Administrator's guide at http://www.tldp.org/LDP/nag2/x-087-2-issues.html.  Start from there and then search for any additional info on how to set up routing table for your router.  Notice that this issue is offtopic in this list, which is dedicated to packet _filtering_, NAT, etc.
+Chris
 
-You may want to set up some kind of firewalling at your router to protect your servers against different kinds of attacks or abuse.  _This_ is done using iptables.  Please consult appropriate documentation at http://www.netfilter.org/ and http://www.tldp.org/ first.
 
- -- alexkon
+========================================
+Chris Baker -- technical specialist
+614-839-2447x108
+cbaker@bbbscentralohio.org
+Big Brothers Big Sisters of Central Ohio
+www.bbbscentralohio.org
+Opinions expressed in this e-mail are solely my own.
+
+
 
