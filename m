@@ -1,11 +1,12 @@
-From: Eric Leblond <eric@regit.org>
-Subject: First alpha release of NuFW
-Date: Mon, 01 Sep 2003 21:04:56 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Maximum Number of Chains
+Date: Wed, 3 Sep 2003 09:25:51 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062443096.1688.19.camel@porky>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C21A@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-5PVAXJC4r5WCMbLbsBpn"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,50 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
-Cc: gnufw-devel@nongnu.org
+Content-Type: text/plain; charset="us-ascii"
+To: Paul Caritj <pcaritj@freespace-networks.net>, netfilter@lists.netfilter.org
+
+How much memory do you have???
+
+I've added at once stage around 500+ rules in once chain alone, if that =
+helps you in anyway..
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+=20
+
+-----Original Message-----
+From: Paul Caritj [mailto:pcaritj@freespace-networks.net]
+Sent: Saturday, August 30, 2003 2:16 PM
+To: netfilter@lists.netfilter.org
+Subject: Maximum Number of Chains
 
 
---=-5PVAXJC4r5WCMbLbsBpn
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Greetings, I hope everyone is well.
+Though I suspect the subject line adequately conveys my question, I will =
 
-Hi everyone,
+restate it: Does anyone out there know the maximum number of chains per=20
+table?
 
-I'm proud to announce you that the first alpha version of NuFW is
-available for testing.
+Many thanks,
+Paul
 
-NuFW is a set of daemons providing filtering of packets at the user
-level.
-
-Broadly speaking, the users have to run a client that sends
-authentication packets to the gateway. On the server side, the gateway
-associates a userid to packet, thus bringing the possibilty to filter
-packet on a user base.
-
-This software is based on libipq and is written in C. It is in alpha
-status : it's globally stable but lacks configuration tools and the
-client is only available for TCP and Linux.=20
-
-More information and download can be found at :	http://www.nufw.org
-
-BR,
 --=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
 
---=-5PVAXJC4r5WCMbLbsBpn
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQA/U5hYnxA7CdMWjzIRAp8EAJ4zwrpyEdGWNc/NYDCZMt3CoDB5ywCbBcPk
-BKX5R7Kj4bDCNhC8A/Zl+rI=
-=O1FI
------END PGP SIGNATURE-----
+------------------------------
+Paul James Caritj
 
---=-5PVAXJC4r5WCMbLbsBpn--
+President
+Freespace Networks, Inc.
+pcaritj@freespace-networks.net
+
+
+
 
