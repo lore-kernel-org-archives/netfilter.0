@@ -1,11 +1,11 @@
-From: =?iso-8859-1?Q?Francisco_Andr=E9_Barbosa_Neto?= <fneto@connecton.com.br>
-Subject: NAT Problems FTP (maybe a newbie question)
-Date: Wed, 19 Nov 2003 21:49:30 -0200
+From: "German Viera" <gviera@directo.com.uy>
+Subject: H323 NAT
+Date: Thu, 20 Nov 2003 09:49:05 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02ea01c3aef7$c6d4dd20$0af2d3c8@admin1>
+Message-ID: <01db01c3af64$ae81abf0$037803cf@german>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_02E7_01C3AEE7.031B3920"
+	boundary="----=_NextPart_000_01D8_01C3AF4B.89209DD0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,44 +20,28 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_02E7_01C3AEE7.031B3920
+------=_NextPart_000_01D8_01C3AF4B.89209DD0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-            Hi all, I've installed Slackware 9.1 in 2 diferent pc's, in =
-2 different clients. These machines are doing nat to all the internal =
-network. I'm running only a single rule described below, but when any of =
-the client machines try to connect to any ftp site, the connection was =
-ok but when the user gives an ls command the server respond 500 ilegal =
-command.
+Hi everybody......
 
-            I've checked all the modules (one of the machines are =
-running with all the iptables code compiled internally into the kernel, =
-not as module) and all is ok.=20
+    I had been using iptables for almost a year ...I am administering a =
+linux box that works as a router....I am maquins source routing and NAT =
+..but I am having problem with some H323 equipement to make nat with =
+them.....
 
-            What is poosible to happening in this case, could anybody =
-give some hint!
+some one has any idea ???
 
-            Thak's!
 
-All my firewall is:
+PS: Please reply to this mail becuase I am not yet subscriber to the =
+list.
 
-iptables -F
-iptables -t nat -F
+Regards ,
 
-iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -d 0.0.0.0/0 -j SNAT =
---to 200.X.X.X
-           =20
-------------------------------------------------------
-Francisco Andr=E9 Barbosa Neto
-fneto@connecton.com.br
-Connect On Internet Provider
-http://www.connecton.com.br
-Fone: 55-11-4655-2232
-------------------------------------------------------
-
-------=_NextPart_000_02E7_01C3AEE7.031B3920
+Geman Viera
+------=_NextPart_000_01D8_01C3AF4B.89209DD0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -66,60 +50,30 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; Hi all, I've installed Slackware 9.1 in&nbsp;2 =
-diferent pc's,=20
-in 2 different clients. These machines are doing nat to all the internal =
+<DIV><FONT face=3DArial size=3D2>Hi everybody......</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I had been using =
+iptables for=20
+almost a year ...I am administering a linux box that works as a =
+router....I am=20
+maquins source routing and NAT ..but I am having problem with some H323=20
+equipement to make nat with them.....</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>some one has any idea ???</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>PS: Please reply to this mail becuase I =
+am not yet=20
+subscriber to the list.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards ,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Geman Viera</FONT></DIV></BODY></HTML>
 
-network. I'm running only a single rule described below, but when any of =
-the=20
-client machines try to connect to any ftp site, the connection was ok =
-but when=20
-the user gives an ls command the server respond 500 ilegal =
-command.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; I've checked all the modules (one of the machines are =
-running=20
-with all&nbsp;the iptables code&nbsp;compiled internally into the =
-kernel, not as=20
-module) and all is ok. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; What is poosible to happening in this case, could =
-anybody=20
-give some hint!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; Thak's!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>All my firewall is:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -F</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -t nat -F</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -t nat -A POSTROUTING -s =
-192.168.0.0/24 -d=20
-0.0.0.0/0 -j SNAT --to 200.X.X.X</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; </FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>------------------------------------------------------<BR>Franci=
-sco Andr=E9=20
-Barbosa Neto<BR><A=20
-href=3D"mailto:fneto@connecton.com.br">fneto@connecton.com.br</A><BR>Conn=
-ect On=20
-Internet Provider<BR><A=20
-href=3D"http://www.connecton.com.br">http://www.connecton.com.br</A><BR>F=
-one:=20
-55-11-4655-2232<BR>------------------------------------------------------=
-<BR></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_02E7_01C3AEE7.031B3920--
-
+------=_NextPart_000_01D8_01C3AF4B.89209DD0--
 
 
