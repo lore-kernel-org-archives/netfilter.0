@@ -1,11 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: FW: ICQ file transfers
-Date: Sat, 9 Aug 2003 10:44:50 +1000
+From: Rob Verduijn <rverduij@dds.nl>
+Subject: gaim servers and ports ?
+Date: Sat, 09 Aug 2003 19:06:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDEMKKNJDLAJDPNDPCDDOEEDNFAA.georgev@citadelcomputer.com.au>
+Message-ID: <1060448817.2645.2.camel@vimes.localdomain>
+References: <FDEMKKNJDLAJDPNDPCDDOEEDNFAA.georgev@citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FDEMKKNJDLAJDPNDPCDDOEEDNFAA.georgev@citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,23 +18,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailling List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Is this guy a d$@& or what? Nothing but abuse from him... Obviously he is
-mentally challenged..
+Hi there,
 
------Original Message-----
-From: Kari Suomela [mailto:julppi@sipuli.net]
-Sent: Saturday, August 09, 2003 12:33 AM
-To: georgev@citadelcomputer.com.au
-Subject: ICQ file transfers
+Does anybody know what ports are used by gaim, and possibly what servers
+it connects to?
 
+ie the port(range) it listens on and what ports it connects to?
 
-
- GV> Block everything and allow only port 5190/4000 (don't know if
-
-DUH!!!
----
-
+Thanx
+Rob
 
 
