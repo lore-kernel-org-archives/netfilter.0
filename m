@@ -1,13 +1,12 @@
-From: "Paul Harlow" <pharlow@skld.com>
-Subject: Allowing FTP and internal but nothing else
-Date: Wed, 3 Mar 2004 09:55:04 -0700
+From: Xinwen Fu <xinwenfu@cs.tamu.edu>
+Subject: RE: missed packets
+Date: Wed, 3 Mar 2004 10:57:58 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4A8849EC2E153F41B6CECD20C81BC63BD11E66@wolfcreek.skld.net>
+Message-ID: <Pine.GSO.4.58.0403031050380.20955@unix.cs.tamu.edu>
+References: <200403030603.i23632fG009347@server5.bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C40140.468BF33D"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <200403030603.i23632fG009347@server5.bandwidthco.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,86 +16,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Mark E. Donaldson" <markee@bandwidthco.com>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Mark,
 
-------_=_NextPart_001_01C40140.468BF33D
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+> If all these machine are on the same subnet, connected by a hub, then there
+> is no need for the packets to go through 192.168.0.2 because they do not
+> require routing.  Consequently, they cannot be processed by the firewall.
+> The flow is this:  192.168.0.1 -> HUB -> 192.168.0.3.
+	You are right. But I just want to try it. That is, the packet's
+journey is like this
 
-I am new to IPTables and moderately experienced in Linux in general so
-please forgive me if this is a noob question.
-=20
-I have an FTP server that I would like to filter out all external
-traffic except ftp and ftp-data. This same server has an internal
-interface that I would like to allow everything on the inside to have
-access to. Given what I've read I have come up with this general idea of
-what to put into a filter table for now. Please let me know what your
-gurus of netfilter think. Thanks!
-=20
-iptables -I INPUT -i eth0 -j ACCEPT
-iptables -I INPUT -i eth1 -d port 21 -j ACCEPT
-iptables -I INPUT -i eth1 -d port 20 -j ACCEPT
-iptables -I INPUT -i eth1 -j deny
-=20
-I am assuming this is similar to Cisco access lists in that it will read
-along the filter list until a hit is made then take action. Please
-correct me if I am wrong.
-=20
-TIA
+1. a packet is generated on 192.168.0.1 to 192.168.0.3
 
-------_=_NextPart_001_01C40140.468BF33D
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+2. 192.168.0.1 captures the packet (by iptables) and changes its
+destination to 192.168.0.2
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
+3. 192.168.0.2 captures the packet (by iptables) and changes its
+destination to 192.168.0.3
 
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial size=3D2>I am =
-new to IPTables=20
-and moderately experienced in Linux in general so please forgive me if =
-this is a=20
-noob question.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial size=3D2>I have =
-an FTP server=20
-that I would like to filter out all external traffic except ftp and =
-ftp-data.=20
-This same server has an internal interface that I would like to allow =
-everything=20
-on the inside to have access to. Given what I've read I have come up =
-with this=20
-general idea of what to put into a filter table for now. Please let me =
-know what=20
-your gurus of netfilter think. Thanks!</FONT></SPAN></DIV>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial =
-size=3D2></FONT></SPAN><FONT=20
-face=3DArial size=3D2>iptables -I INPUT -i eth0 -j ACCEPT<BR>iptables -I =
-INPUT -i=20
-eth1 -d port 21 -j ACCEPT<BR>iptables -I INPUT -i eth1 -d port 20 -j=20
-ACCEPT<BR>iptables -I INPUT -i eth1 -j deny</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial size=3D2>I am =
-assuming this=20
-is similar to Cisco access lists in that it will read along the filter =
-list=20
-until a hit is made then take action. Please correct me if I am=20
-wrong.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
-size=3D2>TIA</FONT></SPAN></DIV></BODY></HTML>
+4. 192.168.0.3 should receive the packet but did not in my case.
 
-------_=_NextPart_001_01C40140.468BF33D--
+	Here I use ipq_set_verdict to accept the mangled packet. Is there
+some trick about ipq_set_verdict for the mangled packet?
+
+	Thanks.
+
+Xinwen Fu
+
+
+
+
+
+
+>
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Xinwen Fu
+> Sent: Tuesday, March 02, 2004 9:27 PM
+> To: netfilter@lists.netfilter.org
+> Subject: missed packets
+>
+> Hi,
+> 	I have three machines in the same subnet (i.e., 192.168.0.1,
+> 192.168.0.2 and 192.168.0.3). The three machines are collected by a hub.
+> So they can communicate with each other directly.
+>
+> 	Now 192.168.0.1 wants to send a packet to 192.168.0.3. I use
+> "iptables -t mangle -A OUTPUT -j QUEUE"
+> to forward the packet to the user space, where a program changes the
+> destination of this packet to 192.168.0.2. Of course, I change checksum
+> accordingly here and in later steps.
+>
+> 	When 192.168.0.2 receives the packet, I use iptables -t mangle -A
+> PREROUTING -j QUEUE to forward the packet to the user space, where the
+> destination of the packet is changed to 192.168.0.3.
+>
+> 	But I could not see any packet sent out by 192.168.0.2 and
+> 192.168.0.2 does receive the packet from 192.168.0.1.
+>
+> 	What is the possible problem?
+>
+> 	Thanks!
+>
+> Xinwen Fu
+>
+>
+>
+>
 
