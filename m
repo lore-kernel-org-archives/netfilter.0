@@ -1,12 +1,15 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: remote telnet is blocked when internal ping is ongoing
-Date: Thu, 24 Jun 2004 09:20:07 -0400
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: ACK,RST getting dropped in the firewall.
+Date: Thu, 24 Jun 2004 09:36:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4EA4B865@email1.mitretek.org>
+Message-ID: <1088084177.2029.8.camel@grendel>
+References: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org>
+	 <1087990356.2064.47.camel@grendel> <200406241037.01994.gdh@acentral.co.uk>
+	 <200406241144.10450.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200406241144.10450.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,121 +20,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Linda Zhu <lindazhu@utstar.com>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Why not just make it separate for ICMP,TCP (port x,y,z)?
+On Thu, 2004-06-24 at 06:44, Antony Stone wrote:
+> 
+> The other thing you see logged quite often for similar reasons is FIN-ACK 
+> packets - the reply FIN-ACK is regarded as optional by many systems, so 
+> netfilter often ends up logging (and dropping) the second one to come along.
 
-Instead of (ALL_TCP), specify -p icmp .. type or=20
-                              -p tcp --dport 23 (telnet)
+IMHO this is completely non-RFC. It is clearly defined (RFC 793 page 22)
+that both sides must issue a FIN/ACK and receive an ACK before the
+connection is closed.
 
-Then you can fine grain control the connection limit/s.
+What OS does not issue the reciprocating FIN/ACK? 
 
+> No harm done though, because the first one has done the job.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Linda Zhu
-Sent: Wednesday, June 23, 2004 3:53 PM
-To: netfilter@lists.netfilter.org
-Subject: remote telnet is blocked when internal ping is ongoing
+Actually not quite true as both sides will enter a fin-wait state (RFC
+793 page 20) till the second FIN/ACK-ACK exchange takes place. This
+chews up a session on both ends till their timers expire. Add up enough
+of them and it can kill a busy server (seen it happen and have had to
+stop state tracking to fix it).
 
-Hi,
+The "problem" is that there is no requirement for the second FIN to be
+immediately issued. The remote host is free to continue to send data
+till it is finished. Sometimes this exceeds iptables's timer for the FIN
+portion of the session, thus causing the problem many of us are seeing. 
 
-This is Linda from UTStarcom. I have problems with iptable
-configuration.
+Also, if you check the log entry that was posted:
 
-The problem happens on one card. The card has two ethernet interfaces:
-One is 172.16.xx.xx, and another is 192.168.xx.xx. The 172.16.xx.xx
-interface
-is used for remotely acceccing the card. The 192.168.xx.xx interface
-receives
-and transmit traffic.
+> Jun 23 16:42:43 javagreen kernel: New not syn:IN=eth0 OUT=
+> MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+> DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=51601 DF 
+> PROTO=TCP SPT=80 DPT=2162 WINDOW=64574 RES=0x00 ACK URGP=0
 
-Part of our iptable configuration is attached below.
+Its a 1500 byte ACK packet. So iptables is not just blocking the FIN/ACK
+exchange, it can sometimes end up blocking data transfer as well. :(
 
-In normal case, user can remotely telnet into this card with no problme.
-The problem occurs when we run ping from 196.168.xx.xx interface at a
-fast
-rate.
+I reported this "bug" back when iptables was still alpha code. At the
+time iptables would expire the session 60 seconds after the first FIN
+has been passed. I think Rusty bumped the timer up to 2 minutes. Perhaps
+its been tweaked back down again or needs to be increased to 3 minutes?
 
-e.g. ping -i 0.01 -s 1400 192.168.100.2, then the remote telnet to
-172.168.xx.xx
-interface is blocked.
-
-In the iptable configuration, we have one rule:
-
-$IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j
-ACCEPT
-
-If we change the limit from 1/second to 20/second, then with one ping
-session,
-the telnet will be successful. After that, if we run two ping sessions:
-e.g.
-ping -i 0.01 -s 1400 192.168.100.2
-ping -i 0.01 -s 1400 192.168.100.3
-
-then telnet is blocked again.
-
-Then if we change the limit from 20/second to 100/second, remote telnet
-success.
-With the 100/second, even 4 ping sessions ongoing at same time, the
-remote
-telnet is OK.
-
-Basically, we don't setup any firewall for 192.168.xx.xx interface. My
-question
-is why the ping on 192.168.xx.xx interface will affect the remote
-telnet.
-The two
-interface are in different IP groups and on different hardware. Please
-advice.
-
-Thank you,
-Linda
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D part of our =
-iptable configuration
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-###
-# Create separate chains for TCP,UDP,ICMP to traverse
-#
-#
-
-$IPTABLES -N allowed_tcp
-$IPTABLES -N tcp_packets
-$IPTABLES -N udp_packets
-$IPTABLES -N icmp_packets
-#$IPTABLES -N allowed_ping
-
-#
-# Allowed chain
-#
-
-$IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j
-ACCEPT
-$IPTABLES -A allowed_tcp -p TCP -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-$IPTABLES -A allowed_tcp -p TCP -j DROP
-
-#
-# TCP rules
-#
-
-### Telnet ###
-$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 23 -j allowed_tcp
-
-
-#
-# ICMP rules
-#
-
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 -m limit --limit
-3/second --icmp-type 8
- -j ACCEPT
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type pong -j ACCEPT
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type port-unreachable -j
-ACCEPT
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
+HTH,
+Chris
 
 
 
