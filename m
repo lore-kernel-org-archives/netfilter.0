@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Re: iptables help
-Date: Thu, 29 Jul 2004 22:20:39 +0100
+Date: Thu, 29 Jul 2004 22:28:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407292220.39022.Antony@Soft-Solutions.co.uk>
-References: <Pine.LNX.4.44.0407291026030.2121-100000@ivanhoe.pcraft.com> <200407291928.48974.Antony@Soft-Solutions.co.uk> <410966F6.3020206@pcraft.com>
+Message-ID: <200407292228.48991.Antony@Soft-Solutions.co.uk>
+References: <Pine.LNX.4.44.0407291026030.2121-100000@ivanhoe.pcraft.com> <200407291928.48974.Antony@Soft-Solutions.co.uk> <4109698E.9010703@pcraft.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <410966F6.3020206@pcraft.com>
+In-Reply-To: <4109698E.9010703@pcraft.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,38 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 29 July 2004 10:07 pm, Ashley M. Kirchner wrote:
+On Thursday 29 July 2004 10:18 pm, Ashley M. Kirchner wrote:
 
 > Antony Stone wrote:
-> >>>iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 80 -j REJECT
-> >
-> >"-I" will insert the rule at the top of the FORWARD chain, and therefore
-> >guarantees that these packet will be REJECTed, no matter other rules
-> > follow in your ruleset.
+> >where w.x.y.z could be 192.168.38.64/29 for example, to block destination
+> >addresses 192.168.32.64 to 192.168.38.72
 >
->     Thanks for the explanation.  So I'm testing this out now, and I
-> inserted:
+>     Heh, I just realized this won't help a whole helluva lot because
+> www.yahoo.com's round-robin setup isn't contiguous:
 >
-> iptables -I FORWARD -s 66.218.75.184 -d 192.168.1.253 -p tcp --dport 80
-> -j REJECT
+>     And neither is www.hotmail.com (which redirects to passport.net anyway:
 >
->     66.218.75.184 == mail.yahoo.com (or login.yahoo.akadns.net, or
-> l1.login.vip.scd.yahoo.com according to iptables -L), however that
-> machine (.253) can still reach that address just fine.  What am I missing?
+>     Do you suppose there are servers on the missing IPs, but they're
+> just not operational at the moment?  (Which wouldn't surprise me to be
+> honest.)
 
-You're missing the fact that 192.168.1.253 connects to 66.218.75.184 on 
-destination port 80, not the other way round.
+One way of looking at this is: "what does it matter anyway?"
 
-Try reversing the source & destination addresses in your rule and see if that 
-does what you wanted.
+Just block all TCP destination port 80 to the entire contiguous blocks - I 
+really can't imagine there are going to be any interesting websites in the 
+middle of the IPs of the ones you want to block, and restricting the rule to 
+port 80 means you don't affect any other services such as DNS or SMTP.
 
 Regards,
 
 Antony.
 
 -- 
-If builders made buildings the way programmers write programs, then the first 
-woodpecker to come along would destroy civilisation.
+The idea that Bill Gates appeared like a knight in shining armour to lead all 
+customers out of a mire of technological chaos neatly ignores the fact that 
+it was he who, by peddling second-rate technology, led them into it in the 
+first place.
+
+ - Douglas Adams in The Guardian, 25th August 1995
 
                                                      Please reply to the list;
                                                            please don't CC me.
