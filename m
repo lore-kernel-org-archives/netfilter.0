@@ -1,12 +1,12 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: RE: using iptables for poor-man's load balancing?
-Date: Wed, 19 Feb 2003 19:39:37 -0800 (PST)
+From: "louie miranda" <lmiranda@chikka.com>
+Subject: problems on packets going out..
+Date: Thu, 20 Feb 2003 13:01:48 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030220033937.44381.qmail@web40209.mail.yahoo.com>
-References: <001b01c2d88c$385830c0$483918ac@C1006818>
+Message-ID: <00c401c2d89d$2eba94c0$0b00000a@nocpc3>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_00C1_01C2D8E0.3AB1A5F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001b01c2d88c$385830c0$483918ac@C1006818>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,105 +16,120 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I missed the begining of this thread...so ignore this and sorry if it doesn't
-help
+This is a multi-part message in MIME format.
 
-If you are using Linux this may be of some help
+------=_NextPart_000_00C1_01C2D8E0.3AB1A5F0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-http://lartc.org/
+I have an iptables rule which block specific ports and specific icmp and all
+udp.
+Everything is successfully connected and i can retrieve data packets, but
+when i add the last rule for my chain which is..
 
-It's a routing and traffic control Howto. Hope this helps
+$IPTABLES -A INPUT -d $MYIP -s 0/0 -j REJECT
 
---- mpboden <mpboden@surfcity.net> wrote:
-> i was recently reading the "Iptables Tutorial 1.1.16" by Oskar Andreasson,
-> and i'm getting the impression that your rules might be written incorrectly.
-> of course, i could be wrong, but if you check the following link,
-> http://iptables-tutorial.frozentux.net/chunkyhtml/targets.html, he
-> specifically talks about load balancing. in essence, he specifies a range of
-> ip addresses that the packets would randomly go to, and this is specified in
-> only one "--to-destination" instead of two as you have it written. the
-> following rule would send the packets randomly to any of the servers with
-> ip's from 192.168.1.1. through 192.168.1.12.
-> 
-> iptables -t nat -A PREROUTING -p tcp -d 1.2.3.4 --dport 80 -j
-> DNAT --to-destination 192.168.1.1-192.168.1.12
-> 
-> so perhaps a comma would work in your case if you specifically need to have
-> the ip's as you have them. i've never tried this, but it seems to make sense
-> to me.
-> 
-> iptables -t nat -A PREROUTING -p tcp -d 1.2.3.4 --dport 80 -j
-> DNAT --to-destination 192.168.1.1,192.168.1.12
-> 
-> furthermore, he mentions adding two more specific rules in the nat table to
-> allow hosts on the LAN as well as the firewall computer itself to access the
-> servers properly. please check those out.
-> 
-> mike
-> 
-> 
-> 
-> > Message: 7
-> > From: "Ian Douglas" <ian@icreditvision.com>
-> > To: <netfilter@lists.netfilter.org>
-> > Subject: RE: using iptables for poor-man's load balancing?
-> > Date: Wed, 19 Feb 2003 15:17:48 -0800
-> >
-> > > Say for argument's sake that our public IP is 1.2.3.4 and our
-> > > internal LAN machines are:
-> > >   192.168.1.1
-> > >   192.168.1.12
-> >
-> > (cut two of them out since they're not actually ready to run yet)
-> >
-> > > Just curious if the following rules would work to round-robin the
-> connections:
-> > >
-> > > /sbin/iptables -t nat -A PREROUTING -p udp -d 1.2.3.4 --dport 80  -j
-> DNAT \
-> > >    --to-destination 192.168.1.1:80 \
-> > >    --to-destination 192.168.1.12:80
-> > > /sbin/iptables -t nat -A PREROUTING -p udp -d 1.2.3.4 --dport 433  -j
-> DNAT \
-> > >    --to-destination 192.168.1.1:80 \
-> > >    --to-destination 192.168.1.12:80
-> >
-> > I tested this last night and it didn't work - every request went to 1.1
-> >
-> > Should I be using "--to 192.168.1.1:80" instead of "--to-destination
-> > 192.168.1.1:80" ? I've seen documentation show the use of --to and a
-> working
-> > script for port forwarding that uses --to-destination
-> >
-> > As a followup:
-> >
-> > # uname -a
-> > Linux icv.com 2.4.18-18.7.x #1 Wed Nov 13 20:29:30 EST 2002 i686 unknown
-> >
-> > # rpm -qa | grep iptables
-> > iptables-1.2.5-3
-> > iptables-ipv6-1.2.5-3
-> >
-> > # iptables -V
-> > iptables v1.2.5
-> >
-> > Andrej (Tink) suggested I write the list again and ask what version of
-> iptables
-> > introduced 'multiple targets' for port forwarding.
-> >
-> 
-> 
+Yes its secure every port i have from 1 to 65000, but outgoing packets from
+my server could not get out. Which is wrong? I'm attaching my rule if ever
+you want to see it.
 
+--
+Thanks,
+Louie...
 
-=====
-"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+------=_NextPart_000_00C1_01C2D8E0.3AB1A5F0
+Content-Type: text/plain;
+	name="creon-firewall.txt"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="creon-firewall.txt"
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Shopping - Send Flowers for Valentine's Day
-http://shopping.yahoo.com
+#!/bin/bash
+
+IPTABLES=3D"/sbin/iptables"
+MYIP=3D"10.0.0.13"
+
+$IPTABLES -F
+
+### global rule for 193.35.207.34 ###
+# $IPTABLES -A INPUT -d $MYIP -s 0/0 -j LOG
+### end of global rule for 193.35.207.34 ###
+
+### rule for udp ###
+$IPTABLES -A INPUT -p udp -d $MYIP -j LOG
+$IPTABLES -A INPUT -p udp -d 127.0.0.1 -s 127.0.0.1 -j ACCEPT
+$IPTABLES -A INPUT -p udp -d $MYIP -s $MYIP -j ACCEPT
+$IPTABLES -A INPUT -p udp -d $MYIP -s 10.0.0.11 -j ACCEPT # louie-pc
+$IPTABLES -A INPUT -p udp -d $MYIP -s 0/0 -j REJECT --reject-with =
+icmp-net-unreachable # drop the fucker ;)
+### end of udp ###
+
+### rule for icmp 8 ###
+$IPTABLES -A INPUT -p icmp --icmp-type 8 -d $MYIP -j LOG
+$IPTABLES -A INPUT -p icmp --icmp-type 8 -d 127.0.0.1 -s 127.0.0.1 -j =
+ACCEPT
+$IPTABLES -A INPUT -p icmp --icmp-type 8 -d $MYIP -s $MYIP -j ACCEPT
+$IPTABLES -A INPUT -p icmp --icmp-type 8 -d $MYIP -s 10.0.0.11 -j ACCEPT =
+# louie-pc
+$IPTABLES -A INPUT -p icmp --icmp-type 8 -d $MYIP -s 0/0 -j REJECT =
+--reject-with icmp-net-unreachable
+### end of icmp 8 ###
+
+### rule for port 22 ###
+$IPTABLES -A INPUT -p tcp --dport 22 -d $MYIP -j LOG
+$IPTABLES -A INPUT -p tcp --dport 22 -d 127.0.0.1 -s 127.0.0.1 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 22 -d $MYIP -s $MYIP -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 22 -d $MYIP -s 10.0.0.11 -j ACCEPT # =
+louie-pc
+$IPTABLES -A INPUT -p tcp --dport 22 -d $MYIP -s 0/0 -j REJECT =
+--reject-with icmp-net-unreachable # drop the fucker ;)
+### end of port 22 ###
+
+### rule for port 80 ###
+$IPTABLES -A INPUT -p tcp --dport 80 -d $MYIP -j LOG
+$IPTABLES -A INPUT -p tcp --dport 80 -d 127.0.0.1 -s 127.0.0.1 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 80 -d $MYIP -s $MYIP -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 80 -d $MYIP -s 10.0.0.11 -j ACCEPT # =
+louie-pc
+$IPTABLES -A INPUT -p tcp --dport 80 -d $MYIP -s 0/0 -j REJECT =
+--reject-with icmp-net-unreachable # drop the fucker ;)
+### end of port 80 ###
+
+### rule for port 3306 ###
+$IPTABLES -A INPUT -p tcp --dport 3306 -d $MYIP -j LOG
+$IPTABLES -A INPUT -p tcp --dport 3306 -d 127.0.0.1 -s 127.0.0.1 -j =
+ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 3306 -d $MYIP -s $MYIP -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 3306 -d $MYIP -s 10.0.0.11 -j ACCEPT # =
+louie-pc
+$IPTABLES -A INPUT -p tcp --dport 3306 -d $MYIP -s 0/0 -j REJECT =
+--reject-with icmp-net-unreachable # drop the fucker ;)
+### end of port 3306 ###
+
+### misc rules ###
+# $IPTABLES -A OUTPUT -p icmp -s 0/0 -d 10.0.0.13 -j ACCEPT
+### end of misc rules ###
+
+### output rules ###
+$IPTABLES -A OUTPUT -p ALL -s $MYIP -j ACCEPT
+### end of output rules ###
+
+### forward rules ###
+$IPTABLES -A FORWARD -i eth0 -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+### end of forward rules ###
+
+### rule for deny all ###
+$IPTABLES -A INPUT -d $MYIP -s 0/0 -j REJECT --reject-with =
+icmp-net-unreachable # drop the fucker ;)
+### end of deny all ###
+
+#
+# eof
+
+------=_NextPart_000_00C1_01C2D8E0.3AB1A5F0--
+
 
