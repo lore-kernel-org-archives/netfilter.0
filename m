@@ -1,8 +1,8 @@
 From: Juan Hernandez <alucard@kanux.com>
 Subject: Re: virus warning
-Date: 27 Jan 2004 11:44:31 -0400
+Date: 27 Jan 2004 11:47:51 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075218271.12341.0.camel@webmail.aeropostal.com.ve>
+Message-ID: <1075218471.12341.2.camel@webmail.aeropostal.com.ve>
 References: <F22386C3FEB012449238672E38ED61E71642A9@overlord.overturemedia.com>
 	 <200401270145.12799.Alistair Tonner <> >
 	  <001101c3e4a8$800f4970$88e118d2@dw1>
@@ -22,11 +22,7 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
-Is this the new SCO virus? if it is... I'll infect all the computers in
-my network in purpose ;)
-
-
-Juan 
+yes, it's the SCO virus ;)
 
 On Tue, 2004-01-27 at 03:38, Info wrote:
 > ClamAV has detected it. Stopping more than 30 emails since this morning
