@@ -1,14 +1,14 @@
-From: Ryan D <netfilter@mandrake.us>
-Subject: Re: round-robin aliases
-Date: Fri, 17 Sep 2004 16:16:07 -0600
+From: Pascal Vilarem <pvilarem-ml@9online.fr>
+Subject: Re: Blocking Netranges Based on IP-to-Country CSV
+Date: Sat, 18 Sep 2004 15:25:47 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040917221607.GG2579@dearing.us>
-References: <20040917175729.GF2579@dearing.us>
-	<1095445245.1886.48.camel@wolfpack.ljm.dom>
+Message-ID: <414C375B.8080305@9online.fr>
+References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
+	<20040917114613.GP452@metastasis.org.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1095445245.1886.48.camel@wolfpack.ljm.dom>
+In-Reply-To: <20040917114613.GP452@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,61 +18,70 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Cc: pvilarem-ml@9online.fr
 
-On Fri, Sep 17, 2004 at 02:20:45PM -0400, Jason Opperisano exclaimed:
+my 2 cts :
 
->On Fri, 2004-09-17 at 13:57, Ryan D wrote:
->> Ive been trying to find a way to do this... I have eth0 on the
->> 192.168.2.0/24 network (eth0 has ip 192.168.2.10). I also have 5 aliases
->> on the same network with these ips:
->> 
->> eth0:1 192.168.2.11
->> eth0:2 192.168.2.12
->> eth0:3 192.168.2.13
->> eth0:4 192.168.2.14
->> 
->> 
->> Id like to round-robin the source ip on a per connection basis, meaning,
->> if I ssh to 192.168.2.100 it may come from eth0:1, if I then ssh to
->> 192.168.2.110 it will come from eth0:2, etc.  So the destination ssh
->> machines will see different source IPs.
->> 
->> Is this possible with netfilter/iproute2?  The only potential problem I
->> see is with the arp table, but I also dont understand this stuff as well
->> as I would like.
->> 
->> -Ryan
+Nick Drage wrote:
+
+>On Thu, Sep 16, 2004 at 09:33:03AM -0700, Hudson Delbert J Contr 61 CS/SCBN wrote:
+>  
 >
->this is the default behavior of the SNAT code:
+>>why do this ?
+>>    
+>>
 >
->  iptables -t nat -A POSTROUTING -o eth0 \
->    -j SNAT --to-source 192.168.2.11-192.168.2.14
+>There's a good set of reasons on:
 >
->layer 2 devices don't have problems with many IP's being associated with
->the same MAC address--they don't particularly like the same MAC address
->being associated with multiple ports.
+>http://ip-to-country.webhosting.info/
 >
+>  
+>
+good set of reasons... but none of these is a good reason :-)
 
+>>seems a bit nasty in nature.
+>>    
+>>
+>
+>Depends how you use the information.  And to be honest considering the
+>reputation of some sources of traffic, such as Korea and South America,
+>which might be unlikely to have legitimate connections to your site, it
+>would be handy to block them all.
+>
+>  
+>
+let me disagree... youre gonna drop eberybody from one country... most 
+of them are innofensive...
+and more : the really bad guys will just have to hack a good looking 
+computer in a "good" country.
+And then they will bypass this miraculous system...
 
+You will just FEEL safe but you wont be at all... and you'll just hit 
+everybody but your "target" :-\
 
-Is there possibly a piece missing to this? Ive set this up and it did
-not complain, but Im still only going out through one IP. Here is the
-output from iptables and ip route show:
+It IS ab bit nasty... and more : it is blind ineffective.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT   all -- anywhere  anywhere  to:192.168.2.10-192.168.2.11
+>>we dont even do this sort of thing? see email addy...
+>>    
+>>
+>
+>But you're a worldwide organisation, and I think there's much more that
+>you can do with this than just block.  For example, has anything figured
+>out a way to tie this into logging rules, it would great to see which
+>countries I'm being attacked from.
+>
+>  
+>
+If you're dealing with "bad guys" you'd better invest in a Intrusion 
+prevention system...
+start on a snort or prelude basis for example... then you'd be able to 
+adapt dynamically netfilter.
 
+if you have to protect some data, authenticate your users/customers no 
+matter from which country they are.
 
+grtx.
 
-192.168.2.0/24 dev eth0  proto kernel  scope link
-default via 192.168.2.254 dev eth0
-
-
-
-Thanks,
-Ryan
 
