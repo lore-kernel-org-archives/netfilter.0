@@ -1,12 +1,11 @@
-From: Vicnent Haverlant <vincent@haverlant.org>
-Subject: Re: iptables analyzer
-Date: 30 Oct 2003 19:38:36 +0100
+From: "David C. Hart" <DCH@TQMcube.com>
+Subject: Couple More Questions
+Date: Thu, 30 Oct 2003 13:57:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <m2llr2d103.fsf@haverlant.org>
-References: <20031028233053.25326.qmail@web40203.mail.yahoo.com>
+Message-ID: <1067540253.2895.44.camel@main.tqmcube.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-oifwbmIGVjr9JsPwWfDz"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031028233053.25326.qmail@web40203.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,15 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: SBlaze <dagent.geo@yahoo.com>
-Cc: "Earl A.Killian" <netfilter@lists.killian.com>, netfilter@lists.netfilter.org
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
 
--- 
-   .~.     Vincent Haverlant  -- Galadril -- #ICQ: 35695155   
-   /V\      http://www.haverlant.org/
-  /( )\      Parinux (http://www.parinux.org/)
-  ^^-^^       MUD -- FranDUMII (http://perso.enst.fr/~frandum/)
+--=-oifwbmIGVjr9JsPwWfDz
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+I've read the tutorial but a couple of doubts linger.
+
+1. Since I'm only logging rejected packets, any suggestions on getting
+name resolution into the log?
+
+2. I'm still a bit confused on the logging of the destination address.
+With our one static IP, there are two possibilities. Either a packet is
+intended for our IP or for another. Yet, the logs will always show the
+destination address as the IP of the LAN interface. Any suggestions?
+
+--=-oifwbmIGVjr9JsPwWfDz
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQA/oV8dol4OE0cpGaIRAkN1AJ9HJlFOaBSbYVQUoq3rstLCTZnGJgCfWRy+
+bn0pk9LbEzEObzV2Eah9Wfs=
+=u+/B
+-----END PGP SIGNATURE-----
+
+--=-oifwbmIGVjr9JsPwWfDz--
+
 
