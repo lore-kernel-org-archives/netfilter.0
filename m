@@ -1,13 +1,11 @@
-From: Marcel Koppe <m.koppe@lrz.tu-muenchen.de>
-Subject: Re: problem with recent iptables and ftp-server in dmz
-Date: Thu, 20 Jan 2005 17:02:25 +0100
-Message-ID: <200501201702.25366.m.koppe@lrz.tu-muenchen.de>
-References: <200501201629.40493.m.koppe@lrz.tu-muenchen.de>
-	<1106236144.5024.13.camel@hubcap.ljm.dom>
+From: Tommy W <tommy@svearike.sytes.net>
+Subject: My Gateway won't listen on second internet interface (internally)
+Date: Thu, 20 Jan 2005 19:57:21 +0100
+Message-ID: <200501201957.21813.tommy@svearike.sytes.net>
+Reply-To: 189@telia.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1106236144.5024.13.camel@hubcap.ljm.dom>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,65 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks, it worked!
+I have the box configured like this
+root@svearike:~# ip rule
+0:      from all lookup local 
+32762:  from all fwmark 0x2 lookup bostream 
+32764:  from 82.182.37.52 lookup bostream 
+32766:  from all lookup main 
+32767:  from all lookup default
 
-Am Donnerstag, 20. Januar 2005 16:49 schrieb Jason Opperisano:
-> On Thu, 2005-01-20 at 10:29, Marcel Koppe wrote:
-> > Hi,
-> >
-> > till today I've used a firewallscript on a "SuSE Linux 7.1" system based
-> > on iptables 1.2.6a. (script is at the end of this message)
-> >
-> > Today I've created a new firewallsystem on a "SuSE Linux 9.2" system
-> > based on iptabels 1.2.11.
-> >
-> > It seemed to work without any problems like the old firewall till I tri=
-ed
-> > to use ftp on my ftpserver on the dmz from outside the network.
-> >
-> > The ftpserver asks for a username and password which means that the
-> > routing works to the dmz but if I type ls and it changes to "extendes
-> > passive mode" I'm getting a timeout error from the "real" ip adress of
-> > the ftp server.
-> >
-> > Thats strange because I'm sure that all preferences are the same on the
-> > new machine as on the old machine. (networkdevices are in the same order
-> > too)
-> >
-> > I would be very grateful if anyone can help me find a way to fix this
-> > problem.
-> >
-> > kind regards
-> >
-> > Marcel
->
-> add this to your script:
->
->   modprobe ip_conntrack_ftp
->   modprobe ip_nat_ftp
->
-> if you want to be fancy, since your script looks rather stylish:
->
->   if (! lsmod | grep -q ip_conntrack_ftp); then
->     modprobe ip_conntrack_ftp
->   fi
->   if (! lsmod | grep -q ip_nat_ftp); then
->     modprobe ip_nat_ftp
->   fi
->
-> -j
->
-> --
-> "It takes two to lie. One to lie and one to listen."
-> 	--The Simpsons
+root@svearike:~# ip route show
+192.168.0.0/24 dev eth1  proto kernel  scope link  src 192.168.0.8 
+82.182.37.0/24 dev eth2  proto kernel  scope link  src 82.182.37.52 
+83.251.64.0/21 dev eth0  proto kernel  scope link  src 83.251.70.192 
+127.0.0.0/8 dev lo  scope link 
+default via 83.251.64.1 dev eth0
 
-=2D-=20
-UNIX Administrator
-EDV Nuklearmedizin
-Klinikum rechts der Isar der TU M=FCnchen
-Ismaninger Stra=DFe 22 BAU 557
-81675 M=FCnchen
+root@svearike:~# ip route show table bostream
+default via 82.182.37.1 dev eth2
+
+ip route add default via $BOSTREAMGW dev eth2 table bostream
+ip rule add from $BOSTREAMIP table bostream
+ip rule add fwmark 0x02 lookup bostream
+$IPTABLES -t mangle -m tcp -A PREROUTING -p tcp -s 192.168.0.5 --dport 80 -j 
+MARK --set-mark 0x02
+$IPTABLES -I FORWARD -i $TELIAIF -o $INTIF -m state -d 192.168.0.5 --state 
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -I FORWARD -i $BOSTREAMIF -o $INTIF -m state -d 192.168.0.5 --state 
+ESTABLISHED,RELATED -j ACCEPT
+
+
+it's working perfectly .. putting all the outbound port 80 traffic on eth2 and 
+the rest on eth0 .. 
+It listens and serves ftp on both eth0 and eth2 
+Everything works fine.. EXCEPT!! I can't even do ping 82.182.37.52 (eth2) from 
+my local net (eth1) if I am on 192.168.0.5 (eth1) and do ping 83.251.70.192 
+(eth0) it works.
+but if I do from 192.168.0.5 (eth1) ping 82.182.37.52 (eth2) it doesn't work.
+For some reason the gateway doesn't know what to do when a request is sent to 
+it on that ip.
+Something strange in the routing table?
+
 
