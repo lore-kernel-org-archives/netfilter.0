@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Masquerading problems
-Date: Wed, 3 Jul 2002 10:33:15 +0100
+From: "R. Sterenborg" <rsterenborg@xs4all.nl>
+Subject: Re: Unable to apply pptp patch
+Date: Wed, 3 Jul 2002 11:34:14 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207030933.g639XMU28761@vulcan.rissington.net>
-References: <200FAA488DE0D41194F10010B597610D2BA1F8@JUPITER>
+Message-ID: <00df01c22274$cbb59160$153fa8c0@hslbrabantzuid.nl>
+References: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA1F8@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,50 +19,38 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Wednesday 03 July 2002 10:28 am, George Vieira wrote:
+----- Original Message -----
+From: "George Vieira" <GeorgeV@citadelcomputer.com.au>
 
-> All you really need is to POSTROUTE the workstations..
+
+> Yes limitation is to all versions and it's not a netfilter problem.. it's
+Thanks for telling me... I was going to try it today.
+
+> Also PPTP isn't the best VPN but is widely used due to the Micro$oft
+support
+> for it..
 >
-> With PPPoE do this..
+I know PPTP is crappy compared to a real VPN but we have Windows clients and
+I have to support Windows 98, NT4 and 2000 for wich, at the time, I didn't
+find a VPN client.
+Also my collegue (semi-boss) didn't want a Linux PPTP server because he
+cannot administer it, so I'm stuck with it (yet) ;-/
+
+It's been a while since I searched ; is there a real VPN client and server
+for Windows 9x/NT4/2000 ?
+Since PPTP is obviously going to be a problem in the future, we will have to
+have an alternative, heheh.. Even if that means we're going to have a Linux
+VPN server.
+
+> I'd rather use IPSEC if I can only just compile my damn kernel right for
+> once.. (it's been a while)..
 >
-> INTSN="192.168.1.0/24"
-> IPTABLES=/sbin/iptables
-> EXTDEV="`adsl-status | grep "Link encap"  | awk {'print $1'}"
-> $IPTABLES -A POSTROUTING -o $EXTDEV -t nat -s $INTSN -d $ANYWHERE -j
-> MASQUERADE
+Haven't *really* looked into that yet. Can I use it with older Windows
+clients ?
+If so, I could try that too.
 
-Surely if this were David's problem, his workstations wouldn't be able to 
-access any external servers, whereas his problem report seems to suggest that 
-it is only certain websites which he cannot contact (and therefore others 
-which he can ?)
 
-Maybe this is my error in interpretation, and the solution is as simple as 
-you suggest...
+Rob
 
- 
 
-Antony.
-
-> -----Original Message-----
-> From: David Gaston Rodriguez [mailto:davidgr@interlap.com.ar]
-> Sent: Wednesday, 03 July 2002 3:08 PM
-> To: netfilter@lists.samba.org
-> Subject: Masquerading problems
->
->
-> Hi!, i am new in the list, i am from argentina, this is mi problem:
-> I have a small LAN with a server doing masquerading, I used the kernel
-> 2.2.20 and
-> did not have any problem, now i decided to use the kernel 2.4.18, i set
-> iptables
-> to make the masquerading, but now there are web pages which i can enter
-> from
->
-> workstations, like for example www.mixmail.com or www.yahoo.com, and from
-> the server
-> i can enter to this pages. I using 2 interfaces, eth0: external, eth1:
-> internal, the
-> external interface is connect to ADSL Modem (PPPoE).
-> Some idea on as could be mi problem?
-> Thanks!!
 
