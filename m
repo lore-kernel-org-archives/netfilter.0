@@ -1,10 +1,11 @@
-From: "olivier" <odanes@free.fr>
-Subject: REDIRECT to more than one port does not work
-Date: Thu, 3 Mar 2005 09:40:58 +0100
-Message-ID: <02eb01c51fcc$b8cb7c60$1416a8c0@lannion.citypassenger.com>
-Reply-To: olivier <odanes@free.fr>
+From: Pablo Neira <pablo@eurodev.net>
+Subject: Re: CLUSTERIP error "iptables: Invalid argument"
+Date: Thu, 03 Mar 2005 10:19:33 +0100
+Message-ID: <4226D6A5.9090307@eurodev.net>
+References: <7203.1109797991@www46.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <7203.1109797991@www46.gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,22 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: alex_oz@gmx.net
+Cc: netfilter@lists.netfilter.org
 
-thx for your help.
+alex_oz@gmx.net wrote:
+> I tried the new Netfilter target CLUSTERIP using kernel-2.6.10. I discovered
+> that there is still no userspace support in iptables-1.3.0. So I added
+> "CLUSTERIP" in iptables-1.3.0/extenstions/Makefile and rebuilt
+> iptables-1.3.0 with CLUSTERIP-support.
 
-without changing the rule I've tried with different IPs, odd and even,  =
-but I've got the same behavior. I've also change the rule as you 've =
-suggested, giving this :
+legba:/home/pablo/iptables-1.3.0/extensions# ls -la libipt_CLUSTERIP.so
+-rwxr-xr-x  1 pablo pablo 6385 2005-03-03 09:44 libipt_CLUSTERIP.so
 
-iptables -t nat -A  PREROUTING -p tcp --dport 8000 -j REDIRECT =
---to-ports 8080-8081
+Really? It seems to compile just fine here
 
-I've made the same test (different IPs odd and even) but nothing has =
-changed...
+> Nevertheless it seems that shared library and kernel-object doesn't fit
+> thogehter. When I try to input a CLUSTERIP rule like:
+> 
+> iptables -A INPUT -j CLUSTERIP --new --hashmode sourceip --clustermac
+> 01:ab:cd:ef:ab:cd --total-nodes 2 --local-node 1
 
-do you known how REDIRECT target select the destination when more than =
-one are given ?
+you forgot to add the interface and the IP, eg: -i eth0 -d 1.1.1.1
 
-olivier.
+CLUSTERIP is still marked as experimental, so maybe you could find any bugs.
+
+--
+Pablo
+
