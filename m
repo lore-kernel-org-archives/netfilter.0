@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: TCP delay, solved
-Date: Thu, 13 Jun 2002 13:05:11 +0100
+From: Axel Heinrici <axel.foley-beverly-hills@gmx.de>
+Subject: Re: migration to iptables
+Date: Thu, 13 Jun 2002 14:38:15 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206131205.NAA07068@slate.rockstone.co.uk>
-References: <0fbe01c2122e$f0783300$2901a8c0@amos> <200206122002.g5CK2nA02787@Networker.rockstone.co.uk> <news2mail-ae9qee$vvr$1@babel.spoiled.org>
+Message-ID: <200206131238.OAA02077@axpmgr.physik.rwth-aachen.de>
+References: <200206101942.43007@.> <200206101431.g5AEVpU08614@vulcan.rissington.net> <200206110754.14398@.>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <news2mail-ae9qee$vvr$1@babel.spoiled.org>
+In-Reply-To: <200206110754.14398@.>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,34 +20,45 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 13 June 2002 10:59 am, Juri Haberland wrote:
+Hi
 
-> >> This is annoying, is there a way you can turn
-> >> this off inside inetd?
-> >
-> > Yes, it's the bit on each line of /etc/inetd.conf which says
-> > "/usr/sbin/tcpd" - it does an ident lookup and logs the access to syslog
-> > before handing the connection over to the real daemon.
-> >
-> > If you don't want this to happen them remove the "/usr/sbin/tcpd" from
-> > inetd.conf and just have the standard daemon listed there on its own.
+On Tuesday 11 June 2002 04:26, Payal wrote:
+> Hi,
+> Thanks for the mails.
 >
-> This is a very bad advice as the tcpwrappers are a standard security
-> tool which shouldn't be disabled!
+> iptables -A POSTROUTING -o $EXT_IF -j MASQUERADE
+> Warning: wierd character in interface `-j' (No aliases, :, ! or
 
-I wasn't advocating this as good advice - I was simply answering the question 
-"how do I do it".
+Is it possible that EXT_IF is not set? This really looks like 
+EXT_IF="". Try expicitly iptables -A POSTROUTING -o ppp0 -j 
+MASQUERADE (or eth1 or whatever).
+But I think it should be iptables -t nat -A POSTROUTING -o ..... -j 
+MASQUERADE.
 
-I don't regard eliminating tcpwrappers as a good idea, just for the record.
+From info iptables:
+  MASQUERADE
+       This  target  is  only  valid  in  the  nat  table, in the
+       POSTROUTING chain.
 
-Mind you, I do also think that ident lookups are a bit of an anachronism 
-which we could well do without in many situations these days, however I don't 
-like having a firewall which automatically responds on port 113 to anyone who 
-cares to probe it...
 
-There's no satisfactory answer to this problem at present, I think.
+> *). Bad argument `MASQUERADE'
+> Try `iptables -h' or 'iptables --help' for more information.
 
- 
+Same problem. May you should have a look at man iptables.
 
-Antony.
+> and this gave,
+> iptables -A forward -j MASQUERADE
+> iptables: No chain/target/match by that name
+
+Correct. MASQUERADE is not valid there.
+
+> My aim is very simple, I just wanted the equivalent command for
+> ipchains -A forward -j MASQ
+> in iptables.
+> Thanks a lot in advance and eagerly waiting for the help.
+> -Payal
+
+
+greetings 
+	Axel
 
