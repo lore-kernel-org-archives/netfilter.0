@@ -1,12 +1,13 @@
-From: Dennis Morgan <dennis@airstrike.co.nz>
-Subject: Could be a stupid question...
-Date: Mon, 17 May 2004 21:55:06 +1200
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: Could be a stupid question...
+Date: Mon, 17 May 2004 11:09:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405172155.06592.dennis@airstrike.co.nz>
-Reply-To: dennis@airstrike.co.nz
+Message-ID: <200405171109.50102.gdh@acentral.co.uk>
+References: <200405172155.06592.dennis@airstrike.co.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200405172155.06592.dennis@airstrike.co.nz>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,15 +21,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi All...
-I am just writing to know if there is a way to BLOCK certain types of requests 
-getting to to the webserver?
+On Monday 17 May 2004 10:55, Dennis Morgan wrote:
 
-at present i am getting alot of problems with people using SEARCH requests 
+> ie SEARCH / and a load of escape characters trying to get unauthorised
+> access. I would like to know if there is a way with netfilter to drop these
+> packets?
 
-ie SEARCH / and a load of escape characters trying to get unauthorised access.
-I would like to know if there is a way with netfilter to drop these packets?
+At a pinch, you could try the 'string match' module, but it's generally not 
+recommended.
 
-regards.
-Dennis
+More usefully, you should look at http://l7-filter.sourceforge.net/ - writing 
+a little regex for this package to drop the WebDAV SEARCH requests should be 
+trivial.
+
+Cheers,
+Gavin.
 
