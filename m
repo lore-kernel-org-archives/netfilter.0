@@ -1,10 +1,10 @@
-From: "Stephan Lucas" <stephan.lucas@fhtw-berlin.de>
-Subject: trouble with masquerade
-Date: Mon, 27 Jan 2003 12:50:21 +0100
+From: Kurt Tragant <k.tragant@firemail.de>
+Subject: ip_conntrack table grows
+Date: Mon, 27 Jan 2003 12:52:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301271142.h0RBgrUC019650@hermes.rz.fhtw-berlin.de>
+Message-ID: <1043668353015969@lycos-europe.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="=_NextPart_Lycos_0159691043668353_ID"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,59 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-hello,
-i have a big problem with my router.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-i installed a dsl-card into my linux-box and got the router to=
- run. i 
-use nat with masquerading like that:
-# iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+--=_NextPart_Lycos_0159691043668353_ID
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-all is wonderfully and i can access most of the sites /=
- services..
-.but only most.
+Hi list,
 
-i have many trouble with one big web page (gmx.de). i tryed to=
- access this
-page once from my router and from my masqueraded client. i got=
- two statements.
-on means that i can access the other means i can not.
+I compiled iplimit into the kernel. After some time,
+wc -l /proc/net/ip_conntrack
+gets bigger and bigger, till ip_conntrack_max is reached and the kernel drops
+packages it shouldn't drop (kernel: ip_conntrack: table full, dropping packet.).
+If I increase ip_conntrack_max, this effect takes place later. The thing is,
+that I even don't use any NAT rules nor the -m iplimit nor other connection
+tracking modules!!! But ip_conntrack grows. Is this right? How can I stop it?
+How can I empty the ip_conntrack table from time to time?
 
-this is my router:
-traceroute to www.gmx.de (213.165.65.100), 30 hops max, 40 byte=
- packets
- 1  217.5.98.178 (217.5.98.178)  51.24 ms  51.194 ms  78.382 ms
- 2  217.237.157.130 (217.237.157.130)  49.83 ms  50.141 ms =
- 49.827 ms
- 3  INXS-gw20.M.net.DTAG.DE (194.25.6.14)  61.395 ms  59.688 ms =
- 59.583 ms
- 4  62.156.128.226 (62.156.128.226)  57.412 ms  57.86 ms  56.333=
- ms
- 5  www.gmx.net (213.165.65.100)  60.417 ms  60.223 ms  61.81 ms
+For an answer I thank you in advance...
 
-this my client: (i've translated the statements, because i get a=
- german
-                 output here)
-Routenverfolgung zu www.gmx.net [213.165.65.100]  =FCber maximal 30=
- Abschnitte:
-  1    10 ms   <10 ms   <10 ms  xerxes.home [192.168.0.1]
-  2    50 ms    70 ms    50 ms  217.5.98.178
-  3    60 ms    61 ms    50 ms  217.237.157.130
-  4    60 ms    80 ms    70 ms  INXS-gw20.M.net.DTAG.DE=
- [194.25.6.14]
-  5     *        *        *     out of time.
-  6  62.156.128.226  meldet (report): Network is unreachable.
+Regards
+Kurt Tragant
 
-may it be that the network (gmx.de) is masqueraded, too. and this=
- is the
-reason of unreachable??
+__________________________________________________________________
+Arcor-DSL Flatrate - jetzt kostenlos einsteigen und bis zu 76,18 Euro sparen!
+Arcor-DSL gibt es jetzt auch mit bis zu 1500 Mbit/s Downstream! http://www.angebot.arcor.net/cgi-bin/angebot.cgi?key=b13e92247022
 
-please help.
 
-thanks
-
+--=_NextPart_Lycos_0159691043668353_ID--
 
 
