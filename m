@@ -1,11 +1,11 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Questions on state
-Date: Sun, 13 Mar 2005 20:42:15 -0500
-Message-ID: <1110764535.19878.5.camel@hubcap.ljm.dom>
-References: <200503131623.42711.jsimmons@goblin.punk.net>
+Subject: Re: Questions on VPNs
+Date: Sun, 13 Mar 2005 20:48:39 -0500
+Message-ID: <1110764882.19878.11.camel@hubcap.ljm.dom>
+References: <200503131626.43314.jsimmons@goblin.punk.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503131623.42711.jsimmons@goblin.punk.net>
+In-Reply-To: <200503131626.43314.jsimmons@goblin.punk.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +19,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 2005-03-13 at 19:23, Jeff Simmons wrote:
-> Sorry to bother anyone, but I'm new to iptables, and I'm debugging a working 
-> production machine, so I can't really test things too much. :-(
-> 
-> Is a connection ONLY added to the state table when the first packet matches a 
-> rule that contains the --state NEW directive, or can it happen in some other 
-> way?
+On Sun, 2005-03-13 at 19:26, Jeff Simmons wrote:
+> Using the native IPSEC code in kernel 2.6, when a tunneled ESP packet is 
+> passed by the INPUT chain and then decoded on a VPN gateway, is it then 
+> processed by any other chain?
 
-connections begin getting added to the conntrack table as soon as the
-ip_conntrack module is loaded.
+yes.  either INPUT or FORWARD depending on the destination of the
+decrypted packet.  with 2.6 IPsec, all packets pass twice:  once as ESP,
+once in decrypted form.
 
-> When --state INVALID is matched, is it done only on the source and destination 
-> addresses and ports, or is something else also involved?
-
-if the tcp_window_tracking patch is applied--sequence and acknowledgment
-numbers are also examined.
-
-> Are NAT 'states' available for examination anywhere, like 
-> /proc/net/ip_conntrack?
-
-yes.
+the accepted way to identify decrypted IPsec packets with the native 2.6
+stack is to MARK the ESP packets and match the decrypted packets base on
+that mark.
 
 -j
 
 --
-"Mr. Simpson, why are you here?
- Don't say revenge! Don't say revenge!
- Revenge?
- That's it! I'm outta here!"
+"Let us all bask in television's warm glowing warming glow."
 	--The Simpsons
 
 
