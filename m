@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: log EVERYTHING
-Date: Wed, 26 Mar 2003 09:10:32 +0100
+From: Paul Colclough <paulc@ibiblio.org>
+Subject: Re: block kazaa
+Date: Wed, 26 Mar 2003 08:14:17 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019C9C@hslex01.hslbz.local>
-References: <3E814345.5060508@shortcircuit.dyndns.org>
+Message-ID: <5.2.0.9.0.20030326081140.028671b0@mail.clara.net>
+References: <5.2.0.9.0.20030325212147.00ba2e88@mail.clara.net>
+ <5.2.0.9.0.20030325212147.00ba2e88@mail.clara.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E814345.5060508@shortcircuit.dyndns.org>
+In-Reply-To: <1048656618.6605.13.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Dan Egli' <dan@shortcircuit.dyndns.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: raymondl@knowledgefactory.co.za
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-> I was wondering if there was a way I could setup my rules to 
-> log EVERYTHING, THEN process normally. I.e. if it's an 
-> allowed port, log the connection, then pass it through, and 
-> if it is a disallowed port, log the intrusion and then reject 
-> the packet.
-> 
-> Is this possible?
+At 07:30 26/03/2003 +0200, you wrote:
+>On Tue, 2003-03-25 at 23:27, paulc@ibiblio.org wrote:
+> > The way I block Kazaa (and the other file sharing applications) is a
+> > blanket ban on all ports by default. I then open the ports as I think is
+> > appropriate at the firewall. These only include the port 23 for anyone
+> > wishing to use telnet. All web and ftp style ports on 80, 21 and the like
+> > are handled by a web-proxy to prevent using them for other purposes. All
+> > incoming connects (and lots of ICMP messages) are dropped by the 
+> firewall also.
+> >
+>How do you get passive ftp to work and not allow file sharing networks?
 
-Sure.
+The firewall machine itself has full access to the internet, and all the 
+Windows PC's use a web proxy to accept all web and ftp servers, so the 
+firewall machine fetches the file, and passes it on. Therefore the only 
+file sharing networks that will work are those that act as a web or ftp 
+server on the standard ports.  
 
-
-iptables -P INPUT DROP
-iptables -A INPUT -i <inet_if> -p tcp --dport 22 -j LOG --log-level info
---log-prefix "ipt:ssh "
-iptables -A INPUT -i <inet_if> -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -i <inet_if> -p tcp --dport 80 -j LOG --log-level info
---log-prefix "ipt:http "
-iptables -A INPUT -i <inet_if> -p tcp --dport 80 -j ACCEPT
-
-<...More rules like these...>
-
-iptables -A INPUT -i <inet_if> -j LOG --log-level info --log-prefix
-"ipt:DROP! "
-
-
-This will log all packets allowed and then accept them. If There's no
-match for a packet it gets logged as "ipt:DROP!" and then will be
-dropped (not rejected) by the default policy.
-
-You can also reject the packet by using the following line as the last
-rule :
-iptables -A INPUT -i <inet_if> -j REJECT [--reject-with <some-type>]
-In this case you don't really need the default policy, as no packet will
-reach it.
-
-
-Rob
 
 
