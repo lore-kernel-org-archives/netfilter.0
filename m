@@ -1,10 +1,12 @@
-From: "Jeroen van den Hoed" <jeroen@smartnet.dhs.org>
-Subject: inconsistency in iptables and ifconfig traffic counters?
-Date: Wed, 5 Jan 2005 17:48:43 +0100
-Message-ID: <000901c4f346$6bc96ec0$3200a8c0@jeroen>
+From: Michael Balasko <michael.balasko@cityofhenderson.com>
+Subject: Re: Who is connected to network
+Date: Wed, 05 Jan 2005 08:38:43 -0800
+Message-ID: <41DC1813.1040505@cityofhenderson.com>
+References: <web-580674226@mail01.infosat.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <web-580674226@mail01.infosat.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,50 +17,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: it clown <suse@mailbox.co.za>, netfilter@lists.netfilter.org
 
-Hello all,
+Currently we have coded something in house that scrubs all the 
+connectivity devices for the mac addresses and will email us when an 
+unauthorized device shows up on the network (All Cisco gear). There is 
+work in progress to expand this to automatically clip the port and fire 
+off a series of emails and other actions.  Additionally, all of the 
+ports on the switches are configured to allow only one device into a 
+port, so it would be very difficult to drop a hub in place and start 
+sniffing. There are also a few other tricks in place to prevent man in 
+the middle attacks and a few other exploits.
 
-I'm working on a script to monitor all traffic that passes my colocated
-server. My first thought was to use ifconfig to monitor the RX and TX
-counters repeatedly and calculate my (monthly) traffic. Later I decided to
-use iptables since it can monitor the traffic seperately, for multiple ip
-aliases, where ifconfig can not.
+As far as the wireless stuff goes, it would be amazingly difficult but 
+not impossible to get it right. Our AP's will not allow authentication 
+without the client mac being pounded into our ACS servers.(MAC spoofing 
+isn't all that hard, but) Also the AP's don't broadcast the 
+SSID's(fairly easy to get around). In the case that someone gets the 
+first two right, they need to then figure out the name of the VPN 
+servers. We do not allow any type of access from the AP's without a VPN 
+session established. Then they need to get the VPN settings right and 
+also need to have a user account comprised that had VPN access. Not 
+impossible, but quite difficult for someone to do without making any 
+"noise" that we would be alerted on.  At that point the access lists on 
+the AP's keep you from really touching any of the gear that would hurt us.
 
-I now have both scripts running at the same time, and I came accross
-inconsistencies in the reported traffic. Ifconfig reports more traffic than
-iptables does. For example; yesterday, iptables reported that my received
-traffic was 230mb, whereas ifconfig reported 259mb. (the transmitted traffic
-has similar inconsistencies, ifconfig reports 10 to 15% more traffic than
-iptables does)
-The problem, of course, is that I now don't know which counter to trust.
+All that being said there are million of exploits out there and lots of 
+tools, but we feel that we have a fairly good system in place to deter 
+all but the very skilled and very determined person out there.
 
-Setup
-My external interface is eth0 which is checked with "ifconfig eth0" every 5
-minutes. The RX and TX values are then written to a log file and at the end
-of the day these values are added up and reported to me by mail. (The script
-handles the overflow of the 32bit counter values correctly.)
+Hope that provides a bit of info you were looking for. Feel free to ask 
+any ?'s if you have any.
 
-For iptables I've a couple of rules to measure my incoming and outgoing
-traffic in the mangle table; as follows:
-iptables -t mangle -N incomingtraffic
-itpables -t mangle -A incomingtraffic -j RETURN
-iptables -t mangle -A PREROUTING -i eth0 -j incomingtraffic
-iptables -t mangle -N outgoingtraffic
-itpables -t mangle -A outgoingtraffic -j RETURN
-iptables -t mangle -A POSTROUTING -o eth0 -j outgoingtraffic
-At the end of the day these values are read out and the counters are reset
-to zero (iptables -L -n -v -x -t mangle -Z).
+Mike Balasko
+Network Specialist II
+City of Henderson
 
-Shouldn't the iptable rules above count ALL the traffic coming in and going
-out of eth0? And if these rules are correct, then why is this report lower
-than the report of ifconfig?
+it clown wrote:
 
-Hope someone can enlighten me.
-
-
-Thanks in advance,
-Jeroen van den Hoed
+>Is there a way to see who is connected to your network.
+>
+>Say if you have a wireless network and you need to know if
+>someone got it right to get onto your network.
+>
+>How do you monitor that and how do you prevent it?
+>
+>Even on a normal network how could you monitor who is
+>connected to your network?
+>
+>Regards
+>_____________________________________________________________________
+>For super low premiums, click here http://www.dialdirect.co.za/quote
+>
+>  
+>
 
 
