@@ -1,69 +1,107 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Patchomatic Snapshot Packages
-Date: Wed, 28 Jan 2004 09:20:33 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20040128082033.GK11761@sunbeam.de.gnumonks.org>
-References: <004c01c3e56b$58dc7490$db00a8c0@W2RZ8L4S02>
+From: "Ben" <nigma@nigma.info>
+Subject: Trouble rejecting connections
+Date: Wed, 28 Jan 2004 04:19:16 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <E1Allqr-0002Mv-LJ@aphex.cyberpixels.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cW0eHRJ76X8TDo3d"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <004c01c3e56b$58dc7490$db00a8c0@W2RZ8L4S02>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Jim Gifford <jim@jg555.com>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hello all,
+
+I'm having trouble rejecting connections using iptables.  I am using cPanel
+/ WHM on a RedHat 7.3 a machine and iptables installed from
+iptables-1.2.8-8.72.3.i386.rpm .  I am using a script for my policy, it
+looks like this.
 
 
---cW0eHRJ76X8TDo3d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+//Start script
+IPTABLES="/sbin/iptables"
 
-On Tue, Jan 27, 2004 at 10:52:50PM -0800, Jim Gifford wrote:
-> I just noticed since Jan 11th, there have not been any snapshots of
-> patch-o-matic. Is this being discontinued??
+#Flush everything, start from scratch
+$IPTABLES -F
 
-no, there seems to be a problem with the script generating them.  I
-definitely updated that script when I reorganized the layout of the CVS
-tree, but there still seems to be a problem with it.
+#Set default policies to DROP
+$IPTABLES -P INPUT DROP
+$IPTABLES -P FORWARD DROP
 
-thank you for letting us know.
+#Allow all lo traffic
+$IPTABLES -A INPUT -i lo -s 0.0.0.0/0 -d 0.0.0.0/0 -j ACCEPT
 
-I'll investigate.
+#Allow all related and established connections
+$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-> Jim Gifford
+#Set default OUTPUT policy to ACCEPT
+$IPTABLES -P OUTPUT ACCEPT
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+# Open ports for server/services
+$IPTABLES -A INPUT -p tcp --dport 20 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 21 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 22 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 37 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 43 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 80 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 110 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 113 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 143 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 443 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 465 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 465 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 873 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 873 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 993 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 995 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 2082 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 2083 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 2086 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 2087 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 2089 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 2095 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 3306 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport 6666 -j ACCEPT
 
---cW0eHRJ76X8TDo3d
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+#Enable Blogger support (non-standards compliant piece of dogshit that it
+is)
+$IPTABLES -A INPUT -s 66.102.15.83 -j ACCEPT
+$IPTABLES -A INPUT -s 216.34.7.186 -j ACCEPT
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+#Add passive-mode people here
+#$IPTABLES -A INPUT -s xxx.xxx.xxx.xxx -j ACCEPT
 
-iD8DBQFAF3DRXaXGVTD0i/8RAkBlAJ9/3F54JA4HNEogZc8bzpojIM3ubgCfXx70
-sjweTcA+zLiXtkDBGmiLtYc=
-=wNKU
------END PGP SIGNATURE-----
+#Add DENY people here
+#$IPTABLES -A INPUT -s 000.000.000.000 -j DROP
+$IPTABLES -A INPUT -s blocked.ip.address.here -j DROP
 
---cW0eHRJ76X8TDo3d--
+#Logging
+$IPTABLES -A INPUT -j LOG --log-prefix "INPUTDEFAULT: "
+
+#Save rules
+iptables-save > /etc/sysconfig/iptables
+
+#Restart for rules to take effect
+service iptables restart
+//End script
+
+The problem is that I can still connect from blocked.ip.address.here.  What
+did I miss?
+
+Ben Prince
+Cyber Pixels
+Systems Administrator
+ben@cyberpixels.com 
+
 
