@@ -1,10 +1,14 @@
-From: "Ed _" <ed_b_71@hotmail.com>
-Subject: RE: Removing netfilet 1.2.7a
-Date: Wed, 11 Jun 2003 15:07:04 -0700
+From: Gadgeteer <gadgeteer@elegantinnovations.org>
+Subject: Re: How to stop imesh with iptables
+Date: Wed, 11 Jun 2003 16:36:30 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law14-F25dZqBMh5Waz0004d860@hotmail.com>
+Message-ID: <200306111636.30206.gadgeteer@elegantinnovations.org>
+References: <20030611200517.2278.qmail@web40306.mail.yahoo.com> <02e701c33060$b7439880$1100000a@busbydev>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <02e701c33060$b7439880$1100000a@busbydev>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,53 +18,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: rob@sterenborg.info
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Before installing the latest iptables v 1.2.8 on RedHat 9.0, am trying to 
-remove the older version.
+> From: "Kevin McConnell" <kevymac@yahoo.com>
+> > am I
+> > the only person that denies everything by default and
+> > only allows the protocols through the firewall that I
+> > feel people need to use? 
 
-there seem to be a series of dependencies on v1.2.7a like "lokkit" which in 
-turn is a dependecy on "redhat-config-securitylevel-1.1.1-3" should I remove 
-all of these too?
+<rearranged nasty top post>
 
-or should I remove iptables without a dependency check
-# rpm -e --nodeps iptables
+On Wednesday 11 June 2003 15:30, David Busby wrote:
+> As always:
+>     Depends on the requirements of the firewall.
 
+I have yet to see a case made for other than default deny that was not full of 
+holes     ....just like their firewalls 8-)
 
--e
-
-
->From: "Rob Sterenborg" <rob@sterenborg.info>
->To: "'Ed _'" <ed_b_71@hotmail.com>
->Subject: RE: Removing netfilet 1.2.7a
->Date: Wed, 11 Jun 2003 23:48:16 +0200
->
-> > # rpm -e iptables
-> > error: Failed dependencies:
-> >         iptables is needed by (installed) lokkit-0.50-22
-> > >>>there seems to be a dependency.
->
->You don't need lokkit. "rpm -e lokkit" ;^)..
->After that, "rpm -e iptables".
->
->"Trust me, I know what I'm doing.." Heheh..
->Well, yes : you don't need it !
->
-From some website :
->"Lokkit is a tool that writes generic firewall configurations based on
->..."
->
->You'd better write your own rules so you know what's going on in your
->packetfilter.
->I never used Lokkit, don't know anyone who use[s/d] it, don't know how
->it works, but it's one of the things that I uninstall when I find it.
->
-
-_________________________________________________________________
-Protect your PC - get McAfee.com VirusScan Online  
-http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
-
+-- 
+cheers,
+Gadgeteer
 
