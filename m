@@ -1,8 +1,8 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: email through firewall
-Date: Mon, 8 Sep 2003 12:30:34 -0300
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Kazaa Ports
+Date: Mon, 08 Sep 2003 11:49:52 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002c01c3761e$2546f6d0$49caa8c0@caris.priv>
+Message-ID: <3F5CA520.6060102@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,24 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Has anyone had problems receiving email from there ISP through their
-firewall ?
+Hi All,
 
-I have a pretty basic firewall with 2 nic cards.  On the inside of my
-network I have a windows xp machine with outlook 2k.
-All of my firewall rules seem to be working and I can browse the net /
-telnet from inside the firewall to the internet.
+I am trying to provide a modest amount of security for a home LAN using 
+NAT and filtering. My family insists on using Kazaa Lite on their 
+Windows boxes (aaahhh!!).
 
-For some reason when I try to receive mail, the mail client ( outlook 2k)
-can not find the pop or smtp servers.
+My (other) problem is that Kazaa insists on using sequential source 
+ports and seemingly random destination ports to make connections. I 
+already have a rule to allow ESTABLISHED,RELATED through, but these 
+packets must be new connections (connecting to supernodes maybe?). No 
+matter how many ports I open I can't seem to open enough ports to make 
+it run.
 
-Any suggestions would be appreciated.
+I'm rapidly becoming unpopular in my house. Any ideas how I can make 
+Kazaa Lite work and still maintain some security? Are these mutually 
+exclusive goals?
 
-Thanks
-Peter
-
+Jeff
 
 
