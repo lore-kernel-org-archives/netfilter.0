@@ -1,12 +1,14 @@
-From: "Steve Wakelin" <steve@wcsl.net>
-Subject: MARK and routing issue
-Date: Thu, 1 Jul 2004 00:58:33 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: traceroute
+Date: Thu, 01 Jul 2004 02:16:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <267354A234DF4D46AA6AE56E1240BEF0A48E@tv.wcslnet.net>
+Message-ID: <1088641000.1755.66.camel@anduril.intranet.cartel-securite.net>
+References: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv>
+	 <200406301429.14248.Antony@Soft-Solutions.co.uk>  <40E334EC.1080606@web.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <40E334EC.1080606@web.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +18,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Florian Boelstler <euphoria@web.de>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+Le mer 30/06/2004 =E0 23:47, Florian Boelstler a =E9crit :
+> My traceroute says:
+> traceroute to www.google.akadns.net (66.102.11.99), 30 hops max, 38 byt=
+e
+> packets
+> traceroute: sendto: Operation not permitted
+>  1 traceroute: wrote www.google.akadns.net 38 chars, ret=3D-1
+> [ ... ]
 
-Perhaps someone could point me in the right direction.
+You must have an OUTPUT rule that forbid UDP to high ports, thus
+traceroute cannot send its packets.
 
-I am simply ;-( trying to MARK packets and then route them according to
-the mark.
-
-[root@localhost sysconfig]# ip rule
-0:      from all lookup local
-32760:  from all fwmark 0x6 lookup T4
-32761:  from all fwmark 0x5 lookup T3
-32762:  from 192.168.252.1 lookup T2
-32763:  from 192.168.253.1 lookup T1
-32764:  from 192.168.252.1 lookup T2
-32765:  from 192.168.253.1 lookup T1
-32766:  from all lookup main
-32767:  from all lookup default
-
-[root@localhost sysconfig]# ip route list table T3
-10.3.0.1 via 10.3.0.2 dev tun1
-default via 10.3.0.2 dev tun1
-
-[root@localhost sysconfig]# ip route list table T4
-10.3.0.1 via 10.3.0.3 dev tun2
-default via 10.3.0.3 dev tun2
-
-[root@localhost sysconfig]# iptables -t mangle -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-MARK       all  --  10.15.1.0/24         10.3.0.0/24         MARK set
-0x5
-MARK       all  --  10.15.1.0/24         10.3.0.0/24         MARK set
-0x6
-
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-[root@localhost sysconfig]# ping -I 10.15.1.1 10.3.0.1
-PING 10.3.0.1 (10.3.0.1) from 10.15.1.1 : 56(84) bytes of data.
-ping: sendmsg: Network is unreachable
-ping: sendmsg: Network is unreachable
-ping: sendmsg: Network is unreachable
-
-Will someone please enlighten me as to what I have missed?
-
-Thanks in advance.
-
-Regards
-
-/Steve
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
