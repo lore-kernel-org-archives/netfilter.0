@@ -1,13 +1,11 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: HELP! Transparent Proxy using bridging 2.6.9 and REDIRECT on
- different subnet
-Date: Thu, 24 Mar 2005 15:09:43 -0600
-Message-ID: <42432C97.4050008@riverviewtech.net>
-References: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
-Reply-To: gtaylor@riverviewtech.net
+From: Bryan Waters <bryanw@abwaters.com>
+Subject: Re: anyone know how to use clusterip
+Date: Thu, 24 Mar 2005 15:03:41 -0700
+Message-ID: <4243393D.9010705@abwaters.com>
+References: <42432676.2010701@bus.okstate.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
+In-Reply-To: <42432676.2010701@bus.okstate.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,47 +17,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Trevor Paskett <tpaskett@cymphonix.com>
-Cc: coreteam@netfilter.org, netfilter@lists.netfilter.org
+To: Jason Joines <support@bus.okstate.edu>
+Cc: netfilter@lists.netfilter.org
 
-There is one last really dastardly thing that I think *might* work.  That would be running your system with a UML in side of it that does nothing but DNATing/SNATing of traffic coming in to it so that traffic could be redirected right back to Squid and then out and back through the DNAT/SNAT router and then back to the box it's self where things can be handled.  But when I start thinking of things like this I also start thinking that there is something either missing or broken that is preventing me from doing what I want to do, but sometimes things like this are necessary.  I presently do not have a system set up any where to test this and I will not have time to do so for a while.  If you would like me to continue down this road next week I would be willing to do so.  In short the following would be the packet's path through the network:
+Jason...i've asked the same question already.  It seems that this is new 
+enough that absolutely nobody has any experience with it...at least 
+nobody on this list.  I'm setting up machines to experiment with this 
+now...i'll post my test results to the list.
 
-Client System(s) <-> Linux 2.6.9 System (DNAT/SNAT) <-> Linux 2.6.9 UML (DNAT/SNAT) <-> Squid on Linux 2.6.9 System <-> Linux 2.6.9 UML (DNAT/SNAT) <-> Linux 2.6.9 System (DNAT/SNAT) <-> INet Router <-> Client System(s)
+-bryanw
 
-Yes this is a LONG convoluted path, but this is all that I can think of with out really messing with the packet.  I have had reasonable success running UMLs for routing before as I have a client that routes out across 8 cable modems on the same subnet in a pseudo round robin fashion via routing to 8 UML virtual routers and then bridging back to the interfaces that the cable modems are connected to.  I ended up using 802.1q VLAN tagging to create the 8 virtual interfaces with wonderful success.  So things like this are doable, just cumbersome and I've not seen any network config or firewall package that would even come close to doing things like this.  This is all hand rolled stuff.
-
-
-
-Grant. . . .
-
-Trevor Paskett wrote:
-
-> Thanks for your reply. Our product is a Linux based product that uses
-> netfilter. We have Squid and a filtering engine on our box. We are
-> strong supporters of netfilter. Our customers have many subnets behind
-> our box because of where it is placed in their network. Bringing up
-> alias's on br0 for each of their subnets that are not even on that
-> broadcast domain is a big band aid :). I think this is somehow a bug in
-> ip_nat_core.c and will investigate that further and have cc'd
-> coreteam@netfilter.org and hopefully that will get to Rusty who wrote
-> it.
+Jason Joines wrote:
+>    I recently noticed the clusterip target extension in my iptables man 
+> page.  It looks really interesting but I have no idea how how to go 
+> about trying  it out as I'm not exactly sure what it is supposed to do 
+> and don't understand exactly what all these options mean.  I've 
+> consoulted the netfilter website and googled far and wide but haven't 
+> had any luck finding any examples or more documentation.  Is anyone 
+> using this thing?
 > 
-> As for the SNAT I think Jason Opperisano's response is correct.
-> Everything works great, except somewhere in ip_nat_core.c the src port
-> is getting changed to 1 from 80. I have attached an ethereal dump to
-> show this happening and a dump when it does what it is supposed to.
-> Everything between the 2 is the same, except after I captured the
-> no_work.cap, I did
+> ~> man iptables
+> <--- snip --->
+>   CLUSTERIP
+>       This  module allows you to configure a simple cluster of nodes 
+> that share a certain IP and MAC address without an explicit load
+>       balancer in front of them.  Connections are statically distributed 
+> between the nodes in this cluster.
 > 
-> ifconfig br0:0 192.168.255.165
+>       --new  Create a new ClusterIP.  You always have to set this on the 
+> first rule for a given ClusterIP.
 > 
-> So it had an IP on the test machine's subnet. Of course it worked fine
-> and that capture is work.cap
+>       --hashmode mode
+>              Specify the hashing mode.  Has to be one of sourceip, 
+> sourceip-sourceport, sourceip-sourceport-destport
 > 
-> Thanks for all your help.
+>       --clustermac mac
+>              Specify the ClusterIP MAC address.  Has to be a link-layer 
+> multicast address
 > 
-> Trevor Paskett
-> Cymphonix Programmer - CCNA, CWNA
-> P: 801-938-1500 F: 801-938-1501
-
+>       --total-nodes num
+>              Number of total nodes within this cluster.
+> 
+>       --local-node num
+>              Local node number within this cluster.
+> 
+>       --hash-init rnd
+>              Specify the random seed used for hash initialization
+> <--- snip --->
+> ~>
+> 
+> 
+> Jason Joines
+> =================================
+> 
+> 
+> 
+> 
 
