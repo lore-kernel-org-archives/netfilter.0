@@ -1,12 +1,15 @@
-From: Ilguiz Latypov <ilguiz@nit.ca>
-Subject: Re: Only MASQ/NAT, no FORWARDing?
-Date: Tue, 28 Jan 2003 20:19:51 -0500 (EST)
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: filtering asym. routing without "ip_conntrack: table full"?
+Date: Wed, 29 Jan 2003 03:14:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0301282016390.4136-100000@localhost.localdomain>
-References: <E18bQfG-0007hN-00@trillium-hollow.org>
+Message-ID: <20030129031435.1677325c.arnt@c2i.net>
+References: <20030114093711.GC9940@westend.com>
+	<20030121061614.GA24090@kwaak.net>
+	<20030121104505.GD603@mispa>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E18bQfG-0007hN-00@trillium-hollow.org>
+In-Reply-To: <20030121104505.GD603@mispa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +19,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: erich@uruk.org
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+On Tue, 21 Jan 2003 11:45:05 +0100, 
+Jakub Jakacki <admin@md4.pl> wrote in message 
+<20030121104505.GD603@mispa>:
+
+> I have the same problem, and have found
+> /proc/sys/net/ip_conntrack_max.
+>  Is it contains the default max hashsize? May I only write:
+> 
+>  cat 16384 > /proc/sys/net/ip_conntract_max
+
+..you meant 'echo "16384" > /proc/sys/net/ip_conntract_max' ?
+
+>  to solve the problem of "full table"?
 
 
-On Wed, 22 Jan 2003 erich@uruk.org wrote:
-
-> I figured out how to keep masquerading only going one direction, but
-> what I can't figure out is how to disable all normal packet forwarding
-> other than the masqueraded connections with iptables.  I.e. someone on
-> the other side who knows my internal IP addressing can still send
-> crafted packets through my firewall.
-
-What if you add rules to the filter table that prevent packets from
-"entering" eth0 unless they have a destination address of eth0?
-
-A similar suggestion applies to eth1.
-
---
-Ilguiz Latypov
-Net Integration Technologies, Inc
-
-tel. +1 (514) 281 9191 x 117
-
-P.S. Thanks for GRUB :-)
-
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
 
