@@ -1,13 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: redesigning my firewall -- concepts and suggestions for a more structured layout
-Date: Fri, 26 Sep 2003 00:31:17 -0400
+From: "Mike Walker" <mhwalker@telus.net>
+Subject: IPTables Script
+Date: Thu, 25 Sep 2003 22:00:45 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309260031.17968.Alistair@nerdnet.ca>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <000001c383eb$256b2d40$0101a8c0@A4A74546>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C383B0.790C5540"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +16,106 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-	Okay ... 
-	    I've been reading, watching and sometimes chipping in on this list for a 
-	while now.  I started with Oskar Andreassens (hope I got that right, and 
-	I hope some deity somewhere blesses the man for his work)  basic script
-	tutorial to set my firewall up originally.  My firewall has over time 	
-	modified and grown, and twiddled its way into a morass of rules that last
-	week gave me utter fits when I inserted a rule in which I goofed, and b0rked
-	the internal network filesharing system.  And couldn't see it right off as to 
-	why ... 
+------=_NextPart_000_0001_01C383B0.790C5540
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-	I am endevouring to remake the basic "my multi-pc home lan needs
-	a firewall" firewall into something more organized, and I intend, as an
-	exercise to write it *cough* myself.  My question is .... given the above
-	basic premise, and a DROP default policy across all chains, Is it more
-	effcient, processing wise, to have all the rules in a flat line, or, since it
-	can make things easier to debug, have it parsed up in user chains.
+Any comments on this script as a starting point? I'm sure its no where
+near as secure as it should be but I was looking for a good example to
+learn from and improve on. =)
 
-	My logic is this.  I can break my network traffic flow into 6 directionally
-	oriented chains ( internet to server, internet to lan, lan to server, lan to
-	internet, server to internet, and server to lan) ... I *feel* that it makes
-	better logical sense to setup user chains for each direction, and 
-	*then* have, at the top of each directional chain a jump to a chain
-	that handles things that go in all directions ( i.e. established related 
-	and dns and things), then append rules that apply to that specific direction.
+ 
 
-	From a system load perspective I recall that minimizing the number of rules
-	a packet must traverse lowers load.  Does my logic fall down somehwere here
-	that I am missing?  From a facility point of view, does anyone have comments
-	about ease of use/debug/tracing/problem solving?
-	
-	Is the use of -m multiport to put several accepted ports into one rule an 
-	imporovement in efficiency (a la fewer rules to traverse) or a burden based
-	on something in the multiport code adding load?
+http://www.linuxhelp.ca/guides/iptables/iptables-script
 
-	Ummm ... okay .. there are several other questions boiling about in my brain,
-	but 1) its too darned late at night to get them out coherently and 2) its 
-	time for bed. (gotta get up at 05:15 fer work)
+ 
 
-	Please don't suggest any packages that setup rules for me.  I want the
-	challenge of doing this m'self. (with a little input from the list of course)
+            Mike..
 
-	Thanks for any and all assitance
--- 
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+------=_NextPart_000_0001_01C383B0.790C5540
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Any comments on this script as a starting point? =
+I&#8217;m
+sure its no where near as secure as it should be but I was looking for a =
+good
+example to learn from and improve on. =3D)</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><a
+href=3D"http://www.linuxhelp.ca/guides/iptables/iptables-script">http://w=
+ww.linuxhelp.ca/guides/iptables/iptables-script</a></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; Mike&#8230;.</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0001_01C383B0.790C5540--
+
 
