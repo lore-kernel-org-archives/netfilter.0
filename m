@@ -1,13 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
 Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
-Date: Thu, 30 Oct 2003 16:56:11 +0100
+Date: Thu, 30 Oct 2003 16:54:11 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031030184542.698CB1B9B8@smtp.ttp.nl>
-References: <Pine.LNX.4.44.0310300823360.18175-100000@localhost.localdomain>
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA5791C@OST_EXCH_USR5>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0310300823360.18175-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,8 +15,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "'Robert P. J. Day'" <rpjday@mindspring.com>
-Cc: 'iptables mailing list' <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: iptables mailing list <netfilter@lists.netfilter.org>
+
+Cheers guys - this is really helpful stuff. I've set it to OUTPUT ACCEPT and
+will ensure all works as expected then work my way from there, plus lots of
+logging. 
+
+Thanks heaps
+
+s
+
+
+-----Original Message-----
+From: Rob Sterenborg [mailto:rob@sterenborg.info] 
+Sent: 30 October 2003 3.56
+To: 'Robert P. J. Day'
+Cc: 'iptables mailing list'
+Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
+
 
 > there are definitely two schools of thought: 1) those who set 
 
@@ -42,5 +56,23 @@ IMHO it would be overkill for an introduction of approx. 30 minutes.
 
 Gr,
 Rob
+
+
+
+
+.
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
