@@ -1,13 +1,15 @@
-From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
-Subject: RE: Kaaza 2 jammer.
-Date: Thu, 9 Jan 2003 12:58:38 -0600
+From: Athan <netfilter@miggy.org>
+Subject: Re: opening a port..
+Date: Thu, 9 Jan 2003 20:38:20 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IMEDICLPAGAOCBLCCKLPGENAEKAA.netfilter@darrelldieringer.com>
-References: <565759501.20030109180351@wp.pl>
+Message-ID: <20030109203820.GK21359@miggy.org>
+References: <FD8F124A387AD6119F7900A0D218B321019A9D@hslex01.hslbz.local> <1042080082.606.21.camel@nirvana> <1042088119.810.3.camel@india> <1042092980.487.4.camel@nirvana> <1042093627.810.17.camel@india> <1042094721.423.15.camel@nirvana> <1042095224.810.19.camel@india> <1042095879.433.17.camel@nirvana> <1042099912.810.21.camel@india> <1042100673.487.20.camel@nirvana>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="64LDleNqNegJ4g97"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <565759501.20030109180351@wp.pl>
+Content-Disposition: inline
+In-Reply-To: <1042100673.487.20.camel@nirvana>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +19,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: mdew <mdew@mdew.dyndns.org>
+Cc: "Dharmendra.T" <dharmu@nsecure.net>, netfilter <netfilter@lists.netfilter.org>
 
-I've always wondered something about the string matching, but never
-having used it, I haven't researched it enough to know...
 
-Wouldn't netfilter also see the string "KazzaClient" in this email
-message?  I can imagine how that might cause problems if the string
-matching rules aren't well crafted.
+--64LDleNqNegJ4g97
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I see in the example posted by Tomasz Wrona that it only applies to
-tcp packets forwared from the internal interface, narrowing the focus
-qiute a bit.  But wouldn't that also block an email message having
-that string if sent from an internal machine?
+On Thu, Jan 09, 2003 at 09:24:32PM +1300, mdew wrote:
+> mdew:~# netcat -p 4662
+> no destination
+> mdew:~# nc -l -p 4662
+> ??;??????????????U????J??G??????dfg<????o??mdew:~# netcat
+> Cmd line:
+> mdew:~# netcat -l -p 4662
+> ??;??????????????U????J??G??????dfg<????o??mdew:~# netcat -l -p 4662
+> ??P<H??og??T'?????\????6???http://emule-project.net<6??o??mdew:~#
 
-Of course, the sender of that message may have indeed sent it from a
-client on his internal network, and since I'm reading it, it must have
-worked as intended.
+   I suspect you'll find that's other eDonkey clients connecting to the
+netcat ;).  Why not just make SURE you're running the client for testing
+this?  You'll know when it's working as the eDonkey client will have
+clients connecting.
 
-I imagine placing a string matching rule, like the example, _after_
-rules which accept other legitimate traffic (like smtp) would work
-completely fine.
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
 
-Looking for eduction on the topic.
+--64LDleNqNegJ4g97
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Darrell Dieringer - Madison, WI
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
-> Tomasz Wrona
-> Sent: Thursday, January 09, 2003 11:04 AM
-> To: netfilter@lists.samba.org
-> Cc: lartc@mailman.ds9a.nl
-> Subject: Kaaza 2 jammer.
->
->
-> Hello,
->
-> Some people asked about matching [blocking] Kaaza 2 sessions.
-> So try this simple rule:
->
-> iptables -I FORWARD -i $internal_interface -p tcp -m string
-> --string "KazaaClient" -j REJECT --reject-with tcp-reset
-> [Or maybe worth to try -j TARPIT]
->
-> In above rule I don't specify separate ports due to dynamic
-> port allocation.
-> This rule works fine, catches and reset completly Kaaza 1 and 2
-> versions.
->
->
-> Regards,
-> tw
+iEYEARECAAYFAj4d3bwACgkQzbc+I5XfxKfadgCfSDVSmYTu/7GFU1XX8NtWj5hC
+Q4MAn3toiRKXWn20oqmYrHiAoCszi8wS
+=8fJl
+-----END PGP SIGNATURE-----
 
+--64LDleNqNegJ4g97--
 
