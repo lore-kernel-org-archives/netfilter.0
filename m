@@ -1,11 +1,14 @@
-From: =?iso-8859-1?q?Leandro_Guimar=E3es_Faria_Corsetti_Dutra?= <ldutra@wlt.com.br>
-Subject: IPMasq denying localhost connections
-Date: Tue, 03 Aug 2004 16:44:22 -0300
+From: Julian Gomez <julianjose.gomez@getronics.com>
+Subject: Re: Dropped/Corrupted Log Entries?
+Date: Wed, 4 Aug 2004 13:55:42 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <pan.2004.08.03.19.44.16.29288@wlt.com.br>
+Message-ID: <20040804055542.GG1899@jgomez-p-latitude.asia.unity>
+References: <20040803061936.50702.qmail@web21121.mail.yahoo.com>
+Reply-To: julianjose.gomez@getronics.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040803061936.50702.qmail@web21121.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,27 +18,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-	I have a 2.6.7 Linux kernel system on Debian testing, with an
-Ethernet interface to the cable modem and another to the internal
-network.
+On Mon, Aug 02, 2004 at 11:19:36PM -0700, Tim Burress spoke thusly:
+>Hello!
+>
+>We've run across a problem and I thought I would check
+>to see if anyone else has seen this, or has
+>suggestions for how to fix or work around it. On both
+>
+>Linux 2.4.21, iptables v1.2.8
+>Linux 2.4.26, iptables v1.2.11-20040621
+>
+>When we do a very fast port scan of a system on the
+>other side of a firewall with various common rules, a
+>majority of the denied connection attempts are not
+>showing up in the logs even though they should be, and
+>depending on circumstances and versions, anywhere from
+>1% to 100% of the accepted connections are also not
+>being logged.
 
-	With Linux 2.4 IPMasq worked OK, but with 2.6 I can=E2=80=99t anymore
-reach localhost 127.0.0.1.  This hinders me from using the squid proxy
-cache, for example.
+What you are seeing is an artifact of running syslog unfortunately.
+There is no guarantee that you'll get all the connection attempts
+logged. Truncated log entries are somewhat common also.
 
-	I never fooled around with routing, and was intimidated by
-IPMasq=E2=80=99s /etc files.  Couldn=E2=80=99t find specific troubleshoot=
-ing
-information for IPTables.  Any hint is welcome=E2=80=A6
-
-
---=20
-Leandro Guimar=C3=A3es Faria Corsetti Dutra    +55 (44) 3028 7467 ext 34
-Web-Link Tecnologia Ltda                      fx +55 (44) 269 71 78
-Maring=C3=A1, PR                                                  BRAZIL
-
-
+Dig around in Google, its quite common.
 
