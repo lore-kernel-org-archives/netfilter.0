@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: How to debug nfmarking
-Date: Mon, 15 Nov 2004 13:03:38 -0500
-Message-ID: <1100541817.3591.10.camel@hubcap.ljm.dom>
-References: <1100540726.2796.23.camel@laserite>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: SNAT question
+Date: Mon, 15 Nov 2004 10:33:14 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F1B4A@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1100540726.2796.23.camel@laserite>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +16,104 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-11-15 at 12:45, Eduardo Fern=C3=A1ndez wrote:
-> Hi all,
->=20
-> i'm trying to debug packet marking like this:
->=20
-> iptables -t mangle -A PREROUTING -p icmp -j MARK --set-mark 0x1
-> (...)
->=20
-> But I don't know how to check if the packets are really being marked.
-> ip_conntrack shows all packets with mark=3D0, and that's not possible.
-> I've tried logging with netfilter but I don't know which option shows
-> the nfmark in the log. Any ideas?
->=20
-> Thank you very much in advance.
->=20
-> Eduardo
+I went back to the sample source and changes a couple little items to =
+march how they had it.  It still fails for each internel request for the =
+external ip with the exception of the firewall itself.
+=20
+ping 206.17.98.52 from machine 206.17.98.60 results in a return from =
+192.168.0.52. =20
+=20
+#Incoming Maps
+[0:0] -A PREROUTING -d 206.17.98.51 -j DNAT --to-destination =
+192.168.0.51
+[0:0] -A PREROUTING -d 206.17.98.52 -j DNAT --to-destination =
+192.168.0.52
+...
+[0:0] -A PREROUTING -d 206.17.98.62 -j DNAT --to-destination =
+192.168.0.62
+#Outgoing Maps=20
+[0:0] -A POSTROUTING -d 206.17.98.51 -j SNAT --to-source 192.168.0.51
+[0:0] -A POSTROUTING -d 206.17.98.52 -j SNAT --to-source 192.168.0.52
+...
+[0:0] -A POSTROUTING -d 206.17.98.62 -j SNAT --to-source 192.168.0.62
+[0:0] -A POSTROUTING -o eth0 -j SNAT --to-source 206.17.98.50
+#************************************************************
+[0:0] -A OUTPUT -d 192.168.0.51 -j DNAT --to-destination 206.17.98.51
+[0:0] -A OUTPUT -d 192.168.0.52 -j DNAT --to-destination 206.17.98.52
+...
+[0:0] -A OUTPUT -d 192.168.0.62 -j DNAT --to-destination 206.17.98.62
 
-add a log rule that matches on the mark:
+I know that I must be missing something simple.
+=20
+Gary Smith
+=20
 
-  iptables -t mangle -A PREROUTING -p icmp -j MARK --set-mark 1
-  iptables -t mangle -A PREROUTING -m mark --mark 1 \
-    -j LOG --log-prefix "FW MARK 1: "
+________________________________
 
--j
+From: netfilter-bounces@lists.netfilter.org on behalf of Gary W. Smith
+Sent: Sun 11/14/2004 2:53 PM
+To: netfilter@lists.netfilter.org
+Subject: SNAT question
 
---
-"Beer. Now there's a temporary solution."
-	--The Simpsons
+
+
+I'm having a problem with DNAT/SNAT.
+
+I have this on a couple firewalls at different places and it works
+great.  I'm implementing this on a new firewall based on RHEL3 and it
+seems to work great for everything except local servers with external
+IP's.  Trying to access 206.14.210.52 internally returns me
+192.168.0.52.  If I access it from the firewall it all works fine.  If I
+access from another workstation or the server itself then it returns the
+local IP as part of the ping.
+
+Some time ago on another firewall with multiple segments someone told me
+to put this:
+-A POSTROUTING -s 192.168.0.0/255.255.255.0 -d 192.168.0.52 -j SNAT
+--to-source 206.17.98.52
+
+On another firewall at another location I found that they had
+-A POSTROUTING -s 192.168.0.52 -d 192.168.0.52 -j SNAT --to-source
+206.17.98.52
+
+Something to note that this is a custom RHEL3v3 compile with
+pptp-conntrack compiled in.  We also recompiled iptables using the new
+userspace changes.
+
+The location where I got the information regarding the original
+DNAT/SNAT is:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#DNATTARGET
+
+
+Here is the actual PRE/POST/OUT routing section
+
+[0:0] -A PREROUTING -d 206.14.210.51 -j DNAT --to-destination
+192.168.0.51
+[0:0] -A PREROUTING -d 206.14.210.52 -j DNAT --to-destination
+192.168.0.52
+...
+[0:0] -A PREROUTING -d 206.14.210.62 -j DNAT --to-destination
+192.168.0.62
+
+[0:0] -A POSTROUTING -s 192.168.0.51 -o eth0 -j SNAT --to-source
+206.14.210.51
+[0:0] -A POSTROUTING -s 192.168.0.52 -o eth0 -j SNAT --to-source
+206.14.210.52
+#[0:0] -A POSTROUTING -s 192.168.0.52 -d 192.168.0.52 -j SNAT
+--to-source 206.17.98.52
+...
+[0:0] -A POSTROUTING -s 192.168.0.62 -o eth0 -j SNAT --to-source
+206.17.98.62
+[0:0] -A POSTROUTING -o eth0 -j SNAT --to-source 206.17.98.50
+
+[0:0] -A OUTPUT -d 206.17.98.51 -j DNAT --to-destination 192.168.0.51
+[0:0] -A OUTPUT -d 206.17.98.52 -j DNAT --to-destination 192.168.0.52
+...
+[0:0] -A OUTPUT -d 206.17.98.62 -j DNAT --to-destination 192.168.0.62
+
+
 
 
