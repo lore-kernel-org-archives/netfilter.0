@@ -1,14 +1,13 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: Re: VPN and iptables rules
-Date: Tue, 04 Nov 2003 21:41:54 -0500
+From: Goetz Bock <netfilter@blacknet.de>
+Subject: Re: conntrack for samba/netbios-ns
+Date: Wed, 5 Nov 2003 03:58:46 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068000113.7813.43.camel@tarkus>
-References: <3FA7BE9D.1000202@aiqa.com>
-Reply-To: tedkaz@optonline.net
+Message-ID: <20031105025846.GB11702@shell.blacknet.de>
+References: <20031105003401.GA11702@shell.blacknet.de> <1067999419.7813.38.camel@tarkus>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <3FA7BE9D.1000202@aiqa.com>
+Content-Disposition: inline
+In-Reply-To: <1067999419.7813.38.camel@tarkus>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,37 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ozgur AKAN <akan@aiqa.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-Try pinging from a machine behind the server the tunnel is terminated
-on.
 
-Ted
-On Tue, 2003-11-04 at 09:58, Ozgur AKAN wrote:
-> Hi,
-> I have a installed pptpd, mppe to my RedHat 9.0. 
-> 
-> real ip`s
-> 
-> 212.2.212.1 --------------- 195.111.111.1
-> 
-> vpn ip`s
-> 
-> 192.168.77.11 ------------ 192.168.77.1
-> 
-> I open protocol gre, and tcp port 1721 at my firewall to establish a
-> connection between client and linux firewall. Client is a windows xp.
-> 
-> After dialing my isp my winxp connects to internet and gets
-> 212.2.212.1. I establish the vpn connection to linux firewall.
-> Everything is ok until this point.
-> 
-> My problem is I can not ping the server from client or vice versa.
-> 
-> What shall i do?
-> 
-> thanks,
-> Ozgur AKAN
+On Tue, Nov 04 '03 at 21:30, Ted Kaczmarek wrote:
+> udp is connectionless, not sure where you can get a state on it.
+Just because the udp is connectionless, does not mean you can not track
+the "state" of a "connection" between two machines.
 
+> I am actually surprised that the udp lines with state even took
+> or do they only show up on the script.
+Yes they do work. Have a look at /proc/net/ip_conntrack.
+-- 
+/"\ Goetz Bock at blacknet dot de  --  secure mobile Linux everNETting
+\ /                     (c) 2003 as GNU FDL 1.1
+ X   [ 1. Use descriptive subjects - 2. Edit a reply for brevity -  ]
+/ \  [ 3. Reply to the list - 4. Read the archive *before* you post ]
 
