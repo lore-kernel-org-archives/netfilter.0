@@ -1,12 +1,13 @@
-From: Navneet Choudhary <navneetkc@gmail.com>
-Subject: Fwd: Linux as router (Gateway Server)
-Date: Sat, 12 Feb 2005 13:18:25 +0530
-Message-ID: <1dceb01205021123483860fb86@mail.gmail.com>
+From: Askar <askarali@gmail.com>
+Subject: Re: Linux as router (Gateway Server)
+Date: Sat, 12 Feb 2005 13:15:06 +0500
+Message-ID: <a0f69e505021200153e017d6c@mail.gmail.com>
 References: <1dceb012050211233357e23dd4@mail.gmail.com>
-Reply-To: Navneet Choudhary <navneetkc@gmail.com>
+	<1dceb01205021123483860fb86@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1dceb012050211233357e23dd4@mail.gmail.com>
+In-Reply-To: <1dceb01205021123483860fb86@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,191 +19,219 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Navneet Choudhary <navneetkc@gmail.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-hi list,
+dude add this rule to yur iptables script 
+iptables -A INPUT -p tcp -s 0/0 --dport 80 -j ACCEPT
 
-i require further co-operation from yours side.
 
-Squid Server is serving as Proxy server, Gateway & Firewall
+second "squid squid[3720]: Squid Parent: child process 3722
+exited due to signal 6" is not iptables related, better place to check
+is squid mailing list.
+You are running squid in interception mode?
+remember when squid is running in interception packets destined fro
+squid machine not hit FORWARD chain but INPUT. :)
 
-Problem:
-Squid daemon dies at startup.
+Note: which version of squid you are using, what cache.log say?
+solution try to upgrade your squid with never version.
 
-Here is log output of  /var/log/messages
+I hope this will help
 
-Feb 12 09:15:25 squid squid[3652]: Squid Parent: child process 3654 started
-Feb 12 09:15:25 squid (squid): Cannot open HTTP Port
-Feb 12 09:15:29 squid squid[3720]: Squid Parent: child process 3722
-exited due to signal 6
-Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385 started
-Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385
-exited with status 1
-Feb 12 09:15:33 squid (squid): Cannot open HTTP Port
+regards
 
-Why my iptables rule blocking squid to open HTTP port.
+On Sat, 12 Feb 2005 13:18:25 +0530, Navneet Choudhary
+<navneetkc@gmail.com> wrote:
+> hi list,
+> 
+> i require further co-operation from yours side.
+> 
+> Squid Server is serving as Proxy server, Gateway & Firewall
+> 
+> Problem:
+> Squid daemon dies at startup.
+> 
+> Here is log output of  /var/log/messages
+> 
+> Feb 12 09:15:25 squid squid[3652]: Squid Parent: child process 3654 started
+> Feb 12 09:15:25 squid (squid): Cannot open HTTP Port
+> Feb 12 09:15:29 squid squid[3720]: Squid Parent: child process 3722
+> exited due to signal 6
+> Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385 started
+> Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385
+> exited with status 1
+> Feb 12 09:15:33 squid (squid): Cannot open HTTP Port
+> 
+> Why my iptables rule blocking squid to open HTTP port.
+> 
+> Note: existing rule being attached at the end of mail
+> 
+> Since, process will not die if I disable/flush my rules?
+> 
+> Squid being started from /etc/rc.local
+> 
+> Where i am doing mistakes?
+> 
+> Please suggest since its causing startup hiccup
+> 
+> Thanks & regards,
+> 
+> Navneet Choudhary
+> 
+> Updates & quick recap
+> 
+> 1.> Basically I want clients to be able to :
+> 
+>  a). Send and receives mails from mail.ISP.net [X.X.X.160] and
+> sometimes from X.X.X.78
+> Status: Working
+> b). Browse the net through squid [3128]
+> Status: Working
+> 
+> c). Use Jabber [??], MSN [1863] and Yahoo [5050]
+> Status: Working
+> 
+> d) Down and upload data using ftp from 202.134.192.21 & 221.171.85.41
+> 
+> Status: Working
+> e) Down and upload data using SONICMQ [IP & Port?]
+> 
+> Status: Require HELP
+> e) Allow SSH connection to this system [eth0].
+> Status: Working
+> f) We can ping/trace route by domain name i.e. ping yahoo.com
+> Status:  Working
+> 
+> 2.What i am using?
+> 
+> My network configuration is as follows: -
+> 
+>           WAN
+>              |
+>           eth1
+>   (172.21.0.133/28)
+>              |
+>              |
+>       Red Hat 9
+> [Squid Proxy, Gateway ,firewall & FTP]
+>              |
+>              |
+>              |
+>     (133.147.0.0/16)
+>            eth0
+>               |
+> ---- SWITCH----------
+>               |
+>               |
+>               |
+>           LAN
+> 
+> where:-
+> eth0-Intel Corp. 82557/8/9 [Ethernet Pro 100]
+> eth1-Broadcom Corporation NetXtreme BCM5702 Gigabit Ethernet
+> 
+> Kernel 2.4.20-8
+> 
+> iptables  v1.2.7a
+> 
+> 3.What I have done:-
+> 
+> a)Enabled IP forwarding by adding
+> vi  /etc/sysctl.conf
+> 
+>  # Controls IP packet forwarding
+> net.ipv4.ip_forward = 1
+> 
+> b)Automatic loading of modules by adding
+> vi  /etc/rc.local
+> 
+> /sbin/insmod ip_nat_ftp
+> /sbin/insmod ip_conntrack_ftp
+> 
+> b)Firewall rules as follows:-
+> # Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
+> *mangle
+> :PREROUTING ACCEPT [1308:428675]
+> :INPUT ACCEPT [1308:428675]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [1273:553710]
+> :POSTROUTING ACCEPT [1273:553710]
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> COMMIT
+> # Completed on Thu Feb 10 20:02:43 2005
+> # Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
+> *nat
+> :PREROUTING ACCEPT [10233:846887]
+> :POSTROUTING ACCEPT [71:4821]
+> :OUTPUT ACCEPT [67:4688]
+> -A POSTROUTING -s 133.147.0.0/255.255.0.0 -o eth1 -j SNAT --to-source
+> 172.21.0.132
+> COMMIT
+> # Completed on Thu Feb 10 20:02:43 2005
+> # Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
+> *filter
+> :INPUT DROP [0:0]
+> :FORWARD DROP [0:0]
+> :OUTPUT DROP [0:0]
+> -A INPUT -s 127.0.0.1 -j ACCEPT
+> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 3128
+> --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 22
+> --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 21
+> --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 20
+> --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A INPUT -p udp -j DROP
+> -A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j DROP
+> -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+> -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -p udp -m udp --sport 1024:65535 --dport 53 -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 25
+> --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
+> 110 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 21 -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 20 -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
+> 1863 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
+> 5050 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> -A FORWARD -p icmp -m icmp --icmp-type 8 -j ACCEPT
+> -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A OUTPUT -p udp -m udp --sport 1024:65535 --dport 53 -j ACCEPT
+> -A OUTPUT -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 80
+> --tcp-flags SYN,RST,ACK SYN  -m owner --uid-owner squid -j ACCEPT
+> -A OUTPUT -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 443
+> --tcp-flags SYN,RST,ACK SYN -m owner --uid-owner squid -j ACCEPT
+> -A OUTPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+> COMMIT
+> # Completed on Thu Feb 10 20:02:43 2005
+> 
+> 
 
-Note: existing rule being attached at the end of mail
 
-Since, process will not die if I disable/flush my rules?
-
-Squid being started from /etc/rc.local
-
-Where i am doing mistakes?
-
-Please suggest since its causing startup hiccup
-
-Thanks & regards,
-
-Navneet Choudhary
-
-Updates & quick recap
-
-1.> Basically I want clients to be able to :
-
- a). Send and receives mails from mail.ISP.net [X.X.X.160] and
-sometimes from X.X.X.78
-Status: Working
-b). Browse the net through squid [3128]
-Status: Working
-
-c). Use Jabber [??], MSN [1863] and Yahoo [5050]
-Status: Working
-
-d) Down and upload data using ftp from 202.134.192.21 & 221.171.85.41
-
-Status: Working
-e) Down and upload data using SONICMQ [IP & Port?]
-
-Status: Require HELP
-e) Allow SSH connection to this system [eth0].
-Status: Working
-f) We can ping/trace route by domain name i.e. ping yahoo.com
-Status:  Working
-
-2.What i am using?
-
-My network configuration is as follows: -
-
-          WAN
-             |
-          eth1
-  (172.21.0.133/28)
-             |
-             |
-      Red Hat 9
-[Squid Proxy, Gateway ,firewall & FTP]
-             |
-             |
-             |
-    (133.147.0.0/16)
-           eth0
-              |
----- SWITCH----------
-              |
-              |
-              |
-          LAN
-
-where:-
-eth0-Intel Corp. 82557/8/9 [Ethernet Pro 100]
-eth1-Broadcom Corporation NetXtreme BCM5702 Gigabit Ethernet
-
-Kernel 2.4.20-8
-
-iptables  v1.2.7a
-
-3.What I have done:-
-
-a)Enabled IP forwarding by adding
-vi  /etc/sysctl.conf
-
- # Controls IP packet forwarding
-net.ipv4.ip_forward = 1
-
-b)Automatic loading of modules by adding
-vi  /etc/rc.local
-
-/sbin/insmod ip_nat_ftp
-/sbin/insmod ip_conntrack_ftp
-
-b)Firewall rules as follows:-
-# Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
-*mangle
-:PREROUTING ACCEPT [1308:428675]
-:INPUT ACCEPT [1308:428675]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [1273:553710]
-:POSTROUTING ACCEPT [1273:553710]
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-COMMIT
-# Completed on Thu Feb 10 20:02:43 2005
-# Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
-*nat
-:PREROUTING ACCEPT [10233:846887]
-:POSTROUTING ACCEPT [71:4821]
-:OUTPUT ACCEPT [67:4688]
--A POSTROUTING -s 133.147.0.0/255.255.0.0 -o eth1 -j SNAT --to-source
-172.21.0.132
-COMMIT
-# Completed on Thu Feb 10 20:02:43 2005
-# Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
--A INPUT -s 127.0.0.1 -j ACCEPT
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 3128
---tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 22
---tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 21
---tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 20
---tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A INPUT -p udp -j DROP
--A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j DROP
--A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -i eth0 -o eth1 -p udp -m udp --sport 1024:65535 --dport 53 -j ACCEPT
--A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 25
---tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
-110 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 21 -j ACCEPT
--A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 20 -j ACCEPT
--A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
-1863 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
-5050 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
--A FORWARD -p icmp -m icmp --icmp-type 8 -j ACCEPT
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -p udp -m udp --sport 1024:65535 --dport 53 -j ACCEPT
--A OUTPUT -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 80
---tcp-flags SYN,RST,ACK SYN  -m owner --uid-owner squid -j ACCEPT
--A OUTPUT -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 443
---tcp-flags SYN,RST,ACK SYN -m owner --uid-owner squid -j ACCEPT
--A OUTPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
-COMMIT
-# Completed on Thu Feb 10 20:02:43 2005
+-- 
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
 
