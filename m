@@ -1,12 +1,16 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: voicechat(yahoo messenger)
-Date: Tue, 27 May 2003 17:00:37 +1000
+From: Michael Stilmant <ml-netfilter@adtech.be>
+Subject: RE: transparent tcp proxy
+Date: 27 May 2003 09:46:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D04@wardrive.citadelcomputer.com.au>
+Message-ID: <1054021618.18150.49.camel@stilmant>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A019241@wardrive.citadelcomputer.com.au>
+	 <1053938722.17259.6.camel@stilmant>
+	 <1054016670.1847.213.camel@alpha.newkirk.us>
+Reply-To: ml-netfilter@adtech.be
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <1054016670.1847.213.camel@alpha.newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,176 +21,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>, kaushalender shekhawet <kaushalenders@hotmail.com>, netfilter@lists.netfilter.org
-
-Sorry, ignore my ignorance.. missed the vital Subject line...
-
-What ports does this program use? Have you port forward it to your PC?
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
-
------Original Message-----
-From: George Vieira=20
-Sent: Tuesday, May 27, 2003 4:25 PM
-To: kaushalender shekhawet; netfilter@lists.netfilter.org
-Subject: RE: voicechat(yahoo messenger)
-
-
-Voice chat using what program.. I have a million chatting utilites....
-Have you researched www.google.com for anything?
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
------Original Message-----
-From: kaushalender shekhawet [mailto:kaushalenders@hotmail.com]
-Sent: Tuesday, May 27, 2003 3:35 PM
 To: netfilter@lists.netfilter.org
-Subject: voicechat(yahoo messenger)
+
+On Tue, 2003-05-27 at 08:24, Joel Newkirk wrote:
+> You'd need to handle this outside of iptables/ebtables, but it could be 
+> done.  
+
+Thanks to answer. but I don't understand well how to do this, but I'll
+check your idea. 
+
+And this is in fact this is how I really do the stuff.
+
+                     10.0.0.225
+                     +--------+
+                     |   B    |
+   +-----+           |        |          +-----+
+   |  A  +-----------[ebtables]----------|  C  |
+   +-----+           +--------+          +-----+
+   10.0.0.3                             10.0.0.32         
 
 
-Hi group,
+I've made a C program able to update the kernel iptables. This program
+read a config file where they are the remote port and the remote IP
+address to listen for (address of A; A is the server for B machine to
+connect on port 3435)
 
+So when the program start, it update iptables like if you have done this
+rule :
 
-we have redhat 8 on which we are running iptables.We have problem that =
-all=20
-user behind this are not able to voice chat.Plz help me on that These r =
-the=20
-rules i am using
+iptables -t nat -A PREROUTING -i eth1 -d 10.0.0.3 -p tcp --dport 3435 -j
+DNAT --to-destination 10.0.0.225:3625
 
+And after that the program start a tcp server on B machine to listen
+routed traffic from B.
 
-#!/bin/sh
-export =
-PATH=3D"/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin"
-IPTABLES=3D"/sbin/iptables"
-IFCONFIG=3D"/sbin/ifconfig"
-# Delete and flush. Default table is "filter". Others like "nat" must be =
+When a connection came from C to the special port on A, traffic is
+routed locally to the listening TCP server. this server known now the
+source IP and update iptables with this rules.
 
-explicitly stated.
-/sbin/iptables --table nat --flush
-/sbin/iptables --delete-chain
-/sbin/iptables --table nat --delete-chain
-/sbin/iptables -F
-# Add SysV style initialization support (ignore everything except 'stop' =
-and=20
-'clear').
+iptables -t nat -A POSTROUTING -o eth0 -d 10.0.0.3 -p tcp --dport 3435
+-j SNAT --to-source 10.0.0.32
 
-if [ "$1" =3D=3D "stop" ] || [ "$1" =3D=3D "clear" ]; then
-  iptables -t filter -F > /dev/null 2>&1
-  iptables -t filter -X > /dev/null 2>&1
-  iptables -t nat -F > /dev/null 2>&1
-  iptables -t nat -X > /dev/null 2>&1
-  iptables -t mangle -F > /dev/null 2>&1
-  iptables -t mangle -X > /dev/null 2>&1
-  iptables -t filter -P INPUT ACCEPT > /dev/null 2>&1
-  iptables -t filter -P OUTPUT ACCEPT > /dev/null 2>&1
-  iptables -t filter -P FORWARD ACCEPT > /dev/null 2>&1
-  iptables -t nat -P PREROUTING ACCEPT > /dev/null 2>&1
-  iptables -t nat -P POSTROUTING ACCEPT > /dev/null 2>&1
-  iptables -t nat -P OUTPUT ACCEPT  > /dev/null 2>&1
-  iptables -t mangle -P POSTROUTING ACCEPT > /dev/null 2>&1
-  iptables -t mangle -P OUTPUT ACCEPT > /dev/null 2>&1
-  iptables -t mangle -P PREROUTING ACCEPT > /dev/null 2>&1
-  iptables -t mangle -P INPUT ACCEPT > /dev/null 2>&1
-  iptables -t mangle -P FORWARD ACCEPT > /dev/null 2>&1
-  echo "-> Firewall disabled."
-  exit
-fi
-iptables -t nat -X
-iptables -t nat -P PREROUTING ACCEPT
-iptables -t nat -P POSTROUTING ACCEPT
-iptables -t nat -P OUTPUT ACCEPT
-#iptables -t mangle -F
-#iptables -t mangle -X
-#iptables -t mangle -P POSTROUTING ACCEPT
-#iptables -t mangle -P OUTPUT ACCEPT
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j =
-REDIRECT=20
---to-port 3128
-/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j =
-REDIRECT=20
---to-port 3128
-/sbin/iptables -A INPUT -p icmp --icmp-type 0 -j ACCEPT
-/sbin/iptables -A INPUT -p icmp --icmp-type 3 -j ACCEPT
-# Set up IP FORWARDing and Masquerading
-/sbin/iptables --table nat --append POSTROUTING --out-interface eth0 -j=20
-MASQUERADE
-/sbin/iptables --append FORWARD --in-interface eth0 -j ACCEPT
-/sbin/iptables --table nat --append POSTROUTING --out-interface eth1 -j=20
-MASQUERADE
-/sbin/iptables --append FORWARD --in-interface eth1 -j ACCEPT
+since the ip source is well known now.
 
-## Ignore any broadcast icmp echo requests
-if [ -e /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts ]; then
-    echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-fi
-#
-## Don't accept source routed packets.
-if [ -e /proc/sys/net/ipv4/conf/all/accept_source_route ]
-for interface in /proc/sys/net/ipv4/conf/*/accept_source_route; do
-   echo "0" > $interface
-  done
-fi
-# Automatic IP defragmenting
-############################
-if [ -e /proc/sys/net/ipv4/ip_always_defrag ]
-then
-  echo "1" > /proc/sys/net/ipv4/ip_always_defrag
-fi
-#
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 111 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 111 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 6668 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 6668 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 22 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 22 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 111 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 111 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 135 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 135 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 137 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 137 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 138 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 138 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 139 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 139 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 445 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 445 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 6667 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 6667 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 1025 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 1978 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 2002 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 1433 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 1433 -j DROP
-/sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 1434 -j DROP
-/sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 1434 -j DROP
+after that the program open a tcp connection to A:3435.
 
-#Turning on Linux kernel support for spoof and DOS (Denial Of Service)=20
-protection:
-echo 1 >/proc/sys/net/ipv4/tcp_syncookies
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Now I can use the B tcp server to listen and interact with the traffic
+between A and C.
 
-_________________________________________________________________
-Himalayan holiday! Waiting to be won.=20
-http://server1.msn.co.in/sp03/summerfun/index.asp Find out more.
+Now I've a connection from C to B where I can find the value of the
+source IP address. I need to find a way to know also the MAC address,
+perhaps with an IOCTL on the socket. and using this MIAC address to
+update something somewhere to tell to the network layer wich MAC address
+to use but only with the connection from B to A. and this will be great
+if I can say this only for one TCP connection from B to A. Because I
+want to try to be possible to put many C like machine on the right.
 
+Best regards
 
+Michael
 
 
