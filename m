@@ -1,11 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: hosts.deny
-Date: Mon, 8 Jul 2002 00:29:12 +0100
+From: "Ed Street" <blacknet@simplyaquatics.com>
+Subject: RE: hosts.deny
+Date: Sun, 7 Jul 2002 19:33:22 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020707232913.OTYH19225.mta07-svc.ntlworld.com@there>
+Message-ID: <006d01c2260e$aec0be20$0a01a8c0@ed>
 References: <200FAA488DE0D41194F10010B597610D2BA265@JUPITER>
+Reply-To: <blacknet@simplyaquatics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA265@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
@@ -20,14 +21,18 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Monday 08 July 2002 12:24 am, George Vieira wrote:
+Hello,
 
-> I thought iptables and linux could block spoofed ips anyway.. this is a
-> last resort..
+I've taken the hosts.deny file a bit further and wrote a hosts.trashcan
+and a hosts.dnat.
 
-How do you block a spoofed IP ?   How do you know it's spoofed ?
+The hosts.trashcan uses the time patch, it will reject any ip/netmask
+from start_time to end_time on days.
 
- 
+The hosts.dnat file will setup a dnat rule, it's format is 
+Sport	ip	dport	protocol
 
-Antony
+Ed
+
+
 
