@@ -1,11 +1,11 @@
-From: "Bryan Ko" <bryanko@i-cable.com>
-Subject: failed to patch the kernel "2.4.19"!
-Date: Wed, 18 Sep 2002 23:36:05 +0800
+From: Lacroix francois <francois.lacroix@assephira.com>
+Subject: Re: Info STRING PATCH
+Date: Wed, 18 Sep 2002 18:27:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001e01c25f29$1a3d2d70$0201a8c0@winxp>
+Message-ID: <3D88A954.6040109@assephira.com>
+References: <3D886FB0.3090907@assephira.com> <20020918132409.GC801@Ajftl1.ajfthome.on.ca>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001B_01C25F6C.28373A90"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,58 +16,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Ok thanks everyone.
+This options completly get out of my mind.
 
-------=_NextPart_000_001B_01C25F6C.28373A90
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+I have an another question.
+I would like to know the exact dependance need for the H323
 
-Hi there,=20
+Francois
 
-I have some torubles to patch kernel 2.4.19 with the =
-patch-o-matic-20020825, below is the error messages:
+Alistair Tonner wrote:
 
-[root@zs patch-o-matic-20020825]# ./runme pending =
-KERNEL_DIR=3D/usr/src/linux-2.4.19
-ERROR: Invalid option KERNEL_DIR=3D/usr/src/linux-2.4.19
+>
+>
+>     *code maturity level not set to experimental on*
+>          -- are my mime types b0rked??? the attachment shows
+>     up as a java applet in my balsa?? On 2002.09.18 08:21 Lacroix 
+> francois wrote:
+>
+>> hello,
+>>
+>> Hi, sorry to bother you, but it has been 2 weeks that i am working on 
+>> a netfilter patch firewall.
+>> I would like to had the H323 tftp and string netfilter patch.
+>> I am done with the H323 and tftp. I follow the instruction and 
+>> everything did go well.
+>> But i have a problem with the string netfilter patch.
+>> I had it to the kernel with out any problem as you can see it below.
+>> But i can't check the option in my kernel as the picture, i join to 
+>> this mail.
+>> Could anybody help me with that. I don't undestand why?
+>>
+>> Thanks for awnsering and sorry to take your time.
+>>
+>> @+
+>> Francois
+>>
+>>
+>> Here is how i had it to the kernel
+>>
+>> I  lauch this command
+>>
+>> ./runme --batch extra/string.patch
+>>
+>> Testing... string.patch NOT APPLIED ( 2 missing files)
+>> The extra/string patch:
+>>  Author: Emmanuel Roger <winfield@freegates.be>
+>>  Status: Working, not with kernel 2.4.9
+>>    This patch adds CONFIG_IP_NF_MATCH_STRING which allows you to
+>>  match a string in a whole packet.
+>>    THIS PATCH DOES NOT WORK WITH KERNEL 2.4.9 !!!
+>>  Testing patch extra/string.patch...
+>>  Placed new Config.in line
+>>  Placed new Configure.help entry
+>>  Placed new Makefile line
+>>  Patch extra/string.patch applied cleanly.
+>> Applying patch extra/string.patch...
+>>  Patch extra/string.patch applied cleanly.
+>>  Placed new Config.in line
+>>  Placed new Configure.help entry
+>>  Placed new Makefile line
+>>
+>> Excellent! Kernel is now ready for compilation.
+>>
+>>
+>>
+>
+>
 
-Would anyone know what is wrong with my command? Thanks a lot!!!! =3D)
 
-Bryan Ko
-
-
-------=_NextPart_000_001B_01C25F6C.28373A90
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Hi there, </FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I have some torubles to patch kernel 2.4.19 with the =
-
-patch-o-matic-20020825, below is the error messages:</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>[root@zs patch-o-matic-20020825]# ./runme pending=20
-KERNEL_DIR=3D/usr/src/linux-2.4.19<BR>ERROR: Invalid option=20
-KERNEL_DIR=3D/usr/src/linux-2.4.19</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>Would anyone know what is wrong with my command? =
-Thanks a=20
-lot!!!! =3D)</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>Bryan Ko</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_001B_01C25F6C.28373A90--
 
 
