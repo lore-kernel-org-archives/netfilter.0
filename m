@@ -1,14 +1,14 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: how do i forward ftp from my firewall to an internal server?
-Date: Sun, 29 Feb 2004 16:47:17 -0800
+From: Sasa Stupar <sasa@stupar.homelinux.net>
+Subject: Re: MAC address and iptables
+Date: Mon, 01 Mar 2004 07:42:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403010047.i210lCfG003905@server5.bandwidthco.com>
-References: <40427EF9.6090701@karlskrona.net>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <4042DB6A.8090506@stupar.homelinux.net>
+References: <4041ED0A.9070001@stupar.homelinux.net> <40422B1D.5010406@stupar.homelinux.net> <40425D27.60604@stupar.homelinux.net> <200402292203.59216.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------030609090005050703060905"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40427EF9.6090701@karlskrona.net>
+In-Reply-To: <200402292203.59216.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,300 +18,129 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Gustav Petersson' <gustav.petersson@karlskrona.net>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter-List <netfilter@lists.netfilter.org>
 
-The problem there is SNAT should have no effect on inbound connections
-whatsoever.  The NAT table will handle all address translations once a
-permitted connection has been established.  However, I do suspect your
-problem is related to a permitted "state". I'm going to send you my complete
-FTP ruleset off-list for you to look at.  This will include inbound to
-server access, and outbound client to foreign server.  These may help.  For
-your information, other than the H323 protocols, FTP is by far the most
-difficult to get working.  This is mostly because of all the affecting
-variables involved.  Myself, I had to use some heavy logging and packet
-sniffing to figure it out and get it going. Anyway, I'll send those out to
-you in a few minutes.  Perhaps they will give you a clue or two.
+This is a multi-part message in MIME format.
+--------------030609090005050703060905
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
------Original Message-----
-From: Gustav Petersson [mailto:gustav.petersson@karlskrona.net] 
-Sent: Sunday, February 29, 2004 4:08 PM
-To: markee@bandwidthco.com
-Cc: netfilter@lists.netfilter.org
-Subject: Re: how do i forward ftp from my firewall to an internal server?
+   > If you can post your ruleset in a format we can understand
+("iptables -L -nvx;
+> iptables -L -t nat -nvx" is good), keep the ruleset to the smallest possible 
+> number which shows the problem you have, and explain what you changed when 
+> the problem started, we may be able to help.
 
-Ok, I rewrote the rules to exactly match yours except for the log level. 
-In the log I can only see one packet but that is ok because as I understand
-it only the first packet for a connectio goes through the PREROUTING chain.
-I also added a LOG for the POSTROUTING chain like this just before my SNAT
-target:
-iptables -t nat -A POSTROUTING -p tcp -s $LOCALNET/24 --source-port 20:21 \
-        -j LOG --log-prefix "SNAT FTP: "
-And that doesn't show up in the log, in fact even if I remove the
---source-port argument I get nothing in the log... (is the LOG target valid
-in the POSTROUTING chain?) I am running proftpd in standalone mode with
-ident and reverse dns lookups turned off, full access for everyone including
-anonymous. And from proftpd (or any of the other ftp daemons I have tried) I
-can see a connection being made in the log and immediately it closes again
-(not by the ftp daemon). My best guess based on this is that the SNAT screws
-up somewhere. Even if no data connection can be made I should at least get
-the welcome message and be able to log in but I get absolutely _nothing_...
+OK, I have done ruleset in the format you have advised and they are
+attached. I have made two pair: on before (working config) and one after
+the change. I have named it as follows:
+- for command "iptables -L -nvx" they are called iptables-before and
+iptables-after
+- for command "iptables -L -t nat -nvx" they are called
+iptables-nat-before and iptables-nat-after
 
-Mark E. Donaldson wrote:
+I hope that it is now more readable. Sorry, but I am new to this.
 
->OK - seems like you left out your DNAT rule for port 20 this time.  You 
->could simplify that some by using just one rule.  Here is how I DNAT my 
->FTP
->servers:
->
->$IPT -t nat -A PREROUTING -p tcp --destination-port 20:21 -i 
->$FW_INET_IFACE -j LOG --log-level $LOG_LEVEL --log-prefix "DNAT IN SERVICE
-FTP: "
->
->$IPT -t nat -A PREROUTING -p tcp --destination-port 20:21 -i 
->$FW_INET_IFACE -j DNAT --to-destination $SERVICE_FTP
->
->I assume you have enabled logging (as I have done with this rule) so 
->you can check you logs to see what the packets are doing?
->
->OK - now what else.  The fact that your outbound is working is 
->significant, and makes me think we should at applications after all. Few
-more questions:
->
->Is this an "anonymous" FTP server setup, or is it account authorized?  
->Could there be a permissions problem within your "ftpusers" file? Is 
->your ftp daemon initialized by inetd, and if so could tcpwrappers be 
->killing the connections? Have you made sure that your PAM configuration 
->is not killing the connections?
->
->These are mostly food-for-thought questions. I should also point out 
->(and I'm sure you know this already) but once you have this debugged, 
->you will want to set your default policies on INPUT and FORWARD to 
->DROP, and then create the needed permit rules from there.
->
->-----Original Message-----
->From: Gustav Petersson [mailto:gustav.petersson@karlskrona.net]
->Sent: Sunday, February 29, 2004 2:11 PM
->To: markee@bandwidthco.com
->Cc: netfilter@lists.netfilter.org
->Subject: Re: how do i forward ftp from my firewall to an internal server?
->
->I cleaned up my script a bit as you suggested but with the same result. 
->I should mention that outbound ftp works just fine.
->
->Here is the revised script:
->#!/bin/sh
-> 
->
->
->EXTIF=eth0
->INTIF=eth1
->EXTIP=213.88.181.68
->INTIP=192.168.150.3
->LOCALNET=192.168.150.0
->FTPSVR=192.168.150.10
->HTTPSVR=192.168.150.10
->
-># Enable IP forwarding
->echo 1 > /proc/sys/net/ipv4/ip_forward
->
-># Load modules
->modprobe ip_conntrack_ftp
->modprobe ip_nat_ftp
->
-># Set default policies and flush tables iptables -t nat -F iptables -P 
->INPUT ACCEPT iptables -F INPUT iptables -P OUTPUT ACCEPT iptables -F 
->OUTPUT iptables -P FORWARD ACCEPT iptables -F FORWARD
->
-># Masquerade on $EXTIF
->iptables -t nat -A POSTROUTING -o $EXTIF -s $LOCALNET/24 -d ! 
->$LOCALNET/24 \         # here I have tried both with and without the -d 
->! $LOCALNET/24
->        -j SNAT --to $EXTIP
->
-># Forward ftp traffic to internal server iptables -t nat -A PREROUTING 
->-d $EXTIP -p TCP --dport 21 \
->        -j DNAT --to $FTPSVR:21
->
-># Forward http traffic to internal server iptables -t nat -A PREROUTING 
->-d $EXTIP -p TCP --dport 80 \
->        -j DNAT --to $HTTPSVR:80
->
->Mark E. Donaldson wrote:
->
->  
->
->>Yes - I see what you are saying now.  And indeed, if your FORWARD 
->>policy is set to ACCEPT, your packets should be properly DNATTED with 
->>the rules you list. And you are correct, the FTPD application in use 
->>would not be a factor at all here. You also seem to have all the 
->>needed modules you need loaded as well.  So, how do we fix this?
->>
->>First a question on your SNAT rule: iptables -t nat -A POSTROUTING -o 
->>eth0 -j SNAT --to 213.88.181.68
->>
->>Is 213.88.181.68 the external IP?  If so, is it the same as the 
->>variable $EXP_IP is set to, and if so why not use $EXP_IP instead?  I 
->>would also add a -s address or network to the rule to assure only the 
->>packets you want SNATTED are SNATTED.  I doubt if this is causing your 
->>problem, but these things need to get cleaned up to help troubleshoot 
->>the
->>    
->>
->problem.
->  
->
->>Next - run an lsmod after your ruleset is loaded to confirm all the 
->>needed modules have loaded.
->>
->>Also - I notice you are flushing your NAT table after you have set 
->>your default policies: iptables -t nat -F.  I would move this up and 
->>flush before the policies are set.
->>
->>Try all this and we shall go from there.
->>
->>-----Original Message-----
->>From: Gustav Petersson [mailto:gustav.petersson@karlskrona.net]
->>Sent: Sunday, February 29, 2004 11:15 AM
->>To: markee@bandwidthco.com
->>Cc: netfilter@lists.netfilter.org
->>Subject: Re: how do i forward ftp from my firewall to an internal server?
->>
->>Thanks for your reply Mark.
->>I should have explained better. I know that ftp uses two ports with a 
->>different setup for active and passive mode. That is not the problem.
->>Right now I am only DNATing the control port and my INPUT,OUTPUT and 
->>FORWARD chains have a default policy of ACCEPT. The rules I posted are 
->>the _only_ rules I have for my firewall. The problem is that when I 
->>telnet to my $EXTIP port 21 I should get a welcome message and be able 
->>to send some commands but from logging all traffic to and from my 
->>internal ftp server I can see the following traffic:
->>Client->FTP: SYN
->>FTP->Client: SYN ACK
->>Client->FTP: ACK
->>FTP->Client: ACK PSH
->>FTP->Client: ACK PSH
->>FTP->Client: ACK PSH
->>FTP->Client: ACK PSH
->>Client->FTP: RST
->>
->>after this short exchange the connection is terminated. If i telnet to 
->>$EXTIP port 80 and do a 'GET /' everything works fine. I have tried 
->>proftpd, in.ftpd, wu-ftpd and they all give the same result so it's 
->>not a problem with the ftp server software.
->>
->>Gustav Petersson
->>
->>Mark E. Donaldson wrote:
->>
->> 
->>
->>    
->>
->>>The FTP protocol works completely differently than http, particularly 
->>>in the way connections are negotiated and accepted.  You must also 
->>>account for both active and passive modes. I'm assuming the rules you 
->>>have here are for new connections to your FTP server?  What are your 
->>>FTP rules for the FORWARD chain?
->>>
->>>-----Original Message-----
->>>From: netfilter-admin@lists.netfilter.org
->>>[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Gustav 
->>>Petersson
->>>Sent: Saturday, February 28, 2004 12:28 AM
->>>To: netfilter@lists.netfilter.org
->>>Subject: how do i forward ftp from my firewall to an internal server?
->>>
->>>Like the subject line says.. how do I do it?
->>>
->>>I have port http traffic forwarded to the same server but when i use 
->>>the same rule with only the port(s) changed for ftp traffic my ftp 
->>>server opens the connection but immediately closes it again. I have 
->>>tried running both the standard in.ftpd and proftpd. Any help would 
->>>be
->>>   
->>>
->>>      
->>>
->>greatly appreciated.
->> 
->>
->>    
->>
->>>Gustav Petersson
->>>
->>>I am running debian 3.0 with kernel 2.4.24 and I have the following 
->>>modules
->>>loaded:
->>>
->>>ipt_LOG
->>>ipt_state
->>>iptable_filter
->>>ip_nat_ftp
->>>ip_conntrack_ftp
->>>iptable_nat
->>>ip_conntrack
->>>ip_tables
->>>
->>>Here is my firewall config:
->>>#!/bin/sh
->>>
->>>EXT_IP=1.2.3.4
->>>INT_IP=192.168.x.x
->>>
->>>modprobe iptable_nat
->>>modprobe ip_conntrack_ftp
->>>modprobe ip_nat_ftp
->>>
->>>echo "1" > /proc/sys/net/ipv4/ip_forward
->>>
->>>iptables -P INPUT ACCEPT
->>>iptables -F INPUT
->>>iptables -P OUTPUT ACCEPT
->>>iptables -F OUTPUT
->>>iptables -P FORWARD ACCEPT
->>>iptables -F FORWARD
->>>iptables -t nat -F
->>>
->>># NAT
->>>iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 213.88.181.68
->>>
->>>
->>>
->>>
->>># Forward port 80 to internal server
->>>iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 80 \
->>>      -j DNAT --to $INT_IP:80
->>>
->>># Forward ports 20 and 21 to internal server iptables -A PREROUTING 
->>>-t nat -p tcp -d $EXT_IP --dport 20 \
->>>      -j DNAT --to $INT_IP:20
->>>
->>>
->>>
->>>iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 21 \
->>>      -j DNAT --to $INT_IP:21
->>>
->>>
->>>
->>>
->>>
->>>
->>>   
->>>
->>>      
->>>
->> 
->>
->>    
->>
->
->
->
->  
->
+Thank you again for helping me,
+Sasa
 
 
 
+
+--------------030609090005050703060905
+Content-Type: application/x-zip-compressed;
+ name="iptables.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="iptables.zip"
+
+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
+AAAAAA==
+--------------030609090005050703060905--
 
