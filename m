@@ -1,12 +1,14 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: Port-forwarding Perfomance
-Date: Thu, 24 Feb 2005 08:09:09 -0800
-Message-ID: <421DFC25.5010000@wildcash.com>
-References: <421D2F04.8090100@wildcash.com>	<1109156169.11713.2.camel@nostromo.bgsecm.com>	<421DE4AF.6040702@wildcash.com>
-	<20050223211053.GA12107@bender.817west.com>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: providing partial access to iptables for non root user
+Date: Wed, 23 Feb 2005 23:38:59 +0100
+Message-ID: <1109198339.17992.40.camel@porky>
+References: <4219C6F1.2070500@juergens.name>
+	<1108996157.5516.14.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050223211053.GA12107@bender.817west.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-wqGvxLVyEwGSpyg8Mvvz"
+In-Reply-To: <1108996157.5516.14.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +19,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
-
-Hi,
-
->1 - you have a speed/duplexing mismatch between the internal interface
->of the firewall and your internal switch...or the windows box and the
->internal switch (but you should notice that slowing internal
->transfers)...or both.
->  
->
-
-Thanks, am checking on this one now ..
-
->2 - your internet connection is ppp/pppoe and you have an MTU problem.
->since the linux gateway is directly connected, it knows to lower the MTU
->of the external interface, but machines behind it would continue to
->assume an MTU of 1500; and in the absence of functioning PMTU
->discovery, would suffer from significant packet loss due to the need for 
->fragmentation.
->  
->
-This is on a 100MB link at choopa .com.
-The windows machine being forward to is on a Gigabit network.
-
->3 - you're using some traffic shaping script (like the wondershaper) and
->it is misconfigured.
->  
->
-Only using Iptables.
-
-Thanks for these leads, am following up now.
-
-Cheers
-Rudi
+To: netfilter@lists.netfilter.org
 
 
--- 
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.300 / Virus Database: 266.4.0 - Release Date: 22/02/2005
+--=-wqGvxLVyEwGSpyg8Mvvz
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2005-02-21 at 09:29 -0500, Jason Opperisano wrote:
+> On Mon, 2005-02-21 at 06:33, Michael J=FCrgens wrote:
+> > Hi,
+> >=20
+> > I=B4m looking for a solution to provide a non root user write access to=
+ a=20
+> > chain.
+> >=20
+> > In this special case I have to provide the a mechanism to block some ip=
+=20
+> > adresses to connect to http.
+> > But this should be done by a non root user. The non root user should no=
+t=20
+> > change any other rule.
+> >=20
+> > Any ideas?
+>=20
+
+Why not to use a conf file with proper right ?
+selected user could add rules in the script that will be automatically
+inserted into the firewall via a cron task or a sudo script ?
+
+BR,
+--=20
+Eric Leblond <eric@inl.fr>
+INL
+
+--=-wqGvxLVyEwGSpyg8Mvvz
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQBCHQYCnxA7CdMWjzIRAoD+AJ9I8EEBoylU7Ep7NwJHk+bbWSwrXgCfZEmF
+XJCLIPHMo27nDr7IUR9OSDE=
+=za9f
+-----END PGP SIGNATURE-----
+
+--=-wqGvxLVyEwGSpyg8Mvvz--
 
 
