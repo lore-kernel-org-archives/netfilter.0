@@ -1,60 +1,73 @@
-From: Andrea Rossato <mailing_list@istitutocolli.org>
-Subject: ECN and ipitables: a political issue
-Date: Fri, 06 Dec 2002 19:38:27 +0100
-Sender: lartc-admin@mailman.ds9a.nl
-Message-ID: <3DF0EEA3.5010404@istitutocolli.org>
+From: Maxim Berlin <mak@rtsnet.ru>
+Subject: Re: I continued with the problem NAT and Filtering packet
+Date: Fri, 6 Dec 2002 21:52:26 +0300
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1133748700.20021206215226@rtsnet.ru>
+References: <web-160663@gecyt.cu>
+Reply-To: Maxim Berlin <mak@rtsnet.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <lartc-admin@mailman.ds9a.nl>
-Errors-To: lartc-admin@mailman.ds9a.nl
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <web-160663@gecyt.cu>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi there!
+Hello Administrador,
 
-I recently  discovered that the linux kernel support Explicit Congestion 
-Notification and that a fully ecn enabled network would have virtually 
-no dropped packets.
-Enabling that feature is a way to respect the infrastructure we use, and 
-servers, routers or firewalls not complying with regularly approved 
-standard like rfc 793 and 3168 are dammaging all of us, in a way not 
-very different from that of spammers.
-Being able to discriminate between good and bad guys it is possible 
-through a filtering rule,
+Friday, December 06, 2002, Administrador de Red <admin@gecyt.cu> wrote:
 
-iptables -A POSTROUTING -t mangle -p tcp -d bad.guy.com -j ECN 
---ecn-tcp-remove.
+AdR> Dear friends thanks very Mouch a some friends that try 
+AdR> help me, well I want to say you that  a I continu with the 
+AdR> problem the OE don't want to send and recived the email 
+AdR> from mail server, I want to send the rules for iptables 
+AdR> (Filtering and Nat) well i writing this rules and the file 
+AdR> iptables configuration.
 
-Many thanks to the guys who wrote the kernel support and the target!
+AdR> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25 -j DNAT --to 172.16.1.4:25
+AdR> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 110 -j DNAT --to 172.16.1.4:110
+AdR> iptables -t nat -A POSTROUTING -o eth0 -j SNAT 169.158.130.253
+[]
 
-This is not a solution of the problem, but at least gives you the power 
-to send an email the the system/network administrators and put that rule 
-in our ILLEGAL_HOST_AND_NETS_VIOLATING_RFC793 chain. Many of those hosts 
-simply do not have access to their routers' or firewalls' configuration.
+AdR> I need some help  fast. please.
 
-Now, the problem is the rule seems not to be working and I cannot 
-connect to those hosts unless turning ecn off (echo 0 > 
-/proc/sys/net/ipv4/tcp_ecn), the wrong solution. I suspect I'm getting 
-something wrong.
+very unfriendly people living here:(
 
-Miciej Soltysiak had a similar probelm with an illegal box in his 
-network. Did you find a solution?
+in my meaning, you are interested in
+client <-> 169.158.130.253:25  <-> 172.16.1.4:25
+client <-> 169.158.130.253:110 <-> 172.16.1.4:110
+and 169.158.130.253 is your linux host.
+am i correct?
 
-Please help. If I will solve this problem I promise that I will submit a 
-patch proposal to the LARTC's mantainers. That's the best I can do to 
-make people aware of this issue.
+try this:
+*******************
+#!/bin/bash
 
-Thanks a lot.
-Andrea
+IPTABLES=/sbin/iptables
+IF=eth0
+echo "1" > /proc/sys/net/ipv4/ip_forward
+# uncomment two next lines, if you do not have any other rules
+#$IPTABLES -t nat -F
+#$IPTABLES -F
+$IPTABLES -t nat -A PREROUTING -p tcp -i $IF --dport 25 -j DNAT --to 172.16.1.4:25
+$IPTABLES -t nat -A PREROUTING -p tcp -i $IF --dport 110 -j DNAT --to 172.16.1.4:110
+$IPTABLES -A FORWARD -p tcp -i $IF -o $IF -d 169.158.130.253 --dport 25 -j ACCEPT
+$IPTABLES -A FORWARD -p tcp -i $IF -o $IF -d 169.158.130.253 --dport 110 -j ACCEPT
+$IPTABLES -t nat -A POSTROUTING -o $IF -j MASQUERADE
+*******************
+then do
+telnet 169.158.130.253 25
+from your client.
 
-_______________________________________________
-LARTC mailing list / LARTC@mailman.ds9a.nl
-http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
+Best wishes,
+ Maxim                            mailto:mak@rtsnet.ru
+
+
