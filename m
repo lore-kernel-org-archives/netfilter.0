@@ -1,15 +1,12 @@
-From: "Lasse B. Jensen" <gymer@odense.kollegienet.dk>
-Subject: Re: Change iptables log format (would be a nice feature)
-Date: Wed, 8 Oct 2003 14:57:33 +0200 (CEST)
+From: info <info@novelgmt.intnet.mu>
+Subject: Help on IPTABLES
+Date: Thu, 09 Oct 2003 16:20:02 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.56L0.0310081457180.5838@sutsko.kollegie.dk>
-References: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
- <1065456746.1189.32.camel@valhalla> <20031007094746.GJ18246@sunbeam.de.gnumonks.org>
- <Pine.LNX.4.56L0.0310081208511.5838@sutsko.kollegie.dk>
- <20031008122427.GU25743@sunbeam.de.gnumonks.org>
+Message-ID: <3F855272.2080201@novelgmt.intnet.mu>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="------------000000080202080701010709"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031008122427.GU25743@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +16,125 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+
+--------------000000080202080701010709
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-To: Harald Welte <laforge@netfilter.org>
-Cc: Chris Brenton <cbrenton@chrisbrenton.org>, netfilter@lists.netfilter.org, ulogd@lists.gnumonks.org
 
-Thanks very much
+hi all,
 
---
-Lasse B. Jensen
+ Can somebody explain to me why is when i changed my Chain INPUT Rules 
+from ACCEPT to DROP, i cannot browse the internet despite opening port 
+80 in the INPUT rule.
+However, when Chain INPUT is changed to ACCEPT, browsing the internet 
+works fine. (Note: CHAIN Output is accept for ALL)
 
-On Wed, 8 Oct 2003, Harald Welte wrote:
 
-> On Wed, Oct 08, 2003 at 12:11:46PM +0200, Lasse B. Jensen wrote:
-> > 
-> > On Tue, 7 Oct 2003, Harald Welte wrote:
-> > 
-> > > On Mon, Oct 06, 2003 at 12:12:26PM -0400, Chris Brenton wrote:
-> > > > On Thu, 2003-10-02 at 10:40, Lasse B. Jensen wrote:
-> > > > >
-> > > > > Is it possible to change the log format of iptables?
-> > > > 
-> > > > As others have pointed out this is not possible, however it might make a
-> > > > nice feature to be added in. I've noticed that in high bandwidth
-> > > > environments what chokes throughput the most is logging. 
-> > > 
-> > > This is why you should use ULOG / ulogd if you log many packets.
-> > 
-> > I have now tried with ulog and ulogd and got a much better performance.... 
-> > however i seem that the timestamp i ulog i "fucked up". My time on the 
-> > machine i fine, but the ulog timestamp says Jan 12 00.04.02 when the 
-> > date-output says Okt 8 11.43.22 
-> > 
-> > Can anyone give me an explanation?
-> 
-> the answer is in the ulogd@lists.gnumonks.org mailinglist archive, there
-> is also a patch for it (in ulogd CVS).  I'm about to release ulogd-1.02
-> because of that bug.
-> 
-> > /Lasse
-> 
-> -- 
-> - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-> ============================================================================
->   "Fragmentation is like classful addressing -- an interesting early
->    architectural error that shows how much experimentation was going
->    on while IP was being designed."                    -- Paul Vixie
-> 
+The configurations on my IPTABLES are as follows
+
+_*Chain INPUT (policy DROP)*_
+target     prot opt source               destination
+RH-Lokkit-0-50-INPUT  all  --  anywhere             anywhere
+ACCEPT     tcp  --  anywhere             anywhere           tcp spt:http
+ACCEPT     udp  --  anywhere             anywhere           udp spt:http
+
+Note that my OUTPUT Rules are as follows:
+
+_*Chain OUTPUT (policy ACCEPT)*_
+target     prot opt source               destination
+
+I have two network cards installed on my pc - running Red Hat 9.0
+
+Routing for static routes are follows:
+
+xx.yy.zz.aa        0.0.0.0         255.255.255.0       U     0      
+0        0 eth0
+xx.0.0.0           0.0.0.0         255.0.0.0           U     0      
+0        0 eth1
+127.0.0.0          0.0.0.0         255.0.0.0           U     0      
+0        0 lo
+0.0.0.0            zz.zz.zz.zz       0.0.0.0           UG    0      
+0        0 eth0
+0.0.0.0            zz.zz.zz.zz       0.0.0.0           UG    0      
+0        0 eth1
+
+where zz.zz.zz.zz is my gateway to the internet.
+eth0 - Interface with local address
+eth1 - Interface with Internet address.
+
+By the way, is there a way to save static routes because when i reboot 
+my pc, all routes are lost.
+
+Thanks for any help.
+
+guy
+
+
+
+--------------000000080202080701010709
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+hi all,<br>
+<br>
+&nbsp;Can somebody explain to me why is when i changed my Chain INPUT Rules
+from ACCEPT to DROP, i cannot browse the internet despite opening port
+80 in the INPUT rule.<br>
+However, when Chain INPUT is changed to ACCEPT, browsing the internet
+works fine. (Note: CHAIN Output is accept for ALL)<br>
+<br>
+<br>
+The configurations on my IPTABLES are as follows<br>
+<br>
+<font color="#ff6600"><u><b>Chain INPUT (policy DROP)</b></u></font><br>
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; destination<br>
+RH-Lokkit-0-50-INPUT&nbsp; all&nbsp; --&nbsp; anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; anywhere<br>
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp; anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp spt:http<br>
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp; anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp spt:http<br>
+<br>
+Note that my OUTPUT Rules are as follows:<br>
+<font color="#ff6600"><br>
+<u><b>Chain OUTPUT (policy ACCEPT)</b></u></font><br>
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; destination<br>
+<br>
+I have two network cards installed on my pc - running Red Hat 9.0<br>
+<br>
+Routing for static routes are follows:<br>
+<br>
+<font face="Courier New, Courier, monospace">xx.yy.zz.aa &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 255.255.255.0&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 eth0<br>
+xx.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; 0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 255.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 eth1<br>
+127.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; 0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 255.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 lo<br>
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; zz.zz.zz.zz &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; UG&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 eth0<br>
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; zz.zz.zz.zz &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; UG&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 eth1</font><br>
+<br>
+where zz.zz.zz.zz is my gateway to the internet.<br>
+eth0 - Interface with local address<br>
+eth1 - Interface with Internet address.<br>
+<br>
+By the way, is there a way to save static routes because when i reboot
+my pc, all routes are lost.<br>
+<br>
+Thanks for any help.<br>
+<br>
+guy<br>
+<br>
+<br>
+</body>
+</html>
+
+--------------000000080202080701010709--
+
 
