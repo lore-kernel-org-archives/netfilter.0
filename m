@@ -1,11 +1,13 @@
-From: "a.m.rasat" <a.m.rasat@palangkaraya.speed.net.id>
-Subject: Preserving source IP
-Date: Thu, 03 Apr 2003 21:28:57 +0700
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: DNAT on POSTROUTING or someother way?
+Date: 03 Apr 2003 17:29:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030403142857.1400.qmail@palangkaraya.speed.net.id>
+Message-ID: <1049383790.1937.3.camel@kermit.spenneberg.de>
+References: <200304030034.17067.dag@gruneau.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200304030034.17067.dag@gruneau.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,35 +17,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Dag Gruneau <dag@gruneau.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Dear all, 
+Am Don, 2003-04-03 um 00.34 schrieb Dag Gruneau:
+> Hello,
+> I need to hide several identical targets behind a host but have failed
+> to accomplish this. Hope someone on the list can help me.
+> 
+> The set-up is shown below (good old ASCII drawings). My objectiv
+> is to set up a testsite where several (more than the shown three)
+> etherbased targets are to be tested. Each target has a FIXED ip. One target
+> is attached to one ethernet port on the server. Every target has the same
+> ip address.
+> 
+> My question: is it possible to access the differnt targets from the
+> LAN side via ip 10.1.1.11-13. A DNAT in a nat POSTROUTING rule would do
+> it, but that's not allowed.
+> 
+> Is there any other way to accomplish this?
+Well, that depends. By default I do not know of any additional way. If
+you enable sourcerouting, it should be possible, though.
 
-I'm trying to setup a DMZ style firewall. The Linux box has 3 interface, one 
-to Internet, one to internal network (trusted) and one to DMZ network. 
-Unlike many example script I found, this DMZ interface has legal Internet IP 
-address, similar to hosts connected to it, also uses legal Internet IP.
-NAT IP address also similar to DMZ interface IP address. To simplify it : 
+Ralf
+> 
+> 
+>                  LAN side           Test side  
+> -----------              Server    
+> ! Client1 !-----!       ----------        -----------
+> -----------     !       !10.1.1.11/24-----! Target1 !
+> 10.0.0.1/24     !       !        !        -----------
+>                 !       !        !        10.1.1.1/24
+>                 !       !        !
+> -----------     !       !        !        -----------
+> ! Client2 !-----!-------!10.1.1.12/24-----! Target2 !
+> -----------     !       !        !        -----------
+> 10.0.0.2/24     !       !        !        10.1.1.1/24
+>                 !       !        !        
+>                 !       !        !        -----------
+> -----------     !       !10.1.1.13/24-----! Target3 !
+> ! Client3 !-----!       ----------        -----------
+> -----------       10.0.0.10/24            10.1.1.1/24
+> 10.0.0.3/24
+> 
+> I am running kernel 2.4.19, soon 2.4.20 with iptables 1.2.7a
+> 
+> Thanks in advance
+> /Dag
+> 
+> 
+-- 
+Ralf Spenneberg
+RHCE, RHCX
 
-eth0 IP address : aaa.bbb.ccc.ddd
-eth1 IP address : ddd.ccc.bbb.aaa
-eth2 IP address : ddd.ccc.bbb.aaa 
-
-IP ddd.ccc.bbb.aaa is a legal Internet IP address. 
-
-Up till now, I'm using Linux 2.4.20's proxy arp 
-(/proc/sys/net/ipv4/{eth}/proxy_arp) and /proc/sys/net/ipv4/ip_nonlocal_bind 
-to let hosts connected to that DMZ interface can be seen from Internet. It 
-leaves me a problem : DMZ hosts can only see DMZ interface IP address as 
-source IP address, no matter it really came from trusted network or 
-Internet. 
-
-Is it possible to preserve source IP address even though still using 
-proxy_arp and ip_nonlocal_bind? I know this is more likely kernel question 
-but right now I need every idea I can use. 
-
-Regards, 
-
-Anthony M. Rasat.-
+IPsec/PPTP Kernels for Red Hat Linux:  
+http://www.spenneberg.com/.net/.org/.de
+Honeynet Project Mirror:                http://honeynet.spenneberg.org
+Snort Mirror:                           http://snort.spenneberg.org
 
