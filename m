@@ -1,8 +1,8 @@
-From: "Pedro C. Arias" <parias@sede.unr.edu.ar>
-Subject: Logs of iptables
-Date: Mon, 12 May 2003 09:40:34 -0300
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: top level rules
+Date: Mon, 12 May 2003 08:25:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009801c31883$aea69140$f000010a@pc207pca>
+Message-ID: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,16 +16,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-Hello, i use Iptables with logs option, i send logs to a syslogs server and
-i like to process this logs, but i don't found any tool or program to
-process this logs files and if is posible send alerts about port scanning
-and posible attacks, anybody know a program that make it ?
+Is there any way to insert a new rule at the top of a table...
 
-Thanks
-Pedro
-Rosario - Argentina.
+For instance, I have rules...
+
+RULE 1
+RULE 2
+RULE 3
+RULE 4
+
+in order... but what if I want to place a rule before rule 1? Is that
+possible?
+Thanks,
+-Patrick
 
 
 
