@@ -1,14 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: shorewall
-Date: Mon, 8 Sep 2003 10:52:18 +0100
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: POSTROUTING -d ! MASQUERADE question
+Date: Mon, 08 Sep 2003 06:15:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309081036.47127.gdh@acentral.co.uk>
-References: <F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>
+Message-ID: <1063016144.7525.30.camel@tarkus>
+Reply-To: tedkaz@optonline.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,18 +19,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 08 September 2003 10:26, Fritz Mesedilla wrote:
-> Has anybody used shorewall? If I try shorewall to fix my nat problem (make
-> it easier) and still does not work, will I be able to disable shorewall and
-> implement a manual setup of iptables again?
+Been messing around with freeswan and their is a need to for excluding
+from nat the ipsec tunnel traffic. Does anyone know of a good link that
+shows multiple exclusions of IP addresses that should be excluded from
+Nat in the POSTROUTING chain? 
 
-Shorewall is just a set of scripts to try and make managing netfilter a little 
-easier. All it does it generate lots of 'iptables' commandlines based on 
-values you plug into /etc/shorewall/*
+This excludes the 10.123,123.0/30, but what if I want to also
+exclude 192.168.123.0/29?
+-A POSTROUTING -o eth0 -d ! 10.123,123.0/30 -j MASQUERADE
 
-If you decide you don't like it, simply delete the script files, and do 
-iptables -F ; iptables -X to clean everything out...
+Any insight would be greatly appreciated.
 
-Cheers,
-Gavin.
+Thanks,
+Ted
+
 
