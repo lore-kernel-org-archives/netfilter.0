@@ -1,11 +1,10 @@
-From: "Bailey Kong" <bailey@tgpsolutions.com>
-Subject: Re: IPTables not available
-Date: Wed, 26 Jun 2002 10:19:23 -0700 (PDT)
+From: "Nathan Cassano" <nathan@cjhunter.com>
+Subject: RE: Linux Gateway/Firewall with NAT
+Date: Wed, 26 Jun 2002 10:30:22 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <4738.192.168.1.2.1025111963.squirrel@mail.tgpsolutions.com>
-Reply-To: bailey@tgpsolutions.com
+Message-ID: <100801c21d37$26d05730$2901a8c0@amos>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -17,40 +16,69 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: 'Russell Seymour' <russell.seymour@energis.com>, netfilter@lists.samba.org
 
-> yeah, I think rh72 ships with an ipchains kernel. if you apply system
-> updates, the new kernel is an ipchains one. don't know about rh73,
-> which would be odd if it's the same reason. ...send the error?
 
-Both RH7.2 and RH7.3 ship with an iptables kernel. The reason why it
-probably doesn't work for you, is simply because ipchains was loaded
-alrdy.  Ipchains is RH's default firewall.  All you need to do is
+Hi Russell,
 
-chkconfig --del ipchains
-so ipchains doesn't load on boot or you can delete the ipchains firewall
-rm /etc/sysconfig/ipchains
+> However I have an SMTP server in the internal LAN and I have an mx
+record for it on the internet.
+> What I want to do is put another IP address on the external interface
+(virtual IP??) and have that
+> NAT'ed through to the internal IP address for the mail server on ports
+25, 110, 389, 3389.
+> Also all traffic is allowed outbound, but only selected services are
+allowed inbound for the primary external IP address.
+> 
+> Here are the questions:
+> 
+> Is this a possible setup using Linux and iptables? 
 
-then reboot
-i don't think you can just do a service ipchains stop, but i could be
-wrong
+I think so, but you'll have to just try it.
 
-and then implement your iptables firewall using the iptables command
+> If the answer to 1 is yes then can someone point me in the right
+direction in terms of what I need to do? 
+> 
+> If anymore information is required then please let me know.  Any help
+is greatly appreciated.
 
-iptables -A .....
 
-after you done with that you can save it to a file using
+First you need to setup IP Aliasing on your Linux Router for the email
+server's IP.
 
-/etc/rc.d/init.d/iptables save or service iptables save
+IP-Alias, Setting Up IP Aliasing On A Linux Machine
+http://www.tldp.org/HOWTO/mini/IP-Alias/index.html
 
-hope this helps
-Bailey
 
--- 
-bailey@tgpsolutions.com
+Here is a basic example of how I think this could be accomplished. I'm
+sure there are a few
+extra rules that could be added to be more secure about this, but here
+we go.
 
-Administrator, tgpsolutions
-http://www.tgpsolutions.com
+#!/bin/sh
 
+MAILSERVER_INT_IP=192.168.1.25
+
+MAILSERVER_EXT_IP=195.92.252.137
+
+# SNAT all connections from internal mail server to external mail
+server's IP address
+iptables -t nat -A POSTROUTING -s $MAILSERVER_INT_IP -j SNAT --to-source
+$MAILSERVER_EXT_IP
+
+# DNAT all connections to IP address of external mail server on port 25
+to internal mail server 
+iptables -t nat -A PREROUTING -p tcp --port 25 -d $MAILSERVER_EXT_IP -j
+DNAT --to-destination $MAILSERVER_INT_IP
+
+
+The last rule could be repeated for each service that you wish to allow
+into the mail server.
+
+I have not tested this at all. Try this at your own risk.
+
+Best of luck.
+
+Nathan
 
 
