@@ -1,12 +1,11 @@
-From: "Shawn Wright" <swright@sls.bc.ca>
-Subject: Using old CPU for 100s of clients
-Date: Fri, 03 Dec 2004 12:06:27 -0800
-Message-ID: <41B056C3.12743.B417EB07@localhost>
-Reply-To: swright@sls.bc.ca
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Using old CPU for 100s of clients
+Date: Fri, 3 Dec 2004 12:22:11 -0800
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E3A1@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-description: Mail message body
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: swright@sls.bc.ca, netfilter@lists.netfilter.org
 
-Ok, I've flogged this issue on the shorewall list probably longer than some 
-of you can stand by now. (remember, I'm the nut trying to use a PPro200 
-to support ~500 users on a 10Mb internet link, and was experiencing 
-random slow access/timeouts on first attempts to websites, but 2nd hits 
-were fast. Problems can occur even during times of light load, and we 
-have less than 25 rules in the firewall.)
+The Speed problems may not be isolated to your CPU. You'll want to make
+sure your conntrack table isn't getting full, and that conntracks are
+safely getting expired from your system. Are you using a custom kernel,
+or a stock distro one?
 
-To appease those who think I'm nuts, I am ordering a new firewall shortly 
-to allow for future growth. (probably a Dell PE750 with P4/2.8 and dual 
-GE nics, although I'm open to suggestions on best choice of CPU, etc)
+Just for fun, could you forward me the following:
 
-However, since I have yet to prove that processor speed has anything to 
-do with my random slow response times, I have this horrible nightmare 
-that I will build a brand new 2.8Ghz firewall and *have the same problem*!
+# cat /proc/loadavg
+# free
+# iostat 20 2 (sysstat package is nice for accounting)
+# top (grab the CPU lines, over time is best)
+# cat /proc/slabinfo
+# cat /proc/net/ip_conntrack | wc -l
+# hdparm /dev/<your disk(s)>
+# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
+# w
+# netstat -i
+# mii-tool
 
-(I have reproduced the problem on a PPro200 and a PII/233, but CPU 
-use never exceeds 15% on either, and no sign of dropped packets. A 
-P3/667 is currently running fine, and I am working on duplicating it's 
-setup, including exact kernel config on the slower machines as a test.)
+wow.. there are a lot of areas to look into.. Anyways, hope to find
+something.
 
-So I won't bore you with any more details, but simply ask that anyone who 
-is using iptables/shorewall on an aging CPU (say from 100-500 Mhz) 
-supporting several hundred clients on a 10Mb link or faster, please let me 
-know, on or off list. I just hate not knowing what is causing our problems, 
-and having them occur on a new, fast firewall would probably push me 
-over the edge....
+> Thanks.
+> -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
+> Shawn Wright, I.T. Manager
+> Shawnigan Lake School
+> http://www.sls.bc.ca
+> swright@sls.bc.ca
 
-Thanks.
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Shawn Wright, I.T. Manager
-Shawnigan Lake School
-http://www.sls.bc.ca
-swright@sls.bc.ca
-
-
+Good ol' BC boy!
 
