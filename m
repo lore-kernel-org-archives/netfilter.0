@@ -1,14 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: RELATED ICMP packets of type 3
-Date: Fri, 11 Feb 2005 16:58:31 +0100
-Message-ID: <1108137511.5565.68.camel@anduril.intranet.cartel-securite.net>
-References: <200502111757.16352.e-boogie@yandex.ru>
-	<1108135654.5565.62.camel@anduril.intranet.cartel-securite.net>
-	<200502111844.16095.e-boogie@yandex.ru>
+From: Tib <tib@tigerknight.org>
+Subject: Re: [OBORONA-SPAM]  more limiting fun
+Date: Fri, 11 Feb 2005 09:59:51 -0600 (CST)
+Message-ID: <Pine.LNX.4.53.0502110959100.1996@altaica>
+References: <Pine.LNX.4.53.0502110936210.1996@altaica>
+	<200502111853.40434.e-boogie@yandex.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200502111844.16095.e-boogie@yandex.ru>
+In-Reply-To: <200502111853.40434.e-boogie@yandex.ru>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Mikhail Zotov <e-boogie@yandex.ru>
 Cc: netfilter@lists.netfilter.org
 
-Le vendredi 11 f=E9vrier 2005 =E0 18:44 +0300, Mikhail Zotov a =E9crit :
-> Thus, do I understand it correctly that I should and can safely=20
-> accept _all_ RELATED ICMP messages, both incoming and outgoing?
+On Fri, 11 Feb 2005, Mikhail Zotov wrote:
+> AFAIU, the last line is incomplete: there is nowhere to "jump".
+> As for me, I would have added
+>
+> -m state --state NEW
+>
+> to it for clarity.
 
-As far as you consider Netfilter conntrack safe, yes.
 
+What would this do exactly (as in how would it affect where it falls in
+the ruleset)? I think I have a grasp on it but I'd like to know for
+certain.
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+<EOL>
+Tib
 
