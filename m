@@ -1,13 +1,15 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: timeout settings?
-Date: Mon, 27 Sep 2004 14:24:50 -0400
+Subject: Re: Transparent Remote Proxy Server
+Date: Mon, 27 Sep 2004 14:27:56 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096309489.16814.53.camel@wolfpack.ljm.dom>
-References: <561dc326040927085672734f3c@mail.gmail.com>
+Message-ID: <1096309676.16814.57.camel@wolfpack.ljm.dom>
+References: <666183F7-0DA7-11D9-99BA-000A95C71776@freezone.co.uk>
+	<41546F23.2010601@pbl.ca>
+	<9B51275E-10B2-11D9-9099-0003931DA24A@freezone.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <561dc326040927085672734f3c@mail.gmail.com>
+In-Reply-To: <9B51275E-10B2-11D9-9099-0003931DA24A@freezone.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,18 +22,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-09-27 at 11:56, Jiann-Ming Su wrote:
-> I need to change the timeout settings on my iptables firewall.  I
-> found /proc/sys/net/ipv4/netfilter/* but I haven't found docs
-> describing how each of those parameters affect the performance of the
-> firewall.  Where can I find the docs on how to properly set these
-> values?  Thanks.
+On Mon, 2004-09-27 at 14:25, ms419@freezone.co.uk wrote:
+> Thank you sincerely for your suggestion! You are correct: It is simpler 
+> to use DNAT & MASQUERADE. I tried it & it works. But now, I am trying 
+> to avoid using NAT.
+> 
+> The problem with NAT (as I understand it) is it rewrites the 
+> destination address, which breaks HTTP/1.0 requests without a Host: 
+> header. By using policy routing, I hope to route traffic through wum 
+> without rewriting the destination address.
 
-if you have those settings available, you (or your distribution) applied
-the tcp-window-tracking patch.  that patch is based off this document:
+your "-j REDIRECT" on wum rewrites the destination IP address as well.
 
-        http://www.iae.nl/users/guido/papers/tcp_filtering.ps.gz
-        
 -j
 
 -- 
