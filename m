@@ -1,12 +1,10 @@
-From: "Manikandan" <mani@manikandan.org>
-Subject: Invalid arguement - iptables 1.2.9
-Date: Tue, 27 Apr 2004 14:41:43 +0530
+From: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
+Subject: Re: Is this possible?
+Date: Tue, 27 Apr 2004 10:57:27 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKOEHDCFAA.mani@manikandan.org>
-Reply-To: <manikandan@manikandan.org>
+Message-ID: <E1BIPLD-000Unh-BM@alf1.lmb.internal>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0010_01C42C65.C2848400"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,132 +15,107 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Alex.Fisher@uk.thalesgroup.com
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+>>>Hi.
+>>>
+>>>I'll do my best to explain what I'm trying to acheive with a linux box 
+>>>and 3 NICS.
+>>>
+>>>I have two sets of systems.  Each system has about 30 IP addresses 
+>>>spread across various bits of hardware.  The two systems are identical 
+>>>(ie have the same 30 IP addresses).  The addresses are all part of the 
+>>>class C subnet 192.168.0.*
+>>>
+>>>The IP addresses for each system are now set in stone and can't be 
+>>>changed.  Furthermore, similar addresses are already in use on our
+>network.
+>>>
+>>>I've been given a set of IP addresses I CAN use (172.26.158.*)
+>>>
+>>>A diagram might help here ...
+>>>
+>>>  -----------        -----------------
+>>>  - System1 ---------|eth1            |
+>>>  -----------        |                |
+>>>                     |  Linux Router  |
+>>>                     |            eth0|------------Rest of the network
+>>>                     |                |
+>>>  -----------        |                |
+>>>  - System2 ---------|eth2            |
+>>>  -----------        ------------------
+>>>
+>>>I also have an address I can use for eth0 which will make the router 
+>>>visible from machines on the rest of the network.  This can be set as 
+>>>the default gateway for connections to the 172.26.158.* subnet.
+>>>
+>>>I would like PCs on the normal network to be able to connect with either 
+>>>system by addressing them with addresses off the 172.26.158 subnet. 
+>>>I'll assign 30 of these IPs to each system.
+>>>
+>>>For example. 172.26.158.10 might be mapped onto 192.168.0.2 on eth1
+>>>whilst  172.26.158.50 might be mapped onto 192.168.0.2 on eth2
+>>>
+>> 
+>> 
+>> I've always regarded netfilter as a symmetric thing, so is it possible to 
+>> 
+>> 1. apply a set of S/DNAT rules specifically to
+>>    eth1 to map system1's 192 addresses to something else, 
+>> 2. add a route to enable these new addresses to reach eth0
+>> 3. add appropriate rules to the FORWARD chain for those NAT'd addresses
+>>    if required
+>> 4. add a suitable set of S/DNAT rules specifically for eth0
+>>    to S/DNAT those new addresses to a unique subset of 172 addresses
+>> 5. Do the same stuff for eth2 but 1. would not be necessary
+>> 
+>> 
+>> Cheers,
+>> Terry.
+>
+>Thanks for your help here.  Whilst it differs from what other people 
+>have suggested, what you've said seems to make good sense.  Some 
+>examples would really help me out.  For instance, is it just DNAT I'm 
+>doing in 1 and 4 or do I also need to use SNAT?  I take it that 3. is 
+>optional and only required if I require extra filtering/firewalling.
+>
+>How does this look?
+>
+>iptables -t nat -A PREROUTING -d 192.168.152.2 -o eth1 DNAT --to  193.168.152.2
+>
+>ip route add 193.168.152.0/24 dev eth1
+>
+>iptables -t nat -A PREROUTING -d 172.26.158.2 -o eth0 DNAT --to  193.168.152.2
+>
+>ip route add 192.168.152.0/24 dev eth2
+>
+>iptables -t nat -A PREROUTING -d 172.26.158.130 -o eth0 DNAT --to  192.168.152.2
+>
+>ip route add default dev eth0 via 192.168.152.1
+>
 
-------=_NextPart_000_0010_01C42C65.C2848400
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Ah. I didnt read your first query carefully enough. Are you really
+wanting to  map each 192 subnet into a unique bit of 172
+address space so that you dont have to make any config changes
+to machines in 172 in order for them to access 192-space? I dont know if
+this is possible. It implies that eth0 would have to respond to the whole
+bunch of 172 ip addresses which you had reserved for your 192 nets, and
+would also have to know that those packets were not intended for *it*,
+but had to be forwarded on somewhere else. How would this be achieved?
+It sounds like some sort of NAT'ing bridge, which is beyond my experience.
+Maybe static entries in eth0's arp tables...
 
 
+What I was suggesting is something that would map one of your 192 subnets
+into a different bit of 192 space (so that the two 192 nets were
+distinguishable), but that machines in 172 would still reference the 192
+machines by their 192 addresses (a different set in the case of eth2, say).
+This would require config'ing a static route in every machine in 172
+which wanted to talk to the 192 boxes. Before carrying on, is this acceptable?
 
-Hi folks,
-	
-	I am running Red Hat linux 9 with kernel 2.4.20-30 and iptables
-1.2.9.  I recently upgraded my kernel and iptables package. 
-
-Now the NAT commands started giving me an error "invalid argument" whereas
-the same commands were working fine with iptables 1.2.7
-
-
-	[root@jgreen root]# iptables -t nat -A OUTPUT -d 10.35.45.20  -j
-DNAT --to-destination 10.35.45.204
-iptables: Invalid argument
-
-So I tried,
-
-	[root@jgreen root]# iptables -t nat -A OUTPUT -d 10.35.45.20  -j
-DNAT
-iptables v1.2.9: You must specify --to-destination
-Try `iptables -h' or 'iptables --help' for more information.
-
-Then I tried,
-
-	
-[root@jgreen root]# iptables -t nat -A OUTPUT -d 10.35.45.20  -j DNAT -to
-10.35.45.204
-iptables: Invalid argument
-
-I also get the following error when I run my firewall script
-
-iptables: Chain is not empty
-SIOCADDRT: File exists
-SIOCADDRT: File exists
-
-Please help me.
-
-Regards,
-Manikandan
-
-
-------=_NextPart_000_0010_01C42C65.C2848400
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-eJ8+IiwJAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEIAAUABAAAAAAAAAAAAAEJAAQAAgAAAAAA
-AAABBoADAA4AAADUBwQAGwAOACkAAAACADMBAQOQBgBoDgAAKQAAAAsAAgABAAAACwAjAAAAAAAD
-ACYAAAAAAAsAKQAAAAAACwArAAAAAAADAC4AAAAAAAMANgAAAAAAHgBNAAEAAAABAAAAAAAAAB4A
-cAABAAAAIwAAAEludmFsaWQgYXJndWVtZW50IC0gaXB0YWJsZXMgMS4yLjkAAAIBcQABAAAAGwAA
-AAHELDXvr72/Xj/DHUNqh3cdoLoM/74AAGoUgAALABcMAAAAAAIBHQwBAAAAGQAAAFNNVFA6TUFO
-SUBNQU5JS0FOREFOLk9SRwAAAAALAAEOAAAAAEAABg4AapKONyzEAQIBCg4BAAAAGAAAAAAAAAB0
-23W7Ho1nSL3thPkU0QonwoAAAAsAHw4BAAAAAgEJEAEAAAATCgAADwoAAAkcAABMWkZ1QpgrwAMA
-CgByY3BnMTI18jIMYGMxAzABAgBQAQFFC2BuDhAwMzMPFmY+ZQ+SAfcCpANjAgBjaBEKwHNldALR
-cHJxSjIAACoKoW5vElAgFjAB0AHQNg+gMDUwzjQUIQHQFBA0fQdtAoPvAFAD1BH/EwtiE+EUUBOy
-Pxj0FNAHEwKDD7ERnTIzijgXVCAHbSBDRRoEnjQafxRAG68ctXlyGgRyNhGOMTYWMR7/A4JH1QnR
-axoENyDvNg5QIi+9A3NUCHAaBBuRIQ03JDFDJZ8DgihIZWIJcHfqKRoEOSePNxufKbYHEN8BoA3g
-KpQUUCsfOCDRLG/1A4JCB0B0DeAuNBY/G3j7BxMdBjQlYTI9HrcztSBVPjQdkRZsIegztCOINDXv
-N08lVzO0JuY0INE3bSiX+zO0Kis0JDE8zjM8LbwsMb83bS+3M7QxRgKRCOY7CW/qMEW/ZQ4wNUbq
-SAFHv/9IyUbUSPJHX0svSu1Kb0if80bvEGAyOFC6UdFRj1KZ/0bUUsJRL1T/VL1UP1JvVjR+OQ5Q
-WYRa4VMDWuBQszUfAFAJw1xhRpQCkXN0eapsB5BoCeB0AABxAyE8bGkBQAUQAUAD8GRj7HRsCrEA
-YHMKsF9wFuARX7JudW0CAGFhdcR0bwBgZGp1XaAFEHhnaHRe0QoBXqAKAWn5AZBwMAMxMgIMAQ9X
-EBjPCNAJwF8wY3NucGPJZWThAzBzbmV4FzAHsAWw5wDAAnMTEGNzD5ADMGEw0mRikGl2E4BEARBg
-4GkxYCBQCsBhCcBisGhsIEYCIV1jMTnwXmJm9GktD5A4YiJrI17sKlC8ZHIJUGzCFqBswnc54f8q
-UF/QAdBoIV/fYO9h9msj72KfY69kv2XOYm6ACYACIJ9xwWazaoBpQGHxdC1p4BUDYTowMG93gFN1
-YgpqBZB0d4BEYXRl/jpqNCDQar9rz2zfbe9u//9wD3EcXfB+gAuADhJxwQwwf3H0DlByf3OPdJ91
-r3a3UvZlaKAXASAqMH6ABJBqNP8kMHlPel97b3x/fY4IYF9g7QuAZV3QaKBsAUB+j3+fLYCkMJDA
-CNBiCrB0OPuBOHJWMh2QEBaSgYM0E1DxF3Bvb2aDj4SfhaeRUPOGwAtQeS9p8IsgCxGHNf5zajQs
-MIgviT+KT4tffY//jl9xH3Ivgr+Uf5WPlp+Xov93ondEeHkrAF5vX3+db2Gf+5+0kQM5n/+hD6If
-oy+FmHGsMERvY6lwCfAFQE3/n8BdYwwBmN+Z75r/nA+pH/+qL58/rJ+tr66/r89mwrYR+3bfd+wx
-sgQAULKPs5+0r/+1v7bPt9+Pb4C/gc+7L7w//71PvlqGzMCVDlDBL8I/w0//xF+Mb41/xq/Hv5Cv
-kb+Sz/+T38wfzS1mgJcPmBLAlQ/A/9Af0S/SP9NPxW/WT7jvuf//yp/cb91/3o+ln8B1Z8LacPto
-KegHYwBA66hoAuSwhvHbAiAz4UUAwAMQU12y2nD/sgRqlKeP5J/lr6q/5//pD8/qH+svzXh2sEUt
-8nIGAKv24PIgdAhwZe7XNu9///CDrDHxD/ITamBF0N8R8lr6Nu7XN/7KaRDwoTAgAEp8SHnx0feB
-I8Fnk0XQdrEJMSB7VQXw27B3FdEeffRSB0D0kOMRZnRuv3gADaAJ8GhQsVDboXgLYKkRAG95RlBc
-ZtBwXfB/DRALkNuwaRHjEPUQCRBk5xDwRpANwGJk2XATUfTAXmMO0GcwBFEMUW3IYmWUXGhnMHoI
-8mRn/UDscmerMA3BaAwDL6AXQD0N0HYOmQ1R9uDnMTcw51zwDyEQFTk4HZAOYg1Q/ncQoxHUeBAK
-ABXA+kAI8afywPHQJWB2aSpwa6sw5mQdkBPSc2P1MFMw+QB9F+Bn4uJeAGhAFTUMUG/39xD1EN8g
-dAdQ1ZEIQhbH//cA/UD2MPUQ26ELcPcA9nH/RYEEQM7wMWCFMAtw9PALcH9FgRQh89AW0BTB9JBG
-kHc/GpNFgQpAVsDz0Ahwcmu3DHHwAl4gMAZC7pBtAfCjeIE0ADpcXL6gb2mR3m1p4PKQXeAeEE0u
-ACEA4/IACFAgT2bhEAwwHhCvH8b5Awng/UIuhXB0B5D/zvD0kJfA93Jm0C6QCMEY0J/gEA0wIdLV
-gvoSMzYukHsh02jkYwbRBlH1sCHRbPx2bFzw9bEfQPXgJWGrgO8KQCXiFCGxkTfwgfWwN+AX+OBq
-UPWwdGbgYSAu/wYkJWY0kCYCCrEmbyd/KI/+bPkw9bDPUAkQKk8rXyxvvzcw9bAbACoPLs8v1Cko
-zO858C2fMn8vtGI+kDmhM5//JZM8kDFPNg83HzgvJcA/gP85ciZPOt877yjMVqA5fz7//0APQR8l
-wKcgPf9Dj0SfRaT/FeCXoRXg2hCrMPPA86/0v//1z/bf9+/4//oP+xtqUP6C6f/zDQpKciBKZEsv
-TD9/TU9OX6tlU4PbMfDBBkJiyGtta0dzIF+x0PKQie5xYX1UNUhpIAxQ2mxa0CxUNR1QYUUAXOqs
-SSAegQxwbhcBZ4axi5fBeIAgTyF1eCCsMDVV4HRp0GvgENWhIDLILjQu8IAtMwVgEwGYIGlwXWEe
-0SAxYSDwLjkuIF5RAdAMMLGgvQIBdRVAaXDPUJfAbQIQ12CFYZsMEWtpgGVisFQ1NVQ1TgdAIGBQ
-aLBOQfhUIGPuMP1ACNBiQEdzv19BDiAT0F8BsYBhgSDgEOvb4FSAk6swdlawUdBecHsOELFzlGAg
-IvKFQGczc/cegM8AZ8d3IwFgIAzAFBHfXxDhEHZgYCRh2zdmLFzqF0UxWdX+sFvb4XRAap0jwGUJ
-wF6gFmFdI2HILi2xsP3Bc0BBH7BVVB5QdABzQJfAUKAuMzVvYQB00ORhc0Bq7mBngi29c1BvdGAe
-4O/Q/cFphYD9dIo0VD/g8khiVW9Wf1eP31ifWaj+sGHWv1BJai1wyP/w0He/VU96P3tPfF9ZjICl
-/FNvXlGEsaQAXNZwD3Ef/3Ivcz90T3VWgK94z4Jvg39nhI+Fn34ZIHZiY79QWR/VUGQQkoFoQPHQ
-Y2lmpwIQde6ONVRyAhBgiyjoaCcgadEniyiZMNXw/nCZUAxRZBAMwM8AqzAMsv12ky6OP4G/kL+R
-z5Lfhf//mBMVoEsQh39dD46vnT+eT/+fX6Bvk/uJ74r/jA+NH3XA/yKizSBgYKigdu9mYX5Paof/
-pL+dL6c/qE+pX6Fvs1JeYb8K4IdQZeAfoGdCXIFsB0D/XvJppGsxouJesWQS4RAB0P/tgLrQaEBH
-EGHRf+kDgGYs24kqsYhDtdBLAWliQNuwDx+gHXHywIbWSU9DQXBERFJU7fEewWmQeL/A8Bhgwb/C
-z76v8LJQ1cB9zSEgmmJpMZwGsyXe8Gf/35Fcx1tQFwBlwK/Bl9aJKk9aZgjBWz+zgH0AzYAACwAA
-gAggBgAAAAAAwAAAAAAAAEYAAAAAA4UAAAAAAAADAAKACCAGAAAAAADAAAAAAAAARgAAAAAQhQAA
-AAAAAAMADIAIIAYAAAAAAMAAAAAAAABGAAAAAFKFAAAnagEAHgANgAggBgAAAAAAwAAAAAAAAEYA
-AAAAVIUAAAEAAAAEAAAAOS4wAAsADoAIIAYAAAAAAMAAAAAAAABGAAAAAAaFAAAAAAAAAwAPgAgg
-BgAAAAAAwAAAAAAAAEYAAAAAAYUAAAAAAAALABiACCAGAAAAAADAAAAAAAAARgAAAAAOhQAAAAAA
-AAMAGYAIIAYAAAAAAMAAAAAAAABGAAAAABGFAAAAAAAAAwAbgAggBgAAAAAAwAAAAAAAAEYAAAAA
-GIUAAAAAAAAeACqACCAGAAAAAADAAAAAAAAARgAAAAA2hQAAAQAAAAEAAAAAAAAAHgArgAggBgAA
-AAAAwAAAAAAAAEYAAAAAN4UAAAEAAAABAAAAAAAAAB4ALIAIIAYAAAAAAMAAAAAAAABGAAAAADiF
-AAABAAAAAQAAAAAAAAALADSACCAGAAAAAADAAAAAAAAARgAAAACChQAAAQAAAAIB+A8BAAAAEAAA
-AHTbdbsejWdIve2E+RTRCicCAfoPAQAAABAAAAB023W7Ho1nSL3thPkU0QonAgH7DwEAAABJAAAA
-AAAAADihuxAF5RAaobsIACsqVsIAAFBTVFBSWC5ETEwAAAAAAAAAAE5JVEH5v7gBAKoAN9luAAAA
-RDpcTWFpbFxwZXIucHN0AAAAAAMA/g8FAAAAAwANNP03AAACAX8AAQAAADMAAAA8R0hFSUxOT05Q
-QUNDR0JHS0JFS0tPRUhEQ0ZBQS5tYW5pQG1hbmlrYW5kYW4ub3JnPgAAAwAGEGvr1fgDAAcQxQIA
-AAMAEBAAAAAAAwAREAAAAAAeAAgQAQAAAGUAAABISUZPTEtTLElBTVJVTk5JTkdSRURIQVRMSU5V
-WDlXSVRIS0VSTkVMMjQyMC0zMEFORElQVEFCTEVTMTI5SVJFQ0VOVExZVVBHUkFERURNWUtFUk5F
-TEFORElQVEFCTEVTUEFDAAAAAHsL
-
-------=_NextPart_000_0010_01C42C65.C2848400--
+Cheers,
+Terry.
 
 
