@@ -1,12 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: p.o.m-ng+linux-2.6.2+ctnetlink
-Date: Fri, 20 Feb 2004 09:54:51 +0100 (CET)
+From: Ahmad Almulhem <feltah@yahoo.com>
+Subject: ip_queue question
+Date: Fri, 20 Feb 2004 01:02:49 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0402200953150.16037-100000@blackhole.kfki.hu>
-References: <E1AtqId-000LDX-0I@alf1.lmb.internal>
+Message-ID: <20040220090249.97666.qmail@web13426.mail.yahoo.com>
+References: <BAY15-F10Ln5U9T3TGJ00000452@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1AtqId-000LDX-0I@alf1.lmb.internal>
+In-Reply-To: <BAY15-F10Ln5U9T3TGJ00000452@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 19 Feb 2004, T. Horsnell (tsh) wrote:
+Hi all,
 
-> Problem using patch-o-matic-ng-20040217 to patch kernel 2.6.2
-> and iptables-1.2.9, to include the nfnetlink-ctnetlink-0.13 patch.
->
-> When I use .runme to test this patch, it reports:
-> 'Patch nfnetlink-ctnetlink-0.13 applies cleanly'
-> When I actually install the patch, it reports errors,
-> but installs it anyway.
+I am trying to run 2 program to
+use ip_queue module at the same time. 
 
-Thank you the bugreport, I'll look into it.
+I basically start the first program 
+and it runs fine receiving packets 
+correctly. I then run the second 
+program, which prints the following 
+error:
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+"Received error message 16"
 
+and keeps running without receiving
+any packets!
+
+The two programs that I am running are
+snort inline and my code based on the
+sample which comes with libipq(3).
+Both programs runs fine when run alone.
+I only get this problem when I try to run
+them together.
+
+My question: does libipq module support
+more than one program at one time? is
+there any options I should set when
+modprobe ip_queue?
+
+thank u for ur help,
+
+ahamd
+
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail SpamGuard - Read only the mail you want.
+http://antispam.yahoo.com/tools
 
