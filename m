@@ -1,11 +1,14 @@
-From: Wouter Vanwalleghem <wouter@belnet.be>
-Subject: Unable to stop tunnel from being "connection-tracked"
-Date: 02 Oct 2003 13:10:09 +0200
+From: Mickael DILY <woksy@ether.net1.nerim.net>
+Subject: Re: [ANNOUNCE] netfilter.org looking for ftp and www mirror sites
+Date: Thu, 2 Oct 2003 13:36:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065093009.24289.193.camel@wouter.fw.belnet.be>
+Message-ID: <200310021336.48365.woksy@ether.net1.nerim.net>
+References: <20031001082832.GU5758@sunbeam.de.gnumonks.org>
+Reply-To: woksy@ether.net1.nerim.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031001082832.GU5758@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,51 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: webmaster@netfilter.org, Harald Welte <laforge@netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-hi all,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have setup a 6-in-4 tunnel which is giving me head-aches.
-FYI, I use kernel 2.4.21 and iptables 1.2.8.
-
-As soon as I start using the tunnel the output of "cat
-/proc/net/ip_conntrack" shows a protocol 41 connection between my
-firewall and the IPv4 PoP of the tunnelbroker. 
-OK so far. 
-
-But if I then stop using the tunnel, above-mentioned connection
-disappears from the connection tracking table after 600 seconds.
-Normal behaviour.
-
-Thing is that the tunnel "dies" as soon as the connection has
-disappeared from the connection tracking table.
-
-After some research I followed a suggestion to keep the tunnel from
-being connection tracked.
-However, the following iptables rules do not prevent the tunnel from
-popping up in the connection tracking table:
+Hi !
+How high does the bandwith need to be ?=20
+If it is not too much high, i can provide a mirror for .fr
+How many MBits for a month ?=20
 
 
-#####------------ IPv6 tunnel to SixXS-----
-iptables -A INPUT -p 41 -s tunnelserver.concepts-ict.net -j ACCEPT
-iptables -A OUTPUT -p 41 -d tunnelserver.concepts-ict.net -j ACCEPT
-iptables -A INPUT -p icmp --icmp-type echo-request -s
-tunnelserver.concepts-ict.net -j ACCEPT
-iptables -t nat -A POSTROUTING --protocol ! 41 -s 192.168.100.0/24 -o
-ppp0 -j MASQUERADE
 
-The ip6tables tables are all empty and all policies are set to ACCEPT.
-I cannot do without the MASQUERADE'ing rule because I still want my LAN
-to have connectivity.
+Le Mercredi 1 Octobre 2003 10:28, Harald Welte a =E9crit :
+ Hi!
 
-Anybody have a clue?
+ The netfilter project is calling for international mirrors of it's
+ homepage and ftp server.
 
-TIA
+ Ideally we would have one mirror for ftp and http per country,
+ having ftp.<CCtld>.netfilter.org and www.<CCtld>.netfilter.org in
+ operation.
 
-kind regards,
+ We already have mirrors for: .de, .at, .it, .ar
 
-Wouter
+ If you have sufficient bandwith and want to donate a mirror, please
+ contact webmaster@netfilter.org (Reply-To is set in this message).
 
+ The mirrors are pulling from the public rsync service
+ (rsync.netfilter.org::ftp / rsync.netfilter.org::www).
+
+ Thanks in advance!
+
+- --=20
+- - M. DILY, administrateur r=E9seau, geek :-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQE/fA3OzEzekoYhlpsRAsC3AKDHMZda9BfxxYh/FS0pKwabC93u7QCgn8wl
+1FHoa2NgelBWHV/O7QBPzvA=3D
+=3D6Zg5
+-----END PGP SIGNATURE-----
 
 
