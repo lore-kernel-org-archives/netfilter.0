@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: redirect doesn't seem to work?
-Date: Sat, 9 Nov 2002 12:57:24 +0000
+Subject: Re: reply messages
+Date: Sat, 9 Nov 2002 13:04:15 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021109125726.HOVZ20191.mta03-svc.ntlworld.com@there>
-References: <1036471268.2912.7.camel@localhost.localdomain>
+Message-ID: <20021109130418.HWAH20191.mta03-svc.ntlworld.com@there>
+References: <Pine.LNX.4.33.0211072133140.159-100000@laptop.sympatico.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1036471268.2912.7.camel@localhost.localdomain>
+In-Reply-To: <Pine.LNX.4.33.0211072133140.159-100000@laptop.sympatico.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,50 +20,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 05 November 2002 4:41 am, Ben Russo wrote:
+On Friday 08 November 2002 2:39 am, James Stickland wrote:
 
-> Have a UNIX server.  User wants to write programs to receive SNMPTraps.
-> I *thought* I could redirect incomming traffic to port 162 to a high
-> port, (like 4162) where the user could have his programs receive the
-> messages with no special privelages?
+> A while ago, while simultaneously icmp pinging my isp's dns server and
+> viewing the tcpdump of the interface to which the icmp requests/replies
+> were going out/in from, i realised that my ISP's DNS server drops icmp
+> ping requests, and instead replies with a message visible to tcpdump
+> something along the lines like this: "This server does not allow ping
+> replies."
 >
-> Anyway, a completely normal box, no special firewalling rules....
-> The only rule I create is:
->
-> iptables -t nat -A POSTROUTING -p udp -m udp --dport 162 -j REDIRECT
-> --to-ports 4162
->
-> Now, the user starts his program that binds to udp port 4162 ( I can see
-> it with "netstat -nap" ) but he doesn't see any packets coming in.
-> I run tcpdump -n | grep snmptrap and I see packets coming from the
-> network to the server on udp port 162, and the server sending back icmp
-> unreachable packets back to the sources??
->
-> Why doesn't the redirect work?
+> My question is, would there happen to be a jump i could do with netfilter
+> that would enable me to send out such a message for certain types of
+> packets coming in?
 
-Is this rule on the machine sending the SNMP traps, or the machine receiving 
-them ?
+Probably.   What was the reply you saw ?   (Presumably you can recreate it by 
+pinging your ISPs DNS again ?)
 
-If it's on the sender, then the problem is that REDIRECT changes the 
-destination address to the machine the rule is on, therefore it will not get 
-to the destination.
+I just made a guess at your ISP from the headers of your email, looked up 
+their DNS servers, and pinged them - I got nothing back (I was running 
+tcpdump to check for anything that ping might not tell me).   Hopefully I 
+guessed the ISP wrongly, or something....
 
-If it's on the receiver, then the problem is that you've put the rule in the 
-POSTROUTING chain, which is not traversed by incoming packets, so they never 
-see the rule.
+I'm interested to know what message you saw meaning "this server does not 
+allow ping replies"....
 
-From the description above in your first paragraph it sounds like you want to 
-run the netfilter rule on the machine which is receiving the traps, so try 
-this instead:
-
-iptables -A PREROUTING -t nat -p udp --dport 162 -j REDIRECT --to 4162
-
- 
 Antony.
 
 -- 
 
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
+It is also possible that putting the birds in a laboratory setting
+inadvertently renders them relatively incompetent.
+
+ - Daniel C Dennett
 
