@@ -1,16 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: howto bind Mac to ip address
-Date: 11 Aug 2003 16:08:53 +0200
+From: "Sebastian" <netfilter@basti79.de>
+Subject: RE: howto bind Mac to ip address
+Date: Mon, 11 Aug 2003 16:51:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060610932.765.52.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <000701c36018$1bcb5d60$0200a8c0@basti79>
 References: <007601c35fe1$01eb3d20$142a45ca@shahid>
-	 <20030811130508.GA11493@cannon.eng.us.uu.net>
-	 <1060608510.765.39.camel@elendil.intranet.cartel-securite.net>
-	 <20030811134839.GC11493@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030811134839.GC11493@cannon.eng.us.uu.net>
+In-Reply-To: <007601c35fe1$01eb3d20$142a45ca@shahid>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,39 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: Tariq Anwer <alien@aol.com.pk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Tariq Anwer' <alien@aol.com.pk>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Le lun 11/08/2003 =E0 15:48, Ramin Dousti a =E9crit :
-> Absolutely. But let's back off a bit and take a look at the picture as =
-a whole.
-> We're talking about the internal users here. If someone is so ambisious=
- to do
-> what you said, be sure they can do even more harm to you.
+Hi!
 
-Without any doubt. This is a paranoid mesure to prevent mighty lusers or
-big evil 3lle7 crackers who managed to get into the LAN to mess around
-;)
+Just a general hint. If I understand u correcty, you'll bind MAC- to
+IP-Adresses to apply different filters/restritions to each clients. But
+you have to keep in mind, if the users of the client systems have root
+privileges they are able to alter their MAC-Address with most modern
+Ethernet-Adapters. Also many Windows-Drivers have these capabilities,
+too. This could easily be used to bypass your resriction.
 
-> Besides, are you going to implement this at every single router on any
-> LAN segment you have internally? Or is this solution meant for VSOHO?
+Greets
+Sebastian.
 
-Well, I do not think implementing a static ARP cache on the Linux NAT
-box will be more a burden than doing almost the same using iptables with
-mac match (as far as I understand what OP wants).
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Tariq Anwer
+Sent: Monday, August 11, 2003 10:17 AM
+To: netfilter@lists.netfilter.org
+Subject: howto bind Mac to ip address
 
-I mean once you have done this for one purpose (e.g. DHCP MAC based
-assignement), there's not much left to do to generate a /etc/ethers like
-file for filling ARP cache or generate a basic iptables ruleset.
 
-> But, your point taken :-)
+Hi!
 
-Was just for info and discussion, not for contradiction. Most of the
-time, DHCP assignement as you told before is far sufficient to provide
-an acceptable way to associate MAC and IP.
+I'm a new to Linux, I want to setup Linux NAT box for a small LAN with
+selective services to allow like only browsing for staff and other
+services for management like ftp msn chatting etc.
+ 
+1.>  I want to bind each MAC address to his or her assigned IP address
+so nobody should mess around to change his or her IP's.
+ 
+2.> I want to allow selective MAC addresses each time, so they are not
+allowed to use it all the time or I can block them whenever I want to.
+ 
+I will highly appreciate if anybody could help me or direct me to any
+web site or article to build this Box successfully.
+ 
+Best regards,
+ 
+Alien
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
