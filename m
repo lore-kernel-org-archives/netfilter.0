@@ -1,15 +1,14 @@
-From: Michelle Konzack <linux4michelle@freenet.de>
-Subject: Re: Routing problem...
-Date: Tue, 27 Jul 2004 10:06:23 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Hostname with DNAT  ? {OK}
+Date: Tue, 27 Jul 2004 09:44:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040727080623.GZ20473@freenet.de>
-References: <20040727072329.GV20473@freenet.de> <20040727074251.GA23024@zion.homelinux.com>
+Message-ID: <200407270944.52819.Antony@Soft-Solutions.co.uk>
+References: <D5C9032B2B09C64EA2409D6214E91AC90511F6@asimail2.alphanumeric.com> <007101c473af$108ddc60$da0da8c0@pisic>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ITEy4z2kE7rjCDPK"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040727074251.GA23024@zion.homelinux.com>
+In-Reply-To: <007101c473af$108ddc60$da0da8c0@pisic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +18,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tuesday 27 July 2004 8:54 am, Danila Octavian wrote:
 
---ITEy4z2kE7rjCDPK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Good morning Sven,=20
-
-Am 2004-07-27 09:42:51, schrieb Sven Schuster:
+> I'm afraid i was not very explicit ...
 >
->Hi Michelle,
+> I was trying to use strictly names and that's why :
+>
+> I have only one public IP and 3 diferrent names. Behind the machine i have
+> a network with 4 servers which use that names :
 
->at which iptables invocation do you get this error exactly?? Try
->executing the script with "sh -x scriptname" and look where the
->error occurs.
->What kernel version are you using, what version of iptables?
+In that case set up one mail relay (which only accepts mail for the four 
+domains), feed all external MX records to this one server, and then configure 
+it to relay mail for each domain on to each appropriate server.
 
-It is the line with the ESTABLISHED,RELATED
+What you are trying to do is an application layer requirement; netfilter 
+cannot do this for you at the network routing layer.
 
-I have found the lines in the Firewall-HOWTO=20
-and on <http://www.debianforum.de/>
+Regards,
 
->Sven
+Antony.
 
-Greetings
-Michelle
+-- 
+I love deadlines.   I love the whooshing noise they make as they go by.
 
---=20
-Linux-User #280138 with the Linux Counter, http://counter.li.org/=20
-Michelle Konzack   Apt. 917                  ICQ #328449886
-                   50, rue de Soultz         MSM LinuxMichi
-0033/3/88452356    67100 Strasbourg/France   IRC #Debian (irc.icq.com)
+ - Douglas Noel Adams
 
---ITEy4z2kE7rjCDPK
-Content-Type: application/pgp-signature; name="signature.pgp"
-Content-Description: Digital signature
-Content-Disposition: inline
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFBBgz/C0FPBMSS+BIRAmBJAJ4yWj1bAZOf4W5dDwMjyqIUPIOczQCfcQKi
-UVgjyHCQjwNL08iMaY7UKPg=
-=9ETg
------END PGP SIGNATURE-----
-
---ITEy4z2kE7rjCDPK--
 
