@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: alucard@kanux.com
 Subject: Re: forwarding
-Date: Tue, 18 May 2004 15:44:24 +0100
+Date: Tue, 18 May 2004 10:57:15 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405181544.24474.Antony@Soft-Solutions.co.uk>
+Message-ID: <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
 References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105>
-Reply-To: netfilter@lists.netfilter.org
+    <1084891180.6410.18.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105>
+In-Reply-To: <1084891180.6410.18.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,59 +19,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 18 May 2004 3:22 pm, alucard@kanux.com wrote:
+Hi there again...
 
-> Hi there again,
->
->    I finally decided to add a second card to both, the server and the
-> client to be able to forward packets from port 8080 in server 1 to port
-> 80 in server 2 and somehow this packets are not going thru, let me
-> explain my scenario
->
-> - Server 1 has a natted addres using it's 10.73; what I'm trying to do is
-> that evrything that comes to 10.73.219.156:8080 gets forwarded to
-> 192.168.0.2:80.
->
-> - Server 1 functions as a webserver and that's why I'm using port 8080 in
-> order to forward packets to port 80 in server 2
->
-> - Here's my Server 1's /etc/rc.d/rc.firewall script because somehow it's
-> not working:
->
-> #para el forward
-> echo 0 > /proc/sys/net/ipv4/ip_forward
-> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
-> iptables -t nat -A PREROUTING -d 192.168.0.1 -p tcp --dport 8080 \
->     -j DNAT --to-destination 192.168.0.2:80
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> -----
+Here's my changed rule:
 
-That nat rule should read:
+-------
+echo "Borrando posibles reglas anteriores..."
+iptables -F
+iptables -X
 
-iptables -t nat -A PREROUTING -d 10.73.219.156 -p tcp --dport 8080 -j DNAT 
---to-destination 192.168.0.2:80
+echo "Habilitando politicas de negacion total de paquetes"
 
-Regards,
+iptables -P FORWARD DROP
+iptables -P INPUT DROP
 
-Antony.
+echo "Reglas para paquetes de entrada y salida"
 
--- 
-This email is intended for the use of the individual addressee(s) named above 
-and may contain information that is confidential, privileged or unsuitable 
-for overly sensitive persons with low self-esteem, no sense of humour, or 
-irrational religious beliefs.
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-If you have received this email in error, you are required to shred it 
-immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
-minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
-and eat the original message.
+#iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+##internas
+iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+
+#para el forward
+echo 0 > /proc/sys/net/ipv4/ip_forward
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
+iptables -t nat -A PREROUTING -d 10.73.219.156 -p 6 --dport 8080 \
+    -j DNAT --to-destination 192.168.0.2:80
+echo 1 > /proc/sys/net/ipv4/ip_forward
+-------
+
+and after I executed this, here's my nmap output
+
+-------
+root@mail:~# nmap 10.73.219.156
+
+(The 1652 ports scanned but not shown below are in state: filtered)
+PORT     STATE SERVICE
+22/tcp   open  ssh
+25/tcp   open  smtp
+80/tcp   open  http
+143/tcp  open  imap
+3306/tcp open  mysql
+--------
+
+Should I show something else? for what I know, it should be forwarding
+packets but is not... port 8080 is not open as nmap shows, any
+suggestions?
+
+Thanks a lot as usual...
+Juan
 
 
