@@ -1,12 +1,10 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: Bridging firewall setup
-Date: Tue, 16 Dec 2003 13:58:02 -0600
+From: Jason Cook <jg0327@yahoo.com>
+Subject: Re: Port Redirection with iptables
+Date: Tue, 16 Dec 2003 12:08:15 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C6471@coxhpexg.coxhp.com>
+Message-ID: <20031216200815.26012.qmail@web41114.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +15,97 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 
-This should be emphasized, as there seems to be a good deal of confusion =
-about what's included in the kernel and what isn't.
+Ok. I would like to run just the proxy and caching end
+of squid...so I removed the acceleration options.
 
-1)  Bridging is included in the kernel
-2)  Using iptables (or ebtables for that matter) to filter bridge =
-traffic is not included and must be patched in.
-
-Check out http://bridge.sourceforge.net/docs.html or =
-http://ebtables.sourceforge.net/documentation.html for more details.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Richard Doyle
-Sent: Tuesday, December 16, 2003 11:35 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Bridging firewall setup
+I then added the lines to log.  But I added
+--log-prefix "Iptables Error:" to the lines that were
+suggested, but I can't find any reference to them in
+the log file.  Does anyone have any ideas?
 
 
-On Tue, 2003-12-16 at 08:55, Chris Brown wrote:
-> Hi all, new to the list. I'm trying to get a bridging firewall setup =
-on=20
-> a RH 9 box and I'm not having much luck. The bridge itself works fine=20
-> but when I try to add rules using netfilter they seem to be ignored =
-and=20
-> packets I'm trying to block go on through. I've been digging through =
-the=20
-> list archives, google, various forums and HOWTOs and I still haven't=20
-> found the answer so I'm hoping someone here can point out what I'm =
-doing=20
-> wrong :)
-Did you patch the kernel to support this? The bridging code in the stock
-2.4 kernels doesn't support firewalling,
+> 
+> > I am trying to install Linux as a firewall and
+> caching
+> > server with iptables and Linux.  I
+> > need to do this transparently.
+> >
+> > I installed Red Hat Linux 9.  Ran all of the
+> updates
+> > nice and smooth.  Turned on ip forwarding.
+> > Configured Squid...and tested it by specifying the
+> > servers ip address and port 3128 from the
+> > browser.  Works great.  Here the options I had
+> changed
+> > in the config file.
+> >
+> > http_port 3128
+> > http_access deny to_localhost
+> > acl our_networks src 10.0.0.0/8
+> > http_access allow our_networks
+> > httpd_accel_host virtual
+> > httpd_accel_port 80
+> > httpd_accel_with_proxy on
+> > httpd_accel_uses_host_header on
+> 
+> I'm puzzled by this combination - are you trying to
+> set up Squid as a caching 
+> proxy, or as an accelerator (or both)?
+> 
+> You do not need the acceleration options turned on
+> to operate Squid as a 
+> transparent proxy (and it is not generally
+> recommended that you operate a 
+> single instance of Squid in both modes
+> simultaneously - you can do it, but 
+> it's recommended to use two instances of Squid
+> instead).
+> 
+> > For iptables I used
+> > iptables -t nat -A PREROUTING -i eth1 -p tcp
+> --dport
+> > 80 -j REDIRECT --to-port 3128
+> >
+> > I then try to browse the internet from a client
+> > through the firewall and nothing.
+> >
+> > When I run iptables -t nat -nv -L
+> >
+> > Chain PREROUTING (policy ACCEPT 31254 packets,
+> 3971K
+> > bytes)
+> >  pkts bytes target     prot opt in     out    
+> source
+> >              destination
+> >     0     0 REDIRECT   tcp  --  eth1   *
+> > 0.0.0.0/0            0.0.0.0/0          tcp dpt:80
+> > redir ports 3128
+> >
+> > PREROUTING is accepting packets...but none are
+> > processes by the redirect rule.
+> 
+> I assume that eth1 is your internal LAN interface,
+> so that's where the packets 
+> will be coming from.   Can you try adding some LOG
+> rules so we can see where 
+> the packets are really going?
+> 
+> iptables -I PREROUTING -t nat -p tcp --dport 80 -j
+> LOG
+> iptables -I INPUT -p tcp --dport 80 -j LOG
+> iptables -I FORWARD -p tcp --dport 80 -j LOG
+> 
+> Antony.
+> 
+> 
 
 
+__________________________________
+Do you Yahoo!?
+New Yahoo! Photos - easier uploading and sharing.
+http://photos.yahoo.com/
 
