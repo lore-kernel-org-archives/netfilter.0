@@ -1,12 +1,9 @@
-From: "Domenico Gargano" <d.gargano@planetek.it>
-Subject: Win2k/XP Client DNS hang up
-Date: Tue, 16 Mar 2004 11:03:52 +0100
+From: "AFShin" <FreeBSD@exsir.net>
+Subject: Rounf-Robin NAT
+Date: Tue, 16 Mar 2004 14:45:47 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4056DF18.21276.6952B7@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Message-ID: <WorldClient-F200403161445.AA45470054@exsir.net>
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +13,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I submit you all this very strange problem:
-My firewall occasionally stop accepting input and forward packets 
-from my Win PCs. After then I have 2 choises:
-1: wait some minutes
-2: stop/start "client DNS" service twice to immediately obtain again 
-full access to the net.
-
-Can someone give me a hint?
-
-- sorry for my poor english
-
-Bye all
-
--- 
-~~~~  Domenico Gargano  [Network Administrator]  ~~~~
-Planetek Italia s.r.l.                        :tel:+39 080 5343750
-Via Massaua, 12 - I-70123 BARI     :fax:+39 080 5340280
-~~~ email: gargano@planetek.it ~~~ www.planetek.it ~~~
+Dear Friends,
+Can iptables do the real Round-Robin SNAT --to ?
+Is there any patch or it is available ?
+Thank you all in advance,
+AFShin A.
 
 
