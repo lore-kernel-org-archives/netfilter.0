@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Need Help ..!
-Date: Sun, 11 Jan 2004 14:41:39 +0000
+Subject: Re: any documents on Link-Load balancing
+Date: Sun, 11 Jan 2004 14:42:56 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401111441.39057.Antony@Soft-Solutions.co.uk>
-References: <20040111120049.44784.qmail@web40205.mail.yahoo.com>
+Message-ID: <200401111442.56492.Antony@Soft-Solutions.co.uk>
+References: <BAY1-DAV38fyQgeDKvP000003c0@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040111120049.44784.qmail@web40205.mail.yahoo.com>
+In-Reply-To: <BAY1-DAV38fyQgeDKvP000003c0@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +20,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 11 January 2004 12:00 pm, HEMANT BAANDAL wrote:
+On Friday 09 January 2004 7:19 am, san wrote:
 
-> Hey guys,
->
->    Is there anyway i can detect proxied ips' behind my
-> nat box. I am using iptables-1.2.7a-2, i need to
-> detect natted or proxied ips passing through my linux
-> box. Can anyone help me with this.
+> BlankCan anyone help me to find out the link loadbalancing howto linux
 
-Proxied IPs may be detectable by looking at the OSI layer 7 content of the 
-packets (ie: not using netfilter), to see whether the proxies give themselves 
-away by some sort of header (eg: http proxies commonly insert a header from 
-which you can tell it's not a direct connection).
+Suggest you start with http://lartc.org
 
-NATted IPs can (I believe) be detected by analysis of the source ports and/or 
-sequence numbers.   Try a google search for something like "nat detect 
-sequence source port"?
-
-Why do you want to do this?   There may a better solution to your problem than 
-the specific question you have asked?
-
-Antony.
+Antony
 
 -- 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
                                                      Please reply to the list;
                                                            please don't CC me.
