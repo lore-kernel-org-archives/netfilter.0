@@ -1,12 +1,11 @@
-From: "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>
-Subject: RE: Checksumming Issues
-Date: Fri, 21 Nov 2003 15:31:04 -0600
+From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
+Subject: question on state module ....
+Date: Sat, 22 Nov 2003 13:57:41 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D8FBABA1EF6F2E4DBCC88903F60691F3021BD945@houxchsvr.ucscorp.ucs.pvt>
+Message-ID: <000701c3b119$be544b80$95ffa8c0@ESTACAO>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +16,105 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: netfilter ML <netfilter@lists.samba.org>
 
-I didn't mean for that to sound as bad as it did. As I had said in the =
-first e-mail I made the same mistake you did originally. I sent Leonid =
-an e-mail directly (nasty habit of hitting the reply instead of reply =
-all button) and was wrong when I said it. But then I remembered I had =
-some issues calculating the checksum and went to look at my source to =
-jog my memory and saw that my memory was wrong as well. I was going to =
-let it stand at that, but I didn't want incorrect information left on =
-the list after your initial reply. No hard feelings either way I hope. =
-Who are we to question the wisdom of the designers of TCP? :)=20
 
-On topic to Leonid, you can calculate the TCP checksum using the =
-algorithm on that website I posted a minute ago. I'm surprised you =
-actually calculated the IP checksum, normally the stack does that =
-automatically before it goes out (if it wasn't in your case I would like =
-to hear specifics of what you are doing for my own interest).=20
+    Hello Guys,
 
------Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Friday, November 21, 2003 15:14
-To: netfilter@lists.netfilter.org
-Subject: Re: Checksumming Issues
+    I'm having a strange behavior here with state module. I'm using kernel
+2.4.22 with some patchs applied from a pretty recent (20031111)
+patch-o-matic. I have SEVERAL rules to deal with FORWARD chain, as I have 5
+NICs in this machine.
 
-On Friday 21 November 2003 9:00 pm, Hildebrand, Brian wrote:
+    Well ...... what I think shouldnt being blocked is this:
 
-> www.netfor2.com/tcpsum.htm
->
-> That is the first website I found. I'm sure if you look some more you =
-could
-> probably find about 500 more. If you do not follow those instructions, =
-you
-> will get bad checksum returns. Just because it is an OSI layer higher =
-does
-> not mean it can't include data from lower down the chain.
+[root@firewall log]# cat /var/log/messages | grep "=110 " | grep "Nov 22" |
+grep forward
+Nov 22 11:17:13 firewall kernel: bloq_forward_intadm:IN=eth2 OUT=eth0
+SRC=172.16.1.2 DST=10.0.0.39 LEN=40 TOS=0x00 PREC=0x00 TTL=63 ID=6783 DF
+PROTO=TCP SPT=110 DPT=1089 SEQ=3167588316 ACK=3598442 WINDOW=5840 RES=0x00
+ACK FIN URGP=0
+Nov 22 11:33:18 firewall kernel: bloq_forward_intadm:IN=eth2 OUT=eth0
+SRC=172.16.1.2 DST=10.0.0.39 LEN=1500 TOS=0x00 PREC=0x00 TTL=63 ID=62904 DF
+PROTO=TCP SPT=110 DPT=1109 SEQ=4150259894 ACK=4539767 WINDOW=5840 RES=0x00
+ACK URGP=0
+[root@firewall log]#
 
-You are right.   The TCP checksum contains a "notional IP header" which =
-is
-included in the calculation.
+    eth0 is my internal network and eth2 is my DMZ network, where my mail
+server is hosted. According to the log, these packets do NOT have the SYN
+bit on.
 
-Today is not a good day for me :(   It must be somebody else's birthday.
+    Why I think it shouldnt being blocked ??? Because it's only being
+blocked in one or two connections a day. This is a very busy server. Almost
+all the connections works fine, but once or twice I got these logs.
 
-Antony.
+    Rules that matters are:
 
---
+[root@firewall log]# iptables -nL FORWARD -v
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+[ ...... ]
+  930 54630 forward_dmz_internaadm  all  --  eth2   eth0    0.0.0.0/0
+0.0.0.0/0
+[ ..... ]
+[root@firewall log]#
 
-I love deadlines.   I love the whooshing noise they make as they go by.
 
- - Douglas Noel Adams
-                                                     Please reply to the =
-list;
-                                                           please don't =
-CC me.
 
-----------------------------------------
-The information transmitted in this message is intended only for the =
-person or entity to whom it is addressed and may contain confidential =
-and/or privileged material.  Any review, retransmission, dissemination =
-or other use of, or taking of any action in reliance upon this =
-information by persons or entities other than the intended recipient is =
-prohibited.  If you received this in error, please contact the sender =
-and destroy any copies of this document.
+(the state INVALID,RELATED,ESTABLISHED,UNTRACKED is translated from 'state !
+NEW' from iptables command)
+[root@firewall log]# iptables -nL forward_dmz_internaadm -v
+Chain forward_dmz_internaadm (1 references)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 ACCEPT     tcp  --  *      *       172.16.1.2
+0.0.0.0/0           tcp spt:25 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+    0     0 ACCEPT     tcp  --  *      *       172.16.1.2
+0.0.0.0/0           tcp spt:80 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+  930 54630 ACCEPT     tcp  --  *      *       172.16.1.2
+0.0.0.0/0           tcp spt:110 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+    0     0 ACCEPT     tcp  --  *      *       172.16.1.2
+0.0.0.0/0           tcp spt:443 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+    0     0 ACCEPT     udp  --  *      *       172.16.1.2
+0.0.0.0/0           udp spt:53 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+    0     0 ACCEPT     tcp  --  *      *       172.16.1.2
+0.0.0.0/0           tcp spt:53 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+    0     0 ACCEPT     tcp  --  *      *       172.16.1.3
+0.0.0.0/0           tcp spt:80 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+    0     0 ACCEPT     tcp  --  *      *       172.16.1.3
+0.0.0.0/0           tcp spt:443 state INVALID,RELATED,ESTABLISHED,UNTRACKED
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0           state RELATED
+    0     0 forward_bloqueado_interna_adm  all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+[root@firewall log]#
+
+
+[root@firewall log]# iptables -V
+iptables v1.2.9
+[root@firewall log]#
+
+
+    As you can notice, I restarted the firewall to apply some changes and
+the counter are somehow low. There's, for example, no hit on
+'forward_bloqueado_interna_adm' rule, which is the one that produces the log
+I sent in the beggining of the message. Also notice that these drops were
+logged when firewall was working normally, that means, NOT during a firewall
+restart.
+
+
+    The dropped and logged packet should have been allowed according to the
+rules, but it wasnt. If I wasnt using the 'state ! NEW' clause, it would
+have been allowed for sure, because source port/source address/destination
+address matchs the rule. Do you have any idea of what can be happening here
+? Any hint ? Any clue ? Any new patch ? Any patch that I shouldnt have
+applied from patch-o-matic ??? Should I stop using state module in these
+rules ?
+
+
+    Sincerily,
+    Leonardo Rodrigues
+
+
 
