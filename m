@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Re: selective filter
-Date: Thu, 4 Dec 2003 09:47:24 +0000
+From: gARetH baBB <hick.lkml@gink.org>
+Subject: 2.4.23 ipchains/MASQ problems
+Date: Thu, 4 Dec 2003 11:07:20 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312040947.24520.Antony@Soft-Solutions.co.uk>
-References: <002a01c3ba31$9d1a82b0$0501a8ac@Rares>
+Message-ID: <Pine.LNX.4.58.0312041054500.532@stum.gink.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002a01c3ba31$9d1a82b0$0501a8ac@Rares>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,70 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 04 December 2003 6:41 am, Admin wrote:
+Has anyone else had serious problems with 2.4.23 death when using ipchains
+and masquerading ?
 
-> Yesterday I posted a message regarding a selective filter.
-> I was asking for a hands on making a filter which will force only some
-> users to use the squid proxy and some not.
-> The message can be found in "netfilter digest, Vol 1 #1355" with the
-> subject "selective filter".
-> First of all I want to thank you to Antony Stone
-> <Antony@Soft-Solutions.co.uk> that replyed me on the list with a very
-> helpfull instruction.
-> And, because his wish was not to reply directly to him, I came with a
-> suplementary question related to that message:
+I've had two boxes die with a panic as soon as they tried to do any form
+of masq, going back to .22 results in happiness.
 
-Thank you - I'm glad the answer was helpful.
+One box is essentially a Slackware 8.1 base, and the other 9.0.
 
-The reasons I say "Please reply to the list" on my postings are:
+Both have similar ipchains rules.
 
-1. There may be other people better qualified to answer a follow-up question 
-than I am.
-2. I may be busy and not able to respond as quickly as someone else who knows 
-the answer as well.
-3. Other people with similar problems (now, or in the future) can see the 
-follow-up postings, and thereby benefit from the question and the answer.
+The 8.1 box is my test box and I upgraded to .23 on it and everything was
+fine, it shifted over 4G of non-masq data during the day and showed no
+problems.
 
-> After I do this:
->
-> iptables -A FORWARD -s 192.168.1.21 -p tcp --dport 80 -j ACCEPT
-> ....
-> iptables -A FORWARD -p tcp --dport 80 -j REJECT
->
-> this mean that all the rules aplies to the running configuration?
-> I mean, if I restart the service iptables I will have to write those rules
-> again?
-> To save the rules and to make them load after a service restart I have to
-> type "service iptables save"?
-> If the answer to the questions above is negative, I want to know what can I
-> do to REMOVE the rules?
+I then upgraded the 9.0 box to .23, and it died within seconds of
+networking going with a panic.
 
-This question actually falls into category 1 above - someone else knows the 
-answer better than I do, so I shall ask them to reply to this please.
+Whilst I investigated what was going on I shited the routing so the 8.1
+box did masq for the internal network. Not immediately, but within minutes
+that box too paniced. Rebooting the 8.1 box resulted in panic pretty much
+in the same way as the 9.0 box.
 
-Your question is more distribution-specific than it is to do with netfilter / 
-iptables itself, and the "service iptables save" command is not one I use.
+I put both back to .22 and sanity was restored.
 
-The answer to your final question however is easy - to delete a rule, simply 
-replace the -A or -I in the original rule (append or insert) with -D 
-(delete):
+I notes lots of changes in the .23 patch to the masq code and network code
+in general.
 
-iptables -D FORWARD -s 192.168.1.21 -p tcp --dport 80 -j ACCEPT
-iptables -D FORWARD -p tcp --dport 80 -j REJECT
-
-Regards,
-
-Antony.
-
--- 
-Having been asked for a reference for this man,
-I can confirm that you will be very lucky indeed if you can get him to work 
-for you.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Anyone else seen these problems ? [though I presume most of you are using
+iptables and this *could* be ipchains specific]
 
