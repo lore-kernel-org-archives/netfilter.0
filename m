@@ -1,11 +1,9 @@
-From: Martin Stricker <shugal@gmx.de>
-Subject: Re: Best distro for firewalls.
-Date: Tue, 12 Nov 2002 01:55:56 +0100
+From: Dax Kelson <dax@gurulabs.com>
+Subject: DNATd server behind fw with two ISPs
+Date: Mon, 11 Nov 2002 19:10:39 -0700 (MST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DD0519C.B860FCAB@gmx.de>
-References: <Pine.LNX.4.33.0211111425130.24679-100000@mail-02.swi.com>
+Message-ID: <Pine.LNX.4.44.0211111909550.1971-100000@mooru.gurulabs.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,23 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Vladas Keparoutis wrote:
-> 
-> Hi,
-> I'd recommend gentoo (gentoo.org)
-> It is very flexible and fast with updates.
+Consider the following:
+                 ________
+(ISP1)=====eth0:| 2.4.18 |
+		|Firewall|:eth2=====(WWW/DNS server @ 10.3.2.1)
+(ISP2)=====eth1:|__NAT___|
 
-Yeah, but you have to compile everything. On the 486 I use as a firewall
-this is more than a pain...
+On the firewall there are these DNAT rules:
 
-Best regards,
-Martin Stricker
--- 
-Homepage: http://www.martin-stricker.de/
-Linux Migration Project: http://www.linux-migration.org/
-Red Hat Linux 7.3 for low memory: http://www.rule-project.org/
-Registered Linux user #210635: http://counter.li.org/
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d REAL.IP.FROM.ISP1 --dport
+25 -j DNAT --to 10.3.2.1:25
+
+iptables -t nat -A PREROUTING -i eth1 -p tcp -d REAL.IP.FROM.ISP2 --dport
+25 -j DNAT --to 10.3.2.1:25
+
+Question:
+
+What sort of SNAT and/or policy routing can I do so that the responses
+from the internal 10.3.2.1 server are SNATed to and leave the appropriate
+external interface on the firewall (the appropriate interface would be the 
+external interface that the connection originated from).
+
+TIA,
+Dax
+
+
 
