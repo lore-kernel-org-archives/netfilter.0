@@ -1,15 +1,11 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Purpose of self-referential rule
-Date: Wed, 26 Feb 2003 10:33:25 -0500
+From: "Preston Wade" <Preston_Wade@hilton.com>
+Subject: RE: block yahoo messenger
+Date: Wed, 26 Feb 2003 10:02:27 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302261033.25724.Alistair@nerdnet.ca>
-References: <20030224160628.GH4316@placemark.com>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <0B2759D401C1D211ACA500805FFE2C3F0860BEE1@cmxserv3.hilton.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030224160628.GH4316@placemark.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,56 +16,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Kelly Setzer <Kelly.Setzer@placemark.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+I had this same problem and realized that other servers on those nets
+provided news articles that some of my users wanted to read.  I feel like
+Corp America should ask Yahoo to publish a list of servers used to support
+Instant Messaging.  Actually MSN and AOL should do the same.
+
+Just my 2 cents.
+
+Thanks,
+Preston
+
+-----Original Message-----
+From: Rob Sterenborg [mailto:rsterenborg@xs4all.nl]
+Sent: Wednesday, February 26, 2003 8:50 AM
+To: netfilter@lists.netfilter.org
+Subject: RE: block yahoo messenger
 
 
-	Hi:
+> hi all,
+> does anyone have an idea about blocking "yahoo messenger" 
+> using iptables? thanks afshin
 
-	This rule would only really be invoked when in a packet left a system on the
-internal network headed for the firewall box itself (presumably the firewall 
-has a valid network address on that segment.) -- however that rule is rather 
-loose, since it supposes that it is accepting a destination of the entire 
-segment, rather than for a specific IP on the firewall.  This might be valid 
-if you had wireless lan tunnelling equipment that used the firewall as a 
-router, and the rule was in the forward chain.   There was a discussion 
-recently about controlling access to MS shares in a public wireless lan, but 
-the solution was not in iptables, but in the wireless lan tunnelling 
-software.
-	
-	What is the intent of the rule is perhaps the more appropriate question.
-	This would be appropriate for certain envrionments, but not in most.
+Maybe it's quite rude to block 4 /24 nets, but Messenger kept connecting
+in these ranges and on different ports (5050, 23, 80) so I just did this
+:
 
+iptables -A FORWARD -d 216.136.223.0/24 -j REJECT --reject-with
+tcp-reset
+iptables -A FORWARD -d 216.136.224.0/24 -j REJECT --reject-with
+tcp-reset
+iptables -A FORWARD -d 216.136.227.0/24 -j REJECT --reject-with
+tcp-reset
+iptables -A FORWARD -d 216.136.233.0/24 -j REJECT --reject-with
+tcp-reset
 
-
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!	
+Of course you are welcome to find out exactly what servers Messenger
+using to block them individually ; I didn't take the time to do that.
 
 
-On February 24, 2003 11:06 am, Kelly Setzer wrote:
-> I've been experimenting with gShield trying to learn the ins and outs
-> of iptables.  One of the rules is generates is:
->
-> iptables -A INPUT -s 192.168.6.0/24 -d 192.168.6.0/24 -i eth1 -j ACCEPT
->
-> The source and dest are correct for my internal network, and eth1 is
-> the internal net.  My question is, when would the firewall ever see a
-> packet that could possible match this?  Any packet with a source and
-> destination on the same network would send the packet directly (no
-> routing, thus no firewall).
->
-> What am I missing?
->
-> thanks,
-> Kelly
-> --
-> Kelly Setzer, System Administrator/Architect - Placemark Investments
-> 14180 Dallas Pkwy, Suite 200, Dallas, TX 75240
-> kelly.setzer@placemark.com  http://www.placemark.com
-> (972)404-8100x41 (work)       (214) 287-3464 (cell)
+Gr,
+Rob
 
--- 
+
+
 
