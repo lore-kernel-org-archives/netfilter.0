@@ -1,11 +1,10 @@
-From: Simone Sestini <simone.sestini@plugit.net>
-Subject: Redirection
-Date: Wed, 09 Apr 2003 12:15:55 +0200
+From: tfischer@abh.de
+Subject: UDP in PREROUTING mangle
+Date: Wed,  9 Apr 2003 12:01:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.0.20030409121155.02472d98@imap4.plugit.net>
+Message-ID: <1049882465.3e93ef6202375@www.intranet.abh.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="=====================_63945879==.ALT"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,82 +15,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
---=====================_63945879==.ALT
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Hi,
 
-Hi all.. i have a situation where i need to use iptables..
+I've setup a routing based only on fwmarks with iproute 2 and discovered a
+Problem with UDP Packets. I mark the packets in the PREROTUING Chain, that works
+great for tcp, but for UDP Packets i have to mark them in the POSTROUTING Chain
+also. It seems that the UDP Packets "loose" their mark somewhere.
 
-I have a public www with some virtual hosts on a machine with public ip 
-2.2.2.2.
-I have with another provider a second server with public ip 1.1.1.1
+iptables -A PREROUTING -t mangle -p udp -s xxx.xxx.xxx.xxx -d 0/0 -j MARK
+--set-mark 1
 
-On dns server i wrote that intra.pippo.foo has address 1.1.1.1 so all the 
-internet request come to machine 1.1.1.1 port 80.
-I want that the server 1.1.1.1 redirects all the call on port 80 and 443 to 
-the server 2.2.2.2 in transparent mode.. i don't want end user to know that 
-datas are over server 2.2.2.2.
+doesn't work.
 
-Naturally the www server on 2.2.2.2 listen on port 80 for intra.pippo.foo
+iptables -A PREROUTING -t mangle -p udp -s xxx.xxx.xxx.xxx -d 0/0 -j MARK
+--set-mark 1
+iptables -A POSTROUTING -t mangle -p udp -s xxx.xxx.xxx.xxx -d 0/0 -j MARK
+--set-mark 1
 
-How can i menage the packets with iptables for do that ?
+works.
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Greets,
 
-Simone Sestini [ SS971-RIPE ]
-
-Plug IT s.p.a. - Technical Office
-Via Galileo Ferraris 216
-52100 Arezzo
-
-Titles:
-System and Network Administrator
-Data Transmission Manager
-
-Fax             +39-199-4400-88
-E-mail  simone.sestini@plugit.net
-Web             http://www.plugit.it
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
---=====================_63945879==.ALT
-Content-Type: text/html; charset="us-ascii"
-
-<html>
-<body>
-Hi all.. i have a situation where i need to use iptables..<br><br>
-I have a public www with some virtual hosts on a machine with public ip
-2.2.2.2.<br>
-I have with another provider a second server with public ip
-1.1.1.1<br><br>
-On dns server i wrote that intra.pippo.foo has address 1.1.1.1 so all the
-internet request come to machine 1.1.1.1 port 80.<br>
-I want that the server 1.1.1.1 redirects all the call on port 80 and 443
-to the server 2.2.2.2 in transparent mode.. i don't want end user to know
-that datas are over server 2.2.2.2.<br><br>
-Naturally the www server on 2.2.2.2 listen on port 80 for
-intra.pippo.foo<br><br>
-How can i menage the packets with iptables for do that ?<br>
-<x-sigsep><p></x-sigsep>
-<font face="Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::<br><br>
-</font><font face="Verdana" color="#FF0000"><b>Simone Sestini
-</font><font face="Verdana" size=2 color="#FF0000">[ SS971-RIPE
-]<br><br>
-</b></font>Plug IT s.p.a. - Technical Office<br>
-Via Galileo Ferraris 216<br>
-52100 Arezzo<br><br>
-<tt><font face="Courier New, Courier" color="#0000FF">Titles:<br>
-System and Network Administrator<br>
-Data Transmission Manager<br><br>
-Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39-199-4400-88<br>
-E-mail<x-tab>&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
-Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href="http://www.plugit.it/" eudora="autourl">http://www.plugit.it</a><br><br>
-</font></tt><font face="Verdana"><u>::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-<br>
-</font></u></body>
-</html>
-
---=====================_63945879==.ALT--
+Tom Fischer
 
 
