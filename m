@@ -1,59 +1,71 @@
-From: Pedro Salazar <pedro-b-salazar@ptinovacao.pt>
-Subject: load-balancing with netfilter: round robin or what??
-Date: 06 Oct 2003 10:59:35 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065434375.1604.33.camel@vitoria.intra.cet.pt>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Using iptables with x86_64 static kernel (module problems)?
+Date: Mon, 6 Oct 2003 13:05:09 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031006110509.GH5758@sunbeam.de.gnumonks.org>
+References: <20031003102156.GV5758@sunbeam.de.gnumonks.org> <20031005001333.GA8589@cc.jyu.fi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9vtvPJo8mpgWPkkI"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20031005001333.GA8589@cc.jyu.fi>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Jani Averbach <jaa@cc.jyu.fi>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-Greetings,
 
-I pretend to load-balancing to two servers but apparently I think only
-one machine is getting the requests.
+--9vtvPJo8mpgWPkkI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-These are the rules I run in iptables:
+On Sun, Oct 05, 2003 at 03:13:33AM +0300, Jani Averbach wrote:
 
-/sbin/iptables -v -P INPUT ACCEPT
-/sbin/iptables -v -P OUTPUT ACCEPT
-/sbin/iptables -v -P FORWARD ACCEPT
-/sbin/iptables -v -t nat -A PREROUTING --dst 192.168.89.44 -p tcp \
- --dport 9000 -j DNAT --to-destination 192.168.89.158:80 \
- --to-destination 192.168.89.159:80
-/sbin/iptables -v -t nat -A POSTROUTING --dst 192.168.89.158/31 \ 
--p tcp --dport 80 -j SNAT --to-source 192.168.89.44
-/sbin/iptables -v -t nat -A OUTPUT -p tcp -m tcp --dport 9000 \ 
---dst 192.168.89.44 -j DNAT --to-destination 192.168.89.158:80 \
- --to-destination 192.168.89.159:80
+> > yes, please.   I have no idea what you are talking about, sorry.
+>=20
+> Here is the transcript of what I have done, I hope it will bring some
+> light to this issue. If this is not a result of some kind of stupidity
+> what I have done, and this is real issue, I could test patch etc.
 
-As you can see, I have two destinations hosts, 192.168.89.158/31. The
-192.168.89.44 is the gateway itself that is redirecting requests on port
-9000 to the two http servers. All of them are in the same network.
+I have installed a 2.4.23-pre5-x86_64-1 kernel on my Redhat Taroon Beta
+Dual Opteron box, downloaded iptables-1.2.8, compiled it and it is
+running without any problems.
 
-However, I think only the .158 is getting the requests (I have verified
-that with tcpdump).
+Which distribution are you running?  Debian?  The Debian compiler
+behaves inconsistent with all other x86_64 distributions wrt. 32/64bit
+code generation - but this is a well-known and well-documented fact.=20
 
-So, what is wrong or what is needed? I supposed the requests would be
-load-balanced...
+> BR, Jani
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-I'm using a linux redhat 7.3 box with default kernel 2.4.18-3. 
+--9vtvPJo8mpgWPkkI
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-thanks,
-Pedro Salazar.
--- 
-PS
-pedro-b-salazar@ptinovacao.pt
-PGP:0E129E31D803BC61
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
+iD8DBQE/gUxkXaXGVTD0i/8RAh70AJsHkp1V1VlPxJP99jx8Heu2iQh6aACgg4Lk
+GUNII/8BtPVdWFD9AgGnePQ=
+=6EEC
+-----END PGP SIGNATURE-----
+
+--9vtvPJo8mpgWPkkI--
 
