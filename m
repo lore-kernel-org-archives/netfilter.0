@@ -1,13 +1,13 @@
-From: "Sebastian" <netfilter@basti79.de>
-Subject: RE: Deleting Rules
-Date: Sun, 14 Sep 2003 15:10:36 +0200
+From: "Timothy J. Miller" <tj.miller@javaspotlet.com>
+Subject: DHCP Help
+Date: Sun, 14 Sep 2003 07:46:45 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c37ac1$9719e7c0$fe78a8c0@basti79>
-References: <3F642E1B.8010801@riovia.net>
+Message-ID: <767f9555.9555767f@idirliontech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F642E1B.8010801@riovia.net>
+Content-language: en
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Paul Caritj' <pcaritj@riovia.net>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-Hi
+Hoping that someone can help me with my problem. I have a small lan segemented across two families of ip's on a quad card.
 
-Try around with something like this:
-iptables -L INPUT -n --line-numbers | \
-awk -- '{ if ($5=="192.168.0.1") { iptables -D INPUT $1 } }'
+eth0 ->  Public IP
+eth2 -> 10.2.3.1 -> internal DHCP for laptops
+eth3 -> 10.2.1.1 -> internal static ips for servers
 
-This will delete all entries in INPUT chain with source IP (column 5) of
-192.168.0.1
-Pearhaps you have to optimize some things to fit your needs.
+My problem is that my users sometimes must perform an ipconfig /renew on their laptops to get access to the outside world.  My rules at this time are not very explicit but I am trying to change that and I can't seem to figure out what the heck is going on.  My rules look like:
 
-Greets
-Sebastian.
+ipables -A INPUT -i $DHCP_INTERFACE -s 0.0.0.0 -d 255.255.255.255 \
+        -p udp --sport 68 --dport 67 -j ACCEPT
 
+iptables -A INPUT -i $DHCP_INTERFACE -s $DMZ \
+        -d $DMZ -p udp --sport 68 --dport 67 -j ACCEPT
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Paul Caritj
-> Sent: Sunday, September 14, 2003 11:00 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Deleting Rules
-> 
-> 
-> Simple Question:
-> 
-> Is it possible to delete rules without complete knowledge of its 
-> contents? E.g., Would it be possible to delete all rules that match a 
-> source ip of X?
-> 
-> If not, can anyone reccomend a workaround? I am creating rules on the 
-> fly and setting them to mark packets with a flag that would not be 
-> knowable subsequently. (Rather, unknowable unless there is no 
-> solution 
-> to this problem and I am forced to keep some sort of log...eew)
-> 
-> 
-> Thanks,
-> Paul
-> 
-> 
-> 
+iptables -A INPUT -i $DMZ_INTERFACE -s $DMZ -d 10.2.1.1 -j ACCEPT
+
+One last note, eth2 and eth3 are connected to a switch and I am not sure if that is going to effect this or not but thought that it may be relevent in solving my issues.
+
+Any help or direction anyone can give is greatly appreciated.
+
+- Tim
 
 
