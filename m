@@ -1,13 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SNAT not working
-Date: Sun, 29 Feb 2004 10:32:50 +0000
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Strange log info from iptables ?
+Date: Sun, 29 Feb 2004 12:09:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402291032.50839.Antony@Soft-Solutions.co.uk>
-References: <1078047284.4041b234e0530@milliweb.millicom.com.pe>
+Message-ID: <1078052958.9054.4.camel@anduril.intranet.cartel-securite.net>
+References: <20040227175608.666a0e38.Information-Cascade@ntlworld.com>
+	 <1077905740.2526.41.camel@anduril.intranet.cartel-securite.net>
+	 <20040227190555.214cbc6e.Information-Cascade@ntlworld.com>
+	 <000d01c3fea4$ea271f70$de0aa8c0@comp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1078047284.4041b234e0530@milliweb.millicom.com.pe>
+In-Reply-To: <000d01c3fea4$ea271f70$de0aa8c0@comp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +20,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Bo Jacobsen <subs@systemhouse.dk>
+Cc: netfilter@lists.netfilter.org
 
-On Sunday 29 February 2004 9:34 am, Felipe wrote:
+Le dim 29/02/2004 =E0 10:17, Bo Jacobsen a =E9crit :
+> What is the following log info. It looks like some kind of combined
+> ICMP and DNS ?
+> Feb 29 10:02:03 WFx-SH kernel:=20
+> DROP-OUT:IN=3D OUT=3Deth0 SRC=3D192.168.1.2 DST=3D212.54.64.171=20
+> LEN=3D198 TOS=3D0x00 PREC=3D0xC0 TTL=3D64 ID=3D30626=20
+> PROTO=3DICMP TYPE=3D3 CODE=3D3 [SRC=3D212.54.64.171 DST=3D192.168.1.2 L=
+EN=3D170=20
+> TOS=3D0x00 PREC=3D0x40 TTL=3D59 ID=3D53582=20
+> PROTO=3DUDP SPT=3D53 DPT=3D59554=20
+> LEN=3D150 ]=20
 
-> I've tried to set up SNAT to match INTERNAL network to a external ip,
->
-> /usr/local/sbin/iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/16 -j
-> SNAT --to-source 200.110.2.179
->
-> But that's working, it only works when i put:
->
-> /usr/local/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
->
-> eth0= external interface
-> eth1= internal interface
+To complete Antony's answer...
 
-Is 200.110.2.179 the address of the external interface eth0?
+This is an ICMP port unreachable sent by 192.168.1.2 to 212.54.64.171
+about what looks like a DNS answer (sport=3DUDP/53). This usually happen
+on loaded links. Answer is delayed to the point client has already
+closed its socket when it arrives. So the client sends back an ICMP port
+unreachable.
 
-If it isn't, then reply packets have no interface to come back to, so 
-connections won't work.
-
-Regards,
-
-Antony.
-
--- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
-
- - Philip Hands
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
