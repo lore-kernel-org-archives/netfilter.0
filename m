@@ -1,13 +1,15 @@
-From: Damphyr <damphyr@gmx.net>
-Subject: NAT and pppoe
-Date: Fri, 11 Apr 2003 09:07:43 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: new tcp connections, without SYN
+Date: 11 Apr 2003 10:37:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E9669BF.5020509@gmx.net>
-References: <20030328102714.DF82D1C59B4DA@sm212.163.com> <20030410185540.GB565@eychenne.org>
+Message-ID: <1050050273.5564.15.camel@elendil.intranet.cartel-securite.net>
+References: <7497DCA1C240C042B28F6657ADFD8E09268777@i2km11-ukbr.domain1.systemhost.net>
+	 <1049964481.790.4.camel@elendil.intranet.cartel-securite.net>
+	 <3E95AF83.5050508@iatp.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030410185540.GB565@eychenne.org>
+In-Reply-To: <3E95AF83.5050508@iatp.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +19,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-7"; format="flowed"
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Rahul Jadhav <rahul@iatp.org>
+Cc: netfilter@lists.netfilter.org
 
-T25jZSBtb3JlLCBhcyBhIG1lbWJlciBvZiB0aGlzIGxpc3QgOikuCgpJIGFtIGhhdmluZyBwcm9i
-bGVtcyBzZXR0aW5nIHVwIE5BVCBmb3IgbXkgaG9tZSBMQU4uCgpJIGdldCB0aGUgZm9sbG93aW5n
-OgoKZnJpZ29yaWZlcm8gcm9vdCAjIGlwdGFibGVzIC12IC10IG5hdCAtQSBQT1NUUk9VVElORyAt
-byBwcHAwIC1qIE1BU1FVRVJBREUKTUFTUVVFUkFERSAgYWxsIG9wdCAtLSBpbiAqIG91dCBwcHAw
-ICAwLjAuMC4wLzAgIC0+IDAuMC4wLjAvMAppcHRhYmxlczogSW52YWxpZCBhcmd1bWVudAoKaWZj
-b25maWcgZ2l2ZXMgbWU6CgpldGgwICAgICAgTGluayBlbmNhcDpFdGhlcm5ldCAgSFdhZGRyIDAw
-OkUwOjI5OjA5OkMwOjAzCiAgICAgICAgICAgaW5ldCBhZGRyOjE5Mi4xNjguMS4yNTQgIEJjYXN0
-OjE5Mi4xNjguMS4yNTUgIE1hc2s6MjU1LjI1NS4yNTUuMAogICAgICAgICAgIFVQIEJST0FEQ0FT
-VCBSVU5OSU5HIE1VTFRJQ0FTVCAgTVRVOjE1MDAgIE1ldHJpYzoxCiAgICAgICAgICAgUlggcGFj
-a2V0czozMDMwIGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjAKICAgICAgICAg
-ICBUWCBwYWNrZXRzOjIzNDkgZXJyb3JzOjAgZHJvcHBlZDowIG92ZXJydW5zOjAgY2Fycmllcjow
-CiAgICAgICAgICAgY29sbGlzaW9uczowIHR4cXVldWVsZW46MTAwCiAgICAgICAgICAgUlggYnl0
-ZXM6MjI1MjE4ICgyMTkuOSBLYikgIFRYIGJ5dGVzOjQ2MTAzNiAoNDUwLjIgS2IpCiAgICAgICAg
-ICAgSW50ZXJydXB0OjEwIEJhc2UgYWRkcmVzczoweGU0MDAKCmV0aDEgICAgICBMaW5rIGVuY2Fw
-OkV0aGVybmV0ICBIV2FkZHIgMDA6QzA6REY6MEU6NkQ6ODcKICAgICAgICAgICBVUCBCUk9BRENB
-U1QgUlVOTklORyBNVUxUSUNBU1QgIE1UVToxNTAwICBNZXRyaWM6MQogICAgICAgICAgIFJYIHBh
-Y2tldHM6MTc1IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjAKICAgICAgICAg
-ICBUWCBwYWNrZXRzOjE3NyBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBjYXJyaWVyOjAK
-ICAgICAgICAgICBjb2xsaXNpb25zOjAgdHhxdWV1ZWxlbjoxMDAKICAgICAgICAgICBSWCBieXRl
-czoxMTE1MiAoMTAuOCBLYikgIFRYIGJ5dGVzOjExNTk3ICgxMS4zIEtiKQogICAgICAgICAgIElu
-dGVycnVwdDoxMiBCYXNlIGFkZHJlc3M6MHg2MDAwCgpsbyAgICAgICAgTGluayBlbmNhcDpMb2Nh
-bCBMb29wYmFjawogICAgICAgICAgIGluZXQgYWRkcjoxMjcuMC4wLjEgIE1hc2s6MjU1LjAuMC4w
-CiAgICAgICAgICAgVVAgTE9PUEJBQ0sgUlVOTklORyAgTVRVOjE2NDM2ICBNZXRyaWM6MQogICAg
-ICAgICAgIFJYIHBhY2tldHM6MCBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBmcmFtZTow
-CiAgICAgICAgICAgVFggcGFja2V0czowIGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGNh
-cnJpZXI6MAogICAgICAgICAgIGNvbGxpc2lvbnM6MCB0eHF1ZXVlbGVuOjAKICAgICAgICAgICBS
-WCBieXRlczowICgwLjAgYikgIFRYIGJ5dGVzOjAgKDAuMCBiKQoKcHBwMCAgICAgIExpbmsgZW5j
-YXA6UG9pbnQtdG8tUG9pbnQgUHJvdG9jb2wKICAgICAgICAgICBpbmV0IGFkZHI6MjE3LjIzNC54
-eHgueHh4ICBQLXQtUDoyMTcuNS54eHgueHh4IApNYXNrOjI1NS4yNTUuMjU1LjI1NQogICAgICAg
-ICAgIFVQIFBPSU5UT1BPSU5UIFJVTk5JTkcgTk9BUlAgTVVMVElDQVNUICBNVFU6MTQ5MiAgTWV0
-cmljOjEKICAgICAgICAgICBSWCBwYWNrZXRzOjE2IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVu
-czowIGZyYW1lOjAKICAgICAgICAgICBUWCBwYWNrZXRzOjE1IGVycm9yczowIGRyb3BwZWQ6MCBv
-dmVycnVuczowIGNhcnJpZXI6MAogICAgICAgICAgIGNvbGxpc2lvbnM6MCB0eHF1ZXVlbGVuOjMK
-ICAgICAgICAgICBSWCBieXRlczo5MzQgKDkzNC4wIGIpICBUWCBieXRlczo2NjQgKDY2NC4wIGIp
-CgphbmQgaXB0YWJsZXMgc2F5czoKCmZyaWdvcmlmZXJvIHJvb3QgIyBpcHRhYmxlcyAtaAppcHRh
-YmxlcyB2MS4yLjdhCgpNeSBQUFAgbGluayBpcyBhIERTTCBsaW5lLCBJIHVzZSBycC1wcHBvZSBh
-bmQgSSB1cCBpdCB1c2luZyBhZHNsLXN0YXJ0LgpBbGwgbW9kdWxlcyBmb3IgaXB0YWJsZXMgbG9h
-ZCBmaW5lLiBJIGFsc28gdHJpZWQgdGhlIGlwdGFibGVzIGNvbW1hbnRkIAp3aXRoIGV0aDEgYXMg
-YSBwYXJhbWV0ZXIuIFNhbWUgcmVzdWx0LiBIYXZlbid0IGJlZW4gYWJsZSB0byBmaW5kIGFueSAK
-YW5zd2VyIGFueXdoZXJlIGluIHRoZSBkb2NzIG9yIGxpc3QgYXJjaGl2ZXMgc28gcGxlYXNlLi4u
-aGVlZWVscC4KCkNhbiBhbnlvbmUgdGVsbCBtZSB3aGF0IGFtIEkgZG9pbmcgd3Jvbmc/ClRoYW5r
-cywKVi4tCgoKCi0tCmh0dHA6Ly93d3cuZnJlZW1haWwuZ3IgLSDk+fHl3O0g9fDn8eXz3+Eg5+vl
-6vTx7+3p6u/9IPTh9/Xk8e/s5d/v9S4KCg==
+Le jeu 10/04/2003 =E0 19:53, Rahul Jadhav a =E9crit :
+> I have been following your messages for a  while now and I tried the '!=
+=20
+> --syn' and '--state NEW, RELATED' rule without much success. I am tryin=
+g=20
+> to completely block the nmap -P0 and -PS probes.
+
+man nmap :
+[...]
+       -P0    Do not try and ping hosts at all before scanning
+	      them. This allows the scanning of networks that don't
+	      allow ICMP echo requests (or responses) through their
+	      firewall. microsoft.com is an example of such a network,
+	      and thus you should always use -P0 or -PT80 when
+	      portscanning microsoft.com.
+[...]
+       -PS    This option uses SYN (connection request) packets instead
+	      of ACK packets for root users.  Hosts that are up should
+	      respond with a RST (or, rarely, a SYN|ACK). You can set
+	      the destination ports in the same manner as -PT above.
+[...]
+
+-PT is a TCP scan using ACK.
+
+So, there's nothing to do to avoid a scan using -P0 for it does not
+probe before scanning. You have to concentrate on detecting the scan
+itself, using POM psd match or any userland tool that achieve this, and
+then block it before its end.
+
+It is about the same for -PS. You are able to block -PT scans blocking
+NEW TCP packets that would not be SYN ones, but as -PS uses a SYN
+packet, it uses a valid packet that is to be answered. So, if you're
+probed against an opened port, you can't do anything, and as for -P0,
+you have to concentrate on port scan itself.
+
+Imho, port scanning blocking is a very tough feature to implement, as
+there is a lot scanning technics, with various parameters such as
+timing, multiple sources usage, decoys, etc. I prefer concentrate on a
+good filtering ruleset, and let others scan. They will discover what
+services they're allowed to access ;)
+
+> And, also someone please write back rules to block port scans (do I HAV=
+E=20
+> to block ICMP completely for that?).
+
+Netfilter's conntrack achieves ICMP errors handling very well.. When an
+ICMP error is recieved, it is labeled RELATED if conntrack can associate
+it to an existing IP flow. If not, it's RELATED. So, you can safely drop
+all ICMPs that are not RELATED (INVALID packets should be droped
+anyway).
+
+ICMP echos, timestamp, netmask and info are treated with NEW/ESTABLISH
+states, as they implies requests and responses. It is harmless to drop
+them all.
+
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+
