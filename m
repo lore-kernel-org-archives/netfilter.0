@@ -1,12 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Broken fwmark
-Date: Mon, 3 Jun 2002 12:22:21 +0200 (CEST)
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: Re: PLs HELP !
+Date: Mon, 03 Jun 2002 17:09:20 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206031218260.4553-100000@blackhole.kfki.hu>
-References: <Pine.LNX.4.33.0206022311320.10014-100000@shaun.sheddy.net>
+Message-ID: <3CFB5568.8010907@inbox.lv>
+References: <Pine.LNX.4.33.0206031029580.4553-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.33.0206022311320.10014-100000@shaun.sheddy.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,41 +16,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Steve <steve@sheddy.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.samba.org
 
-Hi,
+ys i complied kernel 2.4.18 on rh 7.2  & was downloaded from the site !
 
-On Sun, 2 Jun 2002, Steve wrote:
-
-> I've had watermark routing working fine for sometime. However, recently it
-> has stopped working and I'm not having much luck getting it to function
-> again. The machine has gone through several kernel revisions and has had
-> an additional network card fitted (PCNet32 based) and I'm not exactly sure
-> when fwmark ceased to work.
-
-Actually, I'm surprised that at some time it worked.
-
-According to the manpage:
-
-   MARK
-       This  is  used  to set the netfilter mark value associated
-       with the packet.  It is only valid in  the  mangle  table.
-            ^^^^^^^^^^
-You don't mark the reply packet as well by marking a packet, even if the
-reply packet is generated on the machine itself.
-
-What you want to achieve can be done by using Henrik Nordstrom's CONNMARK
-patch from patch-o-matic.
-
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-WWW-Home: http://www.kfki.hu/~kadlec
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Jozsef Kadlecsik wrote:
+> On Fri, 31 May 2002, Arindam Haldar wrote:
+> 
+>>i am getting these messages in my /var/log/messages..
+>>can someone tell me whats hapenning here..
+>>iptables v1.2.7-2--2-423 with  kernel 2.4.18 & patched htb3.3-020512 &
+>>imq-2.4.18...
+>>May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840
+>>&ip_conntrack_lock not readlocked
+> 
+> The connection tracking part of netfilter does not fuction properly on
+> your system. Is it a vanilla 2.4.18 or shipped by some vendor?
+> 
+> Regards,
+> Jozsef
 
 
