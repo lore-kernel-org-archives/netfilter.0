@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: nat hangs the system
-Date: Tue, 17 Sep 2002 22:22:55 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: h323-conntrack-nat.patch problem
+Date: Tue, 17 Sep 2002 23:47:58 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020917212257.DXQJ287.mta02-svc.ntlworld.com@there>
-References: <3D877A87.701@ecn.purdue.edu>
+Message-ID: <Pine.LNX.4.33.0209172346530.16587-100000@blackhole.kfki.hu>
+References: <DGEFLNBBHJDEGJNHJIEMGEELCEAA.ludovic.ducros@isep.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D877A87.701@ecn.purdue.edu>
+In-Reply-To: <DGEFLNBBHJDEGJNHJIEMGEELCEAA.ludovic.ducros@isep.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ludovic Ducros <ludovic.ducros@isep.fr>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 17 September 2002 7:55 pm, Chris Gniady wrote:
+On Tue, 17 Sep 2002, Ludovic Ducros wrote:
 
-> Hello,
+> 1 - I untar the linux kernel sources 2.4.18 in /usr/src/linux-2.4.18
+> 2 - I did the same with iptables-1.2.7a.
+> 3 - In the directory patch-o-matic, I ran './runme extra' to patch with
+> h323-conntrack-nat.patch
+>     Here is the result :
 
-> I am trying to setup iptables in linux 2.3.99
+The h323 patch depends on the corresponding newnat patch. You must apply
+first that.
 
-Why are you running a development kernel ?
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
-> When I try to load the nat module it hangs my system. I am not setting any
-> rules at this point simply loading a module.
-
-Can you reproduce the same situation with a stable kernel version ?
-
-Antony.
-
--- 
-
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
 
