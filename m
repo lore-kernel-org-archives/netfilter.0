@@ -1,11 +1,12 @@
-From: Stephen Jones <hivemynd@hivemynd.net>
-Subject: pom-ng-20040621 - pptp conntrack patch missing argument
-Date: Mon, 23 Aug 2004 12:08:50 -0500
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: FORWARD-ed packet doens't reach POSTROUTING
+Date: Mon, 23 Aug 2004 14:20:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <412A24A2.6010700@hivemynd.net>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512B8@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,66 +16,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Fred Gansevles <fred@gansevles.defamilie.nl>, netfilter@lists.netfilter.org
 
-Hello Harald and netfilter-list!
+> Hello,
+>
+> First: I'm not subscribed to this list so please make sure that any =
+reply is
+> also sent to: fred@gansevles.defamilie.nl
+>
+> I have a weird problem trying to setup multiple routes on my NAT-box
+>
+> I have the following setup:
+>
+>  <local network>  <NAT-box>
+>  [192.168.0.0/24]  eth0: 192.168.0.1
+>      eth1: <adsl.static.ip>
+>      tunl1: <tunnel to remote NAT-box via eth1>
+>
+> The remote NAT-box can reach a special subnet which I want to connect =
+to.
+> The special subnet is also reachable thru eth1, but I want the =
+packages that
+> reach the special subnet to be NAT-ted by the remote NAT-box
+>
+> On my NAT-box I add the following route:
+>
+>  ip route add <special.sub.net> dev tunl1
+>
+> the relevant iptables rules are:
+>  iptables -t nat -A POSTROUTING -s 192.168.0.0/255.255.255.0 -o eth1 \
+>   -j SNAT --to-source <adsl.static.ip>
+>  iptables -t nat -A POSTROUTING -o tunl1 \
+>   -j SNAT --to-source <adsl.static.ip>
 
-I have been using iptables 1.2.9 with the pptp/gre conntrack modules 
-with a 2.4.26 kernel with great success for several months.  I would 
-like to thank you for your hard work in providing support for pptp 
-connection tracking through linux NAT'ing firewalls!  It is a great 
-service!
+also of relevance would be your actual FORWARD rules.  as in--provide =
+the output of "iptables -vnL FORWARD"
 
-With the release of 2.4.27, I thought I would update my iptables to the 
-current 1.2.11 release and patch-o-matic-ng-20040621 along with the 
-kernel.  I was in the process of patching and recompiling the kernel 
-when I ran across this problem:
- 
-The complier complains about the missing arguments for the call to 
-ip_nat_used_tuple from gre_unique_tuple, in line 108 of the 
-ip_nat_proto_gre.c source:
- 
-The gre_unique_tuple method, line 108 in the ip_nat_proto_gre.c file 
-reads like this:
+> All messages originating from my NAT-box for the special subnet are =
+routed
+> through tunl1 and SNAT-ted by the second iptables rule
+>
+> All messages originating from my local subnet for the special subnet =
+are
+> routed through tunl1 and *NOT* SNAT-ted by the second iptables rule =
+(the
+> packages never reach the POSTROUTING chain)
+>
+> If I remove the special subnet route with:
+>
+>  ip route del <special.sub.net> dev tunl1
+>
+> then all messages originating from my local subnet for the special =
+subnet are
+> routed through eth1 and SNAT-ted by the first iptables rule
 
-if (!ip_nat_used_tuple(tuple, conntrack))
+something tells me that your FORWARD rules are specifying some =
+combination of "-s 192.168.0.0/24" and "-o eth1"
 
-The definition of ip_nat_used_tuple from the ip_nat.h file reads like this:
+if the packets are getting dropped in the FORWARD chain of the filter =
+table; then no, they will never make it to the POSTROUTING chain of the =
+nat table.
 
-/* Is this tuple already taken? (not by us)*/
-extern int ip_nat_used_tuple(const struct ip_conntrack_tuple *tuple,
-                const struct ip_conntrack *ignored_conntrack,
-                const enum ip_nat_manip_type maniptype,
-                const unsigned int flags);
+> All messages originating from my NAT-box for the special subnet are =
+directely
+> routed through eth1 and *NOT* SNAT-ted (no matching rule for
+> SRC=3D<adsl.static.ip>)
+>
+> Summarizing: When I want to reach the special subnet using the remote =
+NAT-box
+> I can only do this *ON* the NAT-box and all machines in my local =
+subnet cat
+> *NOT REACH THE special subnet AT ALL*
 
-I am no code monster, but a quick glance at the source made me think 
-that perhaps the line 108 in the ip_nat_proto_gre.c could read:
+the filter rules controlling packets from the NAT box itself are the =
+OUTPUT rules; while the filter rules controlling the packets from your =
+local subnet are FORWARD rules...something tells me there's a key =
+difference between those sets of rules.  without posting your rules; it =
+is very difficult to tell you what is wrong.  if you feel so inclined; =
+provide the output of:  iptables -vnL && iptables -t nat -vnL && =
+iptables -t mangle -vnL
 
-if (!ip_nat_used_tuple(tuple, conntrack, maniptype, flags))
-
-The problem is, I don't know what the proper values to send in for the 
-"flags" argument should be, and the "maniptype" argument is a guess 
-based off of what is passed into the parent gre_unique_tuple function:
-
-/* generate unique tuple ... */
-static int
-gre_unique_tuple(struct ip_conntrack_tuple *tuple,
-        const struct ip_nat_range *range,
-        enum ip_nat_manip_type maniptype,
-        const struct ip_conntrack *conntrack)
-
-I have been scanning the mailing lists looking to see if someone posted 
-a solution to this yet, but I have not run across a solution so far.
-A nudge in the right direction would be most helpful!  And thanks again 
-for your outstanding work!
-
-Best regards,
-
-Stephen
-
-
-
-
-
+-j
 
