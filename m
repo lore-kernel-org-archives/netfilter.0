@@ -1,48 +1,40 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: [Users] ipsec auto problem
-Date: Fri, 9 Jul 2004 14:59:09 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407091459.09571.gdh@acentral.co.uk>
-References: <289377461.12932@nwpu.edu.cn>
+From: Petr Silhavy <silhavy@mef.cz>
+Subject: [Openswan Users] 
+	Re: Dead loop on netdevice ipsec0, fix it urgently!
+Date: Fri, 09 Jul 2004 16:21:49 +0200
+Sender: users-bounces@lists.openswan.org
+Message-ID: <658x2rcy.fsf@chaos.mef.cz>
+References: <40EE7E15.70204@epost.de>
+Reply-To: Discussion list for Openswan users <users@lists.openswan.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <289377461.12932@nwpu.edu.cn>
-Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <users-bounces@lists.openswan.org>
+In-Reply-To: <40EE7E15.70204@epost.de> (
+ =?iso-8859-1?q?Nicole_H=E4hnel's_message_of?= "Fri, 09 Jul 2004 13:14:29
+ +0200")
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <http://lists.openswan.org/mailman/listinfo/users>,
+	<mailto:users-request@lists.openswan.org?subject=unsubscribe>
+List-Archive: <http://lists.openswan.org/pipermail/users>
+List-Post: <mailto:users@lists.openswan.org>
+List-Help: <mailto:users-request@lists.openswan.org?subject=help>
+List-Subscribe: <http://lists.openswan.org/mailman/listinfo/users>,
+	<mailto:users-request@lists.openswan.org?subject=subscribe>
+Errors-To: users-bounces@lists.openswan.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: =?iso-8859-1?q?Nicole_H=E4hnel?= <nicole.haehnel@epost.de>
+Cc: users@lists.openswan.org, netfilter@lists.netfilter.org
 
-On Friday 09 July 2004 13:51, =C2=DE=BB=DB=C3=F4 wrote:
-> In my "ipsec.conf",there exists one connection:
+Nicole H=E4hnel <nicole.haehnel@epost.de> writes:
+
+> Hi,
 >
-> conn test
->     left=3D202.117.83.1
->     right=3D202.117.83.2
->     authby=3Dsecret
->     reykey=3Dyes
+> I get this error on my firewall-vpn-server
 >
-> To load the connection by using "ipsec auto --add test",what is the defau=
-lt
-> arithmetic of the connction?
+> Dead loop on netdevice ipsec0, fix it urgently!
 >
-> How do i add esp=3D3des-md5 in "ipsec.conf"?
-> Thanks!
-
-
-http://www.freeswan.org/freeswan_trees/freeswan-2.06/doc/HowTo.html suggests
-
-esp=3D3des-md5-96
-
-Simply put it as another config line underneath "conn test"
-
-gdh
-
+>
+> Any ideas where this come from?
+I got this cryptic message when I modified ESP packet in mangle table.
+Rule like "iptables -t mangle -A OUTPUT -p 50 -j TOS --set-tos 0x10"
+is able to make klips (1.99.x) mad.
