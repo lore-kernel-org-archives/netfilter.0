@@ -1,13 +1,15 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: SNAT: I'm going insane
-Date: Sat, 31 Jan 2004 20:37:26 +0100
+Subject: Re: SNAT: I'm going insane
+Date: Sat, 31 Jan 2004 22:06:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075577846.2506.10.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <1075583166.2360.9.camel@anduril.intranet.cartel-securite.net>
 References: <739652C2AFA4834AAB5986A215F68CEC01656E@svr1.home.compsup.net>
+	 <1075577846.2506.10.camel@anduril.intranet.cartel-securite.net>
+	 <401C05E1.5030204@palaver.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <739652C2AFA4834AAB5986A215F68CEC01656E@svr1.home.compsup.net>
+In-Reply-To: <401C05E1.5030204@palaver.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +20,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Carl Farrington <carl@compsup.net>
+To: Brian Capouch <brianc@palaver.net>
 Cc: netfilter@lists.netfilter.org
 
-Le sam 31/01/2004 =E0 20:22, Carl Farrington a =E9crit :
-> Guess I should read up on netfilter quite a bit more. So the state tabl=
-e
-> is an automagic thing that re-writes the return packets.. thanks.
+Le sam 31/01/2004 =E0 20:45, Brian Capouch a =E9crit :
+> How do you see those connections?  "iptables -t nat -n -L -v" doesn't=20
+> show them.
 
-Yes, because deNAT is handle through conntrack, prior to anything else.
-Netfilter's NAT is very bound to conntrack as you can see. That's why
-unNATing rules are not necessary.
+You can't, there's no "ipchains -L -m" equivalent for Netfilter. You can
+have a direct look at the conntrack table :
 
-Moreover, once a packet has been NATed, no other packet belonging to
-this very connection will go through nat table. Which means you only see
-the very first packet of each connection in nat table.
+	cat /proc/net/ip_conntrack
+
+You can also use netstat-nat tool that is available at :
+
+	http://tweegy.demon.nl/projects/netstat-nat/index.html
+
+
+PS : I put a Cc back to the list as this answer may interest someone ;)
 
 --=20
 http://www.netexit.com/~sid/
