@@ -1,11 +1,11 @@
 From: "Alex Samad" <Alex@Samad.com.au>
-Subject: RE: Is this possible?
-Date: Tue, 15 Feb 2005 15:25:38 +1100
-Message-ID: <778233409EC.AAA7324@weasel.optus.com.au>
-References: <MPG.1c7aa1bb6cf712669896c1@localhost>
+Subject: RE: Question about POM
+Date: Tue, 15 Feb 2005 15:28:03 +1100
+Message-ID: <77823340AF4.AAA7430@weasel.optus.com.au>
+References: <cuo6t4$q0h$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <MPG.1c7aa1bb6cf712669896c1@localhost>
+In-Reply-To: <cuo6t4$q0h$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Andrew Schulman' <andrex@alumni.utexas.net>, netfilter@lists.netfilter.org
+To: 'Simon Turvey' <simon@catandsimon.com>, netfilter@lists.netfilter.org
 
-If your firewall is using a proxy to allow this access, most default to
-allow 563 nntps as well, run your ssh server on that port
+Have a look at the info files it will tell what it is supposed to be applied
+to.  The thing to remember is that some of the patches have been applied to
+the kernel directly and don't need to be applied
 
-Alex
+A
 
 -----Original Message-----
 From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Andrew Schulman
-Sent: Tuesday, 15 February 2005 3:54 AM
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Simon Turvey
+Sent: Monday, 14 February 2005 5:42 AM
 To: netfilter@lists.netfilter.org
-Subject: Re: Is this possible?
+Subject: Question about POM
 
-> I have a issue where I cannot connect to my server because the 
-firewall 
-> only allows ports 80 and 443 out.
-> 
-> I previously ran SSH on port 443 to overcome this, but I have had to 
-> implement a HTTPS solution for users who wanted secure access, so that 
-> is now gone.
-> 
-> This system has DNS records for ssh.server.co.uk and www.server.co.uk, 
-> so can I use IPTables or similar to recognise if it is being connected 
-> to via ssh.server.co.uk on port 443 and forward the traffic to port 22? 
-> If www.server.co.uk:443 is used apache gets the traffic? Or is this (As 
-> I suspect) Impossible?
+Hi all,
 
-I don't think that's possible, because the address resolution happens on 
-the client side.  Both names are resolved to your one IP address before 
-you ever see any packets.
+Are the POM patches only supposed to apply to a particular 2.4.x or 
+2.6.x?  The reason I ask is that the ipsec* patches don't seem to apply 
+cleanly to my 2.6.10 tree.
 
-One option would be to get a second IP address.  Another would be to get 
-the client admins to open an outgoing port in their firewall, as Jose 
-suggests.
+Thanks,
 
-A third possibility would be to direct both sets of traffic to port 443, 
-and use application-level filtering to distinguish them.  See for 
-example 
-http://l7-filter.sourceforge.net/.  I see that they have a pattern for 
-recognizing SSH, that's supposed to work well.  They don't have one for 
-HTTPS, but you could either assume that as the default for non-SSH 
-traffic, or maybe write your own pattern.
-
-Good luck,
-Andrew.
+Simon
 
 
 
