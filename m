@@ -1,101 +1,49 @@
-From: mourik jan c heupink <heupink@intech.unu.edu>
-Subject: RE: Firewall Question
-Date: 02 Oct 2002 09:38:23 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033544303.1179.5.camel@suse8>
-References: <FLEKIPPLAEDMJMOOBBDPCENHDAAA.stewart.thompson@shaw.ca>
+From: "Robert K. Johnson" <johnson60@llnl.gov>
+Subject: problems with MAC filtering of fragmented packets
+Date: Mon, 30 Sep 2002 11:55:59 -0700
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <5.1.0.14.2.20020930114233.0209be00@poptop.llnl.gov>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FLEKIPPLAEDMJMOOBBDPCENHDAAA.stewart.thompson@shaw.ca>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-I agree. I have just setup my first iptables firewall, and it's really
-not as difficult as it might seem.
+I have an embedded computer platform running Linux 2.4.3 and iptables
+userland tools 1.2.4.  MAC address filtering does not appear to work for
+fragmented packets.  Non-fragmented packets work fine.  Please let me
+know if there is a minimum kernel version and iptables version that performs
+MAC address filtering correctly for fragmented packets.
 
-I also doubted wether to use a special firewall program, or do it
-myself. I eventually did it myself. The program I *would* have used
-otherwise is shorewall. (http://www.shorewall.net)
-
-Hope this helps.
-
-Mourik Jan
-
-On Wed, 2002-10-02 at 09:27, Stewart Thompson wrote:
-> Hi:
-> 
-> 	I wasn't the original poster. I was just replying to Bishop.
-> 
-> Stu........
-> 
-> 
-> -----Original Message-----
-> From: mourik jan c heupink [mailto:heupink@intech.unu.edu]
-> Sent: October 2, 2002 12:21 AM
-> To: stewart.thompson@shaw.ca
-> Subject: RE: Firewall Question
-> 
-> I agree. I have just setup my first iptables firewall, and it's really
-> not as difficult as it might seem.
-> 
-> I also doubted wether to use a special firewall program, or do it
-> myself. I eventually did it myself. The program I *would* have used
-> otherwise is shorewall. (http://www.shorewall.net)
-> 
-> Hope this helps.
-> 
-> Mourik Jan
-> 
-> On Wed, 2002-10-02 at 03:26, Stewart Thompson wrote:
-> > HI Luis:
-> >
-> >       I prefer to write a script by hand using the CLI.
-> > Most modern Linux distributions include Iptables/Netfilter.
-> > You can also control when it starts up, and include other
-> > things in it like Stunnel set up, conditional rules etc. I
-> > have not used any of the firewall front ends, but a GUI is
-> > probably easier if you are new. The trouble I have is the
-> > rules are hidden behind the GUI interface. There are lots
-> > of good sample scripts on the net that you can modify for
-> > your purposes. Plus, you will get a much more interment
-> > knowledge of Iptables. Just my two cents worth.
-> >
-> > Stu.........
-> >
-> >
-> >
-> >
-> > -----Original Message-----
-> > From: netfilter-admin@lists.netfilter.org
-> > [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Bishop
-> > Sent: October 1, 2002 5:04 PM
-> > To: stewart.thompson@shaw.ca; HareRam; netfilter@lists.netfilter.org
-> > Subject: Firewall Question
-> >
-> > Hello all,
-> >
-> >         I have  a question for you guys. I will installing a firewall on
-> my
-> > linux box soon. My question is would it be better for me to download a
-> > firewall software off then net , or should I build my own firewall from
-> > scratch. Let me know what you guys think, and which one would be better.
-> >
-> >
-> > Thank you all
-> >
-> > --Luis
-> >
-> 
-
+I have a wireless networking application.  I would like to first block all 
+packets
+except those with known MAC addresses.  I will then perform additional 
+filtering
+based on protocols, ip addresses, etc.  In other words, MAC address 
+verification
+is an initial check.  I created a user chain that I jump to immediately 
+from both
+the INPUT and FORWARD chains.  This user chain performs a RETURN jump
+for matches with known MAC's and DROPs all others.  I created a user chain
+for dropped packets to perform logging.  Using a commercial packet sniffer, 
+I can
+see that fragmented packets are not passing the MAC check when they should.
+The resulting LOG shows an empty MAC address field.  I have seen old entries
+in the mailing list archives that indicate MAC address matching does not 
+work for
+fragmented packets.  I was hoping that this problem was resolved since then.
+I would like to know the oldest kernel and iptables version that works 
+correctly.
+I am limited on moving to the latest kernel and iptables because the embedded
+platform requires special Linux drivers that I do not have source access for.
 
 
