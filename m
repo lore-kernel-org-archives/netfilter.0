@@ -1,13 +1,10 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: PPTP
-Date: Wed, 9 Oct 2002 20:51:41 +0200
+From: Chris Len <sniper@apu.edu>
+Subject: doing NAT on udp broadcast traffic (for LAN tcp/ip gaming)
+Date: Wed, 9 Oct 2002 11:49:10 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608F615F70@w2ks-e2k.iconos.be>
+Message-ID: <Pine.LNX.4.44.0210091128000.4531-100000@home.apu.edu>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C26FC4.E7D57FAE"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,112 +14,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Rickard Eriksson <riceri@home.se>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+I'm trying to create a psuedo-bridge between wireless and ethernet 
+interface. All works well, except detection of lan game servers. These 
+clients send out a global udp broadcast (255.255.255.255) to the game 
+server's dst port, and the server replies. Currently however, I cannot nat 
+this traffic.  
 
-------_=_NextPart_001_01C26FC4.E7D57FAE
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Is there any way to make this work? 
 
-Rickard Eriksson [mailto:riceri@home.se] wrote:
->
->The z-newnet patch? I can't install that patch.
->
->BTW, this is the first time i am patching a kernel.
->
+eth0 is a 802.11b if at 172.16.0.101/16
+eth1 is an ethernet interface at 192.168.0.101/24
 
-Hi Rickard,
+#/sbin/iptables -t nat -A PREROUTING -i eth1 --protocol udp -d 
+255.255.255.255 --dport 6111 -j DNAT --to 172.16.255.255
+#/sbin/iptables -t nat -A PREROUTING -i eth0 --protocol udp -d 
+255.255.255.255 --dport 6111 -j DNAT --to 192.168.0.255
 
-What kernel version are you working from ?=20
-Basically, newnat is a new API for writing connection tracking/nat
-modules.
+When i've tried logging rules to see if the traffic was recognized, the 
+filter and mangle tables could see the traffic, but the nat table could 
+not. 
 
-The patch has been sitting in p-o-m for a long time now, and all the
-modules from recent iptables have been converted to work with newnat
-and don't apply on kernels witout newnat.
+Obviously the appropriate SNAT rules will need to be in place as well to 
+make the traffic appear as if it is from the same subnet.
 
-Newnat has been included in the early 2.4.20-pre kernels, so from=20
-2.4.20 (or the -pre releases if you don't mind running these) onwards,
-there will be no need to patch the kernel with newnat support anymore
-before adding conntrackers.
+I'd be open to one of three solutions (in order of prefererence):
 
-Now, if you're working from a pre-2.4.20 kernel, you need to download
-iptables or check out CVS, then from the patch-o-matic directory
-run "./runme *" and apply the newnat patch before trying any=20
-conntrackers. That sould do the trick. You may need to apply some
-additional stuff. IIRC, the pptp patch also needs an "unregister"
-fix of some kind that's probably in p-o-m/pending or /submitted.
+1) Get this working using iptables/netfilter in its native state
+2) use the ipt_ULOG module to redirect this traffic to userspace, have a 
+program listening on the appropriate netlink sockets, mangle the 
+src/dst addresses, and resend
+3) Get a group and help hack netfilter to support NAT of broadcast 
+traffic (if not currently supported)
 
-Good luck,
-Filip
+I appreciate any help that can be offered :)
 
+-Chris Len
+sniper@apu.edu
+Student Systems Manager
+Information & Media Technology
+Azusa Pacific University
 
-
-
-
-------_=_NextPart_001_01C26FC4.E7D57FAE
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: PPTP</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Rickard Eriksson [<A =
-HREF=3D"mailto:riceri@home.se">mailto:riceri@home.se</A>] wrote:<BR>
-&gt;<BR>
-&gt;The z-newnet patch? I can't install that patch.<BR>
-&gt;<BR>
-&gt;BTW, this is the first time i am patching a kernel.<BR>
-&gt;<BR>
-<BR>
-Hi Rickard,<BR>
-<BR>
-What kernel version are you working from ?<BR>
-Basically, newnat is a new API for writing connection tracking/nat<BR>
-modules.<BR>
-<BR>
-The patch has been sitting in p-o-m for a long time now, and all the<BR>
-modules from recent iptables have been converted to work with newnat<BR>
-and don't apply on kernels witout newnat.<BR>
-<BR>
-Newnat has been included in the early 2.4.20-pre kernels, so from<BR>
-2.4.20 (or the -pre releases if you don't mind running these) =
-onwards,<BR>
-there will be no need to patch the kernel with newnat support =
-anymore<BR>
-before adding conntrackers.<BR>
-<BR>
-Now, if you're working from a pre-2.4.20 kernel, you need to =
-download<BR>
-iptables or check out CVS, then from the patch-o-matic directory<BR>
-run &quot;./runme *&quot; and apply the newnat patch before trying =
-any<BR>
-conntrackers. That sould do the trick. You may need to apply some<BR>
-additional stuff. IIRC, the pptp patch also needs an =
-&quot;unregister&quot;<BR>
-fix of some kind that's probably in p-o-m/pending or /submitted.<BR>
-<BR>
-Good luck,<BR>
-Filip<BR>
-<BR>
-<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C26FC4.E7D57FAE--
 
