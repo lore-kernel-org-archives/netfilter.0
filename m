@@ -1,12 +1,17 @@
-From: ypresente@mrv.com (Yaron Presente)
-Subject: Re: RTSP netfilter patch for 2.4.18
-Date: Wed, 29 Sep 2004 09:15:56 +0200
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: Fw: Hi,
+	could you please tell me the difference between ipt_eco.c and
+	ipt_ECN.c?
+Date: Wed, 29 Sep 2004 10:06:18 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <415A612C.2030205@mrv.com>
-References: <20040928235104.GA21363@home.tig-grr.com>
+Message-ID: <20040929080618.GF31674@sunbeam.de.gnumonks.org>
+References: <BAY22-DAV9tr5XsCj1d000243f2@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6v9BRtpmy+umdQlo"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <BAY22-DAV9tr5XsCj1d000243f2@hotmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,50 +21,71 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tom Marshall <tommy@home.tig-grr.com>
-Cc: netfilter@lists.netfilter.org
+To: T Lu <tlu@hotmail.com>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
+--6v9BRtpmy+umdQlo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tom Marshall wrote:
+On Wed, Sep 29, 2004 at 03:29:41PM +0800, T Lu wrote:
+>=20
+> ----- Original Message -----=20
+> From: T Lu=20
+> To: davej@codemonkey.org.uk=20
+> Sent: Wednesday, September 29, 2004 3:25 PM
+> Subject: Hi, could you please tell me the difference between ipt_eco.c an=
+d ipt_ECN.c?
+>=20
+>=20
+> Hi,
+>=20
+> I'm a newbie to linux, I'm compiling linux-2.6.8.1 on my Dell Latitude X3=
+00 notebook, carefully according to the README_26.txt. It breaks at the mak=
+e modules step, gives out this message,
+>=20
+> "make[3]: *** No rule to make target `net/ipv4/netfilter/ipt_ecn.c', need=
+ed by `net/ipv4/netfilter/ipt_ecn.o'.  Stop.
+> make[2]: *** [net/ipv4/netfilter] Error 2
+> make[1]: *** [net/ipv4] Error 2
+> make: *** [net] Error 2
+> "
+>=20
+> As I cannot find ipt_eco.c in the source code tree, can I safely copy
+> ipt_ECN.c to ipt_eco.c to avoid this error? Could you please help me
+> out through this? Thanks a lot!
 
->On Tue, Sep 28, 2004 at 07:33:33PM +0200, Yaron Presente wrote:
->  
->
->>Hi All,
->>Is anyone aware of a RTSP netfilter patch which is suitable for a 2.4.18 
->>kernel (I could only find a patch for 2.4.21).
->>If no such patch already exists, should there be any significant problem 
->>to adapt the 2.4.21 patch to 2.4.18?
->>    
->>
->
->Does the patch apply cleanly?  If it does, it should work okay.
->  
->
-No, unfortunately it doesn't. I had a problem with the modifications in 
-netfilter_ipv4/ip_conntrack.h .
-The patch tries to insert exp_rtsp_info and ct_rtsp_info into the union 
-ip_conntrack_expect_help,
-which does not exist in my 2.4.18 source.
-Looking at the ftp 2.4.18 patch as a reference, I see that a ct_ftp_info 
-does exist, but in a different context in the header file.
-an exp_ftp_info structure, however, is not defined at all.
-Any ideas?
+ipt_ecn.c is definitely included in the stock 2.6.8.1 kernel.  You must
+have deleted it somehow accidentially. (net/ipv4/netfilter/ipt_ecn.c)
 
->  
->
--- 
-Yaron Presente
-MRV International
-Direct   : 972-4-9936237
-Fax      : 972-4-9890564
-Email   : ypresente@mrv.com
-www.mrv.com
+ipt_ECN is totally different (it's a target, not a match).
 
+> Regards,
+> Tim
 
+--=20
+- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+Programming is like sex: One mistake and you have to support it your lifeti=
+me
 
+--6v9BRtpmy+umdQlo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
+iD8DBQFBWmz6XaXGVTD0i/8RAmfmAJ9aY8KcJKb3dDTMeXGiDiWS6D576wCeL/n3
+By2jOYfcGjK5OTRr2Lpis+I=
+=hZIe
+-----END PGP SIGNATURE-----
+
+--6v9BRtpmy+umdQlo--
 
