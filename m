@@ -1,8 +1,8 @@
-From: Andero Belov <belvo@ut.ee>
+From: Andero Belov <belov@ut.ee>
 Subject: IPv6 conntrack
-Date: Wed, 4 Feb 2004 16:25:39 +0200
+Date: Wed, 4 Feb 2004 16:33:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402041625.39992.belvo@ut.ee>
+Message-ID: <200402041633.31714.belov@ut.ee>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
