@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Block/Accept by MAC Address
-Date: Mon, 30 Sep 2002 22:24:30 -0400
+From: "HareRam" <hareram@sol.net.in>
+Subject: transfer Bytes Counting
+Date: Tue, 1 Oct 2002 10:41:35 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209302224.30664.netfilter@newkirk.us>
-References: <003a01c268ea$d98408a0$e951ea43@W2RZ8L4S02>
-Reply-To: netfilter@newkirk.us
+Message-ID: <007301c26909$036ea440$7cfcc5cb@humanpc>
+References: <200209272021.g8RKLYu11395@mklab.ph.rhbnc.ac.uk>
+Reply-To: "HareRam" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003a01c268ea$d98408a0$e951ea43@W2RZ8L4S02>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,34 +20,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 30 September 2002 09:33 pm, Jim Gifford wrote:
-> Is it possible to block or accept information from specific MAC Address=
-es.
->
-> Here is what I would like to do. Is to create a exempt and complete blo=
-ck
-> policy by mac address. I have a guy who keeps hacking my machine and hi=
-s IP
-> address is always changing and so does his hostname. The only thing tha=
-t
-> was common was his MAC address.
->
-> Thank you in advance for your help.
+Hi all
 
-For the preparation- and research-impaired, read the oft-referenced tutor=
-ial at:
-http://www.netfilter.org/documentation/tutorials/blueflux/iptables-tutori=
-al.html
+iam using IPtables since long
+now i have new requirement in my network
+i sould like to count tranfer bytes In/Out for individual IP or MAC address
+could any give me small examples, how can i do this rather i achive this
 
-especially section 5.4.3.1 about the "iptables -A INPUT -m mac --mac-sour=
-ce 00:00:00:00:00:01" usage... (for
-the keyboard impaired, try http://www.netfilter.org/documentation/tutoria=
-ls/blueflux/iptables-tutorial.html#AEN1864 )
+thanks in advance
 
-Or any of at least a dozen other places I could think of offhand. For the=
- search-impaired:
-http://www.google.com/linux?hl=3Den&lr=3D&ie=3DISO-8859-1&q=3Diptables+ma=
-c&num=3D100
+hare
 
-j
 
