@@ -1,15 +1,13 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: Routing problem...
-Date: Tue, 27 Jul 2004 09:42:51 +0200
+From: "Danila Octavian" <octavian@service.agress.ro>
+Subject: Re: Hostname with DNAT  ? {OK}
+Date: Tue, 27 Jul 2004 10:54:33 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040727074251.GA23024@zion.homelinux.com>
-References: <20040727072329.GV20473@freenet.de>
+Message-ID: <007101c473af$108ddc60$da0da8c0@pisic>
+References: <D5C9032B2B09C64EA2409D6214E91AC90511F6@asimail2.alphanumeric.com>
+Reply-To: "Danila Octavian" <octavian@service.agress.ro>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040727072329.GV20473@freenet.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,59 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Michelle Konzack <linux4michelle@freenet.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <Jopperisano@alphanumeric.com>, netfilter@lists.netfilter.org
+
+I'm afraid i was not very explicit ...
+
+I was trying to use strictly names and that's why :
+
+I have only one public IP and 3 diferrent names. Behind the machine i have a
+network with 4 servers which use that names :
 
 
---BXVAT5kNtrzKuDFl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Internet ---> eth0(public ip) eth1(private ip) ---> mail.server1.com
+                                                                   --->
+mail.server2.com
+                                                                   --->
+mail.server3.com
 
+$IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server1.com --dport
+25 -j DNAT --to 192.168.14.254:25
+$IPTABLES -A FORWARD -i eth0 -p tcp -d mail1.server.com --dport 25 -j ACCEPT
 
-Hi Michelle,
+$IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server2.com --dport
+25 -j DNAT --to 192.168.14.251:25
+$IPTABLES -A FORWARD -i eth0 -p tcp -d mail.server2.com --dport 25 -j ACCEPT
 
-On Tue, Jul 27, 2004 at 09:23:29AM +0200, Michelle Konzack told us:
->=20
->  \______________________________________________________________________
->=20
-> But if I execute the script, I get:=20
->=20
-> iptables: No chain/target/match by that name
->=20
+$IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server3.com --dport
+25 -j DNAT --to 192.168.14.253:25
+$IPTABLES -A FORWARD -i eth0 -p tcp -d mail.server3.com --dport 25 -j ACCEPT
 
-at which iptables invocation do you get this error exactly?? Try
-executing the script with "sh -x scriptname" and look where the
-error occurs.
-What kernel version are you using, what version of iptables?
+I realized that iptables uses the resolved IP address but that's exactly
+what i was trying to avoid.
 
+Can that be possible ?
 
-Sven
+Thanks very much in advance,
 
-> Whats wrong ?
-> I have compiled Linux with ALL netfilter modules in.
->=20
-> Greetings
-> Michelle
+Danila Octavian
 
 
 
---=20
-Linux zion 2.6.8-rc2 #1 Sun Jul 18 15:00:48 CEST 2004 i686 athlon i386 GNU/=
-Linux
- 09:40:33  up 8 days, 11:08,  1 user,  load average: 2.14, 2.07, 2.01
+-- 
+This message has been scanned for viruses and
+dangerous content, and is believed to be clean.
+Service.Agress.Ro E-Mail Scanning Service
 
---BXVAT5kNtrzKuDFl
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFBBgd7o4FAdB2PneQRArHkAJwNMpCs3A4NrIex879W26ubItD0EgCeOTK8
-KCvl2Xo0n95jUpZi4ZJz5/I=
-=dr+O
------END PGP SIGNATURE-----
-
---BXVAT5kNtrzKuDFl--
 
