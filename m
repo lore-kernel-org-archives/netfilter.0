@@ -1,13 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: KAZAA
-Date: 02 Jun 2003 08:09:53 +0200
+From: Blesson Paul <blessonpaul@softhome.net>
+Subject: A Good Question about log
+Date: Mon, 02 Jun 2003 11:31:26 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054534192.13177.112.camel@raylinux.internal>
-References: <001301c32747$3b9e57a0$0200000a@workgroup.kev>
+Message-ID: <5.2.0.9.0.20030602112046.00ab36b0@mail.SoftHome.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-jzcrzagqp3puQFXC6fsD"
+Content-Type: multipart/mixed; x-avg-checked=avg-ok-3E9B197A; boundary="=======6AE861E7======="
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001301c32747$3b9e57a0$0200000a@workgroup.kev>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,84 +15,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+--=======6AE861E7=======
+Content-Type: text/plain; x-avg-checked=avg-ok-3E9B197A; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 8bit
+
+hi all
+We are maintaining a Linux Sever as the gateway and we are using IP Tables 
+for Nating and routing. It is working perfectly. Now the question is about 
+the log it is displaying. There are lots of packets from the internet which 
+are get "DROPED". Presently the information in the log contains the src 
+address(address somewhere in the internet), the destination address(always 
+the IP of the Linux Server) , ports etc. I need to know more information 
+about the droped packets. The important information I need to know to which 
+computer in the intranet the src is intended to sent. I also like to know 
+the internal table which contains the NAT information.
+regards
+Blesson Paul
 
 
---=-jzcrzagqp3puQFXC6fsD
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Blesson Paul,
+Software Engineer,
+Integrated Computing Environments Ltd,
+Cochin Special Economic Zone,
+Cochin - 682 030, India.
+Tel: +91-94473 70103(M)
+       +91-484-2413 083(O),  +91-484-2413 096(O)
+       +91-481-2380 893(R)
 
-Hi
 
-Kazaa (at least the latest clients) also try and connect via http to the
-kazaa servers, basically they tunnel the kazaa traffic in http.
+--=======6AE861E7=======
+Content-Type: text/plain; charset=us-ascii; x-avg=cert; x-avg-checked=avg-ok-3E9B197A
+Content-Disposition: inline
 
-So use your proxy to deny access to *.kazaa.com.
 
-Or, use the iptables string match to drop all packets with 'kazaa' in
-them.
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.483 / Virus Database: 279 - Release Date: 5/19/03
 
-Ray
-
-On Sat, 2003-05-31 at 09:35, Kevin Smith wrote:
-> Now I am no expert and this is just a random thought. But if Kazaa looks =
-for
-> other ports to connect, is there a way to send it a fake connect signal s=
-o
-> it THINKS its connected? Or what someone suggested to block everything. a=
-nd
-> allow only the ports you know.
-> As I said its just a thought...you decide whether its viable, since I don=
-t
-> use Kazaa anymore.
-> Kev
->=20
->=20
->=20
->=20
->=20
-> Message: 1
-> Date: Thu, 24 Apr 2003 19:28:52 +0800 (PHT)
-> Subject: block kazaa using iptables
-> From: "Wesley Jay Deypalan" <wjdeypalan@ictuscomm.net>
-> To: <netfilter@lists.netfilter.org>
-> Reply-To: wjdeypalan@ictuscomm.net
->=20
-> Hi,
->=20
-> Is there a way to block kazaa using iptables?Already tried blocking port
-> 1214 but to no avail, I heard that kazaa change ports if it cannot connec=
-t
-> using 1214.
-> TIA,
->=20
-> wesley
->=20
->=20
->=20
->=20
-> --__--__--
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-jzcrzagqp3puQFXC6fsD
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+2uowh1fuR/Bv+ygRAlzGAJ9dvFXNTHmV4o52ZIWeI5E9gZKmNACdHQ+e
-K+IYjrm8jDcJxwy1BajiV0Q=
-=xSmP
------END PGP SIGNATURE-----
-
---=-jzcrzagqp3puQFXC6fsD--
+--=======6AE861E7=======--
 
 
