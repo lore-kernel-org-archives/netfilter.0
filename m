@@ -1,10 +1,13 @@
-From: Dmitry Ananjev <altex@crazy.ru>
-Subject: Iptables + traceroute + NAT = invalid packet? :-(
-Date: Thu, 13 Jan 2005 23:20:36 +0400
-Message-ID: <41E6CA04.6090203@crazy.ru>
+From: "Don Hughes" <support@microtechniques.com>
+Subject: DNATing back to the same network
+Date: Thu, 13 Jan 2005 14:26:07 -0500
+Message-ID: <41E684FF.13943.7EDFCC@localhost>
+References: <20050113165624.C0BFA5F67@mail.microtechniques.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-reply-to: <20050113165624.C0BFA5F67@mail.microtechniques.com>
+Content-description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,62 +18,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello!
+ 
+> Message: 1
+> Date: Thu, 13 Jan 2005 15:42:33 +0100 (CET)
+> From: danci@agenda.si
+> Subject: DNATing back to the same network
+> To: netfilter@lists.netfilter.org
+> Message-ID: <Pine.LNX.4.58.0501131538030.16403@desktop.agenda.si>
+> Content-Type: TEXT/PLAIN; charset=US-ASCII
+> 
+> Hi!
+> 
+> I have a firewall with a number of DNAT rules for various ports/hosts.
+> It would be good if local users could use the same DNAT's. However, as
+> it seems this doesn't work.
+> 
+> My firewall has a public IP. Some ports on this IP are DNATed to
+> different hosts on the local network. DNAT works for users that
+> connect from the internet.
+> 
+> However, when a local users tries to connect to the public IP and
+> DNATed port, the connection fails. Which is basically logical as the
+> server receives a packet with the source IP of the actual user and it
+> answeres directly to that IP.
+> 
+> Is it possible to change netfilter behaviour? Any other work-around
+> for that?
+> 
 
-I have a problem with the connection tracking state extension.
-I want to allow traceroute from my local network, so I configured my 
-firewall to accept outgoing packets from my network.
-I also accept established, related pachets and log&drop invalid packets:
+I have a POSTROUTING rule for any internal traffic to SNAT it so 
+that it returns back to the router instead of directly to the 
+user.
 
-iptables -A INPUT -m state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -m state INVALID -j LOG
-iptables -A INPUT -m state INVALID -j DROP
-iptables -A INPUT -i <LAN_IFACE> -j ACCEPT
 
-iptables -A OUTPUT -m state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -m state INVALID -j LOG
-iptables -A OUTPUT -m state INVALID -j DROP
 
-iptables -A FORWARD -m state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -m state INVALID -j LOG
-iptables -A FORWARD -m state INVALID -j DROP
-iptables -A RORWARD -i <LAN_IFACE> -j ACCEPT
 
-iptables -A POSTROUTING -o <INET_IFACE> -j SNAT --to-source <INET_IP>
+-- 
+..don
 
-However, at this time a traceroute from my local network to an external 
-host looks like that:
-
----
-Tracing route to ya.ru [213.180.193.123]
-over a maximum of 30 hops:
-
-  1     *        *        *     Request timed out.
-  2    22 ms    23 ms    31 ms  213.156.200.xxx
-  3    31 ms    21 ms    23 ms  213.156.195.xxx
-  4    25 ms    50 ms    25 ms  e12.bcn1.xxx.xxx [213.156.192.xxx]
-etc.
----
-
-cat /var/log/messages
--------------
-Jan 12 14:30:02 serv kernel: INVALID output: IN= OUT=eth0 
-SRC=192.168.2.1 DST=192.168.2.10 LEN=120 TOS=0x00 PREC=0xC0 TTL=64 
-ID=54714 PROTO=ICMP TYPE=11 CODE=0 [SRC=192.168.2.10 DST=213.180.193.123 
-LEN=92 TOS=0x00 PREC=0x00 TTL=1 ID=26615 PROTO=ICMP TYPE=8 CODE=0 ID=512 
-SEQ=32768 ]
--------------
-
-So why does the time-exceeded answer have the state 
-INVALID, though it should be RELATED as far as i can see it?
-Am I doing something wrong or is it even an iptables bug?
-
-Thank you!
-WBR, Dmitry Ananjev
-altex@crazy.ru
+dhughes@microtechniques.com
+White Plains, NY
 
 
 
