@@ -1,12 +1,13 @@
-From: "Sood, Ashish" <asood@iPolicyNet.COM>
-Subject: Use mode Netfiler
-Date: Thu, 19 Feb 2004 16:40:52 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Use mode Netfiler
+Date: Thu, 19 Feb 2004 11:38:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D269C7CBDF116A48982D4DC51F111BE324D493@nsezhpmail01.india.ipolicynet.com>
+Message-ID: <200402191138.58241.Antony@Soft-Solutions.co.uk>
+References: <D269C7CBDF116A48982D4DC51F111BE324D493@nsezhpmail01.india.ipolicynet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <D269C7CBDF116A48982D4DC51F111BE324D493@nsezhpmail01.india.ipolicynet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +20,32 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Thursday 19 February 2004 11:10 am, Sood, Ashish wrote:
 
-I want to extend the netfilter to user mode. I read some literature on
-the same which talks about a file netfilter_device.h which defines the =
-IOCTL's
+> Hi,
+>
+> I want to extend the netfilter to user mode.
 
-ioctl(fd, NFDIOSADDCOND, &a_nfdev_condition);
-ioctl(fd, NFDIOSDELCOND, &a_nfdev_condition);
+Why?   Surely a usermode version would be (a) less efficient, with all the 
+context switching involved, and (b) less secure, because the code is out in 
+userland instead of protected inside kernelspace?
 
-I am unable to find the netfilter_device.h in the source code of linux.
+Efficiency and security seem both desirable qualities for a firewall.
 
-Please can anybody guide me on how to extend the NEtfilter to user =
-space.
+Regards,
 
-Thanks,
-Ashish
+Antony.
+
+-- 
+In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
+the mechanics are German, the lovers are French, the entertainment is 
+American, and everything is organised by the Swiss.
+
+In Hell, the police are German, the chefs are British, the beer is American, 
+the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
+and everything is organised by the Italians.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
