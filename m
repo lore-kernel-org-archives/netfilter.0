@@ -1,9 +1,11 @@
-From: cable linux <cablelinux@yahoo.com>
-Subject: I implement that script plz check it again
-Date: Tue, 24 Jun 2003 12:22:18 -0700 (PDT)
+From: "Jeremy" <jeremy@paradise.net.nz>
+Subject: PPTP Conntrack pom patch. compile issues.
+Date: Wed, 25 Jun 2003 10:02:20 +1200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030624192218.996.qmail@web14404.mail.yahoo.com>
+Message-ID: <03a101c33a9c$490d8d80$3964a8c0@comsol.co.nz>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_039E_01C33B00.DE20DBC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,158 +16,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I sucessfully implement that script but, when i do
-iptables -NL command it shows only ethernet ip address
-information. i want to see the internet issues that is
-not showing to me.
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_039E_01C33B00.DE20DBC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-# Internal and External Devices
-#dev_world=ppp0
-dev_world=`/sbin/ifconfig ppp0|grep -w "inet addr"|awk
--F: '{print $2}'|awk '{print $1}'`
-dev_int=eth0
+Hi there,=20
 
-# Firewall IP
-addr_int=192.168.1.1
+I run a debian box, and have tried compiling on 2.4.20 & 2.4.21 kernels =
+after applying this patch with the same errors. Could someone shed some =
+light on this please, im getting very frustrated!! :o) Thanks
 
-# Internal Net
-net_int=192.168.1.0/24
+p.s. i dont run any debugging of netfilter stuff in the kernel
 
-#Loading Modules
-
-insmod ip_tables
-insmod iptable_filter
-insmod ip_conntrack
-insmod ip_conntrack_ftp
-insmod ipt_state
-insmod iptable_nat
-insmod ipt_MASQUERADE
-insmod ipt_limit
-insmod ipt_LOG
-insmod ipt_REJECT
-insmod iptable_mangle
-
-#Disabling IP Spoofing attacks.
-#Comment this line out when using IPSEC
-echo 2 > /proc/sys/net/ipv4/conf/all/rp_filter
-
-#Don't respond to broadcast pings
-echo "1" >
-/proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-
-
-#Enable forwarding
-echo 1 >/proc/sys/net/ipv4/ip_forward
-
-#Block source routing
-echo 0
->/proc/sys/net/ipv4/conf/all/accept_source_route
-
-#Kill timestamps.  These have been the subject of a
-recent bugtraq thread
-echo 0 > /proc/sys/net/ipv4/tcp_timestamps
-
-#Enable SYN Cookies
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
-
-#Kill redirects
-echo 0 >/proc/sys/net/ipv4/conf/all/accept_redirects
-
-#Enable bad error message protection
-echo 1 >
-/proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
-
-#Allow dynamic ip addresses
-echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-
-#Log martians (packets with impossible addresses)
-#RiVaL said that certain NICs don't like this. 
-Comment out if necessary.
-echo 1 >/proc/sys/net/ipv4/conf/all/log_martians
-
-#Set out local port range
-echo "32768 61000"
->/proc/sys/net/ipv4/ip_local_port_range
-
-#Reduce DoS'ing ability by reducing timeouts
-echo 30 > /proc/sys/net/ipv4/tcp_fin_timeout
-echo 1800 > /proc/sys/net/ipv4/tcp_keepalive_time
-echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
-echo 0 > /proc/sys/net/ipv4/tcp_sack
-echo 1280 > /proc/sys/net/ipv4/tcp_max_syn_backlog
-
-#################################################################
-# Delete all Rules in Filtertable
-iptables -F
-
-#######################################################
-# Define new chains
-iptables -N BLOCK
-iptables -N EXT-INT
-iptables -N INT-EXT
-iptables -N ICMP-DENY
-iptables -N INT-IF
-iptables -N EXT-IF
-
-#######################################################
-
-iptables -A BLOCK -m state --state ESTABLISHED,RELATED
--j ACCEPT
-iptables -A BLOCK -m state --state NEW -i ! $dev_world
--j ACCEPT
-iptables -A BLOCK -j DROP
-
-iptables -A INPUT -j BLOCK
-iptables -A FORWARD -j BLOCK
-
-#################################################################
-# Point to chains
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A INPUT -i $dev_int -s $net_int -j INT-IF
-iptables -A INPUT -d ! $addr_int -i $dev_world -s !
-$net_int -j EXT-IF
-iptables -A INPUT -j DROP
-
-iptables -A FORWARD -d ! $net_int -i $dev_world -s
-$net_int -j INT-EXT
-iptables -A FORWARD -d $net_int -i $dev_int -s !
-$net_int -j EXT-INT
-iptables -A FORWARD -j DROP
-
-iptables -A OUTPUT -j ACCEPT
-
-#################################################################
-# Chain Rules
-iptables -A EXT-INT -j DROP
-
-iptables -A EXT-IF -i ! $dev_world -j DROP
-iptables -A EXT-IF -p tcp --dport 22 -j ACCEPT
-iptables -A EXT-IF -p tcp --dport 5901 -j ACCEPT
-iptables -A EXT-IF -p tcp --dport 1024: -j ACCEPT
-iptables -A EXT-IF -p udp --dport 1024: -j ACCEPT
-iptables -A EXT-IF -j DROP
-
-iptables -A INT-IF -j ACCEPT
-
-################################################################
-# NAT Rules
-# Standard Routing
-iptables -A POSTROUTING -t nat -o $dev_world -j
-MASQUERADE -s $net_int
+Compile Errors are as follows:
+NAME=3Dip_conntrack_proto_gre  -DEXPORT_SYMTAB -c =
+ip_conntrack_proto_gre.c
+ip_conntrack_proto_gre.c: In function `ip_ct_gre_keymap_add':
+ip_conntrack_proto_gre.c:118: union has no member named `gre'
+ip_conntrack_proto_gre.c:120: union has no member named `gre'
+ip_conntrack_proto_gre.c: In function `ip_ct_gre_keymap_destroy':
+ip_conntrack_proto_gre.c:148: union has no member named `gre'
+ip_conntrack_proto_gre.c:150: union has no member named `gre'
+ip_conntrack_proto_gre.c:151: union has no member named `gre'
+ip_conntrack_proto_gre.c:152: union has no member named `gre'
+ip_conntrack_proto_gre.c:154: union has no member named `gre'
+ip_conntrack_proto_gre.c:156: union has no member named `gre'
+ip_conntrack_proto_gre.c:157: union has no member named `gre'
+ip_conntrack_proto_gre.c:158: union has no member named `gre'
+ip_conntrack_proto_gre.c: In function `gre_print_conntrack':
+ip_conntrack_proto_gre.c:242: union has no member named `gre'
+ip_conntrack_proto_gre.c:243: union has no member named `gre'
+ip_conntrack_proto_gre.c: In function `gre_packet':
+ip_conntrack_proto_gre.c:254: union has no member named `gre'
+ip_conntrack_proto_gre.c:258: union has no member named `gre'
+ip_conntrack_proto_gre.c: In function `gre_new':
+ip_conntrack_proto_gre.c:272: union has no member named `gre'
+ip_conntrack_proto_gre.c:273: union has no member named `gre'
+make[3]: *** [ip_conntrack_proto_gre.o] Error 1
+make[3]: Leaving directory =
+`/usr/src/linux/TEMP/linux-2.4.21/net/ipv4/netfilter'
+make[2]: *** [first_rule] Error 2
+make[2]: Leaving directory =
+`/usr/src/linux/TEMP/linux-2.4.21/net/ipv4/netfilter'
+make[1]: *** [_subdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux/TEMP/linux-2.4.21/net'
+make: *** [_dir_net] Error 2
 
 
 
+------=_NextPart_000_039E_01C33B00.DE20DBC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi there, </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I run a debian box, and have tried =
+compiling on=20
+2.4.20 &amp; 2.4.21 kernels after applying this patch with the same =
+errors.=20
+Could someone shed some light on this please, im getting very =
+frustrated!! :o)=20
+Thanks</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>p.s. i dont run any debugging of =
+netfilter stuff in=20
+the kernel</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Compile Errors are as =
+follows:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>NAME=3Dip_conntrack_proto_gre&nbsp; =
+-DEXPORT_SYMTAB=20
+-c ip_conntrack_proto_gre.c<BR>ip_conntrack_proto_gre.c: In function=20
+`ip_ct_gre_keymap_add':<BR>ip_conntrack_proto_gre.c:118: union has no =
+member=20
+named `gre'<BR>ip_conntrack_proto_gre.c:120: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c: In function=20
+`ip_ct_gre_keymap_destroy':<BR>ip_conntrack_proto_gre.c:148: union has =
+no member=20
+named `gre'<BR>ip_conntrack_proto_gre.c:150: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c:151: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c:152: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c:154: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c:156: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c:157: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c:158: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c: In function=20
+`gre_print_conntrack':<BR>ip_conntrack_proto_gre.c:242: union has no =
+member=20
+named `gre'<BR>ip_conntrack_proto_gre.c:243: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c: In function=20
+`gre_packet':<BR>ip_conntrack_proto_gre.c:254: union has no member named =
 
+`gre'<BR>ip_conntrack_proto_gre.c:258: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c: In function=20
+`gre_new':<BR>ip_conntrack_proto_gre.c:272: union has no member named=20
+`gre'<BR>ip_conntrack_proto_gre.c:273: union has no member named=20
+`gre'<BR>make[3]: *** [ip_conntrack_proto_gre.o] Error 1<BR>make[3]: =
+Leaving=20
+directory =
+`/usr/src/linux/TEMP/linux-2.4.21/net/ipv4/netfilter'<BR>make[2]: ***=20
+[first_rule] Error 2<BR>make[2]: Leaving directory=20
+`/usr/src/linux/TEMP/linux-2.4.21/net/ipv4/netfilter'<BR>make[1]: ***=20
+[_subdir_ipv4/netfilter] Error 2<BR>make[1]: Leaving directory=20
+`/usr/src/linux/TEMP/linux-2.4.21/net'<BR>make: *** [_dir_net] Error=20
+2<BR></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</DIV></FONT></BODY></HTML>
 
+------=_NextPart_000_039E_01C33B00.DE20DBC0--
 
-__________________________________
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
-http://sbc.yahoo.com
 
