@@ -1,12 +1,14 @@
-From: "Alexis" <alexis@attla.net.ar>
-Subject: Re: Firewall four nics, two separate routes
-Date: Mon, 26 Jan 2004 23:37:30 -0300
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: Apache:access_log - 408
+Date: Mon, 26 Jan 2004 21:34:53 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c3e47e$830e4ab0$0200000a@heretic>
-References: <KMS-272302109-548@mail.espgroup.net> <002f01c3e47a$7a6f3f80$0200000a@heretic>
+Message-ID: <200401270534.i0R5YsmK022776@server5.bandwidthco.com>
+References: <20040126090010.1242A33DBF@smtp.263.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040126090010.1242A33DBF@smtp.263.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,78 +19,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: 'ccddtt' <ccddtt@263.net>, netfilter@lists.netfilter.org
 
-its too late at night, i drive so many kms today, i cant write.
+What makes you think you are being attacked?  There is not enough
+information here to make that determination. "408" is a "request Time-out
+error" and does not mean you are being attacked.  This appears to be an ACK
+scan with spoofed IP addresses. Look at the IPID's and TTL values. They tell
+me they are coming from the same machine. If you want to drop these packets,
+create stateful rules for inbound connections to port 80, and they will be
+dropped:
 
-this is the real message
+$IPT -t filter -A PORTSCAN_RULES --destination-port 80 -p tcp --tcp-flags
+ALL ACK -m state --state NEW -j LOG --log-level $LOG_LEVEL --log-prefix
+"PORTSCAN: ACK ON NEW: "
+
+$IPT -t filter -A PORTSCAN_RULES --destination-port 80 -p tcp --tcp-flags
+ALL ACK -m state --state NEW -j REJECT --reject-with icmp-host-unreachable
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of ccddtt
+Sent: Monday, January 26, 2004 1:00 AM
+To: netfilter@lists.netfilter.org
+Subject: Apache:access_log - 408
+
+hi,all
+
+please help me.
+my linux server installed redhat 9 + apache 1.3.29. passing through some
+attack.
+in apache acc_log,like :
+221.233.227.230 - - [17/Jan/2004:17:26:32 +0800] "-" 408 - 221.233.227.230 -
+- [17/Jan/2004:17:26:32 +0800] "-" 408 - 221.233.227.230 - -
+[17/Jan/2004:17:26:32 +0800] "-" 408 - 61.145.188.110 - -
+[17/Jan/2004:17:26:32 +0800] "-" 408 -
+210.38.179.145 - - [17/Jan/2004:17:26:32 +0800] "-" 408 - 221.233.227.230 -
+- [17/Jan/2004:17:26:32 +0800] "-" 408 - but no err_log.
+
+some packge like :
+Jan 18 19:35:53 linux-sv1 kernel: IN=eth0 OUT=
+MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00 SRC=220.173.8.56
+DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=114 ID=42497 DF PROTO=TCP
+SPT=60177 DPT=80 WINDOW=8280 RES=0x00 ACK URGP=0 Jan 18 19:35:53 linux-sv1
+kernel: IN=eth0 OUT= MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00
+SRC=220.173.8.56 DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=114 ID=42753
+DF PROTO=TCP SPT=60177 DPT=80 WINDOW=8280 RES=0x00 ACK URGP=0 Jan 18
+19:35:53 linux-sv1 kernel: IN=eth0 OUT=
+MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00 SRC=61.173.25.88
+DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=115 ID=53402 DF PROTO=TCP
+SPT=63601 DPT=80 WINDOW=16560 RES=0x00 ACK URGP=0 Jan 18 19:35:53 linux-sv1
+kernel: IN=eth0 OUT= MAC=00:07:e9:6c:4c:49:00:02:b3:03:e3:67:08:00
+SRC=220.173.8.56 DST=61.135.xx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=114 ID=43265
+DF PROTO=TCP SPT=60182 DPT=80 WINDOW=8280 RES=0x00 ACK URGP=0 
+
+how to set this iptables rules?
+
+what's this attack?
+thanks your any help!
 
 
-think lan1 lan2 wan1 wan2
-
-the firewall box, must have NO default route
-
-ip rule add from lan1 lookup table 5
-ip rule add from lan2 lookup table 6
-ip route add default via wan1 table 5
-ip route add default via wan2 table 6
-
-sorry
 
 
------ Original Message ----- 
-From: "Alexis" <alexis@attla.net.ar>
-To: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Monday, January 26, 2004 11:08 PM
-Subject: Re: Firewall four nics, two separate routes
-
-
-> think lan1 lan2 wan1 wan2
->
-> the firewall box, must have NO defaul route
->
-> ip rule add from lan1 lookup table 5
-> ip rule add from lan2 lookup table 6
-> ip route add default via wan1 table 5
-> ip route add default via wan1 table 6
->
-> thats it.
->
->
->
-> ----- Original Message ----- 
-> From: "Ryan Johnson" <rjohnson@espgroup.net>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Monday, January 26, 2004 2:49 PM
-> Subject: Firewall four nics, two separate routes
->
->
-> Hi all,
->
-> I have a firewall with four nics, two external nics with two public ips
-and
-> two internal nics with private ips (two different networks). What I would
-> like to do is force all traffic from each internal network to its
-> corresponding external nic. I believe the only solution to this is to use
-> iproute2, but I have had to luck. So traffic from internal net1 will be
-> routed out external nic1, then the other side, internal net2 will be
-routed
-> out the external nic2. Internal net1 traffic should never go out external
-> nic2 and internal net2 traffic should never go out external nic1.
->
->
-> Thank you in advance,
-> Ryan
->
-> Ryan Johnson
-> Security Architect
-> ESP Group
->
->
->
->
->
->
 
 
 
