@@ -1,60 +1,40 @@
-From: "Aaron Smith" <snafflefu@hotmail.com>
-Subject: --mark match/subsetting question
-Date: Wed, 28 Apr 2004 13:15:58 -0700
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea2-F42Vd7cl4TlL8R0002b70a@hotmail.com>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Idea: Check session source and destination
+Date: Thu, 29 Apr 2004 15:24:52 +0200 (CEST)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0404291521030.27094-100000@filer.marasystems.com>
+References: <9D157DFC-99DB-11D8-8B47-000A957FD99E@src.no>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <9D157DFC-99DB-11D8-8B47-000A957FD99E@src.no>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mike Andersen <mike@src.no>
+Cc: Netfilter Developers List <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
+On Thu, 29 Apr 2004, Mike Andersen wrote:
 
-I've got a whole bunch of redirect rules in the PREROUTING table, but for=20
-some
-connections (say from one IP for examlpe) I want none of these redirects to=
-=20
-take effect.
-I need to toggle this effect on and off easily. Inserting/Removing one rule=
-=20
-is ideal, but
-I can't insert and remove all rules.
-(Connections that exist when its toggled are unimportant)
+> So, when I can't use DROP in iptables, can I do it with ebtables 
+> instead?
 
-I first way I thought to do this is with every REDIRECT rule use a --source=
-=20
-! <ipfoo>,
-but then I have to delete all rules and reinsert (without the --source) to =
+Don't know. Not familiar with ebtables.
 
-toggle.
+But from what I understnad you do not need to drop the packets, you can 
+just blackhole them..  effectively the same thing, just happens a little 
+later, forwarding the packets into a blackhole instead of dropping them in 
+the middle of the forward process. See "ip route blackhole" or a "dummy 
+device".
 
-Then I figured I'd put a mark rule out front to mark connections I don't=20
-want redirected, and
-every redirect rule would have a --mark ! 0x01, but the not operator doesnt=
-=20
-seem to work with mark.
-(Is there a default mark? - If so that would work).
-
-It seems this is a fairly simple thing to do, and I'm positive I can do it =
-
-given the current tools,
-but I can't see how.
-Any ideas?
-
-Thanks!
-
-_________________________________________________________________
-MSN Toolbar provides one-click access to Hotmail from any Web page =96 FREE=
-=20
-download! http://toolbar.msn.com/go/onm00200413ave/direct/01/
+Regards
+Henrik
 
 
