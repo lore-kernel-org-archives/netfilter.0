@@ -1,13 +1,14 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Strange log entry ...
-Date: Mon, 8 Jul 2002 13:15:16 -0400
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: Re: trying to get one blessed thing to work
+Date: Mon, 8 Jul 2002 19:25:25 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708171516.GS25368@cannon.eng.us.uu.net>
-References: <002d01c22688$cfa8a920$0a01a8c0@ed> <1026138591.27153.77.camel@rayw> <20020708143656.GR25368@cannon.eng.us.uu.net>
+Message-ID: <0207081925250B.14428@Lms>
+References: <20020708123223.7107dc16.mt@open2web.com> <02070818562409.14428@Lms>
+Reply-To: jan.humme@xs4all.nl
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020708143656.GR25368@cannon.eng.us.uu.net>
+In-Reply-To: <02070818562409.14428@Lms>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,33 +19,28 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
-Cc: Raymond Leach <raymondl@knowledgefactory.co.za>, blacknet@simplyaquatics.com
+To: Mark Tessier <mt@open2web.com>, Netfilter Mailing List <netfilter@lists.samba.org>
 
-On Mon, Jul 08, 2002 at 10:36:56AM -0400, Ramin Alidousti wrote:
+On Monday 08 July 2002 18:56, Jan Humme wrote:
+> On Monday 08 July 2002 18:32, Mark Tessier wrote:
+> > I have a PC running rh7.1., which I'm trying to turn into a firewall. The
+> > firewall stands between a DMZ and a LAN. I have an elaborate script which
+> > I've been trying to deploy, but so far no luck. Since I really don't know
+> > where to begin in terms of diagnosing my problem, I decided to see if I
+> > could just ping one machine on the DMZ from another on the LAN.
+> >
+> > The first thing I did was to set the policy to drop for the forward chain
+> > as in:
+> >
+> > iptables --policy FORWARD DROP
+>
+> => Response on my machine (and yours) is:
+> iptables v1.2.1a: Unknown arg '--policy'
+> Try 'iptables -h` or 'iptables --help' for more information.
 
-> On Mon, Jul 08, 2002 at 04:29:51PM +0200, Raymond Leach wrote:
-> 
-> > On Mon, 2002-07-08 at 16:07, Ed Street wrote:
-> > > Hello,
-> > > 
-> > > 
-> > > Looks like station 10.0.0.19 on eth2 tried to ping 199.181.167.201 and
-> > > it was droped.
-> > > 
-> > I've checked the process list on 10.0.0.19 and also restarted it just to
-> > make sure, and there is nothing that is trying to ping anywhere.
-> > 
-> > Isn't ICMP CODE 0 TYPE 0 a reply? Doesn't this log entry represent
-> > 10.0.0.19's reply to an echo request?
-> 
-> Don't you have any backdoor?? If not, then 10.0.0.19 might be replying
-> to a spoofed ping from the inside...
+Nonsense.
 
-Second thought. It probably isn't due to a backdoor as this backdoor
-would need to do the same natting that you're doing on your firewall.
-So it'd narrow down to the spoofed ping from the inside.
+Please accept my sincere and humble apologies: of course your syntax is OK.
 
-Ramin
+Jan Humme.
 
