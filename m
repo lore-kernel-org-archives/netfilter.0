@@ -1,13 +1,13 @@
-From: "Michael K" <micke@klintan.se>
-Subject: RE: Firewall Setup on RH 9
-Date: Thu, 3 Jul 2003 10:07:24 +0200
+From: Filip Sneppe <filip.sneppe@cronos.be>
+Subject: Re: Memory problem
+Date: 03 Jul 2003 11:15:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000201c3413a$23328d50$c800a8c0@klintan.local>
-References: <015201c3412d$992c0ac0$660210ac@christo>
+Message-ID: <1057223745.457.40.camel@xbox>
+References: <3F03FD0F.5070509@sadomain.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <015201c3412d$992c0ac0$660210ac@christo>
+In-Reply-To: <3F03FD0F.5070509@sadomain.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +17,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?Cilli=E8?= Burger <security@sadomain.co.za>
+Cc: netfilter@lists.netfilter.org
 
+On Thu, 2003-07-03 at 11:53, Cilli=E8 Burger wrote:
+> Hi Everyone
+>=20
+> I was wondering if anyone has a solution to this problem.
+>=20
+> I have a the following box that sits between our router and switch:
+>=20
+> Pentium 200, 64 Mbyte RAM, Linux version 2.4.18-3=20
+> (bhcompile@stripples.devel.redhat.com)
+> (gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)), iptables v1.2.5
+>=20
+> I almost never reboot this box, but lately I have noticed a dramatic=20
+> increase in memory consumption.
+>=20
+> I start out on bootup with about 40 MB or so free and in a weeks time=20
+> its down to about 800KB.
+> When iptables is restarted and the rules flushed and reloaded I reclaim=20
+> about 6024 KB, which then gradually
+> decreases back to about a meg in a 16 hour period.
+>=20
+...
+>=20
+> Why does iptables consume so much memory ?
+> Why does iptables appear to loose so much memory ? When regarding this=20
+> question, consider the following:
+>=20
+> On reboot and before loading of rules there is about 40 MB free ram.=20
+> After loading the rules, and about two weeks uptime
+> there is about 800KB of free memory. After flushing the rules, theres=20
+> only 6024 KB free.
+> Is there a slight possibility that this may be due to a memory leak of=20
+> some sort ?
+>=20
+> Thanks in advance for your help. Keep up the good work Netfilter .
+>=20
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Christo
-Bezuidenhout
-Sent: Thursday, July 03, 2003 8:38 AM
-To: netfilter@lists.netfilter.org
-Subject: Firewall Setup on RH 9
+Hi Cilli=E8,
 
+I understand your concerns about memory consumption, but there is
+no information in your mail showing that the memory used by the
+firewall is in fact used by connection tracking or any other netfilter
+kernel structures.=20
 
-I need to do the following.
+In fact, many Linux admins will tell you that any Linux box that has
+free memory after system boot will end up using all available memory
+after a little while: that memory is simply used for buffering and
+caching filesystem operations.
 
-1. I have a Redhat 9 Box with Two nics. NIC1 is my Private Network. NIC2
-is connected to my PPP0 interface for internet access. I need to add
-NIC3 which will be second Private Network.
+So in order to get an idea about your box' memory consumption, send us
+the output of:
 
-2. Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet. 
-NIC1 Should be able to connect to NIC3 but NIC3 must not be ABLE to
-Connect to NIC1 's network
+cat /proc/meminfo
+cat /proc/slabinfo
+wc -l /proc/net/ip_conntrack
 
-I have my network already setup as in 1 above and it working very well.
-I'm using iptables to get this running. 
-
-Please mail me offline if more info needed or with a suggestion
-
-Christo 
-
-Perhaps something like this.
-
-NIC1=eth0
-NIC2=ppp0
-NIC3=eth1
-
-modprobe ip_nat_ftp
- 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-#Allow everything out to $NIC2
-iptables -A FORWARD -o $NIC2 -j ACCEPT
-#Accept only connections from $NIC1 to $NIC3
-iptables -A FORWARD -i $NIC1 -o $NIC3 -j ACCEPT
-
-iptables -t nat -A POSTROUTING -o $NIC2 -j MASQUERADE
-sysctl -w net.ipv4.ip_forward=1
-
-
-/Klintan
-
+Regards,
+Filip
 
 
