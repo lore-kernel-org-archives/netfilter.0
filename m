@@ -1,16 +1,11 @@
-From: O-Zone <liste@zerozone.it>
-Subject: Re: DMZ to DMT through ROUTER problem !
-Date: Thu, 20 May 2004 16:58:55 +0200
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: ICMP and connection tracking
+Date: Thu, 20 May 2004 10:06:46 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405201658.59945.liste@zerozone.it>
-References: <200405201318.34706.liste@zerozone.it> <200405201637.54395.liste@zerozone.it> <200405201545.32872.Antony@Soft-Solutions.co.uk>
-Reply-To: liste@zerozone.it
+Message-ID: <40ACC986.8060103@pbl.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405201545.32872.Antony@Soft-Solutions.co.uk>
-Content-Description: clearsigned data
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,44 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Are ICMP packets related to new and established TCP connections and UDP 
+traffic considered to be part of them, or do I need to have explicit 
+rules like
 
-On Thursday 20 May 2004 16:45, Antony Stone wrote:
-> Yes, but that destination address has already been changed by your
-> PREROUTING rule, and is now 192.168.0.0/24 - that's the whole point.   If
-> the destination address had not been changed (ie: if the client had
-> contacted the server's real IP address instead of a pretend one), you
-> wouldn't need to change the source address as well.
+    -A INPUT -p icmp -m state --state RELATED -j ACCEPT
 
-As you say, the problem was when a server with 192.168.0.x, passing through=
-=20
-192.168.0.1 (that is the ROUTER), and try to connect to 151.8.47.x (the rea=
-l=20
-server's PUBLIC IP). This is the desidered flow:
+for things like path MTU discovery, traceroute, ICMP port unreachables, 
+and so on to work properly?
 
-192.168.0.2-->151.8.47.A-->192.168.0.3
+Any downsides of using generic rule like above (if it is needed)?
 
-So i think that i need additiona rules to MASQ/DNAT connection to 151.8.47.=
-x !
-
-Oz
-
-=2D --=20
-There is a theory which states that if ever anyone discovers exactly what
-the Universe is for and why it is here, it will instantly disappear and be
-replaced by something even more bizarre and inexplicable.  There is another
-theory which states that this has already happened.
-		-- Douglas Adams, "The Hitchhiker's Guide to the Galaxy"
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFArMexYuBSFbgkEysRAgoOAKCxjUX/lXCX30GUUaCkQTSHaklXXQCdHS6A
-faOLbQvIfdm6e7coMhWm/9w=3D
-=3DddMI
-=2D----END PGP SIGNATURE-----
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
