@@ -1,11 +1,13 @@
-From: Brian Capouch <brianc@palaver.net>
-Subject: JNAT and SNAT private <-> public, but can't get to port 80 . . .
-Date: Tue, 11 Jun 2002 20:06:12 -0500
+From: Ralf Hemmann <netfilter@core-dump.de>
+Subject: Re: Too scared....
+Date: Wed, 12 Jun 2002 03:37:56 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D069E84.F94CD414@palaver.net>
+Message-ID: <200206110924.20630.ralf@core-dump.de>
+References: <E17HVTU-00062d-00@pooh.kjernsmo.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <E17HVTU-00062d-00@pooh.kjernsmo.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,23 +20,77 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Tried to say it all in the subject line. . . 
 
-Should I expect that when I set up a host that has private IP go out via
-a public IP using a SNAT entry (simply: iptables -t nat -A POSTROUTING
--s 192.168.x.y -j SNAT --to-source w.x.y.z) and then use DNAT to allow
-the public IP back in (iptables -t nat -A PREROUTING -d w.x.y.z -j DNAT
---to-destination 192.168.x.y) that I not be able to get web traffic to
-port 80 through to the machine in question?
+Hy
 
-That seems to be my unfortunate situation.  Defaults are ACCEPT for
-INPUT, OUTPUT, and FORWARD.
+> I hope someone can take my paw and help me through the iptables setup,
+> because I'm a bit scared of the possibility of locking myself out of my
+> box...
 
-I hope this isn't a FAQ or I'm somehow otherwise proving cluelessness
-here.  I've read around the web a bit and at least it doesn't seem the
-answer is totally obvious. . .
+I know what you mean and be shure - if you do not use a "roll back system"
+you WILL lock you out of your server ;-))
 
-Thanks in advance.
 
-B.
+Try to make your Firewall script like this:
+
+
+!/bin/bash
+
+
+#  Deadmans Switch
+# like in german railways.
+# The driver has to press a
+# button when its buzzing.
+# If the driver dont push the button the
+# Train stops
+
+
+case "$1" in
+
+start)
+
+
+   # your rules her
+   # iptables -t nat bla
+
+
+# At the verry end of start put something like this:
+
+echo "Are you dead ?
+
+answer with Ctrl C
+
+"
+
+sleep 4
+echo "2 more"
+sleep 4
+echo "1 to go"
+sleep 4
+
+echo "OK open firewall"
+
+iptables -P INPUT ACCPET 
+iptables -P OUTPUT ACCPET
+iptables -P FORWARD ACCPET
+
+iptables -F
+iptables -F -t nat
+
+;;
+
+stop )
+
+# bla bla
+
+;;
+
+
+*)
+
+echo "usage $0 Start | Stop "
+
+esac
+
+
 
