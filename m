@@ -1,12 +1,12 @@
-From: "Matt Riggs" <matt.riggs@beasleyallen.com>
-Subject: iptables forwarding problems
-Date: Fri, 21 Feb 2003 12:46:58 -0600
+From: Bernd Podey <Bernd.Podey@gmx.de>
+Subject: Re: Problem with iptables -A FORWARD -j DROP
+Date: Thu, 20 Feb 2003 12:37:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <664D40A267DF6C4A8D5DAD9D901D51CF028B64DE@feb.bwamc.com>
+Message-ID: <3E54BE09.30509@gmx.de>
+References: <002d01c2d819$2746d250$04000059@INFORMATICA>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +16,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Gabriel_G=FCeto?= <gabriel.gueto@rhodasol.turimar.es>
+Cc: netfilter@lists.netfilter.org
 
-I am confused. I am trying to port forward ftp from a specific host to a =
-server on my private network.
+Gabriel G=FCeto wrote:
+> Hello, I'm installing a bridge-firewall an all is OK, but whe I deny al=
+l=20
+> the 'FORWARD' traffic this rule deny all the traffic included the=20
+> 'ACCEPT' rules. Mi Kernel is 2.4.18
+> and i installed itables 1.2.5-3. My script is:
+> =20
+> iptables -F FORWARD
+> iptables -F INPUT
+> iptables -F OUTPUT
+> =20
+> iptables -A FORWARD -p icmp -s 89.0.0.0/24 -d 89.0.0.55/32 -j ACCEPT
+> =20
+> iptables -A FORWARD -j DROP
+> =20
+> =20
+> =20
+> If I quit the las line it's all OK, if I deny 'ping' it's OK, but if I=20
+> put the last line all ping are deny.
+> =20
+> Can somebody help me. I'm sorry for mu poor English.
+> =20
+> Gabriel.
+Hello!
 
-I was under the impression that specifying a rule such as $iptables -t =
-nat -A PREROUTING -p tcp -s IP -d IP --dport 21 -j DNAT --to IP:21 would =
-allow this connection.=20
+You have to allow both communication directions!
 
-The Catch ALL rule.
-$iptables -A INPUT -j DROP
-$iptables -A OUTPUT -j DROP
-$iptables -A FORWARD -j DROP
+Try the following:
+iptables -A FORWARD -p icmp -s 89.0.0.0/24 -d 89.0.0.55/32 -j ACCEPT
+iptables -A FORWARD -p icmp -s 89.0.0.55/32 -d 89.0.0.0/24 -j ACCEPT
 
-I realize it says to DROP FORWARDs but I was under the assumption that =
-since i declared a specific rule, it would DROP everything else( i.e. =
-allow that one forward rule)
+iptables -A FORWARD -j DROP
 
-Am I completely wrong...please explain....=20
+and everything will work fine
 
-Thanks in advance=20
-
-Matt
-
-
-
+Bernd
 
 
