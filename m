@@ -1,8 +1,8 @@
-From: Matthias Kattanek <mattes@mykmk.com>
-Subject: 2 ISPs on firewall
-Date: Tue, 2 Jul 2002 18:53:56 -0700 (PDT)
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: RE: 2 ISPs on firewall
+Date: Wed, 3 Jul 2002 12:12:51 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0207021852410.20445-100000@e33.eng.roonetworks.com>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA1E3@JUPITER>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
@@ -14,9 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: 'Matthias Kattanek' <mattes@mykmk.com>
+Cc: netfilter@lists.samba.org
+
+that's exactly right.. connection tracking.. meaning the ports connections,
+but the path it came from all depends on it's routing so as long as the
+packet arrives it knows the connection it's for..
+
+You need something like using the TOS value for minimise-cost and routing
+that to the other link... so it works like a redundant link and doesn't go
+through the other because it thinks it costs the earth to go that way..
+iproute2 might be able to help here but never done it..
+
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: Matthias Kattanek [mailto:mattes@mykmk.com]
+Sent: Wednesday, 03 July 2002 11:54 AM
 To: netfilter@lists.samba.org
+Subject: 2 ISPs on firewall
+
 
 
 There seems to be lots of question about multihomed firewall/routers.
