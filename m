@@ -1,12 +1,13 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: patch-o-matic and modules
-Date: Tue, 16 Mar 2004 17:27:36 +0800
+From: Frederic de Villamil <neuro@seclab.jp>
+Subject: Re: patch-o-matic and modules
+Date: Tue, 16 Mar 2004 10:46:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00a701c40b38$eb8591d0$0100a8c0@newlife>
-References: <Pine.GSU.4.58.0403142225080.22714@adore.lightlink.com> <20040315041348.GT26800@samad.com.au> <200403150733.07149.Antony@Soft-Solutions.co.uk> <Pine.GSU.4.58.0403160119090.6899@adore.lightlink.com>
+Message-ID: <20040316094632.GA25680@jesus.seclab.jp>
+References: <Pine.GSU.4.58.0403142225080.22714@adore.lightlink.com> <20040315041348.GT26800@samad.com.au> <200403150733.07149.Antony@Soft-Solutions.co.uk> <Pine.GSU.4.58.0403160119090.6899@adore.lightlink.com> <00a701c40b38$eb8591d0$0100a8c0@newlife>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <00a701c40b38$eb8591d0$0100a8c0@newlife>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Ming-Ching Tiew <mingching.tiew@redtone.com>
+Cc: netfilter@lists.netfilter.org
 
+Hi Ming-Ching!
 
-I have a question about kernel and patch-o-matic.
+On Tue, 16 Mar 2004, Ming-Ching Tiew wrote:
 
-Assuming that I have a kernel 'vmlinuz' before applying 
-patch-o-matic.
+>
+> I have a question about kernel and patch-o-matic.
+>
+> Assuming that I have a kernel 'vmlinuz' before applying
+> patch-o-matic.
+>
+> Then I go ahead to apply patch-o-matic patches, a few I
+> have applied, say TTL and CONNMARK. Then I go ahead to
+> recompile a new kernel but those new netfilter features I specify
+> them as modules. Then I compile the new modules. In this
+> example, I would get ipt_TTL.o and ipt_CONNMARK.o as result.
+>
+> My question is what is the impact of using this ipt_CONNMARK.o
+> or ipt_TTL.o with the kernel 'vmlinuz' prior to applying patch-o-matic ?
+> I tried loading it, it does not seem to have any problem. I got loaded.
+> There is also no error in the iptables commands.
+>
+> It is safe to using the new modules with the old kernel ? Or must I only
+> use it with the new kernel ?
+>
 
-Then I go ahead to apply patch-o-matic patches, a few I 
-have applied, say TTL and CONNMARK. Then I go ahead to 
-recompile a new kernel but those new netfilter features I specify 
-them as modules. Then I compile the new modules. In this 
-example, I would get ipt_TTL.o and ipt_CONNMARK.o as result.
+Hello,
+as long as your  old kernel is the same version as  the new modules, I
+don't see  why you should  encounter any trouble.  One of the  aims in
+using modules with kernel is the possibility to compile new modules if
+you add some new hardware, or  if you patch the modules source without
+having to recompile the whole stuff.
 
-My question is what is the impact of using this ipt_CONNMARK.o
-or ipt_TTL.o with the kernel 'vmlinuz' prior to applying patch-o-matic ? 
-I tried loading it, it does not seem to have any problem. I got loaded.
-There is also no error in the iptables commands.
-
-It is safe to using the new modules with the old kernel ? Or must I only
-use it with the new kernel ? 
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
+regards
+Frederic.
+--
+Frederic de Villamil
+http://www.seclab.jp
 
