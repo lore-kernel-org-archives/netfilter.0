@@ -1,12 +1,13 @@
-From: "James Stickland" <jamesstickland@sympatico.ca>
-Subject: multiple external interfaces
-Date: Mon, 11 Jan 1999 12:13:45 -0500
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: next topic:  --limit and --burst-limit
+Date: 31 Oct 2002 09:24:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001501be3d85$bf2b8e40$0200000a@workstation>
+Message-ID: <1036052695.21032.21.camel@elendil>
+References: <Pine.LNX.4.44.0210301343140.24838-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0012_01BE3D5B.D61262C0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0210301343140.24838-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,111 +17,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+Le mer 30/10/2002 =E0 19:47, Robert P. J. Day a =E9crit :
+>   first, as i read it, you can use the "--limit" option by itself,
+> without --burst-limit.  if you do that, then this limit is considered
+> a *hard* limit -- say 5/sec -- and once you hit that limit, you're
+> done until the next time unit.  is this correct?
 
-------=_NextPart_000_0012_01BE3D5B.D61262C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+No.
+If you do not specify burst, then it has a default value of 5. So
 
-what i am currently trying to do is have my router masquerade multiple =
-external interfaces to multiple internal ethernets.
+        --limit 5/s
 
-I have two ppp connections: one over ethernet (dsl), and the other over =
-serial (pots line dialup).
+is the same as
 
-the dsl line is basically for my servers, it looks like this
+        --limit 5/s --bust-limit 5
 
-internet--dsl-->ppp0(eth0)-->router-->eth1-->server switch-->computers
+From libipt_limit.c :
+[...]
+#define IPT_LIMIT_AVG   "3/hour"
+#define IPT_LIMIT_BURST 5
+[...]
 
-this ethernet works fine, and all iptables rules written for it work =
-fine. (filtering and NATing)  new or established packets are taken in, =
-then forwarded along eth1 to the corresponding class c ip on the server =
-network.
+These are default values, that are used if nothing's specified. To
+achieve what you descriobe, you have to explicitly specify a burst of 0.
+=20
+>   adding "--burst-limit", on the other hand, allows you to exceed
+> the first limit, but you end up paying for it down the road.
 
-however, i would like to run my client/workstation's internet connection =
-from the same router, but using different external interface and =
-internal ethernet.
-for example, i would like the pots dialup line interface masqueraded to =
-eth2, so that all computers connected to eth2 use the ip address of the =
-ppp device connected to dialup.
+Adding --burst-limit allows you to specify another value than the
+default one.
 
-here is how i vision it:
+> however, i'm still unclear on what the burst-limit represents
+> and how it gets recharged.  can someone explain this, preferably
+> with an example containing numbers? =20
 
-internet--dial_up-->ppp1(/dev/ttyS3)-->router-->eth2-->crossover_cable-->=
-client
+It is a bit difficult for me to give a more expressive exemple than the
+one in Linux 2.4 Packet Filtering HOWTO at :
 
-could anyone help me in doing so?  is it just a matter of some =
-additional iptables entries, or does this run deeper? please help, and =
-cc reply directly to jamesstickland@sympatico.ca
+http://www.netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-7.ht=
+ml
 
+So I'll try to explain it a bit...
 
-------=_NextPart_000_0012_01BE3D5B.D61262C0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Limit is a bucket. This bucket is separated in two parts. The first one
+is the burst. The second one is the limit. You do not apply the limit
+until burst is full. This bucket is emptying a limit rate.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>what i am currently trying to do is =
-have my router=20
-masquerade multiple external interfaces to multiple internal=20
-ethernets.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have two ppp connections: one over =
-ethernet=20
-(dsl), and the other over serial (pots line dialup).</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>the dsl line is basically for my =
-servers, it looks=20
-like this</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>internet--dsl--&gt;ppp0(eth0)--&gt;router--&gt;eth1--&gt;server =
+        |       |
+        |       | <---- limit
+        |-------|
+        |       |
+        |       | <---- burst
+        |_______|
 
-switch--&gt;computers</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>this ethernet works fine, and all =
-iptables rules=20
-written for it work fine. (filtering and NATing)&nbsp; new or =
-established=20
-packets are taken in, then forwarded along eth1 to the corresponding =
-class c ip=20
-on the server network.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>however, i would like to run my=20
-client/workstation's internet connection from the same router, but using =
+So, in the HOWTO exemple, (limit 1/s, burst 5, 4 packet/s flow), you're
+filling the burst part of the bucket the first second. The second one,
+the burst part is filled when receiving the 2nd packet. So, we begin to
+fill the limit part of the bucket, and the limit of 1/s is beginning to
+apply. I can accept the sixth packet, but not the following one,
+arriving at the same second. When the second ends, I can flush the limit
+part of the bucket, so I can accept more packets on top of the burst
+part, within the limit.
 
-different external interface and internal ethernet.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>for example, i would like the pots =
-dialup line=20
-interface masqueraded to eth2, so that all computers connected to eth2 =
-use the=20
-ip address of the ppp device connected to dialup.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>here is how i vision it:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>internet--dial_up--&gt;ppp1(/dev/ttyS3)--&gt;router--&gt;eth2--&=
-gt;crossover_cable--&gt;client</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>could anyone help me in doing so?&nbsp; =
-is it just=20
-a matter of some additional&nbsp;iptables entries, or does this run =
-deeper?=20
-please help, and cc reply directly to <A=20
-href=3D"mailto:jamesstickland@sympatico.ca">jamesstickland@sympatico.ca</=
-A></FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
+Later, the flow stops. Each second I do not receive a packet, one packet
+is taken from the bucket (because it's 1/s limit). For limit part is
+empty, then we take it from the burst part. And then, if it goes again,
+the burst part is getting filled again, and once filled, the limit
+applies. And so on...
 
-------=_NextPart_000_0012_01BE3D5B.D61262C0--
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
