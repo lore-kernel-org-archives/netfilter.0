@@ -1,8 +1,8 @@
-From: "Tyler Kemp" <tylerk4@sbcglobal.net>
-Subject: NAT problem
-Date: Wed, 8 May 2002 21:41:26 -0700
+From: Jaroslav Knespl <jaroslav@knespl.cz>
+Subject: ACCEPT ESTABLISHED doesn't work
+Date: Thu, 09 May 2002 14:44:11 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <MGEOKCAIJIIHPHKAFOFIAEDLCAAA.tylerk4@sbcglobal.net>
+Message-ID: <3CDA6F1B.8020302@knespl.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -15,119 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.samba.org
 
-Hey,
-	I recently installed linux on a spare box I had, in order to share my DSL
-connection throughout the house. I've run into a problem with iptables.
+Hi all,
 
-Linux distro: Debian Woody
-Kernel: 2.4.17
-iptables version: 1.2.6a
-
-	Iptables modules are loaded completely, local LAN is setup correctly, and
-the windows machine I've been testing the connection with is configured to
-use the linux box as it's gateway (no firewall on the windows machine).
-
-Rules I'm using:
-#!/bin/sh
-#
-#   Firewall
-#
+I use following rules (not only :-) in my fw script:
 
 
-echo "Setting up Netfilter Firewall"
-#flush
-iptables -F
-iptables -t nat -F
+$IPTABLES -A INPUT -i $INTERNAL -m state --state INVALID -j DROP
+$IPTABLES -A INPUT -i $INTERNAL -m state --state RELATED,ESTABLISHED -j 
+ACCEPT
 
-#allow anything already established
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+but when I try to connect to w98 using smbmount or smbclient it still 
+drops returning packets. I think that they should be ESTABLISHED packets 
+and should be accepted. Can you help me to find, where is a problem?
 
-#allow anything new from LAN
-iptables -A INPUT -m state --state NEW -i ! ppp0 -j ACCEPT
+Relevant syslog message:
 
-#drop mySQL
-iptables -A INPUT -p tcp --dport 3306 -j REJECT --reject-with tcp-reset
+May  9 13:22:02 fw kernel: Rule21:IN=eth0 OUT= 
+MAC=00:02:1b:f1:50:26:00:50:fc:50:24:6c:08:00 SRC=192.168.1.72 
+DST=192.168.1.2 LEN=90 TOS=0x00 PREC=0x00 TTL=128 ID=39856 PROTO=UDP 
+SPT=137 DPT=32784 LEN=70
 
-#open ident
-#iptables -A INPUT -p tcp --dport 113 -j ACCEPT
+where 192.168.1.2 is linuxbox from where I am trying to connect w98 
+computer with ip 192.168.1.72 and Rule21 is the last rule in the INPUT 
+table:
 
-#open httpd
-#iptables -A INPUT -p tcp --dport 80 -m limit --limit 2/s -j
-LOG --log-prefix "Apache "
-#iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+ $IPTABLES -A INPUT -j LOG --log-prefix="Rule21:"
 
-#open ssh
-#iptables -A INPUT -p tcp --dport 22 -m limit --limit 2/s -j
-LOG --log-prefix "SSH "
-#iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+Default policy of INPUT table is DROP
 
-#allow identd
-#iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+I am using Debian woody with 2.4.18 kernel and iptables v1.2.5
 
-#log specific curious ports before accepting/denying them
-iptables -A INPUT -i ppp0 -p tcp --dport 31337 -m limit --limit 2/s -j
-LOG --log-prefix "Trojan "
-iptables -A INPUT -i ppp0 -p tcp --dport 27374 -m limit --limit 2/s -j
-LOG --log-prefix "Trojan "
-iptables -A INPUT -i ppp0 -p tcp --dport 12345 -m limit --limit 2/s -j
-LOG --log-prefix "Trojan "
-
-#iptables -A INPUT -i ppp0 -p tcp --dport 6666:7000 -m limit --limit 2/s -j
-LOG --log-prefix "IRC "
-iptables -A INPUT -i ppp0 -p tcp --dport 6346 -m limit --limit 2/s -j
-LOG --log-prefix "6346 DoS "
-
-#allow anything out of service range for tcp/udp (ports over 1024)
-iptables -A INPUT -p tcp --dport 1024: -j ACCEPT
-iptables -A INPUT -p udp --dport 1024: -j ACCEPT
-
-#Log everything else below 1024
-iptables -A INPUT -i ppp0 -p tcp -m limit --limit 1/s -j LOG --log-prefix
-"DROPPED "
-iptables -A INPUT -i ppp0 -p udp -m limit --limit 1/s -j LOG --log-prefix
-"DROPPED "
-iptables -A INPUT -i ppp0 -p icmp -m limit --limit 1/s -j LOG --log-prefix
-"DROPPED "
-
-#drop the rest with devious tcp reset
-iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
-iptables -A INPUT -j DROP
-
-#setup NAT
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+ucar
 
 
-#forward chain
 
-#syn flood limiting
-iptables -A FORWARD -p tcp --syn -m limit --limit 1/s -j ACCEPT
-iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit
-1/s -j ACCEPT
-
-
-#enable ip forwarding
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-echo "Starting IP Forwarding"
-
-
-The symptoms:
-	The linux box connects properly to my DSL service, and can see the windows
-box on the local LAN (windows box can see the linux box aswell). I can
-access services on the linux box such as ssh and http, but something is
-preventing the windows box from seeing anything on the outside world via the
-DSL. Any ideas/solutions?
-
-		Cheers,
-			Tyler
-
-Tyler Kemp
-----------
-tylerk4@sbcglobal.net
-tyler@strtok.co.uk
-tylerk4@softhome.net
 
 
