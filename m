@@ -1,9 +1,9 @@
 From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: BUG(?) - SNAT causes networking to stop.
-Date: Thu, 31 Oct 2002 23:35:03 +0100
+Subject: Re: iptables, portforward, DNAT, SNAT
+Date: Thu, 31 Oct 2002 22:54:41 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DC1B017.1060700@fugmann.dhs.org>
-References: <Pine.LNX.4.44.0210311202110.21650-100000@robotron.office.tiedyenetworks.com>
+Message-ID: <3DC1A6A1.6060900@fugmann.dhs.org>
+References: <542FEF78.196CA339.03240133@netscape.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,74 +17,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: mike-netfilter@tiedyenetworks.com
+To: Thomas Meindl <methodaut@netscape.net>
 Cc: netfilter@lists.netfilter.org
 
-mike-netfilter@tiedyenetworks.com wrote:
-> Howdy folks,
+Thomas Meindl wrote:
+> Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
 > 
-> 	I've got a router I am experamenting with SNAT on.  I've hit a 
-> situation where local ping processes are forced to stop transmitting (get 
-By local ping process, I guess you mean processes which are started on 
-the firewall itself.
-> caught in a loop on sendmsg() ) until the box receives packets from some 
-> external source (ping it from another machine on the network for example), 
-> and then it wakes right up without missing a beat. Experamentally, I've 
-> had ping waiting for several minutes this way. Typically it's able to fire 
-> off say 10 packets (and get replies) before it starts hanging. Using 
-> larger packets - say, 3000 bytes, results in only being able to fire off 3 
-> before stopping. I'm running tcpdump to verify that it's not emitting 
-> packets and strace to verify it's stuck looping on sendmsg(). Very weird.
-Can you internet connection really handle packets this big? How are you 
-connected to the internet? What happens if you use a smaller packet size 
-(e.g. 64 byte)
+> no, i didn't write it that way in the actual script.
+> just to save some tipping here..
 > 
-> 	I think it's netfilter related because I can reset netfilter to 
-> zero rules (allow everything) and the problem goes away. Then I can run my 
-> netfilter script and the problem returns. The rule set I'm working 
-> with provides snat for the 8 /24 networks that will connect to this 
-> router, and provides each network with it's own seperate 'outgoing 
-> ip address' (for accounting and management conveience). Here's my nat 
-> table after my script sets it up:
+> * stands for the three below
+> 
+> sorry for that confusing
+> I simply should have copied and pasted it like
+> 
+> echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> echo 1 > /proc/sys/net/ipv4/tcp_syncookie
+> 
+>>># enable masquerading
+>>>iptables -t NAT -A POSTROUTING -o $EXTIF -j MASQUERADE
+>>
+>>"NAT" in this rule should read "nat" - it matters !
+>>
 > 
 > 
-> Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source               destination         
->    86  4936 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0          
+> spelling mistake sorry! nat
 > 
-> Chain POSTROUTING (policy ACCEPT 39 packets, 28092 bytes)
->  pkts bytes target     prot opt in     out     source               destination         
->     0     0 SNAT       all  --  *      eth0    192.168.1.0/24       0.0.0.0/0          to:a.b.c.1 
->     0     0 SNAT       all  --  *      eth0    192.168.2.0/24       0.0.0.0/0          to:a.b.c.2 
->     0     0 SNAT       all  --  *      eth0    192.168.3.0/24       0.0.0.0/0          to:a.b.c.3 
->     0     0 SNAT       all  --  *      eth0    192.168.4.0/24       0.0.0.0/0          to:a.b.c.4 
->     1    84 SNAT       all  --  *      eth0    192.168.5.0/24       0.0.0.0/0          to:a.b.c.5 
->     0     0 SNAT       all  --  *      eth0    192.168.6.0/24       0.0.0.0/0          to:a.b.c.6 
->     0     0 SNAT       all  --  *      eth0    192.168.7.0/24       0.0.0.0/0          to:a.b.c.7 
->     0     0 SNAT       all  --  *      eth0    192.168.8.0/24       0.0.0.0/0          to:a.b.c.8 
-> 
-> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source               destination         
->    39 28092 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0          
-> 
-> Chain logndrop (0 references)
->  pkts bytes target     prot opt in     out     source               destination         
->     0     0 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0          LOG flags 0 level 4 
->     0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0          
+Something that completely eludes me. You have hand typed the script you 
+  post for debugging? Then how do you know that the error is in the script?
 
-No packets generated on the machine itself would ever hit any of the 
-SNAT rules, so I guess that the SNAT rules are not the problem, but 
-maybe some rules in the INPUT or OUTPUT chains in the filter table.
-could you post how these rules are inserted (stating the actual iptables 
-commands.)
+Try to narrow the problem down to a very small set of rules, and test 
+the script. If it still does not work then post the script as is - copy 
+and paste. I imagine that over 50% of all script questions posted to 
+this list would answer itself, it the scripts posted had actually been 
+tested.
 
+I'm not flaming you, and apologize if you take it that way.
+I'm trying to provide you with the tools to solve the problem. I guess 
+that if you work systematically, then one of two will happen: you
+solve the problem yourself, or you will be able to ask very 
+accurate/specific questions to the list, which has a much higher chance 
+of being answered correctly.
 
 Regards
 Anders Fugmann
-
---
-Author of FIAIF
-FIAIF is an intelligent Firewall
-http://fiaif.fugmann.dhs.org
 
 
