@@ -1,14 +1,12 @@
-From: Alex Satrapa <alex@lintelsys.com.au>
-Subject: Re: General denial question (tarpitting)
-Date: Mon, 29 Mar 2004 08:59:50 +1000
+From: rrecaba@usb.ve
+Subject: Double Match or jump (was Re: detect original chain after jump?)
+Date: Sun, 28 Mar 2004 21:27:25 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <406758E6.8090106@lintelsys.com.au>
-References: <Pine.LNX.4.44.0403251546510.29753-100000@e-smith.charlieb.ott.istop.com> <40634D80.9050609@pay2send.com> <4063B458.4030501@smgtec.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0403281955110.8682-100000@anis.dst.usb.ve>
+References: <200403271514.07236.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4063B458.4030501@smgtec.com>
+In-Reply-To: <200403271514.07236.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Daniel Chemko wrote:
-> Check out the Patch-o-matic enhancements to netfilter.
-> TARPIT? Check.
 
->> Charlie Braddy wrote, on the qpsmtpd list, which is about
->> a perl drop-in replacement for qmail-smtpd:
->>
->>> If you are going to undertake the noble task of sucking up their 
->>> bandwidth, then I'd suggest that you do the job thoroughly, and make 
->>> sure that their TCP stack decides to retransmit as many packets as 
->>> possible. Use iptables (for instance) to selectively/randomly drop 
->>> packets.
+Hello again,
 
-Note that any kind of packet loss as high as 5% will cause the TCP stream to wither and die. I'm not sure of the exact numbers, but if 1 in 20 packets goes missing, you'll find the TCP flow-control ends up backing off more than it regains through the slow-start mechanism. Remember, TCP treats packet loss as a symptom of congestion. The protocol cannot handle sustained packet loss for any other reason.
+So i decided to ask this again cause it is actually not related to the
+original post...
 
-TARPIT simply causes the transmission to cease by setting the window size to 0. TARPIT achieves DoS only if enough "targetted" sites use the TARPIT option, thus depriving the originator or system resources (required for tracking the connection). TARPIT keeps the connection alive (ACK packets flow freely), but prevents the resources being released, since the data isn't flowing.
+Supose I want to log and drop a packet with certain criteria. Actually,
+imagine that I want to send the logged info to a program in userspace. I
+have seen recommendations in the lines of:
 
-Neither packet loss nor TARPIT will result in a demand-side bandwidth DoS.
+iptables <whatever> <MATCH> -j ULOG
+iptables <whatever> <MATCH> -J DROP
 
-If you want to achieve DoS by continual retransmission, you'll have to keep sending back ACKs for one particular sequence number, claiming a very large window.
+That is doing a double match. So I wanted to ask: has anyone done any
+experimentation to see when exactly is it better to do another chain,
+call it "temp", to do the ULOG and DROP unconditionally, and call it from
+a single one that does the match?
+
+iptables <whatever> <MATCH> -j temp
+
+iptables -A temp -j ULOG
+iptables -A temp -j DROP
+
+Of course, it cant be related to the final jumps, so I would expect the
+drop and ulog not being important. I would conjecture that what is important
+is the actually the MATCH. If the MATCH is very complex, is it
+better to go the second way. Has anyone done experiments on this?
+
+The reason this is important to me is because I am working on a user level
+program that is supposed to analize and generate rules dynamically. I am
+working on a very general multipurpose language and specification... so, I
+want to be able to decide what kind of rules I am suppose to generate in
+different scenarios ... kind of like bringing iptables alive... or
+actually giving it a life of its own... :)
+
+Regards,
+Ruben.
+
 
