@@ -1,16 +1,14 @@
-From: Cody Harris <hchs@ns.sympatico.ca>
-Subject: Re: Adding a flag to a packet
-Date: Tue, 30 Mar 2004 18:19:15 -0400
+From: Tony Earnshaw <tonye@billy.demon.nl>
+Subject: Re: Redirecting ports on localhost
+Date: Wed, 31 Mar 2004 00:03:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040330181915.787349e5@darna.vectec.net>
-References: <20040328155231.32b07799@darna.vectec.net>
-	<200403302223.33019.Antony@Soft-Solutions.co.uk>
-	<20040330172840.491b9b4a@darna.vectec.net>
-	<200403302240.29413.Antony@Soft-Solutions.co.uk>
+Message-ID: <1080684198.2471.106.camel@localhost>
+References: <20040330133505.22298.90925.Mailman@vishnu.netfilter.org>
+	 <406980E5.6080107@personalsoft.com.br> <200403302013.40298.lists@edeca.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403302240.29413.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200403302013.40298.lists@edeca.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,47 +21,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks. You helped a lot. Hopefully i can take it from here!
+tir, 30.03.2004 kl. 21.13 skrev David Cannings:
 
-On Tue, 30 Mar 2004 22:40:29 +0100,
-Someone named Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> I've linked to the English HTML version of the HOWTO, other languages and 
+> formats are available at:
+> 
+> http://netfilter.org/documentation/index.html#documentation-howto
+> 
+> Have a read, see if you can make some sense of it.  If not, post back with 
+> what you've tried and why it doesn't work.  For the record, I've never 
+> tried redirecting a port to localhost although I can see no reason why it 
+> would not work as any other does.  I will have to give it a go myself 
+> when I have a few minutes spare.
 
-> On Tuesday 30 March 2004 10:28 pm, Cody Harris wrote:
-> 
-> > On Tue, 30 Mar 2004 22:23:33 +0100, Antony Stone wrote:
-> > >
-> > > There are other ways to do what you want, and the IP tunnel solution is
-> > > not at all complicated (however it is not at all secure, either - packets
-> > > are transferred across the Internet between the two networks with no
-> > > encryption or other attempt to hide the contents).
-> >
-> > Would the VPN also transmit the lan-based packets (such as the ones needed
-> > to run games).
-> 
-> A VPN will route anything - just like a standard router - except that the 
-> traffic is hidden (encrypted) as it passes across the Internet.   Basically, 
-> if you imagine having a router with two interfaces, one connected to network 
-> A and the other connected to network B, except the networks are a few 
-> thousand miles apart, that's what a VPN does for you.
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> One good tern deserves another.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+Hi David,
 
+Dunno if you're the one responsible for the general Netfilter HOWTO. But
+if so, could you please change "iplimit" to "connlimit"? I've used vi to
+great effect after txt2html for my own copy, but I frigged around with
+iplimit for a while with the non-existent iplimit first. I was *not*
+pleased.
+
+B.t.w., connlimit works a treat :)
+
+Best,
+
+--Tonni
 
 -- 
-+------------------+-----------------------------+
-| Cody Harris      | --------------------------- |
-| ---------------- | --------------------------- |
-+------------------+-------+---------------------+---+
-| *Sigh*. No key.                                    |
-+----------------------------------------------------+
+
+mail: billy - at - billy.demon.nl
+http://www.billy.demon.nl
+
 
