@@ -1,31 +1,44 @@
-From: "David S. Miller" <davem@davemloft.net>
-Subject: Re: Netfilter ipt_hashlimit
-Date: Mon, 14 Mar 2005 21:41:38 -0800
-Message-ID: <20050314214138.025b2e43.davem@davemloft.net>
-References: <20050310222934.C1044@flint.arm.linux.org.uk>
-	<E1D9itD-00039G-00@gondolin.me.apana.org.au>
+From: "Alexander Newald" <alexander@newald.de>
+Subject: NAT & forwarding
+Date: Tue, 15 Mar 2005 07:35:33 +0100
+Message-ID: <002701c52929$30fc82a0$6300a8c0@arbeitszimmer>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <E1D9itD-00039G-00@gondolin.me.apana.org.au>
-Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-On Fri, 11 Mar 2005 23:05:11 +1100
-Herbert Xu <herbert@gondor.apana.org.au> wrote:
+Hello,
 
-> Russell King <rmk+lkml@arm.linux.org.uk> wrote:
-> > With current-ish Linus 2.6 BK, I'm seeing this:
-> > 
-> > net/ipv4/netfilter/ipt_hashlimit.c:96: warning: type defaults to `int' in declaration of `DECLARE_LOCK'
-> > net/ipv4/netfilter/ipt_hashlimit.c:96: warning: parameter names (without types) in function declaration
-> > 
-> > Looks like ipt_hashlimit.c is missing an include?
-> 
-> Indeed.  It should include lockhelp.h directly.
-> 
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+I have some problems with the fullowing:
 
-Applied, thanks Herbert.
+I have one box (123.123.123.123) from with I would like to forward all 
+traffic comeing to this box to another (12.12.12.12). This should be 
+transparent for the clients. So if I do a http or ftp request to 
+123.123.123.123 the answer (webpage, ftp login) comes from 12.12.12.12.
+
+I like to have this but not for ssh (so I can login to 123.123.123.123).
+
+I thought that I should do
+
+iptables -t nat -I PREROUTING -d 123.123.123.123 -s 0/0 -j DNAT --to 
+12.12.12.12
+
+on 123.123.123.123
+
+But it dosn't work. Do I need to setup something on 12.12.12.12?
+
+Thanks,
+
+Alexander Newald 
+
+
