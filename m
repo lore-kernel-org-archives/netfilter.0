@@ -1,11 +1,13 @@
-From: Adharsh Praveen R <adarsh@multitech.co.in>
-Subject: PPTP Conntrack
-Date: Tue, 15 Oct 2002 12:48:15 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IPSec passthrough with iptables
+Date: Tue, 15 Oct 2002 09:22:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DABC137.1DFC4D12@multitech.co.in>
+Message-ID: <20021015082231.RBQR27697.mta05-svc.ntlworld.com@there>
+References: <20021015044722.73838.qmail@web21205.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021015044722.73838.qmail@web21205.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,32 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/html; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-hai
-<p>I would like to know the differences between pptp-conntrack-nat.patch
-<br>and pptp-gre-ct-nat-0.83.patch.I am trying to apply these patches to
-my 2.4.18 kernel.I am using iptables-1.2.6a.I applied pptp-conntrack-nat.patch
-first to the kernel. Later I tried appling pptp-gre-ct-nat-0.83.patch.
-<br>when I try to compile the kernel after saying make menuconfig and make
-<br>bzImage,make install, the compilation fails in make modules saying
-<br><b>structure has no member named 'master' in ip_conntrack_pptp.c</b>
-<br><b>structure has no member named 'list' in ip_conntrack_pptp.c</b>
-<br>(This is for the structure ip_ct_pptp )
-<br>when I check the file, the structure has a member called slave.
-<br>pptp-conntrack-nat.patch wants a member called master in the structure.
-<br>where as pptp-gre-ct-nat-0.83.patch adds a member called slave in the
-<br>structure.
-<p>Can I apply these two patches together or any one of them is enough
-<p>for PPTP to function with NAT. If both are needed, in which order&nbsp;
-should I apply
-<p>the patches.
-<br>&nbsp;
-<p>Thanks in advance.
-<p>regards,
-<br>adharsh.</html>
+On Tuesday 15 October 2002 5:47 am, Thomas Smith wrote:
 
+> I need to be able to connect to clients IPSec VPN from
+> behind and iptables firewall. I know the VPN is
+> working and my firewall is masquing traffic but IPSec
+> doesn't work from systems behind my firewall.
+>
+> I've got a pretty basic firewall. It's simply masquing
+> internal traffic.
+>
+> Are there some iptables' rules or patches I'm missing?
+
+No patches needed.   No special support in netfilter needed.
+
+Make sure you are forwarding (both ways :-) protocol 50 (ESP), protocol 51 
+(AH) and UDP sport 500 / dport 500 (IKE).
+
+Also make sure you are using IPsec in tunnel mode, not transport mode 
+(transport mode will not work through NAT).
+
+Hope this helps,
+
+Antony.
+
+-- 
+
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
 
