@@ -1,16 +1,13 @@
-From: Francois Chenais <francois@chenais.net>
-Subject: Re: Masquerade (Newbie)
-Date: Mon, 10 Jun 2002 18:54:52 +0200
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: SNAT of ICMP fragmentation-nee
+Date: Mon, 10 Jun 2002 14:03:34 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020610185452.515736e4.francois@chenais.net>
-References: <200206091647.32562.richard.downing@bcs.org.uk>
-	<200206092118.53543.richard.downing@bcs.org.uk>
-	<200206092126.g59LQEA23512@Networker.rockstone.co.uk>
-	<200206101222.28237.richard.downing@bcs.org.uk>
+Message-ID: <20020610180334.GA21405@cannon.eng.us.uu.net>
+References: <Pine.LNX.4.44.0206101340570.30649-100000@albert.ha-vel.cz> <200206101218.g5ACIKU08127@vulcan.rissington.net> <0GXH0068QZEYYV@l-daemon>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206101222.28237.richard.downing@bcs.org.uk>
+Content-Disposition: inline
+In-Reply-To: <0GXH0068QZEYYV@l-daemon>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,53 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: richard.downing@bcs.org.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jack Bowling <jbinpg@shaw.ca>
 Cc: netfilter@lists.samba.org
 
-Have you=20
+On Mon, Jun 10, 2002 at 09:06:41AM -0700, Jack Bowling wrote:
 
-    modprobe iptable_nat
+> ** Reply to message from Antony Stone <Antony@Soft-Solutions.co.uk> on Mon, 10 Jun 2002 13:18:12 +0100
+> 
+> 
+> > On Monday 10 June 2002 12:45 pm, jakub@angel.cz wrote:
+> > 
+> > > :) this is really not the problem, now I am logging all packets, no adress
+> > >
+> > > specification ;)
+> > >
+> > > -A POSTROUTING -p icmp -m icmp --icmp-type 3/4 -j LOG --log-prefix "icmp
+> > > SNAT POST "
+> > 
+> > Hmmm.   Okay - this is beyond my understanding of netfilter - can anyone else 
+> > suggest why icmp packets going through the machine would get logged and 
+> > processed by PREROUTING and FORWARD but not by POSTROUTING ?
+> 
+> Wouldn't hurt to add the interface(s).
 
-	Fran=E7ois
+Absolutely!! You omit the -i/-o switches only when you _really_
+don't care about the direction of the packet flow.
 
+Ramin
 
-
-On Mon, 10 Jun 2002 17:44:57 +0100
-Richard A Downing <richard.downing@bcs.org.uk> wrote:
-
-  | Antony,
-  |=20
-  | I was helped by email from another list member.  The error below goes a=
-way if=20
-  | the kernel modules are compiled in (I.E. NOT modules).  Perhaps there i=
-s a=20
-  | kernel bug here.
-  |=20
-  | I am pleased to say that I now have Masquerade running fine, and my LAN=
-=20
-  | machines happily soaking my bandwidth ;-)
-  |=20
-  | Thanks for your help,
-  | Richard.
-  |=20
-  |=20
-  | On Sunday 09 June 2002 22:26, Antony Stone wrote:
-  | On Sunday 09 June 2002 9:18 pm, Richard A Downing wrote:
-  |=20
-  | > root:/usr/lib/iptables$: iptables -t nat -A POSTROUTING -o ppp0 -j
-  | > MASQUERADE
-  | > iptables: No chain/target/match by that name
-  |=20
-  | Okay.   I still do not know why you cannot use the MASQUERADE target, b=
-ut I
-  | do not use modules - I have everything compiled-in to the kernel, so I =
-don't
-  | know what you need to look for to find out why that command isn't worki=
-ng.
-  | Hopefully someone else can help on that one ?
-  |=20
-  |=20
-  |=20
-
+> jb
+> 
+> -- 
+> Jack Bowling
+> mailto: jbinpg@shaw.ca
 
