@@ -1,11 +1,13 @@
-From: "Marius Mertens" <marius.mertens@gmx.de>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Packets that should have been DNATted appearing in INPUT table
-Date: Tue, 11 Jan 2005 16:03:11 +0100
-Message-ID: <002801c4f7ee$ccf74210$4206a8c0@loki>
+Date: Tue, 11 Jan 2005 11:29:14 -0500
+Message-ID: <20050111162914.GA14045@bender.817west.com>
 References: <Pine.LNX.4.05.10501101924120.16399-100000@darkstar.sysinfo.com>
+	<002801c4f7ee$ccf74210$4206a8c0@loki>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <002801c4f7ee$ccf74210$4206a8c0@loki>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,133 +18,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: "R. DuFresne" <dufresne@sysinfo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi again,
+On Tue, Jan 11, 2005 at 04:03:11PM +0100, Marius Mertens wrote:
+> Hi again,
+> 
+> I just subscribed to this list in order to save the moderator some work and 
+> minimize the delays in our discussion ;-)
+> So no need to cc anymore.
 
-I just subscribed to this list in order to save the moderator some work and 
-minimize the delays in our discussion ;-)
-So no need to cc anymore.
+we greatly appreciate that.
 
-On Tuesday, January 11, 2005 1:27 AM,
-R. DuFresne wrote:
+> On Tuesday, January 11, 2005 1:27 AM,
+> R. DuFresne wrote:
+> 
+> >[...]
+> >validate your conclusions, adding a LOG rule prior to the drop might
+> >help track down 'why' you are seeing that 'counter' increment.
+> 
+> Below are the packets logged by
+> iptables -A INPUT -i ppp0 -p tcp --dport 4664 -j LOG --log-level 
+> 6 --log-prefix "SUSPICIOUS: "
+> after running some minutes.
 
-> [...]
-> validate your conclusions, adding a LOG rule prior to the drop might
-> help track down 'why' you are seeing that 'counter' increment.
+you could easily be creating this situation yourself with your "testing"
+methodology.  if you are:
 
-Below are the packets logged by
-iptables -A INPUT -i ppp0 -p tcp --dport 4664 -j LOG --log-level 
-6 --log-prefix "SUSPICIOUS: "
-after running some minutes.
+1) starting firewall
+2) allowing connections to establish
+3) stopping firewall, which includes removing ip_conntrack
+4) starting firewall
 
-Thanks,
+all the packets that were part of the established connections in step 2
+will no longer have a conntrack entry that ties them to the DNAT, and
+they will end up in INPUT and get dropped.
 
-Marius
+i'm not saying this is what you are doing--but it's an explanation for
+what you're seeing--the DNAT functionality in netfilter works properly
+in my experience.
 
-IN=ppp0 OUT= MAC= SRC=140.123.66.197 DST=217.225.53.155 LEN=48 TOS=0x00 
-PREC=0x00 TTL=109 ID=55204 DF PROTO=TCP SPT=1440 DPT=4664 WINDOW=65535 
-RES=0x00 SYN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=241 ID=32322 DF PROTO=TCP SPT=53421 DPT=4664 WINDOW=0 RES=0x00 
-ACK RST URGP=0
-IN=ppp0 OUT= MAC= SRC=84.30.47.18 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=116 ID=16344 DF PROTO=TCP SPT=4265 DPT=4664 WINDOW=16816 
-RES=0x00 ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=84.30.47.18 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=116 ID=16723 DF PROTO=TCP SPT=4265 DPT=4664 WINDOW=16816 
-RES=0x00 ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=84.30.47.18 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=116 ID=17446 DF PROTO=TCP SPT=4265 DPT=4664 WINDOW=16816 
-RES=0x00 ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=84.30.47.18 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=116 ID=18857 DF PROTO=TCP SPT=4265 DPT=4664 WINDOW=16816 
-RES=0x00 ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=213.103.35.61 DST=217.225.53.155 LEN=425 TOS=0x00 
-PREC=0x00 TTL=121 ID=28543 DF PROTO=TCP SPT=3654 DPT=4664 WINDOW=64814 
-RES=0x00 ACK PSH URGP=0
-IN=ppp0 OUT= MAC= SRC=213.103.35.61 DST=217.225.53.155 LEN=1452 TOS=0x00 
-PREC=0x00 TTL=121 ID=30075 DF PROTO=TCP SPT=3654 DPT=4664 WINDOW=64814 
-RES=0x00 ACK PSH URGP=0
-IN=ppp0 OUT= MAC= SRC=213.103.35.61 DST=217.225.53.155 LEN=1280 TOS=0x00 
-PREC=0x00 TTL=121 ID=31490 DF PROTO=TCP SPT=3654 DPT=4664 WINDOW=64768 
-RES=0x00 ACK PSH URGP=0
-IN=ppp0 OUT= MAC= SRC=62.214.27.81 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=123 ID=29135 DF PROTO=TCP SPT=2687 DPT=4664 WINDOW=46391 
-RES=0x00 ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=67.126.22.246 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=241 ID=47633 DF PROTO=TCP SPT=4984 DPT=4664 WINDOW=0 RES=0x00 
-ACK RST URGP=0
-IN=ppp0 OUT= MAC= SRC=212.45.48.230 DST=217.225.53.155 LEN=62 TOS=0x00 
-PREC=0x00 TTL=115 ID=34124 DF PROTO=TCP SPT=3527 DPT=4664 WINDOW=17310 
-RES=0x00 ACK PSH URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=58370 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=58435 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=58510 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=58698 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=59086 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=59598 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=60126 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=60901 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=66.122.241.147 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=246 ID=45285 DF PROTO=TCP SPT=3010 DPT=4664 WINDOW=0 RES=0x00 
-ACK RST URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=61891 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=213.200.229.3 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=246 ID=9736 PROTO=TCP SPT=23067 DPT=4664 WINDOW=0 RES=0x00 RST 
-URGP=0
-IN=ppp0 OUT= MAC= SRC=213.200.229.3 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=246 ID=9737 PROTO=TCP SPT=23067 DPT=4664 WINDOW=0 RES=0x00 RST 
-URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=62757 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=63693 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=64849 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=52 TOS=0x00 
-PREC=0x00 TTL=49 ID=421 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK FIN URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=49 ID=1546 PROTO=TCP SPT=54021 DPT=4664 WINDOW=65535 RES=0x00 
-ACK RST URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=241 ID=18689 DF PROTO=TCP SPT=54021 DPT=4664 WINDOW=0 RES=0x00 
-ACK RST URGP=0
-IN=ppp0 OUT= MAC= SRC=64.237.189.227 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=244 ID=17409 DF PROTO=TCP SPT=3846 DPT=4664 WINDOW=0 RES=0x00 
-ACK RST URGP=0
-IN=ppp0 OUT= MAC= SRC=63.201.36.204 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=241 ID=25925 DF PROTO=TCP SPT=54581 DPT=4664 WINDOW=0 RES=0x00 
-ACK RST URGP=0
-IN=ppp0 OUT= MAC= SRC=82.83.169.119 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=58 ID=30825 PROTO=TCP SPT=2276 DPT=4664 WINDOW=0 RES=0x00 RST 
-URGP=0
-IN=ppp0 OUT= MAC= SRC=62.1.170.19 DST=217.225.53.155 LEN=40 TOS=0x00 
-PREC=0x00 TTL=115 ID=56835 PROTO=TCP SPT=1776 DPT=4664 WINDOW=0 RES=0x00 RST 
-URGP=0
+-j
 
+--
+"To alcohol: the cause of, and solution to, all of life's problems."
+        --The Simpsons
 
