@@ -1,14 +1,14 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Weird TCP flags?
-Date: Fri, 12 Dec 2003 11:05:19 -0500
+From: Michael Gale <mgale@utilitran.com>
+Subject: Re: iptable_nat module slows/hoses my Redhat 9.0 box
+Date: Fri, 12 Dec 2003 09:11:31 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312121105.19702.JALaramie@Loudoun-Fairfax.com>
-References: <003101c3c065$f61ad790$13fea8c0@melita.com> <200312120941.44245.JALaramie@Loudoun-Fairfax.com> <200312121438.24448.Antony@Soft-Solutions.co.uk>
+Message-ID: <20031212091131.08087ae5.mgale@utilitran.com>
+References: <EFBADA8C200C2B418DA39734FD15475B0B20EF@skat.sky.com>
+	<20031212071301.GP15606@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312121438.24448.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <20031212071301.GP15606@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +19,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Friday 12 December 2003 09:38, Antony Stone wrote:
-> On Friday 12 December 2003 2:41 pm, Jeffrey Laramie wrote:
-> > Duh! Boy do I feel like an idiot. Last night I blamed it on
-> > sleeplessness. Today I'll blame it on coffee. Yup, that's it, I haven't
-> > had enough coffee yet.
->
-> Time for a weekend, perhaps, Jeff?
->
+Hello,
 
-Yeah, I definitely need a vacation. Next time I post something stupid like 
-that *smack* me and say "Shut Up Jeff, let me answer this!"
+	Am I missing something here, I have dual 2.X Ghz processor box with 4GB of RAM. 
 
-The TTL of his packet was about 60 secs lower than what I usually see which 
-makes Chris's explanation sound likely. How does TTL get calculated? Does 
-each host set a new TTL for it's packets or does it calculate it from the 
-time of the original SYN packet? In this situation which host is slow 
-responding, the server?
+The box only has 2 interfaces but it has 22 "floating IP address" because it runs in a master / slave cluster using linux-ha. 
 
-Jeff
+The master box has a complex Iptables scripts -- that consists of 25 user defined chains, one for each IP. Plus each IP has it's own NAT rule for inbound and outbound traffic.
+
+I have not really notice any performance problems. I am using a custom 2.4.23 kernel with all the Iptables options built in.
+
+Between the standard just forward with NO NAT and the complex iptables script. There is basicly no performance change ... sure the initial FTP command channel connection is a little slower. But besides that all other performance issues have gone unnoticed by any users.
+
+Michael.
+
+
+On Fri, 12 Dec 2003 08:13:01 +0100
+Harald Welte <laforge@netfilter.org> wrote:
+
+> On Thu, Dec 11, 2003 at 09:47:25PM -0800, Kishore Dharmavaram wrote:
+> > Hi All,
+> > 
+> > I find that after inserting "iptable_nat" module on my RH9.0(2.4.20-19.9)
+> > box, session-setup(ip_conntrack)  performance gets very bad. 
+> 
+> yes, that's true.  I think we cannot state often enogh: DO NOT load
+> iptable_nat if you don't need nat.  
+> 
+> > I am wondering why "iptable_nat" is slowing doing the box so much when I
+> > don't have any NAT rules defined.
+> 
+> NAT is inherently complex.  and in order to support any kind of nat,
+> every connection (even the non-nat'ed ones) need to be placed in two
+> additional hash tables.  
+> 
+> If you just use conntrack, a single hash table is sufficient.. 
+> 
+> > Do you guys know of any netfilter patches made to address/fix this issue?.
+> 
+> There is no way to 'address' this issue other than not using NAT.
+> 
+> > Thanks,
+> > Kishore
+> 
+> -- 
+> - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+> ============================================================================
+>   "Fragmentation is like classful addressing -- an interesting early
+>    architectural error that shows how much experimentation was going
+>    on while IP was being designed."                    -- Paul Vixie
+> 
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
