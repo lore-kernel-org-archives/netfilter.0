@@ -1,9 +1,11 @@
-From: Thomas Carrie <thocar@free.fr>
-Subject: bastille linux blocking all outgoing connection
-Date: Sat, 19 Feb 2005 20:17:49 +0100
-Message-ID: <cv836s$jqb$1@sea.gmane.org>
+From: srg <srgqwerty@telefonica.net>
+Subject: Re: Support for asymmetric routing?
+Date: Sat, 19 Feb 2005 22:42:50 +0100
+Message-ID: <4217B2DA.4090803@telefonica.net>
+References: <20050219163917.89551.qmail@web50710.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050219163917.89551.qmail@web50710.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,96 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Jeff McCarthy <intel1914a@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Jeff:
 
-I've setup a iptables config using bastille-linux, I have only one 
-network interface (eth0), I'm running debian sarge
+I think that there is a project called "ct_sync" that does exactly this.
+Also, I think (not sure) that this is part of the netfilter project.
 
-If I have a look at the tables, it seems to me that outgoing connection 
-(like wget http://apache.org) should be accepted, it not the case, does 
-someone understand why ?
+Jeff McCarthy wrote:
 
-./bastille-firewall status
-Chain INPUT (policy DROP 0 packets, 0 bytes)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 DROP       tcp  --  !lo    *       0.0.0.0/0 
-127.0.0.0/8
-     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0 
-0.0.0.0/0
-     0     0 DROP       all  --  *      *       224.0.0.0/4 
-0.0.0.0/0
-  1053 90569 PUB_IN     all  --  eth+   *       0.0.0.0/0 
-0.0.0.0/0
-     0     0 DROP       all  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 DROP       all  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
-  pkts bytes target     prot opt in     out     source 
-destination
-   781  135K PUB_OUT    all  --  *      eth+    0.0.0.0/0 
-0.0.0.0/0
-
-Chain INT_IN (0 references)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
-0.0.0.0/0
-     0     0 DROP       all  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-
-Chain INT_OUT (0 references)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
-0.0.0.0/0
-     0     0 ACCEPT     all  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-
-Chain PAROLE (5 references)
-  pkts bytes target     prot opt in     out     source 
-destination
-  1028 87089 ACCEPT     all  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-
-Chain PUB_IN (3 references)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
-0.0.0.0/0           icmp type 3
-     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
-0.0.0.0/0           icmp type 0
-     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0 
-0.0.0.0/0           icmp type 11
-     6   329 PAROLE     tcp  --  *      *       0.0.0.0/0 
-0.0.0.0/0           tcp dpt:80
-     0     0 PAROLE     tcp  --  *      *       0.0.0.0/0 
-0.0.0.0/0           tcp dpt:25
-  1022 86760 PAROLE     tcp  --  *      *       0.0.0.0/0 
-0.0.0.0/0           tcp dpt:22
-     0     0 PAROLE     tcp  --  *      *       0.0.0.0/0 
-0.0.0.0/0           tcp dpt:993
-     0     0 PAROLE     tcp  --  *      *       0.0.0.0/0 
-0.0.0.0/0           tcp dpt:995
-     0     0 DROP       icmp --  *      *       0.0.0.0/0 
-0.0.0.0/0
-    25  3480 DROP       all  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-
-Chain PUB_OUT (3 references)
-  pkts bytes target     prot opt in     out     source 
-destination
-   772  122K ACCEPT     all  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-
-Thanks for your help
+>I would like to configure 2 linux boxes for use with
+>asymmetric routing. Is there a way to share state
+>tables between 2 different linux boxes? If traffic
+>goes out through one linux box I want to be able to
+>allow it back through another box, based on state
+>information. 
+>
+>I found the netfilter-ha trunk but not sure if that
+>will do what I need.
+>
+>Thanks,
+>
+>--Jeff
+>
+>
+>	
+>		
+>__________________________________ 
+>Do you Yahoo!? 
+>Yahoo! Mail - You care about security. So do we. 
+>http://promotions.yahoo.com/new_mail
+>
+>
+>  
+>
 
 
