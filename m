@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Ip accounting Help--> Urgent
-Date: Sat, 26 Jun 2004 10:29:36 +0100
+From: Askar Ali Khan <askarali@gmail.com>
+Subject: Re: ipfilter on satellite receive only PC
+Date: Sat, 26 Jun 2004 14:33:46 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406261029.36368.Antony@Soft-Solutions.co.uk>
-References: <1087962571.2041.10.camel@joel.d2visp.com> <200406260922.14221.Antony@Soft-Solutions.co.uk> <1088241658.2283.35.camel@joel.d2visp.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <a0f69e504062602337d614297@mail.gmail.com>
+References: <40DD28BA.82DEE8DA@neduet.edu.pk> <200406260915.01035.Antony@Soft-Solutions.co.uk> <a0f69e5040626012851d190ba@mail.gmail.com> <200406260945.38438.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088241658.2283.35.camel@joel.d2visp.com>
+In-Reply-To: <200406260945.38438.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,64 +18,105 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+Cc: antony@soft-solutions.co.uk
 
-On Saturday 26 June 2004 10:20 am, Joel Solanki wrote:
+hey 
+if this is your router/getway through which all other clients LAN will
+access Internet then you have to add a rule for NAT Masq :)
 
-> Good morning Antone and all.
+Edit the file /etc/sysctl.conf and on the line net.ipv4.ip_forward =
+0, change 0 to 1.
+           net.ipv4.ip_forward = 1
+
+This is another script for this perpose :)
+
+ iptables -F INPUT	
+ iptables -F OUTPUT	
+ iptables -F FORWARD
+ iptables -t nat -F
+
+The following commands will create new rules for your system.
+
+   iptables -P INPUT ACCEPT	
+   iptables -P OUTPUT ACCEPT	
+   iptables -P FORWARD DROP	
+
+   iptables -A FORWARD -i eth0 -o eth1 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT	
+
+$ iptables -A FORWARD -j LOG	
+
+$ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+Regards
+
+Askar
+
+
+On Sat, 26 Jun 2004 09:45:38 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
+> 
+> On Saturday 26 June 2004 9:28 am, Askar Ali Khan wrote:
+> 
+> > this is out im running on my slackware, adjust it to your needs :)
+> 
+> That's okay - I run Slackware too :)
+> 
+> > #!/bin/bash
+> > #
+> > # Basic script to keep the nasties out of slack-lap
+> >
+> > # First we make the default policy to drop everything
+> > iptables -P INPUT DROP
+> > iptables -P FORWARD DROP
+> >
+> > # Allow established connections and programs that use
+> > loopback
+> >
+> > iptables -A INPUT -m state --state ESTABLISHED,RELATED
+> > -j ACCEPT
+> > iptables -A INPUT -s 127.0.0.0/8 -d 127.0.0.0/8 -i lo
+> > -j ACCEPT
+> 
+> # Also allow established connections *through* the router, as well as *to* it:
+> 
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> # Now allow first packets of the connections we want to become established
+> 
+> iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
+> iptables -A FORWARD -i eth0 -p udp --dport 53 -j ACCEPT
+> iptables -A FORWARD -i eth0 -p tcp --dport 53 -j ACCEPT
+> 
+> > # Lets allow ssh to connect
+> >
+> > iptables -A INPUT -p tcp --dport 22 -i ppp0 -j ACCEPT
+> >
+> > #end script
+> 
+> The above rules should allow machines on your internal network (assumed to be
+> connected to eth0, adjust if otherwise) to do DNS lookups and HTTP requests
+> to the outside world.
+> 
+> Hopefully this gives you a template to which you can add more rules for
+> whatever other protocols you want to allow.
+> 
+> Regards,
+> 
+> Antony.
+> 
+> --
+> The words "e pluribus unum" on the Great Seal of the United States are from a
+> poem by Virgil entitled "Moretum", which is about cheese and garlic salad
+> dressing.
+> 
+> 
+> 
+>                                                     Please reply to the list;
+>                                                           please don't CC me.
+> 
 >
-> 	LINUX SERVER eth0 200.200.200.200 (public ip) --> switch
-> 		     eth1 192.168.0.1/24   -------------> switch
->
-> Yes 192.168.0.2 is the ip of windows 98 machine.
-
-Windows 98?   And it's running an FTP server???
-
-I'm surprised...
-
-> Chain FORWARD (policy ACCEPT 5299 packets, 1571K bytes)
->  pkts bytes target     prot opt in     out     source        destination
->  2672 1461K            all  --  eth1   *       192.168.0.2   0.0.0.0/0
->  2627  110K            all  --  eth0   *       0.0.0.0/0     192.168.0.2
->
-> I have tested again this rules
-> I just upload squid.tar.gz which is of 1.3M. and i found the above
-> results. Its only showing the 110K bytes ...file is of 1.3M and traffic
-> bytes are more in other rule ..its showing 1461K. so i cant get what is
-> exactly going on with this chains...
-
-Please let's clarify which machine is doing exactly what...
-
-You say you have a Windows 98 machine on IP 192.168.0.2
-
-Your rules have recorded 1461kbytes *sent from* that machine to somewhere 
-else, and 110kbytes *received by* that machine from somewhere.
-
-That to me is entirely consistent with you saying you have uploaded (by which 
-I assume you mean "sent to somewhere else") 1.3Mbytes of data by FTP.
-
-My suggestion is:
-1. Clear the counters to zero with "iptables -Z FORWARD -t mangle"
-2. Download (receive) a file on machine 192.168.0.2 of some known size.
-3. Check the counters with "iptables -L FORWARD -t mangle -nvx"
-4. Upload (send) some *other* file of a different size from machine 
-192.168.0.2
-5. Check the counters again.
-6. Let us know if the first rule shows a byte count noticeably different from 
-what you sent, or the second rule shows a byte count noticeably different 
-from what you received.
-
-Hope this helps,
-
-Antony.
-
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
 
