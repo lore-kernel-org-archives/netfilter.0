@@ -1,15 +1,14 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: different DMZs which is better?
-Date: Mon, 13 Jan 2003 20:28:44 +0000
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Help in IPTABLES
+Date: Mon, 13 Jan 2003 15:30:14 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030113202844.GH22487@miggy.org>
-References: <001e01c2bb10$05d79300$9865fea9@win2k.com> <001201c2bb38$25e45980$1e01a8c0@win2k.com>
+Message-ID: <200301131530.14106.netfilter@newkirk.us>
+References: <20030111054656.20063.qmail@web40711.mail.yahoo.com> <200301112132.00991.netfilter@newkirk.us> <20030112090122.3e9a3bc8.arnt@c2i.net>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UthUFkbMtH2ceUK2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <001201c2bb38$25e45980$1e01a8c0@win2k.com>
+In-Reply-To: <20030112090122.3e9a3bc8.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +18,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Mike <mikeeo@msn.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
+On Sunday 12 January 2003 03:01 am, Arnt Karlsen wrote:
 
---UthUFkbMtH2ceUK2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> ..the wee point I was trying to make, is an iptables firewall is
+> vulnerable while it is being set up, so echo "0" first to stop
+> forwarding, set up the firewall, and echo "1" at the end of the
+> script to start forwarding again, a wee nit into your helpful
+> responses to him.
 
-On Mon, Jan 13, 2003 at 02:15:34PM -0500, Mike wrote:
-> I talked with my ISP and they will route me a /30 for my firewall and a /=
-28
-> for the DMZ segment. The DMZ will be hosting a webfarm does anyone have a
-> list of things I should to the box besides filtering rules? like how I can
-> stop directed broadcasts etc... I am going to accept Established and New
-> connections in the forward chain going to the webservers and drop invalid.
-> Is that ok for webservers or should I also accept related? Im only going =
-to
-> open up port 80 to the webservers and drop everything else.
+I do this myself in my script, but believe there is an additional=20
+solution, at least for some distros:
 
-  Are the web servers going to be setup to do reverse DNS lookups on
-their connections?  Usually best not to, as it can be quite a
-performance hit for busy servers, but bear this in mind for access rules
-if restricting any part of the webspace by client host, as you'll only
-be able to do that on IP.
-  If you are allowing such reverse lookups then obviously the DMZ needs
-to be able to access at least one DNS server, probably the firewall box
-acting as a forwarder, or just plain doing the lookups itself.
+I'm running RedHat 7.3, and so everything runs off SysV-Init.  I was=20
+greatly bothered by the fact that the S07iptables startup link would get=20
+run quite a bit (well, a few seconds at least :^) before my firewall=20
+would.  Changing my firewall to a lower number in the sequence wouldn't=20
+work easily, since I'm on a Dynamic IP at the moment and had to start up=20
+ADSL to get the IP, since I use it 'statically' in SNAT.  It also would=20
+need (or at least want) syslog up and running.  Couldn't easily move=20
+ADSL up in the sequence, since it depended on networking in general. =20
+Everything is pretty much fixed in the sequence it already starts in.
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+Then it occurred to me:  Modify the /etc/init.d/iptables script to set=20
+DROP policies, instead of the horribly shortsighted ACCEPT default it=20
+uses.  As soon as this occurred to me I changed it, and I feel much more=20
+comfortable now, knowing that if the whole startup collapses right after=20
+iptables and network scripts, I'm still not wide open.
 
---UthUFkbMtH2ceUK2
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+My sequence now is=20
+iptables->ip6tables->network->syslog->ADSL->firewall->ip6firewall->freene=
+t
+(freenet is the startup for the IPv6inIPv4 tunnel)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+I modified the /etc/init.d/iptables script to set DROP policies in both=20
+the 'start' and 'stop' functions.
 
-iEYEARECAAYFAj4jIXwACgkQzbc+I5XfxKfyRQCghRR4+o82a0AJF+Ghe2FtZlaA
-DjsAn12ICdBnZG3PVHI90eGjIuDKbHTM
-=z2vw
------END PGP SIGNATURE-----
+Despite being more comfortable with this, I'd like to hear if anyone sees=
+=20
+a hole in my reasoning.
 
---UthUFkbMtH2ceUK2--
+j
+
 
