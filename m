@@ -1,12 +1,13 @@
-From: "Bob Hockney" <zeus@ix.netcom.com>
-Subject: [Annoucement] Webfwlog ulogd log file analysis
-Date: Sat, 15 Nov 2003 16:54:16 -0800
+From: m_feldmann@t-online.de (Michael Feldmann)
+Subject: Redirect in intranet using DNAT?
+Date: Sun, 16 Nov 2003 11:43:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB65A38.18151.468C2F7@localhost>
+Message-ID: <200311160017.05962.m.feldmann@nikocity.de>
+Reply-To: m.feldmann@nikocity.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-description: Mail message body
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +18,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: ulogd@lists.gnumonks.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Announcing webfwlog, a flexible web-based analysis and reporting tool for 
-firewall logs saved in a database using the ULOGD target of the linux 
-netfilter project. At this time it only supports data saved in a mysql 
-database.  With Webfwlog you can design reports to use on your logged data in 
-whatever configuration you desire. Included are sample reports as a starting 
-point. You can sort a report with a single click, "drill-down" on the reports 
-all the way to the packet level, and save your reports for later use. You can 
-also create a link directly to any saved report.  For more information and a 
-demo please visit http://webfwlog.sourceforge.net.
+Hi all, 
 
-Enjoy
 
--Bob
+How can I redirect traffic from one internal IP to another? My situation is as 
+follows:
 
+I have two webservers in an Intranet, one on 192.168.0.1, port 80, the
+other on on 192.168.0.5 port 80. Each machine has only one ethernet
+card, attached to the same switch.Now I want to take away the first
+webserver In order to do this transparently, I thought of using a
+redirect rule.
+
+Thus, on 192.168.0.1 I tried the following commands:
+
+iptables -t nat -A PREROUTING -p tcp -d 192.168.0.1 --dport 80 -j DNAT
+--to 192.168.0.5:80
+iptables -t nat -A PREROUTING -p udp -d 192.168.0.1 --dport 80 -j DNAT
+--to 192.168.0.5:80
+
+
+For testing reasons, all the policies on both machines are set to ACCEPT.
+iptables -t nat -L -n yields:
+
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       udp  --  0.0.0.0/0            192.168.0.1        udp dpt:80
+to:192.168.0.5:80
+DNAT       tcp  --  0.0.0.0/0            192.168.0.1        tcp dpt:80
+to:192.168.0.5:80
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+
+With these rules, I thought an attempt to reach 192.168.0.1:80 would
+lead me to 192.168.0.5:80. But it seems there are no packets arriving at 
+192.168.0.5:80 .
+Obviously, i seem to overlook something. But what?
+
+Thanks in advance
+Michael
+
+
+P.S. Sorry if this question has been posted twice. I am note sure if 
+yesterday's posting has really reched the list.
 
 
