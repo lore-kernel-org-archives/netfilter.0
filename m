@@ -1,14 +1,13 @@
-From: Sandro Dentella <sandro@e-den.it>
-Subject: Re: ip ro get problem
-Date: Wed, 15 Sep 2004 16:03:23 +0200
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Passive FTP Problem in NAT.
+Date: Wed, 15 Sep 2004 11:43:50 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040915140323.GA10277@bluff>
-References: <20040915104501.GA10207@bluff>
-	<200409150951.51609.Alistair@nerdnet.ca>
+Message-ID: <1095263030.1899.70.camel@wolfpack.ljm.dom>
+References: <1095261204.9082@wormhole.atom.is>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200409150951.51609.Alistair@nerdnet.ca>
+In-Reply-To: <1095261204.9082@wormhole.atom.is>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,27 +18,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alistair Tonner <Alistair@nerdnet.ca>
-Cc: iptables <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> << Snippage >>
+On Wed, 2004-09-15 at 11:13, svavar@atom01.is wrote:
+> Hi.
 > 
-> 	Very good question -- and althought there might be someone here who could 
-> answer this (and I too would like to know since I'm now mucking with iproute2 
-> and a dual route system) .. But this question would best be asked on a LARTC 
-> mailing list :
+> Could someone help me or give me advice regarding NAT on a FTP server located in my DMZ.
+> 
+> This is my setup :
+> 
+> My Firewall(Linux 2.4.22-1) :
+> |
+> - eth0 = Public Interface (x.x.x.66 / 26 )
+> |
+> - eth1 = DMZ Interface (172.16.100.254 / 24 )
+> |
+> - eth2 = My Internal Network ( 192.168.1.1 / 24 )
+> 
+> 
+> I have a FTP server located on my DMZ Network. The server is listening on a non-standard ftp port. It listens on port : 2121.
 
+bingo.  the standard modprobe commands won't work in your situation. 
+try:
 
-Sorry for that! I'm subscribed to both lists and I swapped the addresses
+        modprobe ip_conntrack_ftp ports=21,2121
+        modprobe ip_nat_ftp ports=21,2121
 
+to force the helper to watch your specific port.
 
-sandro
-*;-)
-
+-j
 
 -- 
-Sandro Dentella  *:-)
-e-mail: sandro@e-den.it 
-http://www.tksql.org                    TkSQL Home page - My GPL work
+Jason Opperisano <opie@817west.com>
+
 
