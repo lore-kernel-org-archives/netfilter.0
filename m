@@ -1,11 +1,13 @@
-From: David Trott <linux@davidtrott.com>
-Subject: Question about Nth matching
-Date: Thu, 15 May 2003 19:11:18 -0700
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: TFTP ..unable to track...
+Date: 16 May 2003 08:39:14 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053051078.3ec448c633470@www.mailshell.com>
+Message-ID: <1053063554.4942.18.camel@elendil.intranet.cartel-securite.net>
+References: <LONLKONDBJILJAAA@mailcity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <LONLKONDBJILJAAA@mailcity.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,55 +17,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: gautham.thavva@lycos.com
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Le lun 12/05/2003 =E0 17:37, Gautham Thavva a =E9crit :
+> This machine is running a TFTP client. I am unable to track the TFTP
+> sessions.
 
-I am using the nth patch to perform load balancing for outgoing traffic, sp=
-ecifically these are packets that are generated on the firewall itself (not=
- forwarded traffic).
+See patch-o-matic. There's a patch for TFTP conntrack.
 
-In order to do this I have used ip route 2 to set up two different routing =
-tables, then I use netfilter to set the MARK so that alternate packets are =
-sent to alternate links.
-
-In order to do this I use the following rules:
-
-iptables -t mangle -A OUTPUT -d 10.1.1.1 -j MARK --set-mark 1
-iptables -t mangle -A OUTPUT -d 10.1.1.1 -m nth --every 2 -j MARK --set mar=
-k 2
-
-Using the above rules everything appears to be fine, however this style can=
- get messy if you have more than two links so I tried to use the following =
-style:
-
-iptables -t mangle -A OUTPUT -d 10.1.1.1 -m nth --every 2 --packet 0 -j MAR=
-K --set-mark 1
-iptables -t mangle -A OUTPUT -d 10.1.1.1 -m nth --every 2 --packet 1 -j MAR=
-K --set-mark 2
-
-This does not work (it appears that neither mark is set - although I am not=
- certain of this).
-
-Can anyone point me in the right direction in order to get the second case =
-working?
-
-TIA,
-David
-
-Notes:
-Kernel 2.4.20
-Iptables 1.2.7a
-
-Both the kernel and iptables have had a few patches applied although I don=
-=92t think this is the cause of the problem.
-
-I have read that sending alternate packets over different links is not alwa=
-ys a good idea because it can lead to packets arriving at the destination h=
-ost in the wrong order. I have been told that this is not a problem for Lin=
-ux, but some other OS don=92t like it, so I have restricted the balancing r=
-ules to a host that I know runs Linux.
-This is the reason for the =96d 10.1.1.1
-(In the real rules 10.1.1.1 is replaced with a real IP address).
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
