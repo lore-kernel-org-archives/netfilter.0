@@ -1,12 +1,14 @@
-From: "david" <david@suarapembaruan.co.id>
+From: Victor Julien <victor@nk.nl>
 Subject: Re: Blocking IP
-Date: Thu, 29 Jul 2004 19:48:10 +0700
+Date: Thu, 29 Jul 2004 15:29:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005d01c4756a$4dd22f60$858310ac@suarapembaruan.com>
-References: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de> <001601c47565$8e0ba110$858310ac@suarapembaruan.com> <1091104096.9267.4.camel@les-home.futuresource.com>
+Message-ID: <200407291529.36832.victor@nk.nl>
+References: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de> <200407291410.24531.victor@nk.nl> <004201c47569$4838bbb0$858310ac@suarapembaruan.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <004201c47569$4838bbb0$858310ac@suarapembaruan.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,45 +21,100 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear all,
+On Thursday 29 July 2004 14:40, david wrote:
+> Dear Victor,
+>
+> I still receive traffic from that ip.......
+>
+>
+> IPTABLES Rules
+> #iptables -I INPUT 1 -s 202.145.10.147 -j DROP
+>
 
-Thank's for your information, now all trafic from that ip already drop.
+Maybe you should place the rule in the FORWARD chain.
 
-Thank you.
-:)
-David Kandou
+#iptables -I FORWARD 1 -s 202.145.10.147 -j DROP
 
+Regards,
+Victor
 
-
------ Original Message ----- 
-From: "Les Mikesell" <les@futuresource.com>
-To: "david" <david@suarapembaruan.co.id>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Thursday, July 29, 2004 7:28 PM
-Subject: Re: Blocking IP
-
-
-> On Thu, 2004-07-29 at 07:14, david wrote:
-> > Dear all,
+> IPTRAF Monitoring
+> ??202.145.10.147:1668                                                    =
+> 31           19815     DONE       eth0       ?
+> ??202.46.146.164:25                                                      =
+> 33            1485     CLOSED     eth0       ?
+> ??206.190.39.164:8
+>
+> I try :
+> #iptables -I INPUT 1 -s 202.145.10.147 -j LOG
+> after that ip show again :
+> #iptables -L -nvx
+>
+> Chain INPUT (policy ACCEPT 1532113 packets, 168017560 bytes)
+>     pkts      bytes target     prot opt in     out     source
+> destination
+>        0        0 LOG        all  --  *      *       202.145.10.174
+> 0.0.0.0/0          LOG flags 0 level 4
+>        0        0 DROP       all  --  *      *       202.145.10.174
+> 0.0.0.0/0
+>
+> Chain FORWARD (policy ACCEPT 8470318 packets, 3950493169 bytes)
+>     pkts      bytes target     prot opt in     out     source
+> destination
+>
+> Chain OUTPUT (policy ACCEPT 2106115 packets, 361037890 bytes)
+>     pkts      bytes target     prot opt in     out     source
+> destination
+>
+> Chain RH-Lokkit-0-50-INPUT (0 references)
+>     pkts      bytes target     prot opt in     out     source
+> destination
+>
+>
+> Thank's
+> David
+>
+>
+>
+> ----- Original Message -----
+> From: "Victor Julien" <victor@nk.nl>
+> To: <netfilter@lists.netfilter.org>
+> Cc: "david" <david@suarapembaruan.co.id>
+> Sent: Thursday, July 29, 2004 7:10 PM
+> Subject: Re: Blocking IP
+>
+> > Try #iptables -I INPUT 1 -s 202.145.10.146 -j DROP
 > >
-> > My mail server received so many virus mails from ip 202.145.10.147 and
-after
-> > i look at gateway (linux) and i using iptraf i see so many traffic from
-> > 202.145.10.147.
-> > After that i try to block all traffic from 202.145.10.147 with command :
-> > #iptables -A INPUT -s 202.145.10.146 -j DROP
+> > It will insert the rule on the top of the ruleset, so it matches first.
 > >
-> > but i still receiveall traffic from 202.145.10.146......
+> > Regards,
+> > Victor
+> >
+> > On Thursday 29 July 2004 14:14, david wrote:
+> > > Dear all,
+> > >
+> > > My mail server received so many virus mails from ip 202.145.10.147 and
+> > > after i look at gateway (linux) and i using iptraf i see so many
+> > > traffic from 202.145.10.147.
+> > > After that i try to block all traffic from 202.145.10.147 with command
+> > > : #iptables -A INPUT -s 202.145.10.146 -j DROP
+> > >
+> > > but i still receiveall traffic from 202.145.10.146......
+> > > Can anybody help me ........... that ip send virus in to mail server
 >
-> It might be as easy to block traffic with route as iptables:
-> route add -host 202.145.10.146 reject
-> should stop it (actually it stops your ability to respond
-> but for tcp that's enough).
+> more
 >
-> ---
->   Les Mikesell
->    les@futuresource.com
->
->
-
+> > > then 20 mails per minute.......
+> > >
+> > >
+> > > Regards,
+> > > David Kandou
+> > >
+> > > Help me ... iam so confused
+> > >
+> > > FYI :
+> > > Iam using RedHat 9
+> > > eth0 --> ippublic
+> > > eth1 --> local ip
+> > > mail server --> local ip
 
