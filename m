@@ -1,73 +1,61 @@
-From: Kishore Dharmavaram <kishored@servgate.com>
-Subject: RE: Memory leaks in ip_conntrack?
-Date: Mon, 10 Nov 2003 19:07:09 -0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B2057@skat.sky.com>
+From: "Lohan Spies" <l.spies@petzetakis.co.za>
+Subject: RE: open port to specific ip address
+Date: Tue, 11 Nov 2003 09:41:17 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAAK6iB3UPoxEi0dscTRq25PQEAAAAA@petzetakis-africa.co.za>
+References: <1068476240.1530.30.camel@valhalla>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1068476240.1530.30.camel@valhalla>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-Anthony & All,
-Earlier when I checked, /proc/net/ip_conntrack  and /proc/slabinfo were both
-showing a number around 34000 to 36000, when I checked again after sometime,
-number of connections in /proc/slabinfo hit the maximum 131072 and number of
-connections went down to 20 to 30 in /proc/net/ip_conntrack andbox is
-rejecting new connections.
-Thanks,
-Kishore
+Yes, this is exactly what I need. Internal to internal - nat external!
+
+I don't know why the company want this because if I use my linux squid
+proxy address for this everything is fine!
+
+Will speak to the requestor and let you know! Thanks for all the help so
+far!
+
 
 -----Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Monday, November 10, 2003 4:33 PM
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Chris Brenton
+Sent: 10 November 2003 04:57 PM
 To: netfilter@lists.netfilter.org
-Subject: Re: Memory leaks in ip_conntrack?
+Subject: Re: open port to specific ip address
 
 
-On Tuesday 11 November 2003 12:03 am, Alistair Tonner wrote:
+On Mon, 2003-11-10 at 08:26, Antony Stone wrote:
+> 
+> I assumed (maybe wrongly?) that because Lohan specified an internal IP
+> address, the access was required from the internal network.
 
-> 	what is set in /proc/sys/net/ipv4/tcp_wmem?
->
-> 	I suspect that what is STOPPing the network is there ..
-> 	cat /proc/sys/net/ipv4/tcp_wmem -- on my system the max is ...
-> 	!! 131072 !!
->
-> 	Maybe you've maxed your memory allocation for TCP?
+Obviously Lohan needs to be the one to clarify, but I think your right.
+Going back through the thread, it looks like the access is internal to
+internal, with forwarding to an external.
 
-I can understand why you think this might be the magic number causing the 
-problem, but why would Kishore be running into this limit with only 20 to 30
+Of course this is still going to give him trouble if 10.10.10.41 is part
+of the local subnet. Systems are going to ARP for this IP, not send the
+traffic to their default gateway. You might be able to use publish ARP
+on the internal interface of the firewall, but that assumes a flat
+subnet and starts to get real messy.
 
-connections active on the machine?
+Thanks for the clarification,
+C
 
-> > I believe /proc/slabinfo gives # of conntracks being used, in my tests I
-> > usually find slabinfo number is same as number of entries in
-> > /proc/net/ip_conntrack. But, after 18hrs or so the number in
-> > /proc/slabinfo reaches maximum and box starts refusing connections,
-> > /proc/net/ip_conntrack show 20 to 30 entries, I hear
-> > /proc/net/ip_conntrack is unreliable and broken. Anyway, I guess I have
-> > to dig into the code.
+CONFIDENTIALITY CAUTION: If you have received this communication in error, please note that it is intended for the addressee only, is private and confidential and dissemination or copying prohibited. Please notify us immediately by e-mail and return the original message. We cannot assure that the integrity of this communication has been maintained nor that it is free of errors, virus, interception or interference. Thank you
 
-Antony.
 
--- 
-
-What a waste it is to lose one's mind -- or not to have a mind.   How true 
-that is.
-
- - Dan Quayle, vice-president of the United States of America
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
 
