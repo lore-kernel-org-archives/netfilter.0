@@ -1,13 +1,12 @@
-From: "Victor Wren" <vwren_netfilter@timension.com>
-Subject: Yet another xNAT question
-Date: Tue, 13 Jul 2004 13:51:56 -0800
+From: Real Cucumber <monkcucumber@yahoo.com>
+Subject: Re: SSH Connections Lost After 1 minute idle
+Date: Tue, 13 Jul 2004 13:57:16 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40F3E8FC.5160.B171D3@localhost>
-Reply-To: vwren_netfilter@timension.com
+Message-ID: <20040713205716.58900.qmail@web40707.mail.yahoo.com>
+References: <200407131901.21907.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-description: Mail message body
+In-Reply-To: <200407131901.21907.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,120 +17,117 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I've been trying to put together a DMZ firewall for several days, now, to 
-replace an aging (1996 vintage) Watchguard Firebox.  I've read Oskar's 
-tutorials, and used his scripts as a starting point.  I'm starting to lose 
-track of all the experimentation I've done, and which things got what other 
-things to halfway work.
+Why should ICMP not be completely blocked? The machine
+is used strictly as a port forwarding firewall/router.
 
-My configuration is this:
-OUTSIDE INTERFACE (ETH2) 67.116.23.77 on net 67.116.23.64/28
-DMZ INTERFACE (ETH1) 10.10.2.244 on net 10.10.2.0/24
-INSIDE (ETH0) 10.10.1.254 on net 10.10.1.0/24
-
-I have six sites, and I'd like to have the firewall just translate addresses 
-from the public IPs to the 10.10.2.0/24 addresses.
-
-I've set up ETH2 on the firewall with virtual addresses, like this:
-eth2:65 --> 67.116.23.65
-eth2:66 --> 67.116.23.66
-eth2:67 --> 67.116.23.67
-etc...
-The DMZ addresses are also virtual interfaces on another machine
-eth1 -->    10.10.2.32
-eth1:0 --> 10.10.2.33
-eth1:1 --> 10.10.2.34
-etc...
-
-The default route for the DMZ machine is 10.10.2.254
-The default route for the firewall is 67.116.23.78 (an address on the SBC 
-side of my DSL bridge)
-
-As I understand it, the only things that should matter for packets destined 
-for the DMZ are the PREROUTING, POSTROUTING and FORWARD chains.
-
-I have the following NAT rules for each of my public IPs (with the addresses 
-incremented, of course):
-
-iptables -t nat -A PREROUTING -i eth2 -d 67.116.23.65 
-  -j DNAT --to-destination 10.10.2.32
-iptables -t nat -A POSTROUTING -o eth2 -s 10.10.2.32 
-  -j SNAT --to-source 67.116.23.65
-
-------------------------------------------------------
-These are the forwarding rules:
---------------------------------------------------
-# bad TCP packets we don't want 
-# (this is Oskar's basic SYN/ACK rule)
-iptables -A FORWARD -p tcp -j bad_tcp_packets
-
-#               DMZ SECTION
-# General rules
-iptables -A FORWARD -i eth1 -o eth2 -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth1 -m state 
-  --state ESTABLISHED,RELATED  -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -m state 
-  --state ESTABLISHED,RELATED -j ACCEPT
-
-# Allow HTTP traffic across firewall
-iptables -A FORWARD -p tcp --dport http -j allowed
-
-# DNS server on DMZ
-iptables -A FORWARD -p udp --dport domain -j ACCEPT
-
-# Allow forwarding of NTP packets
-iptables -A FORWARD -p udp --dport ntp -j ACCEPT
-
-# Allow SMTP connection to/from all servers
-iptables -A FORWARD -p tcp --dport smtp -j allowed
-
-# Allow ICMP traffic
-iptables -A FORWARD -p icmp -j icmp_packets
-
---------------------------------------------------------
-# CHAIN: "allowed"
-iptables -A allowed -p tcp --syn -j ACCEPT
-iptables -A allowed -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A allowed -p tcp -j DROP
-
-# CHAIN: "icmp_packets"
-iptables -A icmp_packets -p icmp --icmp-type echo-request -j ACCEPT
-iptables -A icmp_packets -p icmp --icmp-type echo-reply -j ACCEPT
-iptables -A icmp_packets -p icmp --icmp-type time-exceeded -j ACCEPT
-iptables -A icmp_packets -p icmp --icmp-type destination-unreachable 
-  -j ACCEPT
-
-
-Pinging the outside interfaces (67.116.23.65-70) from my home machine 
-elsewhere on the internet doesn't get any response.  Pinging the firewall 
-interface (67.116.23.77) does get a response.  The counters in "nat" and 
-"FORWARD" are solidly stuck at zero, suggesting somehow that the packets 
-aren't even getting to the chains.  I can ping back and forth across all the 
-private DMZ addresses between the firewall and the DMZ machine, so that part 
-of the configuration seems valid.
-
-I feel like I am having a fundamental lack of understanding about how 
-DNAT/SNAT works, but I'm at a loss as to how to debug this.  I'd rather have 
-my servers on a DMZ network, because the alternative is trying to figure out 
-how to do routing across a machine where two of the interfaces have the same 
-IP address.  Maybe that's not as ugly as I fear.
-
-Victor Wren
+Also it does appear to be arp related. On the fireawll
+the arp -a does not keep the connecting host in its
+cache for long.  If I connect I see it, but after a
+few minutes it disappears.  Is there anyway to fix
+that?
 
 
 
-Victor Wren
-Designer,
-Timension Inc.
-1350 C Pear Ave
-Mountain View CA 94043
-(650) 564-9397
-Fax: (650) 564-9398
-Opinions stated in this letter are not necessarily
-those of Timension Inc. or the management.  All
-Rights Reserved.  No spitting.
+--- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> On Tuesday 13 July 2004 5:51 pm, Real Cucumber
+> wrote:
+> 
+> > I have a fedora firewall/router using iptables to
+> > forward incoming SSH packets to an internal server
+> and
+> > it works great....however, only if the user does
+> not
+> > remain idle for 1 minute.  If they idle for 1
+> minute,
+> > the connection "freezes"
+> >
+> > If the user is connecting from within the network,
+> > they can remain idle for an unlimited amount of
+> time
+> > without being disconnected.  It is only ones
+> > connecting from outside hte network going through
+> the
+> > iptables firewall that have this idle problem.
+> >
+> > I am only allowing TCP and UDP for SSH to be
+> > forwarded.
+> 
+> I assume you mean TCP for SSH and TCP/UDP for DNS?  
+> (You don't need UDP for 
+> SSH...)
+> 
+> > Do I need any ICMP or any other special connection
+> > timeout rules on the iptables side to fix this
+> problem?
+> 
+> You should not completely block ICMP, although I
+> regard that as a side issue 
+> and not necessarily the cause of your problem.
+> 
+> It sounds like an ARP cache timeout problem to me.
+> 
+> Try the following test:
+> 
+> 1. Connect from an external client to the internal
+> SSH server.
+> 2. Log in on the console of the SSH server (ie: not
+> using the SSH connection) 
+> and start a ping to the firewall (I don't care
+> whether it gets replies or 
+> not).
+> 3. Type some command on the SSH client and check you
+> get a response.
+> 4. Wait >1 minute and then type another command on
+> the SSH client and check 
+> you still get a response.
+> 5. Cancel the ping test from the SSH server to the
+> firewall.
+> 6. Wait >1 minute and then type another command on
+> the SSH client and see if 
+> the connection has died.
+> 
+> If the above confirms that during a ping, the
+> connection is maintained, and in 
+> the absence of a ping, the connection dies, then it
+> strongly suggests that 
+> the firewall is losing the MAC address of the SSH
+> server after a period of no 
+> activity (or perhaps the SSH server loses the MAC
+> address of the Firewall - 
+> check both arp caches with "arp -an" on each machine
+> to find out).
+> 
+> It might help to post your ruleset so we can comment
+> on anything we see that 
+> might cause this problem.
+> 
+> Regards,
+> 
+> Antony.
+> 
+> -- 
+> Microsoft may sell more software than any other
+> company, but McDonald's sell 
+> more burgers than any other company, and I think the
+> other similarities are 
+> obvious...
+> 
+>                                                     
+> Please reply to the list;
+>                                                     
+>       please don't CC me.
+> 
+> 
+> 
 
+
+
+		
+__________________________________
+Do you Yahoo!?
+Take Yahoo! Mail with you! Get it on your mobile phone.
+http://mobile.yahoo.com/maildemo 
 
