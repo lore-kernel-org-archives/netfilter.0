@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Rules for blocking Email from libero.it domain
-Date: Tue, 29 Oct 2002 08:50:02 +0000
+Subject: Re: ip conflict with proxy arp
+Date: Tue, 29 Oct 2002 08:58:41 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021029085004.FRPW1554.mta07-svc.ntlworld.com@there>
-References: <200210281507.g9SF70e08704@vulcan.rissington.net> <42647.192.168.7.14.1035847030.squirrel@iw.k1k2.com>
+Message-ID: <20021029085844.GBUS1554.mta07-svc.ntlworld.com@there>
+References: <20021029122844.6b1e70ca.arc_of_descent@gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <42647.192.168.7.14.1035847030.squirrel@iw.k1k2.com>
+In-Reply-To: <20021029122844.6b1e70ca.arc_of_descent@gmx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,43 +20,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 28 October 2002 11:17 pm, Andrew Smith wrote:
+On Tuesday 29 October 2002 6:58 am, Rohan Almeida wrote:
 
-> >> Hi,
-> >>
-> >> I want to block all incoming mail from the libero.it domain.
-> >
-> > Configure your mail server to reject it.
-> >
-> > Netfilter is not the right answer to this question.
-> >
-> > Antony.
+> HI,
+> I've got a proxy arp setup with iptables and tc.
 >
-> If the problem is that you keep getting large arounts of email
-> from libero.it then I think you may have to use the firewall.
-> I'm only guessing, but when I view my maillog it always
-> seems to know the size of each email that has been blocked,
-> so I presume I am actually getting the email then it is
-> being rejected (unless the sendmail protocol passes this
-> value across and that is what is being displayed?)
+> on eth0 i have a route to 172.16.2.0/24 network
+> on eth1 is the LAN of 172.16.1.0/24 network
+>
+> I have enabled proxy arp on both interfaces.
+> Now accordingly, the interface will respond
+> to all ARP requests for which it has a route to.
+>
+> Noy my setup is such, that a user on the LAN,
+> would like to have an ip from the 172.16.2.0/24 network.
 
-The latter is correct.   Before an email is transmitted, the sender tells the 
-receiver what size it is so that the receiver can decide whether it has space 
-to accept it.   Most mail servers will have some upper limit (probably 10Mb - 
-50Mb these days) on the size of mail they will accept.
+What, whilst still plugged in to eth1 ?   Why ?
 
-An email server will typically check the address of the machine trying to 
-send the email (in things like ordb.org for example), the sender's address, 
-the recipient's address, and the size of the mail before it decides whether 
-it's prepared to receive the actual email or not.   Even things like the 
-recipient's address can be more complicated than you might expect, because 
-you can limit things like the total number of recipients for a single email 
-as well as checking individual addresses.
+> But unfortunately, when he tries to allocate an
+> ip like 172.16.2.1 he gets an ip conflict.
+>
+> I also know why he is getting it!
+> But is there any way out of this??
+>
+> Something like, tell the linux server to respond for
+> ARP requests for the 172.16.2.0/24 network but at the
+> same time if a machine is trying to use an ip for itself,
+> then it should not respond.
+
+How are you allocating your addresses on the two networks at the moment ?
+
+If it's a system administrator handing out static addresses and recording 
+who's got what, then tell the person on the LAN to go to the sysadmin and ask 
+for an unused address.
+
+If it's a DHCP server handing out addresses on request, try setting up a 
+DHCRELAY (there's another thread going in this mailing list at the moment 
+about getting that working with netfilter) so pass addresses from one network 
+to the other.
+
+However, I still want to ask: why does someone on eth1 want an IP address 
+which belongs on eth0 ?
 
 Antony.
 
 -- 
 
-I vote "no" to this proposal to form a committee to investigate whether we 
-should or should not hold a ballot on whether to vote yet.
+There are only 10 types of people in the world:
+those who understand binary notation,
+and those who don't.
 
