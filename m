@@ -1,12 +1,11 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Forward with IPTABLES
-Date: Thu, 13 Jan 2005 09:38:05 +0100
-Message-ID: <1105605485.3624.14.camel@bibo.spenneberg.de>
-References: <001a01c4f8f9$9de78f00$0100a8c0@betasvr.noip.org>
+From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Subject: GRE problem
+Date: Thu, 13 Jan 2005 10:13:17 +0100
+Message-ID: <200501131013.17416.marcin.giedz@eulerhermes.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001a01c4f8f9$9de78f00$0100a8c0@betasvr.noip.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Guillermo Javier Nardoni <gjnardoni@gmail.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hello all,
 
-Am Mi, den 12.01.2005 schrieb Guillermo Javier Nardoni um 23:54:
-> we have 2 domains hosted by our servers (www.domainA.com and
-> www.domainB.com)
-> when a customer asks for a webpage (through ppp0) port 80 at www.domainA.com
-> i want to redirect it to our Windows 2000 server (it domain is written in
-> ASP), but when some customers ask for a webpage from the other one (domainB)
-> the page must flow-back  to the customer from linux server instead of
-> Windows.
-If both domain have different IP adresses you can do it with DNAT using
-iptables.
-If both domain share the same IP address you need a reverse proxy.
+I've posted this message on several news groups without any results, maybe 
+here someone can help me...
 
-Ralf
--- 
-Ralf Spenneberg <lists@spenneberg.org>
+I still have problem with GRE through Linux router and Win2k clients but
+additional information have occured. Let's start from the beginning:
 
+My subnet is as follows:
+192.168.49.0 ----- linux router ------ 172.19.1.0 ------> Win2k clients
+
+When first client is trying to connect to VPN server out side our office all
+packets are sent through "linux router". When he finishes the connection
+and second client wants to make a new connection no GRE packets are sent
+through router. If I down and up interfaces on "linux router" everything
+works OK as earlier - GRE packets are transmitted through router. If I
+don't down and up interfaces but wait eg. for next day everything also
+works OK. It seems for me that some "timeout" variable is set on my linux
+router but I didn't set anything. 
+
+Can you tell me where I can change this "timeout" on my router? For me it
+should stay in /proc/xxxx? but what next?
+
+Thanks,
+Marcin
 
