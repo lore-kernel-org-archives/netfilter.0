@@ -1,10 +1,13 @@
-From: Piers Finlayson <pdf@dataconnection.com>
-Subject: RE: port forwarding with one interface to trace traffic?
-Date: Thu, 22 Jan 2004 15:33:24 -0000
+From: "Jan Kaastrup" <jka@protego.dk>
+Subject: ip_conntrack_pptp
+Date: Thu, 22 Jan 2004 16:57:26 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <37701240971DD31193970000F6CCB9F704CB8072@duke.datcon.co.uk>
+Message-ID: <003601c3e100$6e8a68c0$2d64a8c0@pcjka>
+References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,52 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'Harald Welte' <laforge@netfilter.org>, 'Netfilter Development Mailinglist' <netfilter-devel@lists.netfilter.org>
+Cc: 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>
 
-Also be warned that many "hubs" on the market are actually switches.  I find
-this terribly annoying.
+Hi Harald and all on this list.
 
-Cheers,
-Piers
+I have problems with ip_conntrack_pptp patch from POM-20031219
 
------Original Message-----
-From: Rasca [mailto:rasca-ml@triad.de]
-Sent: 22 January 2004 13:37
-To: Jeffrey Laramie
-Cc: netfilter@lists.netfilter.org
-Subject: Re: port forwarding with one interface to trace traffic?
+It seems the patch doesn't apply what it should:
+
+"In the pptp-conntrack-nat.patch.configure.help it says something like
+this:
+CONFIG_IP_NF_CT_PROTO_GRE
+  This module adds generic support for connection tracking and NAT of
+the
+  GRE protocol (RFC1701, RFC2784).  Please note that this will only work
+  with GRE connections using the key field of the GRE header."
+
+I do something like this for patching my kernel (2.4.21):
+patch -p1 < ./path-o-mat.../ip_conntrack_pptp.patch, and everything
+seems allright.
+
+But I Never get the option in my kernelconfiguration - I want to make it
+as a module.
+I do have the ip_conntrack_pptp.c and .h file, maybe it is possible to
+make my module out of them?
 
 
-Hi,
+Does anyone know of this, or is it just me being stupid ?
 
-Jeffrey Laramie schrieb:
-> 
->>
->> 3. Connect a hub (not a switch) to the printer's ethernet cable (or to 
->> the Mac's ethernet cable), and plug the Linux machine running ethereal 
->> into the hub, so you can sniff the packets off the wire without any NAT.
->>  
->>
-> 
-> This is dangerously OT, but what's the difference? I always thought that 
-> the difference between a switch and a hub was simply a matter of 
-> internal plumbing that affected how the pipes were connected and had no 
-> effect on the actual tcp/ip connections. I've used them interchangeably 
-> and haven't seen a difference. Maybe someone has a link that could 
-> educate me more better! :-)
 
-A "hub" broadcasts all packets to all port. And yes - that was
-the way I choosed, cause it's more simple to setup (I found an
-old hub..) and it's working.
 
-thx to Antony.
+Thanks a lot in regards
 
-cu
-  rasca
+Jan
 
--- 
-_______________________________________________________________
-| Triad Berlin Projektgesellschaft mbH | http://www.triad.de/ |
+
+
 
 
