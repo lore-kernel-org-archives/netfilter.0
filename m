@@ -1,13 +1,13 @@
-From: "Erick Sanz" <esanz@minorplanetusa.com>
-Subject: Home web server using front firewall
-Date: Wed, 10 Dec 2003 17:24:41 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Home web server using front firewall
+Date: Wed, 10 Dec 2003 23:40:14 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HFEBJMKNPOCPPMGFHDMCOECACDAA.esanz@minorplanetusa.com>
-References: <Pine.LNX.4.44.0312101542130.2784-100000@sparrow>
+Message-ID: <200312102340.14210.Antony@Soft-Solutions.co.uk>
+References: <HFEBJMKNPOCPPMGFHDMCOECACDAA.esanz@minorplanetusa.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0312101542130.2784-100000@sparrow>
+In-Reply-To: <HFEBJMKNPOCPPMGFHDMCOECACDAA.esanz@minorplanetusa.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,65 +20,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter <netfilter@lists.netfilter.org>
 
+On Wednesday 10 December 2003 11:24 pm, Erick Sanz wrote:
 
-All,
+> All,
+>
+> I am trying to install a small web server at home in order
+> to display some family pictures and some other personal
+> topics (hobbies, interests ...)
+>
+> For this I need port forwarding and probably NAT to change
+> the outgoing IP address.
 
-I am trying to install a small web server at home in order
-to display some family pictures and some other personal
-topics (hobbies, interests ...)
+If you do DNAT for incoming packets, you will get automatic SNAT on the 
+outgoing reply packets - you do not need to set up your own rule to handle 
+these.
 
-I would like to have the following configuration:
+> I want the real server to be completely blocked for
+> any other port than http and https on the web server
+> (I am planning to accept requests only from the internal
+> network).
 
+Um, do you really mean what that last bit says?   You only want to accept 
+requests from the internal network - ie not from the Internet???
 
-	Static IP -------- Linux    --------- Real web server
-	SBC ADSL	       Firewall       
-	            eth0              eth1
-	63.5.5.5				        10.10.1.5
+> Am I forgetting anything else?
 
-For this I need port forwarding and probably NAT to change
-the outgoing IP address.
+The only thing I can see missing from the rules you posted is:
 
-I want the real server to be completely blocked for
-any other port than http and https on the web server 
-(I am planning to accept requests only from the internal 
-network).
- 
-If you can shed some light on the port forwarding part,
-I think I can tackle the rest.  I believe it would be
-something like this:
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-    iptables -P INPUT   DROP
-    iptables -P OUTPUT  DROP
-    iptables -P FORWARD DROP
+That rule will allow the reply packet to traverse your firewall, and return to 
+the outside world (assuming that's what you really want to happen....).
 
-    iptables -t nat -A PREROUTING -p tcp -d 63.5.5.5 \
-    --dport 80 -j DNAT --to 10.10.1.5
+If you have any problems with the ruleset you posted (with the above addition) 
+feel free to post here again, but please be as specific as you can about what 
+the problem is, and how you have tested for it.
 
-    iptables -t nat -A PREROUTING -p tcp -d 63.5.5.5 \
-    --dport 443 -j DNAT --to 10.10.1.5
+Hope you have a good time with netfilter.
 
-    iptables -A FORWARD -i eth1 -s 10.10.1.0/24 --sport 80 \
-    -j ACCEPT
+Antony.
 
-    iptables -A FORWARD -i eth1 -s 10.10.1.0/24 --sport 443 \
-    -j ACCEPT
+-- 
+Success is a lousy teacher.  It seduces smart people into thinking they can't 
+lose.
 
-    iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
+ - William H Gates III
 
-
-I am already dropping all malformed packets before this
-entries, so nmap and nessus should not be able to do attacks;
-they will be able to tell there is a web server there,
-but that is all.
-
-Also, I am planning to use syn_cookies to avoid DoS attacks.
-
-Am I forgetting anything else?
-
-Beforehand, thank you for your help.
-
-PS. if someone has something like this working, could you
-please send me your config?
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
