@@ -1,14 +1,12 @@
-From: =?UTF-8?B?0JvQvtC20LXRh9C90LjQuiDQkNC70LXQutGB0LDQvdC00YA=?=
-	<A.Logechnik@itak.ua>
-Subject: Re: Differentiating direct, and redirected access?
-Date: Mon, 18 Oct 2004 17:34:40 +0000
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Differentiating direct, and redirected access?
+Date: Mon, 18 Oct 2004 10:40:39 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4173FEB0.9070605@itak.ua>
-References: <D5C9032B2B09C64EA2409D6214E91AC9C05820@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9C05825@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9C05820@asimail2.alphanumeric.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +16,23 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+> -t nat -A PREROUTING -i eth0 -d ! $INT_ROUTER_IP -p tcp --dport 80 -j
+> REDIRECT --to-ports 3128
+> -A INPUT -i eth0 -d $INT_ROUTER_IP -p tcp --dport 3128 -J REJECT
+>
+> TCP SYN have external ip dst_ip.
 
->>Hello all,
->>
->>I'm running a squid at port 3128 as a transparent proxy.
->>
->>There are requests coming directly to 3128 port and
->>those coming to 80 port and then redirected to 3128 by
->>following rule:
->>
->>-t nat -A PREROUTING -i eth0 -p tcp -m tcp \
->>   --dport 80 -j REDIRECT --to-ports 3128
->>
->>What I want is block direct requests to 3128, allowing
->>redirected access (transparent proxy) only. How do I do it?
->>
->>If I just set up a rule in filter chain like:
->>
->>-t filter -A INPUT -i eth0 -p tcp -m tcp \\
->>   --dport 3128 -j DROP
->>
->>Those requests redirected from port 80 to 3128 are also
->>blocked by this rule. It seems that the redirected packets
->>come in to this chain once again with the new port number.
->>
->>How can I differentiate these two different kinds of
->>request? Any clue will be greatly appreciated.
->>
->>Jinsuk Kim
->>    
->>
--t nat -A PREROUTING -i eth0 -d ! $INT_ROUTER_IP -p tcp --dport 80 -j 
-REDIRECT --to-ports 3128
--A INPUT -i eth0 -d $INT_ROUTER_IP -p tcp --dport 3128 -J REJECT
+the TCP SYN to port 80 has the dst IP of the web server on the internet.
 
-TCP SYN have external ip dst_ip.
+the redirected packet to TCP port 3128 has the dst IP of the redirected
+interface (eth0 in this case).
 
--- 
-wbr, Logechnik Alexandr
+your suggested REJECT rule will reject all redirected traffic to port
+3128, and is essentially the issue the OP had already run into, and was
+asking for a work-around.
 
-In God we trust, but something 
-else must have X.509 certificate
-
+-j
 
