@@ -1,11 +1,13 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Mail Through Firewall
-Date: Wed, 18 Feb 2004 09:57:07 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Mail Through Firewall
+Date: Wed, 18 Feb 2004 14:05:01 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <012201c3f627$18eabbe0$49caa8c0@caris.priv>
+Message-ID: <200402181405.01680.Antony@Soft-Solutions.co.uk>
+References: <012201c3f627$18eabbe0$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <012201c3f627$18eabbe0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +20,52 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hey, I am sure this question is going to seem trivial to everyone here ..
-but I will ask anyway.
-I want to get outlook to work on my inside box .... I have it all set up
-correctly, but it can't find the pop / smtp servers ...
+On Wednesday 18 February 2004 1:57 pm, Peter Marshall wrote:
 
-I ran ethereal to see what the problem was ...
-When I try to connect I get 3 requests
-source 10.0.0.2
-dest 10.0.0.255
-Protocol NBNS
-source and dest ports: 137
+> Hey, I am sure this question is going to seem trivial to everyone here ..
+> but I will ask anyway.
+> I want to get outlook to work on my inside box .... I have it all set up
+> correctly, but it can't find the pop / smtp servers ...
+>
+> I ran ethereal to see what the problem was ...
+> When I try to connect I get 3 requests
+> source 10.0.0.2
+> dest 10.0.0.255
 
-and I get no reply's ... ( well, I get an arp request after the 3rd try ...)
-Any ideas how to get this working ?
+That's a broadcast address...
 
-BTW, I am using IPTables
+> Protocol NBNS
 
-Thanks
-Peter Marshall
+Ugh.   M$ Outlook trying to use NetBios Name Resolution instead of DNS :(
+
+> source and dest ports: 137
+
+NetBios....
+
+> and I get no reply's ... ( well, I get an arp request after the 3rd try
+> ...) Any ideas how to get this working ?
+
+Tell the client machine (or Outlook, if this is one of those things which 
+Outlook tries to look after by itself, never mind how the rest of the machine 
+has been configured), to resolve names by DNS, not by using NetBios.
+
+Then it might sensibly look up the IP address of your POP3 server and send a 
+TCP packet to port 110 on it....
+
+Regards,
+
+Antony.
+
+-- 
+"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+Blaster].   However, these products are no longer supported.   Users of these
+products are strongly encouraged to upgrade to later versions."
+
+(which *are* affected by MS Blaster...)
+
+http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
