@@ -1,13 +1,14 @@
-From: Gianni Pucciani <gp.puccio@tin.it>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: vpn under linux
-Date: Sat, 10 Apr 2004 11:41:50 +0200
+Date: Sat, 10 Apr 2004 10:44:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4077C15E.9080701@tin.it>
-References: <4077B7EF.5070805@tin.it> <200404101018.38664.Antony@Soft-Solutions.co.uk>
+Message-ID: <200404101044.23558.Antony@Soft-Solutions.co.uk>
+References: <4077B7EF.5070805@tin.it> <200404101018.38664.Antony@Soft-Solutions.co.uk> <4077BEFF.4060902@tin.it>
+Reply-To: Netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404101018.38664.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <4077BEFF.4060902@tin.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +18,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
-I forget one things, waht about the CIPE solution. I read that in the 
-rh9 sec guide about VPN.
+On Saturday 10 April 2004 10:31 am, Gianni Pucciani wrote:
 
-And then, I see this  news:  the FreeS/WAN project is no longer in 
-active development, it could be a problem?
+> Antony Stone wrote:
+> >
+> >PPP is Point-to-Point Protocol, and has almost nothing to do with VPNs :)
+> >
+> >SSH is Secure Shell, and at least it contains some encryption, but again,
+> > is almost nothing to do with VPNs (but more on that later).
+>
+> I thought that they could be used in conjuction to achieve vpn
+> functionalities...
 
-thanks
+Er, well, actually, yes they can, however it is *really* ugly, it breaks some 
+of the ways in which TCP works, and I wouldn't normally even let someone know 
+it was possible until they'd exhausted all other sane ways to set up a VPN 
+and failed for some reason.
 
-Antony Stone wrote:
+The most common reason I know of for people wanting to create a VPN using SSH 
+and PPP is when they're behind a firewall which doesn't allow them to create 
+VPNs (using PPTP or IPsec) but does allow SSH - ie: as a way to bypass an 
+organisation's security policy of not allowing personal VPN setups :)
 
->On Saturday 10 April 2004 10:01 am, Gianni Pucciani wrote:
->
->  
->
->>Hi all,
->>some of you can give me some input about the best way to set up a vpn
->>under two Linux RH9 systems?
->>I heared there are different solution (PPP and SSH, PPTP...) and I'd
->>like to know your opinion about that.
->>    
->>
->
->PPP is Point-to-Point Protocol, and has almost nothing to do with VPNs :)
->
->SSH is Secure Shell, and at least it contains some encryption, but again, is 
->almost nothing to do with VPNs (but more on that later).
->
->PPTP is Pretty Poor Tunneling Protocol (oh, no, sorry, it's a Point to Point 
->Tunneling Protocol...), and is the way Microsoft systems do VPN.
->
->The "standard" way to do VPN (in other words, the method which is supported by 
->most vendors, uses open standards, and also has the best security) is IPsec.
->
->The usual way to do IPsec under Linux is to use FreeS/WAN under kernel 2.4, or 
->the built-in IPsec under kernel 2.6.
->
->I use FreeS/WAN, I like it, it works well with netfilter (once you've got used 
->to the path the packets take at each end), and I'm happy with its 3DES/RSA 
->security.
->
->I said I'd mention more about SSH - that also uses good encryption and is 
->therefore secure, and once you have an SSH connection between two machines, 
->you can "tunnel" almost any network traffic you like between them, and it 
->does work, although I wouldn't select this as a first choice for a VPN 
->because there's a lot more manual setting up involved.   IPsec is more like a 
->network route - you just configure it, and let the two endpoint machines get 
->on with negotiating the link, and then computers from whichever network 
->ranges you've configured the VPN to support can connect to each other 
->transparently through a nice secure tunnel across the Internet.
->
->Hope this helps,
->
->Regards,
->
->Antony.
->
->  
->
+As I said in my earlier reply, you can tunnel other protocols through an SSH 
+link, and it turns out that this includes PPP.
+
+Regards,
+
+Antony.
+
+-- 
+Wanted: telepath.   You know where to apply.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
