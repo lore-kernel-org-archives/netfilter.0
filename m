@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: preserving fwmarks through KLIPS
-Date: Tue, 11 Jan 2005 07:45:15 -0500
-Message-ID: <1105447514.9691.9.camel@hubcap.ljm.dom>
-References: <1105393017.12167.24.camel@latte.nssg.mitel.com>
+From: <Derek_Chen@trend.com.tw>
+Subject: packet filtering in virtual NIC
+Date: Tue, 11 Jan 2005 18:47:21 +0800
+Message-ID: <05D4351F36F7844CAE6F3C6499156745086969C7@twexmail01.tw.trendnet.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1105393017.12167.24.camel@latte.nssg.mitel.com>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,28 +19,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2005-01-10 at 16:36, Michael P. Soulier wrote:
-> Hello,
-> 
-> I am trying to classify ipsec and non-ipsec traffic on the external
-> interface of my box. I plan to use fwmarks in iptables, and then rely on
-> those for queueing classification on the external interface. 
-> 
-> My question is, if I mark a packet before it is encrypted by KLIPS in
-> FreeS/WAN, when it is re-injected with a new IP header, will that fwmark
-> be maintained? 
 
-nothing can replace you actually testing this for yourself, but yes--in
-my experience--MARKs stay with a packet through its entire journey
-through the stack, regardless of what sort of processing is done to the
-packet.  a MARK is simply tag associated with a packet, but not part of
-the packet itself.
-
--j
-
---
-"I have been shot eight times this year, and as a result, I almost
- missed work."
-	--The Simpsons
+Hi, All
+=0D
+I create a virtual netowrk card by supplementing a network driver. To=
+ simulate the activity of receving packets I customize packet data and call=
+ ioctl to feed them to netif_rx. My registered hook is like this
+static struct nf_hook_ops ns_hook =3D { {NULL,NULL},scan_hook,
+                                                             =
+ //PF_INET,NF_IP_PRE_ROUTING,                           //I have tried this
+                                                             =
+ PF_BRIDGE,NF_BR_PRE_ROUTING,                     // and this
+                                                              1};
+Both hooks point does not work for my crafted data but work for real=
+ packets (through real NIC).
+Does anyone know what I'm doing wrong? Thanks for help.
+=0D
+Derek
+                =0D
 
 
+TREND MICRO EMAIL NOTICE
+The information contained in this email and any attachments is confidential=
+ and may be subject to copyright or other intellectual property protection.=
+ If you are not the intended recipient, you are not authorized to use or=
+ disclose this information, and we request that you notify us by reply mail=
+ or telephone and delete the original message from your mail system.
