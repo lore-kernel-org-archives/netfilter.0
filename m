@@ -1,9 +1,8 @@
-From: "Alexis" <alexis@attla.net.ar>
-Subject: Re: Need urgent help on NAT/load sharing
-Date: Fri, 6 Feb 2004 09:58:49 -0300
+From: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
+Subject: /proc/net/ip_conntrack problem
+Date: Fri, 6 Feb 2004 17:28:51 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c3ecb0$f6e0c230$0200000a@heretic>
-References: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
+Message-ID: <E1Ap9md-000c35-CG@alf1.lmb.internal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,35 +16,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
-
-you need iproute2 to use both providers links.
+To: netfilter@lists.netfilter.org
 
 
+I need to maintain a log of SNAT'd connections/disconnections
+which contain the source/dest ip/port of the host before
+SNAT'ing. As discussed on this list before, the POSTROUTING -j LOG
+target doesnt provide this information, so I've written a crude
+logger of my own.
 
------ Original Message ----- 
-From: "Saeed Zamani" <szamani@concept.ae>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, February 05, 2004 2:24 PM
-Subject: Need urgent help on NAT/load sharing
+This logger is a perl script which does the following:
+
+Every second:
+
+. Reads the content of /proc/net/ip_conntrack.
+
+. Searches for entries in the ip_conntrack data which it
+  doesnt have in its own list, adds them to its own
+  list and logs a 'connect' for that entry.
+
+. Searches for entries in its own list which no longer
+  appear in the ip_conntrack data, removes them from
+  its own list and logs a 'disconnect' for that entry.
 
 
-> Hi all,
->    I am new to list and have a basic nat question on Redhat Linux 9. I
-> have to translate my local IP ( 192.168.1.0/24 ) to two different public
-> IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
-> example for every 4 received packet, one have to translate to IPE1 and
-> other three to IPE2. I need this for load balacing the internet traffic
-> between two isp. At the end, it is excellent if there is an option that
-> If one the ISP gateway is dead, all packets have to translate to other
-> public IP. Please help me. 
-> Thanks, 
-> Saeed Zamani, 
-> Technical Manager, 
-> Concept FZ LLC. 
-> 
-> 
-> 
-> 
+This seems to work OK apart from one thing. From time
+to time, the output from /proc/net/ip_conntrack seems
+to get truncated. This means that I erroneously flag
+all the missing items as 'disconnected', and then next
+time I read ip_conntrack (this time without truncation)
+all the previously missing entries reapper and then get
+flagged as 'connected' again.
+I can also experience the truncation if I repeatedly grep
+for a known src= + dst= line in ip_conntrack. Occasionally
+grep doesnt find it.
+
+What happens if the ip_conntrack data is being updated
+at the instant /proc/net/ip_conntrack is being read?
+Is there the possibility of a race condition here which
+might explain what I'm seeing? Any suggestions welcome.
+
+Cheers,
+Terry.
 
 
