@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: MRTG and IPTABLES
-Date: Wed, 7 Jan 2004 12:57:48 +0000
+From: Eddahbi Karim <installation_fault_association@yahoo.fr>
+Subject: Re: UDP connections and Conntrack...
+Date: Wed, 07 Jan 2004 14:33:19 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401071257.48913.Antony@Soft-Solutions.co.uk>
-References: <83055D4B014C9E478D2F04624B9E82CFAE965A@noveldc.novelgmt.mu>
+Message-ID: <1073482399.9732.10.camel@gamux>
+References: <Pine.LNX.4.33.0401071011330.18324-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFAE965A@noveldc.novelgmt.mu>
+In-Reply-To: <Pine.LNX.4.33.0401071011330.18324-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,64 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 07 January 2004 12:46 pm, Gilles Yue wrote:
+Le mer 07/01/2004 =E0 10:13, Jozsef Kadlecsik a =E9crit :
+> On Tue, 6 Jan 2004, Eddahbi Karim wrote:
+>=20
+> > Ok, so the state of the connection change in the nat table of the OUTPUT
+> > Chain ?
+>=20
+> Why should the state of the connection change in the nat table?
+>                             ^^^^^^^^^^               ^^^
+> State changes happen in connection tracking itself.
+>=20
 
-> Hi,
->
-> Is this the way it should be in iptables?
->
-> #Open SNMP Ports
-> $IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
->
-> Have tried it, not working
+Conntrack and nat are bound.
 
-Try putting in the LOGging rule which two of us have already recommended, and 
-see what traffic is getting blocked.
+The connection state change at the nat table of the PREROUTING chain and
+at the nat table of the OUTPUT chain.
 
-This will then tell you what you need to ACCEPT.
+Btw Iptables for IPv6 doesn't have any conntrack for the moment ;-).
 
-Regards,
+--=20
+--
+Eddahbi Karim
 
-Antony.
+Phone :
+(33) (0)6 61 30 57 77
 
-> -----Original Message-----
-> From: Daniel F. Chief Security Engineer -
-> [mailto:danielf@supportteam.net]
-> Sent: Wednesday, January 07, 2004 4:45 PM
-> To: Gilles Yue; netfilter@lists.netfilter.org
-> Subject: Re: MRTG and IPTABLES
->
-> SNMP UDP Ports 161 and 162 MRTG typically only uses 161.
->
->
-> Thanks
->
-> On Wednesday 07 January 2004 00:54, Gilles Yue wrote:
-> > MRTG cannot work properly due to iptables running.
-> >
-> >
-> >
-> > Anybody knows which port number to open to enable MRTG to work
->
-> properly.
->
-> > Thanks.
-> >
-> >
-> >
-> > Rgds
-> >
-> > gy
-
--- 
-I want to build a machine that will be proud of me.
-
- - Danny Hillis, creator of The Connection Machine
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+France
 
 
