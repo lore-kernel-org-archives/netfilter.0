@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: traceroute
-Date: Wed, 30 Jun 2004 22:55:37 +0200
+From: Sam Loy <sampaw@mac.com>
+Subject: Still having problems...
+Date: Wed, 30 Jun 2004 13:30:53 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088628937.1755.63.camel@anduril.intranet.cartel-securite.net>
-References: <2E314DE03538984BA5634F12115B3A4E62E819@email1.mitretek.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <9E8B5B9C-CAC3-11D8-A356-000A95AD0230@mac.com>
+Mime-Version: 1.0 (Apple Message framework v618)
+Content-Type: multipart/mixed; boundary=Apple-Mail-2-791387482
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E819@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +15,166 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Le mer 30/06/2004 =E0 20:20, Piszcz, Justin Michael a =E9crit :
-> If the output chain POLICY is set to ACCEPT; there is no need to setup
-> rules for it.
 
-Indeed, if you accept _any_ packet, you don't need to make rules to
-accept ICMP ones in particular... And if you set all chains policy to
-accept, then you do not need any rule, for any type of packet, and then
-it's so easy to configure...
+--Apple-Mail-2-791387482
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=US-ASCII;
+	format=flowed
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+I sorry to be such a newbie, but I still cannot get my firewall up and 
+running.
+
+Actually, I had it working with the enclosed script, until I generated 
+/etc/sysconfig/iptables using /sbin/service iptables save.
+
+After I tried to get things to spin up at boot time it quit 
+working...not sure what I did.
+
+I erased my tracks, can still ping and set the net before loading 
+iptables. Afterwords, I can't even ping the 192.168.1.1 interface on 
+the same machine!
+
+Anyway, jason, antony, dick, a lot of you have been very helpful. Thank 
+you so much for your continued help and patience.
+
+It is starting to make sense, but I still don't get it. I'm also in 
+processing of up2dating my linux. maybe that will help.
+
+fwscript is the script I'm using (from Jason with slight mods). I run 
+it after I connect ppp0 and get an ip from my isp, before running 
+dhcpd. stillnowork is the output of iptables-save.
+
+Like I said, it worked until I tried to get it to start at boot time.
+
+Thanks,
+
+Sam
+--Apple-Mail-2-791387482
+Content-Transfer-Encoding: 7bit
+Content-Type: application/octet-stream;
+	x-unix-mode=0755;
+	name="fwscript"
+Content-Disposition: attachment;
+	filename=fwscript
+
+
+
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+# NOTES:
+# 1) Assumes that eth0 is external interface, and eth1 is internal.  Adjust
+#    to taste.
+
+# Get current details:
+EXT_IF=ppp0
+INT_IF=eth0
+EXTERNAL_IP=`ifconfig $EXT_IF | grep "inet addr:" | awk '{print $2}' | \
+		cut -f 2 -d :`
+
+# Clean out tables
+iptables --flush
+iptables --table nat --flush
+iptables --delete-chain
+iptables --table nat --delete-chain
+
+# Set up source nat
+iptables --table nat --append POSTROUTING --out-interface $EXT_IF \
+		-j MASQUERADE
+
+#iptables --append FORWARD --in-interface $EXT_IF -j ACCEPT
+#iptables --table nat --append POSTROUTING -d 192.168.1.0/24 \
+#		-j MASQUERADE
+#iptables --append FORWARD -s 192.168.1.0/24  -j ACCEPT
+iptables --append FORWARD --in-interface $EXT_IF -j ACCEPT
+
+# Allow loopback traffic
+iptables -A INPUT -i lo -p all -j ACCEPT
+iptables -A OUTPUT -o lo -p all -j ACCEPT
+
+# Internal DHCP
+iptables -A INPUT -p tcp --syn -s 192.168.1.0/24 \
+		--dport 67 -j ACCEPT
+iptables -A INPUT -p udp -s 192.168.1.0/24 \
+		--dport 67 -j ACCEPT
+
+iptables -A INPUT -p tcp -i $EXT_IF --dport 67 -j DROP
+iptables -A INPUT -p udp -i $EXT_IF --dport 67 -j DROP
+
+# ssh internal and external
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# samba internal
+iptables -A INPUT -p tcp -i $INT_IF \
+		--dport 139 -j ACCEPT
+
+# Accept established connections
+#iptables -A INPUT -i $EXT_IF -m state --state ESTABLISHED,RELATED -j ACCEPT 
+#iptables -A INPUT -i $INT_IF -m state --state ESTABLISHED,RELATED -j ACCEPT 
+iptables -A FORWARD -i $INT_IF -j ACCEPT
+
+# Reject non-established connections.
+#iptables -A INPUT -p tcp --tcp-option ! 2 -j REJECT --reject-with tcp-reset
+
+iptables -P INPUT DROP
+		# Drop all other connection attempts. 
+		# Only connections defined above are allowed.
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+#echo 1 > /proc/sys/net/ipv4/conf/${EXT_IF}/rp_filter
+
+#iptables -A OUTPUT -p icmp -d 0/0 -j DROP 		# block all icmp
+
+# ftp external
+# iptables -A INPUT -p tcp -i $EXT_IF --dport 21 -j ACCEPT
+# iptables -A INPUT -p udp -i $EXT_IF --dport 21 -j ACCEPT
+
+# http external
+# iptables -A INPUT -p tcp -i $EXT_IF --dport 80 -j ACCEPT
+# iptables -A INPUT -p udp -i $EXT_IF --dport 80 -j ACCEPT
+
+# DEBUG ONLY!
+#iptables -A INPUT -j LOG --log-prefix "INPUT_DROP: "
+#iptables -A OUTPUT -j LOG --log-prefix "OUTPUT_DROP: "
+########################################################################
+
+
+--Apple-Mail-2-791387482
+Content-Transfer-Encoding: 7bit
+Content-Type: application/octet-stream;
+	x-unix-mode=0644;
+	name="stillnowork"
+Content-Disposition: attachment;
+	filename=stillnowork
+
+# Generated by iptables-save v1.2.7a on Wed Jun 30 12:01:04 2004
+*nat
+:PREROUTING ACCEPT [59:6784]
+:POSTROUTING ACCEPT [7:588]
+:OUTPUT ACCEPT [21:1466]
+-A POSTROUTING -o ppp0 -j MASQUERADE 
+COMMIT
+# Completed on Wed Jun 30 12:01:04 2004
+# Generated by iptables-save v1.2.7a on Wed Jun 30 12:01:04 2004
+*filter
+:INPUT DROP [1:48]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [21:1309]
+-A INPUT -i lo -j ACCEPT 
+-A INPUT -s 192.168.1.0/255.255.255.0 -p tcp -m tcp --dport 67 --tcp-flags SYN,RST,ACK SYN -j ACCEPT 
+-A INPUT -s 192.168.1.0/255.255.255.0 -p udp -m udp --dport 67 -j ACCEPT 
+-A INPUT -i ppp0 -p tcp -m tcp --dport 67 -j DROP 
+-A INPUT -i ppp0 -p udp -m udp --dport 67 -j DROP 
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT 
+-A INPUT -i eth0 -p tcp -m tcp --dport 139 -j ACCEPT 
+-A FORWARD -i ppp0 -j ACCEPT 
+-A FORWARD -i eth0 -j ACCEPT 
+-A OUTPUT -o lo -j ACCEPT 
+COMMIT
+# Completed on Wed Jun 30 12:01:04 2004
+
+--Apple-Mail-2-791387482--
+
 
