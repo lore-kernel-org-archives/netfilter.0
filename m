@@ -1,58 +1,33 @@
-From: Tobias DiPasquale <toby@cbcg.net>
-Subject: [PATCH] kfree_skb() bug in 2.4.22
-Date: Wed, 08 Oct 2003 08:44:35 -0400
+From: Jeff Garzik <jgarzik@pobox.com>
+Subject: Re: [PATCH] kfree_skb() bug in 2.4.22
+Date: Wed, 08 Oct 2003 09:09:48 -0400
 Sender: linux-net-owner@vger.kernel.org
-Message-ID: <1065617075.1514.29.camel@localhost>
+Message-ID: <3F840C9C.9050704@pobox.com>
+References: <1065617075.1514.29.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-net-owner@vger.kernel.org>
+In-Reply-To: <1065617075.1514.29.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netdev@oss.sgi.com
-Cc: linux-net@vger.kernel.org, linux-kernel@vger.kernel.org, coreteam@netfilter.org, netfilter@lists.netfilter.org, akpm@zip.com.au, jgarzik@pobox.com, davem@redhat.com, kuznet@ms2.inr.ac.ru, pekkas@netcore.fi, jmorris@intercode.com.au, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Tobias DiPasquale <toby@cbcg.net>
+Cc: netdev@oss.sgi.com, linux-net@vger.kernel.org, linux-kernel@vger.kernel.org, coreteam@netfilter.org, netfilter@lists.netfilter.org, akpm@zip.com.au, davem@redhat.com, kuznet@ms2.inr.ac.ru, pekkas@netcore.fi, jmorris@intercode.com.au, yoshfuji@linux-ipv6.org
 
-Hi all,
-
-I was debugging one of my iptables/netfilter modules yesterday and I
-came across this bug in kfree_skb(). One of my functions returns a
-struct skbuff * on success and NULL on failure. When it failed, the code
-calling said function attempted to free the struct skbuff *, which at
-that point was NULL. This produced a kernel panic. I investigated the
-problem and found that, not only should I be checking for a NULL pointer
-when freeing the struct skbuff *, but the actual cause of the panic was
-because kfree_skb() and kfree_skb_fast() do not check for skb==NULL,
-either. They immediately attempt to dereference the users field of the
-struct skbuff * in order to decrement that reference counter. 
-
-I have come up with a patch that applies to both the 2.4.22 pristine
-source tree and the 2.4.23-pre6 source tree that solves this issue (see
-below). I tried to follow Documentation/SubmittingPatches to the letter;
-please let me know if I failed this in some way. Thanks :)
-
-P.S. I wasn't sure who exactly maintains this particular code; that's
-why I just sent it to everyone listed in MAINTAINERS remotely associated
-with include/linux/skbuff.h ;)
+Tobias DiPasquale wrote:
+> Hi all,
+> 
+> I was debugging one of my iptables/netfilter modules yesterday and I
+> came across this bug in kfree_skb(). One of my functions returns a
+> struct skbuff * on success and NULL on failure. When it failed, the code
+> calling said function attempted to free the struct skbuff *, which at
+> that point was NULL. This produced a kernel panic. I investigated the
+> problem and found that, not only should I be checking for a NULL pointer
+> when freeing the struct skbuff *, but the actual cause of the panic was
+> because kfree_skb() and kfree_skb_fast() do not check for skb==NULL,
+> either. They immediately attempt to dereference the users field of the
+> struct skbuff * in order to decrement that reference counter. 
 
 
---- include/linux/skbuff.h.orig	2003-10-08 07:52:31.000000000 -0400
-+++ include/linux/skbuff.h	2003-10-08 07:52:52.000000000 -0400
-@@ -293,6 +293,8 @@
-  
- static inline void kfree_skb(struct sk_buff *skb)
- {
-+	if (!skb)
-+		return;
- 	if (atomic_read(&skb->users) == 1 || atomic_dec_and_test(&skb->users))
- 		__kfree_skb(skb);
- }
-@@ -300,6 +302,8 @@
- /* Use this if you didn't touch the skb state [for fast switching] */
- static inline void kfree_skb_fast(struct sk_buff *skb)
- {
-+	if (!skb)
-+		return;
- 	if (atomic_read(&skb->users) == 1 || atomic_dec_and_test(&skb->users))
- 		kfree_skbmem(skb);	
- }
-
+I would prefer that you fix your code instead, to not pass NULL to 
+kfree_skb()...
 
