@@ -1,11 +1,15 @@
-From: Gilles =?ISO-8859-1?Q?L=E9vesque?= <gleve@sympatico.ca>
-Subject: re : any VPN program at linux?
-Date: 22 Nov 2002 08:32:16 -0500
+From: Ben Russo <ben@umialumni.com>
+Subject: Re: arptables
+Date: 22 Nov 2002 11:01:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037971946.1349.3.camel@ti-gil.mag-datacom.ca>
+Message-ID: <1037980891.14335.5.camel@ben.mis.tnsi.com>
+References: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
+	 <047701c28f97$895afb30$ac01a8c0@monday>
+	 <1037960290.8909.1.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-izfzLEtgIiz+OqEQM1H8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1037960290.8909.1.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,122 +19,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: SB CH <chulmin2@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Toshihiro Sonoda <toshihiro@jp.fujitsu.com>, netfilter@lists.netfilter.org
 
-
---=-izfzLEtgIiz+OqEQM1H8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-vtund : http://vtun.sourceforge.net
-IPSec : http://www.freeswan.org
-PPtP : http://www.poptop.org
-
-you can also try CIPE=20
-
-vtund, IPSec or CIPE is really usefull when you connect 2 or more
-linux/solaris/*BSD together=20
-PPtP is usefull when you want your linux box to act as VPN server for
-windows boxes=20
-
-
-
+On Fri, 2002-11-22 at 05:18, Cedric Blancher wrote:
+> Le mar 19/11/2002 =E0 07:47, Toshihiro Sonoda a =E9crit :
+> > I can find the arp_filter.c and arp_tables.c in "net/ipv4/netfilter/" o=
+f kernel tree (2.4.18).
+> > But, I can not find the document about how to use the arp filtering.
+> > How can I use the arp filtering in linux.
 >=20
+> Akaik, there's still no userland tool to configure ARP filtering into
+> kernel (aka arptables tool) and associated library.
 >=20
->Hello,  all.=20
->=20
->I would like to use VPN at linux?=20
->Do you know any recommendable program?=20
->=20
->Thanks in advance.=20
->=20
->=20
-Gilles L=C3=A9vesque, RHCE
-M.A.G. Datacom
-373, rue T=C3=A9miscouata=20
-Rivi=C3=A8re-du-Loup (Qu=C3=A9bec)=20
-G5R 2Y9=20
-T=C3=A9l=C3=A9phone : (418) 867-8656
-T=C3=A9l=C3=A9copieur : (418) 867-3870
+> So the first step would be implementing kernel/userland interface...
 
+Just a half baked idea....
 
---=-izfzLEtgIiz+OqEQM1H8
-Content-Type: text/html; charset=utf-8
+I havent tested this, but the /etc/ethers (man 5 ethers)
+is used for storing arp cache information statically, like /etc/hosts
+in /etc/rc.local you could call:
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
-<BODY>
-vtund : <A HREF="http://vtun.sourceforge.net">http://vtun.sourceforge.net</A>
-<BR>
-IPSec : http://<A HREF="http://www.freeswan.org">www.freeswan.org</A>
-<BR>
-PPtP : <A HREF="http://www.poptop.org">http://www.poptop.org</A>
-<BR>
+/sbin/arp -f /etc/ethers
 
-<BR>
-you can also try CIPE 
-<BR>
+The /etc/ethers file might contain:
+	00:08:02:88:88:88 10.10.10.10
 
-<BR>
-vtund, IPSec or CIPE is really usefull when you connect 2 or more linux/solaris/*BSD together 
-<BR>
-PPtP is usefull when you want your linux box to act as VPN server for windows boxes 
-<BR>
+If you had no 10.10.10.10 anywhere on your network!
+Then you could set rules in your iptables that DROP all 10.10.10.10=20
+packets from source and destination, in all tables.
 
-<BR>
+From the "arp" man page "If the temp flag is
+              not supplied entries will be permanent stored  into
+              the ARP cache."
 
-<BR>
+-Ben.
 
-<BR>
-&gt; 
-<BR>
-&gt; 
-<BR>
-&gt;Hello,&nbsp; all. 
-<BR>
-&gt; 
-<BR>
-&gt;I would like to use VPN at linux? 
-<BR>
-&gt;Do you know any recommendable program? 
-<BR>
-&gt; 
-<BR>
-&gt;Thanks in advance. 
-<BR>
-&gt; 
-<BR>
-&gt; 
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<FONT SIZE="3"><B>Gilles L&#233;vesque, RHCE</FONT></B>
-<BR>
-<FONT SIZE="3"><B>M.A.G. Datacom</FONT></B>
-<BR>
-373, rue T&#233;miscouata 
-<BR>
-Rivi&#232;re-du-Loup (Qu&#233;bec) 
-<BR>
-G5R 2Y9 
-<BR>
-<FONT SIZE="2">T&#233;l&#233;phone : (418) 867-8656</FONT>
-<BR>
-<FONT SIZE="2">T&#233;l&#233;copieur : (418) 867-3870</FONT>
-<BR>
-
-</TD>
-</TR>
-</TABLE>
-
-</BODY>
-</HTML>
-
---=-izfzLEtgIiz+OqEQM1H8--
 
 
