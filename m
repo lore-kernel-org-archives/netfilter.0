@@ -1,9 +1,8 @@
-From: Geert van der Ploeg <netfilter@geert.triple-it.nl>
-Subject: iptables-restore: commit not at end of table
-Date: Wed, 09 Mar 2005 12:43:02 +0100
-Message-ID: <422EE146.1070808@geert.triple-it.nl>
+From: Josh Logan <josh@wcug.wwu.edu>
+Subject: multiple pptp clients behind one machine
+Date: Tue, 8 Mar 2005 14:47:09 -0800 (PST)
+Message-ID: <Pine.LNX.4.58.0503081436210.29834@sloth.wcug.wwu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,46 +13,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
 
-After updating a firewall from iptables 1.2.7a to a later version, my
-ruleset doesn't work anymore.
-It fails on COMMIT-lines that are not at the end of a table definition.
-I used commits for cutting my (sometimes quite large) rulesets into
-smaller parts and make sure I always keep a working configuration, even
-if some rules fail.
+I have compiled a 2.6.9 kernel with the pptp patches.  When I try out the
+new modules GRE is blocked on the firewall.
 
-For example:
- - define management-access definitions (allow SSH from
-management-stations, etc)
- - COMMIT
- - define other rules that get changed a lot and thus have a larger
-chance of containing errors.
+Shorewall:net2all:DROP:IN=eth0 OUT=
+MAC=00:a0:cc:56:b8:5c:00:10:67:00:1f:04:08:00 SRC=x.x.48.2
+DST=x.x.116.164 LEN=61 TOS=0x00 PREC=0x00 TTL=52 ID=36900 DF PROTO=47
 
+I'm running debian unstable.  I patched and installed the new version of
+iptables.  I'm using the patch-o-matic-ng-20050307.tar.bz2 and most recent
+iptables source.
 
-Having looked at the source-code, I discovered that it is caused by some
-extra checks on 'in_table' (in iptables-restore.c), which got inserted
-between 1.2.7a and 1.2.8. The changelog doesn't say why.
-
-
-My questions:
-
-1. Does anybody know what was the reason for the extra checks?
-
-2. Is the effect of not-working-commits-in-middle-of-table-definition
-intended or not? If so, what was the intention?
-
-2. Did anybody use those commits like I did? And if so, how do you
-accomplish the same without this feature?
-
-3. Is this the right list to ask these questions or should they be asked
-on the developer-list?
+The modules load OK:
+root@router-jl:~# lsmod
+Module                  Size  Used by
+ip_nat_proto_gre        3264  0
+ip_nat_pptp             4512  0
+ip_conntrack_pptp       6336  1 ip_nat_pptp
+ip_conntrack_proto_gre     5632  2 ip_nat_pptp,ip_conntrack_pptp
 
 
-Thanks!
+Do you have any ideas, or need more information that I can provide?
 
-Geert van der Ploeg
+Thanks.
+
+							Later, JOSH
+
 
