@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: INPUT or FORWARD;;
-Date: Mon, 20 Dec 2004 07:58:45 -0500
-Message-ID: <1103547524.2932.6.camel@hubcap.ljm.dom>
-References: <Pine.LNX.4.05.10412200158240.18976-100000@darkstar.sysinfo.com>
+Subject: Re: Inbound port mapping blocks outbound connection?
+Date: Mon, 20 Dec 2004 08:22:14 -0500
+Message-ID: <1103548934.3264.6.camel@hubcap.ljm.dom>
+References: <4CE68372-5207-11D9-BA43-000A95CFE5AA@latencyzero.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.05.10412200158240.18976-100000@darkstar.sysinfo.com>
+In-Reply-To: <4CE68372-5207-11D9-BA43-000A95CFE5AA@latencyzero.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,54 +20,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-12-20 at 02:10, R. DuFresne wrote:
-> I see in the FAQ on the netfilter website this under  section 7.3
-> FILTERING SPECIFICATIONS;
-> 
-> <quote>
-> 
-> Specifying an Interface
-> 
-> ...
-> 
->  Packets traversing the INPUT chain don't have an output interface,
->           so any rule using `-o' in this chain will never match.
-> 	  Similarly, packets traversing the OUTPUT chain don't have an
-> 	  input interface, so any rule using `-i' in this chain will never
-> 	  match.
->  Only packets traversing the FORWARD chain have both an input and
->           output interface.
-> 
-> 
-> </quote>
-> 
-> 
-> My question is this, and it may well have been answered many times
-> already, I'll take the slap to the back of the head if it's one of the
-> common list questions that folks tend to get irritated in repeatedly
-> answering;
-> 
-> A multi-homed firewall having at least two interfaces, is known, at least
-> to itself by those IP/hostnames combos assinged to its interfaces.  <i.e.
-> ppp0 and eth0>  So say rules coming from the ppp0 interface into the
-> firewall <INPUT rules> are directed to it's other name/interface
-> 
-> -i /dev/ppp0 -d /dev/eth0
+On Sun, 2004-12-19 at 16:45, Rick Mann wrote:
+> As I was writing this email about a problem connecting outbound, I 
+> discovered what my problem was. Now I have a  new problem: Why would an 
+> inbound port mapping prevent an outbound connection on one of those 
+> ports, as described below? TIA!
 
-well--those values make no sense whatsoever, but if you're asking if the
-following is valid:
+well--you provide pretty much zero detail, so i'm going to have to put
+my funny-looking kreskin hat on...
 
-  iptables -A INPUT -i ppp0 -d $IP_OF_ETH0 -j ACCEPT
+the powers-that-be are telling me that you (like many other people that
+as this question), did not specify "-i $OUTSIDE_IF" in your PREROUTING
+nat rule, and therefore packets that arrive inbound on the inside
+interface match and disappear into the ether.
 
-then yes.  the INPUT chain is traversed by packets destined for a local
-process (IP addresses).  the input interface is just a tag attached to
-the packet.
+  iptables -t nat -A PREROUTING -i $OUTSIDE_IF -p tcp \
+    -d $OUTSIDE_IP --dport 6969 -j DNAT --to-destination $INSIDE_HOST
 
 -j
 
 --
-"If I wanted smoke blown up my ass, I'd be at home with a pack of
- cigarettes and a short length of hose."
+"I'm a well-wisher, in that I don't wish you any specific harm."
 	--The Simpsons
 
 
