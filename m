@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
+From: "David C. Hart" <DCH@TQMcube.com>
 Subject: Re: Couple More Questions
-Date: Thu, 30 Oct 2003 14:06:43 -0500 (EST)
+Date: Thu, 30 Oct 2003 14:14:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310301405390.19227-100000@localhost.localdomain>
-References: <1067540253.2895.44.camel@main.tqmcube.com>
+Message-ID: <1067541286.2899.49.camel@main.tqmcube.com>
+References: <Pine.LNX.4.44.0310301405390.19227-100000@localhost.localdomain>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-xylY7wQjUwVmf+ckkAS/"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1067540253.2895.44.camel@main.tqmcube.com>
+In-Reply-To: <Pine.LNX.4.44.0310301405390.19227-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,23 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "David C. Hart" <DCH@TQMcube.com>
+To: "Robert P. J. Day" <rpjday@mindspring.com>
 Cc: iptables mailing list <netfilter@lists.netfilter.org>
 
-On Thu, 30 Oct 2003, David C. Hart wrote:
 
-> I've read the tutorial but a couple of doubts linger.
-> 
-> 1. Since I'm only logging rejected packets, any suggestions on getting
-> name resolution into the log?
+--=-xylY7wQjUwVmf+ckkAS/
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-you don't need to log only rejected packets.  logging represents a
-"non-terminating" rule.  you can log packets and they will continue
-to be processed by subsequent rules until you decide what you want
-to do with them.
+On Thu, 2003-10-30 at 14:06, Robert P. J. Day wrote:
+> On Thu, 30 Oct 2003, David C. Hart wrote:
+>=20
+> > I
+Yes. I understand that. With full logging I would never attempt name
+resolution but, given that we're only logging rejects, it shouldn't slow
+things down to a crawl.
+>=20
 
-rday
+--=-xylY7wQjUwVmf+ckkAS/
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQA/oWMmol4OE0cpGaIRAtC/AJ9di6i/mLWHowc2hriwSptHn85xnwCghM8x
+8/kTzZeKl9ditoYRlwinYB0=
+=+S+j
+-----END PGP SIGNATURE-----
+
+--=-xylY7wQjUwVmf+ckkAS/--
 
 
