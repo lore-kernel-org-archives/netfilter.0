@@ -1,11 +1,13 @@
-From: Tony Clayton <tony-netfilter@enfusion-group.com>
-Subject: lifecycle of a packet
-Date: Thu,  9 Jan 2003 17:54:52 -0500
+From: "Brad Morgan" <B-Morgan@concentric.net>
+Subject: Configuration Questions
+Date: Thu, 9 Jan 2003 17:11:24 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042152892.3e1dfdbc6f5d1@webmail.enfusion-group.com>
+Message-ID: <NABBJOOEOFODEALNMJAJIEGCHHAA.B-Morgan@concentric.net>
+References: <200301090258.04071.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200301090258.04071.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,97 +20,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I'm doing some volunteer work for a non-profit client that wants to add a
+firewall to the following configuration:
 
-I've been reading the various docs linked to from netfilter.org, hoping
-to figure out the exact order in which a packet traverses the various
-tables and chains as it passes through the network stack.  
+T1 to outside --- Cisco 2600 router --- LAN
 
-Unfortunately, I couldn't find a definative resource that contained this
-information, so I decided to figure it out myself.
+The LAN has 3 subnets, a.b.c.d/25, d.e.f.g/25, and just recently 10.0.h.i/16
+which is NATed in the Cisco router.  The first two subnets are public IP
+addresses.  Although the machines on the LAN have public IP addresses, there
+are no "known" public services being offered.
 
-I build a quick script to insert LOG rules into every chain of every
-table, so that I could log the order in which the tables and chains are
-traversed.
+I believe the firewall would be added between the Cisco 2600 router and the
+LAN like this:
 
-Here are my findings, using the three test cases below:
+T1 --- Cisco 2600 --- Firewall --- LAN
 
----
-TEST A:
-Sending http request from masqueraded client, through firewall, to
-external box
+The firewall will run RedHat Linux 8.0 with iptables 1.2.6a.
 
-Request from client
+How do you configure the ethernet adapters to pass all the traffic for all
+three subnets?
 
-   1. mangle: PREROUTING
-   2. nat: PREROUTING (first packet only)
-   3. mangle: FORWARD
-   4. filter: FORWARD
-   5. mangle: POSTROUTING
-   6. nat: POSTROUTING (first packet only)
+I'm assuming that the router now routes packets between 2 machines in
+different subnets on the LAN.  Should the firewall assume this role?
 
-Reply from external box
+If you can point me to any documents or examples on the web that would help
+me understand
+how to solve this challenge I would be very grateful!
 
-   1. mangle: PREROUTING
-   2. mangle: FORWARD
-   3. filter: FORWARD
-   4. mangle: POSTROUTING
+Regards,
 
-TEST B
-Sending http request from masqueraded client to firewall
-
-Request from client
-
-   1. mangle: PREROUTING
-   2. nat: PREROUTING (first packet only)
-   3. mangle: INPUT
-   4. filter: INPUT
-
-Reply from firewall
-
-   1. mangle: OUTPUT
-   2. filter: OUTPUT
-   3. mangle: POSTROUTING
-
-TEST C
-Sending http request from firewall to external box:
-
-Request from firewall
-
-   1. mangle: OUTPUT
-   2. nat: OUTPUT (first packet only)
-   3. filter: OUTPUT
-   4. mangle: POSTROUTING
-   5. nat: POSTROUTING (first packet only)
-
-Reply from external box
-
-   1. mangle: PREROUTING
-   2. mangle: INPUT
-   3. filter: INPUT
-
----
-
-This is quite interesting, and not at all what I was expecting based on
-what I'd read.
-
-I have a list of questions about this behaviour, keeping in mind that
-I'm fairly new to iptables/netfilter:
-
-1. Why does only the first packet for a TCP/IP connection seem to pass
-through the nat table?  Does connection tracking take over if the packet
-is (ESTABLISHED,RELATED) and work some magic under the covers?
-
-2. Why do both OUTPUT and POSTROUTING chains get traversed for packets
-that the firewall sends out?  Is this useful at all?
-
-3. Most of the documents I looked at were fairly old.  Is there a
-somewhat recent document that perhaps might benefit from including these
- tests?
-
-thanks,
-
-Tony
-
+Brad Morgan
 
 
 
