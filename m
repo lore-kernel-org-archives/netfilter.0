@@ -1,12 +1,14 @@
-From: "Narti Kitiyakara" <Nkitiyakara@nolacom.com>
-Subject: Microsoft VPN
-Date: Wed, 30 Jun 2004 12:27:37 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Microsoft VPN
+Date: Wed, 30 Jun 2004 18:42:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <76408279273F86419EA113F4CC5BB13D026C5E@EXCHANGE.InsideNCS.local>
+Message-ID: <200406301842.32108.Antony@Soft-Solutions.co.uk>
+References: <76408279273F86419EA113F4CC5BB13D026C5E@EXCHANGE.InsideNCS.local>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <76408279273F86419EA113F4CC5BB13D026C5E@EXCHANGE.InsideNCS.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,21 +21,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-We're having trouble accessing our Microsoft VPN server through an =
-iptables firewall.  The first person to connect gets in fine, but we =
-can't make concurrent VPN connections.  We used guarddog and guidedog to =
-set up most of the firewall, but guidedog doesn't know how to DNAT based =
-on IP protocol, so we added an initialization script to run level 5 =
-(below) to DNAT based on protocol.  As I said, we're just perplexed as =
-to why this would work for one user but not additional users.  Any help =
-will be greatly appreciated.
+On Wednesday 30 June 2004 6:27 pm, Narti Kitiyakara wrote:
 
-/sbin/iptables -t nat -A ftolocal -p gre -j DNAT --to-destination =
-1.2.3.4
-/sbin/iptables -t mangle -A ftolocal -p gre -j MARK --set-mark 1
-/sbin/iptables -t nat -I PREROUTING 1 -p gre -j gforward
+> We're having trouble accessing our Microsoft VPN server through an iptables
+> firewall.  The first person to connect gets in fine, but we can't make
+> concurrent VPN connections.
 
+Sounds like you don't have the PPTP NAT Conntrack helper loaded.
 
-- narti
+Check patch-o-matic for details.
+
+Regards,
+
+Antony.
+
+-- 
+Software development can be quick, high quality, or low cost.
+
+The customer gets to pick any two out of three.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
