@@ -1,12 +1,11 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: unexpected behaviour...?
-Date: Tue, 26 Aug 2003 20:52:13 -0700 (PDT)
+From: ads nat <adsnat@yahoo.com>
+Subject: SMTP HTTP port allow
+Date: Tue, 26 Aug 2003 23:52:56 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0308262037240.3634@xena.cft.ca.us>
-References: <20030826194801.53066.qmail@web21414.mail.yahoo.com>
+Message-ID: <20030827065256.47173.qmail@web20708.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-1268608863-1061967176=:46364"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030826194801.53066.qmail@web21414.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +15,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: =?iso-8859-1?q?Christof=20Nyffenegger?= <cnyf@yahoo.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 26 Aug 2003, Christof Nyffenegger wrote:
+--0-1268608863-1061967176=:46364
+Content-Type: text/plain; charset=us-ascii
 
->  --- Jim Carter <jimc@math.ucla.edu> schrieb:
-> but what about the connection table on firewall B? it contains no established
-> ssh session - in fact no session at all, since it didn't forward any traffic so
-> far. only established and related sessions are allowed in its rulebase, plus
-> explicitly defined NEW sessions of course (for example the forementioned ssh
-> connection). now i ask myself why the ssh session appears in the connection
-> table as an established session on firewall B if the session was not
-> established through firewall B? or maybe i missunderstand the concept of a
-> stateful firewall from the ground up...?
+I am implimenting iptables for first time. 
+I want to allow all my LAN users to send emails to SMTP (port no. 25) all destination with following code. :
+ 
+***
+iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
+***
+ 
+I also want to allow LAN users having ip 192.168.0.42 192.168.0.23 to upload contents to webserver on ip 207.106.22.35 (outside of LAN) with following code. 
+ 
+***
+iptables -A FORWARD -p tcp -s 192.168.0.42 192.168.0.23 -d 207.106.22.35 --dport 80 -j ACCEPT
+***
+ 
+I would loke know whether It works or not.
+Tell me whether my code is O.K. also where can i check logs.
+Thanks
 
-Hmmm, good point.  However, I think a packet is considered to be part of an
-established connection because it has particular header bits set, not
-because of IP address matching in the conntrack tables.  Someone who's more
-familiar with the sources, could you please confirm or correct this
-statement?
 
-> the proxy server is not running on the firewalls - it was a http donwload
-> *through* firewall A from a browser client to a squid proxy elsewhere in the
-> network. as i mentioned it's no surprise to see this session freeze after
-> failover. but the point is that the ssh session did NOT freeze after failover.
-> i think i understand why the ftp and http sessions froze, but i don't
-> understand why the ssh session did not.
 
-Oh, I didn't understand the configuration.  Hmmm again.  I would really
-expect the http and ssh connections to behave the same.  What are the
-differences between the connections?  Are the services on different
-operating systems (Linux / Windows), so the TCP stack behaves differently?
-Maybe you could put the server-side DMZ's switch into promiscuous mode (so
-you can snoop on all packets) and run tcpdump / ethereal / snort.  If any
-machine is somehow using the IP address of the individual firewall box as
-its gateway, its connections won't survive the failover, while if the
-shared address is being used, as it should be, it should work.  The same
-principle applies on the client side too.
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+---------------------------------
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--0-1268608863-1061967176=:46364
+Content-Type: text/html; charset=us-ascii
+
+<DIV>I am implimenting iptables for first time. </DIV>
+<DIV>I want to allow all my LAN users to send emails to SMTP (port no. 25)&nbsp;all destination with following code. :</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>***</DIV>
+<DIV>iptables -A FORWARD -p tcp --dport 25 -j ACCEPT<BR>
+<DIV>***</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I also want to allow LAN users having ip 192.168.0.42 192.168.0.23 to upload contents to webserver on ip 207.106.22.35 (outside of LAN)&nbsp;with following code. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>***</DIV>
+<DIV>iptables -A FORWARD -p tcp -s 192.168.0.42 192.168.0.23 -d 207.106.22.35 --dport 80 -j ACCEPT</DIV>
+<DIV>***</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I would loke know whether It works or not.</DIV>
+<DIV>Tell me whether my code is O.K. also where can i check logs.</DIV>
+<DIV>Thanks<BR></DIV></DIV><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
+--0-1268608863-1061967176=:46364--
 
