@@ -1,14 +1,10 @@
-From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
-Subject: Re: (no subject)
-Date: 24 Jan 2003 12:39:41 +0100
+From: "PAUL FABRICIO VILLACRESES LEON" <paulvillacreses@hotmail.com>
+Subject: bridging and iptables
+Date: Fri, 24 Jan 2003 23:40:53 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043408382.1846.12.camel@ranjeet-linux-1>
-References: <5.2.0.9.0.20030124154733.00a0bd10@mail.SoftHome.net> 
-	<1043409967.1998.31.camel@rayw.knowledgefactory.co.za>
+Message-ID: <F44dtOODEFYkiv1MOam0001ee18@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1043409967.1998.31.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +14,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Fri, 2003-01-24 at 13:06, Raymond Leach wrote:
-> AFAIK most *nix's support it... Solaris does.
-> 
-> On Fri, 2003-01-24 at 12:18, Blesson Paul wrote:
-> > Hi all
-> >          Is IPTables are only supported by linux. Which of the OS's support 
-> > IPTables
-> > regards
-> > Blesson Paul
-> > 
-> > Blesson Paul,
 
-I was under the impresssion that you need to be using the kernel-space
-NetFilter mechanism to be able to use the user-space IPTables utilities,
-and that NetFilter is present only in Linux 2.4+ kernels. I was not
-aware that it has been ported to the Solaris OS. Unless you are talking
-on Linux OS running on Sun hardware.
 
--- 
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-Ranjeet dot Shetye2 at Zultys dot com
-http://www.zultys.com/
 
-The views, opinions, and judgements expressed in this message are solely
-those of
-the author. The message contents have not been reviewed or approved by
-Zultys.
+
+Hi
+core development
+
+I'm Paul Villacreses Leon
+Developer Transparent Firewall contents
+ESPOL's UNIVERITY ECUADOR
+
+I develop a software using libiptc.a and the program put rules in the tables 
+filter insidde chain FORWARD. but i whould like put rules in chain 
+PREROUTING .
+
+i have
+Linux Redhat 8.0
+Kernel 2.4.18
+iptables 1.2.6a included in CD linux RedHAt 8.0
+enable Bridging firewall
+
+LAN ---------- eth0 ---------MyBridge -------eth1 ---------Internet
+
+
+The present is for response of some questions please.
+
+1.- Can I use bridging firewall and nat tables ?
+2.- Are some library for manipulated nat tables ?
+
+thank for the answer anybody
+
+Thank you
+
+
+_________________________________________________________________
+Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
 
