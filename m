@@ -1,8 +1,9 @@
-From: Josh Howlett <josh.howlett@bristol.ac.uk>
-Subject: linux-2.4.22, iptables-1.2.9, imq
-Date: 12 Nov 2003 15:56:09 +0000
+From: "John Paul" <voltaire@pinoylinux.sytes.net>
+Subject: Re: pptp broken after POM
+Date: Thu, 13 Nov 2003 10:31:05 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068652569.27810.450.camel@cumulus>
+Message-ID: <015701c3a98e$34c2fcf0$63000a0a@pooh>
+References: <3FB2C509.5070703@yahoo.com> <00cd01c3a983$3a96ff10$63000a0a@pooh>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,37 +17,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: Josh.Howlett@bristol.ac.uk
+To: John Paul <john@pinoylinux.sytes.net>, netfilter@lists.netfilter.org
 
-Hi,
+oooopss... sorry for answering my own query. i have found the problem and
+has been fixed :-) i was previously using the old .so.
 
-I am trying to get IMQ working with Linux 2.4.22 and iptables-1.2.9.
+----- Original Message -----
+From: "John Paul" <john@pinoylinux.sytes.net>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, November 13, 2003 9:12 AM
+Subject: pptp broken after POM
 
-I have patched the kernel with the IMQ patch. No problem.
 
-I then patched the latest patch-o-matic with the IMQ patch. No problem.
-
-I then ran P-o-M against my kernel tree, and selected IMQ. No problem.
-
-I then selected the IMQ target (module) and device (module) options in
-the kernel configuration and compiled it. No problem.
-
-I then compiled iptables against the kernel (statically). No problem.
-
-When I run iptables I get: "Couldn't find target `IMQ'".
-
-I assume that the IMQ stuff isn't getting linked into iptables. Where
-have I gone wrong? I don't seem to have patched anything directly
-against the iptables source...
-
-many thanks, josh.
-
--- 
------------------------------------------------------------
-Josh Howlett, Networking & Digital Communications,
-Information Systems & Computing, University of Bristol, U.K.
-'phone: 0117 928 7850 email: josh.howlett@bris.ac.uk
-------------------------------------------------------------
+> Hello Folks,
+>
+> I got my PPTP working before patching my kernel with POM. Below is the log
+> when trying to connect to the vpn server. Am i missing something after the
+> POM patch?
+>
+> iptables-1.2.9rc1
+> linux-2.4.22
+>
+> Thanks.
+> PJ.
+>
+> Nov 13 09:11:17 mail pppd[8395]: pppd 2.4.1 started by root, uid 0
+> Nov 13 09:11:17 mail pppd[8395]: using channel 3
+> Nov 13 09:11:17 mail pppd[8395]: Using interface ppp1
+> Nov 13 09:11:17 mail pppd[8395]: Connect: ppp1 <--> /dev/pts/3
+> Nov 13 09:11:17 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:19 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:20 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:22 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:23 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:26 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:26 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:29 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:30 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:32 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:34 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:35 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:38 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:38 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:41 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:42 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:44 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
+> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
+> Nov 13 09:11:46 mail pptpd[8394]: GRE: Discarding for incorrect call
+> Nov 13 09:11:47 mail pppd[8395]: LCP: timeout sending Config-Requests
+> Nov 13 09:11:47 mail pppd[8395]: Connection terminated.
+> Nov 13 09:11:47 mail pppd[8395]: Exit.
+> Nov 13 09:11:47 mail pptpd[8394]: GRE: read(fd=5,buffer=804d920,len=8196)
+> from PTY failed: status = -1 error = Input/output error
+> Nov 13 09:11:47 mail pptpd[8394]: CTRL: PTY read or GRE write failed
+> (pty,gre)=(5,6)
+> Nov 13 09:11:47 mail pptpd[8394]: CTRL: Client 10.10.0.99 control
+connection
+> finished
+>
+>
 
 
