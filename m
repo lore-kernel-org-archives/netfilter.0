@@ -1,12 +1,11 @@
-From: Nimit Gupta <nimit@deeproot.co.in>
-Subject: Re: how to block kazaa ?
-Date: Wed, 26 Feb 2003 10:37:57 +0530 (IST)
+From: Esteban <eribicic@sinectis.com>
+Subject: argument error while natting?
+Date: 26 Feb 2003 02:13:59 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0302261032380.375-100000@debian.lan.deeproot.co.in>
-References: <200302252242.25175.netfilter@newkirk.us>
+Message-ID: <1046236439.12245.8.camel@debian>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302252242.25175.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Joel Newkirk <netfilter@newkirk.us>
-Cc: "inghau@perkom.co.id" <inghau@perkom.co.id>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+always i try to use the nat issues i get "Invalid argument" ..
+why could it be?
 
-hello,
-	Just going thru the thread so that i could learn form others
-problem. One thing I could not understand is, how to custom compile a
-kazaa-blocking kernel?
+root@debian:~# iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 80
+-j DNAT --to 127.0.0.1:3128
+iptables: Invalid argument
+root@debian:~# 
+root@debian:~# iptables -t nat -A PREROUTING  -p tcp --dport 80 -j DNAT
+--to 127.0.0.1:3128
+iptables: Invalid argument
+root@debian:~# 
+root@debian:~# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables: Invalid argument
 
->
-> But newer implementations apparently support port-hopping, so it seems
-> that the only confirmed way to stop it with iptables is with the STRING
-> match from patch-o-matic, and block anything with the string "kazaa"
-> (don't recall case requirements) in it.  Compiling a custom
-> kazaa-blocking kernel may be more than you want to do, though.
->
+root@debian:~# 
+root@debian:~# iptables  --version
+iptables v1.2.7a
+root@debian:~# lsmod 
+Module                  Size  Used by    Not tainted
+ipt_MASQUERADE          1912   0  (autoclean)
+iptable_nat            23064   0  (autoclean) [ipt_MASQUERADE]
+ip_conntrack           28832   1  (autoclean) [ipt_MASQUERADE
+iptable_nat]
+iptable_filter          1672   1  (autoclean)
+ip_tables              14360   5  [ipt_MASQUERADE iptable_nat
+iptable_filter]
+root@debian:~# 
 
-	Thanks a lot.
-
-with regards,
-Nimit.
 
 
