@@ -1,14 +1,13 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: RE: Iptables and various domains
-Date: 12 Dec 2002 10:52:51 +0200
+From: "Amit Kumar Gupta" <amitkumar.gupta@wipro.com>
+Subject: IPtables Problem
+Date: Thu, 12 Dec 2002 17:22:20 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039683170.4085.41.camel@rayw.knowledgefactory.co.za>
-References: <NEBBKLENIBMGHGCLGBPIIEBLCDAA.security@e-gim.es>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <4223A04BF7D1B941A25246ADD0462FF559A08C@blr-m3-msg.wipro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-DOysrUHB3TfWUDUe0aCZ"
+Content-Type: multipart/mixed;
+	boundary="----=_NextPartTM-000-e71913bd-65c1-476f-b455-863412e98aaa"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NEBBKLENIBMGHGCLGBPIIEBLCDAA.security@e-gim.es>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,141 +17,188 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: E-GIM Security <security@e-gim.es>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---=-DOysrUHB3TfWUDUe0aCZ
-Content-Type: text/plain; charset=ISO-8859-1
+------=_NextPartTM-000-e71913bd-65c1-476f-b455-863412e98aaa
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2A1D4.ED3E0C9F"
+
+------_=_NextPart_001_01C2A1D4.ED3E0C9F
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2002-12-12 at 11:34, E-GIM Security wrote:
-> Thanks Raymond:
->=20
-> My domains are virtually hosted. Problems is the next: We have various ap=
-ps
-> in IIS-Windows and ASP technologic. Future developments we need will be
-> hosted on Linux with Apache+Tomcat. But, we only use one IP number. Do yo=
-u
-> know another solution?
->=20
-I don't understand the question. You cannot host two physically seperate
-machines with one ip (AFAIK). iptables does not have the capability to
-look inside http headers (maybe with an iptbles module ...)
+Hi List,
+=20
+Can somebody tell me what are all possible ways using IPTables to detect
+malicious activities?
+=20
+Thanks & Regards,
+Amit
+=20
 
-Ray
+------_=_NextPart_001_01C2A1D4.ED3E0C9F
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-> Thanks a lot
->=20
-> > -----Mensaje original-----
-> > De: Raymond Leach [mailto:raymondl@knowledgefactory.co.za]
-> > Enviado el: jueves, 12 de diciembre de 2002 8:15
-> > Para: E-GIM Security
-> > CC: Netfilter Mailing List
-> > Asunto: Re: Iptables and various domains
-> >
-> >
-> > Hi
-> >
-> > Yes and maybe no. If your domains are virtually hosted (they resolve to
-> > the same ip numbers) then no. iptables cannot redirect traffic in this
-> > case - it uses ip numbers. You would need to use something like Apache
-> > virtual hosting and possibly redirect pages to accomplish your goal in
-> > this case.
-> >
-> > If your domains resolve to different ip numbers, then iptables can be
-> > your solution:
-> >
-> > iptables -t nat -A PREROUTING -d www.dom1.com -p tcp --dport 80 -j
-> > REDIRECT --to-destination webserver-1:80
-> > iptables -t nat -A PREROUTING -d www.dom2.com -p tcp --dport 80 -j
-> > REDIRECT --to-destination webserver-1:80
-> > iptables -t nat -A PREROUTING -d www.dom3.com -p tcp --dport 80 -j
-> > REDIRECT --to-destination webserver-2:80
-> > iptables -t nat -A PREROUTING -d www.dom4.com -p tcp --dport 80 -j
-> > REDIRECT --to-destination webserver-2:80
-> >
-> > Remember, to use iptables like above, www.dom1.com, www.dom2.com,
-> > www.dom3.com, www.dom4.com must resolve to different ip numbers.
-> >
-> > Ray
-> >
-> >
-> > On Thu, 2002-12-12 at 10:58, E-GIM Security wrote:
-> > > 	Hi,
-> > >
-> > > 	Can Iptables route by domains? For example, I have a
-> > webserver and my
-> > > firewall with iptables route all request on port 80 throw IP
-> > webserver. I
-> > > need add another webserver, and various domains (www.dom1.com,
-> www.dom2.com)
-> > will be redirect to webserver-1 and other domains (www.dom3.com,
-> > www.dom4.com) will be redirect to webserver-2. Can IPTables help me? Wh=
-ich
-> > is the solution)
-> >
-> > 	Thanks and sorry ... my english is very poor.
-> >
-> > Jos=E9 Antonio Garc=EDa Garc=EDa
-> > Technical Internet Solutions
-> >
-> > E-GIM 	+34 952700010
-> > http://www.e-gim.es
-> >
-> --
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> (  Raymond Leach                       )
->  ) Knowledge Factory                  (
-> (                                      )
->  ) Tel: +27 11 445 8100               (
-> (  Fax: +27 11 445 8101                )
->  )                                    (
-> (  http://www.knowledgefactory.co.za/  )
->  ) http://www.saptg.co.za/            (
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    o                                o
->     o                              o
->         .--.                  .--.
->        | o_o|                |o_o |
->        | \_:|                |:_/ |
->       / /   \\              //   \ \
->      ( |     |)            (|     | )
->      /`\_   _/'\          /'\_   _/`\
->      \___)=3D(___/          \___)=3D(___/
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
---=-DOysrUHB3TfWUDUe0aCZ
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
 
-iD8DBQA9+E5ih1fuR/Bv+ygRAhEBAJ0fbxEXYbiluM0alVeGWSB6u0ffqgCeMNdc
-P0wEqHTsnRDUsJ/wZPLhZvs=
-=+bOb
------END PGP SIGNATURE-----
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C2A203.066AF670">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
 
---=-DOysrUHB3TfWUDUe0aCZ--
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi List,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Can somebody tell me what are all possible ways using =
+<span
+class=3DSpellE>IPTables</span> to detect malicious =
+activities?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks &amp; Regards,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Amit<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C2A1D4.ED3E0C9F--
+
+
+------=_NextPartTM-000-e71913bd-65c1-476f-b455-863412e98aaa
+Content-Type: text/plain;
+	name="Wipro_Disclaimer.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="Wipro_Disclaimer.txt"
+
+**************************Disclaimer************************************************
+
+Information contained in this E-MAIL being proprietary to Wipro Limited is 
+'privileged' and 'confidential' and intended for use only by the individual
+ or entity to which it is addressed. You are notified that any use, copying 
+or dissemination of the information contained in the E-MAIL in any manner 
+whatsoever is strictly prohibited.
+
+***************************************************************************************
+
+------=_NextPartTM-000-e71913bd-65c1-476f-b455-863412e98aaa--
 
 
