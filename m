@@ -1,8 +1,9 @@
-From: Patrick Turley <pturley@rocksteady.com>
-Subject: Question about limited primary addresses
-Date: Sun, 19 Sep 2004 22:35:32 -0500
+From: Askar <askarali@gmail.com>
+Subject: udp port 1025
+Date: Mon, 20 Sep 2004 13:44:18 +0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <414E5004.1060009@rocksteady.com>
+Message-ID: <a0f69e5040920004411e0eeb6@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,37 +16,43 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-I am trying to configure a Linux box with all possible VLANs (4094 of 
-them), and a subnet on each VLAN. Creating the VLANs isn't a problem. 
-But, when I try to use "ip addr add ..." commands to assign an IP 
-address to each VLAN interface, I get to do about 280 of them before all 
-the interfaces on the box become unresponsive. I've also tried to assign 
-the same IP addresses all to eth0, and I get the same result.
+hi all
 
-The problem seems to hinge on the distinction between primary and 
-secondary addresses.
+Im taking care of a fw machine that is configured by my predecsssor,
+firewall being configure by default policies to ACCEPT for all chain
+(coz he thinks its difficult of an ISP to run firewall as default set
+to DROP)
+however for the time being this is not my concern but here are few
+lines from script that confusing for me
 
-If you're reading the LARTC list, then you've probably had the need 
-(e.g., load testing) to assign thousands of IP addresses to a single 
-interface. However, it's usually the case that one is assigning multiple 
-addresses that all belong to the same subnet. In that case, the first 
-such IP address is "primary" and all the additional addresses that 
-belong to the same subnet are "secondary". My investigations tell me 
-that "secondary" addresses are much lighter-weight. On the other hand, I 
-don't seem to be able to assign more than about 280 "primary" addresses 
-in the entire system before all the interfaces become unresponsive.
+iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+iptables -A OUTPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
 
-For additional information about "primary" vs. "secondary" addresses, 
-take a look at:
+when I do "tail -f /var/log/messages", I found lot of below messages
 
-http://www.linux-ip.net/html/linux-ip.html#tools-ip-address-add
-http://www.linux-ip.net/gl/ip-cref/node33.html
+Sep 20 12:26:35 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+sending response: host unreachable
+Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xxx#1025: error
+sending response: host unreachable
+Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+sending response: host unreachable
+Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+sending response: host unreachable
+Sep 20 12:26:38 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+sending response: host unreachable
+Sep 20 12:26:39 guru named[12308]: client xxx.xx.xxx.xxx#1025: error
+sending response: host unreachable
 
-Does anyone know why there appears to be a limit on the number of 
-networks? Does anyone know where in the code this limit arises? Does 
-anyone know a way to get around this limit?
+what mean by all this, can someone care to explain/clear things to me? :)
+may I remove the above iptables rules?
 
+regards
+Askar
+-- 
+(after bouncing head on desk for days trying to get mine working, I'll make
+yer life a little easier)
 
