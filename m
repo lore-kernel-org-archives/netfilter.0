@@ -1,13 +1,12 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: Internal ip exiting network on firewall external nic despight
- rule
-Date: Sat, 21 Sep 2002 15:01:09 +0200
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: RE: Iptables bandwidth limit
+Date: Fri, 20 Sep 2002 21:46:37 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8C6D95.1070308@fugmann.dhs.org>
-References: <000101c260f4$c5861260$0801a8c0@s3ac>
+Message-ID: <Pine.LNX.4.44.0209202140330.2337-100000@laptop1.agatha>
+References: <Pine.LNX.4.44.0209201534250.6328-100000@webdev.ines.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0209201534250.6328-100000@webdev.ines.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: Rowan Reid <rreid@studio3arc.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andrei Ivanov <andrei.ivanov@ines.ro>
 Cc: netfilter@lists.netfilter.org
 
-Rowan Reid wrote:
-> Since I'm cheap I don=92t want to purchase another hub, I have my T1,
-> connected to a hub with my Firewall extif, my VPN extif and the hub is
-> connected to my switch this allows my to access the net directly and
-> through the firewall from my station, this is for diagnostic purposes s=
-o
-> I don=92t have to play cable switcher.=20
-I really do not understand why you do not want all traffic to go through =
 
-your firewall. A firewall is supposed to shield off any unwanted traffic =
+First of all, the limitation was created since you should not use other 
+TOS values than specified in the RFC's. You may get extremely strange 
+problems if you start doing random TOS matches on packets. 
 
-to ever enter the internal network, which is only accomplised, if all=20
-traffic _must_ go through the firewall.
+Anyways, iptables _is_ actually able to do irregular TOS matching with the
+ftos patch applied to the kernel (I _think_ it may still be in
+patch-o-matic, but I don't know for sure). It should also be available 
+somewhere on the www.paktronix.com site.
 
-This could be accomplished simply by connecting your external interface=20
-on the firewall directly to the T1 entry point, and the switch/hub to=20
-the internal network interface.
+Have a nice day,
 
-The "diagnostic purposes" you are talking about are rendered useless=20
-with the configuraion you are describing - not to mention the _serious_=20
-degradation of your network.
 
-Regards
-Anders Fugmann
+
+On Fri, 20 Sep 2002, Andrei Ivanov wrote:
+
+> 
+> What amazes me is that iptables doesn't know to match packets by a tos 
+> value other then the ones in ip.h... this really SUCKS.
+> 
+> On Fri, 20 Sep 2002, Rob Sterenborg wrote:
+> 
+> > > You can almost do this with the limit module, but you should 
+> > > better use
+> > > HTB or CBQ (QOS) which are really done for this.
+> > > 
+> > I first accomplished it with CBQ, but later I switched to HTB which is a lot
+> > easier to configure.
+> > 
+> > 
+> > Rob
+> > 
+> 
+> 
+> 
+
+-- 
+----
+Oskar Andreasson
+http://www.frozentux.net
+http://iptables-tutorial.frozentux.net
+http://ipsysctl-tutorial.frozentux.net
+mailto:blueflux@koffein.net
+
 
 
 
