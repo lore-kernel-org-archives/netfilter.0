@@ -1,12 +1,9 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: How to debug nfmarking
-Date: Mon, 15 Nov 2004 21:44:10 +0100
-Message-ID: <1100551451.3612.2.camel@coati>
-References: <1100540726.2796.23.camel@laserite>
+From: ads nat <adsnat@yahoo.com>
+Subject: Iptables Error 'Memory allocation problem'
+Date: Tue, 16 Nov 2004 06:55:52 -0800 (PST)
+Message-ID: <20041116145552.48507.qmail@web60408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1100540726.2796.23.camel@laserite>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +14,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-11-15 at 18:45 +0100, Eduardo Fern=E1ndez wrote:
-> Hi all,
->=20
-> i'm trying to debug packet marking like this:
->=20
-> iptables -t mangle -A PREROUTING -p icmp -j MARK --set-mark 0x1
-> (...)
-> But I don't know how to check if the packets are really being marked.
-> ip_conntrack shows all packets with mark=3D0, and that's not possible.
+Hi,
+I am getting following on this server.
 
-yes, you need to explicitly save mark with CONNMARK to have the mark
-being propagated through the connection.
-See http://home.regit.org/connmark.html for details.
+#######
+[root@xxx root]# iptables -t nat -A PREROUTING -s
+192.168.0.0/24 -d xxx.xxx.xxx.xxx -i eth1 -p tcp -m
+tcp --dport 3128 -j DNAT --to-destination 10.0.0.2:80
+iptables v1.2.7a: can't initialize iptables table
+`nat': Memory allocation problem
+#########
 
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL
+But on other servers with exactly similar
+configuration and setup, I have not faced this error.
+
+Any clue to solve this problem.
+Thanks
+
+Perhaps iptables or your kernel needs to be upgraded.
+
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Meet the all-new My Yahoo! - Try it today! 
+http://my.yahoo.com 
+ 
 
 
