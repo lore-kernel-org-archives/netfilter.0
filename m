@@ -1,12 +1,16 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: [OT] - Please reply off list - What Distro?
-Date: Tue, 23 Dec 2003 10:32:54 -0600
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Packets missing state ?
+Date: Tue, 23 Dec 2003 12:13:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C67DE@coxhpexg.coxhp.com>
+Message-ID: <1072199612.2184.467.camel@grendel>
+References: <200312231828.59518.rajiv@theargoncompany.com>
+	 <200312231354.36213.Antony@Soft-Solutions.co.uk>
+	 <1072192881.2184.371.camel@grendel>
+	 <200312231533.40728.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200312231533.40728.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +21,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter <netfilter@lists.netfilter.org>
+
+On Tue, 2003-12-23 at 10:33, Antony Stone wrote:
+>
+> > > Yes.   UDP port 53 means client-to-server DNS lookups.
+> >
+> > It could also be server to server queries as well as a load balancer.
+> 
+> I thought server to server queries were always TCP?
+
+Nope. UDP is always used unless the "answer" will exceed a packet length
+of 512 bytes. If this max is exceeded, as complete an answer as possible
+is returned with the truncation bit turned on in the DNS header. After
+that, you'll see the session switch over to TCP for a complete answer.
+
+The other case is primary/master <--> secondary/slave communications for
+the purpose of zone transfers. 
+
+Dig and other tools will let you choose to use TCP, but the default is
+UDP.
+
+HTH,
+C
 
 
-Disclaimer:  I do not wish to start a dreaded 'distro-war', but I am at =
-a bit of a loss.  Please reply to me off-list, so as not to incite a =
-riot...
 
-I'm unhappy with my current distro, and would like to find another one.  =
-Does anyone have any recommendations?
-
-I'm using bridging firewalls with iptables.  The boxes also run snort.  =
-They're PII's and PIII's, no frills.  That's about it...
-
-I'm currently on RedHat and am disappointed with their move/change to =
-'Fedora'.  Nothing is future-proof, but I'd be more comfortable on =
-something that isn't 'sunsetting'.  I also have concerns with Fedora's =
-quality going forward.  It seems to me to be very much RedHat's =
-step-child, if you get my meaning.  I don't like the concept of being =
-lured with a 'stripped-down' version, and later being 'pushed' into =
-paying for an upgrade.  I'm not saying that RedHat is doing this today, =
-but it seems to me that they will be in a better place to do this in the =
-future.
-
-Any thoughts?
 
