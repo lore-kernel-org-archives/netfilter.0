@@ -1,15 +1,13 @@
-From: Frederic de Villamil <neuro@seclab.jp>
-Subject: Re: simple config question
-Date: Sun, 28 Mar 2004 11:53:50 +0200
+From: "Mehmet AK" <mehmet.ak@kolayyol.net>
+Subject: Re: map internal ip
+Date: Sun, 28 Mar 2004 13:26:10 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040328095350.GA6334@jesus.seclab.jp>
-References: <000a01c41470$9dbe3ec0$8a361645@Earthlink.net>
+Message-ID: <000901c414af$2a155550$de00a8c0@homelande0hze1>
+References: <1079722569.1980.52.camel@kaos.mpsnet.net.mx> <200403191918.05189.Antony@Soft-Solutions.co.uk>
+Reply-To: "Mehmet AK" <mehmet.ak@kolayyol.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000a01c41470$9dbe3ec0$8a361645@Earthlink.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +17,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Eric McAfee <emcafee@earthlink.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+
+hi Antony.
+
+yo can do this with iproute2  .  You have to mark TCP packet with iptables
+like an example
+
+ip route add default via 148.245.164.1 table 40 # this is your default
+router
+iptables -t mangle -I PREROUTING -d 150.50.53.5  -j MARK --set-mark 0x10  #
+mark who goes 150.50.53.5
+ip rule add fwmark 0x10 table 40      #
 
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+best regards
 
-On Sat, 27 Mar 2004, Eric McAfee wrote:
+Mehmet AK
 
-> I need to know the iptables command that would restrict all access to my server except for my computer's Dreamweaver program and ccbill's access to my password file. I know it would be some variation of:
-> iptables -A INPUT -i ppp0 -p tcp --syn -j DROP
 
-Hi,
-what  you're going  to do  is drop  every new  TCP connection  to your
-interface ppp0.
 
-What you want to to should be something like that
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, March 19, 2004 10:18 PM
+Subject: Re: map internal ip
 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
 
-iptables -A INPUT -s 127.0.0.1 -j ACCEPT
-iptables -A OUTPUT -s 127.0.0.1 -j ACCEPT
+> On Friday 19 March 2004 6:56 pm, Omar Armas wrote:
+>
+> > I have the following config:
+> >
+> > (public ip)
+> > eth0
+> > Firewall
+> > eth1 (150.50.53.4)
+> >
+> > 148.145.133.1 (vpn router)
+> >
+> > 150.50.57.0/24
+> > (LAN, including a server with 150.50.57.2)
+> >
+> > *Class 150.50.57.0/24 is routed to 148.245.164.1
+> >
+> > I want that when people(from eth1 lan) goes to 150.50.53.5, be
+> > redirected to 150.50.57.2.
+> >
+> > I tried:
+> >
+> > iptables -t nat -A PREROUTING 150.50.53.5 -j DNAT --to-destination
+> > 150.50.57.2
+> >
+> > But doesn't seem to be working. Any idea if it is possible and how to do
+> > it?
+>
+> That looks correct.   Do you have a suitable FORWARD rule to allow the
+> translated packets through the firewall?
+>
+> Does 150.50.57.2 know how to route the replies back again (through the
+> firewall)?
+>
+> How are you testing?
+>
+> I'm not sure I understand the significance of the "VPN router" shown on
+your
+> diagram with only a single IP address - can you explain further what this
+> means, and what is its relevance to the setup?
+>
+> Regards,
+>
+> Antony.
+>
+> -- 
+> Never write it in Perl if you can do it in Awk.
+> Never do it in Awk if sed can handle it.
+> Never use sed when tr can do the job.
+> Never invoke tr when cat is sufficient.
+> Avoid using cat whenever possible.
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
 
-iptables -A INPUT -s $MACHINE -j ACCEPT
-iptables -A OUTPUT -s $MACHINE -j ACCEPT
-
-$machine is your machine IP address.
-
-regards
-Frederic
---
-http://www.seclab.jp
-
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (FreeBSD)
-
-iD8DBQFAZqCuYBnsNILdO64RAlOHAJ99bo5g4Hf/wRvy46Sv0IMRUIwPAQCfaERE
-DjsjDnaRHGY92aiw1DOYJ+4=
-=MgQJ
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
 
