@@ -1,11 +1,15 @@
-From: pejman moghadam <pmoghadam@yahoo.com>
-Subject: Yahoo messenger confusion
-Date: Fri, 1 Aug 2003 06:56:00 -0700 (PDT)
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: IPTables articles links
+Date: Fri, 1 Aug 2003 16:19:57 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030801135600.12725.qmail@web14511.mail.yahoo.com>
+Message-ID: <20030801141957.GM6894@naboo>
+References: <3F29BBA1.4030405@davidcoulson.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-875713272-1059746160=:11726"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="asNXdz5DenlsLVVk"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3F29BBA1.4030405@davidcoulson.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,53 +19,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: David Coulson <david@davidcoulson.net>
+Cc: webmaster@netfilter.org, netfilter@lists.netfilter.org
 
---0-875713272-1059746160=:11726
+
+--asNXdz5DenlsLVVk
 Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-hi gurus
-I have a linux box in my LAN with :
- 
-RH 9 , iptables-1.2.6a-2 , kernel 2.4.18.-14 , iproute-2.4.7-5 , squid-2.5.STABLE1
-valid IPs : 1.2.3.140 -- 1.2.3.143
-invalid IPs : 192.168.0.128 -- 192.168.0.191
+On Thu, Jul 31, 2003 at 09:00:17PM -0400, David Coulson wrote:
+> http://www.iptables.org/documentation/index.html
+>=20
+> # Part 1 of an introductory iptables tutorial by David Culson
+> # Part 2 of an introductory iptables tutorial by David Culson
+>=20
+> Please do the following:
+>=20
+> 1) Spell my name correctly - It's right above the two which were spelled=
+=20
+> wrong.
 
-ifconfig eth0 192.168.0.135 netmask 255.255.255.192 broadcast 192.168.0.191
-ifconfig eth0:0 1.2.3.142 netmask 255.255.255.252 broadcast 1.2.3.143
-route add default gw 1.2.3.141
-iptables -t nat -A POSTROUTING -s 192.168.0.128/26 -o eth0 -j SNAT --to 1.2.3.142
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 3128
+sure.
 
-this box is my gateway; everything is good : my users can ping the internet, use http and ftp and . . . 
-but there is a problem : 
-when they want to login with yahoo messenger sometimes they can , and sometimes they can't :(
- 
-any idea?
- 
-thanks in advance
-Pejman
+> 2) Link directly to my PDFs, so that the copyright information is easily=
+=20
+> accessable for those who need to know about it.
 
+The links are directly to the PDF files.
 
----------------------------------
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
---0-875713272-1059746160=:11726
-Content-Type: text/html; charset=us-ascii
+> I e-mailed webmaster@netfilter.org eariler this week, but had no response.
 
-<DIV>hi gurus<BR>I have a linux box in my LAN with :</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>RH 9 , iptables-1.2.6a-2 , kernel 2.4.18.-14 , iproute-2.4.7-5 , squid-2.5.STABLE1</DIV>
-<DIV>valid IPs : 1.2.3.140 -- 1.2.3.143<BR>invalid IPs : 192.168.0.128 -- 192.168.0.191</DIV>
-<DIV><BR>ifconfig eth0 192.168.0.135 netmask 255.255.255.192 broadcast 192.168.0.191<BR>ifconfig eth0:0 1.2.3.142 netmask 255.255.255.252 broadcast 1.2.3.143</DIV>
-<DIV>route add default gw 1.2.3.141</DIV>
-<DIV>iptables -t nat -A POSTROUTING -s 192.168.0.128/26 -o eth0 -j SNAT --to 1.2.3.142<BR>iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 3128</DIV>
-<DIV><BR>this box is my gateway; everything is good : my users can ping the internet, use http and ftp and . . . <BR>but there is a problem : <BR>when they want to login with yahoo messenger sometimes they can , and sometimes they can't :(</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>any idea?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>thanks in advance<BR>Pejman</DIV><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
---0-875713272-1059746160=:11726--
+Sorry, the position of the webmaster seems to be 'vacant' currently.=20
+We might want to do a new 'call for volunteer', but I want to discuss
+this first with the rest of the coreteam at the summit at the end of
+august.
+
+So the work ends up to be done by myself - and I'm currently travelling
+qute a lot (now after karlsruhe(de) and ottawa(ca) in edinburgh(uk)), so
+I don't have email access that often.
+
+The links are most of the time contributed by people who send emails to
+webmaster@netfilter.org - and I usually don't spell-check them.
+
+Thanks for your corrections.
+
+> David
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--asNXdz5DenlsLVVk
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/KncNXaXGVTD0i/8RAr6sAJ9fnZexOpozmOo+NLJBYk93eFHfMwCgkvbZ
+hopZ9eO9i7TxrkKems7DToE=
+=ybdS
+-----END PGP SIGNATURE-----
+
+--asNXdz5DenlsLVVk--
 
