@@ -1,12 +1,14 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Port 1900
-Date: Mon, 25 Oct 2004 13:07:22 -0700 (PDT)
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: connection tracking without iptables?
+Date: Mon, 25 Oct 2004 15:48:44 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041025200722.2107.qmail@web61010.mail.yahoo.com>
-References: <417D0535.4090300@pbl.ca>
+Message-ID: <417D66AC.1070600@pbl.ca>
+References: <7C9884991ADAE0479C14F10C858BCDF591E37C@alderaan.smgtec.com>	<561dc326040930160476d839c7@mail.gmail.com>	<1096587270.22962.24.camel@wolfpack.ljm.dom>
+	<561dc326041014113163a6a9eb@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <417D0535.4090300@pbl.ca>
+In-Reply-To: <561dc326041014113163a6a9eb@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,61 +18,33 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Aleksandar Milivojevic <amilivojevic@pbl.ca>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-
---- Aleksandar Milivojevic <amilivojevic@pbl.ca> wrote:
-
-> Peter Marshall wrote:
-> > Oct 25 08:58:43 radium kernel: REJECT: frbk-rad IN=eth2 OUT=
-> > MAC=00:01:02:2f:78:4d:00:01:02:46:85:d6:08:00 SRC=192.168.100.101
-> > DST=192.168.100.1 LEN=160 TOS=0x00 PREC=0x00 TTL=1 ID=1464 PROTO=UDP
-> > SPT=29860 DPT=1900 LEN=140
-> > 
-> > I looked on the gys macine for a LONG time .. I can't see why this is
-> > happening.  I know 1900 is the msn port ..... Any ideas ?
+Jiann-Ming Su wrote:
+> On Thu, 30 Sep 2004 19:34:30 -0400, Jason Opperisano <opie@817west.com> wrote:
 > 
-> 1900 is Universal Plug-and-Play.  It's used by messanger, however 
-> messanger works just fine without it.  There's registry entry to disable it:
-> 
-> Hive: HKEY_LOCAL_MACHINE
-> Key: Software\Microsoft\DirectPlayNATHelp\DPNHUPnP
-> Name: UPnPMode
-> Type: REG_DWORD
-> Value: 2 disabled
-> With UPnPMode=2, Universal Plug and Play Network Address Translation 
-> (NAT) traversal discovery does not occur.
-> 
-> Apperently this is good idea to do.  It seems there's more holes in UPnP 
-> than in Swiss cheese.
-> 
-> -- 
-> Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-> Systems Administrator                           1499 Buffalo Place
-> Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+>>  egrep 'ESTABLISHED|ASSURED' /proc/net/ip_conntrack | wc -l
+>>
 > 
 > 
-Agreed... If you are in charge of medium to large network and not all of your
-users are not as Windows savy to go attempting to insert/remove reg keys. You
-might send out a memo directing users here
+> We're finding that any read operation on /proc/net/ip_conntrack really
+> locks the system until that operation is completed.  That is, it's
+> almost as if the read prevents any writes, so the firewall locks up
+> momentarily until the read is done.  Is there a less system intensive
+> way to read ip_conntrack?  Or, is my observation completely wrong?
 
-http://www.grc.com/default.htm
+ From linux kernel 2.6.9 changelog:
 
-with a note to download and use the "Three Muskateers." These are excelent
-freeware apps to close off some obvious holes in Windows. They include UPnP,
-DCOMbobulator, and Shoot the Messenger. Hope this is of use to someone.
+[NETFILTER]: add sysctl to read out the number of current connections
+	
+Apparently a lot of scripts use a construct like
+    cat /proc/net/ip_conntrack | wc -l
+which has a negative impact on system performance due to all the locking
+required.
 
-John
-
-=====
-In the absence of order there will be chaos.
-
-
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail Address AutoComplete - You start. We finish.
-http://promotions.yahoo.com/new_mail 
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
