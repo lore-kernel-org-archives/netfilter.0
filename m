@@ -1,12 +1,12 @@
-From: "John Black" <black@arbbs.net>
-Subject: Re: netfilter question
-Date: Thu, 19 Feb 2004 10:23:47 -0600
+From: Dirk Mueller <dmuell@gmx.net>
+Subject: ESTABLISHED with [UNREPLIED] state??
+Date: Thu, 19 Feb 2004 17:54:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4034e313.7746.0@arbbs.net>
-Reply-To: black@arbbs.net
+Message-ID: <200402191754.57501.dmuell@gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,17 +20,28 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
->
->this assumption is because you're saying 161.x.x.x/21  as destination,
->all other destinations that doesnt belong to 161.x.x.x to
->161.x.x+8.x+255 will be not nat'ed
->
+Hi, 
 
-right now i just have 1 class C private network.
+I'm experiencing a weird problem here. I start use ip_conntrack for stateful 
+packet filtering on a machine that mainly does ftp server. it accepts state 
+== NEW connections to port 21, and ESTABLISHED,RELATED to all hiports 
+(1024-65535 TCP). 
 
-At work i have a static class B ipaddress of 161.x.x.x/255.255.252.0 with the
-private class C network 192.168.0.0/255.255.255.0
+The machine is highly unstable since then. I notice that the number of 
 
-john
-http://www.arbbs.net/
+cat /proc/net/ip_conntrack | grep ESTABLISHED | grep UNREPLIED | wc -l
+
+is steadily rising, and when it reaches something close to 65500 (the 
+max_ip_conntrack limit), the machine crashes. 
+
+Can anyone explain me what the purpose of a ESTABLISHED UNREPLIED connection 
+is? It doesn't make any sense to me (how can a connection be established when 
+its unreplied) ?
+
+Thanks in advance,
+
+Dirk
+
+(PS iptables script available off-list)
+
 
