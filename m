@@ -1,12 +1,15 @@
-From: "Arthur Niu" <arthur.niu@neighbourhoodlink.ca>
-Subject: Questions about Patch-o-Matic
-Date: Thu, 18 Dec 2003 09:20:16 -0500
+From: "Michael H. Warfield" <mhw@wittsend.com>
+Subject: Re: Can I have DES / 3 DES VPN with IPtables Kernal kernel version 2. 4.20 with IPSEC installed
+Date: Thu, 18 Dec 2003 11:15:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <EOEIJIEEJODPHJKGJHMBGEHKCBAA.arthur.niu@neighbourhoodlink.ca>
+Message-ID: <20031218161552.GA19518@alcove.wittsend.com>
+References: <A44765C986F8D411995B00B0D0795F4B1E9A1B17@hhtnt002> <1071759272.1883.4.camel@jasiiitosh.nexusmgmt.com> <20031218081126.7719e90c.mgale@utilitran.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0000_01C3C548.261FEED0"
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20031218081126.7719e90c.mgale@utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,206 +19,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Michael Gale <mgale@utilitran.com>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_01C3C548.261FEED0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by localhost.localdomain id hBIEQQrJ021249
-
-Hi there,
-
-I =91d like to deploy patch-o-matic to block Kazza and Imesh, but I have =
-the
-following questions,
-
-I am using Redhat 9,
-
-1.	How to check kernel version?
-2.	When I run ./runme base, it told me program =93'patch' is missing, ple=
-ase
-install it!=94, what does the patch mean? Redhat patch or iptables patch?
-
-Thx
-
-Have a good day.
-
-Arthur
-
-------=_NextPart_000_0000_01C3C548.261FEED0
-Content-Type: text/html;
-	charset="iso-8859-1"
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
+On Thu, Dec 18, 2003 at 08:11:26AM -0700, Michael Gale wrote:
+> Hello,
 
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<meta name=3DProgId content=3DWord.Document>
-<meta name=3DGenerator content=3D"Microsoft Word 9">
-<meta name=3DOriginator content=3D"Microsoft Word 9">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C3C548.25E6B660">
-<!--[if gte mso 9]><xml>
- <o:OfficeDocumentSettings>
-  <o:DoNotRelyOnCSS/>
- </o:OfficeDocumentSettings>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:View>Normal</w:View>
-  <w:Zoom>0</w:Zoom>
-  <w:DocumentKind>DocumentEmail</w:DocumentKind>
-  <w:EnvelopeVis/>
- </w:WordDocument>
-</xml><![endif]-->
-<style>
-<!--
- /* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:Arial;
-	mso-fareast-font-family:"Times New Roman";
-	color:navy;}
-p.MsoAutoSig, li.MsoAutoSig, div.MsoAutoSig
-	{margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:Arial;
-	mso-fareast-font-family:"Times New Roman";
-	color:navy;}
-span.EmailStyle15
-	{mso-style-type:personal-compose;
-	mso-ansi-font-size:12.0pt;
-	mso-ascii-font-family:Arial;
-	mso-hansi-font-family:Arial;
-	mso-bidi-font-family:Arial;
-	color:black;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;
-	mso-header-margin:.5in;
-	mso-footer-margin:.5in;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
- /* List Definitions */
-@list l0
-	{mso-list-id:2071994168;
-	mso-list-type:hybrid;
-	mso-list-template-ids:1886445310 67698703 67698713 67698715 67698703 =
-67698713 67698715 67698703 67698713 67698715;}
-@list l0:level1
-	{mso-level-tab-stop:.5in;
-	mso-level-number-position:left;
-	text-indent:-.25in;}
-ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
--->
-</style>
-</head>
+> 	You should seriously consider Super FreeS/Wan ... it supports more then =
+DES and 3DES which are out dated and I believe it has been proven.=20
 
-<body lang=3DEN-US style=3D'tab-interval:.5in'>
+	FreeSWAN doesn't support DES because it's considered weak.
+Single DES hasn't been "cracked" per se, it's just that it's keyspace
+(56 bits) is now considered too small to resist concerted brute force
+attacks.  If it's used for persistent storage of data, you could have a
+real problem.  If it's used with ephemeral keys in a communications
+channel with frequent auto-rekeying and perfect forward secrecy (supported
+by IKE/pluto) it's not so much a problem since brute forcing would take
+longer than the life expectancy of the ephemeral key.  If you used it
+for long term "shared secret" keys and sessions with no rekeying, you
+could have a problem.  So if you want to be really REALLY sure, you
+avoid single DES and so unpatched FreeSWAN doesn't support it.
 
-<div class=3DSection1>
+> Michael.
 
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'>Hi =
-there,<o:p></o:p></span></font></span></p>
 
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'><![if =
-!supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></font></span></p>
+> On Thu, 18 Dec 2003 09:54:32 -0500
+> "John A. Sullivan III" <john.sullivan@nexusmgmt.com> wrote:
+>=20
+> > On Thu, 2003-12-18 at 07:58, Laxmi_Narsaiah wrote:
+> > > Hi,
+> > >=20
+> > > Can I have DES / 3 DES VPN with IPtables Kernal kernel version 2.4.20
+> > > with IPSEC installed, please let me know.
+> > >=20
+> > <snip>
+> > 	We do this all the time with FreeS/WAN.  In fact, we are developing a
+> > GUI front end to managed combined firewall and VPN security for large,
+> > complex implementations.  You can find training slide shows on using
+> > iptables, FreeS/WAN, iproute2 and DHCP at http://iscs.sourceforge.net -
+> > Good luck
+> > --=20
+> > John A. Sullivan III
+> > Chief Technology Officer
+> > Nexus Management
+> > +1 207-985-7880
+> > john.sullivan@nexusmgmt.com
+> > ---
+> > If you are interested in helping to develop a GPL enterprise class
+> > VPN/Firewall/Security device management console, please visit
+> > http://iscs.sourceforge.net=20
+> >=20
+> >=20
+>=20
+>=20
+> --=20
+> Michael Gale
+> Network Administrator
+> Utilitran Corporation
 
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'>I &#8216;d like to deploy =
-patch-o-matic to
-block Kazza and Imesh, but I have the following =
-questions,<o:p></o:p></span></font></span></p>
+	Mike
+--=20
+ Michael H. Warfield    |  (770) 985-6132   |  mhw@WittsEnd.com
+  /\/\|=3Dmhw=3D|\/\/       |  (678) 463-0932   |  http://www.wittsend.com/=
+mhw/
+  NIC whois:  MHW9      |  An optimist believes we live in the best of all
+ PGP Key: 0xDF1DD471    |  possible worlds.  A pessimist is sure of it!
 
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'><![if =
-!supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></font></span></p>
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'>I am using Redhat 9, =
-<o:p></o:p></span></font></span></p>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'><![if =
-!supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></font></span></p>
+iQCVAwUBP+HSuOHJS0bfHdRxAQHYfQP+LXT7W3w1bN06+dWhHyxnbVnTFfvzRV9u
+9UOSW4TOm+nmG5ntyNe8XV1U3VZHSumMYYOVrq35DwBZgzUHBl8DsQ+e+fIU1yT3
+dPgYanJau/LujyjTGtUqLD7+o3IK7j7SzHexbUE02Za8VMR+fv9/SXpEM6emoXR1
+yS2AhJ8aey8=
+=SFl1
+-----END PGP SIGNATURE-----
 
-<ol style=3D'mso-margin-top-alt:0in' start=3D1 type=3D1>
- <li class=3DMsoNormal style=3D'color:black;mso-list:l0 level1 =
-lfo1;tab-stops:list .5in'><span
-     class=3DEmailStyle15><font size=3D3 color=3Dblack =
-face=3DArial><span
-     style=3D'font-size:12.0pt'>How to check kernel =
-version?<o:p></o:p></span></font></span></li>
- <li class=3DMsoNormal style=3D'color:black;mso-list:l0 level1 =
-lfo1;tab-stops:list .5in'><span
-     class=3DEmailStyle15><font size=3D3 color=3Dblack =
-face=3DArial><span
-     style=3D'font-size:12.0pt'>When I run ./runme base, it told me =
-program &#8220;'patch'
-     is missing, please install it!&#8221;, what does the patch mean? =
-Redhat patch or
-     iptables patch?<o:p></o:p></span></font></span></li>
-</ol>
-
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'><![if =
-!supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></font></span></p>
-
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span =
-style=3D'font-size:12.0pt'>Thx<o:p></o:p></span></font></span></p>
-
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'><![if =
-!supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></font></span></p>
-
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'>Have a good =
-day.<o:p></o:p></span></font></span></p>
-
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span style=3D'font-size:12.0pt'><![if =
-!supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></font></span></p>
-
-<p class=3DMsoNormal><span class=3DEmailStyle15><font size=3D3 =
-color=3Dblack
-face=3DArial><span =
-style=3D'font-size:12.0pt'>Arthur<o:p></o:p></span></font></span></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0000_01C3C548.261FEED0--
-
+--UlVJffcvxoiEqYs2--
 
