@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Changing the desitnation (DNAT) locally
-Date: Tue, 10 Feb 2004 15:47:55 -0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Apply rules to 1 UDP port but port used as a socket: possible?
+Date: Wed, 11 Feb 2004 00:25:48 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679158@alderaan.smgtec.com>
+Message-ID: <200402110025.48644.Antony@Soft-Solutions.co.uk>
+References: <D4EF10CCEB2CE742BEEA9838C590B0E80113FA41@ftrdmel2.rd.francetelecom.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <D4EF10CCEB2CE742BEEA9838C590B0E80113FA41@ftrdmel2.rd.francetelecom.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Al Sparks <data345@yahoo.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-When you locally generate packets, the netfilter core doesn't go through
-PREROUTING,INPUT, or FORWARD before reaching their destinations. You
-will have to add the same rule to the -t nat -A OUTPUT chain in order to
-get the desired response from the local machine.
+On Tuesday 10 February 2004 1:16 pm, zze-Proxy GRALL O ext FTRD/SVA/LAN wrote:
 
-Al Sparks wrote:
-> I'm new to netfilter.
->=20
-> I've been going through the HOW-TO's on NAT, and I want to change the
-> destination on packets based on it's destination.=20
->=20
-> I set up a test, the idea being, I want to change the destination of
-> a packet from 192.168.100.99 to 127.0.0.5.  The packet will be
-> generated locally. =20
->=20
-> The first thing I did, is I set up my route tables so that
-> 192.168.100.99  127.0.0.5   255.255.255.255 UGH 0      0        0 lo
-> 10.254.223.0    *           255.255.255.0   U   0      0        0 eth0
-> 127.0.0.0       *           255.0.0.0     U     0      0        0 lo
-> default         whatever    0.0.0.0       UG    0      0        0 eth0
->=20
->=20
->=20
-> So I have 192.168.100.99 routed to my local interface, "lo".
->=20
->=20
-> Here's my NAT listing:
-> # iptables -t nat -L
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> DNAT       all  --  anywhere             192.168.100.99   =20
-> to:127.0.0.5=20
->=20
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination
->=20
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
->=20
->=20
->=20
-> To test it, I telnet to the SSH port with
->    telnet 127.0.0.5 22
-> which gets me a connection, but
->    telnet 192.168.100.99 22
-> just shows a SYN_SENT when I check with netstat.
->=20
-> So, is what I'm doing doable?  If so, how do I do it?
->    =3D=3D=3D Al
+> Hello to IPTables users,
+>
+> I'm trying to use a socket (on port 1727) to decode some proprietary UDP
+> packets. When I've decoded them I want to apply a DNAT rule (and then a
+> SNAT  too) to this port using a filter on @IP:port source for all
+> following packets...
+
+I *think* what you're saying is that you want to receive packets on a socket 
+bound to port 1727, and *then* you want to NAT the packets (which happens in 
+the kernel, around about the routing stage, before they're handed over to a 
+listening socket....).
+
+If this interpretation is correct, then the very least reason why you can't do 
+what you want is because once the packets have been accepted by a socket, 
+they're no longer available to netfilter to be NATted, because they've 
+already been delivered.
+
+Have I misunderstood what you're trying to do?   Or are you really trying to 
+redirect packets after they've arrived at their destination?
+
+Antony.
+
+-- 
+Ramdisk is not an installation procedure.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
