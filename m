@@ -1,12 +1,13 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: Re: Need some clarification or help
-Date: Tue, 20 Apr 2004 22:32:36 +0100
+From: "Rodrigo Haces" <rhaces_chistes@yahoo.com.mx>
+Subject: RE: IP Alias with iptables
+Date: Tue, 20 Apr 2004 17:39:27 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003c01c4271e$ffbe9a00$68892090@grouse>
-References: <20040420182205.GA2948@rie.rie.priv> <200404201947.39774.Antony@Soft-Solutions.co.uk> <20040420205144.GC2997@rie.rie.priv>
+Message-ID: <EMEKLOMJOPNJPAFKHEDJOEDGCDAA.rhaces_chistes@yahoo.com.mx>
+References: <200404200833.05963.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200404200833.05963.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,57 +18,90 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Christian Riechmann <riechmann@fgan.de>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi Christian,
+Thanks for this, hope this is my last post:
 
+assuming this will allow all 192.168.1.0/24 go to 192.168.0.0/24 how could i
+do if i want not all the subnet, but only 192.168.1.10, i suppose is with
+the -s option, but im not sure of how to use this.
 
-> Maybe I am a little bit lazy when describing my method as "tunnelling".
-> Therefore I will go a little bit deeper.
-> I know that UDP and TCP protocols are completely different, especially
-> the 3-way handshake. But all its steps are TCP packets. Therefore my idea
-> is to encapsulate on each side each TCP packet into a UDP packet, send
-> this one to the other side, decapsulate the original TCP paket from the
-UDP
-> packet and inject the TCP packet to the kernel. This way the total TCP
-> dialog shall be exchanged as payload of separate UDP packets. UDP
-> is necessary, because only UDP can use broadcast addresses.
-> (I use this type of address to emulate LAN-broadcast within a mobile
-> adhoc network. Therefore I doubt that vtun would help me.)
+Thanks
+Rodrigo
 
-This sounds to me like that you need two transport layers to do this at the
-receivers. Otherwise the encapsulated TCP packets will be forwarded as the
-payload of UDP packets to upper layers. The receivers even don't know they
-were actually TCP packets, and upper layers will get confused what these
-payloads mean. Am I missing something obvious?
-
-Cheers,
-Jee
-
+> -----Mensaje original-----
+> De: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]En nombre de Antony Stone
+> Enviado el: Martes, 20 de Abril de 2004 01:33 a.m.
+> Para: Netfilter
+> Asunto: Re: IP Alias with iptables
+>
+>
+> On Tuesday 20 April 2004 4:08 am, Rodrigo Haces wrote:
+>
+> > New Situation:
 > >
-> > > Here is what I wish to do:
-> > > For the transmission of IP packets (UDP, ICMP, TCP) between two hosts
-> > > I want to send these packets through a UDP tunnel.
+> > eth0: 192.168.1.1 Connected to hub 1
+> > eth1: 192.168.0.1 Connected to hub 2
 > >
-> > Tunnelling is a very different matter from converting UDP packets into
-TCP
-> > packets, and should be eminently feasible.
+> > hub 1 is for guests
+> > hub 2 is for administrative porposes, and MUST be able to use network
+> > 192.168.0.x and 192.168.1.x
 >
-> As I tried to explain, I do NOT want to convert UDP to TCP, I only want to
-> transport TCP packets as UDP payload.
+> So, the firewall needs to allow 192.168.1.0/24 addresses to connect to
+> 192.168.0.0/24 but not the other way round.
 >
-> I would be glad if you can comment the method described above.
+> > so this is something i thought.
+> >
+> > eth0... 192.168.1.1 netmask 255.255.255.0
+> > eth1... 192.168.0.1 netmask 255.255.0.0
 >
-> Regards
-> Christian
+> Doesn't look good.
 >
-> -- 
-> Christian Riechmann    E-Mail: riechmann@fgan.de
-> c/o FGAN/FKIE          Tel: (+49) 228/9435 345,378
-> Neuenahrer Strasse 20  Fax: (+49) 228/9435 685
-> D-53343 Wachtberg, Germany
+> > eth1:1. 192.168.1.101 netmask 255.255.0.0
 >
+> Looks as bad as the first idea, with only one interface.
+>
+> > my laptop is part of the administrative sector, i have
+> 192.168.0.10 ip, but
+> > i need to be able to use also 192.168.1.10 so i can monitor guests,
+>
+> What is wrong with yur laptop havign just one IP address (that *is*
+> conventional, after all), and the firewall allowing it to
+> "monitor" addresses
+> in the other subnet?   Perhaps you should explain more about what
+> you mean by
+> "monitor"?
+>
+> > Any ideas
+>
+> Yes.   Have two subnets with separate address ranges, a firewall
+> in between,
+> and allow one subnet to connect to the other, but not the other way round.
+>
+> eg:
+> eth0 192.168.1.1 netmask 255.255.255.0
+> eth1 192.168.0.1 netmask 255.255.255.0
+>
+> iptables -P FORWARD DROP
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
+>
+> Regards,
+>
+> Antony.
+>
+> --
+> Success is a lousy teacher.  It seduces smart people into
+> thinking they can't
+> lose.
+>
+>  - William H Gates III
+>
+>                                                      Please reply
+> to the list;
+>                                                            please
+> don't CC me.
 >
 
 
