@@ -1,15 +1,12 @@
-From: Frank =?iso-8859-1?Q?Matthie=DF?= <frankm@lug-owl.de>
-Subject: Re: state match support in ip6tables
-Date: Fri, 19 Mar 2004 13:45:04 +0100
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: Problem with lipq
+Date: Fri, 19 Mar 2004 13:45:11 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040319124503.GX2350@dvmwest.dvmwest.de>
-References: <1079045669.6476.3.camel@localhost> <20040311233044.GC26800@samad.com.au>
+Message-ID: <Pine.GSU.4.58.0403191341470.28117@adore.lightlink.com>
+References: <20040317203816.31110.qmail@web11302.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eqq5Le9VNi5o1NaU"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040311233044.GC26800@samad.com.au>
+In-Reply-To: <20040317203816.31110.qmail@web11302.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +16,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Srinivas <nivas_4u@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
+Sounds like your you're not linking against the library.  Your ld error
+is perhaps the most informative.  Once upon a time I also wrote a modules
+to use libipq, and on one system I develop on, it was properly installed,
+and 'gcc filter.c -o filter -lipq' worked perfectly, but on the other,
+libipq was not installed, so I got libipq.c, built it in the project
+directory, and did 'gcc filter.c libipq.a -o filter' and that works like a
+champ.  Hope this is helpful.
 
---eqq5Le9VNi5o1NaU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 17 Mar 2004, Srinivas wrote:
 
-Alexander Samad [2004-03-12 00:30 CET]:
-> On Thu, Mar 11, 2004 at 11:54:30PM +0100, marco wrote:
-> > hi all, i need help with ip6tables and match support
-> >=20
-> > can i use it with vannilla2.4?
-> > where can i get a patch to enable the it (evenif there's one)?
->=20
-> Conntection tracking isn't implemented in ipv6 AFSIK.
-
-Do you know. why this isn't implemented yet?
-Are there technical reasons or only a problem of priorities?
-
-I would like to have IPv6 statefull inspection, because i and some others
-want to play with IPV6 over freenet6. But making firewall rules w/o
-statefull inspection isn't really funny, nor is it compareable.
-
-Frank.
---=20
-Frank Matthie=DF
-
-[x] Nail here for new monitor.
-
---eqq5Le9VNi5o1NaU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAWutMLXa7dZqO5SERAlD3AKCnAmGs/kXz/8mlbF6JUZOOeCwjLQCfXNGh
-c1XcO5OZzSM7hx53mQixnCM=
-=oA3e
------END PGP SIGNATURE-----
-
---eqq5Le9VNi5o1NaU--
+> Date: Wed, 17 Mar 2004 12:38:16 -0800 (PST)
+> From: Srinivas <nivas_4u@yahoo.com>
+> To: netfilter@lists.netfilter.org
+> Subject: Problem with lipq
+>
+> Hi,
+>
+> while browsing for help finall I found your talks
+> about libipq. So, I wish you could help me...
+> my problem is that....
+>
+> When I compile my code like
+> gcc <filename>
+>
+> I am getting following error :
+>
+> /tmp/ccb2U3Gs.o(.text+0x20b): In function
+> `strip_packet':
+> : undefined reference to `ipq_set_verdict'
+> /tmp/ccb2U3Gs.o(.text+0x252): In function
+> `strip_packet':
+> : undefined reference to `ipq_set_verdict'
+> /tmp/ccb2U3Gs.o(.text+0xb9d): In function `run':
+> : undefined reference to `ipq_create_handle'
+> /tmp/ccb2U3Gs.o(.text+0xbda): In function `run':
+> : undefined reference to `ipq_set_mode'
+>
+> and when I compile with option,
+> gcc <filename> -lipq
+>
+> it says
+> /usr/bin/ld : cannot find -lipq
+>
+> I am using libipq.h library.. Please help me...
+>
+> Thanks in advance.
+>
+> Srinivas
+>
+> __________________________________
+> Do you Yahoo!?
+> Yahoo! Mail - More reliable, more storage, less spam
+> http://mail.yahoo.com
+>
 
