@@ -1,12 +1,15 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Access to two identical subnets
-Date: Tue, 31 Aug 2004 09:26:10 -0400
+From: "Shaun T. Erickson" <ste@smxy.org>
+Subject: OT: split-dns
+Date: Tue, 31 Aug 2004 09:34:19 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC905130D@asimail2.alphanumeric.com>
+Message-ID: <41347E5B.5020401@smxy.org>
+References: <7C9884991ADAE0479C14F10C858BCDF56794C2@alderaan.smgtec.com>
+	<20040831000249.GH20169@metastasis.org.uk>
+Reply-To: ste@smxy.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <20040831000249.GH20169@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,62 +19,44 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-> Hello
-> The goal is that all computers on the 192.168.1.0 net should have =
-access
-> to two identical 10.50.50.0 subnets.
->
-> Like this:
+Nick Drage wrote:
+> On Mon, Aug 30, 2004 at 03:23:58PM -0700, Daniel Chemko wrote:
+> 
+> 
+>>>Not knowing what split-dns was, I googled it. If I understand it
+>>>correctly it seems that this is only needed when you use a single,
+>>>common domain for both internal and external systems. All our
+>>>external systems (both between the firewall and the router, and in
+>>>the DMZ) are in "domain.com" and all our internal systems are in
+>>>"sub.domain.com", so we don't need split-dns, right?
+> 
+> 
+> Probably a good idea anyway - you probably don't want external users
+> using your DNS server in the same way that internal hosts do - i.e.
+> making recursive lookups.  Also while it isn't much of an information
+> leak, stopping Internet users looking up hosts in sub.domain.com won't
+> do any harm.
 
-[snip:  incomprehensible ascii art]
+My DNS here is a bit screwy, having inherited it from my predecessor, 
+whom I only recently took over for. The outside name server handles our 
+primary domain "y.net", only, so external people cannot look up internal 
+hosts, but they can make recursive requests for information about our 
+external systems. My internal name server handles our internal domain, 
+"x.y.net", and a copy of our external domain, on a Windows box. Clients 
+are pointed at the internal name server and the secondary nameserver our 
+ISP runs for us.
 
-> When I ping 10.100.50.5 (linux server on B Subnet) from 192.168.1.35
-> (linux comp), I LOG in the VPN 1 box:
->
-> 12206.080946 192.168.1.35 -> 10.50.50.5: icmp: echo request
-> 12207.081074 192.168.1.35 -> 10.50.50.5: icmp: echo request
->
-> But it doesn't get any reply.
+Clearly, this all needs to be re-done, which I plan to do as soon as my 
+shiny new server arrives, which I'll migrate all my services too, 
+rebuilding them as I go.
 
-it sounds like 10.50.50.5 (B) doesn't route traffic back through the =
-VPN1 box.
-is the VPN1 box the default gateway on the 10.50.50 (B) subnet?
+> Also with the use of "view" this is pretty easy to do with BIND 9.  If
+> you don't have a copy of "DNS and BIND" 
 
-> The output NIC on IPTABLES box is on the 10.100.6.0 net, who also the
-> VPN 1 box stands on.
-> The 10.100.6.0 and the 192.168.1.0 net is in a group on the VPN 1 box,
-> who routes the traffic from these nets to the 10.50.50.0 net via the =
-VPN
-> TUNNEL.
->
-> If I ping from the IPTABLES box to 10.50.50.5, I get echo reply, but =
-not
-> from the 192.168.1.35 machine.
->
-> 134.344974 10.100.6.3 -> 10.50.50.5: icmp: echo request
-> 134.491585 10.50.50.5 -> 10.100.6.3: icmp: echo reply
+I do - excellent book.
 
-ok...  what are the networks involved in the VPN?  your source addresses =
-are
-all over the place here...  are the above packets encrypted or clear?
-
-> What must I do, will this work at all?
-
-this can be made to work, yes...  it's complicated, and takes some =
-serious
-understanding of how routing is supposed to work (so that you can then
-mess with it).
-
-> Do I need other rules?
-
-maybe...
-
-> Will be happy for answers/suggestions :-)
-
-is there any way you can make a better/more readable diagram available?
-
--j
+	-ste
 
