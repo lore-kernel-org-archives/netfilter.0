@@ -1,10 +1,10 @@
-From: "Allan M. Stewart" <astewart@xinetix.com>
-Subject: Trouble subscribing
-Date: Tue, 10 Jun 2003 15:05:38 -0400
+From: "=?GB2312?Q?=C0=EE=BD=F0=CA=AF?=" <lijinshi112@sina.com>
+Subject: Question:How to realize NAT Internet sharing with two NICs?
+Date: Sat, 14 Jun 2003 21:23:1 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EE62C02.4090504@xinetix.com>
+Message-ID: <E19RAzr-0007s6-00@kashyyyk.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,33 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-2022-jp"
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+
+Hello netfilter!
+   I am a newer for Linux OS. I made use of "NAT" Service under=
+ MS Windows Platform to realize internet sharing before.
+Since I met Linux OS, I found that Linux is a greater than MS=
+ Windows.So I make a decision, that is to realize internet=
+ sharing under Linux with "iptables",who can tell me the command=
+ or script.
+
+NIC info:
+      eth0:   IPADDR: 10.10.40.6
+              NETMASK:255.255.255.252
+              GATEWAY:10.10.40.5
+              DNSSERVE:211.100.0.57 211.100.0.57
+
+      eth1:   IPADDR: 172.16.255.254
+              NETMASK:255.255.0.0 
+
+the clients addresses are 172.16. x . x
 
 
-I've tried this several times.....
+Thank you!!! 
 
-I send a subscribe request and get the confirmation email. I respond to the
-confirmation email and it never gets through.
+e-mail:lijnshi112@tom.com   
 
-Help appreciated.
+A chinese with poor english! 
+=09
+lijinshi112@sina.com
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12003-06-14
 
-Allan
 
-
---------------------------------------------------------------------
-The original message was received at Wed, 4 Jun 2003 14:06:05 -0400
-from sybil [127.0.0.1]
-
-   ----- The following addresses had permanent fatal errors -----
-<netfilter-request@lists.netfilter.org>
-    (reason: 403 4.7.0 TLS handshake failed.)
-
-   ----- Transcript of session follows -----
-<netfilter-request@lists.netfilter.org>... Deferred: 403 4.7.0 TLS 
-handshake failed.
-Message could not be delivered for 5 days
-Message will be deleted from queue
------------------------------------------------------------------------
 
 
