@@ -1,12 +1,15 @@
-From: "Kumar, Mukesh" <MKumar@telogy.com>
-Subject: Netmeeting and NAT
-Date: Wed, 7 Jul 2004 19:26:33 -0400
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: DNAT to another Network?
+Date: Wed, 07 Jul 2004 22:10:49 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09DD40ABD88ACF4CB0D3CD84BB95296079773C@tnint11.telogy.design.ti.com>
+Message-ID: <20040707121049.GA5416@samad.com.au>
+References: <200407071129.i67BTbP22745@ps0.linanet.is>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C46479.D6CAC590"
+Content-Type: multipart/signed; boundary=gKMricLos+KVdGMg;
+ protocol="application/pgp-signature"; micalg=pgp-sha1
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <200407071129.i67BTbP22745@ps0.linanet.is>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,117 +21,72 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
 
-------_=_NextPart_001_01C46479.D6CAC590
-Content-Type: text/plain
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Jul 07, 2004 at 11:51:02AM -0000, Svavar ?rn Eysteinsson wrote:
+> Hi everybody.
+>=20
+> I have one question about DNAT.
+>=20
+> I have a computer foo.com on an ipaddress xxx.xxx.xxx.xxx
+>=20
+> Is there any way for me to DNAT all traffic with destination to foo.com
+> to another server out-of-town, e.g. computer foobar.com with zzz.zzz.zzz.=
+zzz
+> that
+> is not on my public network.?
+>=20
+>=20
+>=20
+> Diagram : (showing where the traffic should go)
+>=20
+>=20
+> Traffic with destination to Computer A
+>=20
+>       INTERNET(ISP nr1)   -------INTERNET(ISP nr2)
+>          |                |         |
+>          |                |         |
+>     Network A             |      Network B
+>          |                |         |
+>          |                |         |
+>      Firewall             |    Computer B (final destination)
+>          |          |-----|
+>          ->Computer A
+>         =20
 
-   I am seeing some problems with interaction between NAT and netmeeting.
+you can do iptables -t nat -I POSTROUTING -j -d foo.com DNAT --to-destinati=
+on
+xxx.xxx.xxx.xxx
 
-I try to setup a netmeeting session between 2 PCs going over internet
-(voice/video/data)
-
-And sometimes the connection works but at othertimes video/audio start
-streaming but chat and whiteboard
-
-Keeps saying Not In Call.
-
-I am using 2.4.17 kernel and have NAT rules for all the standard Netmeeting
-ports.
-
- 
-
-Any help is appreciated.
-
- 
-
-Thanks
+the only problem is if the machine xxx.xxx.xxx.xxx can talk to the
+originator with talking to the machine nat'ing, then you need an SNAT
+rule as well.
 
 
-------_=_NextPart_001_01C46479.D6CAC590
-Content-Type: text/html
+> Best regards,
+>=20
+> Svavar O
+> Reykjvik - Iceland
+>=20
+>=20
+>=20
 
-<html>
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-<head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
+iD8DBQFA6+hJkZz88chpJ2MRAoH1AJ9EcsxKKS3N6Lcb+ipFN9dP75WC7gCfUEyz
+20fT3BJLHSkhdVQEO66GPGQ=
+=QkOf
+-----END PGP SIGNATURE-----
 
-<meta name=Generator content="Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:#606420;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=EN-US link=blue vlink="#606420">
-
-<div class=Section1>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Hi,</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;&nbsp; I am seeing some problems with interaction between NAT
-and netmeeting.</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>I try to setup a netmeeting session between 2 PCs going over
-internet (voice/video/data)</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>And sometimes the connection works but at othertimes
-video/audio start streaming but chat and whiteboard</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Keeps saying Not In Call.</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>I am using 2.4.17 kernel and have NAT rules for all the
-standard Netmeeting ports.</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Any help is appreciated.</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Thanks</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C46479.D6CAC590--
+--gKMricLos+KVdGMg--
 
