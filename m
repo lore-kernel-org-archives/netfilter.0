@@ -1,13 +1,10 @@
-From: =?iso-8859-1?q?Luis=20GUSTAVO?= <lgpcf@yahoo.com.br>
-Subject: Re: VPN PPTP
-Date: Wed, 16 Jun 2004 17:43:27 -0300 (ART)
+From: Jeronimo de A Barros <jero@i2.com.br>
+Subject: Slackware 10RC1 + Kernel 2.6.7 + iptables 1.2.10
+Date: Wed, 16 Jun 2004 18:01:53 -0300 (BRT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040616204327.9622.qmail@web50206.mail.yahoo.com>
-References: <200406162139.09672.Antony@Soft-Solutions.co.uk>
+Message-ID: <Pine.LNX.4.44.0406161739360.8826-100000@lima.i2.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406162139.09672.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,95 +14,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-ok thank you..
+Hi all,
+
+	While compiling iptables 1.2.10 (GCC 3.3.4):
+
+Making dependencies: please wait...
+Extensions found: IPv4:recent IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.10\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
+In file included from include/libiptc/libiptc.h:6,
+                 from include/iptables.h:5,
+                 from extensions/libipt_ah.c:8:
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: no semicolon at end of struct or union
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: parse error before '*' token
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: parse error before '}' token
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: type defaults to `int' in declaration of `DECLARE_MUTEX'
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: parameter names (without types) in function declaration
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: `DECLARE_MUTEX' declared `static' but never defined
+make: *** [extensions/libipt_ah_sh.o] Error 1
+
+	IPv6 is not checked.
+
+	Any hint ? Any help ?
+
+	Thanks in advance.
+
+[]s, Jero
 
 
-
---- Antony Stone <Antony@Soft-Solutions.co.uk>
-escreveu: > On Wednesday 16 June 2004 9:19 pm, Antony
-Stone
-> wrote:
-> 
-> > On Wednesday 16 June 2004 8:57 pm, Luis GUSTAVO
-> wrote:
-> > > yes.. i use NAT.
-> > >
-> > > but i download patch-o-matic, and apply
-> pptp-nat.
-> > >
-> > > which rules i use now ?
-> >
-> > The ones I suggested earlier (with the addition,
-> of course, of the
-> > appropriate NAT rules, which presumably need to go
-> in your PREROUTING chain
-> > (if you're doing destination NAT?).
-> 
-> Just in case your next posting was going to be
-> something like "I have those 
-> rules, but it doesn't work", here is a suggestion
-> for how to find out what's 
-> not working.
-> 
-> Add two LOGging rules to the end of your FORWARD
-> chain, one specifying at 
-> least one of (a) the source address of the remote
-> client, and/or (b) the 
-> destination address of the server on your network,
-> and the other specifying 
-> at least one of (a) the source address of your local
-> server, and/or (b) the 
-> destination address of the remote client.
-> 
-> Then the LOG output will show you any packets going
-> between the two machines 
-> which are not being properly processed by the ACCEPT
-> rules I suggested 
-> earlier, and you can see what sort of packets they
-> are, and add appropriate 
-> rules to let them through.
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> The lottery is a tax for people who can't do maths.
-> 
->                                                     
-> Please reply to the list;
->                                                     
->       please don't CC me.
-> 
-> 
->  
-
-=====
-
-SlackWare Simply  the Best
-
- 
-
-Luis GUSTAVO         
-+55 (21) 9891-3560    
----------------------------------------------------------------------------------
- 
-
-
-
-
-
-
-
-
-
-
-
-______________________________________________________________________
-
-Yahoo! Messenger - Fale com seus amigos online. Instale agora! 
-http://br.download.yahoo.com/messenger/
 
