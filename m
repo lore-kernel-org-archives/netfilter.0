@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how to allow multiple -d flags?
-Date: Wed, 25 Feb 2004 23:01:19 +0000
+From: Michelle Konzack <linux4michelle@freenet.de>
+Subject: Re: ULOG:  invalid argument
+Date: Thu, 26 Feb 2004 02:40:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402252301.19692.Antony@Soft-Solutions.co.uk>
-References: <66425557D80D6448A99C4BAFFE9874030CA661@icptex02.corp.icpt.net>
+Message-ID: <20040226014018.GH27875@freenet.de>
+References: <LAW12-F18Uhyx9w8OjU000276ef@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <66425557D80D6448A99C4BAFFE9874030CA661@icptex02.corp.icpt.net>
+Content-Disposition: inline
+In-Reply-To: <LAW12-F18Uhyx9w8OjU000276ef@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +18,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 25 February 2004 10:40 pm, Michael Brown wrote:
-
-> How can I specify a SNAT rule to exclude multiple destination networks?
-
-Create a user-defined list which checks for the excluded networks, and then 
-does the SNAT at the end (for all addresses which didn't match).
-
-> Is there a way to do something like
+Am 2004-02-19 20:46:12, schrieb T. Take:
+>I cannot use "ULOG".
 >
-> /sbin/iptables -t nat -A POSTROUTING -o eth0 -s
-> 172.28.22.0/255.255.255.0 -d ! 172.0.0.0/8,10.0.0.0/8,192.168.0.0/16 -j
-> SNAT --to-source 64.243.144.209
+>#iptables -A INPUT -i $OUTER_PORT -s $INNER_IP -j ULOG --ulog-nlgroup 32 
+>--ulog-prefix "spoofed packet "
+>#iptables: Invalid argument
 >
-> I 've tried spaces between the networks, commas, semi-colon, nada
+>Although I updated iptables to version 1.2.9 and installed ulogd by apt-get 
+>install (Debian),  I have not used ULOG yet. And there is ipt_ULOG.o in 
+>"/lib/modules/2.4.24/kernel/net/ipv4/netfilter".
+>
+>Did you have the same problem about ULOG?
+>I hope your advises.
 
-No; as you've discovered, you can't have multiple matches (either with or 
-without the !).
+I had he same problem...
 
-Try:
+It is NOT an iptables problem/bug !!!
 
-iptables -N MYSNAT -t nat
-iptables -A POSTROUTING -s 172.28.22.0/24 -j MYSNAT
+It is the ULOG Package from WOODY !!! 
 
-iptables -A MYSNAT -t nat -d 10.0.0.0/8 -j RETURN
-iptables -A MYSNAT -t nat -d 172.16.0.0/12 -j RETURN
-iptables -A MYSNAT -t nat -d 192.168.0.0/16 -j RETURN
-iptables -A MYSNAT -t nat -j SNAT --to 64.243.144.209
+It is too old. put the source from unstable 
+in your /etc/apt/sources.list like
 
-Antony.
+deb-src ftp://ftp.debian.org/debian unstable main
+
+Then make a 
+
+apt-get build-dep ulogd
+
+and last not least a 
+
+apt-get -b source ulogd
+
+It will compile automaticly and install ist.
+
+Have fun with 'iptables' and 'ulogd'
+
+Greetings
+Michelle
 
 -- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
-
- - Philip Hands
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Registered Linux-User #280138 with the Linux Counter, http://counter.li.org/ 
 
