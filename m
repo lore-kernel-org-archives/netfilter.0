@@ -1,9 +1,10 @@
-From: Paulo Andre <PAndre@autopage.altech.co.za>
-Subject: Iptables
-Date: Thu, 13 Jun 2002 11:03:36 +0200
+From: Michael <mutk@ozemail.com.au>
+Subject: How accurate is iptables/netfilter Packet and byte counts??
+Date: Thu, 13 Jun 2002 20:03:46 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <CC845BB8BC74D6119934000347DD23E87C0BCA@jhbmail.autopage.co.za>
+Message-ID: <3D086E02.1050204@ozemail.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,19 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.samba.org
 
-I use iptables-1.2.6a, and ulog.
-Has anyone written a script that will go through the log files and filter
-out stats that management require (eg. daily no. of port scans, telnet/ssh
-attempts etc.)
+Hi All,
 
-Thanks
+***************
+First I'd like to appologise for polluting list with discussion about 
+outrageously excessive use of html in posts to this list. I'll think 
+much more carefully about it in future, before posting.
+(ref thread: "The posting of HTML format messages to this List!!!!") 
+Also, I retract unconditionaly the bit about 12 year old former WebTV 
+users..Sorry Jesse Asher.
+***************
 
-Paulo 
+
+Now to the subject, quick question:
+
+If anyone has specific info about the accuracy of the byte counts that 
+netfilter produces, for example, from the output of "iptables -xvn -L" 
+I'd be very greatful. ie How accurate? Are these diffinitive counts, 
+beyond doubt??
 
 
+Thanks for reading, and I appreciate any information provided,
+Cheers,
+Michael
 
 
