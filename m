@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: block port 137
-Date: Tue, 3 Aug 2004 07:17:59 +0100
+From: Tim Burress <hokousha2001@yahoo.com>
+Subject: Dropped/Corrupted Log Entries?
+Date: Mon, 2 Aug 2004 23:19:36 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408030717.59289.Antony@Soft-Solutions.co.uk>
-References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <002401c4 7917$d0a6fd70$858310ac@suarapembaruan.com> <1091513004.4660.34.camel@dc.nucleussoftware.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040803061936.50702.qmail@web21121.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1091513004.4660.34.camel@dc.nucleussoftware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,49 +15,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tuesday 03 August 2004 7:04 am, Dhananjoy Chowdhury wrote:
+Hello!
 
-> try dropping packets both with dport 137 and also with sport 137.
+We've run across a problem and I thought I would check
+to see if anyone else has seen this, or has
+suggestions for how to fix or work around it. On both
 
-I disagree.
+Linux 2.4.21, iptables v1.2.8
+Linux 2.4.26, iptables v1.2.11-20040621
 
-Try ACCEPTing the packets you *want* to go through the firewall, and DROP 
-everything else.
+When we do a very fast port scan of a system on the
+other side of a firewall with various common rules, a
+majority of the denied connection attempts are not
+showing up in the logs even though they should be, and
+depending on circumstances and versions, anywhere from
+1% to 100% of the accepted connections are also not
+being logged.
 
-Don't create individual rules to DROP the traffic you think you don't want 
-(you will always forget something, or there will be a new problem next week 
-which requires a new rule, etc).
+At the same time, we also notice that some corrupted
+Netfilter log entries are appearing in our default
+system log, each typically the last 3/4 or so of a
+legtimate-looking log entry. There are only a few of
+these -- they don't make up the balance of the missing
+entires mentioned above -- but it does indicate that
+the scan is overwhelming the ability of the system to
+correctly manage log data.
 
-Instead create individual rules to ACCEPT the traffic you need, and DROP 
-anything which doesn't fit that description.
+We tried rebuilding the 2.4.26 kernel with a larger
+value for CONFIG_LOG_BUF_SHIFT, but this did not seem
+to have an effect. We do not have any explicit log
+rate-limiting configured. Does anyone know what is
+happening here, or have suggestions for what we might
+tune to eliminate the problem?
 
-Regards,
+Thanks!
 
-Antony.
+Tim
 
-> On Tue, 2004-08-03 at 10:37, david wrote:
-> > Dear all,
-> > How to block outgoing traffic over network that using port 137 udp,
-> > because my isp tell me that my network broadcast virus using port 137
-> > udp, i want to make all traffic (port 137) do go outside my network,
-> > so i plan to blocking that traffic from my gateway.
-> >
-> > I already try to do this rules, but not working :
-> > #iptables -A FORWARD -p udp -s 0/0 --dport 137 -j DROP
-> >
-> >
-> >
-> >
-> > Regards,
-> > David Kandou
+PS Certainly if it would help to see the rules, I can
+send those as well, but they're long, and anyway this
+seems like more of a general issue. Just let me know!
 
--- 
-If builders made buildings the way programmers write programs, then the first 
-woodpecker to come along would destroy civilisation.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+		
+__________________________________
+Do you Yahoo!?
+New and Improved Yahoo! Mail - Send 10MB messages!
+http://promotions.yahoo.com/new_mail 
 
