@@ -1,12 +1,13 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: ULOGD and invalid timestamps
-Date: Fri, 10 Sep 2004 09:41:23 -0400
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: ULOGD and invalid timestamps
+Date: Fri, 10 Sep 2004 09:53:07 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62EB33@email1.mitretek.org>
+Message-ID: <1094824387.1900.84.camel@wolfpack.ljm.dom>
+References: <00cd01c4968a$53c10b30$3c01a8c0@tftpd>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <00cd01c4968a$53c10b30$3c01a8c0@tftpd>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,84 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Steve Melo <smelo@communitytrust.ca>, netfilter@lists.netfilter.org
-
-I have never had a problem with the timestamp in any version of ulogd
-since 1.00, 1.01 or 1.02.
-
-What does the following show:
-
-% date
-
-
-Where did you obtain/how did you install ulogd?
-
-I used the source in all three versions.
-
-
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Steve Melo
-Sent: Thursday, September 09, 2004 12:31 PM
 To: netfilter@lists.netfilter.org
-Subject: ULOGD and invalid timestamps
 
-Greetings list,
+On Thu, 2004-09-09 at 12:30, Steve Melo wrote:
+> Greetings list,
+> 
+> I'm using the ulogd to log information and everything works great except
+> that everything that gets logged has a timestamp of "Dec 31 19:00:00".  I
+> would like to have the correct timestamp.
 
-I'm using the ulogd to log information and everything works great except
-that everything that gets logged has a timestamp of "Dec 31 19:00:00".
-I
-would like to have the correct timestamp.
+from:
+http://packages.debian.org/changelogs/pool/main/u/ulogd/ulogd_1.02-1/changelog
 
-Here is my setup:
-Debian Linux w/2.6.7-1-686 kernel (binary install)
-ulogd Version 1.02
-iptables v1.2.9
+---------------------------------------------------------------
+ulogd (1.02-1) unstable; urgency=low
 
-Here is my /etc/ulogd.conf:
-# netlink multicast group (the same as the iptables --ulog-nlgroup
-param)
-nlgroup 1
+  * New upstream release.
+    - fixed timestamp printing in LOGEMU (closes: Bug#208506)
+  * debian/patches/ulogd-version.patch:
+    - this is really ulogd 1.02
+---------------------------------------------------------------
 
-# logfile for status messages
-logfile /var/log/ulog/ulogd.log
+The thread on bug 208506:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=208506
 
-# loglevel: debug(1), info(3), notice(5), error(7) or fatal(8)
-loglevel 5
+What I typed into google to find the above info:  ulogd timestamp
 
-# socket receive buffer size (should be at least the size of the
-# in-kernel buffer (ipt_ULOG.o 'nlbufsiz' parameter)
-rmem 131071
+-j
 
-# libipulog/ulogd receive buffer size, should be > rmem
-bufsize 150000
-
-# ulogd_BASE.so - interpreter plugin for basic IPv4 header fields
-#                 you will always need this
-plugin /usr/lib/ulogd/ulogd_BASE.so
-plugin /usr/lib/ulogd/ulogd_LOCAL.so
-
-
-#
-# ulogd_LOGEMU.so - simple syslog emulation target
-#
-# where to write to
-syslogfile /var/log/ulog/syslogemu.log
-# do we want to fflush() the file after each write?
-syslogsync 1
-# load the plugin
-plugin /usr/lib/ulogd/ulogd_LOGEMU.so
-
-
-#
-# ulogd_OPRINT.so: file for packet dumping
-#
-# where to write the log
-dumpfile /var/log/ulog/pktlog.log
-# load the plugin (remove the '#'if you want to enable it
-plugin /usr/lib/ulogd/ulogd_OPRINT.so
-
+-- 
+Jason Opperisano <opie@817west.com>
 
 
