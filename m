@@ -1,14 +1,13 @@
 From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Dropping RST of SYN
-Date: 08 Sep 2003 11:21:28 +0530
+Subject: Re: ip_tables.o not loading - nf_unregister_sockopt error
+Date: 08 Sep 2003 11:36:34 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063000297.827.26.camel@india.nsecure.net>
-References: <20030904183027.9CC5.ATNAK@chejz.com> 
-	<1062666800.1615.23.camel@kermit>
+Message-ID: <1063001214.960.33.camel@india.nsecure.net>
+References: <000501c37184$d6701fc0$7b01a8c0@Doc>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-MDiUSsqXAUJTmdeCA4b5"
+Content-Type: multipart/alternative; boundary="=-CHB/honJAwKCfgNCnPKF"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1062666800.1615.23.camel@kermit>
+In-Reply-To: <000501c37184$d6701fc0$7b01a8c0@Doc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: Atsushi Nakagawa <atnak@chejz.com>, Netfilter <netfilter@lists.netfilter.org>
+To: Doc Nielsen <WebMaster@DocNielsen.dk>
+Cc: netfilter@lists.netfilter.org
 
 
---=-MDiUSsqXAUJTmdeCA4b5
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+--=-CHB/honJAwKCfgNCnPKF
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2003-09-04 at 14:43, Ralf Spenneberg wrote:
+On Wed, 2003-09-03 at 00:33, Doc Nielsen wrote:
 
-    Am Don, 2003-09-04 um 10.50 schrieb Atsushi Nakagawa:
-    > What iptables table/rule can I use to drop RST (TCP) packets that're =
-in
-    > reply to SYN?
-    > This is what I want it to do:
-    >=20
-    > -SYN->    [NEW]        -SYN->
-    >           [CLOSED]     <-RST-
-    >             ^
-    >           IF TCP & [NEW]: DROP '<-RST-' & SET [CLOSED]
-    Using the current state implementation, AFAIK this is not possible.
-    The RST is already an established packet. There is no way to
-    differentiate between this RST and a later valid and needed RST packet.
-    You can only drop all RST packets
-    -m state --state ESTABLISHED -p tcp --tcp-flags RST,ACK RST,ACK -j DROP
-   =20
-    Cheers,
-   =20
-    Ralf
-    --=20
-    Ralf Spenneberg
-    RHCE, RHCX
-   =20
-    Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.co=
-m
-    IPsec-Howto				     http://www.ipsec-howto.org
-    Honeynet Project Mirror:                     http://honeynet.spenneberg=
-.org
-   =20
+    hey guys
+    
+    Im having some trouble compiling and using iptables/netfilter
+    Its enabled in the kernel, and the modules are there, but when I try to load
+    them I get this:
+    
+    root@server:~# modprobe ip_tables
+    /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved symbol
+    nf_unregister_sockopt
+    /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved symbol
+    nf_register_sockopt
+    /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+    /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o failed
+    /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod ip_tables
+    failed
+    
+    What am I doing wrong?
+    
+    Please CC mail directly to me, as Im not subscribed to the list.
+    And yes, I have browsed the archives with no luck.
+    
+    - Doc
+    
+    Could you tell me how you have compiled your kernel?
 
-Hi,
-
-Blocking the RST packets on the firewall is not recommended. If the
-attacker comes to know that the server is dropping RST packets then he
-can flood the servers by initiating lacks of connections, which inturn
-result closewait state.
-
---=20
+-- 
 Regards
 Dharmendra.T
 dharmu@nsecure.net
 Linux Security and Admin
 
---=-MDiUSsqXAUJTmdeCA4b5
+--=-CHB/honJAwKCfgNCnPKF
 Content-Type: text/html; charset=utf-8
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
@@ -81,42 +68,33 @@ Content-Type: text/html; charset=utf-8
   <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
 </HEAD>
 <BODY>
-On Thu, 2003-09-04 at 14:43, Ralf Spenneberg wrote:
+On Wed, 2003-09-03 at 00:33, Doc Nielsen wrote:
     <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Am Don, 2003-09-04 um 10.50 schrieb Atsushi Nakagawa:</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; What iptables table/rule can I use to drop RST (TCP) packets that're in</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; reply to SYN?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; This is what I want it to do:</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; -SYN-&gt;    [NEW]        -SYN-&gt;</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;           [CLOSED]     &lt;-RST-</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;             ^</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;           IF TCP &amp; [NEW]: DROP '&lt;-RST-' &amp; SET [CLOSED]</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Using the current state implementation, AFAIK this is not possible.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>The RST is already an established packet. There is no way to</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>differentiate between this RST and a later valid and needed RST packet.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>You can only drop all RST packets</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-m state --state ESTABLISHED -p tcp --tcp-flags RST,ACK RST,ACK -j DROP</FONT></FONT></I>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>hey guys</FONT></FONT></I>
 <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Cheers,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Im having some trouble compiling and using iptables/netfilter</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Its enabled in the kernel, and the modules are there, but when I try to load</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>them I get this:</FONT></FONT></I>
 <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Ralf</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-- </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Ralf Spenneberg</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>RHCE, RHCX</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>root@server:~# modprobe ip_tables</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>/lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved symbol</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>nf_unregister_sockopt</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>/lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: unresolved symbol</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>nf_register_sockopt</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>/lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>/lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o failed</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>/lib/modules/2.4.20/kernel/net/ipv4/netfilter/ip_tables.o: insmod ip_tables</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>failed</FONT></FONT></I>
 <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Book: Intrusion Detection f&#252;r Linux Server   http://www.spenneberg.com</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>IPsec-Howto				     http://www.ipsec-howto.org</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Honeynet Project Mirror:                     http://honeynet.spenneberg.org</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>What am I doing wrong?</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Please CC mail directly to me, as Im not subscribed to the list.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>And yes, I have browsed the archives with no luck.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>- Doc</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT SIZE="3">Could you tell me how you have compiled your kernel?</FONT></PRE>
     </BLOCKQUOTE>
-<FONT SIZE="3">Hi,</FONT>
-<BR>
-<FONT SIZE="3"></FONT>
-<BR>
-<FONT SIZE="3">Blocking the RST packets on the firewall is not recommended. If the attacker comes to know that the server is dropping RST packets then he can flood the servers by initiating lacks of connections, which inturn result closewait state.</FONT>
-<BR>
-<FONT SIZE="3"></FONT>
 <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
 <TR>
 <TD>
@@ -132,6 +110,6 @@ Linux Security and Admin</PRE>
 </BODY>
 </HTML>
 
---=-MDiUSsqXAUJTmdeCA4b5--
+--=-CHB/honJAwKCfgNCnPKF--
 
 
