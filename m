@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Questions about the workings of iptables
-Date: Mon, 26 Jul 2004 14:17:33 +0100
+From: =?utf-8?q?Fr=C3=A9d=C3=A9ric=20Gonzatti?= <fred99@libertysurf.fr>
+Subject: Re: Firewall IP change
+Date: Mon, 26 Jul 2004 15:20:57 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407261417.33159.Antony@Soft-Solutions.co.uk>
-References: <564DE4477544D411AD2C00508BDF0B6A21C4DABE@usahm018.exmi01.exch.eds.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407261520.57942.fred99@libertysurf.fr>
+References: <40FEE340.8090907@ctwa.com> <200407261413.27558.fred99@libertysurf.fr> <200407261327.43786.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <564DE4477544D411AD2C00508BDF0B6A21C4DABE@usahm018.exmi01.exch.eds.com>
+In-Reply-To: <200407261327.43786.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,53 +21,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 26 July 2004 1:51 pm, Small, Jim wrote:
+Thanks Antony,
 
-> 1)  How extensive is IPTables stateful packet filtering?  Are the sequence
-> numbers carefully scrutinized as part of the state check?
+According to your explanations I think I 'd rather to include the following 
+line in my iptable script :
+iptables -A POSTROUTING -t nat -o eth2 -j SNAT --to 62.160.X.Y
 
-No.   AFAIK the connection tracking in netfilter checks only src+dst IP+port, 
-nothing else.
+But to be sure : I've got two computers on my DMZ which have IP included in 
+192.168.2.0/255.255.255.0 and other computers on my LAN which have IP 
+included in 172.16.0.0/255.255.0.0  and static public IP on my WAN Firewall.
+So the best way is to use the line you advice me ?
+Where on my script do I have to add this line ? At the beginning, just after a 
+modprobe iptable_nat line ?
 
-> Is there a listing of everything the connection tracking modules do?
+Last question : Do you see some clumsy things or errors in my script ?
+Unfortunately I think there are .... ;-(
 
-Netfilter source code is probably your best bet here.
+Thanks again for your help
 
-> If connection tracking or stateful inspection does not include TCP sequence
-> checking, is there a way to add it?
+Frederic
 
-I do not know of a patch to provide this.   It would be in patch-o-matic if 
-there is one.
-
-> 2)  Can IPTables randomize initial TCP sequence numbers?
-
-No.   Netfilter doesn't change the packets on their way past, except for:
- - NAT, which will change as little as necessary to achieve the required 
-ersult (ie source port numbers don't get changed if it can be helped)
- - mangle rules which specifically change things in the headers
-
-> If not, is there an add-on that can?
-
-How about a Linux or BSD-based proxy server :) ?
-
-You really want something which is going to generate its own sequence numbers 
-to do this properly (and a proxy server would help with your first question 
-above as well).
-
-I know that's not really the answer you wanted, but I'm not aware of any way 
-to do these with netfilter itself.
-
-Regards,
-
-Antony.
-
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
-
- - William H Gates III
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
