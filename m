@@ -1,12 +1,12 @@
-From: Jason <baker@cyborgworkshop.com>
-Subject: Re: netfilter - Dual NIC configuration
-Date: Wed, 28 May 2003 11:57:54 -0500 (CDT)
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Static compile issues
+Date: Thu, 29 May 2003 09:10:06 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.50.0305281156510.2433-100000@alfred.home.cyborgworkshop.com>
-References: <Law14-F35SZMhRjX9kH00052c58@hotmail.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D2D@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Law14-F35SZMhRjX9kH00052c58@hotmail.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +16,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ed _ <ed_b_71@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Cory Visi <merlin@phear.lwz.org>, netfilter@lists.netfilter.org
 
-I have 4 Intel Dual Pro 100's in my firewall (cross over cables rather
-then a switch, kinda fun and what else was I going to do with all of those
-interfaces?).  They show up as individual interfaces to the kernel. So I
-have eth0-eth7.
+No, don't enable it.. why bother.
 
--- 
-Jason Baker
-baker@cyborgworkshop.com
-www.cyborgworkshop.com
+I've noticed that there are more and more people with problems on 2.4.20 =
+kernel. Not sure the reason behind it or if it's the kernel or netfilter =
+causing it.. but so far my 2.4.19 is fine.. not that it helps you...
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+-----Original Message-----
+From: Cory Visi [mailto:merlin@phear.lwz.org]
+Sent: Thursday, May 29, 2003 7:12 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: Static compile issues
+
+
+When I compile the kernel statically and enable IP Tables support,
+ipchains compatibilty is becomes no longer available. I have the Invalid
+Argument problem with the static kernel.
+
+When I compile the kernel with module support, I do _not_ enable
+the ipchains compatibility module.
+
+Should I try enabling this? Obviously, I cannot insert it when the IP
+tables module is loaded. Also, this doesn't help my situation with the
+static kernel.
+
+Thanks,
+Cory
+
+On 28 May 2003, Esteban wrote:
+
+> did you enable the ipchains cmpatibility module?
+> (i think is the last one one the netfiler menu con make menuconfig)
+>
+> good luck
+>
+> On Wed, 2003-05-28 at 17:09, Cory Visi wrote:
+> > I am using a 2.4.20 kernel with pom-20030107 and iptables v1.2.7a. =
+From
+> > pom-20030107, I have installed all the pending patches and all the =
+base
+> > patches. In addition, I have installed the following extra patches:
+> >
+> > amanda-conntrack-nat.patch
+> > eggdrop-conntrack.patch
+> > ip_tables-proc.patch
+> > mms-conntrack-nat.patch
+> > pptp-conntrack-nat.patch
+> > quake3-conntrack.patch
+> > rsh.patch
+> > tftp-conntrack-nat.patch
+> >
+> > The problem is, when I compile the kernel statically and enable all =
+the
+> > iptables options, I cannot do NAT. Any iptables line that specifies =
+a
+> > chain in the nat table causes an Invalid Argument:
+> >
+> > # iptables -t nat -A POSTROUTING -o $EXTERNAL -s $INTERNAL_NETWORK =
+-j SNAT --to-source $EXTERNAL_IP
+> > Invalid argument
+> >
+> > Another interesting thing to point out, is that I also compiled this
+> > kernel with modules and experienced the same problem. I was, =
+however, able
+> > to fix it by disabling the IPv4 netfilter option for "NAT of local
+> > connections". For the module kernel, disabling this option fixes the
+> > problem. For the staticly compiled kernel, disabling this option has =
+no
+> > effect-- the error persists.
+> >
+> > Anyone have any ideas?
+> > Please CC me directly if you respond to the list, since I am not
+> > subscribed (yet).
+> >
+> > Thank you,
+> > Cory Visi
+> >
+> >
+> >
+>
+>
+>
+
 
 
