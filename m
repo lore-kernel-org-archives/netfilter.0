@@ -1,10 +1,12 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
 Subject: RE: sending packet in round robin...
-Date: Sat, 12 Mar 2005 22:01:03 +0100
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C49B70@knowledge.wizdom.nu>
+Date: Sat, 12 Mar 2005 22:09:59 +0100
+Message-ID: <27913.5843077258$1110661805@news.gmane.org>
+References: <02BB8A4AC86C564C89C7F14CF98CE0C49B70@knowledge.wizdom.nu>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C49B70@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,8 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
+
+Hi,
+
+that what you would like to do is called link aggregation ( IMHO ).... =
+here
+is a link that explains how to make this:
+http://linux-ip.net/html/ether-bonding.html
+
+Regards,
+
+Edvin Seferovic
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Sietse van =
+Zanen
+Sent: Samstag, 12. M=E4rz 2005 22:01
+To: netfilter@lists.netfilter.org
+Subject: RE: sending packet in round robin...
 
 No you can not.
 
@@ -53,6 +74,8 @@ Can i use two default routes... or may some kind of iptables...
 appreciate an early response
 
 Muhammad A Imam
+
+
 
 
 
