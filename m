@@ -1,11 +1,11 @@
-From: Emmanuel Guiton <emmanuel@netlab.hut.fi>
-Subject: iptables module installation going wrong.
-Date: Thu, 13 Nov 2003 16:21:19 +0200
+From: "Harish Sabnani" <harish.sabnani@cyberhutoman.com>
+Subject: Help Needed
+Date: Thu, 13 Nov 2003 19:06:05 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB3935F.8030907@netlab.hut.fi>
-Reply-To: emmanuel@netlab.hut.fi
+Message-ID: <001201c3a9f7$ab954a90$36b4fea9@station1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000F_01C3AA19.3055F5B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,127 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hei!
+This is a multi-part message in MIME format.
 
-I tried to install iptables v1.2.9 on a Debian with a 2.4.22 kernel but 
-I cannot load the module in the kernel.
+------=_NextPart_000_000F_01C3AA19.3055F5B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I patched my kernel with patch-o-matic (20030912)), re-configured it and 
-I think I didn't forget any option. (I put the relevant part of the 
-.config file at the end of this mail)
-I made the new kernel and options, installed them, rebooted.
-I installed iptables. no problem.
-I tried to load the iptables.o in the kernel and I get the following error:
+Hi All,=20
 
-pc104:/# insmod iptables.o
-iptables.o: couldn't find the kernel version the module was compiled for
+I am using Iptables with IPmasquerade on my LAN network to share the =
+Internet connection, I have used rc.firewall script that I downloaded =
+from the netfilter site.The whole setup is rocking but I get mssgs at =
+/var/log/messages every sec, is there a way I can stop this? Sometimes, =
+this clogs my network ?
 
-while if I just try to use iptables, I get:
+Any pointers in this reagard will be appreciated.
 
-pc104:/# iptables -L
-modprobe: Can't locate module ip_tables
-iptables v1.2.9: can't initialize iptables table `filter': iptables who? 
-(do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
-pc104:/#
+Regards
 
-Does someone have a clue?
+Harish 
+------=_NextPart_000_000F_01C3AA19.3055F5B0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DVerdana size=3D2>Hi All, </FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>I am using Iptables with IPmasquerade =
+on my LAN=20
+network to share the Internet connection, I have used rc.firewall script =
+that I=20
+downloaded from the netfilter site.The whole setup is rocking but I get =
+mssgs at=20
+/var/log/messages every sec, is there a way I can stop this? Sometimes, =
+this=20
+clogs my network ?</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>Any pointers in this reagard will be=20
+appreciated.</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>Regards</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>Harish </FONT></DIV></BODY></HTML>
 
-          Emmanuel
-
-And here is the content of my .config file:
-
-
-# Networking options
-#
-CONFIG_PACKET=y
-# CONFIG_PACKET_MMAP is not set
-# CONFIG_NETLINK_DEV is not set
-CONFIG_NETFILTER=y
-# CONFIG_NETFILTER_DEBUG is not set
-# CONFIG_FILTER is not set
-CONFIG_UNIX=y
-CONFIG_INET=y
-CONFIG_IP_MULTICAST=y
-CONFIG_IP_ADVANCED_ROUTER=y
-CONFIG_IP_MULTIPLE_TABLES=y
-CONFIG_IP_ROUTE_FWMARK=y
-CONFIG_IP_ROUTE_NAT=y
-CONFIG_IP_ROUTE_MULTIPATH=y
-CONFIG_IP_ROUTE_TOS=y
-CONFIG_IP_ROUTE_VERBOSE=y
-CONFIG_IP_PNP=y
-CONFIG_IP_PNP_DHCP=y
-CONFIG_IP_PNP_BOOTP=y
-CONFIG_IP_PNP_RARP=y
-CONFIG_NET_IPIP=y
-# CONFIG_NET_IPGRE is not set
-# CONFIG_IP_MROUTE is not set
-# CONFIG_ARPD is not set
-CONFIG_INET_ECN=y
-# CONFIG_SYN_COOKIES is not set
-
-#
-#   IP: Netfilter Configuration
-#
-CONFIG_IP_NF_CONNTRACK=y
-CONFIG_IP_NF_FTP=y
-CONFIG_IP_NF_AMANDA=m
-CONFIG_IP_NF_TFTP=m
-CONFIG_IP_NF_IRC=m
-# CONFIG_IP_NF_QUEUE is not set
-CONFIG_IP_NF_IPTABLES=y
-CONFIG_IP_NF_MATCH_LIMIT=m
-CONFIG_IP_NF_MATCH_MAC=m
-CONFIG_IP_NF_MATCH_PKTTYPE=y
-CONFIG_IP_NF_MATCH_MARK=m
-CONFIG_IP_NF_MATCH_MULTIPORT=y
-CONFIG_IP_NF_MATCH_TOS=m
-CONFIG_IP_NF_MATCH_RECENT=y
-CONFIG_IP_NF_MATCH_ECN=m
-CONFIG_IP_NF_MATCH_DSCP=m
-CONFIG_IP_NF_MATCH_AH_ESP=m
-CONFIG_IP_NF_MATCH_LENGTH=m
-CONFIG_IP_NF_MATCH_TTL=m
-CONFIG_IP_NF_MATCH_TCPMSS=m
-CONFIG_IP_NF_MATCH_HELPER=m
-CONFIG_IP_NF_MATCH_STATE=y
-CONFIG_IP_NF_MATCH_CONNTRACK=y
-CONFIG_IP_NF_MATCH_UNCLEAN=m
-CONFIG_IP_NF_MATCH_OWNER=m
-CONFIG_IP_NF_FILTER=y
-CONFIG_IP_NF_TARGET_REJECT=m
-CONFIG_IP_NF_TARGET_MIRROR=m
-CONFIG_IP_NF_NAT=y
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=y
-CONFIG_IP_NF_TARGET_REDIRECT=y
-CONFIG_IP_NF_NAT_AMANDA=m
-CONFIG_IP_NF_NAT_LOCAL=y
-CONFIG_IP_NF_NAT_SNMP_BASIC=m
-CONFIG_IP_NF_NAT_IRC=m
-CONFIG_IP_NF_NAT_FTP=y
-CONFIG_IP_NF_NAT_TFTP=m
-CONFIG_IP_NF_MANGLE=y
-CONFIG_IP_NF_TARGET_TOS=m
-CONFIG_IP_NF_TARGET_ECN=m
-CONFIG_IP_NF_TARGET_DSCP=m
-CONFIG_IP_NF_TARGET_MARK=m
-CONFIG_IP_NF_TARGET_LOG=m
-CONFIG_IP_NF_TARGET_ULOG=m
-CONFIG_IP_NF_TARGET_TCPMSS=m
-CONFIG_IP_NF_ARPTABLES=m
-CONFIG_IP_NF_ARPFILTER=m
-CONFIG_IP_NF_ARP_MANGLE=m
-# CONFIG_IPV6 is not set
-# CONFIG_KHTTPD is not set
-# CONFIG_ATM is not set
-# CONFIG_VLAN_8021Q is not set
-
+------=_NextPart_000_000F_01C3AA19.3055F5B0--
 
 
