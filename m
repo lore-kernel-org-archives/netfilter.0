@@ -1,12 +1,14 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: internal web server
-Date: Fri, 5 Sep 2003 20:57:51 +0800
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: Linux firewall hardware specs
+Date: Fri, 5 Sep 2003 21:02:54 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8CA2@overlord.overturemedia.com>
+Message-ID: <20030905130254.GA2790@propaganda.localdomain>
+References: <20030905121050.88228.qmail@web11605.mail.yahoo.com>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20030905121050.88228.qmail@web11605.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +19,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+On Fri, Sep 05, 2003 at 05:10:50AM -0700, Grant Moby spoke thusly:
 
-Greetings!
-I can't seem to make this work...
+>I need to setup a NetFilter/Linux firewall at my company, but I'm not sure
+>what spec hardware box I need.
+> 
+>There are about 100 users surfing the web, sending and receiving email
+>over a 256k line, a couple of subnets, a DMZ, etc.
 
-- external ip of firewall 202.138.128.xxx
-- internal ip of firewall 192.168.247.3
-- internal web server with ip 192.168.247.5
+OK. 256k line will be easily handled by a 486/Pentium 100Mhz host. How many
+subnets and what is their interconnectivity ? Very high traffic Mbits/s ?
 
-This was what my code was...
-$IPT -t nat -A PREROUTING -p tcp -d 192.168.247.3 --dport 80 -j DNAT =
---to-destination 192.168.247.5:80
+How many connections per second are initiated (to keep up with conntrack) ?
+Short / long lived ?
 
-It doesn't seem to work. I have set the web server to use the gw of =
-192.168.247.3
+The only way to be sure is to benchmark it in your own network, that said
+-- I'll be surprised is a PII 266Mhz, 128Mb of RAM won't be able to handle
+your setup. Unless you've got funky going-ons in your network :-)
 
-
-Hope you can help me. Thanks.
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
-
+(snip remaining)
 
