@@ -1,12 +1,12 @@
-From: "Julien Duvault" <duvault@efrei.fr>
-Subject: MASQUERADING problem under iptables 1.2.8 - kernel 2.4.20
-Date: Mon, 26 May 2003 00:18:10 +0200 (CEST)
+From: "Urban Spielmann" <spielmann@it-insourcing.ch>
+Subject: AW: Multi PPTP clients behind iptables firewall
+Date: Tue, 27 May 2003 10:10:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <42690.192.168.1.50.1053901090.squirrel@tek.homelinux.net>
-Reply-To: duvault@efrei.fr
+Message-ID: <A9B668705BE3754790A3C32C7682149463C8@pluto.insourcing.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Ralf Spenneberg <lists@spenneberg.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+Now it works, but I had to do not only
+modprobe ip_nat_pptp
+also
+modprobe ip_nat_proto_gre
 
-I'm contacting you, as I've a problem with netfilter. Let's sum up the
-situation :
-The system I'am reunning is a linux/debian woody, this host is acting as a
-router, and gateway, for my home network over an ADSL link. I used to have
-the default stable iptables package 1.2.6 (if I am not wrong) with kernel
-2.4.18. Every thing were find, I was happy. I decided to upgrade to kernel
-2.4.20 and iptables 1.2.8 and all patches. Since that time, I can't use
-anymore the MASQUERADE target with kernel 2.4.20 (the modules are corectly
-loaded ...). The amazing thing is that it perfectly working on kernel
-2.4.18 with the same version of iptables.
-So is there a bug somewhere in the combination of iptables
-1.2.8/kernel-2.4.20 ? I don t think so because i didn t find any
-informations about such a problem ... Maybe something happen during my
-compilation of 2.4.20 which make MASQUERADE not working ?
-So if someone here have information, I would be very happy to solve this
-problem.
-Thanks,
+I do not know why. But im lucky it works.
 
-Julien.
+Regards,
+Urban
 
--- 
-BOFH excuse #149 : Insert coin for new game
+-----Urspr=FCngliche Nachricht-----
+Von: Ralf Spenneberg [mailto:lists@spenneberg.org]=20
+Gesendet: Dienstag, 20. Mai 2003 08:16
+An: Urban Spielmann
+Cc: Netfilter
+Betreff: Re: Multi PPTP clients behind iptables firewall
 
 
+Am Sam, 2003-05-17 um 05.41 schrieb Urban Spielmann:
+> Hi
+> =20
+> I have Windows-XP-Clients behind a linux firewall ( kernal 2.4.20). I=20
+> do VPN over PPTP to a VPN-Server on the internet.
+> =20
+> I configured the iptables and it works fine for ONE client.
+> =20
+> But a second client at the same time does not :-(
+> =20
+> Do I have to use any patches for kernal 2.4.20?
+Yes.
+You have to use the nat_pptp module. Depending on your kernel you have =
+to patch and recompile your kernel. You will find the patch on=20
+http://www.netfilter.org.
+Then do a=20
+modprobe ip_nat_pptp
+And it should work.
+
+Cheers,
+
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
+
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                   =20
+http://honeynet.spenneberg.org
 
 
