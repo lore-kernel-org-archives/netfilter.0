@@ -1,14 +1,13 @@
-From: Erik Pagel <erik.pagel@gmx.de>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Yet another FTP connection problem
-Date: Thu, 06 Jun 2002 18:30:32 +0200
+Date: Thu, 6 Jun 2002 17:50:18 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <376479889.1023388232@[192.168.13.4]>
-References: <200206061606.g56G6SA31895@vulcan.rissington.net>
+Message-ID: <200206061650.g56GoQA32044@vulcan.rissington.net>
+References: <200206061606.g56G6SA31895@vulcan.rissington.net> <376479889.1023388232@[192.168.13.4]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206061606.g56G6SA31895@vulcan.rissington.net>
-Content-Disposition: inline
+In-Reply-To: <376479889.1023388232@[192.168.13.4]>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,42 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Hi,
+On Thursday 06 June 2002 5:30 pm, Erik Pagel wrote:
 
---On Donnerstag, 6. Juni 2002 17:06 +0100 Antony Stone 
-<Antony@Soft-Solutions.co.uk> wrote:
+> > Please can you tell us whether you are trying to ftp from this machine
+> > with  the netfilter rules on, or is the netfilter machine acting as a
+> > router  between the ftp client and server ?
+>
+> Both, I want so send files from this machine and this machine also act as
+> router for my internal network.
+> That the reason why I apply the rules to all three chains.
 
-> On Thursday 06 June 2002 4:41 pm, Erik Pagel wrote:
->
->> iptables -N ftp
->> iptables -A ftp -p tcp --dport 20:21 -o $I_EXTERN -j ACCEPT
->> iptables -A ftp -p tcp --sport 20:21 -i $I_EXTERN -m state --state
->> ESTABLISHED,RELATED -j ACCEPT
->> iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state
->> NEW,INVALID -j LOG --log-level warning --log-prefix "DROP:FTP Incomming"
->> iptables -A ftp -p tcp --dport 20:21 -i $I_EXTERN -m state --state
->> NEW,INVALID -j DROP
->
->> iptables -A INPUT   -j ftp
->> iptables -A OUTPUT  -j ftp
->> iptables -A FORWARD -j ftp
->
-> That is a very strange set of rules to try applying to all three of
-> INPUT,  FORWARD and OUTPUT chains !
->
-> Please can you tell us whether you are trying to ftp from this machine
-> with  the netfilter rules on, or is the netfilter machine acting as a
-> router  between the ftp client and server ?
+Okay.   Let's deal with those two requirements one at a time.
 
-Both, I want so send files from this machine and this machine also act as 
-router for my internal network.
-That the reason why I apply the rules to all three chains.
+First, to use this machine as an ftp client to a machine on the Internet:
 
->
-> Antony.
->
-bye Erik
+# standard policy on all chains
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+# allow ftp control connections outbound
+iptables -A OUTPUT -p tcp --dport 21 -j ACCEPT
+# allow replies back from ftp servers
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# if you want to use names your firewall must be able to do DNS lookups
+iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+
+With those rules you should be able to contact external ftp servers from the 
+firewall and send / receive files.
+
+You need to have loaded as modules, or compiled into your kernel, state 
+matching, ftp connection tracking and general connection tracking.
+
+Next, allow this machine to route internal ftp clients to external servers:
+
+iptables -A FORWARD -o $EXT_IF -p tcp --dport 21 -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -o $EXT_IF -p tcp --dport 53 -j ACCEPT
+iptables -A FORWARD -o $EXT_IF -p udp --dport 53 -j ACCEPT
+
+if you need to masquerade internal clients behind your firewall's external 
+address (which wasn't in your original ruleset, so maybe you don't need to ?):
+
+iptables -A POSTROUTING -t nat -o $EXT_IF -j SNAT --to $EXT_IP
+
+Let us know how you get on with those.
+
+
+Antony.
 
