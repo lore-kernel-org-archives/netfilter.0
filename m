@@ -1,13 +1,14 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: http-rules and browsing ebay Problem
-Date: Wed, 11 Feb 2004 15:09:43 +0200
+From: "Alexander Konovalenko" <a-konovalenko@yandex.ru>
+Subject: Re: Major NAT Problem
+Date: Wed, 11 Feb 2004 18:40:48 +0300 (MSK)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076504982.2747.83.camel@raylinux.internal>
-References: <25706769.1076502938552.JavaMail.ngmail@webmail02.arcor-online.net>
+Message-ID: <402A4D00.000013.05317@tide.yandex.ru>
+References: <Sea2-F19kyCKDkb9pPF00000901@hotmail.com> <008c01c3f036$90067b70$0200000a@heretic>
+Reply-To: a-konovalenko@yandex.ru
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-5WvX2DJEN9nT2jOwcXLR"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <25706769.1076502938552.JavaMail.ngmail@webmail02.arcor-online.net>
+In-Reply-To: <008c01c3f036$90067b70$0200000a@heretic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,78 +18,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: alexis@attla.net.ar
+Cc: netfilter@lists.netfilter.org
 
+>You have 2 options
+>
+>1- disable pmtud in the lan boxes and decrease the mtu (begin with 1490 and
+>no more of 1400) and test it.
+>2- make linux to announce an mss of 1450 (commonly mtu-20)
+>
+>(let me know if you need the theory applied to it)
 
---=-5WvX2DJEN9nT2jOwcXLR
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I'm very interested in the details.  Is there any documentation that explains why this is so?
 
-On Wed, 2004-02-11 at 14:35, mgeschermann@arcor.de wrote:
-> Hi all,
->=20
-> I spend a lot of time on building my own firewall-script. Mostly everythi=
-ng is working fine (some things aren't tested yet), but I've got a tricky p=
-roblem and hope you can help me.
->=20
-> If I want to open the ebay-site from either the firewall or an client my =
-browser tells me after a some seconds "This site could not be displayed."
->=20
-> I've done some logging and noticed, that after the reply I get a packet w=
-ith status "NEW" from ebay. (within a few seconds after the the first reply=
-)
->=20
->=20
-> I'm running Suse 9.0 on my router/firewall with iptables 1.2.8. I'm using=
- ip_conntrack.
-> (The problem occurs even without conntrack.)
->=20
->=20
-> here my rules:
->=20
-> iptables -t nat -A PREROUTING -i $IFACE_LAN -p tcp -s $LOCAL_LAN --dport =
-$HTTP_PORT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
->=20
-> iptables -A FORWARD -i $IFACE_LAN -o $IFACE_EXT -p tcp -s $LOCAL_LAN --dp=
-ort $HTTP_PORT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
->=20
-> iptables -A FORWARD -i $IFACE_EXT -o $IFACE_LAN -p tcp -d $LOCAL_LAN --sp=
-ort $HTTP_PORT -m state --state RELATED,ESTABLISHED -j ACCEPT
+Thank you!
 
-Do you use a proxy server on the internal LAN?
-
-Try doing a tcpdump showing all traffic from and to the workstation and
-ebay web site.
-
-There was a 'problem' with earlier versions of IE where the browser
-would send a NEW packet after the connection was closed, never did
-figure out why?
-
-Regards
-
-Ray
->=20
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-5WvX2DJEN9nT2jOwcXLR
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBAKimWh1fuR/Bv+ygRAkv7AJ4oztzTHh/P9zFvVk3PaogIZjSR+QCgjVpH
-9QpQlSbJX5BOd1T8cIkS3wk=
-=MIDf
------END PGP SIGNATURE-----
-
---=-5WvX2DJEN9nT2jOwcXLR--
-
+  -- Alexander Konovalenko
 
