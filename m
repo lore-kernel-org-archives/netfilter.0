@@ -1,14 +1,14 @@
 From: "Stuart Lamble" <stu@gateway10.homeip.net>
 Subject: RE: Logging default drop
-Date: Thu, 8 Apr 2004 20:20:09 +0200
+Date: Thu, 8 Apr 2004 20:25:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c41d96$20a216d0$0464a8c0@stu>
-References: <200404081850.23836.Antony@Soft-Solutions.co.uk>
+Message-ID: <000101c41d96$e2b466b0$0464a8c0@stu>
+References: <1081446914.2453.68.camel@katala.sterenborg.info>
 Reply-To: <stu@gateway10.homeip.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404081850.23836.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <1081446914.2453.68.camel@katala.sterenborg.info>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,65 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
->-----Original Message-----
->From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
->Sent: Thursday, April 08, 2004 7:50 PM
->To: netfilter@lists.netfilter.org
->Subject: Re: Logging default drop
+>On Thu, 2004-04-08 at 19:40, Stuart Lamble wrote:
+>> I was not aware that I was doing that. Is it to do with this damn 
+>> outlook Cr@P that I am using?
 
+>Ermmm.. 
 
->On Thursday 08 April 2004 6:40 pm, Stuart Lamble wrote:
+>Perhaps you could just cut out irrelevant text and move your cursor to
+the bottom of the email and start typing, or, if
+>you want to react to a specific piece, insert a few lines and write
+your comment in the space you just created. That way
+>we all know what you are reacting to. I know I can do that with
+Outlook.
 
-> I was not aware that I was doing that. Is it to do with this damn 
-> outlook Cr@P that I am using?
+OK, thanks for explaining it so nicely. I must admit that even though I
+have read many, many of these posts, I never really noticed that.
+The art of proper communication is sweet.
 
->Yes - you've just done it again :)
+>Gr,
+>Rob
 
->The idea is that you should write your response underneath the bit
-which I 
->wrote, which you're responding to, so that it makes sense as a
-conversation.
-
->If you post your comment at the top of an email, people have to read my
-bit 
->underneath first, to find out what it's about, then go back up to the
-top to 
->find out what you said afterwards....
-
-OK, makes good sense, At least now that someone has explained it to me I
-understand it.
-
-
->Regards,
-
->Antony.
-
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-> Sent: Thursday, April 08, 2004 7:31 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Logging default drop
->
-> On Thursday 08 April 2004 6:24 pm, Stuart Lamble wrote:
-> > Ok, so what does "toppost" mean?
->
-> Regards,
->
-> Antony.
-
--- 
-These clients are often infected by viruses or other malware and need to
-be 
-fixed.  If not, the user at that client needs to be fixed...
-
- - Henrik Nordstrom, on Squid users' mailing list
-
-                                                     Please reply to the
-list;
-                                                           please don't
-CC me.
 
 
 
