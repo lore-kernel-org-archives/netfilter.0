@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: RELATED emulation without ip_conntrack
-Date: Wed, 23 Oct 2002 16:17:56 +0100
+From: "Patty O'Furniture" <throwaway8306@tradersdata.com>
+Subject: Re: *****SPAM***** p-o-m for kernel]
+Date: Wed, 23 Oct 2002 12:32:25 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210231518.g9NFI4L02942@vulcan.rissington.net>
-References: <200210231602.00745.roy@karlsbakk.net>
+Message-ID: <200210231632.g9NGWS325697@vela.tradersdata.com>
+References: <005b01c27a3f$91cc2a40$0814a8c0@yy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210231602.00745.roy@karlsbakk.net>
+In-Reply-To: <005b01c27a3f$91cc2a40$0814a8c0@yy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+Content-Type: TEXT/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: amyyang@w-ibeda.com
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 23 October 2002 3:02 pm, Roy Sigurd Karlsbakk wrote:
+On 23 Oct, Amy wrote:
+| sorry for I post this on the list.And say sorry to Erick. [...]
+| 
+| Regards,
+| Amy
+| 
+| 
+| ----- Original Message ----- 
+| From: "Erik Leupold" <spam@cs-el.sytes.net>
+| To: <amyyang@w-ibeda.com>
+| Sent: Wednesday, October 23, 2002 7:43 AM
+| Subject: [Fwd: *****SPAM***** p-o-m for kernel]
+| 
+| 
+| > your mail is rated as spam
+| > 
+| > -- 
+| > Erik Leupold <spam@cs-el.sytes.net>
+| > 
 
-> hi
->
-> I've got this video server streaming @ ~250Mbps, so I really don't want to
-> waste cpu cycles on ip_conntrack.
->
-> how can I test for tcp flags to allow me to do a poor-man's-conntrack?
+Amy,
 
-Treat packets with SYN set, and ACK, FIN and RST clear as NEW connections.
+If you look at the link below, you'll see how your original post
+appears in the archive. 
 
-Treat packets with SYN and ACK set, FIN and RST clear as NEW replies.
+https://lists.netfilter.org/pipermail/netfilter/2002-October/039425.html
 
-Treat packets with ACK set, SYN, FIN and RST clear as ESTABLISHED connections.
+Mail filters will be processing what you see above, and not what you
+think you wrote. You would probably be better off posting in plain text
+without the encoding. Honestly I don't know how to do that when you're
+using a different character set (GB2312). I especially know nothing
+about how to do it with Outlook Express.  But most likely, Erik's spam
+filters consider *anything* encoded to be obfuscated spam, or possibly
+it took exception to some "bad" words embedded in the encoding.
 
-Treat packets with FIN or RST set (probably ACK too) as terminating 
-connections.
+Although if either of the above is correct one could argue:
 
-Antony.
+1. That filter is brain-dead, and
+2. Auto-responding to (suspected) spam is ill-advised, and
+3. It is as ill-conceived as vacation msgs responding to list msgs [*],
+
+there's little you can do other than avoiding the encoding.  Or you
+could just choose to ignore it.
+
+[*] At least it didn't go back to the list.
 
 -- 
+Email address is a temporary one that will only work for a couple of days.
+Spammers' unrelenting address harvesting forces me to this... reluctantly.
 
-Most people have more than the average number of legs.
+
 
