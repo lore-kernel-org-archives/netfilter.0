@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
 Subject: RE: FTP Connection problems.
-Date: Tue, 24 Aug 2004 09:19:31 -0400
+Date: Tue, 24 Aug 2004 10:04:47 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512C1@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512C2@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,81 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: Vincent Blondel <vincent.blondel@chello.be>
 
-> Hi all,
+> I compiled a kernel without any modules ( all these are in vmlinuz ) =
+an
+> I use the very basic ftp client from coreutils ( so normally this does
+> not initiate passive connections ).
 >
-> I a trying to initiate ftp connections to some of my servers but it
-> doesn't work. You can find below a schema representing my three
-> machines, client, firewall and ftp server. There is no NAT at the =
-moment
-> and the script I use on my firewall.
->
-> ---
->
->  ftp server                   eth1 fw eth0                 client
-> 192.168.125.1      192.168.125.240    192.168.124.240    192.168.124.1
->
-> ---
->
-> #!/bin/sh
-> #
->
-> fw=3D"/sbin/iptables"
-> nat=3D"$fw -t nat"
-> mangle=3D"$fw -t mangle"
->
-> CONN_TRACK=3D"1"                                # Connection Tracking
-> UNPRIVPORTS=3D"1024:65535"              # unprivileged port range
->
-> # Remove any existing rules from all chains
-> $fw --flush
-> $nat --flush
-> $mangle --flush
->
-> # Unlimited traffic on the loopback interface
-> $fw -A INPUT  -i lo -j ACCEPT
-> $fw -A OUTPUT -o lo -j ACCEPT
->
-> # Set the default policy to drop
-> $fw --policy INPUT   DROP
-> $fw --policy OUTPUT  DROP
-> $fw --policy FORWARD DROP
->
+> So what do I have to do ???
+
+go look in your config file that you used to compile your kernel.  did =
+you set CONFIG_IP_NF_CONNTRACK (i assume you did) and CONFIG_IP_NF_FTP =
+(this is connection tracking for FTP)?  if not...i see a make config && =
+make dep clean bzImage install in your future...
+
+use an FTP client that allows you to switch between active and passive =
+mode on the fly so you can determine what is and is not working.  i use =
+ncftp, which supports 'set passive on|off'...  the basic "ftp" command =
+that ships with FC1 supports switching back and forth with the 'passive' =
+command.  the way your rules are set up, *active* FTP should be working.
+
+also--please rethink this:
+
 > $nat --policy PREROUTING  DROP
 > $nat --policy OUTPUT      DROP
 > $nat --policy POSTROUTING DROP
 >
 > $mangle --policy PREROUTING  DROP
 > $mangle --policy OUTPUT      DROP
->
-> # Remove any pre-existing user-defined chains
-> $fw --delete-chain
-> $nat --delete-chain
-> $mangle --delete-chain
->
-> if [ "$CONN_TRACK" =3D "1" ]; then
->       $fw -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->       $fw -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->       $fw -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> fi
->
-> # Incoming FTP requests
-> iptables -A FORWARD -i eth0 -o eth1 -p tcp -s 192.168.124.1 --sport
-> $UNPRIVPORTS -d 192.168.125.1 --dport 21 -m state --state NEW -j =
-ACCEPT
->
-> # Port Mode Data Channel Responses
-> iptables -A FORWARD -i eth1 -o eth0 -p tcp -d 192.168.124.1 --sport 20
-> --dport $UNPRIVPORTS -m state --state NEW -j ACCEPT
->
-> Thanks to help me ...
-> Vincent
 
-if the client is running a passive FTP client--you need to have the FTP =
-connection tracking module loaded for those connections to be considered =
-RELATED:
-
-  # modprobe ip_conntrack_ftp
+you'll never get anything working with those set to DROP (relatively =
+speaking)...
 
 -j
 
