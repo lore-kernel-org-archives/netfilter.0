@@ -1,11 +1,18 @@
-From: Linux Query <linux_query@yahoo.com>
-Subject: Re: ip + mac authentication
-Date: Wed, 19 Jan 2005 03:48:04 -0800 (PST)
-Message-ID: <20050119114804.13549.qmail@web30806.mail.mud.yahoo.com>
-References: <3063e50501190257de42d67@mail.gmail.com>
+From: Ulysses Almeida <ulysses.almeida@gmail.com>
+Subject: Re: Two links and a SMTP sever.
+Date: Wed, 19 Jan 2005 09:26:32 -0300
+Message-ID: <d645356050119042639935f07@mail.gmail.com>
+References: <d645356050118053928226673@mail.gmail.com>
+	<26550.142.169.215.10.1106081679.squirrel@142.169.215.10>
+	<d645356050118125243d12dfb@mail.gmail.com>
+	<28693.142.169.215.10.1106083062.squirrel@142.169.215.10>
+	<d645356050118131479a9720@mail.gmail.com>
+	<41ED8777.2050604@cookinglinux.org>
+Reply-To: Ulysses Almeida <ulysses.almeida@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3063e50501190257de42d67@mail.gmail.com>
+In-Reply-To: <41ED8777.2050604@cookinglinux.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +24,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Samuel Jean <sj-netfilter@cookinglinux.org>
+Cc: netfilter@lists.netfilter.org
 
-
---- George Alexandru Dragoi <waruiinu@gmail.com>
-wrote:
-
-> You can make a file with pairs of <ip> <mac> and
-> load it with arp -f ,
-> or man ethers then you can make firewall rules based
-> on ips only, of
-> course don;t forget to drop traffic in FORWARD which
-> not match your
-> clients's source ip.
+On Tue, 18 Jan 2005 17:02:31 -0500, Samuel Jean
+<sj-netfilter@cookinglinux.org> wrote:
+> 
+> As I said, did you enable this ? :
+> 
+>   CONFIG_IP_NF_NAT_LOCAL
 > 
 
-Thank you! I didnt know about the /etc/ethers file. Is
-it possible to assign two ips for a single mac in that
-file and a single ip for two macs ?
+Yes CONFIG_IP_NF_NAT_LOCAL=y
 
-e.g.   ip1   <mac1>
-       ip2   <mac1> 
+  I did put some -j LOG on target host. Tried a telnet to cited host
+on port 25. On
+target's host everything looks right. I get the packets from the right
+ip (link(2)). But it still disapper after mangles PREROUTING. Maybe
+i'm missing something on second routing table.... I'll try to find
+out.
 
-and
-       ip3   <mac2>
-       ip3   <mac3>  
-      
-Besides, if i leave out some of the clients from the
-/etc/ethers file (I dont know all mac addresses right
-now) , will it create problems for those who are not
-included ?
-
-Thanks and regards,
-jim
+  It's strange, because I have other host, with this really same
+solution, and everything works fine.
 
 
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Meet the all-new My Yahoo! - Try it today! 
-http://my.yahoo.com 
- 
-
+-- 
+ - Ulysses Almeida
 
