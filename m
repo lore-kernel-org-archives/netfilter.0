@@ -1,94 +1,68 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Call for testing: patch-o-matic-ng
-Date: Tue, 23 Dec 2003 18:30:22 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031223173022.GA3879@obroa-skai.de.gnumonks.org>
-References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org> <plopm3zndjoexg.fsf@drizzt.kilobug.org>
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: SMTP Routing Based On Recipient
+Date: Tue, 23 Dec 2003 11:20:46 -0800
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200312231921.hBNJKkNC007637@server5.bandwidthco.com>
+References: <200312231314.06746.Antony@Soft-Solutions.co.uk>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <plopm3zndjoexg.fsf@drizzt.kilobug.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200312231314.06746.Antony@Soft-Solutions.co.uk>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: =?iso-8859-1?Q?Ga=EBl?= Le Mignot <kilobug@freesurf.fr>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+
+One more vote for MailScanner.  To put it simply, it is an "amazing" piece
+of software.  It's easy to install, it requires very little maintenance, it
+is highly effective, and the price is fits my budget perfectly ($0.00).  I
+find it to be the perfect complement to iptables.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+Sent: Tuesday, December 23, 2003 5:14 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: SMTP Routing Based On Recipient
+
+On Tuesday 23 December 2003 1:00 pm, Adam Ellis wrote:
+
+> On Tue, 2003-12-23 at 06:37, Chris Brenton wrote:
+> >
+> > A couple of other options:
+> > I use a combination of Sendmail, ClamAV, MimeDefang and Spamassassin 
+> > to clean up all inbound e-mail before passing it off to my mail 
+> > server. You can find a great tutorial on setting this up here:
+> > http://www.rudolphtire.com/mimedefang-howto/
+>
+> Chris and everyone else in this thread,
+>
+> Thanks for the information.  I think you all have me going in the 
+> right direction now!
+
+I recommend http://www.mailscanner.info for a similar setup - it uses
+sendmail or exim, and provides a wonderfully configurable wrapper around any
+of 15 different antivirus engines (including the free ClamAV), and
+SpamAssassin.
+
+Antony.
+
+--
+RTFM may be the appropriate reply, but please specify exactly which FM to R.
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
 
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 23, 2003 at 02:13:15PM +0100, Ga=EBl Le Mignot wrote:
-> I've tested pom-ng on 2.6.0  with USAGI patch, the patch-o-matic seems
-> to work, but the kernel doesn't compile (I put nearly all patches, and
-> select M in the kernel config wherever it was possible):
->=20
->   CC      net/core/netfilter.o
-> net/core/netfilter.c: In function `nf_log_register':
-> net/core/netfilter.c:760: warning: implicit declaration of function `br_w=
-rite_lock_bh'
-> net/core/netfilter.c:760: error: `BR_NETPROTO_LOCK' undeclared (first use=
- in this function)
-> net/core/netfilter.c:760: error: (Each undeclared identifier is reported =
-only once
-> net/core/netfilter.c:760: error: for each function it appears in.)
-> net/core/netfilter.c:765: warning: implicit declaration of function `br_w=
-rite_unlock_bh'
-> net/core/netfilter.c: In function `nf_log_unregister':
-> net/core/netfilter.c:770: error: `BR_NETPROTO_LOCK' undeclared (first use=
- in this function)
-> make[3]: *** [net/core/netfilter.o] Error 1
->=20
->=20
-> I think maybe some patches doesn't work with 2.6, would it possible to
-> add a way to select patch that works with 2.6 ? like ./runme extra-2.6
-> or such ?
-
-yes, indeed.  There are numerous patches that would not work in the
-2.6.x kernels.  They have yet to be identified.  Once they are
-identified, we can put a special "requires" tag into the 'info' file of
-those patches.
-
-This way the 2.4 only patches would only be offered if you have a 2.4.x
-kernel source (and vice-versa).
-
-You could help us in finding out which patches compile and which ones
-don't.
-
-> --=20
-> Gael Le Mignot "Kilobug" - kilobug@nerim.net - http://kilobug.free.fr
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/6HutXaXGVTD0i/8RAjD2AKCgkfqMVhs+Cfu3SCwS3hxZWrG+IgCgkQR/
-fFTziJ3Cqr7VPbgYQFwgypw=
-=9wPN
------END PGP SIGNATURE-----
-
---0OAP2g/MAC+5xKAE--
 
