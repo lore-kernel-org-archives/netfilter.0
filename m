@@ -1,9 +1,10 @@
-From: "Manestro Oliveira" <manestro123@hotmail.com>
-Subject: Re:Re: bypassing a PREROUTING rule - answer
-Date: Mon, 28 Jun 2004 13:51:58 +0000
+From: Kevin de Kok <kevin@oom-killer.org>
+Subject: -j TARPIT
+Date: Mon, 28 Jun 2004 21:35:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY22-F24bSzxdWGHpP00049478@hotmail.com>
+Message-ID: <40E0731A.3060509@oom-killer.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,22 +16,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi, 
 
-It seems that my knowledge was wrong...
-And as I can' t stand the silence (=no response) :>), I think I found the 
-answer.
+What are the advantages of tarpits i can't find really good information 
+on the net about that
+options.
 
-This link should clarify things:
+greetings,
 
-http://lists.netfilter.org/pipermail/netfilter/2004-May/053122.html
-
-Thanks anyway.
-
-_________________________________________________________________
-MSN Hotmail, o maior webmail do Brasil.  http://www.hotmail.com
+Kevin de Kok.
 
 
