@@ -1,15 +1,10 @@
-From: Jeroen Vriesman <j.vriesman@prompt.nl>
-Subject: Re: transparent proxy
-Date: Fri, 27 Feb 2004 11:25:11 +0100
+From: "Nikolaj G." <damn_you_alexis@yahoo.com>
+Subject: RE: Example scripts with DNS and DMZ solutions
+Date: Fri, 27 Feb 2004 03:44:18 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040227112511.57fcc4a6.j.vriesman@prompt.nl>
-References: <003901c3fd0e$88a3c6f0$2a245cc2@cea05>
-	<20040227101829.544cceae.j.vriesman@prompt.nl>
-	<200402270927.19754.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040227114418.92242.qmail@web20415.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200402270927.19754.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +15,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Ojee,
+Hi Netfilters,
 
-that means I'm living in the past, sorry.
+I found some more info about subj. (thanks to Daniel
+Chemko). Have to read this DNS-stuff before going
+further with questions. The keywords for me was "view"
+and "split dns".
 
+http://www.linuxjournal.com/article.php?sid=4198
+http://www.linuxforum.com/bind/Bv9ARM.ch04.html
+http://www.zytrax.com/books/dns/ch4/#stealth
 
+/NikolajG
 
-On Fri, 27 Feb 2004 09:27:19 +0000
-Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-
-> On Friday 27 February 2004 9:18 am, Jeroen Vriesman wrote:
-> 
-> > Hi,
-> >
-> > you cannot send http traffic directly to a proxy port,
-> 
-> Yes you can.
-> 
-> See the example netfilter rule given on the Squid FQ at 
-> http://www.squid-cache.org/Doc/FAQ/FAQ-17.html#ss17.4
-> and http://en.tldp.org/HOWTO/TransparentProxy-5.html
-> 
-> Antony.
-> 
-> -- 
-> Ramdisk is not an installation procedure.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+__________________________________
+Do you Yahoo!?
+Get better spam protection with Yahoo! Mail.
+http://antispam.yahoo.com/tools
 
