@@ -1,8 +1,8 @@
-From: William Hamilton <william@thevirtual.co.nz>
-Subject: Logging to pgSQL
-Date: 18 Feb 2003 17:38:11 +1300
+From: "Daniel Martinez" <dani@dif.um.es>
+Subject: Redirect & ip6tables
+Date: Wed, 19 Feb 2003 16:22:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045543090.710.37.camel@monster.thevirtual.co.nz>
+Message-ID: <000501c2d82a$c360c400$45d2369b@mortadelo>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,14 +16,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Is there a method to log all output to PostgreSQL database?  If so any
-pointers to some docs please?
+Hello,
 
-tia
+I need to capture IPv6 packets in the prerouting stage and redirect them to
+another host/port. Is there a target extension for ip6tables for
+redirecting, like "REDIRECT" for iptables?
 
-William
-
+Thanks.
 
 
