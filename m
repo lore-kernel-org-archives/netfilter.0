@@ -1,9 +1,10 @@
-From: titus grig <altitus@yahoo.com>
-Subject: TWO INDEPENDENT NETWORKS AND IP IN IP can?
-Date: Sun, 9 Jun 2002 05:40:54 -0700 (PDT)
+From: Fred Richards <Toril@twcny.rr.com>
+Subject: DCC ...
+Date: Sun, 09 Jun 2002 11:27:58 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020609124054.84608.qmail@web20513.mail.yahoo.com>
+Message-ID: <3D0373FE.9060205@twcny.rr.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,31 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.samba.org
 
-Hi
- I am new on iptables and of course have problems
- date of problem:
- -two networks with internet conections
- -say A network with eth0 on internet,eth1 with
-private adress class C 192.x.x.x with internet traffic
-limit at 500Mb
- -say B network with eth0 internet conection and eth1
-with class C real Ip (32 adreses)with full acces on
-internet (no traffic limit)
- QUESTIONS ARE:
-  1.SETTING IPTABLES TO ROUTE THESE ADRESS ALL 32 AND
-SET ACCES WITH IP/MAC ADDRESS
-2.SETTING A NETWORK TO BE ROUTED ONLY TRHOUGH A ROUTER
-AND THIS WAY IT WILL BE NOT MONITORIZED BY ISP WITH
-INTERNET TRAFFIC -TRFFIC WICH WILL BE TROUGH SECOND B
-NETWORK
- 
+Ok, I have IPtables 1.2.6a and using kernel 2.4.18.  Everything is 
+working great, but I keep getting this error message when I try and DCC:
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! - Official partner of 2002 FIFA World Cup
-http://fifaworldcup.yahoo.com
+Forged DCC command from 172.16.0.5: 24.92.231.26:4300
+Forged DCC command from 172.16.0.5: 24.92.231.26:4399
+Forged DCC command from 172.16.0.5: 24.92.231.26:4405
+Forged DCC command from 172.16.0.5: 24.92.231.26:4854
+
+I am not using modules, I have everything statically compiled into the 
+kernel (yes including IRC and FTP support...)  Is there something else 
+I'm missing?
+
+  Appearently anyone can DCC us but we cannot dcc out... any help would 
+be appreciated ...
+
+							-- Fred
+
 
