@@ -1,11 +1,10 @@
-From: "Domenico Gargano" <d.gargano@planetek.it>
-Subject: weird blocked sync packets on win machines
-Date: Thu, 11 Nov 2004 15:50:42 +0100
-Message-ID: <41938A52.31513.16CC25F@localhost>
+From: ro0ot <ro0ot@phreaker.net>
+Subject: iptables with policy routing
+Date: Fri, 12 Nov 2004 01:01:06 +0800
+Message-ID: <41939AD2.602@phreaker.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +15,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-strange things happen on my linuxbox, I've got a firewall box running fedora 2 with 5 net 
-adapters. All my private machines (192.168.30.) connect to internet and to my DMZ 
-through the linuxbox.
-During the day usually happens that my firewall stop forwarding SYN packets, allowing 
-instead all other packets (ex. ACK) and all other protocols. This means that I cannot 
-establish only new connections (prevoiously opened ones just work fine).
-All my eth stop forwarding for 15 minutes, all the new traffic is totally blocked (from/to 
-LAN, DMZ, INTERNET).
-The really weird thing is that this happen only on windows machines, and during this 
-block-time, if I close all IE windows and then I re-open IE, all connections start again to 
-work (without waiting 15 minutes), this trick works only if my IE is using squiq proxy 
-running on a server located in DMZ.
-I've upgraded the kernel from 2.4.22 to all new releases since 2.6.8 but nothing has 
-changed, I've changed all net adapters and fine-tuning kernel parameters (like disable 
-syn-protect or increase nr. connections and decrease timeout values).
-All tests are done with tcpdump.
-Can someone please suggest me some way to find a solution? I'm not only looking for 
-the right solution, but also some method to study this weird problem.
-Thanks
+Hi,
+
+Below is my Linux firewall network configuration: -
+
+eth0 - isp 1, IP: 1.1.1.10, Netmask: 255.255.255.252
+eth1 - isp 2, IP: 2.2.2.10, Netmask: 255.255.255.252
+eth2 - lan, IP: 172.16.0.254, Netmask: 255.255.255.0
+eth3 - dmz, 192.168.0.254, Netmask: 255.255.255.0
+
+isp 1 gateway: 1.1.1.9
+isp 2 gateway: 2.2.2.9
 
 
--- 
-~~~  Domenico Gargano  [Senior Network Manager]  ~~~
-Planetek Italia s.r.l.                        :tel:+39 080 5343750
-Via Massaua, 12 - I-70123 BARI     :fax:+39 080 5340280
-~~ email:  d.gargano@planetek.it ~~~ www.planetek.it ~~
+Below is my iptables rules: -
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+iptables -t nat -A PREROUTING -d 1.1.1.10 -j DNAT --to-destination 
+172.16.0.1
+iptables -t nat -A PREROUTING -d 2.2.2.10 -j DNAT --to-destination 
+192.168.0.1
+
+iptables -t nat -A POSTROUTING -s 172.16.0.1 -j SNAT --to-source 1.1.1.10
+iptables -t nat -A POSTROUTING -s 192.168.0.1 -j SNAT --to-source 2.2.2.10
+
+
+Below is my split access routing for multiple providers: -
+
+# First ISP
+ip route add 1.1.1.8/30 dev eth0 src 1.1.1.10 table 1
+ip route add default via 1.1.1.9 table 1
+
+# Second ISP
+ip route add 2.2.2.8/30 dev eth1 src 2.2.2.10 table 2
+ip route add default via 2.2.2.9 table 2
+
+#
+ip rule add from 1.1.1.8/30 lookup 1
+ip rule add from 2.2.2.8/30 lookup 2
+
+# My default choice of gateway
+ip route add default via 1.1.1.9
+
+#
+ip route add 2.2.2.8/30 dev eth1 table 1
+ip route add 172.16.0.0/24 dev eth2 table 1
+ip route add 192.168.0.0/24 dev eth3 table 1
+ip route add 127.0.0.0/8 dev lo table 1
+
+#
+ip route add 1.1.1.8/30 dev eth0 table 2
+ip route add 172.16.0.0/24 dev eth2 table 2
+ip route add 192.168.0.0/24 dev eth3 table 2
+ip route add 127.0.0.0/8 dev lo table 2
+
+When I perform a traceroute from a workstation with the IP address of 
+192.168.0.1 and gateway 192.168.0.254, I can see the result of the 
+traceroute going through the 1.1.1.9 gateway, why?  It suppose to SNAT 
+to 2.2.2.10 via 2.2.2.9 gateway.
+
+Regards,
+ro0ot
+
+
 
 
