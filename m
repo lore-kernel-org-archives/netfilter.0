@@ -1,10 +1,15 @@
-From: A K A <gello666@yahoo.com>
-Subject: NF_STOLEN effect on TCP
-Date: Tue, 11 Nov 2003 11:13:18 -0800 (PST)
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: iprange
+Date: Tue, 11 Nov 2003 16:54:30 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031111191318.84468.qmail@web13114.mail.yahoo.com>
+Message-ID: <200311111654.30916.Alistair@nerdnet.ca>
+References: <Pine.LNX.4.33.0311110937110.24817-100000@blackhole.kfki.hu> <Pine.LNX.4.58.0311111558160.8003@fhynpb.envafyvqr.arg>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.58.0311111558160.8003@fhynpb.envafyvqr.arg>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,56 +20,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Vigil <nvnwdfuq02@sneakemail.com>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-(include my address in the replies, i am not
-subscribed to the list).
-
-
-hello all,
-
-
-
-Ok I have been stuck on this for tooo long and cant
-figure it out. I have made an LKM which registers to
-NF_POST_ROUTING hook. it gets a packet and if matches
-a certain criterion then it puts it on to my private
-Queue and returns NF_STOLEN. By putting the packet on
-the Queue I am delaying the packets by arround 4 ms.
-
-Now here is the problem for the case of a TCP packet:
-A TCP SYN was selected to be delayed. So my hook
-returns NF_STOLEN and the packet is sent 4 ms latter
-using ip_send(), initated by an ioctl called from a
-user application. next my host receives a syn+ack
-and imediately sends an ack. However the first data
-packet is sent out at a delay arround 4ms also. which
-is very odd. cuz in the user application the send
-function is called right after connect. I was
-expecting only the syn packet to be affected because
-of my delay, but there is some sort of reaction.
-
-I dont think that its because of some RTT calculations
-because when i send the SYN packet imdediately and
-delay it at the peer then the first data packet goes
-on fine.
-
-Now I have been stuck with this damn thing for a long
-while and cant figure out---is it the stealing that
-results in this. is this some expected behavior of
-TCP. .. please can u help me with this soon.
+On November 11, 2003 11:01 am, Vigil wrote:
+> Oh, ngh. Excuse me, I read it being built into iptables as I wouldn't have
+> to build it into the kernel. As I say, ngh.
+>
+> On Tue, 11 Nov 2003, Jozsef Kadlecsik kadlec-at-blackhole.kfki.hu |Netfilter 
+Mailing List| wrote:
+> >I still suspect you have got two iptables binaries on your system and you
+> > start the previous one instead what you installed from source.
 
 
-regards,
+	Vigil the problem likely is that you have an OLD rpm installation at /usr/
+ 	and the new built iptables at /usr/local/ 
 
-Asad
+	This usually causes the sort of problem you are experiencing......
+	
+	try :
+	
+	find /usr -name iptables
 
-ps: i can send you a trace plot of the tcp seq vs time
-as an attachment if you would like to see it.
+	if you get more than one result you have this problem.... 
+-- 
 
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
