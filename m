@@ -1,8 +1,8 @@
-From: Karina =?iso-8859-1?Q?G=F3mez?= Salgado <kgs@acabtu.com.mx>
-Subject: How to NOT redirect..
-Date: Thu, 07 Nov 2002 12:40:20 -0600
+From: Meir Michanie <meirm@riunx.com>
+Subject: killing an existing connection
+Date: 07 Nov 2002 21:28:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DCAB394.BE9050AF@acabtu.com.mx>
+Message-ID: <1036697319.10279.13.camel@meirm2kp.riunx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,28 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: meirm@riunx.com
 
-Hi, I'm using iptables for redirect requests to port 80 to port 3128 of
-Squid.
+I am trying to develop a pay per routing limited by time. (lets say
+15mins)
 
-But I have a problem, because some of the squid users have trouble
-accessing certain services through the proxy, i want to this users
-bypass the proxy when they try to reach certain sites.
+step 1 :the iptables should redirect all forwarding packets to my
+gatekeeper site.
 
-So How can i deny the redirect ?
+step 2:after you pay I should allow youe mac address for free
+forwarding.
 
-I've excluded certain users for their source address... making the
-redirection to the remaining ip addresses.
+step 3: but adding a cron job or something like that to stop you after
+15 mins and then redirect you back to my site to pay for more time.
 
-But now i want to send all traffic to squid, all but certain
-destinations...
+step 1 is done by 
 
-Is there a way to do that ?
+iptables  -t nat -A PREROUTING -j DNAT --to-destination 10.0.10.2
 
-I appreciate any help,
+step 2 is done by
 
-Thanks,
+iptables -t nat -I PREROUTING -m mac --mac-source 00:20:18:2D:6B:20 -j  
+ACCEPT
 
-Karina
+
+My problem is with step 3:
+
+prerouting is not dealing with established sessions.
+
+mangle is not using dnat target.
+
+someone told me to use tcpkill, I do not nothing about it, I i thought
+that it may be a way to do something with iptables, like resetinmg all
+its connections for that mac address, etc.
+
+Ideas?
+
+
+-- 
+QOTD:
+	"I tried buying a goat instead of a lawn tractor; had to return
+	it though.  Couldn't figure out a way to connect the snow blower."
 
 
