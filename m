@@ -1,13 +1,15 @@
-From: Francois van Doorneveld <francois@vandoorneveld.org>
-Subject: Re: Having a problem loading NETMAP extension.
-Date: Sat, 25 Jan 2003 22:00:46 +0100
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: question on recent module
+Date: Sat, 25 Jan 2003 18:55:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E32FAFE.3050509@vandoorneveld.org>
-References: <3E32C282.9040508@vandoorneveld.org>
+Message-ID: <20030125235533.GQ484@ns.snowman.net>
+References: <001901c2c3b3$5adfe4a0$3201a8c0@leonardo> <20030125013327.GO484@ns.snowman.net> <005201c2c4a9$f9e7f280$3201a8c0@leonardo> <20030125192149.GP484@ns.snowman.net> <000f01c2c4ba$da76b8d0$3201a8c0@leonardo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dgjlcl3Tl+kb3YDk"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E32C282.9040508@vandoorneveld.org>
+Content-Disposition: inline
+In-Reply-To: <000f01c2c4ba$da76b8d0$3201a8c0@leonardo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +19,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: #LIST-netfilter <netfilter@lists.netfilter.org>
-
-OK, just found out I need to create a new kernel as well. Going to try 
-that now.
-
-Francois.
-
-Francois van Doorneveld wrote:
-
-> Howdy all,
->
-> I've searched and searched, but I can't seem to get this to work.
->
-> I installed the tarball for iptables 1.2.7a. In the tarball there is 
-> also the .c file for the NETMAP extension.
->
-> I added the NETMAP extension in the Makefile for the extensions. It 
-> copies the .so to the directory where the extensions are located, but 
-> the following happens:
->
-> # iptables -m NETMAP -h
-> iptables v1.2.7a: Couldn't load match `NETMAP'
->
-> Try `iptables -h' or 'iptables --help' for more information.
->
-> Any help on this would be very appreciated, as this is getting 
-> frustrating.
->
-> Best regards,
->
-> Francois
->
->
+To: "Leonardo Rodrigues ( listas )" <leolistas@solucoesip.net>
+Cc: netfilter ML <netfilter@lists.samba.org>
 
 
+--dgjlcl3Tl+kb3YDk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+* Leonardo Rodrigues ( listas ) (leolistas@solucoesip.net) wrote:
+>     And it works !! :))
+
+Great!
+
+>     Stephen, thanks very much for your help and, just in case, please
+> correct the error message ( --check to --rcheck stuff ).
+
+Oh, many thanks.  It used to be --check until I changed it because
+something else used that (or some such, as I recall).  I must have
+missed it there.  Fixed in my local version.
+
+	Stephen
+
+--dgjlcl3Tl+kb3YDk
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+MyP1rzgMPqB3kigRAvLjAJ4xrEWf+I8icApeqj64dXwKX043QQCfWWUD
+0DMRj3XPhNYrBIuyxHDlNJE=
+=tPbw
+-----END PGP SIGNATURE-----
+
+--dgjlcl3Tl+kb3YDk--
 
