@@ -1,15 +1,13 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Mirror!!
-Date: Thu, 19 Feb 2004 15:48:25 +0100
+From: Alexis <alexis@attla.net.ar>
+Subject: Re: kernel2.6.2-3 + iptables/shorewall
+Date: Thu, 19 Feb 2004 12:01:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040219144825.GJ28197@sunbeam.de.gnumonks.org>
-References: <108e01c3f6ed$6fb6aa30$fe01000a@estacion1>
+Message-ID: <1077202860.1578.13.camel@pepelui.baicom>
+References: <1077202137.4302.12.camel@gb7tf.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cN519qCC4CN1mUcX"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <108e01c3f6ed$6fb6aa30$fe01000a@estacion1>
+In-Reply-To: <1077202137.4302.12.camel@gb7tf.org.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,64 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: XMundo - Soporte Tecnico <soporte@xmundo.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Richard Bown <richard.bown@blueyonder.co.uk>
+Cc: 'netfilter' <netfilter@lists.netfilter.org>
+
+Yes, i have at least 4 firewalls running SNAT and DNAT with 2.6.2 and
+iptables 1.2.9 without any problem. (using redhat 8,9 or debian)
 
 
---cN519qCC4CN1mUcX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 19, 2004 at 10:36:51AM -0300, XMundo - Soporte Tecnico wrote:
-> o the person responsible for managing the mirrors.
->=20
-> I have been sending messages for almost a month to the following emails:
->=20
-> coreteam@netfilter.org
-> webmaster@netfilter.org
-> laforge@netfilter.org
+IP forwarding could be enabled and disabled at
 
-mh, I don't remember seeing anything prominent in those two folders.
-Maybe the subject made it look like spam ;(
+/proc/sys/net/ipv4/ip_forward if this is your question
 
-> netfilter-mirrors@lists.netfilter.org
 
-A typo in my mail-sync configuration file resulted in no mails from that
-folder being transferred to my local imap repository.  I am now reading
-all pending email in that folder.
 
-> Could you read netfilter-mirrors and make the change I'm asking you for?
+On Thu, 2004-02-19 at 11:48, Richard Bown wrote:
+> Hi
+> having a real headach with this
+> Running kernel-2.6.2-3mdk patched for win4lin
+> iptables 1.2.9-5mdk
+> shorewall 1.4.8-3mdk
+> modules loaded are :-
+> ipt_TOS 2240 0 - Live 0xe197f000
+> ipt_REJECT 6464 0 - Live 0xe198e000
+> ipt_LOG 5312 0 - Live 0xe198b000
+> ipt_state 1728 2 - Live 0xe1985000
+> ipt_multiport 1856 0 - Live 0xe1983000
+> ipt_conntrack 2304 0 - Live 0xe1981000
+> iptable_filter 2624 1 - Live 0xe1932000
+> iptable_mangle 2624 0 - Live 0xe18d2000
+> iptable_nat 23116 1 ipt_MASQUERADE, Live 0xe18c3000
+> ip_conntrack 31120 4 ipt_MASQUERADE,ipt_state,ipt_conntrack,iptable_nat,
+> Live 0xe1963000
+> ip_tables 16704 10
+> ipt_MASQUERADE,ipt_TOS,ipt_REJECT,ipt_LOG,ipt_state,ipt_multiport,ipt_conntrack,iptable_filter,iptable_mangle,iptable_nat, Live 0xe1952000
+> 
+> 
+> now in the 2.4 series kernels if I remember right you could turn /off
+> IPV4 forwarding, I hav'nt found this at all in the config file on a
+> 2.6.2 kernel.
+> So as you guys are more at the iptables end, is anyone successfully
+> getting MASQ,& DNAT functional with a 2.6.2 kernel, and maybe on a
+> mandrake system :)
+> 
+> Thanks
+> Richard
+-- 
+Alexis <alexis@attla.net.ar>
 
-I'll respond to you seperately.
-
-Sorry for any inconvenience.
-
-> Regards.
-> Cristian Merz
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---cN519qCC4CN1mUcX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFANMy5XaXGVTD0i/8RAhpoAKCyUxBYYrjNfbmJYyKuuaU46jwFIQCeIdWZ
-OCSS36HG+BsnXSUqt3xHPac=
-=Pp9h
------END PGP SIGNATURE-----
-
---cN519qCC4CN1mUcX--
 
