@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: terminating connections when an interface goes down
-Date: Sat, 13 Mar 2004 18:44:50 +0000
+From: Carsten Maass <cm@blinkenlichten.de>
+Subject: [solved] Re: Iptables / KAME IPSec problem: source port information
+ lost
+Date: Sat, 13 Mar 2004 23:16:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403131844.50093.Antony@Soft-Solutions.co.uk>
-References: <1127959457.20040313192408@anime-h.com>
+Message-ID: <40538843.9050303@blinkenlichten.de>
+References: <404DB826.3000709@blinkenlichten.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1127959457.20040313192408@anime-h.com>
+In-Reply-To: <404DB826.3000709@blinkenlichten.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +18,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Saturday 13 March 2004 6:24 pm, MaXxX wrote:
+Carsten Maass wrote:
+> my network layout looks like this:
+> ----------------------------------
+> 
+> (Localnet A)---(Gateway A)==IPSec==(Gateway B)---(Localnet B)
+> 
+> where "==IPSec==" is a IPSec connection using the backport of the 2.6 
+> KAME IPSec stack on a static 2.4.24 kernel in tunnel-mode. Both gateways 
+> are running Debian stable with racoon and the ipsec-tools coming from 
+> testing:
+> 
+> kernel-source-2.4.24          2.4.24-3
+> iptables                      1.2.6a-5
+> ipsec-tools                   0.2.2-8
+> racoon                        0.2.2-8
+> 
+> 
+> My problem is:
+> --------------
+> 
+> At some point in the filtering process, the information about the source 
+> ports of the incoming and decrypted packet gets lost, so that the 
+> clients on the localnet don't accept it as one of the established 
+> connection.
+> 
+> Here is some example:
+> ---------------------
+> 
+> The tcpdump was taken on Gateway A, listening on all interfaces.
+> 
+> Client 192.168.3.4 on Localnet A tries to establish a http-connection to 
+> client 192.168.0.1 on Localnet B.
+> 
+> 12:05:48.370984 192.168.3.4.35114 > 192.168.0.1.80: S 
+> 3186461765:3186461765(0) win 5840 <mss 1460,sackOK,timestamp 220395665 
+> 0,nop,wscale 0> (DF)
+> 
+> The initial packet...
+> 
+> 12:05:48.372462 218.10.35.139 > 146.254.136.108: 
+> ESP(spi=0x0a6825be,seq=0xaf) (DF)
+> 
+> ...gets correctly encrypted and sent out to Gateway B (146.254.136.108).
+> 
+> 12:05:48.447361 146.254.136.108 > 218.10.35.139: 
+> ESP(spi=0x03e34241,seq=0xa5) (DF)
+> 
+> The encrypted response arrives at Gateway A (218.10.35.139).
+> 
+> 12:05:48.447361 192.168.0.1.80 > 192.168.3.4.35114: S 
+> 969293027:969293027(0) ack 3186461766 win 5792 <mss 
+> 1460,sackOK,timestamp 2220996862 220395665,nop,wscale 0> (DF)
+> 
+> The packet gets decrypted, the source port is correct.
+> 
+> 12:05:48.448584 192.168.0.1.1 > 192.168.3.4.35114: S 
+> 969293027:969293027(0) ack 3186461766 win 5792 <mss 
+> 1460,sackOK,timestamp 2220996862 220395665,nop,wscale 0> (DF)
+> 
+> And here the strange thing apperars: The packet is sent out with a 
+> source port of 1!
+> 
+> 12:05:48.448816 192.168.3.4.35114 > 192.168.0.1.1: R 
+> 3186461766:3186461766(0) win 0 (DF)
+> 
+> As it comes from source port 1, the client does not recognize it as a 
+> packet which belongs to the established connection and rejects it.
+> 
+> 12:05:48.449038 218.10.35.139 > 192.168.0.1: 
+> ESP(spi=0x0a6825be,seq=0xb0) (DF)
+> 
+> The reject gets encrypted, sent out over the tunnel and the game starts 
+> over again.
+> 
+> Portless connections like ping don't show this behavior and gets 
+> established correctly.
 
-> Hello.
->
-> Having recently switched to a faster ISP but with dynamically assigned
-> (and forcibly changed every 24h) IP, I'd like the conntrack module to
-> TERMINATE all active connections when the IP changes.
->
-> So far I've been using the MASQUERADE target, but all the difference
-> between it and SNAT is that it forgets its connections. What I'd like
-> is that it terminated them - preferably by generating a two-way
-> FIN+RST (or whatever a "terminate" packet looks like).
+Even if it's not completely clear to me why: the offending rule was
 
-My recommendation is to use a utility quite independently of netfilter, which 
-gets called when your IP address changes (the dhcpcd-eth0.exe script would be 
-a good place to do this), and simply sends a suitable RST packet to each 
-connection found in /proc/net/ip_conntrack at the time it is called.   
-Netfilter will then sort itself out and remove the connection tracking table 
-entries when it sees the RST packets.
+$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
 
-I'm sure you can find a ready-made utility for generating such RST packets 
-(they have to contain the right sequence number) if you don't want to do your 
-own coding.
+It seems to do some kind of NATing to all traffic leaving the gateway. 
+When i narrowed it down to only match traffic which comes out of the LAN 
+it works like a charm:
 
-If you still want to try building this into netfilter, I suggest you ask on 
-the developers' list instead of the users' list.
+$IPTABLES -t nat -A POSTROUTING -s 192.168.3.0/24 -o $INET_IFACE -j SNAT 
+--to-source $INET_IP
 
-Regards,
+Is this a bug?
 
-Antony.
-
--- 
-I want to build a machine that will be proud of me.
-
- - Danny Hillis, creator of The Connection Machine
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Greetings,
+Carsten.
 
