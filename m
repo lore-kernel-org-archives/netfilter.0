@@ -1,10 +1,15 @@
-From: Real Cucumber <monkcucumber@yahoo.com>
-Subject: Iptables Email Alerting
-Date: Mon, 15 Mar 2004 10:08:15 -0800 (PST)
+From: David Cannings <lists@edeca.net>
+Subject: Re: Iptables Email Alerting
+Date: Mon, 15 Mar 2004 18:15:24 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040315180815.18699.qmail@web40701.mail.yahoo.com>
+Message-ID: <200403151815.24769.lists@edeca.net>
+References: <20040315180815.18699.qmail@web40701.mail.yahoo.com>
+Reply-To: david@edeca.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040315180815.18699.qmail@web40701.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,27 +20,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Does anyone know if it is possible to have IPtables
-send email alerts 
-based on certain traffic?
- 
-I'm looking for something similair to the -j LOG
-option, perhaps a -j MAIL ?
+On Monday 15 March 2004 18:08, Real Cucumber wrote:
+> Does anyone know if it is possible to have IPtables
+> send email alerts
+> based on certain traffic?
+>
+> I'm looking for something similair to the -j LOG
+> option, perhaps a -j MAIL ?
 
-I realize that I could setup a manual cronjob to scan
-the logfiles via grep and search for certain
-activities, but it would obviously be much better to
-have alerts sent in realtime.
+You could quite possibly jump to a userspace script that handles this.  I 
+believe the target is QUEUE, but support will need to be compiled into 
+your kernel to support it.
 
-Any ideas?
-
-
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - More reliable, more storage, less spam
-http://mail.yahoo.com
+David
 
