@@ -1,10 +1,12 @@
-From: "Michael Varga" <mike.varga@cavium.com>
-Subject: ip_rcv() crashes kernel with netfilter hook
-Date: Wed, 26 Jan 2005 15:37:46 -0800
-Message-ID: <0cde01c50400$0f01e260$a610a8c0@niche>
+From: KOVACS Krisztian <hidden@balabit.hu>
+Subject: Re: ip_rcv() crashes kernel with netfilter hook
+Date: Thu, 27 Jan 2005 09:56:09 +0100
+Message-ID: <1106816170.3893.5.camel@nienna.balabit>
+References: <0cde01c50400$0f01e260$a610a8c0@niche>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <0cde01c50400$0f01e260$a610a8c0@niche>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,22 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-devel-bounces@lists.netfilter.org
 Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Michael Varga <mike.varga@cavium.com>
+Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-Hello:
 
-I have set up a NF_IP_PRE_ROUTING hook to capture packets.
+  Hi,
 
-Specifically I am using netfilter for an IPSec implimentation I have=20
-written.
+2005-01-26, sze keltez=E9ssel 15.37-kor Michael Varga ezt =EDrta:
+> It only crashes when the icmp echos are addressed locally.
+>=20
+> Has anyone ever experienced this? Suggestions on how to fix?
 
-When I recieve an increased amount of icmp echos, decapsulate
-them from IPSec and pass them on by calling ip_rcv() the kernel crashes.
+  Maybe providing some more details (for example a backtrace) could help
+get an answer to your questions...
 
-It only crashes when the icmp echos are addressed locally.
+--=20
+ Regards,
+  Krisztian Kovacs
 
-Has anyone ever experienced this? Suggestions on how to fix?
-
-Mike
 
