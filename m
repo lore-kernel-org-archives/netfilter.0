@@ -1,12 +1,13 @@
-From: Peteris Krumins <newsgroups@lf.lv>
-Subject: Possible huge iptables memory leakage
-Date: Thu, 31 Jul 2003 22:23:06 +0300
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: Possible huge iptables memory leakage
+Date: Thu, 31 Jul 2003 15:42:12 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <62264464249.20030731222306@lf.lv>
-Reply-To: Peteris Krumins <newsgroups@lf.lv>
+Message-ID: <200307311943.h6VJhjjX018060@discmail.com>
+References: <62264464249.20030731222306@lf.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <62264464249.20030731222306@lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,6 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Peteris Krumins' <newsgroups@lf.lv>, netfilter@lists.netfilter.org
+
+I run many different Linux systems ranging in physical memory from 128M =
+to
+5Gig (that's RAM!) both with and without iptables:
+
+The funny thing about Linux is - if you give it RAM - it will use =
+it....I am
+sure someone more in tune with mem management will set me straight, but =
+it
+seems that Linux will always grab up 90% of all physical memory after it =
+has
+been running for a while...
+
+To make a short story long - unless you are tracking all connections =
+(and
+there are many dynamic connections) I would not be too quick to blame
+iptables - I mean the amount of ram you are using in 30Meg - is this the
+80's???
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peteris =
+Krumins
+Sent: Thursday, July 31, 2003 3:23 PM
 To: netfilter@lists.netfilter.org
 
 Hello,
@@ -41,7 +68,7 @@ used memory: 26304KB
 
 now:
 used memory: 29204KB
- 
+=20
 and the usage grows every hour around 1.5 MB.
 The data flow is around 8mbit/s at a constant rate.
 
@@ -81,14 +108,19 @@ iptable_filter          1668   1  (autoclean)
 ^- a must
 ip_conntrack_ftp        4016   0  (unused)
 ip_conntrack_irc        3184   0  (unused)
-ip_conntrack           25736   4  [ipt_state iptable_nat ip_conntrack_ftp ip_conntrack_irc]
+ip_conntrack           25736   4  [ipt_state iptable_nat =
+ip_conntrack_ftp
+ip_conntrack_irc]
 ^- used to connection-track.
 ip_queue                5020   1
 ipt_XOR                 1208   2  (autoclean)
 ^- used to encrypt some of the traffic.
 iptable_mangle          2192   1  (autoclean)
 ^- used to match some packets in mangle table
-ip_tables              13720  15  [ipt_mark ipt_mport ipt_state ipt_psd ipt_ttl ipt_limit ipt_MARK iptable_nat ipt_REJECT iptable_filter ipt_XOR iptable_mangle]
+ip_tables              13720  15  [ipt_mark ipt_mport ipt_state ipt_psd
+ipt_ttl ipt_limit ipt_MARK iptable_nat ipt_REJECT iptable_filter ipt_XOR
+iptable_mangle]
 ^- a must
+
 
 
