@@ -1,14 +1,14 @@
-From: Andre Lorenz <andre@highsecure.de>
-Subject: Re: Modprobe .
-Date: Wed, 23 Apr 2003 16:20:50 +0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Redirect DHCP requests to DMZ?
+Date: Wed, 23 Apr 2003 18:21:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304231620.50861.andre@highsecure.de>
-References: <NGBBLGFEALDADHNDAAFFGEIKDJAA.ksmith@perfht.com>
+Message-ID: <20030423182131.67061da5.arnt@c2i.net>
+References: <3EA66634.2020508@blinkenlichten.de>
+	<1051100353.12295.96.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NGBBLGFEALDADHNDAAFFGEIKDJAA.ksmith@perfht.com>
-Content-Disposition: inline
+In-Reply-To: <1051100353.12295.96.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Kevin Smith <ksmith@perfht.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@lists.netfilter.org
 
-Am Mittwoch, 23. April 2003 15:14 schrieb Kevin Smith:
-> I recently patched my kernel and all went well with POM. After I recompiled
-> it and rebooted, I didn't see the module on lsmod, so I tried insmod which
-> responded with and "module not found" error.
-> I looked in the /lib/modules and saw the module was not compiled. (.c file)
-> when the other patch was compiled ok. (.o) file.
-> What would cause a patch not to compile? I checked the source and saw the
-> #include lines and all the files are where is suggest it should be, though
-> running gcc (lack of anything better to do) responds with file or directory
-> not found errors. Is there a PATH that needs to be set up to get this
-> working?
-> I am using RH 7.2 Kernel 2.4.20,  IPTables 2.2.7a, the module is
-> ip_nat_cuseeme.c.
->
-> Kev
-Hi,
-I had the same problem, I'm using SuSE 8.2.
-The problem was fixed after setting the "right path-vraiable".
+On 23 Apr 2003 14:19:13 +0200, 
+Cedric Blancher <blancher@cartel-securite.fr> wrote in message 
+<1051100353.12295.96.camel@elendil.intranet.cartel-securite.net>:
 
-now it works fine for me
+> Le mer 23/04/2003 à 12:08, Carsten Maass a écrit :
+> > Local LAN (192.168.20.*)
+> >      |
+> >      |
+> >    Switch
+> >      |
+> >      |
+> > Router/Firewall ---- DMZ (192.168.21.*)
+> >      |
+> >      |
+> >      |
+> >   Internet
+> >
+> > Everything runs smoothly, except for one thing: I am unable to
+> > redirect DHCP request from the clients on the local LAN to the DHCP
+> > server inside the DMZ.
+> 
+> You'll achieve this setting a DHCP Relay up. Due to what they are,
+> DHCP packets cannot be routed through different IP networks (mainly
+> because of destination addresses that are used).
+> 
+> But this kind of setup is no secure. If someones breaks into your DMZ,
+> he will be able to have your LAN's configuration, and even tamper it,
+> acting on DHCP stuff. That's _very bad_. DMZ compromission must not
+> endanger rest of network security.
+> 
 
-with friendly regards
-Andre
+..to put it short: get that dhcp server out of your dmz box 
+and into a lan box (or maybe the firewall).  
+
+..the dmz is _only_ for stuff you want me, Saddam, Osama bin Laden, 
+Bill Gates, the scriptkiddies and the FBI to see.  Here, I speak 
+with authority; Neither of us needs your dhcp server.  ;-)
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
+
 
