@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Masquerading
-Date: Wed, 23 Oct 2002 10:53:11 +0100
+Subject: Re: what filtering to do on the OUTPUT chain?
+Date: Wed, 23 Oct 2002 10:43:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210230953.g9N9rHL02331@vulcan.rissington.net>
-References: <3DB49303.3050408@mclachlan.com.au>
+Message-ID: <200210230943.g9N9hiL02304@vulcan.rissington.net>
+References: <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain> <1035328874.10494.38.camel@elendil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DB49303.3050408@mclachlan.com.au>
+In-Reply-To: <1035328874.10494.38.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +18,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Tuesday 22 October 2002 12:51 am, Wilson Fletcher wrote:
+On Wednesday 23 October 2002 12:21 am, Cedric Blancher wrote:
 
-> Just looking at iptables.
+> During a pentest, we broke into a box through vulnerable PHP scripts
+> (one to upload files, and another one to include them and have commands
+> executed). At this point, we are able to execute commands and upload
+> binaries, but we do not have a remote shell. So, we launched a netcat
+> piped to a shell to connect on, because input flows were not filtered
+> properly. Imagine they were, but output policy was to be accept
+> anything. We could just get our shell in having our "piped shell" netcat
+> connect to the attacking box. So, output stuff would have allowed our
+> remote shell just like if there were not much filtering.
+>
+> This means, that with proper output filtering, we couldn't have achieve
+> this this easy, and must have find something else to gain our remote
+> shell. That would have make the intrusion far more difficult.
 
-Welcome.
+The OUTPUT rules are always going to allow traffic to or from expected ports. 
+53 is a good one to guess is going to be made accessible, so you simply set 
+up netcat to contact your external system on port 53, and you can still do 
+what you've outlined above even with pretty good OUTPUT filters in place.
 
-> Normally a reply to a masq'd packet coming into the network will
-> have the destination IP of the g/w.
+The trouble is, netfilter only knows about IP addresses and TCP/UDP port 
+numbers - it doesn't understand anything about the content of packets being 
+sent on those ports, so it can't check that port 53 is being used only for 
+DNS queries, port 80 is being used only for HTTP transfers etc.
 
-Correct (except remove the word 'normally' from the above sentence :-)
+My point is that if you can break into a machine, you can break out of it 
+again, so OUTPUT filters are generally either not much use, or they get in 
+the way of your normal applications.
 
-> So if the NAT for masq is done
-> in POSTROUTING (after filtering) do I need to except INPUT packets
-> to ports in the masquerading range (~61000:65535 ????) ?
+Re the comment "--cmd-owner is your friend", I agree that this is worth 
+adding to any OUTPUT rules you do choose to specify, but bear in mind that a 
+compromised application or trojan is still going to be running under an 
+expected user on the target machine, therefore --cmd-owner isn't necessarily 
+going to see anything strange...
 
-No, because the INPUT chain is:
-a) only for packets which finally arrive on the local machine
-b) after the PREROUTING chain, where the reverse NAT will be automatically 
-applied to reply packets, hence changing the Destination Address back to the 
-original client.
-
-> The Linux 2.4 Packet Filtering HOWTO appears to suggest that I can
-> ignore the fact that I'm nat'ing and use forwarding rules for packets
-> being masq'd and de-masq'd and that I do not need to worry about
-> INPUT for packets that are going to my masq'd range.
-
-This is correct.
-
-INPUT is *only* for packets destined for the local machine (the one running 
-netfilter), and this means after any DNAT has taken place.
-
-FORWARD is only for packets destined for another machine, and this also means 
-after any DNAT (automatic or specified in your rules) has taken place.
-
-Remember also that if you specify a SNAT rule in your POSTROUTING chain, then 
-netfilter will automagically apply the appropriate DNAT rule to the replies 
-in your PREROUTING chain - you do not need to specify a rule to do this.
+If you're concerned about this level of security (which you should be) then 
+you need to deal with Operating System security and things like Host 
+Intrustion Detection - netfilter is not going to do the job effectively for 
+you.
 
 Antony.
 
 -- 
 
-You can spend the whole of your life trying to be popular,
-but at the end of the day the size of the crowd at your funeral
-will be largely dictated by the weather.
-
- - Frank Skinner
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
