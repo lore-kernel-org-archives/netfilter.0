@@ -1,10 +1,9 @@
 From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: iptables - edition with browser
-Date: Tue, 2 Jul 2002 07:55:29 +1000
+Subject: RE: VPN software
+Date: Tue, 2 Jul 2002 07:56:46 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA1C0@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA1C1@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,16 +14,12 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?=27Z=E9_Lu=EDs=27?= <zeluis@objetivo-americana.com.br>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Sundaram Ramasamy' <sun@percipia.com>, netfilter@lists.samba.org
 
-Could it be possible you didn't use -p tcp or -p udp.. you can't use =
---dport
-without specifying the protocol..
-
-can we see a rule your using or the actual errors reported.. little =
-confused
-on your doors/archives thingy...
+I suggest IPSEC as it's pretty good security, but PPTP is supported by most
+Windows versions but is susceptible to decryption..
 
 thanks,
 George Vieira
@@ -35,24 +30,17 @@ http://www.citadelcomputer.com.au
 
 
 -----Original Message-----
-From: Z=E9 Lu=EDs [mailto:zeluis@objetivo-americana.com.br]
-Sent: Monday, 01 July 2002 9:10 PM
+From: Sundaram Ramasamy [mailto:sun@percipia.com]
+Sent: Monday, 01 July 2002 11:00 PM
 To: netfilter@lists.samba.org
-Subject: iptables - edition with browser
+Subject: VPN software
 
 
-hi everybody,
+Hi,
 
-I have a problem with iptables. I use one script that it automatically=20
-catches the doors of an archive text and opens or it closes the doors=20
-that are in this archive. It functions well.
-I have an interface web made in jsp that it edits this archive text.=20
-When I edit this archive with browser, iptables I report errors similar =
+I wanted to setup the linux based VPN server for my office. which software
+is good for ppt protocal.
 
-to ("invalid dest port"). I use a textarea to edit the archive. Browser =
-
-can be sending characters that iptables does not recognize?
-
-Thanks a lot.
+Thanks
 
 
