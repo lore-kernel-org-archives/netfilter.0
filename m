@@ -1,10 +1,11 @@
-From: "Pierre Volcke" <Pierre.Volcke@obs.ujf-grenoble.fr>
-Subject: packet counter limitation
-Date: Tue, 15 Apr 2003 17:46:08 +0200 (CEST)
+From: Stephane Ouellette <ouellettes@videotron.ca>
+Subject: Re: How to find nvl table?
+Date: Tue, 15 Apr 2003 04:11:59 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2904.193.54.242.74.1050421568.squirrel@mail-lpg.obs.ujf-grenoble.fr>
+Message-ID: <3E9BBECF.3030302@videotron.ca>
+References: <20030415065751.DEEDD1C6C8DB0@sm205.163.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,17 +17,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Bobo <boboaq@163.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
+Bobo wrote:
 
-hello,
+>HI
+>
+>     Some days ago ,a member of here reply me the followings about traffic account:
+>  
+>
+>>try this one:
+>>
+>>iptables -nvL INPUT
+>>
+>>in Perl:
+>>
+>>open(CHAINS, "iptables -nvL INPUT|") or die "Error reading chains\n";
+>>
+>>while(<CHAINS>)
+>>{
+>># read the lines one by one, matching on the text you want
+>>}
+>>
+>>close(CHAINS);
+>>    
+>>
+>
+>   My platform is Redhat 7.2 in  default congiguration.
+>
+>  While I execute "iptables  -nvL input"
+>  
+>
 
-what is the maximum value for packet counters in iptables,
-under an Intel32/Linux system ? I guess it is coded as an unsigned
-64 bits integer... but...
+Table names are case sensitive. Use INPUT, not input :-)
 
-thanks,
-Pierre
+>  I got the following message on screen:
+>
+>
+>   [root@myfirewall account]# iptables -nvL  input
+>iptables: Table does not exist (do you need to insmod?)
+>
+>    why?  how to find the talbe? does  it need a special patch?
+>
+> Thanks.
+>
+>
+>  
+>
 
 
 
