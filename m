@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: IPsec through NAT Mode
-Date: Mon, 22 Nov 2004 10:07:22 -0500
-Message-ID: <20041122150722.GA30577@bender.817west.com>
-References: <20041122104157.58409.qmail@web50505.mail.yahoo.com>
+Subject: Re: Odd iptables behavior. One port range works, another doesn't
+Date: Mon, 22 Nov 2004 10:32:30 -0500
+Message-ID: <20041122153230.GA30649@bender.817west.com>
+References: <BC36F80F-3C29-11D9-9337-000A95B6BD3E@hotpop.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20041122104157.58409.qmail@web50505.mail.yahoo.com>
+In-Reply-To: <BC36F80F-3C29-11D9-9337-000A95B6BD3E@hotpop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +19,48 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: iptables <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Mon, Nov 22, 2004 at 02:41:57AM -0800, Nilesh wrote:
-> Hello All, 
+On Sun, Nov 21, 2004 at 07:56:33PM -0600, James wrote:
+> I am trying to use non-standard ports with torrents. If I use the 
+> standard ports: 6880:6899, it works fine. However, if I simply change 
+> the port range to 6280:6299, it no longer matches and my default DROP 
+> rule at the end of my chain catches the packets.
 > 
-> I am using Squid proxy and IPtables. I am having some
-> problems to configure firewall. 
-> The problem is SNAT rule If I put rule in script I am
-> able to connect VPN server at outside world but could
-> not block yahoo messengers by squid without SNAT rule
-> I can block messenger through squid. 
-> I have checked VPN connection properties there is
-> check box IPsec through NAT mode . If I uncheck I wont
-> able to connect 
-> SNAT Rule 
-> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to
-> $EXTIP
+> My full script can be found here, it is fairly thorough in its comments:
+> http://www.tuxmac.homelinux.org/~james/scripts/fwsoho.full
+> 
+> In an attempt to debug, I trimmed out all of the DROP and REJECT rules 
+> except the default, catch-alls at the bottom. I discovered that if I 
+> used the --dport with the following rules the alternate port range 
+> would not work, but if I left the --dport off and did a straight 
+> accept, it did:
+> 
+> $IPT -A OUTPUT  -o $EXTIF -p tcp -s $EXTIP  \
+>     --dport $ports -m state --state NEW -j ACCEPT
+>    $IPT -A FORWARD -i $INTIF -p tcp -s $INTNET \
+>     --dport $ports -m state --state NEW -j ACCEPT
+> 
+> Here is a link to the trimmed down rule set:
+> http://www.tuxmac.homelinux.org/~james/scripts/fwsoho
+> 
+> Finally, here is the output of "iptables -L" and below it "iptables -t 
+> nat -L PREROUTING -vn" with the troublesome 6280:6299 range used
+> http://www.tuxmac.homelinux.org/~james/scripts/rules
 
-if you only need SNAT for VPN traffic, how about just SNAT-ing traffic
-destined for the VPN server?
+looking at the above link--your FORWARD rules allow the bittorrent
+traffic OUT, not IN [1]; whereas, if you're using PREROUTING NAT rules, i'm
+assuming you're trying to allow the traffic IN.
 
-  $IPTABLES -t nat -A POSTROUTING -o $EXTIF -d $VPN_SRV \
-    -j SNAT --to $EXTIP
+[1]
+Chain FORWARD (policy DROP)
+target     prot opt source                      destination 
+ACCEPTl    tcp  --  james.tuxmac.homelinux.org  anywhere tcp dpt:6280 
 
 -j
 
 --
-"Do you want to change your name to Homer Junior? The kids can call
- you Hoju!"
+"I have been shot eight times this year, and as a result, I almost
+ missed work."
         --The Simpsons
 
