@@ -1,12 +1,13 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Rules for blocking Email from libero.it domain
-Date: Mon, 28 Oct 2002 09:04:51 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: setup firewall to allow Remote Desktop in XP???
+Date: Mon, 28 Oct 2002 14:47:54 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006901c27e8a$fbde4630$8c01a8c0@sundaram>
-References: <OF4868D659.17C45E12-ON65256C60.003E4AD9-65256C60.004175C4@lntinfotech.com>
+Message-ID: <200210281447.g9SElxe08646@vulcan.rissington.net>
+References: <000f01c27dca$38bb9b00$1801010a@demo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000f01c27dca$38bb9b00$1801010a@demo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, harish.k@lntinfotech.com
+To: netfilter@lists.netfilter.org
 
-Hi,
+On Sunday 27 October 2002 3:05 pm, Ben Tan wrote:
 
-I want to block all incoming mail from the libero.it domain. I have NATed
-mail server.
+> hi,
+>     I am considering to setup a firewall to allow the remote desktop
+> connection for internet. which ports to allow for INPUT, FORWARD, OUTPUT?
+>
+>     There will be a DNAT for each connecton request to the internal client.
 
-I set the following rules in my firewall, But still I am getting mails from
-this domain.
+You do not require any ports open in your INPUT and OUTPUT chains because 
+these are only for packets to/from the netfilter machine - which obviously is 
+not the machine running the service if you're talking about XP.
 
-Can you please help on this.?
+Try the following rules in your FORWARD chain, and use the logged results to 
+tell you what additional rules you need to allow in order to let the packets 
+through:
 
-#libero.it - 195.210.91.83
-SIP=195.210.91.83
-$IPT -A INPUT -s $SIP -j LOG --log-prefix="spam: "
-$IPT -A INPUT -s $SIP -j DROP
+iptables -A FORWARD -s a.b.c.d -d w.x.y.z -j LOG
+iptables -A FORWARD -d a.b.c.d -s w.y.x.z -j LOG
 
-$IPT -A INPUT -s $SIP -j LOG --log-prefix="spam: "
-$IPT -A FORWARD -s $SIP -j DROP
+Where a.b.c.d and w.x.y.z are the two machines you're trying to get to talk 
+to each other.
 
+Antony.
 
-[root@gw root]# dig libero.it
+-- 
 
-; <<>> DiG 9.2.0 <<>> libero.it
-;; global options:  printcmd
-;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 8861
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 0
+Anyone that's normal doesn't really achieve much.
 
-;; QUESTION SECTION:
-;libero.it.                     IN      A
-
-;; ANSWER SECTION:
-libero.it.              86169   IN      A       195.210.91.83
-
-;; AUTHORITY SECTION:
-libero.it.              86169   IN      NS      ns2.libero.it.
-libero.it.              86169   IN      NS      ns1.libero.it.
-
-;; Query time: 4 msec
-;; SERVER: 192.168.1.1#53(192.168.1.1)
-;; WHEN: Mon Oct 28 09:00:45 2002
-;; MSG SIZE  rcvd: 79
-
--SR
-
+ - Mark Blair, Australian rocket engineer
 
