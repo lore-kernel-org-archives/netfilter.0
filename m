@@ -1,13 +1,11 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Change source address on incoming packets
-Date: Mon, 10 May 2004 06:56:43 -0400
+From: michael@floog.net
+Subject: How to drop/reject packets amongst LAN clients?
+Date: Mon, 10 May 2004 09:23:11 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084186603.13931.14.camel@localhost>
-References: <409EA7A6.8070000@mail.ee>
+Message-ID: <1084206191.409fac6f1176a@webmail.floog.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <409EA7A6.8070000@mail.ee>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +16,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Joel Vosu <joel.vosu@mail.ee>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sun, 2004-05-09 at 17:50, Joel Vosu wrote:
-> I would need to be able to change the source address of incouming 
-> packets. I have 2 different subnets, but I need the server to see the 
-> packes from the 2nd subnet as coming from the 1st.
-> in iptables it would be something like:
-> iptables -A PREROUTING -t nat -s 2nd_subnet -j SNAT --to-source 
-> local_machine
-> but this is not possible because SNAT only works for outgoing packets in 
-> POSTROUTING.
-> Is there a way to get this to work other than adding a second router box 
-> for NAT?
-> I tried to do it like this:
-> Added another IP address eth0:0 to the server,
-> added rules:
-> iptables -A PREROUTING -t nat -d eth0:0_ip -p tcp --dport server-port -j 
-> DNAT --to-destination eth0_ip:server_port
-> iptables -A POSTROUTING -t nat -d eth0_ip -p tcp --dport server_port -j 
-> SNAT --to-source eth0:0_ip
-> but when I check from: iptables -L -t nat -nv then the second rule does 
-> not get used at all. I presume the pacet intended for local machine does 
-> not traverse the outgoing part of the nat table.
-<snip>
-I haven't tried or fully thought through any of these but here are a few
-of the thoughts which came to my mind.
+Hi Group:
 
-You may see the local packets in the POSTROUTING chain but on interface
-lo instead of eth0.
+Setup:
 
-If that doesn't work, I wonder if you can use iproute2.  It can do
-stateless NAT independent of iptables (i.e., the reply packets will know
-nothing of the original NAT and will need to have rules applied to them,
-too).  I believe that will alter the packet after it leaves the
-PREROUTING chain of the nat table. I'm not sure which address the filter
-table will see.
+Linux box acting as gateway/router/firewall for a LAN connected to the
+internet by way of DSL connection.
+eth0 - goes to the internet
+eth1 - is gateway for the LAN
+Linux box is using iptables version 1.2.9
 
-You may also be able to do it with an iproute2 routing rule.  They can
-be used to tell the server which ip to use for the source.  I haven't
-looked at the details of doing this in a while so I do not recall if it
-will do what you want off the top of my head.
+Environment:
 
-In a recent RedHat distribution, you can find the iproute2 documentation
-in /usr/share/doc/iproute-2.4.7/ip-cref.ps.  There is also a slide show
-about using it in the training section on http://iscs.sourceforge.net.
+The LAN currently has 5 computers connected to it with static IP
+addresses:
 
-Good luck - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+192.168.1.2
+192.168.1.3
+192.168.1.4
+192.168.1.5
+192.168.1.6
+
+I will be adding 3 more machines with with static IP addresses:
+
+192.168.1.7
+192.168.1.8
+192.168.1.9
+
+Issue:
+
+*.9 needs to remain accessible from *.7 and *.8; however, I need to
+restrict any connection or accessibility to *.9 from *.2 - *.6.
+
+I know how to restrict all access to *.9 by doing the following rule:
+
+$IPTABLES -t filter -A FORWARD -p all --destination 192.168.1.9 -j DROP
+or
+$IPTABLES -t filter -A FORWARD -p all --destination 192.168.1.9 -j
+REJECT
+
+But I don't know how to craft a rule that allows only some machines to
+send/receive data packets to/from *.9 while blocking other machines'
+access to *.9 on the LAN.
+
+I don't think prerouting or postrouting is the answer for this situation
+but I could be wrong.  Thank you for your time and assistance.  All
+guidance and responses are greatly appreciated.
+
+Mike 
+
 
 
