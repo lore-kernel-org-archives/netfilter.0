@@ -1,13 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Drop packets with low IP Time to Live field value
-Date: Fri, 24 Dec 2004 21:08:12 -0500
-Message-ID: <1103940492.2011.19.camel@grendel>
-References: <41CC19DF.2766.F2FCB6D@localhost>
-	<1103914608.14459.23.camel@hubcap.ljm.dom>
+From: Radien Radien <radien@gmail.com>
+Subject: Help! problem with PPTPD and pptp nat helper
+Date: Sun, 26 Dec 2004 15:45:45 +0330
+Message-ID: <4a0a384e041226041571f504ae@mail.gmail.com>
+Reply-To: Radien Radien <radien@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103914608.14459.23.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +17,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Fri, 2004-12-24 at 13:56, Jason Opperisano wrote:
->
-> this has nothing to do with netfilter or firewalling--it is part of
-> standard routing.
+But based on netfilter pom-ng documentation its needed for NAT working properly
 
-Agreed. TTL of 0 should never happen unless the upstream router has gone
-rogue or has been compromised.
+http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-pptp-conntrack-nat
 
-> that all being said--use the ttl match:
-> 
->   iptables [...] -m ttl --ttl-eq 1 [...]
->   iptables [...] -m ttl --ttl-lt 1 [...]
-> 
-> i don't condone the use of the above.
+I have great successfull experiment using these 4 p-o-m modules, they
+work perfect in my cases multiple session for DNAT and SNAT even both
+at the same time. But when the last one is loaded part of pptpd(when
+uses pppd) cannot negotiate using LCP, it seems so in logfiles. And if
+I unload it, pptpd works fine!!
 
-I've rejected TTL's of 5 or less with a host unreachable for many years
-and have never had a problem. Its a great way to detect, and usually
-prevent, tools such as Firewalk and TCPTrace. 
+#This adds CONFIG_IP_NF_PPTP:
+#Connection tracking and NAT support for PPTP.  Using this, you can track
+#PPTP/GRE connections and do SNAT/DNAT.  You have to load the following modules
+#for connection tracking:
+#       ip_conntrack_proto_gre
+#       ip_conntrack_pptp
+#for NAT:
+#       ip_nat_proto_gre
+#       ip_nat_pptp
+#
 
-The lowest starting TTL you will see in the wild today is 32. Even then,
-that's only certain networking hardware as most OS's are 64 or higher.
-Given that most hosts are 14-18 hops away from each other on the
-Internet, filtering TTL's or 5 or less should cause zero problems with
-legitimate traffic.
+It seems to be a conflict of using ppp, with ip_nat_pptp module and pptpd.
 
-HTH,
-Chris
+-------------------------------------------------------------------------------------------------------
 
+>trying to connect to a server which is itself behind a router and NAT'd
 
+You mentioned that you applied the conntrack patch.  Did you do this on
+both the firewalls?  I have had success with the following.  Note that I
+have disabled ip_nat_pptp.  If I load ip_nat_pptp then only one person
+can connect and on the first time only.  Subsequent attempts fail.  I
+have asked but received no feedback on this as well.  But hopefully this
+will help you as well.
+
+Anyways, here's what I run and the order that I run them in.  The
+firewall currently has two active incoming connections I did test
+multiple outgoing connections when I configured it.
+
+/etc/rc.d/rc.local:
+/sbin/modprobe ip_conntrack_proto_gre
+/sbin/modprobe ip_conntrack_pptp
+/sbin/modprobe ip_nat_proto_gre
+#/sbin/modprobe ip_nat_pptp
+/sbin/modprobe ip_conntrack_irc
+/sbin/modprobe ip_nat_irc
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
+/sbin/modprobe ip_conntrack_mms
+/sbin/modprobe ip_nat_mms
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_TARPIT
+/sbin/modprobe ip_gre
+/sbin/modprobe ipt_MASQUERADE
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_nat
+Gary Smith
 
