@@ -1,13 +1,15 @@
-From: Filip Sneppe <filip.sneppe@cronos.be>
-Subject: Re: Memory problem
-Date: 03 Jul 2003 11:15:42 +0200
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: [ANNOUNCE] rh7.3 / rh9 / cl9 RPMS of iptables-1.2.8 and ulogd-1.0.0
+Date: Thu, 3 Jul 2003 12:31:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057223745.457.40.camel@xbox>
-References: <3F03FD0F.5070509@sadomain.co.za>
+Message-ID: <20030703103132.GA7073@sunbeam.de.gnumonks.org>
+References: <20030605104134.GH18183@sunbeam.de.gnumonks.org> <3F03F89D.5000108@lycos.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e+JRL32uBeeWnrD4"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F03FD0F.5070509@sadomain.co.za>
+Content-Disposition: inline
+In-Reply-To: <3F03F89D.5000108@lycos.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +19,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Cilli=E8?= Burger <security@sadomain.co.za>
-Cc: netfilter@lists.netfilter.org
+To: LMCM <docume@lycos.es>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Thu, 2003-07-03 at 11:53, Cilli=E8 Burger wrote:
-> Hi Everyone
->=20
-> I was wondering if anyone has a solution to this problem.
->=20
-> I have a the following box that sits between our router and switch:
->=20
-> Pentium 200, 64 Mbyte RAM, Linux version 2.4.18-3=20
-> (bhcompile@stripples.devel.redhat.com)
-> (gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)), iptables v1.2.5
->=20
-> I almost never reboot this box, but lately I have noticed a dramatic=20
-> increase in memory consumption.
->=20
-> I start out on bootup with about 40 MB or so free and in a weeks time=20
-> its down to about 800KB.
-> When iptables is restarted and the rules flushed and reloaded I reclaim=20
-> about 6024 KB, which then gradually
-> decreases back to about a meg in a 16 hour period.
->=20
-...
->=20
-> Why does iptables consume so much memory ?
-> Why does iptables appear to loose so much memory ? When regarding this=20
-> question, consider the following:
->=20
-> On reboot and before loading of rules there is about 40 MB free ram.=20
-> After loading the rules, and about two weeks uptime
-> there is about 800KB of free memory. After flushing the rules, theres=20
-> only 6024 KB free.
-> Is there a slight possibility that this may be due to a memory leak of=20
-> some sort ?
->=20
-> Thanks in advance for your help. Keep up the good work Netfilter .
->=20
 
-Hi Cilli=E8,
+--e+JRL32uBeeWnrD4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I understand your concerns about memory consumption, but there is
-no information in your mail showing that the memory used by the
-firewall is in fact used by connection tracking or any other netfilter
-kernel structures.=20
+On Thu, Jul 03, 2003 at 11:34:21AM +0200, LMCM wrote:
+> Hi Harald,
+>=20
+> As I read in a web, I can't remember which one, this problem ->=20
+> http://www.secunia.com/advisories/8786, also affects to iptables or=20
+> netfilter code.
+> I would like to know if iptables 1.2.8 fixed that problem;bug.
 
-In fact, many Linux admins will tell you that any Linux box that has
-free memory after system boot will end up using all available memory
-after a little while: that memory is simply used for buffering and
-caching filesystem operations.
+iptables-1.2.8 is the userspace part.   The bug is inside the kernel, so
+you need a recent kernel (2.4.21)
 
-So in order to get an idea about your box' memory consumption, send us
-the output of:
+> LuisMi
 
-cat /proc/meminfo
-cat /proc/slabinfo
-wc -l /proc/net/ip_conntrack
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-Regards,
-Filip
+--e+JRL32uBeeWnrD4
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE/BAYEXaXGVTD0i/8RAqZCAJ4x6f5XFVxGM2T8HUqCwFltwgcZqQCfYUPE
+k/XR5Kqly/Co+JN63auN7uM=
+=AAyf
+-----END PGP SIGNATURE-----
+
+--e+JRL32uBeeWnrD4--
 
