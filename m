@@ -1,8 +1,8 @@
 From: Christian Seberino <seberino@spawar.navy.mil>
 Subject: Re: how is this stuff getting thru default deny iptables firewall?....
-Date: Tue, 9 Jul 2002 14:41:59 -0700
+Date: Tue, 9 Jul 2002 14:43:09 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020709144159.A25806@spawar.navy.mil>
+Message-ID: <20020709144309.A25835@spawar.navy.mil>
 References: <F1442JB1ndcx3Vp20N30000b94a@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
@@ -22,14 +22,11 @@ Content-Transfer-Encoding: 7bit
 To: j davis <davis_compz@hotmail.com>
 Cc: netfilter@lists.samba.org
 
-I read somewhere that ipchains is not stateful so I agree
-but yet.. then it would seem that ipchains would have
-the problem associated with this thread then!
+With no conntrack how would ipchains know to treat
+packets of an ESTABLISHED connection differently?
 
-(i.e. you could not do DNS, HTTP, SMTP, etc. from private
-LAN with an ipchains SSH-only Firewall!?!?!?!?)
+CS
 
-Chris
 
 On Tue, Jul 09, 2002 at 07:43:42PM +0000, j davis wrote:
 > 
