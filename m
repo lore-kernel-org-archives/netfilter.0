@@ -1,10 +1,13 @@
-From: David Fokkema <fokkema@nat.vu.nl>
-Subject: Iptables 'hang'
-Date: Mon, 23 Dec 2002 13:21:12 +0100 (MET)
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: [REPOST] PPTP+NAT+MASQ anyone?
+Date: Mon, 23 Dec 2002 14:15:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.SOL.4.43.0212231312460.4174-100000@selene.nat.vu.nl>
+Message-ID: <200212231415.09766.roy@karlsbakk.net>
+References: <200212091226.23888.roy@karlsbakk.net> <1039624902.20562.91.camel@tux> <200212111754.46937.roy@karlsbakk.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200212111754.46937.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,37 +17,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-Hi there!
+hi all
 
-I have a problem, and I think it is the same as one posted earlier, but
-the solution given is not correct. I run kernel 2.4.20, iptables 1.2.7a. I
-have this, as a test:
+still trying to patch up my kernel to allow for PPTP NATing, but patch-o-=
+matic=20
+simply fails. This is with kernel 2.4.20 (from kernel.org) and latest=20
+patch-o-matic from cvs.
 
-iptables -P INPUT DROP
-iptables -A INPUT -p tcp -j ACCEPT
+Can someone _please_ help me here? I'm doing exactly as the doc says!
 
-And this will hang my system for about 1 minute. In that time, I noticed
-(with the use of tcpdump) that iptables tries to connect to port 111 on my
-box using udp. Why? Anyway, because the policy is DROP, it won't connect,
-and an ICMP message is not sent back. If I take a policy of ACCEPT, ICMP
-messages will be sent and iptables behaves fine. When I want to list my
-rules using iptables -L, it again hangs for some time (trying to connect
-to 111) and finally gives the list. The rule mentioned above is added, it
-only took some time. If I do iptables -nL (notice the 'n') it all works
-fine. Why is this? It is very annoying, particulary since another linux
-partition on my box doesn't have this problem. If I chroot to that
-partition, so using the same kernel version, iptables does not hang. Same
-version of iptables, same version of libc. What is going on here? Am I
-missing a configuration file somewhere? What does iptables want with udp
-port 111? If someone can clear this up for me, I'd be very happy to hear
-about it.
+# pwd
+/usr/src
+# mkdir Pom
+# tar xjf packed/linux-2.4.20.tar.bz2 -C Pom
+=2E/runme pending
+Testing... ip_conntrack_protocol_destroy.patch NOT APPLIED (6 rejects out=
+ of 6=20
+hunks)
+Testing... remove_no_version.patch NOT APPLIED (4 rejects out of 4 hunks)
+Testing... newnat-udp-helper.patch NOT APPLIED (8 rejects out of 8 hunks)
 
-Regards,
+# KERNEL_DIR=3D/usr/src/Pom/linux-2.4.20 ./runme base
+=2E..
+Testing... IPV4OPTSSTRIP.patch NOT APPLIED ( 1 missing files)
+Testing... NETLINK.patch NOT APPLIED ( 2 missing files)
+Testing... NETMAP.patch NOT APPLIED ( 1 missing files)
+Testing... REJECT.patch.ipv6 NOT APPLIED ( 1 missing files)
+Testing... SAME.patch NOT APPLIED ( 2 missing files)
+Testing... TTL.patch NOT APPLIED ( 2 missing files)
+Testing... ahesp6.patch.ipv6 NOT APPLIED ( 4 missing files)
+Testing... frag6.patch.ipv6 NOT APPLIED ( 2 missing files)
+Testing... fuzzy.patch NOT APPLIED ( 2 missing files)
+Testing... iplimit.patch NOT APPLIED ( 2 missing files)
+Testing... ipt_unclean-ubit.patch NOT APPLIED (1 rejects out of 1 hunks)
+Testing... ipv4options.patch NOT APPLIED ( 2 missing files)
+Testing... ipv6header.patch.ipv6 NOT APPLIED ( 2 missing files)
+Testing... mport.patch NOT APPLIED ( 2 missing files)
+Testing... nth.patch NOT APPLIED ( 2 missing files)
+Testing... opts6.patch.ipv6 NOT APPLIED ( 3 missing files)
+Testing... pool.patch NOT APPLIED ( 5 missing files)
+Testing... psd.patch NOT APPLIED ( 2 missing files)
+Testing... quota.patch NOT APPLIED ( 2 missing files)
+Testing... random.patch NOT APPLIED ( 2 missing files)
+Testing... realm.patch NOT APPLIED ( 2 missing files)
+Testing... route6.patch.ipv6 NOT APPLIED ( 2 missing files)
+Testing... time.patch NOT APPLIED ( 2 missing files)
 
-David
+# KERNEL_DIR=3D/usr/src/Pom/linux-2.4.20 ./runme extra
+=2E..
+Testing... CONNMARK.patch NOT APPLIED ( 4 missing files)
+Testing... ROUTE.patch NOT APPLIED ( 2 missing files)
+Testing... amanda-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+Testing... condition.patch NOT APPLIED ( 2 missing files)
+Testing... eggdrop-conntrack.patch NOT APPLIED ( 1 missing files)
+Testing... h323-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+Testing... ip_conntrack-timeouts.patch NOT APPLIED ( 1 missing files)
+Testing... ip_tables-proc.patch NOT APPLIED (5 rejects out of 5 hunks)
+Testing... ipt_TARPIT.patch NOT APPLIED ( 1 missing files)
+Testing... mms-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+Testing... nfnetlink-ctnetlink-0.11.patch NOT APPLIED ( 4 missing files)
+Testing... pptp-conntrack-nat.patch NOT APPLIED ( 8 missing files)
+Testing... quake3-conntrack.patch NOT APPLIED ( 3 missing files)
+Testing... recent.patch NOT APPLIED ( 2 missing files)
+Testing... rsh.patch NOT APPLIED ( 2 missing files)
+Testing... string.patch NOT APPLIED ( 2 missing files)
+Testing... talk-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+Testing... tcp-window-tracking.patch NOT APPLIED (29 rejects out of 32 hu=
+nks)
+Testing... tftp-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+
+
+
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
+
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
