@@ -1,14 +1,12 @@
-From: Andreas Kretschmer <andreas_kretschmer@despammed.com>
-Subject: Re: [despammed] Blocking ip
-Date: Fri, 2 Jan 2004 14:15:55 +0100
+From: Andy Loukes <andy@navaho.co.uk>
+Subject: Re: Dropping connections
+Date: Fri, 2 Jan 2004 13:24:26 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040102131555.GB5845@kaufbach.delug.de>
-References: <20031225131942.D3FF41800099@mwinf0801.wanadoo.fr>
+Message-ID: <Pine.LNX.4.58.0401021322410.4138@picea.navaho>
+References: <E1AZN5M-0004j4-0w@orcrist.cyberpixels.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20031225131942.D3FF41800099@mwinf0801.wanadoo.fr>
+In-Reply-To: <E1AZN5M-0004j4-0w@orcrist.cyberpixels.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ben Prince <ben@cyberpixels.com>
+Cc: netfilter@lists.netfilter.org
 
-am  Thu, dem 25.12.2003, um 14:13:53 +0100 mailte - folgendes:
-> I would like to block a specific IP adress from the internet using an=20
-> iptables rule (for all ports) - How does it looks like ? (iptables v 1.2.=
-6)
+On Wed, 24 Dec 2003, Ben Prince wrote:
 
-Please read the f* man-page!
-iptables -A INPUT -p TCP -s 111.111.111.111 -j REJECT
+> I am running Redhat 7.3 and installed iptables from the
+> iptables-1.2.5-3.i386.rpm found on ftp.redhat.com .  The problem I am having
+> is that I can't seem to DROP connections at all.
+> 
+> I am using the following syntax
+> 
+> $IPTABLES -A INPUT -s ip.address.he.re -j DROP
 
-This blocks all incoming traffic from 111.111.111.111 with
-icmp-port-unreachable.
+This should drop connections destined for the machine running iptables, if
+it is a router you will need to drop the packets in the forward chain.
 
-Andreas
---=20
-Diese Message wurde erstellt mit freundlicher Unterst=FCtzung eines freilau-
-fenden Pinguins aus artgerechter Freilandhaltung.   Er ist garantiert frei
-von Micro$oft'schen Viren. (#97922 http://counter.li.org)     GPG 7F4584DA
-Was, Sie wissen nicht, wo Kaufbach ist? Hier: N 51.05082=B0, E 13.56889=B0 =
-;-)
+Also the order of the rules matters, if you have an ACCEPT before the DROP 
+then that will match first.
+
+tcpdump is very useful for debugging. You can also add a log rule at the 
+top iptables -I will insert at the top...
+
+
+-- 
+Andy Loukes
+http://www.navaho.co.uk				Complete Appliance Technology
+
 
