@@ -1,12 +1,12 @@
-From: "Chris Winfield-Blum" <chris@leadingside.com.my>
-Subject: A little help?
-Date: Fri, 14 Nov 2003 16:45:32 +0800
+From: Emmanuel Guiton <emmanuel@netlab.hut.fi>
+Subject: Do I miss anything?
+Date: Fri, 14 Nov 2003 11:27:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9911B83A96D5CF44B5F326FF60E6EB6906780F@mailsvr.leadingside.com.my>
+Message-ID: <3FB49FEB.1030307@netlab.hut.fi>
+Reply-To: emmanuel@netlab.hut.fi
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,64 +16,129 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi everyone.. i hope that one of you may be able to help...
+Hei!
 
-Hi my name is Chris and I'm currently setting up a firewall for my =
-office. However I am pretty much a novice and am having some problems... =
-I read one of your scripts and thought you would be a good person to get =
-in contact with IF i could.
-=20
-I have a firewall up and running BUT my boss is wanting me to block =
-Instant Messaging... I have worked out HOW to do this however the system =
-that I had working was causing problems with the email (i was using =
-Guarddog for KDE)=20
+That's been two days that I'm trying to make iptables works without 
+success. As I have already reported, once iptables is installed I have 
+the error:
 
-So i have resorted to handwriting everything as I should probably have =
-done before hand.
+pc104:/lib/modules/2.4.22# iptables -L
+modprobe: Can't locate module ip_tables
+iptables v1.2.9: can't initialize iptables table `filter': iptables who? 
+(do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-I was hoping that you would be able to help me out... I am limited by =
-what I can do to the network because this is a "stable" network (even =
-though they did not have a firewall before I cam 3 weeks ago)=20
+And if I try to insmod iptables.o (from the install directory) or 
+ip_tables.o (from the kernel sources) I get the following error:
+ couldn't find the kernel version the module was compiled for
 
-I have installed a Proxy server on the same box as the firewall and the =
-rules successfully prevent clients from accessing yahoo and msn (which a =
-normal firewall wouldnt because they would go through on port 80 etc)
+If anybody has a clue, I would really appreciate to know it.
+Anyway, can someone tell me if I miss any file? When looking for any 
+iptables related file I obtain the following:
 
-BUT when guarddog was used it was stuffing up the IPtables.. (eg i would =
-open Port 80 and it would close it)
+pc104:/# locate ip_tables
+/usr/include/linux/netfilter_ipv4/ip_tables.h
+/usr/src/linux-2.4.22/include/linux/modules/ip_tables.stamp
+/usr/src/linux-2.4.22/include/linux/modules/ip_tables.ver
+/usr/src/linux-2.4.22/include/linux/netfilter_ipv4/ip_tables.h
+/usr/src/linux-2.4.22/net/ipv4/netfilter/.ip_tables.o.flags
+/usr/src/linux-2.4.22/net/ipv4/netfilter/ip_tables.c
+/usr/src/linux-2.4.22/net/ipv4/netfilter/ip_tables.o
 
-EXACTLY WHAT I NEED
-------------------------------------
+pc104:/# locate iptables
+/sbin/iptables
+/sbin/iptables-restore
+/sbin/iptables-save
+/usr/iptables-1.2.9.tar
+/usr/local/man/man8/iptables-restore.8
+/usr/local/man/man8/iptables-save.8
+/usr/local/man/man8/iptables.8
+/usr/patch-o-matic/extra/iptables-loopcheck-speedup.patch
+/usr/patch-o-matic/extra/iptables-loopcheck-speedup.patch.help
+/usr/src/linux-2.4.22/include/config/ip/nf/iptables.h
+/var/lib/iptables
+/var/lib/iptables/libip6t_ah.so
+/var/lib/iptables/libip6t_dst.so
+/var/lib/iptables/libip6t_esp.so
+/var/lib/iptables/libip6t_eui64.so
+/var/lib/iptables/libip6t_frag.so
+/var/lib/iptables/libip6t_hbh.so
+/var/lib/iptables/libip6t_HL.so
+/var/lib/iptables/libip6t_hl.so
+/var/lib/iptables/libip6t_icmpv6.so
+/var/lib/iptables/libip6t_ipv6header.so
+/var/lib/iptables/libip6t_length.so
+/var/lib/iptables/libip6t_limit.so
+/var/lib/iptables/libip6t_LOG.so
+/var/lib/iptables/libip6t_mac.so
+/var/lib/iptables/libip6t_MARK.so
+/var/lib/iptables/libip6t_mark.so
+/var/lib/iptables/libip6t_multiport.so
+/var/lib/iptables/libip6t_owner.so
+/var/lib/iptables/libip6t_rt.so
+/var/lib/iptables/libip6t_standard.so
+/var/lib/iptables/libip6t_tcp.so
+/var/lib/iptables/libip6t_TRACE.so
+/var/lib/iptables/libip6t_udp.so
+/var/lib/iptables/libipt_ah.so
+/var/lib/iptables/libipt_CLASSIFY.so
+/var/lib/iptables/libipt_connlimit.so
+/var/lib/iptables/libipt_CONNMARK.so
+/var/lib/iptables/libipt_connmark.so
+/var/lib/iptables/libipt_conntrack.so
+/var/lib/iptables/libipt_DNAT.so
+/var/lib/iptables/libipt_DSCP.so
+/var/lib/iptables/libipt_dscp.so
+/var/lib/iptables/libipt_ECN.so
+/var/lib/iptables/libipt_ecn.so
+/var/lib/iptables/libipt_esp.so
+/var/lib/iptables/libipt_helper.so
+/var/lib/iptables/libipt_icmp.so
+/var/lib/iptables/libipt_iprange.so
+/var/lib/iptables/libipt_length.so
+/var/lib/iptables/libipt_limit.so
+/var/lib/iptables/libipt_LOG.so
+/var/lib/iptables/libipt_mac.so
+/var/lib/iptables/libipt_MARK.so
+/var/lib/iptables/libipt_mark.so
+/var/lib/iptables/libipt_MASQUERADE.so
+/var/lib/iptables/libipt_MIRROR.so
+/var/lib/iptables/libipt_multiport.so
+/var/lib/iptables/libipt_NETMAP.so
+/var/lib/iptables/libipt_NOTRACK.so
+/var/lib/iptables/libipt_owner.so
+/var/lib/iptables/libipt_physdev.so
+/var/lib/iptables/libipt_pkttype.so
+/var/lib/iptables/libipt_realm.so
+/var/lib/iptables/libipt_recent.so
+/var/lib/iptables/libipt_REDIRECT.so
+/var/lib/iptables/libipt_REJECT.so
+/var/lib/iptables/libipt_rpc.so
+/var/lib/iptables/libipt_SAME.so
+/var/lib/iptables/libipt_SNAT.so
+/var/lib/iptables/libipt_standard.so
+/var/lib/iptables/libipt_state.so
+/var/lib/iptables/libipt_TARPIT.so
+/var/lib/iptables/libipt_tcp.so
+/var/lib/iptables/libipt_TCPMSS.so
+/var/lib/iptables/libipt_tcpmss.so
+/var/lib/iptables/libipt_TOS.so
+/var/lib/iptables/libipt_tos.so
+/var/lib/iptables/libipt_TRACE.so
+/var/lib/iptables/libipt_TTL.so
+/var/lib/iptables/libipt_ttl.so
+/var/lib/iptables/libipt_udp.so
+/var/lib/iptables/libipt_ULOG.so
+/var/lib/iptables/libipt_unclean.so
 
-I need to have two sections to the firewall.. one being the server and =
-priviledged machine (kind of like DMZ BUT on the same ip range as the =
-clients much to my disgust)=20
+Could someone mail me the results of the same commands on a working 
+system so I can compare?
 
-Local Clients are from 192.168.1.11-192.168.1.249 (not my setup)
+Thanks,
 
-I want any machines that are not included in this to NOT have to go =
-through the Firewall if possible. If not all of them I need the mail =
-server (residing on 192.168.1.251) to not be if possible.
+              Emmanuel
 
-I would like the following ports FORWARDED to 192.168.1.251
-25 80 110 443
-that way the squid will do the rules to filter out bad ports etc =
-(right?)
-
-I would like all machines that are clients to be Automatically FORWARDED =
-to port 3128 so that the rules can stpo the chatting etc
-
-I have given links my "attempt" at this but am really stuck on it.. I =
-realise you have probably got better things to spend your time with but =
-I would be eternally grateful. this would take me HOURS but probably =
-take you minutes. I hope to hear from you soon
-
-http://web.igateway.com.au/~chrislive/iptables/fw.leadside
-http://web.igateway.com.au/~chrislive/iptables/fw_leadingside
-
-
-Thankyou
 
