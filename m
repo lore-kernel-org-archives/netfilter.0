@@ -1,16 +1,14 @@
-From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl?= Le Mignot)
-Subject: Re: nmap
-Date: Tue, 22 Oct 2002 23:05:39 +0200
+From: Nick Drage <nickd@funkyjesus.org>
+Subject: Re: what filtering to do on the OUTPUT chain?
+Date: Wed, 23 Oct 2002 00:26:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <plopm3vg3ub2vw.fsf@drizzt.dyndns.org>
-References: <1035264046.15391.85.camel@hyperno>
-	<20021022174245.13d2766b.fonetica@tiscali.it>
-	<plopm31y6icovs.fsf@drizzt.dyndns.org>
-	<20021022211221.3d91e4fb.fonetica@tiscali.it>
+Message-ID: <20021023002659.C8681@funkyjesus.org>
+References: <Pine.LNX.4.44.0210221455120.15018-100000@localhost.localdomain> <20021022200357.TCVO1554.mta07-svc.ntlworld.com@there>
+Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021022211221.3d91e4fb.fonetica@tiscali.it> (antonio's
- message of "Tue, 22 Oct 2002 21:12:21 +0200")
+Content-Disposition: inline
+In-Reply-To: <20021022200357.TCVO1554.mta07-svc.ntlworld.com@there>; from Antony@Soft-Solutions.co.uk on Tue, Oct 22, 2002 at 09:03:54PM +0100
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,22 +20,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: antonio <fonetica@tiscali.it>
-Cc: netfilter@lists.netfilter.org
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
+On Tue, Oct 22, 2002 at 09:03:54PM +0100, Antony Stone wrote:
+> On Tuesday 22 October 2002 7:57 pm, Robert P. J. Day wrote:
+> 
+> >   i've had a number of people tell me that, while they put a good deal
+> > of thought into their INPUT filtering, they simply ACCEPT all outgoing
+> > traffic since, if their input filtering is working properly, there's no
+> > reason to stop outgoing packets.
+> 
+> There's no reason to filter outgoing packets unless you don't trust the 
+> applications running on your machine.
 
-Tue, 22 Oct 2002 21:12:21 +0200, tu as dit : 
+You shouldn't trust the applications running on your machine.
 
- > Ok,but in order to set the policy at DROP,which port/protocols I have to set at ACCEPT to allow nmap from firewall box to anywhere nad from LAN to anywhere?
+> If you don't trust what's running on your machine, then you should
+> probably fix more than just what netfilter allows.
 
-If you don't block OUTPUT and allow ESTABLISHED and RELATED packets in INPUT,
-you don't need to open extra ports. Maybe some extra icmp for "weird" scans,
-that's all.
+Yes, but netfilter is a good start :)
 
 -- 
-Gael Le Mignot "Kilobug" - kilobug@freesurf.fr - http://kilobug.free.fr
-GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
-Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
+FunkyJesus System Administration Team
 
-Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
