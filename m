@@ -1,12 +1,11 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: how to block packets with specific words inside udp datagram???
-Date: Mon, 13 Oct 2003 14:34:33 +0530
+From: "Lohan Spies" <l.spies@petzetakis-africa.co.za>
+Subject: iptables nat
+Date: Mon, 13 Oct 2003 11:27:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <030701c39169$0547efe0$c2bf09ca@Housecall>
-References: <000d01c390d6$89b13900$0201a8c0@leonardo>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAAga/TlglPPUOVX8PxvOY9ZgEAAAAA@petzetakis-africa.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00A9_01C3917D.0430C370"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,85 +16,134 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+This is a multi-part message in MIME format.
 
-String is Pay load for the system
-I have tried l7-filter
-works well, look at this
+------=_NextPart_000_00A9_01C3917D.0430C370
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-l7-filter.sf.net
+Hi all,
+ 
+How can i configure a nat rule so that the original ip address is sended
+to the nat server instead of the ip of the fw?
+ 
+Thanks,
+ 
+Lohan Spies 
+Systems Administrator CSA / DBA / MCP
+IQ Business  <http://www.iqgroup.net/> Group
+Tel: +27 12 521 7309
+Fax: +27 12 541 3441
+Cell: +27 83 258 2698
+l.spies@petzetakis-africa.co.za 
 
-hare
------ Original Message ----- 
-From: "Piotr P." <peterp@poczta.onet.pl>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, October 12, 2003 9:05 PM
-Subject: how to block packets with specific words inside udp datagram???
+
+ 
+
+ 
 
 
-> Does anybody know how to block kaza with iptables ?
->
->     Kazza jump over ports, and hosts (if yopu block destinations to
-> kazza.com, rr1.kazza.com & rr2.kazza.com kazza uses ip's of other users
-that
-> was cached during last downloading anything from anyone). The key is,
-kazza
-> use tah same word "KaZaA" inside an uupd datagram. Does any body know how
-to
-> block traffic with this word using iptables?
-> Below is the sample dump:
->
-> a sample dump using udp to communicate with the other users from its
-> internal table and take note of different port  numbers used because these
-> are the ports that had been previously connected...
->
-> 11:03:23.343988 IP fooler.ilo.skyinet.net.1962 >
-> cable-202-8-230-222.d-one.net.2911: udp 12
-> 0x0000  4500 0028 a377 0000 8011 a5d5 ca4e 7642 E..(.w.......NvB
-> 0x0010  ca08 e6de 07aa 0b5f 0014 c401 2700 0000 ......._....'...
-> 0x0020  2980 4b61 5a61 4100                     ).KaZaA.
->
-> 11:03:23.344282 IP fooler.ilo.skyinet.net.1962 > 202.8.251.31.1278: udp 12
-> 0x0000  4500 0028 a378 0000 8011 9193 ca4e 7642 E..(.x.......NvB
-> 0x0010  ca08 fb1f 07aa 04fe 0014 b621 2700 0000 ...........!'...
-> 0x0020  2980 4b61 5a61 4100                     ).KaZaA.
->
-> 11:03:23.344524 IP fooler.ilo.skyinet.net.1962 > 202.163.194.3.2844: udp
-12
-> 0x0000  4500 0028 a379 0000 8011 ca13 ca4e 7642 E..(.y.......NvB
-> 0x0010  caa3 c203 07aa 0b1c 0014 e884 2700 0000 ............'...
-> 0x0020  2980 4b61 5a61 4100                     ).KaZaA.
->
-> 11:03:23.344762 IP fooler.ilo.skyinet.net.1962 > 202.69.170.153.3377: udp
-12
-> 0x0000  4500 0028 a37a 0000 8011 e1da ca4e 7642 E..(.z.......NvB
-> 0x0010  ca45 aa99 07aa 0d31 0014 fe37 2700 0000 .E.....1...7'...
-> 0x0020  2980 4b61 5a61 4100                     ).KaZaA.
->
->
->
->
-> best regards,
-> PeterP
->
-> gadu-gadu: 818854
->         e-mail: peterp@poczta.onet.pl
->          www:  http://republika.pl/peterp
->             cell:  (++48) 606 675 729  (Mon - Fri, 8am-16pm ONLY!)
->            ICQ: 217990807
->
-> -----------------------------------------------------------------------
-> -----              Zapraszam na moje aukcje internetowe
->   -----
-> -----         Lista auktualnych aukcji, zawsze pod
-         -----
-> ----- http://www.allegro.pl/show_user_auctions.php?uid=11609  -----
-> -----------------------------------------------------------------------
->
->
->
+CONFIDENTIALITY CAUTION: If you have received this communication in error, please note that it is intended for the addressee only, is private and confidential and dissemination or copying prohibited. Please notify us immediately by e-mail and return the original message. We cannot assure that the integrity of this communication has been maintained nor that it is free of errors, virus, interception or interference. Thank you
+
+------=_NextPart_000_00A9_01C3917D.0430C370
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D156562609-13102003><FONT face=3DArial size=3D2>Hi=20
+all,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D156562609-13102003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D156562609-13102003><FONT face=3DArial size=3D2>How =
+can i configure=20
+a nat rule so that the original ip address is sended to the nat server =
+instead=20
+of the ip of the fw?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D156562609-13102003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D156562609-13102003><FONT face=3DArial=20
+size=3D2>Thanks,</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV><FONT face=3DArial size=3D2></FONT><FONT face=3DArial=20
+size=3D2></FONT><FONT face=3DArial size=3D2></FONT>
+<MARQUEE id=3DMarquee2 style=3D"WIDTH: 340px; HEIGHT: 17px" trueSpeed =
+scrollAmount=3D1=20
+scrollDelay=3D1 behavior=3Dslide loop=3D1 width=3D394 height=3D19 =
+border=3D"0"><B><FONT=20
+size=3D5>Lohan Spies</FONT></B></MARQUEE>
+<DIV></DIV></SPAN></FONT></B><FONT face=3DVerdana color=3D#ff0000 =
+size=3D2><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana"><FONT face=3DArial=20
+color=3D#000000></FONT><FONT face=3DArial color=3D#000000></FONT>
+<MARQUEE id=3DMarquee2 style=3D"FONT-WEIGHT: bold; COLOR: #ff0000" =
+trueSpeed=20
+scrollAmount=3D1 scrollDelay=3D2 behavior=3Dslide loop=3D1 width=3D550 =
+height=3D19=20
+border=3D"0">Systems Administrator CSA / DBA /=20
+MCP</MARQUEE></SPAN></FONT><BR><FONT face=3DVerdana size=3D2><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">
+<MARQUEE id=3DMarquee2 style=3D"WIDTH: 340px; HEIGHT: 17px" trueSpeed =
+scrollAmount=3D1=20
+scrollDelay=3D2 behavior=3Dslide loop=3D1 width=3D393 height=3D19 =
+border=3D"0"><A=20
+href=3D"http://www.iqgroup.net/">IQ Business=20
+Group</A></MARQUEE></SPAN></FONT><BR><FONT face=3DVerdana size=3D1>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
+16px"=20
+trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+width=3D390 height=3D16=20
+border=3D"0"><SPAN=20
+style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Tel: +27 =
+12 521=20
+7309</SPAN></MARQUEE></FONT><BR>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
+16px"=20
+trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+width=3D390 height=3D16=20
+border=3D"0"><SPAN=20
+style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Fax: +27 =
+12 541=20
+3441</SPAN></MARQUEE></FONT><FONT face=3DVerdana><SPAN=20
+style=3D"FONT-FAMILY: Verdana"><BR></SPAN></FONT><FONT face=3DVerdana =
+size=3D1>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
+16px"=20
+trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+width=3D390 height=3D16=20
+border=3D"0"><SPAN=20
+style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Cell: +27 =
+83 258=20
+2698</SPAN></MARQUEE></FONT><FONT face=3DVerdana><SPAN=20
+style=3D"FONT-FAMILY: Verdana"><BR></SPAN></FONT><FONT face=3DVerdana =
+size=3D1>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 340px; HEIGHT: =
+17px"=20
+trueSpeed scrollAmount=3D4 scrollDelay=3D5 behavior=3Dslide loop=3D1 =
+width=3D391 height=3D16=20
+border=3D"0"><SPAN style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: =
+Verdana"><A=20
+href=3D"mailto:l.spies@petzetakis-africa.co.za">l.spies@petzetakis-africa=
+.co.za</A></SPAN></MARQUEE></FONT>
+<P><FONT face=3DArial size=3D2></FONT><FONT face=3DArial =
+size=3D2></FONT><BR>&nbsp;</P>
+<DIV><FONT face=3DVerdana color=3D#0000ff></FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+
+<html>
+<br>
+CONFIDENTIALITY CAUTION: If you have received this communication in error, please note that it is intended for the addressee only, is private and confidential and dissemination or copying prohibited. Please notify us immediately by e-mail and return the original message. We cannot assure that the integrity of this communication has been maintained nor that it is free of errors, virus, interception or interference. Thank you</html>
+
+------=_NextPart_000_00A9_01C3917D.0430C370--
 
 
