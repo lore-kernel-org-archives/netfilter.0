@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: How to do port forwarding dynamically
-Date: Fri, 21 Feb 2003 20:34:57 -0500
+From: =?gb2312?q?Dig=20Harry?= <digharry@yahoo.com.cn>
+Subject: connection track == stateful inspection(Check Point Firewall)???
+Date: Sat, 22 Feb 2003 11:27:46 +0800 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302212034.57159.netfilter@newkirk.us>
-References: <023001c2daaf$cd19fe80$020010ac@romio> <3E56CB74.4090305@actiswitch.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <20030222032746.18033.qmail@web15206.mail.bjs.yahoo.com>
+References: <Pine.LNX.4.33.0302201238570.13017-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E56CB74.4090305@actiswitch.com>
+In-Reply-To: <Pine.LNX.4.33.0302201238570.13017-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,88 +17,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Dhirendra Pal Singh <list@actiswitch.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="gb2312"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, - = k o l i s k o = - <kolisko@penguin.cz>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 21 February 2003 07:59 pm, Dhirendra Pal Singh wrote:
-> Hi All,
-> I am trying to set up a web server inside my home lan. Firewall is
-> running on the gatewaty.
-> Below is the script for the firewall... (its very simple.. I
-> downloaded it from the net)
-
-> echo "   enabling forwarding.."
-> echo "1" > /proc/sys/net/ipv4/ip_forward
-
-Best not to do this until you've already created the rules, and the DROP=20
-policy.
-
-> echo "   enabling DynamicAddr.."
-> echo "1" > /proc/sys/net/ipv4/ip_dynaddr
->
-> echo "   clearing any existing rules and setting default policy.."
-> $IPTABLES -P INPUT ACCEPT
-
-This is NOT a good idea.  This allows anybody on the internet to have=20
-unrestricted access to all ports on your firewall/gateway.  (unless you=20
-DNAT them to another machine, or have a rule that explicitly DROPs=20
-something)  You want a DROP policy instead, and then ACCEPT only traffic=20
-that needs to access the gateway machine itself.  A simple, more-secure=20
-(but still not tight) approach is to have a DROP policy on INPUT, then=20
-use:
-
-$IPTABLES -A INPUT -i $INTIF1 -j ACCEPT
-$IPTABLES -A INPUT -i $INTIF2 -j ACCEPT
-
-which allows all machines on the local networks unrestricted access to=20
-the gateway itself (this is a separate matter from forwarding!) but=20
-ignores connection attempts from the outside world.  Even better would=20
-be to ACCEPT ONLY the absolute bare minimum.  Under normal operation=20
-nobody (internet _OR_ LAN) should need access to the firewall box=20
-itself.  If you do all your work on the machine sitting in front of it=20
-with it's own keyboard and monitor, and it's not offering other services=20
-then you can probably work just fine with DROP policy for INPUT (and=20
-even OUTPUT).  If there are services that the gateway offers to the LAN=20
-(mailserver, DNS, filesharing, whatever) then you should have ACCEPT=20
-rules for the necessary ports on INPUT chain, and limit them as above to=20
-ONLY the LAN, never the internet. =20
-
-
->************************ I have stripped off the comments for
-> simplicity. Now when I want to open a port and forward it I am trying
-> to execute the following 2 commands...
->
-> $iptables -A INPUT -j ACCEPT -p tcp --syn --destination-port 5000
-> $iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 5000 -j DNAT
-> --to-destination 192.168.1.30:80
->
-> Shouldnt this forward port 5000 to the internal box on port 80. But
-
-Nope.  This DNATs port 5000 incoming to port 80 on the internal box, and=20
-ACCEPTs syn to port 5000 on the gateway.  You want the PREROUTING rule=20
-as is, (but "-i $EXTIF" would fit the script style better...) but the=20
-second rule should be:
-
-$IPTABLES -A FORWARD -i $EXTIF -p tcp --dport 80 -j ACCEPT
-
-Differences:  This is FORWARD chain, which is where packets to be=20
-forwarded will go instead of INPUT.  The destination port is now 80, not=20
-5000, since the DNAT rule already changed the DPORT when it changed the=20
-destIP.
-
-> this is not working. Can someone please help me to correct this
-> script. Actually I want just 2 lines which I can run for any port and
-> can open and forward it to anymachine of my choice...
->
-> Any quick help would be very much appreciated...
-> Thanks and advance..
-> Dp
-
-INPUT is for connections directly to the firewall machine, or responses=20
-to something initiated by the machine itself.  OUTPUT is for connections=20
-initiated by the firewall machine, or responses to something that came=20
-in INPUT.  FORWARD is for connections that are only passing through.
-
-j
-
-
+CmNvbm5lY3Rpb24gdHJhY2soSXB0YWJsZXMpIGFuZCBzdGF0ZWZ1bAppbnNwZWN0aW9uKENoZWNr
+IFBvaW50IEZpcmV3YWxsKSBpcyBzYW1lPz8/CkkgdGhpbms6CmNvbm5lY3Rpb24gdHJhY2sgaXMg
+b25seSAidHJhY2siLCBjYW4gbm90IGZpbHRlci4Kc3RhdGVmdWwgaW5zcGVjdGlvbiBjYW4gZmls
+dGVyIGFjY29yZGluZyB0byB0aGUgcGFja2V0CmluZm9ybWF0aW9uLgpJcyB0aGF0IGNvcnJlY3Q/
+CndoYXQgaXMgdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBjb25uZWN0aW9uIHRyYWNrIGFuZApzdGF0
+ZWZ1bCBpbnNwZWN0aW9uPz8/CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KRG8gWW91IFlhaG9vIT8gCiLTw9HFu6LL0cv3o6zV0rW9udjT
+2rDCy7m/qLXE0rvH0CIKaHR0cDovL2NuLnNlYXJjaC55YWhvby5jb20vc2VhcmNoL2NuP3A9JWIw
+JWMyJWNiJWI5JWJmJWE4Cgo=
