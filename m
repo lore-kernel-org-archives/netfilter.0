@@ -1,13 +1,13 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: [REPOST] PPTP+NAT+MASQ anyone?
-Date: Mon, 23 Dec 2002 14:15:09 +0100
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: Accessing machine with public ip address.
+Date: Mon, 23 Dec 2002 19:49:19 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212231415.09766.roy@karlsbakk.net>
-References: <200212091226.23888.roy@karlsbakk.net> <1039624902.20562.91.camel@tux> <200212111754.46937.roy@karlsbakk.net>
+Message-ID: <01c001c2aa8e$486bd6a0$13fcc5cb@Housecall>
+References: <Pine.SOL.4.43.0212231312460.4174-100000@selene.nat.vu.nl> <003701c2aa8b$6d84c8f0$8c01a8c0@sundaram>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200212111754.46937.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,85 +18,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: Sundaram Ramasamy <sun@percipia.com>, netfilter@lists.netfilter.org
 
-hi all
+Hi
 
-still trying to patch up my kernel to allow for PPTP NATing, but patch-o-=
-matic=20
-simply fails. This is with kernel 2.4.20 (from kernel.org) and latest=20
-patch-o-matic from cvs.
+what is your Present Iptable rules
 
-Can someone _please_ help me here? I'm doing exactly as the doc says!
+where are you accessing ?
+what is your PC address ???
 
-# pwd
-/usr/src
-# mkdir Pom
-# tar xjf packed/linux-2.4.20.tar.bz2 -C Pom
-=2E/runme pending
-Testing... ip_conntrack_protocol_destroy.patch NOT APPLIED (6 rejects out=
- of 6=20
-hunks)
-Testing... remove_no_version.patch NOT APPLIED (4 rejects out of 4 hunks)
-Testing... newnat-udp-helper.patch NOT APPLIED (8 rejects out of 8 hunks)
+what you want to achive
 
-# KERNEL_DIR=3D/usr/src/Pom/linux-2.4.20 ./runme base
-=2E..
-Testing... IPV4OPTSSTRIP.patch NOT APPLIED ( 1 missing files)
-Testing... NETLINK.patch NOT APPLIED ( 2 missing files)
-Testing... NETMAP.patch NOT APPLIED ( 1 missing files)
-Testing... REJECT.patch.ipv6 NOT APPLIED ( 1 missing files)
-Testing... SAME.patch NOT APPLIED ( 2 missing files)
-Testing... TTL.patch NOT APPLIED ( 2 missing files)
-Testing... ahesp6.patch.ipv6 NOT APPLIED ( 4 missing files)
-Testing... frag6.patch.ipv6 NOT APPLIED ( 2 missing files)
-Testing... fuzzy.patch NOT APPLIED ( 2 missing files)
-Testing... iplimit.patch NOT APPLIED ( 2 missing files)
-Testing... ipt_unclean-ubit.patch NOT APPLIED (1 rejects out of 1 hunks)
-Testing... ipv4options.patch NOT APPLIED ( 2 missing files)
-Testing... ipv6header.patch.ipv6 NOT APPLIED ( 2 missing files)
-Testing... mport.patch NOT APPLIED ( 2 missing files)
-Testing... nth.patch NOT APPLIED ( 2 missing files)
-Testing... opts6.patch.ipv6 NOT APPLIED ( 3 missing files)
-Testing... pool.patch NOT APPLIED ( 5 missing files)
-Testing... psd.patch NOT APPLIED ( 2 missing files)
-Testing... quota.patch NOT APPLIED ( 2 missing files)
-Testing... random.patch NOT APPLIED ( 2 missing files)
-Testing... realm.patch NOT APPLIED ( 2 missing files)
-Testing... route6.patch.ipv6 NOT APPLIED ( 2 missing files)
-Testing... time.patch NOT APPLIED ( 2 missing files)
-
-# KERNEL_DIR=3D/usr/src/Pom/linux-2.4.20 ./runme extra
-=2E..
-Testing... CONNMARK.patch NOT APPLIED ( 4 missing files)
-Testing... ROUTE.patch NOT APPLIED ( 2 missing files)
-Testing... amanda-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-Testing... condition.patch NOT APPLIED ( 2 missing files)
-Testing... eggdrop-conntrack.patch NOT APPLIED ( 1 missing files)
-Testing... h323-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-Testing... ip_conntrack-timeouts.patch NOT APPLIED ( 1 missing files)
-Testing... ip_tables-proc.patch NOT APPLIED (5 rejects out of 5 hunks)
-Testing... ipt_TARPIT.patch NOT APPLIED ( 1 missing files)
-Testing... mms-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-Testing... nfnetlink-ctnetlink-0.11.patch NOT APPLIED ( 4 missing files)
-Testing... pptp-conntrack-nat.patch NOT APPLIED ( 8 missing files)
-Testing... quake3-conntrack.patch NOT APPLIED ( 3 missing files)
-Testing... recent.patch NOT APPLIED ( 2 missing files)
-Testing... rsh.patch NOT APPLIED ( 2 missing files)
-Testing... string.patch NOT APPLIED ( 2 missing files)
-Testing... talk-conntrack-nat.patch NOT APPLIED ( 3 missing files)
-Testing... tcp-window-tracking.patch NOT APPLIED (29 rejects out of 32 hu=
-nks)
-Testing... tftp-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+hare
+----- Original Message ----- 
+From: "Sundaram Ramasamy" <sun@percipia.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Monday, December 23, 2002 7:28 PM
+Subject: Accessing machine with public ip address.
 
 
-
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
-
-Computers are like air conditioners.
-They stop working when you open Windows.
+> hi,
+> 
+> 
+> 
+> I have NATed public 216.205.140.8 IP Address into local 192.168.1.130
+> Network address, from my LAN I was not able to access my machine using
+> public IP Address.
+> 
+> 
+> 
+> How will I set my firewall rules? Please help me on this.
+> 
+> 
+> 
+> 
+> 
+> Thanks
+> 
+> SR
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
 
 
