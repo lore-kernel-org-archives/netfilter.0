@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: read and set static ARPs
-Date: 24 Jul 2003 08:44:35 +0200
+From: "Rio Martin." <rio@martin.mu>
+Subject: DNAT question..
+Date: Thu, 24 Jul 2003 14:00:51 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059029075.1177.2.camel@elendil.intranet.cartel-securite.net>
-References: <BAY1-F57pfTYSl1q4gt00000109@hotmail.com>
+Message-ID: <200307241400.51653.rio@martin.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY1-F57pfTYSl1q4gt00000109@hotmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Javier Garza <ejgg71@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mer 23/07/2003 =E0 21:29, Javier Garza a =E9crit :
->   somebody know which is  the   patched version of the Red Hat=20
-> /etc/init.d/network
-> script which read and set static ARPs from a file, /etc/init.d/static-a=
-rp.
+Dear all,
+I describe first about my network:
 
-Just fill /etc/ethers file and add a command such as :
+INTERNET --- eth0 [ NAT+Firewall Linux ] eth1 --- LAN
 
-	/usr/sbin/arp -f /etc/ethers
+eth0 would be my public ip = 211.1.1.10
+eth1 would be my private ip = 192.168.1.1
 
-to your startup script.
+On NAT+Firewall Linux i applied this rule:
+iptables -t nat -A PREROUTING -p tcp -d 211.1.1.10 --dport 80 -j DNAT --to 
+192.168.1.2:80
+This is rule for redirecting to local webserver.
 
-If your file is /etc/init.d/static-arp, then :
+I tried to test it from outside network (internet), surf to http://211.1.1.10 
+and it succeed.
+But from inside LAN network (192.168.1.3) i am unable to browse to 
+http://211.1.1.10
 
-	/usr/sbin/arp -f /etc/init.d/static-arp
+Let me know how to make this also worked from inside LAN Network.
+Thanks ..
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+Regards,
+Rio Martin.
+-- 
+Don't cook tonight -- starve a rat today!
+
 
