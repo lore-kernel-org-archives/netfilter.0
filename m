@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: multiple ISP routing/firewall
-Date: Sat, 24 Jul 2004 15:48:20 +0100
+Subject: Re: Fedora Core 2. Port Forwarding Problems
+Date: Sat, 24 Jul 2004 15:55:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407241548.20108.Antony@Soft-Solutions.co.uk>
-References: <20040723102011.88D9E3959@sitemail.everyone.net>
+Message-ID: <200407241555.16611.Antony@Soft-Solutions.co.uk>
+References: <4101D6BD.8040904@mail.ru>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040723102011.88D9E3959@sitemail.everyone.net>
+In-Reply-To: <4101D6BD.8040904@mail.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +18,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-On Friday 23 July 2004 11:20 am, Alok Nath Upadhyay wrote:
+On Saturday 24 July 2004 4:25 am, =D0=92=D0=B0=D1=81=D0=B8=D0=BB=D0=B8=D0=
+=B9 =D0=A1=D0=B2=D0=B8=D1=80=D0=B8=D0=B4=D0=BE=D0=B2 wrote:
 
-> hi all,
-> i am in a not so common situation and i have tried to figure out the
-> solution without luck. i have 3 leased lines from three different vendors.
-> i want to distribute outbound traffic from my lan on these three differnet
-> links.
+> I've installed fedora core 2 and tried to reuse my old settings i
+> retained from redhat9 system.
+>
+> Masqeurading works fine, but when i try to do port forwarding like this
+> iptables -t nat -A PREROUTING -p tcp -d <domainname.com> --dport 80 -j
+> DNAT --to 192.168.20.40:80
+> rule adds itself fine, but port 80 is not accessible from outside.
 
-Sounds like a fairly simple configuration requirement for iproute2.
+Are you sure about the resolving of domainname.com?   What does the rule =
+get=20
+added as?
 
-> i have some degree of success i.e. i can route the traffic but
-> internet access speed is very slow. i guess that this is due to differnet
-> DNS servers of these vendors.
+> when i try to connect from outside it doesn't say connection refused, i=
+t
+> dies after a timeout.
+> /proc/net/ip_conntrack doesn't show any presence of connection, I tried
+> to send it to -j LOG & ULOG but both end up empty.
 
-I do not understand your reasoning here - what are you saying about the ISPs' 
-DNS servers, and how would they cause your Internet access to be slow?
+Please show us your ruleset.   We would like to see:
+ - what IP address the above PREROUTING rule gets installed with
+ - the corresponding FORWARD rule for the packets
+ - an appropriate reply packet rule
+ - how you have been LOGging packets for testing
 
-> moreover if i have the unristricted access to
-> internet, i am fine. but not with the restrictions on services and ports.
-> after this all internet access is denied. This is my firewalling script for
-> ur debugging and any remedial measures.
-
-The main observation I would make is that you are using the random match to 
-determine what MARK to put on the packets - what happens in the cases where 
-none of the random matches match?
-
-eg: if you have three rules in sequence, each of which matches 33% of the 
-packets going through it, the first rule will match 33% of the packets, the 
-second rule will match 33% of the remaining 67% (ie: 22% of the original 
-packets), and the final rule will match 33% of the 45% (100-33-22) which get 
-that far (ie: 15% of the original packets).   This still leaves 30% of the 
-original packets unmatched by any rule.
-
-I know you have not set all the rules to 33%, but I think you have not taken 
-account of the packets which will not match any of the probabilistic rules?
-
-My approach (if I wanted equal numbers of packets to match all three rules) 
-would be to set the first rule to match 33%, the second rule 50% (ie: half 
-the ones which didn't match the first rule), and then the third rule to match 
-100% (ie: all the packets which didn't match the first or second rules).   
-Obviously you can adjust the 33% and 50% in this example if you want the 
-three rules to match unequal quantities of packets.
-
-Hope this helps,
+I suggest the output of "iptables -L -nvx; iptables -L -t nat -nvx" and i=
+f=20
+appropriate also "iptables -L -t mangle -nvx" is a good format for us to=20
+understand where you're starting from.
 
 Regards,
 
 Antony.
 
--- 
-If you can't find an Open Source solution for it, then it isn't a real 
-problem.
+--=20
+In science, one tries to tell people
+in such a way as to be understood by everyone
+something that no-one ever knew before.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+In poetry, it is the exact opposite.
+
+ - Paul Dirac
+
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
 
 
