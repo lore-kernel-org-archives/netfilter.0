@@ -1,14 +1,13 @@
-From: "stu" <stu@gateway10.homeip.net>
-Subject: RE: Startup script
-Date: Sat, 17 Apr 2004 07:49:53 +0200
+From: "IT Clown" <iptables@mailbox.co.za>
+Subject: Re: Iptables ACCEPT and DROP
+Date: Sat, 17 Apr 2004 12:37:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040417074919.1B34ECEF41@firewall.gateway10.homeip.net>
-References: <20040416100238.GC1439@hamachi.radom.org>
-Reply-To: <stu@gateway10.homeip.net>
+Message-ID: <web-287717304@mail01.infosat.net>
+References: <000201c423da$486c8250$8101a8c0@TELECOMME9F58X>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040416100238.GC1439@hamachi.radom.org>
+In-Reply-To: <000201c423da$486c8250$8101a8c0@TELECOMME9F58X>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,24 +20,72 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
- 
-> * stu (stu@gateway10.homeip.net) wrote:
-> > Hi All
-> > 
-> > Where is the best place to put my firewall script, for example when 
-> > the firewall is booted.
-> > 
+will the following help:
+
+
+iptables -A INPUT -i eth0 -p tcp -s 216.155.193.168 --sport
+5050 -j DROP
+iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168
+--dport 5050 -j DROP
+
+service iptables stop
+/etc/init.d/iptables stop
+iptables -F
+service iptables start
+/etc/init.d/iptables start
+
+or am i missing it completely?
+
+Regards
+
+On Fri, 16 Apr 2004 10:43:07 -0700
+ "Ravi Verma" <ravi.verma@telecommand.com> wrote:
+> Dear Friends:
 > 
-> That depends entirely on your distros init scripts.  You left 
-> that detail out though.  Try /etc/init.d/rc.local perhaps.
+> I have observe a behavior of iptables which I need to
+> understand.
 > 
-> dan
+> 216.155.193.168 is the IP address of Yahoo's messenger
+> site and it
+> listens on port 5050.
+> 
+> The following command will allows the machine to connect
+> to
+> 216.155.193.168.
+> 
+> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168
+> --dport 5050 -j
+> ACCEPT
+> 
+> After that, I see output like following:
+> 
+> #telnet 216.155.193.168 5050
+> Trying 216.155.193.168...
+> Connected to 216.155.193.168.
+> Escape character is '^]'.
+> 
+> Now when I issue
+> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168
+> --dport 5050 -j
+> DROP
+> And
+> iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168
+> --dport 5050 -j
+> REJECT
+> 
+> Still, it allows connection to 216.155.193.168 on port
+> 5050.
+> 
+> How does this work? It seems -j DROP is not opposite of
+> -j ACCEPT. How
+> can stop this?
+> 
+> Kind regards.
+> 
+> Ravi Verma
+> 
+> 
 
-Suse 9.0 pro - I am more interested in finding out at what run level the
-script should kick in at. I have tried putting it in the
-/etc/init.d/boot.local, but I think this comes up very last.
-
-Thanks
-Stu 
-
+______________________________________________________________
+Herbalife Independent Distributor http://www.healthiest.co.za
 
