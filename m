@@ -1,11 +1,11 @@
 From: Guillermo Javier Nardoni <gjnardoni@gmail.com>
-Subject: Hello, i need some help to do that. please!
-Date: Mon, 14 Mar 2005 01:13:53 -0300
-Message-ID: <7b85e53050313201357f51562@mail.gmail.com>
+Subject: Iptables and Script to make it possible (Help me please)
+Date: Mon, 14 Mar 2005 01:16:55 -0300
+Message-ID: <7b85e530503132016f170630@mail.gmail.com>
 Reply-To: Guillermo Javier Nardoni <gjnardoni@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed; 
-	boundary="----=_Part_1707_15396376.1110773633863"
+	boundary="----=_Part_1711_5360070.1110773815891"
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,7 +18,7 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
-------=_Part_1707_15396376.1110773633863
+------=_Part_1711_5360070.1110773815891
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
@@ -55,7 +55,8 @@ LAN: subnet: 192.168.0.0/24
 so i want to do NAT over my LAN, it means a client wich ip is
 192.168.0.65 for example could have full acces to internet
 but all incoming packets comes from ppp0 at theses ports 27015 27016
-27017 have to DNAT and i guess SNAT too, to my W2k server
+27017 and port 80 have to DNAT to 192.168.1.100 ip address and i guess
+SNAT too, to my W2k server
 
 i don't know how to do the script to make it possible, could you lend
 me a hand please.-
@@ -68,7 +69,7 @@ Guillermo Javier Nardoni
 Estudiante de Ing. en Sistemas
 Tel: 03402-15540590
 
-------=_Part_1707_15396376.1110773633863
+------=_Part_1711_5360070.1110773815891
 Content-Type: image/pjpeg; name="network.JPG"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="network.JPG"
@@ -520,5 +521,5 @@ FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU
 UUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRR
 RQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf//Z
 
-------=_Part_1707_15396376.1110773633863--
+------=_Part_1711_5360070.1110773815891--
 
