@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bandwidth Monitor
-Date: Sat, 8 May 2004 11:53:19 +0100
+From: "kaushalender shekhawet" <kaushalenders@hotmail.com>
+Subject: blocking internet host behind proxy
+Date: Sat, 08 May 2004 19:11:47 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405081153.19812.Antony@Soft-Solutions.co.uk>
-References: <006001c434da$7c6400e0$36b4fea9@SABNANIS>
-Reply-To: Netfilter <netfilter@lists.netfilter.org>
+Message-ID: <BAY18-F270Cpg0RnLJm0000e3ec@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <006001c434da$7c6400e0$36b4fea9@SABNANIS>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Saturday 08 May 2004 9:57 am, Harry wrote:
+hi group,
 
-> Hi All,
-> I have a DSL connection which has a bandwidth capacity of 3GB a
-> month...having said that I have 16 machines hooked up on the network with a
-> linux server, is there a away to capture/monitor the total consumption of
-> bandwidth utilised per machine or server basis.
+we are having linux box which is haveing  two network card .Eth0 is directly 
+connected to internet and eth1 is connected to some machine whom we are 
+giving internet .One of those user have installed proxy on that host and 
+started to give internet to other who are not customer.Can any body help me 
+to prevent this.If customer install proxy on there they should able to get 
+internet but the host that are behind the proxy should not get the internet 
+.Plz help I will l be thankfull
 
-I would recommend iptraf, ntop or ipac.
 
-Try http://www.topology.org/comms/netmon.html for some ideas.
+kaushalender
 
-If you really want to do it with netfilter, try some rules like this:
-
-iptables -A POSTROUTING -t mangle -d a.b.c.d
-iptables -A PREROUTING -t mangle -s a.b.c.d
-
-Repeat for every machine on your network, changing a.b.c.d in each pair of 
-rules to match the IP address of that machine.
-
-Note there is no target for these rules - this is deliberate (and correct).
-
-When you want to know how many bytes have gone to & come from each machine:
-
-iptables -L -t mangle -nvx
-
-When you want to reset the counters to zero (midnight on 1st of each month?):
-
-iptables -Z
-
-Regards,
-
-Antony.
-
--- 
-Ramdisk is not an installation procedure.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+_________________________________________________________________
+Seized by wanderlust? Have the best vacation ever. 
+http://www.msn.co.in/Travel/ Team up with MSN Travel!
 
 
