@@ -1,13 +1,14 @@
-From: "Aris  Santillan" <aris@femalenetwork.com>
-Subject: Im new
-Date: Tue, 20 May 2003 17:50:57 +0800
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: Performance losings with iptables
+Date: Tue, 20 May 2003 18:09:26 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <831411C4CBD37C4A91DBEC9B98A64C8B6C42CB@spmail.summitmedia.com.ph>
+Message-ID: <20030520100926.GA1209@floyd>
+References: <007d01c31965$fe099ce0$3a51a8c0@memmingen> <1053417001.1964.86.camel@kermit.spenneberg.de>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C31EB5.4FCAED1E"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <1053417001.1964.86.camel@kermit.spenneberg.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +18,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+On Tue, May 20, 2003 at 09:50:01AM +0200, Ralf Spenneberg spoke thusly:
+>Am Die, 2003-05-13 um 17.40 schrieb Michael Albrecht:
+>> iptables -A input -s 192.168.81.xxx 
+>> i will lose a lot of perfomance (for
+>> example: apache take a lot of time, ssh ...) Wenn i show the perfomance
+>> with vmstat - vmstat says that 99 % is
 
-------_=_NextPart_001_01C31EB5.4FCAED1E
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-
-------_=_NextPart_001_01C31EB5.4FCAED1E
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-
-------_=_NextPart_001_01C31EB5.4FCAED1E--
+As Michael has already mentioned, I too doubt its an iptables fault. I've
+had in excess of 1,300 rules running on a production firewall, for dynamic
+dumping of Nimda infected hosts. Its almost certainly a name resolving
+issue as Michael has already pointed to.
 
