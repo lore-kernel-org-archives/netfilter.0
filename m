@@ -1,14 +1,14 @@
-From: Tommy McNeely <Tommy.McNeely@Sun.COM>
-Subject: Re: Subject: Re: OT: curious about eth0/eth1
-Date: Wed, 08 Jan 2003 16:36:15 -0700
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Newbie - Where is my kernel? Can't run POM
+Date: Wed, 8 Jan 2003 23:38:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <38490000.1042068975@leverage>
-References: <3E1CB1E0.1060708@aut.ac.nz>
+Message-ID: <20030108233813.537ba0d3.arnt@c2i.net>
+References: <20030108195329.01d77b2f.arnt@c2i.net>
+	<001301c2b754$59f77280$6601a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <3E1CB1E0.1060708@aut.ac.nz>
-Content-Disposition: inline
+In-Reply-To: <001301c2b754$59f77280$6601a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +18,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Wed, 08 Jan 2003 12:27:22 -0800, 
+Rowan Reid <rreid@studio3arc.com> wrote in message 
+<001301c2b754$59f77280$6601a8c0@s3ac>:
 
+> 
+> > 
+> > ..try 'rpm -ivh kernel-source-2.4.18-19.8.0.i386.rpm'.  ;-)
+> > 
+> > -- 
+> > ..med vennlig hilsen = with Kind Regards from Arnt... ;-) 
+> > ...with a number of polar bear hunters in his ancestry...
+> >   Scenarios always come in sets of three: 
+> >   best case, worst case, and just in case.
+> 
+> If this is a new kernel don_t forget to do a dry run and compile the
+> kernel prior to running pom
+> 
+..my "try" line installs RH's kernel source tree.  
+I just run pom over it and then compile.
+(However, kernelmod-0.6.tar.gz'ing from 
+http://sourceforge.net/project/showfiles.php?group_id=44827
+needs a built and installed kernel _and_ the tree.)
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
---On Thursday, January 09, 2003 12:18:56 PM +1300 Ian Batterbee 
-<ian.batterbee@aut.ac.nz> wrote:
-
->> On a side note... the case you speak of is easily averted by using
->> different cards :)
->>
->> [root@pickles root]# cat /etc/modules.conf
->> alias parport_lowlevel parport_pc
->> alias eth0 3c59x
->> alias eth1 eepro100
->> alias eth2 tulip
->
->
-> I'm probably missing something here, but how does that help ?  The
-> problem is that if that the eth0 module fails to load for whatever
-> reason, then the card that would normally be eth1 would be known as eth0.
->
-> If you provide aliases... all that means is that you can do
->
-> modprobe eth0
-> modprobe eth1
->
-> but ... as far as I understand it, those module aliases names have no
-> link to the name the kernel allocates to the interface, so if eth0
-> failed, it would load eth1 (aliased to eepro100), and the eepro100 would
-> be known as eth0 to the kernel.
->
-> Or is there some kludgy relationship between module alias names and
-> interface names ?
->
-
-
-I assumed there was a relationship... I can't really test that from here.. 
-but um.. I assume it would load eth1 as eepro100 ?? if you compile your 
-network devices into the kernel, then you may hafta get a little trickier
-
-Tommy
-
-PS: why doesn't my mail client treat this as a list like redhat's ?
-
-
->
->
-
-
-
---
-Tommy McNeely         --        Tommy.McNeely@Sun.COM
-Sun Microsystems - IT Ops - Broomfield Campus Support
-Phone:  x50888 / 303-464-4888  --  Fax:  720-566-3168
 
 
