@@ -1,12 +1,12 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: smoothwall
-Date: Mon, 29 Sep 2003 17:02:43 +0800
+From: "Joel" <zealous@bonbon.net>
+Subject: Re: view nat rules
+Date: Mon, 29 Sep 2003 16:10:19 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8D08@overlord.overturemedia.com>
+Message-ID: <002301c38676$15c2d9a0$61a1a0ca@lin>
+References: <3F77E8BC.1090502@ewt.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +17,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+To: Klaus Boehm <k.boehm@ewt.de>, netfilter@lists.netfilter.org
+
+iptables -t nat -nL
+
+----- Original Message -----
+From: "Klaus Boehm" <k.boehm@ewt.de>
+To: <netfilter@lists.netfilter.org>
+Sent: Monday, September 29, 2003 1:39 PM
+Subject: view nat rules
 
 
-Hello folks!
+> How can i view the nat rules.
+>
+> i did iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source
+xx.xx.xx.xx
+>
+>  and then i tried iptables -L POSTROUTING
+> but this doesn't work.
+>
+> Thanks.
+>
+> Klaus
+>
+>
+> --
+>
+>
+> ewt gmbh
+> data management group
+> tel: ++49 821 3106 319
+> fax: ++49 821 3106 399
+> url: www.ewt.de
+>
+>
+>
+>
 
-Has anyone tried smoothwall?
-I have become tired of making samba work and still it won't work so now =
-I am resorting to using a "pre-built" iptables firewall.
-At least it is GUI-based. :D
-
-I've always wanted to make my own firewall bash script.
-If I can make smoothwall and samba to work properly then perhaps I can =
-use the firewall script it generates to make my own, right?
-
-So can anyone advice me on this one?
-
-Thanks.
-
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
 
 
