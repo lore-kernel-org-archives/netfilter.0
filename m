@@ -1,13 +1,11 @@
-From: Taner Halicioglu <taner@taner.net>
-Subject: Re: Bug?  ICMPs sent by REJECT are not getting SNAT'd...
-Date: Tue, 15 Apr 2003 15:37:57 -0700
+From: "Michael K" <micke@klintan.se>
+Subject: Direct Connect DNAT rules
+Date: Wed, 16 Apr 2003 08:51:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030415223757.GM5912@boom.net>
-References: <20030411164801.GF5912@boom.net> <Pine.LNX.4.33.0304112051311.528-100000@blackhole.kfki.hu> <20030411190805.GJ5912@boom.net>
+Message-ID: <000001c303e4$93366bf0$0200a8c0@klintan.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030411190805.GJ5912@boom.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,71 +16,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Uh, ok... I solved this comepletely outside of iptables :-)
+I have a linux fw running SNAT to my lan. One of the lan computers is
+running windows and a DC++ client. I wish to add DNAT rules that will
+alow my DC++ client to use the active mode. 
 
- ip route change default via 10.1.1.1 dev eth1 src 200.1.1.1
+If you don't know what DC++ is you will find info here.
+http://dcplusplus.sourceforge.net/
 
-works like a charm, and I got rid of my SNAT:
+Here is my setup.
+DC++ Client ip = 192.168.0.2
+LAN Interface = eth0
+WAN Interface = eth1
 
- iptables -t nat -A POSTROUTING -o eth1 -s 10.1.1.1 -j SNAT --to-source 200.1.1.1
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 412 -j DNAT --to
+192.168.0.2
+iptables -t nat -A PREROUTING -i eth1 -p udp--dport 412 -j DNAT --to
+192.168.0.2
 
-(no more need for that ;)
+#Don't think I need these, perhaps moving them to the forward chain?
+iptables -A INPUT -p tcp --dport 412 -j ACCEPT
+iptables -A INPUT -p udp --dport 412 -j ACCEPT
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-	-Taner
+Here is a log from tcpdump
+# tcpdump -i eth1 host YYYYYYYYYY
+tcpdump: listening on eth1
+22:36:50.922913 YYYYYYYYYY.1706 > XXXXXXXXXX.net.412: S
+1128686762:1128686762(0) win 64240 <mss 1460,nop,nop,sackOK> (DF)
+22:36:50.923477 XXXXXXXXXX.412 > YYYYYYYYYY.1706: S
+2874033958:2874033958(0) ack 1128686763 win 64240 <mss
+1460,nop,nop,sackOK> (DF)
+22:36:50.925982 YYYYYYYYYY.1706 > XXXXXXXXXX.412: . ack 1 win 64240 (DF)
+22:36:50.927488 YYYYYYYYYY.1706 > XXXXXXXXXX.412: P 1:90(89) ack 1 win
+64240 (DF)
+22:36:51.110195 XXXXXXXXXX.412 > YYYYYYYYYY.1706: . ack 90 win 64151
+(DF)
 
-On Fri, Apr 11, 2003 at 12:08:05PM -0700, Taner Halicioglu <taner@taner.net> wrote:
+My box is XXXXXXXXXX
 
-> On Fri, Apr 11, 2003 at 08:58:00PM +0200, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
-> 
-> > > No, the problem is that when the firewall machine REJECTs any packets in a
-> > > FORWARD chain (ie, anything I am blocking that is destined to the network
-> > > behind it), the source IP of the ICMP UNREACH (or evn the RST packets) is
-> > > that of the *outside* interface - the unroutable address.  It seems the
-> > > POSTROUTING is not performed on the ICMPs that are created by the actual
-> > > host.
-> > 
-> > If this is a problem of the forwarded packets, then it has nothing to do
-> > with the connections initiated from/targeted to the firewall itself.
-> 
-> What?  Of course it does!
-> 
-> I have a rule like:
-> 
->  iptables -A Firewall -p tcp --dport 1434 -j REJECT
-> 
-> where 'Firewall' is
-> 
->  iptables -A FORWARD -i eth1 -j Firewall
-> 
-> The above rule will generate an ICMPUNREACH if it tries to forward a packet
-> coming in eth1 that is destined for port 1434 to anything behind the firewall
-> machine.
-> 
-> This UNREACH is generated with a source IP of my firewalls *outside*
-> interface, which is the unrouteable address (and is filtered by my ISP).  I
-> need this ICMP to be generated with a source IP of my *inside* interface,
-> instead.
-> 
-> > But if the packets created by the REJECT target contain the address of the
-> > firewall, then the packet they are rejecting was targeted to the firewall.
-> 
-> No, see above.
-> 
-> > Show me the tcpdump of both the packets rejected and the reject packets
-> > generated.
-> 
-> 12:05:31.037765 66.220.X.Y.38487 > 67.122.A.B.ms-sql-m: S 2857026105:2857026105(0) win 5840 <mss 1460,sackOK,timestamp 406253139 0,nop,wscale 0> (DF) [tos 0x10]
-> 12:05:31.037805 10.0.0.1 > 66.220.X.Y: icmp: 67.122.196.121 tcp port ms-sql-m unreachable [tos 0xd0]
-> 
-> Notice how the source address on the ICMP unreach is the unroutable IP.  I
-> need it to be an address on the 67.122.n.n address block (my inside
-> interface).
-> 
-> Refer to my original email w/ diagram again, if you need to :)
-> 
-> 	-Taner
+And the counters for DNAT rules increases
+# iptables -t nat -L -nv
+Chain PREROUTING (policy ACCEPT 105K packets, 9703K bytes)
+pkts bytes target     prot opt in     out     source
+destination
+ 168  8240 DNAT       tcp  --  eth1   *       0.0.0.0/0
+0.0.0.0/0          tcp dpt:412 to:192.168.0.2
+ 113  7724 DNAT       udp  --  eth1   *       0.0.0.0/0
+0.0.0.0/0          udp dpt:412 to:192.168.0.2
+
+My DC++ setup is to report my wan ip-address and use port 412
+Still, I can't connect to other users that are in passive mode.
+
+Please help
+
+/Klintan
+
+
 
