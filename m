@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: H/A
-Date: Tue, 27 May 2003 07:47:31 +1000
+Subject: RE: PASV rules opening up my high-ports - Whoops - sent the first one in HTML
+Date: Tue, 27 May 2003 07:54:30 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CE7@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CE9@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,38 +17,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: kluivert@tm.net.my, netfilter@lists.netfilter.org
+To: jherschel <jherschel@quarry.com>, netfilter@lists.netfilter.org
 
-iptables isn't a problem as I solved this using a special script and a =
-special way of assigning the IPs.
+Forget that whole script and use the ip_conntrack_ftp modules.
+then just use -m state --state RELATED,ESTABLISHED and passive will =
+work.
 
-    LIVE IP=3D203.x.x.x
-FW1=3D10.1.1.1    FW2=3D10.1.1.1
-
-using iproute2 I add the live IP to FW1 which is the Master FW.
-
-ip add addr 203.x.x.x/28 dev eth0
-
-Then my firewall scripts find the dev IP using "ip addr show $EXTDEV" =
-add then "tail -1" for so it grabs the last line of the list otherwise =
-it finds 2 IP bounded to the 1 network card and the scripts go nuts.. =
-See snippet of my iptables script below.
-
-getipfromdevice()
-{
-        DEV=3D"$1"
-        DEVIP=3D`ip addr show dev $DEV | grep "inet" |tail -1 |awk =
-{'print $2'} | cut -f1 -d "/"`
-        echo "$DEVIP"
-}
-EXTDEV=3D"eth0"
-EXTIP=3Dgetipfromdevice $EXTDEV
-
-
-The problem is more with VPNs like PPTP/IPSEC as they won't pass the =
-session over. But if they are company to company tunnels and they =
-automatically reconnect, how it is a problem. a bit of packet loss for a =
-few seconds and it's back up.. that's the internet for ya. ;)
+(BTW: Does anybody use google.com anymore, google is your friend.. ;) )
 
 Thanks,
 ____________________________________________
@@ -59,38 +34,136 @@ georgev@citadelcomputer.com.au
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
 
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
 -----Original Message-----
-From: Julian Gomez [mailto:kluivert@tm.net.my]
-Sent: Monday, May 26, 2003 7:59 PM
+From: jherschel [mailto:jherschel@quarry.com]
+Sent: Tuesday, May 27, 2003 6:01 AM
 To: netfilter@lists.netfilter.org
-Subject: Re: H/A
+Subject: PASV rules opening up my high-ports - Whoops - sent the first
+one in HTML
 
 
-On Sun, May 25, 2003 at 09:45:12PM -0500, g_netfilter@netfids.com spoke =
-thusly:
+Howdy,
 
->Hi friends, I have some boxes running iptables and i works well. But =
-now I
->need to configure a failover solution, please could you give me some =
-links
->to start reading? I need to consider Netfilter/Iptables and FreeSwan in
->the same box and with a failover configuration.
+Thanks in advance for reading this, if this is a common issue, I =
+apologize -
+but could you point me to a searchable archive so I don't bug this list =
+with
+previously asked questions?
 
-A few things you need to clarify :
+Anyways - here goes ...
 
-	a) What are the failover criteria ? Does the other box need to
-	   maintain full state, or can you accept that all connections will
-	   die for the moment, and can be re-established with the new
-	   master server ?
+I've got rules for FTP inbound/outbound for both PORT and PASV =
+connections.
+I'm also running MySQL, which defaults to port 3306.
 
-           If state is required, iptables2 should contain failover
-	   capability according to some previous posts by Harald. There was
-	   some experimental work being done by someone, in regards to
-	   exporting the entries out (you'll have to check the archives for
-	   details). I'm not sure how you'll get freeswan to play nice
-	   though.
+If FTP PASV rules are enabled, either as a server or client, it seems =
+all my
+high ports are open to be connected to.  I've tried enforcing state, but =
+I
+end up either breaking the rule so that FTP doesn't work, or I end up
+opening the high-ports again.
 
-	b) If you merely want dumb failover, then google around for VRRP.
-	   But understand the drawbacks in each circumstance.
+Is there a way to fix this by developing a better rule? Or should I =
+limit my
+PASV ports to a range that does not overlap with other services?
+
+Here are the related rules ... (the PASV rules are commented out)
+
+#
+# General rules
+#
+modprobe ip_tables
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp
+
+#################################################################
+# Kernel configuration section and cleansing of the filter, nat,#
+# and mangle tables                                             #
+#################################################################
+echo -n $"clearing old rules from tables:"
+
+$IPTABLES -F && \
+$IPTABLES -t filter -F INPUT && \
+$IPTABLES -t filter -F FORWARD && \
+# commands to zero chain counters - needed on restart
+$IPTABLES -X
+$IPTABLES -t filter -Z && \
+
+success $"clearing old rules from tables" || \
+failure $"clearing old rules from tables"
+echo
+
+# set all filtering to DROP as default
+echo -n $"setting default rules to DROP: "
+
+# used to be IPTABLES -t filter -P ...
+
+$IPTABLES -P INPUT DROP && \
+$IPTABLES -P FORWARD DROP && \
+$IPTABLES -P OUTPUT DROP  && \
+
+success $"setting default rules to DROP" || \
+failure $"setting default rules to DROP"
+echo
+
+#
+# FTP RULES
+#
+
+if [[ $FTP_client =3D=3D 1 ]] ; then
+        echo -n $"adding FTP client rules: "
+
+        # Outgoing Request
+
+        $IPTABLES -A INPUT -i $IFACE -p tcp \
+                        -s any/0 --sport 21 \
+                        -d $LOCAL_IP --dport 1024: \
+                        -m state --state ESTABLISHED \
+                        -j ACCEPT &&\
+        $IPTABLES -A OUTPUT -o $IFACE -p tcp \
+                        -s $LOCAL_IP --sport 1024: \
+                        -d any/0 --dport 21 \
+                        -m state --state NEW,ESTABLISHED \
+                        -j ACCEPT &&\
+
+        # PORT FTP Connections
+
+        $IPTABLES -A INPUT -i $IFACE -p tcp \
+                        -s any/0 --sport 20 \
+                        -d $LOCAL_IP --dport 1024: \
+                        -m state --state ESTABLISHED,RELATED \
+                        -j ACCEPT &&\
+        $IPTABLES -A OUTPUT -o $IFACE -p tcp \
+                        -s $LOCAL_IP --sport 1024: \
+                        -d any/0 --dport 20 \
+                        -m state --state ESTABLISHED \
+                        -j ACCEPT &&\
+
+        # PASV FTP Connections
+
+#       $IPTABLES -A INPUT -i $IFACE -p tcp \
+#                       -s any/0 --sport 1024: \
+#                       -d $LOCAL_IP --dport 1024: \
+#                       -m state --state ESTABLISHED \
+#                       -j ACCEPT &&\
+#       $IPTABLES -A OUTPUT -o $IFACE -p tcp \
+#                       -s $LOCAL_IP --sport 1024: \
+#                       -d any/0 --dport 1024: \
+#                       -m state --state ESTABLISHED,RELATED \
+#                      -j ACCEPT &&\
+
+        success $"adding FTP client rules" || \
+        failure $"adding FTP client rules"
+        echo
+fi
+
+Thanks again,
+
+James
+
 
 
