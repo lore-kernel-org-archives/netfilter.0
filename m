@@ -1,13 +1,12 @@
-From: Stef Coene <stef.coene@docum.org>
-Subject: Re: [LARTC] Performanace fo the Iptables Server
-Date: Wed, 27 Aug 2003 19:17:00 +0200
+From: Tabris <tabris@tabris.net>
+Subject: ipt_string problems and FAQ
+Date: Wed, 27 Aug 2003 13:19:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308271917.00121.stef.coene__10954.8158398413$1062301097@docum.org>
-References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall> <200308271730.07228.stef.coene@docum.org> <011601c36cbd$185a5da0$c2bf09ca@Housecall>
+Message-ID: <200308271319.29439.tabris@tabris.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <011601c36cbd$185a5da0$c2bf09ca@Housecall>
+Content-Description: clearsigned data
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,47 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
-Cc: lartc@mailman.ds9a.nl
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wednesday 27 August 2003 19:03, hare ram wrote:
-> Hi Stef
->
-> thanks for the reply
->
-> yes i would like to do accounting the source IP
-> so i need to log them all the traffic,
-> so i will know each IP how much transfering DATA
->
-> with my configuration, is there any performance issue
-> i may have more than thousands of passing through this firewall or qos
-> server
->
-> so my PC will have any performance issue or,
-> this configuration need any modification
-You don't have to log each packet to do accounting.  If you create 1 iptables 
-rule for each src address, you know how many packets and bytes that that src 
-address transmitted.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-iptables -A INPUT -s 192.168.1.0
-iptables -A INPUT -s 192.168.1.1
-iptables -A INPUT -s 192.168.1.2
+Ok, i admit to finding a message in the archive that mentioned that we're=20
+not supposed to use ipt_string for stopping code red and such (it says=20
+there's an FAQ entry for it, which i did not find), so first, I'd like to=20
+ask where this FAQ entry is...
 
-iptables -L -v -n
-Chain INPUT (policy DROP 47 packets, 5842 bytes)
- pkts bytes target     prot opt in     out     source   destination
-    0     0            all  --  *      *       192.168.1.0          0.0.0.0/0
-    0     0            all  --  *      *       192.168.1.1          0.0.0.0/0
-    0     0            all  --  *      *       192.168.1.2          0.0.0.0/0
+second, I've been using ipkungfu to attempt to stop codered, nimda, etc=20
+from hitting my apache server and clogging up my logs.
 
-Stef
+It's not working, the rules never trigger. I've played around with it to=20
+no avail.
 
--- 
+I guess, if this doesn't work, and isn't supposed to work, what SHOULD I=20
+do?
 
-stef.coene@docum.org
- "Using Linux as bandwidth manager"
-     http://www.docum.org/
-     #lartc @ irc.oftc.net
+I'm using a kernel 2.4.22-pre series kernel with some patch-o-matic=20
+iptables patches. I hope this doesn't end up being another of those=20
+stupid questions that never gets answered.
+
+TIA
+=2D --
+tabris
+=2D -
+Nietzsche says that we will live the same life, over and over again.
+God -- I'll have to sit through the Ice Capades again.
+		-- Woody Allen, "Hannah and Her Sisters"
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/TOggtTgrITXtL+8RAiGkAJ49cU4UE+LzbcbS4XNxp+RM+uo3qgCfZQxD
+iL/1//ju0Ke+UuJIXkZauZk=3D
+=3DmY90
+=2D----END PGP SIGNATURE-----
 
 
