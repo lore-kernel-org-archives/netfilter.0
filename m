@@ -1,11 +1,11 @@
-From: Krunk <krunkalot@hotpop.com>
+From: "IT Clown" <iptables@mailbox.co.za>
 Subject: Re: passive ftp
-Date: Sat, 17 Apr 2004 13:12:04 -0500
+Date: Sat, 17 Apr 2004 20:18:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082225524.4221.9.camel@james>
+Message-ID: <web-287954911@mail01.infosat.net>
 References: <web-287943006@mail01.infosat.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <web-287943006@mail01.infosat.net>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -20,28 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This did it for me:
-IPT=/usr/sbin/iptables
-EXTIF=ppp0 # interface facing outward
-EXTIP=xxx.xxx.xxx.xxx
-INTIF=eth1
-INTNET=<ip assigned to eth1>
-TCP="ftp ftp-data"
-for i in $TCP
-do
-$IPT -A OUTPUT -o $EXTIF -p tcp -s $EXTIP --dport $i --syn -m state --state NEW -j ACCEPT
-$IPT -A FORWARD -i $INTIF -p tcp -s $INTNET --dport $i --syn -m state --state NEW -j ACCEPT
-done
+Sorry i left out something about the following rule:
+> -A FORWARD -p tcp -i eth0 -o ppp0 --dport 20 -j ACCEPT
+> -A FORWARD -p tcp -i eth0 -o ppp0 --dport 21 -j ACCEPT
+> -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-You can put any number of services defined in /etc/services in the TCP
-list and free them up with the loop. 
+When i set the rule i can connect to passive mode ftp
+servers but when it needs to list the contents of the ftp
+server it will list nothing or i will get disc from the ftp
+server.
 
-On Sat, 2004-04-17 at 12:50, IT Clown wrote:
+
+
+On Sat, 17 Apr 2004 19:50:35 +0200
+ "IT Clown" <iptables@mailbox.co.za> wrote:
 > Hi 
 > 
-> I am having some trouble to access passive mode ftp sites.I
-> have a firewall with ip forwarding enabled.When a pc on the
-> network want to access passive ftp servers i need to do the
+> I am having some trouble to access passive mode ftp
+> sites.I
+> have a firewall with ip forwarding enabled.When a pc on
+> the
+> network want to access passive ftp servers i need to do
+> the
 > following in my rules ( on the server ):
 > 
 > -A OUTPUT -p tcp -m multiport --dport 21,20 -j ACCEPT
@@ -50,15 +50,20 @@ On Sat, 2004-04-17 at 12:50, IT Clown wrote:
 > -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 > 
 > But i do not want every query to be forwarded i only want
-> say ftp access to be forwarded. Why does the following not
+> say ftp access to be forwarded. Why does the following
+> not
 > work ( on the server ):
 > 
 > -A FORWARD -p tcp -i eth0 -o ppp0 --dport 20 -j ACCEPT
 > -A FORWARD -p tcp -i eth0 -o ppp0 --dport 21 -j ACCEPT
 > -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 > Regards
-> ______________________________________________________________
-> Herbalife Independent Distributor http://www.healthiest.co.za
+>
+______________________________________________________________
+> Herbalife Independent Distributor
+> http://www.healthiest.co.za
+> 
 
-
+______________________________________________________________
+Herbalife Independent Distributor http://www.healthiest.co.za
 
