@@ -1,55 +1,60 @@
-From: Andrew McRory <amcrory@linuxsys.com>
-Subject: SNAT Problem / Question
-Date: Thu, 17 Jun 2004 23:24:47 -0400 (EDT)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0406172259260.15532-100000@weta.lselinux.com>
+From: KOVACS Krisztian <hidden@balabit.hu>
+Subject: RE: Redundant netfilter gateway
+Date: Fri, 18 Jun 2004 11:56:45 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <1087552587.2422.19.camel@nienna.balabit>
+References: <810BC538117E9F4E9BB152E0C100DF1F0F46CC@farmer.vikus.net>
+	 <1087516560.1891.32.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <1087516560.1891.32.camel@anduril.intranet.cartel-securite.net>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Patrick Ahler <patrick@vikus.com>, Harald Welte <laforge@netfilter.org>, netfilter@lists.netfilter.org, netfilter-devel <netfilter-devel@lists.netfilter.org>
 
+  Hi,
 
-I am having problem getting SNAT to work with tn3270 clients. My network 
-is using private IP address and is connected via freeswan ipsec to the 
-remote server. Since a large number of clients connect to the server they 
-require that all incoming connections be from our public IP. I setup this 
-rule:
+2004-06-18, p keltez=E9ssel 01:56-kor Cedric Blancher ezt =EDrta:
+> Le ven 18/06/2004 =E0 01:50, Patrick Ahler a =E9crit :
+> > I'm surprised there hasn't been more demand for a netfilter failover
+> > module though, I know I would sleep better at night if there was. =3D)
+>=20
+> There's definitly a strong demand. But there's not much offer yet...
+> Things seems to be on the way.
 
-  $IPT -t nat -A POSTROUTING -o ipsec0 -j SNAT -d <REMOTE_IP> \
-    --to <OUR_PUBLIC_IP>
+  Netfilter failover is progressing silently... Harald has done a lot of
+work based on my crappy proof-of-concept implementation, and things are
+really getting to take off. This week I've spent a few days testing the
+code, with somewhat mixed results. Certainly, there are a lot of
+problems, It's not usable in its current form. However, I think that the
+whole ct_sync code could be fixed and made into a _working_ piece of
+long-awaited software in not more than a few weeks, if somebody with
+enough knowledge _and_ free time would be able to help Harald. (I plan
+to do so if I'll find the time.) Most of the code necessary for basic
+synchronization is there, just contains bugs. So, come on dear Netfilter
+hackers, we're not that far from providing a solution!
 
-and verified with tcpdump that the packets going out on the ipsec0 
-interface have been SNAT'ed properly. With a single client connection 
-everything operates beautifully however when a second client connects the 
-first client session breaks and the server responds with 
+  Moreover, I think that a somewhat more open development model could
+help. Currently, only the core ct_sync code can be found in the
+Netfilter CVS (I don't know if it's up-to-date), the patchset needed to
+be able to even compile the code is missing. (It took me a lot of time
+just to gather the patches and make ct_sync compile.) There is not too
+much information regarding the basic concepts of the proposed solution,
+so publishing an easy-to-test package along with some instructions would
+be an absolute must.
 
-	"Please close your telnet session. A connection establishment 
-	error has been detected."
-
-I am guessing that this is having to do with connection tracking but I am 
-not sure. Any help is greatly appreciated as I have not found anything in 
-hours of searching!!
-
-Regards,
-
--- 
-Andrew McRory - President
-Linux Systems Engineers, Inc.
-PO BOX 3791
-Tallahassee, FL 32315
-Office	850-224-5737
-Office	850-575-7213
-Mobile	850-294-7567
-
+--=20
+ Regards,
+   Krisztian KOVACS
 
 
