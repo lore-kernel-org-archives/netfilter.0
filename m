@@ -1,9 +1,11 @@
-From: David Reta <DavidR@Narus.com>
-Subject: New to IP Tables
-Date: Wed, 13 Nov 2002 16:14:33 -0800
+From: Chris Poupart <chris.poupart@mcgill.ca>
+Subject: Re: Time based rules ...
+Date: Wed, 13 Nov 2002 11:00:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <580E532D9F7A9B4BAE8A130848E0DDA702A0B74F@franklin.narus.com>
+Message-ID: <3DD27725.7030006@mcgill.ca>
+References: <1037199668.4556.30.camel@rayw.knowledgefactory.co.za>
 Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms030200050104000308010508"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,48 +16,103 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+To: Raymond Leach <raymondl@knowledgefactory.co.za>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+
+This is a cryptographically signed message in MIME format.
+
+--------------ms030200050104000308010508
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-	I just started using IP Tables and have a question. I was not able
-to find the answer in any of the docs I've read so far.
-I have a machine that I am using as a router and running Ip Tables on it.
-Here is a list of my tables.
+Couldn't you just use a CRON job to add and remove that rule at the 
+required times?
 
-[root@qa-gate root]# iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
+-- Chris
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ftp-data
+Raymond Leach wrote:
+> Hi
+> 
+> Is there a way to put time restrictions on rules?
+> For eaxmple, something like:
+> 
+> iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
+> 0700:1700 -j DROP
+> 
+> It would be nice ...
+> 
+> Ray
+> -- 
 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ftp 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:26 
-DROP       tcp  --  anywhere             anywhere           
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
+--------------ms030200050104000308010508
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Chain test (0 references)
-target     prot opt source               destination
-
-I am not able to pass any data through the router. Here is the scenario, I
-want to access a Web Site which is on the other side of the router. The way
-that I interpret this is that the packet will get passed to the first chain
-which is
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
-and be let through, yet this is not happening. All tcp traffic is being
-blocked which is defined by my 6th rule. I guess I am not understanding
-this, but I would think that the packet would match the first rule and be
-passed through and the following chains would be ignored. My logic is
-probably wrong.
-
-Thanks,
-David
-
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJXDCC
+AwwwggJ1oAMCAQICAwhdizANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
+BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
+HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
+bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkyNzE3MTczNloXDTAzMDkyNzE3MTczNlowSTEf
+MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEmMCQGCSqGSIb3DQEJARYXY2hyaXMu
+cG91cGFydEBtY2dpbGwuY2EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4eF7z
+tl0IE3iJFRn+QxzBIYj9kv5bkCa3oB0ZcsGxoYoVoTKXPKmiI/CvhpNUKG3EgffmNsO1bsiW
+yoyX29ex3bjSUvXUp7rUdl4z/LlgTsPXOpfuXnt1d719kpn5yAPI3yzCBjjtwrEb1X7XUIcP
+iLW8kAwMn12a6m7ym7UUGuFALwIB3LkOiO0OnT46s5ePDLWwSLgRNamTT+DSgi5thUktZAhk
+jPcOwzrfvYH8+/BPbGpgjtUQjWE/prOI/MwAG+CUnFXFc72OjJsdBpUj0mRKiDpsVH6u0LWe
+lnxtnRWc40zdhl4zYvM3+t110RFmEsf9fl8qig2sc9noV4YBAgMBAAGjNDAyMCIGA1UdEQQb
+MBmBF2NocmlzLnBvdXBhcnRAbWNnaWxsLmNhMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEE
+BQADgYEA2R04OiFqWwqdpxeCGJQflyooYzpl7T+vXXizBMOLAcn6ecXf+na9O2AOFTOVLZ83
+kR0jg5vX7GJpvVDM+qBkQqyqCgsDElXxzizOEFwMZwbNcEl3lA1wxLwwcvICZlfAZsn1dNGo
+NZrZ2castGJgIf64I1YmlnxwX82nJDQJ1dQwggMMMIICdaADAgECAgMIXYswDQYJKoZIhvcN
+AQEEBQAwgZIxCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcT
+CUNhcGUgVG93bjEPMA0GA1UEChMGVGhhd3RlMR0wGwYDVQQLExRDZXJ0aWZpY2F0ZSBTZXJ2
+aWNlczEoMCYGA1UEAxMfUGVyc29uYWwgRnJlZW1haWwgUlNBIDIwMDAuOC4zMDAeFw0wMjA5
+MjcxNzE3MzZaFw0wMzA5MjcxNzE3MzZaMEkxHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBN
+ZW1iZXIxJjAkBgkqhkiG9w0BCQEWF2NocmlzLnBvdXBhcnRAbWNnaWxsLmNhMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuHhe87ZdCBN4iRUZ/kMcwSGI/ZL+W5Amt6AdGXLB
+saGKFaEylzypoiPwr4aTVChtxIH35jbDtW7IlsqMl9vXsd240lL11Ke61HZeM/y5YE7D1zqX
+7l57dXe9fZKZ+cgDyN8swgY47cKxG9V+11CHD4i1vJAMDJ9dmupu8pu1FBrhQC8CAdy5Dojt
+Dp0+OrOXjwy1sEi4ETWpk0/g0oIubYVJLWQIZIz3DsM6372B/PvwT2xqYI7VEI1hP6aziPzM
+ABvglJxVxXO9joybHQaVI9JkSog6bFR+rtC1npZ8bZ0VnONM3YZeM2LzN/rdddERZhLH/X5f
+KooNrHPZ6FeGAQIDAQABozQwMjAiBgNVHREEGzAZgRdjaHJpcy5wb3VwYXJ0QG1jZ2lsbC5j
+YTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBANkdODohalsKnacXghiUH5cqKGM6
+Ze0/r114swTDiwHJ+nnF3/p2vTtgDhUzlS2fN5EdI4Ob1+xiab1QzPqgZEKsqgoLAxJV8c4s
+zhBcDGcGzXBJd5QNcMS8MHLyAmZXwGbJ9XTRqDWa2dnGrLRiYCH+uCNWJpZ8cF/NpyQ0CdXU
+MIIDODCCAqGgAwIBAgIQZkVyt8x09c9jdkWE0C6RATANBgkqhkiG9w0BAQQFADCB0TELMAkG
+A1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRow
+GAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2
+aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSsw
+KQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0aGF3dGUuY29tMB4XDTAwMDgzMDAw
+MDAwMFoXDTA0MDgyNzIzNTk1OVowgZIxCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJu
+IENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEPMA0GA1UEChMGVGhhd3RlMR0wGwYDVQQLExRD
+ZXJ0aWZpY2F0ZSBTZXJ2aWNlczEoMCYGA1UEAxMfUGVyc29uYWwgRnJlZW1haWwgUlNBIDIw
+MDAuOC4zMDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA3jMypmPHCSVFPtJueCdngcXa
+iBmClw7jRCmKYzUqbXA8+tyu9+50bzC8M5B/+TRxoKNtmPHDT6Jl2w36S/HW3WGl+YXNVZo1
+Gp2Sdagnrthy+boC9tewkd4c6avgGAOofENCUFGHgzzwObSbVIoTh/+zm51JZgAtCYnslGvp
+oWkCAwEAAaNOMEwwKQYDVR0RBCIwIKQeMBwxGjAYBgNVBAMTEVByaXZhdGVMYWJlbDEtMjk3
+MBIGA1UdEwEB/wQIMAYBAf8CAQAwCwYDVR0PBAQDAgEGMA0GCSqGSIb3DQEBBAUAA4GBADGx
+S0dd+QFx5fVTbF151j2YwCYTYoEipxL4IpXoG0m3J3sEObr85vIk65H6vewNKjj3UFWobPcN
+rUwbvAP0teuiR59sogxYjTFCCRFssBpp0SsSskBdavl50OouJd2K5PzbDR+dAvNa28o89kTq
+JmmHf0iezqWf54TYyWJirQXGMYIDJzCCAyMCAQEwgZowgZIxCzAJBgNVBAYTAlpBMRUwEwYD
+VQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEPMA0GA1UEChMGVGhhd3Rl
+MR0wGwYDVQQLExRDZXJ0aWZpY2F0ZSBTZXJ2aWNlczEoMCYGA1UEAxMfUGVyc29uYWwgRnJl
+ZW1haWwgUlNBIDIwMDAuOC4zMAIDCF2LMAkGBSsOAwIaBQCgggFhMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTAyMTExMzE2MDAzN1owIwYJKoZIhvcNAQkE
+MRYEFPPTeVlaU6CriiJOR4LZx+r6wQHOMFIGCSqGSIb3DQEJDzFFMEMwCgYIKoZIhvcNAwcw
+DgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEo
+MIGtBgsqhkiG9w0BCRACCzGBnaCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rl
+cm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsT
+FENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0Eg
+MjAwMC44LjMwAgMIXYswDQYJKoZIhvcNAQEBBQAEggEAoB1OfLfTqsK2qcx8rvWr2BjmUAf2
+lZptBBFjTllqjMOSSBf1uQW3pkKEgtRInTtpgO8n6GMaOufBeP6qqYL3F/D0lOwcn3R/E7my
+0o8+dAN59mmI7X/CfKJFqPdob7VqPxTfp6fXr+gVxDcbG3WKfYkdpF2oDU9Z0TFaMKpZ76Zg
+OaF6May1hkzxVsuQgG3YZmzQleelN9X4kDCu4gfMfLSm2uWRjGuPV+EA+0CzIrHMt7kilkfo
+LBnN7NGRqMRZ6aydF6CQ8KS7ptV5KF5xTgMOr4m4IlDwl5PP6QJNZ2I4qFWe2eIHTWNqhiZa
+b7vNjCLgvG42EDyKPdHZfpZw6wAAAAAAAA==
+--------------ms030200050104000308010508--
 
 
