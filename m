@@ -1,13 +1,11 @@
-From: "R. Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: PPTP through masquerading gateway
-Date: Tue, 9 Jul 2002 00:31:41 +0200
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: RE: Why are default policies not possible for user-defined chains
+	?
+Date: Tue, 9 Jul 2002 08:34:56 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001c01c226cf$3bc72d70$0401000a@win2k>
-References: <000d01c226c1$9a049390$6b01a8c0@s3ac>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA279@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000d01c226c1$9a049390$6b01a8c0@s3ac>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,99 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org]On
-> Behalf Of Rowan Reid
-> Subject: RE: PPTP through masquerading gateway
->
-> I've been trying to get this to work. with no luck. I've used the POM
-module which
-> fails everytime I try to patch my kernel 2.4.4 and up
-> no luck even on a freshly downloaded kernel. other patches work but pptp
-does not. I
-> tried another patch which patched my 2.4.18 kernel
-> but all my connections fail to make it to my server.  I woudl love to talk
-to
-> at least one person who HAS gotten this to work.
+You could put a RETURN at the end too couldn't you, so it'll return back to
+the chain it came from and then end up with the original chains DEFAULT
+policy... no?
 
-Ok.. I did it this way.
-I'm going through it step by step, so don't flame me for describing steps
-that seem obvious.
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
 
-I used :
-- kernel 2.4.17 (Because the patch is for *that* kernel. I'm no hacker so
-I'm not going to try it on another kernel...).
-- the PPTP kernel patch from
-http://www.impsec.org/linux/masquerade/ip_masq_vpn.html.
-- iptables-1.2.6a.
-- the default gcc from RH-7.3 (2.96, I know, I know...)
 
-Untar the kernel source to /usr/src/linux.
-Untar the patch to /usr/src.
-Untar iptables to /usr/src/iptables-1.2.6a
 
-cd /usr/src
-patch =96p0 < netfilter-pptp-2.4.17-rev2.patch
+-----Original Message-----
+From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+Sent: Tuesday, 09 July 2002 2:57 AM
+To: netfilter@lists.samba.org
+Subject: Re: Why are default policies not possible for user-defined
+chains?
 
-cd /usr/src/iptables-1.2.6a
-make pending-patches KERNEL_DIR=3D/usr/src/linux
 
-If all went well go ahead and configure your kernel.
-cd /usr/src/linux
-make xconfig (or whatever you like to use)
+On Monday 08 July 2002 5:32 pm, Jan Humme wrote:
 
-Check all (networking) options that apply.
-There are two new options in the kernel config :
-- Networking options -> IP: Netfilter Configuration -> PPTP protocol support
-- Networking options -> IP: Netfilter Configuration -> PPTP verbose debug
-Make sure you check the first.
-If you want ***LOT'S*** of logging in syslog, also check the second.
-(You could try that, see what it's all about when you got it to work and
-after that recompile the kernel without it ;o] You don't need it for normal
-operation.)
+> What is the reason that iptables does not support default policies on
+> user-chains?
 
-make dep clean
-make bzImage (or some other ?)
-make modules modules_install
+I suppose it's partly because there's not a lot of point (that I can see).
 
-Copy the ./arch/i386/boot/bzImage file to /boot
-Copy ./System.map to /boot
-Change your lilo.conf or grub.conf to let the new kernel show up in the
-bootmanager. (Lilo needs you to run "lilo" to reflect the changes.)
+You can only call a user-defined chain from one of the built-in chains (or 
+from another user-defined chain, which has to be called from a built-in 
+chain, etc...) therefore ultimately it's the default policy of the built-in 
+chain which determines what happens to a packet if none of the rules match.
 
-cd /usr/src/iptables-1.2.6a
-make KERNEL_DIR=3D/usr/src/linux
-make install KERNEL_DIR=3D/usr/src/linux
+> It seems like such a natural extension, and easy to implement. Or not? Is
+> there perhaps a catch that I am overlooking?
 
-Reboot and make sure to boot the new kernel.
+It's easy enough to put a DROP, or ACCEPT, or whatever, as the last rule in 
+your user-defined chain, thereby catching any packets which haven't already 
+matched.....
 
-Now for the forwarding rules.
-I'm taking values from this post. Since it's not mentioned, I take eth0 as
-the LAN NIC.
-http://www.netfilter.org/documentation/tutorials/blueflux/iptables-tutorial.
-html#TRAVERSINGOFTABLES
-Table 3-1. We are forwarding packets -> our packets will be going through
-the PREROUTING chain and the FORWARD chain, so we'll need rules for both of
-them.
+ 
 
-iptables -A FORWARD -p tcp -i ppp0 -o eth0 -d 10.1.1.15 --dport 1723 -j
-ACCEPT
-iptables -A FORWARD -p 47 -i ppp0 -o eth0 -d 10.1.1.15 -j ACCEPT
-
-iptables -t nat -A PREROUTING -p tcp -i ppp0 -d <external-ip> --dport
-1723 -j DNAT --to 10.1.1.15:1723
-iptables -t nat -A PREROUTING -p 47 -i ppp0 -d <external-ip> -j DNAT --to
-10.1.1.15
-
-Of course you need to set additional rules for your firewall to work.
-
-Well, this should do it. It does for me.
-Hope I was of help and wasn't talking too much rubbish.
-
-Rob
-
+Antony.
 
