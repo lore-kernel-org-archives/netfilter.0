@@ -1,10 +1,15 @@
-From: Michael Thompson <mike@thompsonmike.co.uk>
-Subject: Is this possible?
-Date: Fri, 11 Feb 2005 16:06:45 +0000
-Message-ID: <420CD815.1000806@thompsonmike.co.uk>
+From: Victor Julien <victor@nk.nl>
+Subject: Re: RELATED ICMP packets of type 3
+Date: Fri, 11 Feb 2005 17:08:41 +0100
+Message-ID: <200502111708.41372.victor@nk.nl>
+References: <200502111757.16352.e-boogie@yandex.ru>
+	<20050211154955.GA2644@bender.817west.com>
+	<1108137730.5565.71.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1108137730.5565.71.camel@anduril.intranet.cartel-securite.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,19 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-I have a issue where I cannot connect to my server because the firewall 
-only allows ports 80 and 443 out.
+On Friday 11 February 2005 17:02, Cedric Blancher wrote:
+> Le vendredi 11 f=E9vrier 2005 =E0 10:49 -0500, Jason Opperisano a =E9crit=
+ :
+> > in theory--they are RELATED.  in practice, i allow them explicitly.
+> > looking at one of my firewalls, it appears as though there are ICMP Type
+> > 3 packets that get past the RELATED rule and hit the explicit allow rul=
+e,
+>
+> Did you have a look at one of them, just to see if it's a legitimate
+> one ? I have experienced some troubles with DNS and port unreachable on
+> very slow links, but that was quite unusual.
 
-I previously ran SSH on port 443 to overcome this, but I have had to 
-implement a HTTPS solution for users who wanted secure access, so that 
-is now gone.
+So Cedric, you are basicly saying that if i accept RELATED icmp packets i=20
+_should_ be a good internet-citizen?
 
-This system has DNS records for ssh.server.co.uk and www.server.co.uk, 
-so can I use IPTables or similar to recognise if it is being connected 
-to via ssh.server.co.uk on port 443 and forward the traffic to port 22? 
-If www.server.co.uk:443 is used apache gets the traffic? Or is this (As 
-I suspect) Impossible?
+Regards,
+Victor
 
