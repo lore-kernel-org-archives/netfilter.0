@@ -1,13 +1,12 @@
-From: James Sneeringer <james+netfilter@vincentsystems.com>
-Subject: Re: Error when using iptables 1.2.6a (or another version)
-Date: Tue, 4 Jun 2002 16:28:07 -0500
+From: "Travis Crook" <travis@visionsbeyond.com>
+Subject: ftp forward to internal machine
+Date: Tue, 4 Jun 2002 16:00:13 -0600
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020604212807.GA30300@valjean.si.ocslink.com>
-References: <B5747F3DB39FD411884B00B0D07808CCB6C1FC@server10> <1023223261.8261.2.camel@billy.demon.nl>
+Message-ID: <009201c20c13$347b4140$6702a8c0@mindtrip.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_008F_01C20BE0.E99DADC0"
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <1023223261.8261.2.camel@billy.demon.nl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,27 +16,97 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Tue, Jun 04, 2002 at 10:41:01PM +0200, Tony Earnshaw wrote:
-| O.k., I use Red Hat and kernel.org kernels and modules, but it seems
-| *very* strange to me that Mandrake should use gzipped modules.
+This is a multi-part message in MIME format.
 
-There is a compile-time option to modutils (modprobe, insmod, et al) that
-permits gzipped kernel modules.  The INSTALL file from modutils-2.4.16
-has this to say about it:
+------=_NextPart_000_008F_01C20BE0.E99DADC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-    [configure options]
+Hello everyone,
+    I have a firewall configured to forward port 80 traffic to an =
+internal machine.  I was wondering if the same thing is possible with =
+ftp traffic.  The rules I am using are as follows:
 
-    --disable-zlib          Handle gzipped objects?  Default is no.
-                            You probably only need this if you are booting
-                            a small root filesystem and the filesystem is
-                            not compressed itself.
+iptables -A PREROUTING -t nat -i EXTINF -p tcp -d 1.2.3.4 --dport 21 -j =
+DNAT --to 192.168.2.5:21
 
-I know Slackware 7.1 and 8.0 enable this feature.
+iptables -A FORWARD -i EXTINF -p tcp -d 192.168.2.5 --dport 21 ACCEPT
 
--James
+iptables -A FORWARD -i EXTINF -o INTIF -p tcp --dport 21 -m state =
+--state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+iptables -t nat -A PREROUTING -i EXTINF -p tcp --dport 21 -d 1.2.3.4 -j =
+DNAT --to-destination 192.168.2.5:21
+
+iptables -t nat -A POSTROUTING -o INTIF -p tcp --dport 21 -d 192.168.2.5 =
+-j SNAT --to-source 192.168.2.254
+
+I can connect to the ftp server but then I cannot establish a data =
+channel between the client and the server.=20
+
+Any help would be appreciated.  If you want to see output of anything I =
+can include it.
+
+Thanks
+
+Travis Crook
+Visions Beyond
+
+------=_NextPart_000_008F_01C20BE0.E99DADC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4728.2300" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hello everyone,</DIV>
+<DIV>&nbsp;&nbsp;&nbsp; I have a firewall configured to forward port 80 =
+traffic=20
+to an internal machine.&nbsp; I was wondering if the same thing is =
+possible with=20
+ftp traffic.&nbsp; The rules I am using are as follows:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>iptables -A PREROUTING -t nat -i EXTINF -p tcp -d 1.2.3.4 --dport =
+21 -j=20
+DNAT --to 192.168.2.5:21</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>iptables -A FORWARD -i EXTINF -p tcp -d 192.168.2.5 --dport 21 =
+ACCEPT</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>iptables -A FORWARD -i EXTINF -o INTIF -p tcp --dport 21 -m state =
+--state=20
+NEW,ESTABLISHED,RELATED -j ACCEPT</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>iptables -t nat -A PREROUTING -i EXTINF -p tcp --dport 21 -d =
+1.2.3.4 -j=20
+DNAT --to-destination 192.168.2.5:21</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>iptables -t nat -A POSTROUTING -o INTIF -p tcp --dport 21 -d =
+192.168.2.5 -j=20
+SNAT --to-source 192.168.2.254</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I can connect to the ftp server but then I cannot establish a data =
+channel=20
+between the client and the server. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Any help would be appreciated.&nbsp; If you want to see output of =
+anything=20
+I can include it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Travis Crook</DIV>
+<DIV>Visions Beyond</DIV></BODY></HTML>
+
+------=_NextPart_000_008F_01C20BE0.E99DADC0--
 
 
