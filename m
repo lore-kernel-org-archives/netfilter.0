@@ -1,13 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: RST instead of FIN?
-Date: Sun, 11 Apr 2004 06:00:40 -0400
+From: ro0ot <ro0ot@phreaker.net>
+Subject: Re: opening connection for Tomcat
+Date: Fri, 09 Apr 2004 00:01:28 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081677639.2013.11.camel@grendel>
-References: <05c301c41f2a$4a6ef650$9701a8c0@office>
+Message-ID: <40757758.8060707@phreaker.net>
+References: <40756C19.3010606@tin.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <05c301c41f2a$4a6ef650$9701a8c0@office>
+In-Reply-To: <40756C19.3010606@tin.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +17,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jay Levitt <lists-netfilter@shopwatch.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Gianni Pucciani <gp.puccio@tin.it>
 Cc: netfilter@lists.netfilter.org
 
-On Sat, 2004-04-10 at 14:33, Jay Levitt wrote:
+You should only have this below: -
+
+iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -m state --state 
+NEW -j ACCEPT
+
+or
+
+iptables -A INPUT -p tcp -s 0.0.0.0/0 --sport 1024: -d <myprivateip> 
+--dport 8080 -m state --state NEW -j ACCEPT
+
+Regards,
+ro0ot
+
+Gianni Pucciani wrote:
+
+> Hi all,
+> I was in trouble opening a port for services with tomcat:
+> Is this rule right? I'm behind an adsl router that forward every 
+> connection on port 8080 to <myprivateip>.
 >
-> sourceforge: [SYN]
-> me: [SYN, ACK]
-> sourceforge: [ACK]
-> [SMTP conversation ensues, switches to TLS, sends me an e-mail.  at
-> the end..]
-> me: [RST]
+> iptables -P INPUT DROP
+> iptables -P OUTPUT ACCEPT
+> iptables -P FORWARD DROP
+>
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -s 0.0.0.0 -m 
+> state --state NEW -j ACCEPT
+>
+>
+>
+>
 
-Weird. Are you sure this is not a RST/ACK? 
-
-> sourceforge: [FIN, ACK]
-
-Looks like the RST was ignored (although hard to say since you did not
-include time stamps). Does the source MAC on the RST match your system?
-When I've seen this in the past its been an IDS or IPS attempting to
-reset the session due to a suspicious payload, but they get the sequence
-numbers wrong. Thus the RST/ACK gets ignored and the session continues.
-
-> me: [RST]
-> me: [RST]
-
-If this is an RST rather than a RST/ACK, it could be your system is
-losing session info and handling the ACKs like they are new packets
-(maybe some kind of broken IP wrapper application?). The second RST is
-*really* odd as its an error packet without any stimulus. That's not
-suppose to happen. 
-
-I'm guessing this is not the kernel or Sendmail, but I'm honestly not
-sure what it is.
-
-Happy hunting,
-Chris
 
 
 
