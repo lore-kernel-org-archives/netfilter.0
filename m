@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: How to control the bandwidth
-Date: Wed, 08 Dec 2004 08:05:23 -0500
-Message-ID: <1102511123.3556.7.camel@hubcap.ljm.dom>
-References: <MDAEMON-F200412082053.AA5333898md50000000155@palettemm.com>
+Subject: Re: Input chain, traffic from interface lo
+Date: Wed, 08 Dec 2004 08:00:05 -0500
+Message-ID: <1102510805.3556.2.camel@hubcap.ljm.dom>
+References: <20041208123229.14114.qmail@web54106.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <MDAEMON-F200412082053.AA5333898md50000000155@palettemm.com>
+In-Reply-To: <20041208123229.14114.qmail@web54106.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,47 +20,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-08 at 07:51, Bassam A. Al-Khaffaf wrote:
->  
-> Hi All,
->    I have Internet sharing Linux box (Redhat 9, Kernel 2.4.27, iptables
-> 1.2.11). All the traffic from the LAN side is MASQUERDED to the WAN side so
-> that everyone can get access the Internet.
+On Wed, 2004-12-08 at 07:32, Vesselin Kostadinov wrote:
+> Hi,
 > 
-> My backbone bandwidth is 2 mbps, when some people on the LAN side try to use
-> streaming downloads or use VoIP they will reserve the bandwidth and will
-> deprive the others from accessing the Internet.
+> The current "Iptables Tutorial" contains the following lines:
 > 
-> How can I use the iptables firewall rules to control the bandwidth??
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LAN_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $INET_IP -j ACCEPT
 > 
-> Regards 
-> Bassam
+> where $LO_IFACE is "lo", $LO_IP is "127.0.0.1", $LAN_IP is "192.168.0.2" and
+> $INET_IP is "194.236.50.155". 
 > 
-> ---
-> Outgoing mail is certified Virus Free.
-> Checked by AVG anti-virus system (http://www.grisoft.com).
-> Version: 6.0.806 / Virus Database: 548 - Release Date: 12/5/2004
->  
+> I fully agree with the first line but I am a bit puzzled by the other 2
+> lines. Is there any chance packets with source IP other than 127.0.0.1 to
+> come from interface lo?
 
-while you can use iptables to mark traffic you want to queue--actual
-queuing is handled by iproute2.  the main howto is at:
+no.  the linux routing code drops packets with source IP != 127.0.0.1
+received on lo as a "martian source."
 
-        http://lartc.org/howto/
-        
-queuing is specifically covered in chapter 9:
-
-        http://lartc.org/howto/lartc.qdisc.html
-        
-they also have their own dedicated mailing list:
-
-        http://lartc.org/#mailinglist
+i used to have the actual line in the source code handy, but i'm sure
+some constructive grepping will get you there.
 
 -j
 
 --
-"Lisa, if the Bible has taught us nothing else, and it hasn't, it's
- that girls should stick to girls sports, such as hot oil wrestling
- and foxy boxing and such and such."
+"Look, just give me some inner peace, or I'll mop the floor with ya!"
 	--The Simpsons
 
 
