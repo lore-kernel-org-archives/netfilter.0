@@ -1,13 +1,11 @@
-From: Louie <bishop@pacbell.net>
-Subject: Red Hat 8
-Date: Sat, 30 Nov 2002 23:42:46 -0800
+From: Othmar Pasteka <pasteka@kabsi.at>
+Subject: Getting rid of the masses of ip_conntrack messages
+Date: Sun, 1 Dec 2002 11:04:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBJIEMADMKCHCLFBLKOEBFCCAA.bishop@pacbell.net>
-References: <200212010111.42946.netfilter@newkirk.us>
+Message-ID: <20021201100429.GB18712@davinci>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200212010111.42946.netfilter@newkirk.us>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +16,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@newkirk.us, Tim Rodriguez <twr@bellsouth.net>, iptables-list <netfilter@lists.samba.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hello all,
+Hello,
 
-	Hope that everyone had a good
-Thanksgiving and weekend. Well I have a
-question for you guys regarding red hat
-8. I have just installed it. I got an
-alert from the red hat update. Does
-anyone trust that update program?
+I get quite many "ip_conntrack: max number of expected connections 1
+of ftp reached for 1.2.3.4->4.3.2.1, reusing" messages. How can I
+configure netfilter that he doesn'T show such messages at all?
+I am not interested in it and actually don't need/care about
+them.
+So far i googled a bit but just found that someone else had that
+as well, but didn't find an answer :(. Answers are greatly
+appreciated.
 
-Is that the way to update patches and
-other holes in red hat now?
+iptables: 1.2.6a
+kernel: 2.4.20
 
-Can anyone help me out?
+anything else what's needed?
 
-Louie
-
+TIA
+Othmar
 
