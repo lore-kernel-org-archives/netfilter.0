@@ -1,12 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: iptables wishes
-Date: Tue, 1 Apr 2003 03:41:48 -0500
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: Accept icmp-type destination-unreachable with limit
+Date: 01 Apr 2003 10:21:57 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304010341.48281.netfilter@newkirk.us>
-Reply-To: netfilter@newkirk.us
+Message-ID: <1049185317.14477.17.camel@elendil.intranet.cartel-securite.net>
+References: <000c01c2f716$b9fde2c0$0200a8c0@klintan.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000c01c2f716$b9fde2c0$0200a8c0@klintan.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Michael K <micke@klintan.se>
+Cc: netfilter@lists.netfilter.org
 
-I haven't started a new thread here in ages, and this is something I've=20
-been toying with for a while.  With the recent announcement of a=20
-feature-freeze on iptables 1.2.8, this seemed a reasonable time to start=20
-this thread.  (targeting later releases, obviously, and hoping to spark=20
-some constructive discussion :^)
+Le lun 31/03/2003 =E0 01:47, Michael K a =E9crit :
+> > Is this a good rule? According to
+> > http://www.robertgraham.com/pubs/firewall-seen.html#8.1 It's a good
+> > thing to accept this icmp type 3 and 4. But now the firewall=20
+> > is open for
+> > dos attacks. So I thought I put a limit to the rule.=20
+> > iptables -A INPUT -p ICMP --icmp-type destination-unreachable \
+> > 	-m limit --limit 10/minute --limit-burst 5 -j ACCEPT
+> > iptables -A INPUT -p ICMP --icmp-type source-quench -j ACCEPT
+> Is there no comments on this?
 
-I was curious to hear what people might have as a 'wishlist' for=20
-iptables/netfilter capabilities.  Every once in a while something comes=20
-up here that simply doesn't seem to have a good solution.
+Just one.
 
-My hope is that many of our personal wishes may already be possible, and=20
-by voicing them someone who has a solution may post it.  And for any=20
-that don't presently have an answer, perhaps someone will be inspired to=20
-create one.
+When an ICMP error packet is received by your box, conntrack tries to
+associate it to an existing IP flow in conntrack table. If it does match
+something, it is RELATED ; if not, it's INVALID.
 
-Personally I have four:
+So, if you want to accept ICMP errors, just accept RELATED stuff. And
+that's what you do with your last rule :
 
-1 - revamped LOG entry format, especially cleaning up MAC.
+> > iptables -A INPUT -p ALL -m state --state RELATED,ESTABLISHED
+> > -j ACCEPT
 
-2 - completely separate netfilter logging from kernel log streams.  (not=20
-just redirecting infrequently-used kernel streams, but actual dedicated=20
-netfilter streams)
+This means that even if a ICMP destination-unreachable breaks the limit
+you set, it will be accepted as long as it is flaged RELATED.
 
-3 - Ability to match "original DestinationIP" of a DNATted packet in=20
-subsequent chains.  Useful with a single physical interface but multiple=20
-IPs bound to it.
+So, imho, you should first DROP all INVALID stuff at ruleset top. It's
+better get rid of them at first than wasting ressources in having them
+go through the whole chain and get dropped by policy. So, no INVALID. At
+this point, ICMP error packets you'll get into your next rules are
+RELATED, and so are not likely to be part of a DoS. If someone's try to
+DoS you via ICMP, most of packet's you'll receive will be INVALID, and
+will get dropped. So you're right in saying you do not need theses
+rules.
 
-4 - addition of support for a REM field in rules.  Would do nothing=20
-whatsoever except print the specified REMark text at the end of the rule=20
-in -L listings.  Something like:
-iptables -A INPUT -p tcp --dport 22 -s a.b.c.d -j ACCEPT -REM JoelSSH
-So that a -L listing could be easier & quicker to decipher sometimes.  It=
-=20
-would also allow "iptables -L -v -n | grep Joel" to list only rules, in=20
-all chains, with "Joel" in the comment.
+So, for Netfilter as a good conntrack engine, I would let it handle ICMP
+errors. Better focus on DoS that are based on ping, UDP, TCP SYN, or
+stuff.
 
-
-j
-
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
