@@ -1,11 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
+From: Raphael Jacquot <raphael.jacquot@imag.fr>
 Subject: Re: Two NICS with same IP and same client IP
-Date: Wed, 02 Feb 2005 09:41:58 -0500
-Message-ID: <1107355317.4916.11.camel@hubcap.ljm.dom>
-References: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>
-	<4200A1F3.8030609@imag.fr>
-	<5172.57.66.65.39.1107338261.squirrel@57.66.65.39>
-	<4200AB33.1010308@imag.fr> <1107352680.4916.8.camel@hubcap.ljm.dom>
+Date: Wed, 02 Feb 2005 15:44:50 +0100
+Message-ID: <4200E762.2020501@imag.fr>
+References: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>	<4200A1F3.8030609@imag.fr>	<5172.57.66.65.39.1107338261.squirrel@57.66.65.39>	<4200AB33.1010308@imag.fr>
+	<1107352680.4916.8.camel@hubcap.ljm.dom>
 	<63838.57.66.65.39.1107354736.squirrel@57.66.65.39>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -20,22 +18,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Herv=E9?= <herve@lucidia.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2005-02-02 at 09:32, Herv=C3=A9 wrote:
-> Sorry guys, but this is indeed allowed. Your example might be valid if
-> you're talking MAC addresses and do not bridge the NICs, and even then =
-I'm
-> not sure.
+Herv=E9 wrote:
+>=20
+> In my case, the point is to help the routing by modifying the source
+> address. For example, you give eth0 two addresses: 192.168.100.1 and
+> 192.168.101.1, and eth1: 192.168.100.1 (yes, the same) and 192.168.102.=
+1.
 
-yup--you're exactly right--so i don't suppose you'll be needing any help
-on this then.
-
--j
-
---
-"Operator! Give me the number for 911!"
-	--The Simpsons
-
+what's the point ???
 
