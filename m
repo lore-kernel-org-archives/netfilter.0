@@ -1,14 +1,12 @@
-From: Fabrice MARIE <fabrice@celestix.com>
-Subject: Re: ip_forward file
-Date: Thu, 4 Jul 2002 22:17:28 +0800
+From: "Stephan Viljoen" <stephan@panintra.com>
+Subject: MSM Mesanger through a iptables firewall.
+Date: Thu, 4 Jul 2002 16:06:37 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207042217.28812.fabrice@celestix.com>
-References: <839BF5387528D311AD5D00902751CFC301B0418D@HAVASSMX>
-Reply-To: fabrice@celestix.com
+Message-ID: <003e01c22364$03356d50$f218dcc1@Tink>
+References: <200FAA488DE0D41194F10010B597610D2BA20C@JUPITER> <1025744168.3d239d282366f@www.solucoesip.net> <20020704080226.A4820@trot>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <839BF5387528D311AD5D00902751CFC301B0418D@HAVASSMX>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,36 +17,62 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Denis JULIEN <denis.julien@vupublishing.net>, iptables <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
+
+Hi there , some of my clients is having problems to send files to each other
+with MSN. The problem
+seems to be that I'm running 2 firewalls behind each other.
+
+PC 1 can't send a file to PC 2 but PC 2 can send a file to PC 1. PC 3 and PC
+1 can send files
+to each other.  Now all the pcs can serve the web , ftp , chat , blah blah
+blah. I'm not blocking any ports what
+so ever , so it's just masq. and normal packet forwarding.
+
+Here's all the information.
+
+Help will be apreciated.
+
+PC 1 :
+IP : 10.0.0.10 , Gateway : 10.0.0.1
+
+Firewall 1:
+eth0 : 193.220.24.230 : uplink  , Gateway : 193.220.24.193
+eth1 : 10.0.0.1/16
+
+echo "   enabling forwarding.."
+echo "1" > /proc/sys/net/ipv4/ip_forward
+$IPTABLES -F
+$IPTABLES -X
+$IPTABLES -P FORWARD ACCEPT
+$IPTABLES -t nat -A POSTROUTING -s 10.0.0.1/16 -o eth0 -j MASQUERADE
+$IPTABLES -A FORWARD -i eth0 -o eth1 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPTABLES -A FORWARD -i eth1 -o eth0 -j ACCEPT
+
+Firewall 2:
+eth0 : 193.220.24.8
+eth1 : 193.220.24.193
+eth2 : 192.168.1.1
+
+$IPTABLES -F
+$IPTABLES -X
+$IPTABLES -P FORWARD ACCEPT
+$IPTABLES -A FORWARD -i eth0 -o eth1 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPTABLES -A FORWARD -i eth1 -o eth0 -j ACCEPT
+
+$IPTABLES -t nat -A POSTROUTING -s 192.168.1.1/24 -o $EXTIF -j MASQUERADE
+$IPTABLES -A FORWARD -i eth0 -o eth2 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPTABLES -A FORWARD -i eth2 -o eth0 -j ACCEPT
+
+PC 2 :
+IP : 193.220.24.242 , Gateway : 193.220.24.193
+
+PC3 :
+IP : 192.168.1.10 , Gateway : 192.168.1.1
 
 
-Hello,
 
-On Thursday 04 July 2002 21:16, Denis JULIEN wrote:
-> Hi,
-> In order to validate the routing of my Red hat linux (7.2) I have to do an
-> echo "1" > /proc/sys/net/ipv4/ip_forward.
-> But every time that I restart the network service the ip_forward file
-> returns to the "0" value and my server does not route any more.
-> How can I do to keep the ip_forward set to "1"?
-> (It's my first time on linux..)
-> thank in advance
-> Denis
-
-If you have a file called /etc/sysctl.conf,
-then add the following line in it :
-
-net.ipv4.ip_forward = 1
-
-Have a nice day,
-
-Fabrice.
---
-Fabrice MARIE
-Senior R&D Engineer
-Celestix Networks
-http://www.celestix.com/
-
-"Silly hacker, root is for administrators"
-       -Unknown
 
