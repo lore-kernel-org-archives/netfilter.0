@@ -1,13 +1,10 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Is this firewall good enough?
-Date: Wed, 09 Jun 2004 10:12:03 -0500
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: port scan identification
+Date: Wed, 9 Jun 2004 08:43:08 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C728C3.8080406@pbl.ca>
-References: <20040609081453.75751.qmail@web14704.mail.yahoo.com>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D472828@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040609081453.75751.qmail@web14704.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,121 +14,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Raileanu Grigore' <grisha@unixro.net>, netfilter@lists.netfilter.org
 
-Sagara Wijetunga wrote:
-> I noted --syn can only be used with protocol tcp. How
-> do I write a similar rule to accept connections to udp
-> port 53?
+Why would one care about ho many ports get scanned as long as your rulesets
+cover the ones you care about + other ports discovered as you go.
+as long as you CYA, it wong get sunburned.
 
-UDP is stateless protocol.  So you have to choices.
+~piranha
 
-Not using connection tracking:
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Raileanu
+Grigore
+Sent: Wednesday, June 09, 2004 3:32 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: port scan identification
 
-    -A INPUT -p udp --dport 53 -j ACCEPT
-    -A OUTPUT -p udp --sport 53 -j ACCEPT
 
-Using connection tracking:
+On Wed, 09 Jun 2004 11:33:59 +0200
+Rakotomandimby Mihamina <rktmb.list@wanadoo.fr> wrote:
 
-    -A INPUT -p udp --dport 53 -m state --state NEW -j ACCEPT
+> Hello
+> 
+> I try to set correctly up my firewall ans would need your help on one
+> thing :
+> 
+> I have this rule :
+> [...]
+> iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST \
+> -j LOG --log-level debug --log-prefix 'p_scan_: '
+> [...]
+> 
+> and i see this when i tail the output file :
+> 
+> [...]
+> Jun  8 22:52:32 milina kernel: p_scan_: IN=ppp0 OUT= MAC=
+> SRC=81.220.171.201 DST=81.248.95.56 LEN=40 TOS=0x00 PREC=0x00 TTL=54
+> ID=45424 PROTO=TCP SPT=4391 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
+> [...]
+> 
+> Well . According to me, a port scan is the action to scan _all_ the
+> ports ... why is the port scan identified as only scaning the 80th port
+> ? I mean, a port scan should not be on one port only ... isn't it ?
+> 
+> -- 
+> Rakotomandimby Mihamina Andrianifaharana
+> Tel : +33 2 38 76 43 65
+> http://stko.dyndns.info/site_principal/Members/mihamina
+> 
+> 
 
-Both would allow for inbound DNS.  You'll probably want to allow
-outbound also.
+Try to use psd , from patch-o-matic patches.
 
-Somehow I don't think you'll have that much traffic that you will need
-to worry about overhead of connection tracking (not even for DNS, as
-discussed earlier in this thread).  So I would recommend using it in
-your case.  For example, at home I'm using old 200MHz Pentium MMX as
-firewall, and it is perfectly capable to handle two interfaces (~3Mbps
-(effectivly) cable, and 100Mbps LAN) with connection tracking.
+http://www.iptables.org/downloads.html#pomng-20040302
 
-The connection tracking line mentioned above assumes you have a line to
-handle outbound packets (responses) equivalent to:
+You can create a rule like this: 
 
-    -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-While we are at it, I would replace the line you have:
-
-    -P OUTPUT ACCEPT
-
-With:
-
-    -P OUTPUT DROP
-    -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-(you might want to put this lines at top)
-
-This would limit outbound packets to responses to already established
-connections.  This addresses the issue some people pointed out to you
-already (that you configured the box as both client and server).  If you
-want something to originate from your server, add it explicitly.  You
-would probably need to allow DNS server to make outbound connections.
-Another example would be to allow you to ping from your server:
-
-    -A OUTPUT -p icmp --icmp-type ping --state NEW -j ACCEPT
-
-For FTP, you need only to allow NEW connections to port 21.  Data
-connections will be RELATED, so you don't need separate line for them.
-This is if you are using connection tracking.  For this to work, you'll
-probably need to load ip_conntrack_ftp module manualy ("modprobe
-ip_contrack_ftp" should do it).
-
-So in short, I would organize things somethine like this:
-
-    # Have this at top
-    -P INPUT DROP
-    -P OUTPUT DROP
-    -P FORWARD DROP
-    # Unomment FORWARD line and add rules to FORWARD chain if
-    # this box is router.  99% of packets will match these three
-    # rules, so it makes sense to have them first.
-    -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-    -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-    # -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-    # Put inbound things you need here, these depend on OUTPUT line
-    # from first section.  For example:
-    -A INPUT -p tcp --dport 21 -m state --state NEW -j ACCEPT
-    -A INPUT -p udp --dport 53 -m state --state NEW -j ACCEPT
-    -A INPUT -p tcp --dport 53 -m state --state NEW -j ACCEPT
-    -A INPUT -p tcp --dport 110 -m state --state NEW -j ACCEPT
-       ...  add other services you have ...
-    # Put outbound things you need here, these depend on INPUT line
-    # from first section:
-    -A OUTPUT -p udp --dport 53 -m state --state NEW -j ACCEPT
-    -A OUTPUT -p tcp --dport 53 -m state --state NEW -j ACCEPT
-    -A OUTPUT -p icmp --icmp-type ping --state NEW -j ACCEPT
-       ...  add more as needed ...
-
-If some of the services should be accessble only from LAN, than make
-more restrictive rule.  For example, replacing POP3 line with:
-
-    -A INPUT -p tcp -s 192.168.0.0/16 --dport 110 -m state --state NEW
--j ACCEPT
-
-If your box has two separate interfaces (LAN and WAN), you can use even
-more specific rule (assuming eth1 is LAN interface):
-
-    -A INPUT -i eth1 -p tcp -s 192.168.0.0/16 --dport 110 -m state
---state NEW -j ACCEPT
-
-These rules could be refined in many ways to make things more strict
-(and secure).  But with so many services running on a single box, it is
-questinable if you would gain anything.
-
-> I don't see a good explanation of tcp-flags either on
-> iptables man pages or Packet Filtering HOWTO. What are
-> meaning of SYN,ACK,FIN,RST,URG,PSH? What combinations
-> can be logged/dropped?
-
-TCP flags are explained in many fine books.  I guess searching a web
-(for example using Google) would result in many pages with good
-explanations of those.  No point in explaining them again and again in
-every single piece of networking software ;-)
+iptables -A INPUT -p ALL -m psd -j LOG --log-level DEBUG --log-prefix
+"PORTSCAN:"
 
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
-
+Best regards,
+Raileanu Grigore
+mail: grisha at unixro dot net
+phone: +40 742759147
 
