@@ -1,10 +1,9 @@
-From: "blkcore" <netfilter@blackcore.net>
-Subject: 2.4.20 - ntfilter (owner) problems
-Date: Mon, 6 Jan 2003 23:37:25 -0800
+From: =?unknown-8bit?q?=C1=CE=E7=F7?= <liao812@163.com>
+Subject: =?gb2312?B?YSBxdWVzdGlvbiBvZiBOQVQ=?=
+Date: Tue, 7 Jan 2003 16:38:59 +0800 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006301c2b61f$9f88cfa0$0200a8c0@void>
+Message-ID: <3E1A9223.00001A.23552@bj230.163.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,24 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 To: netfilter@lists.netfilter.org
 
-This is my first time posting, I am not sure if I'm in the right place, so
-correct me if I'm wrong.
-I recently compiled 2.4.20 with netfilter support, with the owner module (-m
-owner), and after several attempts of trying to use it (worked for 2.4.18),
-it gives an error.
-
-[root@scsi1 slinksi]# iptables -I OUTPUT -m owner --uid-owner root
-iptables: Target problem
-
-setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [1953261926], 912) = -1 EINVAL
-(Invalid argument)
-(strace)
-This is enabled in the netfilter section, compiled in, not as a module, I
-also have grsecurity support (1.9.8)
-.
-Any help is appreciated, I am going to try 2.4.19.
-
-
+SSBoYXZlIGEgcXVlc3Rpb24gd2hlbiBpIHVzZSB0aGUgTkFULgoKSSBoYXZlIHR3byBMQU4gQSBh
+bmQgQiAsIEEgaXMgMjAyLjExNS42MC4wLzI0IGFuZCBCIGlzIDIwMi4xMTUuNzAuMC8yNCAuCkxB
+TiBBIGhhdmUgYSBzZXJ2ZXIgQyB3aGljaCBpcCBpcyAyMDIuMTE1LjYwLjIsIGFuZCAgTEFOIEIg
+aGF2ZSBhIHNlcnZlciBEIHdoaWNoIGlwIGlzIDIwMi4xMTUuNzAuMyAsIG5vcm1hbCwgdGhlIHNl
+cnZlciBDIHByb3ZpZGUgdGhlIHNlcnZpY2UsIHdoZW4gdGhlIHNlcnZlciBEIHNodXRkb3duLCBJ
+IHdhbnQgdXNlIHNlcnZlciBCIHByb3ZpZGUgCnRoZSBzZXJ2aWNlIGludGVhZCBvZiB0aGUgc2Vy
+dmVyIEMuCiBJIHRoaW5rIHRoZSBOQVQgbWF5YmUgc29sdmUgdGhlIHF1ZXN0aW9uIC4gU28sIEkg
+dXNlIHRoZSBETkFUIGFuZCBTTkFUOgoKYXQgdGhlIG5ldGdhdGUgb2YgTEFOIEEsZG8gdGhpczoK
+I2lwdGFibGVzIC10IG5hdCAtQSBQUkVST1VUSU5HIC1zICEgMjAyLjExNS43MC4wLzI0IC1kIDIw
+Mi4xMTUuNjAuMiAtaiBETkFUIC0tdG8gMjAyLjExNS43MC4zCiNpcHRhYmxlcyAtQSBGT1JXQVJE
+IC1kIDIwMi4xMTUuNzAuMC8yNCAtaiBBQ0NFUFQKCmF0IHRoZSBuZXRnYXRlIG9mIExBTiBCICwg
+ZG8gdGhpczoKI2lwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtcyAyMDIuMTE1LjcwLjMg
+LWQgISAyMDIuMTE1LjYwLjAvMjQgLWogU05BVCAtLXRvIDIwMi4xMTUuNjAuMiAKCmJ1dCB3aGVu
+IEkgY2hlY2sgdGhlIGlwIHBhY2thZ2UgdXNlIHRjcGR1bXAgLCBJIGZpbmQgdGhlIFNOQVQgZGlk
+IG5vdCB3b3JrLCB0aGUgc291cmNlIGFkZHJlc3Mgb2YgdGhlIHBhY2thZ2UgZnJvbSB0aGUgc2Vy
+dmVyIEQgaXMgMjAyLjExNS43MC4zICwgbm90IDIwMi4xMTUuNjAuMi4KCnRoZW4gSSBkbyBhIHRl
+c3QuIHdoZW4gaSBzZW5kIGEgcGluZyBwYWNrYWdlIGZyb20gdGhlIHNlcnZlciBELCB0aGUgc291
+cmNlIGFkZHJlc3Mgb2YgdGhlIHBpbmcgCgpwYWNrYWdlIGNoYW5nZSB0aGUgMjAyLjExNS42MC4y
+LCBoZXJlIHRoZSBTTkFUIHdvcmsgd2VsbC4gCgpzbywgSSBkbyBub3QgdW5kZXJzdGFuZCB3aHkg
+dGhlIFNOQVQgY2FuIHdvcmsgd2hlbiBzZW5kIHRoZSByZXF1aXJlIHBhY2thZ2UgYW5kIG5vdCB3
+b3JrIHdoZW4gcmVwbHkgdGhlIHJlcHVpcmUgLi4uLgoKVGhhbmsgeW91IFZFUlkgbXVjaCEKPT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQrUqrWpoaLH6cjLvdqyu9TZ1/a5wrbAyMshxOO7ubK7v+zAtNS8u+GjvwlodHRwOi8vZGF0aW5n
+LjE2My5jb20vCs340te+48DWsr/OqsTjvajU7NK7uPazrLy2tcTLvcjLyefH+KOhCQlodHRwOi8v
+b3VyLjE2My5jb20K0MLE6tPQwPGjoSBWSVDTys/k0rK/ydLUw+K30dPDo6EJCWh0dHA6Ly92aXAu
+MTYzLmNvbS9wYXltZW50L01vYmlsZVBheW1lbnQuc2h0bWwKCgo=
