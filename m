@@ -1,10 +1,13 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Fw: Upgrading kernel 2.4.26 cuts out DNAT --to rules.....!!??
-Date: Wed, 2 Feb 2005 10:54:31 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F01994A@pxtvjoexd01.pxt.primeexalia.com>
+From: =?iso-8859-1?Q?Herv=E9?= <herve@lucidia.net>
+Subject: Re: Two NICS with same IP and same client IP
+Date: Wed, 2 Feb 2005 20:47:32 -0000 (GMT)
+Message-ID: <57788.192.168.144.1.1107377252.squirrel@192.168.144.1>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F019948@pxtvjoexd01.pxt.primeexalia.com>
+	<18348031.1107363459685.JavaMail.rct@kale>
+	<200502021841.35410.bob@zooid.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
+In-Reply-To: <200502021841.35410.bob@zooid.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,107 +18,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Emilio Lombardo <emiliokatia@terra.com.br>, RODRlGO <ro.garcia@gmail.com>, netfilter@lists.netfilter.org, Jason Opperisano <opie@817west.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter  <netfilter@lists.netfilter.org>
 
-But did they recompile iptables against the correct kernel headers?  The
-default compile of iptables will use the old headers that will contain
-the old structure that is causing the problems in the first place.
-Compile them against the ones that you modified with patch-o-matic.
-
-This got me the first time as well some months ago.
-
-Gary Smith
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of Emilio Lombardo
-> Sent: Wednesday, February 02, 2005 10:52 AM
-> To: RODRlGO; netfilter@lists.netfilter.org; Jason Opperisano
-> Subject: Re: Fw: Upgrading kernel 2.4.26 cuts out DNAT --to
-rules.....!!??
->=20
-> thanks Jason :-)
->=20
-> this procedure you passed  was exactly what the people did....
-> I'm beginning to think that the bug could be originated from the fact
-that
-> we installed the new iptables up on the other and probably this
-merging
-> didn't fit good or some /bin directory of the old one still stands
-there
-> The idea was to remove the content of all the iptables and reinstall
-the
-> new
-> one with the apt-get after having deleted all manually
-> You guess it may work out ?
-> I hope so...:-)
-> Any suggestion is well accepted !
->=20
-> thanks again!!
->=20
->=20
-> ----- Original Message -----
-> From: "Jason Opperisano" <opie@817west.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, February 02, 2005 2:20 PM
-> Subject: Re: Fw: Upgrading kernel 2.4.26 cuts out DNAT --to
-rules.....!!??
->=20
->=20
-> > On Wed, Feb 02, 2005 at 02:02:51PM -0200, Emilio Lombardo wrote:
-> >> So what we did was upgrading to iptables 1.2.11 on kernel 2.4.26
-and
-> >> recompiling it whithin patch-o-matic and it worked out !
-> >> Now we got simultaneous and various vpn on gre protocol perfectly
-> working
-> >> passing by the firewall whitout any problem (and of course it was
-> really
-> >> the firewall because we tested the vpn's bypassing it and they
-> worked.all
-> >> toghether...)
-> >> Well...now when everithing looked working but than debugging the
-> internal
-> >> rules we saw that any attempt to add a "DNAT --to" always got an
-answer
-> >> of
-> >> Invalid Argument ..........the same rules that before was working
-> >> ....!!!!!And here came the problem.....
-> >> How is it possible for us making both instances (The VPN's and the
-> >> DNAT --to rules) work togheter...is there any linux guru...:-) who
-can
-> >> lend a hand and help us to find a way out in this maze ?
-> >
-> > it sounds like you didn't compile iptables *after* applying POM and
-> > recompiling your kernel.  steps are:
-> >
-> > apply patches from POM
-> > recompile kernel
-> > recompile iptables
-> >
-> > -j
-> >
-> > --
-> > "Simpson, Homer Simpson, he's the greatest guy in his-tor-y. From
-> > the town of Springfield, he's about to hit a chestnut tree....D'oh!"
-> >        --The Simpsons
-> >
-> >
-> >
-> >
-> > --
-> > No virus found in this incoming message.
-> > Checked by AVG Anti-Virus.
-> > Version: 7.0.300 / Virus Database: 265.8.1 - Release Date: 27/1/2005
-> >
-> >
->=20
->=20
->=20
+> On Wednesday 02 February 2005 16:57, Herv=E9 wrote:
+>
+>> Basically, the network interface where the packet originated has to
+>> somehow be remembered at the routing stage. I only see source address
+>> mangling to do that...
+>>
+>
+> It would seem that if you add two additional IPs to the NFS machine (on=
+ a
+> dummy interface) and do a local DNAT to those IPs based on the incoming
+> nic,
+> that the correct routing tables/rules would be all that is needed to ro=
+ute
+> the return packets to the correct network.
+>
+> Have a look at
+>
+>    http://www.policyrouting.org/PolicyRoutingBook/ONLINE/TOC.html
+>
+> for the concepts and examples.  Chapter 5, in particular, covers the
+> routing
+> concepts your solution will need.
+>
+> Note that ProxyARP uses the same ip on two interfaces and depends on th=
+e
+> proper routing table entries to do the right thing.
+>
+>
 > --
-> No virus found in this outgoing message.
-> Checked by AVG Anti-Virus.
-> Version: 7.0.300 / Virus Database: 265.8.1 - Release Date: 27/1/2005
->=20
+>
+> Bob Tellefson
+> Java network application development & hosting
+>
+Yup, that's what I started doing, but I still have to modify the source
+address somehow, so the return packet is routed according to that
+address...
+
+In fact, conceptually, I really want a router between each client and my
+server:
+
+Client1 (a.b.c.d) -> (a.b.c.1) Router (x.y.z.1) -|-> (x.y.z.3) Server
+Client2 (a.b.c.d) -> (a.b.c.1) Router (x.y.z.2) -|
+
+This does all: same client IPs, unique server for all the clients IP (and
+only one NIC).
+
+And that's probably what I'm going to do, not just conceptually!
+
+But I have to say that I would have liked to do it all on the one machine=
+,
+rather than needing to go through routers.
+
+Thanks for the link as well, I need to read through it carefully before
+giving up my first idea (I hate giving up ;-)
+
+Herve.
 
 
