@@ -1,13 +1,11 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Dropping RST of SYN
-Date: 04 Sep 2003 11:13:20 +0200
+From: Scott Mcdermott <smcdermott@questra.com>
+Subject: SNAT interaction with kernel-based IPSEC (in 2.6)
+Date: Thu, 4 Sep 2003 05:15:25 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062666800.1615.23.camel@kermit>
-References: <20030904183027.9CC5.ATNAK@chejz.com>
+Message-ID: <20030904091525.GO17837@questra.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030904183027.9CC5.ATNAK@chejz.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Atsushi Nakagawa <atnak@chejz.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
 
-Am Don, 2003-09-04 um 10.50 schrieb Atsushi Nakagawa:
-> What iptables table/rule can I use to drop RST (TCP) packets that're in
-> reply to SYN?
-> This is what I want it to do:
->=20
-> -SYN->    [NEW]        -SYN->
->           [CLOSED]     <-RST-
->             ^
->           IF TCP & [NEW]: DROP '<-RST-' & SET [CLOSED]
-Using the current state implementation, AFAIK this is not possible.
-The RST is already an established packet. There is no way to
-differentiate between this RST and a later valid and needed RST packet.
-You can only drop all RST packets
--m state --state ESTABLISHED -p tcp --tcp-flags RST,ACK RST,ACK -j DROP
+I'm having some difficulty doing simple pings over an IPSEC
+tunnel using the implementation in 2.6.0-test4 (with
+Racoon, and successful Phase 1 and 2, I get the IPSEC SA
+fine), in combination with iptables.
 
-Cheers,
+I have SNAT rules on the same machine that is my IPSEC
+tunnel endpoint.  I have RFC1918 IPs on my near side of the
+NAT/IPSEC box, which are SNATted to routable IPs in the
+normal case (where they don't go over the IPSEC tunnel) and
+conntracked.  If they are destined for the remote LAN though
+(at other end of tunnel), they need to go through
+unmolested: I do NOT want them SNATted when they go over the
+IPSEC tunnel, but to instead just bypass the `nat' table
+altogether.  Is this possible? I would like them still to
+traverse the `filter' table (so I can restrict the remote
+LAN), but I would be happy right now if I could get just
+bypass iptables altogether.
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+I am suspecting that when my packets do go over the tunnel,
+get to the other end, and are unwrapped, they have the
+translated IP as the source, and not the original RFC1918
+source IP (which would then allow replies to get routed
+correctly back over the IPSEC tunnel to me).  I am awaiting
+a reply from the other end on whether or not my suspicion is
+true, but in the meantime, I thought I would try to get an
+understanding of how the kernel IPSEC implementation and
+netfilter interact, and if it's even possible to do what I'm
+trying to do (bypass nat rules in the case that the packet
+is destined for the tunnel).  Hopefully this is a common
+procedure that others have attempted already.
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+Thanks for any information.  Sorry to crosspost, I am not
+sure where to discuss IPSEC issues that regard Netfilter.  I
+tried subscribing to netdev, but it seems to just ignore my
+subscription emails.
 
