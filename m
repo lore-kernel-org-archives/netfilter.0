@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: REJECT sends more than just RST?
-Date: Thu, 6 Nov 2003 13:05:27 +0000
+From: "Stephan Viljoen" <steph@gabswave.net>
+Subject: Weird routing problem. (I think)
+Date: Thu, 6 Nov 2003 16:21:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311061305.hA6D5bj13952@agate.rockstone.co.uk>
-References: <3FAA4480.2D98@sat.dundee.ac.uk>
+Message-ID: <003e01c3a471$3e8af660$0200010a@Tinkerbell>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FAA4480.2D98@sat.dundee.ac.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,32 +18,78 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 06 November 2003 12:54 pm, Andrew Brooks wrote:
+Hi There,
 
-> Hi,
->
-> I'm trying to reject SMTP connections by sending a RST but it
-> seems to be sending SYN ACK before sending RST which isn't what
-> I want.  I'm using shorewall 1.2.8 and kernel 2.4.18.  Is this
-> a known problem, and, if so, which release fixes it?
+I'm sorry if I've mailed this to the wrong mailing list , but I reckon
+you guys would know best :)
 
-What rule/s are you attempting to use to do this?
+Some off my clients started complaining that they're having problems
+connecting to my mail server. Now all this worked fine up until
+yesterday. I'm not blocking any ports nor am I blocking ICMP on the
+network.
 
-I would have thought something like:
+If I try and ping the mail server from the clients computer I get the
+following message.
 
-iptables -A INPUT (or FORWARD, depending on your setup) -p tcp --dport 25 -j 
-REJECT --reject-with=tcp-reset
+[root@ceda root]# ping 217.10.176.138
+PING 217.10.176.138 (217.10.176.138) 56(84) bytes of data.
+From 10.0.5.1: icmp_seq=2 Redirect Host(New nexthop: 217.10.176.138) 
+From 10.0.5.1: icmp_seq=3 Redirect Host(New nexthop: 217.10.176.138)
 
-should do the trick?
+And here comes the weird part, the moment I restart the client's network
+all problems disappear for at least an hour or two. I have about 50
+customers on my network and only about half off them is experiencing
+this problem and it's on both Windows / linux boxes.
 
-Antony.
+I only have this problem accessing the mail server, the rest of the
+servers hosted on the 217.10.176.136/29 network works fine. I can also
+ping the same clients pc from the mail server without any problems.
 
--- 
+[root@mail routers]# ping 10.0.5.2
+PING 10.0.5.2 (10.0.5.2) 56(84) bytes of data.
+64 bytes from 10.0.5.2: icmp_seq=1 ttl=64 time=0.260 ms
+64 bytes from 10.0.5.2: icmp_seq=2 ttl=64 time=0.235 ms
 
-Perfection in design is achieved not when there is nothing left to add,
-but rather when there is nothing left to take away.
+Here's my network layout.
 
- - Antoine de Saint-Exupery
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Cisco Router 	 : (217.10.176.149/255.255.255.252)
+
+		-----------------------------
+
+FIREWALL	 : eth0 (217.10.176.150/255.255.255.252)
+		 : eth1:client1 (10.0.5.1/255.255.255.252)
+		 : eth1:client2 (10.0.4.1/255.255.255.252)
+		 : eth1:mail (217.10.176.137/255.255.255.248)
+
+Routing table for the firewall.
+10.0.5.0	    0.0.0.0		 255.255.255.252  U  0	 0
+0 eth1
+10.0.4.0	    0.0.0.0		 255.255.255.252  U  0 0 0 eth1
+217.10.176.136  0.0.0.0        255.255.255.248  U  0 0 0 eth1
+127.0.0.0       0.0.0.0        255.0.0.0        U  0 0 0 lo
+0.0.0.0         217.10.176.149 0.0.0.0          UG 0 0 0 eth0
+
+		-----------------------------
+
+MAIL SERVER	 : eth0 (217.10.176.138/255.255.255.248)
+Routing table on the Mail Server
+217.10.176.136  0.0.0.0         255.255.255.248 U  0 0 0 eth0
+127.0.0.0       0.0.0.0         255.0.0.0       U  0 0 0 lo
+0.0.0.0         217.10.176.137  0.0.0.0         UG 0 0 0 eth0
+
+		-----------------------------
+
+Client PC 1 	 : eth0 (10.0.5.2/255.255.255.252)
+
+		-----------------------------
+
+Client PC 2 	 : eth0 (10.0.4.2/255.255.255.252)
+
+		-----------------------------
+
+Some input would be greatly appreciated.
+
+Kind Regards
+Stephan
+
 
