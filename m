@@ -1,11 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Performance of iptables with web proxy
-Date: Mon, 17 Jan 2005 01:06:44 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0198E4@pxtvjoexd01.pxt.primeexalia.com>
+From: Nic Ferrier <nferrier@tapsellferrier.co.uk>
+Subject: Dates not appearing on netfilter digest mails
+Date: Mon, 17 Jan 2005 10:31:50 +0000
+Message-ID: <87wtuc5otl.fsf@tapsellferrier.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: netfilter-request@lists.netfilter.org's message of "(unknown
+	date)"
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +17,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Askar <askarali@gmail.com>, DurgaPrasad Adusumalli <adusumallid@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Read the entire question again...  It has more to do with iptables than
-squid.
+When I get a netfilter digest there is no date in the mail header.
 
-You probably could do some type of fancy pre/post routing.  What you
-would need to do is write a special routing entry that says anything on
-port 80 or 443 going out the firewall that is from any IP address other
-than the proxy server needs to be routed to the proxy.  I'm not sure how
-to do this directly.
-
-But if the proxy server is in the firewall then the rules change.  This
-is from the squid site.  This redirects you to another port on the same
-server but what you want is
-
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
---to-port 3128
-
-There is another module named tproxy (or something like that) which
-sounds like it might do what you want but it might require a kernel
-recompile.
-
-HTH
-
-Gary
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Askar
-Sent: Sunday, January 16, 2005 11:58 PM
-To: DurgaPrasad Adusumalli
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Performance of iptables with web proxy
-
-wrong list, why not ask in squid mailing list
-
-regards
+This is annoying since I get a lot of soam with no dates (I normally
+filter it out).
 
 
+I've never seen this on any other mailing list (mailman or
+otherwise). Can you fix this? Is it a mailman option?
 
-On Mon, 17 Jan 2005 11:33:07 +0530, DurgaPrasad Adusumalli
-<adusumallid@gmail.com> wrote:
-> I am using web proxy content filter (Dansguardian) to scan all
-> outgoing traffic from my LAN. I am using transparent proxying with an
-> iptable rule that forwards all outgoing traffic to web proxy. This
-> setup works but all the browsing activity gets slowed down. When I
-> configure my browser to use proxy Internet access gets faster.
->=20
-> Can someone suggest me how can I enhance the performance of iptables
-> with this rule is place and without configuring my browser to use
-> proxy.
->=20
-> Thanks in advance.
-> Durga Prasad.
->=20
->=20
+Here's an example of the header I'm getting:
+
+  To: netfilter@lists.netfilter.org 
+  Subject: netfilter Digest, Vol 6, Issue 40 
+  Envelope-to: nferrier@tapsellferrier.co.uk 
+  Received: from vishnu.netfilter.org ([213.95.27.115]) 
+          by owls-tree.tapsellferrier.co.uk with esmtp (Exim 4.30 #1 (Debian)) 
+          id 1CqSqy-0001OV-26 
+          for <nferrier@tapsellferrier.co.uk>; Mon, 17 Jan 2005 09:07:16 +0000 
+  Received: from localhost ([127.0.0.1] helo=vishnu.netfilter.org) 
+          by vishnu.netfilter.org with esmtp (Exim 4.41 #1 (Debian)) 
+          id 1CqSru-0000wv-U7; Mon, 17 Jan 2005 10:08:14 +0100 
+  From: netfilter-request@lists.netfilter.org 
+  Reply-To: netfilter@lists.netfilter.org 
+  MIME-Version: 1.0 
+  Content-Type: text/plain; charset="us-ascii" 
+  Content-Transfer-Encoding: 8bit 
+  X-BeenThere: netfilter@lists.netfilter.org 
+  X-Mailman-Version: 2.1.5 
+  Precedence: list 
+  List-Id: General discussion and user questions <netfilter.lists.netfilter.org> 
+  List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>, 
+          <mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe> 
+  List-Archive: </pipermail/netfilter> 
+  List-Post: <mailto:netfilter@lists.netfilter.org> 
+  List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help> 
+  List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>, 
+          <mailto:netfilter-request@lists.netfilter.org?subject=subscribe> 
+  Sender: netfilter-bounces@lists.netfilter.org 
+  Errors-To: netfilter-bounces@lists.netfilter.org 
 
 
---=20
-(after bouncing head on desk for days trying to get mine working, I'll
-make
-your life a little easier)
+See? No date.
 
+-- 
+Nic Ferrier
+http://www.tapsellferrier.co.uk
 
