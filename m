@@ -1,9 +1,8 @@
-From: David Cary Hart <DCH@TQMcube.com>
-Subject: Rule Set Size vs Performance Follow-up
-Date: Thu, 29 Jul 2004 11:08:11 -0400
+From: Askar Ali Khan <askarali@gmail.com>
+Subject: droping in forward/postrouting
+Date: Thu, 29 Jul 2004 15:19:10 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1091113691.9879.9.camel@dchws.tqmcube.com>
-Reply-To: NetFilter List <netfilter@lists.netfilter.org>
+Message-ID: <a0f69e504072903196a830aee@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,16 +18,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-The issue was a large number of dpt 80 rules that are added by a script
-from Snort exploits.
+hi all
 
-The suggested solution was to move these to a new chain so that only
-packets destined for httpd would have to traverse several hundred
-(hopefully temporary) rules.
+Im afraid i am again with a very simple/stupid question :), even
+though things not clear to me yet.
 
-Not only does this make logical sense but I notice a definite
-improvement in DNS (which is the most apparent performance issue).
+im droping/blocking certain sites mainly gator sites on my
+router/firewall to LAN users, using slackware kernel 2.4.26.
 
-Thanks.
+im doing this with the below rule
+$iptables -t nat -A POSTROUTING -s 0/0 -d  212.4.208.105 -j DROP
+   This is working fine, however im kinda confuse whether this is the
+proper table/chain for accomplished this or may I do it with FORWARD
+chain like ...
 
+  $iptables -A FORWARD -s 0/0 -d 212.4.208.105 -p tcp -j DROP
+
+which approach is recommended ?
+1)nat/POSTROUTING 
+OR
+2) FORWARD
+
+thanks in advance
+
+regards
+Askar
 
