@@ -1,13 +1,12 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: NETMAP in iptables
-Date: Wed, 22 Oct 2003 23:11:29 +0200
+From: "Martin Bene" <martin.bene@icomedias.com>
+Subject: Problem with pptp nat/contrack
+Date: Thu, 23 Oct 2003 00:20:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066857089.7221.11.camel@porky>
-References: <27F86DE281793349AADA579D4F4A409C6AA8FC@usbosex00001.na.didata.local>
+Message-ID: <4D618F6493CE064A844A5D496733D66704E247@freedom.icomedias.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-UWRBRwvwFWCtpV1o1CrW"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <27F86DE281793349AADA579D4F4A409C6AA8FC@usbosex00001.na.didata.local>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Leon Gous (US)" <leon.gous@us.didata.com>
-Cc: "Netfilter List (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Trying to use pptp nat/contrack modules to access VPN server on the =
+internet
+from a client(W2k, SP2) behind my nat/firewall iptables machine.
+
+Versions used: iptables 1.2.9rc1
+pom from cvs snapshot (20031007)
+
+Network setup:
+192.168.168.175 (netmask 255.255.255.0) =3D=3D> cisco1 192.168.168.1 =
+=3D=3D>
+cisco2 192.168.120.2 =3D=3D> linux nat box 192.168.120.1 =3D=3D> =
+(internet) =3D=3D> VPN
+PPTP Server (WatchGuard Technologies, Inc.)
+
+WITHOUT ip_nat_pptp, ip_conntrack_pptp, ip_conntrack_proto_gre,
+ip_nat_proto_gre loaded:=20
+Connection to external VPN Server works, but just one client at a time =
+may
+access the VPN server.
+
+WITH the above modules loaded:=20
+Connection can't be established. Packet dump shows: gre encapsulated ppp =
+conf
+req going out; returning (ppp conf rej) packets show up on the firewall
+external interface, but don't show up on  the internal =
+interface/network;
+instead they end up being blocked by INPUT firewall - rules; looks like =
+they
+aren't correctly associated with the gre expectation and end up being =
+treated
+as destined for the firewall locally. iptables configuration/rules were =
+not
+changed from previous test, so I'd expect the ruleset to be OK.
+
+Any Idea where to start looking?
 
 
---=-UWRBRwvwFWCtpV1o1CrW
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Le mer 22/10/2003 =C3=A0 23:04, Leon Gous (US) a =C3=A9crit :
-> How do I enable NETMAP in iptables to xlate networks 1:1?
-
-download the patch-o-matic from the netfilter site and apply it to your
-source kernel ....
-
-BR,
---=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
-
---=-UWRBRwvwFWCtpV1o1CrW
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQA/lvKBnxA7CdMWjzIRAo4aAJ93LmX6ZgZ7Iz2D3jG0jFCP2PaCFgCfeymq
-giKCMcuZ/E85Ldcsou8qRsI=
-=Rd/i
------END PGP SIGNATURE-----
-
---=-UWRBRwvwFWCtpV1o1CrW--
+Yours, Martin
 
 
