@@ -1,8 +1,8 @@
 From: Sagara Wijetunga <sagaralists@yahoo.com>
 Subject: RE: Allow active and passive FTP connections
-Date: Mon, 21 Jun 2004 08:21:11 -0700 (PDT)
+Date: Mon, 21 Jun 2004 08:43:14 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040621152111.84670.qmail@web14704.mail.yahoo.com>
+Message-ID: <20040621154314.7506.qmail@web14724.mail.yahoo.com>
 References: <2E314DE03538984BA5634F12115B3A4E895673@email1.mitretek.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -22,38 +22,27 @@ To: netfilter@lists.netfilter.org
 
 --- "Piszcz, Justin Michael"
 <justin.piszcz@mitretek.org> wrote:
-> I see..
-> 
-> Some questions for you:
-> 
-> You are running the IP connection tracker for FTP in
-> the KERNEL or
-> MODULE?
-IP connection tracker for FTP in kernel, not as a
-module.
-
-> You are running the FTP daemon on port 21?
-Yep, on the port 21
-
 > You are *NOT* running an (SSL) FTP daemon, correct?
 > (The current
 > conntrack module for FTP does _NOT_ support this).
 > 
-really? I run a SSL based FTP daemon. 
+You are right! I disabled SSL from the FTP server. Now
+the RELATED rule *works* as I expected for both active
+and passive FTP connections.
 
-Let me disable SSL, try and see. 
+Thank you very much to highlight it to me. Is there a
+workaround for this?
 
-But I *really* need to use a SSL/TLS based FTP server.
-Is there any workaround?
-
+kind regards
 Sagara
 
 
 
 
+	
 		
 __________________________________
 Do you Yahoo!?
-Read only the mail you want - Yahoo! Mail SpamGuard.
+New and Improved Yahoo! Mail - 100MB free storage!
 http://promotions.yahoo.com/new_mail 
 
