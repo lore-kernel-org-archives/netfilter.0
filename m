@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: SNAT
-Date: Wed, 13 Nov 2002 14:48:30 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IPtables accounting ...
+Date: Wed, 13 Nov 2002 14:10:41 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B32101998F@hslex01.hsl-brabantzuid.nl>
-References: <002801c28b18$45b2d8e0$2c00a8c0@PERUCCHI>
+Message-ID: <200211131410.gADEAle31994@vulcan.rissington.net>
+References: <1037193855.4553.25.camel@rayw.knowledgefactory.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002801c28b18$45b2d8e0$2c00a8c0@PERUCCHI>
+In-Reply-To: <1037193855.4553.25.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-> Everybody is talking about DNS tcp/udp. But I want know how I
-> can do that my
-> traffic go to out as my IP_NET and not another IP. I know
-> that I have to use
-> SNAT for to do this.
+On Wednesday 13 November 2002 1:24 pm, Raymond Leach wrote:
+
+> Hi
 >
-> My problem is that my DNS this going out with IP NAT(Masquerade)
-> Somebody can help me
+> Where do I do iptables accounting?
+>
+> For example: If I have users on a private LAN surfing via a proxy on the
+> firewall and I have web servers in a DMZ also being routed via the
+> firewall, where do I put my accounting rules? In the FORWARD chain, or
+> the INPUT chain, or both?
 
-I thought I did reply to your question. Don't the SNAT/FORWARD rules work ?
+Packets being routed through your firewall go through the FORWARD chain and 
+not through the INPUT chain.
 
-In your first post you didn't mention any of your FORWARD rules, and I still
-think you should match your traffic for dport 53 instead of sport 53. Unless
-ofcourse there's something we don't know because you didn't tell us (do you
-have a DNS server ? If so ; is your DNS server running on or behind the
-firewall ?).
-If you have policy set to DROP for the FORWARD chain then you have to add a
-rule to allow traffic for port 53/udp/tcp or whatever you want to
-accomplish.
+Packets going to a proxy application running on your firewall go through the 
+INPUT chain and not the FORWARD chain.
 
+Antony.
 
-Rob
+-- 
 
+Anything that improbable is effectively impossible.
+
+ - Murray Gell-Mann, Nobel Prizewinner in Physics
 
