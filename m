@@ -1,98 +1,133 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Call for testing: patch-o-matic-ng
-Date: Sun, 21 Dec 2003 13:24:45 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: need help firewalling homebrew http+smtp+dns+vpn
+Date: Sun, 21 Dec 2003 08:12:13 -0800
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200312211612.hBLGCENC015988@server5.bandwidthco.com>
+References: <20031221070757.GD15390@dragonII>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031221070757.GD15390@dragonII>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Andrea Tasso' <andrea@tasso.info>, netfilter@lists.netfilter.org
+
+This is a pretty nifty setup Andrea.  As for the specific rules you are
+going to need to allow it to perform, I agree with Anthony in that you
+should consult the tutorials as this will be a somewhat complex rule set
+(too much for me to list here).  Couple of comments:
+
+1. Port 42 is WINS replication so you do not need to worry about it unless
+you are using a complex & pure SAMBA setup on the internal machines.
+
+2. Double layer of SNAT is fine and provides an extra layer of security of
+internal machines.
+
+3. It's not clear to me where or how your VPN is connecting, and where the
+end points are.  However, since it appears to be in-line to the double SNAT,
+architecturally it is sound and should work.
+
+4. It's not clear why you are concerned with ppp0 or PPPoE encapsulation.
+Your DSL router should handle that just fine.  Since your interface to the
+outside world has a static IP, you can use SNAT for these rules instead of
+MASQ.  If you have a typical DSL router, is not your external interface an
+eth? And not a ppp?.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Andrea Tasso
+Sent: Saturday, December 20, 2003 11:08 PM
+To: netfilter@lists.netfilter.org
+Subject: need help firewalling homebrew http+smtp+dns+vpn
+
+hello, these are my naive questions, I am a newbie:
+
+I need to firewall my homebrew linux boxes, say to close everything I can
+to/from outside (internet), and do everything inside my vpn. On the FIREWALL
+machine I also run some server whose services/ports must keep to be
+accessible to/from outside. Those kinds of connections I need to do also to
+servers outside.
+All the machines of the VPN need to be free to suft the outside internet. So
+also masquerading and forwarding are needed.
+
+thanks a lot for your help,
+Andrea
 
 
---WYTEVAkct0FjGQmd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+That's my box: (see also below for explanations)
 
-I've now gotten patch-o-matic-ng to a state where it is actually quite
-useable. =20
 
-Everybody interested can check it out from CVS
-(netfilter/patch-o-matic-ng).  Everything should look exactly like the
-old patch-o-matic, including screen output and command syntax.
+   ------------------                        -----------
+  | 192.168.8.2 eth0 |-----|                |  FIREWALL |
+   ------------------      |      ---------- - - - - - - ---------- 
+                           |-----| eth1 192.168.8.1                |
+   ------------------      |     |                                 |
+  | 192.168.8.3 eth0 |-----|     |                   10.0.0.1 eth0
+|----------|
+   ------------------            |                                 |
+|
+                            |----| wlan0 192.168.2.1               |
+|
+   -------------------      |     --- - - - - - - - - - - - - - ---
+|    
+  | 192.168.2.2 wlan0 |-----|        |  servers: ssh:22        |
+|
+   -------------------               |           http:80       |
+|
+                                     |           https:443     |
+|
+                                     |           dns:42/53(?)  |
+|    my VPN: everything
+                                     |           smtp:25       |
+|
+                                      -------------------------
+---------  in/out (ssh,http,https,dns,smtp +
+ 
+|               "masqued web browsing")
+ 
+|
+ 
+|    "outside"    
+ 
+|
+ 
+-------------------------
+                                                      ----------|
+eth0          |
+                                                     |    dsl
+10.0.0.138        |
+                                                     |   router
+|
+                                                      ----------|
+|
+                                                                |
+dummy(*) ip        |
+                                                                |
+111.69.96.69.96     |      
+                                                                |
+ppp0 (?)        |
+ 
+-------------------------
+ 
+|
+ 
+|
+ 
+internet
 
-However, the implementation behind the curtain is completely different.
-Interested people are invited to look into the perl source of
-Netfilter_POM.pm and 'runme'.
 
-I would like to have people start testing/using pom-ng and report errors
-back to me (via email).
+(*) dummy ip: the dsl router has a fixed ip I do not write for security
+(?) the question mark is for stuffs I am not sure about
 
-The differences from a user's point of view:
 
-- dependencies are resolved recursively
-- verbose error reporting
-- new, more verbose './runme --man' documentation
-- if you want to apply a specific set of patches, don't prefix them
-  with the repository name (i.e. use
-  	./runme pptp-conntrack-nat
-  instead of
-  	./runme extra/pptp-conntrack-nat
-
-The differences from a developer's point of view:
-
-- support for requirements (i.e. kernel >=3D 2.4.22)
-- recursive dependencies
-- support for multiple kernel build systems (i.e. 2.4.x and 2.6.x)
-- automatic creation of Configure.help entries / Kconfig help sections
-  from the patches 'help' file
-- no wholefile-patches in CVS.  This means that entirely new files like
-  net/ipv4/netfilter/ipt_foo.c / ipt_foo.h are not stored as patches but
-  rather in their original form.   This in turn means real version
-  control on the sourcecode!
-- backend seperated from frontend (i.e. other user frontends could be
-  implemented
-- not limited to the linux sourcecode.  It is easy to add support for
-  other projects (if a patchlet would have to patch other software, too)
-
-However, some stuff is still missing (see the patch-o-matic/TODO file).
-I'm working on implementing those missing features, though.
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---WYTEVAkct0FjGQmd
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/5ZENXaXGVTD0i/8RAuBYAJ0fYlBOrW2VjaII8vfTtegnqaXYdwCgnu/S
-hx1A9hlikuWdGktclY7czYc=
-=fZLo
------END PGP SIGNATURE-----
-
---WYTEVAkct0FjGQmd--
 
