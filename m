@@ -1,11 +1,13 @@
-From: Frank <Frank@duranicub.sytes.net>
-Subject: active Ftp Problems on different Port
-Date: 30 Sep 2002 17:28:25 +0000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: conntrack ftp module usage
+Date: Mon, 30 Sep 2002 17:03:26 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033406904.1239.3.camel@duranicub.duranicub.sytes.net>
+Message-ID: <200209301603.g8UG3XL04506@vulcan.rissington.net>
+References: <20020930203655.57527962.arc_of_descent@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20020930203655.57527962.arc_of_descent@gmx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +20,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+On Monday 30 September 2002 4:06 pm, Rohan Almeida wrote:
 
-i have an FTP Server on the Firewall Machine itself but listen to Port
-21 and 210. For Port 21 active/passive Mode works fine, but for the Port
-210 it works only with passive Mode. My Question is, how can i enable
-active Mode for Port 210 ?
+> Hi List,
+> I've loaded the ip_nat_ftp and ip_conntrack_ftp modules.
+> I also have the follwing rule in my firewall:
+>
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+> This is on a linux box, with 2 interfaces, one public,
+> one private and doing NATing
+>
+> Most importantly, ftp from the client's end works fine
+> But when i do an `lsmod', i see that the ftp modules
+> are being used.
+> Is that normal?
+> what is happening?
 
-modprobe ip_nat_ftp ports=21,210
-modprobe ip_conntrack_ftp ports=21,210
-#
-$IPTABLES -t filter -P INPUT DROP
-$IPTABLES -t filter -P OUTPUT DROP
-$IPTABLES -t filter -P FORWARD DROP
-#
-$IPTABLES -A INPUT -p tcp ! --syn -m state --state NEW,INVALID -j DROP
-#
-$IPTABLES -A INPUT  -i ppp0 -p tcp --sport 21 -m state --state
-ESTABLISHED -j ACCEPT
-$IPTABLES -A OUTPUT -o ppp0 -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-$IPTABLES -A INPUT  -i ppp0 -p tcp --sport 20 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT -o ppp0 -p tcp --dport 20 -m state --state
-ESTABLISHED -j ACCEP
-#
-#
-$IPTABLES -A INPUT -t filter -i ppp0 -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-$IPTABLES -A OUTPUT -t filter -o ppp0 -p tcp --sport 21 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-#
-$IPTABLES -A INPUT -t filter -i ppp0 -p tcp --dport 20 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT -t filter -o ppp0 -p tcp --sport 20 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-#
+Modules being "used" does not indicate whether they are doing anything useful 
+on your machine.
 
-Any Suggestions what wrong here ?
+It tells you whether any other modules depend on them.
 
+Therefore a module which is listed by lsmod which is not being "used" may be 
+doing a splendid job for you, but no other modules are linked in to it.
 
-Regards
-Frank
+Antony.
 
+-- 
 
-
+What is this talk of software 'release' ?
+Our software evolves and matures until it becomes capable of escape,
+leaving a bloody trail of designers and quality assurance people in its wake.
 
