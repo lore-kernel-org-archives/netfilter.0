@@ -1,13 +1,14 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: LAN accessing DMZ
-Date: Sun, 18 Jul 2004 13:39:37 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: FAQ 3.13, but on the same box
+Date: Sun, 18 Jul 2004 18:44:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040718173937.GA31408@tranquility.scriptkitchen.com>
-References: <f51b72bc040718062373640612@mail.gmail.com> <200407181739.05377.Antony@Soft-Solutions.co.uk> <20040718165830.GA30303@tranquility.scriptkitchen.com> <200407181812.31070.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407181844.22744.Antony@Soft-Solutions.co.uk>
+References: <20040718173200.GC718@always.joy.eth.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200407181812.31070.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040718173200.GC718@always.joy.eth.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sun, Jul 18, 2004 at 06:12:31PM +0100, Antony Stone wrote:
-> I do not see how TCP port 10000 should be accessible from the Internet either 
-> (which is what I believe you were asking about - allowing access to the DMZ 
-> from the Internet, but not from the LAN?)
+On Sunday 18 July 2004 6:32 pm, Joshua N Pritikin wrote:
 
-We will keep it more simple. All ports which are allowed from internet are 
-allowed from LAN (192.168) range for DMZ. Ok? Just for start-up.
+> I understand how to set up a transparent proxy.  However, it is
+> possible to run a transparent proxy and web browser on the same box?
 
-> Please post the output of "iptables -L -nvx; iptables -L -t nat -nvx".   Post 
-> it on the website if you prefer (the formatting is probably easier to read 
+Yes.
 
-I do not have access to that machine till tomorrow. But I have copied the 
-firewall script at,
-http://payal.staticky.com/fw2.txt
-I have masked the real IP and I have noticed a small error now.
-"INET_IFACE" is not eth0 as in script but eth1. eth0 is blank. Not
-using it.
-My firewall IP is 10.10.10.1.
+> What if I put the proxy on a loopback interface and REDIRECT port 80
+> to port 3128 the loopback?  Would that work?
 
-> there anyway).   Please also post the IP addresses of the machine you are 
-> connecting from, and the machine you are connecting to, on TCP port 10000.
+Sounds good to me.
 
-I am connecting from any machine in range 192.168/16
+http://www.squid-cache.org/Doc/FAQ/FAQ-17.html#ss17.4
 
-If you want any more *live* information I will get it tomorrow.
+Regards,
 
-With warm regards,
--Payal
+Antony.
+
+-- 
+The first fifty percent of an engineering project takes ninety percent of the 
+time, and the remaining fifty percent takes another ninety percent of the 
+time.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
