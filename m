@@ -1,13 +1,13 @@
 From: "Preston A. Elder" <prez@srealm.net.au>
 Subject: Re: [netfilter-core] iptables/conntrack in enterprise environment.
-Date: Fri, 30 May 2003 01:33:22 -0400
+Date: Fri, 30 May 2003 03:37:56 -0400
 Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200305300133.44822.prez@srealm.net.au>
-References: <200305290113.58552.prez@srealm.net.au> <20030529083953.GB2461@sunbeam.de.gnumonks.org>
+Message-ID: <200305300338.05101.prez@srealm.net.au>
+References: <20030530072818.E2AAB2C053@lists.samba.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20030529083953.GB2461@sunbeam.de.gnumonks.org>
+In-Reply-To: <20030530072818.E2AAB2C053@lists.samba.org>
 Content-Description: clearsigned data
 Content-Disposition: inline
 Errors-To: netfilter-devel-admin@lists.netfilter.org
@@ -20,80 +20,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: Text/Plain; charset="us-ascii"
-To: Harald Welte <laforge@netfilter.org>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
+To: Rusty Russell <rusty@rustcorp.com.au>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
 =2D----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-I'd like to add some more to this issue.
+On Thursday 29 May 2003 05:08 am, Rusty Russell wrote:
+> In message <200305290113.58552.prez@srealm.net.au> you write:
+> > We have a system that acts as a router, however any new inbound
+> > connection for any machine behind this router is re-directed to a
+> > specific port on the local machine, where an application responds as if
+> > it were the system behind the router.  These systems experience some ve=
+ry
+> > high volumes of traffic
+>
+> Sounds a lot like something is happening to the FIN or RST packets: as
+> soon as conntrack sees a FIN or RST, it'll leave ESTABLISHED and
+> timeout fairly quickly.
+>
+> Now, there are several simple things you can do here, as well as
+> dropping the ESTABLISHED timeout:
+>
+> 1) Try 2.4.21-rc5.  The hashing algorithm was markedly improved, which
+>    you could well be hitting.
+I'll look into this, thanks.
 
-I did some more testing, and figured out the exact scenario that is causing=
- me=20
-problems, here goes.
+> 2) You set the conntrack_max to 524280, but on a 1GB machine you'll
+>    only have about 8192 hash chains, making each chain 64 long.  Up
+>    the hashsize module parameter to around 100000 (or edit the kernel
+>    source if builtin, sorry).
+Already made the hashsize the largest prime less than (524280 / 2), on=20
+recommendation from someone on core.
 
-I have my router box, say, 192.168.0.1, and a range of IP's behind it, say,=
+> > We have multiple systems performing this task (essentially for load
+> > balancing and to remove a single point of faulure).
+>
+> Um, how are you load balancing?  Remember, if the connection tracking
+> code doesn't see all the packets for a connection, it can't work.
+Well, not quite load balancing in that way.  I mean we have a whole mess of=
 =20
-10.0.0.0/24, for arguments sake.  I also have an application on the router=
+systems 'behind' the routers, and we're splitting them up, so one router=20
+takes portion A, the next takes portion B, etc.  I'm not actually load=20
+balancing (ie. distributing between servers realtime), so much as splitting=
 =20
-box listening on 100 ports, say, 5000-5100.  My uplink interface is eth0, a=
-nd=20
-the interface with all the 10.0.0.0 addresses is on eth1.
-
-Now, I add an iptables rules something like the following:
-
-iptbales -t nat -A PREROUTING -j REDIRECT -i eth0 -p tcp -d 10.0.0.0/24=20
-=2D --destination-port 1025:65535 --to-ports 5000-5100
-
-If I then telnet to 10.0.0.1 on port 5050, the connection is immediate, and=
- my=20
-application receives a new connection on port 5050.  If, however, I telnet =
-to=20
-10.0.0.1 on port 5150, there is a small (but noticable) delay between when=
-=20
-the telnet session shows the connection as established, and when the=20
-application receives the connection (on a random port between 5000 and 5100=
-=20
-inclusive).
-
-=46irst, I cannot see why this delay is even there, choosing a random port=
-=20
-between 5000 and 5100 is not exactly an onerous task, especially not one th=
-at=20
-should cause a noticable delay.  And the connection itself is quite=20
-responsive once established (closing it down takes no more time one way or=
-=20
-the other).
-
-The problems really start when you multiply this out to enterprise proporti=
-ons=20
-=2D - I'm talking a system than can get thousands of new connections a seco=
-nd=20
-(the hardware is up to it, we're talking gb's of ram, and SMP machines).  A=
-s=20
-with my above small test case, connecting to a port in the 'to-ports' range=
-=20
-gives me an immediate connection (on the application), but the delay betwee=
-n=20
-telnet showing the connection established, and the application receiving th=
-e=20
-connection (and establishing it) grows dramaticaly, even taking over a minu=
-te=20
-for the application to receive the connection.  Hell, even the time for=20
-telnet to show the connection as established is much greater when connectin=
-g=20
-to a port outside the 'to-ports' range than when connecting to one within=20
-this range.
-
-This is just an abserd delay, and I really can't see a logical reason that=
-=20
-this delay would be there.  Can anyone shed some light onto the situation,=
-=20
-and more importantly, how to fix it?  I'm willing to test some patches=20
-(obviously in my test environment) to see if they resolve the problem as=20
-necessary.
-
-Thanks in advance for your help,
+the load across servers.
 
 =2D --=20
 PreZ
@@ -108,9 +79,9 @@ http://www.srealm.net.au
 =2D----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE+1u04KFp14D8AGEQRAlg3AJ9c4LBfDIZ+3PQ5NzhM7tCdsqCdhQCfdIFz
-JFA7Y0hHt0bVtuhKiA+qtMY=3D
-=3DNKyf
+iD8DBQE+1wpcKFp14D8AGEQRAv2BAJ9zMkWSacT2Nk0bmjempwGqfOdsIQCcD8PS
+WDAt/rDsgN5nHhbufM+FOAY=3D
+=3DZzHB
 =2D----END PGP SIGNATURE-----
 
 
