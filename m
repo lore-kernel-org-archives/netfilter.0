@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: logging mac address
-Date: Tue, 15 Jul 2003 13:59:42 -0700
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: logging mac address
+Date: Tue, 15 Jul 2003 16:59:36 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E359E@alderaan.smgtec.com>
+Message-ID: <20030715205936.GO24604@cannon.eng.us.uu.net>
+References: <7C9884991ADAE0479C14F10C858BCDF5122DF5@alderaan.smgtec.com> <OFED428E53.CB94B945-ON83256D64.006E5081-83256D64.006E6B88@LocalDomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <OFED428E53.CB94B945-ON83256D64.006E5081-83256D64.006E6B88@LocalDomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antonio Paulo Salgado Forster <aforster@br.ibm.com>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Antonio Paulo Salgado Forster <aforster@br.ibm.com>
+Cc: netfilter@lists.netfilter.org
 
-I don't recommend it, but I guess it is possible to filter them on the
-nat prerouting chain instead if you really must have the MAC address
-recorded...
+On Tue, Jul 15, 2003 at 05:06:04PM -0300, Antonio Paulo Salgado Forster wrote:
 
------Original Message-----
-From: Antonio Paulo Salgado Forster [mailto:aforster@br.ibm.com]=20
-Sent: Tuesday, July 15, 2003 1:06 PM
-To: netfilter@lists.netfilter.org
-Subject: logging mac address
+> 
+> 
+> Hello all,
+> 
+>       Is there any known way to log the mac address for packets blocked on
+> the forward table just like in the input table? I've been searching the
+> archives and documentations but found nothing so far.
 
+forward and input are chains and not tables. nat, mangle and filter are
+tables. But anyhow, you just use the same rule for logging that you
+used for INPUT logging and replace INPUT with FORWARD. You also need
+to make sure what and where you're logging so that you don't DoS yourself.
 
+Ramin
 
-Hello all,
-
-      Is there any known way to log the mac address for packets blocked
-on
-the forward table just like in the input table? I've been searching the
-archives and documentations but found nothing so far.
-
-Thanks in advance.
-
-Forster
-
-
-
+> 
+> Thanks in advance.
+> 
+> Forster
+> 
+> 
 
