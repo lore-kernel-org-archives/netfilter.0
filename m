@@ -1,11 +1,12 @@
-From: Charlie Brady <charlieb-netfilter@budge.apana.org.au>
-Subject: Re: DNATing back to the same network
-Date: Thu, 13 Jan 2005 10:35:20 -0500 (EST)
-Message-ID: <Pine.LNX.4.44.0501131034010.2774-100000@e-smith.charlieb.ott.istop.com>
-References: <Pine.LNX.4.58.0501131538030.16403@desktop.agenda.si>
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: forwarding to an external ip
+Date: Thu, 13 Jan 2005 11:22:36 -0500 (EST)
+Message-ID: <52539.142.169.215.10.1105633356.squirrel@142.169.215.10>
+References: <20050112170926.GA4744@digicit.nl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0501131538030.16403@desktop.agenda.si>
+In-Reply-To: <20050112170926.GA4744@digicit.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: danci@agenda.si
+Content-Type: text/plain; charset="us-ascii"
+To: Roderik van Heijst <roderik@digicit.nl>
 Cc: netfilter@lists.netfilter.org
 
+On Wed, January 12, 2005 12:09 pm, Roderik van Heijst said:
+> hi there,
 
-On Thu, 13 Jan 2005 danci@agenda.si wrote:
+hi
 
-> I have a firewall with a number of DNAT rules for various ports/hosts. It 
-> would be good if local users could use the same DNAT's. However, as it 
-> seems this doesn't work.
-> 
-> My firewall has a public IP. Some ports on this IP are DNATed to different 
-> hosts on the local network. DNAT works for users that connect from the 
-> internet.
-> 
-> However, when a local users tries to connect to the public IP and DNATed 
-> port, the connection fails. Which is basically logical as the server 
-> receives a packet with the source IP of the actual user and it answeres 
-> directly to that IP.
-> 
-> Is it possible to change netfilter behaviour? Any other work-around for 
-> that?
+> [...]
+> ... Nopez. Honestly, I can't understand what's making the difference ..
+> must be due to
+> different kernels, but this is user-space right .. should work the same=
+?
 
-Set up split horizon DNS so that the internal clients go direct to the 
-internal IP, rather than to the public IP.
+What do you mean by `but this is user-space' ?
 
----
-Charlie
+> I'm sorry if i sound frustrated, but i am.
+
+Against what ? 8)
+
+>
+> iptables -F
+> iptables -t nat -F
+> iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport 1111 -j DNAT --to
+> 131.155.228.4
+> iptables -t nat -A POSTROUTING -p tcp --dport 1111 -j MASQUERADE
+> iptables -L
+> iptables -t nat -L
+
+Quick comment : May I guess you have static external ip ?
+
+If you do, use SNAT instead of MASQUERADE.
+
+>
+> Now for the difference that i can spot which may have to do with this:
+> phex uses 2.4.20 whereas boron has 2.4.24.
+
+Shouldn't matter.
+
+> A subtle difference (at least that's what it seems to me) is that phex
+> preroutes things from ppp0 while boron should
+> do that from eth0, maybe that can be the problem? i don't see how, but
+> that doesn't surprise me anymore by now.
+
+That, obiviously, is a problem. The packet will never get DNAT'ed
+(because it doesn't match your rule) if you specified it should
+come from ppp0 where, in fact, it comes from eth0.
+
+> I hope any of you can bravely
+> come up with some sort of answer that should push me into the right
+> direction of solving this .. well .. i don't know what it is. Aargh!
+
+Maybe I missed something ?
+
+>
+> oh and happy newyear.
+
+Thanks
+
+HTH,
+
+Samuel
 
 
