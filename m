@@ -1,12 +1,14 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: How to install patch-o-matic
-Date: Sat, 28 Aug 2004 10:42:27 -0400
+From: Marcin Sura <slacklist@op.pl>
+Subject: Re: iptables + MRTG
+Date: Sat, 28 Aug 2004 17:23:55 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9064210@asimail2.alphanumeric.com>
+Message-ID: <1910446864.20040828172355@op.pl>
+References: <a0f69e5040828042815b5e61e@mail.gmail.com>
+Reply-To: Marcin Sura <slacklist@op.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <a0f69e5040828042815b5e61e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-> On August 27, 2004 04:50 am, Bassam A. Al-Khaffaf wrote:
-> > Thanks for the great information,
-> >     I have successfully upgraded and recompiled the kernel according =
-to
-> > the URL you gave to me.
-> >
-> > You have mentioned to compile the user space, so what do u mean by =
-user
-> > space and how to compile it, do you mean I have to go inside the
-> > /usr/src/iptables-1.2.11 and write the following instructions again:
-> >
-> > make KERNEL_DIR=3D/usr/src/linux-2.4.27
-> > make install KERNEL_DIR=3D/usr/src/linux-2.4.27
-> >
-> > Do I need to compile this user space before I start the actual
-> > configuration and compilation for the kernel as described in the URL
-> > http://www.digitalhermit.com/linux/Kernel-Build-HOWTO.html?
->
-> >
-> > Regards
-> > Bassam
-> >
->
->       Short answer is yes.
->
->       iptables userspace refers to the iptables code itself that is =
-NOT part of the
-> kernel (kernelspace)
->       Thus the iptables package itself.
+Witam
 
-and regarding the order:  patch & recompile kernel, then recompile =
-userspace.  the userspace tools are compiled against the kernel sources, =
-and detect the patches you have applied.
+Saturday, August 28, 2004, 1:28:27 PM, you wrote:
 
--j
+> Anyone here using MRTG with iptables? for example to check iptables -L
+> -nvx things graphical using mrtg... or any other statistics
+> any possibility ?
+
+With MRTG you can graph temperature even this how many times your dog
+go outside, so also you can make charts of iptables output. Simply,
+you must parse iptables -L -vnx output, and provide what you want to
+graph to MRTG.
+
+You can also try a rrdtool. This is a (imo better) successor of MRTG.
+
+Try to google. There is a lot of examples for both - MRTG and rrdtool
+
+-- 
+Pozdrawiam
+ Marcin                            mailto:slacklist@op.pl
+
+
