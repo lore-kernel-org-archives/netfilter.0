@@ -1,11 +1,11 @@
-From: "Hlynur Thor Olason" <thorolason@web.de>
-Subject: iptables -- routing
-Date: Thu, 11 Dec 2003 10:04:15 +0100
+From: Ray Leach <bob@home.com>
+Subject: iptables / network / linux issue ...
+Date: Thu, 11 Dec 2003 14:32:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c3bfc5$c0f8cfe0$b84526c0@thor>
+Message-ID: <1071145955.22911.9.camel@raylinux.internal>
+Reply-To: spoons@rchq.co.za
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C3BFCE.22585B90"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,118 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+Hi
 
-------=_NextPart_000_000B_01C3BFCE.22585B90
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have a strange network / iptables / Linux problem. I don't know which
+it is yet ...
 
-I have 2 Ethernet cards in a box.
+If I ssh to my firewall (which has 4 NIC installed), I then ftp back to
+an ftp server on eth2 segment of the firewall and get a whole bunch of
+files (about 20 totaling 100MB), I get a transfer rate of 110KB/s
+(800Kb/s) - measured on both ends of the connection. This is on a 100Mb
+network.
 
-=20
+I then ftp from the machine on the internal LAN (eth2) through the
+firewall to a machine in the DMZ (eth1 on the firewall). Now I get 1MB/s
+- that's more like it.
 
-Call them eth0 with IP address 192.168.0.1    and
+Any ideas why the first transfer could be so slow?
 
-eth1 with IP =3D 192.168..0.2
+I have checked my -m limit iptables rules and verified (as can be seen
+above) that they are not limiting the packet rate.
 
-=20
+Regards
 
-eth1=3D 192.168.0.2 is connected to another computer a gateway which has =
-the IP address 192.168.0.3. This computer is then connected to an =
-external network which is again connected to eth0=3D192.168.0.1 in the =
-first box.=20
-
-=20
-
-Now the problem is I want to get locally generated packages in the box =
-destined for 192.168.0.2 (eth1 in the box) to leave the box and be =
-routed trough the network to the box again.=20
-
-=20
-
-I have been trying to use iptables but not found a solution.=20
-
-=20
-
-Any suggestion would be welcome?  / Thor=20
-
-------=_NextPart_000_000B_01C3BFCE.22585B90
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
-New Roman">I=20
-have 2 Ethernet cards in a box.<?xml:namespace prefix =3D o ns =3D=20
-"urn:schemas-microsoft-com:office:office" =
-/><o:p></o:p></FONT></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><o:p><FONT face=3D"Times New Roman"=20
-size=3D3>&nbsp;</FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
-New Roman">Call=20
-them eth0 with IP address 192.168.0.1<SPAN=20
-style=3D"mso-spacerun: yes">&nbsp;&nbsp;&nbsp;=20
-</SPAN>and<o:p></o:p></FONT></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
-New Roman">eth1=20
-with IP =3D 192.168..0.2<o:p></o:p></FONT></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><o:p><FONT face=3D"Times New Roman"=20
-size=3D3>&nbsp;</FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
-New Roman">eth1=3D=20
-192.168.0.2 is connected to another computer a gateway which has the IP =
-address=20
-192.168.0.3. This computer is then connected to an external network =
-which is=20
-again connected to eth0=3D192.168.0.1 in the first box.=20
-<o:p></o:p></FONT></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><o:p><FONT face=3D"Times New Roman"=20
-size=3D3>&nbsp;</FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
-New Roman">Now=20
-the problem is I want to get locally generated packages in the box =
-destined for=20
-192.168.0.2 (eth1 in the box) to leave the box and be routed trough the =
-network=20
-to the box again. <o:p></o:p></FONT></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><o:p><FONT face=3D"Times New Roman"=20
-size=3D3>&nbsp;</FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
-New Roman">I=20
-have been trying to use iptables but not found a solution.=20
-<o:p></o:p></FONT></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><o:p><FONT face=3D"Times New Roman"=20
-size=3D3>&nbsp;</FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
-New Roman">Any=20
-suggestion would be welcome?<SPAN style=3D"mso-spacerun: yes">&nbsp; =
-</SPAN>/ Thor=20
-<o:p></o:p></FONT></FONT></SPAN></P></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_000B_01C3BFCE.22585B90--
+Ray
 
 
