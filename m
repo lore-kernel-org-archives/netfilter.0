@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: compilation problem with cuseeme patch.
-Date: Sun, 15 Feb 2004 16:28:32 +0100
+Subject: Re: cannot compile extensions/libipt_ECN.c
+Date: Sun, 15 Feb 2004 16:56:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040215152832.GM15567@sunbeam.de.gnumonks.org>
-References: <1076587638.1004.49.camel@krishnap>
+Message-ID: <20040215155633.GO15567@sunbeam.de.gnumonks.org>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAPCp1YAf+Yku8TNzXRFUK5MKAAAAQAAAApakBm76La0OUjD2MrlZa8QEAAAAA@digital-vitamins.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3hAdtgBjtgL7p0NQ"
+	protocol="application/pgp-signature"; boundary="+gHRqQ1BTyNna/y8"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1076587638.1004.49.camel@krishnap>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAPCp1YAf+Yku8TNzXRFUK5MKAAAAQAAAApakBm76La0OUjD2MrlZa8QEAAAAA@digital-vitamins.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +19,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Krishna Prasanth P <krishnap@teneoris.com>
+To: Stefan Bosnjakovic <sb@digital-vitamins.com>
 Cc: netfilter@lists.netfilter.org
 
 
---3hAdtgBjtgL7p0NQ
+--+gHRqQ1BTyNna/y8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 12, 2004 at 05:36:50PM +0530, Krishna Prasanth P wrote:
-> Hi!!
->  I'm trying to use cuseeme patch with netfilter and downloaded the patch
-> from the cvs repository.
+On Mon, Feb 09, 2004 at 06:13:28PM +0100, Stefan Bosnjakovic wrote:
+> Hi list,
+>=20
+> when I try to compile the user-land applications of iptables 1.2.6a,
+> it stops at extensions/libipt_ECN.c with the following message:
 
-a) Which kernel version are you using
-b) did you correctly use the 'runme' program or did you apply the patch
-   manually?
+please use a more recent version of iptables.
 
-> While building the kernel with the new patch, i'm not able to do
-> linking. The reason is the cuseeme(ip_nat_cuseeme.c) is using function
-> ip_nat_mangle_udp_packet() function which is not defined.
+1.2.6a contained an old incompatible version of the ECN target.
 
-net/ipv4/netfilter/ip_nat_helper.c includes this function, at least in
-all kernels released for at least one year.
-
-> -prasanth
+> Cheers, Stefan !
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -56,7 +50,7 @@ all kernels released for at least one year.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---3hAdtgBjtgL7p0NQ
+--+gHRqQ1BTyNna/y8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -64,10 +58,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFAL5AgXaXGVTD0i/8RApIkAKCwQXb28nznTvqS+goVkVHhfTA66QCeJT+o
-WGXb64/YpCiLBlbUTgzyeyw=
-=A9Mt
+iD8DBQFAL5axXaXGVTD0i/8RAsTcAJ4nf3zugcK90tb2iZPEHbJH/Dd3dwCfV6LD
+OX4PEpoQUXAEIkfs6QSiGXk=
+=JvKc
 -----END PGP SIGNATURE-----
 
---3hAdtgBjtgL7p0NQ--
+--+gHRqQ1BTyNna/y8--
 
