@@ -1,13 +1,12 @@
-From: Carlos Villegas <villegas@math.gatech.edu>
-Subject: Re: Question about REJECT in FORWARD rule
-Date: Wed, 11 Aug 2004 16:00:45 -0400
+From: "linux@openware" <linux@openware.nl>
+Subject: MSN access with a webcam
+Date: Wed, 11 Aug 2004 22:20:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040811200045.GA6472@uglabng.math.gatech.edu>
-References: <D5C9032B2B09C64EA2409D6214E91AC905126E@asimail2.alphanumeric.com>
+Message-ID: <1811517141.20040811222046@openware.nl>
+Reply-To: "linux@openware" <linux@openware.nl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC905126E@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <Jopperisano@alphanumeric.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, Aug 11, 2004 at 12:30:50PM -0400, Jason Opperisano wrote:
-> is not narrowing down the interface/source, and is hit before any connection tracking occurs.  i've never used "-j REJECT --reject-with tcp-reset" without also specifying "--syn" as it could have very odd results (and also doesn't make sense from a TCP perspective)...
+Hello listmembers,
 
-Really? I thought "-j REJECT --reject-with tcp-reset" would always do
-the right thing, even without specifying --syn (of course, it wouldn't
-be a bad idea to specify it anyway). I have several systems running fine
-without the --syn option explicitly mentioned. Could any of the "core"
-guys say if my assumption is wrong? 
+I build myself a firewall on a gateway Suse 9.1 server
 
-Carlos
+eth0 = DSL(WAN)
+eth1 = LAN
+net-lan = 192.168.0.1/24
+
+On the LAN 3 Windowsclients are talking to Internet via a switch.
+
+I can use Microsoft's MSN(chat) but using a webcam wont work.
+
+Here's a part listings of my firewall MSN rules:
+
+echo "MSN Messenger..."
+iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 1863 -s $net_lan -j ACCEPT
+iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 1863 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t filter -A FORWARD -i $lan -o $wan -p tcp --dport 443 -s $net_lan -j ACCEPT
+iptables -t filter -A FORWARD -i $wan -o $lan -p tcp --sport 443 -m state --state ESTABLISHED,RELATED -d $net_lan -j ACCEPT
+
+Is a webcam using another TCP port?
+
+
+
+-- 
+regards,
+
+Jan Rozema
+Kortenhoef-Holland
+linux@openware.nl
+
 
 
