@@ -1,13 +1,14 @@
-From: Kim Jensen <kimj@dawn.dk>
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
 Subject: Re: What ports need to be open to allow for mail?
-Date: Thu, 10 Apr 2003 13:20:54 +0200
+Date: 10 Apr 2003 12:18:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304101320.54473.kimj@dawn.dk>
-References: <5.1.0.14.2.20030410122405.02794440@of23sm3.kadnet.dom>
+Message-ID: <1049969891.8232.0.camel@raylinux.internal>
+References: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-2F2fUOJLQLFUBe5zQVIc"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.2.20030410122405.02794440@of23sm3.kadnet.dom>
+In-Reply-To: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +18,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
->I'm trying to set up my mail server; however I want to
->make sure that I have the correct port(s) open. I
->already have TCP port 25 open; however do I also have
->to have UDP port 25 open as well? Any help would be
->appreciated.
->
-Extract from /etc/services:
 
-SMTP:
-smtp            25/tcp          mail
-smtp            25/udp          mail
-smtps           465/tcp                         # SMTP over SSL (TLS)
+--=-2F2fUOJLQLFUBe5zQVIc
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-POP:
-pop2            109/tcp         pop-2   postoffice      # POP version 2
-pop2            109/udp         pop-2
-pop3            110/tcp         pop-3           # POP version 3
-pop3            110/udp         pop-3
-pop3s           995/tcp                         # POP-3 over SSL
-pop3s           995/udp                         # POP-3 over SSL
+Hi
 
-IMAP:
-imap            143/tcp         imap2           # Interim Mail Access Pro=
-to v2
-imap            143/udp         imap2
-imap3           220/tcp                         # Interactive Mail Access
-imap3           220/udp                         # Protocol v3
-imaps           993/tcp                         # IMAP over SSL
-imaps           993/udp                         # IMAP over SSL
+Depends what kind of mail:
 
-Now, make you picking, standard answer is:
-25 for SMTP
-110 for POP3
-143 for IMAP
+SMTP uses tcp port 25 (no UDP necessary)
+POP3 uses tcp port 110 (no UDP necessary)
 
-/Kim
+HTH
+
+Ray
+
+On Thu, 2003-04-10 at 11:39, James Marcinek wrote:
+> Hello All,
+>=20
+> I'm trying to set up my mail server; however I want to
+> make sure that I have the correct port(s) open. I
+> already have TCP port 25 open; however do I also have
+> to have UDP port 25 open as well? Any help would be
+> appreciated.
+>=20
+> Thanks,
+> James
+>=20
+> __________________________________________________
+> Do you Yahoo!?
+> Yahoo! Tax Center - File online, calculators, forms, and more
+> http://tax.yahoo.com
+
+--=-2F2fUOJLQLFUBe5zQVIc
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+lUTjh1fuR/Bv+ygRAgRLAJ4m3c5lAslme5sjakohzLljmWaBfACePpSa
+CqpCUPVmUWB7jBnTf9r9qhE=
+=Fi1c
+-----END PGP SIGNATURE-----
+
+--=-2F2fUOJLQLFUBe5zQVIc--
 
 
