@@ -1,8 +1,7 @@
-From: "Marius Mertens" <marius.mertens@gmx.de>
-Subject: Re: Packets that should have been DNATted appearing in INPUT table
-Date: Tue, 11 Jan 2005 19:33:23 +0100
-Message-ID: <009601c4f80c$0cd15d40$4206a8c0@loki>
-References: <Pine.LNX.4.05.10501111313200.7610-100000@darkstar.sysinfo.com>
+From: "mdpeters" <michael.peters@lazarusalliance.com>
+Subject: Your linux version .. is unknown for patch-o-matic at runme line 214
+Date: Tue, 11 Jan 2005 15:41:52 -0500
+Message-ID: <017001c4f81d$fb4e4fd0$3e0010ac@esonet18>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,21 +18,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-On Tuesday, January 11, 2005 7:16 PM,
-R. DuFresne wrote:
+I am attempting to run POM on Fedora Core 2.
 
-> [...]
-> at various links and sec websites on the net.  But,this can be
-> confirmed with comparing these INPUT hits with his FORWARDED NAT hits
-> in the logs, yes?
+I get this error message "Your linux version .. is unknown for patch-o-matic 
+at runme line 214" and I don't know how to get around it.
 
-Great idea, but I think we can exclude malicious attempts: The source IPs of 
-the "critical packets" all (without exception) have far more packets that 
-were correctly forwarded (several 10 or 100) than dropped (just 1 or 2 in 
-the same time).
+Best regards,
 
-Thank you very much,
-
-Marius 
+Michael
 
 
