@@ -1,57 +1,50 @@
-From: Nuutti Kotivuori <naked@iki.fi>
-Subject: Re: differences between win and unix tcp clients.
-Date: Wed, 17 Mar 2004 23:13:39 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <871xnrnpmk.fsf@aka.i.naked.iki.fi>
-References: <024b01c40b4f$e3341620$3f32a8c0@ds.ig.com.br> <20040316150746.GA8506@myinternet.com.au>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Creating rules without the /sbin/iptables command?
+Date: Wed, 17 Mar 2004 22:34:20 +0100 (CET)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0403172230510.11069-100000@filer.marasystems.com>
+References: <1079551538.1424.23.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <1079551538.1424.23.camel@anduril.intranet.cartel-securite.net>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Victor Julien <victor@nk.nl>, netfilter@lists.netfilter.org, Netfilter Developers List <netfilter-devel@lists.netfilter.org>
 
-Joshua Goodall wrote:
-> On Tue, Mar 16, 2004 at 09:12:01AM -0300, Fabiano Reis wrote:
->> Conclusion: I think this was because the Windows implementation of
->> TCP detects something different on this connection, maybe it
->> detects in some way that there is a filter on the server side and
->> this is why the time for the error message take so long to appear.
->
-> Basically yes.  I wouldn't say that Windows "detects something
-> different".   I would say that the Windows client isn't properly
-> interpretating the ICMP Port Unreachable message.
+On Wed, 17 Mar 2004, Cedric Blancher wrote:
 
-Incorrect. Receiving an ICMP port unreachable message should not cause
-a break in the connection attempt - it should be retried until SYN
-timeout, at which point it can be informed that there was an ICMP port
-unreachamble message received during the period.
+> Le mer 17/03/2004 =E0 19:46, Victor Julien a =E9crit :
+> > My program (written in c) creates rules by opening a pipe to=20
+> > /sbin/iptables. However this is quite slow with large rulessets and o=
+n=20
+> > slow hardware. Is there another way, like an iptables librarycall or=20
+> > something?
+>=20
+> You could use iptables libs that stand in /usr/lib/iptables, just like
+> iptables does.
 
-So Windows is acting properly.
+Or actually the preferred interface for this type of operations is to use=
+=20
+iptables-restore, the batch version of iptables. The speed difference fro=
+m=20
+using iptables-restore and direct calls is pretty minimal by any means.
 
->> Am I right? Is there a workaround for this problem? I need to make
->> windows think that the server is really "down" and that is why i?m
->> writting to you people.
->
-> try extending your REJECT option:
->
-> -j REJECT --reject-with tcp-reset
->
-> which should give you the desired result, in exchange for being
-> a crude pseudo-rejection.
+libiptc is an internal interface of the iptables source tree and is
+subject to change at any time. This should not be used directly unless yo=
+u=20
+have very good reasons.
 
-If you wish to get immediate reject responses, TCP reset is the only
-way. It has nothing more or less crude than sending an ICMP.
-
--- Naked
-
+Regards
+Henrik
 
 
