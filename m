@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Hello -- kind of of topic -- but still related
-Date: Wed, 3 Dec 2003 23:36:14 +0000
+Subject: Re: open ports 25/tcp and 110/tcp
+Date: Wed, 3 Dec 2003 23:39:21 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312032336.14650.Antony@Soft-Solutions.co.uk>
-References: <20031203151030.31eaeacd.mgale@utilitran.com> <200312032234.22291.Antony@Soft-Solutions.co.uk> <20031203162710.540a1fc9.mgale@utilitran.com>
+Message-ID: <200312032339.21755.Antony@Soft-Solutions.co.uk>
+References: <002101c3b9ef$53e5d780$0201a8c0@OurPC> <200312032301.11900.Antony@Soft-Solutions.co.uk> <002201c3b9f5$c7ee11a0$0201a8c0@OurPC>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031203162710.540a1fc9.mgale@utilitran.com>
+In-Reply-To: <002201c3b9f5$c7ee11a0$0201a8c0@OurPC>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +20,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 03 December 2003 11:27 pm, Michael Gale wrote:
+On Wednesday 03 December 2003 11:32 pm, David F. Strauch wrote:
 
-> Hello,
+> Antony,
 >
-> 	Thanks for the response -- it starting logging all outbound traffic and
-> found that the FTP server is sending out ident request to the Cisco router.
-> Which is odd because there is NO ident server on the FTP box and the FTP
-> config specifies no Ident lookups.
+> I tried telnet from my WinXP machine to both open ports without any
+> responce.  I'm hosting neither services on this machine.  It will be a
+> gateway machine with a very minimal hardened installation.
 
-Ident requests are generally caused by the use of tcpwrappers (see your 
-inetd.conf file to confirm this).   You do not need to be running an ident 
-server for your machine to send out ident requests (those mean that it is 
-acting as a client, asking for responses from some other server).
+Are you saying that from the same machine you did "nmap -sT -F -P0 -O 
+xx.xx.xx.xx" and got a report including "SMTP port 25 open" and "POP3 port 
+110 open", and also doing "telnet xx.xx.xx.xx 25" gives no response?
 
-> The packet leaves from port X to the Cisco on port 113 but then the Cisco
-> returns a ACK RST from port number < 10 to port X.
+That makes no sense, because nmap -sT means a full TCP connect - the same as 
+the telnet command would do.
 
-That is not the way TCP is supposed to work.  All responses should be from the 
-source port which the original request packet went to as destination port.
-
-If you send a packet to port 113, you should get a reply (whether it's a goood 
-one saying "hello" or a bad one saying "no service here") from port 113.
+Please confirm whether I am understanding correctly that you are doing both 
+these tests from the same machine to the same address and getting different 
+answers?
 
 Antony.
 
 -- 
-Most people have more than the average number of legs.
+All matter in the Universe can be placed into one of two categories:
+
+1. Things which need to be fixed.
+2. Things which need to be fixed once you've had a few minutes to play with 
+them.
 
                                                      Please reply to the list;
                                                            please don't CC me.
