@@ -1,12 +1,13 @@
-From: "Markus Zeilinger" <mz@sea.uni-linz.ac.at>
-Subject: Filtering multiple networks
-Date: Mon, 31 May 2004 11:57:13 +0200
+From: Frank Gruellich <frank@home.manuelm.org>
+Subject: Re: Filtering multiple networks
+Date: Mon, 31 May 2004 12:08:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BUjWm-0005kj-GQ@vishnu.netfilter.org>
-Reply-To: <mz@sea.uni-linz.ac.at>
+Message-ID: <20040531100803.GZ26731@home.manuelm.org>
+References: <E1BUjWm-0005kj-GQ@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <E1BUjWm-0005kj-GQ@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all,
+* Markus Zeilinger <mz@sea.uni-linz.ac.at> 31. May 04:
+> Hi all,
 
-sorry if this is a stupid question, I am just a newbie with iptables.
+Hello,
 
-I am currently writing a little script for a simple network design. I have a
-local network parted from the internet with a linux firewall. Now I would
-like to drop all packets coming on the Internet interface on the firewall
-with source address out of the private IP address ranges (10.0.0.0/8,
-192.168.0.0/16, 172.16.0.0/12 and 169.254.0.0/16). I use the following
-syntax in my script:
+> sorry if this is a stupid question, I am just a newbie with iptables.
 
-...
-WAN_IFACE="eth0"
-PRIV_IP="10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,169.254.0.0/16"
-...
-iptables -A INPUT -i $WAN_IFACE -s $PRIV_IP -j DROP
-...
+Okay.
 
-When I execute the script I get the following error:
-...
-iptables v1.2.9: host/network
-`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0' not found
-...
+> Now I would like to drop
 
-Isn't it possible to write a rule like this, or what am I doing wrong?
+Drop is considered to be bad.  Maybe you should prefer REJECT.
 
-Thx for you help guys!
+> all packets coming on the Internet interface on the firewall with
+> source address out of the private IP address ranges (10.0.0.0/8,
+> 192.168.0.0/16, 172.16.0.0/12 and 169.254.0.0/16).
 
-Cheers,
-Markus
+You have to split it.
 
---------------------------------------------------------------------
-Markus Zeilinger (System Administration)
+> I use the following syntax in my script:
+> 
+> ...
+> WAN_IFACE="eth0"
+> PRIV_IP="10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,169.254.0.0/16"
 
-University of Linz, Systems Engineering and Automation
-Altenberger Strasse 69, 4040 Linz, AUSTRIA 
-Phone: +43(0)732-2468-8869, Fax: +43(0)732-2468-8878
+PRIV_IP="10.0.0.0/8 192.168.0.0/16 172.16.0.0/12 169.254.0.0/16"
 
-PGP Fingerprint: 5FC3 E7B3 DC02 C0A2 0198  70CB 9715 491B DA97 4E3F
+> iptables -A INPUT -i $WAN_IFACE -s $PRIV_IP -j DROP
 
-Home: http://www.sea.uni-linz.ac.at/department/staff/mz/
---------------------------------------------------------------------
+Well, INPUT isn't very appropriated, but:
 
+for ip in $PRIV_IP; do iptables -A INPUT -i $WAN_IFACE -s $ip -j DROP; done
 
+Maybe you should have something like this in your FORWARD, too.
 
+HTH,
+ regards, Frank.
+-- 
+Sigmentation fault
 
