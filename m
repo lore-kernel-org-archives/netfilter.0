@@ -1,13 +1,10 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: TTL patch buggy?
-Date: Wed, 7 Jan 2004 17:16:14 -0500
+From: "Gabby James" <lizard0000092@hotmail.com>
+Subject: Filter out broadcast messages
+Date: Wed, 07 Jan 2004 14:44:42 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040107221614.GE20346@cannon.eng.us.uu.net>
-References: <20040107211951.GC20346@cannon.eng.us.uu.net> <Pine.LNX.4.44.0401072153050.6249-100000@filer.marasystems.com>
+Message-ID: <BAY10-F77TIFprhMOgR0003cd8a@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0401072153050.6249-100000@filer.marasystems.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: Harald Welte <laforge@netfilter.org>, "John A. Sullivan III" <john.sullivan@nexusmgmt.com>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, Jan 07, 2004 at 09:54:05PM +0100, Henrik Nordstrom wrote:
+Hi,
 
-> On Wed, 7 Jan 2004, Ramin Dousti wrote:
-> 
-> > Can you explain (b) a bit more, Harald? Multicast traffic is being
-> > dealt with by the routers in exactly the same way as the unicast
-> > traffic with regards to the TTL (as far as I understand it).
-> 
-> Yes, but the difference is that multicast does actually use the ttl to 
-> limit the scope of how wide the traffic is distributed, as opposed to most 
-> other protocols just using the ttl to kill forwarding loops.
+I would like to filter out all broadcast messages.  The packets could come 
+from 255.255.255.255 or multiple other addresses of the form 10.*.*.255.  
+What kind of syntax do I use to DROP these packets?  The line below will 
+filter out packets from 255.255.255.255 but I'm not sure what syntax to use 
+to DROP the other adresses.
 
-Absolutely. For a sec I forgot all about the dense mode. Thanks, Henrik.
-However, I still don't see any "danger" about this. It might not be
-desirable but not dangerous, as multicast forwarding has a builtin mechanism
-against the loops.
+iptables -A INPUT -d 255.255.255.255 -p udp -j DROP
 
-Ramin
+Regards,
+GJ
 
-> Regards
-> Henrik
+_________________________________________________________________
+Worried about inbox overload? Get MSN Extra Storage now!  
+http://join.msn.com/?PAGE=features/es
+
 
