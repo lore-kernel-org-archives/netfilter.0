@@ -1,11 +1,13 @@
-From: Marc Lucke <marc@marcsnet.com>
-Subject: ethernet headers and iptables counters
-Date: 10 Nov 2003 20:14:39 +1100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ethernet headers and iptables counters
+Date: Mon, 10 Nov 2003 09:40:40 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068455679.10203.4.camel@hohum.marcsnet.com>
+Message-ID: <200311100940.hAA9eij16696@agate.rockstone.co.uk>
+References: <1068455679.10203.4.camel@hohum.marcsnet.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-VAWwww8EbLkqCmm//b/s"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1068455679.10203.4.camel@hohum.marcsnet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,50 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Monday 10 November 2003 9:14 am, Marc Lucke wrote:
 
---=-VAWwww8EbLkqCmm//b/s
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> Hi,
+>
+> Do the iptables counters include layer 2 ethernet packet headers?  If
+> so, how much traffic is this - is it a set amount?
 
-Hi,
+No, because you may not be using ethernet.
 
-Do the iptables counters include layer 2 ethernet packet headers?  If
-so, how much traffic is this - is it a set amount?
+Netfilter can be used for packets across ethernet, 802.11, PPP modems - all 
+sorts of network transports.
 
-Horst.Hansen@fhtw-berlin.de Sat Mar 08 12:29:13 2003 asked the question
-that I was interested in - nobody seemed to answer him.
+Packet and byte counters in netfilter are IP (OSI layer 3) and upwards.
 
-My apologies if this is an RTFA question.
+You can check this easily by creating a rule matching something specific (eg 
+ping packets), send a known amount of traffic through the box (or measure it 
+with a packet sniffer / protocol analyser such as ethereal, which will give 
+you a detailed view of the contents of the packets), and then check what the 
+counters say.
 
+Antony
 
-good wishes to all,
-Marc
+-- 
 
---=-VAWwww8EbLkqCmm//b/s
-Content-Type: text/html; charset=utf-8
+Anything that improbable is effectively impossible.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.1.9">
-</HEAD>
-<BODY>
-Hi,<BR>
-<BR>
-Do the iptables counters include layer 2 ethernet packet headers?&nbsp; If so, how much traffic is this - is it a set amount?<BR>
-<BR>
-Horst.Hansen@fhtw-berlin.de Sat Mar 08 12:29:13 2003 asked the question that I was interested in - nobody seemed to answer him.<BR>
-<BR>
-My apologies if this is an RTFA question.<BR>
-<BR>
-<BR>
-good wishes to all,<BR>
-Marc
-</BODY>
-</HTML>
-
---=-VAWwww8EbLkqCmm//b/s--
+ - Murray Gell-Mann, Nobel Prizewinner in Physics
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
