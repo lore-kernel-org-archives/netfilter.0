@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNAT Not working
-Date: Mon, 12 Jul 2004 17:33:54 +0100
+From: Payal Rathod <payalrathod@gmail.com>
+Subject: Re: MASQUERADE
+Date: Tue, 13 Jul 2004 00:15:24 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407121733.55059.Antony@Soft-Solutions.co.uk>
-References: <04fe01c46822$af0ae4c0$1a07a8c0@civic2k> <200407121659.51187.Antony@Soft-Solutions.co.uk> <059201c4682b$21f95f90$1a07a8c0@civic2k>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <f51b72bc04071211457eb8b84@mail.gmail.com>
+References: <f51b72bc040708204912ab0cc7@mail.gmail.com> <20040709103513.GA18894@itstud.chalmers.se> <200407091151.01620.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <059201c4682b$21f95f90$1a07a8c0@civic2k>
+In-Reply-To: <200407091151.01620.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Monday 12 July 2004 5:13 pm, Nicolas Ross wrote:
+Hi,
 
-> On Monday 12 July 2004 4:59 pm, Antony Stone wrote:
->
-> > Yup, it's listening on TCP port 5003 alright :)
-> >
-> > Does the mac have a default route to send reply packets back to the
-> > remote client through the firewall?
->
-> Between the time I wrote my message, and now, I finally got my hand on it.
->
-> The probleme was that the default route on that host was not the RH
-> firewall, but another box wich connects with a vpn to another network at
-> another location, so the route back to the source host doesn't pass trough
-> the firewall, thus the problem...
+On Fri, 9 Jul 2004 11:51:01 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
+ 
+> Sure, if you want to use a new feature you didn't previously build, you need
+> to recompile the kernel and do a reboot, but in most cases that should be (a)
 
-Here's one of my sigs, especially for you :)
+The issue was that iptables was not started (???). I had to do
+/etc/init.d/iptables start and then it worked pretty well.
 
-Antony.
-
--- 
-90% of networking problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Now any ideas why?
+-Payal
 
