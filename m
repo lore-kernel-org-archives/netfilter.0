@@ -1,10 +1,14 @@
-From: Dan.Nguyen@hpa.com.au
-Subject: echo "1" > /proc/net/ip_conntrack
-Date: Tue, 17 Sep 2002 16:51:29 +1000
+From: "Arif Mahmood" <arif786@rogers.com>
+Subject: RE: Upgrade Iptables...
+Date: Tue, 17 Sep 2002 12:34:56 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DB751D23E906D311984100805FCB115F02FBFEA1@exchange.melb.hpa>
+Message-ID: <000601c25e68$286606e0$3a00a8c0@am>
+References: <000e01c25dc3$6d7d0170$d201a8c0@hornet>
+Reply-To: <arif786@rogers.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000e01c25dc3$6d7d0170$d201a8c0@hornet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +19,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi All,
+Hi Raj/Everyone,
 
-	I saw somewhere mentioned about the above command. My questions are
-	1. Is that command for purging the connection tracking table?
-	2. if yes, Is it safe to clear the table that way?
+You mean  by  KERNEL_DIR, location of the complied kernel or source
+kernel, also I couldn't find the source kernel directory in RH 7.3,
+which I installed with default packages.
 
-Thanks,
+Thanks and Best Regards,
+Arif
+ 
 
-Dan A NGUYEN
-Hermes Precisa Australia
-50 Park West Drive
-Derrimut, VIC 3030
-ph: 61 3 92175505
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Raj
+Wurttemberg
+Sent: Monday, September 16, 2002 4:56 PM
+To: netfilter@lists.netfilter.org; arif786@rogers.com
+Subject: RE: Upgrade Iptables...
 
 
 
+> On Monday 16 September 2002 8:23 pm, Arif Mahmood wrote:
+> > How do I do the  patch-o-matic, I mean if you send me the
+> steps to do
+> > patch-o-matic on RedHat 7.3.  I couldn't find the  patch-o-matic
+> > documentations.
+http://www.netfilter.org/documentation/FAQ/netfilter-faq-1.html#ss1.5
+
+Unfortunately that FAQ is out of date and now completely *incorrect* for
+the new Patch-o-Matic (PoM). And on a RedHat type system even the
+documentation included with the package does not work. :(
+
+The proper procedure would be to set your environment variable for
+KERNEL_DIR first. This is from a posting on 10-Sep-2002 by Fabrice
+(Thank you Fabrice!)
+
+# KERNEL_DIR=/usr/src/linux-2.4 ./runme pending
+or
+# export KERNEL_DIR=/usr/src/linux-2.4; ./runme pending
+
+Of course be sure to set your KERNEL_DIR to the correct directory and
+read the "INSTALL" file that comes with the PoM package to ser the
+appropriate patch options. We should get the package maintainers to
+correct the FAQ and the PoM dox.
+
+/*Raj*/
 
 
-**********************************************************************
-IMPORTANT
-The contents of this e-mail and it's attachments are confidential and intended
-solely for the use of the individual or entity to whom they are
-addressed.  If you received this e-mail in error, please notify
-the HPA Postmaster, postmaster@hpa.com.au, then delete 
-the e-mail.
-
-This footnote also confirms that this e-mail message has been swept for
-the presence of computer viruses by MimeSweeper.  Before opening or
-using any attachments, check them for viruses and defects.
-
-Our liability is limited to resupplying any affected attachments.
-
-HPA collects personal information to provide and market our services.
-For more information about use, disclosure and access see our Privacy
-Policy at www.hpa.com.au
-**********************************************************************
 
 
