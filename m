@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Can't interpret this log entry
-Date: Fri, 24 Sep 2004 12:44:44 -0400
+Subject: Re: cannot outgoing smtp with snat
+Date: Fri, 24 Sep 2004 12:46:49 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096044284.9581.79.camel@wolfpack.ljm.dom>
-References: <415442FF.1060304@mail.co.gilchrist.fl.us>
+Message-ID: <1096044409.9581.82.camel@wolfpack.ljm.dom>
+References: <89045C600CF2D74F8B98B9A25B1E9D850488F5@procor.internal.broadnet.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <415442FF.1060304@mail.co.gilchrist.fl.us>
+In-Reply-To: <89045C600CF2D74F8B98B9A25B1E9D850488F5@procor.internal.broadnet.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,38 +20,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-09-24 at 11:53, Eric Ellis wrote:
-> I'm slightly confused about this log entry that I'm seeing pop up in my 
-> syslog.
-> 
-> The firewall is 200.21.1.254, on a private net.
-> 
-> Sep 24 11:57:03 firewall kernel: IN=eth0 OUT= 
-> MAC=00:40:05:3d:51:e9:00:50:3e:ed:28:a0:08:00 SRC=200.175.75.101 DST=200.2
-> 1.1.254 LEN=56 TOS=0x00 PREC=0x00 TTL=43 ID=10814 PROTO=ICMP TYPE=3 
-> CODE=3 [SRC=200.21.1.254 DST=200.175.75.101 LEN=48 T
-> OS=0x00 PREC=0x00 TTL=102 ID=2554 DF PROTO=TCP INCOMPLETE [8 bytes] ] 
-> 
-> 
-> it *almost* looks like my box is sending an ICMP query, and getting a 
-> "port closed" response.  The thing that bothers me about this is that I 
-> don't allow ICMP to talk on the box at all, so I shouldn't be sending 
-> ICMP, or if the machine tries to, I should be getting it logged, as I'm 
-> logging all of my drops.
-> 
-> Confused.
+On Fri, 2004-09-24 at 04:38, Higuera, Antonio wrote:
+> Hi,
+> I have a linux iptables fw with two interfaces: internal and external
+> (nating the internal traffic) with a public ip. In the internal
+> interface I have a ms exchange server that forward all the external mail
+> to the firewall via smtp.
+> - After setup the linux fw I had a cisco router nating the traffic to
+> internet and everything went fine. It seems therefore that the exchange
+> server works properly.
+> - With the linux machine everything works fine unless the outgoing
+> smtp.I can telnet the port 25 of the external server but something
+> happen once the smtp protocol has begun. In fact I can see with a
+> sniffer that the protocol stop when the external server send back DATA.
+> In this moment the local exchange stop of sending and the timeout is
+> reached.
+> - I tested other smtp applications to send out messages and work fine
+> with iptables. But what happens with exchange?: works with cisco but not
+> with iptables!! It's crazy!!!
+> Any ideas?
+> Thank you for your help
 
-it appears as though your firewall (200.21.1.254) is receiving an ICMP
-port unreachable from 200.175.75.101 in response to a TCP packet it sent
-(or SNAT-ed for a machine behind it).
+posting your rules might help:
 
-there are those that would say that it's actually not a bad idea to
-allow ICMP errors (types 3, 11, 12) into/through your firewall.  YMMV.
-
-icmp types/codes reference:
-        http://www.iana.org/assignments/icmp-parameters
-        
--j
+iptables -t mangle -vxnL && iptables -t nat -vxnL && iptables -vxnL
 
 -- 
 Jason Opperisano <opie@817west.com>
