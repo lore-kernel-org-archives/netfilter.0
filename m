@@ -1,11 +1,11 @@
-From: "Hannu Sehm" <hannus@heth.org>
-Subject: IP tracking
-Date: Sat, 3 May 2003 21:56:16 +0300
+From: =?big5?q?Keith=20Tin?= <keithtin@yahoo.com.hk>
+Subject: strange log
+Date: Fri, 2 May 2003 17:47:26 +0800 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <025501c311a5$ad236580$6400a8c0@S>
-References: <20030503180002.30563.49757.Mailman@kashyyyk>
+Message-ID: <20030502094726.13204.qmail@web9802.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1946149932-1051868846=:13202"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,13 +16,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I need to track MAC and IP addresses of incoming traffic. And I need to
-forward these parameters to an other program for tracking issues. Can I do
-this with netfilter/iptables?
+--0-1946149932-1051868846=:13202
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 
--Hannu
+SGksIEkgZm91bmQgc29tZXRoaW5nIHN0cmFuZ2UgaW4gbXkgaXB0YWJsZXMgbG9nLiBJdCB3YXMg
+c3RyYW5nZSBiZWNhdXNlIEkgcHV0IG15IHNlcnZlciBhdCBJU1AgYW5kIEkgZG9uJ3Qga25vdyB3
+aHkgdGhlcmUgd2FzIGFuIGludGVybmFsIElQIGxvZ2dlZCBieSBteSBzZXJ2ZXIuIE1heSAgMiAx
+Njo1NTozNSBBQkMga2VybmVsOiBGVy1SRUpFQ1QgSU49ZXRoMCBPVVQ9IE1BQz1mZjpmZjpmZjpm
+ZjpmZjpmZjowMDoxMDo1YTo2MzpkMzpkODowODowMCBTUkM9MTkyLjE2OC45My4xIERTVD0yNTUu
+MjU1LjI1NS4yNTUgTEVOPTI3NiBUT1M9MHgwMCBQUkVDPTB4MDAgVFRMPTEyOCBJRD0zNDg4NCBQ
+Uk9UTz1VRFAgU1BUPTY4IERQVD02NyBMRU49MjU2IEhvdyBjYW4gSSBibG9jayB0aGVzZSBraW5k
+IG9mIElQPyBUaGFua3MsIEtlaXRoCrLEpEelQCjBwr5evlcpoUGy37pEpaLFyiiuZa+qqOApoUGl
+U6lmKLOvq7OosykuLi4KWWFob28hILlhwW6kVbj8Cg==
 
+--0-1946149932-1051868846=:13202
+Content-Type: text/html; charset="big5"
+Content-Transfer-Encoding: base64
+
+PERJVj4KPERJVj5IaSw8L0RJVj4KPERJVj4mbmJzcDs8L0RJVj4KPERJVj5JIGZvdW5kIHNvbWV0
+aGluZyBzdHJhbmdlIGluIG15IGlwdGFibGVzIGxvZy4gSXQgd2FzIHN0cmFuZ2UgYmVjYXVzZSBJ
+IHB1dCBteSBzZXJ2ZXIgYXQgSVNQIGFuZCBJIGRvbid0IGtub3cgd2h5IHRoZXJlIHdhcyBhbiBp
+bnRlcm5hbCBJUCBsb2dnZWQgYnkgbXkgc2VydmVyLjwvRElWPgo8RElWPiZuYnNwOzwvRElWPgo8
+RElWPk1heSZuYnNwOyAyIDE2OjU1OjM1Jm5ic3A7QUJDIGtlcm5lbDogRlctUkVKRUNUIElOPWV0
+aDAgT1VUPSBNQUM9ZmY6ZmY6ZmY6ZmY6ZmY6ZmY6MDA6MTA6NWE6NjM6ZDM6ZDg6MDg6MDAgU1JD
+PTE5Mi4xNjguOTMuMSBEU1Q9MjU1LjI1NS4yNTUuMjU1IExFTj0yNzYgVE9TPTB4MDAgUFJFQz0w
+eDAwIFRUTD0xMjggSUQ9MzQ4ODQgUFJPVE89VURQIFNQVD02OCBEUFQ9NjcgTEVOPTI1NjwvRElW
+Pgo8RElWPiZuYnNwOzwvRElWPgo8RElWPkhvdyBjYW4gSSBibG9jayB0aGVzZSBraW5kIG9mIElQ
+PzwvRElWPgo8RElWPiZuYnNwOzwvRElWPgo8RElWPlRoYW5rcyw8L0RJVj4KPERJVj4mbmJzcDs8
+L0RJVj4KPERJVj5LZWl0aDwvRElWPjwvRElWPjxwPjxhIGhyZWY9Imh0dHA6Ly9oay55YWhvby5j
+b20vbWFpbF90YWdsaW5lLz9odHRwOi8vaGsucmluZ3RvbmUueWFob28uY29tL3Jpbmd0b25lL2xp
+c3Rzb25ncz9jYXQ9MDAxMDA0Ij6yxKRHpUAowcK+Xr5XKTwvYT6hQTxhIGhyZWY9Imh0dHA6Ly9o
+ay55YWhvby5jb20vbWFpbF90YWdsaW5lLz9odHRwOi8vaGsucmluZ3RvbmUueWFob28uY29tL3Jp
+bmd0b25lL2xpc3Rzb25ncz9jYXQ9MDAyMDAyIj6y37pEpaLFyiiuZa+qqOApPC9hPqFBPGEgaHJl
+Zj0iaHR0cDovL2hrLnlhaG9vLmNvbS9tYWlsX3RhZ2xpbmUvP2h0dHA6Ly9oay5yaW5ndG9uZS55
+YWhvby5jb20vcmluZ3RvbmUvbGlzdHNvbmdzP2NhdD0wMDEwMDEiPqVTqWYos6+rs6izKTwvYT4u
+Li48YnI+CjxCPjxhIGhyZWY9Imh0dHA6Ly9oay55YWhvby5jb20vbWFpbF90YWdsaW5lLz9odHRw
+Oi8vaGsucmluZ3RvbmUueWFob28uY29tLyI+WWFob28hILlhwW6kVbj8PC9hPjwvQj48YnI+
+
+--0-1946149932-1051868846=:13202--
 
