@@ -1,13 +1,10 @@
-From: Frederic de Villamil <neuro@seclab.jp>
-Subject: Re: Logging
-Date: Mon, 15 Mar 2004 17:07:47 +0100
+From: "Hurley, Michael" <MHurley@law.uconn.edu>
+Subject: RE: Logging
+Date: Mon, 15 Mar 2004 10:56:51 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040315160747.GA96139@jesus.seclab.jp>
-References: <1079365863.2163.8.camel@vejan>
+Message-ID: <AD8D39C727CBD411BB2C0090273A727408F9F07A@mortimer.law.uconn.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1079365863.2163.8.camel@vejan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +16,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mario Udina <m.udina@libero.it>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, 15 Mar 2004, Mario Udina wrote:
+Try something like this:
 
-> Hello!
->
-> I have done some googling however did not manage to find out if there
-> is a way to define a file where iptables writes its logs.
->
-> As I read in the man the file where the logs are written is the kernel
-> log i.e. /var/log/messages
->
-> is there a way to send this output to another file in order to keep the
-> logs clean?
->
-> regards,
+set logging to, for example,
+iptables -A FORWARD -j LOG --log-level 7 --log-prefix "FORWARD: "
 
-Hi Mario,
-maybe what you're looking for is in /etc/syslog.conf.
+Then in /etc/syslog.conf:
+kern.7	-/var/log/firewall
 
---
-< Ylli> lol je rigole neuro jte prend pa pr un pervers ms un president
-et pere de famille respectable :s
-http://www.seclab.jp
+
+
+-----Original Message-----
+From: Mario Udina [mailto:m.udina@libero.it]
+Sent: Monday, March 15, 2004 10:51 AM
+To: netfilter@lists.netfilter.org
+Subject: Logging
+
+
+Hello!
+
+I have done some googling however did not manage to find out if there
+is a way to define a file where iptables writes its logs.
+
+As I read in the man the file where the logs are written is the kernel
+log i.e. /var/log/messages
+
+is there a way to send this output to another file in order to keep the
+logs clean?
+
+regards,
+	Mario Udina
+-- 
+i would like to die as my gradfather did, quietly in his sleep
+and not in panic and disbelief as the passengers of his bus.
 
