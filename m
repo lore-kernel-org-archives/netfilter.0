@@ -1,14 +1,12 @@
-From: =?utf-8?q?Fr=C3=A9d=C3=A9ric=20Gonzatti?= <fred99@libertysurf.fr>
-Subject: Re: Firewall IP change
-Date: Mon, 2 Aug 2004 17:10:01 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Firewall IP change
+Date: Mon, 2 Aug 2004 11:41:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408021710.01203.fred99@libertysurf.fr>
-References: <40FEE340.8090907@ctwa.com> <200408021612.41826.fred99@libertysurf.fr> <200408021557.12351.Antony@Soft-Solutions.co.uk>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC905121E@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408021557.12351.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,179 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-
-1-My iptables rules are the following :
-iptables -t filter -F
-iptables -t nat -F
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-iptables -t filter -P INPUT DROP
-iptables -t filter -P FORWARD DROP
-iptables -t filter -P OUTPUT DROP
-
-iptables -t filter -A INPUT -i lo -j ACCEPT
-iptables -t filter -A OUTPUT -o lo -j ACCEPT
-
-iptables -t nat POSTROUTING -o eth2 -j MASQUERADE
-
-###########
-# FORWARD #
-###########
-
-                        ##############
-                        # LAN -->DMZ #
-                        ##############
-
-
-
-iptables -t filter -A FORWARD -i eth0 -o eth1 -s 172.16.0.0/16 -d=20
-192.168.2.150/32 -p tcp --dport 110 -m state --state NEW,ESTABLISHED -j=20
-ACCEPT
-iptables -t filter -A FORWARD -i eth1 -o eth0 -s 192.168.2.150/32 -d=20
-172.16.0.0/16 -p tcp --sport 110 -m state --state ESTABLISHED -j ACCEPT
-
-
-
-
-                        ###############
-                        # LAN --> WAN #
-                        ###############
-
-
-
-
-####################################
-# PROTOCOLE IDENT : TCP et UDP 113 #
-####################################
-iptables -t filter -A FORWARD -p tcp --dport 113 -j ACCEPT
-iptables -t filter -A FORWARD -p tcp --sport 113 -j ACCEPT
-iptables -t filter -A FORWARD -p udp --dport 113 -j ACCEPT
-iptables -t filter -A FORWARD -p udp --sport 113 -j ACCEPT
-
-
-
-###################################
-# HTTP, HTTPS : TCP 80 et TCP 443 #
-###################################
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tc=
-p=20
-=2D-dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tc=
-p=20
-=2D-sport 80 -m state --state ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tc=
-p=20
-=2D-dport 443 -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tc=
-p=20
-=2D-sport 443 -j ACCEPT
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p ud=
-p=20
-=2D-dport 443 -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p ud=
-p=20
-=2D-sport 443 -j ACCEPT
-
-##################
-# Protocole POP3 #
-##################
-
-iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tc=
-p=20
-=2D-dport 110 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tc=
-p=20
-=2D-sport 110 -m state --state ESTABLISHED -j ACCEPT
-
-#################
-# Protocole FTP #
-#################
-
-
-modprobe ip_conntrack_ftp
-modprobe ip_nat_ftp
-
-iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 21 -m=
-=20
-state --state NEW,ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 21 -m=
-=20
-state --state ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 20 -m=
-=20
-state --state ESTABLISHED -j ACCEPT
-iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 20 -m=
-=20
-state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport=20
-1024:65535 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport=20
-1024:65535 -m state --state ESTABLISHED -j ACCEPT
-
-
-iptables -t filter -A INPUT -j DROP
-iptables -t filter -A OUTPUT -j DROP
-iptables -t filter -A FORWARD -j DROP
-
-2- My default route is the IP of the LAN interface of my router which is a=
-=20
-public IP (62.160.X.X/255.255.255.248)
-
-3- eth0 : 172.16.2.1/255.255.0.0
-    eth1: 192.168.2.1/255.255.255.0
-    eth2: 62.160.X.Y/255.255.255.248
-
-Regards,
-
-=46rederic
-
-
-
-> On Monday 02 August 2004 3:12 pm, Fr=C3=A9d=C3=A9ric Gonzatti wrote:
-> > Sorry, my external interface is eth2 (it's just an error when I wrote t=
-he
-> > mail).
-> > Some pages takes lots of time to appear when I'm using the first line in
-> > my script. When I'm using the second one they appear immediately.
-> > My DNS server is on my LAN with a private IP address 172.16.2.200.
->
-> Please show us:
->
-> 1. The exact rules you are referring to (no typos, no hidden addresses, t=
-he
-> exact rules as they appear in the scripts).
->
-> 2. The routing table (output of "route -n") of the firewall
->
-> 3. The interface configuration (output of "ifconfig") from the firewall.
->
-> Regards,
->
-> Antony.
->
-> > > On Monday 02 August 2004 1:07 pm, Fr=C3=A9d=C3=A9ric Gonzatti wrote:
-> > > > If I replace in my iptables script :
-> > > > iptables -A POSTROUTING -t nat -o eth2 -j SNAT --to my_public_IP
-> > > > by
-> > > > iptables -t nat POSTROUTING -o eth1 -j MASQUERADE
-> > > >
-> > > > ...I can access to the internet faster !
-> > > >
-> > > > Have you got any idea ?
-> > >
-> > > Which is your external interface?   eth1 or eth2?
-> > >
-> > > How are you measuring "faster"?
-> > >
-> > > Where are your DNS servers?
-> > >
-> > > Regards,
-> > >
-> > > Antony.
-
-
+PiAxLU15IGlwdGFibGVzIHJ1bGVzIGFyZSB0aGUgZm9sbG93aW5nIDoNCj4gaXB0YWJsZXMgLXQg
+ZmlsdGVyIC1GDQo+IGlwdGFibGVzIC10IG5hdCAtRg0KPg0KPiBlY2hvIDEgPiAvcHJvYy9zeXMv
+bmV0L2lwdjQvaXBfZm9yd2FyZA0KPg0KPiBpcHRhYmxlcyAtdCBmaWx0ZXIgLVAgSU5QVVQgRFJP
+UA0KPiBpcHRhYmxlcyAtdCBmaWx0ZXIgLVAgRk9SV0FSRCBEUk9QDQo+IGlwdGFibGVzIC10IGZp
+bHRlciAtUCBPVVRQVVQgRFJPUA0KPg0KPiBpcHRhYmxlcyAtdCBmaWx0ZXIgLUEgSU5QVVQgLWkg
+bG8gLWogQUNDRVBUDQo+IGlwdGFibGVzIC10IGZpbHRlciAtQSBPVVRQVVQgLW8gbG8gLWogQUND
+RVBUDQo+DQo+IGlwdGFibGVzIC10IG5hdCBQT1NUUk9VVElORyAtbyBldGgyIC1qIE1BU1FVRVJB
+REUNCg0Kc29tZXRoaW5nIHRlbGxzIG1lIHRoaXMgaXMgc3RpbGwgbm90IHRoZSBvdXRwdXQgdGhh
+dCBBbnRvbnkgcmVxdWVzdGVkLCBhcyB0aGF0IGxhc3QgbGluZSBpcyBub3QgYSB2YWxpZCBjb21t
+YW5kICh0aGVyZSdzIG5vICItQSIgaW4gaXQpLg0KDQo+IFtidW5jaCBvZiBydWxlcyBzbmlwcGVk
+IG91dF0NCg0KaSBkb24ndCBzZWUgYW55IHJ1bGUgdGhhdCBhbGxvd3MgZm9yIEROUyByZXNvbHV0
+aW9uLiAgaXMgdGhpcyBkdWUgdG8gc2FuaXRpemluZywgb3IgZG8geW91IHJlYWxseSBub3QgaGF2
+ZSBvbmU/DQoNCmknbSB0aGlua2luZyBzb21ldGhpbmcgYWxvbmcgdGhlIGxpbmVzIG9mOg0KDQoJ
+aXB0YWJsZXMgLUEgRk9SV0FSRCAtcCB1ZHAgLXMgMTcyLjE2LjAuMC8xNiAtLWRwb3J0IDUzIC1q
+IEFDQ0VQVA0KLU9SLQ0KCWlwdGFibGVzIC1BIEZPUldBUkQgLXAgdWRwIC1zICRJTlRFUk5BTF9E
+TlNfU1JWIC0tZHBvcnQgNTMgLWogQUNDRVBUDQoNClRyeSBwb3N0aW5nIHRoZSBvdXRwdXQgb2Y6
+DQoNCmVjaG8gLWUgIlxuKioqIEZJTFRFUiAqKipcbiI7IGlwdGFibGVzIC12eG5MICYmIGVjaG8g
+LWUgIlxuKioqIE5BVCAqKipcbiI7IGlwdGFibGVzIC10IG5hdCAtdnhuTCAmJiBlY2hvIC1lICJc
+bioqKiBNQU5HTEUgKioqXG4iOyBpcHRhYmxlcyAtdCBtYW5nbGUgLXZ4bkwNCg0KQW5kIHRoZSBv
+dXRwdXQgb2Y6DQoNCmlwIGFkZHIgc2hvdw0KaXAgcm91dGUgbGlzdA0KDQphcyB3ZSdyZSBub3Qg
+bWFraW5nIG11Y2ggcHJvZ3Jlc3MgdW5kZXIgdGhlIGN1cnJlbnQgbWV0aG9kLi4uDQoNCi1qDQo=
 
