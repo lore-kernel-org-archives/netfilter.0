@@ -1,13 +1,12 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: passive mode ftp
-Date: 23 May 2003 12:04:54 +0200
+From: "Tim Saunders" <Tim.Saunders@aquilauk.co.uk>
+Subject: RE: UnNATing return packets
+Date: Fri, 23 May 2003 10:42:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053684294.1787.6.camel@raylinux.internal>
-References: <3ECDE243.3133BBAA@nerim.net>
+Message-ID: <081A08701BD5BA46ACEE07E9D8A60F871801E4@troy.win.aquilauk.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-qrMu2zamOOt81SHeGgLB"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3ECDE243.3133BBAA@nerim.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
 
+Your description describes exactly what is happening far better than
+mine did. I am trying to do source routing so that all packets from
+203.x.x.x go out on the same line as they came in on. Which is not via
+the default route for outgoing packets. To give an example eth0 is
+connected to routers A and B. The default route is to go out via router
+A. Packets destined for 203.x.x.x will come in via router B so the
+return packets need to go out via router B. When the routing decision is
+made the return packets have a source address of: 192.168.0.1 so they
+get routed via router A, then in post routing they get unNATed to a
+203.x.x.x address. Thus DNAT of incoming connections cannot be used with
+source routing.
 
---=-qrMu2zamOOt81SHeGgLB
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Tim
 
-On Fri, 2003-05-23 at 10:56, Eric Constantineau wrote:
-> Hi !
->=20
-> I want to be able to use passive ftp under my firewall...
->=20
-> Right now passive mode does not function because I allow only packets
-> WITH port 21 as a destination OR source.  When in normal mode, packets
-> from the ftp server have 21 for the source port and the packets from the
-> client have 21 for the destination port so it works.  But, entering
-> passive mode, the destination and source ports are not 21, so my
-> firewall blocks.
->=20
-> Using a ftp client such as leechftp, cuteftp, wsftp is okay, but using
-> the browser (iexplore) does not because it use passive mode.
->=20
-> I don't want to open too much my ports, it would mean that someone could
-> use those ports to get access to inside networks...  But I want to be
-> able to use passive mode, some users do not want to use ftp client
-> software, or are not even able to install them...
->=20
-> Is there a specific range of ports that all passive ftp use ?
-No, passive mode uses random ports from 1024 upwards.
-
-You could use a web proxy like squid. You can force squid to always use
-active mode.
-
-Alternatively, you could use the state inspection of iptables and the
-ftp connection tracking module to configure passive ftp.
-
->=20
-> Thanks for helping me
->=20
-> Eric
+> -----Original Message-----
+> From: George Vieira [mailto:georgev@citadelcomputer.com.au]=20
+> Sent: 23 May 2003 10:19
+> To: Tim Saunders; netfilter@lists.netfilter.org
+> Subject: RE: UnNATing return packets
 >=20
 >=20
+> Sorry, I can't understand your english explanation.
+> =20
+> When the packets come in off the internet it hit the EXTernal=20
+> DEVice which the PREROUTING table converts the EXTernal=20
+> DESTination address to the INTernal DEVices DESTination=20
+> servers IP address..
+> =20
+> EXTDEV=3Deth0
+> DESTIP=3D203.x.x.x.x
+> INTIP=3D192.168.0.1
+> =20
+> iptables -A PREROUTING -t nat -i $EXTDEV -d $DESTIP -p tcp=20
+> --dport 80 -j DNAT --to $INTIP
+> =20
+> it changes it at the PREROUTING because the routing table=20
+> won't know where 203.x.x.x is, but if it's changed before=20
+> routing then routing will know that 192.168.0.1 is inside on=20
+> eth1 and pass through the FORWARD chain and out via eth1.
+> =20
+> Having said that, going out is the same thing except it's POSTROUTING.
+> =20
+> So 192.168.0.1 responds to the packet and goes into eth1=20
+> which then passes through FORWARD and into POSTROUTING which=20
+> then says "hey 192.168.0.1 can't go out onto the net like=20
+> that" and translates it to the IP which matches the=20
+> ip_conntrack table that the original packets wanted to reach=20
+> ie. $DESTIP
+> =20
+> this makes perfect sense..
+> =20
+> If you can detail what your problem is a bit like about it'll=20
+> help me more to help you.. ;) I hope the above didn't bore=20
+> you either.. ;))
+>=20
+> 	-----Original Message-----=20
+> 	From: Tim Saunders [mailto:Tim.Saunders@aquilauk.co.uk]=20
+> 	Sent: Fri 23-May-03 5:49 PM=20
+> 	To: netfilter@lists.netfilter.org=20
+> 	Cc:=20
+> 	Subject: RE: UnNATing return packets
+> =09
+> =09
+> 	=20
 >=20
 >=20
-
---=-qrMu2zamOOt81SHeGgLB
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD4DBQA+zfJGh1fuR/Bv+ygRAq6SAKCbD2ytGNL3WBZh4lpIVvc+wVgCygCVGDoj
-V8f4+G0+X5VA7a3Um3fFQQ==
-=KiKV
------END PGP SIGNATURE-----
-
---=-qrMu2zamOOt81SHeGgLB--
-
 
