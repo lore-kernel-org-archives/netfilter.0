@@ -1,11 +1,9 @@
-From: "Toshihiro Sonoda" <toshihiro@jp.fujitsu.com>
-Subject: arptables
-Date: Tue, 19 Nov 2002 15:47:32 +0900
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: No netfilter mail for some time now [Checking if it's alive]
+Date: Tue, 19 Nov 2002 14:03:46 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <047701c28f97$895afb30$ac01a8c0@monday>
-References: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
+Message-ID: <Pine.LNX.4.44.0211191341370.22730-100000@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,17 +14,12 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-hi,
+Five, six, pickup the sticks :)
 
-I can find the arp_filter.c and arp_tables.c in "net/ipv4/netfilter/" of kernel tree (2.4.18).
-But, I can not find the document about how to use the arp filtering.
 
-How can I use the arp filtering in linux.
-Please teach me.
-
-regard, toshihiro.
 
 
