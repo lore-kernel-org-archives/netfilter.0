@@ -1,10 +1,12 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: A simple question
-Date: Thu, 19 Aug 2004 10:58:06 -0700
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: idle timeout question
+Date: Thu, 19 Aug 2004 14:27:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7EACCDBB65D37443912D80713CC1245D02382AB4@fsnsab20.losangeles.af.mil>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512AD@asimail2.alphanumeric.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,50 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Nick Drage' <nickd@metastasis.org.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+> What is the default idle timout on tcp connections passing through an
+> iptables firewall? If it's modifiable, on a rule by rule basis, how do =
+I
+> do that, and what is the maximum timeout that I can set?
 
-I think there has been a bit of loss of direction from the initial thread.
+short answer:  5 days
 
-programatically speaking NO services which allow traffic of any kind s/be
-running
-'out of the box'...
+long answer:  check out "Table 4-2. Internal states" at:
+  =
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TCPCONNECTI=
+ONS
 
-the fewer and smaller amount of code the more secure.
+modifiable rule-by-rule?  i do not believe so...
 
-i.e.,,,if it ain't running you cant attack it....common sense....
+maximum?  whatever the max value of an unsigned long integer is on your =
+platform--probably something bigger than would be sane to use =
+(4294967295 comes to mind)...
 
-re: bellovin, cheswick, farmer, wiezste, et al...
+-j
 
-console should be how one initally accesses the box unless
-we are speaking of a centrally managed security enclave scenario.
-
-why take needless chances...
-
-~piranha
-
-
-> Just my two cents on this:
-
-My two pennies :)
-
-> If your firewall is designed correctly, there shouldn't be any network
-> available services running baring SSH.
-
-If you're using IPTables as a seperate firewall then wouldn't you just
-want SSHD listening on the internal interface?
-
-> Because of this, if a hacker gets into your firewall I assume that
-> 99.9999% of the time, they'll have root access. Any hacker that could
-> hack into your Linux box will be able to disable any iptables rules in
-> a second. Hence, blocking the OUTPUT chain on a firewall does NOT
-> secure you against hackers.
-
-You're presuming that IPTables isn't protecting a single host.  If
-you're using it on a desktop or a server filtering on the OUTPUT chain
-gives you a huge gain in security.
-
--- 
-"I think a church with a lightning rod shows a decided lack of confidence"
 
