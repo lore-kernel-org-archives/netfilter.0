@@ -1,14 +1,13 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Invalid friggen argument
-Date: Sun, 12 Oct 2003 10:44:54 -0700
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: how to block packets with specific words inside udp datagram???
+Date: 12 Oct 2003 13:50:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com>
-References: <200310120141.15894.Herman@AerospaceSoftware.com>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <1065981000.1122.3.camel@valhalla>
+References: <000d01c390d6$89b13900$0201a8c0@leonardo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200310120141.15894.Herman@AerospaceSoftware.com>
+In-Reply-To: <000d01c390d6$89b13900$0201a8c0@leonardo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +17,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Herman@AerospaceSoftware.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "Piotr P." <peterp@poczta.onet.pl>
+Cc: netfilter@lists.netfilter.org
 
-I don't think you have a versioning problem.  Some of the more recent
-releases of netfilter are more sensitive about arguments and argument
-ordering I have found.  Are you able to slip in a destination address into
-that rule:
+On Sun, 2003-10-12 at 11:35, Piotr P. wrote:
+>
+> Does any body know how to
+> block traffic with this word using iptables?
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp -d xxx.xxx.xxx.xxx --dport 6390
-\
- -j DNAT --to 192.168.10.245
+iptables =E2=80=93A FORWARD =E2=80=93p udp =E2=80=93d 0/0 --dport 1024:65=
+535 =E2=80=93m string --string
+"KaZaA" =E2=80=93j DROP
 
-It may be looking for a dest address.
+should do the trick.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Herman
-Sent: Sunday, October 12, 2003 12:41 AM
-To: netfilter@lists.netfilter.org
-Subject: Invalid friggen argument
-
-
-Hi everybody,
-
-I am trying to get port forwarding to work.  I had it working some time ago
-gawdknows what changed...
-
-Now, I get this result with iptables 1.2.7a-2mdk and with 1.2.9rc1:
-
-# iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 6390 \
- -j DNAT --to 192.168.10.245
-iptables: Invalid argument
-
-I can cut and paste a line from a howto and I still get 'invalid argument' -
-grrr...
-
-Any ideas?
-
-Cheers
---
-Herman
+HTH,
+C
 
 
 
