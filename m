@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: set up my DMZ
-Date: Thu, 16 Sep 2004 13:39:51 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: [Fwd: Re: Blocking Netranges Based on IP-to-Country CSV]
+Date: Thu, 16 Sep 2004 13:29:59 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095356390.2489.70.camel@wolfpack.ljm.dom>
-References: <web-3246067@infinito.it>
+Message-ID: <4149DBA7.4060309@pbl.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------010706090203080704000902"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-3246067@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +15,88 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
 
-On Thu, 2004-09-16 at 10:44, hamals@infinito.it wrote:
-> I've a DMZ with two server, I would like to acces them 
-> through my iptables firewall.
-> 
-> IP_serve1_DMZ =192.168.2.2
-> IP_serve2_DMZ =192.168.2.3
-> 
-> IP_server1_public = x.x.x.52
-> IP_server2_public = x.x.x.53   (x is for privacy..)
-> 
-> 
-> My firewall has
-> 
-> eth1 internet interface = x.x.x.50
-> eth0 dmz interface = 192.168.2.1
-> 
-> I need to have my server access with their pubbic IP, but 
-> I've only eth1 as inteface to internet.
-> 
-> I read that I can't use alias in iptables rules (like 
-> eth1:1 etc) , then what kind of rules have I to write to 
-> solve my problem?
+This is a multi-part message in MIME format.
+--------------010706090203080704000902
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-  ip address add x.x.x.52 dev eth1
-  ip address add x.x.x.53 dev eth1
-
-  iptables -t nat -A PREROUTING -i eth1 -d x.x.x.52 \
-    -j DNAT --to-destination 192.168.2.2
-
-  iptables -t nat -A PREROUTING -i eth1 -d x.x.x.53 \
-    -j DNAT --to-destination 192.168.2.3
-
-filter rules as necessary (remember to use the 192.168.2.x address in
-your filter rules)...
-
-HTH...
-
--j
+Probably needed to end up on the list...
 
 -- 
-Jason Opperisano <opie@817west.com>
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
+--------------010706090203080704000902
+Content-Type: message/rfc822;
+	name="Re: Blocking Netranges Based on IP-to-Country CSV"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="Re: Blocking Netranges Based on IP-to-Country CSV"
+
+Return-Path: <nib@cookinglinux.org>
+Received: from wav.pbl.ca
+	by pbl.ca (8.12.0/8.12.0) with ESMTP id i8GI4nqe011572
+	for <amilivojevic@pbl.ca>; Thu, 16 Sep 2004 13:04:49 -0500
+Received: from wav.pbl.ca by pbl.ca (foo/bar) with SMTP id i8GI4nOv001001
+	for <amilivojevic@wav1.pbl.ca>; Thu, 16 Sep 2004 13:04:49 -0500 (CDT)
+Received: from wav1.pbl.ca ([192.168.200.11])
+	by wav.pbl.ca with SMTP id M2004091613044805575
+	for <amilivojevic@wav1.pbl.ca>; Thu, 16 Sep 2004 13:04:48 -0500
+Received: from pbl.ca ([192.168.210.67])
+	by wav1.pbl.ca with SMTP id M2004091613044829036
+	for <amilivojevic@wav1.pbl.ca>; Thu, 16 Sep 2004 13:04:48 -0500
+Received: from quasar.cookinglinux.org
+	by pbl.ca (foo/bar) with ESMTP id i8GI4mgP031828
+	for <amilivojevic@pbl.ca>; Thu, 16 Sep 2004 13:04:49 -0500
+Received: from mail.cookinglinux.org (localhost [127.0.0.1])
+	by quasar.cookinglinux.org (Postfix) with ESMTP id 4E6B6AFFC2
+	for <amilivojevic@pbl.ca>; Thu, 16 Sep 2004 13:56:53 -0400 (EDT)
+Received: from 207.162.80.7
+	(SquirrelMail authenticated user nib@cookinglinux.org);
+	by mail.cookinglinux.org with HTTP;
+	Thu, 16 Sep 2004 13:56:53 -0400 (EDT)
+Message-ID: <25974.207.162.80.7.1095357413.squirrel@207.162.80.7>
+Date: Thu, 16 Sep 2004 13:56:53 -0400 (EDT)
+Subject: RE: Blocking Netranges Based on IP-to-Country CSV
+From: "Nicolas Bouliane" <nib@cookinglinux.org>
+To: amilivojevic@pbl.ca
+User-Agent: SquirrelMail/1.4.3a
+X-Mailer: SquirrelMail/1.4.3a
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+X-Priority: 3 (Normal)
+Importance: Normal
+
+Gary & Mic McFall wrote:
+
+>Due to a number of issues, my organization is reviewing the ability to
+>block certain country domains at the firewall.  To be proactive, we want
+>to automate that process via iptables & the CSV available at
+><http://ip-to-country.webhosting.info>.
+
+I currently work on a match geoip based on the maxmind database.
+You can observe my development state to:
+http://codepoet.cookinglinux.net/cgi-bin/blosxom.cgi
+
+and my current source code at:
+http://www.cookinglinux.org/projects/netfilter-iptables/geoip_alpha-0.3/
+
+Anyway I really dont know if my concept is ok. Using netlink in a match. I
+was wait to have a usable code to post.
+
+If you plan to use my source code, please let me know, thanks.
+
+
+--
+Nicolas Bouliane
+nib@cookinglinux.org
+
+
+
+
+--------------010706090203080704000902--
 
