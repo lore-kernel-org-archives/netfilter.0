@@ -1,11 +1,13 @@
-From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Subject: service iptables stop; hangs constantly on red hat 8
-Date: 27 Oct 2003 14:48:42 +0100
+From: jose nuno neto <jose.neto@liber4e.com>
+Subject: RE: FTP SERVER ACCESS ( IPT_UNCLEAN PROBLEM?)
+Date: Mon, 27 Oct 2003 16:00:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067262522.6369.7.camel@drs0.manchotnetworks.net>
+Message-ID: <1067270459.3020.94.camel@janis>
+References: <LFEHKEBEBHAFGJBMNKAOKEJFCDAA.markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <LFEHKEBEBHAFGJBMNKAOKEJFCDAA.markee@bandwidthco.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +18,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-users <netfilter@lists.netfilter.org>
+To: markee@bandwidthco.com
+Cc: netfilter@lists.netfilter.org
 
-hi all,
+Thanxs for your help,
 
-i have an up2date redhat 8 installation with iptables-1.2.8-8.80.2
+I've dig into the /var/log/messages and found this message everytime i
+tried to connect to the ftp server(it the same as the firewall)
 
-as required by my setup, i insmod ip_conntrack_ftp and ip_nat_ftp to
-handle connection tracking of ftp sessions.
+Oct 27 16:22:41 bob kernel: ipt_unclean: TCP option 8 after end
 
-if a connection has been established, and it becomes closed, or if there
-is a current ftp session, "service iptables stop" hangs the machine
-while trying to remove modules. here's an example, but it does not
-necessairly hang on this module --
+Did this: tcpdump dst port ftp
+
+16:22:41.317744 213.22.184.162.1844 > bob.liber4e.com.ftp: S
+2900698949:2900698949(0) win 5840 <mss 1460,eol> (DF)
+16:22:44.316286 213.22.184.162.1844 > bob.liber4e.com.ftp: S
+2900698949:2900698949(0) win 5840 <mss 1460,eol> (DF)
+16:22:50.301330 213.22.184.162.1844 > bob.liber4e.com.ftp: S
+2900698949:2900698949(0) win 5840 <mss 1460,eol> (DF)
+16:23:02.313601 213.22.184.162.1844 > bob.liber4e.com.ftp: S
+2900698949:2900698949(0) win 5840 <mss 1460,eol> (DF)
+
+But i dont understand nothing of this, do u?
+
+I've found the UN_CLEAN chain from the iptables script and commented it
+and now ftp works :-)
+
+# Block (inbound) Traffic w/ Incorrect Flags
+#$IPT -N IN_UNCLEAN
+#$IPT -t filter -I INPUT -i $IF -m unclean -j IN_UNCLEAN
+#$IPT -t filter -I IN_UNCLEAN -j LOG --log-prefix "** UNCLEAN ** "
+#$IPT -t filter -I IN_UNCLEAN -j UNCLEAN
+
+But i dont figured out what was happenning....
+/var/log/messages also shoes this:
+Oct 27 16:24:00 bob kernel: device eth0 entered promiscuous mode
+Oct 27 16:24:26 bob kernel: device eth0 left promiscuous mode
+
+Any clues on what happened?
 
 
-[root@aztec root]# ps -eaf | grep mod
-root      1728  1672 99 14:39 pts/0    00:01:07 modprobe -r ip_nat_ftp
-root      1952  1910  0 14:40 pts/1    00:00:00 grep mod
+-- 
+Best Regards,
 
-i have the belief that it is comming from ip_conntrack. in any case, i
-can make it happen always (i.e. the system hang). processor time goes to
-99% and a reboot is necessary.
-
-has anyone else come accross this? is there something to be flushed
-prior to removing the modules?
-
-many thanks!
-
-charles
-
+Jose' Nuno Neto
+TLM: 00 351 96 2808587
 
 
