@@ -1,8 +1,9 @@
-From: "Gabor Csuri" <csucsu@dunasor.hu>
-Subject: mark connections based a quote
-Date: Thu, 14 Nov 2002 23:01:27 +0100
+From: Martin Stricker <shugal@gmx.de>
+Subject: Re: Fuck You all !
+Date: Fri, 15 Nov 2002 01:12:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBLBOMOLDNJFMPIGKLGEBACFAA.csucsu@dunasor.hu>
+Message-ID: <3DD43BDA.FE176861@gmx.de>
+References: <20021114223041.C67ED1EC762@front.interia.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,19 +19,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi All,
+atic@poczta.fm wrote:
+> 
+> yeah hihihihi
+> 
+> i`m your master slut !
 
- I need to restrict some connections into a bandwidth on my local network.
-The long downloads (and uploads) are very bad for our 800k/128k bandwidth.
-I thougth I would restrict the long downloads into a lower bandwidth, but I
-don't know how can I mark the long downloads.
-Can I mark the packets which are a part of a long connection maybe like
-this:
-iptables -m cquote --cquote 2000000 -j MARK --set-mark 1
-means it marks packet within a connection which are over 2MB.
+         +----------+
+         |  Please  |
+         |don't feed|
+         |the trolls|
+         +----++----+
+              ||
+              ||
+              ||
+___\^/___\^^/_||____\\/___\|/___
 
-How can I do this?
-
-Thanks in advice, Gabor Csuri.
-
+-- 
+Homepage: http://www.martin-stricker.de/
+Linux Migration Project: http://www.linux-migration.org/
+Red Hat Linux 7.3 for low memory: http://www.rule-project.org/
+Registered Linux user #210635: http://counter.li.org/
 
