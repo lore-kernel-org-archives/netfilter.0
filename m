@@ -1,10 +1,13 @@
-From: cs02m004 <bharath@peacock.iitm.ernet.in>
-Subject: [SUSPECTED SPAM] ipq_read error: Received message truncated
-Date: Tue, 16 Mar 2004 22:46:23 +0530 (IST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Problems with Portforwarding -- Loopback problems---
+Date: Tue, 16 Mar 2004 17:11:45 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.10.10403162234530.8634-100000@peacock.iitm.ernet.in>
+Message-ID: <200403161711.45869.Antony@Soft-Solutions.co.uk>
+References: <405624A2.60906@imperium-noctem.de> <200403161637.39934.Antony@Soft-Solutions.co.uk> <40573025.9050009@imperium-noctem.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40573025.9050009@imperium-noctem.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,23 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi all,
-I am trying to read packets using ipq_read after trapping them.
-ipq_read() is returning -1. 
-errno == EINTR
-ipq_errstr() says Received message truncated.
+On Tuesday 16 March 2004 4:49 pm, Ronny Fauth wrote:
 
-I tried reexecuting the call to ipq_read (to restart the system call which
-failed). I also tried increasing the size argument to ipq_read() i.e.
-bigger buffer. Both methods failed.
+> Antony Stone wrote:
+> >>Test --> Router/Gateway ---> Inet --> Router/Gateway --> Test2
+>
+>        192.168.0.2 ---> 192.168.0.1 ---> dynamicIP, the IP i'm using at
+> the Internet ---> 192.168.0.1 ---> 192.168.0.3
+>
+> i want to forward some ports, port 192.168.0.1:4711 should be forwarded
+> to 192.168.0.2:4711, well this works, but i want to try it..... so i'm
+> typing on a browser on 192.168.0.3 "http://xxx.dyndns.org:4711/" and this
+> doesn't work, if i'm typing "http://192.168.0.2:4711" it works, this is the
+> major problem i have.
 
-What is the reason. Any workarounds ?
+Think about the replies.
 
-Thanks in advance
-Bharath
+192.168.0.3 sends a packet to xxx.dyndns.org, that gets translated by 
+192.168.0.1 into 192.168.0.2
+
+192.168.0.2 receives the packet, sees that the sender is 192.168.0.3, and 
+replies.
+
+Therefore 192.168.0.3 sent a packet to xxx.dyndns.org and got a reply from 
+192.168.0.2.   It can't handle this, so fails.
+
+(I'm assuming in all the above that xxx.dyndns.org does not resolve to 
+192.168.0.2, of course).
+
+Also see http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+
+Regards,
+
+Antony.
+
+-- 
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
 
 
