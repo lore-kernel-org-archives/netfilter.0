@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: problem with forward and iptables (added one more prob in here)
-Date: Wed, 3 Jul 2002 19:05:13 +0100
+From: alexander.swann@synetics.fr
+Subject: Logging - where does it go??
+Date: Wed, 3 Jul 2002 20:24:03 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020703180517.YAEQ4626.mta02-svc.ntlworld.com@there>
-References: <20020703163907.99011.qmail@web9904.mail.yahoo.com>
+Message-ID: <OF4C10C9CF.58EEBC03-ONC1256BEB.00610871-C1256BEB.00654974@synetics.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020703163907.99011.qmail@web9904.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,44 +17,72 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.samba.org
+Cc: russell.seymour@energis.com
 
-On Wednesday 03 July 2002 5:39 pm, "J=F6rgen" Danielsson wrote:
+Hi !
 
-> Thanks for the reply
->
-> I asked the company earlier why they don't put it on
-> the 172 net they have aswell, the explanation will be
-> abit too long to get here, but the answer is that they
-> must have a real c-net behind the firewall since they
-> are connected to another net aswell that requires real
-> ips (short version).
->
-> And they don't want the iii.iii.iii.iii net to be
-> accessible from the outside, thats why i am stuck.
+(Sorry I can't send the history back in this mail, I just suscribed and=
 
-Okay, I'll accept that you have some frustrating reasons why things just ha=
-ve=20
-to be this way.
+first post)
 
-Here's a suggestion for how to solve things:
+I have the same problem than Russell :-((((
 
-iptables -A PREROUTING -i eth1 -t nat -d iii.iii.iii.0/24 -j DROP
+My iptables rule :
+$PATH -A FORWARD -i $LAN -p tcp -s 0.0.0.0/0 --dport 80 -j LOG --log-le=
+vel
+DEBUG --log-prefix "FWlogHTTP :"
 
-*before* the rule which says
+Does my rule work ? (yes)
+# iptables -L -v -n
+ pkts bytes target     prot opt in     out     source
+destination
+ 2793  241K LOG        tcp  --  eth3   *       0.0.0.0/0
+0.0.0.0/0          tcp dpt:80 LOG flags 0 level 7 prefix `FWlogHTTP :'
 
-iptables -A PREROUTING -t nat -d ooo.ooo.*17.*54 -p tcp --dport 25 -j SNAT =
+Ok now lest do a little # dmesg
+# dmesg
+FWlogHTTP :IN=3Deth3 OUT=3Deth0 SRC=3D192.168.252.48 DST=3D194.98.133.x=
+xx LEN=3D48
+TOS=3D0x08 PREC=3D0x00 TTL=3D127 ID=3D12358 DF PROTO=3DTCP SPT=3D2271 D=
+PT=3D80
+WINDOW=3D16384 RES=3D0x00 SYN URGP=3D0
+FWlogHTTP :IN=3Deth3 OUT=3Deth0 SRC=3D192.168.255.184 DST=3D213.193.13.=
+xx LEN=3D48
+TOS=3D0x08 PREC=3D0x00 TTL=3D127 ID=3D19957 DF PROTO=3DTCP SPT=3D1114 D=
+PT=3D80
+WINDOW=3D16384 RES=3D0x00 SYN URGP=3D0
 
---to iii.iii.iii.*15:25
+ok, it's logging in the kernel ring buffer
 
-These rules will:
+lets see my /etc/syslog.conf
 
-1. Drop any incoming packets originally addressed to iii.iii.iii.iii IPs
-2. Translate packets for ooo.ooo.17.54 port 25 to iii.iii.iii.15
+*.info;mail.none;authpriv.none;cron.none
+/var/log/messages
+(this one shud work ? no ?)
 
-Forwarding remains the same.
+I tested to add these 2 ones (as suggested by GeorgeV)... but without a=
+ny
+result ...
 
-=20
+*.*                                       /var/log/test
+*.=3Ddebug                                  /var/log/debugF
 
-Antony.
+(I restarted the syslogd also)
+
+So my stupid question is :
+What did I miss so that all logs goes in a file ? /var/log/messages or =
+an
+other one ...
+
+Help ;-))
+
+I am running on a RH 7.2
+
+
+Alexander SWANN
+Administrateur Syst=E8mes et R=E9seaux
+SYNETICS Groupe Soft-Computing
+75015 PARIS=
+
 
 
