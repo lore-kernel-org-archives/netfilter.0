@@ -1,10 +1,10 @@
-From: luigicart@tin.it
-Subject: fragment.c
-Date: Wed, 5 Jun 2002 17:07:46 +0200
+From: Jeff Bonner <lunar@comcast.net>
+Subject: Performance tuning w/kernel SYSCTL options
+Date: Wed, 05 Jun 2002 11:15:49 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CEF4F3E0000C1ED@ims3c.cp.tin.it>
+Message-ID: <00cd01c20ca3$dffd57c0$0200a8c0@JEFF>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,12 +16,25 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: 'netfilter' <netfilter@lists.samba.org>
 
-Hi I'm Luigi.I have a question:
-which are the differences between fragment.c file in linux-2.4.3 and linu=
-x-2.4.7?
-Thank you
+I have the following in my iptables script, but commented out for now
+because I'm not sure if they're necessary or useful:
+
+# echo 30  > /proc/sys/net/ipv4/tcp_fin_timeout         # Reduce dead
+sockets?
+# echo 180 > /proc/sys/net/ipv4/tcp_keepalive_intvl     # Is this even
+needed?
+
+I've read some of the documentation on these (and many other SYSCTL
+items), but honestly, some is above my head.  What might be the
+appropriate values, if any, to use for a 1.5Mbps down/128Kbps up
+cablemodem connection, on a 486/66 with Debian Woody, serving 3
+NAT/masq'd machines?
+
+Thanks in advance,
+
+Jeff Bonner
 
 
 
