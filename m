@@ -1,13 +1,13 @@
-From: "Szabo Nandor" <medve@wenetto.hu>
-Subject: Re: Are IP ALIASES supported by iptables?
-Date: Tue, 29 Jul 2003 08:54:29 +0200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: state --string
+Date: Tue, 29 Jul 2003 11:22:47 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030729065429.3133.qmail@mail.panaphone.hu>
-References: <008301c3558f$22b075e0$080a0a0a@medannic>
+Message-ID: <Pine.LNX.4.51.0307291121390.23491@dns.toxicfilms.tv>
+References: <3F2598BD.6050302@sat.com.py> <1059429064.6146.11.camel@localhost>
+ <3F25C294.1090506@4linux.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008301c3558f$22b075e0$080a0a0a@medannic>
+In-Reply-To: <3F25C294.1090506@4linux.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +17,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ralf Braga <ralf@4linux.com.br>
+Cc: Shawn <core@enodev.com>, juanca <juanca@sat.com.py>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-HTB writes: 
+> iptables -A FORWARD -p tcp -m state --state NEW -m string --string
+>
+> Have you what compile the module string ?
+Take a look at patch-o-matic, patch your kernel, compile the module,
+compile iptables sources to get the userspace module. Use the rules.
 
-> When i want to active nat using iptable on eth0:0 (aliasing) "error 
-> appear"
-> # /sbin/iptables -A POSTROUTING -j MASQUERADE -t nat -s 192.168.0.0/24 -o 
-> eth0:0
-> Warning: wierd character in interface `eth0:0' (No aliases, :, ! or *).
-
-If eth0:0 has FIX IP address, you should try SNAT: 
-
-# iptables -A POSTROUTING -t nat -s 192.168.0.0/24 -j SNAT --to IP_of_eth0:0 
-
-Nandor Szabo 
+Regards,
+Maciej
 
 
