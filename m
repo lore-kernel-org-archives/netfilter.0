@@ -1,14 +1,13 @@
 From: Michael Gale <michael.gale@utilitran.com>
 Subject: Re: how to block p2p
-Date: Mon, 5 Apr 2004 09:05:55 -0600
+Date: Mon, 5 Apr 2004 09:09:43 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040405090555.05d1cfcf@mgalepc.utilitran.com>
-References: <40506957.8050609@o2.pl>
-	<Pine.LNX.4.44.0403111256360.29636-100000@Sinister.Com>
+Message-ID: <20040405090943.05bc0db2@mgalepc.utilitran.com>
+References: <001201c40744$1f34a190$2a245cc2@cea05>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0403111256360.29636-100000@Sinister.Com>
+In-Reply-To: <001201c40744$1f34a190$2a245cc2@cea05>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,42 +22,32 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-	Are you sure it has nothing to do with work vs play well you are at work ? I
-have worked for companies where MSN Messenger was widely used it was disrupting
-work. 
+	From my experience and depending on how anal you would like to get. I setup a
+firewall with IPTABLES blocking all connections / traffic types and then
+allowed:
 
-Projects where not getting done, some people actually asked managers to "hold on
-a sec" so they could finish their messages. 
+port 22 out
+port 21 out 
+connections made by the squid UID 
 
-What about the cost of bandwidth ? If your company has to pay X number of
-dollars a month because your employee are downloading music from kaza -- which
-may be illegal depending on where you work and against company policy.
+I then used squid to block almost all traffic except for http. No MSN, AOL, ICQ
+,... over http. No streaming audio, video (except for Microsoft training).
 
-Plus there are ways of allowing needed work related p2p connections after
-blocking the rest.
+It cut our bandwidth usage is have which saved the company over $400 a month.
 
 Michael.
 
 
 
+On Thu, 11 Mar 2004 09:37:42 +0100
+"Tomasz Macioszek" <tomekm@cea.pl> wrote:
 
-On Thu, 11 Mar 2004 13:00:45 -0500 (EST)
-Bob Keyes <bob@sinister.com> wrote:
-
-> It's amazing how many people seem so anxious to block p2p. They have this
-> idea that nothing but mp3s of madonna and metallica are on it. Far from
-> the case.
+> Hello!!
+> I would like to block all known p2p program ( Kazaa, eDonkey, ...). I would
+> like to find patch of iptables (p-o-m) which blocks all this programs??
 > 
-> Wouldn't it be better to just make sure that traffic is prioritized and
-> handled accordingly? for instance, dns traffic highest, followed by ssh
-> traffic, etc. lowest being the bulk fiel transfers of p2p, ftp, and large
-> http transfers.
-> 
-> I know of several ways to detect p2p transfers, but I am not going to tell
-> you, because I don't want to find some overzealous ISP administrator
-> blocking my Debian updates.
-> 
-> oh, by the way, http://xa.net/p2ping
+> Thanks for your help
+> Tomek
 > 
 > 
 > 
