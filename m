@@ -1,8 +1,8 @@
-From: Sasa Stupar <sasa@stupar.homelinux.net>
-Subject: Ports opened without request
-Date: Wed, 25 Feb 2004 18:01:19 +0100
+From: Dan Malvin <dmalvin@dunwoody.edu>
+Subject: routing specific IP addresses
+Date: Wed, 25 Feb 2004 11:49:42 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <403CD4DF.1070704@stupar.homelinux.net>
+Message-ID: <1077731382.3585.32.camel@ziggurat8>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,19 +15,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi!
+I'd like to gain some understanding of an existing rule on my firewall
+that is allowing only a specific range if IP addresses outside.  This
+rule was created by the previous network admin.
 
-I have linux RH8 with kernel 2.4.20-28.8, iptables v1.2.8. I have setup 
-a firewall with some tcp ports opened (21,25,80,110,443) for servers.
-Then I have ran a port scan  and scanned all 65535 tcp and udp ports. I 
-was suprised that 3 ports were opened even if I didn't opened them in 
-the configuration. These ports are tcp 389,1002 and 1720.
-I have tried to block them manually by entering a drop command for these 
-three ports but no success-they are still open.
-What am I missing here? Is this some problem with iptables?
+The rule is:
+-A FORWARD -s 10.1.1.0/255.255.255.192 -i eth2 -j ACCEPT
 
-Sasa
+I understand that the "/255.255.255.192" part of the above rule is
+allowing only a specific range of IP addresses out to the Internet.  How
+is this rule working and how would I expand the range or create an new
+range?
 
