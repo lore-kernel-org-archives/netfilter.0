@@ -1,12 +1,9 @@
-From: John Lash <jkl@sarvega.com>
-Subject: Re: iptables for port forwarding
-Date: Tue, 30 Nov 2004 07:26:57 -0600
-Message-ID: <20041130072657.5acc7264@homer.sarvega.com>
-References: <20041130005154.6978.qmail@web11204.mail.yahoo.com>
+From: John <john@jjgb.com>
+Subject: Iptables - Memory Allocation Errors
+Date: Tue, 30 Nov 2004 13:16:19 -0700
+Message-ID: <6.1.2.0.2.20041130125155.02271640@pop2.jjgb.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041130005154.6978.qmail@web11204.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +14,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> I tried doing this:
-> /sbin/iptables -A FORWARD -p tcp --dport 80 -j ACCEPT 
-> /sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth0 -j DNAT
-> --to 127.0.0.1:5900 
-> 
-> But the VNC client hangs for a while before timing out when I try to
-> connect to it.
-> 
-> Ideas on how to achieve the desired result?
-> 
-> Thanks,
-> 
-> Nick
-> 
+System Info:
 
-I suspect that you won't be able to redirect to 127.x.x.x. Check out this
-thread:
-	https://lists.netfilter.org/pipermail/netfilter/2002-November/040104.html
+Netra T1 105
+Linux sparky 2.4.27-sparc #2 Thu Oct 7 10:49:35 MDT 2004 sparc64 sun4u TI 
+UltraSparc IIi (Sabre) GNU/Linux
+440Mhz
+512Meg Ram
+18Gig HD
+Gentoo Incarnation.
+Has been extremely stable.
+iptables v1.2.11
 
-He comes to the conclusion that you can't redirect packets to localhost because
-the kernel refuses to route a packet from an external ip to a destination on the
-127.x.x.x network. I haven't yet verified that in the code but it sounds
-reasonable enough.
+I have a previously developed firewall that goes way back in 
+years.  However, several years ago I switched to iptables from ipchains 
+when I went to Red Hat 7.3 on an X86 box.
 
-I played with something similar for a while and was also unsuccessful. Needless
-to say, if you find a way to do this, short of hacking the routing code, please
-post back. Seems to be a fairly common wish.
+Having a few years of automated door slamming of cracker's, port scans etc. 
+etc., I have a sizable list of blocked IP's I would like to continue to 
+use.  Bout 1800 or so, as a matter of fact, plus my actual rules 
+allowing/disallowing services and such.  I could supply entire firewall if 
+needed, but I can't imagine I am the only one with this difficulty.
 
-The usual way to forward the port to localhost is to use ssh. There are many
-references to that on the net.
+This whole firewall loads nicely on an X86 box running 128Meg ram and a 
+2.4.19 stock kernel and a X86 box I just set up using a 2.6.7 kernel on a 
+Gentoo distro. with 256M ram.
 
---john
+However, on the Sparc box, it will load only 857 lines of "iptables -A 
+INPUT -i $EXTERNAL_INTERFACE -s $BANNED -j DROP" and then I get "iptables - 
+memory allocation error" line after line through out the rest of the 
+load.  When I do "iptables -L -n |wc -l" the 857 shows up.
+
+I can load my basic I/O rules then start the loop for these IP's, and when 
+it hits the total of 857, same indication...
+
+Can anyone out there help me out?  Is this a Sparc64 thingy, and if so, how 
+may I work around it?
+
+Much thanks in advance.
+
+John
+
+John Jaeger - Billings, Montana
+
+EMail To	: <mailto:john@jjgb.com>
+Home Page	: <http://www.jjgb.com>
+
+PGP:
+RSA Key ID: 0xAAEC7751  <http://www.jjgb.com/public_files/RSA_Key.zip>
+
+"Our liberty is protected by four boxes...
+     The ballot box, the jury box, the soap box, and the cartridge box."
+                                    - Anonymous
+
+"Soap Box" didn't work, now using the "Cartridge Box" 3/20/2003
+
 
