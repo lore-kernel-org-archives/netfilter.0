@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Could someone tell me the rules of port translation in SNAT ?
-Date: Mon, 5 Jan 2004 11:14:24 +0000
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: RE: help needed: clogged console
+Date: Mon, 5 Jan 2004 13:31:55 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401051114.24879.Antony@Soft-Solutions.co.uk>
-References: <BAY10-F80mi4Ho8YZ4n00031d23@hotmail.com>
+Message-ID: <Pine.LNX.4.33.0401051315050.15139-100000@blackhole.kfki.hu>
+References: <1073059221.2993.10.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY10-F80mi4Ho8YZ4n00031d23@hotmail.com>
+In-Reply-To: <1073059221.2993.10.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: bmcdowell@coxhealthplans.com, orlowscy@hotpop.com, shrike-list@redhat.com, redhat-list@redhat.com, netfilter@lists.netfilter.org
 
-On Monday 05 January 2004 6:22 am, ding dang wrote:
+On Fri, 2 Jan 2004, John A. Sullivan III wrote:
 
-> When using SNAT of Netfilter as an NAPT, how will Netfilter assign the
-> public UDP port for a UDP request from the private network to Internet?
+> > Search for 'dmesg -n 1' - I think that's what you're after.
+                ^^^^^
+> I've been really confused by this issue.  I am also running iptables on
+> RedHat 9.0.  /etc/syslog.conf shows nothing being logged to the
+> console.  Yet, ever since applying the netfilter patch-o-matic
+> tcp-window patch, all of its messages appear on my console.  The
+> netfilter mail lists say this is a misconfiguration of syslog but it
+> sure looks correctly configured to me.  No other iptables messages go to
+> the console - just the tcp-window messages. How do I stop them!!! Thanks
 
-With both TCP and UDP, netfilter will use the source port contained in the 
-original packet if it can (ie: if that source port is not being used for 
-something else by the netfilter machine).   If this is not possible, then 
-another port is chosen at random using the standard socket-binding mechanism 
-used for any network connection.
+Default the tcp-window-tracking patch uses extensive kernel logging,
+while the other parts of netfilter keeps mouth shut. You can easily
+disable the logging by
 
-> Could someone detail it to me when the UDP request is
-> NEW/ESTABLISHED/RELATED/REPLIED/UNREPLIED?
+echo 0 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_log_invalid
 
-This makes no difference.
+Back to the console logging: klogd uses the console to display the kernel
+log messages. You can alter it's default behaviour by issuing dmesg like
+above or setting the proper command line switches for klogd. If you want
+to send the kernel logs to other places (file/remote machine etc.), *then*
+you have to configure syslogd properly.
 
-Antony.
-
--- 
-In science, one tries to tell people
-in such a way as to be understood by everyone
-something that no-one ever knew before.
-
-In poetry, it is the exact opposite.
-
- - Paul Dirac
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
