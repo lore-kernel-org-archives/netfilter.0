@@ -1,10 +1,10 @@
-From: "Philipp Stader" <me@ph1l.de>
-Subject: MS PPTP Server behind Debian Internet Gateway
-Date: Thu, 13 Nov 2003 18:11:45 +0100
+From: "David C. Hart" <dch@TQMcube.com>
+Subject: Is there a simple way to let Whois through?
+Date: Thu, 13 Nov 2003 14:39:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311131711.hADHBhEd031172@mini001.webpack.hosteurope.de>
+Message-ID: <1068752343.3536.92.camel@dchws.TQMcube.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-GTobb9QmBY+qErv+EG77"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,51 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Iptables Mailing List <netfilter@lists.netfilter.org>
 
-Hello List,
 
-i've spent the last days trying to get connections from the Internet to =
-a MS Windows 2003 Server on the local LAN via PPTP working. The LAN is =
-connected to the Internet via a Debian box (vanilla 2.4.22 Kernel)which =
-does the pppoe handling and masquerading:
+--=-GTobb9QmBY+qErv+EG77
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+I could force rwhois but I don't think that's a supported netfilter
+protocol. I have some of the individual servers configured for accept. I
+thought about accepting source port 43 but not all of the whois servers
+use that port.
 
-This works.
+Any ideas?
+                               ---------
+            Quality Management - A Commitment to Excellence
 
-While trying to make the Windows 2003 Server available for pptp =
-connections from the outside [internet] i read a lot on the web and this =
-mailinglists archive and came to the conclusion that i will have to =
-patch the kernel with the pptp-conntrack-nat patch from Harald Welte [ =
-http://www.netfilter.org/documentation/pomlist/pom-extra.html#pptp-conntr=
-ack-nat ] and compile the userland tools to make things work.
+--=-GTobb9QmBY+qErv+EG77
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-But browsing a Forum i found the following fragments which actually do =
-what i was trying:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 1723 -j DNAT =
---to-destination 192.168.200.99
-iptables -A FORWARD -i ppp0 -m state --state NEW -p tcp -d =
-192.168.200.99 --dport 1723 -j ACCEPT=20
+iD8DBQA/s93Xol4OE0cpGaIRAg7KAKCHZNgxFScWXzZfSPGSO0A1x5VSugCbB1D3
+kpdtcsAJI3BBHH036GtwIEg=
+=iXNs
+-----END PGP SIGNATURE-----
 
-iptables -A FORWARD -i ppp0 -m state --state NEW -p 47 -d 192.168.200.99 =
--j ACCEPT=20
-iptables -t nat -A PREROUTING -i ppp0 -p 47 -j DNAT --to-destination =
-192.168.200.99
-
-192.168.200.99 is the Windows 2003 Server.
-
-Is the above code sufficient? Will i run into trouble with it sooner or =
-later? Users from the LAN don't and won't use PPTP Connections to other =
-sites via internet. For which scenario do i have to patch the Kernel =
-with the pptp-conntrack-nat patch?
-
-Thanks for reading.
-
-Kind regards
-
-Phil
+--=-GTobb9QmBY+qErv+EG77--
 
 
