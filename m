@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: can we shape the kazaa traffic
-Date: Thu, 22 May 2003 07:45:57 +1000
+Subject: RE: ip_conntrack
+Date: Thu, 22 May 2003 07:53:22 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C76@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019233@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,48 +17,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Serge Blondin <sergebl@phreaker.net>, netfilter@lists.netfilter.org
+To: netfilter_user <netfilter_user@o2.pl>, netfilter@lists.netfilter.org
 
-You can if you know the ports it uses and if it's like DC++ which you =
-can specify the port, then use a tool which is pretty new which works on =
-a different ip layer. Below is a post recently sent regarding it.
+ip connection tracking is what it says and using rules like
 
-The way it works is that it matches the packets content and pushes that =
-into the shaped pipe, iptables can actually do that too with the "-m =
-string" patch-o-matic module. I'm just not sure what happens after the =
-SYN packet if the connection keeps goign through the shaped pipe or =
-not..
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-hope this helps...?
+makes the existing connections automatically excepted, like an SSH =
+connection will continue to work after the first SYN is accepted as the =
+connection would be established and ip_conntrack will keep a record of =
+the connection while it's still up.
 
-
-----------------------------------------------------------------------
-From: arbitrator-linux-admin@lists.sourceforge.net
-[mailto:arbitrator-linux-admin@lists.sourceforge.net]On Behalf Of Art
-Reisman
-Sent: Wednesday, May 14, 2003 9:35 AM
-To: arbitrator-linux@lists.sourceforge.net
-Subject: [Bandwidth/Arbitrator-linux] Adapting Application Level Shaping
-(Kazaa) comments?
-
-
-There is a sourceforge project that has just released
-application shaping tools for TC
-
-http://l7-filter.sourceforge.net/
-
-We are in the process of adapting their "application
-detection code" into the arbitrator.. =20
-
-Their code works by matching text patterns in data
-packets. If you have any knowledge on this subject
-please share your thoughts experiences.
-
-Art
------------------------------------------------------------------------
-
-
-
+Without ip_conntrack, the --state module would not work... correct me if =
+I'm wrong guys.. ;)
 
 Thanks,
 ____________________________________________
@@ -68,22 +39,25 @@ georgev@citadelcomputer.com.au
 
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
-=20
 
 -----Original Message-----
-From: Serge Blondin [mailto:sergebl@phreaker.net]
-Sent: Thursday, May 22, 2003 6:49 AM
+From: netfilter_user [mailto:netfilter_user@o2.pl]
+Sent: Thursday, May 22, 2003 6:18 AM
 To: netfilter@lists.netfilter.org
-Subject: can we shape the kazaa traffic
+Subject: ip_conntrack
 
 
-I know a way of shapping the traffic with a Cisco Router, but i was=20
-wondering.
+Hello everyone,
 
-I will be nice to shape the kazaa 2 traffic on my linux router.
+I have got very simply and basic quastion.
+What ip_cpnntrack and ip_cpnntrack_ftp realy do? Tracking connection
+or something more?
 
-Serge Blondin
-sergebl@phreaker.net
+ =20
+
+--=20
+Best regards,
+ mailto:netfilter_user@o2.pl
 
 
 
