@@ -1,13 +1,15 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Configure my firewall
-Date: Wed, 17 Mar 2004 11:46:56 +0100
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: Problem with Transparent Proxy and 2.6 IPSec
+Date: Wed, 17 Mar 2004 21:59:30 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079520416.3615.38.camel@anduril.intranet.cartel-securite.net>
-References: <20040317093541.C8A5BC154@postfix3-2.free.fr>
+Message-ID: <20040317105930.GC17776@samad.com.au>
+References: <20040317033707.GA9494@cube.ecbaldwin.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f0KYrhQ4vYSV2aJu"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040317093541.C8A5BC154@postfix3-2.free.fr>
+Content-Disposition: inline
+In-Reply-To: <20040317033707.GA9494@cube.ecbaldwin.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +19,176 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: nicolas boussekeyt <nicolas.boussekeyt@free.fr>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
-
-Le mer 17/03/2004 =E0 10:37, nicolas boussekeyt a =E9crit :
-> Hi, I want filter my firewall for raleka worm.
-> Actually, i have used :
-> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j DROP
-> iptables -A FORWARD -p tcp -i $EXTIF --dport 135 -j LOG
-[...]
-> But the worm is back.
-
-Do you mean that FORWARD policy is set to ACCEPT and only thoses ports
-are blocked ? If so, you have a _major_ misconfiguration, as you should
-block _everything_ first and then only accept what is OK for you.
-
-I am not aware of your need of course, but I don't think you need your
-LAN stations :
-
-	. being accessible on TCP/135 from the Internet (needed for the
-	  worm to infect)
-	. being accessible on TCP/32767 from the Internet (needed for
-	  the backdoor to be accessible)
-
-Furthermore, if the worm comes back, that means that your stations are
-still vulnerable. It may be time to patch...
-If the rules you gave are not overriden by another, as we do not have
-your complete ruleset to check its consistency, this means you still
-have an infected host inside your LAN that on one hand continue to
-infect other hosts and on the other hand may has its backdoor
-potentially reachable from the Internet as you do not block all upper
-32767 ports.
-
-So, things to do :
-
-	. shut the Internet down
-	. clean and patch all your boxes (see Antony's post to both
-	  Symantec and MS advisory)
-	. have a full rewrite of filtering ruleset
+To: netfilter@lists.netfilter.org
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+--f0KYrhQ4vYSV2aJu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+There is a problem with NAT + IPSEC on the same box running the native
+stack.  There is a thread in devel that covers this.  There are also
+some patches that will work with 2.6.3, but do not apply the
+ip_route_me_hrader patch by herbert Xu (to fix the mangle taple hooks)
+as this causes a loop(this patch is in 2.6.4).
+
+Alex
+
+On Tue, Mar 16, 2004 at 08:37:07PM -0700, Carl Baldwin wrote:
+> Hello,
+>=20
+> I am new to this list but not new to iptables.  I have used iptables for
+> several years and have had much success with it.  I want to present the
+> problem that I have and request comments on how I might resolve it.
+>=20
+> I have been using a transparent proxy with squid and smtp for about a
+> year.  It has worked fine and I've been very happy with it.
+>=20
+> The problem came when I dumped freeswan and gave ipsec in linux 2.6.4 a
+> try.  This ipsec has been, for the most part, more reliable and easier
+> to understand for me.
+>=20
+> I first ran into a problem that has already been discussed on this list
+> (or maybe netfilter-devel?).  This problem is with transport mode in
+> ipsec.  So, I switched to tunnel mode.  For more on that problem do a
+> search on the list archives.
+>=20
+> In tunnel mode, as you may know from previous postings, iptables sees
+> each packet twice.  First, as an esp packet.  Second, as the
+> de-encapsulated version of the packet.  This is good, I think, although
+> I would like a way to know that a packet was authenticated or encrypted
+> prior to its de-encapsulation.  However, that is the subject of a future
+> posting.
+>=20
+> Anyway, most rules work for me.  I can SNAT these packets out onto the
+> global network, all my INPUT rules seem to work and things are generally
+> happy.  However, my transparent proxies do not work.  Does anyone know
+> why?
+>=20
+> SOME INTERESTING OBSERVATIONS
+>=20
+> Here is something that I observed running tcpdump on the two hosts at
+> the end of the tunnel.  This is part of the dump when trying to telnet
+> from cube to host mail --- names changed to protect the innocent --- on
+> port 25.  The nat box is called nat and the source machine is called
+> cube.  Here is the dump on the nat box side:
+>=20
+> 18:44:43.825043 cube > nat: ESP(spi=3D0x00000201,seq=3D0x532b) (DF) [tos =
+0x10]
+> 18:44:43.825043 cube.39869 > mail.smtp: S 1307041850:1307041850(0) win 58=
+40 <mss 1460,sackOK,timestamp 118540183 0,nop,wscale 0> (DF) [tos 0x10]
+> 18:44:43.825292 mail > cube: ESP(spi=3D0x00000301,seq=3D0x54ca) (DF)
+> 18:44:46.824219 cube > nat: ESP(spi=3D0x00000201,seq=3D0x532f) (DF) [tos =
+0x10]
+> 18:44:46.824219 cube.39869 > mail.smtp: S 1307041850:1307041850(0) win 58=
+40 <mss 1460,sackOK,timestamp 118543184 0,nop,wscale 0> (DF) [tos 0x10]
+>=20
+> Here, I see the request to mail.smtp encapsulated in esp and then
+> de-encapsulated.  Then I see a mail > cube esp packet.  Then another
+> cube > nat packet.
+>=20
+> On cube I see the following.
+>=20
+> 18:44:43.823985 mail > cube.39869: ESP(spi=3D0x00000301,seq=3D0xc06c) (DF)
+> 18:44:43.823985 nat.smtp > cube.39869: S 4174872998:4174872998(0) ack 130=
+7041851 win 5792 <mss 1460,sackOK,timestamp 186145512 118540183,nop,wscale =
+0> (DF)
+> 18:44:46.823183 mail > cube.39869: ESP(spi=3D0x00000301,seq=3D0xc06d) (DF)
+> 18:44:46.823183 nat.smtp > cube.39869: S 4174872998:4174872998(0) ack 130=
+7041851 win 5792 <mss 1460,sackOK,timestamp 186148512 118540183,nop,wscale =
+0> (DF)
+>=20
+> It looks to me like a response is being sent.  So, I'm not sure where
+> things might be breaking down.
+>=20
+> MISC INFO ABOUT MY SETUP
+>=20
+> I run a debian testing machine as my NAT and proxy.  Both the proxy and t=
+he
+> firewall are on the same machine because this is my home machine and I'm =
+just
+> playing around with this stuff at the moment.  My other linux machines
+> communicate with this box through an ipsec tunnel.  Network analysis with
+> tcpdump comfirms this.  Currently, I have one windows machine that is all=
+owed
+> to talk to this linux machine without ipsec.  This machine can still use =
+the
+> transparent proxies without a problem.
+>=20
+> # This shows the version of iptables that I am running.
+> nat:~> dpkg -l iptables
+> Desired=3DUnknown/Install/Remove/Purge/Hold
+> | Status=3DNot/Installed/Config-files/Unpacked/Failed-config/Half-install=
+ed
+> |/ Err?=3D(none)/Hold/Reinst-required/X=3Dboth-problems (Status,Err: uppe=
+rcase=3Dbad)
+> ||/ Name       Version   Description
+> +++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> ii  iptables   1.2.9-5   Linux kernel 2.4+ iptables administration tools
+>=20
+> # Info on my kernel.  (I have tried all of the 2.6.x stable releases)
+> nat:~> uname -a
+> Linux nat 2.6.4 #1 Sun Mar 14 14:54:23 MST 2004 i686 GNU/Linux
+>=20
+> # Here are the relavant iptables rules (iptables-save format.)
+> #   NOTE eth0 goes to the global internet, eth1 to my local net.
+>=20
+> # Generated by iptables-save v1.2.9 on Tue Mar 16 10:51:20 2004
+> *nat
+> :PREROUTING ACCEPT [88:22304]
+> :POSTROUTING ACCEPT [98:14092]
+> :OUTPUT ACCEPT [139:17757]
+> -A PREROUTING -i eth1 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+> -A PREROUTING -i eth1 -p tcp -m tcp --dport 25 -j REDIRECT --to-ports 25
+> -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.1.2
+> COMMIT
+>=20
+> # Generated by iptables-save v1.2.9 on Tue Mar 16 10:51:20 2004
+> *filter
+> :INPUT DROP [72:21276]
+> :FORWARD DROP [0:0]
+> :OUTPUT ACCEPT [9217:2302627]
+> -A INPUT -p ah -j ACCEPT
+> -A INPUT -p esp -j ACCEPT
+> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+> -A INPUT -i eth1 -p tcp -m tcp --dport 8080 -j ACCEPT
+> -A FORWARD -i eth1 -o eth0 -j ACCEPT
+> -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+> COMMIT
+>=20
+> OTHER INTERESTING ASIDES
+>=20
+> Just as an aside, most of you are used to seeing this done with squid
+> but some may not be used to seeing it done with smtp.  It works great
+> and I love it.  Only my border machine needs to know about special rules
+> for routing certain mail (like routing mail to aol for instance).  My
+> desktop and laptop think they are delivering MX direct.
+>=20
+> Thanks for taking the time to read this.
+> Carl Baldwin
+
+
+
+--f0KYrhQ4vYSV2aJu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAWC+SkZz88chpJ2MRApTMAJ0dw20L9lHLM1blSOpVIYZk4JsQPQCguKqF
+FkACbX9pJI3KFUM9CHnlj4w=
+=ettN
+-----END PGP SIGNATURE-----
+
+--f0KYrhQ4vYSV2aJu--
 
