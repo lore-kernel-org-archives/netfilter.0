@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is this config OK, plus where should I be logging...
-Date: Mon, 5 Apr 2004 14:48:45 +0100
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: how to block p2p
+Date: Mon, 5 Apr 2004 09:05:55 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404051448.45733.Antony@Soft-Solutions.co.uk>
-References: <000001c41ad1$692d25b0$0464a8c0@stu> <>> <200404051434.04761.Antony@Soft-Solutions.co.uk>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040405090555.05d1cfcf@mgalepc.utilitran.com>
+References: <40506957.8050609@o2.pl>
+	<Pine.LNX.4.44.0403111256360.29636-100000@Sinister.Com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404051434.04761.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <Pine.LNX.4.44.0403111256360.29636-100000@Sinister.Com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,41 +21,54 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 05 April 2004 2:34 pm, Antony Stone wrote in error:
+Hello,
 
-> Most systems below an unreasonable level of complication have rules which
-> fall into the following categories:
->
-> 1. Clients on local LAN accessing servers on Internet.
-> 2. Clients on local LAN accessing servers on DMZ.
-> 3. Systems on the Internet accessing servers on DMZ.
-> 4. Servers on DMZ accessing the Internet.
-> 5. Replies to any/all the above.
->
-> For most small systems, (1) is very simple - allow everything.
-> (2) and (4) (for a simple setup) provide the same services, so combined
-> rules can be used without bothering about the input interface.
-> (3) is the area where your level of paranoia determines how complex your
-> rules get.
-> (5) is a single rule on the whole firewall allowing Established / Related
-> packets.
+	Are you sure it has nothing to do with work vs play well you are at work ? I
+have worked for companies where MSN Messenger was widely used it was disrupting
+work. 
 
-I got 3 and 4 mixed up there, of course...
+Projects where not getting done, some people actually asked managers to "hold on
+a sec" so they could finish their messages. 
 
-It should read "(2) and (3) (for a simple setup) provide the same services, so 
-combined rules can be used without bothering about the input interface.
-(4) is the area where your level of paranoia determines how complex your rules 
-get."
+What about the cost of bandwidth ? If your company has to pay X number of
+dollars a month because your employee are downloading music from kaza -- which
+may be illegal depending on where you work and against company policy.
 
-Regards,
+Plus there are ways of allowing needed work related p2p connections after
+blocking the rest.
 
-Antony.
+Michael.
+
+
+
+
+On Thu, 11 Mar 2004 13:00:45 -0500 (EST)
+Bob Keyes <bob@sinister.com> wrote:
+
+> It's amazing how many people seem so anxious to block p2p. They have this
+> idea that nothing but mp3s of madonna and metallica are on it. Far from
+> the case.
+> 
+> Wouldn't it be better to just make sure that traffic is prioritized and
+> handled accordingly? for instance, dns traffic highest, followed by ssh
+> traffic, etc. lowest being the bulk fiel transfers of p2p, ftp, and large
+> http transfers.
+> 
+> I know of several ways to detect p2p transfers, but I am not going to tell
+> you, because I don't want to find some overzealous ISP administrator
+> blocking my Debian updates.
+> 
+> oh, by the way, http://xa.net/p2ping
+> 
+> 
+> 
+> 
+> 
+> 
+
 
 -- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
