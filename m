@@ -1,10 +1,15 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: netfilter diagram
-Date: Fri, 5 Jul 2002 09:47:01 +1000
+From: christophe =?iso-8859-15?Q?barb=E9?= <christophe.barbe.ml@online.fr>
+Subject: Re: simple rules and unexpected traffic
+Date: Thu, 4 Jul 2002 19:47:09 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA237@JUPITER>
+Message-ID: <20020704234709.GE909@localhost>
+References: <200FAA488DE0D41194F10010B597610D2BA236@JUPITER>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="phCU5ROyZO6kBE05"
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA236@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,53 +19,101 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'LuisMi' <luismi@adpsoft.com>, netfilter@lists.samba.org
-
-http://www.google.com/linux?hl=en&lr=&ie=ISO-8859-1&q=%2Biptables+%2Btutoria
-l+%2B1.1.9
-
-I had a bookmark and I have it saved locally but use google search for
-tutorials 1.1.9 and it'll most likely find the right one..
-
-thanks,
-George Vieira
-Systems Manager
-Citadel Computer Systems P/L
-http://www.citadelcomputer.com.au
-
-
-
------Original Message-----
-From: LuisMi [mailto:luismi@adpsoft.com]
-Sent: Friday, 05 July 2002 9:25 AM
 To: netfilter@lists.samba.org
-Subject: netfilter diagram
 
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+--phCU5ROyZO6kBE05
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Few days ago I saw an email with an iptables diagram, explaining how the 
-traffic travels along the tables.
+On Fri, Jul 05, 2002 at 09:44:36AM +1000, George Vieira wrote:
+> Have you got any packet counts for the DROPped rules??
 
-Can anyone send me it?
+no.
 
-thanks
+> I'm still a bit stumped on the
+>=20
+> -A block -i ! eth0 -m state --state NEW -j ACCEPT=20
+>=20
+> as what other devices do you have???
 
-- -- 
-Luis Miguel Cruz.  
+I have only eth0 and lo.
 
-PGP KEY: 0x3AC52657   |   [ADPSOFT] http://www.adpsoft.com
-		      |      "Connecting your business"
+Christophe
+
+
+>=20
+> thanks,
+> George Vieira
+> Systems Manager
+> Citadel Computer Systems P/L
+> http://www.citadelcomputer.com.au
+>=20
+>=20
+>=20
+> -----Original Message-----
+> From: christophe barb=E9 [mailto:christophe.barbe.ml@online.fr]
+> Sent: Friday, 05 July 2002 8:57 AM
+> To: netfilter@lists.samba.org
+> Subject: Re: simple rules and unexpected traffic
+>=20
+>=20
+> On Fri, Jul 05, 2002 at 12:54:36AM +0200, Jan Humme wrote:
+> > On Friday 05 July 2002 00:45, christophe barb=E9 wrote:
+> > > On Fri, Jul 05, 2002 at 08:35:53AM +1000, George Vieira wrote:
+> > > > Yes I've found that some user space programs can see stuff before
+> > > > iptables.. tcpdump too I think...
+> > >
+> > > Yes it sounds logical for tcpdump or tools like that (which pass the
+> > > interface in promiscuisious mode) to see everything. I was not expect=
+ing
+> > > the same from a unprivileged app like gkrellm.
+> > > It is stil unclear for me what is the data processing path.
+> > >
+> > > Has someone a clear picture of the packets path ?
+> >=20
+> > It is no problem to open a socket and receive a copy of all raw packets=
+=20
+> > before they get to the kernel iptables modules. See "man 7 packet" for=
+=20
+> > details.
+> >=20
+> > I believe this is how tcpdump does it too.
+>=20
+> Ok it sounds logical.
+> Now the question is what is dropping these packets ? Apparently not
+> rp_filter, and not netfilter because I see no log for it.
+>=20
+> Christophe
+>=20
+> >=20
+> > Jan Humme.
+>=20
+> --=20
+> Christophe Barb=E9 <christophe.barbe@ufies.org>
+> GnuPG FingerPrint: E0F6 FADF 2A5C F072 6AF8  F67A 8F45 2F1E D72C B41E
+>=20
+> Imagination is more important than knowledge.
+>    Albert Einstein, On Science
+
+--=20
+Christophe Barb=E9 <christophe.barbe@ufies.org>
+GnuPG FingerPrint: E0F6 FADF 2A5C F072 6AF8  F67A 8F45 2F1E D72C B41E
+
+L'experience, c'est une connerie par jour mais jamais la m=EAme.
+
+--phCU5ROyZO6kBE05
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-iEYEARECAAYFAj0k2UsACgkQvQHLTzrFJlcttQCgiMlMt7hRoyaz2YW//+b/j6kk
-BDUAnigqF+FToeYRnyd3J+CC1qZDrNLI
-=NxLl
+iD8DBQE9JN59j0UvHtcstB4RAp6RAKCK9o1p0c66lTPUTGdBJQklHc1k1QCfUTqI
+xsfy1+b4ZXPIsMNttjR/jsU=
+=HbUi
 -----END PGP SIGNATURE-----
 
+--phCU5ROyZO6kBE05--
 
