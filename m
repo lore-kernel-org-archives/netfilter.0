@@ -1,14 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: iptables + squid
-Date: 26 Sep 2004 22:33:49 +0200
+Subject: Re: going default DROP
+Date: 26 Sep 2004 22:33:54 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096227749.7416.18.camel@nostromo.bgsecm.com>
-References: <web-453410391@mail01.infosat.net>
-	<1096208831.16814.22.camel@wolfpack.ljm.dom>
+Message-ID: <1096228024.7416.22.camel@nostromo.bgsecm.com>
+References: <a0f69e5040924223152fe70b6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1096208831.16814.22.camel@wolfpack.ljm.dom>
+In-Reply-To: <a0f69e5040924223152fe70b6@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,45 +18,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-El dom, 26 de 09 de 2004 a las 16:27, Jason Opperisano escribi=C3=B3:
-> On Sun, 2004-09-26 at 01:35, it clown wrote:
-> > Hi All,
-> >=20
-> > I want to run squid on the same box as iptables.I need to
-> > setup the client pc's that they have to go through the
-> > proxy to get to the internet... port 3128.They must not be
-> > able to by pass the proxy to get internet access.What rule
-> > do i need to add to iptables to only allow squid to have
-> > internet access?
-> >=20
-> > I want to give the clients internet access through squid,
-> > thanks.
-> >=20
-> > Regards
-> > _____________________________________________________________________
-> > For super low premiums ,click here http://www.dialdirect.co.za/quote
+El s=C3=A1b, 25 de 09 de 2004 a las 07:31, Askar escribi=C3=B3:
+> hi,
 >=20
-> # allow clients to connect to squid proxy
-> iptables -A INPUT -i $INSIDE_IF -p tcp --syn --dport 3128 -j ACCEPT
+> okay now im seriously wanted to convert the default ACCEPTED fw
+> machine by my predecessor to default DROP. coz it is very hard to
+> maintain ACCEPTED fw and im getting tired of monitoring tcpdump and
+> then adding new rules to firewall script.
+> As I told before it is a small ISP (limitations: no more then 150
+> users at a time) and our clients connected to us via dialup.
+> Before going to deploy my desired fw script I want to monitor the
+> users traffic for a while may be I would go outside and interview few
+> cyber cafes, to decide *what* to DROP and which packets to allow.
+> Remember our clients are not that power users, very normal in nature,
+> when online majority of them acccessing port 80, IM, chatting,
+> emailing, irc etc. we have setup a cache "squid" for port 80 related
+> things and its doing very well.
+> Therefore I thinks it would not be difficult to deploy default DROP
+> script, yes may be in starting days we could loose few clients ;)
+> As im kinda new to security and iptables stuff, however I want to
+> prove that this sort of  policy is possible in ISP (small) enviroment
+> .
 >=20
-> # allow squid to fetch web content
-> iptables -A OUTPUT -o $OUTSIDE_IF -p tcp --syn --dport 80 -j ACCEPT
+> =3Dnow can someone guide me what is the good way to monitor traffic i-e
+> what ports clients accessing and then in teh light of this i would
+> finialize my script.
+> =3D any sample scripts for such enviroment and links ?
+> Any other suggestions would be greatly appreciated.
 >=20
-> of course--this assumes that you do not allow clients through the
-> FORWARD chain on port 80.
->=20
-> -j
+> regards
+> Askar
 
-I'd like to add that if they need the transparent proxy feature they
-need a rule like this:
+I think the approach your are using is the correct when dealing with
+an ISP like configuration. You probably don't have power users, but
+be sure that normal users are the more problematic ones, because they
+will want to use nonstandard ports many times, like when using games
+IM chat, DCC and thinks like that. You should make a study of what
+traffic your users are using and then DROP only the traffic that can
+be harmful. It's not a easy way to configuring a firewall, but I think
+it's the more intelligent one when your are an ISP and you don't want
+your users to be complaining all the time.
 
-iptables -t nat -A OUTPUT -A PREROUTING -i $INPUTIP -p tcp \
---dport 80 -j REDIRECT --to-ports 3128
-
-and they need to have the squid proxy properly configured to allow
-the transparent proxy feature.
 
 --=20
 Jose Maria Lopez Hernandez
