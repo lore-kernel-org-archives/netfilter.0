@@ -1,12 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ipt_TCMSS.c -- A slight problem i'm having
-Date: Mon, 1 Nov 2004 14:02:59 -0500
-Message-ID: <20041101190259.GA18883@bender.817west.com>
-References: <424BCB4EA242A1429A8AF0548E8CFF0E123959@apexexchange.ApexSoftware.Com>
+From: Rajesh Menon <secure2k4rrm@yahoo.com>
+Subject: IPTables connection limitiing rule meaning
+Date: Mon, 1 Nov 2004 11:55:27 -0800 (PST)
+Message-ID: <20041101195527.75983.qmail@web53503.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <424BCB4EA242A1429A8AF0548E8CFF0E123959@apexexchange.ApexSoftware.Com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +18,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, Nov 01, 2004 at 11:50:37AM -0500, Scott Knake wrote:
-<snip>
-> That is a little excerpt from ipt_TCMSS.c. The problem is that somebody
-> DoS'd me with syn Packets that contained data len(header) <!=
-> len(packet). I have a little ServGate SG100 router that handles my T1
-> connection. The router physically seized for the 5 minutes or so while
-> he packeted because of the amount of logging I'm guessing. How can I
-> block this with just an iptables ruleset? I'm trying not to limit the
-> incoming number of syn packets and I cant recompile netfilter since it
-> is running on a flavored kernel custom for the router. How am I going to
-> prevent this in the future?
 
-  iptables -t mangle -I PREROUTING -i $external_if -p tcp --syn \
-    -m length ! --length 60 -j DROP
+11/1
 
--j
+Hello,
 
---
-"I bet Einstein turned himself all sorts of colors before he invented
-the light bulb."
-        --The Simpsons
+I have a rule in my output chain as follows:
+
+iptables -A OUTPUT -o <external-IF> -m limit --limit
+15/minute --limit-burst 10 -j LOG --log-prefix
+"GW->Intet: "
+
+1. Would this rule LOG packets as long as the rule is
+matched?
+
+2. If the limit is reached (15/min) would the packets
+stop going to the next rule in the chain? 
+
+3. Supposing I have this rule after the above rule 
+
+iptables -A OUTPUT -j ACCEPT
+
+Would this over-ride the above rule applicable for the
+external interface?
+
+Thank You.
+Menon
+
+
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Check out the new Yahoo! Front Page. 
+www.yahoo.com 
+ 
+
 
