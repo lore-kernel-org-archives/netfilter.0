@@ -1,12 +1,12 @@
-From: "Arnoud" <a.buurman@wxs.nl>
-Subject: multicast and iptables.
-Date: Mon, 3 Feb 2003 19:18:50 +0100
+From: "Centkowski, Peter (AXNH)" <peter.centkowski@schmalz-schoen.de>
+Subject: I need Help
+Date: Wed, 5 Feb 2003 13:14:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000c01c2cbb0$b41b5d10$0c00a8c0@nt.klote.com>
-Reply-To: <a.buurman@wxs.nl>
+Message-ID: <4D365C260C742A4AABFBF2EE41B7E59F051558@itfbsv01.itservices.intern>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +19,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Gents! & Ladies?!
-
-Can someone comment on this?
-
-I figgured that multicast with PIM should work while working with iptables:
-
-We need to allow for IGMP to reach the PIM deamon, the PIM deamon needs to
-communicate and we need some ip traffic to allow from normal IP to multicast
-adresses and or ranges.
-Anyone who got experience with it? Can't find any usefull info in FAQ and
-Google, but maybe I'm googleing the wrong way?
-Maybe someone from the developers who can tell how iptables handles IGMP &
-multicast IP.
+Hello Lists
+i have a typical config:
 
 
-Kind regards,
+INTERNET------eth0--iptables---eth1------eth0--proxy--eth1
+                                                      |
+                                                      |
+                                                   eth0/ftp
+                                                   FTP=09
+i have a Problem with ftp connect. "Extern" will after login connect =
+direcly eth0/ftp. I have no more idea .
+Please Help my.
 
+with bests regarts=20
 
-Arnoud Buurman
-
+Peter =20
 
