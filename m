@@ -1,14 +1,16 @@
-From: Andreas Kretschmer <andreas_kretschmer@despammed.com>
-Subject: Re: [despammed] Netfilter as an application.
-Date: Fri, 16 Jan 2004 17:55:48 +0100
+From: Alexis <alexis@attla.net.ar>
+Subject: Re: Firewall workaround
+Date: Fri, 16 Jan 2004 14:03:18 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040116165548.GA5166@kaufbach.delug.de>
-References: <20040116163906.40844.qmail@web40307.mail.yahoo.com>
+Message-ID: <1074272597.9660.15.camel@noc2tuh.dcn>
+References: <357895CFC8CB7C44900D6A4F46D08AA90459C9@exchangeserver.IAT.local>
+	 <200401161615.23266.Antony@Soft-Solutions.co.uk>
+	 <1074271086.9660.12.camel@noc2tuh.dcn>
+	 <200401161654.16639.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040116163906.40844.qmail@web40307.mail.yahoo.com>
+In-Reply-To: <200401161654.16639.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +20,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-am  Fri, dem 16.01.2004, um  8:39:06 -0800 mailte kernel_learner folgendes:
->  How's it going! I am looking for something that I am
-> not sure currently exists. Basically I want to make a
-> version of netfilter that's free from all the
-> kernel-level and networking stack hooks. I am looking
-> for a plain simpler version of netfilter which does
-> not interact with the kernel or the networking stack
-> in any way. It would be a standard user program which
-> a person with normal privelges could compile and run.
+most of the IM's today will try first it traditional ports, then 80,
+then 443, then 23 , then 25.
+Not using some tunneling of forwarding mechanism like ssh, just a single
+connection trough this port.
 
-Very bad. Every can modify the rules. I think, you search 'Zonealarm for
-Linux'.
+I know ssh could forward ports, but in this case, you need the other end
+where to forward the port :)
 
 
 
-> What would it do? It could do the same things that
-> netfilter does...i.e. filter packets/NAT etc. However
+On Fri, 2004-01-16 at 13:54, Antony Stone wrote:
+> On Friday 16 January 2004 4:38 pm, Alexis wrote:
+> 
+> > using port 80 may work too.
+> 
+> But SSH is designed to support port forwarding - it's part of the standard 
+> operation.   On port 80 you'd have to come up with some mechanism of your own 
+> and make it work.
+> 
+> Antony.
+> 
+> > On Fri, 2004-01-16 at 13:15, Antony Stone wrote:
+> > > On Friday 16 January 2004 4:01 pm, Benjamin Dickgiesser wrote:
+> > > > It would be realy nice if someone could help me with this:
+> > > >
+> > > > Situation:
+> > > > I am useing a Windows XP PC at a student hall. To connect to the
+> > > > internet I am useing the university connection. Unfortunatly there are
+> > > > only around 5 open ports (80,21,22,23,6667).
+> > > > My aim is to make a work around to this firewall.
+> > >
+> > > I'm not sure that's an appropriate quesion to ask on a security mailing
+> > > list, but I guess you're right in assuming that this is a place to find
+> > > people who know how to do it :)
+> > >
+> > > Anyway, my answer to your question is: why not just tunnel the protocols
+> > > you want through SSH port forwarding?
+> > >
+> > > Antony
+-- 
+Alexis <alexis@attla.net.ar>
 
-Why?
-
-
-> Does such a thing exist?
-
-I hope: no.
-
-
->=20
-> How easy/difficult would it be to hack into the
-> current netfilter code to remove all the
-> networking/kernel hooks it has?
-
-This is not the intention of netfilter.
-
-
-Andreas
---=20
-Diese Message wurde erstellt mit freundlicher Unterst=FCtzung eines freilau-
-fenden Pinguins aus artgerechter Freilandhaltung.   Er ist garantiert frei
-von Micro$oft'schen Viren. (#97922 http://counter.li.org)     GPG 7F4584DA
-Was, Sie wissen nicht, wo Kaufbach ist? Hier: N 51.05082=B0, E 13.56889=B0 =
-;-)
 
