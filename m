@@ -1,12 +1,13 @@
-From: "Volker Augustin" <volker@multiartstudio.de>
-Subject: Re: split iptables log from messages
-Date: Wed, 21 May 2003 17:51:40 +0200
+From: eribicic@sinectis.com <kisero@uolsinectis.com.ar>
+Subject: RE: how to filter kazaa
+Date: Wed, 21 May 2003 12:58:12 -0300 (GMT+3)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001b01c31fb0$e09e1ef0$1405a8c0@ew2>
-References: <IHEHKFMEMKMGFDMIAHCIKENEDMAA.borda@netwall.com.br>
+Message-ID: <20030521155812.B03D96C9B7@honorio.sinectis.com.ar>
+Reply-To: kisero@uolsinectis.com.ar
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: georgc@FARMINGDALE.EDU, jaws@skyinet.net, netfilter@lists.netfilter.org
 
-there are a lot of possibilities to do so, you can split them from e.g.
-/var/log/messages and save them in a new file, or just use the syslog
-(i use a mixture of both)
-try google for iptables+logfile , thats where i found some very usefull
-hints and tools to do so (for syslog and splitting logfiles...)
+isnt it easyer to filter ports 1214?
 
-hope this helps a little bit
-volker
-
-
------ Original Message -----
-From: "Leonardo Borda" <borda@netwall.com.br>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, May 21, 2003 5:18 PM
-Subject: split iptables log from messages
-
-
-> Hello
->
-> Does anynone know how to split iptables logs from /var/log/messages ?
->
-> thanks,
->
-> Leonardo Borda
->
-> ---
-> Outgoing mail is certified Virus Free.
-> Checked by AVG anti-virus system (http://www.grisoft.com).
-> Version: 6.0.481 / Virus Database: 277 - Release Date: 13/5/2003
->
->
->
-
+> The following rule has worked for me. 
+> 
+> http://www.securityfocus.com/infocus/1531
+> 
+> 
+> $IPTABLES -A FORWARD -p tcp -m string --string X-Kazaa-Username: -j REJECT
+> --reject-with tcp-reset
+> 
+> $IPTABLES -A FORWARD -p tcp -m string --string X-Kazaa-Network: -j REJECT
+> --reject-with tcp-reset
+> 
+> $IPTABLES -A FORWARD -p tcp -m string --string X-Kazaa-IP: -j REJECT
+> --reject-with tcp-reset
+> 
+> $IPTABLES -A FORWARD -p tcp -m string --string X-Kazaa-SupernodeIP: -j -j
+> REJECT --reject-with tcp-reset
+> 
+> -----Original Message-----
+> From: tracker [mailto:jaws@skyinet.net] 
+> Sent: Wednesday, May 21, 2003 3:20 PM
+> To: netfilter@lists.netfilter.org
+> Subject: how to filter kazaa
+> 
+> Hi all,
+> 
+> Im new to this list and iptables. I would like to know how to filter kazaa.
+> 
+> Thanks.
+> 
+> Jaws
+> 
+> 
+> 
+-- 
+Slds.
 
