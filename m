@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: TTL target
-Date: Fri, 23 Jul 2004 19:43:52 +0100
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: TTL target
+Date: Fri, 23 Jul 2004 15:18:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407231943.52783.Antony@Soft-Solutions.co.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC90511E9@asimail2.alphanumeric.com> <000f01c470e2$fb4f1400$1e00000a@goyaike.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511EC@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000f01c470e2$fb4f1400$1e00000a@goyaike.com>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,20 +19,51 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+heh--yeah, sorry about that.
+
+Frederico-
+
+there's a nice (albeit a bit old) step-by-step on patch-o-matic at:
+
+	http://www.lowth.com/howto/add-iptables-modules.php
+
+when you get down to step 6--the patch you're interested in is:  "runme =
+base/TTL.patch"
+
+i've never had any luck with pom-ng on the stock RH kernels (runme says =
+that the kernel is too old), so you probably want to grab =
+'patch-o-matic-20031219' which does have the TTL target you're looking =
+for.
+
+HTH,
+
+-j
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: Friday, July 23, 2004 2:44 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: TTL target
+
+
 On Friday 23 July 2004 7:29 pm, Gonzalez, Federico wrote:
 
 > I get the following error:
 >
 > iptables: No chain/target/match by that name
 
-I think two people may be talking about two different things here without 
+I think two people may be talking about two different things here =
+without=20
 realising it:
 
-The ttl *match* (lowercase) is for matching packets by value of the TTL field.
+The ttl *match* (lowercase) is for matching packets by value of the TTL =
+field.
 
 The TTL *target* (uppercase) is for altering the TTL value in a packet.
 
-Sorry I can't answer the actual question, because I don't use Fedora, but 
+Sorry I can't answer the actual question, because I don't use Fedora, =
+but=20
 hopefully this might help to avoid some confusion, at least...
 
 Regards,
@@ -49,7 +78,8 @@ Antony.
 > Subject: RE: TTL target
 >
 >
-> um--on fedora core 1--which seems to match the versions you provide, the
+> um--on fedora core 1--which seems to match the versions you provide, =
+the
 > TTL match target is there.
 >
 > $ uname -r
@@ -66,7 +96,7 @@ Antony.
 >  pkts bytes target     prot opt in     out     source
 > destination
 >     0     0 DROP       all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           TTL match TTL == 1
+> 0.0.0.0/0           TTL match TTL =3D=3D 1
 >
 > -j
 >
@@ -88,12 +118,15 @@ Antony.
 >
 > Thank you.
 
--- 
+--=20
 "Black holes are where God divided by zero."
 
  - Steven Wright
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+                                                     Please reply to the =
+list;
+                                                           please don't =
+CC me.
+
 
 
