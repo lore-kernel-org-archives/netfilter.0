@@ -1,14 +1,13 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: iptables acting as a TCP proxy
-Date: Mon, 15 Mar 2004 19:02:24 -0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: transparent proxy
+Date: Tue, 16 Mar 2004 08:44:24 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403160302.i2G32FsV011641@server5.bandwidthco.com>
-References: <200403151259.38056.Antony@Soft-Solutions.co.uk>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <200403160844.24937.Antony@Soft-Solutions.co.uk>
+References: <3C204966522884458700FF59D6EFB87A474DDE@FORUS01.netpower.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403151259.38056.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <3C204966522884458700FF59D6EFB87A474DDE@FORUS01.netpower.lan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,41 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+To: Netfilter <netfilter@lists.netfilter.org>
 
- 
+On Monday 15 March 2004 9:19 am, Fredrik Emil Jensen wrote:
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Monday, March 15, 2004 5:00 AM
-To: Netfilter Mailing List
-Subject: Re: iptables acting as a TCP proxy
-
-On Monday 15 March 2004 12:43 pm, Gavin Hamill wrote:
-
-> On Monday 15 March 2004 11:28, Antony Stone wrote:
-> > iptables -A PREROUTING -p tcp --dport 80 -d old.ip.add.ress -j DNAT 
-> > --to new.ip.add.ress iptables -A FORWARD -p tcp --dport 80 -d 
-> > new.ip.add.ress -j ACCEPT iptables -A POSTROUTING -p tcp --dport 80 
-> > -d new.ip.add.ress -j SNAT --to my.ip.add.ress
+> Hey
 >
-> A thousand thanks, Antony - you're a giraffe among men - so walk tall 
-> :)
+> I'm currently using squid and squidGuard for redirection. Setting up the
+> rules:
+>
+> Iptables -t nat -A PREROUTING -p tcp -s 192.168.1.0/24 -d 0/0 --dport 80
+> -j REDIRECT --to-ports 3128
+>
+> But does anyone know what to do if you want to use iptables to bypass
+> squid with single IP address?
 
-Er, thanks.   Never been called that before, but I'll do my best :)
+Yes, put a rule above that one in the PREROUTING chain which matches the 
+source address you don't want to be REDIRECTed, and jump out of the chain:
+
+iptables -I PREROUTING -t nat -p tcp -s 192.168.1.10 --dport 80 -j ACCEPT
+
+That will match a single address, 192.168.1.10, TCP port 80, and make sure the 
+following REDIRECT rule is not activted.   Note the "-I" to insert the rule 
+at the top of the list, instead of the more common "-A" which appends to the 
+end of the list.
+
+Regards,
 
 Antony.
 
---
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
+-- 
+The difference between theory and practice is that in theory there is no 
+difference, whereas in practice there is.
 
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
