@@ -1,13 +1,13 @@
-From: <enosp.netmeeting@onlinehome.de>
-Subject: Packet loss at routing to own machine
-Date: Wed, 11 Feb 2004 08:42:01 +0100
+From: <root@scheuchenstuel.com>
+Subject: AW: AW: bandwidth problems [Linux 2.4.20] [iptables 1.2.7a]
+Date: Wed, 11 Feb 2004 11:31:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6747028$10764848284029dadca902c5.74025880@config16.schlund.de>
+Message-ID: <20040211103119.IVZS2453.viefep20-int.chello.at@ctxroot>
+References: <1076442585.2018.46.camel@ca.gts.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_10764848284029dadca902c5.74025880";
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1076442585.2018.46.camel@ca.gts.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,108 +17,161 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: =?iso-8859-1?Q?netfilter_user?= <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "'John A. Sullivan III'" <john.sullivan@nexusmgmt.com>
+Cc: netfilter@lists.netfilter.org
 
+> > > > Hi!
+> > > >  
+> > > > My configuration:
+> > > > =================
+> > > > 
+> > > > O-------------o    O-----------------------o
+> > > > |    WinXP    |    |    eth0     |   eth1  |
+> > > > | 10.10.1.100 |----| 10.10.1.254 | D H C P |----INTERNET
+> > > > |             |    |             |         |
+> > > > O-------------o    O-----------------------o
+> > > >   My Computer           My NAT-Computer
+> > > > 
+> > > > NAT-Computer:
+> > > >   Linux 2.4.20-4GB
+> > > >   load average: 0.08, 0.05, 0.06
+> > > >   iptables v1.2.7a
+> > > > All the NICs I use are 3com 3C905-TX
+> > > > 
+> > > > When I do some bandwidth tests on the NAT-Computer
+> > > (provider's service
+> > > > page) my bandwidth is about 1MBit/second When I do the 
+> same on my 
+> > > > computer I only get about 100kbit/second
+> > > > 
+> > > > Now I wonder if there are any problems with my configuration...?
+> > > > Would be nice if you could help me...
+> > > > 
+> > > > Thanks in advance
+> > > > Florian St.
+> > > > 
+> > > > Root(AT)scheuchenstuel(DOT)com
+> > > > 
+> > > > 
+> > > > My iptables-configuration:
+> > > > ==========================
+> > > > 
+> > > > 
+> > > 
+> ####################################################################
+> > > ##
+> > > > ######
+> > > > ######
+> > > > 
+> > > > #!/bin/bash
+> > > > #
+> > > > 
+> > > > modprobe iptable_nat
+> > > > echo 1 > /proc/sys/net/ipv4/ip_forward
+> > > > 
+> > > > ########## CLEARING TABLES
+> > > > iptables -F
+> > > > iptables -t nat -F
+> > > > iptables -t mangle -F
+> > > > iptables -X
+> > > > 
+> > > > ########## SETTING POLICIES
+> > > > iptables -P INPUT DROP
+> > > > iptables -P OUTPUT ACCEPT
+> > > > iptables -P FORWARD DROP
+> > > > 
+> > > > ########## NAT
+> > > > iptables -A INPUT -i eth1 -m state --state 
+> ESTABLISHED,RELATED -j 
+> > > > ACCEPT iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+> > > > 
+> > > > ########## LOOPBACK SETTINGS
+> > > > iptables -A INPUT -i lo -j ACCEPT
+> > > > iptables -A INPUT -s 127.0.0.1/32 -j ACCEPT
+> > > > 
+> > > > ########## EXTERNAL OPEN PORTS
+> > > > iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
+> > > > 
+> > > > ########## INTERNAL OPEN PORTS
+> > > > iptables -A INPUT -s 10.10.1.100/32 -j ACCEPT
+> > > > 
+> > > > ######### NAT FORWARDING
+> > > > iptables -A FORWARD -s 10.10.1.100/32 -j ACCEPT iptables -A
+> > > FORWARD -d
+> > > > 10.10.1.100/32 -j ACCEPT
+> > > > 
+> > > > 
+> > > 
+> ####################################################################
+> > > ##
+> > > > ######
+> > > > ######
+> > > 
+> > > The rules look a little unusual; in fact, they look downright 
+> > > dangerous.  You may want to read a good iptables tutorial such as 
+> > > the one by Oskar Andreasson.  You can find a link to it on the 
+> > > netfilter.org web site.  You can also find some slide 
+> shows in the 
+> > > training section at http://iscs.sourceforge.net
+> > > 
+> > > However, I do not think your rules would create a 
+> throughput problem. 
+> > > How are you measuring your throughput?
+> > > --
+> > > John A. Sullivan III
+> > > Chief Technology Officer
+> > > Nexus Management
+> > > +1 207-985-7880
+> > > john.sullivan@nexusmgmt.com
+> > > ---
+> > 
+> > Now i tried to use a script suggested by Oskar Andreasson 
+> > 
+> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#RCFIREWA
+> > LLTXT
+> > 
+> > But the problem is still the same...
+> > I think there is another problem...
+> > 
+> > When i configure&start squid on the NAT-Computer i have 
+> full bandwidth...
+> > 
+> > I don't know what to do anymore...
+> > 
+> > Thanks in advance
+> > Florian St.
+> How are you measuring your throughput? What happens if you 
+> don't use squid but allow direct (iptables protected) web 
+> access from the client?
+> --
+> John A. Sullivan III
+> Chief Technology Officer
+> Nexus Management
+> +1 207-985-7880
+> john.sullivan@nexusmgmt.com
+> ---
 
-This is a multi-part message in MIME format.
+I use the bandwidth test-page of my provider...
+http://performance.chello.at:81
 
-------_=_NextPart_10764848284029dadca902c5.74025880
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+What do you mean with "direct" web access ?
+Web access via NAT ?
+I have entered the NAT-computer's IP as default gateway
+and the provider's DNS-servers as DNS-servers on my PC.
+I think this is what you mean with direct access...
 
-Please see appended text,
-beacause my web-mailer reformats the ascii layout
+With this direct access i only get about 100kbit, when i use
+squid or when i do the tests on the NAT-computer i have full
+Bandwidth (around 1MBit/sec)
 
-------_=_NextPart_10764848284029dadca902c5.74025880
-Content-Type: text/plain; name=udp-packet-loss.txt
-Content-Disposition: attachment; filename="udp-packet-loss.txt"
+I think there is a general problem with my configuration,
+because the bandwidth is no better with iptables-scripts
+which are known to work fine...
 
-Packet loss at routing to own machine!
+I really don't know what to do anymore...
 
-
-
-I have following test configuration to measure udp round trip time:
-
-(ADR is set to 192.168)
-
-                                             |--------| 
-
-|---------|eth1 (ADR.1.2)<---->(ADR.1.1) eth1|router 1|eth0 (ADR.3.1)<-   
-
-|Test PC  |           cross cable 1          |--------|                |
-
-|reflect. |                                                   cross    |
-
-|         |                                                   cable 3  |
-
-|send/rec.|                                  |--------|                |
-
-|---------|eth0 (ADR.2.2)<---->(ADR.2.1) eth1|router 2|eth1 (ADR.3.2)<-
-
-                      cross cable 2          |--------|
-
-
-
-The linux routers 1 and 2 have activated forwarding.
-
-On the Test PC is running an udp Sender program, which sends udp packets from 
-
-eth0 (192.168.2.2) over the routers 2 and 1 to eth1 (192.168.1.2) on the Test PC.
-
-An udp reflector program receiving the packets on eth1 sends it back over both
-
-routers to eth0 where the packets arrive.
-
-With etheral it can be seen, that the reflected packets arrive at eth0 of the
-
-Test PC, but the receive call of the send/receive program does not get the packets.
-
-
-
-When the Sender program and the reflector program run on separate machines,
-
-it works fine.
-
-
-
-To avoid an internal shortcut,
-
-(udp packets sent from eth0 to eth1 over the loop back interface)
-
-I shut down the loop back interface with 
-
-ifconfig lo down
-
-
-
-Following routing table entries were set:
-
-route add -host 192.168.1.1 dev eth1
-
-route add -host 192.168.2.2 gw 192.168.1.1 dev eth1
-
-route add -host 192.168.2.1 dev eth0
-
-route add -host 192.168.1.2 gw 192.168.2.1 dev eth0
-
-
-
-All other routing entries were deleted.
-
-
-
-Who throws away the received udp packets, when the send/receive program
-
-and the reflector program runs on the same machine ?
-
-
-
-Have I to set iptables rules, if so, which rules have I to use ? 
-
-    
-
-
-
-------_=_NextPart_10764848284029dadca902c5.74025880--
+Thanks in advance
+Florian St.
 
 
