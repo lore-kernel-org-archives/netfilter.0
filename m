@@ -1,11 +1,13 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Using NAT to relay traffic
-Date: Thu, 24 Mar 2005 09:44:00 +0100
-Message-ID: <200503240844.j2O8i0NW024910@smtp26.wxs.nl>
-References: <42420BC0.6030700@riverviewtech.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: HELP! Transparent Proxy using bridging 2.6.9 and REDIRECT on
+ different subnet
+Date: Thu, 24 Mar 2005 02:50:12 -0600
+Message-ID: <42427F44.8080608@riverviewtech.net>
+References: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
+Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42420BC0.6030700@riverviewtech.net>
+In-Reply-To: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,57 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'Jared Cook' <jared@vsahost.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Trevor Paskett <tpaskett@cymphonix.com>
+Cc: coreteam@netfilter.org, netfilter@lists.netfilter.org
 
- Indeed.
+Bad news.  I'm unable to get my system here at the house to intercept traffic destined to port 22 (I chose SSH to work / test with as I don't have Squid installed on any there here at the house) and redirect it to it's self and successfully return the traffic back to my test workstation.  What I was testing was a bit different than what you are asking for help on but it should still serve as a proof of concept.  I was attempting to redirect traffic that was passing through my test firewall destined to port 22 to the local host port 22.  Below are the rules that I tested with:
 
-It would make much more sense, that if you want a fast turnover, to lower
-the TTL of your DNS records to a few seconds.
+iptables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination 127.0.0.1:22
+iptables -t nat -A POSTROUTING -p tcp --dport 22 -j SNAT --to-source 127.0.0.1
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Grant Taylor
-Sent: 24 March 2005 01:37
-To: Jared Cook
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Using NAT to relay traffic
+If I just use something like the following:
 
-The problem that you are having when you port forward traffic from Box A to
-Box B is that the returning traffic comes directly from Box B to the client
-that sent the traffic in the first place thus you have an incorrect
-communications path.  Ironically I just had to work on a situation sort of
-similar to this one.  What I did in my situation to accomplish this was to
-DNAT the traffic destined to Box A over to Box B, like you have done.  You
-also need to SNAT the traffic leaving Box A on it's way Box B to be from Box
-A's IP so that when Box B replies it will reply back to Box A which will in
-turn reply back to the client system.  Thus you no longer have a triangle of
-client to Box a to Box B to client but rather client to Box A to Box B to
-Box A to client.  Let me know what your network config looks like if you
-would like me to come up with some iptables rules for you.
+iptables -t nat -A PREROUTING -p tcp --dport 22 -j REDIRECT
 
-Reference my replies to "HELP! Transparent Proxy using bridging 2.6.9 and
-REDIRECT on	different subnet" thread for an example or email me and I'll
-try to provide more help.
+I can get connected but my connections do not show up from where I would expect them to show up from, namely the firewall it's self.
+
+Where as if I use the following rules, a slight modification of the first set just pointing to a different box, things work fine:
+
+iptables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination 172.30.254.11:22
+iptables -t nat -A POSTROUTING -p tcp --dport 22 -j SNAT --to-source 172.30.254.253
+
+Ultimately I have a feeling the problem has to do with the packets traversal of the kernel / TCP/IP stack and where we can interface / interfere with it.  That being said some extremely dastardly things are probably going to need to be done to make things work the way that you want.  Thus are you willing to do some nasty things as running Squid in a UML, or what about just a UML router that does nothing other than rout the packets between a couple of interfaces thus allowing you to send traffic to a different system while still being in the same box?  If that was the case I think my solution where things were DNATed/SNATed to send the traffic to a foreign system and then ultimately rerouted the long way around would work, but it will be extremely nasty.  It will probably work, but I don't know if you will like it.  Unfortunately you are trying to do something that is EXTREMELY NOT normal
+  and thus are left with extremely not normal solutions.
 
 
 
 Grant. . . .
-
-Jared Cook wrote:
-> I have two servers on two different networks.  I am running a service 
-> on box A that I am transitioning to box B.  While I wait on DNS to 
-> propagate, I would like to do some iptables magic to send traffic from 
-> box A to box B using NAT.  For instance, when pop3 email users connect 
-> to box A, I would like box A to send the request to box B 
-> transparantly.  Is this possible?  I have had success doing port 
-> forwarding to the local machine, but when I specify box B as the 
-> "--to", it doesn't work.  Any help would be greatly appreciated.
-> 
-> Thanks,
-> Jared
-> 
-
-
 
