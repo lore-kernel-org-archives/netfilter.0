@@ -1,8 +1,8 @@
-From: "Hurley, Michael" <MHurley@law.uconn.edu>
-Subject: Ports closed in spite of opening them?
-Date: Fri, 2 Apr 2004 10:09:41 -0500
+From: "Philippe Anctil" <z77y16@hotmail.com>
+Subject: Re: safe default chain policies
+Date: Fri, 02 Apr 2004 10:21:27 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <AD8D39C727CBD411BB2C0090273A727408F9F135@mortimer.law.uconn.edu>
+Message-ID: <BAY16-F48j6fVCjmpp100021caf@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,76 +14,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Trying to write an iptables script to open ports 22, 25, 80, and 443 on a
-little testing box. The problem is, when I scan for open ports, 25 and 443
-report they are *closed*. Any idea what might be going on here?
+Hi Antony,
 
-Here is the output of iptables -L -n -v:
+I will leave the nat chains open. In fact I already did that yesterday. I 
+really makes my life better.
 
-Chain INPUT (policy DROP 54 packets, 4405 bytes)
- pkts bytes target     prot opt in     out     source
-destination         
-  242 23174 ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0          state RELATED,ESTABLISHED 
-    2   120 ACCEPT     tcp  --  *      *       192.168.100.0/27
-0.0.0.0/0          tcp dpt:80 state NEW 
-    1    60 ACCEPT     tcp  --  *      *       192.168.100.0/27
-0.0.0.0/0          tcp dpt:443 state NEW 
-    1    48 ACCEPT     tcp  --  *      *       192.168.101.0/24
-0.0.0.0/0          tcp dpt:80 state NEW 
-    3   144 ACCEPT     tcp  --  *      *       192.168.101.0/24
-0.0.0.0/0          tcp dpt:443 state NEW 
-    3   180 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:22 state NEW 
-    5   264 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:25 state NEW 
+May I ask what are your arguments in favor of putting filter output and 
+forward chains to drop?
 
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination         
+As far as my understanding goes, the output chain is primarily important for 
+traffic involving the firewall box itself. For example, you need rules in 
+this chain if you want to ftp from the firewall to the outside. You need 
+rules also if you want the firewall box to communicate freely with the local 
+network. Why wouldn't we want the box to complete connections? Once traffic 
+passed the input chain, why wouldn't I want it to cross the output chain as 
+well?
 
-Chain OUTPUT (policy DROP 1 packets, 65 bytes)
- pkts bytes target     prot opt in     out     source
-destination         
-  178 29529 ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0          state RELATED,ESTABLISHED 
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:22 state NEW 
-    1    60 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:25 state NEW 
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:53 state NEW 
-    3   213 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0          udp dpt:53 state NEW 
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:80 state NEW 
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0          tcp dpt:443 state NEW 
+My reasoning is similar with the forward chain. If traffic is allowed 
+through the input  chain, it is very likely it is allowed to cross the 
+forward chain too.
 
+In other words, rules in OUTPUT and FORWARD appear redundant to me.
 
-Thanks,
+How a default accept policy in output and forward OUTPUT can compromise my 
+network? Are there obvious cases I should know about?
 
+Thanks for sharing!
 
-/***************************************     .-"""-.
-Michael Hurley                              '       \ 
-Webmaster/SysAdmin                         |,.  ,-.  |
-University of Connecticut School of Law    |()L( ()| |
-mhurley@law.uconn.edu                      |,'  `".| |
-(860) 570-5233                             |.___.',| `
-***************************************/  .j `--"' `  `.
-                                         / '        '   \
-                                        / /          `   `.
-                                       / /            `    .
-                                      / /              l   |
-                                     . ,               |   |
-                                     ,"`.             .|   |
-                                  _.'   ``.          | `..-'l
-                                 |       `.`,        |      `.
-                                 |         `.    __.j         )
-                                 |__        |--""___|      ,-'
-                                    `"--...,+""""   `._,.-' mh
+>
+> > I set all of input and nat chains to DROP.
+>
+>Do NOT set the nat table policies to DROP.   The nat tables are for address
+>translation, not for filtering (DROP is a filtering operation).
+>
+> > I am thinking to set all chains to ACCEPT except the INPUT chain.
+>
+>No.   Set default DROP on INPUT, FORWARD and OUTPUT, then add rules to 
+>allow
+>the traffic you want.
+
+_________________________________________________________________
+MSN Search, le moteur de recherche qui pense comme vous !  
+http://fr.ca.search.msn.com/
+
 
