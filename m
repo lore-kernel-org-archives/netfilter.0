@@ -1,11 +1,13 @@
-From: Mark Tessier <mt@open2web.com>
-Subject: debugging iptables
-Date: Mon, 17 Jun 2002 16:59:03 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: debugging iptables
+Date: Mon, 17 Jun 2002 22:12:17 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020617165903.4b7ac76a.mt@open2web.com>
+Message-ID: <200206172112.g5HLCMA23419@Networker.rockstone.co.uk>
+References: <20020617165903.4b7ac76a.mt@open2web.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020617165903.4b7ac76a.mt@open2web.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,65 +20,23 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-I've set up a small network with 2 subnets: LAN and DMZ. The LAN and DMZ are
-connected by a rh7.1 running a iptables choke firewall. The rc.firewall
-script is based on Ziegler's chpt 6 choke firewall script. When I run the
-rc.firewall script I get several errors that I'm hoping someone can help me
-with. Here's a look at those errors:
+On Monday 17 June 2002 9:59 pm, Mark Tessier wrote:
 
-iptables v1.2.1a: host/network `smtpx.xxxx.xx' not found
-Try `iptables -h' or 'iptables --help' for more information.
-iptables v1.2.1a: host/network `smtpx.xxxx.xx' not found
-Try `iptables -h' or 'iptables --help' for more information.
-iptables v1.2.1a: host/network `mail.yyyy.com' not found
-Try `iptables -h' or 'iptables --help' for more information.
-iptables v1.2.1a: host/network `mail.yyyy.com' not found
-Try `iptables -h' or 'iptables --help' for more information.
-iptables v1.2.1a: host/network `news.cis.dfn.de' not found
-Try `iptables -h' or 'iptables --help' for more information.
-Try `iptables -h' or 'iptables --help' for more information.
-Bad argument `1024:65535'
+> iptables v1.2.1a: host/network `smtpx.xxxx.xx' not found
+> Try `iptables -h' or 'iptables --help' for more information.
 
-Here's the section that some of these  errors refer to:
+[ Etc..... ]
 
-# Sending Mail to the Mail Gateway Server (TCP Port 25)
+What are the values of the variables $SMTP_SERVER and $POP_SERVER in your 
+script ?
 
-iptables -A FORWARD -i $LAN_INTERFACE -o $DMZ_INTERFACE -p tcp \
-         -s $LAN_ADDRESSES --sport $UNPRIVPORTS \
-         -d $SMTP_SERVER --dport 25 \
-         -m state --state NEW -j ACCEPT
+> I'm not sure why the script causes these error messages, while others like
+> accessing an HTTP server doesn't produce any error mesages. DNS rules are
+> prior to these rules.
 
-iptables -A OUTPUT -o $DMZ_INTERFACE -p tcp \
-         -s $DMZ_IPADDR --sport $UNPRIVPORTS \
-         -d $SMTP_SERVER --dport 25 \
-         -m state --state NEW -j ACCEPT
+What are your DNS rules ?
 
-###############################################################
+ 
 
-# Retrieving Mail as a POP Client (TCP Port 110)
-
-iptables -A FORWARD -i $LAN_INTERFACE -o $DMZ_INTERFACE -p tcp \
-         -s $LAN_ADDRESSES --sport $UNPRIVPORTS \
-         -d $POP_SERVER --dport 110 \
-         -m state --state NEW -j ACCEPT
-
-iptables -A OUTPUT -o $DMZ_INTERFACE -p tcp \
-         -s $DMZ_IPADDR --sport $UNPRIVPORTS \
-         -d $POP_SERVER --dport 110 \
-         -m state --state NEW -j ACCEPT
-
-I'm not sure why the script causes these error messages, while others like accessing an HTTP server doesn't produce any error mesages. DNS rules are prior to these rules.
-
--- 
-Thanks,
-
-Mark
-
-
-
-
--- 
-Thanks,
-
-Mark
+Antony.
 
