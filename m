@@ -1,10 +1,14 @@
-From: "Carl Morgan" <killgoretrout59@hotmail.com>
-Subject: Copying nf_info
-Date: Thu, 13 May 2004 13:05:38 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: NAT question (forwarding with subdomains)
+Date: Thu, 13 May 2004 19:08:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY2-F983CAaY6OqdBP0000671a@hotmail.com>
+Message-ID: <200405131908.40252.Antony@Soft-Solutions.co.uk>
+References: <20040513172702.17791.51996.Mailman@vishnu.netfilter.org> <55621.200.107.22.222.1084470741.squirrel@www.easyteck.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <55621.200.107.22.222.1084470741.squirrel@www.easyteck.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,28 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all,
-  I am writing a program that requires I copy nf_info from an entry to=20
-another one.  The general idea of the program is this:
+On Thursday 13 May 2004 6:52 pm, Paul F. Bernal B. - EasyTeck wrote:
 
-struct some_struct {
-                                struct nf_info* info;
-                            };
+> Hi!,
+>
+> I got an internal 192.168.0.0/24 LAN with about 5 web servers including
+> the one which has iptables running and internet output ...
 
-struct some_struct temp1;
-struct some_struct temp2;
+You're running your firewall and a web server on the same machine?   Ugh...
 
-and in effect I want temp2->info=3Dtemp1->info.  Can someone please help.
+> What I need to do is:
+>
+> When someone in the Internet asks for http://sub1.mydomain.com/ respons
+> the 192.168.0.3 machine (wich has a web server running port 80)
+>
+> When someone in the Internet asks for http://sub2.mydomain.com/ responds
+> the 192.168.0.4 machine (wich has a web server running port 80)
 
-Tex Morgan
+If DNS resolves sub1.mydomain.com and sub2.mydomain.com as two different IP 
+addresses, then simple DNAT rules will work here.
 
-_________________________________________________________________
-MSN Toolbar provides one-click access to Hotmail from any Web page =96 FREE=
-=20
-download! http://toolbar.msn.com/go/onm00200413ave/direct/01/
+If sub1.mydomain.com and sub2.mydomain.com resolve to the same IP address, 
+then you cannot do what you want with netfilter (because it works with IP 
+addresses and port numbers, not hostnames and domains).
+
+The solution in that case would be Squid or Apache as acceleration proxy 
+servers.
+
+Regards,
+
+Antony.
+
+-- 
+People who use Microsoft software should be certified.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
