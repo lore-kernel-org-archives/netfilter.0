@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I thought ssh is port #22 ?!!
-Date: Thu, 1 Apr 2004 21:39:16 +0100
+Subject: Re: Having NAT problems
+Date: Thu, 1 Apr 2004 21:45:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404012139.16863.Antony@Soft-Solutions.co.uk>
-References: <E1B98i2-000R7B-7m@alf1.lmb.internal>
+Message-ID: <200404012145.33403.Antony@Soft-Solutions.co.uk>
+References: <20040401192505.3100.69461.Mailman@vishnu.netfilter.org> <200404012119.45564.Antony@Soft-Solutions.co.uk> <20040401203013.M36511@niesc.k12.in.us>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1B98i2-000R7B-7m@alf1.lmb.internal>
+In-Reply-To: <20040401203013.M36511@niesc.k12.in.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,56 +21,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 01 April 2004 9:22 pm, T. Horsnell (tsh) wrote:
+On Thursday 01 April 2004 9:32 pm, Adam Kennedy wrote:
 
-> Hmmm. I thought it went like this:
+> On Thu, 1 Apr 2004 21:19:45 +0100, Antony Stone wrote
 >
-> The client application requests a random high port
-> on the client machine (a socket). Then, using this
-> socket it makes a request to the required well-known
-> port (e.g. 22 for ssh) on the server machine.
-> Since no other application on the client box will ever
+> > Okay, how's this then  - please post all the rules which you think
+> > are needed for this pcAnywhere setup to work (with suitable partial
+> > obscuring of IPs if you wish).   Then we'll tell you if we can see
+> > something missing?
+>
+> That's actually what I wound up doing in the last post. That's all the
+> rules on the box save for a few NAT entries which I just commented out.
+> Commenting them out and re-running the file didn't do anything. I'm at my
+> wits end.
 
-"Ever" is not quite right - "simultaneously" or "concurrently" would be 
-better.   Another application might be given the same port number sometime 
-later, once this connection is over and done with.
+In that case let's see if there's something strange about the protocol 
+pcAnywhere uses.   Set up a similar DNAT rule for something we know about, 
+like ssh (or http, or any other service you happen to be running on an 
+internal server), and see if you can connect to that from the outside world.
 
-> be given the same high-numbered port as any other
-> application on that box, the client-ipaddr/highPort +
-> server-ipaddr/wellKnownPort combination defines a unique
-> 'circuit' over which further communication takes place.
+If you can, then there's obviously something about pcAnywhere which either 
+doesn't like NAT, or isn't sufficiently simple to work on a single 
+destination port.
 
-Yes, and it is this four-part combination which makes up a connection tracking 
-table entry in netfilter.
+If you can't connect to ssh (or whatever) either, then there's something weird 
+going on and we really would need to see more about your ruleset to help 
+further.
 
-> The client doesnt have to do special things to tell the
-> server what its connecting port-number is.
-
-The source port is included in the TCP packet header (as is the destination 
-port).   That's how the server knows which port to send the response back to 
-on the client.
-
-> Until along comes ftp, which has a command channel and
-> a data channel. So having made a connection in the
-> above way for the command channel, the client and server
-> have to make further negotiations for a data channel.
-
-Yes.   Whoever thought that was a good way to do things wasn't thinking about 
-security.
-
-> And firewalls have to be aware of this.
-
-Indeed :(
+Unless anyone else here can spot something I've missed from what's been posted 
+already....?   Maybe someone else has used pcAnywhere through NAT with 
+netfilter?
 
 Regards,
 
-Antony.
+Antony
 
 -- 
-I don't know, maybe if we all waited then cosmic rays would write all our 
-software for us. Of course it might take a while.
-
- - Ron Minnich, Los Alamos National Laboratory
+Normal people think "If it ain't broke, don't fix it".
+Engineers think "If it ain't broke, it doesn't have enough features yet".
 
                                                      Please reply to the list;
                                                            please don't CC me.
