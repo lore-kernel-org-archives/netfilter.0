@@ -1,8 +1,8 @@
-From: Nicholas Sherwood <nickzor@gmail.com>
-Subject: nf_reinject(ing) and the lack of skbuff in ipq_read
-Date: Mon, 6 Dec 2004 12:11:23 -0500
-Message-ID: <5ce4d70b0412060911260a7819@mail.gmail.com>
-Reply-To: Nicholas Sherwood <nickzor@gmail.com>
+From: Mark Moseley <moseleymark@gmail.com>
+Subject: ipset issue
+Date: Mon, 6 Dec 2004 13:27:34 -0800
+Message-ID: <294d5daa0412061327651c1648@mail.gmail.com>
+Reply-To: Mark Moseley <moseleymark@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,51 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Ok so I need to capture some packets in userspace to mess with them,
-particularly switch the order in which they are sent out. Ok I can
-capture them in my program with libipq. Now I need to store them and
-reinject them LATER. Here's the problem; when I capture them using
-ipq_read and ipq_get_packet I get a buffer of type ipq_packet_msg.
-This type looks like this:
+I decided to play with ipset (2.0), but I seem to be running into an
+issue with creating rules. I wonder if I'm missing something silly or
+not.
 
-----/usr/include/linux/netfilter_ipv4/ip_queue.h----
+When I issue the command:
 
-/* Messages sent from kernel */
-typedef struct ipq_packet_msg {
-       unsigned long packet_id;        /* ID of queued packet */
-       unsigned long mark;             /* Netfilter mark value */
-       long timestamp_sec;             /* Packet arrival time (seconds) */
-       long timestamp_usec;            /* Packet arrvial time (+useconds) */
-       unsigned int hook;              /* Netfilter hook we rode in on */
-       char indev_name[IFNAMSIZ];      /* Name of incoming interface */
-       char outdev_name[IFNAMSIZ];     /* Name of outgoing interface */
-       unsigned short hw_protocol;     /* Hardw  Dec 3 2004, 10:43 AM
-Average number of posts peare protocol (network order) */
-       unsigned short hw_type;         /* Hardware type */
-       unsigned char hw_addrlen;       /* Hardware address length */
-       unsigned char hw_addr[8];       /* Hardware address */
-       size_t data_len;                /* Length of packet data */
-       unsigned char payload[0];       /* Optional packet data */
-} ipq_packet_msg_t;
+ipset -N foo iphash --resize 0   (straight from the Tips page)
+
+I get the error:
+
+ipset v2.0: Error from kernel: Protocol not available
+
+I get this on a box running a 2.6.10-rc3 kernel and the kernel has
+most definitely been patched with the POM with the set stuff in it, as
+well as the iptables 1.3.0 (POM and iptables source were downloaded
+from the ipset page,
+http://people.netfilter.org/kadlec/ipset/install.html). The kernel was
+compiled with gcc 3.2.2 (RH9 rpm).
+
+Here's a snippet from the end of strace. Let me know if more
+strace'ing would be helpful. This is the last chunk, running strace
+with -f and -s:
+
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
+setsockopt(3, SOL_IP, 0x53 /* IP_??? */,
+"\1\0\0\0\2\0\0\0foo\0T\277\4@Xn\4@8\344\3@\350u\1@\4\0\0\0\264x\1@\224\207\4\10iphash\0\10\270i\1@\264m\1@\0\0\0\0\200\364\377\277\\~\0@<\364\377\277\0\4\0\0\10\0\0\0\377\377\377\377",
+84) = -1 ENOPROTOOPT (Protocol not available)
+write(2, "ipset v2.0: ", 12ipset v2.0: )            = 12
+write(2, "Error from kernel: Protocol not available", 41Error from
+kernel: Protocol not available) = 41
+write(2, "\n", 1)                       = 1
+exit_group(1)   
 
 
-To reinject a packet, presumably by using the nf_reinject function
-(see include/linux/netfilter.h) I require as inputs an sk_buff and an
-nf_info, two structs usually associated with packets in the netfilter
-context. But all I have is that ipq_packet_msg buffer which has the
-packet and a few random tidbits of info.
-
-Yes I've looked at Rusty's HOWTO on how to do everything in life and
-then some, there just isn't very good documentation on queueing to
-userspace, not to mention reinjecting packets back afterward. And once
-again I do mean reinject, not just NF_ACCEPT something, I mean take it
-out and put it back in.
-
-I would really really appreciate anyone's input if they've done this
-or if they know how to retrieve a packet's sk_buff/nf_info in
-userspace, thanks!!!!!
-
--Nik
+I imagine I'm missing something when I configure the kernel but I'm
+not sure what. Anybody know what botched? Thanks!
 
