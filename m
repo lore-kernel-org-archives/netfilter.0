@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Linux kernel module and -m owner match
-Date: 16 Sep 2004 18:14:30 +0200
+Subject: Re: Marking packets:  order is important?
+Date: 16 Sep 2004 18:14:44 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095342371.12579.19.camel@nostromo.bgsecm.com>
-References: <20040916093755.87684.qmail@web21007.mail.yahoo.com>
+Message-ID: <1095342489.12579.21.camel@nostromo.bgsecm.com>
+References: <086C43C9A9A1A541BFDFABCFDA05F589028E413B@mailnew.tecnun.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040916093755.87684.qmail@web21007.mail.yahoo.com>
+In-Reply-To: <086C43C9A9A1A541BFDFABCFDA05F589028E413B@mailnew.tecnun.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +20,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El jue, 16 de 09 de 2004 a las 11:37, Nicolas Boiteux escribi=C3=B3:
-> Hello,
+El jue, 16 de 09 de 2004 a las 10:51, Arrizabalaga, Saioa escribi=C3=B3:
+> I am analysing the script written in the ADSL-Bandwith-Management-HOWTO
+> I found in www.tldp.org.
 >=20
-> What is the module required into the linux kernel to
-> enable the use of the -m owner match ? The name of
-> this module isn t write into the howto ;(
+> It marks all the packets depending on the ports they use, for example:
 >=20
-> I have parse all the modules in netfilter
-> configuration section of the kernel 2.4.27, and i didn
-> t see anything about this rule .
+> iptables -t mangle -A MYSHAPER-OUT -p tcp --dport 0:1024 \
+> -j MARK --set-mark 23     # Default for low port traffic=20
+> iptables -t mangle -A MYSHAPER-OUT -p tcp --dport 20 \
+> -j MARK --set-mark 26     # ftp-data port, low prio
 >=20
-> Greetings,
-> Nicolas
+> But as far as I can see, the packet that matches the second rule,
+> matches the first rule as well, so, I guess that when this packet is
+> marked by the first rule (--set-mark 23), follows the chain, sees that
+> it also matches the second rule and then it is marked again with the ne=
+w
+> value(--set-mark 26).=20
+>=20
+> I would like someone to confirm this. If all this is true, the most
+> specific rules should be placed at the end, am I right?
+>=20
+> Regards,
+>=20
+> Saioa Arrizabalaga=20
 
-The module you need is called ipt_owner, but it needs to be
-compiled at kernel compilation time, using the patch-o-matic.
+Yes, you are right, the last mark is the one that remains
+when the last rule is applied, so you must order your mark
+rules from the more general to the more specific ones.
 
 --=20
 Jose Maria Lopez Hernandez
