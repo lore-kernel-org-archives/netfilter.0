@@ -1,13 +1,14 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: IPSec - IPTables issues
-Date: Wed, 05 May 2004 11:12:32 -0500
+Date: Wed, 5 May 2004 18:29:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40991270.5030803@pbl.ca>
-References: <20040502155538.GD515@schottelius.org> <20040504211557.GA236@schottelius.org> <4098FE7A.8070707@pbl.ca> <200405051622.26944.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405051829.14783.Antony@Soft-Solutions.co.uk>
+References: <20040502155538.GD515@schottelius.org> <200405051622.26944.Antony@Soft-Solutions.co.uk> <40991270.5030803@pbl.ca>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405051622.26944.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <40991270.5030803@pbl.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,18 +18,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> That's the way FreeS/WAN does it.
+On Wednesday 05 May 2004 5:12 pm, Aleksandar Milivojevic wrote:
 
-Yes, I know that's the way FreeS/WAN implements it.  But it doesn't mean 
-  it is the only way it can be implemented.  Actually, I like better 
-Linux 2.6 implementation that doesn't use virtual devices.
+> Antony Stone wrote:
+> > That's the way FreeS/WAN does it.
+>
+> Yes, I know that's the way FreeS/WAN implements it.  But it doesn't mean
+>  it is the only way it can be implemented.
+
+Well that is certainly true, but if you are using FreeS/WAN then this is the 
+system you have to work with.
+
+> Actually, I like better Linux 2.6 implementation that doesn't use virtual
+> devices.
+
+Yes, it seems like a better design; now if only we could work out how to 
+filter the unencrypted traffic before it all just disappears down the tunnel, 
+it might turn out to be a good idea.
+
+Regards,
+
+Antony.
 
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Anyone that's normal doesn't really achieve much.
+
+ - Mark Blair, Australian rocket engineer
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
