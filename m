@@ -1,12 +1,12 @@
-From: Andreas Gietl <a.gietl@e-admin.de>
-Subject: logging of MAC in FORWARD-chain
-Date: Sun, 13 Oct 2002 07:42:39 +0200
+From: "Mitesh P Choksi" <murli@icafe.co.tz>
+Subject: IPSEC and other non tcp/udp/icmp blocking
+Date: Fri, 11 Oct 2002 23:45:23 +0300 (EAT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210130742.40056.a.gietl@e-admin.de>
+Message-ID: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz>
+Reply-To: murli@icafe.co.tz
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +19,16 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Dear All,
 
-i just want to ask, if there is any special reason why the MAC-Adress is ju=
-st=20
-logged in the INPUT-Rule, not in the FORWARD-rule for example.
+How does netfilter work with other protocols apart tcp/udp/icmp?
 
-Would it be able to patch this?
+I am trying to either block or account IPSec traffic.
 
-thanx=20
+Regards,
 
-Andreas
-
-P.S.: sorry if sb already asked this, but i did not find a searchable archi=
-ve=20
-for this list.
-=2D-=20
-e-admin internet gmbh
-Andreas Gietl                                          tel +49 941 3810884
-Ludwig-Thoma-Strasse 35                      fax +49 941 3810891
-93051 Regensburg                                  mobil +49 171 6070008
-
-PGP/GPG-Key unter http://www.e-admin.de/gpg.html
-
-
+Cyberdude Murli
+The Earth
 
 
 
