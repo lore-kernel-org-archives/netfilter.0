@@ -1,13 +1,13 @@
 From: "Michael K" <micke@klintan.se>
-Subject: RE: Accept icmp-type destination-unreachable with limit
-Date: Mon, 31 Mar 2003 01:47:30 +0200
+Subject: RE: Iptables:  Bad policy name
+Date: Mon, 31 Mar 2003 01:45:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000c01c2f716$b9fde2c0$0200a8c0@klintan.local>
-References: <001401c2f56f$94a40f70$0200a8c0@klintan.local>
+Message-ID: <000501c2f716$8378d2f0$0200a8c0@klintan.local>
+References: <se886948.098@michiganfamilyresources.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001401c2f56f$94a40f70$0200a8c0@klintan.local>
+In-Reply-To: <se886948.098@michiganfamilyresources.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -24,42 +24,44 @@ To: netfilter@lists.netfilter.org
 
 > -----Original Message-----
 > From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Michael K
-> Sent: Friday, March 28, 2003 10:19 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Accept icmp-type destination-unreachable with limit
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+> Bret Holbrook
+> Sent: Monday, March 31, 2003 11:13 PM
+> To: >
+> Subject: Iptables: Bad policy name
 > 
 > 
-> Is this a good rule? According to
-> http://www.robertgraham.com/pubs/firewall-seen.html#8.1 It's a good
-> thing to accept this icmp type 3 and 4. But now the firewall 
-> is open for
-> dos attacks. So I thought I put a limit to the rule. 
-> iptables -A INPUT -p ICMP --icmp-type destination-unreachable \
-> 	-m limit --limit 10/minute --limit-burst 5 -j ACCEPT
-> iptables -A INPUT -p ICMP --icmp-type source-quench -j ACCEPT
+> Hi all,
 > 
-> If I had a personal firewall allowing some ports out and then allowing
-> everything in that is established and related for all 
-> protocols. Then I
-> don't need the icmp type 3 and 4 for the input, right?
-> Something like this.
+> Having a small problem with the error message in the subject. 
+>  I'm running Slackware 9.0, Iptables 1.2.7a, 
+> rc.firewall-2.4-stronger version .77s.  Basically it gives me 
+> the above error on each of the following commands trying to 
+> set up my default policy:
 > 
-> iptables -A OUTPUT -p TCP -m multiport --dports 20,21,25,53,80,110,443
-> -j ACCEPT
-> iptables -A OUTPUT -p UDP --dport 53 -j ACCEPT
-> iptables -A OUTPUT -p ICMP --icmp-type echo-request -j ACCEPT
-> iptables -A OUTPUT -p UDP 33434:33523 -j ACCEPT
-> iptables -A INPUT -p ALL -m state --state RELATED,ESTABLISHED 
-> -j ACCEPT
+> iptables -P INPUT REJECT
+> iptables -P OUTPUT REJECT
+> iptables -P FORWARD REJECT
 > 
-> Btw: Is this a good (and short) firewall allowing most common internet
-> protocols and utilities? Any comments on above?
+> Same error wether I punch it in from the command line or it 
+> runs in the script.  Alternately, the same commands with 
+> ACCEPT instead of REJECT works fine.  I've used these very 
+> same fw rules on various other machines with different 
+> versions of Linux and they have worked just fine.  This is 
+> the first time I've used slackware 9 and the newest iptables 
+> though.  Is there something I'm missing here?  Thanks for the help!
 > 
-> /Klintan
+> Bret
 > 
-> 
-Is there no comments on this?
+
+The reject don't work as a defult policy. Use the drop target instead.
+However, the reject work on rules.
+
+Iptables -P INPUT DROP
+Iptables -A INPUT ...... -j REJECT
+
+PS: Please read this topic, "what are the possible chain policies?"
+someware in this list. Ds
 
 /Klintan
 
