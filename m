@@ -1,11 +1,9 @@
-From: "bino-psn" <bino@indoakses-online.com>
-Subject: Re: kind of off topic but ... P166 w/ 64 MB RAM
-Date: Sun, 28 Dec 2003 10:30:05 +0700
+From: Johan Cimen <c99jcn@cs.umu.se>
+Subject: Logging issue!
+Date: Sun, 28 Dec 2003 12:41:04 +0100 (MET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004001c3ccf2$e31482b0$0300a8c0@indoaksesbno>
-References: <20031227192312.145741df.michael@bluesuperman.com> <200312280239.45998.Antony@Soft-Solutions.co.uk> <20031227195709.12e3a150.michael@bluesuperman.com> <200312280305.32649.Antony@Soft-Solutions.co.uk>
+Message-ID: <Pine.GSO.4.58.0312281236220.12664@peppar.cs.umu.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,43 +14,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, December 28, 2003 10:05 AM
-Subject: Re: kind of off topic but ... P166 w/ 64 MB RAM
 
+Hi!
 
-> Give it a go and see how it performs, but be prepared to increase the RAM
-> (it's not that expensive, after all...)   :-)
->
+I want to log incomming packets at PREROUTING. Packets destinated to a
+specific port on my box and with UDP protocol. Informations within those
+packets that I am interested of is TOS and TTL fields.
 
-Netfilter, vpn and all "router grade" functions will not eat too much CPU
-and RAM resources.
-I'm sure when Antony told you to prepare to add more RAM is because of SQUID
-Cache.
+I have been looking at ulog-acctd using the ULOG target in iptables, but
+this daemon does not logg TOS and TTL.
 
-I'm not a Linux Expert nor netfilter expert.
-I used to deploy bering (Sub distro of LEAF) as Internet-Cafe gateway, with
-No Squid-Cache.
-Classic Pentium 166 class, 16 mb Flash-IDE, 32 mb RAM is happy.
+Using LOG target in iptables will logg my packets among other syslog
+information. Isn't it correct? I want a seperate file for my loggs.
 
-For boosting Squid to it's top-performance,
-First, Take care about it's Cache space. Use a large and High-Speed Storage
-... if money is not a subject ... you can prefer High-Capacity Flash
-IDE/SCSI storage.
-Second ... when the number of user or traffic grow .... move to higher CPU
-speed.
+I have also been looking at syslogd, but this seems to be complicated.
 
-The Key is ... build a good monitoring system, hack snmpd, and run MRTG to
-monitor all your network/mechine Load/performance/resources.
-This way you can build your network starting from dialup-speed,  up to
-multiple OC3 network :)
+Is there a way that I can logg information using LOG/ULOG target to a
+specific file, where there will only be my selected information that I
+later can grep?
 
-Sincerely
--bino-
+-Johan-
 
 
