@@ -1,11 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Chris Wilson <chris@netservers.co.uk>
 Subject: Re: SSL Question
-Date: 01 Aug 2003 16:51:00 +0200
+Date: Fri, 1 Aug 2003 15:58:39 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059749459.4007.6.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <Pine.LNX.4.44.0308011555120.31382-100000@localhost>
 References: <20030729224958.57764.qmail@web41303.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20030729224958.57764.qmail@web41303.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,30 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: nakisawame <nakisawame@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-Le mer 30/07/2003 =E0 00:49, nakisawame a =E9crit :
-> I am wondering if this will work... We are using NAT,
-> and I currently have 2 different webservers that we
-> need to put SSL on.
-> Each webserver has a different external DNS entry (I
-> am using 55.55.55.56 and 55.55.55.57 as examples).
-> Each actual webserver is on its own internal IP
-> address (192.158.0.14 and 192.168.0.15, respectively).
+Hi Nakisawame,
+
 > Can I do something like this:
+> 
 > iptables -t nat -A PREROUTING -p tcp -d 55.55.55.56
 > --dport https -j DNAT --to 192.168.0.14:443
 > iptables -t nat -A PREROUTING -p tcp -d 55.55.55.57
 > --dport https -j DNAT --to 192.168.0.15:443
+> 
 > Does this work? If it doesn't, how do I do this? This
 > is driving me nuts!
 
-Yes it will work, as long as your webservers are correctly configure to
-handle external DNS name and according certificate.
+This should definitely work. If it doesn't, it's probably because either 
+you forgot to turn on IP forwarding
+(echo 1 > /proc/sys/net/ipv4/ip_forward), or you haven't added a 
+corresponding filter rule to allow the traffic through:
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+  iptables -t filter -I FORWARD -d 192.168.0.14 -p tcp --dport 443 \
+	-j ACCEPT
+  iptables -t filter -I FORWARD -d 192.168.0.15 -p tcp --dport 443 \
+        -j ACCEPT
+
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
 
