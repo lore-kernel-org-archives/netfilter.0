@@ -1,16 +1,17 @@
 From: Filip Sneppe <filip.sneppe@cronos.be>
 Subject: Re: /proc/net/ip_conntrack filling without ipt_conntrack.o loaded?
-Date: 14 Jan 2003 17:09:53 +0100
+Date: 14 Jan 2003 17:58:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042560593.464.862.camel@xbox>
+Message-ID: <1042563532.465.1024.camel@xbox>
 References: <20030114093711.GC9940@westend.com>
 	<20030114121232.GA3362@westend.com> <1042551825.465.143.camel@xbox>
-	<20030114150641.GB23431@westend.com> <1042559354.464.770.camel@xbox> 
-	<20030114160134.GC6664@westend.com>
+	<20030114150641.GB23431@westend.com> <1042559354.464.770.camel@xbox>
+	<20030114160134.GC6664@westend.com> <1042560593.464.862.camel@xbox> 
+	<20030114163734.GB19620@westend.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030114160134.GC6664@westend.com>
+In-Reply-To: <20030114163734.GB19620@westend.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -24,34 +25,47 @@ Content-Type: text/plain; charset="us-ascii"
 To: Christian Hammers <ch@westend.com>
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 2003-01-14 at 17:01, Christian Hammers wrote:
-> Yes, thought so, too. - The question that I was trying to ask in this
-> thread was, why the /proc/net/ip_conntrack is filled by the kernel
-> although I *already did* remove the module!
+On Tue, 2003-01-14 at 17:37, Christian Hammers wrote:
 
-Well that's not supposed to happen :-)
-What kernel version are you running ? modutils version ?
-Is this reproducable upon every reboot ?
-I am no expert on this, but part of the reason why
-Rusty is rewriting the modules infrastructure in 2.5
-is that module loading/unloading is inherently racy iirc.
-You may have hit a race condition with one particular
-chain of events.
- 
-> I would have guessed that just after I removed the ipt_conntrack module
-> and all the sub modules (ipt_conntrack_ftp, nat etc) the
-> /proc/net/ip_conntrack would either vanish or at least return nothing
-> because the code at the other end of the virtual device has gone.
+> Kernel-2.4.20. modprobe-2.4.15. Debian 3.0 woody distribution.
+>
+> > Is this reproducable upon every reboot ?
+> I'm not allowed to reboot it :-) But it's still reproducible that 
+> after decreasing with about 1000 per minute the value of
+> /proc/net/ip_conntrack has now stabilized around the
+> /proc/sys/net/ipv4/ipt_conntrack_max value which is currently 10000 
+> (was 65520 and filled up to ca. 50000)
 
-I've been giving it a few tries on my machine, and 
-ip_conntrack disappears nicely from /proc/net upon
-unloads/reloads of ip_conntrack, even
-with unreplied connections pending.
+Since you haven't rebooted it, you will continue to have this
+problem as basically your running kernel+ip_conntrack is
+basically screwed until you reboot the box. 
 
-Have you already rebooted the box (this is no
-Windows-advise - if something went wrong with
-the module unload, there really isn't much 
-other choice :-) ) ?
+> Hmm :) 
+> Maybe you should set your machine unter a load of at least 4mbit/s 
+> with random IPs. This was the amount of traffic my router had when I
+> reloaded the firewall rule script with a "rmmod" at the beginning.
+
+I think you're absolutely right that by unloading ip_conntrack
+while the box is handling packets gives you a greater chance
+of triggering a problem. I remember having this kind of problem
+occasionally with NIC drivers and ip_conntrack_ftp.
+
+See also this item on the netfilter TODO list:
+
+TO BE INVESTIGATED:
+[...]
+- ip_conntrack rmmod loop (sometimes, Yan's patch?)
+   
+Could be your problem, couldn't it ?
+Not a lot I can say to help you any further though...
+If you can reproduce this, you may inform netfilter-devel
+of your workload and test scenario, which could help
+developers. Is your firewall an SMP (multiprocessor)
+machine, by any chance ?
+
+Regards,
+Filip
+
 
 
 
