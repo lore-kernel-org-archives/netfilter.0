@@ -1,42 +1,62 @@
-From: "Intrepid One" <trep@linuxmail.org>
-Subject: MAPI RPC Packet Filtering Dream
-Date: Mon, 10 Feb 2003 12:51:32 -0600
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030210185132.6026.qmail@linuxmail.org>
+From: "Reginald NALLARATNAM" <regi@toolsnottoys.com>
+Subject: Routing packets with IPTABLES?
+Date: Mon, 10 Feb 2003 12:34:16 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <se479e38.044@mail.toolsnottoys.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am migrating a clients servers to linux with the exception of their MS Exchange 5.5 Server (will probably migrate to 2000).  That is all fine and good, and in itself a hard enough thing to do (single login, shared user/password list b/t linux&Exchange), but they also want to connect to Exchange through the internet, (not using web based email).
-This opens up port 135, and anyone with experience in MS crapsecure software knows that opening that port is a stupid thing to do.  I could do the VPN thing, but do I really want to ?
-In searching/studying I stumbled on to an article that talks about this very thing, but it involves using MS ISA, w/ch I will not use.  The server side of this company will be all linux & open-source, w/ the exception of exchange.  Please do not flame me for using MS software, the use is not by choice, it is what a client has and I must work around it and wrap linux as tight around it as I can.
-I included some of the text from the article.  I believe what ISA is described as doing in the article is, at current, an impossible thing to do with anything but MS software (b/c it utilizes MAPI/RPC and, as we all know, MS will not disclose MAPI & RPC innerworkings).  So if it is impossible, just say so. I am just dreaming that there is a way to do it without ISA.  If my dream is crushed then I will use a VPN or something.  Recommendations would be nice, except those that say 'get rid of ms exchange'.  I would if I could.
+Hello,
 
---Section of Article--
-Included with ISA is an Exchange RPC filter rule. This is a special packet filter that protects your servers from external attacks by first inspecting the packets and then proxying them onto the correct Exchange server. Basically, this is how it works :-
+Hardware Layout:
+   Firewall #1: (Linux Box)
+    I have a linux box with 2 nics.
+   eth1 @ 192.168.20.1 =20
+   eth0 @ 192.168.30.2=20
+   Gateway:  192.168.30.1 =20
 
-When a MAPI client tries to make a connection to an Exchange server (behind an ISA server using the Exchange RPC filter rule), it's first point of contact is the ISA server. The RPC packet it sends contains a MAPI data portion. ISA then inspects the packet to ensure it is a valid RPC packet. If the RPC packet is destined for the Exchange server, and contains the proper MAPI portion in the packet, otherwise called an Exchange MAPI RPC packet, it is then sent to the Exchange server by the ISA server on behalf of the client. Or in other words, a proxied request. Any other RPC packets are blocked.
---End--
+   Firewall # 2: (Some other router)
+   interface 1:  192.168.20.2
+   interface 2:  192.168.30.2
+   Gateway:  192.168.30.1 =20
 
-Thanks
---
-Trep
--- 
-______________________________________________
-http://www.linuxmail.org/
-Now with e-mail forwarding for only US$5.95/yr
+   Web server:
+   192.168.20.100
+   Gateway:  192.168.20.2 (Firewall # 2)  =20
 
-Powered by Outblaze
+   Gateway - is someother Firewall/Router that allows both firewall #1 and =
+#2 to connect to the internet.
+   192.168.30.1
+
+Question:
+   Is there a way to route incomming packets from the gateway to eth0 on =
+firewall #1 based on source IP and destination Port to the web server @ =
+192.168.20.100?
+The only way this will work if Firewall # 1 routes or forwards the packets =
+to web server without connection tracking, since the return answer from =
+web server will go through firewall # 2.
+
+Could some give me an example or the command to do this using iptables, if =
+not how else can this be done?
+
+Thanks in advance.
+
+
+
+
+
+
 
