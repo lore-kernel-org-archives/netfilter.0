@@ -1,12 +1,11 @@
-From: Philip Camilleri <philip@fixedoddsgroup.com>
-Subject: Iptables parsing
-Date: Wed, 9 Jul 2003 15:29:52 +0200
+From: David Coulson <david@davidcoulson.net>
+Subject: IPTables articles
+Date: Wed, 09 Jul 2003 13:43:27 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307091529.52144.philip@fixedoddsgroup.com>
+Message-ID: <3F0C543F.8040407@davidcoulson.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi All,
+I've managed to get PDFs of a two part iptables article from a UK Linux 
+magazine which I wrote. It is an update to my previous article, which is 
+linked from the 'Documenation' section of netfilter.org
 
-I have implemented a number of firewall systems using Iptables, and would like 
-to know if there is any tool available that parses the output of 
-iptables-save to produce an HTML/graphic tabular view of the iptables 
-rule-set.
+The PDFs can be downloaded from:
 
-Thanks for your help.
+http://davidcoulson.net/writing/lxf/38/iptables.pdf
+http://davidcoulson.net/writing/lxf/39/iptables.pdf
 
-Philip
+If these can be added to the Documentation page, it would be appreciated.
+
+David
 
 -- 
-Philip Camilleri
-FixedOdds Capital Malta
-philip@fixedoddsgroup.com
+David Coulson                                    email: d@vidcoulson.com
+Linux Developer /                          web: http://davidcoulson.net/
+Network Engineer                                   phone: (216) 533-6967
+
 
