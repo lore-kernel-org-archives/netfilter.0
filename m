@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: MSN Messenger and HTTPS
-Date: Tue, 2 Sep 2003 22:03:50 +0200
+From: Mattia Martinello <liste@mattiamartinello.com>
+Subject: DNAT on Debian
+Date: Sun, 31 Aug 2003 04:00:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006201c3718d$53d2fed0$0401000a@sterenborg.info>
-References: <001b01c36dff$401175c0$3b00a8c0@sturlaws>
+Message-ID: <3F5156DB.7080407@mattiamartinello.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001b01c36dff$401175c0$3b00a8c0@sturlaws>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> But...Clients on the LAN cannot log on to MSN Messenger, and 
-> they can't
-> browse https-webpages like to do their banking. MSN is not the most
-> important issue, though i suspect these two issues are related to
-> eachother through som kind of https-problem. The thing is, 
-> the user can
-> log on to their MSN-accounts through clients like Trillian, but not
-> through MSN Messenger. If anyone out there has a solution to 
-> this, i'll
-> be most grateful. And if possible, a solution for file-transfers an
-> audio/video through MSN Messenger 6.0.
+Hi all
 
-MSN 6 and https shouldn't be a problem.
-Since you didn't show any rules that you're using for NAT it's hard to
-tell what's wrong.
+I created a script that setup a set of rules on the nat table.
+It works good without any problem on SuSE 8.0, and now I wish to move 
+the system on Debian.
+I installed Debian and I set the network correctly like on SuSE and I 
+copied the script on it.
+The scripts shows me no error, and the rules works good, but there is a 
+little problem.
+The DNATs from the local network works very well (I can see the server 
+which is on the DMZ from the local network), but the DNATs from the 
+Internet doesn't work! From the Internet (ppp0) i cannot see the server 
+which is on the DMZ.
+On SuSE 8.0 all works good and I didn't change anything in the script!
+The input, output and forward chains are all setted on ACCEPT, like all 
+the chains on the nat table.
 
-Did you compile your own iptables and support modules ?
-Do you load any netfilter modules ?
+This works good:
+iptables -t nat -A POSTROUTING -s $LocalNET/24 -o ppp0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s $LocalNET/24 -o ppp0 -j ACCEPT
+iptables -t nat -A POSTROUTING -s $LocalNET/255.255.255.0 -o eth2 -j 
+MASQUERADE
+iptables -t nat -A PREROUTING -p tcp -i eth1 -d $PublicIP -j DNAT --to 
+$ServerIP
 
+This DOESN'T work!
+iptables -t nat -A PREROUTING -p tcp -i ppp0 -d $PublicIP --dport 80 -j 
+DNAT --to $ServerIP:80
 
-Rob
+The kernel in use is 2.4.20 with all netfilter modules.
+
+Where could be the problem? Shall I attach the script?
+
+Thank you very much!
+Bye
+Mattia.
 
 
