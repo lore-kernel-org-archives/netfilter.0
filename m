@@ -1,8 +1,9 @@
-From: Florian Boelstler <euphoria@web.de>
-Subject: Handling incoming DCC session
-Date: Wed, 02 Jun 2004 00:55:55 +0200
+From: "John Black" <black@arbbs.net>
+Subject: Re: Destination Nat
+Date: Tue, 1 Jun 2004 22:38:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40BD097B.60709@web.de>
+Message-ID: <013201c44853$1829e220$9322a141@black>
+References: <40b74a21.49.47a3.1468065555@arbbs.net> <1085795768.14775.2.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,43 +19,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Hi,
-
-a long time ago someone posted a patch for 2.4.18 kernels [1], which
-allowed incoming DCCs get caught by a default 'related' rule.
-
-As far as I know this patch wasn't applied by the module maintainer.
-Unfortunately the sources have changed in the meantime and the patch
-doesn't work anymore.
-
-I was trying to adapt the patch to kernel 2.6.5. But I don't have enough
-knowledge to successfully modife it.
-
-Is there anybody out there who owns a patch for 2.6.x series?
-
-Thanks for your help!
-
-  Florian
+thanks, ill give it a try tomorrow when i get to work.  what is the -p 6?
+----- Original Message ----- 
+From: John A. Sullivan III <john.sullivan@nexusmgmt.com>
+To: <black@arbbs.net>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Friday, May 28, 2004 8:56 PM
+Subject: Re: Destination Nat
 
 
-[1]
-http://lists.netfilter.org/pipermail/netfilter-devel/2002-July/008665.html
+> If I understand you correctly and remember your original rule, then I
+> think you have it backward.  If you are changing the destination, you
+> probably want to change it from the public address to the private
+> address:
+> 
 
+john
 
-
-- --
-Public PGP key is available on common key servers.
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
-
-iD8DBQFAvQl7wT2gPfZm6tURAv2eAKCyXR+3FBzZX4qlm8em5EiJfBCthACeIOYI
-N2YuqzKk0chg8VAanrTbp9g=
-=JXtM
------END PGP SIGNATURE-----
 
