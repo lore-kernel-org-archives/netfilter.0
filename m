@@ -1,15 +1,12 @@
-From: "Diego R. Rodriguez Herlein" <diegorh@infovia.com.ar>
-Subject: Re: POSTROUTING & DNAT
-Date: Thu, 11 Sep 2003 18:35:06 -0300
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Filter in POSTROUTING
+Date: Thu, 11 Sep 2003 14:40:51 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001b01c378ac$9844a750$8201a8c0@lw1dqwin>
-References: <000501c32062$42b751e0$6901a8c0@tailor>
- <1b7301c3774d$2d14a260$8201a8c0@lw1dqwin> <1063195160.4399.0.camel@klettke.us>
- <005701c377e6$4fa71800$8201a8c0@lw1dqwin> <1063240191.29892.2.camel@klettke.us>
-Reply-To: "Diego R. Rodriguez Herlein" <diegorh@infovia.com.ar>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E2E@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,108 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Klettke <thomas@klettke.us>
-Cc: Leszek Zur <lzur@record.com.pl>, netfilter@lists.netfilter.org
+To: Claus Regelmann <claus.regelmann@inka.de>, netfilter@lists.netfilter.org, blueflux@koffein.net
 
-yes, sorry about my english .. I have nat compiled as kernel module ...
-I found the problem
-I fix it ...
-I must compile the kernel with this ...
-Networking options  --->  IP: Netfilter Configuration  --->[*]     NAT of
-local connections (READ HELP)
-When I include this the rule of the output chain was accept
-I hope this help anyone.
-Again sorry about my english y thanks for all
-Best regards,
+It is against style to do anything like that in the NAT table. It is
+preferable to do it in the filter table, but if you must be lazy about
+it all, please use the mangle table instead, which does have a valid
+reason to filter certain traffic at times.
 
-Diego
+The -I is to make sure no matching rules get called before we check that
+we want these packets at all. If you do the ordering yourself, then just
+make sure they are all ordered properly.
 
------ Original Message ----- 
-From: "Thomas Klettke" <thomas@klettke.us>
-To: "Diego R. Rodriguez Herlein" <diegorh@infovia.com.ar>
-Cc: "Leszek Zur" <lzur@record.com.pl>; <netfilter@lists.netfilter.org>
-Sent: Wednesday, September 10, 2003 9:29 PM
-Subject: Re: POSTROUTING & DNAT
+iptables -t mangle -I POSTROUTING -o ppp0 -p tcp --dport 137:139 -j DROP
+iptables -t mangle -I POSTROUTING -o ppp0 -p udp --dport 137:139 -j DROP
+iptables -t mangle -I PREROUTING -i ppp0 -p tcp --dport 137:139 -j DROP
+iptables -t mangle -I PREROUTING -i ppp0 -p udp --dport 137:139 -j DROP
 
+-----Original Message-----
+From: Claus Regelmann [mailto:claus.regelmann@inka.de]=20
+Sent: Thursday, September 11, 2003 2:03 PM
+To: netfilter@lists.netfilter.org; blueflux@koffein.net
+Subject: Filter in POSTROUTING
 
-> Diego,
-> I'm not quite sure about your answer, I understand from it this:
->
-> You do not have NAT support compiled into your kernel.
-> You have it compiled as a kernel module though.
->
-> Is this correct?
->
->
->
->
-> On Wed, 2003-09-10 at 16:55, Diego R. Rodriguez Herlein wrote:
-> > nop
-> > like module  ...
-> > I am really lost about it
-> > Thank you for your answer!
-> > Regards,
-> >
-> > Diego
-> >
-> > PD Sorry about my english
-> > ----- Original Message ----- 
-> > From: "Thomas Klettke" <thomas@klettke.us>
-> > To: "Diego R. Rodriguez Herlein" <diegorh@infovia.com.ar>
-> > Cc: "Leszek Zur" <lzur@record.com.pl>; <netfilter@lists.netfilter.org>
-> > Sent: Wednesday, September 10, 2003 8:59 AM
-> > Subject: Re: POSTROUTING & DNAT
-> >
-> >
-> > > Is NAT support compiled into the kernel?
-> > >
-> > >
-> > > On Tue, 2003-09-09 at 22:39, Diego R. Rodriguez Herlein wrote:
-> > > > Sorry those are my rules (DMZ)
-> > > >
-> > > > HTTP
-> > > > #
-> > > > iptables -t nat -A PREROUTING -p tcp -d $IP_REAL --dport 80 -j DNAT
-\
-> > > > --to-destination $IP_DMZ
-> > > > iptables -t nat -A POSTROUTING -p tcp -d $IP_DMZ --dport 80 -j SNAT
-\
-> > > > --to-source $IP_LAN
-> > > > iptables -t nat -A OUTPUT -p tcp -d $IP_REAL --dport 80 -j DNAT \
-> > > > --to-destination $IP_DMZ
-> > > > #
-> > > > #
-> > > > #
-> > > > work great with rh 7.1 kernel 2.4.17
-> > > >
-> > > >
-> > > > ----- Original Message ----- 
-> > > > From: "Leszek Zur" <lzur@record.com.pl>
-> > > > To: <netfilter@lists.netfilter.org>
-> > > > Sent: Thursday, May 22, 2003 10:01 AM
-> > > > Subject: POSTROUTING & DNAT
-> > > >
-> > > >
-> > > > > Hello
-> > > > >
-> > > > > iptables -t nat -A OUTPUT -d 1.1.1.1 -j DNAT --to-destination
-2.2.2.2
-> > > > > iptables: Invalid argument
-> > > > >
-> > > > > Can anyone help me understand what is happening?
-> > > > >
-> > > > > iptables v1.2.8
-> > > > > kernel 2.4.20
-> > > > >
-> > > > > thnx
-> > > > >
-> > > > > Leszek
-> > > > >
-> > > > >
-> > > > >
-> > > >
-> > >
-> >
->
+Hello,
+
+There is a figure Oskar Andreassoons IPTABLES TUTORIAL (V1.1.19, chap.
+3.1, pg.19)
+where both, the forwarded and the local output, join the postrouting
+chain.
+
+Why shoudnt it be possible to filter all outgoing e.g. smb traffic from
+a local
+network at that place with a command like
+>iptables -t nat -A POSTROUTING -o ppp0 -p tcp --dport 137:139 -j DROP
+>iptables -t nat -A POSTROUTING -o ppp0 -p udp --dport 137:139 -j DROP
+=1A
+The same question applies to the PREROUTING chain for input
+>iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 137:139 -j DROP
+>iptables -t nat -A PREROUTING -i ppp0 -p udp --dport 137:139 -j DROP
+
+Thanks
+Claus
 
 
