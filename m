@@ -1,13 +1,14 @@
-From: "David Ashwood" <david@inspiredthinking.co.uk>
-Subject: RE: Log Problem
-Date: Mon, 9 Aug 2004 19:11:18 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Log Problem
+Date: Mon, 9 Aug 2004 18:37:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408091311314.SM01376@Hope>
-References: <200408091758.59638.Antony@Soft-Solutions.co.uk>
+Message-ID: <200408091837.05112.Antony@Soft-Solutions.co.uk>
+References: <200408091311314.SM01376@Hope>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408091758.59638.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200408091311314.SM01376@Hope>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,91 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Monday 09 August 2004 6:11 pm, David Ashwood wrote:
 
-Thanks for responding Anthony,
-
-1) Same problem as before ' iptables: No chain/target/match by that name'
-
-2) User defined chains work - and I can put a drop rule without problems.
-
-Kernel:
-A new box just bought - I thought the kernel was old - but I had to demo a
-product for a client - and wanted to get that done before I pester the VPS
-hosts to upgrade the kernel.
-
-I can see the libraries on the box for both logging and User Space Logging -
-seeing if their being used is harder to establish.
-
-I guess the kernel install didn't do a proper job of installing iptables.
-
-
-David
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Monday, August 09, 2004 6:59 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Log Problem
-
-On Monday 09 August 2004 5:40 pm, 'Me' wrote:
-
->  Hi,
-> I'm having problems logging packets (IPTables: 1.2.8 Kernel: 2.4.8) with
-> the following rule (from the  FAQ):
+> Thanks for responding Antony,
 >
-> iptables -N logdrop
-> iptables -A logdrop -j LOG
-> iptables -A logdrop -j DROP
+> 1) Same problem as before ' iptables: No chain/target/match by that name'
 >
-> On the log line I get:
-> iptables: No chain/target/match by that name
+> 2) User defined chains work - and I can put a drop rule without problems.
 >
-> I'm a little lost - any pointers?
+> Kernel:
+> A new box just bought - I thought the kernel was old - but I had to demo a
+> product for a client - and wanted to get that done before I pester the VPS
+> hosts to upgrade the kernel.
 
-It seems unlikely, but has your kernel been compiled without support for the
+VPS?
 
-LOG target (and by the way, why are you using a three year old kernel 
-anyway?)?
+My recommendation is a kernel recompile (without changing the version for 
+now).   Should take about 15 minutes.
 
-Test one thing at a time:
+Once you've done the demo and have time to think about things, get a current 
+kernel, do a "make oldconfig", and build something up-to-date.
 
-1. Can you use the LOG target?
-iptables -A INPUT -j LOG
-
-2. Can you put a rule into a user-defined chain?
-iptables -N logdrop
-iptables -A logdrop -j DROP
-
-If both the above tests work, then there is no reason you shouldn't be able
-to 
-put a LOG target into your user-defined chain (so check very carefully the 
-syntac of what you are typing when you get the error, etc).
-
-If one of the above tests fails, you know where the problem is.
-
-Just one last thing to check - you haven't compiled the userspace iptables 
-tool without also recompiling the kernelspace netfilter part, have you?
-
-If you do one of these, you should also do the other to match.
-
-Regards,
+Hope this helps,
 
 Antony.
 
 -- 
-Microsoft may sell more software than any other company, but McDonald's sell
+Late in 1972 President Richard Nixon announced that the rate of increase of 
+inflation was decreasing.   This was the first time a sitting president used 
+a third derivative to advance his case for re-election.
 
-more burgers than any other company, and I think the other similarities are 
-obvious...
+ - Hugo Rossi, Notices of the American Mathematical Society
 
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
