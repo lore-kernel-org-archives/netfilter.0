@@ -1,13 +1,12 @@
-From: Jeff Mesch <mesch@NanoTech.Wisc.EDU>
+From: Myles Uyema <mlists@uyema.net>
 Subject: Re: Newbie - Default Deny Setup
-Date: Wed, 07 May 2003 16:41:29 -0500
+Date: Wed, 7 May 2003 15:19:23 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EB97D89.7090708@nanotech.wisc.edu>
-References: <Pine.LNX.4.44.0305071323220.8400-100000@marx.gruntwerk.net>
+Message-ID: <Pine.LNX.4.44.0305071514400.8400-100000@marx.gruntwerk.net>
+References: <3EB97D89.7090708@nanotech.wisc.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0305071323220.8400-100000@marx.gruntwerk.net>
+In-Reply-To: <3EB97D89.7090708@nanotech.wisc.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,9 +16,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Myles Uyema <mlists@uyema.net>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jeff Mesch <mesch@NanoTech.Wisc.EDU>
 Cc: netfilter@lists.netfilter.org
+
+But, I don't see anything hitting RULE_4.  In fact, nothing seems to be 
+hitting the FORWARD table at all.  If you took away RULE_4, are your 
+internal machines able to connect out?
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source
+     0     0 RULE_4     all  --  *      *       0.0.0.0/0
+
+
+On Wed, 7 May 2003, Jeff Mesch wrote:
 
 The only things showing up in the log file are the hits on Rule 4.
 
@@ -198,6 +209,8 @@ Myles Uyema wrote:
 > 
 > 
 > 
+
+
 
 
 
