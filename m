@@ -1,13 +1,13 @@
-From: Alex Satrapa <alex@lintelsys.com.au>
-Subject: Re: Performance Monitoring
-Date: Tue, 06 Jan 2004 09:27:03 +1100
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Re: Traffic Shaper
+Date: Mon, 05 Jan 2004 20:02:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FF9E4B7.8010109@lintelsys.com.au>
-References: <004401c3d17c$4baa7cc0$0a01000a@xcom1>
+Message-ID: <1073350968.26532.14.camel@tarkus>
+References: <NEBBICCJKLGJHMMNBPIKMEHOGJAA.sbisgaard@xtrasource.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004401c3d17c$4baa7cc0$0a01000a@xcom1>
+In-reply-to: <NEBBICCJKLGJHMMNBPIKMEHOGJAA.sbisgaard@xtrasource.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,15 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Barry Rooney <brooney@xcommunications.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+To: sbisgaard@xtrasource.com
 Cc: netfilter@lists.netfilter.org
 
-Barry Rooney wrote:
-> .. recommend an opensource bandwidth monitoring tool ...
+http://luxik.cdi.cz/~devik/qos/htb/
 
-Is IPAC-NG what you're looking for?
+I have made extensive use of HTB and it has performed admirably,
+IMHO it is as good as anything I have used from Xedia and Packateer.
 
-http://ipac-ng.sourceforge.net/
+Ted
+On Mon, 2004-01-05 at 08:39, Steffen Bisgaard - Xtrasource wrote:
+> Hallo list,
+>  
+> I don't actually know whether this is iptables related, but can
+> someone recommend a good place to start to configure a traffic shaper?
+>  
+> Stef
+> 
+>  
+> 
+>  
+> 
+> 
+>  
 
 
