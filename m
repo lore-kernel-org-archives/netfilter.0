@@ -1,13 +1,13 @@
-From: "Sebastian" <netfilter@basti79.de>
-Subject: RE: set RELATED?
-Date: Tue, 29 Jul 2003 16:23:53 +0200
+From: "Andrew J. Meader" <ameader@corp.lcom.net>
+Subject: Re: ftp connection tracking
+Date: Tue, 29 Jul 2003 09:50:04 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001e01c355dd$097a4fd0$0200a8c0@basti79>
-References: <20030729140034.GA19385@cannon.eng.us.uu.net>
+Message-ID: <3F26899C.7060702@corp.lcom.net>
+References: <200307291322.04698.heinrici76@gmx.de> <3F266E03.7050106@corp.lcom.net> <200307291558.31734.heinrici76@gmx.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030729140034.GA19385@cannon.eng.us.uu.net>
+In-Reply-To: <200307291558.31734.heinrici76@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +17,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Axel Heinrici <heinrici76@gmx.de>
+Cc: netfilter@lists.netfilter.org
 
-Hi there...
+Ah, I see your point. I don't think I will be of much help to you. 
+However, I'm sure someone else in the community has walked this path 
+before. Good luck.
 
-Just an idea, i didn't try it out jet.
+ajm
 
-I think u can use the -j POOL target to add the IP-Adresse to a pool
-when u see the icmp packet. Then u can use -m pool to accept connections
-based on wether the IP is in this pool or not.
-
-Greets
-Sebastian.
-
-
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Ramin Dousti
-> Sent: Tuesday, July 29, 2003 4:01 PM
-> To: George
-> Cc: netfilter@lists.netfilter.org
-> Subject: Re: set RELATED?
-> 
-> 
-> On Fri, Jul 25, 2003 at 08:21:21PM -0600, George wrote:
-> 
-> > Is there currently a way for iptables to force another 
-> packet stream 
-> > conntrack entry to be RELATED without having to look inside of the 
-> > packet data?
-> > 
-> > For example:  If a 10.0.0.2 client behind an iptables 
-> firewall were to 
-> > send an IMCP echo to 10.20.30.1, could a rule be set up so 
-> that after 
-> > the firewall see this packet, all udp packets sent to dport=45678 
-> > would be DNATed to 10.0.0.2?
-> > 
-> > The designated RELATED stream would in general then be just 
-> like any 
-> > other conntrack entry.
-> > 
-> > My guess is that this would require a generic force-related module.
-> 
-> Let me see if I understood you well. You want something like this:
-> 
-> if (the firewall sees this traffic) then
->     apply that rule
-> fi
-> 
-> I don't think we have something like this but I think this is 
-> very helpful. Specially if the IF-test could pass some 
-> parameters to the THEN-body. You might want to take this to 
-> the devel mailing list.
-> 
-> Ramin
-> 
-> 
 
 
