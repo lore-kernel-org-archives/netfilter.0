@@ -1,10 +1,13 @@
-From: "Kellogg, Chris" <Chris.Kellogg@dyncorp.com>
-Subject: REJECT target and Source NAT
-Date: Tue, 5 Nov 2002 08:42:19 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Is this firewall issue
+Date: Tue, 5 Nov 2002 14:22:17 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BC6421B0F2CC4C43897842092E0E00A94C1938@tx1ex1nt.dyncorptx.com>
+Message-ID: <200211051422.gA5EMOe19170@vulcan.rissington.net>
+References: <Pine.GSO.4.40.0211041029270.5446-100000@amazonas.robotic.dlr.de> <004e01c284d1$97409aa0$8c01a8c0@sundaram>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <004e01c284d1$97409aa0$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,34 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi, everyone.
+On Tuesday 05 November 2002 1:45 pm, Sundaram Ramasamy wrote:
 
-I'm thinking about a series of obfuscation rules to try to reduce firewall
-visibility.  I've got a few ideas and resulting questions hopefully someone
-might be able to shed some light on.
+> Hi,
+>
+> I have NATed mail server in my office, sometime users are getting  six,
+> seven days old mail, some mails they getting towice, is this because of
+> firewall or some other issue?.
 
-I'd like to make an IPTables firewall reject packets with an
-ICMP-Host-Unreachable, but also change the source address of the packet to
-be the gateway router instead of the firewall itself.  Naturally, this could
-cause the border router to get a little nervous, but with a little creative
-access-list work it could be pretty safely implemented.
+This is very unlikely to be a firewall problem.
 
-This raises a question about ICMP packets created by the REJECT target.  Are
-these packets passed through the OUTPUT chain of the firewall?  If they are,
-it might be possible to use SNAT to make an IPTables firewall more difficult
-to detect and determine.  Perhaps with clever use of the TOS and MANGLE
-targets, you could make the packets less consistent with typical Linux
-systems, perhaps fooling even the intermediate scanner/attacker.
+What do the headers of the emails say ?   Where is the excessive delay 
+occurring ?
 
-Opinions?  Comments?
+Antony.
 
-Chris.
+-- 
 
-Christopher M. Kellogg, GCFW
-Infrastructure Administrator, DynCorp IT 
-6500 West Freeway Suite 600, Fort Worth, TX
-(817)570-1956 Ofc / (817)737-1638 Fax
+It is also possible that putting the birds in a laboratory setting
+inadvertently renders them relatively incompetent.
+
+ - Daniel C Dennett
 
