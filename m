@@ -1,13 +1,14 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: examining data portion of packet
-Date: Wed, 24 Mar 2004 09:18:58 +0200
+From: Mihael Kukec <mkukec@public.srce.hr>
+Subject: Re: newbie question : ip_conntrack_ftp
+Date: Wed, 24 Mar 2004 08:25:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080112737.2387.47.camel@raylinux.internal>
-References: <20040324054521.27142.qmail@web60002.mail.yahoo.com>
+Message-ID: <406137CE.4000203@public.srce.hr>
+References: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr> <406070EC.3010601@nk.nl>
+Reply-To: mihael.kukec@public.srce.hr
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-RBQcsw8VfswCBjVbjNor"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040324054521.27142.qmail@web60002.mail.yahoo.com>
+In-Reply-To: <406070EC.3010601@nk.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +18,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: Netfilter List <netfilter@lists.netfilter.org>
+
+Victor Julien wrote:
+
+> You're probably running the 'bf24' kernel (which kame with the 
+> bootdisk). If you use 'kernel-image-2.4.18-1-i686' you do have the 
+> modules. So you can use 'apt-get install kernel-image-2.4.18-1-i686' (if 
+> you have an i686). Beware though, you need to modify your lilo.conf 
+> because of initrd (instructions will be on the screen when you install).
+
+Kernel that came originally was 2.2.20. I upgraded to 2.4.18-686. There
+is no such image (kernel-image-2.4.18-1-i686) in latest stable or
+testing packages, but there is kernel-image-2.4.25-1-686 in testing. I
+will try with that...
 
 
---=-RBQcsw8VfswCBjVbjNor
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Mihael
 
-On Wed, 2004-03-24 at 07:45, Sandy C wrote:
->    I would like to be able to be able to examine the
-> data portion of a network packet after matching it.=20
->=20
->    I figured there would be some kind of target for
-> this, but there isn't...or at least I couldn't find
-> any.
->=20
->    What is the best way to go about this? Should I be
-> thinking of writing a target extension?
->=20
-You could use something like ntop or tcpdump.
-
-> Thanks!
-> S C
->=20
->=20
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! Finance Tax Center - File online. File on time.
-> http://taxes.yahoo.com/filing.html
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-RBQcsw8VfswCBjVbjNor
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQBAYTZhh1fuR/Bv+ygRAp8dAJ9FJSAZjBkQ6SP2wIpZXXXXlcGIuQCfRqB/
-GFkiWTH/yYbZJPSXYKiEOZo=
-=Mf60
------END PGP SIGNATURE-----
-
---=-RBQcsw8VfswCBjVbjNor--
 
 
