@@ -1,12 +1,11 @@
-From: Ulysses Almeida <ulysses.almeida@gmail.com>
-Subject: Two links and a SMTP sever.
-Date: Tue, 18 Jan 2005 10:39:04 -0300
-Message-ID: <d645356050118053928226673@mail.gmail.com>
-Reply-To: Ulysses Almeida <ulysses.almeida@gmail.com>
+From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: FTP Forwarding
+Date: Tue, 18 Jan 2005 07:49:02 -0800
+Message-ID: <186AC876521E0F46BDE77079A6567FD06F5F85@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_1331_8127676.1106055544996"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,149 +16,140 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: TestMail <testmail@peterpaul.com.ph>, Jason Opperisano <opie@817west.com>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-------=_Part_1331_8127676.1106055544996
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+JASON,
 
-Hi folks,
+is this your network? or is it the companies?
+what i would suggest s/be analyzed based on whose it is.
 
-  I have an unsolved problem with iptables + iproute2 that I can't
-figure out how to solve it.
+if its your network or its the firms and you can convince them it
+would be worth the effort. put a bastion ftp server on the outside=20
+lock it down and NEVER let the Internet inside otherwise why even
+have a firewall....
 
-  I explaint it on the attachment (i sent this attachment, because I
-don't thin it will cause any trouble, since it's text/plain, if does,
-say and I won't send again). I wrote this as a mini-HowTo, and I
-pretend to publish this, but I need to solve the problem before doing
-this ;)
+kiss principle..
 
-  The strange thing. I have almost the same scenario on other host,
-What differs is the fact that on the other host I have 4 Internet
-links, not only two, and everything works as I expected.  I tried the
-same solution on another two hosts, and on both I had this releated
-problem.
+any other ideas the list comes up with will no doubt be of technical
+assistance to you but for a longer life do it this way.=20
 
-  If some one can help-me track this problem, I thank in advance.
+control types of traffic outbound and NEVER let the outside use internal
+resources ever.
 
-  Regars.
+~piranha
 
--- 
- - Ulysses Almeida
-
-------=_Part_1331_8127676.1106055544996
-Content-Type: text/plain; name="lar_with_smtp.txt"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="lar_with_smtp.txt"
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of TestMail
+Sent: Sunday, January 16, 2005 11:32 PM
+To: Jason Opperisano
+Cc: Netfilter Mailing List
+Subject: Re: FTP Forwarding
 
 
-  I Have the following scenario:
 
-  - One server with two links:
-    * First link has dynamic IP (cheap one)
-    * Second links has fixed IP (expensive one)
-
-  - Link(1) is used by my intranet users, they use Internet=20
-  services by this link. To do this, I just setuped Link(1)
-  as my default gw. And made my server a linux router.
-    # echo 1 > /proc/sys/net/ipv4/ip_forward
-    # iptables -t nat -A POSTROUTING -s <intranet_net> -o <eth_link(1)> -j =
-MASQUERADE=20
-    # ip route add default via <link(1)_gw> dev <eth_link(1)>
-
-  - Link(2) is used by some incomming requests from internet
-  to this server. This services are HTTP and SMTP services.=20
-  To use second link properly, I setuped iproute2
-    # echo 100 link2 >> /etc/iproute2/rt_tables
-    # ip route add <intranet_net> dev <eth_intranet> src <server_intranet_i=
-p> table link2
-    # ip route add <link(2)_net> dev <eth_link(2)> src <server_link(2)_ip> =
-table link2
-    # ip route add default via <link(2)_gw> dev <eth_link(2)> table link2
-    # ip rule add from <server_link(2)_ip> lookup link2
-
- =09      ______
-             |      |=09          __________ =20
-             | S    | Link(1)    /=09    \=20
-             | E  S |<--------->| =09     |
-  ________   | R  M |       =09|  INTERNET  |
- |INTRANET|->| V  T | Link(2)   | =09     |
- '--------'  | E  P |<--------->| =09     |
-             | R    |=09         \__________/
-             |______|=09=09       =09
-  =09   =09=09=09     =20
- =20
- =20
-  Almost every thing works at this point. All my intranet users, are=20
-using Link(1) to navigate on Internet, use MSN/ICQ/Jabber, and etc.
-  When someone on Internet want's to access my WEB page, they use=20
-server_link(2)_ip to get into. The same when they want to accesse their
-e-mails. If some MTA on internet, needs to deliver some e-mail to my
-smtp server, it also uses the server_link(2)_ip. And it's work fine.
-
-  There's only one problem. If my MTA wants to deliver an e-mail, it
-tries it by Link(1), what's reasonable, because that's the server default
-gateway. But  it's not good, when the link(1) (dynamic IP) is a black=20
-listed one
-
-  To solve this problem, let's play with iptables and iproute2 a little mor=
-e.
-
-  Every outgoing packet, with destination port set to 25, I will mark.
-    # iptables -t mangle -A OUTPUT -p tcp --dport 25 -j MARK --set-mark 0x0=
-2
-
-  Now I can say to iproute2 use the right routing table.
-    # ip rule add fwmark 0x02 lookup link2
-
-  Still not working, if i log outgoing packts, with destination port 25,
-I see SMTP packets going through eth_link(2), but with server_link(1)_ip.
-Let's handle those packets a little more.
-    # iptables -t nat -I POSTROUTING -o <eth_link(2)> -j SNAT --to-source <=
-server_link(2)_ip>
-
-  Yes, now I'm sure every outgoing trafic through eth_link(2) is going
-with the correct IP.
-
-  =3D=3D UNSOLVED PROBLEM =3D=3D
-
-  But, argh, it still not working. I tried to track connections:
-
-  # iptables -t mangle -m tcp -I OUTPUT -p tcp --dport 25 -j LOG --log-leve=
-l 3 --log-prefix 'mangle OUTPUT: '
-  # iptables -t nat -m tcp -I POSTROUTING -p tcp --dport 25 -j LOG --log-le=
-vel 3 --log-prefix 'nat POSTROUTING:=20
-  # iptables -t mangle -m tcp -I PREROUTING -p tcp --sport 25 -j LOG --log-=
-level 3 --log-prefix 'mangle PREROUTING: '
-  # iptables -t nat -m tcp -I PREROUTING -p tcp --sport 25 -j LOG --log-lev=
-el 3 --log-prefix 'nat PREROUTING: '
-  # iptables -t mangle -m tcp -I INPUT -p tcp --sport 25 -j LOG --log-level=
- 3 --log-prefix 'mangle INPUT: '
-  # iptables -t filter -m tcp -I INPUT -p tcp --sport 25 -j LOG --log-level=
- 3 --log-prefix 'filter INPUT: '
+----- Original Message -----
+From: "Jason Opperisano" <opie@817west.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, January 14, 2005 10:23 PM
+Subject: Re: FTP Forwarding
 
 
-  To simulate, I started a telnet some_smtp_server 25. I could see:
+> On Fri, 2005-01-14 at 03:57, Test Mail wrote:
+> > Hi!Can i have a follow up question regarding FTP server inside =
+internal
+LAN
+> > which can be seen in the internet.....
+> > now what if the scenario is i want to restrict a specific Public IP
+Address
+> > in using my FTP what will be the rules that i should  apply?
+> >
+> > I was thinking of setting up a rule that will filter incomming =
+Public IP
+> > Address request for ftp before it forwards it into my internal FTP
+Server.
+> >
+> > Below are the sample entry in my iptables:
+> > iptables -t filter -A INPUT -p tcp -s $PublicIPAdd --dport 20:21 -j
+ACCEPT
+> > <--- is this correct?
+> > iptables -t filter -A INPUT -j DROP
+> >
+> > Below are the previous solution that you gave.
+> >
+> > modprobe ip_conntrack_ftp
+> > modprobe ip_nat_ftp
+> >
+> >  iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -d 202.147.167.99 \
+> >    --dport 21 -j DNAT --to-destination 192.168.0.5
+> >
+> >  iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d =
+192.168.0.5 \
+> >    --dport 21 -j ACCEPT
+>
+> change that rule to something like:
+>
+>   iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn \
+>     -s $PublicIPAdd -d 192.168.0.5 --dport 21 -j ACCEPT
+>
+> repeat for multiple instances of $PublicIPAdd.
+>
+> -j
+>
+> --
+> "It's not easy to juggle a pregnant wife and a troubled child, but
+>  somehow I managed to fit in eight hours of TV a day."
+> --The Simpsons
+>
 
-  - packet on output mangle -> postrouting nat.
-  - pachet on prerouting mangle.
+I'm sorry but i think this rule will not be the solution to my problem =
+cause
+my ftp server is inside my internal network and automatically my gateway
+will "only" be the source from the -s $PublicIPAdd Forward rule =
+parameter...
+i think???
 
-  After packet appears on mangle's prerouting, it disappers? I can't
-understando why.
-  How can I debug this?
-  Any one knows what can causinig it?
+Below is my schematic on how i want it to be ..
+    1. only 202...1 ip address in my branch office should be allowed to =
+use
+my ftp server in my head office
+
+        so incoming ftp request should be filtered and only 202....1 ip
+address that is coming from my branch office should be allowed.
+
+| Branch | eth0 202. .1       < external
+       |
+       |
+| WAN  |
+       |
+       |
+|gateway:firewall:FCore2|  eth0 192.168...  < internal <<<<<<
+       |                                 eth1 202........    <external
+       |
+       |
+|Ftp Server:FCore2| eth0 192.168.0.5 < Internal
+--------CUT =
+----------------------------------------------------------------
+:::::2nd Question:::::
+if i apply a policy >>>> iptables -P INPUT DROP
+                                    iptables -t filter -A INPUT -p tcp =
+-s
+192.168.0.1 -d 192.168.0.2 --dport 20:21 ACCEPT
+
+means only 192.168.0.1 will only be allowed to use ftp and the rest will =
+be
+drop ???? am i correct??
+
+--------CUT--------------------------------------------------------------=
+---
+
+Thanks in advance.
+
+Still learning iptables..
+Milo
 
 
-  I'm using:
-# uname -r
-2.6.5-63255U10_3cl    (I think is something near 2.6.9, with conectiva patc=
-hs)
-# iptables -V
-iptables v1.2.11
-# ip -V =20
-ip utility, iproute2-ss020116
 
-
-------=_Part_1331_8127676.1106055544996--
 
