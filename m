@@ -1,11 +1,12 @@
-From: "Curby ." <kirbysdl@hotmail.com>
-Subject: Re: questions about chain traversal, new ascii diagram
-Date: Thu, 06 Jan 2005 19:20:01 +0000
-Message-ID: <BAY101-F23030A22FC86C1A88C1F93DF930@phx.gbl>
-References: <41DD7A15.6050405@lopsch.com>
+From: Les Mikesell <les@futuresource.com>
+Subject: RE: bandwidth monitoring
+Date: Thu, 06 Jan 2005 13:39:48 -0600
+Message-ID: <1105040388.14796.64.camel@moola.futuresource.com>
+References: <7C9884991ADAE0479C14F10C858BCDF591E3AA@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41DD7A15.6050405@lopsch.com>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E3AA@alderaan.smgtec.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,30 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: lopsch@lopsch.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Daniel Chemko <dchemko@smgtec.com>
+Cc: netfilter@lists.netfilter.org
 
-----Original Message Follows----
->http://joerg.fruehbrodt.bei.t-online.de/pics/abb3_netfilter_ablaufdiagramm.jpg
->
->What about the mangle decisions, do you also want to include them :D?
+On Thu, 2005-01-06 at 13:04, Daniel Chemko wrote:
 
-It looks reasonable, but if this is true then the article I mentioned was 
-wrong.  Perhaps there should be a disclaimer by the link on the netfilter 
-documentation page?
+> I'll address this as well. Ntop is fantastic at giving you snapshot data
+> of a network, but it is inanely heavy at long term monitoring of
+> services. It got to the point that monitoring traffic from the firewall
+> filled memory and CPU usage if run long enough. It doesn't work for
+> continuous operations.
 
-Does anyone know the answers to my other questions? Specifically, is it due 
-to style or technical reasons that people don't filter traffic in 
-PREROUTING, and instead put the same rules in both FORWARD and INPUT?
+The thing to keep in mind is that it is keeping a database that
+includes all of the remote IP addresses and ports as well as the
+local ones, so of course this will grow quickly.  I haven't needed
+to deal with long-term histories so I haven't investigated the
+possibilities but I do recall something about ntop being able
+to start new logs and archive the old ones as needed to limit
+the active size.  There are tools to monitor and summarize
+netflows between each pair of addresses, but again I haven't
+used that part of the package.  There is also some support for
+RRD databases which would probably be the way to go for longer
+histories.
 
-I think you were probably just being facetious, but I wouldn't mind knowing 
-when the mangle chains come into play.  If we have to jump to them 
-explicitly though, then I'll just RTFM. =)
-
-Thanks again!
-
---Curby
+-- 
+  Les Mikesell
+   les@futuresource.com
 
 
 
