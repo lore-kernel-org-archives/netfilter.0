@@ -1,13 +1,13 @@
 From: =?iso-8859-1?Q?=D6rjan?= Persson <orange@fobie.net>
 Subject: Re: TCP redirect external to external host
-Date: Tue, 9 Dec 2003 20:31:10 +0100
+Date: Tue, 9 Dec 2003 20:40:19 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031209193110.GA17111@fobie.net>
-References: <20031209190402.GA16255@fobie.net> <1070997211.2880.4.camel@pepelui.baicom.com>
+Message-ID: <20031209194019.GB17111@fobie.net>
+References: <20031209190402.GA16255@fobie.net> <200312091915.49683.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1070997211.2880.4.camel@pepelui.baicom.com>
+In-Reply-To: <200312091915.49683.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,37 +21,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Alexis (..@..com) wrote:
-> in fact if you do
+Antony Stone (Antony@Soft-Solutions.co.uk) wrote:
 > 
-> iptables -t nat -A PREROUTING -d host1 -p tcp --dport 33 -j DNAT --to
-> host2:44 it keeps the original sender ip.
+> If it is not true that the real source IP and the real destination IP exist on 
+> the same interface of the netfilter machine, repost your query with a bit 
+> more detail and we may be able to help futher.
 > 
-> if you want to change the sender ip to host1:33 you need to do this
-> doing a POSTROUTING rule to do SNAT in this connection.
->
-> I hope it helps
->
-> please read
-> http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html
 
-Thanks for taking the time to answer!
+The situation is that I have a hostname where there are both SMTP and
+DNS services atm. The mail service is beeing migrated to another host,
+and since I can't just change the IP for the hostname (would break DNS
+services) I would like to have a temporary redirect to the new
+mailservice for the SMTP-service, until the ppl using it has changed
+their mail settings to use the new hostname.
 
-Yes, I've read that manual a few times by now but I still doesn't really
-understand what's going wrong. If I just use the rule you sent above, a
-connection with telnet is just "hangning".
+So, I have two external host with two external IP's. They exists on the
+same subnet too. Both uses the same gateway.
 
-If I add the SNAT-rule it works, but the sender's IP will be altered to
-host1 (the first server).
-
+These are the rules I tried to use, which translates the users IP to the
+first servers IP:
 iptables -t nat -A PREROUTING -p tcp --dport 33 -i eth0 -j DNAT --to host2:44
 iptables -t nat -A POSTROUTING -d host2 -p tcp --dport 25 -j SNAT --to host1
 
-Why I want this is because I'm moving one SMTP to another location. So
-from the postfix logs I get this:
-Dec  9 19:27:56 mail postfix/smtpd[20692]: connect from host1[x.x.x.x]
+Hope that's enough information to get you into my problem!
 
-host1 shouldn't be there, the original sender should.
-
-I'm clueless. :(
+Thanks for letting me take your time! :)
 
