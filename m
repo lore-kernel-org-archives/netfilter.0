@@ -1,13 +1,10 @@
-From: Whit Blauvelt <whit@transpect.com>
-Subject: Re: simple newbie question
-Date: Sat, 9 Aug 2003 18:00:09 -0400
+From: Jean Wolter <jw5-nf@os.inf.tu-dresden.de>
+Subject: Wrong patch in Netfilter Security Advisory: Conntrack list_del() DoS ?
+Date: 10 Aug 2003 00:54:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030809220009.GA27575@china.patternbook.com>
-References: <000101c35ebe$9504e8f0$0401a8c0@pc2>
+Message-ID: <86ekzua1d1.fsf@os.inf.tu-dresden.de>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000101c35ebe$9504e8f0$0401a8c0@pc2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,55 +16,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mario Mer?ngolo <mmeringolo@arnet.com.ar>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Since eth1 is the closest to the wider Net, that's where to build your
-- firewall unless you're also concerned with other people on your home
-network having certain sorts of access to your Linux box, in which case you
-might want to have rules for eth0 too. Most of us only worry about the
-external interface - eth1 in your setup.
+Date: 10 Aug 2003 00:49:59 +0200
 
-I don't use ppp, but for most purposes rules about ppp0 and eth1 should have
-the same effect for you, I think.
+Hello,
 
-Whit
+I just tried to apply the recommended patch to a pristine 2.4.20
+kernel and the following part fails:
 
-On Sat, Aug 09, 2003 at 06:38:32PM -0300, Mario Mer?ngolo wrote:
-> Im starting with this iptables stuff and trying to manage a home network
-> trough linux and adsl + pppoe 
-> 
-> I have two simple questions.
-> 
->  
-> 
-> I have my adsl router conected to my eth1
-> 
->  
-> 
-> When im setting my iptables rules, should I think that eth0 routes packages
-> through eth1 to ppp0 ?
-> 
->  
-> 
-> Because, if that is, my drop rules should be defined on eth1, and my input
-> ones on eth0
-> 
->  
-> 
-> Our should i think that eth1 does not matter and my reliable is eth0 and my
-> unreliable ppp0 ?
-> 
->  
-> 
-> Please forgive my crude english
-> 
->  
-> 
-> Thanx 
-> 
->  
-> 
->  
-> 
+diff -urN --exclude-from=diff.exclude linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+--- linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c Tue Feb 18 17:07:26 2003
++++ linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c Fri Feb 21 17:03:35 2003
+@@ -192,7 +192,7 @@
+	  have an established connection: this is a fairly common
+	  problem case, so we can delete the conntrack
+	  immediately.  --RR */
+-	if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
++	if (!test_bit(IPS_SEEN_REPLY_BIT, &conntrack->status) && tcph->rst) {
+        	WRITE_UNLOCK(&tcp_lock);
+        	if (del_timer(&conntrack->timeout))
+            		conntrack->timeout.function((unsigned long)conntrack);
+
+In the original 2.4.20 ip_contrack_prot_tcp the code looks like
+follows (starting at line 189):
+
+        WRITE_UNLOCK(&tcp_lock);
+
+        /* If only reply is a RST, we can consider ourselves not to
+           have an established connection: this is a fairly common
+           problem case, so we can delete the conntrack
+           immediately.  --RR */
+        if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
+                if (del_timer(&conntrack->timeout))
+                        conntrack->timeout.function((unsigned long)conntrack);
+
+The WRITE_UNLOCK ist not part of the if clause, it is done before
+checking the conntrack state. Therefore the patch fails at this point.
+
+Is this a bug in the patch, in the linux archive or did I do anything
+wrong?
+
+regards, 
+Jean
+
 
