@@ -1,11 +1,10 @@
-From: "Daniel Arjona" <darjona@transito.gob.pa>
-Subject: =?iso-8859-1?Q?CAN=B4T_DO_PING_TO_MY_ROUTER_WITH_MY_NETWORK_CLIENTS?=
-Date: Mon, 1 Sep 2003 11:47:25 -0500
+From: Eric Leblond <eric@regit.org>
+Subject: First alpha release of NuFW
+Date: Mon, 01 Sep 2003 21:04:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006201c370a8$b91ae4f0$0221a0c0@DANIEL>
-Reply-To: "Daniel Arjona" <darjona@transito.gob.pa>
+Message-ID: <1062443096.1688.19.camel@porky>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-5PVAXJC4r5WCMbLbsBpn"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,151 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hello cc:
-
-I tried to do ping to my router and also i do the same to the ip address of
-my dns servers and the both fails.  But the server (with iptables, mail,
-squis, and others) doit everytihng.
-
-What is happennig?  Maybe i have a setup error in my networks clients?
-
-***********************
-Hello:
-
-I tried to configure an iptables firewall, but i can't.  I need cofigure
-this to use FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape
-with my Netscape Client.
-
-Observations:
-I have LRH 8.0 and iptables is in the my unique server with squid, qmail and
-others.
-My router is directly connected to the NIC of the server.
-When i try to connect to any FTP Server, i recieve this message "I can't
-resolve DNS name"
-I can't do ping to any IP Address
-
-PD:  Please see mi script and my outputs to the commands:
-        iptables -L -n
-        iptables -t nat -L
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Cc: gnufw-devel@nongnu.org
 
 
-############################################################################
-##
-#!/bin/sh
-# SCRIPT de IPTABLES
-# Firewall entre red-local e internet con servicios abiertos de puerto
-############################################################################
+--=-5PVAXJC4r5WCMbLbsBpn
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-################################################  FLUSH de reglas
-iptables -F
-iptables -X
-iptables -Z
-iptables -t nat -F
-####################################################### Cargo Variables
-PRIVATE_NET=192.160.33.0/24
-PRIVATE_NIC=eth1
-PUBLIC_NIC=eth0
-################################################### Establecemos politica
-ACEPTAR por defecto
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -t nat -P PREROUTING ACCEPT
-iptables -t nat -P POSTROUTING ACCEPT
-####################################################### INPUTS 143=IMAP,
-25=SMTP, 110=POP3
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A INPUT -s $PRIVATE_NET -i $PRIVATE_NIC -j ACCEPT
-iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 25 -j ACCEPT
-iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 110 -j ACCEPT
-###########################################################################
-# FORWARDS
-## FORWARD ACEPTED 80=HTTP, 143=IMAP, 53=DNS, 21=FTP, 1214=KAZAA
-iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 80 -j
-ACCEPT
-iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 143 -j
-ACCEPT
-iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 53 -j
-ACCEPT
-iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p udp --dport 53 -j
-ACCEPT
-iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 21 -j
-ACCEPT
-iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 1214 -j
-ACCEPT
-iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -p tcp --dport 3128 -j
-ACCEPT
+Hi everyone,
 
-## FORWARD DENIED
-# iptables -A FORWARD -s $PRIVATE_NET -i $PRIVATE_NIC -j DROP
-################################################################
-ENMASCARAMIENTO
-iptables -t nat -A POSTROUTING -s $PRIVATE_NET -o $PUBLIC_NIC -j  MASQUERADE
-################################################################ HABILITAR
-FORWARDING
-echo 1 > /proc/sys/net/ipv4/ip_forward
+I'm proud to announce you that the first alpha version of NuFW is
+available for testing.
 
-############################################################### CERRAR
-ACCESO A INDESEADOS
-# iptables -A INPUT -s 0.0.0.0/0 -i $PUBLIC_NIC -p tcp --dport 1:1024 -j
-DROP
-# iptables -A INPUT -s 0.0.0.0/0 -i $PUBLIC_NIC -p udp --dport 1:1024 -j
-DROP
+NuFW is a set of daemons providing filtering of packets at the user
+level.
 
-## DENIED WEBMIN PORT ACCESS
-# iptables -A INPUT -s 0.0.0.0/0 -i $PUBLIC_NIC -p tcp --dport 10000 -j DROP
+Broadly speaking, the users have to run a client that sends
+authentication packets to the gateway. On the server side, the gateway
+associates a userid to packet, thus bringing the possibilty to filter
+packet on a user base.
 
-service iptables save
+This software is based on libipq and is written in C. It is in alpha
+status : it's globally stable but lacks configuration tools and the
+client is only available for TCP and Linux.=20
 
-# Fin del script
+More information and download can be found at :	http://www.nufw.org
 
+BR,
+--=20
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
 
-*************************************
-[root@transito root]# iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
+--=-5PVAXJC4r5WCMbLbsBpn
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  192.160.33.0/24      anywhere
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
- ******************************************
+iD8DBQA/U5hYnxA7CdMWjzIRAp8EAJ4zwrpyEdGWNc/NYDCZMt3CoDB5ywCbBcPk
+BKX5R7Kj4bDCNhC8A/Zl+rI=
+=O1FI
+-----END PGP SIGNATURE-----
 
-[root@transito root]# iptables -L -n
-
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
-ACCEPT     all  --  192.160.33.0/24      0.0.0.0/0
-ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:25
-ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:110
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:80
-ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:143
-ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:53
-ACCEPT     udp  --  192.160.33.0/24      0.0.0.0/0          udp dpt:53
-ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:21
-ACCEPT     tcp  --  192.160.33.0/24      0.0.0.0/0          tcp dpt:1214
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-
-
-
-
-
-
-Best regards,
-
-DANIEL.
-
-
+--=-5PVAXJC4r5WCMbLbsBpn--
 
