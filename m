@@ -1,9 +1,11 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: Bridging and rule specifications
-Date: Tue, 25 Feb 2003 10:03:35 -0800 (PST)
+From: "Cedric Blancher" <blancher@cartel-securite.fr>
+Subject: Re: De-SNAT-ing and DNAT
+Date: Tue, 25 Feb 2003 20:03:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030225180335.92361.qmail@web13906.mail.yahoo.com>
+Message-ID: <003a01c2dd00$9750d230$0e0aa8c0@Nussele>
+References: <200302251659.h1PGxO005284@ithaca.mcs.le.ac.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: Quoted-Printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,44 +16,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "J. A. Landamore" <jal@mcs.le.ac.uk>, netfilter@lists.netfilter.org
 
-Hello!
-I am playing with iptables under RH8.0 and wanted to
-try out a range of 'stuff'.  I had some questions
-about the iptables qualification lines I should use
-for bridging.
-
-Specifications:  I am using RedHat 8.0.  I recompiled
-the kernel using the linux-2.4.20 release (as opposed
-to the distributed linux-2.4.18).  I applied the
-http://bridge.sourceforge/net bridging + firewall
-patch (I belive the HOWTO eventually points to that as
-the final location of the patch).  Recompiled and all
-is happy in the world.  I can bring up raw interfaces
-(no ip), create my 'br0' bridge device out of eth0 and
-eth1, and even set up br0 to get a DHCP address.
-'eth0' is considered the 'protected hosts'.  'eth1'
-leads out to the world.  Neither interface has an IP
-(tho the pseudo br0 does)
-
-My question: 
-I want to create the following rules
-A rule to send all packets going from machines on eth0
-bound for eth1 to enter into a QUEUE (where the
-packets may also get mangled).  What would my rule
-look like?  Would it be:
-
-iptables -t mangle -A FORWARD -i eth0 -o eth1 -j QUEUE
+----- Original Message -----
+From: "J. A. Landamore" <jal@mcs.le.ac.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, February 25, 2003 5:59 PM
+Subject: De-SNAT-ing and DNAT
 
 
+> I have a lan of machines on a 192.168. network with an iptables box to =
+the
+real
+> world.  If I apply SNAT I can map all the internal addresses to the one
+real
+> world facing assigned address.  I assume that when packets come back th=
+ey
+are
+> "de-SNAT"ed before passing back onto the private lan, and that this
+happens in
+> the "PREROUTING" path.
 
--Scott
+You're right.
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - forms, calculators, tips, more
-http://taxes.yahoo.com/
+> My question is, does the "de-SNAT" happen before or
+> after the "PREROUTING" DNAT?
+
+As far as I understand NAT stuff, it happens far before, handled by
+conntrack which has precedence over any table.
+
+Moreover, only packets with state NEW are going through nat table and its
+chains. Further packets will be handled transparently by conntrack and wi=
+ll
+not cross nat table. That means if you have a PREROUTING DNAT, it will no=
+t
+interfere with your SNAT stuff.
+
+> Why, because I need to make a DNAT decision based on the original _sour=
+ce_
+> address, i.e. which machine originally sourced the packet.
+
+I do not understand what you mean. De-SNAT stuff (which is an "automatic"
+DNAT) sends packets to original source address without doing anything els=
+e.
+Are you trying to set something more tricky up ?
+
+--
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+
+
 
