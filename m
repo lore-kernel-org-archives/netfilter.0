@@ -1,8 +1,8 @@
-From: "Warren P" <warrenp@websurfer.co.za>
-Subject: ip_conntrack
-Date: Mon, 25 Nov 2002 14:00:41 +0200
+From: mailinglists@belfin.ch
+Subject: upgrading iptables
+Date: Mon, 25 Nov 2002 12:49:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211251200.gAPC0d408705@mailgate.mailbox.co.za>
+Message-ID: <31347F3CE518D6118ACB00A0246AD0560B24AA@mx.seaan.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,22 +16,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi
+Hi all
 
-I'm receiving the following messages in /var/log/messages
-kernel: ip_conntrack: table full, dropping packet.
-My ip_conntrack_max = 65528.
-I'm running a squid proxy and the messages did not bother me, until
-last few days, when the proxy's responses deteriated heavily.
-If ip_conntrack is the causing the problem, please indicate as to how
-I determine what the prefered size of ip_conntrack_max should be
-considering that I have 1gig of RAM in the machine.
+I've never before upraded iptables. Right now there's version 1.25 from suse
+8.0 package installed.
+How do I have to make the upgarde? Do I have to de-install the 1.25 first
+and then compile 1.27? Or are there easier ways? e.g. rpms for suse distro?
 
-_______________________________________________________________
- http://www.webmail.co.za the South-African free email service
+thanks,
+Philipp
 
-  NetWiseGurus.Com Portal - Your Own Internet Business Today!
-
+btw: I checked FAQ for that question (just very quickly). It seems this
+question isn't covered. 
 
