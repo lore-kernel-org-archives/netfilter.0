@@ -1,60 +1,40 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: another quick question
-Date: Mon, 20 Sep 2004 11:48:04 +0300
-Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <3063e5040920014819196810@mail.gmail.com>
-References: <a0f69e50409200102455b0172@mail.gmail.com>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
+Subject: Re: udp port 1025
+Date: Mon, 20 Sep 2004 05:37:48 -0400
+Sender: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Message-ID: <cim8dc$pgf$1@sea.gmane.org>
+References: <a0f69e5040920004411e0eeb6@mail.gmail.com>
+	<1403218a04092001376308ea4a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e50409200102455b0172@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Return-path: <netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
 List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Errors-To: netfilter-bounces@lists.netfilter.org
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Errors-To: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 
-It is strongly related to the other question, same RPC/DCOM problems.
+>> iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+>> iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+>> iptables -A OUTPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+>
+> http://www.linklogger.com/TCP1025.htm
 
+Er... that's TCP.  But Mohamed is right, look around for some port lists.  I
+don't see 1025/UDP on any of them.  E.g.
+http://www.iss.net/security_center/advice/Exploits/Ports/ doesn't list any
+particular use for 1025/UDP (or TCP either), except that it's the first
+user-allocable port, so it's not surprising that some hosts should be using
+it.
 
-On Mon, 20 Sep 2004 14:02:57 +0600, Askar <askarali@gmail.com> wrote:
-> hi again
-> My second question of the day is pls first check these few rules from
-> our firewall scirpt
-> 
-> iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -A FORWARD -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -t nat -A PREROUTING -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -t nat -A PREROUTING -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> 
-> aren't there are unnecessary repitions ? port that is Dropped in
-> FOWARD chain is again Dropped in PREROUTING chain, and also why he (my
-> predecssor) droping such port in INPUT table ? aren't it unnecessary,
-> coz it a linux box no port 135:140 are open on our fw machine.
-> 
-> Today I just deletes are PREROUTING rules and now im getting counts
-> for packets drops on FOWARD table.
-> 
-> regards
-> askar
-> 
-> --
-> (after bouncing head on desk for days trying to get mine working, I'll make
-> yer life a little easier)
-> 
-> 
+So I say get rid of those rules.
+A.
 
 
-
--- 
-Bla bla
 
