@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: binding nntp to one interface
-Date: Thu, 12 Sep 2002 11:22:20 +0100
+From: "HareRam" <hareram@sol.net.in>
+Subject: IPTABLES NewBie
+Date: Thu, 12 Sep 2002 17:01:20 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209121022.g8CAMTv09831@vulcan.rissington.net>
-References: <5.1.0.14.2.20020912090056.012e6d48@linda>
+Message-ID: <052701c25a4f$eb00a740$7cfcc5cb@humanpc>
+References: <5.1.0.14.2.20020912090056.012e6d48@linda> <200209121022.g8CAMTv09831@vulcan.rissington.net>
+Reply-To: "HareRam" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.2.20020912090056.012e6d48@linda>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,41 +20,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 12 September 2002 8:05 am, Rasmus Reinholdt Nielsen wrote:
+Hi all
 
-> Hi
->
-> I have two different internet connections, to two different ISP's, set up
-> as load balancing.
->
-> My problem is that both my isp's have ip restricted their newsservers, so I
-> need to bind all outgoing trafic on port 119 to a specific interface or ip.
-> Anybody knows how to do this?
+iam using Redhat 7.2 with Iptable 1.2.4 upgraded
+and patched with p-o-m
+now my application is allow only register mac Address and rest all drop
+i am having home based network
+ever customer have give specific address, since they have regiter only one
+PC for Browsing
+he should get only for that PC,, they are using Winproxy and consuming lot
+of bandwidth
 
-I'm not sure I understand the problem.
+can i have small example how do i enable only register MAC to allow all
+Services
+rest all should deny directly
 
-You have an nntp server set up to connect to your ISP's nntp server (either 
-one, or both, of your ISPs).
+right now iam using like this script
+iam forwarding all the 80 port traffic to squid cache server
 
-Because your ISPs systems are very close (in network hops) to your external 
-interface, surely your routing makes sure that requests to ISP A's nntp 
-server go through the connection to ISP A, and requests to ISP B's nntp 
-server go through the connection to ISP B ?
 
-Then you just need to decide whether your nntp server is going to connect 
-only to one, or to both, of your ISPs.
+m=modprobe
+$m ip_conntrack_ftp
+$m ip_conntrack_irc
+$m ip_conntrack
+$m ip_nat_ftp
+$m ip_nat_irc
+$m ip_queue
+$m iptable_filter
+$m iptable_mangle
+$m iptable_nat
+$m ip_tables
+$m ipt_limit
+$m ipt_LOG
+$m ipt_mac
+$m ipt_mark
+$m ipt_MARK
+$m ipt_MASQUERADE
+$m ipt_MIRROR
+$m ipt_multiport
+$m ipt_owner
+$m ipt_REDIRECT
+$m ipt_REJECT
+$m ipt_state
+$m ipt_tcpmss
+$m ipt_TCPMSS
+$m ipt_tos
+$m ipt_TOS
+$m ipt_unclean
+/sbin/iptables -F
+/sbin/iptables -F -t nat
+/sbin/iptables -t nat -A PREROUTING -s 192.168.20.0/24 -p tcp --dport 80 -j
+REDIRECT --to-port 3129
+/sbin/iptables -t nat -A PREROUTING -s 192.168.3.0/24 -p tcp --dport 80 -j
+REDIRECT --to-port 3129
+/sbin/iptables -t nat -A POSTROUTING -s 192.168.20.0/24 -o eth0 -j
+MASQUERADE
+/sbin/iptables -t nat -A POSTROUTING -s 192.168.3.0/24 -o eth0 -j MASQUERADE
 
-Alternatively, if your routing doesn't automatically determine which way to 
-get to either of your ISPs servers, a few iproute2 commands should fix this.
 
-I don't think you need to do anything with netfilter (in fact I don't think 
-you can) because this sounds like a routing issue, not a filtering problem.
+suggest me how do i have sample to add, to deny un authorised MAC address
 
-Antony.
+thanks in advance
+hare
 
--- 
-
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
 
