@@ -1,8 +1,8 @@
 From: "Markus" <listuser@sally.epygi.de>
 Subject: RE: 2 dif. connections separated
-Date: Tue, 20 Jul 2004 17:04:35 +0200
+Date: Tue, 20 Jul 2004 17:03:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BDEHJGPIKNLKJJBCCFPLIEJICOAA.listuser@sally.epygi.de>
+Message-ID: <BDEHJGPIKNLKJJBCCFPLEEJICOAA.listuser@sally.epygi.de>
 References: <200407201554.45401.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -22,11 +22,11 @@ To: netfilter@lists.netfilter.org
 
 HiHo!
 
-Oups.. two routers doesn't mean two firewall..
-my fault...
+I think he has two routers, aka two different machines ;)
 
 ciao
   markus
+
 
 > -----Original Message-----
 > From: netfilter-admin@lists.netfilter.org
