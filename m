@@ -1,12 +1,13 @@
-From: Naleendra@dms.lanka.net
-Subject: why can't I telnet
-Date: Mon, 16 Sep 2002 19:45:16 +0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: adding counters
+Date: Mon, 16 Sep 2002 14:53:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6029A399F5BFD6118BB200104B0DF37302764B@MAILGATE>
+Message-ID: <200209161353.g8GDrNv15337@vulcan.rissington.net>
+References: <200209161449.58221.roy@karlsbakk.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C25D87.4A22D4C0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209161449.58221.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,77 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Monday 16 September 2002 1:49 pm, Roy Sigurd Karlsbakk wrote:
 
-------_=_NextPart_001_01C25D87.4A22D4C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+> hi
+>
+> I've created a new table with the following lines, and inserted a -j
+> counters on top of INPUT. Wouldn't this allow me to count packets per port?
+> All I get is the -j counters line increasing it's byte count, but none of
+> the below does...
 
-HI LIST,
+Is this a server, providing pop3s, irc, https, imap, pop3, http and smtp 
+services to other clients, or are you actually sending packets *through* this 
+machine and the link should be from the FORWARD chain ?
 
-	I can't telnet when my Iptables rule set is active. However the
-moment I stop thee service I am able to do so. Mine is a default drop
-policy. However I can ping with no problems. Telnet pertaining portion lines
-are,
+If this really is a server, and the INPUT chain is correct, please post your 
+ruleset (ie the commands which create the rules) instead of the output from 
+iptables -L.
 
-	iptables -A INPUT -i <adaptor> -d <ip-address> -p tcp --dport 23 -j
-ACCEPT
-	iptables -A OUTPUT -o <adaptor> -s <ip-address> -p tcp --sport 23 -j
-ACCEPT
+Antony.
 
+-- 
 
- I tried adding the states for both the rules. Any advice is appreeciated
-greatly.
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
 
- nal        
-
-------_=_NextPart_001_01C25D87.4A22D4C0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>why can't I telnet</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">HI LIST,</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">I can't telnet when my Iptables rule set is active. =
-However the moment I stop thee service I am able to do so. Mine is a =
-default drop policy. However I can ping with no problems. Telnet =
-pertaining portion lines are,</FONT></P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">iptables -A INPUT -i &lt;adaptor&gt; -d =
-&lt;ip-address&gt; -p tcp --dport 23 -j ACCEPT</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">iptables -A OUTPUT -o &lt;adaptor&gt; -s =
-&lt;ip-address&gt; -p tcp --sport 23 -j ACCEPT</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;I tried adding the states for =
-both the rules. Any advice is appreeciated greatly.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 =
-FACE=3D"Arial">&nbsp;nal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C25D87.4A22D4C0--
+ - Frank Skinner
 
