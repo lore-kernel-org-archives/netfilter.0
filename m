@@ -1,14 +1,11 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: Firewall performance querry
-Date: Wed, 10 Sep 2003 02:06:13 +0800
+From: Shri Shrikumar <shri@urbyte.com>
+Subject: Help setting up a firewall on a machine
+Date: 15 May 2003 12:35:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909180613.GA3152@propaganda.localdomain>
-References: <20030905062950.M87452@ahm.cmc.net.in> <20030909053404.M44692@ahm.cmc.net.in> <3F5DB160.3080909@chrisbrenton.org>
-Reply-To: kluivert@tm.net.my
+Message-ID: <1052998517.1355.61.camel@VISHNU.INTERNAL>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-d0eP0tNqMhbhZq7SC7e2"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3F5DB160.3080909@chrisbrenton.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Sep 09, 2003 at 06:54:24AM -0400, Chris Brenton spoke thusly:
 
-(snip lots)
+--=-d0eP0tNqMhbhZq7SC7e2
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
->SMTP is not too bad as its pretty efficient. 
+Hi,
 
-I think DJB would disagree with you ? :-)
+I am just configuring a machine and would like to setup a firewall on it
+using iptables. I am keen on setting up properly on the first go since I
+dont want to be left with a machine that I cant ssh into.
 
->HTTP is the one that kills you as it spawns a unique concurrent session
->for every object on a web page you try to view. For example a user
->visiting www.netfilter.org generates 6 unique sessions to view the
->homepage. Microsoft's homepage is 10 sessions, Security Focus is 70, you
->get the idea.
+The machine has just one nic eth0 which is connected to the net. There
+is not NAT or MASQ to be done
 
-If I understand you correctly, that is with HTTP/1.0 which opens up a
-unique tuple per object, HTTP/1.1 uses a single tuple only.
+Here is what I have so far.
 
-(snip again)
+/sbin/iptables -N block
+/sbin/iptables -A block -p ICMP -j ACCEPT
+/sbin/iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
+/sbin/iptables -A block -j DROP
+
+/sbin/iptables -A INPUT -j block
+/sbin/iptables -A FORWARD -j block
+
+What rules do I need to add to the block chain to allow any new
+connections from machine to the outside world ? would it just be
+
+/sbin/iptables -A block -m state --state NEW -o eth0 -j ACCEPT
+
+I am also going to be hosting a site, so the following rule will be
+added as well,
+
+/sbin/iptables -I block -p tcp --dport 80 -j ACCEPT
+
+
+Do these rules sound about right ?
+
+
+Thanks and regards,
+
+
+
+Shri
+--=20
+------------------------------------------------------------------------
+Shri Shrikumar       U R Byte Solutions           Tel:   0845 644 4745
+I.T. Consultant	     Edinburgh, Scotland          Mob:   0773 980 3499
+                     Web: www.urbyte.com          Email: shri@urbyte.com
+
+--=-d0eP0tNqMhbhZq7SC7e2
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+w3t1BqoC2HdbEIcRApZxAKCcnsgYPOQ84En/AqImyYSbFEApGwCgv+0+
+8xT/clAh8Ajd5sqAOj23KRg=
+=wcDU
+-----END PGP SIGNATURE-----
+
+--=-d0eP0tNqMhbhZq7SC7e2--
+
 
