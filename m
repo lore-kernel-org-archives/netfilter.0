@@ -1,11 +1,12 @@
-From: "Mardaga Stephan" <smardaga@brutele.be>
-Subject: Re: Masquerade don't masquerade
-Date: Sun, 29 Aug 2004 13:47:16 +0200
+From: Jason Clark <jason@jasonandjessi.com>
+Subject: Re: OT: Pings phenomen :)
+Date: Sat, 28 Aug 2004 17:49:28 +0000 (UTC)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <003901c48dbe$e7e16eb0$c6ea44d4@famille>
-References: <D5C9032B2B09C64EA2409D6214E91AC90512E3@asimail2.alphanumeric.com>
-	<004d01c48adb$5b9d4180$c6ea44d4@famille>
+Message-ID: <Pine.LNX.4.61.0408281747520.1213@shinobi.jasonandjessi.com>
+References: <213736141.20040828221628@op.pl>
+Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <213736141.20040828221628@op.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,78 +16,31 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Marcin Sura <slacklist@op.pl>
+Cc: netfilter@lists.netfilter.org
 
-Masquerade is working now.
-The rule is to stop networking beforee changes to nat iptables and after
-networking start.
+This is actually a function of DSL and cable modem designs, not TCP.  Hop 
+onto google and ask about how a DSL modem workws, you'll get a pretty good 
+explanation that I cant do justice in an email.
 
-This rule don't need to be applied for tthee filter iptables.
+        Jason
+www.jasonandjessi.com
+It gimme the jibblies
 
-Thanks everyone for the help.
+On Sat, 28 Aug 2004, Marcin Sura wrote:
 
-Stephan
-
------ Original Message -----
-From: "Mardaga Stephan" <smardaga@brutele.be>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, August 25, 2004 9:40 PM
-Subject: Re: Masquerade don't masquerade
-
-
-> From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+> Hi
+>
+>  I have 512/128 adsl. I wonder why, when I download files at full
+>  speed, pings to site X are about 2000ms. But when I upload files at
+>  full speed, pings to X are about 3000 to 5000ms. Can someone explain
+>  this to me from tcp/ip point of view? ;)
+>
+> -- 
+> Pozdrawiam
+> Marcin                         mailto:slacklist@op.pl
 >
 >
-> >  iptables release 1.2.6a
-> >  Linux  2.4.18-bf2.4 #1 Son Apr 14 09:53:28 CEST 2002 i686 unknown
-> >
-> > Chain PREROUTING (policy ACCEPT)
-> > target     prot opt source               destination
-> >
-> > Chain POSTROUTING (policy ACCEPT)
-> > target     prot opt source               destination
-> > LOG        all  --  anywhere             anywhere           LOG level
-> > warning
-> > MASQUERADE  all  --  192.168.1.0/24       anywhere
-> > LOG        all  --  anywhere             anywhere           LOG level
-> > warning
-> >
-> > Chain OUTPUT (policy ACCEPT)
-> > target     prot opt source               destination
-> >
-> > Any help and/or suggestions will be accepted gratefully.
->
-> blind gues would be that you have the wrong interface specified in your
-> MASQUERADE rule.  can you post the output of "iptables -t nat -vnL"
-instead
-> of just "-nL" so we can see the in/out interfaces.
->
-> here are :
->
-> Chain PREROUTING (policy ACCEPT 643 packets, 82862 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->
-> Chain POSTROUTING (policy ACCEPT 61 packets, 18460 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->    55 16492 LOG        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          LOG flags 0 level 4
->     0     0 MASQUERADE  all  --  *      eth0    192.168.1.0/24
-> 0.0.0.0/0
->    55 16492 LOG        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          LOG flags 0 level 4
->
-> Chain OUTPUT (policy ACCEPT 61 packets, 18460 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->
-> Stef
->
->
-
-
 
