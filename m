@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: How to make the default gateway permanent after restart?
-Date: Mon, 20 Sep 2004 11:25:58 -0400
+From: Michael Barry <mbarry@cs.umass.edu>
+Subject: Static Internal IP to Public IP's mapping, and ARP problems
+Date: Mon, 20 Sep 2004 11:32:40 +0000
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095693958.1898.54.camel@wolfpack.ljm.dom>
-References: <200409201513.i8KFDCKG083935@jkcpub.iserver.net>
+Message-ID: <1095679961.4247.0.camel@jabbera-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-1ZsBzSdM/Jteoxfe1rNH"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409201513.i8KFDCKG083935@jkcpub.iserver.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,70 +17,56 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-09-20 at 11:17, Deepak Seshadri wrote:
-> Hello everybody,
-> 
->  
-> 
-> My Linux firewall (Fedora Core 2 & kernel 2.6.8.1) is configured the
-> following way:
-> 
-> Eth0 - WAN
-> 
-> Eth1 - LAN
-> 
-> Eth2 - DMZ
-> 
->  
-> 
-> With the above setup my default gateway is Eth0. For some reason, when the
-> machine boots up it takes Eth1 for default gateway. This not only messes up
-> the Internet connection but also my firewall rules. I have to then manually
-> delete that entry and add Eth0 as the default gateway. Could someone please
-> let me know how to make Eth0 as the permanent default gateway?
-> 
->  
-> 
-> Thank you,
-> 
-> Deepak Seshadri
-> 
->  
 
-<rant>
-there's a list maintained for fedora core questions at:
+--=-1ZsBzSdM/Jteoxfe1rNH
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-        http://www.redhat.com/mailman/listinfo/fedora-list
 
-i'm not trying to be a "mean guy" but this list has a tendency towards
-being the dumping ground for all network-related linux questions, and
-it's not.
-</rant>
+--=20
+---------------------------------------
+Michael Barry <mbarry@cs.umass.edu>
 
-your default gateway is set by the variable GATEWAY in:
 
-        /etc/sysconfig/network
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-the GATEWAY variable can also be set in your:
+mQGiBD+g+0URBADCYQfUXqlCotTnSbprbyOResgLUTYxERMj50z3+16SeELpKOFT
+IlfUhWrKcBoQlIyt8jBL/raN8sc8uVAklIDXmcmBzwhTlZu8mwb63GfTstqDSeBO
+mdPQlWd4RlKUABinHymFL16XFjGBWdqDsimP0sLVtxygljtOrrTLDLMdPwCg5Sho
+AmvLz/9XrgH4Og2BI2w4GO0D/20S3/oTZoAe0Uu9H7qUmsphg1Rk5cqn2zg5Fd7h
+2KaNZjtntgd/2nK9eb1zlwcYEI++TxWJiEFMqSa0+Vr8zj8yDINhRLzIFTkNGkI9
+0aJNVmZ9Vm6hEeDTTZ91d+pnzRLwbGPyu7xvddlSsn9uILI8KrIp/7gPKqfo5c8z
+rXCJBACu/SkTyrXxlEz5L0BmvMyiKwPZGsfqvPp3ZRhKfSZvx7TFa2UvlGN5jQJD
+qIDP1DH0foOQV1oX/tngBLwLFaIsTfO7brYcKX+uT0k/Q1vT2aBmHAQA4xduG2dg
+eXJyBLwYtM1sKTNQj5fnmKZtHE1Vij2uAGUowmKOSuiEOf6/D7QjTWljaGFlbCBC
+YXJyeSA8bWJhcnJ5QGNzLnVtYXNzLmVkdT6IXgQTEQIAHgUCP6D7RQIbAwYLCQgH
+AwIDFQIDAxYCAQIeAQIXgAAKCRDZGaOeesLyC/F+AKClFpol8BoIm8yDxBiMmCWd
+K/pZawCfQb8oetmw5lIyHMVelC7ir+wasb+5AQ0EP6D7RxAEAKuLODeCFV+aVi7z
+2qdE1oYNrH+AitdiB36W/SkLEb8YlXZ/cGFBl4gPspdA93mLyjrlLg5xp+kXVeAU
+DbaYLl9pz4wtmz3GqnyqQdgAPW3XjEv5Dkau+RzKAmlze87x2mw8Zn0ffvcalRFm
++fAEDOvaZquVVljYxgkktI2G6MIPAAQNBACQ4LvuAH+LKbn5NYis+ifEHA4QYPBH
+jtPe2Rb4keAp4azr6Qy1iJTuF/6+G8qCyraoqjk5wlMC7c8gjxCNkXA2VEX0+bXt
+pb85nrQlL0udf8V2ffukxlXOmFo43j85jljzLLk535P/lCXrbiDnW4W5/+8Qpn/z
+aDpqDeLSAX/+a4hJBBgRAgAJBQI/oPtHAhsMAAoJENkZo556wvILN3gAn3/x2PNm
+O1mycJQtyUpCFRXEp8EWAKDPxWTPlx5Ii9DaWadahV4b9LRe4A=3D=3D
+=3Dqjmb
+-----END PGP PUBLIC KEY BLOCK-----
 
-        /etc/sysconfig/network-scripts/ifcfg-eth?
-        
-files.
+--=-1ZsBzSdM/Jteoxfe1rNH
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-if you specify it both places, RH used to have a tendency to add it
-twice, i don't know if they've fixed this (by using 'ip route replace'
-instead of 'ip route add').
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-i also hope you mean your default gateway is "via eth0" not "is eth0"
-because if it's the latter--you've have bigger problems than just a
-variable setting.
+iD8DBQBBTr/Y2RmjnnrC8gsRAvbjAJ44bFLut0noFqrCPzDiqozd8BVcDQCcCsXz
+pmY76SqSb/PAY+ctIKGpf24=
+=8hnT
+-----END PGP SIGNATURE-----
 
--j
-
--- 
-Jason Opperisano <opie@817west.com>
+--=-1ZsBzSdM/Jteoxfe1rNH--
 
 
