@@ -1,11 +1,10 @@
-From: "Don Hughes" <dhughes@microtechniques.com>
-Subject: Re: Newby
-Date: Mon, 27 Dec 2004 15:32:36 -0500
-Message-ID: <41D02B14.6647.F61F81@localhost>
+From: Shaun Savage <savages@cascadiabhc.org>
+Subject: conntrack has problems with syn-ack-psh set
+Date: Mon, 27 Dec 2004 16:59:52 -0800
+Message-ID: <41D0B008.1030400@cascadiabhc.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,44 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Monday 27 December 2004 09:03, calvin@dslextreme.com wrote:
-Thanks to Jason, Kassad and Askar for responding to my email. 
-I've only played with RedHat before, and mostly forced myself to 
-use command line than the GUI interface. Maybe its time to try 
-other Linux flavor. Now, this FW I want to setup for my home 
-network, I would like the least software loaded on this as this 
-is a 32MB, PII 266, 2.5GB computer. I am thinking IPTABLES, 
-Tripwire, SNORT, or will that be too much for this machine ? 
-Related to this, where can I find information of those required
-to load during OS installation for these 3 apps to work.
+I am have a problem getting iptables to work with a bain dead linksys 
+printserver.  After is receives a syn packet it send a syn-ack-psh 
+packet.  Is psh allowed here?  The conntrack can't find a match and the 
+  packet is INVALID.  NO connection.
 
-I know that SuSE has a minimal installation option that will 
-easily fit on your drive. Without the gui 266 should be more than 
-fast enough since your internet connection will be the slowest 
-link. RAM could be tight though. SuSE offers a text based 
-installation for PCs with RAM/Video limits. You can select the 
-minimal installation option then hand pick any other files you 
-wish to add/delete. It uses RPM packages so it will check for 
-dependencies 
-before it loads files. Worth a look...
+my firewall looks like this, please forgive wraparound, spelling,...
+eth1 net
+eth0 local
 
 
-I used to run the SuSE text based system on a similar system 
-without any problem.  I used the SuSE YAST2 installer, deleted 
-everything, added back IPTABLES, Tripwire, SNORT, rsync, and my 
-favorite editor and had it solve dependencies.  With all the 
-libraries/utilities/etc it installed about 170 RPM packages.  
-Excluding swap and temp space, it took about 600Meg of disk 
-space.
+$IPT -t nat -A PREROUTING -i eth1 -p tcp --dport 9100 -j DNAT --net-dest 
+                                                192.168.0.49
+
+$IPT -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+
+$IPT -A FORWARD  -i eth0  state --state INVALID -j DROP
 
 
+Do I have mangle the packet first to get rid of the push flag? how?
+Is this a feature if iptables?
 
--- 
-..don
+shaun
 
-dhughes@microtechniques.com
-White Plains, NY
 
