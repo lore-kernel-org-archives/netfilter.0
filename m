@@ -1,13 +1,11 @@
-From: Matthew Cornwell Williams <os@UDel.Edu>
-Subject: Update: Masquerading Firewall <--GRE--> Bridging Masquerading
- Firewall?
-Date: Mon, 18 Nov 2002 13:40:34 -0500 (EST)
+From: Jakob Praher <jpraher@yahoo.de>
+Subject: portforwarding and masquerding - possible?
+Date: 21 Nov 2002 17:16:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.SOL.4.44.0211181336420.1104-100000@copland.udel.edu>
-References: <Pine.SOL.4.44.0211180847260.29014-100000@copland.udel.edu>
+Message-ID: <1037895394.1302.15.camel@jaques2>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.SOL.4.44.0211180847260.29014-100000@copland.udel.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +15,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-So I figured out part of the problem.  The masquerading on 198.168.1.5 was
-being done incorrectly---it was doing it for /all/ 198.168.1.0/24 at the
-POSTROUTING level (SNAT), so it was mangling more packets than I wanted.
-A couple changes to the firewalling rules, and 198.168.1.0/24 and
-198.168.2.0/24 can see 192.168.1.1 now.
-It also turned out that I misread the output of who -R on my test machine
-on 198.168.1.0/24.  198.168.1.5 wasn't making connections from 192.168.1.1
-appear to be from 68.x.y.z after all.
-Now the only trick is why this damn IRIX box sends *every* packet from
-128.d.e.f, regardless of which network it's sending them to.... grrrr....
-(ping 192.168.1.1 from shows packets to/from 128.d.e.f in tcpdump and not
-192.168.1.50 how it should be!)
+hi all,
 
-Oh, btw, if anybody has any AIX experience, drop me a line ;)
+first of all: iptables is really great.
+please email me to this address: jpraher@yahoo.de, since I am not a
+member of this list.
 
---os (the orange squid)
-a.k.a. Matt Williams
-os@udel.edu os@os.us.eu.org
+I have the following scenario:
+
+* firewall            
+* internal web server   
+
+the firewall has the public address of the server and forwards only port
+80 to the server on the internal address.
+
+now for the internal server, I still want to be able to download things
+from the web, so I decided to do masquerading for ther internal server.
+
+but somehow the internal server can't connect to external sites, that
+means it does not receive any answers. (this might be, as I have a tight
+forwarding policy between the nets )
+
+my questions are:
+
+* is there a problem when doing DNAT and SNAT for the same host?
+* is the following right:
+
+the firewalls forward chain gets the SNATTED request as an internal one
+(since SNAT happends at postrouting ? ) - but how does it get the
+results back, does the POSTROUTING change the incoming (the answer to an
+SNATted ) packet before it get's in the forward queue?
+
+to illustrate it:
+
+outgoing packet:
+	
+	dest addr:    a.b.c.d
+	source addr:  10.1.1.100
+		
+	1) forward 
+	nothing changed (routing deciscion is made with 10.1.1.100)
+
+	2) postrouting 
+	dest addr:	a.b.c.d
+	source addr:    MASQUERADED
+
+
+incoming request
+	
+	source addr:	a.b.c.d
+	dest   addr:	MASQUERADED
+	
+	*** when is it written back to 10.1.1.100 ** ? 
+	*** does the forward quere see MASQUERADED or 10.1.1.100 ***
+
+
+this is important for me, as I have to know what I should allow in the
+forward chain to allow MASQUERADING ...
+
+thanks
+
+-- Jakob
 
 
 
