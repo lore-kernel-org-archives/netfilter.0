@@ -1,14 +1,14 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+From: "James B. Hiller" <jhiller@visi.net>
 Subject: Re: linux-2.6.9-rc1 compilation and configuration issue (fwd)
-Date: Wed, 08 Sep 2004 15:46:24 -0500
+Date: Wed, 8 Sep 2004 16:41:32 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413F6FA0.7020407@pbl.ca>
-References: <200409072333.i87NXJZA012251@bassett.home.org>	<413F12D1.3050108@pbl.ca>	<1094665198.23966.21.camel@nostromo.bgsecm.com>	<413F4E20.9040807@pbl.ca>	<1094667545.11117.30.camel@nostromo.bgsecm.com>	<413F56CB.2090509@pbl.ca>
-	<1094672264.23966.37.camel@nostromo.bgsecm.com>
+Message-ID: <200409082041.i88KfW6j017244@bassett.home.org>
+References: <413F56CB.2090509@pbl.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1094672264.23966.37.camel@nostromo.bgsecm.com>
+In-Reply-To: <413F56CB.2090509@pbl.ca> from "Aleksandar Milivojevic" at Sep 08,
+	2004 02:00:27 PM
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +18,61 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Cc: netfilter@lists.netfilter.org
 
-Jose Maria Lopez wrote:
-> But then we won't have so many upgrades in the kernel, and some of
-> this upgrades are needed, because some of them are for bugs. What
-> does Sun do when they found a bug in the kernel? They probably give
-> their customers a kernel upgrade. The same can be said for Linux, but
-> with more frequent upgrades. You have to choose, having stability in
-> the kernel structures to have third party modules easy to deliver or
-> having new features more frequently.
+Hi!
 
-Sun produces a patch for a bug that doesn't break existing third party 
-modules (and, usually, same is true for Linux).  And it doesn't require 
-you to recompile any third party modules after you install it.  Sun 
-kernel patches include the kernel core itself, and if bugs were in 
-modules, it also includes the modules that need to be patched (for bugs, 
-not for changes in kernel core).
+> Jose Maria Lopez wrote:
+> [snip]
+> > there are things simply impossible.
+[snip snip]
+> 
+> Becoming way off topic, anyhow...
 
-As for the other issue, in production environment I'd choose stability 
-over bleeding edge features anytime.  Updating kernel on my home machine 
-is one thing (if something gets screwed up, no web surfing for one 
-afternoon, big deal).  Updating tens or hundreds or thousands of 
-production machines is something completely different.  Anyhow, what I 
-was aruging is that since SunOS is closed source, they were forced to do 
-modularization of kernel "the right way".  Linux being open source had 
-freedom of not doing it the right way (well, from developers perspective 
-it might be also called the right way, but not from the end-user's 
-perspective).  And Linux abused that freedom...  So now, instead of just 
-getting tcp_windows_trackign.c, compiling against linux26 kernel header 
-files (that would be static for entire 2.6.x tree) and dropping 
-resulting tcp_window_tracking.ko into /lib/kernel26/net/ipv4/netfilter 
-(with kernel26 being shared by all 2.6.x kernels), I need to recompile 
-and reinstall entire damn kernel.  Not to mention downloading the entire 
-kernel source that I really don't need...
+Well, actually, not really - from following a post that Jason provided me
+yesterday in response to my re-posted question, you can easily see how
+the modularity/patching issue is to some degree a factor in the behavior
+I was asking about.
 
-In SunOS/Solaris world, Netfilter developers would be forced to use that 
-approach/design.  In Linux world they unfortunately had Linux source 
-code available ;-)
+Here was Jason's post to me; notice the post he references:
+---------------------------------------------------
+On Tue, 2004-09-07 at 19:33, James B. Hiller wrote:
+> Hi!
+> 
+> No takers?  Or have I put this in the wrong forum?  If I have, please
+> let me know where to go with it.
 
-The way it is now, I first need to discover to which kernel version I 
-can actually apply tcp_window_tracking patch.  Tried several, failed on 
-all of them.  At the end I just gave up, and am waiting for stable 
-kernel that will have it already applied...  Darn...
+[snip]
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+2.6.9-rc1 seems pretty bleeding edge...  the 2.6 series has kind of
+become a test branch as it is, but sheesh--that's really out there.  do
+you have a "gotta have it" reason to run this kernel?  if not--i'd say
+stick with the "release" version:  2.6.8.1...  seems these kind of
+compilation issues would be par-for-the-course on an "rc" kernel.
+
+anyways...if you must--you should probably be following the
+netfilter-devel list (and linux-kernel for that matter)--check out the
+post from Harald Welte (with patch):
+
+http://marc.theaimsgroup.com/?l=netfilter-devel&m=109346594923412&w=2
+-----------------------------------------------------
+
+If you follow that one backward and forward, you'll see other very
+related patch/modularity discussion, and how the issue most likely
+influences exactly what I asked about.
+
+And also note that it became a topic on both the netfilter-devel list
+and the linux-kernel list.
+
+So... I'd say, not OT that much, or even at all!
+
+BTW - from the info in that thread, I more or less got the answer I was
+trying to get:  my config choices most likely should be expected to work;
+it's principally an issue with this particular release; and I should expect
+that it will get better.
+
+thx,
+jbh
 
