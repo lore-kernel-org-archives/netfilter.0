@@ -1,13 +1,14 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: re: ip_conntrack_max vs ip_conntrack
-Date: 27 Sep 2004 20:57:24 +0200
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: Transparent Remote Proxy Server
+Date: Mon, 27 Sep 2004 14:30:02 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096311443.1079.11.camel@nostromo.bgsecm.com>
-References: <561dc32604092710524f3a8b5b@mail.gmail.com>
+Message-ID: <41586A3A.5060901@pbl.ca>
+References: <666183F7-0DA7-11D9-99BA-000A95C71776@freezone.co.uk>	<41546F23.2010601@pbl.ca>
+	<9B51275E-10B2-11D9-9099-0003931DA24A@freezone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <561dc32604092710524f3a8b5b@mail.gmail.com>
+In-Reply-To: <9B51275E-10B2-11D9-9099-0003931DA24A@freezone.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +18,45 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-El lun, 27 de 09 de 2004 a las 19:52, Jiann-Ming Su escribi=C3=B3:
-> I'd like to know what some of these proc paremeters mean as well.=20
-> What we're experiencing is a SYN flood attack that's filling up the
-> connection tables.  What I'd like to do is change the timeout to 5
-> seconds, instead of the default 30 seconds.
+ms419@freezone.co.uk wrote:
+> Thank you sincerely for your suggestion! You are correct: It is simpler 
+> to use DNAT & MASQUERADE. I tried it & it works. But now, I am trying to 
+> avoid using NAT.
+> 
+> The problem with NAT (as I understand it) is it rewrites the destination 
+> address, which breaks HTTP/1.0 requests without a Host: header. By using 
+> policy routing, I hope to route traffic through wum without rewriting 
+> the destination address.
+> 
+> I'm using as my guide the Transparent Proxy HOWTO by Daniel Kiracofe.
 
-The ip_conntrack_max parameter is used to set the maximum
-entries in the conntrack table that the system can have at
-a time. The ip_conntrack is the file that contains the
-conntrack table, it lists the IPs and their states.
+As Jason wrote, REDIRECT will also rewrite destination IP address. 
+Squid is using woodoo magic to find out what was the original 
+destination address before rewriting (that's why you need to also change 
+Squid configuration).  Squid can do that only if it runs on the same box 
+where the address was rewritten.  Even the woodoo magic has limitations ;-)
 
-If you want to limit the SYN flooding you should use the
-limit match of iptables, or you can use the TCP SYN cookie
-feature of netfilter. It can be activated in
-/proc/sys/net/ipv4/tcp_syncookies
+Daniel's document is using nat table for both filtering and NATing, 
+which is the approach I don't particulary like.  Plus the rules are very 
+open (made to demonstrate the concept, not to be used on a real firewall).
 
-For the limit match look at:
-iptables -m limit --help
+Anyhow, what you might try out is a bit of debugging to see what is 
+going on the wire.  Your tcpdump from wum shows that it got SYN packet, 
+and that it sent out SYN ACK.  I don't see third packet with ACK going 
+back to wum, so it might be that it got dropped somewhere.  My next step 
+would be to move to tor.  I'd guess if you run tcpdump on tor's 
+interface to internal network, you'd see only SYN packet, and not SYN 
+ACK.  And if you run it on interface wheer wum is connected that you 
+would see both SYN and SYN ACK.  If that is the case, than you might 
+have something else on tor that is causing it to drop return packets 
+from wum.  As usual, without having an insight into your entire rule 
+set, it might be hard to tell why (something like output of iptables-save).
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
