@@ -1,12 +1,13 @@
-From: Ralph Churchill <mrchucho@yahoo.com>
-Subject: Re: simply confusing
-Date: Thu, 23 Jan 2003 12:40:57 -0800 (PST)
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: simply confusing
+Date: Thu, 23 Jan 2003 22:41:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030123204057.27229.qmail@web11405.mail.yahoo.com>
-References: <Pine.LNX.4.51.0301232123190.7027@dns.toxicfilms.tv>
+Message-ID: <003b01c2c328$3c65fc20$0401000a@robbysan.org>
+References: <20030123204057.27229.qmail@web11405.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.51.0301232123190.7027@dns.toxicfilms.tv>
+In-Reply-To: <20030123204057.27229.qmail@web11405.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Well, I added a logging rule before that:
+> Well, I added a logging rule before that:
+>=20
+> iptables -A INPUT --source 10.11.0.0/16 \
+>   -j LOG --log-level info --log-prefix "iptables "
+>=20
+> But when ever something gets through, it isn't being
+> logged either... If I do "iptables -L -v", then I see
+> that both rules (first the LOG, then the DROP) have
+> the same packet count.
+>=20
+> I can try using "-I" instead, but I'd also like to
+> log, so how would I do that? Am I missing something fundamental?
 
-iptables -A INPUT --source 10.11.0.0/16 \
-  -j LOG --log-level info --log-prefix "iptables "
+iptables -N log_drop
+iptables -A log_drop -j LOG --log-level info --log-prefix "ipt:log_drop
+"
+iptables -A log_drop -j DROP
 
-But when ever something gets through, it isn't being
-logged either... If I do "iptables -L -v", then I see
-that both rules (first the LOG, then the DROP) have
-the same packet count.
+iptables -I INPUT 1 -s 10.11.0.0/16 -j log_drop
 
-I can try using "-I" instead, but I'd also like to
-log, so how would I do that? Am I missing something
-fundamental?
-
-RMC
-
-
---- Maciej Soltysiak <solt@dns.toxicfilms.tv> wrote:
-> > iptables -A INPUT --source 192.168.0.0/16 -j DROP
-> >
-> > Now, shouldn't that block any and ALL traffic from
-> any
-> > computer on the 192.168.*.* subnet?
-> well that is enough to block all packets from that
-> subnet,
-> however, maybe you have other rules that accept
-> traffic before
-> this rule.
-> try -I INPUT to put it at the begining of the chain.
-> 
-> Regards,
-> Maciej Soltysiak
-> 
+What about this ?
 
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+Rob
+
 
