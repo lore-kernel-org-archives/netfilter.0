@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: IP forwarding on port 80
-Date: 13 Jun 2003 10:05:21 +0200
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: redundancy with linux and two NIC
+Date: Fri, 13 Jun 2003 10:44:23 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055491521.665.8.camel@elendil.intranet.cartel-securite.net>
-References: <002201c3317c$d9fc6b50$0300a8c0@eclipse>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E34D6@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002201c3317c$d9fc6b50$0300a8c0@eclipse>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,105 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: Kent Wang <kwang@kwang.org>
-Cc: 'George Vieira' <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Ivan Rodriguez <ivanoch79@yahoo.com.mx>, netfilter@lists.netfilter.org
 
-Le ven 13/06/2003 =C3=A0 09:24, Kent Wang a =C3=A9crit :
-> A properly DNAT=E2=80=99d packet should pass through FORWARD and then O=
-UTPUT,
-> but I found nothing in the log.
 
-A forwarded packets only crosses FORWARD chain. Framework has changed
-from ipchains' one. Now, a given packet goes through one filter table
-chain, and one only, depending it is destined to the hosts, destined to
-be routed or locally generated.
+I want that too!
 
-If your DNAT implies packet to get routed, then you'll them in FORWARD
-chain. Otherwise, you'll see them in INPUT chain.
+The only immediate way I can imagine that happening is writing a =
+monitoring script that keeps checking the availability of each channel, =
+and then when it fails, call a script to modify your iptables and =
+routing configuration to point to the new configuration. I sorta have =
+this setup, but I haven't implemented the poller, so I need to manually =
+switch over when there is a failure...
 
-> Any clues?
+If anyone knows a more elegant approach, I am all ears.
 
-Well, read the doc.
+-----Original Message-----
+From: Ivan Rodriguez [mailto:ivanoch79@yahoo.com.mx]=20
+Sent: Friday, June 13, 2003 10:17 AM
+To: netfilter@lists.netfilter.org
+Subject: redundancy with linux and two NIC
 
---=20
-C=C3=A9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=C3=A9curit=C3=A9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Hi=20
+i have the next situation
+
+                          ADSL
+                   eth1--------->
+192.168.64.x --->LinuxBox
+                   eth0--------->
+                          DS0
+=20
+my Linux box is a GW i need the following:
+        =20
+
+        if etho is down then all traffic is routed
+        by eth1 and  if eth1 is down then all=20
+        traffic is routed by eth0
+
+it is posible ?
+please help me and excusme mi english is not god
+
+
+Destination     Gateway         Genmask         Flags=20
+ MSS Window  irtt
+Iface
+
+148.223.133.227 192.168.65.1    255.255.255.255 UGH  =20
+  40 0          0
+eth1
+
+148.223.182.205 0.0.0.0         255.255.255.255 UH   =20
+  40 0          0
+ppp0
+
+192.168.65.0    192.168.65.1    255.255.255.0   UG   =20
+  40 0          0
+eth1
+
+192.168.65.0    0.0.0.0         255.255.255.0   U    =20
+  40 0          0
+eth1
+
+10.0.0.0        0.0.0.0         255.0.0.0       U    =20
+  40 0          0
+eth0
+
+127.0.0.0       0.0.0.0         255.0.0.0       U    =20
+  40 0          0
+lo
+
+0.0.0.0         148.223.182.205 0.0.0.0         UG   =20
+  40 0          0
+ppp0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_________________________________________________________
+Do You Yahoo!?
+La mejor conexi=F3n a internet y 25MB extra a tu correo por $100 al mes. =
+http://net.yahoo.com.mx
+
 
