@@ -1,8 +1,8 @@
-From: Filip Sneppe <filip.sneppe@cronos.be>
+From: Paulo Andre <pandre@darkstar.nom.za>
 Subject: Re: Inserting rules is extremly slow :((
-Date: 12 Dec 2002 13:25:20 +0100
+Date: 12 Dec 2002 15:03:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039695920.475.42.camel@xbox>
+Message-ID: <1039698200.11114.62.camel@bigblue>
 References: <3df87716.1a99.0@unacs.bg>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,23 +19,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: nedco@unacs.bg
-Cc: netfilter@lists.netfilter.org
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2002-12-12 at 12:46, nedco@unacs.bg wrote:
+On Thu, 2002-12-12 at 13:46, nedco@unacs.bg wrote:
+> 
+> 
 > 
 > Hi,
 >  How to insert fast about 20000 rules in iptables.
 >  If some document will be help , please let me know  :)
 > 
-Hi,
+> Thanks a lot
+> Nedco
+> 
 
-man iptables-save 
-man iptables-restore
+I would write a firewall script and run it...
+Put the script in /etc/rc.local and then if you ever reboot, viola
 
-That's the only solution to your performance problem at this moment...
-
-Regards,
-Filip
-
+Paulo
 
 
