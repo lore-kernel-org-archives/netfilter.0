@@ -1,12 +1,13 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: Re: Upper limit of users for iptables firewall
-Date: Thu, 14 Oct 2004 22:50:17 -0700 (PDT)
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Forward state
+Date: Fri, 15 Oct 2004 10:17:05 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041015055017.75761.qmail@web60410.mail.yahoo.com>
-References: <1097755804.1708.14.camel@wolfpack.ljm.dom>
+Message-ID: <1097828225.2407.5.camel@anduril.intranet.cartel-securite.net>
+References: <20041015014814.LWKR15118.mta13.adelphia.net@mail.adelphia.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1097755804.1708.14.camel@wolfpack.ljm.dom>
+In-Reply-To: <20041015014814.LWKR15118.mta13.adelphia.net@mail.adelphia.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,74 +17,54 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: menonrr@adelphia.net
+Cc: netfilter@lists.netfilter.org
+
+Le ven 15/10/2004 =E0 03:48, menonrr@adelphia.net a =E9crit :
+> I have a Redhat 9 gateway that masquerades traffic between private
+> network and the internet that are directly connectecd to it. The
+> gateway also forwards traffic between another #internal# network (not
+> directly connected) and the internet.
+
+OK.
+
+> The input chain has rule that allows only ESTABLISHED and RELATED
+> connections to the external interface from internet.=20
+> The Output chain has rule allowing NEW, ESTABLISHED, and RELATED
+> connections from inside.
+> The FORWARD chain allows all connections from inside and outside.
+> (NEW,ESTABLISHED or RELATED *not* specified)
+
+OK.
+
+> The Queries:
+> 1) Does the state in INPUT cause NEW connections not be forwarded (as
+> specified in Forward Chain)? I have no state in Forward chain. I want
+> free flow of traffic between the internet and the #internal# network.
+
+Forwarded packets do not go through INPUT chain (nor OUTPUT one either)
+as it is for packets destined to the box itself. Considering filter
+table table, one rule of thumb to always have in mind is that one given
+packet will go through _one_ (and only one) chain, that can be INPUT,
+OUTPUT or FORWARD depending on the packet origin and routing.
+
+This is quite different from BSD or Cisco style rulesets (and ipchains
+also) in which you work on IN and OUT. In Netfilter, you still have IN
+and OUT but they don't apply to forwarded traffic that has their
+dedicated chain (FORWARD). I tends to make things far easier to handle,
+especially if you're doing NAT somewhere.
+
+> 2) To allow all connections IN and OUT to be forwarded, should I
+> explicitly say NEW in Forward chain?
+
+If you want to match states for forwarded flows (which seems to be the
+case), then you have to explicitly match them.
 
 
---- Jason Opperisano <opie@817west.com> wrote:
-
-> On Thu, 2004-10-14 at 03:46, ads nat wrote:
-> > Hi,
-> > My Redhat linux 9.0 gateway server is with
-> iptables
-> > firewall. I am defining security rules based on
-> mac
-> > address of 400 users.
-> > My server configure is 
-> > 1) Intel Pentium IV 2.4 Ghz processor.
-> > 2) 512 MB DD RAM
-> > 3) 40 GB hard disc.
-> > 
-> > Will it be able to server request of 400 users?
-> > I am doubtfull about performance of iptables
-> firewall
-> > for this load but want to avoid commercial
-> firewall.
-> > 
-> > Has anybody used Iptables firewall for this user
-> > traffic or more than this.
-> > Please guide me for same.
-> > 
-> > Thanks for support.
-> > 
-> > 
-> > slow fireawll Can someone give ideaWhat 
-> 
-> what size pipe are you trying to firewall?  while
-> the number of users
-> behind a firewall is relevant--the amount of
-> bandwidth that needs to be
-> filtered has more of an influence on the performance
-> requirements.
-> 
-> 1000 users behind a firewall with a T1 connection
-> can only ever push
-> 1.54 Mbps through the firewall--which is nothing.
-> 
-> 100 users behind a firewall with a OC-3 connection
-> would have a
-> drastically greater hardware requirement.
-> 
-> in any case--a P4 2.4 with 512 MB of RAM is pretty
-> healthy box.  and in
-> the grand scheme, 400 users isn't really a huge
-> amount.  i have a P3 800
-> MHz with 384 MB of RAM server-class machine on a 4
-> Mbps connections for
-> about that many users that isn't breaking a sweat.
-> 
-> -j 
->  
-> -- 
-> Jason Opperisano <opie@817west.com>
-> 
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
