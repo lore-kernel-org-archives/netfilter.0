@@ -1,11 +1,11 @@
-From: "Steven Mugassa" <steven.mugassa@intafrica.com>
-Subject: Log files
-Date: Thu, 3 Jul 2003 09:13:32 +0300
+From: "Christo Bezuidenhout" <christo@it4africa.co.za>
+Subject: Firewall Setup on RH 9
+Date: Thu, 3 Jul 2003 08:37:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NHBBIEHHKBHELDDLACFGAELOCOAA.steven.mugassa@intafrica.com>
+Message-ID: <015201c3412d$992c0ac0$660210ac@christo>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0009_01C34143.602E09B0"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0153_01C3413E.5CB66160"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,79 +16,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0009_01C34143.602E09B0
+------=_NextPart_000_0153_01C3413E.5CB66160
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
+I need to do the following.
+ 
+1. I have a Redhat 9 Box with Two nics. NIC1 is my Private Network. NIC2
+is connected to my PPP0 interface for internet access. I need to add
+NIC3 which will be second Private Network.
+ 
+2. Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet. 
+NIC1 Should be able to connect to NIC3 but NIC3 must not be ABLE to
+Connect to NIC1 's network
+ 
+I have my network already setup as in 1 above and it working very well.
+I'm using iptables to get this running. 
+ 
+Please mail me offline if more info needed or with a suggestion
+ 
+Christo
 
-> Hello everyone,  
-> 
-Although my question seems not to belong to this list, but i'll appreciate
-any help from you guys.
+------=_NextPart_000_0153_01C3413E.5CB66160
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> I have a file that i want to trace all changes that are happening on that
-> file. i.e. 
-> *	date/time
-> *	who has done the changes(username) and from which terminal (IP
-> address)
-> *	What are the changes
-> 
-> Now, what should i do to "create" the log messages? I tried to define in
-> the syslog.conf file the filename(with its path) to be traced for changes,
-> and define where to log the messages (i created a file in the /var/log
-> directory); but i couldn't find any log message (while i've done the
-> changes in the file to be traced) .
-> 
-> Thanks,
-> Steven
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
 
-------=_NextPart_000_0009_01C34143.602E09B0
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>I need=20
+to do the following.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
 
-eJ8+IiAGAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEIAAUABAAAAAAAAAAAAAEJAAQAAgAAAAAA
-AAABBoADAA4AAADTBwcAAwAJAA0AAAAEAP4AAQOQBgDYBgAAJQAAAAsAAgABAAAACwAjAAAAAAAD
-ACYAAAAAAAsAKQAAAAAAAwAuAAAAAAADADYAAAAAAB4ATQABAAAAAQAAAAAAAAAeAHAAAQAAAAoA
-AABMb2cgZmlsZXMAAAACAXEAAQAAACAAAAABw0CPz6cGZNjhrIER14SWAAKzULtkACZsItAAAAxj
-0AsAFwwAAAAAAgEdDAEAAAAiAAAAU01UUDpTVEVWRU4uTVVHQVNTQUBJTlRBRlJJQ0EuQ09NAAAA
-CwABDgAAAABAAAYOAH5IJypBwwECAQoOAQAAABgAAAAAAAAAoXYAa7ky1xGEdwACs1C7ZMKAAAAL
-AB8OAQAAAAIBCRABAAAA8gIAAO4CAACABAAATFpGdeqftWcDAAoAcmNwZzEyNRYyAPgLYG4OEDAz
-M08B9wKkA+MCAGNoCsBz8GV0MCAHEwKDAFAC8t0QxzIGAAbDAoB9CoAIyGwgOwlvDjA1AoAKgXZJ
-CJB3awuAZDQMYGPbAFALA2MAQQ8EMhagC7Z/CrEKgRdQAUAPBgqgA2B04wWQBUBIZWwJAArhGeQp
-EVBldgSQeQIgZSwfGcccYBiVHKUa1kFsdAJoCGBnaCBteSCicQpQc3RpAiAgESCUZW0EIG4Z8CB0
-GpB2YhpgAiBnH9IeEAQAIFJsBAB0LCAAdQVAaeInGnAgYXAZ0AWQBzCvGgAb6Bq4IeBuHpBoGmAU
-cCADUiAbkHUgZ7B1eXMuHJ8aEkkkEP5hG2Ah4CRgAxAm8B4QImCZIZAgdwBwH8N0cgDQ/ybxIcEQ
-4Q8gB5EngwrAJvD/EPAiAAnwC4AgYB8RJ4MnMvouIZAuK3Ec/Qr1GeQAACJwAjBleHQR8idCNjcM
-ggKRKi3BLcFsdv5sAmAuIC3QAEEt0BZxCfB/EUAtsy4QDDAucROQAgBpKC0zOBkhaTHxIGR9ImEv
-HvAHgBiULb8uwXf3HiAmsQQgZBuhIKEm8CkVrCh1ESAEoGEHgCkj0T5kJGQ0wA3gHmAaAHJtQwuA
-B0AgKElQIeBktmQJcAQQKTMvLmdXKaaPNZkr/y0JGJROb3chQOs0wCehcx4hbDcQJ9A1QNUf0iIF
-AGUiYSI1gwkA0yBgB4FzYSlRPyaRKHD/CJA3EB/hAQELgCbwC4A1g/ZzJSBAkS4FoDAAJyYm8Lsn
-MjaSKAPwHhAhkHQEIP8KsB4QNtAf4yhkNxEFsSkV/yFANvJCJTTABJAnYRqQQJL/NZJA1jhgJ9A/
-1DcQJxVClZQvdgrAL0CSZGkiIXMf4BuAKTshVCkAPvJu/icrIjcBI+JAmThgN4FKsv4nJuE1TkKG
-JzRF6TbQJUvaVCkha0dAGJRTGgAbYBcvQRiyE6EAVPAAAAsAAIAIIAYAAAAAAMAAAAAAAABGAAAA
-AAOFAAAAAAAAAwACgAggBgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAAeACCAGAAAAAADAAAAA
-AAAARgAAAABShQAAc3kBAB4ACYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAABAAAABAAAADkuMAAL
-AA2ACCAGAAAAAADAAAAAAAAARgAAAACChQAAAQAAAAsAEYAIIAYAAAAAAMAAAAAAAABGAAAAAAaF
-AAAAAAAAAwASgAggBgAAAAAAwAAAAAAAAEYAAAAAAYUAAAAAAAALABuACCAGAAAAAADAAAAAAAAA
-RgAAAAAOhQAAAAAAAAMAHIAIIAYAAAAAAMAAAAAAAABGAAAAABGFAAAAAAAAAwAegAggBgAAAAAA
-wAAAAAAAAEYAAAAAGIUAAAAAAAACAfgPAQAAABAAAAChdgBruTLXEYR3AAKzULtkAgH6DwEAAAAQ
-AAAAoXYAa7ky1xGEdwACs1C7ZAIB+w8BAAAAXwAAAAAAAAA4obsQBeUQGqG7CAArKlbCAABQU1RQ
-UlguRExMAAAAAAAAAABOSVRB+b+4AQCqADfZbgAAAEY6XHN0ZXZlbi5tdWdhc3NhXE1haWxib3hc
-bWFpbGJveC5wc3QAAAMA/g8FAAAAAwANNP03AAACAX8AAQAAADwAAAA8TkhCQklFSEhLQkhFTERE
-TEFDRkdBRUxPQ09BQS5zdGV2ZW4ubXVnYXNzYUBpbnRhZnJpY2EuY29tPgADAAYQNBfotQMABxAH
-AgAAAwAQEAEAAAADABEQAAAAAB4ACBABAAAAZQAAAEhFTExPRVZFUllPTkUsQUxUSE9VR0hNWVFV
-RVNUSU9OU0VFTVNOT1RUT0JFTE9OR1RPVEhJU0xJU1QsQlVUSUxMQVBQUkVDSUFURUFOWUhFTFBG
-Uk9NWU9VR1VZU0lIQVZFQUYAAAAArZk=
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>1. I=20
+have a Redhat 9 Box with Two nics. NIC1 is my Private Network. NIC2 is =
+connected=20
+to my PPP0 interface for internet access. I need to add NIC3 which will =
+be=20
+second Private Network.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
 
-------=_NextPart_000_0009_01C34143.602E09B0--
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>2.=20
+Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet.=20
+</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>NIC1=20
+Should be able to connect to NIC3 but NIC3 must not be ABLE to Connect =
+to NIC1=20
+'s network</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>I have=20
+my network already setup as in 1 above and it working very well. I'm =
+using=20
+iptables to get this running. </FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>Please=20
+mail me offline if more info needed or with a =
+suggestion</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2>Christo</FONT></SPAN></DIV></DIV></BODY></HTML>
+
+------=_NextPart_000_0153_01C3413E.5CB66160--
 
 
