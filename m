@@ -1,53 +1,37 @@
-From: Evan Harris <eharris@puremagic.com>
-Subject: Re: Bug/Problem with DNAT on OUTPUT chain (-t nat -A OUTPUT) that
- breaks routing? (fwd)
-Date: Thu, 23 Oct 2003 11:30:36 -0500 (CDT)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310231127470.29188-100000@kinison.puremagic.com>
-References: <3F973F04.8090703@trash.net>
+From: Daniele Gallarato <kaihansen@email.it>
+Subject: Problem with http authentication
+Date: Thu, 23 Oct 2003 18:24:07 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <3F9800A7.9070300@email.it>
+Reply-To: kaihansen@email.it
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <3F973F04.8090703@trash.net>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi all!
 
-Ok, I've upgraded to kernel 2.4.22, and the same behaviour is being
-exhibited.
+I've a singular problem with netfilter... All work well, but in some 
+Internet Sites there's a problem of authentication...
 
-To recap the problem:
+I write in the two fields username and password and, if they are 
+correct, browser reload the page; if password is wrong, else, it write 
+an error message...
 
-Packets being nat'd on the OUTPUT chain of a machine are still being sent on
-the same interface they would have without the nat, and ignoring the route
-that aims them to the right iface for that dest addr.
+Anyone ave an idea?
 
-Evan
+Thanks, d
 
-
-On Thu, 23 Oct 2003, Patrick McHardy wrote:
-
-> Evan Harris wrote:
->
-> >I am using a stock linux kernel 2.4.20, with iptables 1.2.8.
-> >
-> >
-> >
-> Try 2.4.22 first, there were countless changes, some related to
-> routing.
->
-> Best regards,
-> Patrick
 
 
 
