@@ -1,13 +1,11 @@
-From: "Nathan Cassano" <nathan@cjhunter.com>
-Subject: RE: a discussion starter i hope.
-Date: Thu, 13 Jun 2002 09:30:45 -0700
+From: <support@supsrv.com>
+Subject: dnat problem
+Date: Tue, 21 May 2002 16:53:51 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <0b1a01c212f7$ab1b9990$2901a8c0@amos>
-References: <1020984749.22168.19.camel@sarig.internal>
+Message-ID: <003e01c20109$9d514e40$6f01a8c0@ollie>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1020984749.22168.19.camel@sarig.internal>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,49 +16,39 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'alan barrow' <aaa.coms.sec@btclick.com>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
+hello all,
+this is my first time posting to this board.  i am having trouble
+with my iptables rules.  my configuration consists of a linux
+router as the main network gateway and firewall providing NAT and
+ipsec.  i have compiled kernel 2.4.17 with freeS/WAN version
+1.91.   i have a source nat rule set up so my non-routable
+addresses can use the gateway to reach the internet.  i did not use
+the MASQUERADE target.
 
-Hi Alan,
- 
-> Now behind the firewall are 2 separate servers, each running a web
-> service and each running on port 80. 
-> 
-> 1) The question is, with only 1 real world address available to you,
-> what suggestions do you guy's have as to the configuration required to
-> make both web servers available on the Internet ? So that incoming
-port
-> 80 request on the firewall public interface go to the correct server. 
+here is my Source nat rule
 
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth1 -j SNAT --to
+w.x.y.z
 
-If you are solely interested in distributing http requests from a single
-access point I would suggest running apache as a reverse proxy on your
-firewall. This way http requests for different domains can be directed
-to different internal (or external) web servers. Optionally this could
-be done on layer 4 with DNAT, by rewriting the destination of packets
-and perhaps adding a user level program to direct packets but I am less
-knowledgeable about the implementation of such a setup.
+I also have some destination nat rules set up.
+iptables -t nat -A PREROUTING -d w.x.y.a -p tcp -m tcp --dport 80 -j
+DNAT --to-destination 192.168.1.48
 
-Here is a simple example of a reverse proxy apache configuration.
+There are about 5 additional dnat rules that are basically the same
+so I won't list them.
 
-<VirtualHost *:80>
+the problem i am having is that the internal private subnet
+(192.168.1.0/24) on my network is unable to bring up sites that
+have been setup using dnat rules.  external users have no problem
+viewing the sites i have set up dnat rules for.
 
- DocumentRoot "/usr/local/apache/htdocs/server.tld"
- ServerName public.server.tld
+any help would be greatly appreciated.
 
- # Rewrite URL to back-end server URL
- RewriteEngine on
- RewriteLog logs/proxy_rewrite
- RewriteLogLevel 0
+thanks
 
- RewriteRule ^/(.*)$ http://www1.server.internal/$1 [P]
-
- # Reverse Proxy the requested URL
-
- ProxyRequests on
- ProxyVia on
- ProxyPassReverse / http://www1.server.internal/
-
-</VirtualHost>
+---
+Ollie Gallardo
 
 
