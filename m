@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Port 25
-Date: Sun, 06 Feb 2005 15:04:38 -0500
-Message-ID: <1107720278.4679.40.camel@hubcap.ljm.dom>
-References: <Pine.LNX.4.58.0502061446150.1174@linux>
-	<1107718151.4679.28.camel@hubcap.ljm.dom>
-	<Pine.LNX.4.58.0502061551540.1318@linux>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: IDS better than hardcore iptables rules?
+Date: Sun, 6 Feb 2005 15:34:12 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502061533170.352-100000@darkstar.sysinfo.com>
+References: <1107695009.20774.1.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0502061551540.1318@linux>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1107695009.20774.1.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +16,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Jose Maria Lopez <jkerouac@bgsec.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Sun, 2005-02-06 at 14:54, Ted Gervais wrote:
-> On Sun, 6 Feb 2005, Jason Opperisano wrote:
-> 
-> 
-> > On Sun, 2005-02-06 at 13:51, Ted Gervais wrote:
-> > > I have a problem getting mail packets to go out with my present firewall
-> > > setup.
-> >
-> > is the mail server on a machine behind the firewall, or running on the
-> > firewall itself?
-> 
-> On the firewall.
+On 6 Feb 2005, Jose Maria Lopez wrote:
 
-k--here's the basic idea:
+> El dom, 06 de 02 de 2005 a las 07:29, seberino@spawar.navy.mil escribi=C3=
+=B3:
+> > Hudson & Ron
+> >=20
+> > I'm not sure there even exists documentation to explain
+> > some of the DROP rules I see in firewall scripts.
+> >=20
+> > Have you seen guys like these?...
+> >=20
+> >  -p tcp --tcp-flags ACK,FIN FIN -j DROP
+> >  -p tcp --tcp-flags ACK,PSH PSH -j DROP
+> >  -p tcp --tcp-flags ACK,URG URG -j DROP
+> >=20
+> > What TCP/IP book tells you that FIN, PSH and URG packets
+> > usually have ACK set?  **These** are the rules I don't
+> > know how to understand.
+> >=20
+> > Chris
+>=20
+> They *don't* have the ACK set, that's because they are
+> dropped, because it's anormal traffic, probably portscans.
+>=20
 
-  # allow established packets in
-  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-  
-  # allow mail in
-  iptables -A INPUT -p tcp --syn --dport 25 -j ACCEPT
+Can't these kind of packets get handled by an INVALID match, with one
+rule per appropriate chain?
 
-  # allow established packets out
-  iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-  # allow mail out
-  iptables -A OUTPUT -p tcp --syn --dport 25 -j ACCEPT
+Thanks,
 
-  # allow dns lookups out
-  iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+Ron DuFresne
+--=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
--j
-
---
-"Well, I'm not calling you a liar, but... I can't think of a way to
- finish that sentence."
-	--The Simpsons
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
 
