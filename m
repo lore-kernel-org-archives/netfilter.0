@@ -1,15 +1,13 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: ipq_read timeout
-Date: Thu, 20 May 2004 16:11:22 +0200
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: RE: Complex NAT problems /sorry for the formated text
+Date: Thu, 20 May 2004 10:07:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040520141122.GA31586@zion.homelinux.com>
-References: <OF7590A685.8176A82D-ON65256E9A.000E5E1F@hss.hns.com>
+Message-ID: <1085062037.22574.5.camel@localhost>
+References: <7528A97D83FBD411BEF40003471B905B05D8FF10@smtp.retecal.es>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <OF7590A685.8176A82D-ON65256E9A.000E5E1F@hss.hns.com>
+In-Reply-To: <7528A97D83FBD411BEF40003471B905B05D8FF10@smtp.retecal.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,70 +17,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: aksingh@hss.hns.com
-Cc: "Jee J.Z." <jz105@york.ac.uk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: CPD - David =?ISO-8859-1?Q?Carde=F1osa?= Rubio <dcardenosa@cac.retecal.es>
+Cc: netfilter@lists.netfilter.org
 
-
---G4iJoqBmSsgzjUCe
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi Amit,
-
-On Thu, May 20, 2004 at 08:17:06AM +0530, aksingh@hss.hns.com told us:
+On Thu, 2004-05-20 at 07:45, CPD - David Carde=C3=B1osa Rubio wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
 >=20
-> HI Sven,
 >=20
->    Well 1.2.1 was on a different system , that had linux 2.4.2, ip_tables
-> 1.2.7a was on a system that has 2.4.20-8. Ok fine, that means I got it
-> terribly wrong ;-) . So iptables.o is the object file I get after compili=
-ng
-> iptables.c from source. And after every make, make install the kernel
-> module ip_tables.o is automatically put in the directory
-> /lib/modules/2.x.x/kernel/net/ipv4/netfilter/ip_tables.o. This happens ev=
-en
-> if I had a different ip_tables version installed earlier ? i.e the earlier
-> version is overwritten ?. Also, the reason why I got this doubt is :
-> 1) I erased the ip_tables rpm after I installed from source
-> 2) ls -la on /lib/modules/2.x.x/kernel/net/ipv4/netfilter/ip_tables.o sho=
-ws
-> me march 14, whereas for all object files in the source directory where I
-> untarred the iptables 1.2.9 source show me may 19th  i.e yesterday. So is
-> this kernel module not made while doing a make ?
-
-The ip_tables.o is made when you compile your kernel and is copied
-to the /lib/modules/2.x.x/kernel/net/ipv4/netfilter directory when
-you issue make modules_install from your kernel source directory
-(or when you install the kernel RPM). Each time you recompile the
-kernel and do the make modules_install the old ip_tables.o is
-replaced by the newly compiled.
-
-
-Sven
-
+> =20
 >=20
-> thanks
-> Amit
+> Hi=20
 >=20
-
+> I have a strage problem with iptables NAT=20
+>=20
+> I try to join 2 net with the same ip.=20
+>=20
+>=20
+> fwinet-2:~# iptables -L -n -t nat -v=20
+> Chain PREROUTING (policy ACCEPT 41232 packets, 2376K bytes)=20
+>  pkts bytes target     prot opt in     out     source             =20
+> destination=20
+>    94  4743 NETMAP     all  --  eth2   *       172.0.0.0/8        =20
+> 172.20.4.0/24       172.16.4.0/24=20
+>     7   420 NETMAP     all  --  eth1   *       172.16.4.0/24      =20
+> 172.20.3.0/24       172.16.33.0/24=20
+>=20
+> Chain POSTROUTING (policy ACCEPT 21845 packets, 1167K bytes)=20
+>  pkts bytes target     prot opt in     out     source             =20
+> destination=20
+>     0     0 NETMAP     all  --  *      eth1    172.16.33.0/24     =20
+> 172.16.4.0/24       172.20.3.0/24=20
+>   654 33367 NETMAP     all  --  *      eth2    172.16.4.0/24      =20
+> 172.0.0.0/8         172.20.4.0/24=20
+>     0     0 SNAT       all  --  *      eth0    172.16.0.0/16      =20
+> 0.0.0.0/0           to:192.168.8.6=20
+>     0     0 SNAT       all  --  *      eth0    172.40.40.0/22     =20
+> 0.0.0.0/0           to:192.168.8.6=20
+>     0     0 SNAT       all  --  *      eth0    172.60.60.0/24     =20
+> 0.0.0.0/0           to:192.168.8.6=20
+>   394 32515 SNAT       all  --  *      eth0    10.152.24.100      =20
+> 0.0.0.0/0           to:192.168.8.6=20
+>     0     0 MASQUERADE  all  --  *      eth1    0.0.0.0/0          =20
+> 172.16.4.14=20
+>=20
+> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)=20
+>  pkts bytes target     prot opt in     out     source             =20
+> destination=20
+>=20
+>=20
+> The 1=C2=BA rule in POSTROUTING table don=C2=B4t work, the packets go to =
+the
+> inteface eth1 with the original ip, i have the same problem for the
+> other NETMAP rules(i also try with SNAT/DNAT) but when y reboot de
+> firewall the rules apply correctly.
+>=20
+> This only happend when modify the rules and no reboot, if reboot and
+> load the firewall script (with the new rules) all work ok.
+>=20
+>=20
+> fwinet-2:~# tcpdump -i eth2 -n icmp=20
+> tcpdump: listening on eth2=20
+> 13:25:38.157106 172.16.33.1 > 172.20.4.11: icmp: echo request=20
+> 13:25:39.158705 172.16.33.1 > 172.20.4.11: icmp: echo request=20
+>=20
+> fwinet-2:~# tcpdump -i eth1 -n icmp=20
+> tcpdump: listening on eth1=20
+> 13:25:43.163094 172.16.33.1 > 172.16.4.11: icmp: echo request=20
+>=20
+> It=C2=B4s very strange.=20
+>=20
+> fwinet-2:~# uname -a=20
+> Linux fwinet-2 2.4.26 #2 Mon May 17 21:11:05 CEST 2004 i686 unknown=20
+<snip>
+I can't give you an easy answer but I can suggest some process.  Have
+you compared the rule listings before and after a change? Have you
+placed logging rules within your rule set to see where the packets are
+being unexpectedly accepted or dropped?
 --=20
-Linux zion 2.6.6-tcp #4 Thu May 13 20:39:05 CEST 2004 i686 athlon i386 GNU/=
-Linux
- 16:07:51  up 6 days, 18:10,  1 user,  load average: 0.04, 0.04, 0.02
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net=20
 
---G4iJoqBmSsgzjUCe
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFArLyKo4FAdB2PneQRAl0mAJ4mWAw+EZ3iIWrs5Wusv25bldq0jACeNmr6
-cYux2Vvp8d6Lxcd8kZ4+UcI=
-=8Mje
------END PGP SIGNATURE-----
-
---G4iJoqBmSsgzjUCe--
 
