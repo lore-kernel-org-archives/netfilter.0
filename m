@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to block MSN messenger?
-Date: Wed, 19 May 2004 21:55:47 +0100
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: ftp
+Date: Wed, 19 May 2004 21:05:00 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405192155.47224.Antony@Soft-Solutions.co.uk>
-References: <1084999531.2868.109.camel@kenneth.intracol.net>
-Reply-To: iptables netfilter <netfilter@lists.netfilter.org>
+Message-ID: <BAY15-F30mEB4HGXAwx000684fd@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084999531.2868.109.camel@kenneth.intracol.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: iptables netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wednesday 19 May 2004 9:45 pm, Kenneth Andresen wrote:
+hi all
+i m unable to browse ftp. it says
+---------------------------------------------------------------------------------------------------------------------------------------
+an error occured opening that folder on the ftp server. make sure you have 
+permissions to access that folder
+details
+200 type set to A
+500 Illegal port command
+500 LPRT not understood
+--------------------------------------------------------------------------------------------------------------------------------------
 
-> Hello all,
->
-> I need to block MSN instant messenger, but so far without any luck.
->
-> Anyone having a good iptable rule to stop MSN Instant Messenger to be
-> allowed through our server?
+while i m running with this only one iptables rule
 
-Sorry, this is not an answer to your question, but I just wanted to comment on 
-how we seem to get roughly equal numbers of requests on this list from people 
-saying "how can I enable X through my firewall", and "how can I block X with 
-my firewall", for identical values of X.
+iptables -t nat -A POSTROUTING -j MASQUERADE
 
-Regards,
+there is no other rule in my firewall in any table any chain. every other 
+things are being masqueraded well
 
-Antony.
+Regards
+Azeem
 
--- 
-What is this talk of "software release"?
-Our software evolves and matures until it is capable of escape, leaving a 
-bloody trail of designers and quality assurance people in its wake.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+_________________________________________________________________
+Add photos to your e-mail with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
 
 
