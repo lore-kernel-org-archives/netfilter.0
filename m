@@ -1,8 +1,11 @@
-From: Bala <egrpbala@yahoo.com>
-Subject: DNAT on single NIC
-Date: Sun, 6 Feb 2005 23:24:03 -0800 (PST)
-Message-ID: <20050207072403.52817.qmail@web54504.mail.yahoo.com>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: Which line for which port?
+Date: 07 Feb 2005 10:15:08 +0100
+Message-ID: <1107767707.7662.0.camel@nostromo.bgsecm.com>
+References: <Pine.LNX.4.05.10502070211030.352-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Pine.LNX.4.05.10502070211030.352-100000@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,39 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: iptables <netfilter@lists.netfilter.org>
 
-Hi All,
-       Is it possible to setup DNAT on single NIC?
+El lun, 07 de 02 de 2005 a las 08:12, R. DuFresne escribi=C3=B3:
+> from;;  which goes into a small part on how to use ip2route when both
+> connections come from the same net/provider;
+>=20
+> /usr/doc/Linux-HOWTOs/Adv-Routing-HOWTO
+>=20
 
-       I am trying to setup DNAT in my 
-DMZ machine to access local webserver(private UP) 
-having single NIC and pulic IP
+This HOWTO it's now called LARTC and located at http://lartc.org
 
- with
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
-iptables  -t nat -I PREROUTING -i eth0 -p tcp --dport
-80  -j DNAT --to-destination 10.62.100.98:80
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
-iptables -I FORWARD -i eth0 -p tcp -d 10.62.100.98
---dport 80 -j ACCEPT
-
-is it correct??, I can't access local(private IP)
-web server, if I remove the rules I can reach public
-IP
-DMZ machine from internet.
-
-thanks in advance,
--bala-
-
-
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - Easier than ever with enhanced search. Learn more.
-http://info.mail.yahoo.com/mail_250
 
