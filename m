@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
-Date: Thu, 8 Jan 2004 17:35:04 +0000
+From: "Martin Leduc" <marled3@hotmail.com>
+Subject: Re: Problem behind my DMZ
+Date: Thu, 08 Jan 2004 17:46:20 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401081735.04719.Antony@Soft-Solutions.co.uk>
-References: <1F244D88-4200-11D8-AFEE-000393677A36@porchlight.ca>
+Message-ID: <Law9-F95jyNQD9Y7j8J00010259@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1F244D88-4200-11D8-AFEE-000393677A36@porchlight.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +14,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Antony@Soft-Solutions.co.uk
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 08 January 2004 5:28 pm, Peter Schobel wrote:
+I have clean a bit of text.
 
-> On Thursday, January 8, 2004, at 12:02  PM, Antony Stone wrote:
-> > On Thursday 08 January 2004 4:56 pm, Peter Schobel wrote:
-> >> I have a server that was running a transparent redirection proxy - i
-> >> was using 2.4.20 kernel on this system and i recently upgraded to
-> >> 2.6.0.107 kernel package for redhat 9
-> >>
-> >> Ever since i did the kernel upgrade the proxy does not work correctly.
-> >
-> > Have you recompiled the userspace iptables to match the new kernelspace
-> > netfilter?
->
-> No, I hadn't considered this. - I am using an rpm package
-> iptables-1.2.7a-2 - do you think this could be the problem?
 
-Yes, I do.   The kernelspace netfilter and the userspace iptables must match 
-in order for the two to work together.
+>So where are the local client machines?
 
-> > Does Squid seem to work correctly as a proxy if you configure your
-> > client
-> > browser to use it specifically, rather than doing it transparently?
->
-> yes it works perfectly on port 80 as well as on port 3128 so the
-> redirection seems to be working - but the transparency does not
+No one, it's my dedicate server network.  My server are on a metal box with 
+one RJ-45 cable from my ISP.  That's it!
 
-That quite satisfactorily demonstrates that networking and Squid are not the 
-problem then, so it's definitely netfilter/iptables.
+My Corporate Lan is provide by an other ISP using an other iptables box.
 
-Just recompile iptables with your new kernel (and its associated header files) 
-installed, and you should be back to normal.
+>>So I have rules
+>>iptables -t nat -A PREROUTING -p tcp/udp --port X -s 20.0.0.2 \
+>>-j DNAT --to-destination 192.168.0.2:X
+>>
+>>And my postrouting
+>>
+>>iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.2 -j SNAT --to-source
+>>20.0.0.2
 
-Antony.
+>I still don't understand where the local client machines are on your 
+>network.   What you have described above should work fine for clients which 
+>are out on the Internet.
 
--- 
-The idea that Bill Gates appeared like a knight in shining armour to lead all 
-customers out of a mire of technological chaos neatly ignores the fact that 
-it was he who, by peddling second-rate technology, led them into it in the 
-first place.
+See previous
 
- - Douglas Adams in The Guardian, 25th August 1995
+>>My FORWARD rules are WideOpen
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+>UGH!
+
+I know but I will DROP all after test be done
+
+>>Spliting my DNS is not an option.
+
+>Why not?
+
+Currently, my DNS is already behind my FIREWALL, but answer my public 
+address.  Currently, i have more than 600 domain name in my DNS.  So to 
+add/remove a domain to my network, I have to register it in my DNS Master, 
+DNS slave and my split DNS?  All of my server are behind the Firewall and 
+send Email to my mail server who is behind my firewall too.
+
+Example:
+
+My Server 1 (192.168.0.2) tried to send Email to abcd.com.  abcd.com are 
+resolved by my internal DNS server.  The MX of the domain abcd.com is 
+20.0.0.4, but this address is, from the server 1 point of view my Firewall.  
+So I lost the email.
+
+>Regards,
+
+Regards and thanks for Help
+
+>Antony.
+
+Martin
+
+_________________________________________________________________
+MSN Search, le moteur de recherche qui pense comme vous !  
+http://fr.ca.search.msn.com/
 
 
