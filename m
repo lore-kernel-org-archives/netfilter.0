@@ -1,13 +1,10 @@
-From: "yomega" <yomega@wahooo.net>
-Subject: AW: AW: OK the last one: IP Accounting
-Date: Sun, 23 Jun 2002 10:42:30 +0200
+From: Rasmus Reinholdt Nielsen <rasmus@narani.dk>
+Subject: modprobe: Can't locate module ip_tables
+Date: Sun, 23 Jun 2002 20:55:13 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NFBBLDBMIDIOFPBNLEAJKEKGCHAA.yomega@wahooo.net>
-References: <20020623103252.P5183@oknodo.bof.de>
+Message-ID: <5.1.0.14.2.20020623204454.029b4580@linda>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020623103252.P5183@oknodo.bof.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,41 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hi,
+Hi
 
-yeah this is :o))
+I have just rekompiled my kernel and iptables. Now when I try to make 
+iptables -L I just get the following messege.
 
-thx in advance 
+modprobe: Can't locate module ip_tables
+iptables v1.2.7: can't initialize iptables table `filter': Table does not 
+exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-greetz,
-yomega
+Having looked at the archievs I found that I need to recompile iptables, 
+but when making iptables -L it says iptables v1.2.7, the one that I have 
+just installed. I have kompiled iptables and all modules into the kernel 
+and not as modules.
 
-> -----Ursprungliche Nachricht-----
-> Von: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]Im Auftrag von Patrick Schaaf
-> Gesendet: Sonntag, 23. Juni 2002 10:33
-> An: yomega
-> Cc: netfilter@lists.samba.org
-> Betreff: Re: AW: OK the last one: IP Accounting
-> 
-> 
-> Yo,
-> 
-> one more thing WRT accounting POP3, and just as an idea that may be
-> useful for you in the future: if your pop3 server software changes
-> its uid to the user served, or if you set up several independant
-> pop3 servers running under different uids, you can use the "owner"
-> match extension to iptables to easily seperate accounting based
-> on the uids. You can do this inside the pop3_accounting chain,
-> without touching the main chains again.
-> 
-> Isn't this nice?
-> 
-> all the best
->   Patrick
-> 
-> 
+It's proberbly just me who don't know have to rekompile iptables proberbly, 
+so a hint in that direction would be appriciated. I have run 'make all 
+install' after recompiling and installing the kernel.
+
+Any ideas would be very wellcome.
+
+Thanks
+
+Rasmus
+
 
