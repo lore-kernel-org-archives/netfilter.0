@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Internal ip exiting network on firewall external nic despight rule
-Date: Sat, 21 Sep 2002 00:01:33 +0100
+Date: Sat, 21 Sep 2002 00:37:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020920230140.RKRZ10370.mta02-svc.ntlworld.com@there>
-References: <000101c260f4$c5861260$0801a8c0@s3ac>
+Message-ID: <20020920233753.ULBX17905.mta07-svc.ntlworld.com@there>
+References: <000401c260fb$611f3c50$0801a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c260f4$c5861260$0801a8c0@s3ac>
+In-Reply-To: <000401c260fb$611f3c50$0801a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Friday 20 September 2002 11:26 pm, Rowan Reid wrote:
+On Saturday 21 September 2002 12:13 am, Rowan Reid wrote:
 
-> > I think the problem is your physical network setup - you should not have a
-> > direct link between the internal and external interfaces of your firewall.
+> > > Since I'm cheap I don?t want to purchase another hub, I
+> > > have my T1....
+> >
+> > You have a T1 connection and you don't want to pay for another hub ?
 >
-> True, but shouldn't I be able to separate the networks using subnets
+> Why do you think I can't afford a hub, actually kudoes to Allegience
+> Telecom $300 a month =3D T1 (6 phone lines and a 500K dedicated connection
+> 16IP's)
 
-No, not the way you might think.
+Well, round these parts I can buy an 8 port switching hub for =A321.95 =3D =
+~$30
 
-I agree that everything you have put in your ruleset (except for the 
-misunderstanding about INPUT vs. FORWARD, which I think we've now sorted 
-out), makes sense and looks like it ought to work, but only if you physically 
-separate your networks.
+> > Okay, but don't be surprised if your firewall doesn't work
+> > like that....
+>
+> <action>
+> Kicks his networking for dummies book out the window
+> </action>
 
-If you do not use two separate switches / hubs for the internal & external 
-interfaces of your firewall, then it will not behave the way you expect it to.
-
-> Since I'm cheap I don?t want to purchase another hub, I have my T1....
-
-You have a T1 connections and you don't want to pay for another hub ?
-
-Okay, but don't be surprised if your firewall doesn't work like that....
-
-Sorry.
+Are you telling me that you have a network book which says it's okay to plu=
+g=20
+both the internal & external interfaces of a firewall into the same switch =
+/=20
+hub (or does it simply not say that it isn't okay....) ?
 
 Antony.
 
--- 
+--=20
 
-It is also possible that putting the birds in a laboratory setting
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennett
+Which part of 'apt-get dist-upgrade' do you not understand ???
 
