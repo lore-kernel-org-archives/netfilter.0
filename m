@@ -1,8 +1,8 @@
-From: John Friel III <john@frieltek.com>
-Subject: RE: upgrade to iptables from ipchains
-Date: Wed, 28 May 2003 13:37:33 -0500
+From: Ville Mattila <vm@iki.fi>
+Subject: Skipping connection tracking for certain traffic types?
+Date: Tue, 27 May 2003 22:49:56 +0300 (EET DST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6B61CBDA8C62344EB172855F4D94D74C042F3D@alpha.frieltek.com>
+Message-ID: <20030527192155.V20519@poliisi.iki.fi>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,32 +14,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
-Cc: =?iso-8859-1?Q?=27Leonardo_Rodrigues_Magalh=E3es=27?= <leolistas@solucoesip.net>
+To: netfilter@lists.netfilter.org
+Cc: Ville Mattila <vm@iki.fi>
 
->     would became this in iptables
-> 
-> iptables -N soporte
-> iptables -A soporte -s 10.0.1.1 -j ACCEPT
-> iptables -A soporte -j DROP
-> iptables -A FORWARD -s 10.0.0.0/25 -j soporte
-> iptables -t nat -A POSTROUTING -s 10.0.1.1 -j MASQUERADE
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-And it should be noted that with these rules in place, all packets that get
-forwarded to the soporte chain will get DROPPED because the forward rule
-only forwards IP's in the range of 10.0.0.0-10.0.0.127 and the accept range
-is restricted to -only- IP 10.0.1.1.  
-
-The 4th rule should be:
-
-iptables -A FORWARD -s 10.0.0.0/16 -j soporte
+Hello all,
 
 
+Correct me on this if I'm wrong: It is a feature of
+Netfilter that whenever conntrack is registered in
+kernel, then for example any UDP packet passing through
+the firewall causes the state table to be consulted
+resulting in either update of an old state entry if
+found or creation of a new state.
+
+Now if the description above holds we have a slight problem.
+
+At our site, connection tracking would be the nice way to
+handle the classic case of allowing responses to UDP
+requests initating from our internal network. The problem
+is that in the internal network there are several standalone
+(a.k.a. non-forwarding) caching nameservers sending about 100
+dns queries per second through the firewall in the worst case.
+For us the default ip_conntrack_proto_udp.c timeout setting
+of 30 seconds for unreplied UDP requests and 180 seconds
+for assured streams could mean from 3 000 up to 18 000 state
+entries for these dns requests alone.
+
+This problem would be solved if it was possible with
+Netfilter/iptables to skip connection tracking for some
+rules (servers sending dns queries and replies to them in
+our case), or better yet, not to track every connection by
+default but only when requested per rule. Is this kind
+of selective connection tracking possible already or will
+it possibly become supported in future conntrack versions?
 
 
-Cheers!
-John Friel III
-Frieltek Consulting, Inc.
+Best regards,
+Ville
+
+- -- 
+Mr. Ville Mattila, vm@iki.fi, http://iki.fi/vm/
+
+-----BEGIN PGP SIGNATURE-----
+
+iD8DBQE+08FytUJlHUfTfMERAoqUAJ9IVa+SDTSH0RBpw62MQennyu2LfACgtbG0
+xlVPrOV87drR5C4KidXjOgI=
+=Me43
+-----END PGP SIGNATURE-----
 
