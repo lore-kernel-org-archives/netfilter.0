@@ -1,11 +1,11 @@
 From: "Vladimir Getselevich" <vladg@techunix.technion.ac.il>
 Subject: flushtimeout in ipt_ULOG question
-Date: Sat, 17 May 2003 12:31:54 +0200
+Date: Sat, 17 May 2003 12:55:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001001c31c5f$89043110$0200c80a@vladcomp>
+Message-ID: <004001c31c62$cebb4ce0$0200c80a@vladcomp>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000D_01C31C70.4C694C70"
+	boundary="----=_NextPart_000_003D_01C31C73.92252330"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,7 +20,7 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000D_01C31C70.4C694C70
+------=_NextPart_000_003D_01C31C73.92252330
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -50,7 +50,7 @@ Please respond on my email (too):  vladg@tx.technion.ac.il
 Thank you,
   Vladimir
 
-------=_NextPart_000_000D_01C31C70.4C694C70
+------=_NextPart_000_003D_01C31C73.92252330
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -63,6 +63,7 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
 <DIV><FONT face=3DArial size=3D2>If I set flushtimeout=3D0 in ipt_ULOG =
 module&nbsp;how=20
 much milliseconds will pass after&nbsp;a message was</FONT></DIV>
@@ -101,9 +102,9 @@ href=3D"mailto:vladg@tx.technion.ac.il">vladg@tx.technion.ac.il</A></FONT=
 ></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3DArial size=3D2>Thank you,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp; =
-Vladimir</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>&nbsp;=20
+Vladimir</FONT></DIV></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_000D_01C31C70.4C694C70--
+------=_NextPart_000_003D_01C31C73.92252330--
 
 
