@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: (no subject)
-Date: Tue, 29 Jun 2004 14:30:38 +0100
+From: "Richard Gutery" <rgutery@MentorITS.com>
+Subject: RE: (no subject)
+Date: Tue, 29 Jun 2004 07:49:29 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406291430.38881.Antony@Soft-Solutions.co.uk>
-References: <1B5A52EE434FEB48AA4803AD84BD3FC30552E5@goliath.tngnet.net>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <1B5A52EE434FEB48AA4803AD84BD3FC37945@goliath.tngnet.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1B5A52EE434FEB48AA4803AD84BD3FC30552E5@goliath.tngnet.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,9 +19,41 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Stop macro:
+$IPT -N LD
+$IPT -A LD -j LOG
+$IPT -A LD -j DROP
+
+$STOP=3DLD (LD =3D Log and Drop)
+
+$IPT =3D /sbin/iptables
+
+I need to totally block all packets to and from this address =
+64.246.26.185. So BLOCK means BLOCK.
+
+We OpenBSD users usually mean blocking as dropping the silly thing on =
+the floor. No ifs, ands or buts. Just gone...
+
+As for the limiting, I simply copied a rule that was already in a =
+firestarter script. So if I need to change the rule, I would be more =
+than willing. Am I to assume that this is a bad rule?
+
+tx for the assist.
+
+rg
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: Tuesday, June 29, 2004 7:31 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: (no subject)
+
+
 On Tuesday 29 June 2004 2:19 pm, Richard Gutery wrote:
 
->  I am form the Microsoft and OpenBSD world and have recently begun using
+>  I am form the Microsoft and OpenBSD world and have recently begun =
+using
 > RH7.3 for my firewall.
 >
 > I need to block an Internet Address.
@@ -40,7 +70,8 @@ What do you mean by "block"?
 >
 > $IPT -t filter -A INPUT  -p tcp -s 0/0 -d 64.246.26.185  --dport 80 -m
 > limit --limit 2/minute -j $STOP
-> $IPT -t filter -A OUTPUT -p tcp -s 64.246.26.185 -d 0/0  --dport 80 -m limit
+> $IPT -t filter -A OUTPUT -p tcp -s 64.246.26.185 -d 0/0  --dport 80 -m =
+limit
 > --limit 2/minute -j $STOP
 >
 > $STOP and $IPT are macro substitutions that works for everything else,
@@ -48,23 +79,29 @@ What do you mean by "block"?
 
 What does the $STOP macro expand to?
 
-Also, the above rules are rate limiting rules - they will prevent packets 
-flowing more quickly than you specify - that is not at all the same thing as 
+Also, the above rules are rate limiting rules - they will prevent =
+packets=20
+flowing more quickly than you specify - that is not at all the same =
+thing as=20
 blocking packets completely.
 
-Tell us more precisely what you want to do (see above) and we can probably 
+Tell us more precisely what you want to do (see above) and we can =
+probably=20
 advise on how to do it.
 
 Regards,
 
 Antony.
 
--- 
+--=20
 "640 kilobytes (of RAM) should be enough for anybody."
 
  - Bill Gates
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+                                                     Please reply to the =
+list;
+                                                           please don't =
+CC me.
+
 
 
