@@ -1,13 +1,13 @@
 From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: natting help needed urgently.
-Date: 08 Sep 2003 10:19:30 +0530
+Subject: Re: POM Question
+Date: 08 Sep 2003 10:37:22 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062996575.831.4.camel@india.nsecure.net>
-References: <20030907110417.GA1463@linux.local>
+Message-ID: <1062997647.960.7.camel@india.nsecure.net>
+References: <20030906154556.26676.qmail@web41504.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-J32ywN982pm0BTOOfXsW"
+Content-Type: multipart/alternative; boundary="=-llm5J8LfZtQ8RTP2pDZu"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030907110417.GA1463@linux.local>
+In-Reply-To: <20030906154556.26676.qmail@web41504.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Payal Rathod <payal-iptables@staticky.com>
+To: Bissio <bissio2000@yahoo.it>
 Cc: netfilter@lists.netfilter.org
 
 
---=-J32ywN982pm0BTOOfXsW
+--=-llm5J8LfZtQ8RTP2pDZu
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Hi Payal,
+Hi
 
-What error you get while connecting from outside? This info will help us
-in solving your problem.
+You can use this module with iptables only. I still don't understand why
+you are using ipchains when you will get good options in iptables.
+
+
 -- 
 Regards
 Dharmendra.T
 dharmu@nsecure.net
 Linux Security and Administrator.
+On Sat, 2003-09-06 at 21:15, Bissio wrote:
 
-
-On Sun, 2003-09-07 at 16:34, Payal Rathod wrote:
-
-    Hi,
-    I have asked this before but nobody responded. Is this un-do-able?
-    I have a windows box which is on intertnal ip 192.168.10.3. I want the
-    outside world to access the servers (ftp, http, smtp, pop3) from it.
-    The scene is something like this,
+    Hi all,
+    
+    I'm wondering if i can update my netfilter using last
+    release of POM (patch-o-matic-20030107) if i have
+    ipchains ver 1.2.5 installed.
     
     
-    +----------+       +--------------+         +---------------+
-    |          +---><--+ Linux        +---->--<-+win2k          |
-    |router    |       |  (1.2.3.4)   |         | (192.168.10.3)|
-    +----------+       +--------------+         +---------------+
-                                      
-    I am not able to redirect any request for windows box from outside world
-    to internal machine 192.168.10.3
+    Thanks
+    Bissio
     
-    Please help me to solve this problem.
-    
-    Waiting eagerly for any help on this.
-    
-    With warm regards,
-    -Payal
-    
-    -- 
-    "Visit GNU/Linux Success Stories"
-    http://payal.staticky.com
-    Guest-Book Section Updated.
+    ______________________________________________________________________
+    Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus, il filtro Anti-spam
+    http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
     
 
 
 
---=-J32ywN982pm0BTOOfXsW
+--=-llm5J8LfZtQ8RTP2pDZu
 Content-Type: text/html; charset=utf-8
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
@@ -78,11 +65,15 @@ Content-Type: text/html; charset=utf-8
   <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
 </HEAD>
 <BODY>
-Hi Payal,
+Hi
 <BR>
 
 <BR>
-What error you get while connecting from outside? This info will help us in solving your problem.
+You can use this module with iptables only. I still don't understand why you are using ipchains when you will get good options in iptables.
+<BR>
+
+<BR>
+
 <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
 <TR>
 <TD>
@@ -96,38 +87,21 @@ Linux Security and Administrator.</PRE>
 </TABLE>
 
 <BR>
-
-<BR>
-
-<BR>
-On Sun, 2003-09-07 at 16:34, Payal Rathod wrote:
+On Sat, 2003-09-06 at 21:15, Bissio wrote:
     <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>I have asked this before but nobody responded. Is this un-do-able?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>I have a windows box which is on intertnal ip 192.168.10.3. I want the</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>outside world to access the servers (ftp, http, smtp, pop3) from it.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>The scene is something like this,</FONT></FONT></I>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi all,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>I'm wondering if i can update my netfilter using last</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>release of POM (patch-o-matic-20030107) if i have</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>ipchains ver 1.2.5 installed.</FONT></FONT></I>
 <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
 <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>+----------+       +--------------+         +---------------+</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>|          +---&gt;&lt;--+ Linux        +----&gt;--&lt;-+win2k          |</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>|router    |       |  (1.2.3.4)   |         | (192.168.10.3)|</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>+----------+       +--------------+         +---------------+</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>                                  </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>I am not able to redirect any request for windows box from outside world</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>to internal machine 192.168.10.3</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Thanks</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Bissio</FONT></FONT></I>
 <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Please help me to solve this problem.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Waiting eagerly for any help on this.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>With warm regards,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-Payal</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-- </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&quot;Visit GNU/Linux Success Stories&quot;</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>http://payal.staticky.com</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Guest-Book Section Updated.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>______________________________________________________________________</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus, il filtro Anti-spam</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/</FONT></FONT></I>
 <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
     </BLOCKQUOTE>
 <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
@@ -141,6 +115,6 @@ On Sun, 2003-09-07 at 16:34, Payal Rathod wrote:
 </BODY>
 </HTML>
 
---=-J32ywN982pm0BTOOfXsW--
+--=-llm5J8LfZtQ8RTP2pDZu--
 
 
