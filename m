@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: how can i combine these 2 iprules
-Date: Fri, 5 Mar 2004 20:17:14 +0100
+From: "John P Lang" <johnl@oregonisonline.net>
+Subject: Create IPTables rules using output from a database?
+Date: Fri, 5 Mar 2004 11:21:31 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040305191716.DD886DBC@sterenborg.info>
-References: <3590.128.59.176.161.1078512825.squirrel@sojourn.dyndns.org>
+Message-ID: <200403051921.i25JLmR05621@megalon.oregonisonline.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3590.128.59.176.161.1078512825.squirrel@sojourn.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +18,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> > On Friday 05 March 2004 6:27 pm, Technical wrote:
-> >
-> >> -A RH-Firewall-1-INPUT ! -s cnnp1.com  -j LOG --log-prefix 
-> "IPTABLES: "
-> >> -A RH-Firewall-1-INPUT ! -s cnnp2.com  -j LOG --log-prefix 
-> "IPTABLES: "
-> >
-> > iptables -N mychain
-> > iptables -A mychain -s cnnp1.com  -j RETURN
-> > iptables -A mychain -s cnnp2.com  -j RETURN
-> > iptables -A mychain -j LOG --log-prefix "IPTABLES: "
-> > iptables -A RH-Firewall-1-INPUT -j mychain
->
-> What is -j Return doing
+Good morning,
 
-Your match is reversed.
-You matched everything that does not cnnp1.com and LOGged it. After that you
-matched everything that does not match cnnp2.com and LOGged it.
-So, you logged everything that matched cnnp1.com or cnnp2.com once, else
-twice.
+Just out of curiosity, has anyone seen an application that allows you to
+build iptables rules using web forms, post to a database of choice and
+builds a firewall script?
 
-Antony's solution redirects a packet to the "mychain" user chain.
-If a packet matches either cnnp1.com or cnnp2.com, it RETURNs to the
-"RH-Firewall-1-INPUT" chain.
-If a packet didn't match, it gets logged and the "mychain" chain ends, thus
-the packet returns to the chain that called it ; the "RH-Firewall-1-INPUT"
-chain.
+I know... I'm not asking for much.
 
+Any suggestions or comments would be greatly appreciated.
 
-Gr,
-Rob
+John L
+
 
 
