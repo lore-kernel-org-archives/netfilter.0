@@ -1,15 +1,13 @@
-From: "Alexander W. Janssen" <yalla@ynfonatic.de>
-Subject: Re: How to block all ports except port 21,22,80,8080 ???
-Date: Tue, 18 Feb 2003 17:03:48 +0100
+From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
+Subject: RE: can't patch with patch-o-matic
+Date: Tue, 18 Feb 2003 16:37:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030218160348.GA23914@ynfonatic.de>
-References: <1045555939.94722.jacob_chan@so-net.net.tw> <1045558628.1967.29.camel@kermit.spenneberg.de> <1045560648.1913.39.camel@kermit.spenneberg.de> <3E5207B9.7C2BEDFA@patrick.at>
+Message-ID: <5.2.0.9.2.20030218163537.01c473e8@172.26.0.8>
+References: <E131E9F1848D0148813EAF06A846608FD7783B@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3E5207B9.7C2BEDFA@patrick.at>
+In-Reply-To: <E131E9F1848D0148813EAF06A846608FD7783B@w2ks-e2k.iconos.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +17,87 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Patrick Maartense <patrick@patrick.at>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Sneppe Filip <Filip.Sneppe@cronos.be>, netfilter@lists.netfilter.org
+
+Ok,
+
+I deleted /usr/src/linux at all.
+I use the original 2.4.19 source code and I still can't apply=20
+tcp-window-tracking patch :(
 
 
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+At 13:53 18/02/2003 +0100, you wrote:
 
-On Tue, Feb 18, 2003 at 11:15:21AM +0100, Patrick Maartense wrote:
-> it would be MUCH better to
->=20
-> iptables -p INPUT DROP # default drop
-> then allow only these ports
-> iptables -A INPUT -p tcp -m multiport  --dport 21,22,80,8080 -j ACCEPT
->=20
-> safe thinking: Default : drop, allow only what needed.
+>Hi Luis,
+>
+>Luis Miguel Cruz Miranda [<mailto:luismi@b2bi.es>mailto:luismi@b2bi.es] =
+wrote:
+> >
+> >I have patch command installed, the problem is: why I  can't use
+> >tcp-window-tracking patch?
+> >
+>
+>Because you have already applied what is commonly referred to
+>(in technical terms) as "a shitload of other netfilter patches".
+>:-)
+>Come on, the window tracking patch is quite "intrusive" and touches
+>a lot of code. You've already included a lot of other netfilter
+>patches. Patches are bound to step on each other that way.
+>
+>Patch-o-matic is cool in that it handles a lot of this
+>stuff without problems, but if you are applying too many patches
+>on top of each other, you should resolve any conflicts yourself...
+>
+> >
+> > Already applied: submitted/01_2.4.19
+> >                   submitted/02_2.4.20
+> >                   submitted/ipt_multiport-invfix
+> >                   submitted/ipt_ULOG-mac_len-fix
+> >                   pending/01_ip_conntrack_proto_tcp-lockfix
+> >                   pending/02_newnat-udp-helper
+> >                   pending/03_REJECT-fwspotting-phrack60-fix
+> >                   pending/04_ftp-conntrack-msg-fix
+> >                   pending/05_ECN-tcpchecksum-littleendian-fix
+> >                   base/fuzzy
+> >                   base/iplimit
+> >                   base/ipt_unclean-ubit
+> >                   base/ipv4options
+> >                   base/IPV4OPTSSTRIP
+> >                   base/mport
+> >                   base/NETLINK
+> >                   base/NETMAP
+> >                   base/nth
+> >                   base/pool
+> >                   base/psd
+> >                   base/quota
+> >                   base/random
+> >                   base/realm
+> >                   base/SAME
+> >                   base/time
+> >                   base/TTL
+> >                   extra/condition
+> >                   extra/CONNMARK
+> >                   extra/h323-conntrack-nat
+> >                   extra/ip_tables-proc
+> >                   extra/ipt_TARPIT
+> >                   extra/mms-conntrack-nat
+> >                   extra/pptp-conntrack-nat
+> >                   extra/recent
+> >                   extra/ROUTE
+> >                   extra/rsh
+> >                   extra/string
+> >                   extra/talk-conntrack-nat
+> >                   extra/tftp-conntrack-nat
+>
+>Regards,
+>Filip
 
-And it's allways a good idea to allow traffic from loopback:
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
 
-iptables -A INPUT -i lo -j ACCEPT
 
-I heard people telling that ssh is using 22/udp as well. I'm not sure if
-that's true, though i haven't found any sshd which ever bind()ed to 22/udp.
-Anyone more information?
-
-Allowing ICMP should be mandatory as well, otherwise you'll create another
-PMTU blackhole and you'll miss almost all error messages. And sending real
-errormessages like tcp-reset and ICMP port unreachable is a good thing, too.
-You can limit them, if you like.
-
-iptables -A INPUT -p icmp -m limit --limit 5/s -j ACCEPT
-iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset # limit if you l=
-ike
-iptables -A INPUT -j REJECT     # and that one as well
-# implicit DROP due to default policy should happen here
-
-Alex.
-=20
-
---=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
-
---d6Gm4EdcadzBjdND
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
-
-iEYEARECAAYFAj5SWWQACgkQEMMZKORQoYJcEgCcCYDWueA1/DSJ5PrxEGWKMl4A
-Hc0An3H3omQfeTyBvjMjZKcHFkSWvwQm
-=yMJk
------END PGP SIGNATURE-----
-
---d6Gm4EdcadzBjdND--
 
