@@ -1,11 +1,9 @@
-From: "Edu" <eduardg@mat.upc.es>
-Subject: Re: can iptables do this?
-Date: Wed, 22 May 2002 01:48:33 +0200
+From: <bhartin@straus-frank.com>
+Subject: ipchains compat/active ftp?
+Date: Wed, 22 May 2002 09:28:59 -0500 (CDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <005f01c20122$04f0f010$901b99c1@mikasa1>
-References: <OFE9A4EDE9.418F3246-ONC1256BC0.0035D17B-C1256BC0.0035D196@upc.es> <200205211157.MAA18294@slate.rockstone.co.uk> <3CEA8069.EA2F5F84@spamless.genwax.com> <200205211742.SAA19742@slate.rockstone.co.uk>
+Message-ID: <Pine.LNX.4.33.0205220926150.32435-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,19 +14,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Thank you all for your time, I'll have to squeeze hard my brain to solve it.
 
-Just one more question: I've heard that there is a Cisco system (just one
-machine that solves the whole problem?) that allows all that thing. Anybody
-knows it?
+I'm using a 2.4.x series kernel, but due to time constraints lately, I'm
+using the ipchains compatability module and our old ipchains scripts.
+Unfortunately, I have yet to find how to get active ftp connections
+working through this.  The ftp module appears to be for pure iptables use
+only, and there are no individual modules to be seen for the ipchains
+compatability.
 
+What am I missing?  Is there something that's just not very well
+documented on this, or am I basically screwed until I re-write everything
+for iptables?
 
-Thanks again.
+Thanks,
 
-
-Edu
+-- 
+Bradley Hartin - bhartin@straus-frank.com
+Communications and Network Administrator
+Straus-Frank Company
 
 
