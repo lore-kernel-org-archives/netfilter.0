@@ -1,10 +1,8 @@
-From: "Alex Nee" <hard__ware@dynamicaccess.biz>
-Subject: Re: RE Problem
-Date: Mon, 28 Apr 2003 14:28:26 -0700
+From: "Vojin Urosevic" <vojin@urosevic.com>
+Subject: GUI!
+Date: Sat, 26 Apr 2003 20:24:23 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c30dcd$1a8a8bd0$7b7b10ac@hardware>
-References: <20030422021216.26459.70618.Mailman@digital>
-Reply-To: "Alex Nee" <alex@dynamicaccess.biz>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAyK03TV+7yUykNpWsyDyYIsKAAAAQAAAAhf+75toHuUaFNA3+BByQ4wEAAAAA@urosevic.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,14 +16,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "lists.netfilter" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-well ive checked those options and they are set ,
+Hi there,
 
-how do i reply to messages in the Archive if i dont recieve them from the
-mailing list itself ..
+Is anybody out there working on a GUI management tool for netfilter?
+Something like what the Watchguard folks have developed for their range
+of Firewalls. 
 
-e.g,  looking at questions via HTTP then responding with my mail client ....
-hrmmm
+Features like drag and drop rules for VPN and a GUI real time connection
+monitoring from external to internal interface and vice versa.
+
+Regards,
+
+vu
+
 
 
