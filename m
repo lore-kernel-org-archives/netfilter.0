@@ -1,12 +1,14 @@
-From: "Kaddouch Guillaume" <kaddouch.guillaume@wanadoo.fr>
-Subject: update to 1.2.7a
-Date: Sun, 8 Sep 2002 15:13:42 +0200
+From: Alistair Tonner <Alistair@alistairt.ath.cx>
+Subject: Re: ftp server issue, trying to DL 1.2.7a
+Date: Sat, 7 Sep 2002 11:40:26 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003101c25739$8e392fa0$0100a8c0@poste1>
+Message-ID: <20020907154026.GA12045@Ajftl1.ajfthome.on.ca>
+References: <3D7877D3.6040608@fugmann.dhs.org> <3D79F330.000001.00620@athlon1000> <3D79FC89.9070001@fugmann.dhs.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002E_01C2574A.513D1830"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3D79FC89.9070001@fugmann.dhs.org>; from afu@fugmann.dhs.org on Sat, Sep 07, 2002 at 09:18:01 -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +18,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: Anders Fugmann <afu@fugmann.dhs.org>
+Cc: wickedsun <wickedsun@phreaker.net>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_002E_01C2574A.513D1830
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-I had with v1.2.6a the special feature "REJECT --fake-source", i was =
-rebuild my kernel for this.=20
-But after a bad update to v1.2.7a (not done properly by me...) all work, =
-but not this feature.=20
-My kernel is ready to manage that feature, not need to rebuild. How to =
-make iptables recognize the feature "--fake-source" ?=20
-It's only I think a file path problem.
+	You need to add the parameter name:
+	in this case ports.
 
-Thanks.
+	modprobe ip_conntrack_ftp ports=21,5006
+	modprobe ip_nat_ftp ports=21.5006
+	 
+	or if built into the kernel, I don't believe you can pass a port
+	parameter to the the module. (Just a quick glance at the
+	source ... so if I'm wrong someone will hit me over the head
+	I'm sure).
 
-------=_NextPart_000_002E_01C2574A.513D1830
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>I had with v1.2.6a the special feature =
-"REJECT=20
---fake-source", i was rebuild my kernel for this. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But after a bad update to v1.2.7a (not =
-done=20
-properly by me...) all work, but not this feature. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>My kernel is ready to manage that =
-feature, not need=20
-to rebuild. How to make iptables recognize the feature "--fake-source" ? =
-
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It's only I think a file path =
-problem.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>Thanks.</FONT></DIV></FONT></DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_002E_01C2574A.513D1830--
+On 2002.09.07 09:18 Anders Fugmann wrote:
+> wickedsun wrote:
+>> FTP Issues, round 2.
+>>   With further testing, I've noticed that it doesnt quite work. For 
+>> some unknown reason, it *seems* to work on port 21, but doesnt on 
+>> other
+> Seems or does?
+> 
+>> ports. From what I understood in your post, you said it would work 
+>> on any port. (FTP, of course).
+> 
+>> 
+> No. The ftp connection tracking module only monitors on port 21. 
+> Because it has to examine all packets beeing send though, it would 
+> simple be too much work to monitor any connection made. If you want 
+> it to monitor other ports also, you can compile the ftp connection 
+> tracking as a module, and then use:
+> modprobe ip_conntrack_ftp 21,5006
+> to let it listen on ports 21 and 5006.
+> 
+> I do not know if there is any way to make this work with 
+> ftp_connection_tracking statically compiled in the kernel.
+> 
+> Regards
+> Anders Fugmann
+> 
+>-- 
+> Author of FIAIF
+> FIAIF Is An Intelligent Firewall
+> http://fiaif.fugmann.dhs.org
+> 
+> 
+> 
 
 
