@@ -1,13 +1,13 @@
 From: Pascal Vilarem <pascal.vilarem@9online.fr>
-Subject: Re: iptables ceases to work after night
-Date: Thu, 11 Sep 2003 12:55:44 +0200
+Subject: Re: iptables newbie
+Date: Thu, 11 Sep 2003 16:28:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F6054B0.9020501@9online.fr>
-References: <E19xL7G-000NJQ-00.varyag18-mail-ru@f10.mail.ru>
+Message-ID: <3F608679.4010508@9online.fr>
+References: <20030911134133.91316.qmail@web20711.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E19xL7G-000NJQ-00.varyag18-mail-ru@f10.mail.ru>
+In-Reply-To: <20030911134133.91316.qmail@web20711.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,50 +20,58 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-what does iptables-save returns on the morning ?
+you could have run the equivalent iptables command lines of each line in 
+order to
+find the wrong one by yourself :-(
 
-is it different from what it returns when forwarding is ok ?
+for your problem, try to write the last line using -m parameter:
+-A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-port 3128
 
-if you find differences... there is something to find that alter 
-netfilter config
-(a firewall script ? something like an iptables-restore script ?)
-
-if you don't find differences :
-
-check to see if resetting netfiler and giving again the config is enough...
-if yes... i'd suggest to update netfilter an perhaps the kernel...
-
-stop netfilter and check if something can go through your netcard...
-if no... i'd suggest to check the driver of the netcard... and perhaps 
-the netcard itself.
+or check your RH-Lokkit-0-50-INPUT definition.
 
 hope this can help,
-Pascal
+Pascal.
 
 
-Vladimir Potapov wrote:
+ads nat wrote:
 
->Yesterday at evening my packet filter with iptables worked fine.Today at morning , I see that he don't forwarding packet from DMZ to local and back.And this thing I see every morning.After I reboot my machine it's work fine.I think that my 3com cards have some bugs.In log there no entries about this . My rules is:
->
->
->#Allow from local to DMZ and back
->
->
->-A FORWARD -d 192.168.1.0/255.255.255.0 -i eth1 -o eth2 -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT 
->
->-A FORWARD -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
->
->-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 80 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
->
->-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 3128 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
->
->-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 25 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
->
->-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 110 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
->
->
+> Hi,
+> I have Linux REDHAT 8.0 server. Iptables are installed while 
+> installing Linux 8.0. version 1.2.6a
+>  
+> I am getting following error.
+>  
+> [root@xyz root]# /etc/init.d/iptables restart
+> Flushing all current rules and user defined chains:        [  OK  ]
+> Clearing all current rules and user defined chains:        [  OK  ]
+> Applying iptables firewall rules: iptables-restore v1.2.6a: Unknown 
+> arg `--dport'
+> Try `iptables-restore -h' or 'iptables-restore --help' for more 
+> information.
+>                                                            [FAILED]
+>  
+> In iptables file i have used  :
+> *filter
+> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 0:1023 --syn -j REJECT
+> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 2049 --syn -j REJECT
+> -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 0:1023 -j REJECT
+> -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 2049 -j REJECT
+> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 6000:6009 --syn -j REJECT
+> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 7100 --syn -j REJECT
+> COMMIT
+> *nat
+> -A PREROUTING -p TCP --dport 80 -j REDIRECT --to-port 3128
+> COMMIT
+>  
+> Do i have to install any additional module.
+> Thanks
 >
 >  
->
+> ------------------------------------------------------------------------
+> Do you Yahoo!?
+> Yahoo! SiteBuilder 
+> <http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com> - 
+> Free, easy-to-use web site design software 
+
 
 
