@@ -1,13 +1,11 @@
-From: Jim Cliver <jclive@mtaonline.net>
-Subject: Re: IPTables Flow Chart
-Date: Thu, 11 Mar 2004 11:13:29 -0900
+From: marco <manzo@ngi.it>
+Subject: state match support in ip6tables
+Date: Thu, 11 Mar 2004 23:54:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4050C869.8080506@mtaonline.net>
-References: <404E7C72.3040500@ynsgroup.net> <4050BD2B.2060509@mtaonline.net> <4050C0ED.2010307@mtaonline.net>
+Message-ID: <1079045669.6476.3.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4050C0ED.2010307@mtaonline.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +15,14 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Jim Cliver wrote:
->> Thank you to all that replied to my first posting of the drawing, I 
->> really appreciate the feedback!
->>
->> I believe that all of your suggestions and comments have been 
->> incorporated into this revision...
->>
->> http://www.aptalaska.net/~jclive/IPTablesFlowChart.pdf
->>
->> As always, your comments, suggestions and corrections are welcome.
->>
->> Regards,
->> jim
->>
->>
->>
-> Sorry Folks,
-> 
-> Just found an error, will correct and repost.  Directonal arrows from 
-> Interface B to PREROUTING process are missing...
-> 
-> jim
-> 
-> 
-> 
+hi all, i need help with ip6tables and match support
 
-Ok, we should be good to go now!  The link above is still good dwg'ng 
-has been updated.
+can i use it with vannilla2.4?
+where can i get a patch to enable the it (evenif there's one)?
 
-Thanks also to Antony for the quick catch!
-
-jim
+tnx
 
 
