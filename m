@@ -1,13 +1,13 @@
-From: Mail Lists <lists@sapience.com>
-Subject: Re: subnet problem
-Date: Wed, 21 Jul 2004 19:46:58 -0400
+From: Michael Sconzo <msconzo@net.tamu.edu>
+Subject: Re: again problem with alias / virtual interface
+Date: Wed, 21 Jul 2004 21:27:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040721234657.GE7576@sapience.com>
-References: <20040718205007.GA7576@sapience.com> <200407182202.20404.Antony@Soft-Solutions.co.uk> <20040718221008.GB7576@sapience.com> <200407191012.04832.Antony@Soft-Solutions.co.uk> <20040720031542.GC7576@sapience.com>
+Message-ID: <20040721212717.R9160@net.tamu.edu>
+References: <007d01c46dae$0a45f330$eb53623e@x> <Pine.LNX.4.44.0407211707490.31223-100000@Megathlon.ESI> <20040721114840.G9160@net.tamu.edu> <40FEA42C.3050006@pbl.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20040720031542.GC7576@sapience.com>
+In-Reply-To: <40FEA42C.3050006@pbl.ca>; from amilivojevic@pbl.ca on Wed, Jul 21, 2004 at 12:13:16PM -0500
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +19,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Cc: netfilter@lists.netfilter.org
 
+> 
+> IMHO, the proper way of doing it is using configuration files.  And let 
+> the init.d scripts configure your interfaces (majority of which still 
+> use good old ifconfig).
 
-On Mon, Jul 19, 2004 at 11:15:42PM -0400, Mail Lists wrote:
-> On Mon, Jul 19, 2004 at 10:12:04AM +0100, Antony Stone wrote:
-> > On Sunday 18 July 2004 11:10 pm, Mail Lists wrote:
-> > 
-> > The first first octet of all the above addresses is an odd number; therefore 
-> > the LSB = 1, therefore any netmask shorter than 8 bits is inappropriate.
-> Indeed - wacky list - will fix - 
+Have an example of such a config file, and what Linux distro you're using?
 
-  Just a thank you follow up. After cleaning up the subnet masks
-  the only hit on reserved ips I have now (2 days or so) is an 
-  ack/rst from 89.205.79.229 which is appropriately dropped.
+Thanks,
+-=Mike
 
-  Thanks again
+-- 
+_
+_ Michael J. Sconzo
+_ Computing & Information Services, Texas A&M University
 
-  gene/
-
-
+The New Testament offers the basis for modern computer coding theory,
+in the form of an affirmation of the binary number system.
+        But let your communication be Yea, yea; nay, nay: for
+        whatsoever is more than these cometh of evil.
+                -- Matthew 5:37
 
