@@ -1,13 +1,13 @@
 From: Michael Gale <mgale@utilitran.com>
-Subject: Re: How to make a computer invisible
-Date: Tue, 2 Dec 2003 08:14:27 -0700
+Subject: Re: Forwarding and masquerading got broken
+Date: Tue, 2 Dec 2003 08:19:32 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031202081427.58d57208.mgale@utilitran.com>
-References: <000501c3b88e$65e35550$6400a8c0@deamon>
+Message-ID: <20031202081932.70944ce6.mgale@utilitran.com>
+References: <3FCD5E75.5020402@mchsi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000501c3b88e$65e35550$6400a8c0@deamon>
+In-Reply-To: <3FCD5E75.5020402@mchsi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,62 +20,57 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-
 Hello,
 
-	You can make a machine almost invisible with iptables. I have a firewall box with multiple IP's on one interface. The one IP address does not have any servers listening on it. So if I do a nmap for all TCP and UDP ports and watch the traffic through a TCP dump the only responses I see are ARP replies.
+	Look the section"
+--snip--
+# --------( Sysctl Tuning - Recommended Parameters )--------
 
-So besides the response to ARP traffic no packets were sent out .. so if I could disable the ARP reply a nothing would be known.
+# Turn off IP forwarding by default
+# (this will be enabled if you require masquerading)
 
-The nmap scanned could only tell me that all ports a filtered :)
+if [ -e /proc/sys/net/ipv4/ip_forward ]; then
+  echo 0 > /proc/sys/net/ipv4/ip_forward
+fi
+--snip--
 
-If you have a service on the IP -- like a web server I can not see you being able to hide it.
+The "echo 0" in the "/proc/sys/net/ipv4/ip_forward" is disabling ip_forwarding -- which is need to forward packets.
 
-Also iptables by default is a IP based filter you a rule like:
-iptables -A INPUT -j DROP 
-will not drop layer two stuff.
+Change the "echo 0" to "echo 1"
 
-You could try:
-iptables -I INPUT -m mac -j DROP
-but I am not sure what this would cause and what else it will break :0
+:)
 
 Michael.
 
 
-On Tue, 2 Dec 2003 09:40:09 +0500
-"Babar Kazmi" <BabarKazmi@Hotmail.Com> wrote:
 
-> Hello ..
+
+
+
+
+
+
+On Tue, 02 Dec 2003 21:54:29 -0600
+"Lawrence G. Hunsicker" <lhunsicker@mchsi.com> wrote:
+
+> Hi, folks:
 > 
-> As far as I know  iptables use MAC Address information for filtering.
-> It cant be used for filtering packets, and I assume iptables cannot edit /
-> modify ARP / RARP stuff.
+> I have just used firestarter's wizard to allow access to my web server. 
+>    This part of things worked correctly, but in the process my machine 
+> has stopped forwarding and masquerading traffic from machines inside my 
+> firewall to the outside world.  All of the interfaces themselves work 
+> correctly.  I.e., from inside machines I can ping my server and from the 
+> server I can see the outside world.  But I can't see the outside world 
+> from the inside machines.  Is there someone out there that can tell me 
+> what I have to do to get IP forwarding and masquerading working again?
 > 
-> If you find an alternate way, Do Share :)
+> I have attached a copy of my firewall.sh file.
 > 
-> Regards
+> Many thanks in advance for any help that you can give me.
 > 
-> Babar Kazmi.
-> 
-> ----- Original Message ----- 
-> From: "Thomas Preissler" <tomjohn@gmx.de>
-> To: "netfilter-user Mailinglist" <netfilter@lists.netfilter.org>
-> Sent: Sunday, November 30, 2003 3:12 PM
-> Subject: How to make a computer invisible
-> 
-> 
-> > Hello folks,
-> >
-> > how do I really make a computer totally invisibly as it would be
-> > when it does not exist?
-> >
-> > It is clear, that the simplest solution is to DROP all incoming
-> > packets, but what's about (R)ARP packets? Can they be blocked anyway?
-> >
-> 
-> 
-> 
-> 
+>   --
+> Lawrence G. Hunsicker
+> lhunsicker@mchsi.com
 > 
 
 
