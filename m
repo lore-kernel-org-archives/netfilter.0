@@ -1,14 +1,11 @@
-From: Joe Judge <joe_judge@guardium.com>
-Subject: Re: to patch, or not to patch? --- 1.2.7a mucked up?
-Date: 27 Mar 2003 17:02:34 -0500
+From: Y Makki <bugzilla@sympatico.ca>
+Subject: [Fwd: RE: Windows file sharing over different subnets]
+Date: 27 Mar 2003 17:55:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048802554.1342.17.camel@midgard.guardium.com>
-References: <1048778825.17439.7.camel@midgard.guardium.com>
-	 <001301c2f481$67a1a300$0e0aa8c0@Nussele>
+Message-ID: <1048805716.8220.18.camel@psyche>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001301c2f481$67a1a300$0e0aa8c0@Nussele>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,90 +16,60 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+To: "Mailing List: Netfilter" <netfilter@lists.netfilter.org>
+
+I enabled file sharing on the win98 box and shared a folder to test, i
+had the same thought you did. 
+
+The win98 client is configured to use 'dns for wins resolution',
+although I have done nothing yet with dns on the router box, it runs
+bind; I don't know if that is even relevant to be honest. 
+
+I added the client entry into win2k's lmhosts.sam and ran nbtstat- R,
+still can't browse the client from the server even with \\192.168.2.2\
+
+Also added the rules mentioned to dnat broadcasts originating on both
+subnets to the other one.
+
+Here's something new, a tcpdump on the client (192.168.2.2) while trying
+to access it through the win2k server (192.168.1.3):
+
+17:28:12.327623 192.168.2.2.microsoft-ds > 192.168.1.3.1079: R [tcp sum
+ok] 0:0(0) ack 228195974 win 0 (ttl 128, id 10240, len 40)
+17:28:12.327981 192.168.2.2.netbios-ssn > 192.168.1.3.socks: S [tcp sum
+ok] 254406:254406(0) ack 228254317 win 8760 <mss 1460,nop,nop,sackOK>
+(DF) (ttl 128, id 10496, len 48)
+17:28:12.329218 192.168.2.2.netbios-ssn > 192.168.1.3.socks: FP [tcp sum
+ok] 1:6(5) ack 73 win 8688
+>>> NBT Packet
+NBT SessionReject
+Flags=0x83000001
+Reason=0x82
+Called name not present
+
+ (DF) (ttl 128, id 10752, len 45)
 
 
-Summary -- 
-	Why does the recent patch-o-matic version have 
-	extra/ROUTE code that uses "ifname" and "ipto" in
-	a structure ... when ... iptables 1.2.7a tries to 
-	compile ROUTE support which uses "if_name" and
-	"if_index" ??
-
-What version of iptables code goes with what version of
-patch-o-matic ?
-
-
-
-
----- details -----------
-problem: need linux box connected to switch mirror/span port on 
-	eth0 to take packets TO hostA and burp them out eth1 and
-	also take packets FROM hostA and burp them our eth2
-
-I appreciate Cedric's posting. This widens the range of choices
-available to me.
-
-They are:
-1	- install BSD or drag my sparc20/solaris box here
-	and configure IPFilter to 
-	take all packets from x.x.x.x and burp them out interface-1
-	take all packets to x.x.x.x and burp them out of interface-2
-	(known solution, I've done it before)
-
-2	- try Cedric's LARC solution
-
-or
-3	- Continue banging my head against POM + iptables
-
-
-
-So, of course I'm continuing down the #3 path :-)
-(no pain, no gain)
-
-Pulled down redhat8.0 kernel source ... did a "make mrproper"
-because they bundled it in a dorky state. 
-
-
-I pulled down iptables 1.2.6a and 1.2.7a and patch-o-matic20030107.
-	cd p-o-m
-	KERNEL_DIR=/usr/src/linux-2.4 ./runme extra/ROUTE.patch
-	cd ../iptables1.2.7a
-	make KERNEL_DIR=/usr/src/linux-2.4
-
----------got this --------------------------------
-
-Extensions found: IPv4:ROUTE
-cc -O2 -Wall -Wunused -I/usr/src/linux-2.4/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_ROUTE_sh.o -c extensions/libipt_ROUTE.c
-extensions/libipt_ROUTE.c: In function `parse':
-extensions/libipt_ROUTE.c:61: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:64: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:66: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:67: structure has no member named `if_index'
-extensions/libipt_ROUTE.c:80: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:81: structure has no member named `if_index'
-extensions/libipt_ROUTE.c:86: structure has no member named `if_index'
-extensions/libipt_ROUTE.c: In function `print':
-extensions/libipt_ROUTE.c:119: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:120: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:122: structure has no member named `if_index'
-make: *** [extensions/libipt_ROUTE_sh.o] Error 1
+I'm breaking my head over this..
 
 
 
-
-
-
-It looks like the include is:
-/usr/src/linux-2.4.18-27.8.0/include/linux/netfilter_ipv4/ipt_ROUTE.h
-
-which only has:
-
-struct ipt_route_target_info {
-        char ifname[IPT_ROUTE_IFNAMSIZ];
-        unsigned int ipto;
-};
+On Thu, 2003-03-27 at 15:15, Daniel Chemko wrote: 
+> 1. Is File sharing enabled on the win98 box? I am not sure it is
+> 'visible' without it.
+> 
+> 2. The server is trying to find NetBIOS String ("192.168.2.2") on the
+> network, which will fail. The followup would be to search WINS for it.
+> If the WINS server on windows 2000 does not have that computer
+> registered, then the machine cannot be resolved. Can you look at your
+> wins server on 192.168.1.3 and see an entry for your win98 clients that
+> allegedly registered with it?
+> 
+> 3. Make sure the win98 computers are configured for wins automatically.
+> Sometimes it is set for manual or disabled wins settings.
+> 
+> 
+> 
 
 
 
