@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: is this correct ?
-Date: Wed, 11 Feb 2004 00:03:59 +0000
+From: "Stefan Bosnjakovic" <sb@digital-vitamins.com>
+Subject: cannot compile extensions/libipt_ECN.c
+Date: Mon, 9 Feb 2004 18:13:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402110003.59279.Antony@Soft-Solutions.co.uk>
-References: <402381FC.4000703@tut.by>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAPCp1YAf+Yku8TNzXRFUK5MKAAAAQAAAApakBm76La0OUjD2MrlZa8QEAAAAA@digital-vitamins.com>
+Reply-To: <sb@digital-vitamins.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <402381FC.4000703@tut.by>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,52 +19,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 06 February 2004 12:01 pm, Aleksandr Guidrevitch wrote:
+Hi list,
 
-> Can anyone say if my config below is correct (/etc/sysconfig/iptables) ?
-> Well, it seems to work as expected, but it is so simple,
-> may be I'm missing some important security points ?
+when I try to compile the user-land applications of iptables 1.2.6a,
+it stops at extensions/libipt_ECN.c with the following message:
+extensions/libipt_ECN.c: In function `parse':
+extensions/libipt_ECN.c:51: `IPT_ECN_OP_REMOVE' undeclared (first use in
+this function)
+extensions/libipt_ECN.c:51: (Each undeclared identifier is reported only
+once
+extensions/libipt_ECN.c:51: for each function it appears in.)
+extensions/libipt_ECN.c: In function `print':
+extensions/libipt_ECN.c:82: `IPT_ECN_OP_REMOVE' undeclared (first use in
+this function)
+extensions/libipt_ECN.c:83: warning: unreachable code at beginning of switch
+statement
+extensions/libipt_ECN.c: In function `save':
+extensions/libipt_ECN.c:99: `IPT_ECN_OP_REMOVE' undeclared (first use in
+this function)
+extensions/libipt_ECN.c:100: warning: unreachable code at beginning of
+switch statement
+make: *** [extensions/libipt_ECN.o] Error 1
 
-You are certainly missing some important security.
+any idea what include file I'm missing?
 
-Take a look at some of the documentation for netfilter, referenced from the 
-netfilter website, such as Oskar Andreasson's excellent tutorial at 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html and pay 
-particular attention to the meaning of the INPUT, FORWARD and OUTPUT chains.   
-Specifically, packets being routed *through* the firewall from your LAN to 
-the Internet (or vice versa) do *not* go through INPUT or OUTPUT.....
+In #include <linux/netfilter_ipv4/ipt_ECN.h
+I can find a couple of IPT_ECN_OP_SET... there - but no IPT_ECN_OP_REMOVE.
 
-Regards,
+I tried kernel 2.4.5 and 2.4.24 fyi ...
 
-Antony.
-
-> ------
-> *nat
-> -A POSTROUTING -o ppp0 -j MASQUERADE
-> COMMIT
->
-> *mangle
-> COMMIT
->
-> *filter
-> -A INPUT -i ppp0 -p icmp -j ACCEPT
->
-> # disabling not established and not related connections
-> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> -A INPUT -i ppp0 -j DROP
->
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
->
-> COMMIT
-
--- 
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Cheers, Stefan !
 
 
