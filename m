@@ -1,14 +1,10 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: bad interpreter
-Date: Wed, 27 Nov 2002 13:28:05 +0000
+From: Sam Pointer <sam.pointer@hpdsoftware.com>
+Subject: RE: can't initialize iptables table `'
+Date: Wed, 27 Nov 2002 15:43:41 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021127132805.H14289@funkyjesus.org>
-References: <20021127115344.59352.qmail@web9606.mail.yahoo.com> <3.0.1.16.20021127141258.1af7ba26@s-net-04.besancon.org>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <6FB083FB72EFD21181D30004AC4CA18A01EABFB1@srv002>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3.0.1.16.20021127141258.1af7ba26@s-net-04.besancon.org>; from thierry.itty@besancon.org on Wed, Nov 27, 2002 at 02:12:58PM +0000
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,25 +16,143 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'Ben Russo' <ben@umialumni.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, Nov 27, 2002 at 02:12:58PM +0000, Thierry ITTY wrote:
-> this happens when you get a script file from dos (with cr/lf eol)
-> the first line may look normal 
+yes, I'm using "iptables start" from /etc/rc.d/init.d/ directories. 
 
-Aaaaahhhh, good point :)
+The contents of the /etc/sysconfig/iptables at the moment is just :
 
-> #!/bin/sh
+-P INPUT DROP
+
+!!! which is why I can't understand why I'm having problems. I did have some
+more comprehensive rules in there ported from an old ipchains setup, but
+whittled it down to that to diagnose this problem.
+
+With regards kernelness, to quote myself from my earlier post:
+
+> > Now, I issued `lsmod` and I have both "iptable_filter" and "ip_tables"
+> > modules loaded.
+
+..and that's it, no other modules loaded; which is what I expect as I'm not
+using the `nat', `masq' or other tables.
+
+I'll let you know on the iptables-save shortly.
+
+-----Original Message-----
+From: Ben Russo [mailto:ben@umialumni.com]
+Sent: 27 November 2002 14:54
+To: Sam Pointer
+Cc: netfilter@lists.netfilter.org
+Subject: RE: can't initialize iptables table `'
+
+
+OK,  when you say "initialize iptables" do you mean that you are using
+the standard RedHat system V init script called
+"/etc/rc.d/init.d/iptables" ?
+If so what is the content of your /etc/sysconfig/iptables?
+That might be the problem there.
+
+When you do an iptables-save what do you see?
+
+
+
+It doesn't really feel like a kernel/modules related issue, but you lean
+in that direction, so....
+when you type "lsmod" what do you see?
+
+On one of my Linux firewalls I see these ipt related modules loaded:
+
+	ipt_state               1152  25 (autoclean)
+	ipt_MASQUERADE          1824   5 (autoclean)
+	iptable_nat            18452   0 (autoclean) [ipt_MASQUERADE]
+	ip_conntrack           17068   2 (autoclean) [ipt_state
+ipt_MASQUERADE
+iptable_nat]
+	iptable_mangle          2272   0 (autoclean) (unused)
+	iptable_filter          2272   0 (autoclean) (unused)
+	ip_tables              11424   7 [ipt_state ipt_MASQUERADE
+iptable_nat
+iptable_mangle iptable_filter]
+
+Maybe try running "depmod -a" and then reruning the "modprobe ip_tables"
+
+
+
+On Wed, 2002-11-27 at 06:02, Sam Pointer wrote:
+> No I didn't custom compile the kernel and the distro is the latest one
+from
+> the ftp site at RedHat. I've been using Linux since the 1.x kernels.
+> although only consider myself an "op" type rather than any great kernel
+> hacker.
 > 
-> but the CR (which remains invisible within a text editor that silently
-> adapts itself) is misunderstood by shell 
+> Thanks for your help.
 > 
-> just edit the file using vi, then ":set ff=unix" and ":wq". this will
-> remove the CRs
+> -----Original Message-----
+> From: Ben Russo [mailto:ben@umialumni.com]
+> Sent: 26 November 2002 22:19
+> To: Sam Pointer
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: can't initialize iptables table `'
+> 
+> 
+> Did you custom compile your kernel?
+> If you are using a standard RedHat 8 kernel have you upgraded to the
+> latest?
+> 
+> On Tue, 2002-11-26 at 12:20, Sam Pointer wrote:
+> > Before I carry, please feel free to tell me FAQ off; I have quickly
+> scanned
+> > the archive and google and haven't found a solution to this problem -
+but
+> > I'm open to suggestions.
+> > 
+> > I'm initialising iptables on RH Linux 8. When I start iptables I am
+> getting
+> > the error message " can't initialize iptables table `' ". 
+> > 
+> > Now, I issued `lsmod` and I have both "iptable_filter" and "ip_tables"
+> > modules loaded.
+> > 
+> > I initially tried starting ipchains with a whole raft of rules, but even
+> > starting with the single rule:
+> > 
+> > -P INPUT DROP
+> > 
+> > causes this error to appear.
+> > 
+> > When I reboot the machine and check my syslog messages, I notice that
+> > iptables-restore is issuing a modprobe for module `iptable_`, as in:
+> > 
+> > iptables: Applying iptables firewall rules
+> > modprobe: modprobe: Can't locate module iptable_
+> > modprobe: modprobe: Can't locate module iptable_
+> > ...
+> > iptables: can't initialize iptables table `' (do you need to insmod?)
+> > 
+> > which leads me to believe that some table module it requires isn't
+loaded.
+> > Is this correct, and if so how is this. I'm only using the default
+> "filter"
+> > table (which is loaded) with my single policy rule...
+> > 
+> > Any help or pointers to solutions would be greatly appreciated.
 
-cat -v will show the dos line-endings if you have them.
 
--- 
-FunkyJesus System Administration Team
+
+This email and any attachments are strictly confidential and are intended
+solely for the addressee. If you are not the intended recipient you must
+not disclose, forward, copy or take any action in reliance on this message
+or its attachments. If you have received this email in error please notify
+the sender as soon as possible and delete it from your computer systems.
+Any views or opinions presented are solely those of the author and do not
+necessarily reflect those of HPD Software Limited or its affiliates.
+
+ At present the integrity of email across the internet cannot be guaranteed
+and messages sent via this medium are potentially at risk.  All liability
+is excluded to the extent permitted by law for any claims arising as a re-
+sult of the use of this medium to transmit information by or to 
+HPD Software Limited or its affiliates.
+
 
 
