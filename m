@@ -1,10 +1,10 @@
-From: Tom Van Overbeke <tvanoverbeke@ccncsi.net>
-Subject: iptables v1.2.4 logs dropped packets that should have been allowed ???
-Date: Fri, 18 Jul 2003 09:07:32 +0200
+From: "Marek Zachara" <marek.zachara@telperion.pl>
+Subject: Strange behaviour of NAT under iptables
+Date: Fri, 18 Jul 2003 14:37:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c34cfb$42ef7f00$d90315ac@rsrc.be.local>
+Message-ID: <00d601c34d29$67a4b030$019ea8c0@eriador>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,84 +18,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
 
+I have a trustix 2.0 distribution installed with 2.4.21 kernel and 1.2.8 =
+iptables.
+thich machine is used as a gateway to the internet for a small lan of 25 =
+computers.
+All computers in local network have private 192.168.x.x addresses.
+eth1 at the router is connected to DSL/internet, eth0 to local lan.
 
-I hope someone can shed some light on a mistery i have:
+I have a couple (4) of static public IPs which I want to assign to =
+certain of these
+25 computers, the rest of them communicate with internet via masquerade.
 
+Everything worked fine when I used kernel 2.2 and ipchains with fast =
+nat.
+Now I have upgraded to the 2.4/iptables. I have set up rules in firewall =
+script=20
+to SNAT and DNAT packets coming to/from machines that should have public =
+IPs.
+Now the funny part begins (here is the scenario):
 
-our firewall (also squid proxy) serves some 50 desktops for web browsing.
+I boot up the router with iptables script which set up NAT for one of =
+the machines in the local
+ network (let's call it X - it has address in local network like =
+192.168.15.1).
+The NAT works. I can login to (X) from outside computer using the public =
+IP,
+when I log from this machine (X) to other computers, the connection is =
+shown
+as made from the right public ip that is assigned to (X).
 
-Everything works fine, noone complains about sites not being accessible or
-sth, but in the firewall logs, i see very regularly 2 types of blocked
-packets:
+Everything seems fine, but works only for about 5 minutes. Then the =
+connection
+to the (X) is unavailable - can't ping it, log in to it, no traceroute - =
+in either (in/out) directions.
+everything is blocked at the router.
 
+Most strange thing is that if I set up an alias for eth1:1 with the =
+public IP
+assigned for (X) the traffic half-works (which is expectable) - I can =
+login from (X) to any
+other computer outside local network (and connection is registered as =
+from (X) public IP),
+but I can't login to (X) from outside - which is also fine since the =
+alias 'catches' all the
+incoming traffic.=20
+Now if I delete the alias the NAT works fine both directions .... for =
+another couple
+of minutes. Then all access to/from (X) is unavailable.
+If I set up the alias again I can repeat this scenario again and again. =
+When I put up a script
+which sets/deletes the alias every 2 mins, the connection lasts, but of =
+course there are
+short periods every 2 min. (between the alias set up and deletion which =
+takes about 2 seconds)
+when all traffic incoming to this IP is directed to the alias - which is =
+not good.
 
-Jul 16 16:49:11 dobermann kernel: -drop_the_rest-IN=eth0 OUT=
-MAC=00:06:5b:f7:66:96:00:00:d1:ec:fa:3b:08:00 SRC=213.199.148.12
-DST=172.17.2.1 LEN=64 TOS=0x00 PREC=0x00 TTL=54 ID=11706 PROTO=TCP SPT=80
-DPT=55475 WINDOW=17125 RES=0x00 ACK URGP=0
+I have tried several things, but nothing works :(  Any ideas? At least =
+how to debug it?
+Any help really appreciated.
 
-DST ip is the external interface of the proxy server. to me, this appears to
-be the reply from an attempt of the squid proxy to initiate a connection
-with a remote website (because of the ACK).
-(in case you wonder why the external interface ip is a private address, this
-is because there is another firewall down the road before our company
-reaches the internet).
-i see no reason why this packet would be blocked, because i can't find the
-corresponding SYN packet in my logs.
-anyway, The connection between these hosts and ports in this example are
-configured to be permitted.
-
-
-second type of blocked packets:
-
-Jul 16 11:57:47 dobermann kernel: -drop_the_rest-IN= OUT=eth1 SRC=172.21.3.1
-DST=172.21.3.209 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=6144 PROTO=TCP SPT=3128
-DPT=2408 WINDOW=16056 RES=0x00 ACK PSH FIN URGP=0
-Jul 16 13:16:19 dobermann kernel: -drop_the_rest-IN= OUT=eth1 SRC=172.21.3.1
-DST=172.21.3.209 LEN=1102 TOS=0x00 PREC=0x00 TTL=64 ID=25203 PROTO=TCP
-SPT=3128 DPT=3384 WINDOW=6468 RES=0x00 ACK PSH URGP=0
-
-SRC is the internal ip of the firewall / squid proxy; DST is one of the
-desktop pc's used to surf the web.
-
-this packet looks like it's the squid that is forwarding the received web
-page back to the requesting client (because of the ACK and PSH bits set).
-the source port is 3128, where we have configured our proxy to listen to.
-
-
-to me this doesn't make sence: it seems almost like iptables has forgotten
-about the already established connection and seems to drop the packet
-because it can't find it in the connection tracking table.
-
-our firewall is iptables v1.2.4 running on redhat advanced server 2.1.
-the firewall was setup via fwbuilder, with connection tracking enabled for
-most of the rules (and definitely for the 'allow squid traffic' rule).
-cat /proc/sys/net/ipv4/conntrack_max is 32760
-cat /proc/net/ip_conntrack | wc -l is 172 (i assume these 2 variables are
-related ?).
-
-
-
-thx,
-
-
-Tom.
-
-
-****************************************************************************
-Disclaimer: 
-This electronic transmission and any files attached to it are strictly 
-confidential and intended solely for the addressee. If you are not 
-the intended addressee, you must not disclose, copy or take any
-action in reliance of this transmission. If you have received this 
-transmission in error, please notify the sender by return and delete
-the transmission.  Although the sender endeavors to maintain a
-computer virus free network, the sender does not warrant that this
-transmission is virus-free and will not be liable for any damages 
-resulting from any virus transmitted. 
-Thank You.
-****************************************************************************
+Marek
 
 
