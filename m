@@ -1,9 +1,8 @@
-From: Michael Eck <michael.eck@gmail.com>
-Subject: Bridging QoS Box Crashing
-Date: Mon, 23 Aug 2004 15:48:08 -0400
+From: "Cristian Seva \(VOIPLAB\)" <cristian.seva@voiplab.com>
+Subject: Problem with 2 NAT and 2 ROUTE
+Date: Mon, 23 Aug 2004 11:42:38 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <d82fbdb704082312482f02c2c8@mail.gmail.com>
-Reply-To: Michael Eck <michael.eck@gmail.com>
+Message-ID: <008801c4891f$70be07b0$0800000a@pc08infierno>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,29 +18,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Greetings,
-I have a Debian Woody box running Linux 2.4.24, iptables 1.2.11 with
-pom-ng-20040621
-patches ipt_helper_invert-fix proc_net_conntrack-permissions CLASSIFY
-CONNMARK, ipp2p, and l7-filter.
+have a problem with mi linux BOX
 
-I have the kernel oops, and have processed the output with ksymoops
-using logged output
-for my /proc/ksym, and /proc/modules.  
+Eth0 =  192.168.0.254  (RED A)
+Eth1 =  200.69.123.177/130  (LINK A)
+Eth2 =  192.168.0.100  (RED B)
+Eth3 =  192.168.1.1 para el PPPOE
+ppp0=  DynamicIP (LINK B)
+-------------------------------------------------------------------
+-DEFAULT ROUTE
+200.69.123.178 (LINKA)
+ppp0 (cdo establece el PPPOE)
+-------------------------------------------------------------------
+-IPTABLES  NAT RULES
+iptables -t nat -A POSTROUTING -s 192.168.0.0/255.255.255.128 -o ppp0 -j
+MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.0.128/255.255.255.128 -o eth1 -j
+MASQUERADE
+-------------------------------------------------------------------
 
-I'm not sure what I should do with the ksymoops output now that I've
-done, as far as I can tell, all the
-right things to make it intelligable to a developer.  I'm writing this
-here because I hadn't had any trouble with the machine until I applied
-all of those patches and started running with them.  At this point I'm
-getting about 1 week uptimes until the kernel panics.  I am not
-finding any corresponding event to the oops and cannot therefore
-reproduce it.
+My problem is the only NAT works is the NAT with march with de default
+route..
 
-Apologies in advance if this is the wrong forum for this message. 
-I'll post the ksymoops output if it's appropriate.
+Can any one helme?
 
-Thanks for the help,
-Michael Eck
-Chilitech Internet Solutions, Inc
+
+
 
