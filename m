@@ -1,11 +1,13 @@
-From: Damien Mason <kinetic@suse.net.au>
-Subject: VLANS + intervlan forwarding + SNAT
-Date: Fri, 25 Jul 2003 15:19:05 +1000
+From: Rick Kennell <kennell@ecn.purdue.edu>
+Subject: RE: port-based filtering of IPsec packets?
+Date: 25 Jul 2003 01:14:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F20BDC9.4060904@suse.net.au>
+Message-ID: <1059113683.16545.162.camel@k7.localnet>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0192CB@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0192CB@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,69 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: George Vieira <georgev@citadelcomputer.com.au>
+Cc: netfilter@lists.netfilter.org
 
-Hi All,
+On Thu, 2003-07-24 at 16:37, George Vieira wrote:
+> >Surely there must be some way of doing port-based filtering of ESP
+> >packets that are known to be bound for the local host.
+> If the packet isn't intended for the firewall/ipsec server, then
+> it's forwarded unencrypted to the internal hosts.... I'm sure by
+> then the data in decrypted right? Because it can't pass an encrypted
+> packet to a host who isn't using IPSEC.
+> 
+> Can you put -j LOG rules in the FORWARD chain to filter on it?
+> Mine appear to pickup port 23 telnet sessions... sorry if what
+> you want isn't this..
+> 
+> 
+> [root@firewall root]# iptables -I FORWARD -i ipsec0 -o eth0 -p tcp --dport 23
+> [root@firewall root]# iptables -L FORWARD -n -v -x
+> Chain FORWARD (policy DROP 0 packets, 0 bytes)
+>     pkts      bytes target     prot opt in     out     source               destination
+>        2      104            tcp  --  ipsec0 eth0    0.0.0.0/0            0.0.0.0/0          tcp dpt:23
 
-    Sorry I think my last post needs some clarification, so here it is, 
-any help would be appreciated :)
+You're using FreeS/WAN, and you're right that it creates an ipsec0
+network device where you can see unencapsulated packets.
 
-I have the following setup:
+Meanwhile, I'm using the IPsec built-in to Linux v2.6.
+No user-land daemon.
+No ipsec0 device.
+And no port-based filtering of ESP packets.
 
-Client Vlans (coming in on a single interface, trunked (802.1q).
-   Client 1
-       eth1.2    ip:    192.168.0.0/24
-       eth1.3    ip:    192.168.10.0/24
-       eth1.4    ip:    192.168.20.0/24
-   Client 2
-       eth1.5    ip:    192.168.0.0/25
-       eth1.6    ip:    192.168.0.128/25
+Maybe what I'm asking is going to be a FAQ in a few months when the
+in-kernel IPsec catches on.  I'm fairly convinced that port- or
+payload-based filtering of IPsec packets isn't presently possible with
+such that environment.  Either something needs to change or I need to
+get a little smarter.
 
-External Interface (to the internet) (examples only).
-eth0:1       ip:    203.1.1.2
-eth0:2       ip:    203.1.1.3
-eth0:3       ip:    203.1.1.4
-eth0:4       ip:    203.1.1.5
+Time to bother the folks on netfilter-devel?
 
-DMZ Intefaces, will not have overlapping network addresses.
-eth2.1       ip:    10.0.0.0/24
-eth2.2       ip:    10.0.1.0/24
-
-I want to be able to enable clients on the eth1.x vlan interfaces to be 
-able to:
-   a) access the internet, that's easy, i've just setup masquerading.
-
-   b) every 'client' has at least 1 external ip address, I want to be 
-able to forward traffic to a vlan'ed server, that is, say traffic coming 
-into 203.1.1.2 on port 80, is redirected to 192.168.0.10:80 on interface 
-eth1.2, I cannot do this in iptables prerouting because you can not 
-specify an outgoing interface in prerouting, if I could I would use 
-something like:
-
-iptables -A PREROUTING -t nat -p tcp -d 203.221.181.27 --dport 80 -j 
-DNAT --to  192.168.50.10:80 -i eth1.2
-
-But, of course, that's impossible.
-
-So, if i use an snat setup, I've come up with something like:
-iptables -t nat -A POSTROUTING -s 0/0 -d 203.1.1.2 -p tcp --dport 80 -j 
-SNAT --to 192.168.0.10:80 -o eth1.2
-
-Anything with a destination of  203.1.1.2, tcp, with a destination of 
-port 80, nat it to 192.168.0.10, port 80, output on interface eth1.2
-
-
-   c) inter-vlan routing/forwarding, eg. have hosts on (eth1.5 - 
-192.168.0.0/25) access hosts (eth1.6 - 192.168.0.128/25)
-
-Thanks in advance,
-
-Damien Mason
-SuSE Linux Asia-Pacific
-
-Email: damien at suse.net.au 
-<mailto:damien@suse.net.au?subject=Reply%20Email>
-Web: http://www.suse.net.au./
+-- 
+Rick Kennell <kennell@ecn.purdue.edu>
+Purdue University School of Electrical and Computer Engineering
 
 
