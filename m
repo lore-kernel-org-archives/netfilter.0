@@ -1,16 +1,15 @@
-From: Arnt Karlsen <arnt@c2i.net>
+From: Herman <Herman@AerospaceSoftware.com>
 Subject: Re: Port forwarding doesn't work.
-Date: Mon, 13 Oct 2003 22:09:08 +0200
+Date: Mon, 13 Oct 2003 14:47:26 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031013220908.11525ec6.arnt@c2i.net>
-References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com>
-	<200310121840.27031.Herman@AerospaceSoftware.com>
-	<20031013031712.7fd7be69.arnt@c2i.net>
-	<200310131205.55401.Herman@AerospaceSoftware.com>
+Message-ID: <200310131447.26239.Herman@AerospaceSoftware.com>
+References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310131205.55401.Herman@AerospaceSoftware.com> <20031013220908.11525ec6.arnt@c2i.net>
+Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310131205.55401.Herman@AerospaceSoftware.com>
+In-Reply-To: <20031013220908.11525ec6.arnt@c2i.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,65 +22,51 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 13 Oct 2003 12:05:55 -0600, 
-Herman <Herman@AerospaceSoftware.com> wrote in message 
-<200310131205.55401.Herman@AerospaceSoftware.com>:
+On Monday 13 October 2003 2:09 pm, Arnt Karlsen wrote:
 
-> On Sunday 12 October 2003 7:17 pm, Arnt Karlsen wrote:
->    On Sun, 12 Oct 2003 18:40:27 -0600,
->    Herman <Herman@AerospaceSoftware.com> wrote in message
-> 
->    <200310121840.27031.Herman@AerospaceSoftware.com>:
->    > The real problem that I'm trying to solve is this:
->    > Several hosts need to acces a gov service that uses Java and a
->    > certain port.
-> 
->    ..if these hosts are initiating this connection from your end,
->    " -j ESTABLISHED,RELATED" should do it, instead of you
->    running around chasing your tail.
-> 
-> Hi Arnt,
-> 
-> Could you please elaborate on that?
+   ..you don't need to specify interface nor protocol or ports other
+   than possibly to make data for the nice graphs.  KISS:   ;-)
 
-..see Robert's correction to my post and my response.
+   # Accept everyting connected
+   /sbin/iptables -A INPUT   -m state --state ESTABLISHED,RELATED \
+   -j ACCEPT
+   /sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED \
+   -j ACCEPT
 
-> As far as I can see, the hosts are initiating the connection, but the
-> port must somehow be forwarded through the firewall snat box.
-> 
-> This is what I have:
-> echo "   DNAT Forward port 3270 for Alberta Registries application on
-> Pluto"$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 3270 -j
-> ACCEPT$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -j
-> DNAT --to 192.168.10.1:3270
+Wow, that is far more simple than anything I ever saw in any howto.  I like it 
+and I'll sure try it.
 
-..this looks like some ifwadm(sp?) or ipchains like kludge?  Rip it out.
+I currently have this input rule:
+# Allow any related traffic coming back to the MASQ server in
+$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state \
+ ESTABLISHED,RELATED -j ACCEPT
 
-> This is working now, provided that I use that specific IP address on
-> the inside - I had to load the iptable_mangle module, which made my
-> problems go away...
-> 
-> I don't understand how to add the ESTABLISHED,RELATED idea into this
-> type of rule.  
-> 
-> Something like this:
-> 
-> $IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -m state
-> --state ESTABLISHED,RELATED
+and these forward rules:
+echo "     - FWD: Allow all connections OUT and only existing/related IN"
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state ESTABLISHED,RELATED 
+\
+ -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
 
-..you don't need to specify interface nor protocol or ports other 
-than possibly to make data for the nice graphs.  KISS:   ;-)
+My snat masquerade rule looks like this:
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to $EXTIP
 
-# Accept everyting connected
-/sbin/iptables -A INPUT   -m state --state ESTABLISHED,RELATED \
--j ACCEPT
-/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED \
--j ACCEPT
+Your suggestions will simplify these rules nicely.
 
+
+The problem is that I'm not quite sure how the Java applet thing works - 
+whether the connection is established from the inside, or whether the gov 
+server starts it up from the outside, after the initial http connection - 
+they may be doing that for some security reason.  If it is the latter, then 
+the established,related rules won't work and explicit port forwarding rules 
+would be required.  To add to my woes, the gov server is down for maintenance 
+at the moment, so I can't test it properly.
+
+Thanks,
 -- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+Herman Oosthuysen 
+B.Eng(E), MIEEE
+Aerospace Software Ltd.
+Ph: 1.403.241-8773, Cell: 1.403.852-5545, Fx: 1.403.241-8841
+Herman@AerospaceSoftware.com, http://www.AerospaceSoftware.com
 
