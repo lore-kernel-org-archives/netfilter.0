@@ -1,9 +1,8 @@
-From: "Joel" <zealous@bonbon.net>
-Subject: Re: view nat rules
-Date: Mon, 29 Sep 2003 16:10:19 +0530
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: iptables-restore help
+Date: Mon, 29 Sep 2003 06:43:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002301c38676$15c2d9a0$61a1a0ca@lin>
-References: <3F77E8BC.1090502@ewt.de>
+Message-ID: <1064832220.1896.12.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,42 +16,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Klaus Boehm <k.boehm@ewt.de>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-iptables -t nat -nL
+	Did you remember to redirect the output of iptables-restore to
+/etc/sysconfig/iptables? Otherwise it just dumps it to stdout.
+	If you use only a small number of rules, it may be easier to rewrite
+the scripts as suggested in another response and use the regular
+iptables syntax.  However, if you use large numbers of rules, you will
+face a very serious degradation in the time it takes to load iptables. 
+On slow machines, I can see a noticeable difference even with only a
+handful of rules.  If you have an installation that involves thousands
+or tens of thousands of rules, the device may become nearly unusable.
+	We have rewritten the scripts for our ISCS project but still use the
+iptables-restore command and syntax to load our rules.  There is
+painfully little documentation on the iptables-restore syntax.  If you
+need more information about it, let me know and I'll post some of our
+engineering documents about using it.
+	The following is an excerpt from an e-mail to our engineering team to
+describe the problem.  lotsarules is a script we used to generate
+meaningless rules for testing the rule load times and proto-PEP is a
+test hardware appliance for use with the ISCS project
+(http://iscs.sourceforge.net):
 
------ Original Message -----
-From: "Klaus Boehm" <k.boehm@ewt.de>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, September 29, 2003 1:39 PM
-Subject: view nat rules
+ My crude benchmarks show that iptables can load a small number (few
+thousand) of rules very quickly but has trouble handling large numbers
+of rules. It is not a linear increase. That is, large numbers of rules
+not only take longer because there are more rules but the rate at which
+rules can be added seems to slow in proportion to the number of existing
+rules.
+    Here are the actual tests and results:
+My laptop - PIII 750 w/256 MB RAM
+ran lotsarules for 30 minutes and added 19,533 rules = 651/minute = 11/s
 
+I thought that the problem may be all the calls to disk to run iptables
+so I ran lotsarules on the RAM based Proto-PEP for 30 minutes and added 
+14807 rules = 493/minutes = 8/second!
 
-> How can i view the nat rules.
->
-> i did iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source
-xx.xx.xx.xx
->
->  and then i tried iptables -L POSTROUTING
-> but this doesn't work.
->
-> Thanks.
->
-> Klaus
->
->
-> --
->
->
-> ewt gmbh
-> data management group
-> tel: ++49 821 3106 319
-> fax: ++49 821 3106 399
-> url: www.ewt.de
->
->
->
->
-
+    That seems awfully slow so I ran some more test on my laptop. When I
+ran lotsarules for only one minute, I added 3584 rules - quite a bit
+more than 651 per minute.
+    I then flushed those rules and ran lotsarules on my laptop for 15
+minutes. I added 13789 rules = 919/minute.
+    I wasn't sure if the problem was running the same script constantly
+from memory or the sheer number of rules. So I next ran lotsarules for
+one more minute WITHOUT first flushing the existing 13789 rules. In one
+minute I added only 445 more rules. It appears that the problem is the
+raw number of rules.
+    Thus, increasing the number of rules by a factor of say three, does
+more than make the box three times slower to boot. It will have some
+kind of exponential impact.
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
