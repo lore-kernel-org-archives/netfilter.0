@@ -1,12 +1,12 @@
 From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: is NOTRACK modules the only way to avoid connection tracking?
-Date: Mon, 7 Feb 2005 08:55:16 -0500 (EST)
-Message-ID: <43169.142.169.215.10.1107784516.squirrel@142.169.215.10>
-References: <1107767854.10815.3.camel@nostromo.bgsecm.com>
-	<Pine.GSO.4.33.0502071342280.1529-100000@indigo>
+Subject: Re: (no subject)
+Date: Mon, 7 Feb 2005 09:27:09 -0500 (EST)
+Message-ID: <45847.142.169.215.10.1107786429.squirrel@142.169.215.10>
+References: <Pine.LNX.4.44.0502062232200.13062-100000@localhost.localdomain>
+	<Pine.LNX.4.44.0502070009450.13062-100000@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <Pine.GSO.4.33.0502071342280.1529-100000@indigo>
+In-Reply-To: <Pine.LNX.4.44.0502070009450.13062-100000@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,45 +18,84 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Alexander Piavka <piavka@cs.bgu.ac.il>
+To: Dean Anderson <dean@av8.com>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, February 7, 2005 7:00 am, Alexander Piavka said:
->
->  Hello, i have a question about connection tracking.
+On Mon, February 7, 2005 12:24 am, Dean Anderson said:
+> Ok, I fixed the openwrt problem. Turned out they had some of their own
+> netfilter patches. I turned those off, and used only the patch-o-matic-=
+ng
+> patchs, and things worked.
 
-Hi
-
->
-> if i have at least one iptables rule with -m state ,no matter in which
-> chain,then the conntrack module gets loaded in all iptables hooks and
-> thus all packets will be connection tracked, even if i need to track
-> only a small subset of packets. This means that the only way to avoid
-> connection tracking for most of packes is to use the NOTRACK module in =
-raw
-> table to match them. Is my understanding correct?
-
-Yes. This is right. Keep in mind that conntrack is a hook in the packet
-traversal just like any other hooks (PREROUTING, INPUT, FORWARD, ...)
-
-Usually, that's the first hook ever. But, with the raw table, there's a n=
-ew
-hook registered before conntrack. That's why you can tell :
-
-That packet which is not going to TCP X and host X, just don't track it
-(NOTRACK).
-
-> Or i can avoid connection tracking without the use of NOTRACK modules?
-
-Without NOTRACK, that's a no conntrack for all or conntrack for all
-condition. There's no beside.
+Official package means clean patches (not always true).
 
 >
-> Thanks a lot
-> Piavlo Alexander
+> These patches were distributed by openwrt to be applied against the
+> linksys kernel:  The first one is pretty substantial.
+>
+> wc 100-revert_netfilter.patch
+>    5834   22128  179845 100-revert_netfilter.patch
+> wc 110-conntrack_setting.patch
+>      20      67     715 110-conntrack_setting.patch
+
+Those are not from patch-o-matic, aren't they ?
+
+Those are patches i've never heard of. They aren't part of netfilter
+(I guess) and obviously no warranty they will apply cleanly.
+
+Some official patches don't, so I guess it's normal 3rd party's one don't
+too.
+
+>
+> I'm not sure what the openwrt folks and/or linksys was thinking with
+> these...  They worked on earlier versions of the linksys kernel... I
+> suspect a distribution/versioning problem caused by the netfilter group=
+.
+
+Because of the constant evolution with netfilter, the only things they ca=
+re
+are :
+
+o Keep compatibility with iptables userspace
+o Keep in-kernel modules synced with new netfilter behaviour.
+o And once this is done, some start syncing Patch-O-Matic patches,
+  which aren't official to Linux but official to Netfilter.
+
+There's no precaution to keep compatibility with 3rd parties.
+
+> There is very little documentation on the netfilter site about how the
+> netfilter kernel modules should get updated.
+
+Official netfilter kernel modules are part of the linux kernel itself.
+That means, no kernel update, no netfilter update.
+
+If you are talking about 'unofficial' patches, then patching your kernel
+source is done with Patch-O-Matic.
+
+>
+> Clearly, someone was very confused with these patches. It might be that
+> linksys was confused earlier, and the openwrt folks were taking that ou=
+t
+> with their patches. Or maybe it is the other way around.  I don't know.=
+ It
+> sure left me confused, and wondering wtf.
+
+I'm wondering wtf too about those patches. What are they, why are they...
+
+>
+> Seems like there should be a better way to distribute kernel modules.  =
+I
+> didn't intend to become a netfilter internals expert.
+
+Again, Netfilter Linux kernel modules are distributed with Linux kernel.
+KIM, netfilter is a total part of the Linux kernel.
+
+>
+> 		--Dean
 >
 
-HTH,
+Have a good day,
 Samuel
+
 
 
