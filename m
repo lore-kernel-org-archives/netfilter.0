@@ -1,10 +1,9 @@
-From: Joe Drago <joe@gotdoofed.com>
-Subject: round robin SNAT, multiple "to IP" setup, AIM issue?
-Date: Wed,  8 Sep 2004 15:33:11 -0700
+From: "Owen C. Creger" <owencreger@rocketmail.com>
+Subject: POP3 Attachments
+Date: Wed, 8 Sep 2004 17:00:19 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094682791.413f88a75fabc@www.gotdoofed.com>
+Message-ID: <20040909000019.5047.qmail@web52506.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,67 +15,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-[fixed resend with proper email]
+Firewall:
+Fedora Core 1
+iptables 1.2.9-1.0
 
-I have a simple setup for a Linux router with two interfaces. One interface
-(eth1) is my internal side, running the 10.176.60.1/22, and the other interface
-(eth0) has 10 public IP addresses on it, similar to 5.5.5.0/23 (first 3 octets
-changed to 5.5.5 to protect the innocent. :-)
+I am having trouble with email clients on the LAN being able to recieve
+emails with attachments.  Attachment size doesn't matter.  The email
+clients will just time out trying to recieve an email that has an
+attachmentThe firewall is able to get emails with attachements using
+Fetchmail from the same server, so I don't think it is a POP3 server
+issue, and everything else works fine, browsing, ftp etc...
 
-Internet - [eth0 5.5.5.60-5.5.5.69] - NAT - [eth1 10.176.60.1/22] - Clients
+I'm using fwbuilder 2.0 to configure iptables.
 
-To configure this device, I use a series of commands, listed here. Mind you, the
-only change from my real config is the public IPs have been replaced with the
-"5.5.5.0" range.
+I'm sure it's something simple...
+iptables -L output:
 
-
-ifconfig eth0 up
-ifconfig eth1 up
-ifconfig eth0 5.5.5.60 netmask 255.255.254.0
-ip addr add 5.5.5.61/23 dev eth0
-ip addr add 5.5.5.62/23 dev eth0
-ip addr add 5.5.5.63/23 dev eth0
-ip addr add 5.5.5.64/23 dev eth0
-ip addr add 5.5.5.65/23 dev eth0
-ip addr add 5.5.5.66/23 dev eth0
-ip addr add 5.5.5.67/23 dev eth0
-ip addr add 5.5.5.68/23 dev eth0
-ip addr add 5.5.5.69/23 dev eth0
-ifconfig eth1 10.176.60.1 netmask 255.255.252.0
-route add default gw 5.5.5.1
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 5.5.5.60-5.5.5.69
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-
-This setup has worked perfect for me for a while, but recently I noticed that
-when I try to connect to the AOL Instant Messenger service, it refuses to
-complete the connection. I recorded the conversation with Ethereal and realized
-that it was talking to two servers over at AOL. One of them provided the
-authentication, and the other one was what carried on the regular AIM conversation.
-
-This is the very reason it seems to break. The AIM client (tried the real AIM
-client running on an XP work laptop and gaim/Debian on my work machine) attempts
-to connect to the auth server. The linux router chooses the next available WAN
-IP for this connection (let's say 5.5.5.60 port 5190). Once the authentication
-completes, it attempts to connect to the main AIM server (port 5190 again), in
-which the linux router chooses 5.5.5.61 to talk to this. The IP discrepancy is a
-no-no to the second server, and sends me away.
-
-To make a long story short (TOO LATE!), I need to figure out a way to have the
-Linux box use the same IP for both connections to the AIM servers. My first idea
-was to potentially route all traffic destined for port 5190 across one of the
-ten WAN IPs, but then I wondered if there was a way to have the linux router
-"prefer" to use the same WAN IP as much as possible without resorting to a
-1-to-1 setup. There are more than 10 clients, so that really isn't an option.
-
-Any advice is appreciated, including potential fixes to the generic config as it
-is. I don't claim to be an expert on any of this. :-D
-
-Joe Drago
-StreamLine Communications
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED
+ACCEPT     all  --  anywhere             anywhere
+DROP       all  --  10.2.0.1             anywhere
+DROP       all  --  cablemodem.creger.net 
+c-24-56-227-130.chrlmi.cablespeed.com
+ACCEPT     all  --  10.1.1.0/24          anywhere            state NEW
+RULE_4     tcp  --  anywhere            
+c-24-56-227-130.chrlmi.cablespeed.com tcp dpt:ssh state NEW
+RULE_5     all  --  anywhere             anywhere
+ 
+Chain FORWARD (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED
+DROP       all  --  10.2.0.1             anywhere
+ACCEPT     all  --  10.1.1.0/24          anywhere            state NEW
+RULE_5     all  --  anywhere             anywhere
+ 
+Chain OUTPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere            state
+RELATED,ESTABLISHED
+ACCEPT     all  --  anywhere             anywhere
+ACCEPT     all  --  c-24-56-227-130.chrlmi.cablespeed.com  anywhere    
+       state NEW
+ACCEPT     all  --  server.creger.net    anywhere            state NEW
+ACCEPT     all  --  10.1.1.0/24          anywhere            state NEW
+RULE_4     tcp  --  anywhere            
+c-24-56-227-130.chrlmi.cablespeed.com tcp dpt:ssh state NEW
+RULE_5     all  --  anywhere             anywhere
+ 
+Chain RULE_4 (2 references)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere            LOG level
+info prefix `RULE 4 -- ACCEPT '
+ACCEPT     all  --  anywhere             anywhere
+ 
+Chain RULE_5 (3 references)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere            LOG level
+info prefix `RULE 5 -- DENY '
+DROP       all  --  anywhere             anywhere
 
 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
