@@ -1,11 +1,12 @@
-From: "jacob" <jacob@plinux.net>
-Subject: how to monitor the connection on NAT...
-Date: Thu, 6 Jun 2002 10:55:27 +0800
+From: "Matt Walkowiak" <matt@inetdvd.com>
+Subject: (no subject)
+Date: Wed, 5 Jun 2002 23:24:25 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001401c20d05$a0103710$bb4110ac@ee>
+Message-ID: <00d301c20d12$0abbfde0$8201a8c0@adserver.local>
+References: <001401c20d05$a0103710$bb4110ac@ee>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0011_01C20D48.AAFD5250"
+	boundary="----=_NextPart_000_00D0_01C20CE8.216BBCD0"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -20,21 +21,37 @@ To: netfilter@lists.samba.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0011_01C20D48.AAFD5250
+------=_NextPart_000_00D0_01C20CE8.216BBCD0
 Content-Type: text/plain;
 	charset="big5"
 Content-Transfer-Encoding: quoted-printable
 
-hi all,
-i use iptables to implement the nat in my network envirement,
-i can use "netstat" to monitor the connection of the nat box,=20
-but how do i monitor the masqueraded connections on the nat box ?
+I was wondering if something exists that can do what I want for =
+netfilter.
 
-Thanks in advance.
-jacob
+In the WatchGuard land, there is a very neat program called HostWatch.  =
+It has two columns: One for Outside and one for Inside.  Then, it draws =
+a line from one column to the other for each connection.  It also =
+refreshes itself about once every second.
 
+Let's say you have a web server on the inside of your firewall, and 10 =
+people are currently hitting it.  HostWatch would show 10 lines (each =
+from a seperate IP addy, resolved if it can find it) drawn to the one ip =
+addy of the web server.
 
-------=_NextPart_000_0011_01C20D48.AAFD5250
+The nice thing about HostWatch is you can see exactly what is happening =
+now.
+
+Now, I generally dont run any kind of X-windows system on my Linux =
+boxes, so it would be nice to get a "text based" version of what I'm =
+looking for, however, if a nice program existed that needed X to run, =
+I'd seriously consider installing X windows.
+
+Anyway, thanks in advance for your responces!
+
+Matt Walkowiak
+
+------=_NextPart_000_00D0_01C20CE8.216BBCD0
 Content-Type: text/html;
 	charset="big5"
 Content-Transfer-Encoding: quoted-printable
@@ -42,24 +59,51 @@ Content-Transfer-Encoding: quoted-printable
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
-<META content=3D"MSHTML 5.50.4522.1800" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>hi all,</FONT></DIV>
-<DIV><FONT size=3D2>i use iptables to implement the nat in my network=20
-envirement,</FONT></DIV>
-<DIV><FONT size=3D2>i can use "netstat" to monitor&nbsp;the connection =
-of the nat=20
-box,&nbsp;</FONT></DIV>
-<DIV><FONT size=3D2>but how do i monitor the masqueraded connections on =
-the nat=20
-box ?</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>Thanks in advance.</FONT></DIV>
-<DIV><FONT size=3D2>jacob</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>I was wondering if something exists =
+that can do=20
+what I want for netfilter.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>In the WatchGuard land, there is a very =
+neat=20
+program called HostWatch.&nbsp; It has two columns: One for Outside and =
+one for=20
+Inside.&nbsp; Then, it draws a line from one column to the other for =
+each=20
+connection.&nbsp; It also refreshes itself about once every =
+second.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Let's say you have a web server on the =
+inside of=20
+your firewall, and 10 people are currently hitting it.&nbsp; HostWatch =
+would=20
+show 10 lines (each from a seperate IP addy, resolved if it can find it) =
+drawn=20
+to the one ip addy of the web server.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>The nice thing about HostWatch is you =
+can see=20
+exactly what is happening now.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT><FONT face=3DArial =
+size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Now, I generally dont run any kind of =
+X-windows=20
+system on my Linux boxes, so it would be nice to get a "text based" =
+version of=20
+what I'm looking for, however, if a nice program existed that needed X =
+to run,=20
+I'd seriously consider installing X windows.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Anyway, thanks in advance&nbsp;for your =
 
-------=_NextPart_000_0011_01C20D48.AAFD5250--
+responces!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Matt =
+Walkowiak</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_00D0_01C20CE8.216BBCD0--
 
 
