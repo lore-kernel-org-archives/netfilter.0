@@ -1,11 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I need help , please
-Date: Fri, 5 Jul 2002 17:49:09 +0100
+From: "Joe Patterson" <jpatterson@asgardgroup.com>
+Subject: RE: I need help , please
+Date: Fri, 5 Jul 2002 12:45:38 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207051649.g65GnH802615@vulcan.rissington.net>
-References: <002701c2242f$9498cd20$0a01a8c0@ed> <200207051635.g65GZC802568@vulcan.rissington.net> <019301c2240f$e8e004e0$8703000a@aid.inf.cu>
+Message-ID: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com>
+References: <019301c2240f$e8e004e0$8703000a@aid.inf.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 In-Reply-To: <019301c2240f$e8e004e0$8703000a@aid.inf.cu>
 Errors-To: netfilter-admin@lists.samba.org
@@ -18,32 +18,59 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: david <david@aid.inf.cu>, Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-On Friday 05 July 2002 11:37 am, david wrote:
+next tell us the output of these commands:
 
+which iptables
+file `which iptables`
+
+and did you mean to mis-spell INPUT as INPUD?
+
+-Joe
+
+
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org]On Behalf Of david
+> Sent: Friday, July 05, 2002 6:37 AM
+> To: Antony Stone
+> Cc: netfilter@lists.samba.org
+> Subject: Re: I need help , please
+> 
+> 
 > Antony;
->
+> 
 > #iptables -P INPUD DROP
 > iptables:Bad built in chain name
-
-Okay, now type it with a 'T' next time.
-
- 
-
-Antony.
-
+> 
+> if I turn to:
+> #iptables -P inpud DROP
+> iptables:Bad built in chain name
+> 
+> if I try:
+> #iptables -p inpud DROP
+> iptables v1.2.3: unknown protocol `inpud` specified
+> 
+> thanks again tony
+> 
+> david
+> 
 > ----- Original Message -----
 > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
 > To: <netfilter@lists.samba.org>
 > Sent: Friday, July 05, 2002 6:35 PM
 > Subject: Re: I need help , please
->
+> 
+> 
 > > On Friday 05 July 2002 11:18 am, david wrote:
+> >
 > > > iptables:Bad built-in change name
 > >
 > > What *exactly* did you type (punctuation as well) and what *exactly* is
-> > the response ?
+> the
+> > response ?
 > >
 > > The command I want you to try is
 > >
@@ -61,8 +88,48 @@ Antony.
 > > <enter>.
 > >
 > > If you really do get an error in response to this, your system is very
-> > sick.
->
+> sick.
+> >
+> >
+> >
 > > Antony.
-
+> >
+> > >  ----- Original Message -----
+> > > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> > > To: <netfilter@lists.samba.org>
+> > > Sent: Friday, July 05, 2002 6:00 PM
+> > > Subject: Re: I need help , please
+> > >
+> > > > On Friday 05 July 2002 10:25 am, david wrote:
+> > > > > OK , I agree.In fact I  am just trying.
+> > > > > I heve tested a simpler script :
+> > > > >
+> > > > > # Standard default policies
+> > > > > iptables -P INPUT DROP
+> > > > > iptables -P FORWARD DROP
+> > > > > iptables -P OUTPUT DROP
+> > > > >
+> > > > > am here you have the output.
+> > > > > /etc/rc.d/init.d/iptables : command not found
+> > > > > iptables: bad police name
+> > > > > iptables: bad police name
+> > > > > iptables: bad police name
+> > > > > /etc/rc.d/init.d/iptables : command not found
+> > > >
+> > > > Do you have . in your path ???   It looks to me as though you're in
+> > > > /etc/rc.d/init.d when you type this, and it's trying to run the
+> iptables
+> > > > script in the local directory instead of the iptables 
+> binary in /sbin
+> > > >
+> > > > What happens if you cd to /root and type
+> > > > iptables -P INPUT DROP
+> > > >
+> > > >
+> > > >
+> > > > Antony.
+> 
+> 
+> 
+> 
 
