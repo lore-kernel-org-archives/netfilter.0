@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is this config OK, plus where should I be logging...
-Date: Mon, 5 Apr 2004 10:11:16 +0100
+From: nexor@fnet.pl
+Subject: Re: Connections and connlimit problem,
+Date: Mon, 5 Apr 2004 11:47:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404051011.16437.Antony@Soft-Solutions.co.uk>
-References: <000001c41ad1$692d25b0$0464a8c0@stu>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <1278290250.20040405114706@fnet.pl>
+References: <813267234.20040405102323@fnet.pl>
+Reply-To: nexor@fnet.pl
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c41ad1$692d25b0$0464a8c0@stu>
+In-Reply-To: <813267234.20040405102323@fnet.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,92 +21,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 05 April 2004 6:46 am, Stuart Lamble wrote:
+Hello nexor,
 
-> Thanks for your reply, it has me thinking here.
->
-> I agree, running local services on a firewall is asking for it,
-> especially with SMTP.
-> I think what I need to do is add a third network card to the firewall
-> and create a DMZ, probably safer than dnat-ing to these services on the
-> LAN, such as SMTP server on the LAN.
+Monday, April 5, 2004, 10:23:23 AM, you wrote:
 
-Yes; if you DNAT external IPs to an internal LAN address, and then someone 
-finds out how to exploit your mail server, your LAN is wide open to them.
+nfp> Hello,
+nfp> it's my first post here - so welcome everyone!
 
-If you place the mail server on a DMZ, it should have very restricted access 
-to your LAN (if any), so someone who gets into your mail server has your mail 
-server and nothing else.
+nfp> I'm using Debian with kernel 2.4.6. I realized that I have a lot lines
+nfp> in ip_conntrack like that:
 
-> That will add some extra rules to the firewall, but at least now it will
-> be a pure netfilter machine ;-)
-> I will probably just open UDP 53,TCP 80 and FTP for the purposes of
-> connecting to the net and running updates from the firewall itself.
-> I may also want ssh, so I can admin from the internet, but then I could
-> always ssh to the DMZ and then ssh from there to the firewall, probably
-> safer.
+nfp> tcp 6 431925 ESTABLISHED src=213.155.172.138
+nfp> dst=217.17.41.88 sport=1057 dport=8074
+nfp> src=217.17.41.88 dst=213.155.172.138 sport=8074 dport=1057 [ASSURED] use=1
 
-The more hoops a cracker has to go through to get at something valuable, the 
-less likely it is they'll succeed.
+nfp> I guess that 431925 (third values) is a timer - means how long this
+nfp> connection will be tracked. Value of 431925 (in secs) means about 5
+nfp> days... Those connections stay in ip_conntrack even after user reboot or
+nfp> shutdown his computer.
 
-> Just a few questions on your reply below?
-> On the "-t nat" table , PREROUTING, OUTPUT and POSTROUTING is -P ACCEPT.
-> Good or bad
+nfp> I use connlimit and would like to not allow more than 20 connections
+nfp> at once - here is my problem. After few days my ip_conntrack is full
+nfp> of connections like that. Users can't make new connections, because
+nfp> they have those 'dead' connections and connlimit prevent them from
+nfp> making new.
 
-Absolutely vital.   *Always* leave nat tables with ACCEPT policies.   All 
-sorts of nasty and incomprehensible things will happen if you set default 
-DROP policy on a nat table :)
+nfp> Sorry for my poor English, I'm waiting for some advices.
 
-> Also, I currently have an eth0 which is the Un-trusted interface
-> connecting to my DSL modem.
-> I have eth1 which is my trusted LAN and ppp0, which is the virtual
-> interface that comes up when the DSL line is up, pritty much 24/7.
-> However, I base my rules on ppp0 as the un-trusted interface and not
-> eth0, in fact in a previous email, you asked where is eth0? What should
-> I do here?
+I've found that:
+cat /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established
 
-To be honest I'm not sure - I'm not familiar with that arrangement.   I use 
-DSL, however I have an ethernet cable between my firewall and my DSL modem 
-and I talk pure IP/ethernet over that - no PPP involved anywhere.   Maybe 
-someone else can suggest how you should deal with this.
+returns value:
+ 432000
 
-> What is the very first table that a packet will "touch" as it comes into
-> the firewall? PREROUTING or INPUT?
-> I believe it will be PREROUTING, as a packet may be destined for another
-> machine on the network, dnat...
+Isn't that too much ?
 
-Exactly.   It has to be PREROUTING (think about the name) because the next 
-step is the routing decision and the selection of whether the packet is going 
-to enter INPUT or FORWARD....
-
-> So, should this table be not be the most "looked after" as so to speak,
-> followed by the FORWARD table?
-
-You should not put filtering (DROP, REJECT) rules in your nat tables, 
-therefore place whatever DNAT rules you need in PREROUTING, but put your 
-security effort into INPUT and FORWARD.
-
-> Especially if we have a DMZ, where we are PREROUTING most services to
-> that interface, and almost nothing will be for INPUT as no services will
-> be running on the firewall itself, except for ssh????
-
-Remember the DMZ services will still go through FORWARD - that is where you 
-should be selective about what you allow and in which direction/s.
-
-> For your time, it is truly appreciated.
-
-Thank you.   Glad you found the mailing list useful.
-
-Regards,
-
-Antony.
 
 -- 
-There's no such thing as bad weather - only the wrong clothes.
-
- - Billy Connolly
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards,
+ nexor                            mailto:nexor@fnet.pl
 
 
