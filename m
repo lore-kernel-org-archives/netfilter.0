@@ -1,13 +1,12 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Inbound port mapping blocks outbound connection?
-Date: Mon, 20 Dec 2004 15:55:01 -0800
-Message-ID: <8FCFE8B8-52E2-11D9-BA43-000A95CFE5AA@latencyzero.com>
-References: <4CE68372-5207-11D9-BA43-000A95CFE5AA@latencyzero.com>
-	<1103548934.3264.6.camel@hubcap.ljm.dom>
-Mime-Version: 1.0 (Apple Message framework v619)
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: conntrack records not going away?
+Date: Mon, 20 Dec 2004 21:33:52 -0500
+Message-ID: <1103596432.6589.8.camel@hubcap.ljm.dom>
+References: <876ef97a041220111947fbeff5@mail.gmail.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103548934.3264.6.camel@hubcap.ljm.dom>
+In-Reply-To: <876ef97a041220111947fbeff5@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Mon, 2004-12-20 at 14:19, Tobias DiPasquale wrote:
+> Hi all,
+> 
+> We have a box running 2.4.26 (from kernel.org) over here that's
+> serving as a sink for test SMTP traffic. The box sits behind a Linux
+> box that is doing ProxyARP. The weird thing is, sometimes after
+> sending tons of traffic to the sink, conntrack records hang around in
+> the ESTABLISHED state, even though the sink process (the endpoint for
+> the connections in question) has been shut down. Has anyone ever seen
+> this before? TIA :)
 
-On Dec 20, 2004, at 05:22, Jason Opperisano wrote:
+once a TCP connection gets to ESTABLISHED [ASSURED] state--it will not
+be removed from conntrack until it times out (after 5 days by default
+(432000 seconds)), or one side sends a FIN-ACK packet requesting that
+the connection be torn down.
 
-> well--you provide pretty much zero detail, so i'm going to have to put
-> my funny-looking kreskin hat on...
+it sounds like you're shutting down endpoints after the connections are
+setup, but before they have a chance to close them.
 
-Really? I thought I put a lot of info in there. Please tell me what 
-else would have helped, so that I may do better next time.
+-j
 
-> the powers-that-be are telling me that you (like many other people that
-> as this question), did not specify "-i $OUTSIDE_IF" in your PREROUTING
-> nat rule, and therefore packets that arrive inbound on the inside
-> interface match and disappear into the ether.
->
->   iptables -t nat -A PREROUTING -i $OUTSIDE_IF -p tcp \
->     -d $OUTSIDE_IP --dport 6969 -j DNAT --to-destination $INSIDE_HOST
-
-Ah! Yes, this sounds very plausible. I appreciate the advice!
-
--- 
-Rick
+--
+"Ah, beer, my one weakness. My achilles heel, if you will."
+	--The Simpsons
 
 
