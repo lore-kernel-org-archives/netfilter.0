@@ -1,12 +1,14 @@
-From: "Yogini Parkhi" <yparkhi@bivio.net>
-Subject: RE: log all dropped packets
-Date: Wed, 2 Oct 2002 14:53:29 -0700
+From: "Rick Deckard" <deckard@forever-networks.com>
+Subject: RE: iptables vs cisco pix
+Date: Wed, 2 Oct 2002 18:16:47 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <385DA3327471554CA86AACAA2BBB8130250E63@plstnexc01.corp.networkrobots.com>
+Message-ID: <HGEEKCPKMCLEIOHFGKCNOEBGCHAA.deckard@forever-networks.com>
+References: <40410.67.118.146.230.1033576589.squirrel@highwayshouse.net>
+Reply-To: <deckard@forever-networks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <40410.67.118.146.230.1033576589.squirrel@highwayshouse.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"
-To: SB CH <chulmin2@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: highway@highwayshouse.net, netfilter@lists.netfilter.org
 
-For Q1. You can do a little trick and create a user chain called LOGDROP =
-and then use that.
-e.g.
-iptables -N LOGDROP
-iptables -j LOG -log-preifx "LOGDROP: "
+I agree with you. However you have to consider the political issues. If
+there is any kind of security breach, management and auditors may want to
+know what type of hardware was used.
 
-now, where ever you were using target DROP, use LOGDROP instead. This =
-way you can make sure you log things before dropping.
+If you go with your Pix or Checkpoint implementation you cover your rear end
+if anything goes wrong.
 
-For logging traffic handled by default policy you will have to have a =
-last rule in all default chains - INPUT, OUTPUT, FORWARD that logs =
-traffic with the right prefix.
+I've been using Linux since 98 and it's slowly creeping into the enterprise.
+I'm a consultant, and I've had the opportunity to move around a bit. Linux
+is doing well in the server market.
 
-Iptables -A INPUT -j LOG -log-prefix "INPUTDEFAULT: "
-Iptables -A INPUT -j LOG -log-prefix "FORWARDDEFAULT: "
-Iptables -A INPUT -j LOG -log-prefix "OUTPUTDEFAULT: "
+I doubt you'll get management to buy into a Linux solution unless you
+provide examples of other users. Do you have a vendor contract with Redhat
+or Caldera? It might make it easier.
 
-Hope this helps you.
--Y
+Try SE-Linux. Management might go with a firewall implementation backed by
+the NSA.
 
-
-
------Original Message-----
-From: SB CH [mailto:chulmin2@hotmail.com]
-Sent: Tuesday, October 01, 2002 6:19 PM
-To: netfilter@lists.netfilter.org
-Subject: log all dropped packets
-
-Hello, all.
-
-my two questions are similar.
-
-Question1.
-I would like to log all Dropped packet.
-How can I write a log about all dropped packet?
+-Clarke-
 
 
-Question2.
-Surely, my default policy is DROP.
-and one can't log about related default Policy.
-How can I log packet information about default policy related?
-
-
-Thanks in advance.
-
-
-
-_________________________________________________________________
-=BA=B8=B4=D9 =BA=FC=B8=A3=B0=ED =BA=B8=B1=E2 =C6=ED=C7=D1 =B4=BA=BD=BA. =
-=BF=C0=B4=C3=C0=C7 =C8=AD=C1=A6=B4=C2 MSN =B4=BA=BD=BA=BF=A1=BC=AD =
-=C8=AE=C0=CE=C7=CF=BC=BC=BF=E4.
-http://www.msn.co.kr/news/
 
 
