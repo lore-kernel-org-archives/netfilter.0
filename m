@@ -1,13 +1,15 @@
-From: Jose Teves <joseteves@linux.org.ar>
-Subject: Re: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
-Date: Tue, 06 Jul 2004 18:55:16 -0300
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: 3 iptables accounting questions
+Date: Wed, 7 Jul 2004 07:55:24 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40EB1FC4.4090606@linux.org.ar>
-References: <009001c4638f$7a173170$800101df@lvl.digidyne.ca> <015601c46399$68674140$800101df@lvl.digidyne.ca>
+Message-ID: <20040706215524.GB30118@samad.com.au>
+References: <200407061017.43252.etienne@unix.za.org> <200407060945.51110.Antony@Soft-Solutions.co.uk> <200407061107.25731.etienne@unix.za.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TRYliJ5NKNqkz5bu"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <015601c46399$68674140$800101df@lvl.digidyne.ca>
+Content-Disposition: inline
+In-Reply-To: <200407061107.25731.etienne@unix.za.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,117 +19,125 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Eric,
 
-Download the last version of patch-o-matic-ng from cvs.netfilter.org
+--TRYliJ5NKNqkz5bu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   =20
-http://cvs.netfilter.org/patch-o-matic-ng/patch-o-matic-ng.tar.gz?tarball=
-=3D1
+On Tue, Jul 06, 2004 at 11:07:25AM +0200, Etienne Ledoux wrote:
+> super answer! tx!
+>=20
+> 1)
+> Should I change the 10.168.0.2/32 to 0.0.0.0/0 ? Would that catch everyth=
+ing=20
+> on eth0 ? My internal lan is 192.168.0.0/24. But mail is delivered direct=
+ly=20
+> to the fw which wont pass to the internal network but is also part of the=
+=20
+> internet traffic. So I guess I have to types of internet traffic.=20
+> 192.168.0.0/24 which is the internal network doing the usual stuff on the=
+=20
+> internet like browsing etc. and mail which is going to/from 10.168.0.2 wh=
+ich=20
+> is the external ethernet of the firewall.
+>=20
+> 2) iptables-save -c ACCT
+> Unknown arguments found on commandline
+>=20
+> I guess I'm doing something stupid here. What would the right syntax be ?
+>=20
+> e.
+>=20
+> On Tuesday 06 July 2004 10:45, Antony Stone wrote:
+> > On Tuesday 06 July 2004 9:17 am, Etienne Ledoux wrote:
+> > > Greetings,
+> > >
+> > > 1) I have a firewall and would like to count all the traffic
+> > > entering/leaving the external interface (I want to count only internet
+> > > traffic, which is the traffic entering/leaving the external if). Is t=
+his
+> > > rule right ?
+> > >
+> > > iptables -N ACCT
+> > > iptables -I FORWARD -j ACCT
+> > > iptables -I INPUT -j ACCT
+> > > iptables -I OUTPUT -j ACCT
+> > > iptables -A ACCT -s 10.168.0.2/32 -d 0.0.0.0/0 -o eth0
+> > > iptables -A ACCT -s 0.0.0.0/0 -d 10.168.0.2/32 -i eth0
 
-this it compiles without problems.
+why not something like=20
 
-good luck
+iptables -t mangle -N ACCT
+iptables -t mangle -I PREROUTING 1 -i eth0 -j ACCT
+iptables -t mangle -I POSTROUTING 1 -o eth0 -j ACCT
 
-pd: i'm sorry my bad english :(
-
---
-Jose Teves
-josxlnx at yahoo dot com dot ar
-
-Eric Poulin escribi=F3:
-
->Well, it turned out I need to apply the 08_linux-2.6.7-user_attr.patch f=
-rom
->patch-o-matic, however, it is failing since it needs to  apply
->03_linux-2.6.5.patch, and it failed on the diff test... There is some
->rejects according to the
->output. Can't force it either... :(
->
->Interesting
->
->Eric
->----- Original Message -----=20
->From: "Eric Poulin" <epoulin@onepost.net>
->To: <netfilter@lists.netfilter.org>
->Sent: Tuesday, July 06, 2004 3:28 PM
->Subject: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
->
->
-> =20
->
->>Hello Guys,
->>
->>Any people succesfully compiled iptables 1.2.11 on 2.6.7?  Oddly, even
->>without applying any patch-o-matics packages, I'm getting the following
->>error while doing the make:
->>
->># make BINDIR=3D/sbin KERNEL_DIR=3D/usr/src/linux
->>Making dependencies: please wait...
->>Extensions found: IPv4:ROUTE IPv4:recent IPv6:ROUTE IPv6:ah IPv6:esp
->>IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
->>
->>   =20
->>
->gcc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VE=
-RSIO
-> =20
->
->>N=3D\"1.2.11\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt=
-_ah.c
->>In file included from include/libiptc/libiptc.h:6,
->>                 from include/iptables.h:5,
->>                 from extensions/libipt_ah.c:8:
->>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: n=
-o
->>semicolon at end of struct or union
->>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: syn=
-tax
->>error before '*' token
->>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: syn=
-tax
->>error before '}' token
->>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: t=
-ype
->>defaults to `int' in declaration of `DECLARE_MUTEX'
->>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
->>parameter names (without types) in function declaration
->>/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
->>`DECLARE_MUTEX' declared `static' but never defined
->>make: *** [extensions/libipt_ah_sh.o] Error 1
->>
->>
->>I'm getting this with a vanilla source code of the kernel and iptables.=
- I
->>was getting those with the patch-o-matic installed, but I wanted to nar=
-row
->>it down. Kernel can compile easily those modules that are coming from
->>iptables 1.2.9.
->>
->>Any idea?
->>
->>Eric
->>
->>
->>
->>
->>   =20
->>
->
->
->
->
->
-> =20
->
+iptables -A ACCT -i eth0
+iptables -A ACCT -o eth0
 
 
---=20
-Jose Teves
-joseteves at linux dot org dot ar
+This should capture every thing entering and leave via eth0
 
 
+
+> > >
+> > > 10.168.0.2 is my external interface ip and is also the ip which my
+> > > internal network is natted behind.
+> >
+> > You want to count traffic addressed *to this machine* from the Internet,
+> > and traffic addressed *from this machine* to the Internet, yes?   In th=
+at
+> > case these rules will work, but there is no point in jumping to the ACCT
+> > chain from the FORWARD chain.
+> >
+> > Remember that FORWARD is *only* for traffic going through the machine, =
+and
+> > INPUT and OUTPUT are *only* for traffic to/from the machine (ie: *never*
+> > for traffic going through it).
+> >
+> > If you want to count traffic addressed *to any machine on your internal
+> > network* from the Internet, and traffic addressed *from any machine on =
+your
+> > network* to the Internet, then you should use your subnet address in th=
+e -s
+> > and -d options, not the address of your firewall.
+> >
+> > At a guess this subnet is going to be 10.168.0.0/24, but I don't know w=
+hat
+> > netmask you're using.
+> >
+> > > 2) I would like to save/restore only this accounting rule. I thought
+> > > 'iptables-save -c -t ACCT' would work but it doesn't.
+> >
+> > No, ACCT is not a table (like filter, nat and mangle are) - it is a cha=
+in
+> > (like FORWARD, INPUT and OUTPUT are).   Don't use -t
+> >
+> > > 3) How do I flush the accounting stats.
+> >
+> > iptables -Z ACCT, or iptables -L -Z ACCT -nvx if you want to see the
+> > counters immediately before zeroing them.
+> >
+> > Regards,
+> >
+> > Antony.
+>=20
+>=20
+
+--TRYliJ5NKNqkz5bu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFA6x/MkZz88chpJ2MRAnhAAKC09CWzv+HXH4m9BKSjW37zSMM2oACeIudB
+rqgQPrreEUhQVBZHbMfkRm8=
+=DwhE
+-----END PGP SIGNATURE-----
+
+--TRYliJ5NKNqkz5bu--
 
