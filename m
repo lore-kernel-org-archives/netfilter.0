@@ -1,13 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Source IP ADDRESS
-Date: Sat, 5 Jul 2003 12:53:37 +1000
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Forwarding HTTP question
+Date: 05 Jul 2003 01:22:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDEMKKNJDLAJDPNDPCDDKEAINFAA.georgev@citadelcomputer.com.au>
-References: <20030704162814.28056.qmail@web41504.mail.yahoo.com>
+Message-ID: <1057382564.2822.22.camel@alpha.newkirk.us>
+References: <004f01c34231$f1d429f0$6800817d@TESTE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030704162814.28056.qmail@web41504.mail.yahoo.com>
+In-Reply-To: <004f01c34231$f1d429f0$6800817d@TESTE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Bissio <bissio2000@yahoo.it>, netfilter@lists.netfilter.org
+To: Guilherme Viebig <guilherme@plannercorretora.com.br>
+Cc: *netfilter <netfilter@lists.netfilter.org>
 
-Because the software your using is telling the server your connected to what
-your IP is. Much like FTP does and ICQ etc..etc.. which is why special
-connection tracking modules are required for those services.
+On Fri, 2003-07-04 at 09:41, Guilherme Viebig wrote:
+> My Firewall has two interfaces
+> 
+> eth0 200.123.234.111
+> eth1 192.168.0.1
+> 
+> I have an internal webserver on 192.168.0.33
+> 
+> How can I setup iptables to forward incoming traffic by eth0 to port 80 go
+> to 192.168.0.33:80 ?
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Bissio
-Sent: Saturday, July 05, 2003 2:28 AM
-To: netfilter@lists.netfilter.org
-Subject: Source IP ADDRESS
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to 192.168.0.33
 
-
-Hi all,
-
-I've a problem with masq... sometimes when i connect
-to pubblic chat or other web services from my lan, i
-see my source ip address (private network) listed. I
-would see my pubblic ip address listed... i use this
-rule:
-
-iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o
-eth1 -j SNAT --to public.ip.address
-
-and in FORWARD rule:
-
-iptables -A FORWARD -p tcp -i eth0 -o eth1 -s
-192.168.0.0/24 --dport 1:1023 -j ACCEPT
-
-iptables -A FORWARD -p tcp -i eth1 -o eth0 -d
-192.168.0.0/24 --dport 1024:65535 ! --syn -j ACCEPT
-
-Why my private ip addres (192.168.0.10) is listed
-instead my public address???
-
-Thanks
-Bissio
-
-
-______________________________________________________________________
-Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus,
-il filtro Anti-spam
-http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
+j
 
 
 
