@@ -1,13 +1,12 @@
-From: "P.Italiaander" <pc-secure@home.nl>
-Subject: Re: DNAT/SNAT stuff
-Date: Mon, 12 May 2003 01:27:30 +0200
+From: kadlec@blackhole.kfki.hu (Jozsef Kadlecsik)
+Subject: [ANNOUNCE] New Core Team Member -  Martin Josefsson
+Date: Mon, 12 May 2003 08:56:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305120127.30416.pc-secure@home.nl>
-References: <1052386761.5804.5.camel@mdew> <1052644854.17942.28.camel@charlebourg-2-81-57-105-138.fbx.proxad.net>
+Message-ID: <20030512065619.GA2377@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1052644854.17942.28.camel@charlebourg-2-81-57-105-138.fbx.proxad.net>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,57 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org, netfilter-devel@listsnetfilter.org, netfilter-announce@lists.netfilter.org
+Cc: coreteam@netfilter.org
 
-Op zondag 11 mei 2003 11:20, schreef Francois LE BOURDELLES:
-> Hello ,
->
-> I just posted a similar question related to the same subject :
-> nating a full subnet (as described in the NAT howto) that doesn't seems
-> to work !
-> in fact it seems that the --to A.B.C.D/X fromat is not implemented (or
-> has been removed ?)
->
-> I'm waiting for a response ... from the list or the authors ....
->
-> Regards.
->
-> Le jeu 08/05/2003 =E0 11:39, mdew a =E9crit :
-> > current setup,
-> >
-> > $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p tcp --dport
-> > 4661 -j DNAT --to 10.0.0.3
-> > $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p tcp --dport
-> > 4662 -j DNAT --to 10.0.0.3
-> > $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p tcp --sport 4661
-> > -j SNAT --to 210.54.175.12
-> > $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p tcp --sport 4662
-> > -j SNAT --to 210.54.175.12
-> > $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p udp --dport
-> > 4665 -j DNAT --to 10.0.0.3
-> > $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p udp --dport
-> > 4672 -j DNAT --to 10.0.0.3
-> > $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p udp --sport 4665
-> > -j SNAT --to 210.54.175.12
-> > $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p udp --sport 4672
-> > -j SNAT --to 210.54.175.12
-> >
-> > i would like specify 10.0.0.x instead of 10.0.0.3, how is this done?
-> >
-> > and some problems i had attempting it..
-> >
-> > Try `iptables -h' or 'iptables --help' for more information.
-> > iptables v1.2.6a: Bad IP address `10.0.0.0/24'
-> > iptables v1.2.6a: host/network `10.0.0.3-10.0.0.8' not found
-> > Try `iptables -h' or 'iptables --help' for more information.
-> >
-> > cc: please :)
 
-I tested this rule and works fine:
+--fdj2RfSjLxBAspz7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/24 -p udp --sport 4665
- -j SNAT --to 210.54.175.12
+The Netfilter Core Team is proud to announce the addition Martin=20
+Josefsson as a new member.
 
-Pascal
+Martin is a dedicated member of the Netfilter development community
+with high insight and coding standards, who has already been responsible=20
+for several parts of the codebase.=20
+=20
+By joining to the Core Team, Martin will definitely help to give a new=20
+momentum to the development of Netfilter.
+
+Welcome Martin!
+
+Jozsef,
+on behalf of the Netfilter Core Team.
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
+--fdj2RfSjLxBAspz7
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj6/RZMACgkQ3Yy3sUcNuWQUxQCfWEVLYDaBEFRSAybUaYO7Zm90
+ej8AmQHyhy7cwatVvYJEbVhBTkc4Jr0d
+=jrFf
+-----END PGP SIGNATURE-----
+
+--fdj2RfSjLxBAspz7--
 
