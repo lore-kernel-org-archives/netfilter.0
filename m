@@ -1,11 +1,14 @@
-From: Saad Faruque <faruque@gmail.com>
-Subject: netfitler against Trojans and worms
-Date: Mon, 5 Jul 2004 19:59:03 +0600
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: netfitler against Trojans and worms
+Date: Mon, 5 Jul 2004 15:10:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1d7da3f40407050659476384b7@mail.gmail.com>
+Message-ID: <200407051510.06470.gdh@acentral.co.uk>
+References: <1d7da3f40407050659476384b7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1d7da3f40407050659476384b7@mail.gmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +21,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello List,
-We are having a windows network (our clients network) with private ip
-address with a linux gateway. The linux box is doing SNAT for all
-(windows network) users, that means its forwarding all the users
-request to the Internet. But the problem is the internal windows
-network is effected by all different kind of worms and Trojans, which
-are coursing a huge amount of unwanted upload/requests to Internet. 
-remember these are the workstations we don't have total control over.
-Securing these windows work stations is some thing which we cant very
-easily do.
-So we are currently protecting these stations with simple netfilter
-rulez such as
-iptables -A FORWARD -p tcp --dport 135 -j DROP
-iptables -A FORWARD -p udp --dport 1025 -j DROP
-.
-.
-.
-.
-iptables -A FORWARD -p tcp --dport 1214 -j DROP
-iptables -A FORWARD -p udp --dport 3127:3198 -j DROP
-which are some commonly used virus ports.
-my question if there any such project or document  which lists all the
-well known virus ports, virus detection signature which i can use with
-string serch or from port and tcp flag.
-i did find couple of sites ex.
-(http://www.doshelp.com/trojanports.htm) which lists some ports. but i
-really am not sure if u simply block all these ports if it will effect
-my clients regular internet activity. any alternative suggestions are
-also welcome :)
+On Monday 05 July 2004 14:59, Saad Faruque wrote:
 
-Regards,
-Saad Faruque.
+> i did find couple of sites ex.
+> (http://www.doshelp.com/trojanports.htm) which lists some ports. but i
+> really am not sure if u simply block all these ports if it will effect
+> my clients regular internet activity. any alternative suggestions are
+> also welcome :)
+
+My suggestion would to stop fire-fighting and instead turn the problem on its 
+head.
+
+Change your default policy from ACCEPT to DROP, and put in rules so that 
+people are allowed to access port 80, 443, etc. and only the ports they 
+actually NEED access to.
+
+Cheers,
+Gavin.
 
