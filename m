@@ -1,8 +1,8 @@
 From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: NF_DROP and NF_STOLEN
-Date: Mon, 19 Apr 2004 19:09:25 +0100
+Subject: mangle table
+Date: Mon, 19 Apr 2004 19:13:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00f401c42639$72dd3eb0$68892090@grouse>
+Message-ID: <010601c4263a$1268c030$68892090@grouse>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,17 +20,10 @@ To: netfilter@lists.netfilter.org
 
 Hi all,
 
-Could anybody let me know what actual difference the targets NF_DROP and
-NF_STOLEN make to the kernel? As far as I know, both of them tell the kernel
-to forget the packet. In "Linux netfilter Hacking HOWTO", it says NF_DROP
-tells netfilter to drop the packet, and NF_STOLEN tells netfilter that the
-registered module has taken over the packet. I don't fully understand what
-the module can do to the packet by taking over it and how.
+Could anybody tell me or point me to some tutorials on what exactly the
+mangle table of iptables can do and how to use the mangle table?
 
-Can anyone be kind enough to explain this or show me an example that a
-module takes over packets and does something to them?
-
-Thanks a lot in advance!
+Thank you in advanced!
 
 Regards,
 Jee
