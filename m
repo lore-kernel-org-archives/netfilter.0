@@ -1,11 +1,11 @@
-From: "Stuart J. Browne" <stuart@promed.com.au>
-Subject: RE: Problem with FORWARD hook
-Date: Wed, 12 Nov 2003 09:06:49 +1100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Problem with FORWARD hook
+Date: Tue, 11 Nov 2003 22:12:46 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <015701c3a8a0$1adada90$2288e7c0@promed.com.au>
+Message-ID: <200311112212.hABMCmj17939@agate.rockstone.co.uk>
 References: <Pine.SOL.4.20.0311111655550.29271-100000@csa.bu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <Pine.SOL.4.20.0311111655550.29271-100000@csa.bu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,46 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Leonid Veytser' <veytser@cs.bu.edu>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+On Tuesday 11 November 2003 9:59 pm, Leonid Veytser wrote:
 
->-----Original Message-----
->From: netfilter-admin@lists.netfilter.org 
->[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
->Leonid Veytser
->Sent: Wednesday, 12 November 2003 07:59
->To: netfilter@lists.netfilter.org
->Subject: Problem with FORWARD hook
->
->
->When I dump the output of all the packets traveling thru my machine, I
->notice that none go thru FORWARD hook. So, I tried to make a 
->packet have
->to go thru the FORWARD hook (ie by changing the packet dest at 
->PREROUTING
->hook), but the packet never goes to the FORWARD hook, but disappears.
->
->Can there be some incorrect configuration on my machine that 
->would cause
->it not to be able to forward packets?
+> When I dump the output of all the packets traveling thru my machine, I
+> notice that none go thru FORWARD hook.
 
+There's no other way packets are going to get routed through your machine 
+except by passing through the FORWARD chain.
 
-When you say "FORWARD hook", do you mean the FORWARD chain on the filter
-table?
+> So, I tried to make a packet have
+> to go thru the FORWARD hook (ie by changing the packet dest at PREROUTING
+> hook), but the packet never goes to the FORWARD hook, but disappears.
 
-If so, you need to understand when packets would normally go throughte
-FORWARD chain.
+Show us an example of your rules so we can see what you are trying to do.
 
-If the packet is sourced from another machine (physically, not
-logically), and destined for another machine (once again, not
-logically), it will go through the FORWARD chain.
+> Can there be some incorrect configuration on my machine that would cause
+> it not to be able to forward packets?
 
-If it comes from the local machine, or is destined for the local
-machine, it will not touch the FORWARD chain.
+There are many ways of (mis)configuring a machine so that it doesn't forward 
+packets.   Some people might say this is a highly secure router :)
 
-I beleive this is detailed in the netfilter FAQ and HOWTO's.  They've
-got some nice flow diagrams there too!
+Antony.
 
-bkx
+-- 
 
+Your email has been returned due to insufficient voltage.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
