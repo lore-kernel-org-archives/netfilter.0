@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: one to one NAT
-Date: Tue, 10 Sep 2002 01:21:57 +0100
+From: Yury Bokhoncovich <byg@center-f1.ru>
+Subject: Is DIVERT w/o forwarding feasible? (fwd)
+Date: Tue, 10 Sep 2002 09:04:48 +0700 (NOVST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020910002200.VICK295.mta06-svc.ntlworld.com@there>
-References: <200209100010.g8A0AAr9027286@ns2.is.bizsystems.com>
+Message-ID: <Pine.LNX.4.33.0209100903440.8488-100000@panda.center-f1.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209100010.g8A0AAr9027286@ns2.is.bizsystems.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tuesday 10 September 2002 2:10 am, Michael wrote:
+Hello!
 
-> I've been messing around all day trying to get one to one NAT working
-> for my site. This is (I think) a typical DMZ application.
+I need an advice for this topic: is diverting without forwarding feasible?
 
-I don't see a DMZ anywhere in your description...   You seem to have an 
-internal network, and an external connection - where's the DMZ ?
+ At present time we've managed to work SSL-tunnels via our MAN-provider
+for a few several protocols by well-known method "connect this app to
+border gateway, it takes care all the rest" and with (essentially!)
+forwarding disabled in the kernel at all. But this method fails to meet
+challenge of deploying fully-functional VPN with transparent packet
+crossing over the MAN. In principle situation can be easily resolved if
+there's a way to divert packets to an program on the border gateway
+without need to enable forwarding in the kernel.
 
-> INTERNET <==> linux/iptables <==> localnet
->
-> linux ip 1.2.3.4 on eth1
-> local net 192.168.1.0
->
-> local net ip box 192.168.1.19
->
-> I want to map 1.2.3.5 to a single address behind the linux box
-> 1.2.3.5 is mapped to eth1:0
-
-iptables -A PREROUTING -a nat -d 1.2.3.5 -j DNAT --to 192.168.1.19
-iptables -A FORWARD -d 192.168.1.19 -j ACCEPT
-
-You might want to restrict that last rule a bit with -p tcp --dport 80 or 
-whatever, depending on what that machine is running and what you're trying to 
-make accessible to the Internet.
-
-Antony.
+ I.e. can I change this:
+"if the kernel does not have forwarding enabled, or it doesn't know how to
+forward the packet, the packet is dropped"
+(sorry ,quote from HOWTO) to something like
+"if the kernel does not have forwarding enabled AND NO SPECIAL DIVERT
+RULES SPECIFIED, or it doesn't know how to forward the packet, the packet
+is dropped" ?
 
 -- 
+WBR, Yury Bokhoncovich, Senior System Administrator, NOC of F1 Group.
+Phone: +7 (3832) 106228, ext.140, E-mail: byg@center-f1.ru.
+Unix is like a wigwam -- no Gates, no Windows, and an Apache inside.
 
-In science, one tries to tell people
-in such a way as to be understood by everyone
-something that no-one ever knew before.
 
-In poetry, it is the exact opposite.
 
- - Paul Dirac
+
 
