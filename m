@@ -1,10 +1,13 @@
-From: bmcdowell@coxhealthplans.com
-Subject: Redirect to Honeypot?
-Date: Tue, 11 Nov 2003 15:57:55 -0500
+From: Padraig Brady <padraig.brady@corvil.com>
+Subject: Re: UDP connection tracking problem
+Date: Mon, 10 Nov 2003 15:17:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <94930-2200311211205755548@coxhealthplans.com>
+Message-ID: <3FAFAC25.8010808@corvil.com>
+References: <3FAFA135.9050707@draigBrady.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3FAFA135.9050707@draigBrady.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,35 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+P@draigBrady.com wrote:
+> Hi, I've a very simple rule set as follows, and in summary
+> it looks to me like udp connection tracking info
+> is only being updated for traffic comming into the box?
+>=20
+> Chain INPUT (policy DROP)
+> target     prot opt source               destination
+> ACCEPT     all  --  127.0.0.1            anywhere
+> ACCEPT     all  --  anywhere             anywhere           state=20
+> RELATED,ESTABLISHED
+> ACCEPT     all  --  172.18.1.170         anywhere
+>=20
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+> ACCEPT     all  --  anywhere             anywhere           state=20
+> NEW,RELATED,ESTABLISHED
+>=20
+> The problem is that I can't initiate udp from this box.
+> If I allow udp in, I can do tftp fine.
+> Then removing the udp rule I can tftp fine for
+> variable amount of time 0s, 30s, 180s.
+>=20
+> I'm using linux 2.4.20 and iptables v1.2.7a
 
-Does anyone on the list have a recomendation as to how one might use
-iptables to redirect traffic to a honeypot?  I have a few ideas, but
-I'd really like to hear from someone who has a solution they like (or
-even an idea they like).  Thanks in advance.
+Ah hang on, when the UDP is sent out, the following
+is added to /proc/net/ip_conntrack as expected:
+udp      17 22 src=3D172.18.1.55 dst=3D172.18.1.14 sport=3D32769 dport=3D=
+69=20
+[UNREPLIED] src=3D172.18.1.14 dst=3D172.18.1.55 sport=3D69 dport=3D32769 =
+use=3D1
 
-To clarify just a bit:
+However the response packet doesn't use 69 as the sport.
+It seems to use an ephemeral one (33118) :-(
 
-I'd like to be able to redirect packets instead of dropping them. 
-I'd also like to be able to do this as a catch-all rule at the end of
-my input and forward chains.  The overall idea is to combine randomly
-dropping packets, tarpitting, and live honeypot responses (from
-different OS'es) in an effort to utterly stump recon efforts.  In my
-head, I have visions of Linux boxes reporting they're running IIS 5
-and Crays running (x app), etc.
+FYI the tftpd is "tftp-hpa 0.34, with remap, with tcpwrappers"
 
-In my testing so far, I've found that combining randomly dropping
-packets and tarpitting to be extremely effective at slowing normal
-NMap scans.  In some cases, scan time was increased to well over two
-hours.  Now I'd like to introduce live ports into that mix.  This
-way, a positive hit on a live port would not necessarily have to be
-one of my production boxes.  In fact, it probably isn't...
+Hmm: http://www.zytor.com/pipermail/syslinux/2003-April/001851.html
 
-Thanks again,
-
-Bob
+P=E1draig.
 
 
