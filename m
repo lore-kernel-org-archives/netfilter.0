@@ -1,9 +1,8 @@
-From: Oliver Jehle <oliver.jehle@monex.li>
-Subject: Conntrack dst= IP Address in /proc/net/conntrack wrong
-Date: Thu, 16 Dec 2004 18:12:13 +0100
-Message-ID: <1103217133.2076.397.camel@vorab.monex.li>
+From: Jason Williams <jwilliams@courtesymortgage.com>
+Subject: Second shot at IPTables script
+Date: Fri, 17 Dec 2004 13:14:40 -0800
+Message-ID: <6.1.2.0.0.20041217130746.026796b0@corpmail.courtesymortgage.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,41 +14,112 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I've a strange effect.
+Thought i'd post my second attempt at a script here, with comments to make 
+sure I am on the right path.
+Spent the better part of the last two days reading up on IPTables and 
+finally understand the whole INPUT,OUTPUT,FORWARD chain. That helped a lot.
 
-if 2 networks connected with IPSEC / Linux 2.6.9
+Here it is: Simple script to just setup a firewall to protect a private LAN.
 
-neta  - gwa - ipsec tunnel - gwb - netb
+#External interface
+INET_IP="xxx.xxx.xxx.xxx"
+INET_IFACE="eth0"
 
-neta 192.168.1.0
-gwa 192.168.1.254
+Usually variables.
 
-netb 192.168.2.0
-gwb 192.168.2.254
+#Internal/Private LAN
+LAN_IP="192.168.0.2"
+LAN_IP_RANGE="192.168.0.0/24"
+LAN_IFACE="eth1"
 
-when i open an ssh session from neta to netb it works and the conntrack
-entry looks like this on gwb:
+Same.
 
-tcp      6 431015 ESTABLISHED src=192.168.2.2 dst=192.168.1.100
-sport=33121 dport=22 packets=347 bytes=27765 src=192.168.1.100
-dst=192.168.2.2 sport=22 dport=33121 packets=225 bytes=43197 [ASSURED]
-use=1
+#LOOPback
+LO_IFACE="lo"
+LO_IP="127.0.0.1"
+
+Same.
+
+# 1.5 IPTables Configuration.
+
+IPTABLES="/usr/sbin/iptables"
 
 
-but when i try from netb to neta, then the entry looks like this on gwb:
+#Default Policy Setting
 
-tcp      6 118 SYN_SENT src=192.168.1.100 dst=192.168.2.2 sport=54803
-dport=22 packets=1 bytes=60 [UNREPLIED] src=192.168.2.2 dst=192.168.1.1
-sport=22 dport=54803 packets=0 bytes=0 use=1
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT DROP
+$IPTABLES -P FORWARD DROP
 
-the dst= ipadress has the adress of the ipsec gateway instead of the
-correct address.
+Default drops.
 
-I've no nat rules for the connection.
+#Custom chain
 
-Is this a known effect ? 
+$IPTABLES -N tcp_packets
+
+Custom chain, so I can specify later what to drop:
+
+# bad_tcp_packets chain
+
+$IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK -m state 
+--state NEW -j REJECT --reject-with tcp-reset
+$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG 
+--log-prefix "New not syn:"
+$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+
+Something i've been looking into. May change it. Looking to drop packets 
+that scan, probe, etc on the firewall.
+
+#Accept loopback interface
+$IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
+
+
+# Rules for incoming packets from the internet.
+
+$IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state ESTABLISHED,RELATED 
+-j ACCEPT
+
+This rule, should only work when the host (firewall) initiate connections 
+first. Nothing should be accepted back unless a connection originated from 
+the firewall, correct? This would allow pings to work, ftp, package 
+grabbing, patches etc. Am I correct?
+
+# Accept the packets we actually want to forward
+
+$IPTABLES -A FORWARD -i $LAN_IFACE -o $INET_IFACE -s $LAN_IP -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Accept traffic from my private LAN.
+
+# Special OUTPUT rules to decide which IP's to allow.
+
+$IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
+
+To allow outbound traffic. This correct? I had question here.
+
+#NAT SETUP
+
+$IPTABLES -t nat -A POSTROUTING -s $LAN_IP -o $INET_IFACE -j SNAT 
+--to-source $INET_IP
+
+Simple enough: Do SNAT.
+
+I appreciate the help and feedback here. I look forward to your responses.
+
+CHeers,
+
+Jason
+
+
+
+
+
 
 
