@@ -1,15 +1,12 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: source-mac filtering
-Date: Sun, 11 Jan 2004 00:55:44 -0500
+From: "Computer Security" <sec@gongya.net>
+Subject: bridge vlans in HP 2524 switch
+Date: Sun, 11 Jan 2004 00:04:10 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39338.2292976186$1073800748@news.gmane.org>
-References: <Sea1-F7gMiX6AZCFgXe000520e9@hotmail.com>
+Message-ID: <002401c3d819$7f470a50$a5bbd00c@issaquah>
+References: <20031209154333.GB17221@edu.joroinen.fi> <20031209090221.413b7286.mgale@utilitran.com> <20031209162820.GC17221@edu.joroinen.fi> <20031209094047.4dbb09f9.mgale@utilitran.com> <20031209165146.GD17221@edu.joroinen.fi> <20031209100650.485e8a4f.mgale@utilitran.com> <20031209171322.GE17221@edu.joroinen.fi> <20031210165306.GH17221@edu.joroinen.fi> <1073785847.9615.487.camel@peterlaptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <Sea1-F7gMiX6AZCFgXe000520e9@hotmail.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,37 +16,12 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?q?H=E5kan=20Engblom?= <cynic_0@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On January 10, 2004 06:20 pm, H=E5kan Engblom wrote:
-> Hi,
->
-> I've run in to a strange problem. I have a dhcp-server on a 2.4.22 kernel
-> with a 1.2.8 iptables. The dhcp-server is configured only to offer
-> IP-addresses to one single mac-address (it is a single host on a private
-> network)
->
->
-> Does anyone have a clue ?
->
-> br H=E5kan Engblom
->
-> Some "logs" :
+Anyone has experience in using iptables to bridge Vlans created in the same
+HP 2524 switch ?
+-----------------------------------------------------------------
+Gongya Yu
 
-	<relevant info snipped, since it has been through the list several times>
-
-	Can I think out loud for a moment???
-
-	have dhcpd listen on a *different* port than normal
-	have iptables grab relevant mac address broadcasts and redirect to appropr=
-iate port?
-
-	drop anything not in relevant mac address range?
-
-	Perhaps this might work???=20
-	anyone care to try?? --my personal net is static ... thankgod its only 5 b=
-oxen=20
-=09
-	Alistair Tonner
 
