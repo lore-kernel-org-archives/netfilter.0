@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DMZ to DMT through ROUTER problem !
-Date: Thu, 20 May 2004 16:07:10 +0100
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: Re: ftp
+Date: Thu, 20 May 2004 15:18:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405201607.10019.Antony@Soft-Solutions.co.uk>
-References: <200405201318.34706.liste@zerozone.it> <200405201545.32872.Antony@Soft-Solutions.co.uk> <200405201658.59945.liste@zerozone.it>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <BAY15-F33Fxkl6JpfmG0001c2dc@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405201658.59945.liste@zerozone.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,66 +14,84 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 20 May 2004 3:58 pm, O-Zone wrote:
 
-> On Thursday 20 May 2004 16:45, Antony Stone wrote:
-> > Yes, but that destination address has already been changed by your
-> > PREROUTING rule, and is now 192.168.0.0/24 - that's the whole point.   If
-> > the destination address had not been changed (ie: if the client had
-> > contacted the server's real IP address instead of a pretend one), you
-> > wouldn't need to change the source address as well.
+
+
+>From: Antony Stone <Antony@Soft-Solutions.co.uk>
+>Reply-To: netfilter@lists.netfilter.org
+>To: netfilter@lists.netfilter.org
+>Subject: Re: ftp
+>Date: Thu, 20 May 2004 10:19:31 +0100
 >
-> As you say, the problem was when a server with 192.168.0.x, passing through
-> 192.168.0.1 (that is the ROUTER), and try to connect to 151.8.47.x (the
-> real server's PUBLIC IP). This is the desidered flow:
+>On Thursday 20 May 2004 5:41 am, azeem ahmad wrote:
 >
-> 192.168.0.2-->151.8.47.A-->192.168.0.3
+> > From: Antony Stone <Antony@Soft-Solutions.co.uk>
+> >
+> > >On Wednesday 19 May 2004 10:05 pm, azeem ahmad wrote:
+> > > > hi all
+> > > > i m unable to browse ftp. it says
+> > > > an error occured opening that folder on the ftp server. make sure 
+>you
+> > > > have permissions to access that folder
+> > > > details
+> > > > 200 type set to A
+> > > > 500 Illegal port command
+> > > > 500 LPRT not understood
+> > >
+> > > Do you get the same error when accessing the server from a machine not 
+>via
+> > > the netfilter firewall (eg localhost, or some other client on the same
+> > > subnet)?
+> > >
+> > only one box is accessing ftp that is firewall box itself. no other box
+> > behind the firewall can access the ftp outside.
 >
-> So i think that i need additiona rules to MASQ/DNAT connection to
-> 151.8.47.x !
+>Okay - let me rephrase the question.
+>
+>Do you get the same error message from the server if you access it from 
+>some
+>machine which does not go through the firewall (and is not the firewall
+>itself)?   Even if you have to temporarily set up a client to test this, I
+>think it would be useful, because it would be good to know if the server
+>generates this error independently of anything the firewall is doing to the
+>packets.
+>
+>Also, have you tried adjusting the MASQUERADE rule as I suggested, so it
+>applies to the external interface only, as this may have a bearing on the
+>problem?
+>
+>Regards,
+>
+>Antony.
+>
+>--
+>Success is a lousy teacher.  It seduces smart people into thinking they 
+>can't
+>lose.
+>
+>  - William H Gates III
+>
 
-Well, yes, but this PREROUTING DNAT rule is needed for connections from the 
-outside, which you say are working fine already?
+the server is accesible from other machines. for an example i goto squid 
+mirror sites
+http://www.squid-cache.org/Mirrors/ftp-mirrors.html
+but even no server here can be accessed. here is a long list of ftp mirror 
+servers. and also i set the rule up as u said. but still no luck
 
-I quote from your original posting:
+and i wanna ask something that is not relevant to list is that u quote very 
+good quotations. can u tell me from where i can get quotes like this and 
+also quotes that are relevant to computer science. infact i m a student and 
+some time i need such material. sorry for this irrelevant question
 
- - Hi all,
- - i've a big problem. Here's a little diagram:
- - 
- - [INTRANET 10.0.0.0/24]-------------+
- -                                                       +--[ROUTER]--(NET)
- - [DMZ SERVER A - 192.168.0.2]----+
- - [DMZ SERVER B - 192.168.0.3]----+
- - 
- - Each DMZ server is mapped to it's PUBLIC IP. For example:
- - 
- - 151.8.47.A ----> 192.168.0.2
- - 151.8.47.B ----> 192.168.0.3
- - 
- - and all work perfectly !!!"
+Regards
+Azeem
 
-If you do not in fact already have the PREROUTING DNAT rules, then what do you 
-mean by "Each DMZ server is mapped to its PUBLIC IP"?   Maybe I misunderstood 
-what you have already done, and already have working, and what problem is 
-still left to solve?
-
-Regards,
-
-Antony.
-
--- 
-"Reports that say that something hasn't happened are always interesting to me, 
-because as we know, there are known knowns; there are things we know we know. 
-We also know there are known unknowns; that is to say we know there are some 
-things we do not know. But there are also unknown unknowns - the ones we 
-don't know we don't know."
-
- - Donald Rumsfeld, US Secretary of Defence
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+_________________________________________________________________
+Protect your PC - get McAfee.com VirusScan Online 
+http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
 
 
