@@ -1,9 +1,9 @@
-From: Brad Tilley <rtilley@vt.edu>
-Subject: Logging the whole packet
-Date: Tue, 23 Nov 2004 16:50:28 -0500
-Message-ID: <41A3B0A4.9020906@vt.edu>
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: Iptables Block Netbios Broadcasts UDP 137-138
+Date: Tue, 23 Nov 2004 13:50:34 -0800
+Message-ID: <29F6FAF7F2C0D41190980002A513591E0E93BA9D@FSNSAB30>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----_=_NextPart_000_01C4D1A6.23CD2C29"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,26 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Is it possible to log the packet body and not just the header?
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Currently I have this line in my iptables start-up file:
+------_=_NextPart_000_01C4D1A6.23CD2C29
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-/sbin/iptables -I INPUT -p tcp -s ! 128.173.120.79 -d 128.173.120.79  -j 
-LOG --log-prefix="Packet_Filter:"
 
-And it generates log entries such as this:
+	all
 
-Nov 23 16:44:28 athop1 kernel: Packet_Filter:IN=eth0 OUT= 
-MAC=00:30:6e:5e:a2:0c:00:d0:01:ab:44:00:08:00 SRC=64.81.214.131 
-DST=128.173.120.79 LEN=48 TOS=0x00 PREC=0x00 TTL=110 ID=29621 DF 
-PROTO=TCP SPT=60366 DPT=445 WINDOW=16384 RES=0x00 SYN URGP=0
+	fyi/cya/etc...,
 
-I'd like to capture the packet body as well. I'm new to packet logging 
-so forgive me if I'm over looking the obvious.
+	70.0.0.0/8 is no longer in IPv4 bogon address space.
 
-Thanks,
-Brad
+	!piranha!suspicious!org
+
+------_=_NextPart_000_01C4D1A6.23CD2C29--
 
