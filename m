@@ -1,13 +1,15 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: error compiling iptables-1.2.8 on linux kernel-2.5.69
-Date: 16 May 2003 14:22:25 +0200
+From: Aide Florent <faide@alphacent.com>
+Subject: Re: SuSEfirewall2 and NAT help : i am so lost!
+Date: Fri, 16 May 2003 14:49:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053087745.659.30.camel@tux.rsn.bth.se>
-References: <20030516081758.GH30683@gsib.sl.ru>
+Message-ID: <200305161449.29544.faide@alphacent.com>
+References: <20030515203925.GA48230@justpickone.org> <20030515211805.GA53289@justpickone.org> <20030515224546.GB53289@justpickone.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030516081758.GH30683@gsib.sl.ru>
+In-Reply-To: <20030515224546.GB53289@justpickone.org>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +19,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Anatoly Pugachev <mator@gsib.ru>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: Text/Plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Fri, 2003-05-16 at 10:17, Anatoly Pugachev wrote:
-> Hello.
-> Sorry if i missed something essencials from the docs on compiling
-> iptables (INSTALL), but i'm unable to compile it. Here what i have:
-> iptables 1.2.8 got from netfilter.org
-> linux kernel version 2.5.69 from kernel.org
-> gcc-3.2.3 from RH rawhide
-> libc-2.3.2 from RH rawhide
-> and errors compiling iptables, 
-> $ make KERNEL_DIR=../linux-2.5.69 2>&1 | tee error-log.txt
-> in attached text file.
-> PS: i've succesfully compiled iptables, using source of 2.4.20 kernel.
-> So can i use this binary with newer linux kernel 2.5.X ?
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Try itables from cvs instead. You really expect a developmentkernel to
-compile with a stable iptables? :)
+Le Vendredi 16 Mai 2003 00:45, David T-G a =E9crit :
+> Hi again, all --
+> "you % % > need to turn on NAT" but no pointers to how to do so!
 
-The binary compiled against 2.4.20 should work, but wheres the fun in
-that? :)
+snip 8<------------
 
--- 
-/Martin
+> %   Packet Filtering HOWTO: 'Mixing NAT and Packet Filtering'
+
+snip 8<------------
+
+> I've attached `iptables -L` so that you can see if anything looks wrong.
+
+you should try
+
+iptables -t nat -nvL
+
+if you want to see what is "NATed" by your machine.
+
+Hope it helps.
+
+=46lorent AIDE
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+xN5YQe8gCED8yYERAtgkAJ4lXltzUv4ie9HjeJtflWQJ9OXWTgCfZ5B3
+Kz5In1xJzzrbUMPz/porghg=3D
+=3Da2hL
+=2D----END PGP SIGNATURE-----
+
+
 
