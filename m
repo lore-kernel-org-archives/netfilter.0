@@ -1,11 +1,13 @@
-From: "Nauman Malik" <naumanm@khi.wol.net.pk>
-Subject: Controlling number of sessions
-Date: Tue, 23 Sep 2003 18:59:45 +0500
+From: Nik Trevallyn-Jones <nik@designer.com.au>
+Subject: Re: active firewall
+Date: Wed, 24 Sep 2003 00:07:14 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309231859450453.1183C0A3@smtp.khi.wol.net.pk>
+Message-ID: <03092400071405.01185@slinky.exmosys.com>
+References: <03092320103102.01185@slinky.exmosys.com> <3F704B6A.7010905@chrisbrenton.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=====_106432558517421=_"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F704B6A.7010905@chrisbrenton.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,38 +17,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---=====_106432558517421=_
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 23 Sep 2003 23:32, you wrote:
+> Nik Trevallyn-Jones wrote:
+> >    As a result of experiences deploying PortSentry behind an ipchains
+> > firewall recently, I started considering how iptables could be used to
+> > deploy a dynamic firewall which would be able to modify itself in
+> > response to predefined events.
+>
+> Be very careful with this. I've seen savvy attackers spoof attacks from
+> the root name servers in order to make the firewall DoS the local
+> environment. :(
 
-Hi,
+Obviously any firewall rules, whether manually or automatically implemented 
+are susceptible to address spoofing. That's one of the reasons I've tried to 
+make my idea as general possible.
 
-I have a Linux box being used as a cache server. I want to control number=
- of TCP sessions per user/IP on this machine. e.g. At one time only 50=
- reuqets per user can be passed through this linux box.
-Is it possible using iptables?.
-Any idea how?
+> > Q: Has anyone considered or suggested this before?
+>
+> Yup, and the feature is built into many commercial firewalls (FW-1, PIX,
+> etc.). I know Bill Stearns was working on this at one point. You might
+> be able to find more info at:
+> http://www.stearns.org
 
+coowell!  Thanks for the pointer!
 
---=====_106432558517421=_
-Content-Type: text/html; charset="us-ascii"
+> > 1  two new targets: ENLIST, DELIST
+> > These targets effectively cause one or more new rules to be automatically
+> > added/removed to/from the firewall in response to matching the associated
+> > rule.
+>
+> Depending on your IDS, you can script this as well. I seem to remember a
+> paper floating around at one point that shows how to set this up with
+> Snort and iptables.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content="text/html; charset=iso-8859-1" http-equiv=Content-Type>
-<META content="MSHTML 5.00.3700.6699" name=GENERATOR></HEAD>
-<BODY bgColor=#ffffff style="FONT-FAMILY: Arial" text=#000000>
-<DIV><FONT size=2>Hi,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=2>I have a Linux box being used as a cache server. I want to 
-control number of TCP sessions per user/IP on this machine. e.g. At one time 
-only 50 reuqets per user can be passed through this linux box.</FONT></DIV>
-<DIV><FONT size=2>Is it possible using iptables?.</FONT></DIV>
-<DIV><FONT size=2>Any idea how?</FONT></DIV></BODY></HTML>
+I haven't looked at snort, but PortSentry can (and does on my machine) do 
+quite a bit of this. However, as I considered what improvements I would like 
+in PortSentry, it became obvious I was trying to put rule-matching chain 
+logic into it - hence my idea to extend iptables.
 
+> > I would like to write a rule which asserts: "BLACKLIST any host that
+> > sends a SYN packet to any ports between 1025-50000 unless there is a
+> > socket listening to the port at the time the packet arrives".
+>
+> Hummm, so if I back door your system the firewall will happily update
+> the ruleset to permit me access to that port. That's very polite of it. ;-)
 
---=====_106432558517421=_--
+Well, if I'm polite to hackers, maybe they'll be nice to me??
 
+- Actually my logic (possibly flawed) was that if they had back doored my 
+system, they probably had enough control to rewrite/disable my firewall 
+anyway.
+
+This kind of ability seems to be much more useful on my internal LAN than on 
+my internet interface. I've found in general that PortSentry does basically 
+nothing on my internet interface, because the firewall is stopping any 
+traffic that would normally trip PortSentry. However, on my internal LAN, 
+PortSentry flipped up the shutters pronto when someone recently connected a 
+laptop that was infected with the Blaster worm.
+
+Sadly, there was no firewall between that laptop and my other (relatively 
+few) PCs, but PortSentry's response alerted me pretty quickly. So what I am 
+planning now is a separate "quarantine" subnet where I will corral all 
+laptops that could be carrying disease. In that case, PortSentry on the 
+firewall/router between the quarantine and regular LAN would probably stop an 
+infection spreading out of the quarantine subnet.
+
+Cheers!
+Nik.
 
