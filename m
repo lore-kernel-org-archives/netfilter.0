@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Output Chain Problem...
-Date: Fri, 18 Jun 2004 15:49:50 +0100
+From: Mark Vevers <mark@vevers.net>
+Subject: Typo's in ip_conntrack_rpc_tcp.c ....
+Date: Fri, 18 Jun 2004 15:49:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406181549.50911.Antony@Soft-Solutions.co.uk>
-References: <005d01c45531$f6f4bfd0$800101df@lvl.digidyne.ca> <200406181402.51862.Antony@Soft-Solutions.co.uk> <009b01c45538$1ab69780$800101df@lvl.digidyne.ca>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <200406181549.19157.mark@vevers.net>
+Reply-To: mark@vevers.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <009b01c45538$1ab69780$800101df@lvl.digidyne.ca>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,71 +18,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 18 June 2004 2:28 pm, Eric Poulin wrote:
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> > > iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
-> > > iptables -A OUTPUT -p ALL -s 192.168.0.0/24 -j ACCEPT
-> > > iptables -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-> >
-> > That second rule suggests to me that you are slightly mistaken about what
-> > packets go through the OUTPUT chain - you have allowed all packets
-> > sourced from an entire Class C, so I suspect you think that all packets
-> > from your local network, which pass through the Firewall, are traversing
-> > the OUTPUT chain?
->
-> Not really, I got several virtual IP on my NIC facing the internal Network,
-> so some packet will sent from my firewall(like those coming from it while
-> i'm doing ssh in it), and I have decided to set the entire subnet. Remember
-> this is a test, I'm doing large rule to make it works first...
+The following 'bug' is currently only a textual typo due to the structures
+actually used - if the structures change it could cause a real bug ....
 
-Okay, I understand.
+In the init for ip_conntrack_rpc_tcp the code sets the ports for=20
 
-> The problem can be simplify as the following. Everything is fine now,
-> because my Default Policy is set to ACCEPT. Following "Best Practices", I
-> would prefer to set it to "DROP" and only allow what I need. The problem is
-> that I have rules that ACCEPT my ssh response packet form the firewall
-> perfectly. PLease check the counters:
+  rpc_helpers[port].mask.dst.u.udp.port =3D htons(0x0);
 
-I think the counter you need to focus on is the one right at the top: "policy 
-ACCEPT 19 packets, 2060 bytes" - that means 19 packets went out by means of 
-the default policy, instead of any of the specified rules...
+with =20
+  rpc_helpers[port].tuple.dst.protonum =3D IPPROTO_TCP;
 
-> Chain OUTPUT (policy ACCEPT 19 packets, 2060 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->        0        0 ACCEPT     all  --  *      *       127.0.0.1
-> 0.0.0.0/0
->     3543   625244 ACCEPT     all  --  *      *       192.168.0.0/24
-> 0.0.0.0/0
->       36     3240 ACCEPT     all  --  *      *       66.11.160.119
-> 0.0.0.0/0
->        6     1948 ACCEPT     all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          state NEW,RELATED,ESTABLISHED
->        0        0 ACCEPT     all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
->        0        0 LOG        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0          LOG flags 0 level 4 prefix `Output:'
->
->
-> If I put back the default output policy to ACCEPT, everything is fine... I
-> don't know if you understand my point, or if I'm wrong...
+i.e. it's setting the udp port for a TCP packet.   In this instance it does=
+n't=20
+matter becase the tuple structure is a union and uses the same type -=20
+from ip_conntrack_tuple.h:
+			struct {
+                                u_int16_t port;
+                        } tcp;
+                        struct {
+                                u_int16_t port;
+                        } udp;
 
-Yes, I understand your point, and no, you're not wrong (at least, not wrong to 
-be puzzled by what's going on, anyway).   I similarly cannot understand why 
-you have 19 packets hitting the default policy, which do not get logged by a 
-LOG rule put at the end of the chain.
+Here's the diff:
+Index: ip_conntrack_rpc_tcp.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file:=20
+/cvspublic/patch-o-matic-ng/rpc/linux/net/ipv4/netfilter/ip_conntrack_rpc_t=
+cp.c,v
+retrieving revision 1.2
+diff -U2 -r1.2 ip_conntrack_rpc_tcp.c
+=2D --- ip_conntrack_rpc_tcp.c      5 May 2004 16:39:37 -0000       1.2
++++ ip_conntrack_rpc_tcp.c      18 Jun 2004 14:34:18 -0000
+@@ -451,7 +451,7 @@
 
-Can anyone else here see something we're both obviously missing?
+                /* RPC can come from ports 0:65535 to ports[port] (111) */
+=2D -               rpc_helpers[port].tuple.src.u.udp.port =3D htons(ports[=
+port]);
+=2D -               rpc_helpers[port].mask.src.u.udp.port =3D htons(0xffff);
+=2D -               rpc_helpers[port].mask.dst.u.udp.port =3D htons(0x0);
++               rpc_helpers[port].tuple.src.u.tcp.port =3D htons(ports[port=
+]);
++               rpc_helpers[port].mask.src.u.tcp.port =3D htons(0xffff);
++               rpc_helpers[port].mask.dst.u.tcp.port =3D htons(0x0);
 
-Antony.
+                rpc_helpers[port].help =3D help;
 
--- 
-The lottery is a tax for people who can't do maths.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+=2D --=20
+Mark Vevers.    mark@ifl.net / mark@vevers.net
+Principal Internet Engineer, Internet for Learning,
+Research Machines Plc. (AS5503)
+=2D --
+GPG Key: http://pgp.mit.edu:11371/pks/lookup?op=3Dget&search=3D0xB08F3CA3
+=46ingerprint: 85BA 30C4 9EC8 1792 4C8C   C31E 58B5 3D1C B08F 3CA3
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQFA0wDuWLU9HLCPPKMRAmxlAJ9qrku1Ykvjmv0QeUeyVoM8UFri8QCfXV8S
+3whpD5fwsG/PpTWJHGVMqXg=3D
+=3DsCOn
+=2D----END PGP SIGNATURE-----
 
 
