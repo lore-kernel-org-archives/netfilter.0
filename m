@@ -1,11 +1,11 @@
-From: =?ISO-8859-1?Q?G=FCnter_Zimmermann?=
- <guenter@guenter-zimmermann.com>
-Subject: Problems during Compilation
-Date: Wed, 16 Jun 2004 19:43:48 +0200
+From: MDelBUSTO@tycoint.com
+Subject: The pptp modules
+Date: Wed, 16 Jun 2004 15:50:36 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40D086D4.5040801@guenter-zimmermann.com>
+Message-ID: <2141C5F52FD2CA4182AF6927090263B908D1E799@flbocexu04>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C453DB.31A819E0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,35 +16,109 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-hi all,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-i am not able to compile iptables-1.2.10 because of the following error:
+------_=_NextPart_001_01C453DB.31A819E0
+Content-Type: text/plain
 
-command:
-make clean && make KERNEL_DIR=3D/usr/src/linux-2.6.5-gre-nomod=20
-MANDIR=3D/usr/share/man LIBDIR=3D/usr/local/lib BINDIR=3D/usr/local/bin=20
-NO_SHARED_LIBS=3D1
+Hi,
 
+ 
 
-error:
-gcc -O2 -Wall -Wunused -I/usr/src/linux-2.6.5-gre-nomod/include=20
--Iinclude/ -DIPTABLES_VERSION=3D\"1.2.10\" =20
--DIPT_LIB_DIR=3D\"/usr/local/lib/iptables\" -rdynamic -o iptables=20
-iptables-standalone.c iptables.o libiptc/libiptc.a -ldl -lnsl
-/bin/sh: -c: line 1: syntax error near unexpected token `;'
-/bin/sh: -c: line 1: `if [ -n "" ]; then  for ext in ; do  echo ".SS=20
-$ext (not supported, see Patch-O-Matic)" ; cat=20
-extensions/libipt_$ext.man ; done ; fi >>extensions/libipt_matches.man'
-make: *** [extensions/libipt_matches.man] Error 2
-rm libiptc/libip6tc.o libiptc/libip4tc.o
+I've looked for a few days without an answer and I was hoping someone here
+can help. I need to run a tunnel through a box running iptables 1.2.x that
+is doing NAT. I found lots of references to the pptp modules but I can't
+figure out how to compile them into a module so I can then use insmod or
+modprobe to load them. I've also seen references to CVS but I'm not familiar
+with it and not sure what to do.
 
-thx for your help
+ 
 
-best regards
-G=FCnter Zimmermann
+Thanks,
+
+-Mike
+
+ 
 
 
+------_=_NextPart_001_01C453DB.31A819E0
+Content-Type: text/html
+
+<html>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
+
+
+<meta name=Generator content="Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.emailstyle17
+	{font-family:Arial;
+	color:windowtext;}
+span.EmailStyle18
+	{font-family:Arial;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>Hi,</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>I've looked for a few days without an answer and I was
+hoping someone here can help. I need to run a tunnel through a box running
+iptables 1.2.x that is doing NAT. I found lots of references to the pptp
+modules but I can't figure out how to compile them into a module so I can
+then use insmod or modprobe to load them. I've also seen references to CVS
+but I'm not familiar with it and not sure what to do.</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
+font-family:Arial'>Thanks,</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>-Mike</span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span style='font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C453DB.31A819E0--
 
