@@ -1,16 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: the impossible "iptables -C" option
-Date: Sat, 24 Jul 2004 07:45:45 -0400
+From: Askar Ali Khan <askarali@gmail.com>
+Subject: Re: ftp access problem
+Date: Sat, 24 Jul 2004 16:45:46 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1090669545.2012.33.camel@grendel>
-References: <01be01c4710c$440a79e0$5100a8c0@egp>
-	 <200407240856.03201.Antony@Soft-Solutions.co.uk>
-	 <1090664200.2012.21.camel@grendel>
-	 <200407241127.25946.Antony@Soft-Solutions.co.uk>
+Message-ID: <a0f69e5040724044591804e0@mail.gmail.com>
+References: <a0f69e504072403057b210342@mail.gmail.com> <200407241122.16298.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407241127.25946.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200407241122.16298.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,40 +18,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sat, 2004-07-24 at 06:27, Antony Stone wrote:
->
-> > Not quite true as you would just use a sting match, same as you would in
-> > a filtering rule.
+Hi Anthony,
+ 
+On Sat, 24 Jul 2004 11:22:16 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
+> On Saturday 24 July 2004 11:05 am, Askar Ali Khan wrote:
 > 
-> I'll assume you meant the "string" match :)   Although the idea of a sting 
-> match in a firewall rule is an interesting one....
+> > Hi
+> >
+> > On my router/firewall which acting i am getting problem while anyone
+> > tries to connect to ftp server he connected successfully however when
+> > he types and command for example "ls" ftp server return error "500
+> > Illegal PORT range rejected"
+> > Everything else is working fine.
+> 
+> I see you are doing NAT on this firewall.   Do you have the nat_ftp support
+> module loaded or compiled in to your kernel?
+> 
+> Without that module, netfilter will not see the PORT commands in the FTP
+> packets, and will not know what to do with the data connection on port 20
+> associated with the control connection onn port 21.
+#modprobe nat_ftp
+   modprobe: Can't locate module nat_ftp
 
-Dooh! Typing before my morning Pepsi. I think we already sort of have a
-"sting" option, its called "Tarpit" ;-)
+I modprobe for nat_ftp on my route/firewall "slackware 2.4.26" and
+also on another machine FC1 and both return the same thing.
+what to do now?
+May I have to go for kernel compilation? :(
 
-> I agree that for textual content you could say "a packet from this IP address 
-> to TCP port 23 containing the string 'root'", however lots of protocols use 
-> binary data
+Also pls check these echos and I will greatly appreciate if you
+explain the usage of this echos becuase i copied it from somewhere
+else :D
 
-Agreed but that's kind of outside of the scope of the check option. ;-)
-
-We're getting more into "what does a better job of checking payload,
-stateful inspection or proxy". I agree proxies are better when it comes
-to payload content, but I find the string match useful mostly because of
-its simplicity. No proprietary, undocumented language to learn, just set
-a few command line switches and away you go. :)
-
-> However, as discussed by other people, there is more than one reason why 
-> "check" is hard to implement, payload is just one of them (and I agree that 
-> state is a more significant problem, and much harder to deal with).
-
-Ya why burn cycles on trying to code something you can easily check with
-nmap, hping & tcpdump. ;-)
-
-Cheers!
-Chris
+echo 1 > /proc/sys/net/ipv4/ip_dynaddr                 
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/conf/all/proxy_arp
+echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
 
 
+> 
+> Regards,
+> 
+> Antony.
+> 
+> --
+> "The joy of X!!??  I've always hated compiling graphical shite.  You have a 10
+> line program, and it ends up depending on the entire known universe."
+> 
+> - Philip Hands
+> 
+>                                                     Please reply to the list;
+>                                                           please don't CC me.
+> 
+>
 
