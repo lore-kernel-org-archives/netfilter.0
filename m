@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Unexpected RSTs?
-Date: Fri, 11 Oct 2002 14:03:42 +0100
+From: Ivan Kanis <ivank@juliva.com>
+Subject: prevent script kiddies to abuse my ppp connection
+Date: Thu, 10 Oct 2002 22:29:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210111303.g9BD3mL19306@vulcan.rissington.net>
-References: <200210111434.52124.mklingens@ism.nl>
+Message-ID: <15781.58154.125224.618756@juliva.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210111434.52124.mklingens@ism.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,43 +18,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 11 October 2002 1:34 pm, Martijn Klingens wrote:
+Hello,
 
-> Please consider the following piece of our firewall script's output:
->
-> iptables -A acl_lan -p tcp --tcp-flags RST RST -j log_lan
-> iptables -A log_lan -p tcp --tcp-flags RST RST -j LOG \
->         --log-level debug --log-prefix '* DROP: Unexpected RST * '
->
-> The last line intrigues me. We drop these packets since quite a while, but
-> didn't log them until yesterday. It turns out that almost 15% of my
-> firewall log now consists of packets qualifying as 'Unexpected RST' though.
+I have a ppp connection to the internet. My connection is limited to
+30 hours per month so I am watching it pretty closely. I have set up
+pppd to timeout after 3 minutes of inactivity. This works most of the
+time.
 
-Depending on what else you're logging, 15% of your log entries could be a lot 
-of packets, could be only a few....
+Some time it doesn't. Once I left my computer for an hour and I was
+surprised to see that the connection was still on! I thought that one
+of my proces was using the connection so i did a quick dump of ppp0. I
+was surprise to see that some script kiddy was looking at my netbios
+port!
 
-> But... isn't the conntrack code at the beginning supposed to take care of
-> accepting RSTs if they are associated with an active connection?
+Now I have been thinking of ways to prevent these silliness from
+shutting down my conneciton within 3mn. If I firewall these incoming
+packets I believe that it won't help me. The blocked packet will still
+traverse the ppp link. So it will still be seen as "activity" to the
+ppp daemon. Correct me if I am mistaken.
 
-Yes.
+Is there a way to setup the the firewall to shutdown ppp if it doesnt
+see any valid packets within a given time limit?
 
-> I'm a bit surprised to see this to say the least. It's not a subnet-wide
-> portscan at least, the dropped packets definitely seem to indicate
-> legitimate traffic.
+Love to hear some suggestions.
 
-I'd expect the reason might be a system sending two RST packets (I believe 
-this is quite common, but I haven't done any specific network sniffing to 
-check it out).   The first one takes down the connection so it is no longer 
-ESTABLISHED, the second one gets logged because it doesn't correspond to an 
-established connection...
+Please CC me, I am not subscribed to the mailing list.
 
-Maybe you could try putting a LOG rule to catch *all* RSTs at the beginning 
-of your rules (before even the ESTABLISHED, RELATED rule) and see if this 
-shows they are coming along in pairs ?
-
-Antony.
-
+Ivan
 -- 
+/-----------------------------------------------------------------------------*
+|     "...Deep Hack Mode--that mysterious and       |        Ivan Kanis       |
+|     frightening state of consciousness where      |     ivank@juliva.com    |
+|     Mortal Users fear to tread." (Matt Welsh)     |      www.juliva.com     |
+*-----------------------------------------------------------------------------/
 
-Most people have more than the average number of legs.
 
