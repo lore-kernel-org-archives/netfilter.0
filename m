@@ -1,11 +1,12 @@
-From: =?iso-8859-1?q?Giancarlo=20Boaron?= <gboaron@yahoo.com.br>
-Subject: No internet connection
-Date: Thu, 9 Sep 2004 11:04:59 -0300 (ART)
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Subject: RE: No internet connection
+Date: Thu, 9 Sep 2004 10:06:38 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040909140459.92337.qmail@web50209.mail.yahoo.com>
+Message-ID: <2E314DE03538984BA5634F12115B3A4E62EB24@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,7 +17,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+To: Giancarlo Boaron <gboaron@yahoo.com.br>, netfilter@lists.netfilter.org
+
+Perhaps show us the script?
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Giancarlo
+Boaron
+Sent: Thursday, September 09, 2004 10:05 AM
 To: netfilter@lists.netfilter.org
+Subject: No internet connection
 
 Hello.
 I'm testing a new iptables script on my server box but
@@ -37,6 +48,7 @@ Giancarlo
 
 __________________________________________________
 Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
+
 
