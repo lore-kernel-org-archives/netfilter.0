@@ -1,13 +1,12 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: Policy Accept + Allow Multiple IP's
-Date: Mon, 15 Nov 2004 17:19:07 -0800
-Message-ID: <4199558B.6080006@wildcash.com>
-References: <41994F2D.70105@wildcash.com>	<99fb058804111423054365bd85@mail.gmail.com>
-	<99fb0588041114231136b9056e@mail.gmail.com>
+From: tepesu@australia.edu
+Subject: Re: Re: iptables and TOS 15
+Date: Mon, 15 Nov 2004 13:35:04 +0200
+Message-ID: <41996f3e.2305.0@australia.edu>
+Reply-To: tepesu@australia.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <99fb0588041114231136b9056e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,68 +17,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Lopsch <lopsch@lopsch.com>
+Cc: netfilter@lists.netfilter.org
 
-Thanks Paul,
 
-Was hoping for a simple solution and well please to know I can do it 
-both ways.
+    first i use imq patch for kernel 2.6.9 and htb for some traffic
+management and i want to redirect this kind of trafic to imq1 or imq0 and
+then to came with some htb rules. just this ...
 
-Many thanks
-Best regards Rudi
+#iptables -t mangle -A PREROUTING -m tos --tos 0x15 -j IMQ --todev 0
+iptables v1.2.11: Bad TOS value `0x15'
+Try `iptables -h' or 'iptables --help' for more information.
 
-Paul Annesley wrote:
+#iptables -t mangle -A PREROUTING -m tos --tos 15 -j IMQ --todev 0
+iptables v1.2.11: Bad TOS value `15'
+Try `iptables -h' or 'iptables --help' for more information.
 
->---------- Forwarded message ----------
->From: Paul Annesley <paul.annesley@gmail.com>
->Date: Mon, 15 Nov 2004 18:05:17 +1100
->Subject: Re: Policy Accept + Allow Multiple IP's
->To: Rudi Starcevic <tech@wildcash.com>
+
+
+>
+>Please post it also to the list so more people can help ;). Only for 
+>understanding: Your ISP marks some pakets with TOS 15, what exactly do 
+>you want to do, only filter them out or mark them with any kind of 
+>number so that the traffic shaper uses it? For further questions about 
+>shaping etc. refer to www.lartc.org howto an their mailinglist perhaps 
+>there waits better help for such questions.
+>
+>as Jason wrote you could use a rule like this:
+>
+>iptables -t mangle -A PREROUTING -m tos --tos 15 [ ... ]
+>
+>the  value is also accepted as hex
+>
+>iptables -t mangle -A PREROUTING -m tos --tos 0x15 [ ... ]
+>
+>where [...] means that=B4s then up to you what action you perform on that> 
+>pakets.
+>iptables -t mangle -A PREROUTING -m tos --tos 15 -j DROP
+>for example would drop all TOS 15 pakets.
+>iptables -t mangle -A PREROUTING -m tos --tos 15 -j MARK --mark n
+>would mark all TOS 15 pakets with the value n for further use for 
+>example traffic shaping.
 >
 >
->On Mon, 15 Nov 2004 16:51:57 -0800, Rudi Starcevic <tech@wildcash.com> wrote:
->
->
->  
->
->>Hi,
->>
->>I have an Iptables firewall with a default policy of accept.
->>
->>I want to allow only certain IP's ssh access.
->>
->>So far I have this rule which allows 1 ip:
->>
->>iptables -A INPUT -p tcp --dport 22 -s ! xxx.xxx.xxx.xxx -j DROP
->>
->>I'm not sure how to list more that 1 allowable IP.
->>
->>This is a production box I've inherited so I'm hoping to work with I already
->>have but may need to look at changing the default policy to drop or
->>something.
->>    
->>
->
->Perhaps you should look at making the policy DROP and allowing
->specific traffic..
->However what you're after can be done with two rules.. something like;
->
->iptables -A INPUT -p tcp --dport 22 -s x.x.x.x -j ACCEPT
->iptables -A INPUT -p tcp --dport 22 -j DROP
->
->  
->
->>Please advise, many thanks.
->>Regards Rudi
->>
->>
->>    
->>
->
->
->
->  
->
+
+
 
 
