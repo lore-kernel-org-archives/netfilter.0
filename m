@@ -1,11 +1,10 @@
-From: a.ledvinka@promon.cz
-Subject: RE: How to block only MX query made to DNS server
-Date: Tue, 30 Nov 2004 13:35:26 +0100
-Message-ID: <OF30199721.8414EE0C-ONC1256F5C.0044AB24-C1256F5C.00452974@promon.cz>
-References: <20041130085324.87578.qmail@web12308.mail.yahoo.com>
+From: Claudio Lavecchia <Claudio.Lavecchia@eurecom.fr>
+Subject: iptables and wireless card in promiscuous mode
+Date: Tue, 30 Nov 2004 13:53:35 +0100
+Message-ID: <41AC6D4F.7000001@eurecom.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041130085324.87578.qmail@web12308.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,17 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: pravin rane <pgr_80@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> # iptables -t filter -A INPUT -p udp --dport 53 -m
-> string --string "MX" -j DROP
-This will not work.
+Hello People,
 
-see http://www.faqs.org/rfcs/rfc1035.html chapter 4.1.3 (for complete 
-understanding see at whole 4.x) and for MX type number see 
-http://www.iana.org/assignments/dns-parameters
+I have a little question:
 
+I have two laptops that have 802.11 wireless cards. I am developing some 
+application that essentially perform sniffing functions using wireless 
+cards in promiscuous mode. To test my code, I need those two laptops not 
+to "see" each other (--> I do not want the wireless card of laptop A, 
+which is operating in promiscuous mode to process packets coming from 
+laptop B) and I tought to do it using iptables. so on laptop A i added 
+the following rule:
+
+iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_B -j DROP
+
+and on laptop B I added the rule:
+
+iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_A -j DROP
+
+I just executed my first tests and the feeling  I got is that, for 
+example, the wlan card of  laptop B still passes through the packet 
+coming from laptop A.
+
+Can anyone confirm  this analysis? If I am right, can anyone give me a 
+hint to possibly workaround this?
+
+Thank you very much
+
+Claudio
 
