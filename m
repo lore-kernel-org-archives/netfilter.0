@@ -1,8 +1,8 @@
 From: Khanh Tran <khanh@slc.edu>
-Subject: RE: module performance
-Date: Sun, 16 Feb 2003 09:23:23 -0500
+Subject: RE: Command not working  in latest version
+Date: Sun, 16 Feb 2003 10:09:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E7@EXCHANGE>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E8@EXCHANGE>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,16 +16,10 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "Paulo J. Matos" <pocm@mega.ist.utl.pt>, netfilter@lists.netfilter.org
 
-Here's a follow-up to this train of thought:
-
-Does someone feel like giving a somewhat detailed explanation of the
-difference between using insmod and modprobe to load kernel modules?  This
-is probably slightly off-topic, but still relevant to loading ip_tables
-modules and the performance of the firewall.
-
-Thanks again...
+You should also make sure you are loading modules ip_tables and ip_conntrack
+before you load your other modules.
 
 Khanh Tran
 Network Operations
@@ -33,26 +27,73 @@ Sarah Lawrence College
 
 
 -----Original Message-----
-From: Khanh Tran [mailto:khanh@slc.edu]
-Sent: Saturday, February 15, 2003 8:16 AM
-To: netfilter@lists.netfilter.org
-Subject: module performance
+From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
+Sent: Sunday, February 16, 2003 9:45 AM
+To: Khanh Tran; netfilter@lists.netfilter.org
+Subject: Re: Command not working in latest version
 
 
-Does anyone feel like giving a somewhat detailed explanation of the
-differences in loading the ip_tables modules versus building it into the
-kernel?  I've got several RedHat Linux firewalls and when it comes to
-upgrading the kernels, loading ip_tables as  modules is easy.  Otherwise, I
-have to upgrade my kernel and then go back and re-compile ip_tables into the
-kernel.  This has proven to be much more time consuming, especially with the
-growth of ip_tables use on our network.
+> You'll now want to do:
+>
+> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $EXTIP
+>
+> where eth0 is the interface going out to the Internet and $EXTIP is the
+> public IP on that interface.
 
-Thoughts?  Thanks in advance?
+Hi Khanh, strangely I still get Invalid Argument.
+iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
+where eth1 is the interface that gives access to the internet with IP
+217.129.146.56 (given by DHCP server).
 
+Thx for your patience,
+
+Paulo
+
+>
+> Khanh Tran
+> Network Operations
+> Sarah Lawrence College
+>
+>
+> -----Original Message-----
+> From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
+> Sent: Sunday, February 16, 2003 9:00 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Command not working in latest version
+>
+>
+> Hi all,
+>
+> I've changed from my old distribution to a new one that comes with
+iptables
+> 1.2.7a.
+> I have iptables in the kernel (2.4.20) and I've loaded the modules
+> iptable_nat, ipt_REDIRECT and ipt_MASQUERADE.
+> I had in my previous distributions the following lines:
+> iptables -t nat -F
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>
+> This would give total access from lan attached to eth0 to the internet
+> through my computer. But now, line 1 executes ok, line 2 gives:
+> iptables: Invalid Argument
+>
+> If I do :
+> iptables -t nat -A POSTROUTING -o eth0
+> everything runs ok but lan has still no access to the internet as
+expected.
+> What's happening, any ideas?
+>
+> Best regards,
+>
+> Paulo
+>
+>
+>
+>
+>
+>
+>
 
 
 
