@@ -1,10 +1,10 @@
-From: Jakob Praher <jpraher@yahoo.de>
-Subject: portforwarding and masquerding - possible?
-Date: 21 Nov 2002 17:16:30 +0100
+From: Tom Elsesser <telsesser@mindspring.com>
+Subject: Port forwarding problem
+Date: Wed, 13 Nov 2002 23:29:05 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037895394.1302.15.camel@jaques2>
+Message-ID: <ut86tuo7rimkt2dc52ke1qo8boaqtt29g0@4ax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,67 +18,59 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi all,
+Hi,
+ I have 2 linux servers on a 20 workstation network. There is an adsl
+connection coming thru a EN5861 router which connects to one server
+(yzerman) on eth1. Eth0 on this box goes to a 48 port switch. The
+other linux box (ulysses) is going to be a webmail server, and has 1
+nic going to the switch. I have the apache server on ulysses listening
+on port 8000. The router can forward ports but only on its own subnet,
+which is the same as eth1 on yzerman. I am trying to get port 8000 to
+go thru yzerman to ulysses, but can't seem to get it right. Can
+someone take a peek at my iptables config and tell me where I went
+wrong?
 
-first of all: iptables is really great.
-please email me to this address: jpraher@yahoo.de, since I am not a
-member of this list.
+Thanks in advance.
 
-I have the following scenario:
++++++++++++++++++
+#!/bin/sh
 
-* firewall            
-* internal web server   
+# Turn on ipforwarding just in case
+echo "1" > /proc/sys/net/ipv4/ip_forward
 
-the firewall has the public address of the server and forwards only port
-80 to the server on the internal address.
+# Flush old rulesets
+/sbin/iptables -F
+/sbin/iptables -F -t nat
 
-now for the internal server, I still want to be able to download things
-from the web, so I decided to do masquerading for ther internal server.
+# Default policies
+/sbin/iptables -P INPUT ACCEPT
+/sbin/iptables -P OUTPUT ACCEPT
+/sbin/iptables -P FORWARD DROP
 
-but somehow the internal server can't connect to external sites, that
-means it does not receive any answers. (this might be, as I have a tight
-forwarding policy between the nets )
+# Masq out eth1 (to router)
+/sbin/iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 
-my questions are:
+# Allow packets to return
+/sbin/iptables -A FORWARD -i eth1 -m state --state RELATED,ESTABLISHED
+-j ACCEPT
 
-* is there a problem when doing DNAT and SNAT for the same host?
-* is the following right:
+# Allow packets out
+/sbin/iptables -A FORWARD -i eth0 -s 10.1.1.0/8 -j ACCEPT
 
-the firewalls forward chain gets the SNATTED request as an internal one
-(since SNAT happends at postrouting ? ) - but how does it get the
-results back, does the POSTROUTING change the incoming (the answer to an
-SNATted ) packet before it get's in the forward queue?
+# Forward squirrelmail http request to ulysses
+/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 8000 -j
+DNAT --to 10.1.1.2
 
-to illustrate it:
+# Connect to port 8000 (squirrelmail) from outside
+/sbin/iptables -A INPUT -i eth1 -d 0/0 -p tcp --dport 8000 -j ACCEPT
 
-outgoing packet:
-	
-	dest addr:    a.b.c.d
-	source addr:  10.1.1.100
-		
-	1) forward 
-	nothing changed (routing deciscion is made with 10.1.1.100)
+# Connect via ssh from outside
+/sbin/iptables -A INPUT -i eth1 -d 0/0 -p tcp --dport 22 -j ACCEPT
 
-	2) postrouting 
-	dest addr:	a.b.c.d
-	source addr:    MASQUERADED
-
-
-incoming request
-	
-	source addr:	a.b.c.d
-	dest   addr:	MASQUERADED
-	
-	*** when is it written back to 10.1.1.100 ** ? 
-	*** does the forward quere see MASQUERADED or 10.1.1.100 ***
+# Log to syslog
+# /sbin/iptables -A INPUT -j LOG
 
 
-this is important for me, as I have to know what I should allow in the
-forward chain to allow MASQUERADING ...
-
-thanks
-
--- Jakob
-
-
+--=20
+Tom
 
