@@ -1,31 +1,43 @@
-From: Jochen Vogel <jvogel@it-sec.de>
-Subject: iptables - bridge - physin
-Date: Tue, 1 Apr 2003 12:18:42 +0200
-Sender: bridge-admin@math.leidenuniv.nl
-Message-ID: <D3DD55FDB74AD511BA51005004163680176597@orion.ibh.de>
+From: "mailinglists" <mailinglists@belfin.ch>
+Subject: AW: iptables wishes
+Date: Tue, 1 Apr 2003 11:48:30 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <65F646CE24EBF24AA3714070D537988E017F04@gargoyle.seaan.net>
 Mime-Version: 1.0
-Return-path: <bridge-admin@math.leidenuniv.nl>
-Errors-To: bridge-admin@math.leidenuniv.nl
-List-Unsubscribe: <http://www.math.leidenuniv.nl/mailman/listinfo/bridge>,
-	<mailto:bridge-request@math.leidenuniv.nl?subject=unsubscribe>
+Content-Transfer-Encoding: base64
+Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Post: <mailto:bridge@math.leidenuniv.nl>
-List-Help: <mailto:bridge-request@math.leidenuniv.nl?subject=help>
-List-Subscribe: <http://www.math.leidenuniv.nl/mailman/listinfo/bridge>,
-	<mailto:bridge-request@math.leidenuniv.nl?subject=subscribe>
-List-Archive: <http://www.math.leidenuniv.nl/pipermail/bridge/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'bridge@math.leidenuniv.nl'" <bridge@math.leidenuniv.nl>
+To: netfilter@lists.netfilter.org
 
-hi all,
+PiA0IC0gYWRkaXRpb24gb2Ygc3VwcG9ydCBmb3IgYSBSRU0gZmllbGQgaW4gcnVsZXMuICBXb3Vs
+ZCBkbyBub3RoaW5nIA0KPiB3aGF0c29ldmVyIGV4Y2VwdCBwcmludCB0aGUgc3BlY2lmaWVkIFJF
+TWFyayB0ZXh0IGF0IHRoZSBlbmQgDQo+IG9mIHRoZSBydWxlIA0KPiBpbiAtTCBsaXN0aW5ncy4g
+IFNvbWV0aGluZyBsaWtlOg0KPiBpcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLS1kcG9ydCAyMiAt
+cyBhLmIuYy5kIC1qIEFDQ0VQVCAtUkVNIEpvZWxTU0gNCj4gU28gdGhhdCBhIC1MIGxpc3Rpbmcg
+Y291bGQgYmUgZWFzaWVyICYgcXVpY2tlciB0byBkZWNpcGhlciANCj4gc29tZXRpbWVzLiAgSXQg
+DQo+IHdvdWxkIGFsc28gYWxsb3cgImlwdGFibGVzIC1MIC12IC1uIHwgZ3JlcCBKb2VsIiB0byBs
+aXN0IG9ubHkgDQo+IHJ1bGVzLCBpbiANCj4gYWxsIGNoYWlucywgd2l0aCAiSm9lbCIgaW4gdGhl
+IGNvbW1lbnQuDQoNCk9oIHllcywgdGhhdCBpcyBhIGdvb2QgaWRlYS4gDQoNCnR3byB3aXNoZXMg
+ZnJvbSBtZToNCg0KY291bGQgaXQgYmUgcG9zc2libGUgdG8gZGlzcGxheSB0aGUgbGluZSBudW1i
+ZXIgb2YgYSBjZXJ0YWluIHJ1bGUgaW4gaXB0YWJsZXMgLUwgLW4gLXYgYWRkaXRpb25hbCB0byAt
+UkVNIHRhcmdldD8NCkkgdGhpbmsgdGhpcyB3b3VsZCB2ZXJ5IG11Y2ggaGVscCB0byBmaW5kIHRo
+ZSBydWxlcyBxdWlja2VyIGluIHRoZSBpcHRhYmxlcyBzY3JpcHRzIHdoZW4gZWRpdGluZyB3aXRo
+IGEgdGV4dCBlZGl0b3IuDQoNCkdlbmVyYWxseSBJIHRoaW5rIHRoaXMgaXMgYSBwcm9ibGVtIG9m
+IHRvbyBsYXJnZSBydWxlIHNldHMuIElzIHRoZXJlIGEgd2F5IHRvIG1ha2UgY29udGFpbmVycyBv
+ZiBzcmMvZHN0IGFkZHJlc3Nlcz8gZS5nLiBsaWtlIHRoaXM6DQoNCmNvbnRhaW5lcl91bnRydXN0
+ZWRfZG5zPSJpcC5hZGRyLkEsIGlwLmFkZHIuQiwgaXAuYWRkci5DIg0KY29udGFpbmVyX3RydXN0
+ZWRfZG5zImlwLmFkZHIuRCwgaXAuYWRkci5FIg0KDQppcHRhYmxlcyAtQSBGT1JXQVJEIC1wIDYg
+LW0gc3RhdGUgLXMgJGNvbnRhaW5lcl90cnVzdGVkX2RucyAtLXNwb3J0IDEwMjQ6IC1kICRjb250
+YWluZXJfdW50cnVzdGVkX2RucyAtLWRwb3J0IDUzIC1vICR3YW5ldGggLS1zdGF0ZSBORVcsRVNU
+QUJMSVNIRUQgLWogQUNDRVBUDQoNCg0KDQpUaGFua3MsDQpQaGlsaXBwIA0K
 
-i compiled iptables and teh bridge patch.
-all is working fine. but in my old iptables script i configured many rules
-with -i and -o.
-in the logs i can see, that iptables use as IN and OUT the bridge and have
-an additional entry for PHYSIN.
-is there an option to use the PHYSIN?
-
-thx for help
-jo
