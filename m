@@ -1,12 +1,13 @@
-From: "Venkatesh. K" <venkatesh@cbayscribe.com>
-Subject: Re: Generate a unified patch for source RPM
-Date: Sat, 4 Oct 2003 06:01:47 +0530
+From: Michael Talbot-Wilson <mtw@birdseye.view.net.au>
+Subject: Re: Remove from mailing list
+Date: Sat, 4 Oct 2003 11:38:34 +0930 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01b601c38a0e$eb0d79d0$2800a8c0@karu>
-References: <003a01c3837f$e482d2d0$2800a8c0@karu> <20031003105021.GE5758@sunbeam.de.gnumonks.org>
+Message-ID: <Pine.LNX.4.53.0310041134180.367@chameleon.view.net.au>
+References: <20031003173736.81086.qmail@web13202.mail.yahoo.com>
+ <3F7DCE60.9000209@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F7DCE60.9000209@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,46 +17,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter@Lists.Netfilter.Org" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Cc: netfilter@lists.netfilter.org
 
-Thanks a lot.
+Ye 2003-10-03 15:30 -0400, Jeffrey Laramie skribis:
 
-I had tried the same command line except the full path to the patch :(
-
-Venkatesh K
-
------ Original Message ----- 
-From: "Harald Welte" <laforge@netfilter.org>
-To: "Venkatesh. K" <venkatesh@cbayscribe.com>
-Cc: <>
-Sent: Friday, October 03, 2003 4:20 PM
-Subject: Re: Generate a unified patch for source RPM
-
-On Thu, Sep 25, 2003 at 09:42:48PM +0530, Venkatesh. K wrote:
-> Hi,
+> bt spawn wrote:
 >
-> I want to patch the RedHat Kernel RPM.
+> >Can you please remove me from the mailing list.
 >
-> How do I generate a single patch file from patch-o-matic which can be
-> applied to an src.rpm ?
+> You can check out any time you like, but you can never leave.
 
-# pom2patch - create a normal unified diff (patch) from patch-o-matic
-
-included in the patch-o-matic directory
-
-syntax is:
-
-pom2patch my_kernel_source_dir submitted/00_foo.patch
-
-(you have to run it seperately for every patch-o-matic patch)
-
-> Venkatesh K
--- 
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-============================================================================
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
+Correct.  If you have a password you may be allowed to leave.  If not,
+forget it.
 
