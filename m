@@ -1,13 +1,14 @@
-From: "Andrew J. Meader" <ameader@corp.lcom.net>
-Subject: Re: Can somebody help me with setting up a server behind a sdsl router?
-Date: Mon, 16 Dec 2002 12:39:27 -0600
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: "iptables: Invalid argument" with kernel 2.4.20
+Date: Mon, 16 Dec 2002 14:35:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DFE1DDF.70109@corp.lcom.net>
-References: <010801c2a527$782dcbd0$5d01a8c0@jason>
+Message-ID: <200212161435.06101.netfilter@newkirk.us>
+References: <Pine.LNX.4.44.0212161717490.11632-100000@flex.cs.kun.nl>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------070703020507000901020208"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0212161717490.11632-100000@flex.cs.kun.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +18,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Jason Corekin <jason@corekin.no-ip.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: cees-bart <ceesb@cs.kun.nl>, netfilter@lists.netfilter.org
 
+On Monday 16 December 2002 11:25 am, cees-bart wrote:
+> hi all,
 
---------------070703020507000901020208
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+> -A OUTPUT -d MYMACHINE -p udp -m udp --dport 27960 -j DNAT \
+>                            --to-destination OTHERMACHINE:30000
 
-Jason,
+> this setup works fine on kernel 2.4.19 with iptables 1.2.6a.
+>
+> BUT, the last rule (OUTPUT) fails with message "iptables: Invalid
+> argument" when running under 2.4.20.
+>
+> i tried iptables 1.2.7a as well, but the result is the same.
+>
+> am i doing something wrong?
 
-Does the service provider (telco) allow more than one IP address (more 
-than one rfc 1483 tunnel) for your connection? Does the router require 
-separate (unique) vc's for this to work? If the provider will allow you 
-to do this then getting a connection for your mail server is a matter of 
-getting the right machine to talk to the right interface on the router. 
-Just a couple of ideas.
+Have you tried manually creating the rule, or are you restoring from a=20
+save made with the earlier version?  Since you list it in a save format,=20
+(dated November 12) and said it won't load, this strikes me as likely. =20
+I don't know, but it's possible this won't work.  Just try a:
 
-Good luck!
+/sbin/iptables -t nat -A OUTPUT -d MYMACHING -p udp --dport 27960 \
+=09-j DNAT --to OTHERMACHINE:30000
 
-Andy
+and see if it accepts it.  If so, then there must have been some change=20
+in the save file structure or handling (possibly fixing a flaw) that=20
+prevents newer netfilter form restoring from the older save.
 
-> Now he wants to use another one of his publicly registered static ip's 
-> for his mail server, which we are trying to plug into one of the 
-> unused jacks on the built it hub on the R7100.  The problem is that we 
-> can not get the R7100 to respond to more then one public address. 
+If you require the ability to use the same save under both versions, it's=
+=20
+possible that saving from the new will be restorable in the old, even if=20
+the reverse turns out to be broken.
 
-
-
---------------070703020507000901020208
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <title></title>
-</head>
-<body>
-Jason,<br>
-<br>
-Does the service provider (telco) allow more than one IP address (more than
-one rfc 1483 tunnel) for your connection? Does the router require separate
-(unique) vc's for this to work? If the provider will allow you to do this
-then getting a connection for your mail server is a matter of getting the
-right machine to talk to the right interface on the router. Just a couple
-of ideas.<br>
-<br>
-Good luck!<br>
-<br>
-Andy<br>
-<br>
-<blockquote type="cite" cite="mid010801c2a527$782dcbd0$5d01a8c0@jason">
-  <div><font face="Arial" size="2">Now he wants to use  another one of his
-publicly registered static ip's for his mail server, which we  are trying
-to plug into one of the unused jacks on the built it hub on the  R7100.&nbsp;
-The problem is that we can not get the R7100 to respond to more  then one
-public address.&nbsp; </font></div>
-</blockquote>
-<br>
-</body>
-</html>
-
---------------070703020507000901020208--
-
+j
 
