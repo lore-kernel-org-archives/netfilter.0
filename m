@@ -1,12 +1,13 @@
-From: James Casbon <james.casbon@a4internet.com>
-Subject: why does this packet not match these rules?
-Date: Mon, 30 Aug 2004 15:12:39 +0100
+From: Jose Maria Lopez <jkerouac@eresmas.com>
+Subject: Re: OT: Pings phenomen :)
+Date: 29 Aug 2004 18:58:33 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200408301512.43189.james.casbon@a4internet.com>
+Message-ID: <1093798236.23474.34.camel@nostromo.bgsecm.com>
+References: <213736141.20040828221628@op.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <213736141.20040828221628@op.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,41 +17,42 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi,
+El sáb, 28 de 08 de 2004 a las 22:16, Marcin Sura escribió:
+> Hi
+> 
+>   I have 512/128 adsl. I wonder why, when I download files at full
+>   speed, pings to site X are about 2000ms. But when I upload files at
+>   full speed, pings to X are about 3000 to 5000ms. Can someone explain
+>   this to me from tcp/ip point of view? ;)
 
-I have these rules in my iptables script (iptables -L -v -n):
+I think it's just a matter of how many occasions the ICMP packets have
+of going out or into your system. All the packets are put in a queue
+and if the queue it's more full then the packets have to wait more to
+have your ICMP packet sent or received. You are talking about uploading
+files, so your ICMP packets have to wait in the queue to be sent, and
+the time you get it's the time from when you sent the packet to when the
+packet it's received, as you have 512 of download and 128 of upload it's
+normal the queue when you are uploading it's more full and the packets
+have to wait more.
 
-Chain OUTPUT (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               
-destination
+It's just my guess. I'm not an expert in this kind of things and I could
+be wrong.
 
-16955 5070K ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0
+-- 
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPAÑA
 
-35895  278M out_lan    all  --  *      eth0    0.0.0.0/0            0.0.0.0/0
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
-  16M 3830M out_internet  all  --  *      ppp0    x.x.x.x       0.0.0.0/0
-
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0           0.0.0.0/0
-     state RELATED
-
-26649 1534K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0 
-0 level 4 prefix `OUT-unknown:' 
-
- 28209 1621K DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0
-
-
-(where x.x.x.x is my ip), and yet these packets are being logged:
-
-... OUT-unknown:IN= OUT=ppp0 SRC=x.x.x.x DST=y.y.y.y LEN=60 TOS=0x00 PREC=0x00 
-TTL=64 ID=45650 DF PROTO=TCP SPT=43257 DPT=4662 WINDOW=4383 RES=0x00 SYN 
-URGP=0
-
-surely this should match rule 3 (src=x.x.x.x, out=ppp0) and be handled by 
-out_internet?
-
-thanks,
-James
 
