@@ -1,10 +1,10 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: OT - rule based system for a fire wall
-Date: Mon, 18 Oct 2004 09:08:58 -0700
+From: "Lee Evans" <netfilter@leeevans.org>
+Subject: SNAT & DNAT
+Date: Mon, 18 Oct 2004 15:46:08 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <29F6FAF7F2C0D41190980002A513591E0E1707CB@FSNSAB30>
+Message-ID: <E1CJaCD-0007HD-00@deer.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,89 +15,29 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-all,
+Hi,
 
-	good idea, but not original thought cisco and  other
-	firewall pros have  been  doing reflexive acl and other
-	stateful related thingsz awhile now.
+Sorry if this has been asked before in some other guise - I looked through
+the archives but couldn't spot anything (or a search feature..)
 
-	q&a,,,
+I'm going to be implementing a gateway system using IPTables, which will
+need to perform both DNAT & SNAT on incoming connections.
 
-	what are the correct rules?
+The reason being that I want to provide external access to systems on a LAN
+which do not have a default gateway (and nor do I want them to have one).
 
-	wouldn't  those be security policy and as such cnt be canned
-	by a vendor.
+The connections will come in to the public IP of the gateway and be DNAT'ed
+to the internal IP PREROUTING, and then SNAT'ed to the gateway's private IP
+POSTROUTING so that the internal systems have a route out for reply traffic.
 
-	netsec is always a work in progress and IMHO anything that starts
-	to point to a 'set it and forget it' mind set is dangerous to
-	a firms information assurance efforts.
+I've tested this on a small test-network but before I try to roll it out on
+a larger scale, are there any issues with doing this that I should be aware
+of?
 
-~piranha
-
-
-riginal Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Jose Maria
-Lopez
-Sent: Saturday, October 16, 2004 10:53 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: OT - rule based system for a fire wall
-
-
-El vie, 15 de 10 de 2004 a las 18:16, Ishwar Rattan escribi=C3=B3:
-> It is a little off-topic but some one here may
-> know something about.
->=20
-> I have seen an idea being floated:
->=20
-> - A firewall uses a set of rules to filter packets (a fact)
->=20
-> - Proposal: possibility of desigaingn a rule based system
->   (call it rule-system) that will insert correct rules in the
->   firewall (sounds ambiguous)
->=20
-
-Maybe what your are looking for it's something like guardian
-that uses snort to insert the proper rules into iptables when
-it detects an attack.
-
-> - Is there such a thing out there? if the propser won't
->   part with any more details, what kind of gusses can be
->   made?
->=20
->   1. Rule-system can interact with a user and then insert
->      rules in the firewall -- I think this has already been
->      accomplished??
->=20
->   2. Rule-system could look at logged information (firewall
->      logs) and come up with better/new rules?
->=20
->   3. Is there any other facet/issue that I am missing here..
->=20
-> It still bugs me to think of a rule-system that will insert
-> rules into another rule based system :-|
->=20
-> Any feedback will be appreciated.
->=20
-> -ishwar
-
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to =
-live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, =
-burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+Thanks
+Lee
 
 
