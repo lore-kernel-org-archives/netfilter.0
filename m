@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Strange ip_conntrack values
-Date: Sun, 18 Jul 2004 11:46:30 +0100
+From: adderek <adderek@polbox.com>
+Subject: Re: Problem: ISA card & iptables (2.4.26) - disappearing packets
+Date: Sat, 17 Jul 2004 12:18:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407181146.30331.Antony@Soft-Solutions.co.uk>
-References: <ef83df6b040718033163810a15@mail.gmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <40F8FCEB.90300@polbox.com>
+References: <40F8D503.3040608@polbox.com> <200407180939.37668.Antony@Soft-Solutions.co.uk> <40F8E16B.2020808@polbox.com> <200407181140.35100.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ef83df6b040718033163810a15@mail.gmail.com>
+In-Reply-To: <200407181140.35100.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,57 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sunday 18 July 2004 11:31 am, John wrote:
+(...)
 
-> Hi,
->
-> When I run the command
->
-> grep ^tcp /proc/net/ip_conntrack | awk '{print $4}' | sort | uniq -c
->
-> I get these lines ...
->
->     26 CLOSE
->     11 CLOSE_WAIT
->    883 ESTABLISHED
->     57 FIN_WAIT
->     34 SYN_RECV
->    116 SYN_SENT
->  23720 TIME_WAIT
->
-> the TIME_WAIT number seems very strange ... network interrupts
-> increased a lot three months ago and I couldn't find an explanation
-> for this. The number of our visitors didn't increased like this ...
+> Are you sure it is actually being fully configured?   Are you doing the PnP 
+> setup in the Bios, or under Linux?
 
-I agree this is strange, because the default TIME_WAIT timeout value is 2 
-minutes (you haven't increased this, have you?), therefore this would suggest 
-that nearly 24000 connections through your firewall were completed during the 
-past two minutes...   This seems unlikely, especially in light of the number 
-(883) you have in progress right now.
+I'm just executing 'modprobe ne' under linux. It requires module '8390'.
+And that's all. In bios I have configured some IRQ's to 'Legacy ISA PnP'
 
-If you "grep TIME_WAIT /proc/net/ip_conntrack | more", do you see nearly all 
-entries with the same source and/or destination address?   If so, investigate 
-that machine.....
 
-If not, I suggest a network sniffer (eg: ethereal) or some netfilter LOGging 
-rules to see if you can identify what all this traffic is.
+> If you take netfilter and the other two PCI cards completely out of the 
+> equation (ie: unplug the other cards, and set netfilter to default ACCEPT on 
+> all chains with no ruleset), can you communicate with the system at all 
+> through this card?
 
-Regards,
+I'll check this in a moment.
+But if I can remember I can communicate with this router - it's
+answering to my ping requests.
+	ping 10.0.0.1
+made from 10.0.0.2 machine sometime works and sometime do not.
+I'm recompilling my kernel at the moment so I'll check it in a while...
 
-Antony.
 
--- 
-There are two possible outcomes:
+Regards
+---
+Adderek
 
- If the result confirms the hypothesis, then you've made a measurement.
- If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
