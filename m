@@ -1,13 +1,13 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Download/upload speeds sluggish behind iptables firewall
-Date: Fri, 7 May 2004 21:30:44 +0100
+From: Joe Riley <irie@networks.org>
+Subject: actually its not TOO sluggish just 30-50% slower
+Date: Fri, 7 May 2004 14:03:14 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040507203044.GA27959@acentral.co.uk>
-References: <20040507201248.78D3F3961@sitemail.everyone.net>
+Message-ID: <20040507210314.CCD6F395D@sitemail.everyone.net>
+Reply-To: irie@networks.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20040507201248.78D3F3961@sitemail.everyone.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +18,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, May 07, 2004 at 01:12:48PM -0700, Joe Riley wrote:
-> Dear mailing list,
-> 
-> I am having a problem with iptables. I have a very simple setup,
-> 192.168.0.1 is the interface to the internet - receives speeds upward
-> to 150kb/sec - and 192.168.0.2 is my windows xp computer, which is
-> getting very crippled speeds of about 10-50kb/sec
+i just was gonna say, i download from kernel.org on the firewall at 300kb/sec peak and it stays steady.
 
-My first suggestion is to go back to first principles - you may simply 
-have an issue with the crossover connection to your XP box - it may not 
-have set the duplex settings correctly.. So, remove your Internet 
-connection, and then completely clear the firewall with
+On the windows xp i get 150kb/sec from this...
 
-$ iptables -F
-$ iptables -t nat -F
+i will look into ethtool thanks :)
 
-Now perform some simple tests by FTP'ing files in both directions 
-between your Linux box and XP box. If you get slow speeds doing this, 
-then netfilter/iptables is not the cause of your grief.
 
-Use 'mii-tool'or 'ethtool' to set/reset/re-negotiate/force the 
-speed and duplex parameters for the Linux box :)
 
-Good luck!
-Cheers,
-Gavin.
-
+_____________________________________________________________
+Proud member of United Networks Email, visit or report abuse at  http://networks.org/
 
