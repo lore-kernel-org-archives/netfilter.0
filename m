@@ -1,9 +1,11 @@
-From: Bryan Waters <bryanw@abwaters.com>
-Subject: Help with CLUSTERIP
-Date: Wed, 16 Mar 2005 15:39:55 -0700
-Message-ID: <4238B5BB.7020500@abwaters.com>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: Re: HUP
+Date: Thu, 17 Mar 2005 09:08:02 +0200
+Message-ID: <42392CD2.2000700@eccotours.dyndns.org>
+References: <200503161452.j2GEq7NW002319@smtp26.wxs.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <200503161452.j2GEq7NW002319@smtp26.wxs.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,15 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: iptables <netfilter@lists.netfilter.org>
 
-Can someone comment on the state of the CLUSTERIP ipt module?  Does it 
-work?  Are there any samples at all on how to use it?  What hash mode is 
-the most appropriate?  What are the upsides and downsides of each...
+Sietse van Zanen wrote:
+>  Logon to the server.
+> 
+> Start Terminal Services manager and kill the connection
+> 
+> 
+> So far for stating the obvious.
 
-The CLUSTERIP module seems to be exactly what we need but i need 
-somewhere to start...can someone help with this?
+Hi
 
-thx
--bryanw
+Thanks for this, but I acctually had first tried this.
+
+On logging on, I have found that with the Terminal Services manager, 
+there literally no connections (no even disconnected sessions ) at the 
+present time .
+
+So im not sure if this is an old entry on the ip_conntrack or what, but 
+it is been displayed when I try
+
+conntrack-viewer.pl and / or  netstat-nat
+
+weird.
+
+Thanks
+Kind Regards
+
+Brent Clark
 
