@@ -1,12 +1,13 @@
-From: =?unknown-8bit?q?J=F6rgen?= Danielsson <jorgen_d@yahoo.com>
-Subject: Re: Masquerading problems (fix)
-Date: Wed, 3 Jul 2002 09:02:29 -0700 (PDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: problem with forward and iptables
+Date: Wed, 3 Jul 2002 17:20:33 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020703160229.23991.qmail@web9902.mail.yahoo.com>
-References: <200207030613.59855.davidgr@interlap.com.ar>
+Message-ID: <200207031620.g63GKhU29698@vulcan.rissington.net>
+References: <20020703155702.95481.qmail@web9904.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207030613.59855.davidgr@interlap.com.ar>
+In-Reply-To: <20020703155702.95481.qmail@web9904.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,49 +18,70 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-To: davidgr@interlap.com.ar, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-This is how i have it
+On Wednesday 03 July 2002 4:57 pm, "J=F6rgen" Danielsson wrote:
 
-### Allow masquerading for internal boxes ###
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-echo 1 > /proc/sys/net/ipv4/ip_forward
+> This is part of the rules
+>
+> $PROG  -t nat -A PREROUTING -p tcp -d ooo.ooo.*17.*54
+> --dport 25 -j DNAT --to iii.iii.iii.*15:25
 
-### Make sure mtu is never changed=20
-iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j
-TCPMSS --clamp-mss-to-pmtu
+Any packets coming in to ooo.oo.*17.*54 TCP port 25 get destination=20
+translated to iii.iii.iii.*15 port 25.
 
+> $PROG -A FORWARD -p tcp -d iii.iii.iii.*15 --dport 25
+> -j ACCEPT
 
-Had the same problem as you earlier, that fixed the
-prob.
+Any packets for iii.iii.iii.*15 TCP port 25 are allowed through.
 
-/J=F6rgen
+> $PROG -A INPUT -p tcp --destination ooo.ooo.*17.*54
+> --destination-port 25 -j ACCEPT
 
---- David Gaston Rodriguez <davidgr@interlap.com.ar>
-wrote:
-> Sorry! i wrote bad. here is the correction:
-> Hi!, i am new in the list, i am from argentina, this
-> is mi problem:
-> I have a small LAN with a server doing masquerading,
-> I used the kernel 2.2.20 and
-> did not have any problem, now i decided to use the
-> kernel 2.4.18, i set iptables=20
-> to make the masquerading, but now there are web
-> pages which i can NOT enter from=20
-> workstations, like for example www.mixmail.com or
-> www.yahoo.com, and from the server
-> i can enter to this pages. I using 2 interfaces,
-> eth0: external, eth1: internal, the
-> external interface is connect to ADSL Modem (PPPoE).
-> Some idea on as could be mi problem?
-> Thanks!!
->=20
->=20
+I don't think you want this rule - you're not running a mail server on the =
 
+Firewall, are you ?
 
-__________________________________________________
-Do You Yahoo!?
-Sign up for SBC Yahoo! Dial - First Month Free
-http://sbc.yahoo.com
+> both ooo.ooo.ooo.ooo and iii.iii.iii.iii is real class
+> c-net (even though iii.iii.iii.iii is being masqed),
+> which mean no net is a 192.168.0.0/255.255.0.0 or
+> 10.0.0.0/255.0.0.0 or 172.16.0.0/255.255.255.0
+
+This means that ooo.ooo.ooo.ooo is routable across the Internet (and will g=
+et=20
+translated by your DNAT rule and sent on the iii.iii.iii.iii), and also=20
+iii.iii.iii.iii is routable across the Internet, so when it arrives at the =
+
+Firewall it will simply get forwarded through to the server with that addre=
+ss.
+
+> The problem:
+>
+> Telnet from the outside to ooo.ooo.*17.*54 : 25 does
+> what its supposed to do, i get a reply from a smtp
+> server. But then i noticed that iii.iii.iii.*15 : 25
+> gives the same reply. How come ?
+
+Hopefully the above explains why ?
+
+> No other ip on the
+> iii.iii.iii.iii net is reachable. Is the forward rule
+> opening for access directly to the masqed ip ? and how
+> do i stop that ?
+
+Why do you want to stop it ?   If the mail server is accessible from the=20
+outside (as ooo.ooo.*17.*54), then why are you bothered about it also being=
+=20
+accessible as iii.iii.iii.*15 ?   No-one can do any more damage to it on on=
+e=20
+IP than the other, so there's no loss of security here.
+
+If you don't want its real IP address to be accessible from the outside, wh=
+y=20
+have you given it a routable IP address at all, instead of a private=20
+10.0.0.0, 172.16.0.0 or 192.168.0.0 address ?
+
+=20
+
+Antony.
 
