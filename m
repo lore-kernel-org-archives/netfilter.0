@@ -1,9 +1,8 @@
-From: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
-Subject: Re: rules for Real's Helix Universal Media Server?
-Date: Wed, 05 Mar 2003 18:08:03 +0900
+From: Ulrich Weber <uw@imos.net>
+Subject: iptables -t nat -A OUTPUT -d 1.2.3.4 -j DNAT --to 127.0.0.1 not working
+Date: Wed, 05 Mar 2003 10:13:31 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E65BE73.5080401@mega-bucks.co.jp>
-References: <3E62E020.2090004@mega-bucks.co.jp>
+Message-ID: <3E65BFBB.3070008@imos.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,138 +18,133 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-For those who are facing the same problem as me I've finally come up 
-with these rules. Don't know if they are the tightest or if they could 
-be improved but they seem to work.
+Hello all,
 
-Any suggestions welcomed.
+could anyone tell me why this and any other Destination Redirection not 
+works?
+I'm using iptables v1.2.7a and 2.4.20-ac2 as Kernel.
 
-#!/bin/sh
+On any other Installations it works perfekt (maybe i tuned my system to 
+much ;)
 
-IPT="/usr/local/sbin/iptables"
-IP=""
-LAN=""
-MBX=""
-INTERNALBCAST=""
+Here an strace of my notworking system and another working system.
 
-# Delete any old rules
-for i in filter
-do
-   $IPT -t $i -F
-   $IPT -t $i -X
-done
+Bye
+  Ulrich
 
-$IPT --policy INPUT   DROP
-$IPT --policy OUTPUT  ACCEPT
-$IPT --policy FORWARD DROP
+---not working---
+root@serv1:~/.ssh# strace iptables -t nat -A OUTPUT -d 1.2.3.4 -j DNAT
+--to 127.0.0.1
+execve("/usr/local/sbin/iptables", ["iptables", "-t", "nat", "-A",
+"OUTPUT", "-d", "1.2.3.4", "-j", "DNAT", "--to", "127.0.0.1"], [/* 26
+vars */]) = 0
+brk(0)                                  = 0x80537a0
+open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=32305, ...}) = 0
+old_mmap(NULL, 32305, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40015000
+close(3)                                = 0
+open("/lib/libdl.so.2", O_RDONLY)       = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0P\27\0\000"...,
+1024) = 1024
+fstat64(3, {st_mode=S_IFREG|0755, st_size=61247, ...}) = 0
+old_mmap(NULL, 10988, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4001d000
+mprotect(0x4001f000, 2796, PROT_NONE)   = 0
+old_mmap(0x4001f000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+3, 0x1000) = 0x4001f000
+close(3)                                = 0
+open("/lib/libc.so.6", O_RDONLY)        = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0h\222\1"...,
+1024) = 1024
+fstat64(3, {st_mode=S_IFREG|0755, st_size=5029105, ...}) = 0
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+-1, 0) = 0x40020000
+old_mmap(NULL, 1191168, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40021000
+mprotect(0x4013a000, 40192, PROT_NONE)  = 0
+old_mmap(0x4013a000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+3, 0x119000) = 0x4013a000
+old_mmap(0x40140000, 15616, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40140000
+close(3)                                = 0
+munmap(0x40015000, 32305)               = 0
+brk(0)                                  = 0x80537a0
+brk(0x80537d8)                          = 0x80537d8
+brk(0x8054000)                          = 0x8054000
+open("/usr/lib/iptables/libipt_DNAT.so", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0`\5\0\000"...,
+1024) = 1024
+fstat64(3, {st_mode=S_IFREG|0755, st_size=5433, ...}) = 0
+old_mmap(NULL, 7692, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40015000
+mprotect(0x40016000, 3596, PROT_NONE)   = 0
+old_mmap(0x40016000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+3, 0) = 0x40016000
+close(3)                                = 0
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
+getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], [84]) = 0
+brk(0x8055000)                          = 0x8055000
+getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], [1652]) = 0
+setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], 1872) = -1 EINVAL
+(Invalid argument)
+write(2, "iptables: Invalid argument\n", 27iptables: Invalid argument
+) = 27
+_exit(1)                                = ?
 
-# Loopback accepts everything
-$IPT -A INPUT  -i lo -j ACCEPT
-$IPT -A OUTPUT -o lo -j ACCEPT
 
-# Allow previously established connections
-$IPT -A INPUT -d $IP -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
-# SMTP needed so I can email the results of the backup jobs
-$IPT -A INPUT -p tcp -s $MBX -i eth0 -d $IP --sport 25 -m state --state 
-NEW,ESTABLISHED,RELATED -j ACCEPT
+---working---
+root@serv2:~# strace iptables -t nat -A OUTPUT -d 1.2.3.4 -j DNAT --to
+127.0.0.1
+execve("/usr/sbin/iptables", ["iptables", "-t", "nat", "-A", "OUTPUT",
+"-d", "1.2.3.4", "-j", "DNAT", "--to", "127.0.0.1"], [/* 25 vars */]) = 0
+brk(0)                                  = 0x8056a7c
+open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=14628, ...}) = 0
+old_mmap(NULL, 14628, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40015000
+close(3)                                = 0
+open("/lib/libdl.so.2", O_RDONLY)       = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0000\31\0"...,
+1024) = 1024
+fstat64(3, {st_mode=S_IFREG|0755, st_size=11788, ...}) = 0
+old_mmap(NULL, 11476, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40019000
+mprotect(0x4001b000, 3284, PROT_NONE)   = 0
+old_mmap(0x4001b000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+3, 0x1000) = 0x4001b000
+close(3)                                = 0
+open("/lib/libc.so.6", O_RDONLY)        = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0p\\\1\000"...,
+1024) = 1024
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1433605, ...}) = 0
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+-1, 0) = 0x4001c000
+old_mmap(NULL, 1256740, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4001d000
+mprotect(0x40147000, 36132, PROT_NONE)  = 0
+old_mmap(0x40147000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+3, 0x12a000) = 0x40147000
+old_mmap(0x4014c000, 15652, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4014c000
+close(3)                                = 0
+munmap(0x40015000, 14628)               = 0
+brk(0)                                  = 0x8056a7c
+brk(0x8057a7c)                          = 0x8057a7c
+brk(0x8058000)                          = 0x8058000
+open("/usr/lib/iptables/libipt_DNAT.so", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0@\5\0\000"...,
+1024) = 1024
+fstat64(3, {st_mode=S_IFREG|0755, st_size=4336, ...}) = 0
+old_mmap(NULL, 7628, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40015000
+mprotect(0x40016000, 3532, PROT_NONE)   = 0
+old_mmap(0x40016000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+3, 0) = 0x40016000
+close(3)                                = 0
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
+getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], [84]) = 0
+getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], [656]) = 0
+setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], 876) = 0
+setsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], 116) = 0
+_exit(0)                                = ?
 
-# Allow SSH from LAN
-$IPT -A INPUT -p TCP -s $LAN -i eth0 -d $IP --dport 22 -m state --state 
-NEW,ESTABLISHED,RELATED -j ACCEPT
-
-# Folding@Home
-$IPT -A INPUT -p TCP -i eth0 -d $IP --sport 8080 -m state --state 
-NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPT -A INPUT -p TCP -i eth0 -d $IP --sport 80   -m state --state 
-NEW,ESTABLISHED,RELATED -j ACCEPT
-
-#################################################
-#
-# Ports needed by the server
-#
-# Listen on :
-#
-# 554         control channel for RTSP (tcp)
-# 80          HTTP (tcp)
-# 1755        control channel for MMS  (tcp/udp)
-# 7070        control channel for PNA  (tcp)
-# 9090        Server Monitor Traffice (tcp)
-# 14185       Helix Admin port (tcp)
-# 34445-34459 RDT/RTP client replies for UDP resends (udp)
-#
-# Send on:
-#
-# 1024-5000  MMS media packet delivery (udp)
-# 1-65000    MMS Multicast (mutlicast) NOT NEEDED
-# 6970-32000 data channel (UDP)
-#
-#################################################
-
-$IPT -A INPUT  -p tcp -i eth0 -d $IP --dport 80          -j ACCEPT
-$IPT -A INPUT  -p tcp -i eth0 -d $IP --dport 554         -j ACCEPT
-$IPT -A INPUT  -p tcp -i eth0 -d $IP --dport 1755        -j ACCEPT
-$IPT -A INPUT  -p udp -i eth0 -d $IP --dport 1755        -j ACCEPT
-$IPT -A INPUT  -p tcp -i eth0 -d $IP --dport 7070        -j ACCEPT
-$IPT -A INPUT  -p tcp -i eth0 -d $IP --dport 9090        -j ACCEPT
-$IPT -A INPUT  -p tcp -i eth0 -d $IP --dport 14185       -j ACCEPT
-$IPT -A INPUT  -p udp -i eth0 -d $IP --dport 34445:34459 -j ACCEPT
-
-# These rules are really needed since the OUTPUT policy is set to ACCEPT
-$IPT -A OUTPUT -p udp  --sport 1024:5000   -j ACCEPT
-$IPT -A OUTPUT -p udp  --sport 6970:32000  -j ACCEPT
-
-##################################################
-#
-# ping flood protection
-# Deny icmp to broadcast address
-# allow :
-#         0 : Echo reply
-#         3 : Destination Unreachable
-#         11: TTL exceeded
-#
-# deny  :
-#         4 : Source Quench
-#         12: Parameter Problem
-#
-##################################################
-
-$IPT -A INPUT -p icmp --icmp-type echo-request -m limit --limit 1/s -j 
-REJECT
-$IPT -A INPUT -i eth0 -p icmp -m icmp --icmp-type 0  -j ACCEPT
-$IPT -A INPUT -i eth0 -p icmp -m icmp --icmp-type 3  -j ACCEPT
-$IPT -A INPUT -i eth0 -p icmp -m icmp --icmp-type 11 -j ACCEPT
-$IPT -A INPUT -i eth0 -p icmp -m icmp --icmp-type 4  -j REJECT
-$IPT -A INPUT -i eth0 -p icmp -m icmp --icmp-type 12 -j REJECT
-$IPT -A INPUT -p icmp -d $INTERNALBCAST -j DROP
-
-##################################################
-#
-# Drop crap so that it does not clog up the log file
-#
-# Drop ports :
-#              67  : BOOTP/DHCP             (UDP)
-#              113 : identd, need to send RST
-#              137 : NetBIOS                (UDP)
-#              139 : Samba and print shares (TCP/UDP)
-#
-# Drop bcasts:
-#              192.168.255.255 (TCP/UDP)
-#              255.255.255.255 (TCP/UDP)
-#
-##################################################
-
-$IPT -A INPUT -p udp --dport 67  -j DROP
-$IPT -A INPUT -p tcp --dport 113 -j REJECT --reject-with tcp-reset
-$IPT -A INPUT -p udp --dport 137 -j REJECT
-$IPT -A INPUT -p udp --dport 139 -j REJECT
-$IPT -A INPUT -p tcp --dport 139 -j REJECT
-$IPT -A INPUT -p tcp -i eth0 -d $INTERNALBCAST  -j DROP
-$IPT -A INPUT -p udp -i eth0 -d $INTERNALBCAST  -j DROP
-$IPT -A INPUT -p tcp -i eth0 -d 255.255.255.255 -j DROP
-$IPT -A INPUT -p udp -i eth0 -d 255.255.255.255 -j DROP
-
-#log anything that made it this far w/o being caught
-$IPT -A INPUT -j LOG --log-level debug --log-prefix "DROP:"
 
 
