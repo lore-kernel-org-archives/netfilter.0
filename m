@@ -1,14 +1,10 @@
-From: John Covici <covici@ccs.covici.com>
-Subject: Re: How to send all packets to a router
-Date: Mon, 31 Mar 2003 23:25:08 -0500
+From: Tim Miller <tj.miller@javaspotlet.com>
+Subject: INPUT vs. FORWARD when????
+Date: Mon, 31 Mar 2003 23:17:00 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <m3znnasv2z.fsf@ccs.covici.com>
-References: <3C792059.865B267B@acabtu.com.mx>
-	<200302242211.38647.netfilter@newkirk.us>
+Message-ID: <Pine.LNX.4.53.0303312251100.1678@beethoven.javaspotlet.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302242211.38647.netfilter@newkirk.us> (Joel Newkirk's
- message of "Mon, 24 Feb 2003 22:11:38 -0500")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,65 +14,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-
-I have sort of a combination problem of this type.  I did the routes
-in section 4.2 of the Advanced Routing HOwTO and that was OK, but now
-I need to have everything go out interface ppp0 except mail which
-must go out eth1 and I need whatever goes out eth1to have a certain 
-ip address and whatever goes out ppp0 to have a certain ip address.
-
-What I did was to use table mail.out like in the example in the
-howto like this:
-ip rule add fwmark 1 table mail.out||exit 1
-ip route add default via <remote gateway for eth1>  dev eth1 table mail.out||exit 1
-Then I issued the following iptable commands
-
-iptables -t mangle -A PREROUTING -i eth1 -p tcp --dport 25 -j MARK --set-mark 1
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT -p tcp --sport 25 --to <ip address for eth1>
-iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to <ip address for ppp0>
-
-I thought I would need something for the output chain as well, but I
-kept getting invalid argument when I tried to put the same rule into
-the output chain like the one I put into the POSTROUTING chain.
-
-So what am I doing wrong here?
-
-Thanks.
+To: NetFilter List <netfilter@lists.netfilter.org>
 
 
+As a newbie to iptables I have some confusion on the subject of the chain
+traversal process that I hope the list can help me clear up.
 
-on Mon, 24 Feb 2003 22:11:38 -0500 Joel Newkirk <netfilter@newkirk.us> wrote:
+Let say for a moment I have one machine, 2 interfaces configured as
+follows, assume for the moment that the 192 address is my internet
+connection.
 
->
-> Yep.  DNAT changes the destination, the FINAL destination.  Everything 
-> you DNAT with this rule is sent TO the router, not THROUGH the router.
->
-> You want to work with routing instead of NAT, because you only want to 
-> change the route used to reach that destination.  The Linux Advanced 
-> Routing and Traffic Control Howto ( http://lartc.org/howto ) has a 
-> helpful section "Routing for Multiple Uplinks" at 
-> http://lartc.org/howto/lartc.rpdb.multiple-links.html that should tell 
-> you what you want.  
->
-> Basically you need to create 2 routing tables, with an upstream router as 
-> the default route in each.  Make the 'main' router the overall default, 
-> and the secondary router has a rule that sends specific traffic to it.  
-> You can source-route ("Prev" from the Multiple-Uplink section linked 
-> above) just with the routing configuration, or you can use the MARK 
-> target in mangle PREROUTING with iptables to flag the traffic destined 
-> for it, and then set up a routing rule based on the fwmark, as explained 
-> in http://lartc.org/howto/lartc.netfilter.html .  From what you 
-> outlined, source routing is your simplest solution, and won't directly 
-> involve iptables at all.  MARK is more useful in situations where you 
-> need to send specific types of traffic, rather than specific sources, 
-> through a different route.
->
-> j
+eth0 -> 192.168.1.1 - Internet Gateway
+eth1 -> 10.2.0.1 - Local Lan gateway
+
+T   F : A packet is received on eth1 whose destination address is 10.2.0.1
+then I assume that it will pass through the INPUT chain. The source of the
+packet was a machine in the local lan.
+
+T  F : A packet is received on eth1 that is a request for a DHCP address.
+The DHCP process is running on the box and listening on eth1.  When the
+request is received the packet passes through the PREROUTING and then the
+INPUT chain.
+
+T   F : A packet arrives on eth1 whose destination is an address out on
+the internet and its source is a machine on the local lan. When this
+occurs it first passes through FORWARD chain and then the POSTROUTING chain,
+it is then sent out eth0. This packet never passes through the OUTPUT
+chain.
+
+T  F : A packet arrives on eth0 whose destination is 192.168.1.1:80
+address. This packet will pass through the PREROUTING chain and then the
+INPUT chain.  (Assume in this scenerio a web server is running on the
+box and the PREROUTING chain did not alter the address).
+
+T  F : A packet arrives on eth0 whose destination is 192.168.1.1:80
+address. This packet passes through the PREROUTING chain which has a rule to
+alter the destination to a 10.2.0.2 address.  Once the destination address
+has been changed, this packet passes through the FORWARD chain. (Assume in
+this scenerio that the web server is running on the 10.2.0.2 machine.
+
+Are my scenerio's correct? If not what am I missing.
+
+Thanks a million
 
 -- 
-         John Covici
-         covici@ccs.covici.com
+-Tim Miller
+
+"You are who you become"
+
+Email: tj.miller@javaspotlet.com
+Registered Linux User #302727
 
