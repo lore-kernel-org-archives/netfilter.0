@@ -1,11 +1,13 @@
-From: "Marc Fargas" <telenieko@telenieko.com>
-Subject: RV: POM on Debian PPTP contrack patch
-Date: Sun, 1 Feb 2004 23:17:58 +0100
+From: jo@neolabs.be
+Subject: define 'connections'
+Date: Sun, 01 Feb 2004 23:32:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5BDF4E1253C4@fargas.com>
+Message-ID: <200402012232.i11MWZu04330@neo1.neolabs.be>
+Reply-To: jo@neolabs.be
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: binary
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +20,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, I've been triying to get the contrack pptp patch to work on Debian. 
+Hi,
 
-I've downloaded kernel 2.4.18 sources and uncompressed them, then patched
-with POM with no problem, but the pptp patch says I have to recompile
-userspace tools so I did an apt-get source iptables to go on with it. The
-problem is that when running debian/rules to compile iptables it takes the
-.tar.bz2 of the kernel sources from /usr/src and uncompresses it to it's
-local folder for doing the iptables binarys, Is there anyway to force
-iptables package to compile with the patched kernel sources and not the
-compressed original ones???
+is this correct : 
 
-Thanks for all!!
+when you are SNAT-ing and using a statefull firewall, iptables must
+manage 2 different 'states' :
 
+- the connections that went out so incoming response packets are matched
+to the correct outgoing request packets
 
+- the states of the state module meaning a list of the connections so
+incoming responste packets are ALLOWED to go back in
 
+I guess if you are doing SNAT with an empty filter table, you only have
+the 'states' of the first kind, right?
+
+Which one of these do we actually see in /proc/net/ip_conntrack ? Are
+these the SNAT-connections or the states from the state module? And where 
+do I see the others? Where can I find the default lifetime for both?
+
+Thanks
+
+Jo
+
+NEOlabs - http://www.neolabs.be - mailto:info@neolabs.be
 
