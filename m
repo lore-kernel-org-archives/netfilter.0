@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NAT and anti spoofing
-Date: Thu, 19 Sep 2002 13:33:06 +0100
+Subject: Re: HELP : How to group IP addresses by refering to them as a single name ?
+Date: Thu, 19 Sep 2002 14:01:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209191233.g8JCXDv19614@vulcan.rissington.net>
-References: <200209181629.56408.danielf@supportteam.net>
+Message-ID: <200209191302.g8JD20v19671@vulcan.rissington.net>
+References: <20020919074555.18679.qmail@web40202.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209181629.56408.danielf@supportteam.net>
+In-Reply-To: <20020919074555.18679.qmail@web40202.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +18,85 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 18 September 2002 10:29 pm, Daniel F. Chief Security Engineer - 
-wrote:
+On Thursday 19 September 2002 8:45 am, Alok Shukla wrote:
 
-> This may be a stupid question but the answer is eluding me right now.
+> HI,
 >
-> With NAT setup.
+> I run a College Laboratory with two rooms for the
+> whole labaratory
+> I have given a static IP for each of the computers
+> from 192.168.0.1 to 192.168.0.254.
 >
-> I have a single machine with 8 global IPs NATed to 8 10.0.0.0/8 IPs. How do
-> you filter the 10.0.0.0/8 network from talking to the machines behind the
-> firewall. From outside the firewall on the internet.
-
-iptables -A FORWARD -s 10.0.0.0/8 -i $extIF -j DROP
-
-> I used command like this to get the NAT working is this right.
-> iptables -t nat -A POSTROUTING -s 10.10.10.128 -j SNAT --to 1.2.3.4
-> iptables -t nat -A PREROUTING -d 1.2.3.4 -j DNAT --to 10.10.10.128
+> 1. My Lab 1 has IP from 192.198.0.11 to 192.168.0.50
+> and Lab 2 has IP from 192.168.0.51 to 192.168.0.90
 >
-> This worked to make 1.2.3.4 send to a machine behind the firewall that had
-> 10.10.10.128 for it's IP.
+> I want to have a set of rules so that i can group Lab
+> 1 computers in one group and Lab 2 computers in
+> another group. In this I want to able to shutdown the
+> Internet facility by stopping its masquerading as a
+> whole by refering as a single name.
+>
+> Like something like :-
+>
+> iptables -t nat -D POSTROUTING -s "LAB1" -d any/0 -J
+> MASQUERADE
 
-You only need the SNAT rule for packets initiated from 10.10.10.128
+You can't use names like this in rules, however you might be able to achieve 
+something almost as effective by creating two user-defined chains forthe two 
+groups of machines, and then putting your rules to apply to each group in the 
+appropriate chain ?
 
-You only need the DNAT rule for packets initiated from 1.2.3.4
+It's a pity your two groups do not split on a neat IP address boundary (maybe 
+you could fix this sometime in the future, for example by putting all LAB1 
+machines in the range 192.168.0.0-63, all LAB2 machines in the range 
+192.168.0.64-127, and all 'general net admin' machines (DNS, NT server etc) 
+above 192.168.0.128 ?), however you could try splitting them up as follows:
 
-Therefore one of the rules might be sufficient for your needs - you only need 
-both if the 10.10.10.128 machine is acting as both client and server.
+# create a user-defined chain called LAB1
+iptables -N LAB1
+# add rules to match machines *not* in LAB1 and return immediately
+iptables -A LAB1 -s 192.168.0.64/26 -j RETURN
+iptables -A LAB1 -s 192.168.0.56/29 -j RETURN
+iptables -A LAB1 -s 192.168.0.52/30 -j RETURN
+iptables -A LAB1 -s 192.168.0.50/31 -j RETURN
+# now any further rules we put in chain LAB1 will only apply to those machines
+
+# create user-defined LAB2 chain
+iptables -N LAB2
+# add some rules to eliminate non-LAB2 machines
+iptables -A LAB2 -s 192.168.0.0/27 -j RETURN
+iptables -A LAB2 -s 192.168.0.32/28 -j RETURN
+iptables -A LAB2 -s 192.168.0.48/31 -j RETURN
+# now any further rules we put in chain LAB2 will only apply to those machines
+
+I suggest using these chains as follows:
+
+1. Add rules as necessary to the above chains to ACCEPT the traffic you want
+2. Put a rule at the end of both LAB1 and LAB2 chains to DROP any other 
+traffic
+3. Call both rules near the start of your FORWARD chain and then add any 
+other rules for non-(LAB1 or LAB2) machines:
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -j LAB1
+iptables -A FORWARD -j LAB2
+iptables -A FORWARD -s $extDNS -p tcp --dport 53 -j ACCEPT
+iptables -A FORWARD -s $extDNS -p udp --dport 53 -j ACCEPT
+
+This would allow servers not in the LAB1 or LAB2 ranges to access an external 
+DNS server, for example.
+
+If you want any help understanding how I created the range matches in the two 
+chains above, let me know and I'll explain in more detail.
+
+Hopw this helps,
 
 Antony.
 
 -- 
 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
+This is not a rehearsal.
+This is Real Life.
 
