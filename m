@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Unicast packets to multiple destinations  -only-
-Date: Thu, 18 Nov 2004 08:32:11 -0500
-Message-ID: <1100784731.3848.10.camel@hubcap.ljm.dom>
-References: <419C6FF3.9070908@lucomp.net>
+Subject: Re: Transparent gateway
+Date: Thu, 18 Nov 2004 08:41:51 -0500
+Message-ID: <1100785310.3848.20.camel@hubcap.ljm.dom>
+References: <419C7FE2.8060002@mattiamartinello.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <419C6FF3.9070908@lucomp.net>
+In-Reply-To: <419C7FE2.8060002@mattiamartinello.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,52 +20,54 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-11-18 at 04:48, Luigi Corsello wrote:
-> Hi all,
+On Thu, 2004-11-18 at 05:56, Mattia Martinello wrote:
+> Hi,
 > 
-> I got 3 IPs in one interface (ip addr add, not aliasing), and wanted to 
-> only allow unicast packets to any of them (and/or their subnet in one 
-> case, to allow broadcasts for the local net).
-> Aim: no broadcasts, no multicast, spoofing prevention?.
-> 
-> You can't have multiple -d in rules. My quick solution was 3 tables
-> (this is a sample):
-> 
-> iptables -N ta
-> iptables -N tb
-> iptables -N tc
-> 
-> iptables -A tc -d ! $ip3 -j DROP
-> iptables -A tb -d ! $ip2 -j tc
-> iptables -A ta -d ! $ip1 -j tb
-> 
-> iptables -A INPUT -j ta
-> 
-> It works, much junk stays out.  All services work.
->  From the list point of view, is this insane(a) stupid(b) or clever(c)? 
-> and why?
+> I'm using a netfilter gateway between my LAN and the server on the DMZ.
+> This gateway makes a DNAT from 192.168.1.* to the external IP of the 
+> server on the DMZ.
 
-if it works, then it's neither insane nor stupid.  just to add a
-viewpoint, if you asked me how to accomplish the same, i would have
-probably answered:
+why?
 
-  iptables -N scrub_interface_0
-  iptables -A scrub_interface_0 -d ${ip1} -j RETURN
-  iptables -A scrub_interface_0 -d ${ip2} -j RETURN
-  iptables -A scrub_interface_0 -d ${ip3} -j RETURN
-  iptables -A scrub_interface_0 -j DROP
+> Then, if I call http://[my external IP], the gateway makes a DNAT to 
+> http://192.168.20.x (the internal DMZ IP of the server), through the 
+> 192.168.20.254 interface.
 
-  iptables -A INPUT -i ${int0} -j scrub_interface_0
+because you told it to...
 
-from my perspective--i can figure out what the above is doing much more
-quickly than i can looking at your method.  but it's really just
-that--personal preference.
+> The problem is that when I call Apache on the server, Apache thinks that 
+> I am 192.168.20.254, not 192.168.1.x.
+> So, in the access logs the connection is made from the DMZ interface of 
+> the gateway and not from the real IP address of the client.
+> This make me some real problems about client autentication.
+> 
+> How I can I get my gateway transparent and solve this problem to let 
+> Apache to write the correct IP address of the client in the logs?
+
+don't NAT traffic from your LAN to your DMZ.  if clients inside the LAN
+are requesting the public IP of the DMZ server and not it's actual DMZ
+IP, you'll need something along the lines of:
+
+  iptables -t nat -A PREROUTING -i ${INSIDE_IF} -s ${INSIDE_NET} \
+    -d ${WEBSRV_PUB_IP} -j DNAT --to-destination ${WEB_SRV_DMZ_IP}
+
+and make sure your outbound SNAT/MASQ for the internal net specifies the
+external interface:
+
+  iptables -t nat -A POSTROUTING -o ${OUTSIDE_IF} -s ${INSIDE_NET} \
+    -j SNAT --to-source ${OUTSIDE_IP}
+
+other than that--you haven't provided near enough information to answer
+your questions (hint:  post your rules [1])
 
 -j
 
+[1] iptables -t mangle -vnxL && iptables -t nat -vnxL && iptables -vnxL
+
 --
-"When will I learn? The answer to life's problems aren't at the bottom
- of a bottle, they're on TV!"
+"You must be the man who didn't know whether it was a blister or
+ a boil.
+ It was a gummi bear."
 	--The Simpsons
 
 
