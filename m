@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Hostname with DNAT  ? {OK}
-Date: Mon, 26 Jul 2004 11:30:43 -0400
+Subject: RE: Settings via init.d lost during runtime
+Date: Mon, 26 Jul 2004 14:29:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511F6@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511F9@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,51 +17,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Danila Octavian <octavian@service.agress.ro>, netfilter@lists.netfilter.org
+To: KKH <knabberknusperhaus@yahoo.de>
+Cc: netfilter@lists.netfilter.org
 
-> $IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server1.com =
---dport 25 -j DNAT --to 192.168.14.254:25
-> $IPTABLES -A FORWARD -i eth0 -p tcp -d mail1.server.com --dport 25 -j =
-ACCEPT
->
-> $IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server2.com =
---dport 25 -j DNAT --to 192.168.14.251:25
-> $IPTABLES -A FORWARD -i eth0 -p tcp -d mail.server2.com --dport 25 -j =
-ACCEPT
->
-> $IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d server3.com --dport =
-25 -j DNAT --to 192.168.14.253:25
-> $IPTABLES -A FORWARD -i eth0 -p tcp -d server3.com --dport 25 -j =
-ACCEPT
-> $IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server3.com =
---dport 25 -j DNAT --to 192.168.14.253:25
-> $IPTABLES -A FORWARD -i eth0 -p tcp -d mail.server3.com --dport 25 -j =
-ACCEPT
->
-> Is posibble to use names instead of IP like in my situation ?
+> yes. all the tools that are run by the script - also those which are
+> executed after iptables - are active after booting..
 
-using a resolvable hostname instead of an IP in a rule is perfectly =
-valid.  the caveat is:  at the time you execute the script, the hostname =
-is resolved to an IP address and the IP is what ends up in the rule.  if =
-the IP associated with the hostname changes after the rules are =
-loaded--you must reload the rules for the new IP to be used in the rule.
+my guess then, would be that you still have the suse iptables startup =
+script enabled and it is running after your custom script.  the first =
+thing the suse script does, is to flush out all your rules...
 
-my guess is that the reason you wish to do this is that you have a =
-dynamic IP address and are using some sort of dynamic DNS service.  you =
-will probably want to incorporate the re-loading of your ruleset into =
-your DHCP client whenever your IP changes.  you could actually do this =
-without utilizing the "dynamic DNS + hostname in rules" solution  by =
-incorporating something like this into your ruleset:
+disable the suse iptables script from running at boot:
 
-	MY_IF=3D"eth0"
-	MY_IP=3D`ip addr sh $MY_IF | grep inet | awk '{print $2}' | cut -d"/" =
--f1`
+	chkconfig -s SuSEfirewall2_setup off
+	chkconfig -s SuSEfirewall2_init off
+	chkconfig -s SuSEfirewall2_final off
 
-	$IPTABLES -A PREROUTING -t nat -i $MY_IF -p tcp -d $MY_IP \
-	  --dport 25 -j DNAT --to 192.168.14.251:25
-
-and whenever your IP changes--have the script re-execute to pickup the =
-new IP.
+beyond that--you've stumped me...
 
 -j
 
