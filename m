@@ -1,14 +1,14 @@
 From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: Re: How can I test my rule set?
-Date: Thu, 30 Oct 2003 07:05:10 -0500
+Subject: Re: service iptables stop; hangs constantly on red hat 8
+Date: Thu, 30 Oct 2003 07:19:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067515509.27238.5.camel@tarkus>
-References: <200310300043.h9U0hiw02135@smtp.postech.ac.kr>
+Message-ID: <1067516395.27241.17.camel@tarkus>
+References: <1067262522.6369.7.camel@drs0.manchotnetworks.net>
 Reply-To: tedkaz@optonline.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200310300043.h9U0hiw02135@smtp.postech.ac.kr>
+In-reply-to: <1067262522.6369.7.camel@drs0.manchotnetworks.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +19,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Jin Gu, Kim" <lilia21@postech.ac.kr>
-Cc: netfilter@lists.netfilter.org
+To: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
+Cc: netfilter-users <netfilter@lists.netfilter.org>
 
-hping2 is your friend.
+strace service iptables stop
 
 Ted
-On Wed, 2003-10-29 at 19:43, Jin Gu, Kim wrote:
-> Hi all.
->  
-> I made my own rule set, but i don't know how to test it.
->  
-> Should I launch some applications and attempt to log in my trusted
-> network one by one?
->  
-> I guess there will be other methods...
->  
->  
->  
-> "Netfilter Hacking HOWTO" seems to introduce some useful tools e.g.,
-> gen_ip, rcv_ip..
->  
-> But I can't understand how to use them.
->  
-> If you know how to handle them or test, would you show me the way?
->  
+On Mon, 2003-10-27 at 08:48, lartc@manchotnetworks.net wrote:
+> hi all,
+> 
+> i have an up2date redhat 8 installation with iptables-1.2.8-8.80.2
+> 
+> as required by my setup, i insmod ip_conntrack_ftp and ip_nat_ftp to
+> handle connection tracking of ftp sessions.
+> 
+> if a connection has been established, and it becomes closed, or if there
+> is a current ftp session, "service iptables stop" hangs the machine
+> while trying to remove modules. here's an example, but it does not
+> necessairly hang on this module --
+> 
+> 
+> [root@aztec root]# ps -eaf | grep mod
+> root      1728  1672 99 14:39 pts/0    00:01:07 modprobe -r ip_nat_ftp
+> root      1952  1910  0 14:40 pts/1    00:00:00 grep mod
+> 
+> i have the belief that it is comming from ip_conntrack. in any case, i
+> can make it happen always (i.e. the system hang). processor time goes to
+> 99% and a reboot is necessary.
+> 
+> has anyone else come accross this? is there something to be flushed
+> prior to removing the modules?
+> 
+> many thanks!
+> 
+> charles
+> 
+-- 
+Ted Kaczmarek<tedkaz@optonline.net>
+18 Packanack Lake Road
+Wayne, NJ, 07470
+973-633-6892
+
+AIM-tedhurrah
+Yahoo-oasysted
 
 
