@@ -1,13 +1,15 @@
-From: Y Makki <bugzilla@sympatico.ca>
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
 Subject: RE: Windows file sharing over different subnets
-Date: 29 Mar 2003 02:31:06 -0500
+Date: 29 Mar 2003 09:50:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048923066.8358.36.camel@psyche>
+Message-ID: <1048924202.17839.96.camel@raylinux.internal>
 References: <7C9884991ADAE0479C14F10C858BCDF5122DA7@alderaan.smgtec.com>
+	 <1048923066.8358.36.camel@psyche>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-MNBONFEOBYONRN4Snrjl"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122DA7@alderaan.smgtec.com>
+In-Reply-To: <1048923066.8358.36.camel@psyche>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,174 +19,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: "Mailing List: Netfilter" <netfilter@lists.netfilter.org>
 
-Hello,
 
-Just thought I'd post to let you guys know how I got it to work.
+--=-MNBONFEOBYONRN4Snrjl
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On the Linux side, 2 simple things: enable IP forwarding and make sure
-it's -P FORWARD ACCEPT or add 135:139 + whatever relevant traffic.
+On Sat, 2003-03-29 at 09:31, Y Makki wrote:
+> Hello,
+>=20
+> Just thought I'd post to let you guys know how I got it to work.
+>=20
+> On the Linux side, 2 simple things: enable IP forwarding and make sure
+> it's -P FORWARD ACCEPT or add 135:139 + whatever relevant traffic.
+>=20
+If you use Win2K and/or WinXP then you should also add port 445.
 
-On the Windows side I removed netbios/netbeui from all 9x clients, and
-checked 'client for microsoft networks' in bindings under tcp properties
-for the ethernet adapter.
+> On the Windows side I removed netbios/netbeui from all 9x clients, and
+> checked 'client for microsoft networks' in bindings under tcp properties
+> for the ethernet adapter.
+>=20
+On Win9x it is impossible to remove Netbios/Netbui. Even if you remove
+the 'service' from the network setup, you will notice that on the tcp/ip
+page the option to select/deselct netbios over ip is disabled. That is
+because netbios over ip is required by win9x for file and print sharing.
 
-With this you can browse computers even over different subnets using
-\\IP, or maybe add netbios names to lmhosts on each machine (which I
-didn't bother trying). I took the other alternative which is install
-Samba on the router and have it run as a WINS server; everything works
-like a charm.
-
-Thanks for the suggestions/help everyone
-
-Cheers.
-
-
-On Thu, 2003-03-27 at 16:24, Daniel Chemko wrote:
-> I would really suggest WINS even if you only have 1 server, etc.. It is
-> ment for interLAN communication like the one you describe.
-> 
-> Oh, another thing would be to broadcast to each other's networks. I am
-> not sure if NetBIOS likes this, but here goes.
-> 
-> iptables -t nat -A PREROUTING --destination 192.168.1.255 -j DNAT
-> --to-destination 192.168.2.255
-> 
-> iptables -t nat -A PREROUTING --destination 192.168.2.255 -j DNAT
-> --to-destination 192.168.1.255
-> 
-> This effectively merges the subnets together on the broadcast range. Any
-> broadcasts to one would go to the other.
-> 
-> If my hypothesis is correct, a request for 192.168.2.2 would be detected
-> since 192.168.2.2 would service the request for itself.
-> 
-> Any SMB guru's can throw their 2 cents in any time :-)
-> 
-> 
-> -----Original Message-----
-> From: Y Makki [mailto:bugzilla@sympatico.ca] 
-> Sent: Thursday, March 27, 2003 11:41 AM
-> To: Andrew J. Meader
-> Cc: netfilter@lists.netfilter.org
-> Subject: Re: Windows file sharing over different subnets
-> 
-> Hi,
-> 
-> I don't really need a wins server on the eth1 segment since there are no
-> windows machines here except the file server, the eth2 segment has no
-> servers at all.
-> 
-> For testing I have set the FORWARD default policy to ACCEPT, and allow
-> all incoming traffic from both eth1 and eth2.
-> I also tried earlier to DNAT any 135:139 traffic coming from eth2 to the
-> fileserver, which did not help. Ping works from segment to segment.
-> 
-> Maybe there is a client or relay agent of some sort I could install on
-> the linux gateway, I don't know.
-> 
-> 
-> 
-> On Thu, 2003-03-27 at 14:17, Andrew J. Meader wrote:
-> > Hi,
-> > 
-> > Netbios is not routable (without help.) Make sure iptables is allowing
-> 
-> > port 139 and make sure both network segments share a common wins
-> server. 
-> > This is painfully obvious, but, can you ping from one segment to the 
-> > other segment?
-> > 
-> > Have fun.
-> > 
-> > Andy
-> > 
-> > Y Makki wrote:
-> > 
-> > >Hello,
-> > >
-> > >I'm faced with a problem on my network, I'll start by describing the
-> > >structure. The router is a redhat box, with 3 network cards:
-> > >eth0 goes to the dsl modem, ppp0
-> > >eth1 goes to the 192.168.1.0 network which contains a Windows 2000
-> file
-> > >server (192.168.1.3)
-> > >eth2 goes to 192.168.2.0 which contains windows clients, mostly Win98
-> > >
-> > >Is it possible to allow clients to see/use the file server? what I
-> have
-> > >done so far is add "option netbios-name-servers 192.168.1.3;" to
-> > >dhcpd.conf and issue the following on the gateway:
-> > >
-> > >ip route add 224.0.0.0/4 dev eth1
-> > >route add -net 255.255.255.255 netmask 255.255.255.255 eth1
-> > >
-> > >tcpdump shows some activity when trying to browse network
-> neighborhood
-> > >from the fileserver:
-> > >
-> > >a client (192.168.2.2)
-> > >----------------------
-> > >02:40:58.548757 arp reply 192.168.2.2 is-at 0:40:5:72:f6:6a
-> > >02:40:58.549485 192.168.2.2.microsoft-ds > 192.168.1.3.1214: R [tcp
-> sum
-> > >ok] 0:0(0) ack 673608238 win 0 (ttl 128, id 3584, len 40)
-> > >02:40:58.549552 192.168.2.2.netbios-ssn > 192.168.1.3.1215: S [tcp
-> sum
-> > >ok] 197681:197681(0) ack 673643567 win 8760 <mss 1460,nop,nop,sackOK>
-> > >(DF) (ttl 128, id 3840, len 48)
-> > >
-> > >the fileserver (192.168.1.3)
-> > >----------------------------
-> > >02:41:01.476626 192.168.1.3.1215 > 192.168.2.2.netbios-ssn: S [tcp
-> sum
-> > >ok] 673643566:673643566(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-> (ttl
-> > >128, id 13498, len 48)
-> > >02:41:01.476736 192.168.1.3.1214 > 192.168.2.2.microsoft-ds: S [tcp
-> sum
-> > >ok] 673608237:673608237(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-> (ttl
-> > >128, id 13499, len 48)
-> > >02:41:02.242490 192.168.1.3.1220 > 192.168.1.1.domain:  [udp sum ok]
-> 49+
-> > >A? 192.gateway.localdomain. [|domain] (ttl 128, id 13500, len 69)
-> > >02:41:02.243234 192.168.1.3.netbios-ns > 192.168.1.255.netbios-ns:
-> [udp
-> > >sum ok]
-> > >  
-> > >
-> > >>>>NBT UDP PACKET(137): QUERY; REQUEST; BROADCAST
-> > >>>>        
-> > >>>>
-> > >TrnID=0x823B
-> > >OpCode=0
-> > >NmFlags=0x11
-> > >Rcode=0
-> > >QueryCount=1
-> > >AnswerCount=0
-> > >AuthorityCount=0
-> > >AddressRecCount=0
-> > >QuestionRecords:
-> > >Name=192             NameType=0x20 (Server)
-> > >QuestionType=0x20
-> > >QuestionClass=0x1
-> > >
-> > >This goes on for a while, after which win2k says "192.168.2.2" cannot
-> be
-> > >found. Browsing from the client 192.168.2.2 yields no results.
-> > >
-> > >Any ideas/hints greatly appreciated.
-> > >
-> > 
-> > 
-> 
-> 
-> 
+If you disable netbios over ip on win2k and/or winxp, then they use port
+445 for file and print sharing and they use ip instead of netbios
+tunneled in an ip packet. However, this will result in win9x machines
+not being able to see or connect to your win2k and winxp machines.
 
 
+> With this you can browse computers even over different subnets using
+> \\IP, or maybe add netbios names to lmhosts on each machine (which I
+> didn't bother trying). I took the other alternative which is install
+> Samba on the router and have it run as a WINS server; everything works
+> like a charm.
+>=20
+> Thanks for the suggestions/help everyone
+>=20
+> Cheers.
 
+<<snip>>
+
+
+--=-MNBONFEOBYONRN4Snrjl
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+hVAqh1fuR/Bv+ygRAqA0AJ99YsRoHA+nIrqLajCRREnAMt4YgQCeJUCE
+bJ+MRWOsv0EWvB3/Zshf7P0=
+=3Hu9
+-----END PGP SIGNATURE-----
+
+--=-MNBONFEOBYONRN4Snrjl--
 
 
