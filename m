@@ -1,14 +1,13 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: Broken ftp through iptables
-Date: Wed, 27 Aug 2003 00:05:36 +0800
+From: "Landon Chelf" <landonc@starrobbins.com>
+Subject: RE: Broken ftp through iptables
+Date: Tue, 26 Aug 2003 12:14:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030826160536.GF1956@propaganda.localdomain>
-References: <3F4B7D1A.2010408@nucdc.org> <000a01c36be8$9b990f70$6901a8c0@Station13>
-Reply-To: kluivert@tm.net.my
+Message-ID: <000b01c36bed$23c17cd0$6901a8c0@Station13>
+References: <035b01c36beb$09b417f0$49caa8c0@caris.priv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000a01c36be8$9b990f70$6901a8c0@Station13>
+In-Reply-To: <035b01c36beb$09b417f0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +18,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Aug 26, 2003 at 11:42:02AM -0400, Landon Chelf spoke thusly:
->Thanks but it is loaded from what I can tell.  Below is the iptables
->stuff of an lsmod
+Thanx,
+
+I was missing the following line.  All seems to be good now.  Thanx for
+the help.
+
+-p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Landon
+
+-----Original Message-----
+From: Peter Marshall [mailto:peter.marshall@caris.com] 
+Sent: Tuesday, August 26, 2003 12:00 PM
+To: Landon Chelf; netfilter@lists.netfilter.org
+Subject: Re: Broken ftp through iptables
+
+
+If you want to use passive ftp you have to allow stuff destined to port
+21 and you also have to allow ( for the commands) traffic to come in on
+some port that you don't get to pick.  The way to to this without
+actually opening a whole bunch of ports is like this
+
+From inside network going out and on forward chain
+    -p tcp --dport  21 -j ACCEPT
+    -p tcp -m state --state RELATED - j ACCEPT
+
+FROM outside network back in on the Forward chain
+   -p tcp -m state --state ESTABLISHED -j ACCEPT
+
+
+If you want to do Active ftp .... well .... trust me, you dont want to
+do this :)
+
+
+----- Original Message -----
+From: "Landon Chelf" <landonc@starrobbins.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, August 26, 2003 12:21 PM
+Subject: Broken ftp through iptables
+
+
+> Hello,
 >
->Module                  Size  Used by    Not tainted
->ip_conntrack_ftp        5296   0  (unused)
->ip_conntrack           26976   1  [ip_conntrack_ftp]
->iptable_filter          2412   1  (autoclean)
->ip_tables              15096   1  [iptable_filter]
+> I've ran into a recent problem both on rh8 and rh9 using iptables.  
+> I've setup my firewall to drop everything incomming and forward and am
 
-You have a corresponding --state RELATED rule ?
+> only allowing certain ports to be open.  I've opened ftp (port 21 tcp)
 
-(snip remaining)
+> and I can connect via FTP from one machine and authenticate, but when 
+> I issue my first command like "ls" for instance the connection locks 
+> up and won't do anything.  Is there a way to fix this?
+>
+> Landon
+>
+>
+
 
