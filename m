@@ -1,12 +1,14 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: Re: IPTABLES syntax problem.
-Date: Tue, 23 Dec 2003 05:37:03 -0800 (PST)
+From: Vinayakam Murugan <vinayakm@theargoncompany.com>
+Subject: Re: Packets missing state ?
+Date: Tue, 23 Dec 2003 19:07:58 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031223133703.24761.qmail@web60409.mail.yahoo.com>
-References: <1072185580.3572.350.camel@grendel>
+Message-ID: <200312231907.58135.vinayakm@theargoncompany.com>
+References: <200312231828.59518.rajiv@theargoncompany.com> <200312231308.50481.Antony@Soft-Solutions.co.uk> <200312231857.21676.vinayakm@theargoncompany.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1072185580.3572.350.camel@grendel>
+In-Reply-To: <200312231857.21676.vinayakm@theargoncompany.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,81 +19,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I modified rules as follows :
+On Tuesday 23 December 2003 18:57, Vinayakam Murugan wrote:
+> > You say you can access the site without any problems.
+> >
+> > I would expect the above log entries to happen when you close down the
+> > browser (or view a different site), but the remote server still continues
+> > to send a few packets.   They are no longer part of an established
+> > connection as far as netfilter is concerned, so they get logged.
+> >
+> > Try checking the timestamps, or view the logfile in real time as you do
+> > your browsing - I'd expect these log entries to occur soon after you
+> > leave the site at the SRC address.
+>
+Thanks Antony. I'm Rajiv's colleague
 
-###########
--A INPUT -p tcp ! --tcp-flags SYN SYN -m state --state
-NEW -j LOG --log-prefix " New not syn: "
+ We were not able to reproduce it out here.Anyways in this scenario, would
+ the packet would have the state as NEW?  All these logs are of packets with
+ state NEW.
 
--A INPUT -p tcp ! --tcp-flags SYN SYN -m state --state
-NEW -j DROP
+ Another peculiar log which we would like to get more info on are
 
--A INPUT -p all -s 192.168.0.0/24 -i eth0 -j REJECT
--A INPUT -p all -s 192.168.1.0/24 -i eth0 -j REJECT
+ Dec 23 18:43:05 theargonserver kernel: IPT IN_FIREWALL_NEW: IN=eth1 OUT=
+ MAC=00:03:47:6a:5c:6b:00:c0:49:25:d1:a3:08:00 SRC=80.15.238.66
+ DST=xxx.xxx.xxx.xxx LEN=73 TOS=0x00 PREC=0x00 TTL=55 ID=0 DF PROTO=UDP
+ SPT=31819 DPT=53 LEN=53
 
--A INPUT -p all -s localhost -i eth0 -j REJECT
+ There are a lot of packets to port 53. Is this normal?
 
+-- 
+Warm Regards
+~~~~~~~~~~~~~~~~~~~~~~~
+Vinayakam Murugan
 
-#
-# allowed chain
-#
+Viruses getting you down?
+Get your virus protected mailbox at http://www.tassm.com
 
+Linux: The choice of a GNU generation
 
--A INPUT -p tcp -m state --state ESTABLISHED,RELATED
--j ACCEPT
-
-
-##########
-
-Get following error :
-[root@allweb root]# /etc/init.d/iptables restart
-Flushing all current rules and user defined chains:   
-    [  OK  ]
-Clearing all current rules and user defined chains:   
-    [  OK  ]
-Applying iptables firewall rules: iptables-restore
-v1.2.6a: Unknown arg `--tcp-flags'
-Try `iptables-restore -h' or 'iptables-restore --help'
-for more information.
-                                                      
-    [FAILED]
-
-
---- Chris Brenton <cbrenton@chrisbrenton.org> wrote:
-> On Tue, 2003-12-23 at 06:47, ads nat wrote:
-> > Hi,
-> > I am trying to setup IPTABLES rules. I am newbe to
-> > this.
-> > 
-> > One of the rule in filter table is 
-> > #######
-> > -A INPUT -p tcp ! --syn -m state --state NEW -j
-> LOG
-> > --log-prefix "New not syn:"
-> 
-> Try:
-> iptables -A INPUT -p tcp ! --tcp-flags SYN SYN -m
-> state --state NEW -j
-> LOG --log-prefix " New not syn: "
-> 
-> Note the change in specifying flags from ipchains to
-> iptables. Also note
-> I added spaces around your prefix. This will make it
-> easier to read in
-> the logs.
-> 
-> HTH,
-> C
-> 
-> 
-
-
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
 
