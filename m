@@ -1,15 +1,11 @@
-From: Jamie Pratt <jamie@nucdc.org>
-Subject: Re: accessing a internal port fowarded email server from the internal
- network
-Date: Tue, 09 Dec 2003 08:13:59 -0500
+From: Michael Gale <mgale@utilitran.com>
+Subject: What does RELATED and ESTABLISHED really mean.
+Date: Tue, 9 Dec 2003 08:39:54 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FD5CA97.9020400@nucdc.org>
-References: <3FD3D65E.7000405@yahoo.com.au>
-Reply-To: jamie@nucdc.org
+Message-ID: <20031209083954.0b7aa4c0.mgale@utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FD3D65E.7000405@yahoo.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,83 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi - I may be wrong, but there is probably nothing iptables can do for 
-you here on this - you should just give your public ip a dns A record 
-(probably has one already, or MX at least?) in the internet DNS, and 
-then set up a small DNS server on your internal lan/network and just add 
-an A record with the same hostname, but pointing to the private IP 
-instead. .. - set the users up to see the internal DNS address first in 
-the list, then just make the users always use the hostname, and all 
-should be work no matter where they are..
+Hello,
 
-(I had this same problem but on a cisco pix firewalled network - 
-luckily, the pix is intelligent enough to do this on it's own, but that 
-was *going* to be how i solved the same problem)
+	I have been reading many netfilter documents and books, they all talk about related and established connections. To use them for FTP connections and to simplify rule sets.
 
-if this doesn't work, or appeal to you, google for 'netsh' - a windows 
-util that will change connection settings via a short script that you 
-can set up on a user's laptop..
+But none explain exactly what an ESTABLISHED or RELATED connection is ?
 
-regards,
-jamie
+Here are my definitions ... please let know if these are correct :)
 
-TN wrote:
+ESTABLISHED - This allows return packets from a connection and all proceeding packets.
 
-> Hi all,
-> 
-> I have a problem which I thought I'd seen the solution so somewhere, but 
-> I just can't find the posting anymore.
-> 
-> I have an iptables firewall, and I port forward to an internal email 
-> server on a 192.168.10.0/24 LAN network.
-> This all works fine, external email comes & goes OK. My problem is that 
-> I want to allow internal network users to address the email server using 
-> the external IP address of the firewall.
-> 
-> Currently, laptop users internal to the network need to then become 
-> external when they work external to the LAN, and they have to either 
-> setup 2 different email accounts (one using the internal email server IP 
-> address, and one using the external IP address), or they have to 
-> remember to change their server settings each time they move from 
-> internal to external and vice-versa. Both of these are a pain for them.
-> 
-> I have attempted to allow this to work by using the following prerouting 
-> rules & forward rules (default policies are DROP, DROP, ACCEPT)
-> 
-> iptables -t nat -A PREROUTING -p tcp --dport 25 -j DNAT --to 
-> 192.168.10.12:25
-> iptables -t nat -A PREROUTING -p tcp --dport 110 -d -j DNAT --to 
-> 192.168.10.12:110
-> iptables -t nat -A PREROUTING -p tcp --dport 143 -d -j DNAT --to 
-> 192.168.10.12:143
-> 
-> iptables -A FORWARD -p tcp -s 0/0 -d 192.168.10.12/32 --destination-port 
-> 25 --syn -j ACCEPT
-> iptables -A FORWARD -p tcp -s 0/0 -d 192.168.10.12/32 --destination-port 
-> 110 --syn -j ACCEPT
-> iptables -A FORWARD -p tcp -s 0/0 -d 192.168.10.12/32 --destination-port 
-> 143 --syn -j ACCEPT
-> 
-> These are just more generalised rules that people commonly use for doing 
-> port forwarding - I have just made them less strict by taking about the 
-> input & output constraints in an attempt to allow external & internal 
-> clients to access the email server via the external ip.
-> 
-> It doesn't work, the email client just times out, as if I'm still 
-> blocking some part of the data stream.
-> What am I doing wrong ?
-> 
-> thanks.
-> -Tim
-> 
-> 
-> 
-> 
-> 
-> 
+Example -- you have a web server on the DMZ network.
+you have the following iptables rules.
 
+$IPT -t nat -A POSTROUTING -i $EXT_FACE -d X.X.X.X -j SNAT --to-destination 172.16.0.5
 
+$IPT -A FORWARD -i $EXT_FACE -o $DMZ_FACE -d 172.16.0.5 -p tcp --sport 1024:65535 --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+$IPT -A FORWARD -i $DMZ_FACE -o $EXT_FACE -s 172.16.0.5 -p tcp --sport 1024:65535 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+
+This only allow a tcp connection to be setup between a out side client and a web server on the DMZ. It also only allows the web server to respond to a TCP connection on port 80 and does NOT allow the web server to initiated a outgoing TCP connection.
+
+If I used related it would allow the web server to make a out going TCP connection to the server that made the initial inbound connection  ?
+
+Sorry -- I hope I explained this well.
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
