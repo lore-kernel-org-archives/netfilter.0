@@ -1,11 +1,10 @@
-From: "Rio Martin." <rio@martin.mu>
-Subject: Re: SNAT
-Date: Sun, 6 Apr 2003 17:52:03 +0700
+From: "Torsten Puls" <debian@pumpum.de>
+Subject: WG: SNAT? DNAT? nur wie?
+Date: Sun, 6 Apr 2003 14:07:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00f101c2fc2a$91158d90$6401a8c0@server>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DAF@alderaan.smgtec.com>
+Message-ID: <DHEJIOOJDPNLNFDGOGMGMEMFCDAA.debian@pumpum.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,72 +15,159 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Okay,
-I add another interface so that make looks like this:
-eth0    = 64.1.1.1
-eth0:1 = 192.168.1.1
-eth1 = 64.1.1.2
-
-also add iptables command:
-# /sbin/iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.0/24 --dport
-6667 -j SNAT --to 64.1.1.2
-
-but still doesnt work, all users from 192.168.1.0/24 still irc using
-64.1.1.1
-need help.
-
-Regards,
-Rio Martin.
 
 
-
------ Original Message -----
-From: "Daniel Chemko" <dchemko@smgtec.com>
-To: "Rio Martin." <rio@martin.mu>; <netfilter@lists.netfilter.org>
-Sent: Friday, April 04, 2003 1:34 AM
-Subject: RE: SNAT
-
-
-1. You are using aliases, which IPTables does not use. Please use look
-into IPRoute2 on the net on how to setup proper IPRoute2 bindings.
-
-2. Add an SNAT rule on the postrouting -o <internet_iface> pointing to
-64.1.1.2
-
------Original Message-----
-From: Rio Martin. [mailto:rio@martin.mu]
-Sent: Thursday, April 03, 2003 2:29 AM
-To: netfilter@lists.netfilter.org
-Subject: SNAT
-
-Dear folks,
-I need help to modify the source ip for every irc connection coming from
-my
-clients.
-
-Eg:
-
-eth0    = 64.1.1.1
-eth0:1 = 64.1.1.2
-eth0:2 = 192.168.1.1
+-----Urspr=FCngliche Nachricht-----
+Von: Torsten Puls [mailto:toto@pumpum.de]
+Gesendet: Sonntag, 6. April 2003 14:06
+An: toto@pumpum.de
+Betreff: SNAT? DNAT? nur wie?
 
 
-My clients is in 192.168.1.0/24. Right now all connection to irc server
-is
-using ip 64.1.1.1
-I want to modify, so all irc connection is using 64.1.1.2
+Hallo ich habe ein Debian-Dystem 3.0, Kernel 2.4.18.
 
-Thanks for helping me ...
 
-Regards,
-Rio Martin.
++-------------+						+-------------+
+| DSL Router  |                                 | ISDN-Router |
+| 192.168.0.1 |                                 | 192.168.1.1 |
++-------------+                                 +-------------+
+       |                                                |
+       |                                                |
+       +-----------+                    +---------------+
+                   |                    |
+             +-----------------------------------+
+             |   eth2                  eth0      |
+             | 192.168.0.10		192.168.1.10 |
+             |                                   |
+             |               eth1                |
+             |          172.16.3.6               |
+             +-----------------------------------+
+                             |
+                             |
+             +-----------------------------------+
+             |     interne Netz 172.16.3.0/24    |
+
+
+Folgendes:
+
+Email-Traffic via ISDN-Router
+WWW via DSL-Router
+
+pstree:
+qmail
+squid
+apache
+
+mein firewall skript
+!! SNAT Rules
+Wie mache ich es richtig?
+
+interne browser =3D> port 3128:eth1
+pop/smtp =3D> eth0
 
 
 
+#!/bin/sh
+route add -net 172.16.1.0/24 gw 172.16.3.2
+### eth0 Internet
+DTAG_NET=3D"192.168.1.0/24"
+DTAG_INTERFACE=3D"eth0"
+DTAG_IP=3D"192.168.1.10"
+### eth1 intern
+INTERN_NET=3D"172.16.3.0/24"
+INTERN_INTERFACE=3D"eth1"
+INTERN_IP=3D"172.16.3.6"
+### eth2 DSL
+DMZ01_NET=3D"192.168.0.0/24"
+DMZ01_INTERFACE=3D"eth2"
+DMZ01_IP=3D"192.168.0.10"
+### Kernel-Tuning
+echo     1 > /proc/sys/net/ipv4/ip_forward
+echo     1 > /proc/sys/net/ipv4/tcp_syncookies
+echo "8182" > /proc/sys/net/ipv4/ip_conntrack_max
+
+iptables -F INPUT
+iptables -F FORWARD
+iptables -F OUTPUT
+iptables -t nat -F PREROUTING
+iptables -t nat -F OUTPUT
+iptables -t nat -F POSTROUTING
+iptables -t mangle -F PREROUTING
+iptables -t mangle -F OUTPUT
+
+iptables -P FORWARD DROP
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+
+iptables -A INPUT -d $DMZ01_IP -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+iptables -A OUTPUT -s $DMZ01_IP -m state --state NEW,ESTABLISHED,RELATED -j
+ACCEPT
+
+iptables -A INPUT -d $DTAG_IP -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -s $DTAG_IP -m state --state NEW,ESTABLISHED,RELATED -j
+ACCEPT
+
+iptables -A INPUT -d $INTERN_IP -m state --state NEW,ESTABLISHED,RELATED -j
+ACCEPT
+iptables -A OUTPUT -s $INTERN_IP -m state --state NEW,ESTABLISHED,RELATED -j
+ACCEPT
+
+iptables -A OUTPUT -o $INTERN_INTERFACE -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A INPUT  -i $INTERN_INTERFACE -j ACCEPT
+iptables -A OUTPUT -o $INTERN_INTERFACE -j ACCEPT
+
+iptables -A INPUT   -i $DTAG_INTERFACE   -p TCP --dport 25   -j ACCEPT
+iptables -A INPUT   -i $INTERN_INTERFACE -p TCP --dport 25   -j ACCEPT
+iptables -A INPUT   -i $INTERN_INTERFACE -p TCP --dport 80   -j ACCEPT
+iptables -A INPUT   -i $INTERN_INTERFACE -p TCP --dport 110  -j ACCEPT
+iptables -A INPUT   -i $INTERN_INTERFACE -p TCP --dport 3128 -j ACCEPT
+
+### SNAT Regeln
+#
+#  ????????????????????????????????
+iptables -t nat -A PREROUTING  -i $INTERN_INTERFACE -p  -j DNAT --to
+$DMZ01_IP
+iptables -t nat -A POSTROUTING -o $DTAG_INTERFACE   -s $INTERN_NET      -j
+SNAT --to $DTAG_IP
 
 
+### EOF
+
+
+#route:
+192.168.0.10    192.168.0.1     255.255.255.255 UGH   0      0        0 eth2
+192.168.0.0     *               255.255.255.0   U     0      0        0 eth0
+172.16.3.0      *               255.255.255.0   U     0      0        0 eth1
+192.168.0.0     *               255.255.255.0   U     0      0        0 eth2
+172.16.1.0      172.16.3.2      255.255.255.0   UG    0      0        0 eth1
+default         192.168.1.1     0.0.0.0         UG    0      0        0 eth0
+
+#ip ru ls:
+0:      from all lookup local
+32765:  from 192.168.0.10 lookup DSL
+32766:  from all lookup main
+32767:  from all lookup default
+
+
+#ip ro ls:
+192.168.0.10 via 192.168.0.1 dev eth2
+192.168.1.0/24 dev eth0  proto kernel  scope link  src 192.168.1.10
+172.16.3.0/24 dev eth1  proto kernel  scope link  src 172.16.3.6
+192.168.0.0/24 dev eth2  proto kernel  scope link  src 192.168.0.10
+172.16.1.0/24 via 172.16.3.2 dev eth1
+default via 192.168.1.1 dev eth0
+111,1
+
+
+
+Hilfe Help
+
+Torsten
 
 
