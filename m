@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Possible problem with FTP ALG
-Date: Mon, 29 Nov 2004 09:36:08 -0500
-Message-ID: <1101738967.10064.43.camel@hubcap.ljm.dom>
-References: <1101732359.12476.3077.camel@ashutosh.teneoris.com>
+Subject: Re: FTP Connection State Tracking Issue
+Date: Mon, 29 Nov 2004 09:39:07 -0500
+Message-ID: <1101739147.10064.47.camel@hubcap.ljm.dom>
+References: <1101748780.12476.3083.camel@ashutosh.teneoris.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1101732359.12476.3077.camel@ashutosh.teneoris.com>
+In-Reply-To: <1101748780.12476.3083.camel@ashutosh.teneoris.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,37 +20,41 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-11-29 at 07:46, Ashutosh wrote:
-> Hi folks,
+On Mon, 2004-11-29 at 12:19, Ashutosh wrote:
+> Hi Everyone,
 > 
-> I am running Linux 2.4.20 on my router with LAN IP FILTER rules as -
+> My question is, that if I have already loaded the ftp connection
+> tracking and nat modules, do i still need to write scripts like the
+> following on my firewall, to enable FTP Access from inside to outside ( 
 > 
-> Allow from LAN to WAN on port 21
-> Deny all from LAN to WAN
+> My Default Rules are -
 > 
-> Now, when I ftp to a machine on the WAN Only the control connection
-> opens ( Login is fine), but the data connection does not open. The
-> machine freezes when I do an "ls".. I am using passive ftp here.
+> Allow Outgoing connection tcp on port 21
+> Deny all other outgoing connections
 > 
-> When I put printk's in the code, the expected is added, the CT is formed
-> and NF_DROP does get called at any stage
+> Scripts
+> (For Active FTP)
+> iptables -A INPUT     -p tcp --sport 20 -m state --state
+> ESTABLISHED,RELATED-j ACCEPT
+> iptables -A OUTPUT-p tcp --dport 20 -m state --state ESTABLISHED-j
+> ACCEPT
 > 
-> Kindly Help!!!
-> 
-> Regards
+> (For Passive FTP)
+> iptables -A INPUT     -p tcp --sport 1024: --dport 1024:  -m state
+> --state ESTABLISHED-j ACCEPT
+> iptables -A OUTPUT-p tcp --sport 1024: --dport 1024:  -m state --state
+> ESTABLISHED,RELATED-j ACCEPT
 
-sounds like you don't have ftp conntrack/nat (you don't actually say
-whether you're using NAT or not) modules loaded.
+no--but you need to write scripts like this:
 
-  modprobe ip_conntrack_ftp
-  modprobe ip_nat_ftp
+  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+  iptables -A FORWARD -p tcp --syn --dport 21 -j ACCEPT
 
 -j
 
 --
-"You must be the man who didn't know whether it was a blister or
- a boil.
- It was a gummi bear."
+"I saw weird stuff in that place last night. Weird, strange, sick,
+ twisted, eerie, godless, evil stuff. And I want in."
 	--The Simpsons
 
 
