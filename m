@@ -1,13 +1,13 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: Re: The posting of HTML format messages to this List!!!!
-Date: 11 Jun 2002 15:59:02 +0200
+From: Payal <rpayal@indiainfo.com>
+Subject: Re: Help with POP3/SMTP and MASQ
+Date: Tue, 11 Jun 2002 19:24:41 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023803943.4057.7.camel@billy.demon.nl>
+Message-ID: <ae4vrl$2a2$2@main.gmane.org>
+References: <F21XZZTHfyQgeDKvPEk0000a6ad@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-WK5q8QHP3iVnG/wJ2xSV"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <00ff01c21145$1fece670$45452040@robles>
+In-Reply-To: <F21XZZTHfyQgeDKvPEk0000a6ad@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,74 +17,97 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Daniel =?ISO-8859-1?Q?El=EDas?= Robles <d.robles@codetel.net.do>
-Cc: Netfilter <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-
---=-WK5q8QHP3iVnG/wJ2xSV
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-tir, 2002-06-11 kl. 14:40 skrev Daniel El=EDas Robles:=20
-
-> unsubscribing from the list until this thread is over ( one more time)=20
-> Can we finish this once for all?
-> Will try back in three weeks
-
-What a lot of strange people there are on this list.=20
-
-"Strange" discounting people like Ramin and Antony (not to speak of the
-core team and Oskar'en min), who seem to work their arses off for us
-all, and then they get this thread. I dunno.=20
-
-My Ximian Evolution handles html and ASCII and doesn't care. Itself it
-sends ASCII, though it does use 8 bit. html spam and all viri from those
-who send it gets chucked into the bit bucket automatically.=20
-
-Lists like OpenOffice.org, to which I subscribe, where 90% of the people
-who contribute use MS Outlook / Outlook Express (because they *have* to,
-because their firms/organizations *force* them to), would be chicaned
-until they went and hanged themselves, had they contributed to this
-particular list.
-
-Is that what rpjday@mindspring.com wants?
-
-Would have thought that people here who claim the nouse for themselves
-to act as security bods could do the same? Not errupt in tantrums?=20
-
-Well well.=20
-
-Best,=20
-
-Tony=20
-
---=20
-
-Tony Earnshaw
-
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
-
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
-
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
-
-
---=-WK5q8QHP3iVnG/wJ2xSV
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA9BgIm99dgUTvnuYERAnp6AJ99bzMIUvtKX/HdItMnEMtoAJigTwCfeF1c
-/bzaabNX4LB1lgk6WolMSFA=
-=OkWP
------END PGP SIGNATURE-----
-
---=-WK5q8QHP3iVnG/wJ2xSV--
-
+Hi,
+I am very very new to iptables. But I think smtp and pop should be left t=
+o=20
+mail server + tcpd [i.e hosts.allow and hosts.deny].
+-Payal
+On Tuesday 11 June 2002 03:07 am, you wrote:
+> Hello...
+> I've had had no luck getting POP3/SMTP going through my RedHat 7.1 2.4
+> kernel iptables box.  I have been able to setup incoming FTP connection=
+s
+> through my firewall, but no luck on the email.  Here's my script...I've
+> pretty much added alot of extra stuff hoping that something would work =
+and
+> I could figure it out from there, but so far nothings worked.  I must b=
+e
+> missing something obvious!
+>
+> Any help is appreciated, and thanks to everyone who takes the time to
+> respond!
+>
+>
+> #Beginning of script
+> #this was from someone's sample script..to load the modules.
+>
+> /sbin/modprobe ip_tables
+> /sbin/modprobe ip_conntrack
+> /sbin/modprobe iptable_filter
+> /sbin/modprobe iptable_mangle
+> /sbin/modprobe iptable_nat
+> /sbin/modprobe ipt_LOG
+> /sbin/modprobe ipt_limit
+> /sbin/modprobe ipt_state
+>
+> #
+> # 2.2 Non-Required modules
+> #
+>
+> #/sbin/modprobe ipt_owner
+> #/sbin/modprobe ipt_REJECT
+> #/sbin/modprobe ipt_MASQUERADE
+> #/sbin/modprobe ip_conntrack_ftp
+> #/sbin/modprobe ip_conntrack_irc
+>
+>
+>
+> #some basic MASQ stuff so I can hit the internet!
+> cp /home/main/ip_forward /proc/sys/net/ipv4
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>
+> #rules for ftp in...working right now
+>
+> iptables -A FORWARD -p tcp --dport 21 -j ACCEPT
+> iptables -A FORWARD -p tcp --dport 20 -j ACCEPT
+>
+> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 21 -j DNAT --to
+> 10.0.0.7:21
+> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 20 -j DNAT --to
+> 10.0.0.7:20
+>
+> iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 10.0.0.7 --dport 21 -j AC=
+CEPT
+> iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 10.0.0.7 --dport 20 -j AC=
+CEPT
+>
+> #rules for FTP out... NOT USED!!!!!!!!!
+> #iptables -t nat -A POSTROUTING -p tcp --sport 21 -j ACCEPT
+> #iptables -t nat -A POSTROUTING -p tcp --sport 20 -j ACCEPT
+> #iptables -A INPUT -p tcp --sport 21 -j ACCEPT
+> #iptables -A INPUT -p tcp --sport 20 -j ACCEPT
+>
+> #iptables -A OUTPUT -p tcp --sport 21 -j ACCEPT
+> #iptables -A OUTPUT -p tcp --sport 20 -j ACCEPT
+>
+>
+> #for POP3 and SMTP mail
+> iptables -t nat -A POSTROUTING -p tcp -j MASQUERADE --to-ports 25
+> iptables -t nat -A POSTROUTING -p tcp -j MASQUERADE --to-ports 110
+>
+> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 25 -j ACCEPT
+> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 110 -j ACCEPT
+>
+> iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
+> iptables -A FORWARD -p tcp --dport 110 -j ACCEPT
+>
+> iptables -t nat -A POSTROUTING -p tcp --sport 25 -j ACCEPT
+> iptables -t nat -A POSTROUTING -p tcp --sport 110 -j ACCEPT
+>
+> _________________________________________________________________
+> Get your FREE download of MSN Explorer at http://explorer.msn.com/intl.=
+asp.
 
