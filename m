@@ -1,13 +1,14 @@
-From: "Ranjeet Shetye" <ranjeet.shetye@zultys.com>
-Subject: RE: problem with UN-DNAT, source is same machine
-Date: Mon, 16 Dec 2002 12:04:35 -0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Loding rules
+Date: Mon, 16 Dec 2002 14:42:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002a01c2a53e$5b26cca0$0100a8c0@zultys.com>
-References: <3DF2E9D3.6010006@technologist.com>
+Message-ID: <200212161442.43121.netfilter@newkirk.us>
+References: <3df77ff9.7a14.0@unacs.bg>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DF2E9D3.6010006@technologist.com>
+In-Reply-To: <3df77ff9.7a14.0@unacs.bg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,118 +19,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: nedco@unacs.bg, netfilter@lists.netfilter.org
 
+On Wednesday 11 December 2002 01:12 pm, nedco@unacs.bg wrote:
+> Hi,
+>  How to load fast about 20000 rules in iptables.
+>  If some document will be help , please let me know  :)
+>
+> Thanks a lot
+> Nedco
 
-Is your Kernel enabled with the LOCAL_NAT option ?
+As long as you don't need to dynamically define the rules (IE using a=20
+dynamic IP) iptables-save and iptables-restore should be your simple=20
+answer.  Oscar's tutorial explains save and restore at:=20
+http://iptables-tutorial.frozentux.net/chunkyhtml/saveandrestore.html
 
-"make xconfig" or "make menuconfig"
+These will load the complete ruleset in a very few operations, instead of=
+=20
+about 40000.  (based on your 20000 figure above)
 
-Click on "Networking options", click on "IP:NetFilter Configuration",
-click on "NAT of local connections". 
-
-This is the option "CONFIG_IP_NF_NAT_LOCAL" in your .config file.
-
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-771 Vaqueros Avenue
-Sunnyvale  CA  94085
-USA
-Ranjeet.Shetye@Zultys.com
-http://www.zultys.com/
-
- 
-
-
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
-> Frank Wallingford
-> Sent: Saturday, December 07, 2002 10:42 PM
-> To: netfilter@lists.netfilter.org
-> Subject: problem with UN-DNAT, source is same machine
-> 
-> 
-> Here's one I can't quite wrap my head around.
-> 
-> I got tcp port forwarding working from machine 192.168.0.100 
-> to machine 
-> 192.168.0.200 with two rules:
-> 
-> iptables -t nat -A PREROUTING -d 192.168.0.100 -p tcp --dport 22 \
->    -j DNAT --to 192.168.0.200
-> iptables -t nat -A POSTROUTING -d 192.168.0.200 -p tcp --dport 22 \
->    -j SNAT --to 192.168.0.100
-> 
-> I realized that I needed the second rule because the hosts 
-> were on the 
-> same network, and without it, replies from .200 would go 
-> straight to the 
-> source.
-> 
-> This works for all machines *except* 192.168.0.100. I wanted 
-> to connect 
-> from .100 to .100 on the port, and have it forwarded to .200. 
-> First, I 
-> realized that I needed a rule on OUTPUT, because locally generated 
-> packets don't traverse PREROUTE. So for testing, I flushed all the 
-> rules, and started over with:
-> 
-> iptables -t nat -A OUTPUT -d 192.168.0.100 --dport 22 \
->    -j DNAT --to 192.168.0.200
-> 
-> Now, I'm only trying to get this one case working:
-> 
-> (from machine 192.168.0.100:) ssh 192.168.0.100
-> 
-> and I'd like it to connect to 192.168.0.200. I'm not sure why 
-> it isn't.
-> 
-> I've also tried the above rule with a second SNAT rule, which 
-> doesn't help.
-> 
->  From what I understand, this should be the case:
-> (1) The packet starts as
-> 	SOURCE: 192.168.0.100:port_a (some random port)
-> 	DEST:   192.168.0.100:22
-> (2) While traversing the OUTPUT chain in the NAT table, it's changed:
-> 	SOURCE: 192.168.0.100:port_a
-> 	DEST:   192.168.0.200:22
-> (3) The packet is sent out
-> (4) Host 192.168.0.200 sees it and sends the reply
-> 	SOURCE: 192.168.0.200:22
-> 	DEST:   192.168.0.100:port_a
-> (5) The packet arrives, and is un-snat'd:
-> 	SOURCE: 192.168.0.100:22
-> 	DEST:   192.168.0.100:port_a
-> (6) The local process sees a reply from the local machine, 
-> and accepts it.
-> 
-> What's actually happening is that it's getting as far as (4), and the 
-> reply comes in, but the local process doesn't accept it. I'm guessing 
-> this is because it wasn't un-snat'd correctly, or I'm doing 
-> something wrong.
-> 
-> I've also tried a few permutations of putting 0 in 
-> /proc/sys/net/ipv4/conf/eth0/rp_filter, in case something weird was 
-> happening there.
-> 
-> 
-> I would be grateful if anyone had any insight into why this doesn't 
-> work, what I'm doing wrong, or how to forward a tcp port from 
-> machine A 
-> to machine B and have it work when the packets originate from 
-> machine A 
-> itself.
-> 
-> Thanks,
-> 
-> -- 
-> ----------------------------------
-> Frank Wallingford
-> frank.wallingford@technologist.com
-> 
-> 
-
+j
 
