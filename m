@@ -1,12 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: RE: FTP
-Date: Tue, 11 Mar 2003 13:02:46 +0100 (CET)
+From: "Rinse Kloek" <rinse@solcon.nl>
+Subject: Iptables efficiency
+Date: Mon, 10 Mar 2003 19:04:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0303111300370.12840@dns.toxicfilms.tv>
-References: <ABEKJILKOKKGGDJKHKDFGECCCAAA.patrick@vikus.com>
+Message-ID: <007b01c2e72f$76712180$0200a8c0@rinse>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ABEKJILKOKKGGDJKHKDFGECCCAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,18 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick Ahler <patrick@vikus.com>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> I figured out what the problem was with my FTP server... it needed a port
-> range of 2095-2300 open for some reason.
-Well, are you using the ip_conntrack_ftp module?
-It should let you use the -m state --state RELATED, ESTABLISHED with ftp.
+We use a RedHat 7.3 machine as bridge on a P3 1.8 Ghz with 2 64 bits
+Gigabit interfaces. On the machine we have a lot of iptables rules like :
+            all  --  213.134.x.0        0.0.0.0/0
+            all  --  0.0.0.0/0            213.134.x.0
+TOS    all  --  213.134.x.4        0.0.0.0/0          TOS set 0x08
+            all  --  0.0.0.0/0            213.134.x.4
 
-Unless you are doing NAT.
+We have about 3200 iptables rules on our bridge. I've tested today to
+remove 1000 of these rules. The load dropped from about 40% to 25%. So I
+think the iptables rule take up the most of the CPU load. Do you think this
+is a problem of ineffeciency of iptables or just a 'limitation' in the
+TCP/IP stack of linux ?
 
-Regards,
-Maciej
+regards Rinse
+
 
