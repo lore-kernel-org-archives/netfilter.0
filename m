@@ -1,66 +1,36 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: How can I test my rule set?
-Date: Thu, 30 Oct 2003 14:56:39 -0800 (PST)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031030225639.93875.qmail@web40204.mail.yahoo.com>
-References: <1067515509.27238.5.camel@tarkus>
+From: Shaun Savage <savages@savages.net>
+Subject: kernel modules won't auto load
+Date: Thu, 30 Oct 2003 15:09:30 -0800
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <3FA19A2A.3090500@savages.net>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1067515509.27238.5.camel@tarkus>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: tedkaz@optonline.net, "Jin Gu, Kim" <lilia21@postech.ac.kr>
-Cc: netfilter@lists.netfilter.org
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+List-Id: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+I am trying to get kernel 2.6-t9 working on redhat9
+
+I have downloaded and compiled, and installed the kernel.
+module-init-tools-0.9.15-pre2,
+and iptables-1.2.9rc1
+
+when I run iptables-restore it dies if I have not loaded the kernel
+modules by hand before.
 
 
---- Ted Kaczmarek <tedkaz@optonline.net> wrote:
-> hping2 is your friend.
-> 
-> Ted
-> On Wed, 2003-10-29 at 19:43, Jin Gu, Kim wrote:
-> > Hi all.
-> >  
-> > I made my own rule set, but i don't know how to test it.
-> >  
-> > Should I launch some applications and attempt to log in my trusted
-> > network one by one?
-> >  
-> > I guess there will be other methods...
-> >  
-> >  
-> >  
-> > "Netfilter Hacking HOWTO" seems to introduce some useful tools e.g.,
-> > gen_ip, rcv_ip..
-> >  
-> > But I can't understand how to use them.
-> >  
-> > If you know how to handle them or test, would you show me the way?
-> >  
-> 
-> 
+Thanks
+Shaun
+CC my address savages@hemp.org
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-Just jumping in here... but if the address you wish to test is available to the
-world.. ie the internet... then dslreports.com has a nice Port Scan you can run
-against your world address and it will give you a nice report as well as grade
-you on your security measures.
-
-Hope this helps
-SBlaze
-
-=====
-In the absence of order there will be chaos.
-
-__________________________________
-Do you Yahoo!?
-Exclusive Video Premiere - Britney Spears
-http://launch.yahoo.com/promos/britneyspears/
-
+iD8DBQE/oZooHrFvgoWMI60RAl0QAJ4/21BG/3+x0C7NaVP17tjvRacrpwCeI6FL
+luoDLATHL13+cLnOxtBglJ0=
+=B5rT
+-----END PGP SIGNATURE-----
