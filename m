@@ -1,12 +1,13 @@
-From: "Juliano Murlick" <jmurlick@sicredi.com.br>
-Subject: source mac address
-Date: Thu, 31 Jul 2003 17:02:32 -0300
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Round Robin Load Balancing
+Date: Thu, 31 Jul 2003 16:02:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAArnhC4pMfykCnPZlPMhHrI8KAAAAQAAAA9QxKLSpdOESQ12+Zk6/CxgEAAAAA@sicredi.com.br>
-Reply-To: <jmurlick@sicredi.com.br>
+Message-ID: <20030731200223.GA25319@cannon.eng.us.uu.net>
+References: <200307311448.h6VEmrpq018899@webmail2.magma.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200307311448.h6VEmrpq018899@webmail2.magma.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Javier Govea <jgovea@magma.ca>
+Cc: netfilter@lists.netfilter.org
 
-How can i log the source mac address ? I'm logging every dropped packet,
-my log is like it :=20
+On Thu, Jul 31, 2003 at 10:48:53AM -0400, Javier Govea wrote:
 
-Jul 15 08:51:26 fwwan kernel: IPT: INPUT DROPPED IN=3Deth0 OUT=3D
-MAC=3D00:00:00:00:00:00:00:00:8827:42:00:08:00 SRC=3DIP1 DST=3DIP2 =
-LEN=3D60
-TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D52070 DF PROTO=3DTCP SPT=3D43812 =
-DPT=3D25
-WINDOW=3D5840 RES=3D0x00 SYN URGP=3D0
+> Hi guys,
+> 
+> Well I tried to use the "nth" patch in the mangle table in both the FORWARD and PREROUTING
+> chains and still no success. My browser still cannot surf internet, it just waits and
+> eventually times out. The rules i tested are below, please correct them if they are wrong.
+> 
+> Any more suggestions??? any other ideas????
 
-that mac is a destin address, i wanna log the source, is it possible ?
+Yes. CONNMARK the conn's and route them accordingly:
 
-Thanks in advance,
-Att,
-Juliano Murlick
+iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <ppp0-ip-addr>
+iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to-source <ppp1-ip-addr>
+iptables -t nat -A POSTROUTING -o ppp2 -j SNAT --to-source <ppp2-ip-addr>
+iptables -t nat -A POSTROUTING -o ppp3 -j SNAT --to-source <ppp3-ip-addr>
 
-=20
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 1 -m state --state new  -j CONNMARK --set-mark 1
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 2 -m state --state new  -j CONNMARK --set-mark 2
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 3 -m state --state new  -j CONNMARK --set-mark 3
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 0 -m state --state new  -j CONNMARK --set-mark 4
 
-=20
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 1 -m state --state new  -j CONNMARK --set-mark 1
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 2 -m state --state new  -j CONNMARK --set-mark 2
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 3 -m state --state new  -j CONNMARK --set-mark 3
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 0 -m state --state new  -j CONNMARK --set-mark 4
 
-=20
+iptables -t mangle -A POSTROUTING -m connmark --mark 1 -j ROUTE --oif ppp1
+iptables -t mangle -A POSTROUTING -m connmark --mark 2 -j ROUTE --oif ppp2
+iptables -t mangle -A POSTROUTING -m connmark --mark 3 -j ROUTE --oif ppp3
+iptables -t mangle -A POSTROUTING -m connmark --mark 4 -j ROUTE --oif ppp0
 
-=20
-=20
+Haven't had the chance to test it, though.
 
-ATs,
-Juliano Murlick
-SICREDI Servi=E7os - Tecnologia
-jmurlick@sicredi.com.br
-<mailto:jmurlick@sicredi.com.br(51> (51) 3358-4977 / (51) 9951-3888
-
-=20
-
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.504 / Virus Database: 302 - Release Date: 24/7/2003
-
-
-
+Ramin
 
