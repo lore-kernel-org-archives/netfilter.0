@@ -1,10 +1,13 @@
-From: <skmail@mcewen.wcnet.org>
-Subject: internal ftp/port forwarding problem (fwd)
-Date: Fri, 27 Sep 2002 12:02:59 -0400 (EDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Memory leak problem
+Date: Fri, 27 Sep 2002 17:33:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0209271151560.23416-100000@mcewen.wcnet.org>
+Message-ID: <200209271633.g8RGXPc32108@vulcan.rissington.net>
+References: <7F2740B50D94FD4B9EAF9AAC33016C3C45382C@lascar>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <7F2740B50D94FD4B9EAF9AAC33016C3C45382C@lascar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,56 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm resending because I didn't get any replies before.  Please let me know 
-if anyone has any ideas.  Thanks!
+On Friday 27 September 2002 4:03 pm, Jean Cantarutti wrote:
 
----------- Forwarded message ----------
-Date: Tue, 24 Sep 2002 16:24:36 -0400 (EDT)
-From: skmail@mcewen.wcnet.org
-To: netfilter@lists.netfilter.org
-Subject: internal ftp/port forwarding problem
+> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+> <HTML>
+> <HEAD>
+> <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
+> <META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
+> <TITLE>Memory leak problem</TITLE>
+> </HEAD>
+> <BODY>
+>
+> <P><FONT SIZE=2 FACE="Arial">Hi, im using iptables 1.2.5 on a HP machine
+> working like firewall, it has 512 MB of RAM and every 30 seconds eats 6 kb
+> of RAM, in 48 hours only left 8300 kb of available RAM.</FONT></P>
 
-I am behind a firewall at work, trying to open up a path through a linux
-firewall at a second remote site.  Following are the iptables rules that I
-am trying to use.  I can get logged in, but since firewalls are involved
-it's set for passive ftp and when it opens the data connection for
-directory listing it comes back as this:
+Please:
 
-COMMAND:>	PASV
-227 Entering Passive Mode (10,8,13,16,4,66).
+1. Do not post html to this mailing list.
+2. Tell us the volume of traffic you have going through your firewall.
+3. Tell us the number of simultaneous connections you have through your 
+firewall.
+4. Tell us if you get any messages from netfilter in your syslog.
+5. Give us an idea of what protocols you're handling, and what your ruleset 
+is.
+6. Let us know if you have any other services or applications running on your 
+firewall.
 
-Which if I'm correct means try to connect to 10.8.13.16 (ftp server's
-internal address, which is why it doesn't work) for the passive data
-connection.  I can't figure out why iptables isn't nat'ing this to work.  
-All my iptables ftp options are compiled directly into the kernel, 2.4.19
-with V 1.2.7 iptables.  Hopefully somebody out there can help explain to
-my addled brain why this isn't working.  Thanks!
+Antony.
 
-------------------------------------------
+-- 
 
-
-# forward port 2101 to internal for an internal ftp server 
-
-$IPTB -t nat -A PREROUTING -d $EXT_IP -p tcp --dport 2101 -j DNAT --to
-$INT_FTP_SRVR:2101
-
-
-$IPTB -A FORWARD -s ! $INT_NET -d $INT_FTP_SRVR -p tcp --dport 2101 -j
-ACCEPT
-
-
-$IPTB -t nat -A POSTROUTING -s $INT_IP -p tcp --sport 2101 -j SNAT --to
-$EXT_IP:2101
-
-
-$IPTB -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT 
-
-$IPTB -A FORWARD -m state --state NEW -i $INTDEV -s $INT_NET -j ACCEPT
-
-
-
+If you want to be happy for an hour, get drunk.
+If you want to be happy for a year, get married.
+If you want to be happy for a lifetime, get a garden.
 
