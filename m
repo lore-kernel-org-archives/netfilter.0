@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: Updating multple iptables on servers
-Date: Thu, 10 Jun 2004 05:43:24 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: port scan identification
+Date: Thu, 10 Jun 2004 11:37:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1086860603.2005.4.camel@localhost>
-References: <E1BXbKC-0007Rf-9w@vishnu.netfilter.org>
+Message-ID: <200406101137.16463.Antony@Soft-Solutions.co.uk>
+References: <40C635E0.2010208@wanadoo.fr>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1BXbKC-0007Rf-9w@vishnu.netfilter.org>
+In-Reply-To: <40C635E0.2010208@wanadoo.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +19,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Kristensen <Hyper@TaberNar.dk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 2004-06-08 at 03:46, Thomas Kristensen wrote:
-> Is it possible to update iptables from a central server. I got 25 servers
-> using the same firewall and i need something to update them all from a
-> central server. 
->  
-> Any ideas?
->  
-> Hilsen Thomas Kristensen
-Strange . . . I thought I saw this identical post a few days ago!
+On Tuesday 08 June 2004 10:55 pm, Rakotomandimby Mihamina wrote:
 
-Although it is still a few months away from release, ISCS
-(http://iscs.sourceforge.net) will help you do this.  It will also
-manage any VPN and router configurations and, eventually, even the layer
-two configuration.  It will do this just as easily if every firewall is
-different - the work is the same - describe the environment and ISCS
-automatically creates and distributes the list of rules to create that
-environment.  I wish I could tell you it's here and ready for use but
-it's still in very active development.  We're working on the last of the
-iptables modules as I write.
+> I have this rule :
+>
+> iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST \
+> -j LOG --log-level debug --log-prefix 'p_scan_: '
+>
+> and i see this when i tail the output file :
+>
+> Jun  8 22:52:32 milina kernel: p_scan_: IN=ppp0 OUT= MAC=
+> SRC=81.220.171.201 DST=81.248.95.56 LEN=40 TOS=0x00 PREC=0x00 TTL=54
+> ID=45424 PROTO=TCP SPT=4391 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
+>
+> Well . According to me, a port scan is the action to scan _all_ the
+> ports ... why is the port scan identified as only scaning the 80th port
+> ? I mean, a port scan should not be on one port only ... isn't it ?
 
-fwbuilder (http://www.fwbuilder.org) is quite a good product more along
-the lines of traditional firewall GUI's and is available now.
- - John
+A packet can only be sent to one address and one port.   You cannot send a 
+single packet to multiple ports.   Therefore what is commonly called a "port 
+scan" is a series of packets, each addressed to a different port, which 
+between them result in lots of ports being scanned.
+
+You are seeing someone sending a packet to port 80.   Maybe they'll send one 
+to port 110 tomorrow, or next week, or five seconds later, or whenever they 
+feel like it....
+
+Regards,
+
+Antony.
+
 -- 
-Open Source Development Corporation
-Financially sustainable open source development
-http://www.opensourcedevelopmentcorp.com
+Microsoft may sell more software than any other company, but McDonald's sell 
+more burgers than any other company, and I think the other similarities are 
+obvious...
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
