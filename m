@@ -1,13 +1,11 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: DirectX 8 games and iptables
-Date: Fri, 1 Aug 2003 10:38:59 +1000
+From: David Coulson <david@davidcoulson.net>
+Subject: IPTables articles links
+Date: Thu, 31 Jul 2003 21:00:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDEMKKNJDLAJDPNDPCDDKEDANFAA.georgev@citadelcomputer.com.au>
-References: <000601c35759$2e309eb0$0200a8c0@willemjan>
+Message-ID: <3F29BBA1.4030405@davidcoulson.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000601c35759$2e309eb0$0200a8c0@willemjan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Willem-Jan Meijer <meyer3@chello.nl>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: webmaster@netfilter.org, netfilter@lists.netfilter.org
 
-Use a program out there which forces directx to use a specific port.. this
-is good for firewalls. much easier to handle than mapping every game..
+http://www.iptables.org/documentation/index.html
 
-yes, you can do that.. but if it works is another thing..
+# Part 1 of an introductory iptables tutorial by David Culson
+# Part 2 of an introductory iptables tutorial by David Culson
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Willem-Jan
-Meijer
-Sent: Thursday, July 31, 2003 9:45 PM
-To: netfilter@lists.netfilter.org
-Subject: DirectX 8 games and iptables
+Please do the following:
 
+1) Spell my name correctly - It's right above the two which were spelled 
+wrong.
+2) Link directly to my PDFs, so that the copyright information is easily 
+accessable for those who need to know about it.
 
-Hello all,
+I e-mailed webmaster@netfilter.org eariler this week, but had no response.
 
-I want to host some DirectX 8 games so I need to open the UDP ports 6073 and
-2302 to 2400 and forward them from eth0 to internal ip 192.168.0.1
+David
 
-How can I do this?
-
--WJ
-
-
+-- 
+David Coulson                                    email: d@vidcoulson.com
+Linux Developer /                          web: http://davidcoulson.net/
+Network Engineer                                   phone: (216) 533-6967
 
 
