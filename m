@@ -1,13 +1,13 @@
 From: "Joel n.solanki" <zealous@bonbon.net>
-Subject: Re: question abut iptables and kernel 2.6
-Date: 07 Aug 2004 14:48:24 +0530
+Subject: Re: Problem configuring masquerading Gateway on RedHat 9.0...
+Date: 07 Aug 2004 14:53:05 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1091870303.1625.0.camel@joel.d2visp.com>
-References: <1091798468.411385c497987@207.44.134.65>
+Message-ID: <1091870585.1624.5.camel@joel.d2visp.com>
+References: <20040806064404.96275.qmail@web50209.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1091798468.411385c497987@207.44.134.65>
+In-Reply-To: <20040806064404.96275.qmail@web50209.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +20,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Hi ,
+Rajesh..
 
-It supports.
+The commands u r following is correct.
 
-Reqards
+From internal client machine test the following things.
 
-On Fri, 2004-08-06 at 18:51, Andres Ricardo Almanza Junco wrote:
-> hello srs
+1) ping www.yahoo.com
+if it tells unknown host then u need to put the correct primary and
+secondary dns in the client machine.
+
+2) Secondly check your /etc/resolv.conf wheather it has correct primary
+and secondary dns server.
+
+If you can ping from client www.yahoo.com then ....
+
+1) are u using squid or something ????
+
+if u r using squid something is wrong in squid.conf
+
+Regards,
+
+On Fri, 2004-08-06 at 12:14, Rajesh Pethe wrote:
+> Dear Sirs,
+> 
+> As mentioned in the 'NAT-HOWTO' I've done the
+> following to configure my Linux box as masquerading
+> gateway for internal network :
+> #iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+> and
+> #echo 1 > /proc/sys/net/ipv4/ip_forward
+> 
+> The problem is I can ping or telnet a remote host from
+> an internal network but browsers say 'unknown host'
+> when I try to load a remote site.
+> 
+> Please help me with this problem.
+> 
+> Regards
+> Rajesh
 > 
 > 
-> maybe help  me
 > 
-> kernel 2.6.5 support h323 nat, pptp nat and others helpers ?
-> 
-> 
-> thanks for you help
-> 
-> 
+> 		
+> _______________________________
+> Do you Yahoo!?
+> Express yourself with Y! Messenger! Free. Download now. 
+> http://messenger.yahoo.com
 -- 
 Joel N.Solanki
 Network Administrator
