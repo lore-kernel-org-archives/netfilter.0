@@ -1,10 +1,13 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: problem with hook function for DHCP
-Date: Tue, 30 Nov 2004 13:52:23 -0800
-Message-ID: <29F6FAF7F2C0D41190980002A513591E0E93BABB@FSNSAB30>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: iptables and wireless card in promiscuous mode
+Date: Tue, 30 Nov 2004 18:21:23 -0500
+Message-ID: <200411301821.23588.Alistair@nerdnet.ca>
+References: <41AC6D4F.7000001@eurecom.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_000_01C4D726.D03C08A6"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <41AC6D4F.7000001@eurecom.fr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,43 +18,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: 'Jason Opperisano' <opie@817west.com>, netfilter@lists.netfilter.org
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_000_01C4D726.D03C08A6
-Content-Type: text/plain;
-	charset="iso-8859-1"
-
-why not try tcpdump or hardware sniffer onm the lan itself.
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Jason
-Opperisano
-Sent: Tuesday, November 30, 2004 12:42 PM
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Subject: Re: problem with hook function for DHCP
 
+ see inlined:
+ 
+On November 30, 2004 07:53 am, Claudio Lavecchia wrote:
+> Hello People,
+>
+> I have a little question:
+>
+> I have two laptops that have 802.11 wireless cards. I am developing some
+> application that essentially perform sniffing functions using wireless
+> cards in promiscuous mode. To test my code, I need those two laptops not
+> to "see" each other (--> I do not want the wireless card of laptop A,
+> which is operating in promiscuous mode to process packets coming from
+> laptop B) and I tought to do it using iptables. so on laptop A i added
+> the following rule:
+>
+> iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_B -j DROP
+>
+> and on laptop B I added the rule:
+>
+> iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_A -j DROP
+>
+> I just executed my first tests and the feeling  I got is that, for
+> example, the wlan card of  laptop B still passes through the packet
+> coming from laptop A.
+>
+> Can anyone confirm  this analysis? If I am right, can anyone give me a
+> hint to possibly workaround this?
 
-On Mon, Nov 29, 2004 at 11:58:44PM -0800, Subhash Gopinath wrote:
-> Hello all,
-> 
-> I am facing problems capturing DHCP packets sent from a client to a
-server....
-> Basically, the hook function (defined below) is not getting called for
-> each packet going out of the system.. Any ideas ?
+ Urrm.  
+ You are likely doing the filtering in the wrong pipe.  These rules will only 
+drop packets that are destined for the IP of the host they are on.  You 
+PROBABLY are trying to drop *all* traffic from the other laptop.  Iptables 
+can do this at the IP layer, however you will STILL be able to see the 
+traffic across that card (from the other laptop) with any decent sniffer 
+program since ip sniffers work below the IP layer, before iptables gets the 
+packet to filter.  Most decent network sniffers, however, can do mac address 
+filtering on input.
 
-my idea:  DHCP packets are generated and processed at the BPF layer
-(which is below netfilter in the stack); and never pass through any
-netfilter hooks.
+ If you would like to have the traffic dropped anyway, there are better places 
+to put these rules, even though many are strongly against filtering anywhere 
+but in the filter table (including myself) the following would get the 
+traffic off your iptables radar:
 
--j
+iptables -A PREROUTING -t mangle -m mac --mac-source MAC_ADDRESS_LAPTOP_A -j \  
+DROP
 
---
-"Default! The two sweetest words in the English language!"
-        --The Simpsons
+ Although in truth I'm not sure that this is wise, it might serve your 
+purposes.
 
-------_=_NextPart_000_01C4D726.D03C08A6--
+ Alistair Tonner
+ RSO HP Unix support 
+
 
