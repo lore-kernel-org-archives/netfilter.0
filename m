@@ -1,11 +1,12 @@
-From: "Moti Levy" <moti@flncs.com>
-Subject: Can anyone please review the following rules and comment on them ?
-Date: Wed, 30 Apr 2003 12:23:03 -0400
+From: "Paul Albert" <palbert@rovingplanet.com>
+Subject: Ipables memory footprint
+Date: Wed, 30 Apr 2003 10:23:22 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0f4201c30f34$c78ae330$fd01a8c0@bvg6>
+Message-ID: <661F9268BBA8CB4EB92CC12B8C42F06901F623@pluto.rovingplanet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +19,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanks ,
-Moti
+Hi all -=20
 
+I'm running a RH 7.3 box with a 2.4.20 kernel (with the bridge patches)
+and iptables v1.2.7a as a bridge.  Last night I received notice that the
+machine was out of memory.  After killing all of the java processes that
+were running, the machine was still using a substantial amount of memory
+(440MB/512MB).  I took the machine to single user mode to see if this
+would reduce the memory footprint, but this didn't change things
+significantly.
 
+I've run iptables for about a year without problems.  However, some
+people belive that it is this code that is causing our problems.  My
+questions are as follows:
 
-iptables -t nat -A PREROUTING -d $EXTIP -p TCP -m multiport \
-   --dport 25,80,110,443 -j DNAT --to $SRV_IP
+* Is there a way that I can measure the amount of memory that iptables
+is using?
 
- iptables -t nat -A POSTROUTING -o $EXTIF -s $LAN -j MASQUERADE
-# --------------------------------------------------------------------------
---
-  iptables -A INPUT -i $EXTIF -p udp -m udp -s 0/0 --sport 67:68 -j ACCEPT
-  iptables -A INPUT -i $EXTIF -m state --state RELATED,ESTABLISHED -j ACCEPT
+* Is there a way that I can manually flush all of the entries in
+/proc/net/ip_conntrack?
 
-  iptables -A INPUT -i $EXTIF -p udp -m udp -s 0/0 --sport 500 -j ACCEPT
-  iptables -A INPUT -i $EXTIF -p 50 -s 0/0 -j ACCEPT
-  iptables -A INPUT -i $EXTIF -p 51 -s 0/0 -j ACCEPT
+* Are there any tools that I could use the monitor the kernel memory
+size?
 
-  iptables -A INPUT -i $EXTIF -p tcp -d $EXTIP -m multiport \
-           --dport 22,25,80,110,443,8080 -j ACCEPT
-
-  iptables -A INPUT -i $EXTIF -p ICMP -s 0/0 --icmp-type 8 -j ACCEPT
-  iptables -A INPUT -i $EXTIF -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
-  iptables -A INPUT -i $EXTIF -m limit --limit 5/minute -j LOG --log-prefix
-"IPT->"
-  iptables -A INPUT -i $EXTIF -j DROP
-
+Thanks,
+Paul
 
