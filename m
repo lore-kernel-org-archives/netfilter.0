@@ -1,13 +1,15 @@
-From: Clayton Russell <clayton.russell@vector.net.au>
-Subject: Re: SNAT & DNAT
-Date: Wed, 20 Oct 2004 09:54:22 +1000
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: dstlimit
+Date: Wed, 20 Oct 2004 08:29:31 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4175A92E.1000600@vector.net.au>
-References: <20041018152033.C85228A3C0@bne-mail01.vector.net.au>
+Message-ID: <20041020062931.GS21927@sunbeam.de.gnumonks.org>
+References: <Pine.SUN.4.58.0410191746080.22855@eskimo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UkokfXldvRlmz8/+"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041018152033.C85228A3C0@bne-mail01.vector.net.au>
+Content-Disposition: inline
+In-Reply-To: <Pine.SUN.4.58.0410191746080.22855@eskimo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +19,60 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Lee Evans wrote:
-> Hi,
-> 
-> Sorry if this has been asked before in some other guise - I looked through
-> the archives but couldn't spot anything (or a search feature..)
-> 
-> I'm going to be implementing a gateway system using IPTables, which will
-> need to perform both DNAT & SNAT on incoming connections.
-> 
-> The reason being that I want to provide external access to systems on a LAN
-> which do not have a default gateway (and nor do I want them to have one).
-> 
-> The connections will come in to the public IP of the gateway and be DNAT'ed
-> to the internal IP PREROUTING, and then SNAT'ed to the gateway's private IP
-> POSTROUTING so that the internal systems have a route out for reply traffic.
-> 
-> I've tested this on a small test-network but before I try to roll it out on
-> a larger scale, are there any issues with doing this that I should be aware
-> of?
-> 
-> Thanks
-> Lee
-> 
-> 
-Hi Lee,
-
-I have had problems with this in the past with strange protocols which 
-the connection tracking does not recognise as related.  For example, xdm 
-over this arrangment has some initial udp communication to organise the 
-X connection, then the client side (LAN in your case) initiates a TCP 
-connection to the server.  In this scenario the fw does not recognise 
-the tcp connection as related to the udp connection, and does not know 
-how to NAT this packet.
-
-This is a fairly strange example though, things like telnet, web etc all 
-worked fine.
-
-Hope this helps,
-Clayton
-
--- 
-Clayton Russell
-Systems Administrator
-Vector Networks Pty Ltd
-em: clayton.russell@vector.net.au
-wb: www.vector.net.au
-ph: +61 7 3236 9328
+To: Jerome Ibanes <jibanes@eskimo.com>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
+--UkokfXldvRlmz8/+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Oct 19, 2004 at 05:48:17PM -0700, Jerome Ibanes wrote:
+>=20
+> I'm trying to setup dstlimit, but, for instance, such configuration:
+> root@erinyes:/usr/src/linux# /usr/local/sbin/iptables -A INPUT -m dstlimit
+> --dstlimit 1000 --dstlimit-burst 10000 --dstlimit-htable-size 100000
+> --dstlimit-htable-max 1000000 --dstlimit-htable-expire 100000
+> --dstlimit-htable-gcinterval 1000 --dstlimit-mode dstip-dstport
+> --dstlimit-name foo -j REJECT
+>=20
+> rejects each and every packet, do you know what could possibly be wrong? I
+> use 2.6.9, iptables 1.2.11 on a slackware 10.
+>=20
+> Do you have any examples of dstlimit configurations?
+
+It behaves exactly like 'limit'.  It matches underlimit packets and
+doesn't match overlimit packes.  Your rule therefore does exactly what
+it is intended: REJECT any underlimit (i.e. within-the-limit) packets.
+
+A patch to the netfilter-extensions-HOWTO is appreciated.
+
+> Thanks,
+> Jerome
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--UkokfXldvRlmz8/+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFBdgXLXaXGVTD0i/8RApWeAJ4xh+8bmgUeDnhUd0fECvDUM+1hSQCeJDq9
+PWJmnRN+e1/tgJPVkio7KPk=
+=QsLK
+-----END PGP SIGNATURE-----
+
+--UkokfXldvRlmz8/+--
 
