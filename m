@@ -1,9 +1,8 @@
-From: "Michael Hudin" <hudin@zoetrope.com>
-Subject: Re: Outgoing SMTP Mystery
-Date: Tue, 4 Jun 2002 16:28:16 -0700
+From: "Jack Baker" <jbaker@neustyle.com>
+Subject: ip address routing setup
+Date: Tue, 4 Jun 2002 19:32:11 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000f01c20c1f$81056890$5227a8c0@michael>
-References: <013601c20c15$cba57520$52cfd3cf@michael> <200206042237.g54MbOA10863@Networker.rockstone.co.uk>
+Message-ID: <002101c20c20$0cfbcab0$1e00a8c0@neox>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -19,49 +18,26 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Yeah, the internal interface was rather pointless and I've changed it to the
-internal gateway.  It ultimately doesn't matter because the file in qmail
-that I'm using allows anything from the subnet and the external IP to relay.
+Hi there, I currently have a set of global ip addresses from my isp (/29
+block) lets say 192.168.0.5/29 for example.
 
-I have tried to telnet in and can get to it fine without being rejected.
-This one has got me stumped.
+My gateway set currently on my set of ip addresses is 192.168.0.5
 
--michael
+I recently got another block (/29) ip addresses say on 192.168.1.64/29.
 
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.samba.org>
-Sent: Tuesday, June 04, 2002 3:37 PM
-Subject: Re: Outgoing SMTP Mystery
+One of my original ip addresses the isp has set for routing the new
+block. Lets say 192.168.0.7. Network ip would be 192.168.1.64, and
+broadcast ip at 192.168.1.71.
 
+Now since they have different subnets, anyone know how I get one to
+route to another. Do I need a get a hardware router or is there a way to
+do it on redhat 7.2/7.3? 
 
-> On Tuesday 04 June 2002 11:18 pm, Michael Hudin wrote:
->
-> >  I can send SMTP out just fine, but no other server can send it in for
-some
-> > reason.
->
-> > -A POSTROUTING -o eth0 -j SNAT --to-source 10.10.10.254
-> > -A POSTROUTING -o eth1 -j SNAT --to-source 10.10.10.254
->
-> I really don't like the look of those two rules together.   You're saying
-> that any packet going out of the external interface should bear the source
-> address of the external interface - pretty standard.   But you're also
-saying
-> that any packet going out of the *internal* interface should also have the
-> source address of the external interface - why ???
->
-> Do you have any access control rules on your SMTP server - is it fussy
-about
-> the IP addresses it accepts connections from ?
->
-> What happens if you telnet to port 25 on the mail server from your
-firewall ?
->
->
-> Antony.
->
->
->
+I'm not sure what they've done up to get this to work.
+
+Thanks,
+Jack.
+jbaker@neustyle.com
+
 
 
