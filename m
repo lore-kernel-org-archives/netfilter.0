@@ -1,8 +1,8 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Article on Firewalls
-Date: Fri, 05 Sep 2003 12:22:30 -0400
+From: Jason Joines <joines@bus.okstate.edu>
+Subject: Another Hardware Sizing Question
+Date: Fri, 05 Sep 2003 11:26:28 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F58B846.4050701@Loudoun-Fairfax.com>
+Message-ID: <3F58B934.3060902@bus.okstate.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,16 +18,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+   We have a subnet with a potential of 1022 hosts.  Each machine is 
+connected to a 100 Mbps switch.  The connection from our subnet to the 
+main university network is I believe OC-3, ~154 Mbps.  There are 
+currently less than 500 active machines on the network.  They do the 
+normal web brosing, and connect to NetWare and Domino servers outside 
+the subnet.  With that, the maximum traffic we've ever seen between our 
+subnet and the rest of the world is about 40 Mbps.
 
-This is an interesting article that discusses the challenges we face as 
-users and developers of iptables. The premise of the article is that 
-when you combine all the ports a modern PC user needs open with software 
-that "hijacks" standard ports for other uses, you end up with a 
-perimeter firewall that has little value. Ouch!
+   We'd like to put all the boxes on our subnet behind and IPTables 
+firewall and NAT them.  We'd also like to take into consideration the 
+possibility of the number of machines growing to ~1000.  We have quite a 
+few spare PIII 450 boxes setting around.
 
-<http://ct.com.com/click?q=15-mYP_IGcgljpbJwCtkAToEF59qGdR>http://ct.com.com/click?q=15-mYP_IGcgljpbJwCtkAToEF59qGdR
+   What would be the mininum, ideal, etc., hardware setup for this 
+environment.
 
-Jeff
+
+Thanks,
+
+Jason Joines
+Open Source = Open Mind
+========================
 
 
