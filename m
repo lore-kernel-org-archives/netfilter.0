@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Log output going to screen
-Date: Wed, 16 Oct 2002 22:52:28 +0100
+From: Michel Briand <michelbriand@free.fr>
+Subject: Netfilter NAT & Quake
+Date: Tue, 15 Oct 2002 09:40:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021016215230.GVSS17202.mta01-svc.ntlworld.com@there>
-References: <B9D38D9C.45F%george@mattandgeorge.com>
+Message-ID: <751.51778660274$1034812614@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <B9D38D9C.45F%george@mattandgeorge.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 16 October 2002 9:41 pm, George Agnelli wrote:
+Hello,
 
-> Does anyone know why my logs are occasionally being dumped to screen as
-> well as to the messages file? How can I stop this happening?
+I have Linux for many years and, since 10 month I play Quake III on 
+Internet with my little linux box ;-)
 
-What do you mean by "occasionally" ?
+Since I brought an HUB I connected my second PC and more to my local 
+network.
 
-Your system should at least be consistent about where it sends its log 
-entries.
+I use kernel 2.4.19 and SuSE distro with their SuSEfirewall2 that give 
+me some good functionnalities to achieve theses tasks :
 
-> iptables -A INPUT  -i eth1 -j LOG
+- NAT for my LAN to the Internet
+- protection of all non specified ports (tcp&udp)
+- open thoses ports that I've chosen (ssh&https)
 
-Try adding a "--log-level=info" (or replace info with 3 if you have a version 
-of iptables which doesn't like the log names) and make sure you have a 
-suitable entry in your /etc/syslog.conf to send 'info' level messages to the 
-desired destination, eg:
+I have the following problem :
 
-*.=info	/var/log/messages
+-- when we are 2 playing all run fine but when we are 3 the kernel spend 
+more time in kernel space to deliver packets and Quake lags. A kernel 
+hacker (a friend of mine) tell me that the kernel have to work a lot 
+with all theses packets that Quake sends&receives .... and it would be a 
+race problem in the NAT & filtering code.
+When there is only 2 connections to Quake servers actives all run fine 
+== the lag is not  perceptible ...
 
-Antony
+-- when a box of my LAN connects, my host (the router) could not connect 
+to Quake III server anymore ... When the connection is in the inverse 
+order (my host = route, another box of my LAN) all connect fine.
 
--- 
+-- when I decide to run eDonkey from my M$ box, it complains about the 
+port 4662 that I've specified in firewall to be open .... and it's not ????
 
-The difference between theory and practice is that
-in theory there is no difference, whereas in practice there is.
+That's all folks !
+Thank you in advance ;)
+
+Michel
+
 
