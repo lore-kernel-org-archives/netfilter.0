@@ -1,14 +1,9 @@
-From: =?iso-8859-1?Q?Herv=E9?= <herve@lucidia.net>
-Subject: Re: Two NICS with same IP and same client IP
-Date: Wed, 2 Feb 2005 16:40:45 -0000 (GMT)
-Message-ID: <50719.57.66.65.39.1107362445.squirrel@57.66.65.39>
-References: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>	<4200A1F3.8030609@imag.fr>	<5172.57.66.65.39.1107338261.squirrel@57.66.65.39>	<4200AB33.1010308@imag.fr>
-	<1107352680.4916.8.camel@hubcap.ljm.dom>
-	<63838.57.66.65.39.1107354736.squirrel@57.66.65.39>
-	<4200E762.2020501@imag.fr>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Two NICS with same IP and same client IP (fwd)
+Date: Wed, 2 Feb 2005 11:48:43 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502021148010.16693-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <4200E762.2020501@imag.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +14,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter  <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: herve@lucidia.net, netfilter@lists.netfilter.org
+
+
+Sorry, hit the wrong selection and set this to the wrong address off
+list;;
+
+
+
+What's surprising is tha there is not complaints about the duo IP being
+assinged here, must be due to it being the same system, else I'd have
+expected one nic to shut down the other with an error about IP dupes on
+the net.
+
+Folks are trying to tell you that you need to go over the basics of
+networking again, then try and step into this with a refreshed clue.
+
+Thanks,
+
+Ron DuFresne
+
+On Wed, 2 Feb 2005, Raphael Jacquot wrote:
 
 > Herv=E9 wrote:
->>
->> In my case, the point is to help the routing by modifying the source
->> address. For example, you give eth0 two addresses: 192.168.100.1 and
->> 192.168.101.1, and eth1: 192.168.100.1 (yes, the same) and
->> 192.168.102.1.
->
-> what's the point ???
->
-I have two identical test benches, in which one box has a fixed IP
-address, hence I can't change the subnets.
-What is more, this box always accesses the same IP address for the server=
-.
+> >>having 2 interfaces on the same box with the same IP address
+> >>
+> >>repeat after me :
+> >>
+> >>WILL NOT WORK
+> >=20
+> >=20
+> > Well, I can't see why not. Can you explain?
+>=20
+> uh, because that's how routing in the server PC works. you have to have=
+=20
+> a different address for each interface.
+> your best bet is to either use the same interface (and change one of th=
+e=20
+> client's IP to something else (like 192.168.100.3) like so :
+>=20
+> server             |         __________         client 1
+> eth0:192.168.100.1 |--------| ethernet |------| 192.168.0.2
+>                     |        |  switch  |
+>                              |__________|------| 192.168.0.3
+>                                                  client 2
+>=20
+> or... change one of the subnets to use a different prefix, like so :
+>=20
+> Server             |         | Client 1
+> eth0:192.168.100.1 |---------| 192.168.100.2
+>                     |                              | Client 2
+> eth1:192.168.101.1 |------------------------------| 192.168.101.2
+>=20
 
-Yeah, not so easy, but hey, it's Linux, so it's possible!
+--=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-Cheers,
-Herv=E9.
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
+
+
 
