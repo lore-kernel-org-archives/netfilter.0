@@ -1,12 +1,13 @@
-From: "Matthew G. Marsh" <mgm@paktronix.com>
-Subject: Re: Packet chain traversals
-Date: Wed, 30 Oct 2002 10:11:47 -0600 (CST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: nmap difficulty number??
+Date: Wed, 30 Oct 2002 16:33:24 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0210301001370.15387-100000@netmonster.pakint.net>
-References: <20021028213720.KZLQ459.mta02-svc.ntlworld.com@there>
+Message-ID: <200210301633.g9UGXWe11985@vulcan.rissington.net>
+References: <39778BFB9C25BA429794B15B50AEC78104B1F3@server-dcms>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021028213720.KZLQ459.mta02-svc.ntlworld.com@there>
+In-Reply-To: <39778BFB9C25BA429794B15B50AEC78104B1F3@server-dcms>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Mon, 28 Oct 2002, Antony Stone wrote:
+On Wednesday 30 October 2002 2:08 pm, Didier Hung Wan Luk wrote:
 
-> On Monday 28 October 2002 9:18 pm, Oskar Andreasson wrote:
->
-> > Hi Antony,
-> >
-> > On Mon, 28 Oct 2002, Antony Stone wrote:
-> > >
-> > > Why do you have a routing decision between OUTPUT and NAT ?   What
-> > > "decision" is there to be made ?
-> >
-> > When you bring it to light... I don't know...
-> >
-> > Because of your mail, I started checking it out... and I can't actually
-> > find any "routing" decisions being made after NF_IP_LOCAL_OUT or before
-> > the IP_NF_POST_ROUTING, nor do any documents I found (so far) point any
-> > such point out, more than mine...
->
-> The only thing I can think of is "which interface should this packet go out
-> of", however that's certainly not the same sort of "decision" as there is
-> between PREROUTING and INPUT or FORWARD, and I'm not even sure it belongs
-> quite where it is shown...
+> hello all,=0D
+>  =0D
+> what do the difficulty numbers mean is higher better or worse??=0D
+>  =0D
+> Difficulty=3D2463109 (Good luck!) ?? what does this mean?=0D
 
-It does exist between OUTPUT and NAT. But the decision structure is more
-along the lines of rule application. Thus you can issue rules such as:
+This is a netfilter mailing list, not nmap.
 
-ip rule add from 10.1.1.1 dev lo table mytable prio 13000
+However, from the nmap man page:
 
-and any packet coming from the local machine (ie exiting OUTPUT) would
-then be acted upon by this rule. see?
+              Another test enabled by -O  is  TCP  Sequence  Pre=AD
+              dictability Classification.  This is a measure that
+              describes approximately how hard it is to establish
+              a  forged  TCP  connection against the remote host.
+              This is useful for exploiting source-IP based trust
+              relationships  (rlogin,  firewall  filters, etc) or
+              for hiding the source of  an  attack.   The  actual
+              difficulty  number is based on statistical sampling
+              and may fluctuate.  It is generally better  to  use
+              the  English  classification  such as "worthy chal=AD
+              lenge" or "trivial joke".  This is only reported in
+              normal output with -v.
 
-> The main reason I commented on it is that I would expect something labelled a
-> "decision" to have more than one possible outcome (eg the first routing
-> decision leads on to either INPUT or FORWARD depending on the destination
-> address), whereas even for the question of which interface to use, this is
-> not relevant to netfilter - there are no choices involved.
->
-> Anyway, just my 2c, as the saying goes...
->
-> Antony.
->
-> --
->
-> Most people are aware that the Universe is big.
->
->  - Paul Davies, Professor of Theoretical Physics
->
+Antony.
 
---------------------------------------------------
-Matthew G. Marsh,  President
-Paktronix Systems LLC
-1506 North 59th Street
-Omaha  NE  68104
-Phone: (402) 932-7250 x101
-Email: mgm@paktronix.com
-WWW:  http://www.paktronix.com
---------------------------------------------------
+--=20
 
+Software development can be quick, high-quality, or low-cost.
+
+The customer gets to pick any two out of three.
 
