@@ -1,9 +1,11 @@
-From: "Pito Breizh" <pito_breizh@hotmail.com>
-Subject: Memory leak problem
-Date: Thu, 07 Nov 2002 07:52:51 +0000
+From: "Nick Vanderest" <backlandz@hotmail.com>
+Subject: iptables not forwarding ports?
+Date: Thu, 7 Nov 2002 00:43:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F162SYe4nhrKtzcbLDi0000031a@hotmail.com>
+Message-ID: <OE21hvqgStMVhEUsebm0000015f@hotmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0005_01C285F6.C0B2D670"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,51 +16,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+This is a multi-part message in MIME format.
 
-I've got a problem of memory leak with iptables. I'm using iptables
-1.2.7a. I've linked libiptc.a and iptables.o with my application.
+------=_NextPart_000_0005_01C285F6.C0B2D670
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-I'm setting up some NAT rules by using do_command and iptc_commit
-functions.
+I have a RH 7.3 box running iptables 1.2.5a, and it's not or seems not to be
+forwarding udp ports.
 
-I've seen a mail on netfilter-devel list (dated of 2 september) dealing
-with this problems. Here is this mail :
+A different fw/router setup (Freesco 0.2.8) was used and sucessfully
+forwarded the ports I needed.
 
->You expect the iptables source components to be more than a short->running 
->one-shot application; you expect them to be usable in a library in a 
->longer-running process. That expectation is wrong, the current userlevel 
->iptables source was not designed with that goal in mind.
+I have attached my script for those who feel inclined. ;-)
 
->This is currently tackled by some developers (not me), who are working
->on an all-new userlevel and user/kernel interface that _is_ designed
->to support efficient use from many different userlevel applications.
+The required ports needed are 5198 and 5199, both udp to a WindowsXP box.
 
->However, as far as I know, this reimplementation is currently not
->in a form that you may use.
+Thanks in advance for any help,
 
->best regards
->  Patrick
-
-First of all, I would want to know if the developers team in charge of
-the developement of the new userlevel interface is on this list?
-
-Secondly, are there news about this subject ? If developement's
-resources are needed, perhaps I can help !
-
-Best regards,
-   Mickael
+ Cheers,
+    Nick
 
 
+------=_NextPart_000_0005_01C285F6.C0B2D670
+Content-Type: application/octet-stream;
+	name="iptables.script"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="iptables.script"
+
+#!/bin/bash
+
+IPT=3D"/sbin/iptables -v"
+
+$IPT -F
+$IPT -F -t nat
+
+$IPT -t nat -A PREROUTING -d xx.xx.xx.xx -p udp --dport 5198 -i =
+xx.xx.xx.xx -j DNAT --to-destination 192.168.1.2
+$IPT -t nat -A PREROUTING -d xx.xx.xx.xx -p udp --dport 5199 -i =
+xx.xx.xx.xx -j DNAT --to-destination 192.168.1.2
+
+$IPT -A POSTROUTING -t nat -s 192.168.1.0/24 -j MASQUERADE
+$IPT -P FORWARD ACCEPT
+
+$IPT -A INPUT -s 127.0.0.1/32 -d 127.0.0.1/32 -j ACCEPT
+$IPT -A INPUT -s 192.168.1.254/32 -d 0/0 -j ACCEPT
+$IPT -A INPUT -s 192.168.1.2/32 -d 0/0 -j ACCEPT
+
+$IPT -A INPUT -p icmp -j ACCEPT
+$IPT -A INPUT -p tcp --syn -j ACCEPT
+$IPT -A INPUT -p udp -j ACCEPT
+
+$IPT -A FORWARD -i eth0 -j ACCEPT -m state --state =
+NEW,ESTABLISHED,RELATED,INVALID
 
 
-
-_________________________________________________________________
-MSN Messenger : discutez en direct avec vos amis ! 
-http://www.msn.fr/msger/default.asp
-
+------=_NextPart_000_0005_01C285F6.C0B2D670--
 
