@@ -1,13 +1,12 @@
-From: "Klemen Kecman" <klemen@sting.si>
-Subject: Re: iptables dnat to loopback
-Date: Fri, 6 Aug 2004 13:54:50 +0200
+From: Scott MacKay <scottmackay@yahoo.com>
+Subject: Re: handle packets by libipq
+Date: Fri, 6 Aug 2004 05:09:20 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002401c47bac$313d0350$6a02a8c0@klemen>
-References: <1091792314.2256.18.camel@localhost>
-Reply-To: "Klemen Kecman" <klemen@sting.si>
+Message-ID: <20040806120920.49351.qmail@web13910.mail.yahoo.com>
+References: <20040806061445.88423.qmail@web41510.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040806061445.88423.qmail@web41510.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,72 +17,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+You re-inject using ipq_set_verdict.  Moving a packet
+from ipv4 to ipv6...dunno.  ipv4 and ipv6 use 2
+different interfaces ( ipq_create_handle(0, PF_INET)
+vs  ipq_create_handle(0, PF_INET6) and 2 different
+ip_queues (ip_queue.o, ip6_queue.o), so not sure if
+you can.  More likely would need to drop from 1 and
+regenerate on the other, but not sure on that one.
 
------ Original Message -----
-From: "Damian Gatabria" <damian_g@speedy.com.ar>
-To: "Lista Netfilter" <netfilter@lists.netfilter.org>
-Sent: Friday, August 06, 2004 1:38 PM
-Subject: iptables dnat to loopback
+-Scott
 
 
-> Hello listers.
->
-> I know this is probably not the proper place to ask
-> a support question, but after a long googling
-> session and asking in my regular lists i was unable to
-> get an answer for what i think is a rather tough situation..
->
-> So, flame me if you must, but here it is =oP
->
-> I have a rather busy server box hosting several web
-> sites in separate independent installation directories,
-> which means several apache, mysql and tomcat installations
-> running simultaneously, with each mysql instance binding
-> a port in the loopback interface.
->
-> Now, for a very specific reason, i need to provide someone
-> with remote access to one of these mysql instances.
->
-> It would be a real hassle to change mysql's config
-> (and the webapps' working with it) so i just decided
-> to use DNAT to redirect incoming tcp connections
-> to the loopback interface.... but for some reason you
-> hopefully already know about, it doesn't seem to work.
->
-> So, while this iptables rule does work for port forwarding
-> to another host:
->
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -m multiport \
->         --dports mysql -j DNAT --to some.other.host
->
-> changing "some.other.host" to 127.0.0.1 doesn't work
-> as expected, and packets seem to be dropped altogether.
-> Using tcpdump i can see packets reaching eth0, but
-> never reaching loopback.
->
-> Is there any way to make iptables do what i'm looking
-> for? Any help will be greatly appreciated.
->
-> Thanks much.
->
-> --
-> Damian Gatabria <damian_g@speedy.com.ar>
->
->
+--- Dan Nguyen <dnguyenanh@yahoo.com> wrote:
 
-Is your FORWARD chain set to DROP? Is so, do you have the rule in the
-FORWARD chain that allows traffic from eth0 to localhost?
+> Hi all,
+> 
+> I posted this in devel- mailling, but it seem is
+> wrong place. So I
+> post here to hope the helping.
+> 
+> I plan to use libipq to do the following:
+> 1. capture all packet (both ipv4 and ipv6) on
+> user-space.
+> 2. Modify the captured packet (may tranlate even
+> protocol, i.e
+> replace ipv4 packet by ipv6 packet).
+> 3. Reinject modified packet to kernel.
+> 
+> The 1st and 2nd tasks had solution by modify the
+> libipq and use rfc.
+> But I had not have solution in 3nd task.
+> 
+> Please help me to roadmap.
+> 
+> Thanks for your considering.
+> Dan Nguyen
+> PS: Sorry if I send to the wrong mailling.
+> 
+> 
+> 
+> 		
+> __________________________________
+> Do you Yahoo!?
+> Yahoo! Mail Address AutoComplete - You start. We
+> finish.
+> http://promotions.yahoo.com/new_mail 
+> 
+> 
 
-Example:
-iptables -t nat -A PREROUTING -p tcp -i eth0 -m multiport \
-        --dports mysql -j DNAT --to some.other.host
-iptables -A FORWARD -p tcp -d some.other.host --dport some.port -j ACCEPT
 
-Correct me if I'm wrong.
 
-Greets,
-Klemen Kecman
-
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
 
