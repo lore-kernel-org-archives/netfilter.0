@@ -1,12 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: QoS on dynamic port allocation protocols
-Date: Thu, 13 Mar 2003 15:54:29 +0100 (CET)
+From: George Chacon <please.help.me@comcast.net>
+Subject: RE: How to keep record of repeat attackers?
+Date: Thu, 13 Mar 2003 07:46:30 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0303131553570.5562-100000@blackhole.kfki.hu>
-References: <1047562853.3e708a65c21a5@www.spsul.com.br>
+Message-ID: <PKEJLPJCFBFLJJPHMGPIEEBHCAAA.please.help.me@comcast.net>
+References: <1047547166.8677.15.camel@tech004.alphalink.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1047562853.3e708a65c21a5@www.spsul.com.br>
+In-reply-to: <1047547166.8677.15.camel@tech004.alphalink.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: alexb@atix.com.br
-Cc: raymondl@knowledgefactory.co.za, Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Eric Leblond <eleblond@init-sys.com>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, 13 Mar 2003 alexb@atix.com.br wrote:
+Accessing the netfilter logs in a web browser on a separate computer sounds
+perfect.  That's exactly what I'm looking for.  Thank you for the
+information.
 
-> But how do I distinguish RELATED connection from ftp and H323 ?
-> If I only whant to limit bandwidht for ftp and not for H323, how could I tell
-> iptable to mark only the RELATED packets from ftp connections ?
+George Chacon
 
-Use the helper match.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Eric Leblond
+Sent: Thursday, March 13, 2003 1:19 AM
+To: Netfilter Mailing List
+Subject: RE: How to keep record of repeat attackers?
 
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
+On Thu, 2003-03-13 at 09:50, George Chacon wrote:
+> Wow!  I'm guessing you've been using iptables for a while.  I thank you
+for
+> the thorough response.  I'll take it and slowly examine it a line and word
+> at a time - and do further research on some of the terms.  I'll also take
+a
+> look at http://ntop.org.  It does look pretty nice.
+
+You can use ulog-php which is an web interface to ulog netfilter logs.
+It give you useful stats as most often blocked hosts ...
+The homepage is : http://home.regit.org/ulogd-php.html
+a demo site is available at
+	http://home.regit.org/ulog-demo/
+It may be the kind of thing you want.
+</end self_add>
+
+--
+Eric Leblond <eleblond@init-sys.com>
+Init-Sys
+
+
+
 
 
