@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: "Lending an internet connection"
-Date: Sat, 28 Sep 2002 20:14:35 +0100
+From: Dworf <root@dworf.com>
+Subject: high load preformance firewall
+Date: Sat, 28 Sep 2002 21:00:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020928191437.NJRG6699.mta01-svc.ntlworld.com@there>
-References: <20020928183518.5187.qmail@web21510.mail.yahoo.com>
+Message-ID: <200209282100.33610.root@dworf.com>
+Reply-To: root@dworf.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020928183518.5187.qmail@web21510.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,47 +19,65 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 28 September 2002 7:35 pm, Sebastian Edman wrote:
+Hello,
 
-> Hi,
->
-> I have a brother that has an internet connection with a static public IP
-> (217.x.x.139). He is running windows and I want to place a linux-server at
-> his house, and only take ports 22, 25 and 80 from him. The best way I can
-> see to accomplish that is to place the linux-server between his computer
-> (running windows) and his ISP, in such a way so that no change is
-> neccessary on his computer.
->
-> ISP ------- (eth0) Linux-server (eth1) ------- (eth2) Windows machine
->
-> (eth2) is configured with the static public IP from the ISP (217.x.x.139)
-> and has gateway 217.x.x.1 and DNS servers 212.x.x.2 and 212.x.x.3.
->
-> I run LFS (www.linuxfromscratch.org) on the linux-server and I consider my
-> skills in iptables enough to write the rules. The problem is that I do not
-> know how to tackle this problem. What IP addresses should I choose for the
-> linux-server, and what IP addresses should I forward?
+I have a little problem with my firewall at the firm... The firm is a big=
+=20
+target for users doing an syn flood. The firewall is connected to the ISP=
+=20
+with an 155Mbit ATM connection. The ISP is doing an total deny on icmp on=
+=20
+incomming connections so we get rid of ddos. So the only attacks comming =
+to=20
+the server are syn floods. The servers behind the firewall are running so=
+me=20
+special made applications that need constant tcp connection to outside wo=
+rld=20
+to other firms. So when the synflood attack is comming in the connections=
+=20
+drop after a while and the firewall runs out of resources. The firewall h=
+as=20
+an mrtg installed and it shows that it doesnt use up all of th 155Mbit on=
+ly=20
+lets say 60% when there is an attack. And the system drops the active=20
+connections couse the timeout is expired of the tcl connection.
 
-I don't think you can do it.
+This is the syn protection i have:
 
-You're trying to set up two machines, connected on a network, with only a 
-single IP address.   There's no way they'd be able to communicate.
+----
+iptables -N syn-flood
+iptables -A INPUT -p tcp --syn -j syn-flood
+iptables -A syn-flood -m limit --limit 2/s --limit-burst 4 -j RETURN
+iptables -A syn-flood -j DROP
 
-You can't put the public IP address 217.x.x.139 on eth0 because then eth1 
-wouldn't talk to the Windows machine.
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+----
 
-You can't put anything other than 217.x.x.139 on eth0 because then the ISP 
-wouldn't talk to it.
+First the firewall droped after about 10minutes of attack then i added th=
+is=20
+settings....:
+--
+/bin/echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+/bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
+/bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects
+/bin/echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+/bin/echo "1" > /proc/sys/net/ipv4/conf/all/log_martians
+/bin/echo "0" > /proc/sys/net/ipv4/ip_forward
 
-You'll just have to put 217.x.x.139 onto eth0, put a private network between 
-eth1 and the Windows machine, and do the standard NAT thing.....
+/bin/echo "2" > /proc/sys/net/ipv4/conf/all/rp_filter
+/bin/echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+/bin/echo "0" > /proc/sys/net/ipv4/tcp_timestamps
+/bin/echo "15" > /proc/sys/net/ipv4/tcp_fin_timeout
+/bin/echo "1600" > /proc/sys/net/ipv4/tcp_keepalive_time
+/bin/echo "0" > /proc/sys/net/ipv4/tcp_window_scaling
+/bin/echo "0" > /proc/sys/net/ipv4/tcp_sack
+--
 
+after this it survives about 20 - 30minutes but not more.
 
-Antony.
+Can someone help me a little more?!
 
--- 
+Thank you
 
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
+David
 
