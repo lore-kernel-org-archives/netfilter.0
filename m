@@ -1,13 +1,12 @@
-From: "Michael P. Soulier" <michael_soulier@mitel.com>
-Subject: Re: preserving fwmarks through KLIPS
-Date: Tue, 11 Jan 2005 15:45:32 -0500
-Message-ID: <1105476332.12167.66.camel@latte.nssg.mitel.com>
-References: <1105393017.12167.24.camel@latte.nssg.mitel.com>
-	<1105447514.9691.9.camel@hubcap.ljm.dom>
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Your linux version .. is unknown for patch-o-matic at runme
+	line 214
+Date: Tue, 11 Jan 2005 12:49:37 -0800
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF567964D@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1105447514.9691.9.camel@hubcap.ljm.dom>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +18,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: mdpeters <michael.peters@lazarusalliance.com>, netfilter@lists.netfilter.org
 
-On Tue, 2005-01-11 at 07:45 -0500, Jason Opperisano wrote:
-> nothing can replace you actually testing this for yourself, but yes--in
-> my experience--MARKs stay with a packet through its entire journey
-> through the stack, regardless of what sort of processing is done to the
-> packet.  a MARK is simply tag associated with a packet, but not part of
-> the packet itself.
+mdpeters wrote:
+> I am attempting to run POM on Fedora Core 2.
+>=20
+> I get this error message "Your linux version .. is unknown for
+> patch-o-matic at runme line 214" and I don't know how to get around
+> it.=20
 
-That being said, I just did some testing, and it would appear that they
-are indeed preserved. 
-
-Thanks,
-Mike
-
--- 
-Michael P. Soulier <michael_soulier@mitel.com>, 613-592-2122 x2522
-6000/6010/60* Development, Mitel Corporation
-"...the word HACK is used as a verb to indicate a massive amount of
-nerd-like effort." -Harley Hahn, A Student's Guide to Unix
-
-
+You need to apply patch-o-matic against a virgin copy of the linux
+kernel, not Redhat/Fedora marked up kernels.=20
 
