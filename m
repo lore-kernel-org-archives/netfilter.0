@@ -1,14 +1,12 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: opening a port..
-Date: 09 Jan 2003 09:40:20 +0530
+From: "John A. Novak" <jnovak@blueshiftinc.com>
+Subject: RE: DMZ trouble!
+Date: Wed, 8 Jan 2003 20:22:32 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042085426.810.1.camel@india>
-References: <1042027958.606.7.camel@nirvana> 
-	<1042029237.4335.2.camel@india>  <1042030327.590.10.camel@nirvana>
+Message-ID: <F635E25A78F69C41B85DC6CB18972A9A474721@kepler.blueshiftinc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1042030327.590.10.camel@nirvana>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,82 +17,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mdew <mdew@mdew.dyndns.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: David Collodel <dave@crawlspaceradio.com>, netfilter@lists.netfilter.org
 
-On Wed, 2003-01-08 at 18:22, mdew wrote:
-> On Thu, 2003-01-09 at 01:33, Dharmendra.T wrote:
-> > 
-> > 
-> > On Wed, 2003-01-08 at 17:42, mdew wrote:
-> > > 
-> > > Hi,
-> > > Just *testing* this out..
-> > > 
-> > > iptables -A INPUT -i eth0 -p tcp --dport 4662 -j ACCEPT
-> > > iptables -A INPUT -i eth0 -p udp --dport 4662 -j ACCEPT
-> > > iptables -A INPUT -i eth1 -p udp --dport 4662 -j ACCEPT
-> > > iptables -A INPUT -i eth1 -p tcp --dport 4662 -j ACCEPT
-> > > iptables -A INPUT -i eth1 -p tcp --sport 4662 -j ACCEPT
-> > > iptables -A INPUT -i eth1 -p udp --sport 4662 -j ACCEPT
-> > > iptables -A INPUT -i eth0 -p udp --sport 4662 -j ACCEPT
-> > > iptables -A INPUT -i eth0 -p tcp --sport 4662 -j ACCEPT
-> > > 
-> > > iptables -A FORWARD -o eth0 -p tcp --dport 4662 -j ACCEPT
-> > > iptables -A FORWARD -o eth1 -p tcp --dport 4662 -j ACCEPT
-> > > iptables -A FORWARD -o eth1 -p udp --dport 4662 -j ACCEPT
-> > > iptables -A FORWARD -o eth0 -p udp --dport 4662 -j ACCEPT
-> > > iptables -A FORWARD -o eth0 -p udp --sport 4662 -j ACCEPT
-> > > iptables -A FORWARD -o eth1 -p udp --sport 4662 -j ACCEPT
-> > > iptables -A FORWARD -o eth1 -p tcp --sport 4662 -j ACCEPT
-> > > iptables -A FORWARD -o eth0 -p tcp --sport 4662 -j ACCEPT
-> > > 
-> > > yet, when i try to telnet to it,
-> > > 
-> > > mdew:~# telnet 127.0.0.1 4662
-> > > Trying 127.0.0.1...
-> > > telnet: Unable to connect to remote host: Connection refused
-> > > 
-> > > Yeah I know I have lots of unnessary rules, but im only testing 'em...it
-> > > just seems a little strange that i cant see 4662 (Edonkey port) on the
-> > > router.
-> > > 
-> > > -mdew
-> > > 
-> > > 
-> > Note:
-> > telnet 127.0.0.1 port
-> > 
-> >  This will not go through any of the interfaces(eth*). You should allow
-> > this through -i lo.
-> > 
-> > Here some how you are getting connected and you are getting the response
-> > connection refused. Probably you are not running the service on the
-> > router!.
-> > 
-> > -- 
-> > Dharmendra.T
-> > Linux Enthu
-> > 
-> ok, telnet from another machine to the router.
-> 
-> telnet 10.0.0.6 4662
-> Trying 10.0.0.6...
-> telnet: Unable to connect to remote host: Connection refused
-> 
-> what "service" should I be running? I simply want 4662 open both ways.
-> 
-> -mdew
-> 
-Install nc and run
- 
-#nc -l -p 4662
+Do you have rules that allow traffic to be forwarded from the LAN to the =
+DMZ and back ?
 
-And then try to connect. Some service should be running on the port else
-you will get the same error message.
+John Novak
 
--- 
-Dharmendra.T
-Linux Enthu
+-----Original Message-----
+From: David Collodel [mailto:dave@crawlspaceradio.com]
+Sent: Wednesday, January 08, 2003 7:43 PM
+To: netfilter@lists.netfilter.org
+Subject: DMZ trouble!
+
+
+Hi,
+
+I've recently been working on a firewall using IPtables to create a
+DMZ/LAN setup.
+
+I have a system with 3 NIC's.=20
+
+eth0 has the "real" static IP's from my ISP. I'm using NAT to translate
+from the IP bound on this NIC to the internal DMZ and LAN hosts.
+eth1 is set to 172.16.12.1 and is used as the DMZ interface. Hosts
+connected to this interface are all 172.16.12.x
+eth2 is set to 172.16.11.1 and is used as the LAN interface.Hosts
+connected here are all 172.16.11.x
+
+Most things seem to be working, I can connect from the LAN to the DMZ
+and to the Internet. I can connect from the DMZ to the Internet, but not
+to the LAN, but already established connections work. Only the ports I
+specify are open from the Internet to the DMZ.
+
+The problem I'm having is this:
+
+When I try to connect to a host in the DMZ from the LAN, it does not
+work when I use the "real" IP address.
+
+An example of the error in the logs is this:
+-----
+IPT INPUT packet died: IN=3Deth1 OUT=3D
+MAC=3D00:10:5a:1b:48:8a:00:10:5a:00:ff:b8:08:00 SRC=3D172.16.11.2
+DST=3D66.92.171.152 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D3514 =
+DF PROTO=3DTCP
+SPT=3D32949 DPT=3D80 WINDOW=3D5440 RES=3D0x00 SYN URGP=3D0
+----
+
+Does anyone have any idea why this might be happening?
+
+Much thanks.
+
+--=20
+David Collodel <dave@crawlspaceradio.com>
+
 
 
