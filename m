@@ -1,12 +1,12 @@
-From: Sagara Wijetunga <sagaralists@yahoo.com>
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
 Subject: RE: Allow active and passive FTP connections
-Date: Mon, 21 Jun 2004 07:56:16 -0700 (PDT)
+Date: Mon, 21 Jun 2004 11:03:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040621145616.43143.qmail@web14716.mail.yahoo.com>
-References: <2E314DE03538984BA5634F12115B3A4E89552A@email1.mitretek.org>
+Message-ID: <2E314DE03538984BA5634F12115B3A4E895673@email1.mitretek.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2E314DE03538984BA5634F12115B3A4E89552A@email1.mitretek.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,8 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: Sagara Wijetunga <sagaralists@yahoo.com>, netfilter@lists.netfilter.org
+
+I see..
+
+Some questions for you:
+
+You are running the IP connection tracker for FTP in the KERNEL or
+MODULE?
+You are running the FTP daemon on port 21?
+You are *NOT* running an (SSL) FTP daemon, correct? (The current
+conntrack module for FTP does _NOT_ support this).
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Sagara
+Wijetunga
+Sent: Monday, June 21, 2004 10:56 AM
 To: netfilter@lists.netfilter.org
+Subject: RE: Allow active and passive FTP connections
 
 --- "Piszcz, Justin Michael"
 <justin.piszcz@mitretek.org> wrote:
@@ -31,38 +49,38 @@ Thanks for your sample firewall.
 
 My server is not connected to a LAN. Therefore, I have
 disabled your LAN related rules. All modifications are
-highlighted with "<<== Sagara".  
+highlighted with "<<=3D=3D Sagara". =20
 
 This is what I have tried:
 
 #!/bin/sh
 
-fw_start() { 
+fw_start() {=20
 #######################################
-# STEP 1 - SET VARIABLES 
+# STEP 1 - SET VARIABLES=20
 #######################################
 # YOUR LOCAL LOOPBACK DEVICE
-LB="lo"
-# YOUR PRIVATE INTERFACE 
-#LAN="eth0"	<<== Sagara
+LB=3D"lo"
+# YOUR PRIVATE INTERFACE=20
+#LAN=3D"eth0"	<<=3D=3D Sagara
 # YOUR PRIVATE LAN IP
-#LIP="192.168.0.253"	<<== Sagara
+#LIP=3D"192.168.0.253"	<<=3D=3D Sagara
 # YOUR LOCAL AREA NETWORK
-#LSAT="192.168.0.0/24"	<<== Sagara
+#LSAT=3D"192.168.0.0/24"	<<=3D=3D Sagara
 # YOUR INTERNET INTERFACE
-#INET="eth1"	<<== Sagara
-INET="eth0"
+#INET=3D"eth1"	<<=3D=3D Sagara
+INET=3D"eth0"
 # THE PATH TO IPTABLES
-#IPTABLES="/usr/sbin/iptables"	<<== Sagara
-IPTABLES="/sbin/iptables"
+#IPTABLES=3D"/usr/sbin/iptables"	<<=3D=3D Sagara
+IPTABLES=3D"/sbin/iptables"
 #######################################
 # STEP 2 - TURN ON IP FORWARDING
 #######################################
-#echo "1" > /proc/sys/net/ipv4/ip_forward <<== Sagara
+#echo "1" > /proc/sys/net/ipv4/ip_forward <<=3D=3D Sagara
 #######################################
 # STEP 3 - FLUSH EXISTING RULES
 #######################################
-$IPTABLES --flush INPUT 
+$IPTABLES --flush INPUT=20
 $IPTABLES --flush OUTPUT
 $IPTABLES --flush FORWARD
 #######################################
@@ -72,9 +90,9 @@ $IPTABLES -P INPUT DROP
 $IPTABLES -P OUTPUT ACCEPT
 $IPTABLES -P FORWARD ACCEPT
 #######################################
-# STEP 5 - CREATE DEFAULT BLOCK CHAIN 
+# STEP 5 - CREATE DEFAULT BLOCK CHAIN=20
 #######################################
-$IPTABLES -N BLOCK 
+$IPTABLES -N BLOCK=20
 $IPTABLES -A BLOCK -j LOG --log-level 3 --log-prefix
 "BLOCK: "
 $IPTABLES -A BLOCK -j DROP
@@ -82,14 +100,14 @@ $IPTABLES -A BLOCK -j DROP
 # STEP 6 - SETUP MASQUERADING
 #######################################
 #$IPTABLES -t nat -A POSTROUTING -o $INET -j
-MASQUERADE	<<== Sagara
+MASQUERADE	<<=3D=3D Sagara
 #######################################
-# STEP 7 - ALLOW LOCAL ENTITIES 
+# STEP 7 - ALLOW LOCAL ENTITIES=20
 #######################################
 # ALLOW LOOPBACK
-$IPTABLES -A INPUT -i $LB -j ACCEPT 
+$IPTABLES -A INPUT -i $LB -j ACCEPT=20
 # ALLOW LOCAL AREA NETWORK
-#$IPTABLES -A INPUT -i $LAN -s $LSAT -j ACCEPT	<<==
+#$IPTABLES -A INPUT -i $LAN -s $LSAT -j ACCEPT	<<=3D=3D
 Sagara
 #######################################
 # STEP 8 - ALLOW SPECIFC TRAFFIC
@@ -109,11 +127,11 @@ ESTABLISHED,RELATED -j ACCEPT
 #######################################
 $IPTABLES -A INPUT -j BLOCK
 #######################################
-} 
+}=20
 
 fw_stop() {
-#IPTABLES="/usr/sbin/iptables"	<<== Sagara
-IPTABLES="/sbin/iptables"
+#IPTABLES=3D"/usr/sbin/iptables"	<<=3D=3D Sagara
+IPTABLES=3D"/sbin/iptables"
 $IPTABLES --flush INPUT
 $IPTABLES --flush OUTPUT
 $IPTABLES --flush FORWARD
@@ -125,7 +143,7 @@ fw_restart() {
   fw_stop
   fw_start
 }
- 
+=20
 case "$1" in
 'start')
   fw_start
@@ -142,22 +160,25 @@ esac
 
 This is the result of passive FTP connect try:
 
-Jun 21 22:56:07 svr1 kernel: BLOCK: IN=eth0 OUT=
-MAC=00:e0:29:34:b3:58:00:e0:29:34:bb:36:08:00
-SRC=[client IP addr] DST=[server IP addr] LEN=60
-TOS=0x00 PREC=0x00 TTL=64 ID=61616 DF PROTO=TCP
-SPT=32936 DPT=64638 WINDOW=5840 RES=0x00 SYN URGP=0
+Jun 21 22:56:07 svr1 kernel: BLOCK: IN=3Deth0 OUT=3D
+MAC=3D00:e0:29:34:b3:58:00:e0:29:34:bb:36:08:00
+SRC=3D[client IP addr] DST=3D[server IP addr] LEN=3D60
+TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D61616 DF PROTO=3DTCP
+SPT=3D32936 DPT=3D64638 WINDOW=3D5840 RES=3D0x00 SYN URGP=3D0
 
-Pls let me know have I made a mistake. 
+Pls let me know have I made a mistake.=20
 
 Kind regards
 Sagara
 
 
 
-		
+	=09
 __________________________________
 Do you Yahoo!?
 Yahoo! Mail - You care about security. So do we.
 http://promotions.yahoo.com/new_mail
+
+
+
 
