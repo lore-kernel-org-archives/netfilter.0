@@ -1,15 +1,13 @@
-From: Pablo Allietti <pablo@lacnic.net>
-Subject: Re: POP3 Forwarding ok or not.
-Date: Wed, 19 Jan 2005 16:29:57 -0300
-Message-ID: <20050119192957.GB17317@omega.lacnic.net.uy>
-References: <20050118195858.GD27505@omega.lacnic.net.uy>
-	<20050118192344.GA8624@bender.817west.com>
-	<1106131612.6185.3.camel@nostromo.bgsecm.com>
+From: Ludo Stellingwerff <ludo@protactive.nl>
+Subject: Re: Does anybody work on supporting SPD matching Netfilter MARKS?
+Date: Wed, 19 Jan 2005 19:56:52 +0100
+Message-ID: <41EEAD74.4030804@protactive.nl>
+References: <41EE01DF.5040707@protactive.nl>
+	<1106145684.4934.32.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1106131612.6185.3.camel@nostromo.bgsecm.com>
+In-Reply-To: <1106145684.4934.32.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,92 +18,89 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Jose Maria Lopez <jkerouac@bgsec.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Wed, Jan 19, 2005 at 03:25:33PM +0100, Jose Maria Lopez wrote:
-> El mar, 18 de 01 de 2005 a las 20:23, Jason Opperisano escribi=C3=B3:
-> > On Tue, Jan 18, 2005 at 04:58:58PM -0300, Pablo Allietti wrote:
-> > > hi people.=20
-> > >=20
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-thanks a lot, all work ok
+Thank for you reaction Jason,
+and sorry about the cross post, you're right, my mistake:(
 
-> > >=20
-> > > i have a question..
-> > >=20
-> > > my net is=20
-> > >=20
-> > >=20
-> > > 		|200.40.228.64/28
-> > > 		|
-> > > 		Firewall FC2 (200.40.229.67)
-> > > 		|	dns midomain.com
-> > > 		|
-> > > 		|192.168.1.0/24
-> > > -------------------------------
-> > >     |
-> > >     |
-> > >     |
-> > > FC2 (pop3) 192.168.1.6
-> > >=20
-> > >=20
-> > > i need to check mail in midomain.com but the pop3 server and mail s=
-erver
-> > > is in 192.168.1.8
-> > >=20
-> > > is that correct to check and send mail?
-> > >=20
-> > > iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --=
-dport
-> > > 110 -j ACCEPT
-> > > iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --=
-dport =20
-> > > 25 -j ACCEPT
-> >=20
-> > those are correct for your filter rules.  do you already have the NAT
-> > setup for this as well?
-> >=20
-> >   iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 110 \
-> >     -j DNAT --to-destination 192.168.1.6
-> >=20
-> >   iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 \
-> >     -j DNAT --to-destination 192.168.1.6
-> >=20
-> > -j
-> >=20
-> > --
-> > "This has purple stuff inside - purple is a fruit."
-> >         --The Simpsons
->=20
-> And of course also the RELATED and ESTABLISHED rules, or the rules
-> for the traffic going out of the machines.
->=20
-> --=20
-> Jose Maria Lopez Hernandez
-> Director Tecnico de bgSEC
-> jkerouac@bgsec.com
-> bgSEC Seguridad y Consultoria de Sistemas Informaticos
-> http://www.bgsec.com
-> ESPA=C3=91A
->=20
-> The only people for me are the mad ones -- the ones who are mad to live=
-,
-> mad to talk, mad to be saved, desirous of everything at the same time,
-> the ones who never yawn or say a commonplace thing, but burn, burn, bur=
-n
-> like fabulous yellow Roman candles.
->                 -- Jack Kerouac, "On the Road"
->=20
->=20
----end quoted text---
+The question I raised was not about the filtering side, but about the
+policy match. What NetBSD is capable of is to use it's packetfilter
+for deciding ipsec policies, by using a "tag".
 
---=20
+In Linux terms this would mean that by using a firewall mark you could
+use the netfilter matching structure instead of the SPD internal matches.
 
+spdadd mark 1 -P out esp/transport//require
 
-Pablo Allietti
-LACNIC
---------------
+This would read: All packages marked with firewall mark 1 should be
+encrypted and send on a transport mode ipsec connection.
 
+Does anyone know some sort of implementation doing this?
+
+Greetings,
+Ludo.
+
+Jason Opperisano wrote:
+
+| On Wed, 2005-01-19 at 01:44, Ludo Stellingwerff wrote:
+|
+|> -----BEGIN PGP SIGNED MESSAGE----- Hash: SHA1
+|>
+|> Hi All,
+|>
+|> I was wondering if someone has been working on and/or has a patch
+|>  which implement's the use of Netfilter Marks for ipsec spd
+|> matching under the linux kernel 2.6. This would be similar to the
+|>  NetBSD "tagged" option of 'setkey':
+|>
+|> spdadd tagged "ssh" -P out esp/transport//require
+|>
+|> But then something like:
+|>
+|> ~     spdadd tagged 1 -P out esp/transport//require or  spdadd
+|> mark 1 -P out esp/transport//require
+|
+|
+| this may not be "good enough" for what you need--but why not just
+| MARK the ESP packets in mangle PREROUTING, for later filtering:
+|
+| iptables -t mangle -A PREROUTING -p 50 -s $VPN_PEER_1 \ -j MARK
+| --set-mark 1
+|
+| iptables -A [INPUT|FORWARD] -m mark --mark 1 [...] -j ACCEPT
+|
+| also--have a look at the "policy" match in POM, as i *think* it
+| will do what you want.
+|
+| and finally--please don't cross-post--it's poor form.
+|
+| -j
+|
+| -- "Let us all bask in television's warm glowing warming glow."
+| --The Simpsons
+|
+|
+|
+
+- --
+Ludo Stellingwerff
+
+V&S B.V. The Netherlands
+ProTactive firewall solution.
+Tel: +31 172 416116
+Fax: +31 172 416124
+
+site: www.protactive.nl
+demo: http://www.protactive.nl:81/netview.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFB7q1zOF3sCpZ+AJgRAjtqAKCVQ1cmcsFauxen7GUGtint/K2atgCfY6T9
+I+FYowE8/BgFYvvKMD/u7fA=
+=cMnB
+-----END PGP SIGNATURE-----
 
