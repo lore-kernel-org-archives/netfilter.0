@@ -1,8 +1,8 @@
-From: "Matthew TenHulzen" <mlt@willconsult.com>
-Subject: exclude NAT to multiple networks
-Date: Fri, 15 Nov 2002 17:20:54 -0600
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: ..anyone else seen this?: https://sourceforge.net/  down
+Date: Sat, 16 Nov 2002 09:43:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LMEMIBPDHPIPKJNOIJNGEELGDIAA.mlt@willconsult.com>
+Message-ID: <20021116094358.0af26246.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,20 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have the following NAT line that excludes NAT'ing to the 192.168.250.0/24
-network.
+..anyone else seen this?: https://sourceforge.net/  down
 
-$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -d ! 192.168.250.0/24 -j
-SNAT --to-source $INET_IP
+..reads:"We're Sorry.
+The SF.net domain is temporarily pointing at this maintenance page.
+Please access the SourceForge.net site at https://sourceforge.net -- you
+will be redirected there in 10 seconds."
 
-I need to exclude NAT for additional networks, but cannot figure out how to
-do it.  I have tried duplicating this line, but it doesn't work.  I also
-cannot figure out how to specify multiple subnets in the same line.
+..well, I did yesterday this time too.
 
 
-Does anyone know how to exclude traffic to multiple subnets from being
-NAT'ed??
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-Matt
 
 
