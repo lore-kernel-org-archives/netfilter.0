@@ -1,13 +1,12 @@
-From: David <dmarchan@supelec-rennes.fr>
-Subject: Re: Incomming packets
-Date: Tue, 11 Mar 2003 09:01:51 +0100
+From: "hare ram" <hareram@sol.net.in>
+Subject: Problem with ULOG
+Date: Tue, 11 Mar 2003 16:36:40 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030311090151.2d1a9c70.dmarchan@supelec-rennes.fr>
-References: <20030311022151.022CCBFD2@webserver.emelytours.com.do>
+Message-ID: <019501c2e7be$4b5bb8e0$13fcc5cb@Housecall>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030311022151.022CCBFD2@webserver.emelytours.com.do>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Le Mon, 10 Mar 2003 22:21:51 -0400 (AST)
-serguey.forcade@emelytours.com.do a =E9crit:
+Hi all
 
-> Hello:
->=20
->     I'm trying to set a rule in my iptables configuration to accept incom=
-ming connections from an specific host, (ie. iptables -A input -i eth0 -p t=
-cp --dport 21 -s test.host -j ACCEPT ) and I keep getting the error:
->=20
-> iptables v1.2.6a: host/network `test.host' not found
-> Try `iptables -h' or 'iptables --help' for more information.
->=20
-> Does anyone know about it?
->=20
-> Thanks
->=20
+Iam setting up a Bridge in my campus
+and try to log using ULOG to mysql
+
+Bridge setup working fine, but iam not able to Log using Ulog to mysql
+
+when i try to use this script iam able to log with interface oob_in oob_out
+called in database br0
+
+$IPTABLES  -F
+$IPTABLES -F -t nat
+$IPTABLES -F -t filter
+
+$IPTABLES -I INPUT -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
+
+$IPTABLES -I OUTPUT -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "EXT_OUT"
+
+$IPTABLES -I FORWARD -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "FORWARD"
 
 
-I'm quite a newbie but I really think it's a dns problem. I had this proble=
-m and I, then, realised that my "dns provider" had filtered port 53...
+----
 
---=20
-Guitou
+when i use
+
+$IPTABLES  -F
+$IPTABLES -F -t nat
+$IPTABLES -F -t filter
+
+$IPTABLES -I INPUT -i eth1 -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
+
+$IPTABLES -I OUTPUT -o eth1 -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "EXT_OUT"
+
+$IPTABLES -I INPUT -i eth0 -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "INT_IN"
+
+$IPTABLES -I OUTPUT -o eth0 -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "INT_OUT"
+
+$IPTABLES -I FORWARD -j ULOG --ulog-nlgroup 1 --ulog-cprange 48 \
+        --ulog-qthreshold 50 --ulog-prefix "FORWARD"
+
+iam not able to see the interface traffic at all, its only capturing the br0
+interface only
+
+any help will be greate
+
+hare
+
 
