@@ -1,13 +1,11 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: ip_conntrack_lock not readlocked? anyone?
-Date: 16 Oct 2002 23:33:05 +0200
+From: <smalik@vistawiz.com>
+Subject: ip_conntrack_lock not readlocked ? anyone ....
+Date: Tue, 15 Oct 2002 12:38:09 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1034803985.7595.230.camel@tux>
-References: <F2421sZV4CllPF6p0V700001255@hotmail.com>
+Message-ID: <1822.192.168.200.200.1034699889.squirrel@w3.vistawiz.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F2421sZV4CllPF6p0V700001255@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +16,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: hallian hallian <hallian@hotmail.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wed, 2002-10-16 at 22:18, hallian hallian wrote:
->hello -
-> 
->I was wondering if anyone has seen this error/warning message before?
->What does it mean?  Any idea? 
->
->Oct 13 11:50:18 f kernel: ASSERT ip_nat_core.c:739
->&ip_conntrack_lock_Rsmp_4193d6ac readlocked
->Oct 13 11:50:18 f kernel: ASSERT ip_conntrack_core.c:91
->&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+hello everyone -
 
-This is just a small bug in the debugging :) it's not a code-bug so it's
-nothing to worry about. I've fixed this (I hope) and the patch will be
-in kernel 2.4.20. You can also get the fix from a patch-o-matic snapshot
-or cvs.
+I was wondering if someone has seen this error message before.  Prt what
+does is mean? I am running iptables 1.2.7.
 
-The other option is to turn off "Network packet filtering debugging" in
-your kernelconfiguration and rebuild your kernel.
+Oct 13 11:50:18 fire kernel: ASSERT ip_nat_core.c:739
+&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:91
+&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:743 &ip_conntrack_lock
+not readlocked
+Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:977
+&ip_conntrack_lock not readlocked
+Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:840 &ip_conntrack_lock
+not readlocked
+Oct 13 11:50:18 fire kernel: ASSERT ip_nat_core.c:739
+&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+Oct 13 11:50:18 fire kernel: ASSERT ip_conntrack_core.c:91
+&ip_conntrack_lock_Rsmp_4193d6ac readlocked
+Oct 13 11:50:18 fire kernel: ASSERT: ip_nat_core.c:743 &ip_conntrack_lock
+not readlocked
+Oct 13 11:50:18 firekernel: ASSERT: ip_nat_core.c:840 &ip_conntrack_lock
+not readlocked
 
--- 
-/Martin
+thanks
+hallian
 
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+
 
