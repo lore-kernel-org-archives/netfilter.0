@@ -1,13 +1,13 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: web server in DMZ
-Date: Tue, 28 Sep 2004 06:40:32 -0400
+From: Florian Boelstler <euphoria@arcor.de>
+Subject: Re: how to log dropped packet
+Date: Tue, 28 Sep 2004 13:50:26 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096368031.2050.13.camel@localhost>
-References: <web-6416739@infinito.it>
+Message-ID: <41595002.70706@arcor.de>
+References: <web-6413785@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-6416739@infinito.it>
+In-Reply-To: <web-6413785@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +18,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: hamals@infinito.it
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 2004-09-28 at 06:21, hamals@infinito.it wrote:
-> I have a big problem
-> 
-> I have a web server in my DMZ, I reach it with his 
-> internal IP 192.168.1.10 from my internal LAN, but I can't 
-> reach them with his public IP.
-> 
-> I did a DNAT and from internet everythings is ok, my web 
-> server is working in right by DNAT.
-> 
-> Where is the problem?
-<snip>
-There could be several causes.  Did you remember to bind the public
-address to the public firewall NIC so that it responds to ARP requests?
+What I usually do is:
 
-For example, if the firewall is at 1.1.1.2 and you want the web server
-to be at 1.1.1.3 then do
+---------------------------------------------------------------------
+#!/bin/sh
 
-ip add address 1.1.1.3/24(or whatever the mask bit count is) dev eth0(or
-whatever the device name is) brd +
+# Some handy variables
 
-You can find a short slide show on using the ip command at
-http://iscs.sourceforge.net 
+IPTABLES=`which iptables`
+d_HTTP="http,https"
+p_high="1024:65535"
+EXT="wlan0"
 
-Good luck - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+
+# DROP & LOG chain
+
+$IPTABLES -N DROPnLOG
+$IPTABLES -A DROPnLOG -p ICMP -j ULOG --ulog-nlgroup 1 --ulog-prefix
+"DROP-ICMP "
+$IPTABLES -A DROPnLOG -p TCP -j ULOG --ulog-nlgroup 1 --ulog-prefix
+"DROP-TCP "
+$IPTABLES -A DROPnLOG -p UDP -j ULOG --ulog-nlgroup 1 --ulog-prefix
+"DROP-UDP "
+
+
+# Default rule for established connections
+
+$IPTABLES -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+# Put several rules to allow outgoing traffic here. E.g. for web sites:
+
+$IPTABLES -A OUTPUT -o $EXT -m state --state NEW -p TCP --sport $p_high
+-m multiport --destination-ports $d_HTTP -j ACCEPT
+
+
+# Wipe anything not matching any of the rulesets above
+
+$IPTABLES -A INPUT -j DROPnLOG
+$IPTABLES -A FORWARD -j DROPnLOG
+$IPTABLES -A OUTPUT -j DROPnLOG
+
+---------------------------------------------------------------------
+
+
+The script above requires that you're kernel is aware of the ULOG target.
+This allows to log iptable's output to another destination (i.e. file)
+than syslog.
+You will need an appropriate ULOG configuration file.
+
+The output will look like this:
+Jan  1 01:00:00 beamstation DROP-UDP  IN= OUT=wlan0 MAC=
+SRC=192.168.2.100 DST=192.168.2.255 LEN=268 TOS=00 PREC=0x00 TTL=64 ID=8
+DF PROTO=UDP SPT=138 DPT=138 LEN=248
+
+
+Good luck,
+
+   Florian
+
+
+
+
+
 
 
