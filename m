@@ -1,8 +1,8 @@
 From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: what do the contents of /proc/net/ip_tables_names mean?
-Date: Thu, 24 Oct 2002 14:44:22 -0400 (EDT)
+Subject: curious about /etc/init.d/iptables script in RH 8.0
+Date: Thu, 24 Oct 2002 15:15:24 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210241437140.1620-100000@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0210241501210.2123-100000@localhost.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,27 +19,76 @@ Content-Transfer-Encoding: 7bit
 To: netfilter mailing list <netfilter@lists.netfilter.org>
 
 
-  in looking through the system script for iptables under red hat 8.0,
-i notice the occasional reference to the file 
-/proc/net/ip_tables_names, which contains, one per line, the names
-of one of more of the possible netfilter tables (filter, nat
-and/or mangle).
+  ... and here's why i was asking about the meaning of the contents
+of /proc/net/ip_tables_names.
 
-  what does it mean for a table to have its name in this file?
-first, i notice that, if i have the modules loaded for filter and
-nat, then the file contents will have the lines "filter" and "nat",
-even though i have not added any rules to the nat table.  just
-the existence of the loaded module seems to be enough to have
-a table name in that file.  (it's pretty clear that, if i'm
-using loadable modules and add a rule to a particular table,
-it's module will be loaded and its name will be added to that
-file.)
+  the RH 8.0 iptables admin script has the following excerpt for
+completely clearing the rule set before reloading from the file
+/etc/sysconfig/iptables:
 
-  so then what happens if i recompile the kernel and build in
-support for all three tables directly?  will all three table
-names show up in that file, even if i have no ruleset entries
-for a given table?  just curious since this leads into my next
-question that's based on the answer to this one. :-)
+
+start() {
+	# don't do squat if we don't have the config file
+	if [ -f $IPTABLES_CONFIG ]; then
+	    # If we don't clear these first, we might be adding to
+	    #  pre-existing rules.
+--- curious stuff starts here ---
+	    chains=`cat /proc/net/ip_tables_names 2>/dev/null`
+	    echo -n $"Flushing all current rules and user defined chains:"
+	    let ret=0
+            for i in $chains; do iptables -t $i -F; let ret+=$?; done
+	    iptables -F
+            let ret+=$?
+            if [ $ret -eq 0 ]; then
+              success
+            else
+              failure
+            fi
+            echo
+            echo -n $"Clearing all current rules and user defined chains:"
+            let ret=0
+            for i in $chains; do iptables -t $i -X; let ret+=$?; done
+            iptables -X
+--- and ends here ---
+
+
+  the obvious purpose of this code is to clean the tables and chains
+totally before reloading, but it does this in a curious way.
+
+  first, the script grabs the list of currently-used tables from
+the file /proc/net/ip_tables_names, which is why i asked about this
+file earlier -- the implication is that, given the possible tables
+filter, nat and mangle, only those that are listed in that file
+can possibly be in use at the moment.  fair enough.  but it
+would make more sense to assign this list to a variable like
+"tables", not "chains", wouldn't you think? :-)  just being
+pedantic.
+
+  the next loop:
+            
+    for i in $chains; do iptables -t $i -F; let ret+=$?; done
+            
+clearly flushes all of the active/loaded tables, which will
+just as clearly flush all chains, both built-in and user-defined.
+again, fair enough, but what's the purpose of the immediately
+subsequent
+
+    iptables -F
+
+by default, this will flush the filter table, but isn't that
+already empty from the previous statement?  not a mistake, just
+redundant, no?
+
+  the same redundancy seems to exist in the next loop that deletes
+the user-defined chains:  the loop really gets rid of all user-defined
+chains in each table one at a time, and follows that up with
+
+    iptables -X
+
+apparently just to give the "filter" table one last good kick
+while it's down or something.  is there something more to this
+than meets the eye?
+
 
 rday
 
