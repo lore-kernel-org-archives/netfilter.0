@@ -1,12 +1,12 @@
-From: "Jin Gu, Kim" <lilia21@postech.ac.kr>
-Subject: How can I test my rule set?
-Date: Thu, 30 Oct 2003 09:43:54 +0900
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: mysql-iptables
+Date: Thu, 30 Oct 2003 12:14:41 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310300043.h9U0hiw02135@smtp.postech.ac.kr>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AC8D@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0017_01C39ECA.56035FF0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,85 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Netfilter Mailling List (E-mail)" <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+For those of you who were/are interested in the script I'm working =
+called mysql-iptables. I have released a GPL version on Source Forge =
+http://sourceforge.net/projects/mysql-iptables/.
 
-------=_NextPart_000_0017_01C39ECA.56035FF0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+This script gathers any chain you specify and stores the rules into a =
+MySQL database of the same chain name. It increments the byte count so =
+you can generate graphs in MRTG/RRDtool or whatever you like using =
+retrieval commands like you do with iptables itself.. eg.
 
-Hi all.
- 
-I made my own rule set, but i don't know how to test it.
- 
-Should I launch some applications and attempt to log in my trusted network
-one by one?
- 
-I guess there will be other methods...
- 
- 
- 
-"Netfilter Hacking HOWTO" seems to introduce some useful tools e.g., gen_ip,
-rcv_ip..
- 
-But I can't understand how to use them.
- 
-If you know how to handle them or test, would you show me the way?
- 
+mysql-iptables -t MRTG -s 192.168.0.1 -p tcp --sport 80
 
-------=_NextPart_000_0017_01C39ECA.56035FF0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+this will return the total byte value for this rule.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT size=3D2>Hi =
-all.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT size=3D2>I made&nbsp;my own =
-rule set,=20
-but i don't know how to test it.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT size=3D2>Should I launch =
-some=20
-applications and attempt to log in my trusted network one by=20
-one?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT size=3D2>I guess there will=20
-be&nbsp;other methods...</FONT></SPAN></DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT size=3D2>"Netfilter Hacking=20
-HOWTO"&nbsp;seems to introduce some useful tools e.g., gen_ip<SPAN=20
-class=3D859454100-30102003>, rcv_ip.</SPAN>.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT size=3D2>But I can't =
-understand how to=20
-use them.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT size=3D2>If you know how to =
-handle them=20
-or test, would you show me the way?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D859203604-29102003><FONT=20
-size=3D2></FONT></SPAN>&nbsp;</DIV></DIV></BODY></HTML>
+a crontab updates the database like so:
 
-------=_NextPart_000_0017_01C39ECA.56035FF0--
+*/5 * * * * root mysql-iptables --updatedb
+*/5 * * * * root mysql-iptables -t HOSTS --updatedb
 
+Any more questions please forward them to the forums... (once I get the =
+rest up and running ;))
+
+
+Thanks,
+____________________________________________
+George Vieira
 
