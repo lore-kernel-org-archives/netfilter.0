@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Packet dumping or mirroring
-Date: Wed, 18 Feb 2004 21:53:40 +0000
+From: archi@archi.szn.pl
+Subject: redirection in local private network problem
+Date: Wed, 18 Feb 2004 23:38:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402182153.40283.Antony@Soft-Solutions.co.uk>
-References: <20040218135436.309837c7@mgalepc.utilitran.com>
+Message-ID: <1077143903.4033e95f5366f@archi.szn.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040218135436.309837c7@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +18,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 18 February 2004 8:54 pm, Michael Gale wrote:
 
-> with traffic that is faster then 100MB HD.
->
-> So anything 10MB FD and slower is ok, but anything over that limit ntop can
+Hello,
 
-> Solution 1:
-> First you create a "tmpfs" .. for example in your NTOP home directory call
-> it tmp (/home/ntop/tmp). Now make this directory a RAM drive that gets
-> mount everytime we boot up, about 50MB (maybe).
+thanx Antony Stone :)
 
-If your problem is not being able to keep up with >10Mbps FD or 100Mbps HD, 
-then 50Mbytes is going to fill up pretty quickly...
+I think my question was wrong or I don't understand the help in Ho-TO ...
 
-1. If you capture full packets, assume network is running at 50Mbps on 
-average; that's 6.25Mbytes per second - your ramdisk fills up in 8 seconds.
+Let me again...
 
-2. If you just capture headers, assume network is again running at 50Mbps, 
-with 1500 byte packets one way and empty packets (headers only) the other, 
-also assume headers are 48 bytes.   50Mbps / (1548 x 8) = 4038 packets / sec.   
-4038 x 48 = 190kbytes / sec.   Your ramdisk now lasts for 258 seconds (or a 
-bit more than 4 minutes).
+I want to loop information in private network with IPtables. A host in local 
+network must get through public IP to another host in the same local network. 
+This is required to get WWW portal information from a specified internal host 
+in the same way from local and external (public) network.
 
-Of course, if your network traffic is not running at 50Mbps then your ramdisk 
-will last longer, but then ntop would have been able to keep up on its own 
-anyway....
+I know how to do this from public network:
 
-Regards,
+# iptables -t nat -A PREROUTING -d 1.2.3.4 -p tcp -m tcp --dport 1025 -j DNAT -
+-to-destination 192.168.1.250:80
 
-Antony.
+But I tried many combinations to do this for local network and I couldn't do 
+this. The comunication shud be like this:
+- a computer in local network e.g. 192.168.1.10 by WWW shoud get through 
+1.2.3.4:1025 and shoud be transfered to 192.168.1.250:80
 
--- 
-If builders made buildings the way programmers write programs, then the first 
-woodpecker to come along would destroy civilisation.
+           (router with NAT: eth0:192.168.1.1 , eth1:1.2.3.4)
+              > 1.2.3.4:1025
+             /              \
+            /                \
+192.168.1.10                  >192.168.1.250:80
+(some host in LAN)             (WWW portal serwer)
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+In "10. Destination NAT Onto the Same Network" of HOWTO in second way (as I 
+understood) it is only the exchange of the source of IP address to a private 
+network. But this rule don't transfer comunication to local destination. Am I 
+right?
+
+Please help me with this problem ...
+
+Archi
 
