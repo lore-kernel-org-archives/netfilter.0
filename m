@@ -1,14 +1,12 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Iptables Forwarding Vnc Connection
-Date: 17 Feb 2003 10:58:09 +0200
+From: Eugene Joubert <eugenej@centratel.co.za>
+Subject: RE: newbie problem
+Date: Mon, 17 Feb 2003 10:49:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045472289.18829.20.camel@rayw.knowledgefactory.co.za>
-References: <3E4D7BE7.6010008@cogeco.ca>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <B848917C9D07D71199C5005004D778B8017B59@TELECOMS04>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-HpehKUSuoeVjF0g6iO88"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2D661.6AF46AD0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E4D7BE7.6010008@cogeco.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +16,152 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: 'Chris Barnes' <runtimeerror@bigpond.com>, Netfilter <netfilter@lists.netfilter.org>
 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
---=-HpehKUSuoeVjF0g6iO88
+------_=_NextPart_001_01C2D661.6AF46AD0
 Content-Type: text/plain
+
+Is your webserver on your firewall?
+
+Also your rule for port 80....you're source port is wrong. Remember if I
+were to access your webpage on your server I will be coming in with a source
+port that my OS has given me. So instead of source port change it to
+destination port cause that is were you request is going?
+
+Also I would suggest moving your webserver to another server behind your
+firewall.
+Just my 5 cents.
+
+PS:
+You could also set your OUTPUT Policy to default ACCEPT, but if your really
+paranoid then just make it DROP
+
+
+
+-----Original Message-----
+From: Chris Barnes [mailto:runtimeerror@bigpond.com] 
+Sent: 17 02 2003 09:43 AM
+To: Netfilter
+Subject: newbie problem
+
+
+hi people i'm new to the list.
+
+anyway, I have a very simple firewall on a web server. I want to deny access
+to everything except the web server (port 80)
+
+i have set the poilcy on all chains to drop and i have added a rule to the
+input chain which says
+
+iptables -A INPUT -p tcp --sport 80 -j ACCEPT
+
+i've done it like this because the web server has 2 interfaces (eth0 and
+eth1) which i would like to have access to the server (eth0 is local
+10.3.2.0/24 and eth1 is external)
+
+i also made a rule for output
+
+iptables -A OUTPUT -p tcp -j ACCEPT
+
+the problem is that nothing can get to the web server...the packets are
+being dropped...i checked the counters and none of the rules counted any
+packets or bytes so the packets are being dropped before the rules.
+
+what am i doing wrong or what is a better way to do this?
+
+thanks heaps for your help.
+
+
+
+------_=_NextPart_001_01C2D661.6AF46AD0
+Content-Type: text/html
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2003-02-15 at 01:29, Nathanael Morrison wrote:
-> Hi,
->=20
-> I currently have several computers behind a linux gateway, one of which=20
-> is my personal computer. I often want to access my desktop from campus=20
-> using KDE's remote desktop feature. At the moment I forward any=20
-> connections to port 5900 to my pc. This works but then I thought,=20
-> wouldn't it be nice if I could to this securely with an ssh tunnel=20
-> Correct me if I'm wrong but, I think the connection gets tunneled=20
-> through ssh, and a connection is made locally (on the gateway) to port=20
-> 5900. Using iptables, is there a way to forward a locally generated=20
-> connection to another computer?
->=20
-Yes, you use PREROUTING and DNAT.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>RE: newbie problem</TITLE>
+</HEAD>
+<BODY>
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 22 -s 192.168.0.1
--j DNAT --to 192.168.0.100:5900
+<P><FONT SIZE=3D2>Is your webserver on your firewall?</FONT>
+</P>
 
-Replace ips and ports as needed ...
+<P><FONT SIZE=3D2>Also your rule for port 80....you're source port is =
+wrong. Remember if I were to access your webpage on your server I will =
+be coming in with a source port that my OS has given me. So instead of =
+source port change it to destination port cause that is were you =
+request is going?</FONT></P>
 
-You possibly need a FORWARD rule to forward the traffic once the
-destination ip has changed.
+<P><FONT SIZE=3D2>Also I would suggest moving your webserver to another =
+server behind your firewall.</FONT>
+<BR><FONT SIZE=3D2>Just my 5 cents.</FONT>
+</P>
 
-> Your help would be greatly appreciated,
->=20
-> Nathanael Morrison
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
+<P><FONT SIZE=3D2>PS:</FONT>
+<BR><FONT SIZE=3D2>You could also set your OUTPUT Policy to default =
+ACCEPT, but if your really paranoid then just make it DROP</FONT>
+</P>
+<BR>
+<BR>
 
---=-HpehKUSuoeVjF0g6iO88
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+<P><FONT SIZE=3D2>-----Original Message-----</FONT>
+<BR><FONT SIZE=3D2>From: Chris Barnes [<A =
+HREF=3D"mailto:runtimeerror@bigpond.com">mailto:runtimeerror@bigpond.com=
+</A>] </FONT>
+<BR><FONT SIZE=3D2>Sent: 17 02 2003 09:43 AM</FONT>
+<BR><FONT SIZE=3D2>To: Netfilter</FONT>
+<BR><FONT SIZE=3D2>Subject: newbie problem</FONT>
+</P>
+<BR>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+<P><FONT SIZE=3D2>hi people i'm new to the list.</FONT>
+</P>
 
-iD8DBQA+UKQgh1fuR/Bv+ygRAgu1AJ9IQy9xTbM4ZutJuqMgg4ka9R57BACeMw/n
-egC13YPUJ5p1hqjLLMEWveY=
-=FhIF
------END PGP SIGNATURE-----
+<P><FONT SIZE=3D2>anyway, I have a very simple firewall on a web =
+server. I want to deny access to everything except the web server (port =
+80)</FONT></P>
 
---=-HpehKUSuoeVjF0g6iO88--
+<P><FONT SIZE=3D2>i have set the poilcy on all chains to drop and i =
+have added a rule to the input chain which says</FONT>
+</P>
 
+<P><FONT SIZE=3D2>iptables -A INPUT -p tcp --sport 80 -j ACCEPT</FONT>
+</P>
+
+<P><FONT SIZE=3D2>i've done it like this because the web server has 2 =
+interfaces (eth0 and</FONT>
+<BR><FONT SIZE=3D2>eth1) which i would like to have access to the =
+server (eth0 is local 10.3.2.0/24 and eth1 is external)</FONT>
+</P>
+
+<P><FONT SIZE=3D2>i also made a rule for output</FONT>
+</P>
+
+<P><FONT SIZE=3D2>iptables -A OUTPUT -p tcp -j ACCEPT</FONT>
+</P>
+
+<P><FONT SIZE=3D2>the problem is that nothing can get to the web =
+server...the packets are being dropped...i checked the counters and =
+none of the rules counted any packets or bytes so the packets are being =
+dropped before the rules.</FONT></P>
+
+<P><FONT SIZE=3D2>what am i doing wrong or what is a better way to do =
+this?</FONT>
+</P>
+
+<P><FONT SIZE=3D2>thanks heaps for your help.</FONT>
+</P>
+<BR>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2D661.6AF46AD0--
 
