@@ -1,15 +1,14 @@
-From: Cody Harris <hchs@ns.sympatico.ca>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Not forwarding?
-Date: Sun, 28 Mar 2004 17:07:33 -0400
+Date: Sun, 28 Mar 2004 22:09:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040328170733.23247779@darna.vectec.net>
-References: <20040328155231.32b07799@darna.vectec.net>
-	<200403282143.47746.lists@edeca.net>
-	<200403282154.17071.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403282209.16455.Antony@Soft-Solutions.co.uk>
+References: <20040328155231.32b07799@darna.vectec.net> <200403282148.46815.Antony@Soft-Solutions.co.uk> <20040328165948.66bef4ef@darna.vectec.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403282154.17071.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040328165948.66bef4ef@darna.vectec.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,88 +21,48 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I rewrote the rules following your suggestions. It still doesn't work:
+On Sunday 28 March 2004 9:59 pm, Cody Harris wrote:
 
-Chain INPUT (policy ACCEPT 300 packets, 77689 bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:10000
-    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:631
-    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:http
-    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:smtp
-    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:ftp
-    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp echo-reply
-    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp destination-unreachable
-    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp redirect
-    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp echo-request
-    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp time-exceeded
-    0     0 DROP       icmp --  eth0   any     anywhere             anywhere
-
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 ACCEPT     all  --  eth1   any     anywhere             anywhere
-    0     0 ACCEPT     icmp --  any    any     anywhere             anywhere           icmp echo-reply
-    0     0 ACCEPT     icmp --  any    any     anywhere             anywhere           icmp destination-unreachable
-    0     0 ACCEPT     icmp --  any    any     anywhere             anywhere           icmp redirect
-    0     0 ACCEPT     icmp --  any    any     anywhere             anywhere           icmp echo-request
-    0     0 ACCEPT     icmp --  any    any     anywhere             anywhere           icmp time-exceeded
-    0     0 ACCEPT     tcp  --  any    any     anywhere             192.168.0.2        tcp dpt:ssh state RELATED,ESTABLISHED
-
-Chain OUTPUT (policy ACCEPT 301 packets, 66019 bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-
-On Sun, 28 Mar 2004 21:54:17 +0100,
-Someone named Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-
-> On Sunday 28 March 2004 9:43 pm, David Cannings wrote:
-> 
-> > On Sunday 28 March 2004 20:52, Cody Harris wrote:
-> > > This is my firewall setup:
-> > > Chain FORWARD (policy ACCEPT)
-> > > target     prot opt source               destination
-> > > ACCEPT     all  --  anywhere             anywhere
-> > > ACCEPT     icmp --  anywhere             anywhere           icmp
-> > > echo-reply ACCEPT     icmp --  anywhere             anywhere
-> > > icmp destination-unreachable ACCEPT     icmp --  anywhere
-> > > anywhere           icmp redirect ACCEPT     icmp --  anywhere
-> > >   anywhere           icmp echo-request ACCEPT     icmp --  anywhere
-> > >         anywhere           icmp time-exceeded ACCEPT     tcp  --
-> > > anywhere             192.168.0.2        tcp dpt:ssh
-> > > We have noticed that ssh isn't getting forwarded. What's wrong?
+> On Sun, 28 Mar 2004 21:48:46 Antony Stone wrote:
 > >
-> > What about the replies from SSH which will come from source port 22?
-> > Either add a rule to explicitly allow from sport ssh or add an
-> > ESTABLISHED/RELATED rule in there.
-> 
-> That might be covered by the first rule:
-> 
-> > > ACCEPT     all  --  anywhere             anywhere
-> 
-> We won't know until we see the output of a listing with -v to show us the 
-> interfaces too.
-> 
-> However your point about there being no ESTABLISHED,RELATED rule is a good one 
-> - it suggests that netfilter is not being used statefully, which means it is 
-> very difficult to make the system (a) work and (b) secure at the same time.
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> Wanted: telepath.   You know where to apply.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+> > 1. Is any other protocol being forwarded correctly?
+>
+> I'm only forwarding tcp, i don't know what the deal is with ICMP.
 
+Yes, I meant any protocol like HTTP, SMTP, POP3....?
+
+Another way of wording my question: "Is SSH failing where other things work, 
+or is SSH failing the same as everything else?"
+
+> > 2. What does "cat /proc/sys/net/ipv4/ip_forward" return?
+>
+> 1
+
+That's good.
+
+> > 3. What do you mean by "properly"?   Does ssh work at all?  Sometimes?  
+> > From some machines?   Only for a certain time, then stops?   What?
+>
+> It logs into my firewall. We've tested that by creating "phoneyuser" on the
+> firewall and logging in as that.
+
+So what's the answer to question 5?
+
+> > 4. Sorry for the way my mailer has mangled your rules, however please
+> > post the output from "iptables -L FORWARD -nvx" (the v is important as it
+> > shows the interface data which is not in the standard listing output).
+> >
+> > 5. How are you testing the setup?
+
+Regards,
+
+Antony.
 
 -- 
-+------------------+-----------------------------+
-| Cody Harris      | --------------------------- |
-| ---------------- | --------------------------- |
-+------------------+-------+---------------------+---+
-| *Sigh*. No key.                                    |
-+----------------------------------------------------+
+The difference between theory and practice is that in theory there is no 
+difference, whereas in practice there is.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
