@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: HELP : How to group IP addresses by refering to them as a single name ?
-Date: Thu, 19 Sep 2002 22:55:41 -0400
+Subject: Re: IPTBLE rule for Slapper" Linux Worm
+Date: Fri, 20 Sep 2002 00:44:24 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209192255.41959.netfilter@newkirk.us>
-References: <20020919180021.80821.qmail@web40206.mail.yahoo.com> <20020919193311.UPJU287.mta02-svc.ntlworld.com@there>
+Message-ID: <200209200044.24379.netfilter@newkirk.us>
+References: <00cf01c26051$9a2a5c00$0200000a@ramasamy>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020919193311.UPJU287.mta02-svc.ntlworld.com@there>
+In-Reply-To: <00cf01c26051$9a2a5c00$0200000a@ramasamy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,55 +21,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 19 September 2002 03:33 pm, Antony Stone wrote:
-> On Thursday 19 September 2002 7:00 pm, Alok Shukla wrote:
-> > Let me say if i am able to sort out the lab in the
-> > accordance that i start my ip settings of lab2
-> >  like 192.168.9.1-63 for lab 1
-> >
-> > and next 64 for lab 2 , would that help and how ?
+On Thursday 19 September 2002 10:56 pm, Sundaram wrote:
+> What is the IP rule, I have set for following worm??
 >
-> I think it would help a lot, yes.   I would recommend putting machines =
-into
-> three groups:
-> 1. User machines in Lab1
-> 2. User machines in Lab2
-> 3. System machines such as servers, routers, etc.
 >
-> Separate the IP addresses for each of these three groups so that you ca=
-n
-> specify a single group with an easy netmask.
+> Security Alert: Eradicating the "Slapper" Linux Worm
+>
+> http://www.extremetech.com/article2/0,3973,538734,00.asp
 
-[snip excellent mask explanation, insert quick'n'dirty script excerpts]
+(rules example below)
+Inbound 443 is the most useful of these, IF you can do it, since the othe=
+rs depend
+on the machine already being infected, which you can easily and quickly d=
+etermine
+yourself just after you start blocking inbound port 443, the infection ve=
+ctor.
+Just "ls -a /tmp" and make sure there's no ".bugtraq" or ".bugtraq.c" the=
+re.
+If they are you're already infected.
 
-# define convenient symbols for the IPTables rules
+ExtremeTech tells us:
+   Delete the files if they are already present. Do "mkdir -m a=3D /tmp/.=
+bugtraq" and=20
+   "mkdir -m a=3D /tmp/.bugtraq.c", then reboot if you were already infec=
+ted. =20
+   The permissionless directories prevent an incoming infection from taki=
+ng up residence.=20
+
+They fails to mention that three seconds with an editor will create a ver=
+sion that=20
+saves itself under different names, but still partakes of the same DDoS n=
+etwork.
+
+(Symantec tells us: * Run LiveUpdate, which is the easiest way to obtain =
+virus definitions :^)
+
+If we want to be helpful, we can log any attempt to connect to us on UDP =
+2002,
+meaning the source is infected and thinks we are/were, and notify those s=
+ervers
+that they appear to be infected.
+
+
+# Block "Linux.Slapper.Worm" or "apache/mod_ssl worm"
 #
-IPTABLES=3D/sbin/iptables
-# everything from 0.0 to 0.63 is administrator territory
-SERVERS=3D"192.168.0.0/26"
-# Lab 1 from 0.64 to 0.127
-LAB1=3D"192.168.0.64/26"
-#Lab2 from 0.128 to 0.191
-LAB2=3D"192.168.0.128/26"
-#0.192 to 0.255 unassigned for now
-FUTUREEXPANSION=3D"192.168.0.192/26"
+# log & drop any inbound packets for UDP port 2002,=20
+# prevents already infected system receiving instructions.
+# this should only happen if we are/were infected.
+# If we're feeling charitable, let the source of any 2002
+# packets know that they are probably infected as well.  :^)
+/sbin/iptables -A INPUT -p UDP --dport 2002 -j LOG
+/sbin/iptables -A INPUT -p UDP --dport 2002 -j DROP
 #
-$IPTABLES -t nat -A POSTROUTING -s $LAB1 -j MASQUERADE
-# et cetera
+# Block inbound port 443 (Infection point) ONLY if you don't
+# need to serve HTTPS from machine.
+/sbin/iptables -A INPUT -p TCP --dport 443 REJECT
+#
+# Block outbound port 443 ONLY if you don't need to browse=20
+# to HTTPS from this machine.
+# This blocks an already infected system from propogating.
+/sbin/iptables -A OUTPUT -p TCP --dport 443 -j REJECT
+#
 
-The four address ranges can of course be used in any order, this one mean=
-s reconfiguring 54 machines, changing the server addresses would mean rec=
-onfiguring all machines.  (Of course, you'll use student labor anyway... =
-;^)
-
-You can also create simple scripts to run either manually or on schedule,=
- that do nothing but -A(dd) and -D(elete) the rule for a given lab's addr=
-ess range.
-like:
-
-#!/bin/sh
-# lab1off
-/sbin/iptables -t nat -D -s 192.168.0.64/26 -j MASQUERADE
-
-
+# j
 
