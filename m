@@ -1,10 +1,13 @@
-From: Eugene Joubert <EugeneJ@centratel.co.za>
-Subject: RE: MRTG and IPTABLES
-Date: Wed, 7 Jan 2004 10:28:54 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Gateway preferance
+Date: Wed, 7 Jan 2004 09:27:21 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D82D57585EE0D711AC8700508BECE9BF03A8@CENTRATEL01>
+Message-ID: <200401070927.22028.Antony@Soft-Solutions.co.uk>
+References: <20040107075513.19937.qmail@web13124.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040107075513.19937.qmail@web13124.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,52 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+On Wednesday 07 January 2004 7:55 am, nayan naya wrote:
 
-It uses SNMP protocol. I think this is built on top of the UDP protocol. I
-am not sure. Try opening up UDP port 1491. 
+> Hi list,
+>
+> I have two internet connections. i want to use only
+> one specific connection for some resions. Supose that
+> connection is stop then automaticaly second internet
+> connection will be start. this is possible with
+> iptables or not and if possible how?
 
-Hope this helps
+This is not a netfilter question.   Netfilter filters packets which would 
+otherwise be routed, it does not decide how to route them.
 
-Eugene
+Check http://lartc.org for advanced routing control.
 
------Original Message-----
-From: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com] 
-Sent: 07/01/2004 10:04 AM
-To: Gilles Yue
-Cc: netfilter@lists.netfilter.org
-Subject: Re: MRTG and IPTABLES
+Antony.
 
-
-On Wed, 2004-01-07 at 01:54, Gilles Yue wrote:
-> MRTG cannot work properly due to iptables running.
-> 
->  
-> 
-> Anybody knows which port number to open to enable MRTG to work 
-> properly.
-> 
->  
-<snip>
-
-No, not off hand but you can use a tool like Ethereal
-(http://www.ethereal.com) or just tcpdump or even just log the ropped
-packets in iptables to determine what MRTG is trying to do.  Good luck -
-John
-> 
->  
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+Blaster].   However, these products are no longer supported.   Users of these
+products are strongly encouraged to upgrade to later versions."
+
+(which *are* affected by MS Blaster...)
+
+http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
