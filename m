@@ -1,11 +1,13 @@
-From: Steve Comfort <steve@4Dllc.com>
-Subject: Don't understand these errors with logdrop target
-Date: Wed, 25 Aug 2004 10:36:30 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Don't understand these errors with logdrop target
+Date: Wed, 25 Aug 2004 10:49:32 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <412C4F8E.8010600@4Dllc.com>
+Message-ID: <1093423772.2246.3.camel@anduril.intranet.cartel-securite.net>
+References: <412C4F8E.8010600@4Dllc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <412C4F8E.8010600@4Dllc.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,50 +17,27 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Steve Comfort <steve@4Dllc.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hi All,
+Le mer 25/08/2004 =E0 10:36, Steve Comfort a =E9crit :
+>         echo 2
+>         $IPTABLES -P INPUT LOGDROP
+[...]
+> 2
+> iptables: Bad policy name
+> The question is : Why does using LOGDROP as a policy cause these errors=
+?
 
-Below is a snippet from my setup script :
+Because only builtin targets can be used as policy, meaning ACCEPT and
+DROP. If you want to use your LOGDROP as "policy", then you'll have to
+keep it as last chain rule...
 
-        echo 1
 
-        $IPTABLES -N LOGDROP
-        $IPTABLES -A LOGDROP -j LOG --log-level debug
-        $IPTABLES -A LOGDROP -j DROP
-
-        echo 2
-
-        $IPTABLES -P INPUT LOGDROP
-       
-        echo 3
-       
-        $IPTABLES -P OUTPUT LOGDROP
-       
-        echo 4
-       
-        $IPTABLES -P FORWARD LOGDROP
-
-        echo 5
-
-When this is run, I see the output below (the echo's are just to zone in 
-on the exact rule(s) generating errors):
-
-1
-2
-iptables: Bad policy name
-3
-iptables: Bad policy name
-4
-iptables: Bad policy name
-5
-
-The question is : Why does using LOGDROP as a policy cause these errors?
-
-(I have CONFIG_IP_NF_TARGET_LOG set BTW).
-
-Best regards
-Steve Comfort
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
