@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
 Subject: Re: IP address to MAC address
-Date: Tue, 11 Jun 2002 22:36:07 +0100
+Date: Tue, 11 Jun 2002 22:32:23 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206112136.g5BLa9A24240@Networker.rockstone.co.uk>
-References: <Pine.LNX.4.44.0206111418380.4051-100000@wookie.shorewall.net>
+Message-ID: <081501c2118f$79efcf30$3200a8c0@jungle.funkybadger.org>
+References: <001601c2113a$aa85b560$0500a8c0@escritoriomundial.com.br> <200206112040.g5BKetA21075@Networker.rockstone.co.uk> <20020611205543.GC21405@cannon.eng.us.uu.net> <200206112109.g5BL9xA22717@Networker.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.44.0206111418380.4051-100000@wookie.shorewall.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,31 +17,53 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Tuesday 11 June 2002 10:27 pm, Tom Eastep wrote:
+Antony Stone wrote:
 
-> On Tue, 11 Jun 2002, Antony Stone wrote:
-
-> > Well, on my system at least (Slackware 8.0), /proc/net/arp has
-> > permissions -r--r--r-- so anyone can read it.   The arp program is in
-> > /sbin, so it can only be run by root.
+> On Tuesday 11 June 2002 9:55 pm, Ramin Alidousti wrote:
 >
-> Are you saying that Slack secures /sbin against access by non-root users
-> or the files there from being executed by non-root users? Not so on
-> RedHat:
+> > On Tue, Jun 11, 2002 at 09:40:53PM +0100, Antony Stone wrote:
+> > > On Tuesday 11 June 2002 9:38 pm, Tony Earnshaw wrote:
+[chomp]
+> > > > Did you say 'arp -a'?
+> > >
+> > > I would have done, if I knew I was root, but the commands I
+suggested
+> > > work for an unprivileged user too :-)
+> >
+> > If that information can be read by anybody then the wrapper
+program like
+> > arp can be run by anybody as well ;-)
 >
-> Note that /sbin isn't in non-root's PATH so by default an absolute path
-> name must be used. But:
+> Well, on my system at least (Slackware 8.0), /proc/net/arp has
+permissions
+> -r--r--r-- so anyone can read it.   The arp program is in /sbin, so
+it can
+> only be run by root.
 
-Okay - turns out I'm telling you Slackware's the same - I just naively 
-assumed that when someone decided not to include /sbin on non-root user PATH, 
-then they would have given it permissions dr-xr-x--- to stop non-root users 
-getting at the juicy commands inside.
+Non sequiter. /sbin contains, by convention, binaries connected with
+system administration. That is *not* the same as "binaries that may
+only be executed by root".
 
-Just shows you something you think is security is just obscurity :-)
+/sbin is not on non-root users' paths, by default, but that doesn't
+necessarily mean they can't execute stuff that lives there. Certainly,
+on my Debian Woody and Sid boxes here, the contents of /sbin
+are -rwxr-xr-x ;- the main thing stopping non-root users using some of
+them is a lack of privileges, not a lack of execute rights to the
+files.
 
- 
+Specifically, arp lives in /usr/sbin on my boxen, and whilst that's
+not on my normal user's path, and the files are owned by root.root, I
+can quite happily:
 
-Antony.
+  /usr/sbin/arp -a
+
+as any user. Similarly, a non-privileged user has no problems running
+/sbin/route.
+
+hth
+
+Adam
+
 
