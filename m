@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Maciej Soltysiak" <solt@dns.toxicfilms.tv>
 Subject: Re: Rules for DNS
-Date: Thu, 29 Jan 2004 15:39:16 +0000
+Date: Thu, 29 Jan 2004 16:39:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401291539.16464.Antony@Soft-Solutions.co.uk>
+Message-ID: <002501c3e67e$2b787c10$0e25fe96@pysiak>
 References: <1075389910.2794.6.camel@dchws.TQMcube.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1075389910.2794.6.camel@dchws.TQMcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,28 +19,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Iptables Mailing List <netfilter@lists.netfilter.org>
 
-On Thursday 29 January 2004 3:25 pm, David C. Hart wrote:
-
 > I am terribly confused about what I need to accept and reject and the
 > associated IPTables rules for Bind to work properly without exposing our
 > server to exploits. Right now, I'm pretty much accepting all traffic to
 > and from port 53 and that's "probably" not a good thing. I'm running
 > IPtables on the same machine running Bind.
->
+
 > Can someone point me in the right direction?
+Well, all DNS servers use udp/53 for queries and replies,
+when the reply is over 512 bytes, tcp/53 is used.
+tcp/53 is also used for zone transfers.
 
-Allow traffic to TCP & UDP ports 53 on your DNS server, but secure it in 
-/etc/named.conf using the info at http://www.isc.org under BIND - hint: stop 
-people from doing zone transfers or domain updates.
+Bind also uses port 953 for remote control.
 
-Antony.
+No matter if you are using a caching server or a master or slave
+server, you need 53 od both udp and tcp.
 
--- 
-I want to build a machine that will be proud of me.
+Advisories about filtering tcp/53 traffic to prevent zone
+transfers is crazy. You just allow zone transfers to trusted
+hosts and deny to everyone else by DNS configuration.
 
- - Danny Hillis, creator of The Connection Machine
+If you are using one DNS server, port 953 is used only on localhost.
+So, give udp/53 and tcp/53 to everybody you want to use your
+nameserver. If it is a caching server, allow only trusted IPs
+and strenghten your named configuration to allow only trusted IPs
+also.
+If it is a master or slave server for public Internet zones,
+you want everybody to be able to ask the server for DNS resources,
+so Open udp/53 and tcp/53 to everybody.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Limit tcp/953 to localhost only if this server is not to be
+remotely controlled.
+
+The simple thought is this:
+In case of DNS use a firewall only to decide who should and who
+should not access the service.
+For security turn to trusted software known to be stable and
+secure, and good configuration of the daemon.
+
+
+Regards,
+Maciej
 
 
