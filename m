@@ -1,14 +1,13 @@
-From: =?iso-8859-1?Q?Lo=EFc?= Minier <lool+netfilter@via.ecp.fr>
-Subject: Re: Connections with SYN aren't NEW
-Date: Sun, 14 Dec 2003 17:59:43 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DNATing packets sent to the NATing box
+Date: Sun, 14 Dec 2003 17:16:40 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031214165943.GB897@via.ecp.fr>
-References: <20031214162315.GA897@via.ecp.fr> <200312141634.54552.Antony@Soft-Solutions.co.uk>
+Message-ID: <200312141716.40029.Antony@Soft-Solutions.co.uk>
+References: <20031214135211.GA11695@tinuviel.compendium.com.ar> <20031214160416.GA17220@tinuviel.compendium.com.ar> <200312141155.19270.JALaramie@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200312141634.54552.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200312141155.19270.JALaramie@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Antony Stone <Antony@Soft-Solutions.co.uk> - Sun, Dec 14, 2003:
+On Sunday 14 December 2003 4:55 pm, Jeffrey Laramie wrote:
 
-> So, if your HTTP client is just dropping a connection without closing it =
+> On Sunday 14 December 2003 11:04, horape@tinuviel.compendium.com.ar wrote:
+>
+> > The proxy has a udp socket bound to port 5000, and another udp socket
+> > bound to some other port, it reads from the first socket and does a
+> > sendto using the other socket (poll + read + write, no more)
+>
+> It looks like the proxy is grabbing the packets first and then dropping
+> them directly onto the INPUT chain. Try disabling the proxy and release the
+> bound ports then try it again. Once the packets reach PREROUTING you can
+> DNAT them to another port.
 
-> nicely (using FIN, or even RST) then netfilter will think it is still=20
-> ESTABLISHED.
+I could ubnderstand the proxy code managing to grab the packet off the wire 
+before netfilter (PREROUTING) sees it, but I don't see how it would then get 
+seen by the INPUT chain - as far as I know, it's not possible for a packet to 
+reach netfilter's INPUT chain without first going through the PREROUTING 
+chain.   If a packet bypasses one of these, it will bypass both.
 
- I should have written that the connection is closed nicely, with a FIN
- packet (I just re-checked). Please note that the conntrack keeps closed
- connection for a while exactly like a normal connection, and with the
- [ASSURED] flag but it adds a TIME_WAIT flag to closed connections.
+However, the idea of disabling the proxy, and then seeing if the LOG rules 
+show anything different, is a good one.
 
-> I don't know if this explains the problem you are seeing, but it's a reas=
-on=20
-> why netfilter may think the connection is in a different state than the=20
-> client does.
+How is the proxy connected to the socket?   Anything unusual?
 
- Yes, it could have been a good explanation.
+Antony
 
---=20
-Lo=EFc Minier <lool@dooz.org>
+-- 
+Having been asked for a reference for this man,
+I can confirm that you will be very lucky indeed if you can get him to work 
+for you.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
