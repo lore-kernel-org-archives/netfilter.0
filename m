@@ -1,13 +1,14 @@
-From: "John Paul" <john@pinoylinux.sytes.net>
-Subject: Problem Found! - Firewall Rule
-Date: Fri, 6 Jun 2003 07:56:08 +0800
+From: Pascal Italiaander <pc-secure@home.nl>
+Subject: Re: Two IP add
+Date: Fri, 6 Jun 2003 01:56:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <012001c32bbe$08915a30$fd00a8c0@homes>
-Reply-To: "John Paul" <john@pinoylinux.sytes.net>
+Message-ID: <200306060156.08079.pc-secure@home.nl>
+References: <200306051156.45624.pandre@darkstar.nom.za> <200306051954.50078.pc-secure@home.nl> <200306051856.48803.Alistair@nerdnet.ca>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_011D_01C32C01.1689B9A0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200306051856.48803.Alistair@nerdnet.ca>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,221 +18,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Alistair@nerdnet.ca, Netfilter <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_011D_01C32C01.1689B9A0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hello Folks, its me again :(
-
-Below is my config. My problem is, I can connect to VPN but for some =
-reason, I cannot see machines inside the network after being connected. =
-Can somebody give me the simpliest firewall rule on this? just for me to =
-see the machines inside the network.
-
-Thanks!
-/JP
-
-
-
-PC1 (192.168.0.20) ----> gateway(LinuxServer) <-------------------> =
-internet <--------------------> VPN Server
-                                   eth0 : 1.1.1.1                        =
-                                                eth0 : 2.2.2.2
-                                   eth1 : 192.168.0.1                    =
-                                             local ip: 192.168.0.10
-                                                                         =
-                                                     remote ip: =
-192.168.0.180-200 =20
-
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-PC1 is already connected to the VPN server. PC1 ip now becomes;
-
-Ethernet adapter Local Area Connection:
-
-        Connection-specific DNS Suffix  . :=20
-        IP Address. . . . . . . . . . . . : 192.168.0.253
-        Subnet Mask . . . . . . . . . . . : 255.255.255.0
-        Default Gateway . . . . . . . . . : 192.168.0.10
-
-PPP adapter Sytes.Net:
-
-        Connection-specific DNS Suffix  . :
-        IP Address. . . . . . . . . . . . : 192.168.0.180
-        Subnet Mask . . . . . . . . . . . : 255.255.255.255
-        Default Gateway . . . . . . . . . : 192.168.0.180
-
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-route -n
-
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use =
-Iface
-202.163.246.1   0.0.0.0         255.255.255.255 UH    0      0        0 =
-ppp0
-192.168.0.180   0.0.0.0         255.255.255.255 UH    0      0        0 =
-ppp1
-192.168.0.0     0.0.0.0         255.255.255.0   U     0      0        0 =
-eth0
-127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 =
-lo
-0.0.0.0         202.163.246.1   0.0.0.0         UG    0      0        0 =
-ppp0
-
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-------=_NextPart_000_011D_01C32C01.1689B9A0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2726.2500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#edfefc>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>Hello Folks, its me again =
-:(</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Below is my config. My problem is, I can connect to VPN but for =
-some=20
-reason, I cannot see machines inside the network after being connected. =
-Can=20
-somebody give me&nbsp;the simpliest&nbsp;firewall rule on this? just for =
-me to=20
-see the machines inside the network.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanks!</DIV>
-<DIV>/JP</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>PC1&nbsp;(192.168.0.20) ----&gt;=20
-gateway(LinuxServer) &lt;-------------------&gt; internet=20
-&lt;--------------------&gt; VPN Server</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eth0=20
-:&nbsp;1.1.1.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;=20
-eth0 : 2.2.2.2</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-eth1=20
-:=20
-192.168.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;local=20
-ip: 192.168.0.10</FONT></DIV>
-<DIV>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;remote ip:=20
-192.168.0.180-200&nbsp; </DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>PC1 is already connected to the VPN=20
-server.&nbsp;PC1 ip now becomes;</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Ethernet adapter Local Area=20
-Connection:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-Connection-specific DNS Suffix&nbsp; . :&nbsp;</FONT></DIV>
-<DIV><FONT face=3DArial =
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IP=20
-Address. . . . . . . . . . . . :=20
-192.168.0.253<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Subnet Mask =
-. . . .=20
-. . . . . . . : =
-255.255.255.0<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-Default Gateway . . . . . . . . . : 192.168.0.10</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>PPP adapter Sytes.Net:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-Connection-specific DNS Suffix&nbsp; .=20
-:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IP Address. . . . . . . =
-. . . .=20
-. : 192.168.0.180<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Subnet =
-Mask . .=20
-. . . . . . . . . :=20
-255.255.255.255<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Default =
-Gateway .=20
-. . . . . . . . : 192.168.0.180</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>route -n</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Kernel IP routing table<BR>Destination&nbsp;&nbsp;&nbsp;&nbsp;=20
-Gateway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-Genmask&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Flags Metric=20
-Ref&nbsp;&nbsp;&nbsp; Use Iface<BR>202.163.246.1&nbsp;&nbsp;=20
-0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 255.255.255.255=20
-UH&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 =
-ppp0<BR>192.168.0.180&nbsp;&nbsp;=20
-0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 255.255.255.255=20
-UH&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-ppp1<BR>192.168.0.0&nbsp;&nbsp;&nbsp;&nbsp;=20
-0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-255.255.255.0&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp;=20
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-eth0<BR>127.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-255.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp;=20
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-lo<BR>0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-202.163.246.1&nbsp;&nbsp;=20
-0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-UG&nbsp;&nbsp;&nbsp;=20
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-ppp0<BR></DIV>
-<DIV>
-<DIV>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</DIV></DIV></FONT></DIV></BODY></HTML=
+Op vrijdag 6 juni 2003 00:56, schreef u:
+> On June 5, 2003 01:54 pm, Pascal Italiaander wrote:
+> > Op donderdag 5 juni 2003 19:51, schreef u:
+> > > Op donderdag 5 juni 2003 15:29, schreef Ray Leach:
+> > > > On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
+> > > > > On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
+> > > > >         I would like to do the following:
+> > > > >
+> > > > >         Stop MASQUESRADING to two servers say. 10.10.10.5 and
+> > > > > 10.10.10.8, how would i do this with a rule.
+> > > > >
+> > > > >         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip'
+> > > > > -j MASQUERADE now how would i put in two ip address's ?
+> > >
+> > > Ok , you could do something like this:
+> >
+> > sorry in the first reply was an error !!
+> > this is fixed now.
+> >
+> >  NO_MASK="10.10.10.5 10.10.10.8"
+> >
+> >  if [ ${NO_MASK} != "" ] ; then
+> >    for nomask in ${NO_MASK}; do
+> >   	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j MASQUERADE
+> >  done;
+> >  fi
+> >
+> > > this is a bit more flexible, cause , you can ad more ip's the NO_MASK
+> > > easily without changing the rule itself, or have to write a new line.
+> >
+> >  Pascal
 >
+> 	I somehow don't think this will do what we want here.
+> 	rule 1 from this loop will MASQUERADE any ip that is
+> 	NOT 10.10.10.5, which unfortunately includes 10.10.10.8
+> 	and rule #2 will never be hit by the 10.10.10.8 packet.
+>
+> 	I would suggest that we want to take the entire segment
+> 	and manage it separately, but I have no experience with
+> 	creating user chains in the nat table, although this *might*
+> 	work -- ymmv
+>
+>
+> iptables -t nat -N masq_filter
+> iptables -t nat -A POSTROUTING -s x.x.x.x -d 10.10.10.0/24 -j masq_filter
+> # the above line includes an assumption that MIGHT BE WRONG!!!! I dont know
+> # what your netmask is!!!!!!!!!
+> iptables -t nat -A masq_filter -d 10.10.10.5 -j RETURN
+> iptables -t nat -A masq_filter -d 10.10.10.8 -j RETURN
+> iptables -t nat -A masq_filter -j MASQUERADE
+>
+> 	filling in out the ips to NOT masquerade one at a time, perhaps with a
+> loop as pascal suggests above, with appropriate modifications...
 
-------=_NextPart_000_011D_01C32C01.1689B9A0--
+Yes correct , now you mention it , I see it also.
+2 lines where added to the filter-list and would not traverse the firewall if 
+IP was 10.10.10.8 
 
+however the syntax could be reused, with this modification.
+So combined the information together we get this example;
+
+MASQ="yes' #Do you need masquerading ?
+NO_MASK="10.10.10.5 10.10.10.8" #IP's who don't need masquerading(watch the 
+single-space)
+INET="10.10.10.0/24" #Local network + subnet
+EX_IF="eth0" #External interface
+
+if [ ${MASQ} == "yes" ]; then
+   if [ ${NO_MASK} != "" ] ; then
+        for nomask in ${NO_MASK}; do
+ 		iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j RETURN
+		iptables -A POSTROUTING -t nat -s ${INET} -o ${EX_IF} -j MASQUERADE
+ 	done;
+		else
+			iptables -A POSTROUTING -t nat -s ${INET} -o ${EX_IF} -j MASQUERADE
+ fi
+
+greetings Pascal
+have fun
 
