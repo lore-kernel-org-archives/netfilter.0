@@ -1,12 +1,9 @@
-From: "Alex Nee" <hard__ware@dynamicaccess.biz>
-Subject: Re: MSN Messenger and Netfilter
-Date: Sat, 28 Jun 2003 15:19:10 +1000
+From: "gold gold" <mr_gold55@hotmail.com>
+Subject: (no subject)
+Date: Sat, 28 Jun 2003 11:22:42 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003c01c33d34$ce97bb70$7b7b10ac@hardware>
-References: <20030505222631.22711.2427.Mailman@kashyyyk>
-Reply-To: "Alex Nee" <alex@dynamicaccess.biz>
+Message-ID: <BAY1-F5kjgJKVApwOLZ00016087@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,17 +14,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Ok last one now
+Hello,
 
-Alex Nee
-Hard__warE
+     How the hell do I allow my masqueraded Windows PC to use MSN's Audio 
+conversation? I've tried port-forwarding for 6901 (which is the audio port 
+for MSN according to some web page), but I still can't use that Audio 
+stuff... please help, thank you.
 
------ Original Message ----- 
-From: <alex@dynamicaccess.biz>
-To: <netfilter@lists.netfilter.org>
-
+_________________________________________________________________
+The new MSN 8: advanced junk mail protection and 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
 
 
