@@ -1,11 +1,12 @@
-From: Kostadin Karaivanov <larry@tamiweb.com>
-Subject: forward port of TTL.patch to 2.6.0-test9
-Date: Tue, 04 Nov 2003 18:01:41 +0200
+From: "Udo A. Steinberg" <us15@os.inf.tu-dresden.de>
+Subject: ipt_hook: happy cracking with 2.6.0-test9-bk7
+Date: Wed, 5 Nov 2003 08:30:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FA7CD65.6000804@tamiweb.com>
+Message-ID: <20031105083015.57e2dff1.us15@os.inf.tu-dresden.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080907010401010406090206"
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="pgp-sha1";
+ boundary="Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,214 +19,94 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------080907010401010406090206
-Content-Type: text/plain; charset=us-ascii; format=flowed
+--Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
 
-Hi list,
-I just forward ported TTL.patch (attached) from patch-o-matic-20031103 
-to linux-2.6.0-test9 for fun and profit. It's rather mechanical port but 
-it works at least build-in. I've veryfied this with tcpdump.
-But I have two questions. First of course is: is this the proper way to 
-port things like this, couse AFAIC 2.4 and 2.5 networking code is quite 
-different, if not why. And second - where I can read about current 
-implementation ot linux networking excetp kernel sources.
 
-wwell Larry.
+[ please CC: me on replies because I'm not subscribed to the netfilter list ]
 
-P.S please cc me, I'm not subscribet to the list.
+Hi,
 
---------------080907010401010406090206
-Content-Type: text/plain;
- name="patch.TTL-2.6.0-test9"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="patch.TTL-2.6.0-test9"
+I'm currently running Linux-2.6.0-test9-bk7 compiled with gcc-3.3.2.
+After upgrading from -test9 to -test9-bk7 I'm getting a lot of
 
-diff -ruN linux-2.6.0-test9/include/linux/netfilter_ipv4/ipt_TTL.h linux-2.6.0-test9-my/include/linux/netfilter_ipv4/ipt_TTL.h
---- linux-2.6.0-test9/include/linux/netfilter_ipv4/ipt_TTL.h	1970-01-01 02:00:00.000000000 +0200
-+++ linux-2.6.0-test9-my/include/linux/netfilter_ipv4/ipt_TTL.h	2003-11-04 11:31:22.000000000 +0200
-@@ -0,0 +1,21 @@
-+/* TTL modification module for IP tables
-+ * (C) 2000 by Harald Welte <laforge@gnumonks.org> */
-+
-+#ifndef _IPT_TTL_H
-+#define _IPT_TTL_H
-+
-+enum {
-+	IPT_TTL_SET = 0,
-+	IPT_TTL_INC,
-+	IPT_TTL_DEC
-+};
-+
-+#define IPT_TTL_MAXMODE	IPT_TTL_DEC
-+
-+struct ipt_TTL_info {
-+	u_int8_t	mode;
-+	u_int8_t	ttl;
-+};
-+
-+
-+#endif
-diff -ruN linux-2.6.0-test9/net/ipv4/netfilter/Kconfig linux-2.6.0-test9-my/net/ipv4/netfilter/Kconfig
---- linux-2.6.0-test9/net/ipv4/netfilter/Kconfig	2003-10-25 21:44:33.000000000 +0300
-+++ linux-2.6.0-test9-my/net/ipv4/netfilter/Kconfig	2003-11-04 14:32:09.000000000 +0200
-@@ -478,6 +478,17 @@
- 
- 	  To compile it as a module, choose M here.  If unsure, say N.
- 
-+config IP_NF_TARGET_TTL
-+	tristate "TTL target support"
-+	depends on IP_NF_MANGLE
-+	help 
-+	  This option adds a `TTL' target, which enables the user to set
-+	  the TTL value or increment / decrement the TTL value by a given
-+	  amount.
-+	      
-+	  If you want to compile it as a module, say M here and read
-+          Documentation/modules.txt.  If unsure, say `N'.
-+		  
- config IP_NF_TARGET_LOG
- 	tristate "LOG target support"
- 	depends on IP_NF_IPTABLES
-diff -ruN linux-2.6.0-test9/net/ipv4/netfilter/Makefile linux-2.6.0-test9-my/net/ipv4/netfilter/Makefile
---- linux-2.6.0-test9/net/ipv4/netfilter/Makefile	2003-10-25 21:43:07.000000000 +0300
-+++ linux-2.6.0-test9-my/net/ipv4/netfilter/Makefile	2003-11-04 11:29:22.000000000 +0200
-@@ -78,6 +78,7 @@
- obj-$(CONFIG_IP_NF_TARGET_SAME) += ipt_SAME.o
- obj-$(CONFIG_IP_NF_TARGET_CLASSIFY) += ipt_CLASSIFY.o
- obj-$(CONFIG_IP_NF_NAT_SNMP_BASIC) += ip_nat_snmp_basic.o
-+obj-$(CONFIG_IP_NF_TARGET_TTL) += ipt_TTL.o
- obj-$(CONFIG_IP_NF_TARGET_LOG) += ipt_LOG.o
- obj-$(CONFIG_IP_NF_TARGET_ULOG) += ipt_ULOG.o
- obj-$(CONFIG_IP_NF_TARGET_TCPMSS) += ipt_TCPMSS.o
-diff -ruN linux-2.6.0-test9/net/ipv4/netfilter/ipt_TTL.c linux-2.6.0-test9-my/net/ipv4/netfilter/ipt_TTL.c
---- linux-2.6.0-test9/net/ipv4/netfilter/ipt_TTL.c	1970-01-01 02:00:00.000000000 +0200
-+++ linux-2.6.0-test9-my/net/ipv4/netfilter/ipt_TTL.c	2003-11-04 13:00:00.000000000 +0200
-@@ -0,0 +1,124 @@
-+/* TTL modification target for IP tables
-+ * (C) 2000 by Harald Welte <laforge@gnumonks.org>
-+ *
-+ * Version: 1.8
-+ *
-+ * This software is distributed under the terms of GNU GPL
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/skbuff.h>
-+#include <linux/ip.h>
-+#include <net/checksum.h>
-+
-+#include <linux/netfilter_ipv4/ip_tables.h>
-+#include <linux/netfilter_ipv4/ipt_TTL.h>
-+
-+MODULE_AUTHOR("Harald Welte <laforge@gnumonks.org>");
-+MODULE_DESCRIPTION("IP tables TTL modification module");
-+MODULE_LICENSE("GPL");
-+
-+static unsigned int 
-+ipt_ttl_target(struct sk_buff **pskb, 
-+		const struct net_device *in, 
-+		const struct net_device *out,
-+		unsigned int hooknum,
-+		const void *targinfo, 
-+		void *userinfo)
-+{
-+	struct iphdr *iph = (*pskb)->nh.iph;
-+	const struct ipt_TTL_info *info = targinfo;
-+	u_int16_t diffs[2];
-+	int new_ttl;
-+			 
-+	switch (info->mode) {
-+		case IPT_TTL_SET:
-+			new_ttl = info->ttl;
-+			break;
-+		case IPT_TTL_INC:
-+			new_ttl = iph->ttl + info->ttl;
-+			if (new_ttl > 255)
-+				new_ttl = 255;
-+			break;
-+		case IPT_TTL_DEC:
-+			new_ttl = iph->ttl + info->ttl;
-+			if (new_ttl < 0)
-+				new_ttl = 0;
-+			break;
-+		default:
-+			new_ttl = iph->ttl;
-+			break;
-+	}
-+
-+	if (new_ttl != iph->ttl) {
-+		diffs[0] = htons(((unsigned)iph->ttl) << 8) ^ 0xFFFF;
-+		iph->ttl = new_ttl;
-+		diffs[1] = htons(((unsigned)iph->ttl) << 8);
-+		iph->check = csum_fold(csum_partial((char *)diffs,
-+						    sizeof(diffs),
-+				 	            iph->check^0xFFFF));
-+									                	(*pskb)->nfcache |= NFC_ALTERED;
-+	}
-+
-+	return IPT_CONTINUE;
-+}
-+
-+static int ipt_ttl_checkentry(const char *tablename,
-+		const struct ipt_entry *e,
-+		void *targinfo,
-+		unsigned int targinfosize,
-+		unsigned int hook_mask)
-+{
-+	struct ipt_TTL_info *info = targinfo;
-+
-+	if (targinfosize != IPT_ALIGN(sizeof(struct ipt_TTL_info))) {
-+		printk(KERN_WARNING "TTL: targinfosize %u != %Zu\n",
-+				targinfosize,
-+				IPT_ALIGN(sizeof(struct ipt_TTL_info)));
-+		return 0;	
-+	}	
-+
-+	if (strcmp(tablename, "mangle")) {
-+		printk(KERN_WARNING "TTL: can only be called from \"mangle\" table, not \"%s\"\n", tablename);
-+		return 0;
-+	}
-+
-+	if (info->mode > IPT_TTL_MAXMODE) {
-+		printk(KERN_WARNING "TTL: invalid or unknown Mode %u\n", 
-+			info->mode);
-+		return 0;
-+	}
-+
-+	if ((info->mode != IPT_TTL_SET) && (info->ttl == 0)) {
-+		printk(KERN_WARNING "TTL: increment/decrement doesn't make sense with value 0\n");
-+		return 0;
-+	}
-+	
-+	return 1;
-+}
-+
-+static struct ipt_target ipt_TTL_reg = {
-+	 .name		= "TTL",
-+	 .target	= ipt_ttl_target,
-+	 .checkentry	= ipt_ttl_checkentry,
-+	 .me		= THIS_MODULE,
-+};
-+
-+static int __init init(void)
-+{
-+	if (ipt_register_target(&ipt_TTL_reg));
-+	    return -EINVAL;
-+	    
-+	return 0;
-+}
-+
-+static void __exit fini(void)
-+{
-+	ipt_unregister_target(&ipt_TTL_reg);
-+}
-+
-+module_init(init);
-+module_exit(fini);
+ipt_hook: happy cracking.
 
---------------080907010401010406090206--
+messages. Google search revealed that this indicates broken packets being
+sent out from the machine - and this is indeed so.
 
+The problem goes away, if I remove all my firewall rules, which looks to me
+as if netfilter's --reject-with is the culprit.
+Below is my netfilter configuration (not wrapped for readability reasons).
+
+Can anyone comment on what might be going wrong here?
+
+-Udo.
+
+
+Chain INPUT (policy DROP)
+target     prot opt source               destination         
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state RELATED,ESTABLISHED 
+TCP        tcp  --  0.0.0.0/0            0.0.0.0/0          
+UDP        udp  --  0.0.0.0/0            0.0.0.0/0          
+ICMP       icmp --  0.0.0.0/0            0.0.0.0/0          
+IGMP       2    --  0.0.0.0/0            0.0.0.0/0          
+IPV6       41   --  0.0.0.0/0            0.0.0.0/0          
+ACCEPT     esp  --  0.0.0.0/0            0.0.0.0/0          
+ACCEPT     ah   --  0.0.0.0/0            0.0.0.0/0          
+LOG        all  --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `IP Drop: ' 
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain ICMP (1 references)
+target     prot opt source               destination         
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0          icmp type 8 
+LOG        icmp --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `ICMP Drop: ' 
+REJECT     icmp --  0.0.0.0/0            0.0.0.0/0          reject-with icmp-port-unreachable 
+
+Chain IGMP (1 references)
+target     prot opt source               destination         
+ACCEPT     2    --  0.0.0.0/0            0.0.0.0/0          
+
+Chain IPV6 (1 references)
+target     prot opt source               destination         
+ACCEPT     41   --  0.0.0.0/0            0.0.0.0/0          
+
+Chain TCP (1 references)
+target     prot opt source               destination         
+ACCEPT     tcp  --  141.30.0.0/16        0.0.0.0/0          state NEW multiport dports 22,111,137,138,139 tcp flags:0x16/0x02 
+ACCEPT     tcp  --  141.76.0.0/16        0.0.0.0/0          state NEW multiport dports 22,111,137,138,139 tcp flags:0x16/0x02 
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          state NEW multiport dports 113,522 tcp flags:0x16/0x02 
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          state NEW tcp dpts:1024:65535 flags:0x16/0x02 
+LOG        tcp  --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `TCP Drop: ' 
+REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0          reject-with tcp-reset 
+
+Chain UDP (1 references)
+target     prot opt source               destination         
+ACCEPT     udp  --  141.30.0.0/16        0.0.0.0/0          state NEW multiport dports 111,137,138,139 
+ACCEPT     udp  --  141.76.0.0/16        0.0.0.0/0          state NEW multiport dports 111,137,138,139 
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0          state NEW multiport dports 123,517,518 
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0          state NEW udp dpts:1024:65535 
+LOG        udp  --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `UDP Drop: ' 
+REJECT     udp  --  0.0.0.0/0            0.0.0.0/0          reject-with icmp-port-unreachable 
+
+--Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/qKcHnhRzXSM7nSkRAr4fAJ9fZ5R0ronDXzkRmhpjmVIJJfuQ7gCfe6gK
+YpIUsSVu8lS1AsBPJr9S+hU=
+=dJbC
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw--
 
