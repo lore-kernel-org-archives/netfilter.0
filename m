@@ -1,14 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: services for predetermined IP addresses
-Date: Fri, 15 Oct 2004 16:28:58 -0400
+From: Krystian <optimusprime@o2.pl>
+Subject: iptables in Fc2
+Date: Fri, 15 Oct 2004 22:39:14 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041015202858.GA8079@bender.817west.com>
-References: <20041015200157.GA7982@bender.817west.com>
-	<20041015201413.71441.qmail@web21527.mail.yahoo.com>
+Message-ID: <41703572.8030701@o2.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041015201413.71441.qmail@web21527.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +15,19 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Fri, Oct 15, 2004 at 01:14:13PM -0700, kate wrote:
-> so the drop-all would be..?
-> 
-> iptables -A INPUT -p TCP -i eth0 -s 0/0 -j DROP
-> 
-> or did I just invent my own thing here?
-> tia
-> Kate
+Hi
 
-well--the standard way would be to set the policy of the built-in chain
-to DROP; i.e.,
+if im writing NTG please write it :)
 
-  iptables -P INPUT DROP
+I have a Fedora 2 Core. To be able to apply POM patches i downloaded 
+iptables + POM from iptables.org and kernel from kernel.org.
+after I compile and install my iptables are working OK but every around 
+10 seconds they r droping most of the connections.
 
-the same can be achieved by making the last rule in the chain a drop
-rule, like
+Can u give my any clues?
 
-  iptables -A INPUT -j DROP
-
-but that gets messy if you want to append rules "on the fly" so the
-policy method is preferred.
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
+:)
 
