@@ -1,12 +1,12 @@
-From: Oskar Andreasson <blueflux@koffein.net>
-Subject: Re: Linux HA with Bridge
-Date: Tue, 30 Sep 2003 20:37:57 +0200 (CEST)
+From: <Josh.Berry@compucom.com>
+Subject: RE: Linux HA with Bridge
+Date: Tue, 30 Sep 2003 14:09:07 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309302026340.2578@oskar-lap.agatha>
-References: <0C7C6E1720E8D74FB52EBEF93649730A0119A522@2k099exm01.compucom.local>
+Message-ID: <0C7C6E1720E8D74FB52EBEF93649730A0116BF95@2k099exm01.compucom.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0C7C6E1720E8D74FB52EBEF93649730A0119A522@2k099exm01.compucom.local>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,15 +16,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Josh.Berry@compucom.com
+Content-Type: text/plain; charset="us-ascii"
+To: blueflux@koffein.net
 Cc: netfilter@lists.netfilter.org
+
+Sure, send it over.  Is it possible to have some type of failover using
+the priority settings with the STP protocol?
+
+-----Original Message-----
+From: Oskar Andreasson [mailto:blueflux@koffein.net]=20
+Sent: Tuesday, September 30, 2003 1:38 PM
+To: Berry, Josh (jberry)
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Linux HA with Bridge
 
 Yes, as long as you are aware that connection states will not traverse
 over the heartbeat system, and that you will find yourself in a deep pit
 of trouble with the IPaddr script (at least the version I saw) that
-comes with heartbeat, and iptables =). IPaddr.sh runs with the help of
+comes with heartbeat, and iptables =3D). IPaddr.sh runs with the help of
 interface aliases, which iptables can't handle.
 
 I rewrote the IPaddr script for work a couple of months ago to get rid
@@ -70,4 +79,5 @@ http://www.frozentux.net
 http://iptables-tutorial.frozentux.net
 http://ipsysctl-tutorial.frozentux.net
 mailto:blueflux@koffein.net
+
 
