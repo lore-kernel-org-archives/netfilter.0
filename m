@@ -1,84 +1,42 @@
-From: Aidas Kasparas <a.kasparas@gmc.lt>
-Subject: Re: IPSec - IPTables issues
-Date: Wed, 05 May 2004 08:28:03 +0300
-Sender: linux-net-owner@vger.kernel.org
-Message-ID: <40987B63.5020601@gmc.lt>
-References: <20040502155538.GD515@schottelius.org> <4096317F.8020609@eurodev.net> <20040504211557.GA236@schottelius.org>
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
+Subject: Re: pptp-conntrack-nat.
+Date: Wed, 05 May 2004 01:10:05 -0400
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <4098772D.3030003@isoar.ca>
+References: <2BE915A69EF4D2119A0800805FF5E0501F14EA44@brspm201.exbr01.exch.eds.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-net-owner@vger.kernel.org>
-In-Reply-To: <20040504211557.GA236@schottelius.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <2BE915A69EF4D2119A0800805FF5E0501F14EA44@brspm201.exbr01.exch.eds.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Nico Schottelius <nico-linux-net@schottelius.org>
-Cc: Pablo Neira <pablo@eurodev.net>, netfilter@lists.netfilter.org, gregor-net@paasch.name, linux-net@vger.kernel.org
+To: netfilter@lists.netfilter.org
 
-Nico,
+Ampugnani, Fernando wrote:
+> Hi all,
+> 	I tried apply the patch pptp conntrack on 3 different kernel
+> versions. None of them worked for me. I tried on 2.4.14, 2.4.21 and 2.4.26.
+> The patch is not getting applied cleanly on any of these.Could anyone please
+> tell me with which kernel version this patch works?
 
-	If you have SPD rule (sorry for racoon/setkey speak)
-0.0.0.0/0 Your.IP/32 any -P in esp/.../require (or unique)
-then any packet coming to your box which is not esp encapsulated will be 
-thrown away by ipsec code in kernel (if I remember correctly, it will 
-not even reach FORWARD chain). Therefore you could safely skip check for 
-esp, ah, udp/500 in iptables rules.
+[This might be a dupe, as my addressbook had the wrong address]
 
-	P.S. you may need to add SPD rule allowing udp/500 before enforcing esp 
-traffic. I never required to ipsec all the traffic and therefore I'm not 
-sure on this detail.
+I'm using 2.4.22-1.nptl from Fedora.  I'd use newer, but this
+is what my company's products are currently using.
 
-Nico Schottelius wrote:
-> Hello Pablo,
-> (netfilter guys, please read 
-> http://www.uwsg.iu.edu/hypermail/linux/net/0405.0/0002.html before)
-> 
-> Pablo Neira [Mon, May 03, 2004 at 01:48:15PM +0200]:
-> 
->>Hi Nico,
->>
->>since this stuff is netfilter-related and netfilter/iptables geeks are 
->>mostly in netfilter's maillist, I think you could redirect this request 
->>there, someone could help you out.
-> 
-> 
-> Thank you for the hint. I first thought this is a netfilter problem, but
-> currently I don't think so.
-> 
-> The problem is IMHO the design of the Linux IPSec implementation.
-> 
-> I'll compare what freeswan did with what Linux 2.6 does now:
-> 
-> Freeswan has virtual devices (ipsec*), through which the unencrypted
-> packets come into the system. So you can add these firewall lines:
-> 
-> - allow AH, ESP, UDP/500, deny rest on eth0
-> - allow IPs/networks, etc. on ipsec0
-> 
-> With Linux 2.6 I don't have virtual devices. This means that my IPSec
-> packets enter the physical device twice:
-> 
-> 1. esp encrypted packet enters
-> 2. Linux decrypts it
-> 3. Linux sends the unencrypted packets through the same device again
-> 
-> The problem with that is, that
-> 
-> - allow AH, ESP, UDP/500, deny rest on eth0
-> 
-> will deny the _content_ of my encrypted packages (step three is broken).
-> 
-> Wouldn't this work fine, if we have the virtual device like freeswan had
-> or is netfilter broken with this?
-> 
-> I mean I cannot practicly setup an IPSec only access point with the current
-> netfilter and ipsec in Linux 2.6, or am I deadly wrong?
-> 
-> Greetings,
-> 
-> Nico
-> 
-> 
+If it will help, I can make the kernels available.  I've compiled
+for all x86 arch's, and have a modified iptables (required) as
+well.  Or you can use my SRPM and compile your own.
 
 -- 
-Aidas Kasparas
-IT administrator
-GM Consult Group, UAB
+Andrew E. Mileski
+
+
