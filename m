@@ -1,11 +1,13 @@
-From: "M. Ziya Ozudogru" <e116132@metu.edu.tr>
-Subject: mac/ip match
-Date: 18 Sep 2003 21:26:00 +0300
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: mac/ip match
+Date: Thu, 18 Sep 2003 20:57:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063909559.19096.12.camel@tux>
+Message-ID: <1063911472.844.7.camel@elendil.intranet.cartel-securite.net>
+References: <1063909559.19096.12.camel@tux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1063909559.19096.12.camel@tux>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,32 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "M. Ziya Ozudogru" <e116132@metu.edu.tr>
+Cc: netfilter@lists.netfilter.org
 
-Hi 
+Le jeu 18/09/2003 =E0 20:26, M. Ziya Ozudogru a =E9crit :
+> Here comes the problem.. How can i define in iptables to use these arp
+> rules and give access only the one addresses that match the rules and
+> should block all the others ( well i want to block the others [unused i=
+p
+> addresses by using iptables mac macth module ] ) . ? Any hints ?
 
-Any hints about the following problem will be appreciated. Thanks a
-lot...
+See mac match :
 
-I want to assure that only given ip/mac matches will access to the
-internet (i mean if someone takes the ip that does not belong to his/her
-mac address no access will be given) . I will give the ip to the mac
-address by the dhcp..
+cbr@elendil:~$ iptables -m mac --help
+[...]
+MAC v1.2.8 options:
+ --mac-source [!] XX:XX:XX:XX:XX:XX
+                                Match source MAC address
 
-In my knowledge, i want to set these ip/mac groups using the command:
+Now, you just have to implement rules matching source mac address and
+source IP address.
 
-arp -s ip mac
-
-and i want to redirect unused ip to an unused mac with the same way...
-
-Here comes the problem.. How can i define in iptables to use these arp
-rules and give access only the one addresses that match the rules and
-should block all the others ( well i want to block the others [unused ip
-addresses by using iptables mac macth module ] ) . ? Any hints ?
-
-Thanks for your valuable help...
-
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
