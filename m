@@ -1,9 +1,10 @@
-From: ju0815nk@gmx.net
-Subject: Firewall did not block SSH - what is wrong
-Date: Tue, 22 Feb 2005 20:16:30 +0100 (MET)
-Message-ID: <17870.1109099790@www17.gmx.net>
+From: Kirk <whereisgui@gmail.com>
+Subject: Confused about NAT and forwarding
+Date: Tue, 22 Feb 2005 14:24:03 -0800
+Message-ID: <48be50bb050222142429a5be8f@mail.gmail.com>
+Reply-To: Kirk <whereisgui@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,44 +15,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-thanks for your help. Actually, I wanted to block all incoming traffic that
-is not related to connections originating from my machine. Should a default
-policy of dropping all packets plus allowing only related packages be
-sufficient ?
+I'm a bit confused about how NAT and forwarding works. Here's  the situation:
 
-e.g.
+I have a proxy server and a web server behind a firewall/gateway. The
+proxy and the web server now have private addresses but they used to
+have public addresses. Since I can't make changes to the DNS server, I
+added those two old addresses to the firewall's eth0 interface and
+then I added the following rules to iptables:
 
-$IPTABLES -P INPUT DROP
-$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state \
- ESTABLISHED,RELATED -j ACCEPT
+*filter
+#http requests
+-A FORWARD -i eth0 -o eth1 -p tcp --syn -d 192.168.0.3 --dport 80 -j ACCEPT
+-A FORWARD -i eth0 -o eth1 -p tcp --syn -d 192.168.0.3 --dport 443 -j ACCEPT
 
-Is there any way to test iptables-based firewalls without access to a second
-machine ?
-I installed the rule you told me and commented out the one allowing
-connections to the firewall - but how can I test that it works for me
-(except testing if my email/mozilla works)?
+#Ezproxy
+-A FORWARD -i eth0 -o eth1 -p tcp --syn -d 192.168.0.2 --dport 2048 -j ACCEPT
+COMMIT
 
-Thanks, Hilmar
+*nat
+#forwarding and NAT
+-A POSTROUTING -o eth0 -j SNAT --to FIREWALL_IP
 
+#web server
+-I PREROUTING -i eth0 -p tcp -d OLD_WEB_IP --dport  80  -j DNAT --to
+192.168.0.3:80
+-I PREROUTING -i eth0 -p tcp -d OLD_WEB_IP --dport  443 -j DNAT --to
+192.168.0.3:443
 
-> try something as:=20
->=20
-> #Substitute values for yours.
-> #your iptables binary
-> IPT=3Diptables
-> #your external iface
-> EFACE=3Dppp0=20
->=20
-> $IPT -A INPUT -i $EFACE -p tcp --dport ssh --syn -j DROP=20
-> Say us if that is your need and if that works fine for you.=20
+#Ezproxy
+-I PREROUTING -i eth0 -p tcp -d PROXY_IP --dport  2048 -j DNAT --to
+192.168.0.2:2048
+COMMIT
 
+The proxy server authenticates users by connecting to a database
+that's not behind the firewall. I looked at the log files of the
+database server and I noticed that the firewall's IP address is the
+one that's showing up instead of the address of the proxy server.
 
---=20
-DSL Komplett von GMX +++ Superg=FCnstig und stressfrei einsteigen!
-AKTION "Kein Einrichtungspreis" nutzen: http://www.gmx.net/de/go/dsl
+I just read the NAT howto from netfilter.org and I guess this line the
+responsible for that behavior.
+-A POSTROUTING -o eth0 -j SNAT --to FIREWALL_IP
+
+Is it possible to make requests for PROXY_IP go out with the PROXY_IP
+address instead of the FIREWALL_IP?
+If so, how can I do that? Or where do I find info about what I want to do?
+
+Thanks.
 
