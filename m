@@ -1,12 +1,11 @@
-From: =?iso-8859-1?Q?Ehrhardt_Ren=E9?= <r.ehrhardt@eviatec.de>
-Subject: AW: pptp-conntrack-nat and kernel 2.6.7
-Date: Fri, 6 Aug 2004 10:17:31 +0200
+From: Damian Gatabria <damian_g@speedy.com.ar>
+Subject: iptables dnat to loopback
+Date: Fri, 06 Aug 2004 08:38:34 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <94F30CDB27E39547A10F4E71E9AF114B2DEEB9@dlb-dc02.intern-eviatec.de>
+Message-ID: <1091792314.2256.18.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Philip Craig <philipc@snapgear.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Lista Netfilter <netfilter@lists.netfilter.org>
 
+Hello listers.
 
-Ehrhardt Ren=E9 wrote:
->> i=B4m running a debian sarge beta 4 box with iptables 1.2.10, I have =
-to install the pptp-conntrack-nat patch.=20
->>=20
->> I have the newest CVS build of pom
+I know this is probably not the proper place to ask 
+a support question, but after a long googling
+session and asking in my regular lists i was unable to 
+get an answer for what i think is a rather tough situation..
 
->You should be using pomng, not pom (which is no longer maintained).
+So, flame me if you must, but here it is =oP
 
-Sorry this was my fault i=B4m using pomng
+I have a rather busy server box hosting several web
+sites in separate independent installation directories,
+which means several apache, mysql and tomcat installations
+running simultaneously, with each mysql instance binding
+a port in the loopback interface.
 
-...
-...
-...
+Now, for a very specific reason, i need to provide someone
+with remote access to one of these mysql instances. 
 
->It means that the patch is trying to apply to the 2.4.x style config
->files, but you are using a 2.6.x kernel which does not have these.
+It would be a real hassle to change mysql's config
+(and the webapps' working with it) so i just decided
+to use DNAT to redirect incoming tcp connections 
+to the loopback interface.... but for some reason you
+hopefully already know about, it doesn't seem to work. 
 
->> Is there any way to get this thing working?
+So, while this iptables rule does work for port forwarding
+to another host:
 
->Unfortunately no.  Noone has ported the pptp patch to 2.6.x yet.
+iptables -t nat -A PREROUTING -p tcp -i eth0 -m multiport \
+        --dports mysql -j DNAT --to some.other.host
 
-Thanks a lot !
+changing "some.other.host" to 127.0.0.1 doesn't work
+as expected, and packets seem to be dropped altogether.
+Using tcpdump i can see packets reaching eth0, but
+never reaching loopback.
+
+Is there any way to make iptables do what i'm looking
+for? Any help will be greatly appreciated.
+
+Thanks much.
+
+-- 
+Damian Gatabria <damian_g@speedy.com.ar>
 
 
