@@ -1,11 +1,14 @@
-From: Steve <info@fabsurplus.com>
-Subject: error: ip_tables.o init_module:Device or resource busy
-Date: Mon, 10 Nov 2003 18:50:36 +0100
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: TFTP connection tracking problem
+Date: Mon, 10 Nov 2003 14:53:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FAFCFEC.8010700@fabsurplus.com>
+Message-ID: <20031110195332.GD22483@cannon.eng.us.uu.net>
+References: <3FAFA135.9050707@draigBrady.com> <3FAFB747.4090005@draigBrady.com> <20031110175435.GC22483@cannon.eng.us.uu.net> <3FAFCA3A.1060008@draigBrady.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3FAFCA3A.1060008@draigBrady.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,52 +18,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-9"
+To: P@draigBrady.com
+Cc: netfilter@lists.netfilter.org
 
-I'd like to preface this mail by saying that if a little knowledge is a 
-dangerous thing, then I am very dangerous....
+On Mon, Nov 10, 2003 at 05:26:18PM +0000, P@draigBrady.com wrote:
 
-I have recently installed redhat 9.0 over the top of RH V7.3 and then I 
-upgraded to iptables 1.2.7a with a 2.4.20-18.9 kernel using apt-get.
-When I try to do anything with iptables, I get the following error:-
+> Ramin Dousti wrote:
+> >You need ip_conntrack_tftp and ip_nat_tftp helper modules.
+>=20
+> Great. So how do I download it?
+> http://lists.netfilter.org/pipermail/netfilter-devel/2003-March/010890.=
+html
 
-*************************************************************
-e.g. iptables -F
-/lib/modules/2.4.20-18.9/kernel/net/ipv4/netfilter/ip_tables.o: 
-init_module: Device or resource busy
-Hint: insmod errors can be caused by incorrect module parameters, 
-including invalid IO or IRQ parameters.
-     You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.20-18.9/kernel/net/ipv4/netfilter/ip_tables.o: insmod 
-/lib/modules/2.4.20-18.9/kernel/net/ipv4/netfilter/ip_tables.o failed
-/lib/modules/2.4.20-18.9/kernel/net/ipv4/netfilter/ip_tables.o: insmod 
-ip_tables failed
-iptables v1.2.7a: can't initialize iptables table `filter': iptables 
-who? (do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
-******************************************************
+Well, good question. A quick scan through the latest pom didn't show anyt=
+hing.
+Anyone?
 
-Obviously (?), there is something wrong with either the kernel or 
-iptables as I have installed it .
-I need to get iptables working yesterday.
-Can anyone tell me a no-brainer way to achieve this ?
-Does my version of kernel work with this version of iptables ?
-Do I have to go back to an earlier version ?
-Whats the best way to get out of this mess ?
-I remember for my dos days we used to do "format c:" in this kind of 
-situation.
+Ramin
 
-Thanks a lot,
-
-Steve
-
-Update: I installed iptables 1.2.8 from tar.gz: same problem.
-Hence, either it's a hardware config. problem (?), or kernel is setup wrong.
-I am now tring to recompile the kernel using v 2.4.22.
-Any help would be much appreciated as I have little idea how to 
-recompile a kernel and all I need is iptables working, I'd rather avoid 
-all this kernel stuff...
-
-
+>=20
+> cheers,
+> P=E1draig.
 
