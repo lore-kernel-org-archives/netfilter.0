@@ -1,13 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: AW: GRE/PPTP and modules
-Date: Thu, 29 Apr 2004 17:27:32 +0200
+Subject: Re: AW: AW: GRE/PPTP and modules
+Date: Thu, 29 Apr 2004 17:57:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1083252452.4884.113.camel@anduril.intranet.cartel-securite.net>
-References: <D3DD55FDB74AD511BA5100500416368053E88E@ORION>
+Message-ID: <1083254240.4884.130.camel@anduril.intranet.cartel-securite.net>
+References: <D3DD55FDB74AD511BA5100500416368053E890@ORION>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D3DD55FDB74AD511BA5100500416368053E88E@ORION>
+In-Reply-To: <D3DD55FDB74AD511BA5100500416368053E890@ORION>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +21,12 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: Jochen Vogel <jvogel@it-sec.de>
 Cc: netfilter@lists.netfilter.org
 
-Le jeu 29/04/2004 =E0 17:19, Jochen Vogel a =E9crit :
-> > 	ip_conntrack_proto_gre
-> > 	ip_conntrack_pptp
-> > 	ip_nat_proto_gre
-> > 	ip_nat_pptp
-> I use fedora1.0 and cant find this modules.
-> I think thats in the patchomatic.
+Le jeu 29/04/2004 =E0 17:33, Jochen Vogel a =E9crit :
+> Is it possible to get the modules precompiled?
+> For a lazy bugger ;)
 
-Yep, right :
-
-http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-pptp-conn=
-track-nat
-
-> What should i do to get the modules?
-
-1. get iptables 1.2.9, patch-o-matic-ng and kernel sources (you can use
-   Fedora SRPM package)
-2. patch kernel sources using patch-o-matic-ng (see README)
-3. configure, build and install pacthed kernel (you should be able to
-   create a new RPM package, see RedHat documentation)
-4. build and install iptables
-
-You're done. Serve warm and enjoy.=09
-
+Don't know, I'm a lazy googler :) You'll have to look at some search
+engines too find a RPM.
 
 --=20
 http://www.netexit.com/~sid/
