@@ -1,14 +1,13 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-Subject: Re: Protecting against DoS
-Date: Wed, 10 Dec 2003 18:53:06 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: NATing out going packets
+Date: Wed, 10 Dec 2003 17:02:39 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031210165306.GH17221@edu.joroinen.fi>
-References: <20031209154333.GB17221@edu.joroinen.fi> <20031209090221.413b7286.mgale@utilitran.com> <20031209162820.GC17221@edu.joroinen.fi> <20031209094047.4dbb09f9.mgale@utilitran.com> <20031209165146.GD17221@edu.joroinen.fi> <20031209100650.485e8a4f.mgale@utilitran.com> <20031209171322.GE17221@edu.joroinen.fi>
+Message-ID: <200312101702.39572.Antony@Soft-Solutions.co.uk>
+References: <20031210094947.49b59fdf.mgale@utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20031209171322.GE17221@edu.joroinen.fi>
+In-Reply-To: <20031210094947.49b59fdf.mgale@utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Michael Gale <mgale@utilitran.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Tue, Dec 09, 2003 at 07:13:22PM +0200, Pasi K=E4rkk=E4inen wrote:
-> On Tue, Dec 09, 2003 at 10:06:50AM -0700, Michael Gale wrote:
-> > Hello,
-> >=20
-> > 	You could try using a rate limit -- you could allow a machine to make =
-lets say 10 outbound=20
-> > connections a second and then ...
-> >=20
-> > Depending on your network policy you could drop or log all other outbou=
-nd request.
-> >=20
->=20
-> This is what I'm planning to do.. and this is also the reason I was asking
-> the questions in the original mail :-)
->=20
+On Wednesday 10 December 2003 4:49 pm, Michael Gale wrote:
 
-If you have some facts/suggestions, please comment my original questions.. =
+> Hello,
+>
+> 	I have kind of a dumb question :)
+>
+> Right now I have the following rule for NATing out going traffic.
+>
+> $IPT -t nat -A POSTROUTING -o $EXT_FACE -s ! $EXT_IP -j SNAT --to-source
+> $EXT_IP
 
+There is no point in specifying "-s ! $EXT_IP".
 
-Thanks!
+Either a packet has the source address $EXT_IP, or it doesn't.
 
--- Pasi K=E4rkk=E4inen
-      =20
-                                   ^
-                                .     .
-                                 Linux
-                              /    -    \
-                             Choice.of.the
-                           .Next.Generation.
+If it does have that address, it won't match the above rule, and will exit the 
+box with the source address $EXT_IP.
+
+If it does not have that address, it will match the above rule, and will exit 
+the box (after being SNATted) with the source address $EXT_IP.
+
+Either way the end result is exactly the same, so keep the rule simpler and 
+remove the "-s ! $EXT_IP".
+
+Antony.
+
+-- 
+All matter in the Universe can be placed into one of two categories:
+
+1. Things which need to be fixed.
+2. Things which need to be fixed once you've had a few minutes to play with 
+them.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
