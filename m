@@ -1,8 +1,9 @@
-From: "Moshe Ashkenazi" <moshea@checkpoint.com>
-Subject: Send packets from iptables to user space
-Date: Wed, 25 Sep 2002 11:57:39 +0200
+From: "Rimas" <rmocius@auste.elnet.lt>
+Subject: patch-o-matic:  newnat and h323
+Date: Wed, 25 Sep 2002 11:03:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005901c26479$fbc8daa0$97025a3e@SHAGWELL>
+Message-ID: <02af01c2647a$d3f37250$6e69690a@rimas>
+References: <3D8DF73A.7020408@iol.it> <003e01c26263$bcbef230$8201a8c0@lw1dqwin>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,19 +19,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, List -
+ Hi,
 
-I'm new in this list so forgive me if someone already asks this
-question.
+What "patch-o-matic" patches I have to install for "newnat" and "h323"
+patches on kernel 2.4.19?
 
-I saw on iptables man page that there is a target QUEUE, which passes
-the filtered packets from iptable kernel to some userspace process.
+Regards
 
-I will appreciate if you can address me to seam examples or document
-which show how to do that.
+Rimas
 
-
-Thanks, 
 
 
 
