@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Email Server Timeouts
-Date: Wed, 18 Feb 2004 18:55:31 +0000
+Subject: Re: Instructions on how to redirect port 80 to port 8080
+Date: Wed, 18 Feb 2004 19:02:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402181855.31122.Antony@Soft-Solutions.co.uk>
-References: <20040217192510.5073.55256.Mailman@netfilter-sponsored-by.noris.net> <2063.192.168.2.103.1077052825.squirrel@mail.empirekosher.com>
+Message-ID: <200402181902.36185.Antony@Soft-Solutions.co.uk>
+References: <9908FCB837A50642B74E2BEC198843095CC65C@csrees-exchsrvb.csrees.usda.gov>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2063.192.168.2.103.1077052825.squirrel@mail.empirekosher.com>
+In-Reply-To: <9908FCB837A50642B74E2BEC198843095CC65C@csrees-exchsrvb.csrees.usda.gov>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Tuesday 17 February 2004 9:20 pm, Corey Furman wrote:
+On Wednesday 18 February 2004 6:47 pm, Martinez, Michael wrote:
 
-> When I enabled these rules, but then sendmail (on the same box) started
-> timing out talking to other mail servers.  Does anyone see why?
+> I put the logging in, and it's logging stuff ... But logging absolutely
+> nothing when I "telnet 80" or "telnet 8080" to this box.
 
-Yes.   Your first INPUT rule blocks all TCP packets coming in to ports in the 
-range  11001 to 65535 (why do you have this rule?).
+In that case, the packets addressed to port 80 or port 8080 are not getting 
+rejected by the last rule in your user-defined chain.
 
-That means on average there's an 85% chance that any connection from this 
-machine will not be able to receive a response, depending on the source port 
-it chooses to communicate from.
+Either they are not even reaching your machine at all (you don't have some 
+sort of transparent proxying on your network, by any chance, do you?), or 
+else they are reaching the application (web server) and being accepted or 
+rejected there.
 
-By the way, I'd just like to comment that it's not a good idea to run sendmail 
-(or any other application for that matter) on your firewall.
+> ???!!
+
+I am afraid to say that I agree with this observation :(
 
 Regards,
 
-Antony.
+Antony
 
 -- 
-Documentation is like sex.
-When it's good, it's very very good.
-When it's bad, it's still better than nothing.
-
+I'm pink, therefore I'm Spam.
                                                      Please reply to the list;
                                                            please don't CC me.
+
 
 
