@@ -1,18 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables jump to userdefined chain and ESTABLISHED,RELATED
-	rules
-Date: Sun, 12 Oct 2003 20:54:00 +0200
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: how to block packets with specific words inside udp datagram???
+Date: Sun, 12 Oct 2003 11:59:20 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065984839.4919.59.camel@elendil.intranet.cartel-securite.net>
-References: <20031010132641.2591d3b5.netfilter@lucassen.org>
-	 <1065889564.1268.11.camel@elendil.intranet.cartel-securite.net>
-	 <20031011194527.17273de9.netfilter@lucassen.org>
-	 <20031012111620.GB571@pcw.home.local>
-	 <20031012195331.409596fc.netfilter@lucassen.org>
+Message-ID: <LFEHKEBEBHAFGJBMNKAOOELBCCAA.markee@bandwidthco.com>
+References: <000d01c390d6$89b13900$0201a8c0@leonardo>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031012195331.409596fc.netfilter@lucassen.org>
+In-reply-to: <000d01c390d6$89b13900$0201a8c0@leonardo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,62 +18,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: reply2@lucassen.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Piotr P." <peterp@poczta.onet.pl>, netfilter@lists.netfilter.org
 
-Le dim 12/10/2003 =E0 19:53, richard lucassen a =E9crit :
-> case 1
-> **************************************************************
-> $IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPT -A FORWARD -p tcp --dport 22 -j CH_SSH
-> [..]
-> $IPT -A CH_SSH -m state --state NEW -s 1.2.3.4 -j ACCEPT
-> **************************************************************
+It's not easy to block.  Take a look at http://www.lowth.com/p2pwall/.  This
+will help you immensely.
 
-Working...
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Piotr P.
+Sent: Sunday, October 12, 2003 8:35 AM
+To: netfilter@lists.netfilter.org
+Subject: how to block packets with specific words inside udp datagram???
 
-> case 2 (I swapped rule 1 and 2)
-> **************************************************************
-> $IPT -A FORWARD -p tcp --dport 22 -j CH_SSH
-> $IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> [..]
-> $IPT -A CH_SSH -m state --state NEW -s 1.2.3.4 -j ACCEPT
-> **************************************************************
 
-Not working for SSH.
+Does anybody know how to block kaza with iptables ?
 
-In fact, it should work. A TCP SYN flaged as NEW will be sent to CH_SSH
-chain, then be accepted by CH_SSH rule that allows NEW packets. Then
-further packets are going by. They are ESTABLISHED.
+    Kazza jump over ports, and hosts (if yopu block destinations to
+kazza.com, rr1.kazza.com & rr2.kazza.com kazza uses ip's of other users that
+was cached during last downloading anything from anyone). The key is, kazza
+use tah same word "KaZaA" inside an uupd datagram. Does any body know how to
+block traffic with this word using iptables?
+Below is the sample dump:
 
-They match first rule so they are sent to CH_SSH chain. They do not
-match the rule, for thieses packets are not NEW. So they hit end of user
-chain and are returned to FORWARD chain, rule 2. They match rule 2 and
-then get accepted.
+a sample dump using udp to communicate with the other users from its
+internal table and take note of different port  numbers used because these
+are the ports that had been previously connected...
 
-If it does not work as your's, then you have a drop all rule at the end
-of CH_SSH chain (I suppose) that prevents packet from returning from
-user chain (CH_SSH here) to calling chain (FORWARD here).
+11:03:23.343988 IP fooler.ilo.skyinet.net.1962 >
+cable-202-8-230-222.d-one.net.2911: udp 12
+0x0000  4500 0028 a377 0000 8011 a5d5 ca4e 7642 E..(.w.......NvB
+0x0010  ca08 e6de 07aa 0b5f 0014 c401 2700 0000 ......._....'...
+0x0020  2980 4b61 5a61 4100                     ).KaZaA.
 
-To me, the best way to handle this is :
+11:03:23.344282 IP fooler.ilo.skyinet.net.1962 > 202.8.251.31.1278: udp 12
+0x0000  4500 0028 a378 0000 8011 9193 ca4e 7642 E..(.x.......NvB
+0x0010  ca08 fb1f 07aa 04fe 0014 b621 2700 0000 ...........!'...
+0x0020  2980 4b61 5a61 4100                     ).KaZaA.
 
-# ESTABLISHED and RELATED packets are accepted anyway
-# We accept them first as they are most treated packets
-$IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+11:03:23.344524 IP fooler.ilo.skyinet.net.1962 > 202.163.194.3.2844: udp 12
+0x0000  4500 0028 a379 0000 8011 ca13 ca4e 7642 E..(.y.......NvB
+0x0010  caa3 c203 07aa 0b1c 0014 e884 2700 0000 ............'...
+0x0020  2980 4b61 5a61 4100                     ).KaZaA.
 
-# Then we care of each proto.
-$IPT -A FORWARD -p tcp --dport 22 -j CH_SSH
-[...]
-$IPT -A CH_SSH -m state --state NEW -s 1.2.3.4 -j ACCEPT
+11:03:23.344762 IP fooler.ilo.skyinet.net.1962 > 202.69.170.153.3377: udp 12
+0x0000  4500 0028 a37a 0000 8011 e1da ca4e 7642 E..(.z.......NvB
+0x0010  ca45 aa99 07aa 0d31 0014 fe37 2700 0000 .E.....1...7'...
+0x0020  2980 4b61 5a61 4100                     ).KaZaA.
 
-Case 3 works because you enforce ESTABLISHED,RELATED accept in your use
-chain.
 
-I really do think that 1st case is the best way to handle, as it implies
-less rules evaluation for each packet.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+
+best regards,
+PeterP
+
+gadu-gadu: 818854
+        e-mail: peterp@poczta.onet.pl
+         www:  http://republika.pl/peterp
+            cell:  (++48) 606 675 729  (Mon - Fri, 8am-16pm ONLY!)
+           ICQ: 217990807
+
+-----------------------------------------------------------------------
+-----              Zapraszam na moje aukcje internetowe
+  -----
+-----         Lista auktualnych aukcji, zawsze pod adresem:            -----
+----- http://www.allegro.pl/show_user_auctions.php?uid=11609  -----
+-----------------------------------------------------------------------
+
+
+
 
