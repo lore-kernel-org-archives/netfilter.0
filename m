@@ -1,20 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: STATELESS
-Date: Tue, 16 Sep 2003 18:57:13 +0200
+Subject: Re: destinations interface must be eth0?
+Date: Tue, 16 Sep 2003 19:07:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063731433.784.25.camel@elendil.intranet.cartel-securite.net>
-References: <02ba01c37c46$bb7a5f60$798014ac@matthew>
-	 <200309161256.15286.gdh@acentral.co.uk>
-	 <1063716386.31093.160.camel@raylinux.internal>
-	 <20030916131153.GA16559@cannon.eng.us.uu.net>
-	 <1063720447.31093.166.camel@raylinux.internal>
-	 <20030916141505.GB16559@cannon.eng.us.uu.net>
-	 <plopm3isnshj1n.fsf@drizzt.kilobug.org>
-	 <20030916155001.GE16559@cannon.eng.us.uu.net>
+Message-ID: <1063732030.784.35.camel@elendil.intranet.cartel-securite.net>
+References: <1063637259.2318.3.camel@dod-secure.e-masi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030916155001.GE16559@cannon.eng.us.uu.net>
+In-Reply-To: <1063637259.2318.3.camel@dod-secure.e-masi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -25,32 +18,60 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: =?ISO-8859-1?Q?Ga=EBl?= Le Mignot <kilobug@freesurf.fr>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: jburnett@e-masi.com
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Le mar 16/09/2003 =E0 17:50, Ramin Dousti a =E9crit :
-> > Can I ask you why do you want  to turn off the conntrack?
-> I don't. I just wanted to learn from the people who were saying "just d=
-on't
-> load the ip_conntrack..."
+Le lun 15/09/2003 =E0 16:47, Jim Burnett a =E9crit :
+> I have found that my destination IP in my rules MUST be bound on eth0
+> what is this? I thought I could use any working IP on my internal
+> network as the --to-destination IP...??
+> Example:
+> internal machine:
+> eth0:192.168.1.55
+> eth1:192.168.1.56
 
-I assume that if someone wants to fallback on stateless filtering is for
-saving load on his box. I can miss something, but I really don't see
-another reason. Once ip_conntrack is loaded, all packets are tracked
-anyway, weither you use state match or not. Yes, one can write a whole
-stateless ruleset with conntrack running, but what's the point : the
-cost implied by a rule with state matching and one without is the same,
-as state flaging is done anyway !
+There's a wierd thing in your setup. Can you show us your routing table,
+as I don't see how you could assign 192.168.1.55 and 192.168.1.56 in two
+different subnets.
 
-That's why assuming that stateless is for save load implies ip_conntrack
-module removal. But, as it relies on conntrack, NAT is broken. It is as
-simple as this.
+Btw, I tried on my box that has two interfaces the same thing, and it
+works :
 
-So, the remaining question is "why does OP wants to fallback to
-stateless filtering". If answer is "to save load", then he will have to
-remove ip_conntrack. If answer is... Well, I don't know, anything else,
-such as "I like writing weak ruleset for fun with powerful tools", then
-not using state matching will be sufficient.
+cbr@elendil:~$ ifconfig
+eth0      Lien encap:Ethernet  HWaddr 00:0A:41:EE:A5:50
+          inet adr:192.168.100.10  Bcast:192.168.100.127
+		Masque:255.255.255.128
+[...]
+eth1      Lien encap:Ethernet  HWaddr 00:01:02:50:0E:0E
+          inet adr:192.168.100.130  Bcast:192.168.100.255=20
+Masque:255.255.255.128
+[...]
+cbr@elendil:~$ sudo iptables -v -t nat -A PREROUTING -i eth0 -p tcp
+--dport 80 -j DNAT --to 192.168.100.15:80
+DNAT  tcp opt -- in eth0 out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:80
+to:192.168.100.15:80
+cbr@elendil:~$ sudo iptables -v -t nat -A PREROUTING -i eth0 -p tcp
+--dport 80 -j DNAT --to 192.168.100.155:80
+DNAT  tcp opt -- in eth0 out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:80
+to:192.168.100.155:80
+cbr@elendil:~$ sudo iptables -t nat -L PREROUTING -v
+Chain PREROUTING (policy ACCEPT 140 packets, 23585 bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination                                                              =
+                  =20
+    0     0 DNAT       tcp  --  eth0   any     anywhere           =20
+anywhere        tcp dpt:www to:192.168.100.15:80
+    0     0 DNAT       tcp  --  eth0   any     anywhere           =20
+anywhere        tcp dpt:www to:192.168.100.155:80
+
+And :
+
+cbr@elendil:~$ iptables --version
+iptables v1.2.8
+cbr@elendil:~$ uname -r
+2.4.22
+
+Patch-o-matic pending and submitted sections are applied.
 
 --=20
 http://www.netexit.com/~sid/
