@@ -1,10 +1,12 @@
-From: "Brennan, JosephX M" <josephx.m.brennan@intel.com>
-Subject: one to one NAT
-Date: Mon, 23 Sep 2002 17:13:08 -0700
+From: "nino scuparacci" <roccox@mail.com>
+Subject: NAT H323 for netmeeting
+Date: Thu, 26 Sep 2002 01:59:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ADCE7AEB26CBD511B4D100508B66D3063BD421@fmsmsx115.fm.intel.com>
+Message-ID: <20020926065943.18658.qmail@mail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,38 +17,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I have been trying for a couple days to set up one to one nat with iptables
-with a few weird results so I would any input out there that could help me
-resolve my problem.
+Hello, 
+I've built a firewall/router for a company with a debian3 - iptables. 
+My company have a LAN(192.168.1.0/24) which accross my debian to visit internet. Some computers of this LAN need to be called by netmmeeting. 
+I've read than I had to patch my kernel 2.4.18 with patch-o-matic and to update iptables 1.2.6 to 1.2.7. 
 
-First, what I am trying to do is set up a box with a virtual ip that will be
-mapped through my iptables box so that essentually the internal box is the
-external ip.
+So I patched my kernel. I ve added the H323 module and compile it : make dep; make clean; make bzImage; make modules; make modules_install. 
+I reboot with this new kernel. I try to install the new iptable-1.2.7 but always the same error : 
 
-I have a dual homed box with interfaces: eth1(internal card):192.168.1.254
-and eth2(external card):10.10.10.254.  In addtion I have an external test
-box with an ip of 10.10.11.23.  Both the 10.10.10.254 and 10.10.11.23 boxes
-are hooked up to a 550T Intel routing switch so they are able to talk to
-each other.  On the other side I have an internal test box with an ip of
-192.168.1.24 and obviously because the routing box and internal test box are
-on the same network they can talk.
+Extensions found: IPv4:CONNMARK IPv4:IPV4OPTSSTRIP IPv4:NETMAP IPv4:ROUTE IPv4:connmark IPv4:ipv4options IPv4:mport IPv4:nth IPv4:pool IPv4:POOL IPv4:psd IPv4:quota IPv4:random IPv4:realm IPv4:recent IPv4:string IPv4:time IPv6:REJECT IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt 
+cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.7a\" -fPIC -o extensions/libipt_conntrack_sh.o -c extensions/libipt_conntrack.c 
+***[extensions/libipt_conntrack_sh.o] error 1 
+-------------------------------------
+????????????????? 
+Can u help me?
+-- 
+__________________________________________________________
+Sign-up for your own FREE Personalized E-mail at Mail.com
+http://www.mail.com/?sr=signup
 
-My question however is i have tried this command
-
-iptables -t nat -A PREROUTING -d 10.10.10.254 -j DNAT --to 192.168.1.24
-
-and my internal box gets a request from the outside box however it does not
-look like there has been any "NAT"ing taken place because when I run a
-packet sniffer on the internal box the packets are still coming from the
-10.10.10.23 address and obviously the internal box has no idea how to send
-the information back.
-
-So if anyone has any suggestions I would appreciate it.
-
-Joe
-
-PS.  I forgot to mention it above but I do have ip forwarding turned on.
 
