@@ -1,14 +1,14 @@
-From: ignaciob@123plaza.com
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: ip_tables_names not showing any results.. please help
-Date: Sun, 2 May 2004 15:49:37 -0400 (EDT)
+Date: Sun, 2 May 2004 22:53:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2846.216.22.86.180.1083527377.squirrel@www.123plaza.net>
-References: <1402.216.22.86.180.1083517083.squirrel@www.123plaza.com>
-    <200405021823.58366.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405022253.14529.Antony@Soft-Solutions.co.uk>
+References: <1402.216.22.86.180.1083517083.squirrel@www.123plaza.com> <200405021823.58366.Antony@Soft-Solutions.co.uk> <2846.216.22.86.180.1083527377.squirrel@www.123plaza.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405021823.58366.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <2846.216.22.86.180.1083527377.squirrel@www.123plaza.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,99 +21,51 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> On Sunday 02 May 2004 5:58 pm, 123plaza Malls wrote:
+On Sunday 02 May 2004 8:49 pm, ignaciob@123plaza.com wrote:
+
+> > On Sunday 02 May 2004 5:58 pm, 123plaza Malls wrote:
+> >> Hi All,
+> >>
+> >> Please forgive my ignorance, but being an inexperienced linux user I
+> >> managed to break something with my iptables
+> >
+> > What were you doing when it broke?   Recompiling your kernel?
+> > Recompiling
+> > iptables?   Fiddling with the startup scripts?  Un/Installing netfilter
+> > RPMs?
 >
->> Hi All,
->>
->> Please forgive my ignorance, but being an inexperienced linux user I
->> managed to break something with my iptables
+> The last thing I remember doing was 2 things:
 >
-> What were you doing when it broke?   Recompiling your kernel?
-> Recompiling
-> iptables?   Fiddling with the startup scripts?  Un/Installing netfilter
-> RPMs?
+> 1) Modify a script I use via cron.hourly used to clear iptables blocking
+> entries set by portsentry, AND made a mistake when calling a command to
+> clear history files.
+>
+> 2) Other than this recently upgraded the kernel to latest (rpm) version
+> from redhat
 
-The last thing I remember doing was 2 things:
+I would say that item number 2 has caused your problem.
 
-1) Modify a script I use via cron.hourly used to clear iptables blocking
-entries set by portsentry, AND made a mistake when calling a command to
-clear history files. The script with the mistake looks like this:
+1. Reboot using the previous kernel version and check whether the problem goes 
+away.
 
-----%<-----------------------------------------
-#!/usr/bin/perl
+2. Check whether the new kernel includes netfilter support.
 
-# Script: iptables.restart
-#
-# Use on cron.hourly to restart (flush) iptables that may be
-# polluted with ecessive IPs blocked by portsentry intrusion
-# detection
-#
-# IMPORTANT NOTE:
-#
-# Change the next line to 0 instead of 1 to enable this script.
-# By default it will be disabled and will not do anything.
-#
+3. Check (if you are using modules) whether you have the correct version of 
+netfilter modules for the new kernel.
 
-$disabled = 0;
+4. If none of the above solves the problem, ask on a Red Hat support mailing 
+list.
 
-exit if $disabled;
+Regards,
 
-# Clear and reload original iptables file
-my $results_01 = `service iptables restart` or print STDERR "couldn't exec
-\"service iptables restart\": $!";
+Antony.
 
-# Clear porsentry local blocked history files
-my $results_02 = `/bin/cat /dev/null > /bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.atcp`;
+-- 
+There's no such thing as bad weather - only the wrong clothes.
 
-my $results_03 = `/bin/cat /dev/null > /bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.audp`;
+ - Billy Connolly
 
-my $results_04 = `/bin/cat /dev/null > /bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.stcp`;
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-my $results_05 = `/bin/cat /dev/null > /bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.sudp`;
-
-my $results_06 = `/bin/cat /dev/null > /bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.tcp`;
-
-my $results_07 = `/bin/cat /dev/null > /bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.udp`;
-
-When run the script bombed, although do not see how this could have caused
-the problem other that the faulty lines where executed immediately after
-restarting iptables. Notice the errors in the double entries for
-"`/bin/cat /dev/null > ", the correct code should be:
-
-my $results_02 = `/bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.atcp`;
-
-my $results_03 = `/bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.audp`;
-
-my $results_04 = `/bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.stcp`;
-
-my $results_05 = `/bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.sudp`;
-
-my $results_06 = `/bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.tcp`;
-
-my $results_07 = `/bin/cat /dev/null >
-/var/log/portsentry/portsentry.blocked.udp`;
-
-
-2) Other than this recently upgraded the kernel to latest (rpm) version
-from redhat
-
-Is any way I can get things back to normal again?
-
-
-
------------------------------------------
-This email was sent using SquirrelMail.
-   "Webmail for nuts!"
-http://squirrelmail.org/
 
