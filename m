@@ -1,12 +1,11 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: simple port forwarding question
-Date: Mon, 3 Nov 2003 06:07:23 -0800 (PST)
+From: "GoMi" <gomi@perezoso.net>
+Subject: Changing the amount of tokens in the conntrack
+Date: Mon, 3 Nov 2003 15:11:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031103140723.2238.qmail@web40206.mail.yahoo.com>
-References: <3FA65F1D.20205@engr.uconn.edu>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAATXFSrRs2Hk2gYw7BzoALGwEAAAAA@perezoso.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FA65F1D.20205@engr.uconn.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,68 +16,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rohit Kumar Mehta <rohitm@engr.uconn.edu>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+=20
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi there, its my first email to the list, so i will explan a little bit =
+my setup:
+
+I have a linux box with 1GB RAM Athlon 1.8GHz and 3 eth cards.
 
 
---- Rohit Kumar Mehta <rohitm@engr.uconn.edu> wrote:
-> 
-> Hi guys, I was wondering if someone could help me out here.  I am fairly 
-> well confused after trying to muddle through
-> this tutorial:
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-> 
-> I think what I want to do should be easy.  Perhaps someone could help.
-> 
-> We are trying to trick the systems into believing that the Kerberos 5 
-> server is on IP#2 (let's call it 192.168.28.3)
-> but it is in fact on IP#1 (192.168.28.2).
-> 
-> Maybe my attempted iptables commands will make it blatantly obvious what 
-> I am trying to do:
-> 
-> iptables -t nat -A PREROUTING --dst 192.168.28.3 -p tcp --dport 88 -j 
-> DNAT --to 192.168.28.2
-> iptables -t nat -A PREROUTING --dst 192.168.28.3 -p udp --dport 88 -j 
-> DNAT --to 192.168.28.2
-> 
-> iptables -t nat -A POSTROUTING -p udp --dst 192.168.28.2 --dport 88 -j 
-> SNAT --to-source 192.168.28.3
-> iptables -t nat -A POSTROUTING -p tcp --dst 192.168.28.2 --dport 88 -j 
-> SNAT --to-source 192.168.28.3
-> 
-> iptables -t nat -A OUTPUT --dst 192.168.28.3 -p tcp --dport 88 -j DNAT 
-> --to-destination 192.168.28.2
-> iptables -t nat -A OUTPUT --dst 192.168.28.3 -p udp --dport 88 -j DNAT 
-> --to-destination 192.168.28.2
-> 
-> 
-> Basically we want it so that if I do a "telnet 192.168.28.3 88", I get a 
-> connection to "192.168.28.2:88"
-> This works - when I initiate the connection from 192.168.28.3, but from 
-> any other machine on the network
-> it does not work.
-> 
-> Am I doing something wrong or forgetting a key step?  Thanks!
-> 
-> Rohit
-> 
-> 
+                        ______
+                 eth2  |      |eth0
+LAN (300 users) <----->|      |<--->ADSL 2Mbit
+                       |      |<--->ADSL 2MBit
+                       |______|eth1
 
-I think you left out one important bit of information here. Are these two ips
-on the same box? ( ie .1 on eth0 and .3 eth1 ) If they are I think it would
-mean all the world of difference for your ruleset. you might be using the NAT
-table when FOWARD lines in your filter table would sufice...
+I am doing load balancing at the moment, but thats nothing to worry =
+about since it works great. I am also using a QoS setup based on HTB and =
+SFQ queues, and due to the load balancing i have a stateful firewall.=20
 
-just a guess...
+Some aplications my users use quite often, like msn messenger, kazaa or =
+other p2p automatically disconnects themselves. I have comed to the =
+conclusion thats because of the amount of simultaneous connections the =
+box can handle. So i want to change the amount of tokens the conntrack =
+is using.
 
-SBlaze
+I have the conntrack module built-in the kernel, hence i am driving =
+myself mad to find a way to increase this value. Does anybody knows how =
+to change that?
 
-=====
-In the absence of order there will be chaos.
+Thank you very much,in advanced. If any of you knows anything i could =
+change as well to improve my setup, i am welcome to suggestions
 
-__________________________________
-Do you Yahoo!?
-Exclusive Video Premiere - Britney Spears
-http://launch.yahoo.com/promos/britneyspears/
+-----BEGIN PGP SIGNATURE-----
+Version: PGP 8.0
+
+iQA/AwUBP6ZiAH7diNnrrZKsEQIyDACgxXIQFfnhkV+P/tsR7En9MV/SRvcAoKv9
+i5lAQ8zmkBchxO9gDk453AZZ
+=3DhKV4
+-----END PGP SIGNATURE-----
+
+
 
