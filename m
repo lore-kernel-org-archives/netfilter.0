@@ -1,12 +1,13 @@
-From: "Matthew G. Marsh" <mgm@paktronix.com>
-Subject: Re: inner workings of IP tables
-Date: Mon, 30 Sep 2002 12:49:03 -0500 (CDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: [Fwd: SNAT to allocat IP from an IP Pool]
+Date: Mon, 30 Sep 2002 20:17:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0209301239460.3130-100000@netmonster.pakint.net>
-References: <Pine.LNX.4.40.0209291918280.19073-100000@klepto.security.algx.lan>
+Message-ID: <20020930191759.YMUT13996.mta05-svc.ntlworld.com@there>
+References: <200209301224.g8UCOLL03868@vulcan.rissington.net> <40391.64.86.49.17.1033412690.squirrel@www.icafe.co.tz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.40.0209291918280.19073-100000@klepto.security.algx.lan>
+In-Reply-To: <40391.64.86.49.17.1033412690.squirrel@www.icafe.co.tz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,99 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Kevin Dwyer <Kevin.Dwyer@algx.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 29 Sep 2002, Kevin Dwyer wrote:
+On Monday 30 September 2002 8:04 pm, Mitesh P Choksi wrote:
 
-> Sorry to barge in, but included are some comments I thought must be made.
-
-Ditto.
-
-> On Sun, 29 Sep 2002, Antony Stone transmitted the following:
+> So, how does -SNAT --to 23.23.23.0-23.23.23.16 work.
 >
-> > On Sunday 29 September 2002 8:05 pm, Mitesh P Choksi wrote:
-> >
-> > [ Comparing netfilter with Checkpoint Firewall-1 ]
-> >
-> > > What about ease of use? The GUI
+> How does this work? I have now tried it but did not dare to go beyond a few
+> seconds.
 >
-> http://www.fwbuilder.org
-> (which incidentally generates rulesets for iptables, pf, and ipfilter)
->
-> Not that a GUI makes a good firewall.  Aren't you pretty much dead in the
-> water with checkpoint if you don't have access to their GUI?  I know you
-> can fw load policies, and possibly even compile them via CLI, but I
-> challenge you to make competent ruleset changes with vi on checkpoint.
+> Does anybody have some documentation / pointers on how to use -SNAT and
+> give a range of IP addresses? I will give it a try and see how does -SNAT
+> handle the range of IP addresses.
 
-Hehehehe - BD3 (been dere done dat) and it is actually fairly easy.
-There are three main ascii files you need to know about but it is pretty
-much the same as scripting iptables. You have Objects that are acted upon
-by Rules. Of course you end up defining first the object then the rule in
-different files. But I have written up perl scripts to do this for
-specific setups (back on 4.1 when I needed a Time limited setup I had a
-cron job that would change the rulesets from businesshours to
-nonbusinesshours)
+I cannot answer that - hopefully someone else here is more familiar with 
+mutliple address SNAT; however please can we clarify something about your 
+original question ?
 
-In fact once you get used to NetFilter/IPTables especially in a scripting
-environment you can actually make better sense out of the CP structure. Of
-course I only use(d) CP on Solaris where I had SSH access. I remember when
-they decided that I should not have access to the GUI because that was the
-FW Admin's job. Funny part is he never did notice all the special rules I
-implemented (hint - there is a way in the command files to declare rules
-as implicit and also as internal ~= hidden)
+Are you merely trying to do SNAT, to allow internal clients out to the 
+Internet, or are you also trying to do DNAT to enable Internet access in to 
+your internal machines as well ?
 
-> > > Multiple firewalls.
->
-> http://www.linux-ha.org
-> http://w3.arobas.net/~jetienne/vrrpd/
-> (and more, peep the linux-ha site for a huge list of resources)
->
-> Netfilter doesn't have the code to pass the state table across machines
-> (and would be a neat feature) but you can make a firewall pair by either
-> using VRRPd or Linux-HA.  You'll drop active connections, but CP did too
-> up until recently I think.
+Antony
 
-Still pretty much does even in NG. At least under real testing (ie: unplug
-the one box in the setup)...
+-- 
 
-> > > Management of firewalls.
->
-> ..is made more difficult with their reliance on a GUI, IMO.
->
-> ..is made more difficult with their licensing schemes.
+Success is a lousy teacher.   It seduces smart people into thinking they 
+can't lose.
 
-YES!
-
-> ..is made more difficult when CP support says: Sorry, the only solution to
-> esoteric bug #48129 is to upgrade to the newest version.  Sorry, the only
-> solution to esoteric bug #48130 is to downgrade to the previous version.
-> (as the clock counts the downtime)
-
-Hehehehehe - yep.
-
-> ..is made more difficult when you upgrade the GUI and magically things
-> like Manual IPSEC (and who knows what else) disappear.
-
-Or even better - you now have a bunch of defined Objects which you CANNOT
-change except by manually deleting them from the file... sigh.
-
-> /* Kevin Dwyer                                Allegiance Internet */
-> /* network security engineer                   Commerce Center II */
-> /* email: Kevin.Dwyer@algx.net                7601 Ora Glen Drive */
-> /* phone: 240-616-2075                        Greenbelt, MD 20770 */
-> /*      >++++++++++[<++++++++++>-]<.+++++.----.[-]++++++++++.     */
-
---------------------------------------------------
-Matthew G. Marsh,  President
-Paktronix Systems LLC
-1506 North 59th Street
-Omaha  NE  68104
-Phone: (402) 932-7250 x101
-Email: mgm@paktronix.com
-WWW:  http://www.paktronix.com
---------------------------------------------------
-
+ - William H Gates III
 
