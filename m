@@ -1,10 +1,10 @@
-From: jn@angel.cz
-Subject: SNAT of icmp: fragmentation-needed
-Date: Tue, 4 Jun 2002 17:30:02 +0200 (CEST)
+From: <miner@kwdomains.net>
+Subject: Solution:  Squid + ReiserFS + Iptables + H.323
+Date: Tue, 4 Jun 2002 20:37:30 +0300 (AST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0206041715120.27892-100000@albert.ha-vel.cz>
-Reply-To: jn@angel.cz
+Message-ID: <62897.194.126.42.61.1023212250.squirrel@www.kwdomains.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,25 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
 
-Hi,
 
-I would like to SNAT icmp fragmentation-needed messages that have source
-address from private network range (RFC1918), I have tried something like:
+Firstly, I would like to thank every one on this list, for either your 
+problems, or your solutions to various situations, which you have put down 
+literally, to help others, like myself, learn from your experiences.
 
-iptables -t nat  -I POSTROUTING -j SNAT --to real_address -p icmp  \
---icmp-type fragmentation-needed -s 192.168.0.0/16
+I hope that this link will save a lot people a lot of time (not to mention 
+the frustration) in building the squid+reiserfs+iptables+h323 mammoth.
 
-but it does not work. I think that because these packets are part of
-valid TCP connection, they are somehow processed by ip_conntrack
-module and do not pass this rule....
+Please feel free to write in with your queries. Please also understand that 
+I, too, am learning.
 
-any idea?
+The link is: http://www.zedeks.com/wormhole.html
 
-jn
+Cheers,
+tHeMiNeR
 
 
