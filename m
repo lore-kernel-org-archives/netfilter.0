@@ -1,8 +1,8 @@
-From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
-Subject: RE: allowing connection
-Date: Fri, 10 Sep 2004 16:11:45 -0400
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: allowing connection
+Date: Fri, 10 Sep 2004 16:24:14 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409102007.i8AK7ddg036736@jkcpub.iserver.net>
+Message-ID: <1094847854.1900.192.camel@wolfpack.ljm.dom>
 References: <20040910181819.GA31430@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,46 +18,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Payal Rathod' <payal-netfilter@scriptkitchen.com>, 'Netfilter ML' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi Payal,
+On Fri, 2004-09-10 at 14:18, Payal Rathod wrote:
+> Hi,
+> Right now I am allowing only my client's LAN access one of my 
+> design's machine from the internet. Their LAN is a simple network,
+> with a single IP and other machines are masqueraded. Now I want to allow
+> only one of their machine to access my machine. Can I do it? I mean 
+> the machine is on 192.168.1.x series of IP, but can I restrict it
+> on mac address basis? If yes, how do I do it?
+> 
+> With warm regards,
+> -Payal
 
-You can use the MAC match to restrict access.
+so essentially:
 
-Something like this:
++------------+  +----------------+
+| CLIENT LAN |--| CLIENT MACHINE |
++------------+  +----------------+
+      |
++-----------+
+| CLIENT FW |
++-----------+
+      |
+      |
++----------+
+| INTERNET |
++----------+
+      |
+      |
++---------+
+| YOUR FW |
++---------+
+      |
++---------+  +----------------+
+|YOUR LAN |--| DESIGN MACHINE |
++---------+  +----------------+
 
-iptables -t mangle -A PREROUTING -s (Masqueraded_IP) -m mac --mac-source
-(MAC_ADDR_MACHINE) -j ACCEPT
+Right you allow whatever IP all of "Client LAN" is MASQ'ed behind to 
+access "Design Machine."
 
-Please follow the link below and read 6.4.3.2 for further understanding:
+To answer the question, can you filter by MAC address--the answer is 
+a resounding, "no!"  The MAC address of "Client Machine" is stripped 
+off by "Client FW" never to be seen again by any network device.
 
-http://iptables-tutorial.frozentux.net/chunkyhtml/matches.html#GENERICMATCHE
-S
+The only MAC address that you'll see on the external interface of
+"Your FW" is that of your Internet router.
 
-Hope this helps!
+My suggestion:  protect the resource in question with a
+username/password or certificate or whatever authentication suits you.
+Only give the one person who needs access credentials to get in.
+Keep the filtering policy as-is.
 
-Regards,
+-j
 
-Deepak Seshadri
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Payal Rathod
-Sent: Friday, September 10, 2004 2:18 PM
-To: Netfilter ML
-Subject: allowing connection
-
-Hi,
-Right now I am allowing only my client's LAN access one of my 
-design's machine from the internet. Their LAN is a simple network,
-with a single IP and other machines are masqueraded. Now I want to allow
-only one of their machine to access my machine. Can I do it? I mean 
-the machine is on 192.168.1.x series of IP, but can I restrict it
-on mac address basis? If yes, how do I do it?
-
-With warm regards,
--Payal
-
+-- 
+Jason Opperisano <opie@817west.com>
 
 
