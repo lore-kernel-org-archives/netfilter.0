@@ -1,14 +1,12 @@
-From: kobartek <kobartek@poczta.fm>
-Subject: Re: block kazaa using iptables
-Date: Fri, 25 Apr 2003 21:00:24 +0200
+From: "David Gaudine" <david@annette.concordia.ca>
+Subject: Re: Local rule for Port Forward
+Date: Fri, 25 Apr 2003 17:12:54 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <15811579862.20030425210024@poczta.fm>
-References: <2CE951F1A7DC0644A33B9F763D2029C0012A2869@mail.it.farmingdale.edu>
-Reply-To: kobartek <kobartek@poczta.fm>
+Message-ID: <002d01c30b6f$70b1c600$0432cd84@sleepy>
+References: <1051289143.14581.25.camel@il.npn>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2CE951F1A7DC0644A33B9F763D2029C0012A2869@mail.it.farmingdale.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter List <netfilter@lists.samba.org>
 
+> I'm doing port forwarding to a server that runs jabber and everything
+> works fine, I did notice that if I bring up a jabber client on the
+> firewall itself I do not get connected.  While this isn't really
+> needed... I don't totally understand why it doesn't work.  Being
+> inquisitive... well I just gots to know why!  Can anyone shed some
+> light?
+> 
+> My rules for the jabber port forward are:
+> 
+> iptables -A FORWARD 
+>          -i $ExIF -d $JabIP -p tcp --dport $JabPort 
+>          -j ACCEPT
+> iptables -A PREROUTING 
+>          -t nat -d $ExIP -p tcp --dport $JabPort
+>          -j DNAT --to-destination $JabIP
+> iptables -A POSTROUTING
+>          -t nat -d $JabIP -p tcp --dport $JabPort
+>          -j SNAT --to-source $InIP
 
-> Does anyone have a list of IP addresses for the kazaa servers?\
-
-Recently found it on Polish newsgroup
-
-217.116.226.0/24
-
-Please make sure before you use it
-
-RGRDS
-k.
-
-
-----------------------------------------------------------------------
-Ponad 100 tysiecy facetow szukajacych przyjaciolki, kochanki, zony, 
-dziewczyny... Czekamy! >>> http://link.interia.pl/f170e
-
+I'm new at this, but shouldn't you have INPUT and OUTPUT rules
+if you want to run something on the firewall?  Maybe not, since
+I've just mastered FORWARD, INPUT and OUTPUT and I haven't
+figured out where PREROUTING and POSTROUTING come in
+so maybe you're counting on them to do the job.
 
 
