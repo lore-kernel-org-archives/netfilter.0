@@ -1,10 +1,9 @@
-From: Eric Leblond <eric@regit.org>
-Subject: php interface to ulog
-Date: 28 Sep 2002 13:31:16 +0200
+From: "Jens =?iso-8859-15?q?Lechtenb=F6rger?=" <lechten@wi.uni-muenster.de>
+Subject: NEW vs INVALID
+Date: 30 Sep 2002 12:18:26 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1033212676.30190.12.camel@porky>
+Message-ID: <m2elbb4w7h.fsf@pcwi1068.uni-muenster.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,29 +15,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi there,
 
-I was not able to find one, maybe it's a mistake.
-I thought it will be helpful for me and others, so I wrote one :
-	http://home.regit.org/ulogd-php.html
+using stateful packet matching I wonder how an INVALID tcp packet is
+defined.  In particular, I set up a rule to log inbound NEW ssh
+connections to port 22:
+iptables -A INPUT  -m state --state NEW -p TCP --dport 22 -j LOG --log-level 5 --log-prefix "IPTABLES: Legal NEW TCP: "
 
-Lots of work need to be done, but it's already usable. So, why not give
-it now to the community.
+What confuses me, is that this rule not only logs initial SYN
+packets but also (initial) packets with SYN and FIN set. 
+I thought that such packets should be INVALID...
+Is this a bug or a feature?
 
-An example of results :
-	http://home.regit.org/datas/ulogd-example.html
-
-By the way : Any help appreciated
-
-BR,
--- 
-Eric Leblond
-Mail: regit@regit.org
-Tips and Linux: http://www.regit.org
-"Computers are like air conditioners. They don't work when Windows are
-open"
-
+Jens
 
 
