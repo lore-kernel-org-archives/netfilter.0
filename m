@@ -1,13 +1,10 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: Netfilter NAT & Quake
-Date: Thu, 17 Oct 2002 02:13:49 +0200
+From: Tasha Smith <natasha3641@yahoo.com>
+Subject: Ineeed of major help with  Dynamic IP Addy for my IPTABLES :(((
+Date: Wed, 16 Oct 2002 21:18:44 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608F615F99@w2ks-e2k.iconos.be>
+Message-ID: <20021017041844.56340.qmail@web40707.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C27572.110B3968"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,243 +14,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Michel Briand <michelbriand@free.fr>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hiii,
+Guys!
+What iam running:
+Linux 7.2 Kernel 2.4.19
+Iptables-1.2.7a
+Pump-0.8.11-7
 
-------_=_NextPart_001_01C27572.110B3968
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+K, Since i am connected to the net with a ADSL connection my ip address changes
+usually. But in my script i have to put in my  ipaddy in some rules. My iptables
+script is in my "/etc/init.d" named "firewall" and it runs and is working.But to
+update my iptables in the script i installed "PUMP" .(i tryed following the
+directions out of LINUX FIREWALLS book ed.2) I created a pump.conf file in /etc
+dir whick looks like this!
+# "/etc/pump.conf"
 
-Hi,
+retries 3
+script /etc/rc.d/rc.pump.done
 
-Michel Briand [mailto:michelbriand@free.fr] wrote:
->
->I have Linux for many years and, since 10 month I play Quake III on=20
->Internet with my little linux box ;-)
->
-...
->
->I have the following problem :
->
->-- when we are 2 playing all run fine but when we are 3 the kernel =
-spend=20
->more time in kernel space to deliver packets and Quake lags. A kernel=20
+device eth0 {
+     noisdomain
+}
+*******************************************************************************
+And in the "/etc/rc.d/" i created this script like the book said and ran it
+using "chmod -u=rwx /etc/rc.d/rc.pump.done" here is what the script looks like:
 
-Wow, that strikes me as fairly odd/weird behaviour. Do you have numbers
-that show this rise in kernel time when the third client enters the
-scenario, like at least a "vmstat 1" output ? What hardware are you=20
-running the NAT box on ?
+#!/bin/bash
 
-IIRC, one thing that happens with Quake III traffic is, the client =
-connects
-from a fixed source UDP port. If you're masquerading this traffic, =
-there's
-no problem for one client behind the firewall. If a second client =
-connects
-to the same gameserver, the masquerading gateway will have to change
-the source UDP port of this new traffic flow in order not to confuse
-the Quake III server. A third client will also need a udp source port=20
-change, etc. The nat box needs to keep track of this.
+if [ "$1" = "down" ]; then
+    exit 0
+fi
 
-I don't know what the overhead of this operation is - I'm tempted to
-think it should be rather unnoticable. Still, it's a theory :-)
+if [ "$1" = "lease" ]; then
+    echo address $3 assigned to network interface $2 >
+/dev/console
+fi
 
->hacker (a friend of mine) tell me that the kernel have to work a lot=20
->with all theses packets that Quake sends&receives .... and it would be =
-a=20
->race problem in the NAT & filtering code.
+/sbin/pump -i eth0 -s > /var/tmp/pump.out
 
-One other theory is that all three of you are connected to the same
-Quake III server on the internet blasting away at each other, and
-that there is some congestion somewhere upstream since, to the rest
-of the Internet, all the Quake III traffic seems to be coming from one
-IP address. Quake III =3D udp, so there's a fairly big chance of udp
-traffic getting dropped by routers when there are network bursts.
+IPADDR=`fgrep IP: /var/tmp/pump.out | sed -e "s/.*IP:
+//"`
+NETMASK=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Netmask: //"`
+BROADCAST=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Broadcast: //"`
+NETWORK=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Network: //"`
+DHCP_SERVER=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*DHCP_SERVER: //"`
+GATEWAY=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Gateway: //"`
+DOMAIN=`fgrep IP: /var/tmp/pump.out | sed -e
+"s/.*Domain: //"`
 
-What happens when all three of you are playing behind the nat box, but=20
-connected to different Quake III servers ? Does the firewall choke
-on that too ?
+rm /var/tmp/pump.out
 
-The following test would be interesting: can you put all three clients
-behind your nat box and have them connect to a Quake III server on=20
-a 100Mbps server ? There should be no congestion, lag or packet loss
-on 100Mbps, and no problem for the server with just three clients, so=20
-if you're getting lag in that setup, there is probably something wrong
-with the masquerading box and you may be on to something.
+echo IPADDR=$IPADDR . /etc/rc.d/pump.info
+echo NETMASK=$NETMASK >> /etc/rc.d/pump.info
+echo SUBNET_BASE=$NETWORK >> /etc/rc.d/pump.info
+echo SUBNET_BROADCAST=$BROADCAST >>
+/etc/rc.d/pump.info
+echo GATEWAY=$GATEWAY >> /etc/rc.d/pump.info
+echo HOSTNAME=$HOSTNAME >> /etc/rc.d/pump.info
+echo DHCP_SERVER=$DHCP_SERVER>> /etc/rc.d/pump.info
 
->When there is only 2 connections to Quake servers actives all run fine=20
->=3D=3D the lag is not  perceptible ...
+sh /etc/init.d/iptables restart
 
-ok.
+exit 0
+********************************************************************************
+And soo after any where in the script where my IP ADDRESS is i put this
+ 
+if [ -f /etc/rc.d/pump.info ]; then
+     . /etc/rc.d/pump.info
+ else
 
->-- when a box of my LAN connects, my host (the router) could not =
-connect=20
->to Quake III server anymore ... When the connection is in the inverse=20
->order (my host =3D route, another box of my LAN) all connect fine.
+ echo "rc.firewall: dhcp is not configured."
+ sh /ect/init.d/iptables panic
+ exit 1 
+fi
+********************************************************************************
+But it is not working:  here is what i get  when i reboot all that happen when
+linux says: 
 
-Yep, this is possible in this scenario (remember the "same source udp
-port" thing from above):
+Starting up redhat network daemon:  
+/etc/init.d/ipatables no such file or directory  <---- i didnt catch the whole
+error cause it disappers to fast and cant find it in /var/log/boot.log but  i
+know it is pretty close to the error!!  ANY HELP GUYS :((((( 
 
-- you masquerade udp traffic coming from your LAN
-- you don't masquerade traffic coming from the local box
-
-The masquerading/nat code has checks for source ports that are in use
-and adjusts those on the fly, but your locally generated traffic
-doesn't go through the masquerade code.
-
-This problem should disappear if you also masquerade traffic from
-the local machine on your Internet interface.
-
->-- when I decide to run eDonkey from my M$ box, it complains about the=20
->port 4662 that I've specified in firewall to be open .... and it's not =
-????
->
-
-Sorry, can't help you with that one without more help...
-
-Regards,
-Filip
-
-
-
-
-
-
-------_=_NextPart_001_01C27572.110B3968
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: Netfilter NAT &amp; Quake</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Hi,<BR>
-<BR>
-Michel Briand [<A =
-HREF=3D"mailto:michelbriand@free.fr">mailto:michelbriand@free.fr</A>] =
-wrote:<BR>
-&gt;<BR>
-&gt;I have Linux for many years and, since 10 month I play Quake III =
-on<BR>
-&gt;Internet with my little linux box ;-)<BR>
-&gt;<BR>
-...<BR>
-&gt;<BR>
-&gt;I have the following problem :<BR>
-&gt;<BR>
-&gt;-- when we are 2 playing all run fine but when we are 3 the kernel =
-spend<BR>
-&gt;more time in kernel space to deliver packets and Quake lags. A =
-kernel<BR>
-<BR>
-Wow, that strikes me as fairly odd/weird behaviour. Do you have =
-numbers<BR>
-that show this rise in kernel time when the third client enters the<BR>
-scenario, like at least a &quot;vmstat 1&quot; output ? What hardware =
-are you<BR>
-running the NAT box on ?<BR>
-<BR>
-IIRC, one thing that happens with Quake III traffic is, the client =
-connects<BR>
-from a fixed source UDP port. If you're masquerading this traffic, =
-there's<BR>
-no problem for one client behind the firewall. If a second client =
-connects<BR>
-to the same gameserver, the masquerading gateway will have to change<BR>
-the source UDP port of this new traffic flow in order not to confuse<BR>
-the Quake III server. A third client will also need a udp source =
-port<BR>
-change, etc. The nat box needs to keep track of this.<BR>
-<BR>
-I don't know what the overhead of this operation is - I'm tempted to<BR>
-think it should be rather unnoticable. Still, it's a theory :-)<BR>
-<BR>
-&gt;hacker (a friend of mine) tell me that the kernel have to work a =
-lot<BR>
-&gt;with all theses packets that Quake sends&amp;receives .... and it =
-would be a<BR>
-&gt;race problem in the NAT &amp; filtering code.<BR>
-<BR>
-One other theory is that all three of you are connected to the same<BR>
-Quake III server on the internet blasting away at each other, and<BR>
-that there is some congestion somewhere upstream since, to the rest<BR>
-of the Internet, all the Quake III traffic seems to be coming from =
-one<BR>
-IP address. Quake III =3D udp, so there's a fairly big chance of udp<BR>
-traffic getting dropped by routers when there are network bursts.<BR>
-<BR>
-What happens when all three of you are playing behind the nat box, =
-but<BR>
-connected to different Quake III servers ? Does the firewall choke<BR>
-on that too ?<BR>
-<BR>
-The following test would be interesting: can you put all three =
-clients<BR>
-behind your nat box and have them connect to a Quake III server on<BR>
-a 100Mbps server ? There should be no congestion, lag or packet loss<BR>
-on 100Mbps, and no problem for the server with just three clients, =
-so<BR>
-if you're getting lag in that setup, there is probably something =
-wrong<BR>
-with the masquerading box and you may be on to something.<BR>
-<BR>
-&gt;When there is only 2 connections to Quake servers actives all run =
-fine<BR>
-&gt;=3D=3D the lag is not&nbsp; perceptible ...<BR>
-<BR>
-ok.<BR>
-<BR>
-&gt;-- when a box of my LAN connects, my host (the router) could not =
-connect<BR>
-&gt;to Quake III server anymore ... When the connection is in the =
-inverse<BR>
-&gt;order (my host =3D route, another box of my LAN) all connect =
-fine.<BR>
-<BR>
-Yep, this is possible in this scenario (remember the &quot;same source =
-udp<BR>
-port&quot; thing from above):<BR>
-<BR>
-- you masquerade udp traffic coming from your LAN<BR>
-- you don't masquerade traffic coming from the local box<BR>
-<BR>
-The masquerading/nat code has checks for source ports that are in =
-use<BR>
-and adjusts those on the fly, but your locally generated traffic<BR>
-doesn't go through the masquerade code.<BR>
-<BR>
-This problem should disappear if you also masquerade traffic from<BR>
-the local machine on your Internet interface.<BR>
-<BR>
-&gt;-- when I decide to run eDonkey from my M$ box, it complains about =
-the<BR>
-&gt;port 4662 that I've specified in firewall to be open .... and it's =
-not ????<BR>
-&gt;<BR>
-<BR>
-Sorry, can't help you with that one without more help...<BR>
-<BR>
-Regards,<BR>
-Filip<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C27572.110B3968--
+__________________________________________________
+Do you Yahoo!?
+Faith Hill - Exclusive Performances, Videos & More
+http://faith.yahoo.com
 
