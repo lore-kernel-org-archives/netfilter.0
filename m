@@ -1,14 +1,13 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Limit of --log-prefix
-Date: 11 Apr 2003 08:29:30 +0200
+From: Damphyr <damphyr@gmx.net>
+Subject: NAT and pppoe
+Date: Fri, 11 Apr 2003 09:07:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1050042570.8964.6.camel@raylinux.internal>
-References: <3E91FE2E.1030603@talika.eii.us.es>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <3E9669BF.5020509@gmx.net>
+References: <20030328102714.DF82D1C59B4DA@sm212.163.com> <20030410185540.GB565@eychenne.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-l/wCB5xQEpkuQZEIoqyS"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E91FE2E.1030603@talika.eii.us.es>
+In-Reply-To: <20030410185540.GB565@eychenne.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-7"; format="flowed"
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-
---=-l/wCB5xQEpkuQZEIoqyS
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-You could use ULOG from the P-O-M.
-
-
-On Tue, 2003-04-08 at 00:39, Javier Miguel Rodr=EDguez wrote:
->     Hello
->=20
->     Is there any patch available to increase the default limit of 31=20
-> chars of --log-prefix?
->=20
->     Thank you for your support
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
-(  http://www.mapnet.co.za/            )
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
-
-
---=-l/wCB5xQEpkuQZEIoqyS
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+lmDKh1fuR/Bv+ygRAnjpAKCTiYCR8ClWRXZTK7zOqK5iNRfW0QCfa1OI
-GRumrfaWvSHktDITonp/ED0=
-=aCyu
------END PGP SIGNATURE-----
-
---=-l/wCB5xQEpkuQZEIoqyS--
-
-
+T25jZSBtb3JlLCBhcyBhIG1lbWJlciBvZiB0aGlzIGxpc3QgOikuCgpJIGFtIGhhdmluZyBwcm9i
+bGVtcyBzZXR0aW5nIHVwIE5BVCBmb3IgbXkgaG9tZSBMQU4uCgpJIGdldCB0aGUgZm9sbG93aW5n
+OgoKZnJpZ29yaWZlcm8gcm9vdCAjIGlwdGFibGVzIC12IC10IG5hdCAtQSBQT1NUUk9VVElORyAt
+byBwcHAwIC1qIE1BU1FVRVJBREUKTUFTUVVFUkFERSAgYWxsIG9wdCAtLSBpbiAqIG91dCBwcHAw
+ICAwLjAuMC4wLzAgIC0+IDAuMC4wLjAvMAppcHRhYmxlczogSW52YWxpZCBhcmd1bWVudAoKaWZj
+b25maWcgZ2l2ZXMgbWU6CgpldGgwICAgICAgTGluayBlbmNhcDpFdGhlcm5ldCAgSFdhZGRyIDAw
+OkUwOjI5OjA5OkMwOjAzCiAgICAgICAgICAgaW5ldCBhZGRyOjE5Mi4xNjguMS4yNTQgIEJjYXN0
+OjE5Mi4xNjguMS4yNTUgIE1hc2s6MjU1LjI1NS4yNTUuMAogICAgICAgICAgIFVQIEJST0FEQ0FT
+VCBSVU5OSU5HIE1VTFRJQ0FTVCAgTVRVOjE1MDAgIE1ldHJpYzoxCiAgICAgICAgICAgUlggcGFj
+a2V0czozMDMwIGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjAKICAgICAgICAg
+ICBUWCBwYWNrZXRzOjIzNDkgZXJyb3JzOjAgZHJvcHBlZDowIG92ZXJydW5zOjAgY2Fycmllcjow
+CiAgICAgICAgICAgY29sbGlzaW9uczowIHR4cXVldWVsZW46MTAwCiAgICAgICAgICAgUlggYnl0
+ZXM6MjI1MjE4ICgyMTkuOSBLYikgIFRYIGJ5dGVzOjQ2MTAzNiAoNDUwLjIgS2IpCiAgICAgICAg
+ICAgSW50ZXJydXB0OjEwIEJhc2UgYWRkcmVzczoweGU0MDAKCmV0aDEgICAgICBMaW5rIGVuY2Fw
+OkV0aGVybmV0ICBIV2FkZHIgMDA6QzA6REY6MEU6NkQ6ODcKICAgICAgICAgICBVUCBCUk9BRENB
+U1QgUlVOTklORyBNVUxUSUNBU1QgIE1UVToxNTAwICBNZXRyaWM6MQogICAgICAgICAgIFJYIHBh
+Y2tldHM6MTc1IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjAKICAgICAgICAg
+ICBUWCBwYWNrZXRzOjE3NyBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBjYXJyaWVyOjAK
+ICAgICAgICAgICBjb2xsaXNpb25zOjAgdHhxdWV1ZWxlbjoxMDAKICAgICAgICAgICBSWCBieXRl
+czoxMTE1MiAoMTAuOCBLYikgIFRYIGJ5dGVzOjExNTk3ICgxMS4zIEtiKQogICAgICAgICAgIElu
+dGVycnVwdDoxMiBCYXNlIGFkZHJlc3M6MHg2MDAwCgpsbyAgICAgICAgTGluayBlbmNhcDpMb2Nh
+bCBMb29wYmFjawogICAgICAgICAgIGluZXQgYWRkcjoxMjcuMC4wLjEgIE1hc2s6MjU1LjAuMC4w
+CiAgICAgICAgICAgVVAgTE9PUEJBQ0sgUlVOTklORyAgTVRVOjE2NDM2ICBNZXRyaWM6MQogICAg
+ICAgICAgIFJYIHBhY2tldHM6MCBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBmcmFtZTow
+CiAgICAgICAgICAgVFggcGFja2V0czowIGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGNh
+cnJpZXI6MAogICAgICAgICAgIGNvbGxpc2lvbnM6MCB0eHF1ZXVlbGVuOjAKICAgICAgICAgICBS
+WCBieXRlczowICgwLjAgYikgIFRYIGJ5dGVzOjAgKDAuMCBiKQoKcHBwMCAgICAgIExpbmsgZW5j
+YXA6UG9pbnQtdG8tUG9pbnQgUHJvdG9jb2wKICAgICAgICAgICBpbmV0IGFkZHI6MjE3LjIzNC54
+eHgueHh4ICBQLXQtUDoyMTcuNS54eHgueHh4IApNYXNrOjI1NS4yNTUuMjU1LjI1NQogICAgICAg
+ICAgIFVQIFBPSU5UT1BPSU5UIFJVTk5JTkcgTk9BUlAgTVVMVElDQVNUICBNVFU6MTQ5MiAgTWV0
+cmljOjEKICAgICAgICAgICBSWCBwYWNrZXRzOjE2IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVu
+czowIGZyYW1lOjAKICAgICAgICAgICBUWCBwYWNrZXRzOjE1IGVycm9yczowIGRyb3BwZWQ6MCBv
+dmVycnVuczowIGNhcnJpZXI6MAogICAgICAgICAgIGNvbGxpc2lvbnM6MCB0eHF1ZXVlbGVuOjMK
+ICAgICAgICAgICBSWCBieXRlczo5MzQgKDkzNC4wIGIpICBUWCBieXRlczo2NjQgKDY2NC4wIGIp
+CgphbmQgaXB0YWJsZXMgc2F5czoKCmZyaWdvcmlmZXJvIHJvb3QgIyBpcHRhYmxlcyAtaAppcHRh
+YmxlcyB2MS4yLjdhCgpNeSBQUFAgbGluayBpcyBhIERTTCBsaW5lLCBJIHVzZSBycC1wcHBvZSBh
+bmQgSSB1cCBpdCB1c2luZyBhZHNsLXN0YXJ0LgpBbGwgbW9kdWxlcyBmb3IgaXB0YWJsZXMgbG9h
+ZCBmaW5lLiBJIGFsc28gdHJpZWQgdGhlIGlwdGFibGVzIGNvbW1hbnRkIAp3aXRoIGV0aDEgYXMg
+YSBwYXJhbWV0ZXIuIFNhbWUgcmVzdWx0LiBIYXZlbid0IGJlZW4gYWJsZSB0byBmaW5kIGFueSAK
+YW5zd2VyIGFueXdoZXJlIGluIHRoZSBkb2NzIG9yIGxpc3QgYXJjaGl2ZXMgc28gcGxlYXNlLi4u
+aGVlZWVscC4KCkNhbiBhbnlvbmUgdGVsbCBtZSB3aGF0IGFtIEkgZG9pbmcgd3Jvbmc/ClRoYW5r
+cywKVi4tCgoKCi0tCmh0dHA6Ly93d3cuZnJlZW1haWwuZ3IgLSDk+fHl3O0g9fDn8eXz3+Eg5+vl
+6vTx7+3p6u/9IPTh9/Xk8e/s5d/v9S4KCg==
