@@ -1,10 +1,10 @@
-From: Andrew <andrew@arda.homeunix.net>
-Subject: forwarding traffic from one port to another on the same box
-Date: Tue, 27 Jan 2004 21:37:45 -0500
+From: suresh k <suresh@pisem.net>
+Subject: Passing packet to IP layer
+Date: Wed, 28 Jan 2004 07:00:52 +0300 (MSK)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <bv779t$mo0$1@sea.gmane.org>
+Message-ID: <200401280400.i0S40qEW082694@www3.hotbox.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,36 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I would like to forward all tcp traffic arriving on a particular port to 
-another port on the same machine. This has worked for me in the past but 
-I can't get it working on my current machine.
-
-Here are the two commands I'm using to try to create the forward.
-
-iptables -I FORWARD -p tcp -d 192.168.10.34 --dport 26 -j ACCEPT
-
-iptables -t nat -A PREROUTING -p tcp -i eth0 -s 0/0 -d 192.168.10.34 
---dport 26 -j DNAT --to 192.168.10.34:25
-
-The first command is accepted but the second command results in an 
-'Invalid argument' error.
-
-The computer has only one interface, eth0. Here are its particulars:
-Mandrake Linux 9.2
-Iptables 1.2.8
-kernel 2.4.24 patched with super-freeswan 1.99.8
-
-The value of /proc/sys/net/ipv4/conf/eth0/forwarding is 0. Changing it 
-to 1 has no impact.
-The value of /proc/sys/net/ipv4/conf/eth0/rp_filter is 0.
-
-I hope someone out there has some ideas about what's going on because 
-I'm all out.
-
-Andrew
-
-
+Hi,
+I am capturing packets using netfilters. I am modifying the packets and I want to give 
+it "up the linux IP stack" in the kernel. The implementation has to been done as a 
+loadable module. I have a problem here, I don't find any kernel exported symbol which 
+can be used to send the modified stack up the stack and give it to the IP module. Kindly 
+tell me if there is any way to do that. I thought abt compiling the code which I have 
+written along with the kernel and use the kernel functions directly, but it is not 
+portable. Kindly tell me how to proceed. 
+cheers
+Suresh
 
