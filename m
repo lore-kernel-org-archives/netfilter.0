@@ -1,10 +1,9 @@
-From: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
-Subject: Command not working  in latest version
-Date: Sun, 16 Feb 2003 14:00:10 -0000
+From: Khanh Tran <khanh@slc.edu>
+Subject: RE: Command not working  in latest version
+Date: Sun, 16 Feb 2003 09:16:44 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b401c2d5c3$b87fd6c0$0100a8c0@nikita>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E6@EXCHANGE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,7 +15,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Paulo J. Matos" <pocm@mega.ist.utl.pt>, netfilter@lists.netfilter.org
+
+You'll now want to do:
+
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $EXTIP
+
+where eth0 is the interface going out to the Internet and $EXTIP is the
+public IP on that interface.
+
+Khanh Tran
+Network Operations
+Sarah Lawrence College
+
+
+-----Original Message-----
+From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
+Sent: Sunday, February 16, 2003 9:00 AM
 To: netfilter@lists.netfilter.org
+Subject: Command not working in latest version
+
 
 Hi all,
 
@@ -40,6 +59,8 @@ What's happening, any ideas?
 Best regards,
 
 Paulo
+
+
 
 
 
