@@ -1,13 +1,13 @@
-From: Rowan Reid <rreid@studio3arc.com>
+From: "Raj Wurttemberg" <rajw@c64.us>
 Subject: RE: DirectX 8.1 and NAT
-Date: Tue, 03 Dec 2002 14:42:27 -0800
+Date: Tue, 3 Dec 2002 21:56:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000201c29b1d$424a07e0$6601a8c0@s3ac>
-References: <000001c29b1a$7c1ac7a0$140aa8c0@monster>
+Message-ID: <000001c29b40$c4277e50$d201a8c0@hornet>
+References: <000201c29b1d$424a07e0$6601a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <000001c29b1a$7c1ac7a0$140aa8c0@monster>
+In-Reply-To: <000201c29b1d$424a07e0$6601a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mfortuna@atllc.net, 'Sherman Boyd' <meekrob@mitosys.com>, 'Andrew Magnus' <xanadian9@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+> standard. So either way this claim is bogus as is any claim without
+> reasonable proof.
 
+Well to be honest and from my experience (or inexperience) with
+Micro$oft's MechWarrior 4 game it IS possible for ONE computer to play
+behind an iptables firewall. I do not know that much about iptables and
+I am learning gradually from this mailing list... but here is what I
+have on my firewall so I can play MechWarrior 4 (Please don't beat me up
+to badly... I'm an iptables noob!): 
 
+IPTABLES="/sbin/iptables"
+STATIC_IP="My IP address from the ISP"
+INTERNAL="My game systems's internal ip address"
+$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 6073 -j DNAT
+--to $INTERNAL:6073
+$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 6667 -j DNAT
+--to $INTERNAL:6667
+$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 9999 -j DNAT
+--to $INTERNAL:9999
+$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 2200:2400 -j
+DNAT --to $INTERNAL:2200-2400
+$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 2200:2400 -j
+DNAT --to $INTERNAL:2200-2400
+$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 27999:29000
+-j DNAT --to $INTERNAL:27999-29000
+$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 27999:29000
+-j DNAT --to $INTERNAL:27999-29000
+$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 47624 -j
+DNAT --to $INTERNAL:47624
+$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 47624 -j
+DNAT --to $INTERNAL:47624
 
+$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 6073 -j ACCEPT
+$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 6667 -j ACCEPT
+$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 9999 -j ACCEPT
+$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 2200:2400 -j ACCEPT
+$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 2200:2400 -j ACCEPT
+$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 27999:29000 -j ACCEPT
+$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 27999:29000 -j ACCEPT
+$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 47624 -j ACCEPT
+$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 47624 -j ACCEPT
 
+Comments, corrections, and advice are welcome.
 
-> It doesn't make any sense.  The only problem I know of is 
-> running a game server behind the firewall.  This causes 
-> problems with outside clients making connections to that 
-> host.  This is easily fixed with some NAT PREROUTING and 
-> FORWARD rules.  A specific case would be helpful.
-> 
-> Thanks!
-> 
-
-
-I know typically it shouldn't be a problem I know some games would
-require certain modules be loaded eg. Quake. However I'm not familiar
-with directx eight. It has a bad tendency of wanting to manage
-everything including networking. Though I doubt this, most games handle
-interconnection on their own. Even if DirectX did take over this facet
-this would be good since modules would only have to be made for one
-standard. So either way this claim is bogus as is any claim without
-reasonable proof.
+Thanks,
+/*Raj*/
 
 
