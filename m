@@ -1,13 +1,12 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: ftp connection tracking on multiple ports
-Date: 30 Oct 2004 23:00:23 +0200
-Message-ID: <1099080894.22637.21.camel@nostromo.bgsecm.com>
-References: <BC372EA70AC7724B9DE983CBA6D1D7E5126E37@ws03-exchange.iconos.be>
-	<1403218a04102804107389b75e@mail.gmail.com>
+Subject: Re: Abot libipq
+Date: 30 Oct 2004 23:00:29 +0200
+Message-ID: <1099081604.22637.27.camel@nostromo.bgsecm.com>
+References: <200410191856493.SM01604@FERRARI>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a04102804107389b75e@mail.gmail.com>
+In-Reply-To: <200410191856493.SM01604@FERRARI>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,12 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: netfilter <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El jue, 28 de 10 de 2004 a las 13:10, Mohamed Eldesoky escribi=C3=B3:
-> I don't use natting, do I still need that helper ???
+El mi=C3=A9, 20 de 10 de 2004 a las 00:56, Danyel Leon Toledo escribi=C3=B3=
+:
+> Hy
+>=20
+> =20
+>=20
+> I need write one aplication for look into pakets I recive in my linux
+> router. I found that libipq can help me. But, ?can any body tell me whe=
+re I
+> find documentation about it? Really is hard to find it
 
-You just need the ip_conntrack_ftp.o helper.
+The most obvious advise it's to start with the man pages that
+are shipped with libipq.
+
+You can also use the source from pdumpq, that it's a little
+program that uses libipq.
 
 --=20
 Jose Maria Lopez Hernandez
