@@ -1,14 +1,11 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: 'No Route: Rusty's brain broke' ??????
-Date: Fri, 3 Sep 2004 15:19:19 -0400 (EDT)
+From: "Sunny Shum" <sshum@empowertechnologies.com>
+Subject: Default routing setup
+Date: Fri, 3 Sep 2004 14:38:05 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <62872.216.239.93.106.1094239159.squirrel@216.239.93.106>
-References: <200409031401.i83E1R53004651@webmail2.magma.ca>
-	<62679.216.239.93.106.1094238621.squirrel@216.239.93.106>
+Message-ID: <200409032138.i83Lc6cn011411@melmac.stargate.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <62679.216.239.93.106.1094238621.squirrel@216.239.93.106>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,71 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Samuel Jean <sj-netfilter@cookinglinux.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Forget my previous post.
-I was in a bad assumption.
-
-I thought about the "MASQUERADE: Route sent us somewhere else" error.
-
-Sorry.
-
-
-On Fri, September 3, 2004 3:10 pm, Samuel Jean said:
-> On Fri, September 3, 2004 10:01 am, dravya said:
->>
->> Hi all,
->>
->> I have two ppp connections setup and I want access the internet via
->> these
->> links....
->> However, I get the error message "kernel: No Route: Rusty's brain
->> broke".
->>
->> Is there a patch associated with this.... or can you suggest any
->> fixes...
->>
->
-> https://lists.netfilter.org/pipermail/netfilter-devel/2004-January/0136=
-95.html
->
->> Why would something like this happen??? Is this a problem with the
->> ipt_MASQUERADE.c code???
->>
->
-> Kinda.
->
->> any tips or suggestions are much appreciated.
->>
->
-> Current ipt_MASQUERADE.c isn't supporting funky routing.
->
-> I got the same error when I was using the ROUTE target to
-> force some nodes to use ppp1 instead of ppp0.
->
-> Patrick's patch found in the URL below worked for me.
->
-> However, this is an active topic. You should follow that
-> thread:
->
-> https://lists.netfilter.org/pipermail/netfilter-devel/2004-August/01662=
-0.html
->
->> Thanks
->>
->
-> HTH
->
->> Dravya
->
->
-> Samuel Jean
-> CookingLinux.org
->
->
->
->
-
-
-
+Hi all,
+ 
+I am a newbie into the Linux world, and I recently built a firewall box (2
+NICs, internal network as 192.168.1.xxx) with RedHat 9.  Everything works
+fine, except the routing table.  Every time when the system has reboot, I
+have to do the following command:
+ 
+prompt>route del default
+ 
+prompt>route add default gateway xxx.xxx.xxx.xxx [external gateway IP]
+ 
+Because I don't do that, and if I just type "route" at the prompt, the
+default is point back to the internal NIC.  Is there a way to make this
+permanent?  I tried to edit the file /etc/sysconfig/network by adding the
+line "GATEWAY=xxx.xxx.xxx.xxx" but it doesn't work.
+ 
+Thanks!
+ 
+Sunny Shum
+ 
