@@ -1,14 +1,15 @@
-From: Jeroen Vriesman <j.vriesman@prompt.nl>
-Subject: Re: How to setup netfilter to stop outbound DHCP?
-Date: Sun, 29 Feb 2004 21:22:00 +0100
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Dummy interfaces
+Date: Sun, 29 Feb 2004 21:47:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040229212200.6aa76976.j.vriesman@prompt.nl>
-References: <20040229143928.7884.68000.Mailman@netfilter-sponsored-by.noris.net>
-	<001001c3fefd$daf70a70$6401a8c0@LSchmitt>
+Message-ID: <20040229204750.GM15558@sunbeam.de.gnumonks.org>
+References: <200402291915.i1TJFL0Y079287@gate.lianet.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vvRocJ6whMXXNc9q"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001001c3fefd$daf70a70$6401a8c0@LSchmitt>
+Content-Disposition: inline
+In-Reply-To: <200402291915.i1TJFL0Y079287@gate.lianet.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +19,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Serge Druzhinin <drserge@nexter.ru>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-You can configure dhcp and dns itself to only listen/respond on one NIC.
 
-No need to make any filter rules.
+--vvRocJ6whMXXNc9q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Won't help the network support people, for most network support people crazyness is a default state of mind.
+On Sun, Feb 29, 2004 at 10:15:16PM +0300, Serge Druzhinin wrote:
+> As I know, loopback interface also don't really exist. But I can match it=
+ in
+> rules. dummy0 (for example) interface is not rejected by iptables as
+> parameter for  -i or -o, but rule never matches.
 
-Cheers,
-Jeroen.
+No, it is not rejected because iptables has no way what interface name
+might be valid or not (nobody forces you to call your dummy inteface
+dummyX.  This is common practise, maybe even policy, but not
+implementation).
 
-On Sun, 29 Feb 2004 13:54:29 -0600
-"Dr. Lawrence J. Schmitt" <lschmitt@cbu.edu> wrote:
+> If you have some time to discuss this situation, please take a look to
+> following:
 
-> 
-> I am setting up a lab for students to configure and experiment with
-> Linux.  I need to set up something that will keep responses to DHCP
-> requests from leaving the lab to keep from driving the network support
-> people crazy.  
-> 	1.  What is the appropriate tool to use?
-> 	2.  Can anyone suggest an iptables rule that will block either
-> dhcp 		requests from entering the lab subnet or responses from
-> exiting.
-> 	3.  I would like to set up one pc running Linux as a router and
-> firewall, filter that also would run DHCP and DNS for the local
-> lab as well as block responses to DHCP requests on the nic that
-> is connected to the campus network.
-> 
-> Any thoughts or comments are appreciated.
-> 
-> Thanks in advance,
-> 
-> Larry Schmitt
-> 
-> 
-> 
-> 
-> 
+This is not a valid use of an interface.  A 'dummy' interface can never
+be treated as a real interface.  you won't be able to attach a tc qdisc
+or do any other advanced networking stuff eithe.r
+
+=20
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--vvRocJ6whMXXNc9q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAQk/2XaXGVTD0i/8RAkgeAKCIhm+DMKW18PEIKWAB0n/c5tdsOACgmb7i
+7VD9uif7MLkCyq+ywOrq2LY=
+=W0bT
+-----END PGP SIGNATURE-----
+
+--vvRocJ6whMXXNc9q--
 
