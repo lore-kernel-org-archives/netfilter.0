@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: urgent - netfilter rejecting 60% of DNS requests!
-Date: Thu, 2 Oct 2003 09:31:00 +1000
+Subject: RE: NAT help needed
+Date: Thu, 2 Oct 2003 09:34:51 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C406@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019344@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,19 +16,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: mferrari@decidir.net, "Netfilter list (E-mail)" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: sathishnet@hotmail.com, netfilter@lists.samba.org
 
-Are you sure this isn't a BIND problem and not iptables? If it's =
-iptables then you should log all droped/rejected packets and find out =
-which ones are dropping and why.
+if you want round robin then use DNS (only if DNS lookups are used eg. =
+www.yourdomain.com ).
 
-Do you have some funky rules like dropping fragmented packets or =
-anything else?
+You will need to assign all IPs to eth0 or you can HOST route all the =
+available IPs to go to your eth0 IP if you unfortunately have a router =
+in front of you, this makes it easier to managed since you don't have to =
+worry about adding heaps of IPs to your external NIC..
 
-Some BIND servers use TCP instead of UDP to transfer zone info but this =
-may(not) be your problem.. LOG, LOG, LOG and if it doesn't catch it then =
-it's probably a BIND issue..
+If you want IP round robin then you'll need to use the patch-o-matic =
+module called "nth" patch. Though I haven't seen much success with this =
+as someone had problems getting it working..
+
+Here's a snippet of his email and rules he was TRYING to get working...
+
+
+<snip>
+iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source =
+<ppp0-ip-addr>
+iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to-source =
+<ppp1-ip-addr>
+iptables -t nat -A POSTROUTING -o ppp2 -j SNAT --to-source =
+<ppp2-ip-addr>
+iptables -t nat -A POSTROUTING -o ppp3 -j SNAT --to-source =
+<ppp3-ip-addr>
+
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 1 -m state =
+--state new  -j CONNMARK --set-mark 1
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 2 -m state =
+--state new  -j CONNMARK --set-mark 2
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 3 -m state =
+--state new  -j CONNMARK --set-mark 3
+iptables -t mangle -A PREROUTING -m nth --every 4 --packet 0 -m state =
+--state new  -j CONNMARK --set-mark 4
+
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 1 -m state =
+--state new  -j CONNMARK --set-mark 1
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 2 -m state =
+--state new  -j CONNMARK --set-mark 2
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 3 -m state =
+--state new  -j CONNMARK --set-mark 3
+iptables -t mangle -A OUTPUT     -m nth --every 4 --packet 0 -m state =
+--state new  -j CONNMARK --set-mark 4
+
+iptables -t mangle -A POSTROUTING -m connmark --mark 1 -j ROUTE --oif =
+ppp1
+iptables -t mangle -A POSTROUTING -m connmark --mark 2 -j ROUTE --oif =
+ppp2
+iptables -t mangle -A POSTROUTING -m connmark --mark 3 -j ROUTE --oif =
+ppp3
+iptables -t mangle -A POSTROUTING -m connmark --mark 4 -j ROUTE --oif =
+ppp0
+</snip>
+
+
 
 Thanks,
 ____________________________________________
@@ -44,47 +88,56 @@ HelpDesk: +61 2 9955 2698
 =20
 
 -----Original Message-----
-From: Martin Ferrari - Decidir IT [mailto:mferrari@decidir.net]
-Sent: Thursday, 2 October 2003 4:33 AM
-To: 'Netfilter list (E-mail)'
-Subject: urgent - netfilter rejecting 60% of DNS requests!
+From: Sathish Net [mailto:sathishenet@yahoo.com]
+Sent: Tuesday, 30 September 2003 7:33 PM
+To: netfilter@lists.samba.org
+Subject: NAT help needed
 
 
-Hi, I don't know what's happening, but I discovered that my firewall is
-currently rejecting with port unreachable about 60% of the DNS queries I
-receive, but this is not happening with the other kind of traffic I =
-manage
-(http and smtp).
+Hello Sir,
 
-I use connection tracking and ip_conntrack_max is set to 32k. Dmesg =
-doesn't
-report anything!
+I have installed REDHAT LINUX 9.0. I want to do
+NATTING. We are having the leased line from our ISP.
+Our ISP provider has assgined 12 IP Address for our
+office use. I want to do NATTING.=20
 
-Please, ANY help would be greatly welcomed!
+I have installed 2 NIC in the LINUX system. eth0 and
+eth1. I assigned the eth0 to the ISP provider and eth1
+- for our LAN addres. (Internal)
 
----
+Now i want to do like eth0 is for ISP provider link.
+(in that i want to nat 12 ip address like
+203.129...... .......) it should work like round robin
+in that 12 ip address.
 
-Martin Ferrari
-Administrador UNIX
-Decidir
-________________________________________
-mailto:mferrari@decidir.net
-Vis=EDtenos en http://www.decidir.com
-Decidir.com International Ltd.
+How to do ???
 
-******************* Confidencialidad en Internet Email =
-********************
-Este mensaje puede contener informaci=F3n confidencial. Si usted no es =
-el
-destinatario de este mail, o la persona encargada de recibir los
-mensajes para dicha persona, por favor no copie ni reenv=EDe este =
-mensaje.
-De ser as=ED, por favor destruya este mensaje y de ser tan amable
-notifique al remitente con un Email. En caso de no querer recibir esta
-clase de informaci=F3n via Internet por favor av=EDsenos cuanto antes.
-Conclusiones, opiniones y cualquier otro tipo de informaci=F3n que
-contenga este mensaje y que no este directamente relacionado con el
-rubro oficial de esta Empresa, no debe ser tomado en cuenta.
+Thanking you,
 
+Looking forward to a favorable response.
+
+With regards,
+
+Sathish
+
+
+
+=3D=3D=3D=3D=3D
+
+=20
+
+=20
+
+=20
+
+ Sathish
+
+=20
+
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
 
 
