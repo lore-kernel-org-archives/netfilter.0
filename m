@@ -1,14 +1,14 @@
-From: "Dick St.Peters" <stpeters@NetHeaven.com>
-Subject: Re: Help with alias interfaces
-Date: Wed, 23 Jun 2004 16:30:46 -0400
+From: Ian Holsman <kryton@gmail.com>
+Subject: Re: Bandwidth Shaping requests coming from a web server
+Date: Thu, 24 Jun 2004 06:40:40 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <16601.59510.845588.723249@saint.heaven.net>
-References: <FLECICIIDHIEIENHHOOLIEFNCCAA.esanz@minorplanetusa.com>
-	<200406231553.01584.Antony@Soft-Solutions.co.uk>
-	<16601.54137.766533.681609@saint.heaven.net>
-	<200406232022.46362.Antony@Soft-Solutions.co.uk>
+Message-ID: <2a627cd2040623134048a70d42@mail.gmail.com>
+References: <2a627cd2040622200675aed3eb@mail.gmail.com> <200406230957.14908.Antony@Soft-Solutions.co.uk>
+Reply-To: ian@holsman.net
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406232022.46362.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200406230957.14908.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Antony Stone writes:
+yes.. fowarding it via squid is an option.
+I was hoping to use netfilters queues and features.
+similiar to what netnice.org can do on freebsd
 
-> On Wednesday 23 June 2004 8:01 pm, Dick St.Peters wrote:
+On Wed, 23 Jun 2004 09:57:14 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
 > 
-> > Antony Stone writes:
-> > > The deprecated way to get multiple IPs results in pseudo-interface names
-> > > such as eth1:0, eth1:1 etc as you discussed.
+> On Wednesday 23 June 2004 4:06 am, Ian Holsman wrote:
+> 
+> > Hi.
 > >
-> > Deprecated by whom?
+> > I would like to write a apache module which limits the speed we send
+> > out the response based on some internal algorithm (like a cookie, or a
+> > line in the request header, or some random number ;-)).
 > 
-> http://mirrors.bieringer.de/Linux+IPv6-HOWTO/conf-ipv6-in-ipv4-point-to-point-tunnels.html
-> (Section headings 9.3.1.1 & 9.3.1.2)
-> http://seclists.org/lists/honeypots/2004/Jan-Mar/0209.html
-> http://www.uwsg.iu.edu/hypermail/linux/kernel/0108.2/0485.html
-
-These are deprecating the use of "ifconfig", not the use of
-pseudo-interface names.  You can use pseudo-interface names with "ip":
-	     ip addr add dev eth0 a.b.c.d/e label eth0:1
-
-What's more, the author of the last of your references doesn't seem to
-be aware that the labels aren't limited to numbers.  His remark about
-the number of labels being limited to <10000 doesn't take into account
-labels eth0:aaaa through eth0:ZZZZ.  Even that's not all; labels like
-eth0:/^%# are allowed too.  I suspect non-printing characters will
-work also, although I haven't tried any yet.
-
-As additional icing on this "ip" cake, you can assign multiple IPs to
-a single pseudo-interface label, making it possible to deal with
-groups of IPs at once.
-
-However, most people aren't dealing with ipv6-in-ipv4 tunnels,
-honeypots, or thousands of IPs per interface, as are the references
-you cite.  "ifconfig" will handle the vast majority of cases and is
-simpler to use when the power of "ip" is not needed.
-
---
-Dick St.Peters, stpeters@NetHeaven.com 
+> I don't know if Apache can do this sort of thing itself, but Squid certainly
+> can (the phrase it uses for that is "delay pools").   Since you want to do
+> this for a server whcih you run, rather than your clients accessing external
+> servers, you want Squid in Accelerator Mode rather than Proxying Mode.
+> 
+> See http://www.squid-cache.org for more info.
+> 
+> > also .. any tips on how to this on a BSD box?
+> 
+> You can certainly run Squid under BSD (and you certainly can't run netfilter
+> under BSD).
+> 
+> Regards,
+> 
+> Antony.
+> 
+> --
+> There's no such thing as bad weather - only the wrong clothes.
+> 
+>  - Billy Connolly
+> 
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+>
 
