@@ -1,17 +1,14 @@
-From: Mike <1100100@gmail.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Policy Misunderstanding: RTFM Guidance Requested.
-Date: Wed, 1 Sep 2004 12:20:54 -0400
+Date: Wed, 01 Sep 2004 12:50:58 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <8ca4228204090109202271a1da@mail.gmail.com>
-References: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
-	<3063e5040831212267c70f95@mail.gmail.com>
-	<8ca42282040901045464650094@mail.gmail.com>
-	<200409011044.27158.Alistair@nerdnet.ca>
-Reply-To: Mike <1100100@gmail.com>
+Message-ID: <1094057457.1824.11.camel@wolfpack.ljm.dom>
+References: <200409011323.i81DNQAi040521@jkcpub.iserver.net>
+	<8ca4228204090108466549b5f3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409011044.27158.Alistair@nerdnet.ca>
+In-Reply-To: <8ca4228204090108466549b5f3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,130 +19,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair Tonner <alistair@nerdnet.ca>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Alistair,
-
-Thanks for the reply.  I appreciate you taking a look and providing comments.
-I want to ask you about some of these "Really Bad Thing"(s)
-
-> > It runs Gentoo Linux, kernel 2.4.26 and iptables 1.2.10.
+On Wed, 2004-09-01 at 11:46, Mike wrote:
+> Hi Deepak,
 > 
->         Yumm ...Gentoo -- good stuff
-
-Definitely yes.  I switched from Slackware which I will always be fond
-of, but Gentoo has so much to offer.  I'll leave it there because one
-could write for days about portage and optimizations.
-
+> Thank you for your response.
 > 
-> > I thought I had seen others on this list discuss starting with a
-> > completely closed router that denies all traffic - INPUT, OUTPUT, and
-> > FORWARD; filter, nat, and mangle.
-
->         Set POLICY for INPUT OUTPUT and FORWARD to DROP in filter only.
->         If you start setting the POLICY for nat and mangle tables to DROP, things
->         will misbehave badly.  And be hard to debug. -- there are those that
->         disagree, and have success doing things like this but in general and
->         for a home router, it is in many folks eyes a (tm) Really Bad Thing (tm).
-
-This comment pricks up my ears/eyes.  Why is this so, and do you have
-links to discussions on this topic.
-
->         There is a wonderful fellow named Oskar Andreasson who has written a
-> wonderful set of tutorials, and even provides some elemental scripts as
-> guidelines
->         http://iptables-tutorial.frozentux.net/
+> On Wed, 1 Sep 2004 09:27:22 -0400, Deepak Seshadri
+> <dseshadri@broadbandmaritime.com> wrote:
+> > 
+> > If the default policy on your mangle & Nat chain is set to DROP & if you
+> > have no rules to classify traffic in these tables, all your packets will get
+> > dropped here. They will not make it to the FILTER table.
 > 
->         Read and enjoy
-
-Thanks for pointer.  I've got a Firefox tab open to it right now. 
-Looks very good.  Now let's see if I can absorb it.
-
-> >
-> > echo "   Enabling forwarding.."
-> > echo "1" > /proc/sys/net/ipv4/ip_forward
+> This is a good point and shows where maybe I am starting to MIS-understand.  
 > 
->         Urk
->           Do this at the *end* of the script. -- just a good habit to NOT turn on
-> forwarding until all the rules are loaded to handle it.
+> 1.  Can appended rules override default polices? 
 
-That sounds like a very good idea to me.  Noted for edit this evening.
+yes--for example:
 
-> >
-> > echo "   Set the filter/nat/mangle packet Matching Table Policy."
-> > $IPTABLES -t filter -P INPUT DROP
-> > $IPTABLES -t filter -P OUTPUT DROP
-> > $IPTABLES -t filter -P FORWARD DROP
-> 
-> The above are a (tm) Good Thing (tm)
+iptables -P INPUT DROP
+iptables -A INPUT -j ACCEPT
 
-Yes, this is the kind of thing that I want - start from complete
-lockdown, and then open only one thing at a time until I can do
-everything that I want on the network and maintain everything else in
-lockdown.
+will accept all traffic in the INPUT chain.  the POLICY of a chain is
+only enforced when a packet reaches the last rule in that chain and
+hasn't matched any rules.
 
-> 
-> > $IPTABLES -t nat -P PREROUTING DROP
-> > $IPTABLES -t nat -P POSTROUTING DROP
-> > $IPTABLES -t nat -P OUTPUT DROP
-> > $IPTABLES -t mangle -P INPUT DROP
-> > $IPTABLES -t mangle -P OUTPUT DROP
-> > $IPTABLES -t mangle -P FORWARD DROP
-> > $IPTABLES -t mangle -P PREROUTING DROP
-> > $IPTABLES -t mangle -P POSTROUTING DROP
-> 
-> In general the above are a (tm) Really Bad Thing (tm)
+> 2.  Do you need to include appended rules to parts of the iptables
+> chain that you are not using, or else all the packets will get
+> dropped?  For example, do you have to set Mangle rules even if you are
+> not using any Mangling but have set a DROP policy for mangling.
 
-As previously requested above, why are these policies bad/unworkable?
-Any info. and links discussing these iptables fundamentals would be
-greatly valued.
+if you set the policies of the mangle chains to DROP and then do not
+append any rules, you can be pretty sure that no traffic will get
+through.
 
-> >
-> > echo "   INPUT/OUTPUT Rules for Routerbox."
-> > $IPTABLES -t filter -A INPUT -j ACCEPT
-> > $IPTABLES -t filter -A OUTPUT -j ACCEPT
-> 
-> Uhhh ... I hope these are only here because yer having problems --
->    These above two rules are a (tm) Really Bad Thing (tm)
->         (they basically allow everything in and out -- *ouch*)
+i'd recommend against starting your netfilter adventure by setting the
+policies of nat & mangle chains to DROP.  it will make it a very short
+trip...
 
-You got it.  This is the rule of a man willing to submit his machines
-to a world of hostility in a desperate attempt to get
-some-packet/any-packet  through the routerbox.
+-j
 
-> >
-> > echo "   FORWARD Rules for data allowed IN and OUT of the LAN."
-> > $IPTABLES -t filter -A FORWARD -i eth0 -o eth1 -m state --state
-> > ESTABLISHED,RELATED -j ACCEPT
-> 
-> Repeat the above rule for filter INPUT
+-- 
+Jason Opperisano <opie@817west.com>
 
-Ahh, I see what you are getting at.  Will do.
-
-> 
-> > $IPTABLES -t filter -A FORWARD -i eth0 -o eth1 -m state --state NEW -j
-> > ACCEPT
-> 
-> The above rule is a (tm) Really Bad Thing (tm)
->         (basically allows everything into yer lan *ouch*)
-
-Indeed, you are witnessing further desperation after hours of
-scratching my head and muttering to myself.  :-)
-
-
-> >
-> > echo "   Do not respond to remote Pings."
-> > $IPTABLES -t filter -A INPUT -p icmp --icmp-type echo-request -j DROP
-> Umm .. You *might* want to set this to deny ping requests from the outside,
-> rather than dropping them all .. .unless you don't trust users on the inside.
-> *grin*
-
-I'm not quite sure I follow here.  How does this affect users behind
-the firewall on the home LAN.
-
-Thanks again for your thoughtful response.
-I'd hope you can spare some further time to respond.
-
-Mike
 
