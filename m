@@ -1,11 +1,10 @@
-From: <Josh.Berry@compucom.com>
-Subject: IPTables PSD Patch Problem
-Date: Mon, 4 Aug 2003 16:54:47 -0500
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Problem reading an URL with Java through IPTables/Squid proxy
+Date: Tue, 5 Aug 2003 08:12:08 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0C7C6E1720E8D74FB52EBEF93649730A0116BEB5@2k099exm01.compucom.local>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C040@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C35AD3.0597B44E"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,152 +16,112 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org, firewalls@securityfocus.com
+Content-Type: text/plain; charset="us-ascii"
+To: Heiko <electropunk@web.de>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+"GET /intl/de/about.html HTTP/0.0"
+Your Java applet isn't using proper HTTP protocols and should send a =
+HTTP/1.0 or HTTP/1.1 to the website..
+I do this already in PHP to check website uptime etc and works fine.
 
-------_=_NextPart_001_01C35AD3.0597B44E
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+This is something you need to send to the web server..
 
-Sorry,=20
 
+GET /webchecker.jsp HTTP/1.0\r\n
+Cache-Control: no-cache\r\n
+Expires: Mon, 26 Jul 1997 05:00:00 GMT\r\n
+Pragma: no-cache\r\n
+Host:www.citadelcomputer.com.au\r\n
+\r\n
+
+<2 sets of CRLF to tell the webserver your finished>
+
+
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 =20
 
-After going through the Makefile and Config.in file for netfilter I
-realized that I had a typo, I had:
-
-obj=3D$(CONFIG_IP_NF_MATCH_PSD) +=3D ipt_psd.o
-
-=20
-
-instead of:
-
-obj-$(CONFIG_IP_NF_MATCH_PSD) +=3D ipt_psd.o
-
-=20
-
-I had an =3D sign where I needed a - .
-
-=20
-
-Josh Berry
-
-Information Security Group
-
-972-856-5402
-
-=20
+-----Original Message-----
+From: Heiko [mailto:electropunk@web.de]
+Sent: Tuesday, August 05, 2003 2:54 AM
+To: netfilter@lists.netfilter.org
+Subject: Problem reading an URL with Java through IPTables/Squid proxy
 
 
-------_=_NextPart_001_01C35AD3.0597B44E
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-<html>
+I've been using an IPTables (1.2.6a-5) / Squid (2.4.6-2) combo on my =
+gateway
+box (Debian Woody, Kernel 2.4.20, latest updates) for quite some time
+without any problems.
+Lately I've been starting to develop Java applications and now encounter =
+the
+problem that any attempt to read the contents of an Internet URL through
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
+java.net.URLConnection.getInputStream()   - or -
+java.net.URL.openStream()
+
+methods from a client situated in my local intranet results in a 'The
+requested URL could not be retrieved' reply from Squid.
+Checking Squid's access.log, I've found that any URL requested by my =
+Java
+code seems to be truncated when (or before?) being received by Squid, eg =
+a
+request for the URL
+
+http://www.google.de/intl/de/about.html
+
+results in a log message similar to
+
+w.x.y.z - - [04/Aug/2003:18:17:32 +0200] "GET /intl/de/about.html =
+HTTP/0.0"
+400 1244 NONE:NONE
+
+Obviously, any such request will fail.
+
+The problem can't be in my code because it works ok if I switch to Win2k
+(got a dual boot configuration on my gateway box).
+
+Squid is not set up as a transparent proxy, and the IPTables rules
+concerning Squid look like this:
+
+$IPTABLES -A PREROUTING -t nat -i $inner_nic -p tcp -d ! $inner_nw =
+--dport
+80 -s $inner_nw -j REDIRECT --to-port 3128
+
+$IPTABLES -A INPUT -i $inner_nic -p tcp -s $inner_nw -d $inner_ip =
+--dport
+3128 -j ACCEPT
+$IPTABLES -A OUTPUT -o $inner_nic -p tcp -d $inner_nw -s $inner_ip =
+--sport
+3128 -j ACCEPT
+$IPTABLES -A INPUT -i $inner_nic -p tcp -d $inner_nw -s $inner_ip =
+--sport
+3128 -j ACCEPT
+$IPTABLES -A OUTPUT -o $inner_nic -p tcp -s $inner_nw -d $inner_ip =
+--dport
+3128 -j ACCEPT
+
+where
+
+inner_nic =3D eth0
+inner_nw =3D intranet (192.168.0.0/24)
+inner_ip =3D IP bound to eth0 (gateway's IP, 192.168.0.x)
+
+Again, this setup works 100% when accessing HTTP/FTP URLs through any =
+means
+but the aforementioned Java code.
+
+Can anyone shed some light on this?
+
+TIA!
 
 
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>Sorry, </span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>After going through the Makefile and Config.in file for =
-netfilter I
-realized that I had a typo, I had:</span></font></p>
-
-<p class=3DMsoNormal><b><font size=3D3 face=3D"Times New Roman"><span
-style=3D'font-size:12.0pt;font-weight:bold'>obj=3D$(CONFIG_IP_NF_MATCH_PS=
-D) +=3D ipt_psd.o</span></font></b></p>
-
-<p class=3DMsoNormal><b><font size=3D3 face=3D"Times New Roman"><span
-style=3D'font-size:12.0pt;font-weight:bold'>&nbsp;</span></font></b></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>instead of:</span></font></p>
-
-<p class=3DMsoNormal><b><font size=3D3 face=3D"Times New Roman"><span
-style=3D'font-size:12.0pt;font-weight:bold'>obj-$(CONFIG_IP_NF_MATCH_PSD)=
- +=3D ipt_psd.o</span></font></b></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>I had an =3D sign where I needed a - .</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>Josh Berry</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>Information Security Group</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>972-856-5402</span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'>&nbsp;</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-=00
-------_=_NextPart_001_01C35AD3.0597B44E--
 
