@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Kernel: NET: messages suppressed (I am sure it has been covered before)
-Date: Thu, 23 Oct 2003 17:03:57 +0100
+From: "Josh Berry" <josh.berry@linknet-solutions.com>
+Subject: RE: Time changes
+Date: Thu, 23 Oct 2003 10:09:35 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310231603.h9NG3x702705@onyx.rockstone.co.uk>
-References: <3F41DBB59549A54482D4FC25AEEDCBE18B9A9F@MAIL-06VS.atlarge.net>
+Message-ID: <12771.204.214.145.6.1066921775.squirrel@mail.linknet-solutions.com>
+References: <9FEBBE3B5C27D311B0B90050041E59B00439EFAF@ziggy.prideindustries.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F41DBB59549A54482D4FC25AEEDCBE18B9A9F@MAIL-06VS.atlarge.net>
+In-Reply-To: <9FEBBE3B5C27D311B0B90050041E59B00439EFAF@ziggy.prideindustries.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +18,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter@Lists.Netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thursday 23 October 2003 4:47 pm, Frischknecht Peter wrote:
+You could also use the IPTables time patch instead of using a crontabs
+entry that enables and disables the rule at specific times.
 
-> I am getting slammed.  My server will display anywhere from a few
-> hundred to 50K messages suppressed.
+
+> Just a side note, if the kid isn't savvy today he will be tomorrow, and
+> could change the ip address of his machine.
 >
-> Network analizers (Ntop, iptraf) have been unable to identify the source
-> of the traffic.  If I run these utilities on the server, they freeze
-> (while a flood is going on).  If I run the utilities on a different
-> computer on a port of the switch, they don't see the traffic intended
-> for the server (obviously).  If I configure the switch for a "monitor"
-> port (one that sees all traffic) and plug a different computer on that
-> port, then that computer freezes too, along with the server.
+> If you have other machines and allow your internal class C to get out, you
+> could restrict the kid's machine by mac address matching, as it is a
+> little
+> harder to forge.  Not impossible, but harder than changing an IP address.
+>
+> Just my $.02.
+>
+> -=Ray
+> ---------------------------------------
+> [Inexperienced] pilots are really blind in the air for the first couple of
+> months.
+> Colonel Erich "Bubi" Hartmann, GAF, World's Leading Ace, Luftwaffe, WWII,
+> 352 Victories
+>
+>
+>> -----Original Message-----
+>> From: Joel Newkirk [mailto:firewalldude@newkirk.us]
+>> Sent: Wednesday, October 22, 2003 5:35 PM
+>> To: sbisgaard@xtrasource.com
+>> Cc: netfilter@lists.netfilter.org
+>> Subject: Re: Time changes
+>>
+>>
+>> On Wed, 2003-10-22 at 15:44, Steffen Bisgaard - Xtrasource wrote:
+>> > Hallo list,
+>> >
+>> > A quick question: Is it possible to block access to and
+>> from a PC (say
+>> > 10.2.0.3) at a specific time, for example 21:00, and re-enable it at
+>> > 08:00 the next day using iptables - and if so how?? Yes this is the
+>> > kids PC...
+>> > It used to be real simple with ipfw - I can't remember the
+>> syntax but
+>> > something along the lines of ipfw -add (or -remove) deny (or allow)
+>> > 10.2.0.3 all
+>> >
+>> > Any ideas? Or do I need two separate iptables scripts?
+>>
+>> Not full scripts.  Try creating two cron jobs - one running
+>> at 21:00 the
+>> other at 08:00.  One is just:
+>> iptables -I FORWARD 1 -s 10.2.0.3 -j REJECT
+>> the other
+>> iptables -D FORWARD -s 10.2.0.3 -j REJECT
+>>
+>> j
+>>
+>>
+>>
+>
 
-Try connecting a hub between your switch and the server which is being 
-affected, then plug a machine running a protocol analyser such as ethereal 
-into the hub, without assigning a network-valid IP address to the analysis 
-machine.   If you're worried about the analysis machine being affected by the 
-flood of traffic, just plug it in for a couple of seconds and then unplug it, 
-and then see what the analyser caught during that time.
 
-If you've found some network attack which blows away the Linux network stack, 
-causing the 'freezing', try using a machine running BSD (or maybe even 
-Windows!?) for doing the analysis - they're unlikely to be vulnerable to the 
-same sort of attack.
+Thanks,
+Josh Berry, CTO
+LinkNet-Solutions
+469-831-8543
+josh.berry@linknet-solutions.com
 
-You say you have managed to identify some of the machines causing the traffic 
-floods - what operating system/s do they run, and what happens if you plug 
-the network protocol analyser into a hub connected to these machines?
-
-Antony.
-
--- 
-
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
 
