@@ -1,11 +1,13 @@
-From: Vinod Chandran <vinod_chandran@multitech.co.in>
-Subject: Dropping in Conntrack during PRERouting/FTP Bounce Attack
-Date: Tue, 01 Feb 2005 09:37:04 +0530
-Message-ID: <41FF0068.8030700@multitech.co.in>
-References: <41FA594A.1000103@multitech.co.in>
-	<Pine.LNX.4.61.0501311608270.13730@willie>
+From: Askar <askarali@gmail.com>
+Subject: Re: MARKing question
+Date: Tue, 1 Feb 2005 10:18:40 +0500
+Message-ID: <a0f69e505013121185a3133fd@mail.gmail.com>
+References: <a0f69e5050131022966942181@mail.gmail.com>
+	<20050131162531.GA24980@bender.817west.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050131162531.GA24980@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,79 +18,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all ,
+On Mon, 31 Jan 2005 11:25:31 -0500, Jason Opperisano <opie@817west.com> wrote:
+> On Mon, Jan 31, 2005 at 03:29:32PM +0500, Askar wrote:
+> > hi list,
+> >
+> > I'm MARKing packets in PREROUTING of mangle with the below rule to
+> > route them from other route then the default route .(iproute2 +
+> > iptables)
+> >
+> > $iptables -A PREROUTING -i eth0 -t mangle -s 202.xxx.xxx.0/24 -d 0/0
+> > -p tcp --dport 80 -j MARK --set-mark 4
+> >
+> > What I want is to exclude a single IP from the above to be MARKed, i-e
+> > the particular IP packets goes through default route of the firewall
+> > machine not through iproute2 route.
+> >
+> > Is this possible with iptables or I have to apply pom (extentions) to
+> > accomplished this?
+> 
+> two thoughts:  1) ACCEPT the packet from the "excluded IP" prior to the
+> mark rule or 2) reset the MARK on packets from the "excluded IP" after
+> the mark rule.
+> 
+> version 1:
+> 
+>   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
+>     --dport 80 -j ACCEPT
+> 
+>   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
+>     --dport 80 -j MARK --set-mark 4
+Thanks jason, i go with version 2 and it worked
 
-Dave,
-
-Thanks for confirming my understanding.
-
-I need PORT command with invalid ip to be dropped. I did certain 
-modifications in ip_conntrack_ftp.c, where the checking of the PORT 
-command is done , and if its an invalid ip , I return NF_DROP instead of 
-NF_ACCEPT.
-
-
-if (htonl((array[0] << 24) | (array[1] << 16) | (array[2] << 8) | array[3])
-        == ct->tuplehash[dir].tuple.src.ip) {
-        exp->seq = ntohl(tcph->seq) + matchoff;
-        exp_ftp_info->len = matchlen;
-        exp_ftp_info->ftptype = search[i].ftptype;
-        exp_ftp_info->port = array[4] << 8 | array[5];
-    } else {
-        /* Enrico Scholz's passive FTP to partially RNAT'd ftp
-           server: it really wants us to connect to a
-           different IP address.  Simply don't record it for
-           NAT. Vinod - Commented the next two lines
-        DEBUGP("conntrack_ftp: NOT RECORDING: %u,%u,%u,%u != %u.%u.%u.%u\n",
-               array[0], array[1], array[2], array[3],
-               NIPQUAD(ct->tuplehash[dir].tuple.src.ip)); */
-
-        /* Thanks to Cristiano Lincoln Mattos
-           <lincoln@cesar.org.br> for reporting this potential
-           problem (DMZ machines opening holes to internal
-           networks, or the packet filter itself). */
-        /* Vinod - Commented the next line  and added two lines of code*/
-        /*if (!loose) goto out;*/
-        DEBUGP("DROP should be done\n");
-        printk("Again\n");
-        UNLOCK_BH(&ip_ftp_lock);
-        return NF_DROP;
-    }
-
-
-
-
-
-This return value is checked in the call ip_conntrack_in ( 
-ip_conntrack_core.c), I have modified it so that when the value returned 
-is NF_DROP, nf_conntrack_put is called to destroy the conntrack.
-
-if (NF_DROP == ret) {
-            /*atomic_set((*pskb)->nfct->master->use,1);
-            nf_conntrack_put((*pskb)->nfct);*/
-            (*pskb)->nfct->master->destroy((*pskb)->nfct->master);
-            (*pskb)->nfct = NULL;
-            DEBUGP("Are we here?\n");
-            return NF_DROP;
-
-
-However with all these modifications the packet is still getting 
-forwarded, in short never getting dropped. I have seen places in ftp 
-helper itself where NF_DROP was getting returned, I wonder if they are 
-working too.
-I have seen the packets reaching the DROP case in nf_hook_slow, without 
-any success.
-Is there something that I am missing out or PREROUTING conntrack cannot 
-drop packets?
-
-Thanks and Regards,
-Vinod C
+> 
+> version 2:
+> 
+>   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
+>     --dport 80 -j MARK --set-mark 4
+> 
+>   iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
+>     --dport 80 -j MARK --set-mark 0
+> 
+> version 1 gets packets from $EXCLUDED_IP out of the mangle PREROUTING
+> chain as quickly as possible.
+> 
+> version 2 allows packets from $EXCLUDED_IP to continue to traverse
+> mangle PREROUTING in case you want to do other stuff to it.
+> 
+> which one is "better" would depend on your specific situation.
+> 
+> -j
+> 
+> --
+> "I saw this in a movie about a bus that had to SPEED around a city,
+>  keeping its SPEED over fifty, and if its SPEED dropped, it would
+>  explode. I think it was called, 'The Bus That Couldn't Slow Down.'"
+>         --The Simpsons
+> 
+> 
 
 
-
-
-
+-- 
+(after bouncing head on desk for days trying to get mine working, I'll make
+your life a little easier)
 
