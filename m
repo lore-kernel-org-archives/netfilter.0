@@ -1,8 +1,8 @@
-From: "prasanna" <prasanna@bharatplanet.com>
-Subject: Share my internet connection
-Date: Wed, 17 Dec 2003 18:06:48 +0530
+From: Eddahbi Karim <installation_fault_association@yahoo.fr>
+Subject: Documentation about /proc/net/ip_conntrack states...
+Date: Wed, 17 Dec 2003 14:08:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c3c49a$70df83d0$05000a0a@bharatplanet.com>
+Message-ID: <1071666514.3955.28.camel@gamux>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,32 +18,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-
 Hi,
-      I am using redhat 9. I connected internet to this machine. I like
-to share my internet to local machines through NAT.
-How to configurethe NAT?
 
-I tried this 
+I'm pretty new to Iptables and I try to create documentation while
+reading others like this
+http://iptables-tutorial.frozentux.net/chunkyhtml/theconntrackentries.html .
 
-modprobe iptable_nat
-echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+On the URL below there's a brief explanation about conntrack and the
+/proc entry.
 
-And put gateway as linux machine in local machine
-But unsucessfull 
+I want to know if there's documentation explaining every type of state
+that a connection can have for the /proc entry.
 
-Please help with script
+For example I don't really understand when a connection will have the
+state FIN_WAIT or TIME_WAIT.
 
+That's maybe my lack of knowledge of the RFC ...
 
+PS : Sorry if that makes a double post.
+I've posted it with my other adress which isn't suscribed to this ML
+and in normal cases it should be dropped.
 
+-- 
+--
+Eddahbi Karim
 
-Thanks & Regards,
-Sureshprasanna M.K
-BharatPlanet Consulting Ltd.
-http://www.bharatplanet.co.in 
+Phone :
+(33) (0)6 61 30 57 77
 
-An SEI-CMM Level 2 Company
- 
+France
 
 
