@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: forwarding (continued)
-Date: Mon, 8 Jul 2002 08:54:26 +0100
+From: BGrummel@zuendel.de
+Subject: Antwort: RE: Most stable firewall distro
+Date: Mon, 8 Jul 2002 12:05:35 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708075428.SHXU2755.mta05-svc.ntlworld.com@there>
-References: <004b01c2263b$9812cc90$1606d6d1@nebuchadnezza> <20020708020553.MITF4119.mta06-svc.ntlworld.com@there> <001201c2264a$ce154110$2002d6d1@nebuchadnezza>
+Message-ID: <OF790BFF1B.6CE4E6EC-ONC1256BF0.0036F6DC@zuendel.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001201c2264a$ce154110$2002d6d1@nebuchadnezza>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,106 +15,122 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables-list <netfilter@lists.samba.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-On Monday 08 July 2002 7:40 am, Tim wrote:
+                                                                                                                           
+                    "Ed Street"                                                                                            
+                    <blacknet@simplyaquat        An:     "'Antony Stone'" <Antony@Soft-Solutions.co.uk>,                   
+                    ics.com>                     <netfilter@lists.samba.org>                                               
+                    Gesendet von:                Kopie:                                                                    
+                    netfilter-admin@lists        Thema:  RE: Most stable firewall distro                                   
+                    .samba.org                                                                                             
+                                                                                                                           
+                                                                                                                           
+                    04.07.2002 01:06                                                                                       
+                    Bitte antworten an                                                                                     
+                    blacknet                                                                                               
+                                                                                                                           
+                                                                                                                           
 
-> I'm pinging from INTERNAL = 192.168.1.4 and DMZ = 172.16.1.3 each one of
-> these machines has their own respective default gateway which are INTERNAL
-> = 192.168.1.11 and DMZ = 172.16.1.1
+
+
+
+
+
+
+
+Hello,
+
+The correct choice to go with would be debian.  You can do a minimal
+install from a business card cd and have everything you need.  For those
+of you that's interested contact me off list for the details and the
+script/iso file (approx 41 megs)
+
+
+
+- a good choice
+- i am working on a cd-based firewall on debian. booting from cd and
+firewall rules from
+- write-protect disk. no hdd is needed. if a kernelchange is needed -create
+a new cd.
+- if somebody hacks it reboot and hes gone!
+
+
+Ed
+
+-----Original Message-----
+From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
+Sent: Wednesday, July 03, 2002 6:34 PM
+To: netfilter@lists.samba.org
+Subject: Re: Most stable firewall distro
+
+On Wednesday 03 July 2002 11:23 pm, riffraff wrote:
+
+> ---------- Original Message ----------------------------------
+> From: "Miguel Laborde" <miguel.laborde@canada.com>
+> Date: Wed, 3 Jul 2002 18:22:38 -0400
 >
-> I agree the routing table looks a little odd in the sense (from my
-> perspective) that there are only two interfaces that have a default
-> gateway.
-
-Slightly inappropriate terminology here.   A 'default gateway' does not apply 
-to an interface, it applies to a whole machine; there should only be one 
-default gateway on a machine (under most normal circumstances); and your 
-machine does not have a default gateway.
-
-Here is what you said your routing table on the firewall is:
-
-Destination     Gateway         Genmask         Iface
-192.168.2.0     192.168.2.2     255.255.255.0   eth0
-192.168.2.0     *               255.255.255.0   eth0
-172.16.0.0      *               255.255.255.0   eth1
-192.168.1.0     *               255.255.255.0   eth2
-172.16.1.0      172.16.1.1      255.255.255.0   eth1
-172.16.1.0      *               255.255.255.0   eth1
-127.0.0.0       *               255.0.0.0       lo
-
-A default gateway is the address of a router to be used for any packets which 
-don't match some other more specific route, and it is recognisable because 
-the destination IP is 0.0.0.0 and the netmask is 0.0.0.0 (ie 'match 
-everything').
-
-> The actual ip addresses on the firewall box are
-> .eth0 = 192.168.2.1 / eth1 = 172.16.1.1 / eth2 = 192.168.1.11.
-
-> > Also, what are the routing tables on the machine you're pinging from, and
-> > the machine you're pinging to ?
+> >Hello all,
+> >  I have a question here for those of you who use iptables heavily
+in a
+> >production environment. Right now I am about to replace a older
+Mandrake
+> >(release 7.2) with an updated linux firewall however before I go
+ahead and
+> >do that, I'm interested in knowing what you people consider the most
+> > stable distribution for a linux firewall.
+> >  I realize that the underlying OS and iptables software is common
+across
+> > all distributions however some distributions apply patches which
+others
+> > don't, and as result might be better suitable as a firewall.
+> >
+> >
+> >  Thanks for your time,
+> >                 Miguel
 >
-> Does this mean that the default gateways (the NICs on the firewall box) are
-> not enough to route the packet through?
+> I just used redhat 7.0 (I think, it's been a while), and removed
+everything
+> that was completely unnecessary, then compiled a whole new kernel (I
+had
+> to; I'm using the bridge-netfilter patch).  So, it isn't much of a
+redhat
+> anymore, just uses redhat paths and rpm.
 
-No, it just means I wanted to check they were correct :-)
+I agree with this approach.   A firewall shouldn't really be any
+recognisable
+distro, because distros basically differ in all the add-ons they include
 
-> I just added a route to box 192.168.1.4 (an NT box INTERNAL) "route add -p
-> 172.168.1.0 mask 255.255.255.0 192.168.1.11", and a route to box 172.16.1.5
-> (another NT box in the DMZ)  "route add -p 192.168.1.0 mask 255.255.255.0
-> 172.16.1.1", to no avail....this can't be the answer.
+around the kernel, nearly all of which you should not have on a
+firewall.
 
-These entries are completely redundant.   You said in your last answer that 
-each of these machines already had a default route of the address of the 
-firewall on their respective networks.   Adding a more specific route to the 
-other network, still using the firewall's IP as the gateway address, adds 
-nothing to this (however it subtracts nothing either, so no harm done).
+And, as suggested above, you really ought to compile your own kernel for
+a
+firewall, too, so it contains what you want and doesn't contain what you
 
-The routes on the machine you're pinging from (172.16.1.3) looks okay, and 
-the routes on the machine you're pinging to (192.168.1.4) looks okay, however 
-I still don't like the routes on your firewall now that you've told me what 
-your IP addresses are.
+don't want, therefore you start from ftp://ftp.kernel.org and 'make
+config'
+(or whichever variation of that you prefer).
 
-Referring back to your firewall routing table listed above, I don't like the 
-two lines with gateways listed.   They should not be there; the lines 
-immediately following each of them handle routing to those two local networks.
+The 'distro' I would really like to see people use for firewalls is
+Linux
+From Scratch, because this is expressly designed to contain only the
+tools
+you choose for a specific job, and not a whole bunch that someone else
+thought might come in handy one day.....
 
-Also, I don't quite understand why you have the line
-172.16.0.0      *               255.255.255.0   eth1
-in the table ?
+Not the easiest thing to play with though, admittedly.
 
-Here's a quick routing table tutorial:
+http://www.linuxfromscratch.org
 
-1. Packets being sent to a directly connected network (eg in your case 
-192.168.1.0/24, 192.168.2.0/24 and 172.16.1.0/24) should only specify the 
-interface name through which to send the packets - there should be no gateway 
-listed, because the destination machine on the locally connected network is 
-directly accessible without going through a gateway.
 
-2. Packets going to networks not directly connected to the machine, but 
-accessible on the other side of some router which is directly connected 
-should be specified with the gateway address = IP of the router on the local 
-network, and the interfacce = where the router is plugged into.
-
-3. A default gateway (addr = 0.0.0.0, mask = 0.0.0.0) specifies where to send 
-any packets which do not match any of the previously listed rules, and the 
-gateway addr = IP of the router on the local network which knows how to send 
-packets out to the Big Wide World.
-
-Try removing the two entries in your firewall routing table which show 
-gateway addresses:
-
-192.168.2.0     192.168.2.2     255.255.255.0   eth0
-172.16.1.0      172.16.1.1      255.255.255.0   eth1
-
-Then re-run the pings and see what happens.
-
-By the way, can you ping from the firewall to either/both of the machines ?
-
-I assume your physical network cables are plugged in correctly and work :-) ?
-Do you have link lights at both ends of all connections ?
-
- 
 
 Antony.
+
+
+
+
+
 
