@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: IP alias and NAT
-Date: Wed, 29 Jan 2003 21:04:59 -0500
+From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
+Subject: Re: REDIRECT,DNAT,SNAT in C
+Date: 29 Jan 2003 17:33:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301292104.59028.netfilter@newkirk.us>
-References: <001e01c2c5f8$bc5d7d40$0bc8c80a@dolphin> <1043672915.15779.16.camel@elendil.intranet.cartel-securite.net> <006c01c2c74b$7f1b37c0$0bc8c80a@dolphin>
-Reply-To: netfilter@newkirk.us
+Message-ID: <1043858013.592.5.camel@ranjeet-linux-1>
+References: <F170govcke7m99L3U600000494d@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <006c01c2c74b$7f1b37c0$0bc8c80a@dolphin>
+In-Reply-To: <F170govcke7m99L3U600000494d@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,37 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jet <yenjet.chan@eglobal.com.my>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-On Tuesday 28 January 2003 11:04 pm, Jet wrote:
-> Hi,
->
-> > To get packets NATed as you want them to, they have to reach
-> > PREROUTING chain on the firewall. That means when access router
-> > wants to forward theses packets, it must get an ARP reply for their
-> > destination IP. If NATed IPs were not aliased on firewall, then
-> > nobody would answer access router's ARP requests, and connections
-> > would not get established.
->
-> I don't totally agree on this. How about POST ROUTING?
->
-> > The only thing you have to keep in mind is that packets you want to
-> > NAT have to reach the firewall. As they're not destined to, you have
-> > to force them a bit ;)
->
-> Can anyone explain why we don't have to do the same for POSTROUTING?
+On Thu, 2003-01-30 at 01:32, PAUL FABRICIO VILLACRESES LEON wrote:
+> 
+> I use libiptc for put rules in the chain FORWARD but i can't put in the 
+> chain PREROUTING because, libiptc accept this target : ACCEPT, DROP, RETURN 
+> and QUEUE but not DNAT ,SNAT and REDIRECT
+> 
+> How i can put rules programming in c for DNAT , SNAT and REDIRECT
+> 
 
-At POSTROUTING the packet is already IN the firewall box, and is about to=
-=20
-pass back out.  The issue mentioned above is trying to get an access=20
-router to recognize that the box is an appropriate destination for a=20
-given packet, so that the packet will be sent to it to begin with. If=20
-and when it does so, the packet first appears in the PREROUTING=20
-chain(s).
+If you can give us some details about what you WANT to do, and also what
+function calls you are making, then we might be able to help you.
 
-j
+As a starter, ACCEPT, DROP, RETURN and QUEUE are termed "built-in"
+targets while DNAT, SNAT and REDIRECT target support has been added via
+extensions. It may be that the functions calls you are making are
+limited to the built-in targets, which are hard-coded values for some
+libiptc calls. This may explain your failure.
 
-> - Jet
+If you can give us an outline of what you want to do, and also include
+the ipt function calls you are making, I am sure someone can point out
+the correct calls or the correct sequence of calls to make.
+
+hope that helps.
+
+-- 
+Ranjeet Shetye
+Senior Software Engineer
+Zultys Technologies
+Ranjeet dot Shetye2 at Zultys dot com
+http://www.zultys.com/
+
+The views, opinions, and judgements expressed in this message are solely
+those of
+the author. The message contents have not been reviewed or approved by
+Zultys.
 
 
