@@ -1,11 +1,13 @@
-From: Salman Ahmed <syd_salman@yahoo.com>
-Subject: Some confuisions about following script
-Date: Fri, 23 May 2003 15:19:48 -0700 (PDT)
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: strange phenomena about ip_conntrack
+Date: 24 May 2003 00:54:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030523221948.60971.qmail@web11508.mail.yahoo.com>
-Reply-To: syd_salman@yahoo.com
+Message-ID: <1053730443.713.167.camel@tux.rsn.bth.se>
+References: <004401c31f72$57415ca0$02020a0a@acamarpeng>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <004401c31f72$57415ca0$02020a0a@acamarpeng>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,49 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: pengjie <bill@acamar.com.cn>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-I have downloaded one script from internet which some
-parts are making confusion which are:
+On Wed, 2003-05-21 at 10:24, pengjie wrote:
+ 
+> After 2 days, the conntrack table is full, /var/log/messages display
+> the ip_conntrack_count is 167, and /proc/net/ip_conntrack is empty. 
+>  
+> Why?!, Why the ip_conntrack_count is bigger than ip_conntrack_max?
+> Why is /proc/net/ip_conntrack is empty?
+> how can this occurs?
+>  
+> who can help me?
 
-####################################################
-#----Create logging chains-----#
+Can you try a newer kernel? (I'd recommend 2.4.21-rc3)
 
-##These are the logging-chains. They all have a
-certain limit of log-entries/sec to prevent
-log-flooding
-##The syslog-entries will be fireparse-compatible (see
-http://www.fireparse.com)
-
-#Invalid packets (not ESTABLISHED,RELATED or NEW)
-	$IPTABLES -N LINVALID
-	$IPTABLES -A LINVALID -m limit --limit $LOGLIMIT
---limit-burst $LOGLIMITBURST -j LOG --log-prefix
-"fp=INVALID:1 a=DROP " $IPTABLES -A LINVALID -j DROP
-
-#####################################################
-
-
-I am having following confusions.
-
-What is LOGLIMIT 
-What is LOGLIMITBURST and
-What is --log-prefix "fp=INVALID:1 a=DROP "
-
-How can we only block mns messenger and yahoo
-messenger?
-
-How can we block all communications except www. 
-
-
-Please help me out.
-
-Best Regards
-Salman
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+And if you still have the same problem, try enabling netfilter debugging
+in the kernel configuration (or at least enable the IP_NF_ASSERT macro
+in include/linux/netfilter_ipv4/ip_conntrack.h)
+ 
+-- 
+/Martin
 
