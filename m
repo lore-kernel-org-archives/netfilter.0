@@ -1,13 +1,14 @@
-From: "Vik Heyndrickx" <vik.heyndrickx@pandora.be>
-Subject: RE: iptables on Red Hat Linux 8.0 installation requires frequent iptables restart
-Date: Sat, 21 Dec 2002 12:24:20 +0100
+From: Richard Mueller <mueller@teamix.net>
+Subject: Re: Best vpn w/ iptables.
+Date: Sat, 21 Dec 2002 13:24:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GNEJLJFCHGLBHGLBHFMPEEPLCAAA.vik.heyndrickx@pandora.be>
-References: <F635E25A78F69C41B85DC6CB18972A9A4746FA@kepler.blueshiftinc.com>
+Message-ID: <136225831458.20021221132453@teamix.net>
+References: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
+Reply-To: Richard Mueller <mueller@teamix.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F635E25A78F69C41B85DC6CB18972A9A4746FA@kepler.blueshiftinc.com>
+In-Reply-To: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +19,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Rowan Reid <rreid@studio3arc.com>
+Cc: 'iptables-list' <netfilter@lists.samba.org>
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of John A. Novak
-> Sent: Friday, December 20, 2002 10:13 PM
-> To: netfilter@lists.netfilter.org
-> Subject: iptables on Red Hat Linux 8.0 installation requires frequent
-> iptables restart
->
->
-> Greetings,
->
-> I am running iptables on a Red Hat Linux 8.0 system that I
-> received from Red Hat about a month ago.  I am using iptables
-> straight off the distribution CD.
->
-> The system iptables is running on is used only as a firewall, has
-> 512MB of RAM and three network adapters.  The symptom I'm seeing
-> is that every day or so I need to restart the iptables service to
-> get packets moving through the firewall again.  The system
-> appears to have plenty of available RAM and plenty of free disk
-> space when the firewall is dysfunctional.
->
-> I am using NAT and have it configured to remap internal addresses
-> to two ranges of external ip addresses, one for each of the two
-> internal networks.
->
-> The periodic failure and resurrection after restart is suggestive
-> of a resource leak, but I'm at a loss as to how to proceed to
-> further debug this problem.
->
-> Any suggestions are appreciated.
+Hallo Rowan,
 
-I have running a couple of RH8.0 routers/firewalls; some with distro
-packages, others upgraded with newer kernels from RH, or my own rebuilds;
-they have between 1 and 5 100mbit Ethernet interfaces. The ones which have
-all fixed IP addresses keep running for weeks now. The ones with dynamically
-assigned IP addresses (through DHCP) need a restart once in a while because
-the firewall rules are very strict, and don't allow packets in with a
-different destination IP address (that changes sometimes when the DHCP lease
-expires). That could be a reason.
+Friday, December 20, 2002, 6:23:21 PM, haben Sie geschrieben:
 
-Until now I haven't had any situation that couldn't be explained, so I don't
-think that there is any bug, like a resource leak in the netfilter code (no,
-I don't even believe myself here).
 
-What I suggest is to replace ANY DROP or REJECT line (don't forget the chain
-policies), with a LOG + DROP/REJECT. And then sit and wait until no packets
-are moving again. Then look in kernel syslog (usually in file
-/var/log/messages), and see if packets are being dropped. Use tcpdump -n -i
-any to see if the packets are coming in, and are going out.
+
+RR> I'm gonna be implimenting a VPN between two offices. Both gateways being
+RR> the Firewall also. Which uses Netfilter I'm looking for secure straight
+RR> forward routable setup and 100% compatability with netfilter ie not
+RR> pptp. It also has to be open source. I know this isn't a vpn group but I
+RR> figured you would have valuable input. Thanks Right now I'm looking at
+RR> freeswan
+
+http://openvpn.sf.net/
+
+It's easy to set up, and can run totally in userspace. :)
+
+Mit freundlichen Gruessen
+
+Richard Mueller
 
 --
-Vik
+Richard Mueller     mailto:mueller@teamix.net  Fon: +49 9171 896287
+Teamix GmbH         http://www.teamix.de       Fax: +49 9171 896286
+Networks - Consulting - Training - Software Development - eCommerce
 
 
