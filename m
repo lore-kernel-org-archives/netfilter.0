@@ -1,12 +1,14 @@
-From: "lololo" <lololo@seed.net.tw>
-Subject: Proxy-arp & DHCP conflict
-Date: Thu, 27 May 2004 18:11:40 +0800
+From: Ludo Stellingwerff <ludo@protactive.nl>
+Subject: Re: Some more IPSec - IPTables issues?
+Date: Thu, 27 May 2004 13:06:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <012501c443d3$00f7d960$260a0a0a@koxp>
-References: <679890948@web.de>
+Message-ID: <1085656011.3861.84.camel@laptop.stwerff.xs4all.nl>
+References: <1085648121.3864.58.camel@laptop.stwerff.xs4all.nl>
+	 <20040527102635.GA18523@alldas.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040527102635.GA18523@alldas.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +19,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Stefan Wagner <sw@alldas.org>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hello,
+On Thu, 2004-05-27 at 12:26, Stefan Wagner wrote:
+> Hi,
+> 
+> > I need this functionality to be able to create a VPN-tunnel between to
+> > networks, one of which is behind a dynamic IP-address. I have a working
+> > solution by (dirty)-hacking Racoon, but that hack is unmaintainable.
+> 
+> What solution is that ?
+> 
+> Cheers,
 
-I'm setting the proxy-arp ,but comes a problem:
+When Racoon would receive a request for a policy that existed to a
+different gateway, Racoon blocked the request. The Error message was
+that it would need to nest policies.
+I changed the test in racoon to detect this situation and start an
+external script. A bit like the routing-scripts in FreeSWan.
 
-My understanding to set the proxy-arp is simply enable the function in
-Kernel.
-echo 1 > /proc/sys/net/ipv4/conf/{interface}/proxy_arp
-and then add routings.It surely worked well.
+This script would have the new remote ipsec-gateway as a parameter, and
+reset the policy to this new adres. The result is an ipsec-tunnel
+between two gateway's but with one end dynamic.
 
-But if I have a server running DHCP in the same LAN,it(proxy-arp server)
-failed ,something like I can't type any words in console or slow down the
-action that i do.After unplugging  the wire ,it worked again.
+But this is a really dirty trick, because I reset the complete network
+to catch this new connection. (including new firewall rules, SPD
+policies and a racoon restart:( )
 
-So now i must type the following command manually
-arp -Ds {IP} eth0 pub
-........
+Unmaintainable!
 
-Does anyone know what's happened?
+The problem is that an Ipsec tunnel with an dynamic gateway is undefined
+in the standard.
+Instead I would like to use one end as a roadwarrior host, masquerading
+the remote network. This will leave me with a uni-directional tunnel,
+but that is good enough for me. 
 
-Thnaks!
+Trouble is the way ipsec and SNAT function at this moment. It doesn't
+yet work. 
 
-Lo
+I thought of 3 different solutions:
+
+1 Using the userland QUEUE target after the SNAT and reinject the
+packages before the IPSEC-filter. Sounds like a possible workaround.
+
+2 The Freeswan virtual devices solution, but most people seem to agree
+that that's not a clean design.
+
+3 Allowing SNAT in the PREROUTING chain, too. That way I should be able
+to SNAT before IPSEC.
+
+Any more suggestions?
+
+Greetings,
+
+Ludo.
+
+
 
 
