@@ -1,13 +1,12 @@
-From: Giovanni Cardone <g_cardone@libero.it>
-Subject: Re: ip_conntrack_ftp doesn't work
-Date: Tue, 25 Jun 2002 11:23:26 +0200
+From: Chris <mlists@aon.at>
+Subject: Allowing limited broadcasts between LAN <-> DMZ?
+Date: Tue, 25 Jun 2002 11:27:56 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020625112326.A255@rainbow>
-References: <20020614194204.A232@rainbow> <20020624151606.07c61b2c.adam@vbfx.com> <20020624193028.RXJI295.mta03-svc.ntlworld.com@there>
+Message-ID: <3D18379C.B101AA83@aon.at>
+References: <Pine.LNX.4.33.0206251044140.4927-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020624193028.RXJI295.mta03-svc.ntlworld.com@there>; from Antony@Soft-Solutions.co.uk on Mon, Jun 24, 2002 at 08:30:26PM +0100
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,17 +17,35 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-> But the script is not doing any NAT, and the log entry shows valid addresses 
-> for both source and destination, so I don't think an FTP NAT module is going 
-> to help ?
+Hello,
 
-You right. I'm not doing any kind of NAT because I do not need it :). I've only 
-this machine with a single dial-up access to the outside. No LAN/other machine 
-behind that one. Simply, I can't have a standard(read: *no* passive) FTP
-session and I dunno why. Have you some suggestions?
 
-Thanks
+i am wondering if it would be a security risk to generally allow ALL
+limited broadcasts (255.255.255.255)?!
+
+We have a heterogenous network with Linux (Firewalls, Mail/Proxy/Time/
+etc-server), WinNT/W2k Clients & Servers and one AS/400 as server.
+Now there is our internal firewall between the LANs and the DMZ.
+At the moment i am blocking limited broadcasts, which breaks the 
+functionality of some windows stuff (SQL-Server, NetBIOS, SMB, ...).
+So i allow this traffic "manually" with adding according rules to the
+internal firewall.
+
+Why am i blocking the limited broadcast? Because i was sniffing around
+and found several "example scripts" which do this. The question is
+if this is REALLY necessary and if someone could exploit a not blocked,
+limited broadcast?
+
+Just yesterday we connected a printer to our LAN, and now it is sending
+limited broadcasts to UDP port 123?!? (it want's to know the time?? :))
+However, it's kind of annoying to see those entries in the logfile now
+every five minutes.. sure i could allow/drop this without logging,
+but the question is - again :) - can't i just allow ALL limited broad-
+casts on the internal firewall?
+
+	
+		regards, Chris
+
 
