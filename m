@@ -1,10 +1,11 @@
-From: Alexander Piavka <piavka@cs.bgu.ac.il>
-Subject: Re: iptables compile error: NFC_IP_TOS undeclared
-Date: Thu, 10 Feb 2005 18:00:48 +0200 (IST)
-Message-ID: <Pine.GSO.4.33.0502101758010.19216-100000@indigo>
-References: <420B7B31.9000606@niksula.hut.fi>
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: random patch with 2.6 kernel?
+Date: Thu, 10 Feb 2005 11:52:12 -0500 (EST)
+Message-ID: <12206.142.169.215.10.1108054332.squirrel@142.169.215.10>
+References: <BAY102-DAV108E4B8D08A7D0E5D30147AE760@phx.gbl>
 Mime-Version: 1.0
-In-Reply-To: <420B7B31.9000606@niksula.hut.fi>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <BAY102-DAV108E4B8D08A7D0E5D30147AE760@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,48 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jonas Berlin <jberlin@niksula.hut.fi>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Brandon Hall <Jodious33@hotmail.com>
+Cc: netfilter@lists.netfilter.org, siegex@atozcomp.com
 
+On Thu, February 10, 2005 1:03 am, Brandon Hall said:
+> i posted previously asking where i can get the random patch, i found th=
+e
+> random patch, compiled what needed to be compiled and no random.
 
-On Thu, 10 Feb 2005, Jonas Berlin wrote:
+Where did you find it ? I hope you didn't get it there :
+https://lists.netfilter.org/pipermail/netfilter-devel/2004-November/01749=
+1.html
 
-> Alexander Piavka wrote:
->
-> >gcc -O2 -Wall -Wunused -I/usr/src/linux-2.6.10-ct_sync-rc1/include
-> >-Iinclude/ -DIPTABLES_VERSION=\"1.3.0rc1\"  -fPIC -o
-> >extensions/libipt_dscp_sh.o -c extensions/libipt_dscp.c
-> >extensions/libipt_dscp.c: In function `init':
-> >extensions/libipt_dscp.c:29: error: `NFC_IP_TOS' undeclared (first use in
-> >this function)
-> >
-> >
-> Could you give the output of the following three commands (run them from
-> your iptables-1.3.0rc1 source directory):
->
->   grep NFC_IP_TOS
-> /usr/src/linux-2.6.10-ct_sync-rc1/include/linux/netfilter_ipv4.h
- no match
+> When I
+> tried to add just the random patch it informed me that it was already
+> applied but the libipt_random.so was not found.  Does this match not
+> function with the 2.6 kernel?
 
-actually there is no match from  NFC_IP_TOS in the whole
-/usr/src/linux-2.6.10-ct_sync-rc1/include subtree
+It hasn't been ported yet. The link I gave is an _attempt_ to do,
+but obivously the guy was confused about porting it to 2.6 _or_ ipv6.
 
->
->   grep netfilter_ipv4.h
-> /usr/src/linux-2.6.10-ct_sync-rc1/include/linux/netfilter_ipv4/ip_tables.h
-#include <linux/netfilter_ipv4.h>
+It looks a mix of both.
 
->
->   grep ip_tables.h extensions/libipt_dscp.c
+--
 
-#include <linux/netfilter_ipv4/ip_tables.h>
->
-> That could help solve the problem.
->
-> --
+SiegeX:
 
- Thanks
+Did you try it before submitting ? Giving it a quick view, it seems
+you play with ipv4 header, but register your match against ip6t_tables
+(which is the ip6tables friend) instead of ipt_tables.
+
+Would you mind giving it another try ?
+
+Thanks,
+Samuel
 
 
