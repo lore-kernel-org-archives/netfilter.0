@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp access problem
-Date: Sat, 24 Jul 2004 14:13:48 +0100
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: [OT] Re: TTL target
+Date: Sat, 24 Jul 2004 09:20:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407241413.48571.Antony@Soft-Solutions.co.uk>
-References: <a0f69e504072403057b210342@mail.gmail.com> <200407241122.16298.Antony@Soft-Solutions.co.uk> <a0f69e5040724044591804e0@mail.gmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407240920.49442.JALaramie@Loudoun-Fairfax.com>
+References: <7EACCDBB65D37443912D80713CC1245D02382A6E@fsnsab20.losangeles.af.mil> <200407231814.41551.JALaramie@Loudoun-Fairfax.com> <1090650852.2228.8.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <a0f69e5040724044591804e0@mail.gmail.com>
+In-Reply-To: <1090650852.2228.8.camel@anduril.intranet.cartel-securite.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,64 +21,11 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 24 July 2004 12:45 pm, Askar Ali Khan wrote:
+> And for the ongoing thread : one should not feed the troll and not even
+> consider jerks' posts.
 
-> Hi Antony,
->
-> On Sat, 24 Jul 2004 11:22:16 +0100, Antony Stone wrote:
-> >
-> > I see you are doing NAT on this firewall.   Do you have the nat_ftp
-> > support module loaded or compiled in to your kernel?
->
-> #modprobe nat_ftp
->    modprobe: Can't locate module nat_ftp
+You're right of course. I have a low tolerance for nonsense and it hit a raw 
+nerve.  :-/
 
-Okay, that may not be the exact name of it - I don't use modules, so perhaps 
-someone else here can tell you the definitive name for the module?
-
-Try lsmod to see what you already do have loaded - if youo find something 
-which looks like NAT and FTP, then you've got it already.
-
-> I modprobe for nat_ftp on my route/firewall "slackware 2.4.26" and
-> also on another machine FC1 and both return the same thing.
-> what to do now?
-> May I have to go for kernel compilation? :(
-
-I always build a monolithic (non-modular) kernel for firewalls; the option for 
-the FTP tracking which you need are "CONFIG_IP_NF_FTP" and 
-"CONFIG_IP_NF_NAT_FTP".
-
-> Also pls check these echos and I will greatly appreciate if you
-> explain the usage of this echos becuase i copied it from somewhere
-> else :D
->
-> echo 1 > /proc/sys/net/ipv4/ip_dynaddr
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> echo 1 > /proc/sys/net/ipv4/conf/all/proxy_arp
-> echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
-> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-> echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
-> echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
-
-Try:
-
-http://www.linuxsecurity.com/articles/network_security_article-4528.html
-http://www.tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.kernel.obscure.html
-
-and on your own machine:
-/usr/src/linux/Documentation/networking/ip-sysctl.txt
-
-Regards,
-
-Antony.
-
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Jeff
 
