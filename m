@@ -1,12 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: forwarding to an external ip (edition II)
-Date: Wed, 19 Jan 2005 12:53:20 -0500
-Message-ID: <20050119175320.GA12400@bender.817west.com>
-References: <20050119110416.GA28664@digicit.nl>
+From: Pablo Allietti <pablo@lacnic.net>
+Subject: Re: POP3 Forwarding ok or not.
+Date: Wed, 19 Jan 2005 16:29:57 -0300
+Message-ID: <20050119192957.GB17317@omega.lacnic.net.uy>
+References: <20050118195858.GD27505@omega.lacnic.net.uy>
+	<20050118192344.GA8624@bender.817west.com>
+	<1106131612.6185.3.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20050119110416.GA28664@digicit.nl>
+In-Reply-To: <1106131612.6185.3.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,74 +20,92 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Roderik van Heijst <roderik@digicit.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: Jose Maria Lopez <jkerouac@bgsec.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Wed, Jan 19, 2005 at 12:04:16PM +0100, Roderik van Heijst wrote:
-> this is phex (the working one):
-> 
-> 
-> Chain PREROUTING (policy ACCEPT 307796 packets, 19158968 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
->        2      108 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:1111 to:131.155.228.4 
+On Wed, Jan 19, 2005 at 03:25:33PM +0100, Jose Maria Lopez wrote:
+> El mar, 18 de 01 de 2005 a las 20:23, Jason Opperisano escribi=C3=B3:
+> > On Tue, Jan 18, 2005 at 04:58:58PM -0300, Pablo Allietti wrote:
+> > > hi people.=20
+> > >=20
 
-slight difference--here you don't have an inbound interface specified.
+thanks a lot, all work ok
 
->        7      348 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:8080 to:131.155.228.4:1111 
+> > >=20
+> > > i have a question..
+> > >=20
+> > > my net is=20
+> > >=20
+> > >=20
+> > > 		|200.40.228.64/28
+> > > 		|
+> > > 		Firewall FC2 (200.40.229.67)
+> > > 		|	dns midomain.com
+> > > 		|
+> > > 		|192.168.1.0/24
+> > > -------------------------------
+> > >     |
+> > >     |
+> > >     |
+> > > FC2 (pop3) 192.168.1.6
+> > >=20
+> > >=20
+> > > i need to check mail in midomain.com but the pop3 server and mail s=
+erver
+> > > is in 192.168.1.8
+> > >=20
+> > > is that correct to check and send mail?
+> > >=20
+> > > iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --=
+dport
+> > > 110 -j ACCEPT
+> > > iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --=
+dport =20
+> > > 25 -j ACCEPT
+> >=20
+> > those are correct for your filter rules.  do you already have the NAT
+> > setup for this as well?
+> >=20
+> >   iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 110 \
+> >     -j DNAT --to-destination 192.168.1.6
+> >=20
+> >   iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 \
+> >     -j DNAT --to-destination 192.168.1.6
+> >=20
+> > -j
+> >=20
+> > --
+> > "This has purple stuff inside - purple is a fruit."
+> >         --The Simpsons
+>=20
+> And of course also the RELATED and ESTABLISHED rules, or the rules
+> for the traffic going out of the machines.
+>=20
+> --=20
+> Jose Maria Lopez Hernandez
+> Director Tecnico de bgSEC
+> jkerouac@bgsec.com
+> bgSEC Seguridad y Consultoria de Sistemas Informaticos
+> http://www.bgsec.com
+> ESPA=C3=91A
+>=20
+> The only people for me are the mad ones -- the ones who are mad to live=
+,
+> mad to talk, mad to be saved, desirous of everything at the same time,
+> the ones who never yawn or say a commonplace thing, but burn, burn, bur=
+n
+> like fabulous yellow Roman candles.
+>                 -- Jack Kerouac, "On the Road"
+>=20
+>=20
+---end quoted text---
 
-slight difference--here you're mapping port 8080 -> port 1111
+--=20
 
-> 
-> Chain POSTROUTING (policy ACCEPT 41528 packets, 2703403 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
->       14      756 MASQUERADE  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:1111 
->    15428  1089859 MASQUERADE  all  --  *      *       10.0.0.0/24          0.0.0.0/0          
-> 
-> Chain OUTPUT (policy ACCEPT 70013 packets, 8101780 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
-> Chain INPUT (policy ACCEPT 5992886 packets, 2962747150 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
-> 
-> Chain FORWARD (policy ACCEPT 5969935 packets, 2763419996 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
-> 
-> Chain OUTPUT (policy ACCEPT 8497655 packets, 958047964 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
-> 
-> 
-> and this is boron (who refuses acting nicely):
-> 
-> Chain PREROUTING (policy ACCEPT 2739595 packets, 217170951 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
->        8      480 DNAT       tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp dpt:1111 to:131.155.228.4 
 
-whereas here you do have the inbound interface specified as eth0.
+Pablo Allietti
+LACNIC
+--------------
 
->      166     8828 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:8080 to:80.69.73.147:80 
-
-whereas here you're mapping port 8080 -> port 80
-
-> 
-> Chain POSTROUTING (policy ACCEPT 233464 packets, 14658006 bytes)
->     pkts      bytes target     prot opt in     out     source               destination         
->        1       60 MASQUERADE  tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp dpt:1111 
-
-um--since you mapped 8080 -> 80 above, this rule that matches on dport =
-1111 will not match the DNAT-ed packets above, as their dport = 80 at
-this point.
-
-<--snip-->
-
-dunno if any of that helps.  your next step to trouble shoot is to
-tcpdump on the external interface of boron, as i love to say, "the wire
-doesn't lie."
-
--j
-
---
-"Weaseling out of things is important to learn. It's what separates
- us from the animals...except the weasel."
-        --The Simpsons
 
