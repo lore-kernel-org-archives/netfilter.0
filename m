@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Clear Iptables chains?
-Date: Mon, 8 Jul 2002 16:22:47 +0100
+Subject: Re: forwarding (continued)
+Date: Mon, 8 Jul 2002 16:28:00 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207081522.g68FMr807248@vulcan.rissington.net>
-References: <839BF5387528D311AD5D00902751CFC301B0419A@HAVASSMX> <20020708144658.GR32764@tik.ee.ethz.ch> <200207081456.g68EuF807141@vulcan.rissington.net>
+Message-ID: <200207081528.g68FS6807279@vulcan.rissington.net>
+References: <004b01c2263b$9812cc90$1606d6d1@nebuchadnezza> <20020708075428.SHXU2755.mta05-svc.ntlworld.com@there> <000601c226ab$d5394ac0$8f01d6d1@nebuchadnezza>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207081456.g68EuF807141@vulcan.rissington.net>
+In-Reply-To: <000601c226ab$d5394ac0$8f01d6d1@nebuchadnezza>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,41 +18,37 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: iptables-list <netfilter@lists.samba.org>
 
-On Monday 08 July 2002 3:56 pm, Antony Stone wrote:
+On Monday 08 July 2002 5:23 pm, Tim wrote:
 
-> On Monday 08 July 2002 3:46 pm, Lukas Ruf wrote:
-> > iptables -P INPUT ACCEPT
-> > iptables -P OUTPUT ACCEPT
-> > iptables -P FORWARD ACCEPT
+> > I don't quite understand why you have the line
+> > 172.16.0.0      *               255.255.255.0   eth1
+> > in the table ?
+>
+>  I have no idea how this got here to begin with, I certainly did no
+> such configuration. (??)
 
-I'd prefer to see:
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+Ah.   In that case you can blame the entire failure of this firewall to do 
+what it's supposed to on the dreaded Firewall Reconfiguration Fairy, who 
+comes along when you're not looking and messes with your routing table :-)
 
-Then you add in the rules for the stuff your definitely know you want to 
-allow.
+> Here is what Im going to do, Im going to remove all routes (except local)
+> and re-establish a table that makes  more sense.
 
-> > iptables -F
-> > iptables -X
->
-> Don't forget:
-> iptables -F -t nat
-> iptables -F -t mangle
->
-> Antony.
->
-> > but rtfm.
->
-> Always good advice :-)
->
-> > On Mon, 08 Jul 2002, Denis JULIEN wrote:
-> > > How can I clear all iptables chains before that my FW script be
-> > > launched?
-> > >
-> > > thank in advance
-> > >
-> > > Denis
+Sounds good to me.
+
+> > By the way, can you ping from the firewall to either/both of the
+> > machines ?
+
+> Only if I have INPUT and OUTPUT rules in place.
+
+Sounds like that would be a good thing to do (temporarily) just to make sure 
+that A can talk to B, and B can reply to A, that B can talk to C, and C can 
+reply to B, before taking the daring step of seeing whether A can talk to C 
+through B and getting the reply back again as well :-)
+
+ 
+
+Antony.
 
