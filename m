@@ -1,13 +1,13 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: RE: Internal ip exiting network on firewall external nic despight rule
-Date: Fri, 20 Sep 2002 13:59:10 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Intercept name lookup discover SA and alter reply?
+Date: Fri, 20 Sep 2002 22:33:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000a01c260e8$91e2bc30$0801a8c0@s3ac>
-References: <20020920190549.NZVO16609.mta05-svc.ntlworld.com@there>
+Message-ID: <20020920213318.TKBX295.mta06-svc.ntlworld.com@there>
+References: <86E43FEDC7E2D411B9610002A50900EB881B7D@ddsmttayz076.ref.whs.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20020920190549.NZVO16609.mta05-svc.ntlworld.com@there>
+In-Reply-To: <86E43FEDC7E2D411B9610002A50900EB881B7D@ddsmttayz076.ref.whs.mil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
- your firewall on eth1, however what I 
-> don't understand 
-> it why it would be picked up by a rule in your INPUT chain, 
-> because this 
+On Friday 20 September 2002 8:45 pm, Vosburgh, Brian P, CTR, WHS-BB wrote:
 
+> I've seen iptables used to block SPAM via dnsbl so I'm wondering... can
+> iptables watch UDP 53, inspect for a specific name query
+> (server.company.com), remap the address to a closer server?
 
-I should have mentioned the internal machine is masquaraded. Therefore
-It should go to the input chain no ?
+Well, you could certainly create a NAT rule which looks for connections to 
+UDP (&TCP?) port 53 to a specific IP address (= a specific server), and 
+redirect them to anyting you liike, really.
 
+Is that helpful ?
 
-> packet is not destined for the firewall itself - it is 
-> destined for machine 
-> 216.99.233.76 chimmx04.algx.net, and should therefore be 
-> passing through your 
-> FORWARD chain (even if it does come in and go out the same 
-> interface, it'll 
-> still go through the FORWARD chain).
+> It would be even better if iptables would know (via TCP connect) if the
+> alternate server were up or down and if down resort to the main server.
 
+Surely you can rely on your DNS resolver to do this for you ?   If you set up 
+multiple DNS servers and the first doesn't respond, the next will 
+automatically be tried...?
+
+Antony.
+
+-- 
+
+Having been asked to provide a reference for this man,
+I can confidently state that you will be very lucky indeed
+if you can get him to work for you.
 
