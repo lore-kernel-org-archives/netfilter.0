@@ -1,12 +1,13 @@
-From: "Stuart Lamble" <stu@gateway10.homeip.net>
-Subject: FW: Varification of firewall script
-Date: Tue, 13 Apr 2004 07:56:50 +0200
+From: "Tarek W." <mailinglists1@hotpop.com>
+Subject: Re: Fairly complex multi-ISP firewall/router problem
+Date: Tue, 13 Apr 2004 12:29:38 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c4211c$1d282e70$0364a8c0@stu>
-Reply-To: <stu@gateway10.homeip.net>
+Message-ID: <1081848323.3747.2.camel@carve.personal.localdomain>
+References: <c4kjrg$lqm$1@gatekeeper.tmr.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <c4kjrg$lqm$1@gatekeeper.tmr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,111 +20,55 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hello netfilter users.
+On Fri, 2004-04-02 at 23:57, Bill Davidsen wrote: 
+> I am trying to set up a single Linux router, RH9.0, for a non-profit I 
+> am supporting with some free consulting. They have two ISP lines, each 
+> of which has a three bit CIDR block, and an internal network.
 > 
-> I would like your opinion on the script below. Before that 
-> you will need to know a bit about my configuration. I have an 
-> ADSL line (ppp0) and two ethernet cards. Eth0 is directly 
-> connected to the DSL modem. Eth1 is connected to my LAN 
-> (192.168.100.0/255.255.255.0). This range is masqueraded. I 
-> want the following services on my firewall server to be 
-> accessible from the internet (22,25,80,443,10000), not good 
-> idea I know, but cost constraints... I have a server on the 
-> LAN that is hosting ssh and 7783, oracle web server. I have a 
-> dnat for this server 555 = 22, and 7783 = 7783. Once again 
-> cost constraints. I have allowed pritty much any port from 
-> the LAN out to the internet, will still work on restricting 
-> this on the FORWARD rules, not too worried about this yet 
-> ;-), however, I will want prevent kazaa etc. I am also a 
-> little restrictive on what goes out from the firewall server 
-> itself, I have limited it to certain ports only. I have 
-> tested everything from the a machine on the internet inwards, 
-> from the Lan outwards, and from the firewall itself outwards. 
-> Everything is working as expected, so based on that I think I 
-> have it right. My question is, am I sufficiently covered on 
-> what comes in from the internet. Can I do more on my INPUT 
-> table to prevent spoofing, DOS attachs, and whatever else is 
-> suspicious?
+> Part one:
 > 
-> Thanks in advance, Stuart.
+> I want to have an IP for each of the services, mail and http, on each 
+> ISP, so that is DSL is down I can use cable, and vice-versa. I will do 
+> NAT in the firewall, and forward the packets to the actual server. 
+> Eventually the servers will move to a DMZ after the other stuff settles 
+> down.
 > 
+> The problem is that a packet can come from any IP outside, and when the 
+> reply packet is sent out, it may go out either NIC. And that's the root 
+> of the problem, getting the source IP to match the NIC. I've added rules 
+> to the mangle table to MARK the packets, that just doesn't seem to work 
+> reliably.
 > 
-> #
-> # IPTABLES script
-> #
+> I want very much to do this without patching the kernel, I have two 
+> patches which seem to solve the problem on other systems, but 
+> maintaining a patched kernel long term is really undesirable, and makes 
+> it hard to turn over the job in the future.
 > 
-> # some kernel flag settings
-> #
-> # preventing smurf amplification attacks
-> /bin/echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-> # do not accept source routed packets
-> /bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
-> # dissable icmp redirect acceptance
-> /bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects
-> # enable bad error message protection
-> /bin/echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+> All I want to do is send packets out the interface which matches the 
+> source IP, and I don't think there's any reasonable way to get there 
+> without patches or BSD.
 > 
-> # initial cleanup
-> iptables -F
-> iptables -X
-> iptables -Z
-> 
-> # INPUT table
-> iptables -P INPUT DROP
-> iptables -A INPUT -i ppp0 -p tcp -m tcp ! --tcp-flags SYN SYN 
-> -m state --state NEW -j DROP iptables -A INPUT -m state 
-> --state INVALID -j DROP iptables -A INPUT -i lo -j ACCEPT 
-> iptables -A INPUT -s 192.168.100.0/255.255.255.0 -i eth1 -j 
-> ACCEPT iptables -A INPUT -i ppp0 -p tcp -m tcp -m multiport 
-> --dports 22,25,80,443,10000 -j ACCEPT iptables -A INPUT -m 
-> state --state RELATED,ESTABLISHED -j ACCEPT iptables -A INPUT 
-> -j LOG --log-prefix "IN-Default-drop "
-> 
-> # FORWARD table
-> iptables -P FORWARD DROP
-> iptables -A FORWARD -s 192.168.100.0/255.255.255.0 -i eth1 -j 
-> ACCEPT iptables -A FORWARD -d 192.168.100.6 -p tcp -m tcp 
-> --dport 22 -j ACCEPT iptables -A FORWARD -d 192.168.100.6 -p 
-> tcp -m tcp --dport 7783 -j ACCEPT iptables -A FORWARD -m 
-> state --state RELATED,ESTABLISHED -j ACCEPT iptables -A 
-> FORWARD -m state --state INVALID -j LOG --log-prefix 
-> "Drop-INV-FWD " iptables -A FORWARD -m state --state INVALID -j DROP
-> 
-> # OUTPUT table
-> iptables -P OUTPUT DROP
-> iptables -A OUTPUT -o lo -j ACCEPT
-> iptables -A OUTPUT -o eth1 -j ACCEPT
-> iptables -A OUTPUT -o ppp0 -p udp -m udp -m multiport --ports 
-> 53 -j ACCEPT iptables -A OUTPUT -o ppp0 -p tcp -m tcp -m 
-> multiport --dports 21,22,25,80,443 -j ACCEPT iptables -A 
-> OUTPUT -o ppp0 -p tcp -m tcp -m multiport --sports 
-> 25,53,80,443,10000 -j ACCEPT iptables -A OUTPUT -o ppp0 -p 
-> icmp -j ACCEPT iptables -A OUTPUT -m state --state INVALID -j 
-> LOG --log-prefix "Drop-INV-OUT " iptables -A OUTPUT -m state 
-> --state INVALID -j DROP
-> 
-> # NAT table
-> iptables -t nat -P PREROUTING ACCEPT
-> iptables -t nat -A PREROUTING -i ppp0 -p tcp -m tcp --dport 
-> 555 -j DNAT --to-destination 192.168.100.6:22 iptables -t nat 
-> -A PREROUTING -i ppp0 -p tcp -m tcp --dport 7783 -j DNAT 
-> --to-destination 192.168.100.6:7783 iptables -t nat -P 
-> POSTROUTING ACCEPT iptables -t nat -A POSTROUTING -s 
-> 192.168.100.0/255.255.255.0 -o ppp0 -j MASQUERADE
-> 
-> # The end
-> 
-> ---
-> Outgoing mail is certified Virus Free.
-> Checked by AVG anti-virus system (http://www.grisoft.com).
-> Version: 6.0.656 / Virus Database: 421 - Release Date: 4/9/2004
->  
-> 
+> Yes, I know about the lartc docs, nano.txt and several other things. The 
+> problem is that the marks don't reliably WORK, routing by destination IP 
+> is being used in some cases (but not all, which is really odd).
 
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.656 / Virus Database: 421 - Release Date: 4/9/2004
- 
+first, the good news... u don't need to patch the kernel...
+
+now, more good news... u actually have two solutions:
+
+ur problem is a routing issue... since Linux works as expected, ur
+solution is in modifying the routing tables and SNAT out...
+
+SNAT should only be used to make sure outgoing packets leave an
+interface with a proper address (the same address that is bound to the
+interface).
+
+u can match by almost anything with ip.
+
+another solution would be to use the ROUTE target with the --continue
+option. the target applies in the mangle table, with the --continue
+option, the packet goes through nat also and gets SNAT'ed.
+
+if u want some hand-holding, give us some more details...
 
 
