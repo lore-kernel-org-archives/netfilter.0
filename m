@@ -1,11 +1,14 @@
-From: Gerry Weaver <gerryw@ctwa.com>
-Subject: Nat for two private subnets with subnet routing
-Date: Wed, 21 Jul 2004 16:42:24 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Nat for two private subnets with subnet routing
+Date: Wed, 21 Jul 2004 23:02:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40FEE340.8090907@ctwa.com>
+Message-ID: <200407212302.53814.Antony@Soft-Solutions.co.uk>
+References: <40FEE340.8090907@ctwa.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40FEE340.8090907@ctwa.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,251 +18,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Hello All,
+On Wednesday 21 July 2004 10:42 pm, Gerry Weaver wrote:
 
-I'm having a bit of trouble setting up a linux router with two private 
-subnets. Each subnet can access the internet, but they cannot 
-communicate with each other. I've include my rules. Any and all advice 
-would be greatly appreciated.
+> Hello All,
+>
+> I'm having a bit of trouble setting up a linux router with two private
+> subnets. Each subnet can access the internet, but they cannot
+> communicate with each other. I've include my rules. Any and all advice
+> would be greatly appreciated.
 
-Thanks in advance,
--G
+I believe that this rule:
 
-### setup networking ############################################
-LAN_IP1="10.10.10.1/24"
+> iptables -t nat -A POSTROUTING -s 10.10.11.0/24 -j SNAT --to  $WAN_IP
 
-LAN_IP2="10.10.11.254/24"
+would benefit from specifying that it only applies to packets leaving via 
+$WAN_IFACE, otherwise it is going to SNAT packets from LAN1 to LAN2 and apply 
+the source address of $WAN_IP, which is probably not what you want?
 
-echo "Bringing down interfaces"
+> iptables -t mangle -A PREROUTING -i $LAN_IFACE1 -s
+> $INTERNAL_ADDRESS_RANGE1 -j ACCEPT
 
-# bring down interfaces
+Why are you bothering to specify ACCEPT rules in the mangle table?
 
-ip link set $WAN_IFACE down
+> iptables -t mangle -A PREROUTING -i $WAN_IFACE -s
+> $INTERNAL_ADDRESS_RANGE1 -j DROP
 
-ip link set $LAN_IFACE1 down
+I do not agree with DROPping packets in the mangle table.   DROP is a 
+filtering action, and belongs in the filter tables.
 
-ip link set $LAN_IFACE2 down
+> iptables -A FORWARD -p all -s $INTERNAL_ADDRESS_RANGE1 -d
+> $INTERNAL_ADDRESS_RANGE1 -j ACCEPT
+>
+> iptables -A FORWARD -p ALL -s $INTERNAL_ADDRESS_RANGE2 -d
+> $INTERNAL_ADDRESS_RANGE2 -j ACCEPT
 
-echo "Setting interface addresses"
+I do not understand the above two rules.   Are internal address range1 and 2 
+the subnets on LAN1 and LAN2?   If so, packets between same-subnet addresses 
+are not going to pass through your firewall.   If not, what are they?
 
-# set interface addresses
+I suggest you firstly identify whether you have a routing problem or a 
+firewalling problem.
+Disconnect the machine from the WAN link to the Internet, flush all rules in 
+all tables and apply default ACCEPT policies to all chains, then see if LAN1 
+can communicate with LAN2.
+If they can, start with a simple ruleset and build up gradually so that you 
+can find out which rule/s break the inter-LAN routing.
+If they cannot, then your problem is a routing problem, not netfilter, and I 
+suggest you check the routing table on the firewall.
 
-ip addr add $WAN_IP dev $WAN_IFACE
+If you want further help, please post the output of: "iptables -L -nvx; 
+iptables -L -t nat -nvx; iptables -L -t mangle -nvx; route -n".
 
-ip addr add $LAN_IP1 dev $LAN_IFACE1
+Regards,
 
-ip addr add $LAN_IP2 dev $LAN_IFACE2
+Antony.
 
-echo "Cleanup iptables"
+-- 
+If builders made buildings the way programmers write programs, then the first 
+woodpecker to come along would destroy civilisation.
 
-# clean up the tables
-
-iptables -F
-
-iptables -X
-
-iptables -Z
-
-echo "Setting default policies"
-
-# Set the default policies
-
-iptables -P INPUT DROP
-
-iptables -P OUTPUT DROP
-
-iptables -P FORWARD DROP
-
-echo "Bringing up interfaces"
-
-# bring up interfaces
-
-ip link set $WAN_IFACE up
-
-ip link set $LAN_IFACE1 up
-
-ip link set $LAN_IFACE2 up
-
-echo "Adding default route"
-
-# add default route
-
-ip route add default via $INET_ROUTER dev eth0
-
-echo "Enable forwarding"
-
-# Enable ip_forward
-
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-### setup firewall
-#######################################################                                                                               
-
-# Let stuff on the local loopback through
-
-iptables -A INPUT -i lo -j ACCEPT
-
-iptables -A OUTPUT -o lo -j ACCEPT
-
-echo "Setup SNAT..."
-
-# Source NAT
-
-iptables -t nat -A POSTROUTING -s 10.10.11.0/24 -j SNAT --to  $WAN_IP
-
-echo "Accept internal addresses"
-
-# packets with valid internal address are accepted on $LAN_IFACE
-
-iptables -t mangle -A PREROUTING -i $LAN_IFACE1 -s 
-$INTERNAL_ADDRESS_RANGE1 -j ACCEPT
-
-iptables -t mangle -A PREROUTING -i $LAN_IFACE2 -s 
-$INTERNAL_ADDRESS_RANGE2 -j ACCEPT
-
-#iptables -t mangle -A PREROUTING -i $LAN_IFACE1 -s 
-$INTERNAL_ADDRESS_RANGE2 -j ACCEPT
-
-#iptables -t mangle -A PREROUTING -i $LAN_IFACE2 -s 
-$INTERNAL_ADDRESS_RANGE1 -j ACCEPT
-
-# no packets with $LAN_IP accepted on $WAN_IFACE
-
-iptables -t mangle -A PREROUTING -i $WAN_IFACE -s 
-$INTERNAL_ADDRESS_RANGE1 -j DROP
-
-iptables -t mangle -A PREROUTING -i $WAN_IFACE -s 
-$INTERNAL_ADDRESS_RANGE2 -j DROP
-
-# allow connections to firewall from LAN
-
-iptables -A INPUT -p ALL -i $LAN_IFACE1 -s $INTERNAL_ADDRESS_RANGE1 -d 
-$LAN_BCAST_ADDRESS1 -j ACCEPT
-
-iptables -A INPUT -p ALL -i $LAN_IFACE2 -s $INTERNAL_ADDRESS_RANGE2 -d 
-$LAN_BCAST_ADDRESS2 -j ACCEPT
-
-iptables -A OUTPUT -o $WAN_IFACE -j ACCEPT
-
-# First off, allow through standard subnet-subnet traffic.  It doesn't need
-
-# to be logged, so get it out of there
-
-# Accept the traffic to and from the subnets
-
-iptables -A FORWARD -p all -s $INTERNAL_ADDRESS_RANGE1 -d 
-$INTERNAL_ADDRESS_RANGE1 -j ACCEPT
-
-iptables -A FORWARD -p ALL -s $INTERNAL_ADDRESS_RANGE2 -d 
-$INTERNAL_ADDRESS_RANGE2 -j ACCEPT
-
-#iptables -A FORWARD -p ALL -s $INTERNAL_ADDRESS_RANGE1 -d 
-$INTERNAL_ADDRESS_RANGE2 -j ACCEPT
-
-#iptables -A FORWARD -p ALL -s $INTERNAL_ADDRESS_RANGE2 -d 
-$INTERNAL_ADDRESS_RANGE1 -j ACCEPT
-
-# Put in a syn flood rule to stop people from a DOS attack
-
-# Commented out while testing things
-
-iptables -N syn-flood
-
-iptables -A FORWARD -p tcp --syn -j syn-flood
-
-iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
-
-iptables -A syn-flood -j DROP
-
-# Allow new connections out (And logged for interest sake)
-
-#iptables -A FORWARD -p tcp -s $INTERNAL_ADDRESS_RANGE --syn -m state 
---state NEW -j LOG --log-prefix "New connection: "
-
-iptables -A FORWARD -p tcp -s $INTERNAL_ADDRESS_RANGE1 --syn -m state 
---state NEW -j ACCEPT
-
-iptables -A FORWARD -p tcp -s $INTERNAL_ADDRESS_RANGE2 --syn -m state 
---state NEW -j ACCEPT
-
-# allow all DNS traffic out
-
-iptables -A FORWARD -p udp -s $INTERNAL_ADDRESS_RANGE1 -j ACCEPT
-
-iptables -A FORWARD -p udp -s $INTERNAL_ADDRESS_RANGE2 -j ACCEPT
-
-# And accept established connections
-
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Also don't allow fragments - they're bad
-
-iptables -A FORWARD -f -j LOG --log-prefix "IP Fragment: "
-
-iptables -A FORWARD -f -j DROP
-
-# Allow ping out (but not in)
-
-iptables -A FORWARD -p icmp -s $INTERNAL_ADDRESS_RANGE1 -j ACCEPT
-
-iptables -A FORWARD -p icmp -s $INTERNAL_ADDRESS_RANGE2 -j ACCEPT
-
-# And in this bit we'll put the things we do allow in
-
-# Allow web requests to web server
-
-iptables -A FORWARD -p tcp -d $WWW --dport 80 -j ACCEPT
-
-# FTP connections to ftp server
-
-iptables -A FORWARD -p tcp -d $FTP --dport 21 -j ACCEPT
-
-# Allow incoming mail
-
-iptables -A FORWARD -p tcp -d $MAIL --dport 25 -j ACCEPT
-
-# DNS lookups to DNS
-
-iptables -A FORWARD -p tcp -d $DNSa --dport 53 -j ACCEPT
-
-iptables -A FORWARD -p udp -d $DNSa --dport 53 -j ACCEPT
-
-# And DNS requests to Secondary DNS
-
-iptables -A FORWARD -p tcp -d $DNSb --dport 53 -j ACCEPT
-
-iptables -A FORWARD -p udp -d $DNSb --dport 53 -j ACCEPT
-
-# Log and drop stuff
-
-iptables -A FORWARD -p tcp -j LOG --log-prefix "Dropped TCP: "
-
-iptables -A FORWARD -p tcp -j DROP
-
-iptables -A FORWARD -p udp -j LOG --log-prefix "Dropped UDP: "
-
-iptables -A FORWARD -p udp -j DROP
-
-iptables -A FORWARD -p icmp -j LOG --log-prefix "Dropped ICMP: "
-
-iptables -A FORWARD -p icmp -j DROP
-
-# This is to really make sure things disappear
-
-iptables -A FORWARD -j LOG --log-prefix "End Forward chain - Dropped: "
-
-iptables -A FORWARD -j DROP
-
-
-
-                                       
-
-
-
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
