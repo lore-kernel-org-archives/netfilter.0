@@ -1,12 +1,13 @@
-From: =?ISO-8859-9?Q?=DDhsan__Turkmen?= <iturkmen@ifk.com.tr>
-Subject: patch-o-matic question.
-Date: Tue, 10 Sep 2002 13:52:37 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: mangle tables.
+Date: Tue, 10 Sep 2002 12:09:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <A758C299015FD411887B0000E2131186C213E8@TRUVA>
+Message-ID: <200209101109.g8AB9Sv06772@vulcan.rissington.net>
+References: <FLEKIPPLAEDMJMOOBBDPCECJCOAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C258B8.2F84690E"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPCECJCOAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Tuesday 10 September 2002 11:41 am, Stewart Thompson wrote:
 
-------_=_NextPart_001_01C258B8.2F84690E
-Content-Type: text/plain;
-	charset="ISO-8859-9"
+> HI:
+>
+> 	Have a look at the traversal diagram in Section 3 of
+> Oskar Andreasson's Tutorial. It explains it quite well.
 
-When I run the following command from within the extracted folder of
-path-o-matic, 
+Yes, indeed it does.   However, it might not be quite correct for the version 
+of netfilter you are running - there have been a couple of subtle changes 
+between recent versions of netfilter.
 
-./runme pending KERNEL_DIR=/usr/src/linux-2.4 
+Therefore I agree and thoroughly recommend Oskar's tutorial for getting an 
+understanding of how netfilter works in principle, however if the question of 
+what order the chains & tables are traversed is really important to you for 
+some reason, I still recommend testing it on your own machine so that you 
+know exactly what your system does.
 
-I get the error:
+Antony.
 
-"ERROR: Invalid option KERNEL_DIR=/usr/src/linux-2.4"
+-- 
 
-What am I doing wrong?
-
-Thanks..
-
- 
-
-
-------_=_NextPart_001_01C258B8.2F84690E
-Content-Type: text/html;
-	charset="ISO-8859-9"
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-9">
-
-
-<META content="MSHTML 5.00.3315.2870" name=GENERATOR></HEAD>
-<BODY>
-<DIV><FONT face="Lucida Console" size=2>
-<P><FONT face=Arial size=3><SPAN class=695594810-10092002>When I run the 
-following command from within the extracted folder of path-o-matic, 
-</SPAN></FONT></P>
-<P>./runme pending KERNEL_DIR=/usr/src/linux-2.4 </P>
-<P><SPAN class=695594810-10092002>I get the error:</SPAN></P><SPAN 
-class=695594810-10092002>
-<P><SPAN class=695594810-10092002>"</SPAN>ERROR: Invalid option 
-KERNEL_DIR=/usr/src/linux-2.4<SPAN class=695594810-10092002>"</SPAN></P>
-<P><SPAN class=695594810-10092002>What am I doing wrong?</SPAN></P>
-<P><SPAN class=695594810-10092002>Thanks..</SPAN></P>
-<P><SPAN 
-class=695594810-10092002></SPAN></SPAN></FONT>&nbsp;</P></DIV></BODY></HTML>
-
-------_=_NextPart_001_01C258B8.2F84690E--
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
