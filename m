@@ -1,11 +1,11 @@
-From: "Admin" <admin@clickonlinenetworks.com>
-Subject: is this possible ?
-Date: Sun, 11 Apr 2004 01:14:09 +0500
+From: Nick Pasich <nick@NickAndBarb.net>
+Subject: Re: block ping  ?
+Date: Sat, 10 Apr 2004 17:19:26 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002501c41f38$6229c230$0300000a@serverxx>
+Message-ID: <20040411001926.GA1135@66.27.62.2>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,15 +16,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Syed Faisal Gillani <faisal@clickonlinenetworks.com>
+Cc: netfilter@lists.netfilter.org
 
-is it possible in iptables to FW a port traffic (eg 80) to an internal =
-ipaddress of a webserver ?
+> From: "Syed Faisal Gillani" <faisal@clickonlinenetworks.com>
+> To: <netfilter@lists.netfilter.org>
+> Subject: block ping  ?
+> Date: Sun, 11 Apr 2004 01:26:27 +0500
+> 
+> i am a newbie learning iptables ...
+> can u tell me the rule of blocking only ping on my nic ?
+> 
+> Syed Faisal Gillani
+> ClickOnline Networks
+> http://clickonlinenetworks.com
+> 
+> E-mail powered by ClickOnline Networks
 
-Syed Faisal Gillani
-
-ClickOnline Networks
-http://clickonlinenetworks.com
-
-E-mail powered by ClickOnline Networks
+ You might also try using "echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all"
+ 
 
