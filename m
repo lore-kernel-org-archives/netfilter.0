@@ -1,13 +1,15 @@
-From: Chris Garringer <chris.garringer@tic.toshiba.com>
-Subject: RE: FTP server
-Date: 24 Mar 2003 10:24:04 -0600
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: Drop firstly? Drop at the end of the Script? Or it doesn't
+	matter?
+Date: 24 Mar 2003 17:45:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048523044.1188.16.camel@bordercollie>
-References: <FD8F124A387AD6119F7900A0D218B321019C93@hslex01.hslbz.local>
+Message-ID: <1048524334.14735.15.camel@tux.rsn.bth.se>
+References: <000801c2ef5b$e3e3ba50$0400000b@laptopbak1>
+	 <3E7F279A.9070303@giganet.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FD8F124A387AD6119F7900A0D218B321019C93@hslex01.hslbz.local>
+In-Reply-To: <3E7F279A.9070303@giganet.cz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +20,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: 'Netfilter List' <netfilter@lists.netfilter.org>
+To: Ales Stibal <astib@giganet.cz>
+Cc: giannhsp <giannhsp@oslab.teipir.gr>, Netfilter <netfilter@lists.netfilter.org>
 
-No. lsmod shows ip_conntrack, ipt_state,iptable_filter, ip_tables,
-ipt_LOG .  This server is running RedHat 7.3 with a RH kernel, I have
-not re-compiled the kernel.  I tried loading ip_conntrack_ftp once
-(insmod) and lsmod showed it in, but unused.
-On Mon, 2003-03-24 at 09:49, Rob Sterenborg wrote:
-> > morning a people could not list the directory , no PASV 
-> > connections were
-> > being accepted.  The connection attempts showed in the log .  
-> 
-> Are ip_conntrack_ftp and ip_nat_ftp loaded (if not in the kernel) ?
-> 
-> 
-> Rob
-> 
+On Mon, 2003-03-24 at 16:43, Ales Stibal wrote:
+
+> IMO is better to set DROP as default policy and allow only the traffic 
+> you *really* need.
+> I use DROP for INPUT and FORWARD. I have ACCEPT for OUTPUT on my home box.
+> This approach will fit nearly all easy installations.
+
+I can almost guarantee that if you set the default policies to DROP you
+will lock yourself out of the machine sometime :)
+I usually add a -j DROP rule at the end instead so that if I get the not
+so bright idea to flush the INPUT chain I won't be locked out.
+
+The downside is that you can't just append rules with -A since the -j
+DROP rule will drop the packets before the newly appended rules are
+checked. IIRC someone sent a patch quite some time ago that made it
+possible to write something like this to add a rule second last in the
+chain:
+
+iptables -I INPUT -2 -s x.x.x.x -j ACCEPT
+
+I can find that quite usefull so I'll see if I can find that patch and
+convince Harald into accepting it :)
+
 -- 
-Chris D. Garringer
-Toshiba International
-LAN/WAN Supervisor
-713-466-0277 x3756
-Certified Solaris Administrator
-Microsoft Certified Engineer (NT)
-RedHat Certified Engineer
-
+/Martin
 
