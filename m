@@ -1,12 +1,13 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: NEW vs INVALID
-Date: Mon, 30 Sep 2002 16:39:07 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: 'Lending an internet connection'
+Date: Mon, 30 Sep 2002 14:48:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D98620B.2070707@fugmann.dhs.org>
-References: <m2elbb4w7h.fsf@pcwi1068.uni-muenster.de>
+Message-ID: <200209301348.g8UDmAL04089@vulcan.rissington.net>
+References: <20020928191437.NJRG6699.mta01-svc.ntlworld.com@there> <55436.64.86.49.17.1033325579.squirrel@www.icafe.co.tz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <55436.64.86.49.17.1033325579.squirrel@www.icafe.co.tz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Jens_Lechtenb=F6rger?= <lechten@wi.uni-muenster.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Jens Lechtenb=F6rger wrote:
-> Hi there,
->=20
-> using stateful packet matching I wonder how an INVALID tcp packet is
-> defined.  In particular, I set up a rule to log inbound NEW ssh
-> connections to port 22:
-> iptables -A INPUT  -m state --state NEW -p TCP --dport 22 -j LOG --log-=
-level 5 --log-prefix "IPTABLES: Legal NEW TCP: "
->=20
-> What confuses me, is that this rule not only logs initial SYN
-> packets but also (initial) packets with SYN and FIN set.=20
-> I thought that such packets should be INVALID...
-SYN-FIN??? Are you sure of this? I would suspect some ACK-FIN when the=20
-connection closes, but not SYN-FIN.
+On Sunday 29 September 2002 7:52 pm, Mitesh P Choksi wrote:
 
-Anyhow, AFAIK, the INVALID target only matches  ackets which are=20
-malformed. a SYN-FIN packets is not malformed as such. (But yes, SYN-FIN =
+> Alternatively, use proxy arp on eth0 for the public IP and then put a host
+> route on the eth1.
+>
+> eth0 will take up all ethernet packets due to the proxy arp.
+> routing table will route the packets to eth1 and subsequently to win
+> machine.
+>
+> proxy-arp howto and bridging howto could be answers to your setup.
 
-is an illegal combination, and should be dropped, though this is not the =
+That would allow him to forward *all* packets through the Linux machine to 
+the Windows machine, but he wants to keep TCP port 22, 25 and 80 on the Linux 
+machine....
 
-purpose of the INVALID match (IMHO, this can easily be done using=20
-standard netfilter rules).
+How would he keep those protocols on the Linux box and send everything else 
+through to the Windows box ?
 
-Regards
-Anders Fugmann
+How would the Linux box be able to reply to the external clients ?   What 
+'real' IP address would he use on eth0, alongside the proxy arp for the 
+public IP we're talking about ?
 
---=20
-Neo: 'Can you fly that thing?'
-Trinity: 'Not yet'.
-$ apt-get install pilot-prg-v212helicopter.
+Antony.
 
+-- 
+
+How I want a drink, alcoholic of course, after the heavy chapters
+involving quantum mechanics.
+
+ - 3.14159265358979
 
