@@ -1,9 +1,9 @@
-From: Martin Stricker <shugal@gmx.de>
-Subject: Re: how to block files with specific extensions
-Date: Fri, 06 Sep 2002 23:31:13 +0200
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Is iptables kickin' that much?
+Date: Sat, 07 Sep 2002 01:44:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D791EA1.E962D99D@gmx.de>
-References: <FLEKIPPLAEDMJMOOBBDPEEMGCNAA.stewart.thompson@shaw.ca>
+Message-ID: <3D793DE4.2060504@fugmann.dhs.org>
+References: <3D78B043.000003.00348@athlon1000>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,36 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: saravanan sakthi <lxsara@yahoo.com>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: wickedsun <wickedsun@phreaker.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Stewart Thompson wrote:
+wickedsun wrote:
+> thing to say, it works. 
+Great.
+
+> Now the question is, will this work with any
+> protocol? (ftp, irc, etc). 
+as of today, only ftp and IRC is implemented in the vanilla tree. POM 
+may have connection tracking for other protocols.
+
+A protocol that requests something and then receives an answer is 
+handled by basic connection tracking (Which is why you dont need 
+connection tracking modules for e.g. http and pop, since no new 
+connection are established). It is the RELATED packets that are hard to 
+find.
+
+>The thing is scary me a bit. I read in your email
+> that you have to load up a FTP module (which I have compiled in the kernel)
+> and it seems to me that it works with other protocol as well. (I was able to
+> enable Active in DC++ without having to forward manually each ports like I
+> used to do).
+Active DC++???? Never heard of it.
+
 > 
-> Hi Saravanian:
-> 
->         Netfilter is a packet based system. So, it don't think
-> you can do what your proposing with it. There may be other
-> applications that could that operate at a higher level in the
-> OSI stack. If you give the list a better description of  your
-> exact requirements. Someone might be able to make a
-> suggestions.
+> This was of a huge help for the iptables newbies (including me) and thanks.
+No problem.
 
-Depending on what kind of files you want to filter, you will have to do
-it in different software: To prevent downloading certain files with the
-web browser or via FTP (which most browsers can do also), you need to
-set up a web cache/proxy. Popular software for that on Linux is squid.
-Then configure squid to deny the file extensions you don't like, and
-configure netfilter to only accept HTTP/FTP connections from your proxy.
+Regards
+Anders Fugmann
 
-If you want to deny certain file types as e-mail attachments you have to
-do so in your e-mail server software. Procmail should be able to, and
-several ant-virus software can do this also.
+--
+Author of FIAIF
+FIAIF Is An Intelligent Firewall
+http://fiaif.fugmann.dhs.org
 
-Best regards,
-Martin Stricker
--- 
-Homepage: http://www.martin-stricker.de/
-Linux Migration Project: http://www.linux-migration.org/
-Red Hat Linux 7.3 for low memory: http://www.rule-project.org/
-Registered Linux user #210635: http://counter.li.org/
 
