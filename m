@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Reverse SNAT routes out wrong interface
-Date: Fri, 21 Feb 2003 01:36:35 -0500
+Subject: Re: Transitioning from one DNAT gateway to another
+Date: Fri, 21 Feb 2003 01:58:01 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302210136.35536.netfilter@newkirk.us>
-References: <1045773286.2306.77.camel@thizzy>
+Message-ID: <200302210158.01203.netfilter@newkirk.us>
+References: <59610.12.227.180.139.1045788151.squirrel@web.heritagepropane.com>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1045773286.2306.77.camel@thizzy>
+In-Reply-To: <59610.12.227.180.139.1045788151.squirrel@web.heritagepropane.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +19,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Del Winiecki <delw@wildapache.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: jhaynes@HERITAGEPROPANE.COM
 
-On Thursday 20 February 2003 03:34 pm, Del Winiecki wrote:
-> Ok, another challenge.
+On Thursday 20 February 2003 07:42 pm, Joe Haynes wrote:
+> Hello to the list.
 >
-> SNAT works fine, but I need the outside WAN address to look as if it
-> came from an address on the eth1 network, not the Upstream WAN
-> network. My linux router ports:
+> I apologize if this subject has been covered
+> elsewhere, but I have yet to locate instructions
+> on how to to this (redirections to appropriate
+> sites would be much appreciated).
 >
-> eth4 192.168.1.0/24 ------------ (local offices, admin net)
+> Our network is currently attached to the internet via
+> a wavelan link (with a dedicated IP). We are transitioning
+> over to a T-1 line that has a new IP address.
 >
-> eth1 209.x.x.x/24 -------- (downstream WAN)
+> What we would like to do is run a gateway off each single
+> external address and redirect specific ports to a single
+> internal server (we want to run both while we wait for
+> DNS updates).
 >
-> WAN1 64.x.x.x/30 ---------  (upstream provider)
+> Currently, we redirect port 80 on our external IP to an internal
+> webserver (also on port 80) using this line:
+> $IPT -t nat -A PREROUTING -i $INTERNET_DEV -d $INTERNET_IP -p tcp
+> --dport 80 -d $INTERNET_IP -j DNAT --to 192.168.1.5
 >
-> all traffic from 192.168.1.0/24 must look like its from 209.x.x.13
+> We'd like to do the same thing off the new gateway that's
+> linked to the T-1 line.
 >
-> traffic flowing into WAN1 with a destination address of 209.x.x.13
-> somehow needs to get routed out the eth4 interface and "un-natted"
-> instead of routing out eth1.
+> The problem I've run into is the responses that have come
+> through the new gateway end up getting sent back out
+> the old gateway.
 >
-> I have:
-> iptables -t nat -A POSTROUTING -o WAN1 -j SNAT --to 209.x.x.13
->
-> Is there some way to use DNAT to fool the kernel routing into properly
-> routing this?
+> Is there a way to redirect packets to the internal server using
+> PREROUTE and then change the source addresses using POSTROUTE so
+> the responses from the internal server come back through
+> the correct gateway?
 
-Since you only want traffic from the 192.168.1.x network to be SNATted,=20
-you should construct your rule with that requirement:
+You should do this in routing.  Read up at=20
+http://lartc.org/howto/lartc.rpdb.multiple-links.html#AEN266 which is=20
+the specific part of the Linux Advanced Routing and Traffic Control=20
+howto that deals with "Split Access", where you have incoming requests=20
+on two different links that have to be answered back out the same link.
 
-iptables -t nat -A POSTROUTING -i 192.168.1.0/24 -o WAN1 -j SNAT --to=20
-209.x.x.13
-
-Netfilter will then reverse SNAT those packets correctly. (the rule you=20
-have above will make ALL traffic going out WAN1 appear from that single=20
-IP)=20
-
-If you want NEW traffic addressed to 209.x.x.13 to be DNATted into the=20
-192.168.1.x network that isn't a problem, but you have to specify a=20
-precise destination (or destinations) for the traffic in one or more=20
-DNAT rules.
+Essentially you set up two default routes each in it's own table, and set=
+=20
+routing rules that route traffic with a particular source IP to use the=20
+appropriate routing table.  Traffic inbound gets DNATted to the server,=20
+and when it returns gets unDNATted to present source IP matching the=20
+original destination IP of the request, then routing takes over and=20
+sends it out the appropriate link.
 
 j
 
-> Thanks,
-> Del W.
+> Thank you,
+>
+> Joe Haynes
+> Helena Montana
 
 
