@@ -1,14 +1,10 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: iptables related
-Date: Mon, 8 Dec 2003 15:33:00 -0500
+From: Roger Hayter <roger@hayter.org>
+Subject: "owner" module fails with patched kernel
+Date: Mon, 8 Dec 2003 23:09:32 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312081533.00869.JALaramie@Loudoun-Fairfax.com>
-References: <20031208191947.GA1603@msservices> <> <20031208201213.GA2103@msservices>
+Message-ID: <OXV7xkMsSQ1$EAc0@rub-al-khali.uninhabited.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031208201213.GA2103@msservices>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Monday 08 December 2003 15:12, Jeffrin wrote:
-> Iam not even able to browse related to internet.
-
-You should do a few things to help solve your problem:
-
-1. Tell us, or even better, show us what your configutation looks like. We can 
-give better advice if we know what you're trying to do.
-
-2. Try the advice that's given, then show us your rules and tell us what 
-happened when you tested them.
-
-3. Read the tutorials and study the examples. Iptables is very well 
-documented.
-
-Jeff
+This may be a SuSE-specific question but a) no one answered it there, 
+and b) there may be a more general answer.  I just updated to the latest 
+kernel patch on SuSE 8.1. Now using 2.4.21-151-athlon. This is patched 
+for the latest (brk) vulnerability, as well as being a newer kernel.  I 
+think the previous kernel was 2.4.19, also optimised by SuSE for AMD. 
+Iptables rules containing -m owner now give "Invalid Argument" when run. 
+A few experiments suggest this is a general failure of the module, not 
+just a particular filter line.  It is successfully loaded, and gives a 
+different  error message if, for instance, I use --uid-owner with an 
+invalid userid.  Needless to say, this worked before the kernel upgrade. 
+Iptables version is 1.2.7a, as distributed by SuSE. Anyone know why this 
+might be and whether it is better to try a newer version of iptables, or 
+is it likely to need recompiling for some reason?  I presume all the 
+modules are already recompiled by SuSE.
+-- 
+Roger Hayter
 
