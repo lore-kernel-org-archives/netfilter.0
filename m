@@ -1,14 +1,22 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: http://www.netfilter.org/patch-o-matic/index.html almost empty
-Date: Wed, 26 Jan 2005 19:57:34 +0100
-Message-ID: <20050126185734.GS28331@sunbeam.de.gnumonks.org>
-References: <20050126172931.GA24879@melina11.ds11.agh.edu.pl>
+From: Mark Moseley <moseleymark@gmail.com>
+Subject: Re: use of the limiting options
+Date: Wed, 26 Jan 2005 10:43:55 -0800
+Message-ID: <294d5daa05012610435e4160b@mail.gmail.com>
+References: <Pine.LNX.4.53.0501251248340.24829@altaica>
+	<Pine.LNX.4.53.0501251306320.24829@altaica>
+	<Pine.LNX.4.53.0501251327570.24829@altaica>
+	<294d5daa0501251137328fa4ff@mail.gmail.com>
+	<Pine.LNX.4.53.0501251340370.24829@altaica>
+	<294d5daa05012511513465fcc1@mail.gmail.com>
+	<Pine.LNX.4.53.0501251355270.24829@altaica>
+	<294d5daa0501251217b1935c4@mail.gmail.com>
+	<Pine.LNX.4.53.0501251421150.24829@altaica>
+	<Pine.LNX.4.53.0501260156100.24829@altaica>
+Reply-To: Mark Moseley <moseleymark@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wKTlTxfx0Fr6BT7S"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050126172931.GA24879@melina11.ds11.agh.edu.pl>
+In-Reply-To: <Pine.LNX.4.53.0501260156100.24829@altaica>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,52 +27,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Marcin Owsiany <marcin@owsiany.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+I'm guessing maybe you don't have a rule above that accepts
+established connections? e.g.
+iptables -A INPUT -i eth0 -p tcp --dport 22 -m state --state
+ESTABLISHED -j ACCEPT
 
---wKTlTxfx0Fr6BT7S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If you don't have that, your established connection will soon deplete
+the 6/hr packets as well.
 
-On Wed, Jan 26, 2005 at 06:29:31PM +0100, Marcin Owsiany wrote:
-> The main text of the mentioned page contains only the following
-> sentences:
->=20
-> | The netfilter/iptables patch-o-matic system
-> |=20
-> | Welcome to the patch-o-matic section of the netfilter/iptables project.
-> |=20
-> | What is patch-o-matic?
->=20
-> Is this supposed to be so empty?
-
-no, but that's where my time was over while writing those web pages :(
-Suggestions / patches welcome.
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---wKTlTxfx0Fr6BT7S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFB9+geXaXGVTD0i/8RAuGmAKCS61T7wm0iTY33g4EAQDC2It16ngCfX5gG
-xQRWHHZGSL3Qi/y2/uQqXis=
-=DOj/
------END PGP SIGNATURE-----
-
---wKTlTxfx0Fr6BT7S--
+Though, as Jason mentioned, you probably want to poke a hole or two
+through for select known-good IPs.
 
