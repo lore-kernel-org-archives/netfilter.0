@@ -1,9 +1,9 @@
-From: "Gavin" <gavin@raha.com>
-Subject: Re: iptables, voip, mac match
-Date: Fri, 11 Oct 2002 13:06:54 +0300
+From: Michael <mutk@iprimus.com.au>
+Subject: Re: Fw: How to remove Established Connection
+Date: Fri, 11 Oct 2002 19:15:47 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <06fd01c2710d$ed9ae4a0$583a29c4@ghome>
-References: <Pine.LNX.4.44.0210110549010.29137-100000@localhost.localdomain>
+Message-ID: <3DA696C3.5000508@iprimus.com.au>
+References: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc> <20021011074918.SGVP459.mta02-svc.ntlworld.com@there> <002d01c270fe$86ca3c80$7cfcc5cb@humanpc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,36 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.samba.org
 
-> On Fri, 11 Oct 2002, Gavin wrote:
->
-> > hello,
-> >
-> > just reporting a funny one:
-> >
-> > One of our clients was trying to use a VOIP application through a linux
-> > gateway (iptables-1.2.3). The client had a MAC address of a:b:c:d:e:f
-and an
-> > IP address of 1.2.3.4
-> >
-> > When I used this rule on the gateway (FORWARD policy DROP):
-> > iptables -A INPUT -i eth1 -m mac --mac a:b:c:d:e:f -j ACCEPT
->
->                                    --mac-source ???
+HareRam wrote:
 
-                                            = same command, works as an
-abbreviation.
+>then ? how do i remove my establish client, when we do some accounting
+>when he logged out, he should not get any browsing, as well as he should be
+>removed from internet
+>how can i achieve
 >
-> >      -     the client could not establish an audio channel to his VOIP
-> > server
->
->
-> rday
->
+>please guide me alternative method to achieve this
 >
 
+You remove the rule that accepts the established connection.
+
+I have a specific rule for each host that is forwarded through firewall. 
+If I want to allow the host, I add the rule in FORWARD chain:
+
+ACCEPT     all  --  *      eth0    <ip_of_host>        
+0.0.0.0/0          state RELATED,ESTABLISHED
+
+When I want to stop them I just remove the rule. Even if the established 
+entry appears and lingers in /proc/net/ip_conntrack, it can't go anywhere.
+At least that's how it seems to work for me... Am I wrong??
+
+Cheers,
+Michael
 
 
