@@ -1,13 +1,13 @@
-From: P@draigBrady.com
+From: Cody Harris <hchs@ns.sympatico.ca>
 Subject: Re: Network Diagraming Tool
-Date: Wed, 31 Mar 2004 12:39:21 +0100
+Date: Wed, 31 Mar 2004 07:46:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <406AADE9.4000609@draigBrady.com>
-References: <7C9884991ADAE0479C14F10C858BCDF567927E@alderaan.smgtec.com> <1080692954.2471.147.camel@localhost>
+Message-ID: <20040331074611.0d623e3d@darna.vectec.net>
+References: <20040330182010.55db9dce@darna.vectec.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1080692954.2471.147.camel@localhost>
+In-Reply-To: <20040330182010.55db9dce@darna.vectec.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Tony Earnshaw <tonye@billy.demon.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Tony Earnshaw wrote:
-> ons, 31.03.2004 kl. 01.49 skrev Daniel Chemko:
->=20
->=20
->>Hey, no need to start a flame and all. I personally use Visio as the
->>corporate standard, and it does the job. I'd use a free equiv if it was
->>pretty good and I was allowed to at work, but as it stands, I'm a Linux
->>admin who uses Visio! :-)
->>
->>Wouldn't it be cool to see a network diagram document record its change
->>history from when the company started to what it stands today? That'd b=
-e
->>a nice feature. Hell, I'd play it as my screensaver! Expecially the
->>security-through-obscurity parts...
->=20
->=20
-> Tried dia - http://www.lysator.liu.se/~alla/dia ? I'm a RedHat person,
-> can use the 0.91 rpm (suppose it's from Fedora?) but though the 0.92
-> source compiles, the compiled stuff won't run on my RHEL3 rig.
+Whether you're using Windows or Linux, you guys have (mostly) said Dia (Which i've now found) or Visio.
 
-Why do people not look for packages first?
-Anyway I usually start here:
-http://dag.wieers.com/home-made/apt/mega-merge.php
-Specifically dia is here:
-http://dag.wieers.com/packages/dia/
+Thank you for your suggestions!
 
-P=E1draig.
+On Tue, 30 Mar 2004 18:20:10 -0400,
+Someone named Cody Harris <hchs@ns.sympatico.ca> wrote:
 
-p.s. The default dia with fedora core 1 doesn't have
-all the nice new network shapes.
+> You know all those nice little pictures of networks people make? You know, with the clouds and stuff. What program can i get to do that?
+> 
+> -- 
+> +------------------+-----------------------------+
+> | Cody Harris      | --------------------------- |
+> | ---------------- | --------------------------- |
+> +------------------+-------+---------------------+---+
+> | *Sigh*. No key.                                    |
+> +----------------------------------------------------+
+> 
+
+
+-- 
++------------------+-----------------------------+
+| Cody Harris      | --------------------------- |
+| ---------------- | --------------------------- |
++------------------+-------+---------------------+---+
+| *Sigh*. No key.                                    |
++----------------------------------------------------+
 
