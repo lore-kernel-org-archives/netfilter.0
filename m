@@ -1,13 +1,12 @@
-From: "Tim Evans" <tkevans@tkevans.com>
-Subject: Re: iptables for ADSL
-Date: Fri, 21 Nov 2003 15:40:08 -0400
+From: Mike McLean <libolt@libolt.net>
+Subject: Continuing Tribes 2 problems with NAT
+Date: Fri, 21 Nov 2003 12:42:05 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031121194008.M88686@tkevans.com>
-References: <02b601c3b065$30bf3a50$0200a8c0@ale> <200311211929.hALJTXj29569@agate.rockstone.co.uk>
-Reply-To: tkevans@tkevans.com
+Message-ID: <200311211242.05614.libolt@libolt.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311211929.hALJTXj29569@agate.rockstone.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,70 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Fri, 21 Nov 2003 19:29:28 +0000, Antony Stone wrote
-> On Friday 21 November 2003 7:25 pm, Alejandro Cabrera Obed wrote:
-> 
-> > Hi people !!!
-> >
-> > I have a basic doubt: I want to connect my Linux with iptables to Intrenet
-> > via ADSL. Just one question:
-> >
-> > Do I have to set
-> > echo "1" > /proc/sys/net/ipv4/ip_dynadrr
-> > in order to work with dynamic addresses asigned by my ISP ????
+Hi,
 
-You just need to capture your dynamically assigned IP address at iptables
-startup time and use it in your rules.  I have the following variable
-assignment in my RH 7.3 startup sdript (all one line):
+I have a tribes 2 server behind an iptables NAT system.  I have forwared the 
+ports for Tribes 2 to the server.  It connects to the master server and show 
+sup in the servers list.  However it shows up with it's internal IP address, 
+not the public IP the network connects to the internet with.  This seems to 
+cause problems for those outside the lan trying to connect to the server.
 
-INET_IP=`ifconfig eth1 | grep 'inet addr' | awk -F":" '{print $2}' | sed 's/ 
-Bcast//'`
+Below I have listed my iptables rules set.  Any help is appreciated:
 
-Then just use $INET_IP in your rules.
---
-Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
-tkevans@tkevans.com             |    Owings Mills, MD 21117
-http://www.tkevans.com/         |    443-394-3864
-http://www.come-here.com/News/  |    
+iptables -F
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables -F -t mangle
+iptables -F -t nat
+iptables -X
+
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 37373 -j DNAT --to 
+192.168.0.1:37373
+
+# Tribes 2 ports forwarded
+iptables -t nat -A PREROUTING -i eth0 -p udp --dport 27999 -j DNAT --to 
+192.168.0.7:27999
+
+iptables -t nat -A PREROUTING -i eth0 -p udp --dport 28000 -j DNAT --to 
+192.168.0.7:28000
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 28000 -j DNAT --to 
+192.168.0.7:28000
+iptables -A FORWARD -i eth0 -o eth1 -p udp -d 192.168.0.7 --dport 28000 -j 
+ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 192.168.0.7 --dport 28000 -j 
+ACCEPT
+
+iptables -t nat -A PREROUTING -i eth0 -p udp --dport 28001 -j DNAT --to 
+192.168.0.7:28001
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 28001 -j DNAT --to 
+192.168.0.7:28001
+iptables -A FORWARD -i eth0 -o eth1 -p udp -d 192.168.0.7 --dport 28001 -j 
+ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 192.168.0.7 --dport 28001 -j 
+ACCEPT
+
+iptables -t nat -A PREROUTING -i eth0 -p udp --dport 28001:29000 -j DNAT --to 
+192.168.0.7:28001-
+29000
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15101 -j DNAT --to 
+192.168.0.7:15101
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15104 -j DNAT --to 
+192.168.0.7:15104
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15024 -j DNAT --to 
+192.168.0.7:15024
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15206 -j DNAT --to 
+192.168.0.7:15206
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15800 -j DNAT --to 
+192.168.0.7:15800
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+Mike
 
 
