@@ -1,11 +1,12 @@
-From: System Administrator <sysadmin_lists@iwa-solutions.com>
-Subject: Patch-o-matic help
-Date: Thu, 3 Jul 2003 15:01:00 -0400
+From: Z_God <zeldario@wanadoo.nl>
+Subject: Unkown arg: '--reject-with' error with ip6tables
+Date: Thu, 3 Jul 2003 22:40:38 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307031501.00905.sysadmin_lists@iwa-solutions.com>
+Message-ID: <200307032240.38437.zeldario@wanadoo.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +19,12 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-anybody arround that can assist a new iptables administrator--I=20
-Hope..............
+Hi,
+I'm using a cool firewall script, but when I run it, I get this --reject-with 
+error from ip6tables. I'm using ip6tables v1.2.8 on Slackware 9.0.
+Does someone know how to solve this problem? Thanks in advance.
+Z
+-- 
+ICQ: 51854780
 
-I have iptable 1.26 setup on a Redhat 8 server.  This server also needs t=
-o=20
-function as a PPTP VPN server.  It appears that PoPToP is the only reason=
-able=20
-way to acomplish that.  I can get PoTPoP to work but I am told that I nee=
-d to=20
-be able to pass GRE packets.
-  It looks like there is a patch to do this but requires patch-o-matic. =20
-Looking at the README, it looks like I run a command called runme.  and t=
-hen=20
-recompile the Kernel.
-  I'm yet to go through the recompile.  Anybody willing to help the=20
-inexperienced become experienced?
-
-Thanks (in advance)
---=20
-Leon Sonntag
 
