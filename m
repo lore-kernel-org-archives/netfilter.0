@@ -1,103 +1,133 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Will netfilter patches be submitted to kernel base?
-Date: Tue, 24 Jun 2003 18:04:33 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030624160433.GQ2645@sunbeam.de.gnumonks.org>
-References: <OKEKIACJCGNKMLKPKIIKEENFCOAA.gcote@transat-tech.com>
+From: Frank =?iso-8859-1?Q?Matthie=DF?= <frankm@lug-owl.de>
+Subject: Two isp's over one physical if w/ different ip alias addr
+Date: Tue, 24 Jun 2003 17:18:42 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20030624151842.GR14958@dvmwest.gt.owl.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BVQ1RKc6+nLPB5pT"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
+	protocol="application/pgp-signature"; boundary="h5TCuzcqTWZxfGfk"
+Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <OKEKIACJCGNKMLKPKIIKEENFCOAA.gcote@transat-tech.com>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Gary Cote <gcote@transat-tech.com>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: Netfilter List <netfilter@lists.netfilter.org>
 
 
---BVQ1RKc6+nLPB5pT
-Content-Type: text/plain; charset=us-ascii
+--h5TCuzcqTWZxfGfk
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 23, 2003 at 02:48:44PM -0500, Gary Cote wrote:
->=20
-> Can anyone brief me on whether there's any sort of master
-> plan to submit the netfilter patches into the kernel base?
+Hi,
 
-sure, we are constantly submitting patches to the 2.4.x and 2.5.x
-kernels.
+after some doing with iptables and ip from iproute packet and a research in
+google i can't resolve my 'routing' problem. I've read also the Linux
+adv Routing & Traffic Control HOWTO, but get no idea why my setup
+doesn't run as expected.
 
-> And further, whether there's any thought to back porting=20
-> them to 2.4.x? If effort is the limiting factor, then my
-> company may be sufficiently motivated to cough up some
-> free time.
+What i have: A debian sid box, iptables 1.2.7a-5,  iproute 20010824-8.
 
-Which ones are you talking about?  2.5.x work is mostly eliminating
-skb_linearize() from all parts of netfilter/iptables.  Apart from that,
-almost all our patches are for 2.4.x
+My preffered setup:
 
-> I'm specifically interested in the pptp-conntrack-nat patch.
-> I noticed that the patch modifies ip_conntrack_core.c and
-> ip_nat_core.c. Aside from what appear to be debug statements,
-> it looks like a net change of *two* lines of code. The rest of
-> the patch consists of new files.
+DMZ
+10.0.0.0/24
+  |
+  |
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+10.0.0.1/24
+eth0
 
-yes.  Th reason for not submitting it is not one of it being instable or
-affecting too many other subsystems.  The main reasons are:
+Firewallbox
 
-- still doesn't support multiple calls in one session
-- some people seem to have DNAT problems
-- it expands the ip_conntrack_tuple by at least 4 to 8 bytes, which
-  is quite some penalty, considering there are two  tuples in every=20
-  connection tracking entry
+-j MASQUERADE  (actual no snat, this should be a problem)
+eth1           eth1:1
+212.8.203.4    192.168.0.1
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+  |               |
+  |               |
+  |            =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+  |            192.168.0.254/24
+  |            DSL Router(NAT)
+  |            212.203.240.4/32
+  |            =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+  |               |
+  |               |
+ISP0           ISP1
 
-> Would it be possible to get only those small changes into the=20
-> kernel base? Then, we'd be able to build the GRE/PPTP helpers=20
-> as loadable modules and not have to patch the kernel.
+For some day's i want to use both isp's. My first try was to set tos
+0x10 for ssh and use this wit a "ip rule" statement to run into a
+special routing table.
 
-You cannot just put those two lines into the kernel, since they require
-the respective header files.  And they increade the tuple size, see
-above.
+ip route add default table http.ftp via 192.168.0.254 src 192.168.0.1
+ip rule add tos 16 table http.ftp
+ip route flush
 
-> We're something of a value-added reseller. We bundle our system
-> software within a linux workstation. We've so far managed to run=20
-> our product on off-the-shelf distros and would prefer not to get
-> into the business of building, shipping, and maintaining custom
-> kernels.
+After that i check this with "tcpdump -i eth1 -n port 22". The new ssh
+connection use the old(212.8.203.4) gateway.=20
 
-I can understand that position, but you have to understand that we have=20
-different motivations for putting code into the linux kernel.
+Independent from my snat problem on eth1:1, the ssh packet has to leave
+the firewall over eth1:1(192.168.0.1). Is there a typical beginner fault
+in my ip route/rule config?
 
+Second: Is there a way to do MASQUERADE or SNAT on both interfaces(eth1,
+eth1:1)? Do the packets mangled before the arrive netfilter pre- or
+postrouting? Or ask another way round: When do the packet manipulate by
+the routing table?=20
+
+
+my picture if netfilter is:
+            =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D                      =3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D        =3D=3D=3D=3D=3D=3D=3D=3D=3D
+            |          |                      |           |        |       |
+-->Packet-->|prerouting|---routing decision---|postrouting|-----+--|forward=
+|--+-->
+            |          |                      |           |     |  |       =
+|  |
+            =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D                      =3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D     |  =3D=3D=3D=3D=3D=3D=3D=3D=3D  |
+   [1]                         [2]                          [3] |          =
+   |
+                                                                |          =
+   |
+                                                             =3D=3D=3D=3D=
+=3D=3D=3D       =3D=3D=3D=3D=3D=3D=3D
+                                                             |  In |       =
+| Out |
+                                                             =3D=3D=3D=3D=
+=3D=3D=3D       =3D=3D=3D=3D=3D=3D=3D
+
+Where do the packet get the source address 192.168.0.1 from the "ip
+route" rule?
+
+I hope i explain my problem in a way that you can give one/siome hints.
+
+Frank.
 --=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+Frank Matthie=DF                                               frankm@lug-o=
+wl.de
 
---BVQ1RKc6+nLPB5pT
+  May the penguin be with you!
+
+--h5TCuzcqTWZxfGfk
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE++HaRXaXGVTD0i/8RAlcCAKCg3pDrU3sx88a1JQeaUrnmu+Q+5wCfcyXw
-x2aag5axJZpiLvVhxEHJVeQ=
-=/6f4
+iD8DBQE++GvSlvxyuc8baY0RAi88AJ493k0sXsGmGNXHA4VLggCxBGkT3gCcClV0
+WJMC4xGT6MRFQAbBy5J4bU8=
+=ndYn
 -----END PGP SIGNATURE-----
 
---BVQ1RKc6+nLPB5pT--
+--h5TCuzcqTWZxfGfk--
 
