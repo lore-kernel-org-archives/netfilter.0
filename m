@@ -1,11 +1,11 @@
-From: "Venkatesh. K" <venkatesh@cbayscribe.com>
-Subject: Re: iptables1.2.7 + pptp + rh9
-Date: Wed, 22 Oct 2003 06:30:13 +0530
+From: gfzhang@njnu.edu.cn (gfzhang)
+Subject: how to use -m conntrack --ctexpire
+Date: Wed, 22 Oct 2003 09:42:57 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009501c39837$e1883850$2800a8c0@karu>
-References: <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com> <6.0.0.22.0.20031021210350.01b66818@pop3.uol.com.br>
+Message-ID: <000e01c3983d$d20f4930$f56877ca@gfzhangnnu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000B_01C39880.E01D2C70"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,82 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org, Fernando Barrocal <fbarrocal@uol.com.br>
+To: netfilter@lists.netfilter.org
 
------ Original Message ----- 
-From: "Fernando Barrocal" <fbarrocal@uol.com.br>
-To: "Daniel Chemko" <dchemko@smgtec.com>; <netfilter@lists.netfilter.org>
-Sent: Wednesday, October 22, 2003 4:35 AM
-Subject: RE: iptables1.2.7 + pptp + rh9
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_000B_01C39880.E01D2C70
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
->
-> Let me ask another question ... a newbie one ...
->
-> Is that order correct ?
->
-> - apply pptp patch
-> - compile iptables
-> - compile kernel (config, dep, clean, image, modules)
->
+aW4gbXkgTkFUIGJveCBJIGZvdW5kIGEgbG90IG9mIA0KdHJhbnNmb3JtIGl0ZW0gaW4gL3Byb2Mv
+bmV0L2lwX2Nvbm50cmFjayANCndpdGggdGhlIGV4cGlyZSB0aW1lIGxhcmdlciB0aGFuIDQwMDAw
+MCANCkkgd2FubmEgZHJvcCBpdCBhbmQgY2hlY2sgaXB0YWJsZXMgbWFudWFsDQppIGZvdW5kIHRo
+ZSAtbSBjb25udHJhY2sgb3B0aW9uIA0KDQpob3cgdG8gdXNlIHRoaXMgbWF0Y2ggZXh0ZW5zaW9u
+PyANCg==
 
-Apply patch
-Compile Kernel
-Compile IPtables
+------=_NextPart_000_000B_01C39880.E01D2C70
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-Venkatesh K
->
->
-> At 20:06 21/10/2003, Daniel Chemko wrote:
-> >Um, yeah. You need to compile the userspace tools against the kernel
-> >that you are installing.
-> >
-> >-----Original Message-----
-> >From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]
-> >Sent: Tuesday, October 21, 2003 3:00 PM
-> >To: Daniel Chemko; netfilter@lists.netfilter.org
-> >Subject: RE: iptables1.2.7 + pptp + rh9
-> >
-> >
-> >Still after installing 1.2.8 it does not work. Do I need to compile ipt
-> >?
-> >and the kernel ?
-> >
-> >At 19:15 21/10/2003, Daniel Chemko wrote:
-> > >Download ipt 1.2.8 or 1.2.9 if it is out.
-> > >Or, use the CVS userspace
-> > >
-> > ># KERNEL_DIR=<yourkerneldir> make
-> > ># make install
-> > >
-> > >You might want to change the destination directories in the Makefile to
-> > >conform to the Redhat deployment layout
-> > >LIBDIR=/lib/
-> > >MANDIR=/usr/man
-> > >etc..
-> > >
-> > >-----Original Message-----
-> > >From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]
-> > >Sent: Tuesday, October 21, 2003 2:04 PM
-> > >To: netfilter@lists.netfilter.org
-> > >Subject: iptables1.2.7 + pptp + rh9
-> > >
-> > >
-> > >Hi,
-> > >
-> > >I am applying the pptp patch with patch-o-matic in my redhat 9.0.
-> > >Somebody
-> > >have somer step by step to patch the kernel, compile the iptable
-> > >userspace
-> > >and compile the kernel to accept DNAT ?
-> > >
-> > >Thanks in advance
-> > >
-> > >Fernando Barrocal
->
->
->
->
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
+MC4yODAwLjEyNjQiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5pbiBteSBOQVQgYm94IEkg
+Zm91bmQgYSBsb3Qgb2YgPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+dHJhbnNmb3Jt
+IGl0ZW0gaW4gL3Byb2MvbmV0L2lwX2Nvbm50cmFjayA8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05U
+IHNpemU9Mj53aXRoIHRoZSBleHBpcmUgdGltZSBsYXJnZXIgdGhhbiA0MDAwMDAgPC9GT05UPjwv
+RElWPg0KPERJVj48Rk9OVCBzaXplPTI+SSB3YW5uYSBkcm9wIGl0IGFuZCBjaGVjayBpcHRhYmxl
+cyBtYW51YWw8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5pIGZvdW5kIHRoZSAtbSBj
+b25udHJhY2sgb3B0aW9uIDwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4m
+bmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPmhvdyB0byB1c2UgdGhpcyBtYXRjaCBleHRl
+bnNpb24/IDwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJ
+Vj48L0JPRFk+PC9IVE1MPg0K
+
+------=_NextPart_000_000B_01C39880.E01D2C70--
 
 
