@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ff:ff:ff:ff:ff:ff mac problem
-Date: Thu, 24 Jun 2004 09:54:38 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: iptables 1.2.10 and linux kernel 2.6.7 problems.
+Date: Thu, 24 Jun 2004 10:34:25 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088063678.1865.23.camel@anduril.intranet.cartel-securite.net>
-References: <1088063173.3839.10.camel@joel.d2visp.com>
+Message-ID: <Pine.LNX.4.33.0406241032140.8190-100000@blackhole.kfki.hu>
+References: <6BFFA187E8806C4E9740A353F715DDBDE57169@newmailer.terraplay.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088063173.3839.10.camel@joel.d2visp.com>
+In-Reply-To: <6BFFA187E8806C4E9740A353F715DDBDE57169@newmailer.terraplay.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Joel Solanki <zealous@bonbon.net>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: =?iso-8859-1?Q?P=E4r_H=E4ggblad?= <par.haggblad@terraplay.com>
+Cc: netfilter@lists.netfilter.org
 
-Le jeu 24/06/2004 =E0 09:46, Joel Solanki a =E9crit :
-> ff:ff:ff:ff:ff:ff This mac address is creating problem in my network.
-> Coz i cant find the ip address  of this mac address device.
+On Wed, 23 Jun 2004, [iso-8859-1] P=E4r H=E4ggblad wrote:
 
-FF:FF:FF:FF:FF:FF is the ethernet broadcast address. There's no device
-associated to this MAC, and the IP address that could be associated to
-it is an IP broadcast address.
+> I have used iptables 1.2.9 with kernel 2.4.x since a week ago.
+> Now I'm using the new 2.6.7 kernel and iptables 1.2.10.
 
-Example : suppose LAN is 192.168.1.0/24, then sending packets to
-192.168.1.255 will send frames to FF:FF:FF:FF:FF:FF.
+You did compile iptables 1.2.10 using the 2.6.7 source code, didn't you?
 
+> modprobe ip_nat_ftp ports=3D ab,cde,fgh
+                            ^
+That space is illegal there |
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+> 2. $IPTABLES -v -A INPUT -i eth0 -p icmp -j DROP
+>    Does not work. I can still ping my compu, the packets are not dropped.
+
+If you list out the rules, you can see the same ones you fed into the
+kernel?
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
 
