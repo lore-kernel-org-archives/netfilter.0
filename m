@@ -1,11 +1,12 @@
-From: cc <cc@belfordhk.com>
-Subject: filtering by packet contents?
-Date: Wed, 16 Jul 2003 12:47:21 +0800
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: filtering by packet contents?
+Date: Wed, 16 Jul 2003 15:51:28 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F14D8D9.2080500@belfordhk.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF26@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,7 +17,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: cc <cc@belfordhk.com>, netfilter@lists.netfilter.org
+
+You can you use the p-o-m patch for the string module "-m string =
+--string pattern"
+
+this works and can be used for some funky stuff too like redirecting 1 =
+virtual host on a server to another server which is very handy when a =
+particular virtual host goes down...
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+-----Original Message-----
+From: cc [mailto:cc@belfordhk.com]
+Sent: Wednesday, July 16, 2003 2:47 PM
+To: netfilter@lists.netfilter.org
+Subject: filtering by packet contents?
+
 
 Hi,
 
@@ -45,5 +69,6 @@ Thanks for any clarification in
 this matter.
 
 Edmund
+
 
 
