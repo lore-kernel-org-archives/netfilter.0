@@ -1,9 +1,9 @@
 From: Emanoil Kotsev <emanuel@abc.at>
-Subject: Re: squid
-Date: Tue, 29 Apr 2003 22:45:10 +0200
+Subject: Re: H323 in new kernel
+Date: Tue, 29 Apr 2003 22:37:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EAEE456.F0F6A2C9@abc.at>
-References: <ABEKJILKOKKGGDJKHKDFOENCCAAA.patrick@vikus.com>
+Message-ID: <3EAEE275.9E6DC6F@abc.at>
+References: <14C5057BC852D611BAC400E0299AA10F1278AE@MAILSERV>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,30 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Patrick Ahler <patrick@vikus.com>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+To: MOUDARIR Mohamed <moudarir@Richbond.ma>
+Cc: netfilter@lists.netfilter.org
 
-I am using squid @home behind a linux firewall and I dont think it is a matter
-of squid to dislike your windows updates.
+I also had to upgrade my kernel to 2.4.20 and have compiled it with the
+H.323 support without problem
 
-In our company we have a lot of windows(es) behind a linux firewall(s).
+As far as I know it is not included in any linux version I know.
 
-I think it might be that you have been too restrictive with your rules, couse
-for windows is one port not enough ;-)
+MOUDARIR Mohamed wrote:
 
-could you post some samples or you can try accepting the traffic that is
-requested from your internal network with ESTABLISHED and RELATED
-
-
-Patrick Ahler wrote:
-
-> I know this is a bit off topic, but at first I thought it was a netfilter
-> problem, now I'm convinced it's squid. I redirect my internal traffic
-> through a squid proxy... the problem I'm running into is that I can't seem
-> to get any windows updates to work for my machines using the proxy. When it
-> begins to detect upgrades needed, it will just sit on 0%. Anyone else had
-> this problem? If so, how'd you fix it?
->
-> -=PaTriCK
+> Hello
+> I have redhat 7.2 with iptables 1.2.3
+> I don't success to install p-o-m to include H323 module ( support of
+> netmeeting session ) , koz compilation problems ...
+> So i want to know if H323 is builting ( pre-installed ) in new kernel
+> version ( like redhat 8.0 ) so i have not to install p-o-m.
+> Thanks
 
 
