@@ -1,11 +1,13 @@
-From: "GoMi" <gomi@perezoso.net>
-Subject: RV: Changing the amount of tokens in the conntrack
-Date: Tue, 28 Oct 2003 12:21:47 +0100
+From: Earl A.Killian <netfilter@lists.killian.com>
+Subject: efficient source address filtering and logging?
+Date: Tue, 28 Oct 2003 09:25:51 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAdMZbo8ar0EerVxNjQLkOigEAAAAA@perezoso.net>
+Message-ID: <16286.42655.163600.954714@teak.killian.com>
+References: <20031028165927.11207.15406.Mailman@netfilter-sponsored-by.noris.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031028165927.11207.15406.Mailman@netfilter-sponsored-by.noris.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +18,171 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+Cc: netfilter@lists.netfilter.org
 
+ > Date: Tue, 28 Oct 2003 09:59:16 -0500 (EST)
+ > From: "Robert P. J. Day" <rpjday@mindspring.com>
+ > 
+ >   i'd like to find a short, efficient way to filter incoming packets with
+ > bogus source addresses, but i don't see an elegant way of doing it.
+ > 
+ >   as we all know, there are a number of clearly bogus source addresses on
+ > incoming packets:
+ > 
+ >   - broadcast
+ >   - your own IP address
+ >   - any of the private class A, B or C addresses
+ >   - class D addresses
+ > 
+ > and on and on.  so it's natural to want to discard them and, just for fun,
+ > log them as well.
+ > 
+ >   for elegance, i can create a user-defined chain called, say,
+ > "reject_bad_source_addresses" to which i jump with every incoming packet.  
+ > this user-defined chain will test for all of the bad source addresses, one
+ > at a time, and DROP/REJECT each one.  however, if i want to log all of 
+ > these rejections, i'd have to double the number of rules in this chain,
+ > so that each test would first LOG that packet, then be followed by a 
+ > second rule to DROP it.  kind of a pain.
+ > 
+ >   if i could rewrite the rules all backwards, i could have the 
+ > user-defined chain full of ACCEPT rules, and only terminate the chain with 
+ > a rule for LOG, followed by one for DROP.  but i don't see how that's 
+ > possible.
 
+Here's what my firewall generator produces (for a complex system
+description).  Perhaps it will give you some ideas?  Or perhaps you
+see a flaw?  I've excerpted just the relevant stuff.  This is machine
+generated output, so perhaps it is not the prettiest...
 
------Mensaje original-----
-De: GoMi [mailto:gomi@arrakis.es] 
-Enviado el: martes, 28 de octubre de 2003 12:21
-Para: 'netfilter@lists.netfilter.org'
-Asunto: Changing the amount of tokens in the conntrack
-
-
-Hi there, its my first email to the list, so i will explan a little bit
-my setup:
-
-I have a linux box with 1GB RAM Athlon 1.8GHz and 3 eth cards.
-
-
-                        ______
-                 eth2  |      |eth0
-LAN (300 users) <----->|      |<--->ADSL 2Mbit
-                       |      |<--->ADSL 2MBit
-                       |______|eth1
-
-I am doing load balancing at the moment, but thats nothing to worry
-about since it works great. I am also using a QoS setup based on HTB and
-SFQ queues, and due to the load balancing i have a stateful firewall. 
-
-Some aplications my users use quite often, like msn messenger, kazaa or
-other p2p automatically disconnects themselves. I have comed to the
-conclusion thats because of the amount of simultaneous connections the
-box can handle. So i want to change the amount of tokens the conntrack
-is using.
-
-I have the conntrack module built-in the kernel, hence i am driving
-myself mad to find a way to increase this value. Does anybody knows how
-to change that?
-
-Thank you very much,in advanced. If any of you knows anything i could
-change as well to improve my setup, i am welcome to suggestions
-
-
+#
+# filter/FORWARD - packets received and routed for transmission
+#
+-A FORWARD -j logdropresvd -s 0/8
+-A FORWARD -j logdropresvd -d 0/8
+-A FORWARD -j logdropresvd -s 169.254/16
+-A FORWARD -j logdropresvd -d 169.254/16
+-A FORWARD -j logdropresvd -s 192.0.2/24
+-A FORWARD -j logdropresvd -d 192.0.2/24
+-A FORWARD -j logdropspoof -s 127/8
+-A FORWARD -j logdropspoof -d 127/8
+-A FORWARD -j logdropspoof -s 10/8
+-A FORWARD -j logdropspoof -d 10/8
+-A FORWARD -j logdropspoof -s 176.16/12
+-A FORWARD -j logdropspoof -d 176.16/12
+-A FORWARD -j forward_eth2 -i eth2
+-A FORWARD -j forward_eth1 -i eth1
+-A FORWARD -j forward_eth3 -i eth3
+-A FORWARD -j forward_eth0 -i eth0
+#
+# filter/INPUT - packets received and routed to me
+#
+-A INPUT -j ACCEPT -i lo
+-A INPUT -j logdropresvd -s 0/8
+-A INPUT -j logdropresvd -d 0/8
+-A INPUT -j logdropresvd -s 169.254/16
+-A INPUT -j logdropresvd -d 169.254/16
+-A INPUT -j logdropresvd -s 192.0.2/24
+-A INPUT -j logdropresvd -d 192.0.2/24
+-A INPUT -j logdropspoof -s 127/8
+-A INPUT -j logdropspoof -d 127/8
+-A INPUT -j logdropspoof -s 10/8
+-A INPUT -j logdropspoof -d 10/8
+-A INPUT -j logdropspoof -s 176.16/12
+-A INPUT -j logdropspoof -d 176.16/12
+-A INPUT -j input_eth2 -i eth2
+-A INPUT -j input_eth1 -i eth1
+-A INPUT -j input_eth3 -i eth3
+-A INPUT -j input_eth0 -i eth0
+#
+# filter/OUTPUT - packets generated by me for transmission
+#
+-A OUTPUT -j ACCEPT -o lo
+-A OUTPUT -j logdropresvd -s 0/8
+-A OUTPUT -j logdropresvd -d 0/8
+-A OUTPUT -j logdropresvd -s 169.254/16
+-A OUTPUT -j logdropresvd -d 169.254/16
+-A OUTPUT -j logdropresvd -s 192.0.2/24
+-A OUTPUT -j logdropresvd -d 192.0.2/24
+-A OUTPUT -j logdropspoof -s 127/8
+-A OUTPUT -j logdropspoof -d 127/8
+-A OUTPUT -j logdropspoof -s 10/8
+-A OUTPUT -j logdropspoof -d 10/8
+-A OUTPUT -j logdropspoof -s 176.16/12
+-A OUTPUT -j logdropspoof -d 176.16/12
+-A OUTPUT -j output_eth2 -o eth2
+-A OUTPUT -j output_eth1 -o eth1
+-A OUTPUT -j output_eth3 -o eth3
+-A OUTPUT -j output_eth0 -o eth0
+#
+# Accept established connections, log/drop invalid ones, return for new ones
+#
+-A checkstate -j ACCEPT -m state --state ESTABLISHED,RELATED
+-A checkstate -j RETURN -m state --state NEW
+-A checkstate -j LOG -p tcp --log-ip-options --log-tcp-options --log-prefix "TCP-INVALID "
+-A checkstate -j DROP -p tcp
+-A checkstate -j LOG -p udp --log-ip-options --log-prefix "UDP-INVALID "
+-A checkstate -j DROP -p udp
+-A checkstate -j LOG -p icmp --log-ip-options --log-prefix "ICMP-INVALID "
+-A checkstate -j DROP -p icmp
+-A checkstate -j LOG --log-ip-options --log-prefix "INVALID "
+-A checkstate -j DROP
+#
+# filter/forward_eth0 - packets received on interface eth0 destined for retransmission
+#
+-A forward_eth0 -j logdrop1918 -s 192.168/16
+-A forward_eth0 -j logdropmulti -s 224/3
+-A forward_eth0 -j logdropmulti -d 224/3
+-A forward_eth0 -j logdropspoof -s 1.2.3.33
+-A forward_eth0 -j logdropspoof -s 1.2.3.41
+-A forward_eth0 -j checkstate
+-A forward_eth0 -j forward_eth0_eth1_tcp -o eth1 -p tcp
+-A forward_eth0 -j DROP
+#
+# tcp packets from forward_eth0_eth1
+#
+-A forward_eth0_eth1_tcp -j ACCEPT -p tcp -m multiport -d 1.2.3.42 --dports http,https
+-A forward_eth0_eth1_tcp -j ACCEPT -p tcp -m multiport -d 1.2.3.43 --dports http,https,smtp,smtps,submission,imaps
+-A forward_eth0_eth1_tcp -j DROP
+#
+# filter/forward_eth1 - packets received on interface eth1 destined for retransmission
+#
+-A forward_eth1 -j logdrop1918 -s 192.168/16
+-A forward_eth1 -j logdropmulti -s 224/3
+-A forward_eth1 -j logdropmulti -d 224/3
+-A forward_eth1 -j logdropspoof -s 1.2.3.33
+-A forward_eth1 -j logdropspoof -s 1.2.3.41
+-A forward_eth1 -j checkstate
+-A forward_eth1 -j forward_eth1_eth0 -o eth0
+-A forward_eth1 -j DROP
+#
+# filter/forward_eth1_eth0 - packets forwarded from eth1 to eth0
+#
+-A forward_eth1_eth0 -j ACCEPT -p udp
+-A forward_eth1_eth0 -j ACCEPT -p tcp
+-A forward_eth1_eth0 -j forward_eth1_eth0_icmp -p icmp
+-A forward_eth1_eth0 -j DROP
+[snip]
+#
+# Log and drop RFC1918 net
+#
+-A logdrop1918 -j LOG --log-ip-options --log-prefix "INET-RFC1918 "
+-A logdrop1918 -j DROP
+#
+# Log and drop MULTI net
+#
+-A logdropmulti -j LOG --log-ip-options --log-prefix "INET-MULTI "
+-A logdropmulti -j DROP
+#
+# Log and drop reserved nets
+#
+-A logdropresvd -j LOG --log-ip-options --log-prefix "INET-RESVD "
+-A logdropresvd -j DROP
+#
+# Log and drop spoof attempt
+#
+-A logdropspoof -j LOG --log-ip-options --log-prefix "ANTI-SPOOF "
+-A logdropspoof -j DROP
+[snip]
 
