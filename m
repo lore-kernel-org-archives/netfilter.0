@@ -1,53 +1,49 @@
-From: "Josh Berry" <josh.berry@linknet-solutions.com>
-Subject: Re: Problem with http authentication
-Date: Thu, 23 Oct 2003 11:08:33 -0500 (CDT)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <30695.204.214.145.6.1066925313.squirrel@mail.linknet-solutions.com>
-References: <3F9800A7.9070300@email.it>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Bug/Problem with DNAT on OUTPUT chain (-t nat -A OUTPUT) that
+ breaks routing? (fwd)
+Date: Thu, 23 Oct 2003 19:16:23 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <3F980CE7.2050909@trash.net>
+References: <Pine.LNX.4.44.0310231127470.29188-100000@kinison.puremagic.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F9800A7.9070300@email.it>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0310231127470.29188-100000@kinison.puremagic.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: kaihansen@email.it
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Evan Harris <eharris@puremagic.com>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-That doesn't sound like a netfilter problem.  Sounds like a few sites have
-authentication issues.
+I tried 2.4 and 2.6 with DNAT to 127.0.0.1. The packets were sent on the
+loopback device as expected. Please send some more information about
+your specific setup.
 
+Best regards,
+Patrick
 
-> Hi all!
->
-> I've a singular problem with netfilter... All work well, but in some
-> Internet Sites there's a problem of authentication...
->
-> I write in the two fields username and password and, if they are
-> correct, browser reload the page; if password is wrong, else, it write
-> an error message...
->
-> Anyone ave an idea?
->
-> Thanks, d
->
->
->
->
->
+Evan Harris wrote:
 
-
-Thanks,
-Josh Berry, CTO
-LinkNet-Solutions
-469-831-8543
-josh.berry@linknet-solutions.com
+>Ok, I've upgraded to kernel 2.4.22, and the same behaviour is being
+>exhibited.
+>
+>To recap the problem:
+>
+>Packets being nat'd on the OUTPUT chain of a machine are still being sent on
+>the same interface they would have without the nat, and ignoring the route
+>that aims them to the right iface for that dest addr.
+>
+>Evan
+>
+>
+>  
+>
 
 
