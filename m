@@ -1,10 +1,9 @@
-From: <oarojo@intermediacorp.com>
-Subject: portforwarding-HOWTO
-Date: Mon, 6 Jan 2003 14:50:37 +0800 (PHT)
+From: jamal <hadi@cyberus.ca>
+Subject: ANNOUNCE: tc filter extensions
+Date: Sat, 4 Jan 2003 13:03:58 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2132.192.168.0.1.1041835837.squirrel@mail.intermediacorp.com>
+Message-ID: <20030104125252.J48869__13874.3922267624$1041974329@shell.cyberus.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,47 +14,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hello people!!!
-
-I have set-up a linux box firewall with two ethernet cards; eth0 facing the
-internet and eth1 facing the internal network. Inside my network is my mail
-server with an IP of 192.168.0.5. Now since my ISP had only given me one
-valid IP address for my network, I wish to do port-forwarding for ports 25
-and 110. I did something like:
-
-# iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx --dport 25
--j DNAT --to 192.168.0.5:25
-
-# iptables -t nat -A PREROUTING -p tcp -i eth0 -d xxx.xxx.xxx.xxx --dport
-110 -j DNAT --to 192.168.0.5:110
-
-# iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 25 -j ACCEPT
-# iptables -A FORWARD -p tcp -i eth0 -d 192.168.0.5 --dport 110 -j ACCEPT
-
-# iptables-save > /etc/sysconfig/iptables
-
-
-When i used nmap to determine if ports 25 and 110 are open, it says:
-
-25/tcp     filtered    smtp
-110/tcp    filtered    pop-3
-
-and when i try telnetting its valid ip
-
-#telnet xxx.xxx.xxx.xxx 25
-
-
-it says "trying...." and can't connect at all...
-
-How's this? Did I missed something here? Please Help!!!
-
-
-Oliver
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: diffserv-general <diffserv-general@lists.sourceforge.net>
+Cc: lartc@mailman.ds9a.nl, netfilter@lists.samba.org, netfilter-devel@lists.samba.org
 
 
 
+I guess holidays means idle time which means idle minds which leads to
+thumb twiddling which then leads to some work (which is sometimes useful)
 
+Ive updated the traffic control patches i posted about six months ago.
+Note, the current release does not break anything in tc. It is fully
+backward compatible so you can choose not to use it and things will work
+as they do today. Of course, it is very useful so you cant choose to
+ignore it!
+
+It's now upgraded to better than "use at your own risk" category.
+tested on both uni and SMP 2.4.18 and 2.4.20.
+
+http://www.cyberus.ca/~hadi/patches/action/
+
+Bug reports and feedback are appreaciated.
+A lot more goodies coming up, so this is just the tip. First steps are to
+prove sanity of the idea.
+
+cheers,
+jamal
 
