@@ -1,11 +1,11 @@
-From: "Piergiorgio Ghezzo" <PJ@piggei.com>
-Subject: BLOCK target
-Date: Sat, 1 Jun 2002 02:51:17 +0200
+From: "Shazad Malik" <smalik@vistawiz.com>
+Subject: ip_conntrack (1011 buckets, 8088 max)???
+Date: Thu, 30 May 2002 23:00:23 -0400 (EDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <009601c20906$70c86430$0704a8c0@sandra>
-Reply-To: "Piergiorgio Ghezzo" <PJ@piggei.com>
+Message-ID: <2974.24.168.132.35.1022814023.squirrel@mail.vistawiz.com>
+Reply-To: smalik@vistawiz.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -19,26 +19,19 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hello to all.
+Hi all,
 
-  you think it's possible to make a BLOCK target that works like DROP, but
-remember the IP and deny any access for a configured time?
+I have a question which may have been asked before but I will ask it anyway!
+When I start iptables I get the following messages:
 
-Ciao,_
-    /_)
-   /ier
-                    +---------------------------------+
-                    |     Piergiorgio Ghezzo  [PJ]    |
-                    |                                 |
-                    | E-mail: PJ@piggei.com           |
-                    |    ICQ: 20755682                |
-                   /)    Web: http://www.piggei.com   (\
-                  / )                                 ( \
-              (\ ( (+---------------------------------+) ) /)
-               \(\\ \   / )                      / )  / / //
-                \\\\ \_/ /                       \ \_/ ////
-                 \      /                         \      /
-                  \    /                           \    /
+ip_conntrack (1011 buckets, 8088 max)
+
+What exactly does bucket mean? and does the 8088 max mean that concurrent
+8088 stateful connection at one time!  Can this value be increased and how
+is this vlaue determined?
+
+Cheers
+hallian
 
 
 
