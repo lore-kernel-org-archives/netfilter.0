@@ -1,14 +1,14 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: Overruns ?
-Date: Thu, 19 Feb 2004 11:49:42 -0700
+From: "Corey Furman" <furmanc@empirekosher.com>
+Subject: Re: Email Server Timeouts
+Date: Thu, 19 Feb 2004 13:49:14 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040219114942.6c6ee6c9@mgalepc.utilitran.com>
-References: <20040219083222.7e4dc5a3@mgalepc.utilitran.com>
-	<1077216213.1984.48.camel@ca.gts.nexusmgmt.com>
+Message-ID: <3515.192.168.2.103.1077216554.squirrel@mail.empirekosher.com>
+References: <20040218203304.24484.34213.Mailman@netfilter-sponsored-by.noris.net>
+Reply-To: furmanc@empirekosher.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077216213.1984.48.camel@ca.gts.nexusmgmt.com>
+In-Reply-To: <20040218203304.24484.34213.Mailman@netfilter-sponsored-by.noris.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,66 +19,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hello,
+Thanks, Antony.  Just because I do a thing, doesn't mean I know why I do
+it :P
 
-	This network device is on a small (5 hub) network with all the other cards
-being on-board GB cards. This network device is a cheap Dlink 10/100 card. 
+I (believe it or not) close those ports because I did not think anything
+would use them, and I sort of approach the firewall as:
+    + close everything
+    + poke holes where needed
 
-I am going to try changing the card to a GB card as well ... since there also
-seems to be a fair amount of collision.
+This may sound like a stupid question, but why aren't the SMTP and POP
+ports sufficient?
 
-Michael.
+For better or for worse, I only know enough to get the linux products I
+use to work, and if something goes wrong, I usually take a week or two to
+figure it out.  The company I work for doesn't have the cash to get me
+trained, so anything I learn is typically self taught on live systems.
 
+So I appreciate it when folks like yourself give me a direction to look
+for answers.  Thanks a lot!
 
-
-On Thu, 19 Feb 2004 13:43:34 -0500
-"John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com> wrote:
-
-> On Thu, 2004-02-19 at 10:32, Michael Gale wrote:
-> > Hello,
-> > 
-> > 	Not sure if this is the place to ask but when I do a ifconfig I see some
-> > overruns. I have tried google and man ifconfig but can not find what a
-> > "overrun" is.
-> > 
-> > eth0      Link encap:Ethernet  HWaddr 00:E0:81:25:A6:92  
-> >           inet addr:10.10.10.173  Bcast:10.10.10.255  Mask:255.255.255.0
-> >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-> >           RX packets:9639161 errors:0 dropped:0 overruns:0 frame:0
-> >           TX packets:9598780 errors:0 dropped:0 overruns:21 carrier:0
-> >           collisions:0 txqueuelen:100 
-> >           RX bytes:2726609687 (2600.2 Mb)  TX bytes:1986194437 (1894.1 Mb)
-> >           Interrupt:10 Base address:0xb000 
-> Perhaps someone else can answer more authoritatively than I but I have
-> always assumed that it means the physical interface picked up a packet
-> addressed to it but had no buffer into which it could put the packet. 
-> In other words, the system ran out of memory dedicated to packet
-> buffering.
-> 
-> One can either increase the number of buffers allocated to buffering
-> packets or identify the source of the bottleneck.  On a standalone
-> system, it might be the processor. In the case of a packet passing
-> device, increase the bandwidth on the egress.
-> 
-> I do not know where one configures the number of cache buffers in Linux
-> but that would be a handy trick to know.  I'm sure someone does know it
-> off the top of their head.  Next person . . . 
-> -- 
-> Open Source Development Corporation
-> Financially Sustainable open source development
-> http://www.opensourcedevelopmentcorp.com
-> 
-> 
-> 
-> 
-> 
+Let me say for the record that if I had my druthers, the firewall would be
+a firewall and nothing else.  I'm simply constrained on resources, and
+frankly I have bigger fish to fry.  I'll get back to it at some point this
+year....
 
 
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+
+> From: Antony Stone <Antony@Soft-Solutions.co.uk>
+> To: netfilter@lists.netfilter.org
+> Subject: Re: Email Server Timeouts
+> Date: Wed, 18 Feb 2004 18:55:31 +0000
+>
+> On Tuesday 17 February 2004 9:20 pm, Corey Furman wrote:
+>
+>> When I enabled these rules, but then sendmail (on the same box) started
+>> timing out talking to other mail servers.  Does anyone see why?
+>
+> Yes.   Your first INPUT rule blocks all TCP packets coming in to ports in
+> the
+> range  11001 to 65535 (why do you have this rule?).
+>
+> That means on average there's an 85% chance that any connection from this
+> machine will not be able to receive a response, depending on the source
+> port
+> it chooses to communicate from.
+>
+> By the way, I'd just like to comment that it's not a good idea to run
+> sendmail
+> (or any other application for that matter) on your firewall.
+>
+> Regards,
+>
+> Antony.
+
 
