@@ -1,13 +1,11 @@
-From: Peteris Krumins <newsgroups@lf.lv>
-Subject: iptc_zerro_entries segfaults, why?
-Date: Fri, 9 May 2003 07:39:59 +0300
+From: enjoy.the.silence@iol.it
+Subject: problem with DNS server behind nat/packet filter
+Date: Fri, 09 May 2003 13:45:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <136662983589.20030509073959@lf.lv>
-Reply-To: Peteris Krumins <newsgroups@lf.lv>
+Message-ID: <20030509114520.1789.qmail@zero.sukkonet.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Resent-Message-Id: <200305090434.h494YWVk027540@mail.lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+hi,
+i've been an user of netfilter/iptables for a short time, and it's always 
+worked great for me, doing NAT and packet filtering exactly as it should 
+(thanx a lot to who wrote the NAT-HOWTO although :D). anyway, i'm 
+experiencing some strange behaviour: 
 
- i am developing some tool which uses libtc to manage rules etc.
- unfortunately iptc_zerro_entries (neither iptc_flush_entries and
- others which require (const IPT_CHAINLABEL chain, TC_HANDLE_T
- *handle) as parameters) does not want to work: as soon as
- called - segfaults.
+i have a DNATting rule as the following:
+iptables -t nat -A POSTROUTING -o $EXTIF -j SNAT --to $EXTIP 
 
- code (simpified, might have a typo) is like this:
+where EXTIF (ppp0 - yeah, dialup) and EXTIP (dynamically assigned but 
+correctly detected) are properly set. recently i have set up a DNS server, 
+and i wish it was accessible from the outside. i have used djbdns, and set 
+it up correctly. actually the requests are received and processed, but the 
+outgoing packets with the replies are blocked by my packet filter. i have 
+the following log from dmesg:
+IN= OUT=ppp0 SRC=10.0.6.5 DST=80.116.131.210 LEN=68 TOS=0x00 PREC=0x00 
+TTL=64 ID=0 DF PROTO=UDP SPT=53 DPT=4538 LEN=48 
 
---/
- const char *table = "filter";
- ...
- iptc_handle_t h;
- int ret=0;
- const char *c = NULL;
- h = iptc_init(table);
+10.0.6.5 is the ip which djbdns is running on, and 80... is the ip who made 
+the request. what is strange is that the packet was trying to go out with 
+the internal ip! is this normal? it's been blocked because i have a rule:
+iptables -A OUTPUT -o $EXTIF -s $UNIVERSE -d $INTNET -j drop-and-log-it 
 
- if (!h){
-    .. err handler
- }
- for (c=iptc_first_chain(&h);
-      c;
-      c=iptc_next_chain(&h)) {
+shouldn't the packet's source address have already been changed at this 
+time? what am i doing wrong? may it be because it's using the UDP protocol? 
+my natting rule should work with all protocols though... 
 
-      printf("in filter found: '%s'\n",c);
-      /* prints "in filter found: 'INPUT'" */
-      printf("zeroing..\n");
-      ret = iptc_zerro_entries(c,&h);
-      /* segfaults right here [1] */
-      ...
- }
---/
-
-[1] i see the prototype of iptc_zerro_entries:
-    TC_ZERO_ENTRIES(const IPT_CHAINLABEL chain, TC_HANDLE_T *handle);
-    IPT_CHAINLABEL is 'typedef char ipt_chainlabel[32]'
-
-    exactly the same thing is done in iptables, only iptables have
-    zero_entries function.
-
- so what could be wrong?
-
- compile w/:
-gcc -W -Wall -I<ipt include dir> -rdynamic \
--o <executable> <src> \
-<path to>/iptables.o <path to/libiptc>/libiptc.a \
--ldl -lnsl
-
-
-P.Krumins
+help me!
+thanks in advance!
+Giorgio 
 
 
