@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: David Cannings <lists@edeca.net>
 Subject: Re: iptables abilities
-Date: Thu, 22 Jan 2004 12:33:18 +0000
+Date: Thu, 22 Jan 2004 12:36:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401221233.18553.Antony@Soft-Solutions.co.uk>
+Message-ID: <200401221236.36105.lists@edeca.net>
 References: <400FC047.4010208@objeng.ch>
+Reply-To: david@edeca.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <400FC047.4010208@objeng.ch>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,12 +20,9 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Sven Burgener <sburgener@objeng.ch>, netfilter@lists.netfilter.org
 
 On Thursday 22 January 2004 12:21 pm, Sven Burgener wrote:
-
-> Hello
->
 > I'm looking for a way to connect two parties (computers) that both have
 > a private IP address.
 >
@@ -37,24 +36,9 @@ On Thursday 22 January 2004 12:21 pm, Sven Burgener wrote:
 > In other words, can iptables act as a "relay" between two computers
 > which both have a private IP address?
 
-You need to be able to route packets between A and B in order for netfilter to 
-be able to consider whether to allow them or not.   The Internet will not 
-route packets with private (RFC 1918) destination addresses.
+If you want to create a network between these two over the internet, you 
+might want some form of VPN.   FreeS/WAN (www.freeswan.org) comes to 
+mind.
 
-Therefore you cannot do what you are suggesting with one netfilter box - you 
-would need one at each end, near enough to A and B that they are on private 
-networks, not routed across the Internet, doing NAT so that all the packets 
-which flow across any bit of the Internet have public, routable, source and 
-destination IPs.
-
-Antony.
-
--- 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+David
 
