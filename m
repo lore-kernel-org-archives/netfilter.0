@@ -1,10 +1,10 @@
 From: Sergio Basurto Juarez <sbasurtoj@yahoo.com>
 Subject: Re: A DNAT question.
-Date: Mon, 7 Feb 2005 07:58:58 -0800 (PST)
-Message-ID: <20050207155858.25262.qmail@web41628.mail.yahoo.com>
-References: <Pine.LNX.4.58.0502051918500.6532@linux>
+Date: Mon, 7 Feb 2005 08:06:03 -0800 (PST)
+Message-ID: <20050207160603.13080.qmail@web41626.mail.yahoo.com>
+References: <20050207155858.25262.qmail@web41628.mail.yahoo.com>
 Mime-Version: 1.0
-In-Reply-To: <Pine.LNX.4.58.0502051918500.6532@linux>
+In-Reply-To: <20050207155858.25262.qmail@web41628.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,43 +20,54 @@ Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 
---- Ted Gervais <ve1drg@av.eastlink.ca> wrote:
+--- Sergio Basurto Juarez <sbasurtoj@yahoo.com> wrote:
 
 > 
-> I am new to this list and to iptables generally.
+> --- Ted Gervais <ve1drg@av.eastlink.ca> wrote:
 > 
-> I have a line I am trying to translate into a
-> current iptables line that
-> will work in my firewall.
+> > 
+> > I am new to this list and to iptables generally.
+> > 
+> > I have a line I am trying to translate into a
+> > current iptables line that
+> > will work in my firewall.
+> > 
+> > ' DNAT net loc:192.168.0.147 udp 5198,5199 '
+> > 
+> > If anyone could venture a thought as to how that
+> > might be translated into
+> > a current iptables statement I would really
+> > appreicate it.
+> > 
+> > I have tried - iptables -t nat -A PREROUTING -i
+> eth0
+> > -d 192.168.0.1 -p tcp
+> > --dport 5198:5199 -j DNAT --to 192.168.0.147
+> > 
+> > That doesn't appear to work so obviously I have
+> not
+> > interpreted that line
+> > correctly..
+> > 
+> I experienced a similar problem with a rule like
+> iptables -t nat -A PREROUTING -d 200.65.184.223 -j
+> DNAT --to 192.168.0.10
 > 
-> ' DNAT net loc:192.168.0.147 udp 5198,5199 '
+> and it does not work until I put the rule at the
+> begining changing the -A to -I
 > 
-> If anyone could venture a thought as to how that
-> might be translated into
-> a current iptables statement I would really
-> appreicate it.
+> I do not know exactly why this work but it works. I
+> guess that the the rules of redirecting should comes
+> before any other rule.
 > 
-> I have tried - iptables -t nat -A PREROUTING -i eth0
-> -d 192.168.0.1 -p tcp
-> --dport 5198:5199 -j DNAT --to 192.168.0.147
 > 
-> That doesn't appear to work so obviously I have not
-> interpreted that line
-> correctly..
-> 
-I experienced a similar problem with a rule like
-iptables -t nat -A PREROUTING -d 200.65.184.223 -j
-DNAT --to 192.168.0.10
+> Hope this help.
 
-and it does not work until I put the rule at the
-begining changing the -A to -I
-
-I do not know exactly why this work but it works. I
-guess that the the rules of redirecting should comes
-before any other rule.
+Also check the protocol because in your rule you put
+udp and in your rule of iptables you choose tcp, you
+must change your protocol to udp.
 
 
-Hope this help.
 
 =====
 -- 
@@ -70,6 +81,6 @@ shoulders of giants. (Isaac Newton)
 		
 __________________________________ 
 Do you Yahoo!? 
-Yahoo! Mail - Easier than ever with enhanced search. Learn more.
+Yahoo! Mail - Find what you need with new enhanced search.
 http://info.mail.yahoo.com/mail_250
 
