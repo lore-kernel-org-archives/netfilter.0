@@ -1,16 +1,13 @@
-From: Chris Andrew <candrew@oxspring.com>
-Subject: Re: bad ftp speeds through nat
-Date: 23 Nov 2004 15:34:18 +0000
-Message-ID: <1101224058.22074.17.camel@candrew.oxspring.com>
-References: <0e7301c4d0c1$74ba04b0$49caa8c0@caris.priv>
-	<0e7801c4d0c2$9dc80220$49caa8c0@caris.priv>
-	<20041122184124.GA31191@bender.817west.com>
-	<0e8e01c4d0c6$a2725380$49caa8c0@caris.priv>
-Reply-To: candrew@oxspring.com
+From: James <newsjn@dpmg.com>
+Subject: RE: DNATed packet not hitting FORWARD chain
+Date: Tue, 23 Nov 2004 10:00:46 -0600
+Message-ID: <9FB9C39FACF4034BB4AC7F89F2AEB0AB01593740@win2k.aries.dpmg.com>
+References: <41A302F1.5020102@hdr-roma.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="Boundary_(ID_8W6gtKxVmFnx+KjaxGOHoQ)"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <0e8e01c4d0c6$a2725380$49caa8c0@caris.priv>
+In-reply-to: <41A302F1.5020102@hdr-roma.it>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,55 +18,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: peter.marshall@caris.com
+To: 'primero' <primero@fastwebnet.it>, 'James' <newsjn@dpmg.com>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 2004-11-22 at 19:08, Peter Marshall wrote:
-> here is the output from the netstat -ni ...
+This is a multi-part message in MIME format.
+
+--Boundary_(ID_8W6gtKxVmFnx+KjaxGOHoQ)
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+
+> James wrote:
 > 
-> [root@radium root]# netstat -ni
-> Kernel Interface table
-> Iface     MTU Met   RX-OK RX-ERR RX-DRP RX-OVR   TX-OK TX-ERR TX-DRP TX-OVR
-> Flg
-> eth0       1500   064374866      0      0      169244643      0      0
-> 0 BMRU
-> eth0:1     1500   0  698461      0      0      0  674916      0           0
-> BMRU
-> eth1       1500   067829304      0      0    26760844194      0      0
-> 0 BMRU
-> eth1:1     1500   0  698461      0      0      0  674916      0      0
-> 0 BMRU
-> eth2       1500   0  698461      0      0      0  674916      0      0
-> 0 BMRU
-> lo        16436   0      54      0      0      0      54      0      0
-> 0 LRU
+> >Hi,
+> >
+> >I'm having some trouble getting DNAT to work properly.  I have a gateway
+> >machine that has two different connections to the Internet, on eth1 and
+> >eth2.  I'm trying to allow inbound port 1723 to be forwarded to an
+> internal
+> >PPTP server through both interfaces.  It works on eth2, but not eth1.
+> >Here's what I've got:
+> >
+> >
+> >
+> Hi
+> I would try to check if packets arrives on .165 by tcpdump on this host.
+> just to see if DNATTING and FORWARDING is done correctly, and it should
+> be based on rules u showed us.
+ 
+Packets don't arrive on .165.  They don't even hit the FORWARD chain, they
+disappear somewhere between nat PREROUTING and filter FORWARD.
+
+
+> Then i would ask how do you deal with routing packets on your gw. I
+> mean, if u receive the connection on eth2 and you DNAT and forward to
+> .167 , the returning packets from .167 should be routed to the eth2 and
+> exit the gw from that interface. The same for eth1 and .165
 > 
-> and no my firewall is not a P-75  ... :)  it is a PIII 850 with 512 MB RAM.
+> What about you routing settings on the gw? maybe u use eth2 as default
+> route interface and also the packets that come back from .165 exits and
+> are routed by eth2. this way you'll never get the SNAT rule associated
+> to the previous DNAT rule matched and applied .
 
-I'm presuming the speeds are poor from your LAN:
+Well, that was it.  I added a routing rule to route packets from .165 out
+eth1, and suddenly packets are making it to the FORWARD chain.
 
-Are the transfer speeds OK if you FTP from the firewall?
+I guess that the Linux routing decision checks the return path for the
+packet as well, and drops it if there isn't one.  Since there wasn't a
+return route, the packet was dropped between nat PREROUTING and filter
+FORWARD.
 
-How do you address the FTP server from your LAN, are you doing any
-DNAT/SNAT, or simply routing?
+> 
+> BTW this is just an idea ;)
+> 
+> bye
+> primero
 
-Are transfer speeds always poor from the LAN regardless of which PC
-initiates the FTP connection?
+Thanks, it was a good idea.
 
-What does mii-tool & the above netstat tell you on:
-  (a) the ftp server
-  (b) the firewall
-  (c) LAN workstation
 
-In an attempt to diagnose a failing NIC, try pulling down the speed on
-either or both of the NICs on the firewall DMZ interface and FTP server,
-using:
-mii-tool -F 10baseT-FD eth0
 
-See man mii-tool for available speeds/duplex, etc.
-
-Regards,
-Chris
-
+--Boundary_(ID_8W6gtKxVmFnx+KjaxGOHoQ)--
 
