@@ -1,10 +1,11 @@
-From: Alexandre Hautequest <hquest@linuxbr.com.br>
-Subject: Limiting connections per time
-Date: 26 May 2003 17:37:41 -0300
+From: "Julien Duvault" <duvault@efrei.fr>
+Subject: MASQUERADING problem under iptables 1.2.8 - kernel 2.4.20
+Date: Mon, 26 May 2003 00:18:10 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053981461.32547.24.camel@clk-gtk.sigmaperitos>
+Message-ID: <42690.192.168.1.50.1053901090.squirrel@tek.homelinux.net>
+Reply-To: duvault@efrei.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,31 +19,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all.
+Hi,
 
-First sorry if this had already replied before, but i found nothing in
-ml archives. Second, sorry about my poor english.
+I'm contacting you, as I've a problem with netfilter. Let's sum up the
+situation :
+The system I'am reunning is a linux/debian woody, this host is acting as a
+router, and gateway, for my home network over an ADSL link. I used to have
+the default stable iptables package 1.2.6 (if I am not wrong) with kernel
+2.4.18. Every thing were find, I was happy. I decided to upgrade to kernel
+2.4.20 and iptables 1.2.8 and all patches. Since that time, I can't use
+anymore the MASQUERADE target with kernel 2.4.20 (the modules are corectly
+loaded ...). The amazing thing is that it perfectly working on kernel
+2.4.18 with the same version of iptables.
+So is there a bug somewhere in the combination of iptables
+1.2.8/kernel-2.4.20 ? I don t think so because i didn t find any
+informations about such a problem ... Maybe something happen during my
+compilation of 2.4.20 which make MASQUERADE not working ?
+So if someone here have information, I would be very happy to solve this
+problem.
+Thanks,
 
-Can i use netfilter to limit a number of connections allowed in a
-per-time basis? Lets take this as an example:
+Julien.
 
-I have a UDP shoutcast server. A want to limit its external access to
-only one connection per IP for 30 minutes. Then i set up some rule (this
-rule is what i want to know if is possible and if so, how can i do this,
-what mods i need, and so on). Clients start to connect in (opens one
-*session*). Another people is opening a 2nd connection (maybe behind a
-NAT gw) and tries to connect in. It should block him. At the end of
-time, the first *session* should be automaticaly blocked again (maybe
-using my default DROP policy). A new connection can be accepted at this
-time, but not as its continuation -- i mean, start another *session*.
+-- 
+BOFH excuse #149 : Insert coin for new game
 
-This is what i have in mind, not actually for a shoutcast server, but is
-almost this situation i have. 
 
-Im not subscribed, so please cc me.
 
-Again sorry for my poor english, and thanks in advance for your time.
-
---
-Alexandre Hautequest
 
