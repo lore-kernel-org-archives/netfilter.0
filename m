@@ -1,10 +1,15 @@
-From: "PAUL FABRICIO VILLACRESES LEON" <paulvillacreses@hotmail.com>
-Subject: REDIRECT,DNAT,SNAT in C
-Date: Thu, 30 Jan 2003 00:32:15 +0000
+From: Athan <netfilter@miggy.org>
+Subject: Re: Broken MS tcp new not syn: better to REJECT or DROP?
+Date: Thu, 30 Jan 2003 00:20:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F170govcke7m99L3U600000494d@hotmail.com>
+Message-ID: <20030130002029.GM11221@miggy.org>
+References: <3E307456.70104@orix.com.au.> <106459900750.20030129180342@dslr.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TKDEsImF70pdVIl+"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <106459900750.20030129180342@dslr.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,37 +19,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: justin <cmbb@dslr.net>
+Cc: Phil Crooker <pcrooker@orix.com.au>, netfilter@lists.netfilter.org
 
 
+--TKDEsImF70pdVIl+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi
+On Wed, Jan 29, 2003 at 06:03:42PM -0500, justin wrote:
+> Is there a web page somewhere on this subject you can point me at?
+> "broken ms tcp" ?
 
-Developers,
+  I presume they mean this:
 
-I'm Paul Villacreses
-Again
+	http://slashdot.org/article.pl?sid=3D03/01/05/2025254&mode=3Dthread
+	http://grotto11.com/blog/slash.html?+1039831658
 
-I use libiptc for put rules in the chain FORWARD but i can't put in the 
-chain PREROUTING because, libiptc accept this target : ACCEPT, DROP, RETURN 
-and QUEUE but not DNAT ,SNAT and REDIRECT
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
 
-How i can put rules programming in c for DNAT , SNAT and REDIRECT
+--TKDEsImF70pdVIl+
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Please Core developers or anybody answer me
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-thank you for give some idea
+iEYEARECAAYFAj44b80ACgkQzbc+I5XfxKftFACdGhdYXWyLbHGaI0XXaobY8UKh
+dNwAn1bhJPGHvvC4aQ+y3YBVwrp9ZSj2
+=fjFj
+-----END PGP SIGNATURE-----
 
-Paul
-
-
-
-
-
-_________________________________________________________________
-The new MSN 8: advanced junk mail protection and 2 months FREE* 
-http://join.msn.com/?page=features/junkmail
-
+--TKDEsImF70pdVIl+--
 
