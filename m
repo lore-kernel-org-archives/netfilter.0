@@ -1,11 +1,14 @@
-From: "Joel n.solanki" <jnsolanki@d2visp.com>
-Subject: kernel panic : help
-Date: 18 Aug 2004 11:04:56 +0530
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: A simple question
+Date: Wed, 18 Aug 2004 21:18:54 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1092807296.2549.42.camel@joel.d2visp.com>
+Message-ID: <SERVER7QYx3G5aYY61L00000074@server7.bandwidthco.com>
+References: <41241244.40804@svw.com>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <41241244.40804@svw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +19,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: lartc <lartc@mailman.ds9a.nl>, netfilter <netfilter@lists.netfilter.org>
+To: 'Sudheer Divakaran' <sudheer@svw.com>, 'Netfilter mailing list' <netfilter@lists.netfilter.org>
 
-Dear all,
-when i am starting my bandwidth script i m getting below errors. then my
-machine gets unusable.
-This is surely something related with tc /iptables and kernel but i cant
-sort out what is the problem.
-Can any body over have experience such problem.
-????????????????
+ 
+In almost all IP Tables articles I've found that the default policy of all
+tables (INPUT,OUTPUT,FORWARD) set to DROP.  I can understand it as far as
+INPUT and FORWARD tables are concerned, but I do not understand why should
+we set the default policy of OUTPUT chain to DROP.  OUTPUT chain is
+responsible for packets originating from the firewall itself.  
+Whay should we DROP it?
 
+Thanks,
+Sudheer
 
-Starting Bandwidth Management: ip_conntrack (4031 buckets, 32248 max)
-Kernel BUG at slab.c:1130
-invalid operand: 0000
-CPU: 0
-EIP: 0010:[<c012e188>]	Not tainted
-EFLAGS: 00010202
-eax: 000001f0	ebx: 00000000 ecx: c15732d0	edx: c02194bc
-esi: c15732c0	edi: 000001f0 ebp: c15732c0	esp: dc1c3ae0
-ds: 0018 es: 0018 ss: 0018
-Process tc (pid: 1164, stackpage=dc1c3000)
-Stack: 000001f0	00000000 c1573480 000001f0 c15732c0 c012e20a c15732c0
-c15732c0
-00000246 000001f0 c15732c0 c012e4fd c15732c0 000001f0 000001d2 c1573480
-00000246 000001f0 dc137000 c02209c0 dc137184 df496c00 c01af3f3 00000064
-
-Call Trace: [<c012e20a>] [<c012e4fd>] [<c01af3f3>] [<e017f102>]
-[<c01b0e4b>]
-
-"	"	"
-
-Code: 0f 0b 6a 04 bb b6 1f c0 89 7c 24 04 b8 03 00 00 00 81 64 24
- <0>Kernel panice: Aiee, killing interrupt handler!
-In interrupt handler - not sycning
-
-
-
-Any ideas,
--- 
-Joel N.Solanki
-Network Administrator
-Phone No: 0265-550001/2/3/4/5 Ext: 211/212
-Digtial 2 Virtual Internet Service Provider.
-http://www.packetraptor.com/
-http://www.d2visp.com/
-Gujarat (India)
+What you say is indeed correct. Most of the articles on the subject do
+recommend a default DROP on all three tables. However, I personally do set
+my OUTPUT default to ACCEPT, while my FORWARD and INPUT are definitely set
+to DROP. As you might expect, it is quite easy to DOS the firewall itself
+when OUTPUT is set to DROP. And that is not a real good idea. However,
+having said that, close scrutiny must be paid to what you allow out of the
+firewall and the necessary rules must be in place.
 
 
 
