@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPsec & FreeS/WAN
-Date: Thu, 4 Jul 2002 19:28:31 +0100
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: Re: I need help , please
+Date: Thu, 4 Jul 2002 20:48:31 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020704182835.BEFN16050.mta01-svc.ntlworld.com@there>
-References: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER> <20020703191224.LSGV19225.mta07-svc.ntlworld.com@there> <20020704175913.GA27072@willow.seitz.com>
+Message-ID: <02070420483100.06327@Lms>
+References: <001e01c22321$e86018a0$2400a8c0@inq7.net> <00fc01c22352$6a2168a0$8703000a@aid.inf.cu> <20020704182042.XIE16050.mta01-svc.ntlworld.com@there>
+Reply-To: jan.humme@xs4all.nl
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020704175913.GA27072@willow.seitz.com>
+In-Reply-To: <20020704182042.XIE16050.mta01-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,38 +19,37 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-On Thursday 04 July 2002 6:59 pm, Ross Vandegrift wrote:
-
-> On Wed, Jul 03, 2002 at 08:12:22PM +0100, Antony Stone wrote:
-
-> > What kernel source do you start from ?
+On Thursday 04 July 2002 20:20, Antony Stone wrote:
+> On Thursday 04 July 2002 1:00 pm, david wrote:
+> > I amtrying to set a dns and proxy server
 >
-> I start from a clean, bleeding edge tree in the 2.4 series.  I usually
-> apply a few misc patches: Andrew Morton's lowlatency, any available
-> reiserfs fixes, sometime and AC series patch.
+> I assume this means you want to run DNS and an http proxy such as squid on
+> the machine running the Firewall.   If this is not correct, post again and
+> tell us what iptables rules you are trying to set up (which is what I was
+> trying to ask).
+>
+> Anyway, if that is the correct assumption, how about a set of rules such as
+> this ?
+>
+> # Standard default policies
+> iptables -P INPUT DROP
+> iptables -P FORWARD DROP
+> iptables -P OUTPUT DROP
+> # Allow in DNS requests
+> iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+> iptables -A INPUT -p udp --dport 53 -j ACCEPT
+> # Allow out DNS requests
+> iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
+> iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+> # Redirect http requests to local proxy
+> iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT 127.0.0.1:80
 
-> Part of the problem was that there wasn't an easy way to just run the
-> kernel patching script.  IIRC, the scripts configure FreeS/WAN, and then
-> run something like "make config dep clean bzImage modules" in the kernel
-> source tree.  I'd much rather do "make patch" in the FreeS/WAN source tree,
-> and then be left to my own devices to build the KLIPS kernel.
+Anthony, just for my understanding: is this any different from:
 
-You should have a quick look at the Makefile for FreeS/WAN.
+iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT   ?
 
-I've just had a look, and it's rather nicely split up into different sections 
-/ modules for doing different bits, and for example, "make menugo" (which is 
-the one I normally use) does:
-make precheck verset insert
-make mcf
-make confcheck programs install kernel
-
-Therefore I'm sure you could use this list to start working out which bits 
-you'd like to run with the make script and which bits you want to do later on 
-by hand...
-
- 
-
-Antony.
+Jan Humme.
 
