@@ -1,11 +1,10 @@
-From: Arturo P <pembo13@flashmail.com>
-Subject: Having probs installing iptables-1.2.9
-Date: Sat, 27 Mar 2004 10:41:40 -0400
+From: "IT Clown" <iptables@mailbox.co.za>
+Subject: x
+Date: Sat, 27 Mar 2004 18:15:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <406592A4.5040106@flashmail.com>
-Reply-To: pembo13@flashmail.com
+Message-ID: <web-268947125@mail01.infosat.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,24 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi all
 
-The make process for iptables-1.2.9 just stalls, and goes nowhere until 
-i terminate it. When I run make with a (-d) tag, it get the following:
+Im new to iptables when i configure iptables X server wont
+load i have the following in my iptables file:
 
-Reading makefiles...
-Reading makefile `Makefile'...
-Got a SIGCHLD; 1 unreaped children.
-Got a SIGCHLD; 1 unreaped children.
-Got a SIGCHLD; 1 unreaped children.
-Got a SIGCHLD; 1 unreaped children.
-Reading makefile `extensions/Makefile' (search path) (no ~ expansion)
+*filter
+:INPUT DROP [0.0]
+:OUTPUT DROP [0.0]
+:FROWARD DROP [0.0]
 
-Please advise
+-A OUTPUT -p tcp -dport 0:80 -j ACCEPT
 
-Thank you
 
+Any idea why x server wont load?
+
+Regards
+__________________________________________________________________________
+http://www.webmail.co.za/dialup Webmail ISP - Cool Connection, Cool Price
 
