@@ -1,14 +1,12 @@
-From: David Cary Hart <DCH@TQMcube.com>
-Subject: RE: ipt_string
-Date: Mon, 20 Sep 2004 22:32:17 -0400
+From: d l <popgojp@yahoo.co.jp>
+Subject: Re: Cannot use iptable extensions[solved]
+Date: Tue, 21 Sep 2004 14:36:16 +0900 (JST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095733909.2894.2.camel@dchws.tqmcube.com>
-References: <7C9884991ADAE0479C14F10C858BCDF591E373@alderaan.smgtec.com>
-Reply-To: NetFilter List <netfilter@lists.netfilter.org>
+Message-ID: <20040921053616.23076.qmail@web804.mail.yahoo.co.jp>
+References: <63855.216.239.93.106.1095711687.squirrel@216.239.93.106>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E373@alderaan.smgtec.com>
+In-Reply-To: <63855.216.239.93.106.1095711687.squirrel@216.239.93.106>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-09-20 at 17:43, Daniel Chemko wrote:
-> Linux Query wrote:
-> > Didn't know about snort. Does it support string matching ?
-> > 
-> Snrot's generally used for Intrusion detections, but it is basically one
-> big string matching program a lot like l7filter that you mentioned in an
-> earlier post. I couldn't say which one is better suoted for your needs.
-> 
-> Snort-inline does take some hand-holding to get started, but I believe
-> that more intrusions will be caught through snort than you adding rules
-> adhoc to l7filter. 
+> So, could it be that you are loading it in the wrong
+chain (not supported by the module) ?
 
-You might also want to take a look at mod_security for HTTPD protection.
-This is a string matcher that allows your to redirect or drop web
-attacks independent of IPT. You can even convert snort rules.
+Indeed.... I missed the big capital letter words in the
+man page that <owner> is only usable in OUTPUT chain.
 
-BTW, one approach with Snort is to use Swatch to execute rule scripts
-for IPT.
+For the <connlimit> extension the kernel module isn't
+compiled in for FC2.
+
+Thanks all for helping out.
+Regards,
+DL
+
+
+__________________________________
+TSUKAME EIKOU! KAGAYAKE EGAO!
+Yahoo! JAPAN JPC OFFICIAL INTERNET PORTAL SITE
+http://pr.mail.yahoo.co.jp/para/
 
 
