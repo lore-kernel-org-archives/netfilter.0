@@ -1,8 +1,8 @@
 From: "Oleg A. Arkhanglelsky" <sysoleg@yandex.ru>
-Subject: (no subject)
-Date: Tue, 19 Oct 2004 16:34:39 +0400 (MSD)
+Subject: ip_conntrack_proto_gre problems?
+Date: Tue, 19 Oct 2004 16:38:48 +0400 (MSD)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <417509DF.000003.18904@camay.yandex.ru>
+Message-ID: <41750AD8.000054.03528@colgate.yandex.ru>
 Reply-To: sysoleg@yandex.ru
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
