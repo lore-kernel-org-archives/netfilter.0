@@ -1,13 +1,12 @@
-From: "Nigel Clarke" <nigel@forever-networks.com>
-Subject: RE: MSN Messenger ...
-Date: Mon, 2 Dec 2002 00:50:12 -0800
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: MSN Messenger ...
+Date: 02 Dec 2002 07:27:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BDEFKJOAPEBPJCGDAGMFMEBGCAAA.nigel@forever-networks.com>
-References: <1038806827.6996.70.camel@rayw.knowledgefactory.co.za>
+Message-ID: <1038806827.6996.70.camel@rayw.knowledgefactory.co.za>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-p2jwYGagetN/kncefn2S"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1038806827.6996.70.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +16,12 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: raymondl@knowledgefactory.co.za, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Go after the servers. This won't mean much when users start using internet
-proxys.
 
-Here is a great link for fighting all P2P apps...
-
-http://www.infosecuritymag.com/articles/february01/cover.shtml
-
-Also, here is a cool paper on the internals of Gnutella.
-
-Have fun.
---
-
-Nigel Clarke
-Network Security Engineer
-FOREVER NETWORKS
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Raymond Leach
-Sent: Sunday, December 01, 2002 9:27 PM
-To: Netfilter Mailing List
-Subject: MSN Messenger ...
-
+--=-p2jwYGagetN/kncefn2S
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 Hi All
 
@@ -52,7 +31,7 @@ need to use something like squidguard to block the message servers?
 Is MSN messenger capable of HTTP tunneling through proxies?
 
 Ray
---
+--=20
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (  Raymond Leach                       )
  ) Knowledge Factory                  (
@@ -71,6 +50,20 @@ Ray
       / /   \\              //   \ \
      ( |     |)            (|     | )
      /`\_   _/'\          /'\_   _/`\
-     \___)=(___/          \___)=(___/
+     \___)=3D(___/          \___)=3D(___/
+
+--=-p2jwYGagetN/kncefn2S
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA96u8rh1fuR/Bv+ygRAjUAAKCLI8GzJOUuyBj/goILmnZoAkHnTwCgjVfO
+w5Tj6LNnGaWFMOUVLsrvAT0=
+=UzSf
+-----END PGP SIGNATURE-----
+
+--=-p2jwYGagetN/kncefn2S--
 
 
