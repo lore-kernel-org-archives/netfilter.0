@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables and smtp
-Date: Fri, 7 May 2004 18:27:08 +0100
+From: Kevin White <ml-kevin@kevbo.org>
+Subject: Connection stats logging?
+Date: Fri, 07 May 2004 13:59:48 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405071827.09173.Antony@Soft-Solutions.co.uk>
-References: <1083949806.710.239.camel@worldvenue.org>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <409BCE94.3070502@kevbo.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1083949806.710.239.camel@worldvenue.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Friday 07 May 2004 6:10 pm, Barry Skidmore wrote:
+Hello all,
 
-> I am experimenting with Trustix-2.1 Linux on a home machine connected
-> directly to the Internet.  I am using Postfix as the MTA and mutt as the
-> email client.
->
-> The problem is that I am not able to receive mail, although I can send,
-> when the iptables rules below are implemented.
+I sent this message on Monday (by mistake, it was sent twice).  I've not
+seen a response, and I'm not sure where to go next.  I'm considering
+asking in -dev, because I'm willing to do some coding, I just want to
+make sure I'm looking in the right direction.
 
->  #set default policies.
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT DROP
+Please help me with any thoughts you can provide, so I go about solving
+this the right way!  Thanks!
 
-Good.
+We had a firewall application using an old OpenBSD (2.9).  One of the
+things it did on NAT was log lines like this when connections closed:
 
-(Ruleset snipped to show the important bits)
+Apr 29 23:25:46 si000AmerSh ipmon[3122]: 23:25:46.021102 STATE:CLOSE
+216.65.19.55,53505 -> 192.168.0.82,25 PR tcp Pkts 60 Bytes 22144
 
->  #drop everything else.
-> iptables -A INPUT -j DROP
+We used this line to do statistics.
 
-(Later)
+I'm trying to figure out how to get something similar with Netfilter.
 
-> #iptables -A INPUT -p TCP --dport 25 -j ACCEPT
+Basically, what I need is a report of the connection: where it was to,
+how many bytes and packets it had, when it closes.
 
-You need to put this before DROPping all packets - otherwise no packets will 
-ever get as far as this rule :)
+I've looked at ulogd, but I'm not sure that would be ideal.  Basically,
+I'd have to build my own connection tracker DB to assign every packet
+to, so I'd be at least doubling the memory footprint.
 
-I suggest you remove the DROP *rules* and just leave the DROP *policies* in 
-place - then you can add more rules to accept other types of packets without 
-getting confused like this.
+I'm wondering if there's something built in that I can get to to give me
+these kinds of statistics.  Or if I should be writing an extension.
+(I'd like to get this data for every connection that goes through the
+firewall.)
 
-> #OUTPUT rules
->  #drop all outgoing invalid packets.
-> iptables -A OUTPUT -m state --state INVALID -j DROP
->  #outgoing traffic is allowed without restriction.
-> iptables -A OUTPUT -j ACCEPT
+Thoughts, or pointers?  I'm looking for input before I waste too much
+time barking up the wrong tree.
 
-This is why you can send mail - no restrictions on OUTPUT (and INPUT allows 
-replies).
+Thanks,
 
-Regards,
+Kevin
 
-Antony.
 
--- 
-The words "e pluribus unum" on the Great Seal of the United States are from a 
-poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
-dressing.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
 
 
