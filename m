@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: iptables-1.2.8-20030929 does not compile connmark match lib module
-Date: Fri, 3 Oct 2003 12:30:31 +0200
+Subject: Re: path-o-matic-20030929.tar.bz2 doesn't apply ok with k2.4.22
+Date: Fri, 3 Oct 2003 12:31:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031003103031.GY5758@sunbeam.de.gnumonks.org>
-References: <3F79D80E.2010903@uga.com.br>
+Message-ID: <20031003103101.GZ5758@sunbeam.de.gnumonks.org>
+References: <3F79CC00.3040003@uga.com.br>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6+nW2YxI2ktSxLND"
+	protocol="application/pgp-signature"; boundary="jXRFVvqvG+w3zy9F"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <3F79D80E.2010903@uga.com.br>
+In-Reply-To: <3F79CC00.3040003@uga.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,38 +23,22 @@ To: Carlo Pires <carlo@uga.com.br>
 Cc: netfilter@lists.samba.org
 
 
---6+nW2YxI2ktSxLND
+--jXRFVvqvG+w3zy9F
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 30, 2003 at 04:22:54PM -0300, Carlo Pires wrote:
-> Well, after compile k2.4.22 with patch-o-matic-20030929 from snapshot I=
+On Tue, Sep 30, 2003 at 03:31:28PM -0300, Carlo Pires wrote:
+> I am compiling kernel 2.4.22 with patch-o-matic-20030929.tar.bz2 and I=20
+> notice that
+> /usr/src/linux/include/linux/netfilter_ipv4/ipt_osf.h
+> after the patch applied don't have a #endif for #define _IPT_OSF_H
+> then I added a line with: #endif /* _IPT_OSF_H */ at the end of the file=
 =20
-> had some problems to compile iptables-1.2.8-20030929. The match lib=20
-> module libipt_connmark didn't compile.
->=20
-> iptables-1.2.8-20030929 seens to lack some .xxx-test file in extensions=
-=20
-> after I check this I found missing the following files:
->=20
-> .NETLINK.test
+> and everything compiled well.
 
-This file is perfectly included in my  CVS tree.
-
-> .connmark-test
-
-this is no longer needed, since ipt_connmark.h is included in the
-iptables/include/linux/netfilter_ipv4 directory.
-
-If you have any compile errors, please give me a complete output of your
-'make' process, including the exact make commandline you used.
-
-> Then I just put these files from iptables-1.2.8.tar.bz2 package to=20
-> extensions dir of iptables-1.2.8-20030929 package and everything=20
-> compiled well.
-
-this might be a workaround, but it is _not_ the solution.
+Thanks, I also noted that the osf.patch is broken in serveral ways.  I'm
+going to contact the author about that.
 
 > []s
 > Carlo
@@ -69,17 +53,17 @@ this might be a workaround, but it is _not_ the solution.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---6+nW2YxI2ktSxLND
+--jXRFVvqvG+w3zy9F
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/fU/HXaXGVTD0i/8RAo4LAKCLuNCCTPPZgsq+qYaoVUg/u+JL1wCfeBdY
-bxsVHCiE1ufOFrzgOcxsmmc=
-=8mni
+iD8DBQE/fU/lXaXGVTD0i/8RAiVfAJ4q7fAw19eREEnb2zZ5OHgyaWz5YQCgj8CM
+U18PCuHmqLJ5NqUc8upNIeQ=
+=irF1
 -----END PGP SIGNATURE-----
 
---6+nW2YxI2ktSxLND--
+--jXRFVvqvG+w3zy9F--
 
