@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip conflict with proxy arp
-Date: Tue, 29 Oct 2002 08:58:41 +0000
+Subject: Re: DHCRELAY through IPTABLES Firewall
+Date: Tue, 29 Oct 2002 09:15:22 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021029085844.GBUS1554.mta07-svc.ntlworld.com@there>
-References: <20021029122844.6b1e70ca.arc_of_descent@gmx.net>
+Message-ID: <20021029091525.CVFB9836.mta01-svc.ntlworld.com@there>
+References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <200210281139.g9SBdPe08223@vulcan.rissington.net> <000b01c27f1d$f805e430$8f33e40f@lsmith5953>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021029122844.6b1e70ca.arc_of_descent@gmx.net>
+In-Reply-To: <000b01c27f1d$f805e430$8f33e40f@lsmith5953>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,53 +20,71 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 29 October 2002 6:58 am, Rohan Almeida wrote:
+On Tuesday 29 October 2002 7:37 am, bigman@monster-solutions.net wrote:
 
-> HI,
-> I've got a proxy arp setup with iptables and tc.
->
-> on eth0 i have a route to 172.16.2.0/24 network
-> on eth1 is the LAN of 172.16.1.0/24 network
->
-> I have enabled proxy arp on both interfaces.
-> Now accordingly, the interface will respond
-> to all ARP requests for which it has a route to.
->
-> Noy my setup is such, that a user on the LAN,
-> would like to have an ip from the 172.16.2.0/24 network.
+> here is how I ended up fixing my problem. However I have just discovered it
+> only works with one client. When I try to get another client to obtain an
+> IP it does not work. Any ideas? Is DNAT limiting me on one MAC to pass
+> through or something? I am lost here.
 
-What, whilst still plugged in to eth1 ?   Why ?
+Please can you confirm whether this works at all for a client which does not 
+have an IP address to start with (ie it's not a renewal, or a request for the 
+last IP address it had).   I don't see how it can work for a totally clean 
+client.
 
-> But unfortunately, when he tries to allocate an
-> ip like 172.16.2.1 he gets an ip conflict.
->
-> I also know why he is getting it!
-> But is there any way out of this??
->
-> Something like, tell the linux server to respond for
-> ARP requests for the 172.16.2.0/24 network but at the
-> same time if a machine is trying to use an ip for itself,
-> then it should not respond.
+> 1)    turned off DHCPD and DHCRELAY on firewall
+> 2)    iptables -t nat -A PREROUTING -i eth2 -p udp --dport 67 -j
+> DNAT --to-destination 192.168.1.70
+> 3)    iptables -A FORWARD -p udp -m multiport --dport 67,68 -j ACCEPT
 
-How are you allocating your addresses on the two networks at the moment ?
+Okay, what this is doing is taking the original client's DHCP request, which 
+has the following characteristics:
+Source IP address = 0.0.0.0
+Destination IP address = 0.0.0.0
+Source MAC address = client's mac address
+Destinaton MAC address = FF:FF:FF:FF:FF:FF
 
-If it's a system administrator handing out static addresses and recording 
-who's got what, then tell the person on the LAN to go to the sysadmin and ask 
-for an unused address.
+The broadcast MAC address means it gets to your firewall.
 
-If it's a DHCP server handing out addresses on request, try setting up a 
-DHCRELAY (there's another thread going in this mailing list at the moment 
-about getting that working with netfilter) so pass addresses from one network 
-to the other.
+The PREROUTING rule then sets a destination IP address, and the normal 
+routing system of Linux gives it a source MAC address = your Firewall, and a 
+destination MAC address = the DHCP server.
 
-However, I still want to ask: why does someone on eth1 want an IP address 
-which belongs on eth0 ?
+The request gets to the server, it allocates an IP address based on the MAC 
+address of your firewall (because that's where the local packet came from; 
+remember MAC addresses only work within physical subnets), and sends the 
+response back again.
+
+The response has:
+Source IP address = 192.168.1.70
+Destination IP address = assigned DHCP address
+Source MAC address = DHCP server
+Destination MAC address = Firewall
+
+Therefore the firewall receives the packet (because of the destination MAC 
+address), forwards the packet on to the destination IP address (because of 
+your rule 3), and the client gets an IP address.
+
+The bit which I don't think can work unless the client already had an IP 
+address (and the request was just a renewal, or a check that it could have 
+the last IP address it had used again), is when the firewall sends the 
+response back to the client, because unless the client responds to an ARP 
+request from the firewall, how does the firewall know which MAC address to 
+send the answer back to ?
+
+I can say that this is definitely not the asnwer to your problem, because 
+DHCP requests & responses with definitely break across a router (such as a 
+netfilter firewall) simply because of what happens to the MAC addresses.
+
+If you want to allocate addresses on one subnet from a DHCP server on another 
+subnet you must use DHCRELAY.
 
 Antony.
 
 -- 
 
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
+It is also possible that putting the birds in a laboratory setting
+inadvertently renders them relatively incompetent.
+
+ - Daniel C Dennett
 
