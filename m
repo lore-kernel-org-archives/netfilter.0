@@ -1,14 +1,16 @@
-From: Graham Swallow <Information-Cascade@ntlworld.com>
-Subject: Re: INCOMPLETE [ 8bytes] with two src addresses! Faked Packet?
-Date: Fri, 27 Feb 2004 19:05:55 +0000
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: INCOMPLETE [ 8bytes] with two src addresses!
+Date: Fri, 27 Feb 2004 20:17:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040227190555.214cbc6e.Information-Cascade@ntlworld.com>
+Message-ID: <1077909472.2526.54.camel@anduril.intranet.cartel-securite.net>
 References: <20040227175608.666a0e38.Information-Cascade@ntlworld.com>
-	<1077905740.2526.41.camel@anduril.intranet.cartel-securite.net>
+	 <1077905409.1644.5.camel@pepelui.baicom>
+	 <1077906138.2526.48.camel@anduril.intranet.cartel-securite.net>
+	 <1077907260.1647.18.camel@pepelui.baicom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077905740.2526.41.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <1077907260.1647.18.camel@pepelui.baicom>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +20,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Alexis <alexis@attla.net.ar>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hello Cedric, salut, thanks for your reply, digestified list too,
+Le ven 27/02/2004 =E0 19:41, Alexis a =E9crit :
+> in traceroute ttl=3D1 is only for the first packet (thats what i said
+> about the first step)
 
-> > [SRC=80.5.144.39 DST=200.179.192.14 LEN=40 TOS=0x00 PREC=0x00 TTL=1
-> > ID=12701 PROTO=TCP INCOMPLETE [8 bytes] ]
-> 
-> This is original packet citation so your kernel can associate the error
-> to the right sent IP packet.
+Yep, but...
+The router which has raised the TTL exceeded error always receive the
+packet with TTL=3D1. So, when you get an ICMP TTL exceeded, the TTL in th=
+e
+citation is always 1 (well, should be).
 
-	thanks, its ICMP repeat quoting, that explains the second SRC,
-
-> > DST=80.5.144.39
-> Destination : probably you  :)
-
-	yes, but probably not! ... I didnt do a traceroute (until after!)
-
-	I am a workstation, on NTL cable modem, with mediocre security,
-	and reasonable iptables. I drop most un-established incoming
-	things (a reply is too easy), allow all out (for now), and
-	limit messages (so possibly miss some details). I have a test
-	192.168. NAT laptop, but I didnt initiate this message. Hacked?
-
-	If someone else injected the original packet, or the reply, why?
-		Maybe it goes through their router? (unlikely)
-		Maybe they want to create junk noise (wastes our time)
-		Maybe they are debugging their code (whatever)
-		Maybe I have an alien/virus (how would I know)
-
-	Anyhow, I just wanted to let you know,
-	in-case such things interest you ;-)
-	I dont think there's much I can do,
-	other than tighten up out-bound.
-
-> > TTL=247
-> Type 11, code 0 is TTL exceeded in transit.
-> 	http://logi.cc/linux/NetfilterLogAnalyzer.php3
-
-
-   regards
---
-   Graham
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
