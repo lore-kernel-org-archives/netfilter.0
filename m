@@ -1,10 +1,13 @@
-From: "j davis" <davis_compz@hotmail.com>
-Subject: Re: Speed Issues through NAT Firewall
-Date: Tue, 09 Jul 2002 19:03:26 +0000
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: Re: how is this stuff getting thru default deny iptables firewall?....
+Date: Tue, 9 Jul 2002 12:08:52 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F220gdjK9H7z2VZT3tS0000b5d6@hotmail.com>
+Message-ID: <20020709120852.A24804@spawar.navy.mil>
+References: <20020622103055.B32585@spawar.navy.mil> <20020622173842.AGM19225.mta07-svc.ntlworld.com@there> <20020623001302.A949@spawar.navy.mil> <20020623095351.M5183@oknodo.bof.de> <20020627002144.B13910@spawar.navy.mil> <20020627093730.C1873@oknodo.bof.de>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <20020627093730.C1873@oknodo.bof.de>; from bof@bof.de on Thu, Jun 27, 2002 at 09:37:30AM +0200
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,88 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: Patrick Schaaf <bof@bof.de>
+Cc: netfilter@lists.samba.org
 
+> On the other hand, if there is not yet a conntrack record in existence
+> for the packet, the nat PREROUTING table is consulted
 
-also...do
+Patrick
 
-mii-tool from the command line to see your duplex and you
-can use a program called bing to test through put between
-2 interfaces.
+I appreciate all your help and after thinking about this on my vacation
+last week I think I got it now thanks to your feedback!
+Can I ask you few questions to verify I got what you said regarding
+how a private LAN can use DNS, HTTP, SMTP, etc. thru an SSH-only firewall?...
 
-jd
-http://www.taproot.bz
+My main confusion I believe was that packets associated with preexisting
+conntracks are handled differently than packets *not* associated
+with a previous conntrack.
 
+Q1: The conntrack is the "memory" of netfilter that allows it to make
+decisions based on "history" of PC traffic right?
 
+Q2: Packets with a previous associated conntrack are handled *differently* than ones
+without previous conntrack... and any attempt to try to understand
+behavior of firewall *without* this concept is doomed
+to confusion right?
 
->From: Antony Stone <Antony@Soft-Solutions.co.uk>
->To: <netfilter@lists.samba.org>
->Subject: Re: Speed Issues through NAT Firewall
->Date: Tue, 9 Jul 2002 19:08:22 +0100
->MIME-Version: 1.0
->Received: from [198.186.203.85] by hotmail.com (3.2) with ESMTP id 
->MHotMailBEF47481004D40043251C6BACB559E280; Tue, 09 Jul 2002 11:20:56 -0700
->Received: from va.samba.org (localhost [127.0.0.1])by lists.samba.org 
->(Postfix) with ESMTPid A0731495C; Tue,  9 Jul 2002 11:20:47 -0700 (PDT)
->Received: from vulcan.rissington.net (mail.rissington.net 
->[213.121.241.158])by lists.samba.org (Postfix) with ESMTP id 57318495Efor 
-><netfilter@lists.samba.org>; Tue,  9 Jul 2002 11:08:40 -0700 (PDT)
->Received: from there (dhcp211 [192.168.192.211] (may be forged))by 
->vulcan.rissington.net (8.10.2/8.10.2) with SMTP id g69I8R810149for 
-><netfilter@lists.samba.org>; Tue, 9 Jul 2002 19:08:27 +0100
-From netfilter-admin@lists.samba.org Tue, 09 Jul 2002 11:21:44 -0700
->Delivered-To: netfilter@lists.samba.org
->Message-Id: <200207091808.g69I8R810149@vulcan.rissington.net>
->Organization: Software Solutions
->X-Mailer: KMail [version 1.3.2]
->References: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com> 
-><20020709194926.A17608@oknodo.bof.de> 
-><005501c22772$1ef01240$6702a8c0@mindtrip.com>
->In-Reply-To: <005501c22772$1ef01240$6702a8c0@mindtrip.com>
->Sender: netfilter-admin@lists.samba.org
->Errors-To: netfilter-admin@lists.samba.org
->X-BeenThere: netfilter@lists.samba.org
->X-Mailman-Version: 2.0.8
->Precedence: bulk
->List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
->List-Post: <mailto:netfilter@lists.samba.org>
->List-Subscribe: 
-><http://lists.samba.org/listinfo/netfilter>,<mailto:netfilter-request@lists.samba.org?subject=subscribe>
->List-Id: netfilter user discussion list <netfilter.lists.samba.org>
->List-Unsubscribe: 
-><http://lists.samba.org/listinfo/netfilter>,<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
->List-Archive: <http://lists.samba.org/pipermail/netfilter/>
->
->On Tuesday 09 July 2002 6:57 pm, Travis Crook wrote:
->
-> > The firewall on the DSL is an Athlon XP 1500+.  The firewall on the ISP
-> > line is a PII 333.  I will check on the full/half duplex issue.
->
->That's a hell of a difference, and could conceivably account for the
->bandwidth.   I'd say it depends on how much RAM you have in the PII/333 and
->how many connections you're trying to support.
->
->
->
->Antony.
->
+Q3: Is conntrack a new "iptables only" feature? I imagine ancient ipchains/ipfwadmin
+would have had same issues and therefore would need something like
+"conntrack" to work correctly right?
 
+Sincerely,
 
-thanks,
-jd
+Chris
+-- 
+_______________________________________
 
-jd@taproot.bz
-http://www.taproot.bz
+Dr. Christian Seberino
+SPAWAR Systems Center San Diego
+Code 2363
+53560 Hull Street
+San Diego, CA 92152-5001
+U.S.A.
 
-thanks,
-jd
-
-jd@taproot.bz
-http://www.taproot.bz
-
-_________________________________________________________________
-Chat with friends online, try MSN Messenger: http://messenger.msn.com
-
+Phone: (619) 553-7940
+Fax:   (619) 553-2836
+Email: seberino@spawar.navy.mil
+_______________________________________
 
