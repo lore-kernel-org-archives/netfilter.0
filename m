@@ -1,10 +1,12 @@
 From: Tasha Smith <natasha3641@yahoo.com>
-Subject: Ineeed of major help with  Dynamic IP Addy for my IPTABLES :(((
-Date: Wed, 16 Oct 2002 21:18:44 -0700 (PDT)
+Subject: Re: Ineeed of major help with  Dynamic IP Addy for my IPTABLES :(((
+Date: Wed, 16 Oct 2002 21:48:48 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021017041844.56340.qmail@web40707.mail.yahoo.com>
+Message-ID: <20021017044848.63963.qmail@web40701.mail.yahoo.com>
+References: <20021017041844.56340.qmail@web40707.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021017041844.56340.qmail@web40707.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +20,13 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hiii,
-Guys!
-What iam running:
-Linux 7.2 Kernel 2.4.19
-Iptables-1.2.7a
-Pump-0.8.11-7
+Ohh just soo you guys know "was i suppose to do this part to the rc.pump.done
+script": 
+"chmod -u=rwx /etc/rc.d/rc.pump.done" or should i have left that part out?????
 
-K, Since i am connected to the net with a ADSL connection my ip address changes
-usually. But in my script i have to put in my  ipaddy in some rules. My iptables
-script is in my "/etc/init.d" named "firewall" and it runs and is working.But to
-update my iptables in the script i installed "PUMP" .(i tryed following the
-directions out of LINUX FIREWALLS book ed.2) I created a pump.conf file in /etc
-dir whick looks like this!
-# "/etc/pump.conf"
+And 1 more thing when i changed in the script
+"sh /etc/init.d/iptables panic "to ----->" /etc/init.d/firewall panic
 
-retries 3
-script /etc/rc.d/rc.pump.done
-
-device eth0 {
-     noisdomain
-}
-*******************************************************************************
-And in the "/etc/rc.d/" i created this script like the book said and ran it
-using "chmod -u=rwx /etc/rc.d/rc.pump.done" here is what the script looks like:
 
 #!/bin/bash
 
@@ -82,28 +67,36 @@ echo GATEWAY=$GATEWAY >> /etc/rc.d/pump.info
 echo HOSTNAME=$HOSTNAME >> /etc/rc.d/pump.info
 echo DHCP_SERVER=$DHCP_SERVER>> /etc/rc.d/pump.info
 
-sh /etc/init.d/iptables restart
+sh /etc/init.d/iptables restart  <---when i changed iptables to firewall retsart
 
 exit 0
 ********************************************************************************
-And soo after any where in the script where my IP ADDRESS is i put this
- 
+AND HERE WHEN I CHANGE IPTABLES TO FIREWALL sh/etc/init.d/firewall panic 
+
 if [ -f /etc/rc.d/pump.info ]; then
      . /etc/rc.d/pump.info
  else
 
  echo "rc.firewall: dhcp is not configured."
- sh /ect/init.d/iptables panic
+ sh /etc/init.d/iptables panic <---when i changed this to firewall panic
  exit 1 
 fi
 ********************************************************************************
-But it is not working:  here is what i get  when i reboot all that happen when
-linux says: 
+WHEN I CHANGES THOSE 2 THINGS IPTABLES TO FIREWALL AND RESTART MY MACHINE ALL IT
+WILL DO WHEN IT starts it SAYS 
+STARTING UP REDHAT NETWORK DAEMON
+DHCP IS NOT CONFIGURED
+DHCP IS NOT CONFIGURED
+DHCP IS NOT CONFIGURED
+DHCP IS NOT CONFIGURED
+DHCP IS NOT CONFIGURED
+DHCP IS NOT CONFIGURED
+DHCP IS NOT CONFIGURED
+DHCP IS NOT CONFIGURED
+"AND KEEPS SAYING THIS!"
 
-Starting up redhat network daemon:  
-/etc/init.d/ipatables no such file or directory  <---- i didnt catch the whole
-error cause it disappers to fast and cant find it in /var/log/boot.log but  i
-know it is pretty close to the error!!  ANY HELP GUYS :((((( 
+Just thought i would let you know i tryed that!!!! And thats what happen  
+
 
 __________________________________________________
 Do you Yahoo!?
