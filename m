@@ -1,13 +1,13 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: RE: firewall machine eating lot of memory
-Date: Thu, 08 Nov 2001 12:02:46 -0800
+From: Jacob Helwig <jhelwig@cs.purdue.edu>
+Subject: Re: Patch-o-Matic problems
+Date: Fri, 8 Nov 2002 13:46:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001701c16890$57113790$6601a8c0@s3ac>
-References: <200211081712.gA8HCke23994@vulcan.rissington.net>
+Message-ID: <20021108184649.GA18276@Parkmoor.dyndns.org>
+References: <20021107005515.GB490@Parkmoor.dyndns.org> <200211071655.00285.fabrice@netfilter.org> <20021108150353.GB32438@Parkmoor.dyndns.org> <200211090206.38312.fabrice@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200211081712.gA8HCke23994@vulcan.rissington.net>
+Content-Disposition: inline
+In-Reply-To: <200211090206.38312.fabrice@netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,17 +18,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Thank ye kindly, sir.  Works like a charm.
 
-> The fact that yoou see almost all your memory "used" instead 
-> of "free" simply 
-> means that the memory has been allocated to some processand has not 
-> subsequently been deallocated, because nothing else needs it.
+On Sat, Nov 09, 2002 at 02:06:38AM +0800, Fabrice MARIE wrote:
 > 
-> This is simply the way Linux allocates memory.
+> Hello Jacob,
+> 
+> I updated the SGML master of the documentation in the CVS, I guess
+> you'll have to wait until the webmaster regenerates the documentation
+> from the SGML before it appears on the website.. or you can regenerate
+> it yourself from the SGML master in the CVS.
+> 
+> Have a nice day,
+> 
+> Fabrice.
+> --
+> Fabrice MARIE
+> 
+> "Silly hacker, root is for administrators"
+>        -Unknown
 
-Ooooooooooooooooooooooooooohhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh !!!!
- Hehe your smart.
-
+-- 
+-----BEGIN GEEK CODE-----
+Version: 3.12
+GCS/MU d- s+:- a-- C++++>$ UL+++ P++++ L+++>++++ !E
+W+++ N++ K? W--- M-- PS+ PE Y+ PGP++(+++) t+ 5+ X+
+R(+) tv b++(+++) DI++ D++(+++) G(++) e* h* r++>+++ y?
+------END GEEK CODE------
 
