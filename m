@@ -1,8 +1,8 @@
-From: Michael Gale <michael.gale@utilitran.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
 Subject: Re: vpn
-Date: Tue, 14 Sep 2004 08:31:54 -0600
+Date: Tue, 14 Sep 2004 10:42:27 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040914083154.61fba19e@mgalepc.utilitran.com>
+Message-ID: <1095172947.2055.33.camel@localhost>
 References: <012a01c49a61$340e8ad0$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,20 +18,10 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Peter Marshall <peter.marshall@caris.com>
+Cc: netfilter@lists.netfilter.org
 
-
-Place the VPN on the firewall box .. NOT on a separate box in the DMZ ... other wise you will most likely have to NATing
-on the VPN connections to the DMZ network or other problems.
-
-Check out superfreeSwan
-
-Michael
-
-
-On Tue, 14 Sep 2004 10:46:14 -0300
-"Peter Marshall" <peter.marshall@caris.com> wrote:
-
+On Tue, 2004-09-14 at 09:46, Peter Marshall wrote:
 > I need to set up a vpn.  I am trying to figure out which would be best.  I
 > need to connect my office with a sister office.  The employess are using
 > windows machines.  They want to be able to get and put files from a windos
@@ -49,27 +39,22 @@ On Tue, 14 Sep 2004 10:46:14 -0300
 > external firewall.  All numbers in the dmz are internet routable (They have
 > their own /26 network).  The external firewall has a 29 subnet on it's
 > external interface.
-> 
-> thanks for the help.
-> 
-> Peter
-> 
-> 
-> 
-> Peter Marshall, BCS
-> Network Administrator, CARIS
-> 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
-> Phone:  (506) 458-8533 (Reception)
-> 
-> 
-> 
-> 
-> 
-> 
+<snip>
+I would suggest an IPSec VPN using either the native IPSec stack in the
+latest Linux or either StrongSWAN (www.strongswan.org) or OpenSWAN
+(www.openswan.org) and placing access control and VPN on the same
+device.  That is how we design most devices for use in the ISCS project
+(http://iscs.sourceforge.net).
 
-
+You will need to manage the Windows networking carefully as the
+broadcasts normally associated with browsing and with some forms of
+NetBIOS Name Resolution will not work through the VPN.  There is a lot
+of information in the FressS/WAN/ StrongSWAN / OpenSWAN archives about
+that. Good luck with it - John
 -- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+John A. Sullivan III
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
 
