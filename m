@@ -1,14 +1,12 @@
 From: "Manikandan" <mani@manikandan.org>
-Subject: RE: Multiple PPTP clients behind iptables.
-Date: Sat, 10 Apr 2004 10:23:30 +0530
+Subject: FW: Multiple PPTP clients behind iptables.
+Date: Sat, 10 Apr 2004 10:48:34 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKIEBKCFAA.mani@manikandan.org>
-References: <BC9C1881.6F2F%luke@westaironline.com>
+Message-ID: <GHEILNONPACCGBGKBEKKOEBKCFAA.mani@manikandan.org>
 Reply-To: <manikandan@manikandan.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BC9C1881.6F2F%luke@westaironline.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,8 +17,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter list <netfilter@lists.netfilter.org>
-Cc: Luke Deryckx <luke@westaironline.com>
+To: Netfilter <netfilter@lists.netfilter.org>
 
 When I try to apply the patch, using netfilter CVS I am getting an error
 like
@@ -31,14 +28,11 @@ Failed to patch copy of /usr/src/linux-2.4.20-8/
 TEST FAILED: patch NOT applied.
 
 [Press enter to continue]
-
 What could be wrong?
-
 Regards,
 Manikandan
-
- -----Original Message-----
-From: 	Luke Deryckx [mailto:luke@westaironline.com]
+-----Original Message-----
+From:	Luke Deryckx [mailto:luke@westaironline.com]
 Sent:	Friday, April 09, 2004 9:38 PM
 To:	manikandan@manikandan.org
 Cc:	Netfilter list
@@ -46,14 +40,11 @@ Subject:	Re: Multiple PPTP clients behind iptables.
 
 This patch worked very nicely for me as well. Keep in mind you also need to
 recompile iptables after you've patched your kernel.
-
 Cheers
 
 
 
-
 On 4/9/04 8:55 AM, "Alexis" <alexis@tpys.com.ar> wrote:
-
 > yes, you need the pptp patch
 >
 > ive been in the same situation, and applying the patch made it work just
@@ -66,10 +57,10 @@ tm
 > l#ss5.6
 >
 > ----- Original Message -----
-> From: "Manikandan" <mani@manikandan.org>
-> To: "Netfilter" <netfilter@lists.netfilter.org>
-> Sent: Friday, April 09, 2004 12:08 PM
-> Subject: Multiple PPTP clients behind iptables.
+> From:	"Manikandan" <mani@manikandan.org>
+> To:	"Netfilter" <netfilter@lists.netfilter.org>
+> Sent:	Friday, April 09, 2004 12:08 PM
+> Subject:	Multiple PPTP clients behind iptables.
 >
 >
 >> Dear friends,
