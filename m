@@ -1,13 +1,12 @@
-From: Frank Gruellich <frank@der-frank.org>
-Subject: Re: block port 137
-Date: Wed, 4 Aug 2004 09:41:08 +0200
+From: "MagicWind" <magicwind@citiz.net>
+Subject: How can I configure my firewall to access voice chat with MSN messenger 6.2?
+Date: Wed, 4 Aug 2004 19:02:31 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040804074108.GK1067@der-frank.org>
-References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <002401c47917$d0a6fd70$858310ac@suarapembaruan.com> <1091513004.4660.34.camel@dc.nucleussoftware.com> <200408030717.59289.Antony@Soft-Solutions.co.uk> <00d601c479cf$352a91f0$858310ac@suarapembaruan.com>
+Message-ID: <002d01c47a12$c13766d0$0201a8c0@MagicwindLaptop>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0028_01C47A55.988D6A70"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <00d601c479cf$352a91f0$858310ac@suarapembaruan.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,88 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+This is a multi-part message in MIME format.
 
-please don't toppost[1].
+------=_NextPart_000_0028_01C47A55.988D6A70
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-* david <david@suarapembaruan.co.id>  4. Aug 04:
-> Dear Antony,
+SSBoYXZlIGEgbGludXggc2VydmVyIHdoaWNoIGlzIGNvbmZpZ3VyZWQgYXMgYSByb3V0ZXIgY29u
+bmVjdGluZyBteSBpbnRlcm5hbCBuZXR3b3JrIGFuZCB0aGUgaW50ZXJuZXQuICB1c2luZyB0aGUg
+Zm9sbG93aW5nIGlwdGFibGVzIHJ1bGVzOg0KDQppcHRhYmxlcyAtQSBGT1JXQVJEIC1pIGV0aDAg
+LW8gZXRoMSAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUDQpp
+cHRhYmxlcyAtQSBGT1JXQVJEIC1pIGV0aDEgLW8gZXRoMCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1B
+IEZPUldBUkQgLWogTE9HDQppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAt
+aiBNQVNRVUVSQURFDQoNCndoZXJlIGV0aDAgaXMgdGhlIG5ldHdvcmQgYWRhcHRlciBsaW5raW5n
+IHRvIHRoZSBpbnRlcm5ldCBhbmQgdGhlIGV0aDEgaXMgdGhlIGFkYXB0ZXIgbGlua2luZyB0byB0
+aGUgaW50ZXJuYWwgbmV0d29yay4NCkl0IHNlZW1zIHRoZSBuZXR3b3JrIHdvcmtzIHF1aXRlIHdl
+bGwsIGV4Y2VwdCBmb3IgdGhlIHZvaWNlIGNvbm5lY3Rpb24gb2YgTVNOIG1lc3NlbmdlciA2LjIu
+ICBJIGNhbid0IGVpdGhlciBpbml0aWFsIGEgdm9pY2UgY2hhdCBvciBhY2NlcHQgYSB2b2ljZSBj
+aGF0Lg0KDQpJJ3ZlIGdvdCBhYnNvbHV0ZWx5IG5vIGlkZWEgaG93IHRvIG1ha2UgaXQgd29yay4g
+IEFueSBpZGVhcz8=
 
-I'm not Antony.
+------=_NextPart_000_0028_01C47A55.988D6A70
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-> I agree with you, i must block all traffic and accept one-by-one rules that
-> i want, but the problem is i don't know how to do this ....,
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
+MC4yODAwLjE0MDAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5JIGhhdmUgYSBsaW51eCBz
+ZXJ2ZXIgd2hpY2ggaXMgY29uZmlndXJlZCBhcyBhIHJvdXRlciANCmNvbm5lY3RpbmcgbXkgaW50
+ZXJuYWwgbmV0d29yayBhbmQgdGhlIGludGVybmV0LiZuYnNwOyB1c2luZyB0aGUgZm9sbG93aW5n
+IA0KaXB0YWJsZXMgcnVsZXM6PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05U
+PiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+aXB0YWJsZXMmbmJzcDstQSBGT1JXQVJE
+IC1pJm5ic3A7ZXRoMCAtbyZuYnNwO2V0aDEgLW0gc3RhdGUgDQotLXN0YXRlIEVTVEFCTElTSEVE
+LFJFTEFURUQgLWogQUNDRVBUPEJSPmlwdGFibGVzJm5ic3A7LUEgRk9SV0FSRCAtaSZuYnNwO2V0
+aDEgDQotbyZuYnNwO2V0aDAgLWogQUNDRVBUPEJSPmlwdGFibGVzJm5ic3A7LUEgRk9SV0FSRCAt
+aiBMT0c8QlI+PC9GT05UPjxGT05UIA0Kc2l6ZT0yPmlwdGFibGVzJm5ic3A7LXQgbmF0IC1BIFBP
+U1RST1VUSU5HIC1vJm5ic3A7ZXRoMCAtaiANCk1BU1FVRVJBREU8L0ZPTlQ+PC9ESVY+DQo8RElW
+PjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj53aGVy
+ZSBldGgwIGlzIHRoZSBuZXR3b3JkIGFkYXB0ZXIgbGlua2luZyB0byB0aGUgaW50ZXJuZXQgYW5k
+IA0KdGhlIGV0aDEgaXMgdGhlIGFkYXB0ZXIgbGlua2luZyB0byB0aGUgaW50ZXJuYWwgbmV0d29y
+ay48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5JdCBzZWVtcyB0aGUgbmV0d29yayB3
+b3JrcyBxdWl0ZSB3ZWxsLCBleGNlcHQgZm9yIHRoZSB2b2ljZSANCmNvbm5lY3Rpb24gb2YgTVNO
+IG1lc3NlbmdlciA2LjIuJm5ic3A7IEkgY2FuJ3QgZWl0aGVyIGluaXRpYWwgYSB2b2ljZSBjaGF0
+IG9yIA0KYWNjZXB0IGEgdm9pY2UgY2hhdC48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9
+Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5JJ3ZlIGdvdCBhYnNvbHV0
+ZWx5IG5vIGlkZWEgaG93IHRvIG1ha2UgaXQgd29yay4mbmJzcDsgQW55IA0KaWRlYXM/PC9ESVY+
+PC9GT05UPjwvQk9EWT48L0hUTUw+DQo=
 
-Okay, then do so.  Take a piece of paper, sketch you topology with every
-network and add special hosts, like the mailserver at 172.16.128.50.
-Then ask yourself: what should go from the internet to your subnet and
-reverse.
+------=_NextPart_000_0028_01C47A55.988D6A70--
 
-This is you starting point (I sort it a bit, and please don't wrap
-commands):
 
-> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 202.46.146.161
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 202.46.146.164 --dport 25  -j DNAT --to 172.16.128.50
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 202.46.146.164 --dport 110 -j DNAT --to 172.16.128.50
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 202.46.146.165 --dport 25  -j DNAT --to 172.16.128.125
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 202.46.146.165 --dport 110 -j DNAT --to 172.16.128.125
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 202.46.146.166 --dport 80  -j DNAT --to 172.16.131.6
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 202.46.146.167 --dport 21  -j DNAT --to 172.16.128.79bie
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 202.46.146.168 --dport 21  -j DNAT --to 172.16.131.29
-> 
-> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -p udp -s 0/0 --dport 137 -j DROP
-
-# Set you default policy in FORWARD to DROP and flush it:
-iptables -P FORWARD DROP
-iptables -F FORWARD
-# No allow everything you expect to pass you paketfilter.  I think you
-# expect to pass all following pakets of an ACCEPTed stream:
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-# Now add everyting you need.  I can see, that you need mail-stuff vom
-# outside to inside:
-for $ip in 172.16.128.50 172.16.128.125
-do for $port in 25 110
-   do iptables -A FORWARD -i eth0 -p tcp -d $ip --sport 1024:65535 --dport $port -m state --state NEW -j ACCEPT
-      iptables -A FORWARD -i eth0 -p tcp -d $ip --sport 1024:65535 --dport $port -m state --state NEW -j ACCEPT
-   done
-done
-# same for http on .131.6 and ftp on .128.79 and .131.29
-iptables -A FORWARD -i eth0 -p tcp -d 172.16.131.6  --sport 1024:65535 --dport 80 -m state --state NEW -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp -d 172.16.128.79 --sport 1024:65535 --dport 21 -m state --state NEW -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp -d 172.16.131.29 --sport 1024:65535 --dport 21 -m state --state NEW -j ACCEPT
-# That's everything of your incomming traffic.  I can guess something
-# about you outgoing:
-iptables -A FORWARD -o eth0 -p tcp  --sport 1024:65535 --dport 21 -m state --state NEW -j ACCEPT
-iptables -A FORWARD -o eth0 -p tcp  --sport 1024:65535 --dport 53 -m state --state NEW -j ACCEPT
-iptables -A FORWARD -o eth0 -p udp  --sport 1024:65535 --dport 53 -m state --state NEW -j ACCEPT
-iptables -A FORWARD -o eth0 -p tcp  --sport 1024:65535 --dport 80 -m state --state NEW -j ACCEPT
-iptables -A FORWARD -o eth0 -p icmp -j ACCEPT
-# This should satisfy you users: surfing and downloading.  I think, you
-# mailservers are responsible for mails from users.  But they have to
-# deliver the mails:
-iptables -A FORWARD -i eth1 -p tcp -s 172.16.128.50  --sport 1024:65535 --dport 25 -m state --state NEW -j ACCEPT
-iptables -A FORWARD -i eth1 -p tcp -s 172.16.128.125 --sport 1024:65535 --dport 25 -m state --state NEW -j ACCEPT
-# Did you forgot something?  I don't know, you don't know, so let's log
-# everything you may have forgot:
-iptables -A FORWARD -j LOG --logprefix='FORWARD (unknown): '
-# Check you logfiles and decide if you want to allow the logged traffic.
-# Now be a good guy and make you machine rfc-compliant
-iptables -A FORWARD -p tcp -j REJECT --reject-with tcp-reset
-iptables -A FORWARD -p udp -j REJECT --reject-with icmp-host-prohibited
-
-This would be my basic layout.  You should tweak it as needed.  Some
-further tips:  RTFM <URL:http://iptables-tutorial.frozentux.net/>; use
-userdefined chains (eg. you could split your FORWARD into an incomming
-and an outgoing chain); use -j LOG and tail -f $logfile to determine
-unknown traffic; tcpdumps are usefull too.
-
-HTH,
- regards, Frank.
--- 
-Sigmentation fault
 
