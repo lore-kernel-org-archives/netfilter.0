@@ -1,10 +1,13 @@
-From: Daniel David Benson <dan@spoontail.com>
-Subject: Interrupts and netfilter
-Date: Mon, 30 Jun 2003 09:09:13 -0700 (PDT)
+From: Aaron Sethman <androsyn@ratbox.org>
+Subject: Re: MSN and Yahoo Block through IPTABLES
+Date: Mon, 30 Jun 2003 12:35:52 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0306300855040.30415-100000@dudester.spoontail.com>
+Message-ID: <Pine.LNX.4.55.0306301233570.29991@squeaker.ratbox.org>
+References: <010a01c33b03$d78da1f0$5505a8c0@asimejaz> <004901c33b4a$963ee9b0$1100000a@busbydev>
+ <007d01c33bd7$699e3810$5505a8c0@asimejaz> <3EFB1B7F.1010200@nucdc.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3EFB1B7F.1010200@nucdc.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +19,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Jamie Pratt <jamie@nucdc.org>
+Cc: netfilter@lists.netfilter.org
 
 
+On Thu, 26 Jun 2003, Jamie Pratt wrote:
 
-The other night I blocked a source of high volume small size traffic
-(i.e., lot's of small packets).  I noticed ksoftirqd_CPU0 starting 
-to run out of control -- essentially making all other traffic 
-going through this firewall suffer.  We are using 2.4.18 and Intel
-cards:
+> Doesn't blocking tcp port 5050 outbound pretty much kill yahoo instant
+> messenger clients? (Last I checked, it wouldn't connect for me at home
+> until i opened 5050, but then again, maybe they got smarter like msn?)
 
-Intel(R) PRO/1000 Network Driver - version 5.0.43-k1
-Copyright (c) 1999-2003 Intel Corporation.
-PCI: Assigned IRQ 7 for device 01:02.0
-divert: allocating divert_blk for eth1
-eth1: Intel(R) PRO/1000 Network Connection
-PCI: Assigned IRQ 3 for device 01:04.0
-divert: allocating divert_blk for eth2
-eth2: Intel(R) PRO/1000 Network Connection
-e1000: eth1 NIC Link is Up 100 Mbps Full Duplex
-e1000: eth2 NIC Link is Up 100 Mbps Full Duplex
+The problem here is, the yahoo messenger servers listen on all ports, 1 to
+65535, so even if you leave something like squid running and transparent
+proxy everything through that, they would still be able to get through
+using CONNECT to port 443.  The other option is, just tell your users it
+is forbidden and that there will be actions taken if they use it ;)
 
-I know we can adjust certain IRQ queues on the card.  Is this 
-what other people have done?  Are other people seeing this 
-problem?
-
-Thanks!
-
--Dan
-
-
+Aaron
 
