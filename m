@@ -1,8 +1,8 @@
 From: BGrummel@zuendel.de
 Subject: help!! whole in firewall --
-Date: Fri, 7 Jun 2002 16:40:31 +0200
+Date: Fri, 7 Jun 2002 17:08:12 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <aear0l$7np$2@main.gmane.org>
+Message-ID: <aear5p$84h$2@main.gmane.org>
 Mime-Version: 1.0
 Content-Type: multipart/mixed; 
 	Boundary="0__=C1256BD1002A6D808f9e8a93df938690918cC1256BD1002A6D80"
@@ -51,21 +51,11 @@ I don=B4t know what it is
 I think its in the keep-state part
 but if I change it i had to change any rule for all connections
 
-(See attached file: firewall.netfilter)
-
 any help is welcome
 
 thanks in advise
 
-
-Dipl.-Ing.
-Benno Grummel
-ZUENDEL & Partner
-Systems & Consultants
-Abt. IT-Services
-Fon:   02153-7376-0
-Fax:   02153-7376-16
-http://www.ZUENDEL.DE=
+(See attached file: firewall.netfilter)=
 
 --0__=C1256BD1002A6D808f9e8a93df938690918cC1256BD1002A6D80
 Content-type: application/octet-stream; 
