@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables + nat problem in large network
-Date: Thu, 26 Sep 2002 23:26:07 +0100
+Subject: Re: Web Browser Information Leakage through NetFilter:
+Date: Fri, 27 Sep 2002 01:08:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020926222610.VSGU13996.mta05-svc.ntlworld.com@there>
-References: <20020926204651.GB3801@alucicrazy.tacnet.com.br>
+Message-ID: <20020927000832.XTYP28842.mta06-svc.ntlworld.com@there>
+References: <FLEKIPPLAEDMJMOOBBDPGEBBDAAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020926204651.GB3801@alucicrazy.tacnet.com.br>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPGEBBDAAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +18,76 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thursday 26 September 2002 9:46 pm, bueno wrote:
+On Friday 27 September 2002 12:49 am, Stewart Thompson wrote:
 
-> Hello all,
-> 	        I have had problems with iptables nat with some servers.
->         Is strange, because the nat works during some time...
+> Hi All:
 >
->         I have a machine with 3 interfaces...
->         eth0 - 200.xxx.xxx.163
->         eth1 - 10.1.2.1
->         eth2 - 10.0.0.1
->                10.0.0.65
->                10.0.1.1
->                10.0.1.65
->                10.0.2.1
->                10.0.2.65
->                10.0.3.1
->                10.0.3.65
->                10.0.4.1
->                10.0.5.1
->                10.0.5.65
->                10.0.5.129
->                10.0.5.194
->                10.0.6.1
->
->         I have the following rules for MASQUERADE:
->         iptables -t nat -A POSTROUTING -s 10.1.2.0/25 -j MASQUERADE
->         iptables -t nat -A POSTROUTING -s 10.0.0.0/16 -j MASQUERADE
+> 	I was redirected to some German web site.
 
-These two rules will masquerade packets from eth1 to the outside world (seems 
-sensible) and from eth2 to the outside world (ditto), but also from eth1 to 
-eth2, and from eth2 to eth1.
+Please could you post the URL - either to the list, or to me privately - I 
+would like to investigate what you have seen.
 
-Do you really want packets between eth1 and eth2 to be masqueraded ?   Surely 
-they can be normally routed with the original source address left intact ?   
-I'd have thought a better rule than the two above would be the single:
+> I couldn't read the text obviously, but the gist was I
+> was insecure, it showed a completely accurate listing
+> of all the folders on my Windows machine I was using
+> the browser on at the time.
 
-iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
+That indicates either:
 
-<snip long quote of tcpdump / ping showing strange things...>
+a) that your firewall was allowing some subset (I can't remember the precise 
+details offhand) of TCP/UDP ports 137,138,139 *IN* from the remote server to 
+your browsing machine, and the remote server could therefore peruse your 
+Windows shares, or
 
-> it remains thus during long time, more than 1 hour
-> note that, 1 second later eth1 stops to answer, eth2 starts...
+b) that your browser downloaded some active content from the web server, 
+executed that active content (which scanned local directories), and then 
+either displayed it in the window of your browser (you hope), or sent it back 
+to the server for it to return as an html view in the window of your browser
 
-I would check two things:
+> Obviously I wasn't to please
+> about this. I am assuming it is a function of the Browser
+> and Server, and not a direct problem with my firewall.
+> I am running IE V6 on that machine.
 
-1. How many concurrent connections do you have on your machine, and what size 
-is your connection tracking table ?
+I would not be at all surprised if this simply ran some active content (Java, 
+VBScript, ActiveX, that sort of thing) without telling you, and may or may 
+not have returned something just as interesting to the remote server.
 
-wc -l /proc/net/ip_conntrack
-cat /proc/sys/net/ipv4/ip_conntrack_max
+> 	So the question is, can a malicious website access
+> Sensitive data with this method?
 
-2. Is your ARP table behaving sensibly ?
+Yes - definitely.
 
-On the firewall machine, try
+> Is there some way to block this with Netfilter and/or Browser settings?
 
-arp -an
+Netfilter ?   No.   Browser ?   Yes.   I would suggest upgrading to Netscape, 
+Konqueror, Mozilla, Opera.......
 
-when the ping is working as it should, and again when it is not, and see if 
-the entry for machine 10.1.2.17 is different ?
+To quote from the KDE website:
+"KDE 3.0.3 contains an important fix for handling SSL certificates," 
+explained Waldo Bastian, the KDE developer responsible for implementing a fix 
+shortly after the KDE Project became aware of the issue. "Anyone who uses 
+Konqueror for secure transactions on the Internet is strongly urged to 
+upgrade. Users of Internet Explorer, which suffers from the same problem but 
+which does not yet have a fix available, are also encouraged to switch to KDE 
+3.0.3." 
+
+Seriously though, there is going to be something in the Options available in 
+either IE6 or possibly on Control Panel - Internet Connection to say what 
+active content you are prepared to accept.   I can't point you straight at 
+the bit you need to change, because I've never used IE on a machine, however 
+there must be something there somewhere.   A search on Google for Internet 
+Explorer Security Settings might be a good place to start.
+
+I'd still be interested to see the URL.
 
 Antony.
 
 -- 
 
-Most people are aware that the Universe is big.
-
- - Paul Davies, Professor of Theoretical Physics
+There are only 10 types of people in the world:
+those who understand binary notation,
+and those who don't.
 
