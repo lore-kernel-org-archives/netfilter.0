@@ -1,13 +1,12 @@
 From: Oskar Andreasson <blueflux@koffein.net>
 Subject: Re: Packet chain traversals
-Date: Sun, 27 Oct 2002 19:52:02 +0100 (CET)
+Date: Sun, 27 Oct 2002 22:23:29 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210271951170.12007-200000@laptop1.agatha>
-References: <200210271303.57379.netfilter@newkirk.us>
+Message-ID: <Pine.LNX.4.44.0210272214080.12317-100000@laptop1.agatha>
+References: <200210271421.51119.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463810815-273754867-1035744722=:12007"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210271303.57379.netfilter@newkirk.us>
+In-Reply-To: <200210271421.51119.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,18 +16,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Joel Newkirk <netfilter@newkirk.us>
 Cc: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Sun, 27 Oct 2002, Joel Newkirk wrote:
 
----1463810815-273754867-1035744722=:12007
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+> On Sunday 27 October 2002 01:50 pm, Oskar Andreasson wrote:
 
-Forgot to attach the script in question....
+> > > http://newkirk.no-ip.org:83/Traversal-sm.png
+> >
+> > Mmmmm, reminds me of that trip on LSD I took the other day.... =) just
+> > kidding. 
+> 
+> mmm.  about the resemblance, or the other day?  :^) (just kidding too :^)
 
+About the resemblance, of course;)
+
+> 
+> > It does look good really, except you made it rather confusing in
+> > one aspect... I don't know if it's just me, but why do you have two "out"
+> > and two "in"?
+> 
+> Two reasons mostly:  That seems to reflect a common arrangement, where there 
+> is a single connection to the internet and a single connection to local 
+> network(s).  (feel free to label the top one 'ppp0' and the bottom 'eth1')  
+> It also allows the diagram to more clearly illustrate (to me at least) the 
+> situation where a packet can be sent back out the same interface it arrived 
+> from, such as a local DNAT redirection to another local IP.  Also, one or 
+> three (or more) would ruin the pretty symmetry...
+
+Ok, I can understand that reasoning. 
+
+> 
+> In my mind, I always think of the local machine (local processes) as being 
+> 'inside' the firewall, with the individual interfaces being separated by it, 
+> or the LAN being 'behind' it.  I can't think of a useful, non-degenerate 
+> example where this isn't a valid perspective, so I've held to it so far.
+
+Try a small backbone or so:).
+
+> > > Thanks for any input, examples, diagram criticism (artistic or logical)
+> > > etc. If your response seems to you to be useless to the list in general
+> > > then please just send it to me directly.
+> >
+> > no problem. Don't take me too seriously though, I am a lousy "artist"
+> > so... :)
+> 
+> I may be as well, but I've tired of always referring to a visualization that 
+> suited my perspective, and decided to try to make a printed version.  (BTW, 
+> my actual intention is to tweak then fade the colors out about 70% before 
+> printing a 'keeper', otherwise I'll have to cover it late in the evening... 
+> :^)
+
+Sounds as a nice idea. I could use one myself once in a while (lousy 
+memory). I would really like seeing the mangle/nat/filter stuff added to 
+FORWARD/INPUT/OUTPUT though, and it would be even better:)
+
+-- 
 ----
 Oskar Andreasson
 http://www.frozentux.net
@@ -36,86 +82,4 @@ http://iptables-tutorial.frozentux.net
 http://ipsysctl-tutorial.frozentux.net
 mailto:blueflux@koffein.net
 
----1463810815-273754867-1035744722=:12007
-Content-Type: TEXT/plain; name="rc.test-iptables.txt"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0210271952020.12007@laptop1.agatha>
-Content-Description: 
-Content-Disposition: attachment; filename="rc.test-iptables.txt"
-
-IyEvYmluL2Jhc2gNCiMNCiMgcmMudGVzdC1pcHRhYmxlcyAtIHRlc3Qgc2Ny
-aXB0IGZvciBpcHRhYmxlcyBjaGFpbnMgYW5kIHRhYmxlcy4NCiMNCiMgQ29w
-eXJpZ2h0IChDKSAyMDAxICBPc2thciBBbmRyZWFzc29uICZsdDtibHVlZmx1
-eEFUa29mZmVpbkRPVG5ldCZndDsNCiMNCiMgVGhpcyBwcm9ncmFtIGlzIGZy
-ZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBt
-b2RpZnkNCiMgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJh
-bCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkNCiMgdGhlIEZyZWUg
-U29mdHdhcmUgRm91bmRhdGlvbjsgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNl
-Lg0KIw0KIyBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhv
-cGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwNCiMgYnV0IFdJVEhPVVQgQU5Z
-IFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkg
-b2YNCiMgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElD
-VUxBUiBQVVJQT1NFLiAgU2VlIHRoZQ0KIyBHTlUgR2VuZXJhbCBQdWJsaWMg
-TGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLg0KIw0KIyBZb3Ugc2hvdWxkIGhh
-dmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
-TGljZW5zZQ0KIyBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbSBvciBmcm9tIHRo
-ZSBzaXRlIHRoYXQgeW91IGRvd25sb2FkZWQgaXQNCiMgZnJvbTsgaWYgbm90
-LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMu
-LCA1OSBUZW1wbGUNCiMgUGxhY2UsIFN1aXRlIDMzMCwgQm9zdG9uLCBNQSAg
-MDIxMTEtMTMwNyAgIFVTQQ0KIw0KDQojDQojIEZpbHRlciB0YWJsZSwgYWxs
-IGNoYWlucw0KIw0KaXB0YWJsZXMgLXQgZmlsdGVyIC1BIElOUFVUIC1wIGlj
-bXAgLS1pY21wLXR5cGUgZWNoby1yZXF1ZXN0IFwNCi1qIExPRyAtLWxvZy1w
-cmVmaXg9ImZpbHRlciBJTlBVVDoiDQppcHRhYmxlcyAtdCBmaWx0ZXIgLUEg
-SU5QVVQgLXAgaWNtcCAtLWljbXAtdHlwZSBlY2hvLXJlcGx5IFwNCi1qIExP
-RyAtLWxvZy1wcmVmaXg9ImZpbHRlciBJTlBVVDoiDQppcHRhYmxlcyAtdCBm
-aWx0ZXIgLUEgT1VUUFVUIC1wIGljbXAgLS1pY21wLXR5cGUgZWNoby1yZXF1
-ZXN0IFwNCi1qIExPRyAtLWxvZy1wcmVmaXg9ImZpbHRlciBPVVRQVVQ6Ig0K
-aXB0YWJsZXMgLXQgZmlsdGVyIC1BIE9VVFBVVCAtcCBpY21wIC0taWNtcC10
-eXBlIGVjaG8tcmVwbHkgXA0KLWogTE9HIC0tbG9nLXByZWZpeD0iZmlsdGVy
-IE9VVFBVVDoiDQppcHRhYmxlcyAtdCBmaWx0ZXIgLUEgRk9SV0FSRCAtcCBp
-Y21wIC0taWNtcC10eXBlIGVjaG8tcmVxdWVzdCBcDQotaiBMT0cgLS1sb2ct
-cHJlZml4PSJmaWx0ZXIgRk9SV0FSRDoiDQppcHRhYmxlcyAtdCBmaWx0ZXIg
-LUEgRk9SV0FSRCAtcCBpY21wIC0taWNtcC10eXBlIGVjaG8tcmVwbHkgXA0K
-LWogTE9HIC0tbG9nLXByZWZpeD0iZmlsdGVyIEZPUldBUkQ6Ig0KDQojDQoj
-IE5BVCB0YWJsZSwgYWxsIGNoYWlucyBleGNlcHQgT1VUUFVUIHdoaWNoIGRv
-bid0IHdvcmsuDQojDQppcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAt
-cCBpY21wIC0taWNtcC10eXBlIGVjaG8tcmVxdWVzdCBcDQotaiBMT0cgLS1s
-b2ctcHJlZml4PSJuYXQgUFJFUk9VVElORzoiDQppcHRhYmxlcyAtdCBuYXQg
-LUEgUFJFUk9VVElORyAtcCBpY21wIC0taWNtcC10eXBlIGVjaG8tcmVwbHkg
-XA0KLWogTE9HIC0tbG9nLXByZWZpeD0ibmF0IFBSRVJPVVRJTkc6Ig0KaXB0
-YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1wIGljbXAgLS1pY21wLXR5
-cGUgZWNoby1yZXF1ZXN0IFwNCi1qIExPRyAtLWxvZy1wcmVmaXg9Im5hdCBQ
-T1NUUk9VVElORzoiDQppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcg
-LXAgaWNtcCAtLWljbXAtdHlwZSBlY2hvLXJlcGx5IFwNCi1qIExPRyAtLWxv
-Zy1wcmVmaXg9Im5hdCBQT1NUUk9VVElORzoiDQppcHRhYmxlcyAtdCBuYXQg
-LUEgT1VUUFVUIC1wIGljbXAgLS1pY21wLXR5cGUgZWNoby1yZXF1ZXN0IFwN
-Ci1qIExPRyAtLWxvZy1wcmVmaXg9Im5hdCBPVVRQVVQ6Ig0KaXB0YWJsZXMg
-LXQgbmF0IC1BIE9VVFBVVCAtcCBpY21wIC0taWNtcC10eXBlIGVjaG8tcmVw
-bHkgXA0KLWogTE9HIC0tbG9nLXByZWZpeD0ibmF0IE9VVFBVVDoiDQoNCiMN
-CiMgTWFuZ2xlIHRhYmxlLCBhbGwgY2hhaW5zDQojDQppcHRhYmxlcyAtdCBt
-YW5nbGUgLUEgUFJFUk9VVElORyAtcCBpY21wIC0taWNtcC10eXBlIGVjaG8t
-cmVxdWVzdCBcDQotaiBMT0cgLS1sb2ctcHJlZml4PSJtYW5nbGUgUFJFUk9V
-VElORzoiDQppcHRhYmxlcyAtdCBtYW5nbGUgLUEgUFJFUk9VVElORyAtcCBp
-Y21wIC0taWNtcC10eXBlIGVjaG8tcmVwbHkgXA0KLWogTE9HIC0tbG9nLXBy
-ZWZpeD0ibWFuZ2xlIFBSRVJPVVRJTkc6Ig0KaXB0YWJsZXMgLXQgbWFuZ2xl
-IC1JIEZPUldBUkQgMSAtcCBpY21wIC0taWNtcC10eXBlIGVjaG8tcmVxdWVz
-dCBcDQotaiBMT0cgLS1sb2ctcHJlZml4PSJtYW5nbGUgRk9SV0FSRDoiDQpp
-cHRhYmxlcyAtdCBtYW5nbGUgLUkgRk9SV0FSRCAxIC1wIGljbXAgLS1pY21w
-LXR5cGUgZWNoby1yZXBseSBcDQotaiBMT0cgLS1sb2ctcHJlZml4PSJtYW5n
-bGUgRk9SV0FSRDoiDQppcHRhYmxlcyAtdCBtYW5nbGUgLUkgSU5QVVQgMSAt
-cCBpY21wIC0taWNtcC10eXBlIGVjaG8tcmVxdWVzdCBcDQotaiBMT0cgLS1s
-b2ctcHJlZml4PSJtYW5nbGUgSU5QVVQ6Ig0KaXB0YWJsZXMgLXQgbWFuZ2xl
-IC1JIElOUFVUIDEgLXAgaWNtcCAtLWljbXAtdHlwZSBlY2hvLXJlcGx5IFwN
-Ci1qIExPRyAtLWxvZy1wcmVmaXg9Im1hbmdsZSBJTlBVVDoiDQppcHRhYmxl
-cyAtdCBtYW5nbGUgLUEgT1VUUFVUIC1wIGljbXAgLS1pY21wLXR5cGUgZWNo
-by1yZXF1ZXN0IFwNCi1qIExPRyAtLWxvZy1wcmVmaXg9Im1hbmdsZSBPVVRQ
-VVQ6Ig0KaXB0YWJsZXMgLXQgbWFuZ2xlIC1BIE9VVFBVVCAtcCBpY21wIC0t
-aWNtcC10eXBlIGVjaG8tcmVwbHkgXA0KLWogTE9HIC0tbG9nLXByZWZpeD0i
-bWFuZ2xlIE9VVFBVVDoiDQppcHRhYmxlcyAtdCBtYW5nbGUgLUkgUE9TVFJP
-VVRJTkcgMSAtcCBpY21wIC0taWNtcC10eXBlIGVjaG8tcmVxdWVzdCBcDQot
-aiBMT0cgLS1sb2ctcHJlZml4PSJtYW5nbGUgUE9TVFJPVVRJTkc6Ig0KaXB0
-YWJsZXMgLXQgbWFuZ2xlIC1JIFBPU1RST1VUSU5HIDEgLXAgaWNtcCAtLWlj
-bXAtdHlwZSBlY2hvLXJlcGx5IFwNCi1qIExPRyAtLWxvZy1wcmVmaXg9Im1h
-bmdsZSBQT1NUUk9VVElORzoiDQo=
----1463810815-273754867-1035744722=:12007--
 
