@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NAT loopback
-Date: Thu, 20 Jun 2002 15:02:47 +0100
+From: "Preston Wade" <Preston_Wade@hilton.com>
+Subject: RE: (no subject)
+Date: Thu, 20 Jun 2002 09:09:54 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206201402.g5KE2vU32695@vulcan.rissington.net>
-References: <F58UIHNkjgJKVApwOLZ00003810@hotmail.com>
+Message-ID: <0B2759D401C1D211ACA500805FFE2C3F06367537@cmxserv3.hilton.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <F58UIHNkjgJKVApwOLZ00003810@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,39 +16,42 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter <netfilter@lists.samba.org>
 
-On Thursday 20 June 2002 2:56 pm, Scott Ware wrote:
+If they are different ports could you not just redirect connections for the
+destination ports to the correct box?
 
-> With the iptables is it possible to allow NAT clients to talk to each other
-> through the External IP address?
->
-> External IP 64.118.165.23
->   PC#1 192.168.1.10
->   PC#2 192.168.1.11
->
-> NAT port forwarding setup
->   Port 3405 udp/tcp -> 192.168.1.10
->   Port 3406 udp/tcp -> 192.168.1.11
->
-> 192.168.1.10 connects to an external server and all the peers are told
-> about each other and begin to talk, port 3405 is used for this client
->
-> 192.168.1.11 connects to the same server and all the peers are told about
-> each other and begin to talk, except 192.168.1.11 wants to talk to
-> 64.118.165.23 on port 3405 and 192.168.1.10 wants to talk to 64.118.165.23
-> on port 3406. This traffic just seems to get lost...
+Thanks,
+Preston
 
-It gets lost because 192.168.1.10 is trying to reply to 192.168.1.11, which 
-is on the local LAN, therefore it doesn't get reverse NATted through the 
-firewall (and 192.168.1.11 can't understand why it sent a packet to 
-64.118.165.23 and got a response from 192.168.1.10....)
+> -----Original Message-----
+> From:	"Antony Stone" <Antony@Soft-Solutions.co.uk>@INTERNET@HHC 
+> Sent:	Thursday, June 20, 2002 8:55 AM
+> To:	netfilter
+> Subject:	Re: (no subject)
+> 
+>  <<...>> 
+> On Thursday 20 June 2002 2:47 pm, Niall Murphy wrote:
+> 
+> > hi all,
+> > I be very gratefully for any help..
+> > my firewall has 2 nic's the external one's ip 194.125.213....  but
+> behind
+> > the firewall I have a proxy server and an email server with ip's
+> > 192.0.0.106 and 192.0.0.253. I know I need to use DNAT and SNAT to send
+> > internet packets to them but i do not know how to add aliases to  the
+> eth0
+> > so that i can route packets to my firewall and then DNAT them on...
+> > does any one know how to use this "ip add address" command   ( maybe
+> even a
+> > example or two)
+> 
+> http://defiant.coinet.com/iproute2/quickie-ip.html
+> 
+> 
+> 
+> Antony.
+> 
+> 
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
-
-(Once Harald has got the website working again properly...)
-
- 
-
-Antony.
 
