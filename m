@@ -1,14 +1,15 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Log Entries with multiple PROTO fields?
-Date: Fri, 19 Mar 2004 14:40:51 +0200
+From: Frank =?iso-8859-1?Q?Matthie=DF?= <frankm@lug-owl.de>
+Subject: Re: state match support in ip6tables
+Date: Fri, 19 Mar 2004 13:45:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079700051.2417.4.camel@raylinux.internal>
-References: <20040317141056.M19130@tkevans.com>
-	 <1079698506.2346.4.camel@carve.personal.localdomain>
+Message-ID: <20040319124503.GX2350@dvmwest.dvmwest.de>
+References: <1079045669.6476.3.camel@localhost> <20040311233044.GC26800@samad.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-m3qPQ1qfclQl7BrguyF3"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eqq5Le9VNi5o1NaU"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1079698506.2346.4.camel@carve.personal.localdomain>
+Content-Disposition: inline
+In-Reply-To: <20040311233044.GC26800@samad.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +19,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 
---=-m3qPQ1qfclQl7BrguyF3
-Content-Type: text/plain
+--eqq5Le9VNi5o1NaU
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2004-03-19 at 14:22, Tarek W. wrote:
-> On Wed, 2004-03-17 at 16:10, Tim Evans wrote: [snipped]
-> > What do these kind of log message mean?  Note there are two PROTO field=
-s:
+Alexander Samad [2004-03-12 00:30 CET]:
+> On Thu, Mar 11, 2004 at 11:54:30PM +0100, marco wrote:
+> > hi all, i need help with ip6tables and match support
 > >=20
-> > Mar  8 08:19:43 kernel: IPT OUT_ICMP: IN=3D OUT=3Deth1 SRC=3Dx.x.x.xDST=
-=3Dx.x.x.
-> > .x LEN=3D76 TOS=3D0x00 PREC=3D0xC0 TTL=3D64 ID=3D54844 PROTO=3DICMP TYP=
-E=3D11 CODE=3D0
-> > [SRC=3Dx.x.x.x DST=3Dx.x.x.x LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D1 ID=
-=3D0 DF PROTO=3DTCP
-> > SPT=3D110 DPT=3D4312 WINDOW=3D5840 RES=3D0x00 ACK SYN URGP=3D0 ]
+> > can i use it with vannilla2.4?
+> > where can i get a patch to enable the it (evenif there's one)?
 >=20
-> this is an ICMP packet sent in response to the TCP packet which is
-> detailed inside []
+> Conntection tracking isn't implemented in ipv6 AFSIK.
 
-icmp TYPE=3D11 CODE=3D0 -- host unreachable(?)
+Do you know. why this isn't implemented yet?
+Are there technical reasons or only a problem of priorities?
+
+I would like to have IPv6 statefull inspection, because i and some others
+want to play with IPV6 over freenet6. But making firewall rules w/o
+statefull inspection isn't really funny, nor is it compareable.
+
+Frank.
 --=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+Frank Matthie=DF
 
---=-m3qPQ1qfclQl7BrguyF3
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+[x] Nail here for new monitor.
+
+--eqq5Le9VNi5o1NaU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQBAWupTh1fuR/Bv+ygRAmJVAJ9Gihl6jdDs7IIlAZVN70C+4luvHwCeOldQ
-A1LSkomNc8yA+esZwgo9fI0=
-=OMB5
+iD8DBQFAWutMLXa7dZqO5SERAlD3AKCnAmGs/kXz/8mlbF6JUZOOeCwjLQCfXNGh
+c1XcO5OZzSM7hx53mQixnCM=
+=oA3e
 -----END PGP SIGNATURE-----
 
---=-m3qPQ1qfclQl7BrguyF3--
-
+--eqq5Le9VNi5o1NaU--
 
