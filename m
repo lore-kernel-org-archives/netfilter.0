@@ -1,14 +1,11 @@
-From: Bryan Shake <bshake@vt.edu>
-Subject: Re: OS Fingerprint
-Date: Mon, 29 Nov 2004 23:02:02 -0500
-Message-ID: <41ABF0BA.7000105@vt.edu>
-References: <7C9884991ADAE0479C14F10C858BCDF56795F1@alderaan.smgtec.com>
-Reply-To: bshake@vt.edu
+From: pravin rane <pgr_80@yahoo.com>
+Subject: RE: How to block only MX query made to DNS server
+Date: Mon, 29 Nov 2004 23:26:36 -0800 (PST)
+Message-ID: <20041130072636.72194.qmail@web12308.mail.yahoo.com>
+References: <29F6FAF7F2C0D41190980002A513591E0E93BAAE@FSNSAB30>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=sha1; boundary="------------ms070602050101040001090405"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF56795F1@alderaan.smgtec.com>
+In-Reply-To: <29F6FAF7F2C0D41190980002A513591E0E93BAAE@FSNSAB30>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,106 +16,169 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
-
-This is a cryptographically signed message in MIME format.
-
---------------ms070602050101040001090405
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>, Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
 
-On 11/29/04 17:12, Daniel Chemko wrote:
-> Vlado Had wrote:
+Dear Hudson,
+
+We are in to the Linux Solution provider.
+
+One of our client has taken SILVER PLAN from XXX ISP
+According to this plan the client can only use ports
+TCP, UDP. 53,25,110,143,80,81 and ports above 1024 for
+out side.
+Here client can only make normal DNS queries. MX type
+of queries get response like "name server can not be
+reached" .
+
+We have installed an Internal Mail-server (Sendmail).
+Since ISP have blocked MX query to any DNS server
+Out-side sendmail is not able to send mails out-side. 
+
+I know I can tell sendmail not to use DNS. But before
+implementing this new setup at client I want to test
+it in my LABS. I want to create the same scenario as
+that ISP have done.
+
+Seeking Urgent help form Netfilter Experts.
+
+Bye 
+Pravin
+
+
+
+--- Hudson Delbert J Contr 61 CS/SCBN
+<Delbert.Hudson@LOSANGELES.AF.MIL> wrote:
+
+> pravin,
 > 
->>hi, could somebody help me, how can i change
->>osfingerprint in packets?
->>thanks
+> 	i know a way to do this but i need to know who it
+> is that you are
+> 	trying to block from doing mx resolution?
+> 
+> 	mx queries to the dns system.
+> 
+> 	this is a staple of bind.
+> 
+> 	internal users need this from your internal
+> servers.
+> 
+> 	external clients needs to have the mail handler
+> resolved
+> 	to point at the secure mail address. 
+> 
+> 	need more info on who you are filtering, the query
+> type (mx)
+> 	is self is needed.
+> 
+> ~v/r,
+> piranha
+> 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On
+> Behalf Of pravin rane
+> Sent: Saturday, November 27, 2004 8:18 PM
+> To: Daniel Chemko; netfilter@lists.netfilter.org
+> Subject: RE: How to block only MX query made to DNS
+> server
 > 
 > 
-> Do some homework. Basically a scanner uses inherent flaws in a packet
-> response to determine the destination machine, but it could also use the
-> fingerprint of the services running on the PC. Ex. if I implement 100%
-> faking on the networking part of my stealthing, but leave apache open,
-> the apache could say Redhat Linux blahblahblah and give it all away to
-> the hacker. It isn't just 'change TOS to random', or MSS to y, or block
-> all n packets to port q. Those are some OS fingerprint examples, but the
-> technique is a lot more detailed. If in doubt, tear open the nmap code!
->
+> That is right but only when all clients are using my
+> DNS server. I will not be able to block MX requests
+> if
+> they are using some other DNS servers which are
+> out-side of my network and I can not force my
+> clients
+> to use only my DNS server.
+> 
+> Using iptables I can build a rule for certain ICMP
+> TYPE Packets. Is there any rule which can match DNS
+> query TYPE?
+> 
+> regards
+> Pravin Rane.
+> --- Daniel Chemko <dchemko@smgtec.com> wrote:
+> 
+> > pravin rane wrote:
+> > > Hi all,
+> > > 
+> > > I want to block DNS MX query made through my
+> > network.
+> > > What iptables rule I should use.
+> > 
+> > You don't use iptables to do this. named has built
+> > in ACL's to determine
+> > who can perform what oeprations. Look at bind
+> > 'view's for more
+> > information on how to properly deal with name
+> > resolution issues.
+> > 
+> 
+> 
+> =====
+> --
+>                                                     
+>           __..-'
+>                                                     
+>     _.--''
+>                                               
+> _...__..-'
+>                                              .'
+>                                            .'
+>                                          .'
+>                                        .'
+>             .------._                 ;
+>       .-"""`-.<')    `-._           .'
+>      (.--. _   `._       `'---.__.-'     Fly High
+> Till You Reach
+>       `   `;'-.-'         '-    ._               The
+> Sky
+>         .--'``  '._      - '   .         
+>          `""'-.    `---'    ,            
+>  ''--..__      `\                              Warm
+> Regards
+>          ``''---'`\      .'              
+>                    `'. '                      
+> Pravin Rane.
+> 
+> 
+> 	
+> 		
+> __________________________________ 
+> Do you Yahoo!? 
+> Yahoo! Mail - You care about security. So do we. 
+> http://promotions.yahoo.com/new_mail
+> 
 
-The IP Personality patch may be a solution, although it could only do so 
-much as pointed out above (running network processes giving you away, 
-etc) ... "http://ippersonality.sourceforge.net/"
-
-Unfortunately, it doesn't appear to be actively maintained any longer.. 
-  Linux 2.4.18 and iptables 1.2.2 were the last official releases, with 
-a 2.4.20 patch here that doesn't seem to have ever made it onto the 
-official download page.
-"http://sourceforge.net/tracker/index.php?func=detail&aid=647045&group_id=7557&atid=307557" 
+> ATTACHMENT part 2 application/ms-tnef 
 
 
-Additionaly, some OS fingerprinting tools such as p0f can be tricked by 
-carefully modifying sysctl values such as ip_default_ttl, etc as they 
-rely on matching a certain profile.
 
-Bryan
+=====
+--
+                                                               __..-'
+                                                         _.--''
+                                               _...__..-'
+                                             .'
+                                           .'
+                                         .'
+                                       .'
+            .------._                 ;
+      .-"""`-.<')    `-._           .'
+     (.--. _   `._       `'---.__.-'     Fly High Till You Reach
+      `   `;'-.-'         '-    ._               The Sky
+        .--'``  '._      - '   .         
+         `""'-.    `---'    ,            
+ ''--..__      `\                              Warm Regards
+         ``''---'`\      .'              
+                   `'. '                       Pravin Rane.
 
---------------ms070602050101040001090405
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIH0TCC
-AkMwggGsoAMCAQICAwxwlDANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UE
-ChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNv
-bmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EwHhcNMDQwNjA0MDE1ODU1WhcNMDUwNjA0MDE1ODU1
-WjA/MR8wHQYDVQQDExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMRwwGgYJKoZIhvcNAQkBFg1i
-c2hha2VAdnQuZWR1MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgjvmS1fUQHkUhtF52
-ab5eFn2XsmlntTjK0Qnf7kMhjq4wSMhND7oXqE3DF4Q+c6DiCy9aVVEUFGsb45/Kd+8jL2Tp
-ciK53KhS9hmykptedflW08++Xk396aVxXUpObf4zxy/6nb42YgfmD8RO3veALXYHmNubqAa7
-HeWLc8yMUwIDAQABoyowKDAYBgNVHREEETAPgQ1ic2hha2VAdnQuZWR1MAwGA1UdEwEB/wQC
-MAAwDQYJKoZIhvcNAQEEBQADgYEAaUP/eDG3ad/FT0gH/bqgngM538dg8vFj4cCG8dHsiJUP
-sU0gIzLIlW5stl3o0r89nrjsWBh/c7b8lm3DqVdGuzKwmUEeg7lrER56wc1sE69TFS78XA37
-vHCcu+Or4EBeMZW0Oz+JVbNejcFYANQ5+QEWfi5usrF+GX0ZRZ43w6YwggJDMIIBrKADAgEC
-AgMMcJQwDQYJKoZIhvcNAQEEBQAwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBD
-b25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
-bCBJc3N1aW5nIENBMB4XDTA0MDYwNDAxNTg1NVoXDTA1MDYwNDAxNTg1NVowPzEfMB0GA1UE
-AxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEcMBoGCSqGSIb3DQEJARYNYnNoYWtlQHZ0LmVk
-dTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA4I75ktX1EB5FIbRedmm+XhZ9l7JpZ7U4
-ytEJ3+5DIY6uMEjITQ+6F6hNwxeEPnOg4gsvWlVRFBRrG+OfynfvIy9k6XIiudyoUvYZspKb
-XnX5VtPPvl5N/emlcV1KTm3+M8cv+p2+NmIH5g/ETt73gC12B5jbm6gGux3li3PMjFMCAwEA
-AaMqMCgwGAYDVR0RBBEwD4ENYnNoYWtlQHZ0LmVkdTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3
-DQEBBAUAA4GBAGlD/3gxt2nfxU9IB/26oJ4DOd/HYPLxY+HAhvHR7IiVD7FNICMyyJVubLZd
-6NK/PZ647FgYf3O2/JZtw6lXRrsysJlBHoO5axEeesHNbBOvUxUu/FwN+7xwnLvjq+BAXjGV
-tDs/iVWzXo3BWADUOfkBFn4ubrKxfhl9GUWeN8OmMIIDPzCCAqigAwIBAgIBDTANBgkqhkiG
-9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UE
-BxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UECxMfQ2Vy
-dGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBlcnNvbmFs
-IEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0aGF3dGUu
-Y29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVowYjELMAkGA1UEBhMCWkExJTAj
-BgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
-ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
-gQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAKMNcCY1os
-iRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTXp6a7n2XR
-xSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYBAf8CAQAw
-QwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBlcnNvbmFs
-RnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQ
-cml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2asZw9/r6y+
-whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSeJVCUYsfb
-J3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHTHUb/XV9l
-TzGCArowggK2AgEBMGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0
-aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1
-aW5nIENBAgMMcJQwCQYFKw4DAhoFAKCCAacwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-BgkqhkiG9w0BCQUxDxcNMDQxMTMwMDQwMjAyWjAjBgkqhkiG9w0BCQQxFgQUipUYAJe4bL1Y
-4Pvr7mRLO+1fqWUwUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgIC
-AIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgweAYJKwYBBAGCNxAE
-MWswaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkg
-THRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECAwxw
-lDB6BgsqhkiG9w0BCRACCzFroGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBD
-b25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
-bCBJc3N1aW5nIENBAgMMcJQwDQYJKoZIhvcNAQEBBQAEgYBDMzsXZ3sNf74GyrSdY73amxCD
-NDFg3Z83Bfl1FkpnWVsw0Wf7mgEyIeWEyD1hdcnxPAPCYk23vnkAj3CdBULGrIigUWNRkXO0
-laraZFhyn43AcJix5VSO6EjMWX1Bqy6VGHPfff2BOJEjrUheoFS9iw/WQcR2uHnPfaJUdCq5
-UAAAAAAAAA==
---------------ms070602050101040001090405--
+		
+__________________________________ 
+Do you Yahoo!? 
+Read only the mail you want - Yahoo! Mail SpamGuard. 
+http://promotions.yahoo.com/new_mail 
 
