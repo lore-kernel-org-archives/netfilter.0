@@ -1,13 +1,14 @@
-From: "Sez" <sezmillenium@yahoo.es>
-Subject: RE: Iptables do nat with Protocol 47 or GRE
-Date: Fri, 14 May 2004 15:00:00 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables do nat with Protocol 47 or GRE
+Date: Fri, 14 May 2004 14:14:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BOcHK-0005So-BG@vishnu.netfilter.org>
-References: <200405141344.54206.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405141414.34877.Antony@Soft-Solutions.co.uk>
+References: <E1BOcHK-0005So-BG@vishnu.netfilter.org>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405141344.54206.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <E1BOcHK-0005So-BG@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,50 +21,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a microsoft server to l2tp/ipsec. And my firewall is a Linux. I
-understand that if i create a server in micro$oft box, i can routing the
-traffic with Linux with any problem (no recompile, multiple users, nat with
-l2tp/ipsec).
+On Friday 14 May 2004 2:00 pm, Sez wrote:
 
-Is it true?
+> I have a microsoft server to l2tp/ipsec. And my firewall is a Linux. I
+> understand that if i create a server in micro$oft box, i can routing the
+> traffic with Linux with any problem (no recompile, multiple users, nat with
+> l2tp/ipsec).
 
-Thanks!
-
- 
-
------Mensaje original-----
-De: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] En nombre de Antony Stone
-Enviado el: divendres, 14 / maig / 2004 14:45
-Para: netfilter@lists.netfilter.org
-Asunto: Re: Iptables do nat with Protocol 47 or GRE
-
-On Friday 14 May 2004 1:15 pm, Sez wrote:
-
-> And, with l2pt or ipsec, iptables work fine without path GRE???
-
-IPsec does not use GRE.   IPsec uses protocols 50 and 51 - ESP and AH.
-
-IPsec works fine over NAT in Tunnel Mode (not Transport Mode without serious
-fiddling with things).
-
-GRE is protocol 47.
-
-L2TP is a UDP-based protocol (port 1701) as far as I know.
+Can someone who knows about L2TP / IPsec step in here please?
 
 Regards,
 
 Antony.
 
---
-Your work is both good and original.  Unfortunately the parts that are good
-aren't original, and the parts that are original aren't good.
+-- 
+The lottery is a tax for people who can't do maths.
 
- - Samuel Johnson
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
