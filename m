@@ -1,10 +1,8 @@
-From: "David Busby" <busby@pnts.com>
-Subject: Re: MSN and Yahoo Block through IPTABLES
-Date: Wed, 25 Jun 2003 11:49:49 -0700
+From: "Luis Fernando Barrera" <luba@assist.com.gt>
+Subject: Iptables stops working
+Date: Wed, 25 Jun 2003 12:52:37 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004901c33b4a$963ee9b0$1100000a@busbydev>
-References: <010a01c33b03$d78da1f0$5505a8c0@asimejaz>
-Reply-To: "David Busby" <busby@pnts.com>
+Message-ID: <NABBIDJPNCAGKGOFGHBFEEODPNAA.luba@assist.com.gt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,35 +16,152 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Asim Ejaz Butt <asim.butt@streaming-networks.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Can you set policy to DROP then only allow what you need?
+Hi all,
 
-/B
+I have a strange problem with IPTables... I use
+iptables to protect the firewall itself and to allow all the
+users from the Local (private) network to the Internet.
 
+It works fine, except that after a while, the firewall (my linux box)
+stops forwarding packets from the local network to the Internet (i.e. the
+Forward chain)
+The Input and Output chains still work, after the problem.
 
------ Original Message ----- 
-From: "Asim Ejaz Butt" <asim.butt@streaming-networks.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, June 25, 2003 03:23
-Subject: MSN and Yahoo Block through IPTABLES
+My solution has been to "restart" the iptables script.
 
+I'm using Red Hat 9, but I have this problem since Red Hat 7.3
 
-> Hello Gurus,
->
-> I am trying to block MSN and Yahoo Instant Messengers with my LAN using
-> IPTABLES. Following commands are used to block them but unsuccessful.
->
->  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 --dport 1863 -j REJECT
->  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 -d 64.4.0.0/18 -j REJECT
->
->  /sbin/iptables -A FORWARD -d cs.yahoo.com -j REJECT
->  /sbin/iptables -A FORWARD -d scsa.yahoo.com -j REJECT
->
-> Anyone help in blocking them through IPTABLES.
->
-> Asim Ejaz Butt
-> asim.butt@streaming-networks.com
->
+Is there maybe a buffer or counters or something that got full?
+Maybe some kernel parameter that produces this behavior?
+
+This is part of my script. Basically every time that is called,
+clean all the chains...
+
+In advance thank you very much
+
+Luis
+
+--------------------------------------
+
+      eth0 = private lan interface
+      eth1  = public interface
+
+        echo "----------------------------------"
+        echo "Starting NetFilter..."
+        echo "----------------------------------"
+        #
+        # loads FTP connection tracking module
+        #
+        modprobe ip_conntrack
+        modprobe ip_conntrack_ftp
+        #
+        # Gets the list of current tables
+        #
+        chains=`cat /proc/net/ip_tables_names 2>/dev/null`
+        #
+        # Flushes all the current tables
+        #
+        action $"Flushing all current rules and user defined chains:"
+iptables -F
+        action $"Clearing all current rules and user defined chains:"
+iptables -X
+        for i in $chains; do iptables -t $i -F; done && \
+            success $"Flushing all current rules and user defined chains:"
+|| \
+            failure $"Flushing all current rules and user defined chains:"
+        for i in $chains; do iptables -t $i -X; done && \
+            success $"Clearing all current rules and user defined chains:"
+|| \
+            failure $"Clearing all current rules and user defined chains:
+
+        #
+        # FW Sets to "0"  the packet counters
+        #
+        for i in $chains; do iptables -t $i -Z; done
+        #
+        # FW Resets the chains to default policy DROP
+        #
+        echo -n $"Setting default policy: DROP"
+        iftable filter -P INPUT      DROP && \
+        iftable filter -P FORWARD    DROP && \
+        iftable filter -P OUTPUT     DROP && \
+        iftable nat -P PREROUTING    ACCEPT && \
+        iftable nat -P POSTROUTING   ACCEPT && \
+        iftable nat -P OUTPUT        ACCEPT && \
+        iftable mangle -P PREROUTING ACCEPT && \
+        iftable mangle -P OUTPUT     ACCEPT && \
+            success $"Setting default policy: DROP" || \
+            failure $"Setting default policy: DROP"
+
+        #
+        # Kernel Flags
+        #
+        echo "----------------------------------"
+        echo "Setting Kernel Flags..."
+        echo "----------------------------------"
+        # Disable response to broadcasts.
+        echo "Disabling response to broadcasts..."
+        echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+        # Don't accept source routed packets.
+        echo "Disabling source routed packets..."
+        echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+        # Disable ICMP redirect acceptance.
+        echo "Disabling ICMP rediret acceptance..."
+        echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
+        # Enable bad error message protection.
+        echo "Enabling bad error message protection..."
+        echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+        # Turn on reverse path filtering.
+        echo "Enabling Spoof protection ..."
+        for interface in /proc/sys/net/ipv4/conf/*/rp_filter; do
+           echo 1 > ${interface}
+        done
+        #Enable SYN Cookies
+        echo "Enabling SYN Cookies..."
+        echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+        #Enable forwarding
+        echo "Enabling Forwarding..."
+        echo 1 >/proc/sys/net/ipv4/ip_forward
+
+       #
+       # USER CHAINS
+       # traffice from LOCAL lan to Internet (INET)
+       #
+        iptables -N LOCAL_TO_INET
+        #
+        # traffice from Internet to LOCAL lan
+        #
+        iptables -N INET_TO_LOCAL
+
+        #
+        # Enables All trafic from Intranet -> Internet
+        #
+        iptables -A LOCAL_TO_INET  -p tcp -m state --state
+    -j ACCEPT
+        iptables -A INET_TO_LOCAL  -p tcp -m state --state
+ESTABLISHED,RELATED         -j ACCEPT
+
+       #################################################
+       #
+        # Traffic Intranet -> Internet
+        #
+        iptables -A FORWARD -i eth0 -o eth1 -p udp -j DROP
+        iptables -A FORWARD -i eth0 -o eth1 -j LOCAL_TO_INET
+        iptables -A FORWARD -i eth0 -o eth1  -m limit --limit
+1/minute --limit-burst 3 -j LOG --log-prefix "LOCAL_TO_INET DROP packet:"
+        #
+        # Traffic Internet -> Intranet
+        #
+        iptables -A FORWARD -i eth1 -o eth0 -p udp -j DROP
+        iptables -A FORWARD -i eth1 -o eth0 -j INET_TO_LOCAL
+         iptables -A FORWARD -i eth1 -o eth0  -m limit --limit
+1/minute --limit-burst 3 -j LOG --log-prefix "INET_TO_LOCAL DROP packet:"
+
+        #enables NAT
+        iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -d \!
+192.168.0.0/16 -j SNAT --to-source <SOME IP>
+
 
 
