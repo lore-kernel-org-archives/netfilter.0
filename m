@@ -1,13 +1,11 @@
-From: "Waldecir Loureiro dos Santos Filho" <psycoman@pop.com.br>
-Subject: See, signature how i can ?
-Date: Wed, 16 Jul 2003 11:13:24 -0300
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IIEKKHFJALFLMOPAIGGIIEFJCAAA.psycoman@pop.com.br>
-References: <661HgPNpa8640S07.1058362860@uwdvg007.cms.usa.net>
+From: xavier renaut <list.netfilter=W+vduneg5OqcvWdFBKKxig@public.gmane.org>
+Subject: printing the owner cmd and uid in iptables logs
+Date: Wed, 16 Jul 2003 11:03:44 -0400
+Sender: netfilter-admin=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Message-ID: <20030716150344.GA3305@natch.8d.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <661HgPNpa8640S07.1058362860@uwdvg007.cms.usa.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-
-You have received a message!
-I would like to get 20 packages to verify what they have in the same...is it
-possible ?
-
-I use this to study packets and get signatures and block this with string
-match patch !
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter=wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
 
 
-********Confidencialidade do Correio do Eletr=F4nico***************
-Informa=E7=F5es confidenciais podem estar contidas nesta mensagem. Se voc=
-=EA n=E3o
-se encontra na lista de destinat=E1rios ou n=E3o =E9 o remetente da mesma, =
-voc=EA
-n=E3o deve copiar ou enviar esta mensagem para ningu=E9m. Neste caso, voc=
-=EA deve
-destruir e notificar o remetente da mesma. A empresa considera opini=F5es,
-conclus=F5es e outras informa=E7=F5es que n=E3o se relacionam com o neg=F3c=
-io oficial
-da corpora=E7=E3o de responsabilidade do usu=E1rio do servi=E7o.
+Hi, 
+
+i'd like to print the owner cmd and uid in my logs,
+so that i'll be able to track more easily  software
+on my box....
+
+is there a way to do it with stock iptables ?
+
+(-j LOG prints a lot of things, but not the owner cmd/uid)
+
+do i need a better logging alternative (ulog ?) ?
 
 
+thanks
+
+
+-- 
+xavier renaut, 514 906 1212 x226  
 
