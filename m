@@ -1,14 +1,13 @@
-From: seberino@spawar.navy.mil
-Subject: Re: valid INPUT/OUTPUT rule piece?--> '-p tcp --tcp-flags ACK,
-	FIN FIN -j DROP', etc.
-Date: Tue, 25 Jan 2005 21:26:58 -0800
-Message-ID: <20050126052658.GA17112@spawar.navy.mil>
-References: <20050126001855.GC15359@spawar.navy.mil>
-	<41F6E665.6010000@lopsch.com>
+From: Greg Cope <gregcope@gmail.com>
+Subject: Re: Help debugging iptables firewall....
+Date: Wed, 26 Jan 2005 07:19:26 +0000
+Message-ID: <c0e9781f0501252319f7b6f27@mail.gmail.com>
+References: <27594E8BA9D5CA458F5EF87D88B6B48F019924@pxtvjoexd01.pxt.primeexalia.com>
+Reply-To: Greg Cope <gregcope@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41F6E665.6010000@lopsch.com>
+In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F019924@pxtvjoexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,69 +19,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Lopsch <lopsch@lopsch.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Lopsch
+Hiya,
 
-Thanks for your email.  I know a little about TCP flags.
-IIRC, ACK means 'Acknowlegement'
-and FIN means 'Finish Connection'.
+[07:09:48 root@gateway root]$ cat /proc/sys/net/ipv4/ip_forward
+1
 
-Why would TCP want everyone to turn on ACK when they
-want to finish a connection with FIN?
+It would seem that the one rule that is causing the issue is this one:
 
-I assume that TCP was written to do 2 errands in one
-TCP datagram?...1. acknowledge last datagram received
-                2. terminate connection
+Works:
 
-It seems odd you can't terminate a connection (FIN)
-without also acknowledging something to me.
+$IPTABLES -t nat -A POSTROUTING -s $LAN_IP_RANGE -j MASQUERADEb
 
-Chris
+Does not:
 
-On Wed, Jan 26, 2005 at 01:37:57AM +0100, Lopsch wrote:
-> seberino@spawar.navy.mil schrieb:
-> >Please explain these:
+$IPTABLES -t nat -A POSTROUTING -s $LAN_IP_RANGE -d ! $LAN_IP_RANGE -j
+MASQUERADE
+
+The lan is on 192.168.0.0/24.
+DMZ is on 192.168.254.0/24
+
+Ie the -d ! $LAN_IP_RANGE
+
+LAN_IP_RANGE="192.168.0.0/16"
+
+So should the DMZ be natted to the LAN?  I would assume yes.
+
+Are there any good guides to 3 inteface'ed firewalls - ie lan, dmz, red?
+
+Greg
+
+On Tue, 25 Jan 2005 14:11:30 -0800, Gary W. Smith <gary@primeexalia.com> wrote:
+> Greg,
+> 
+> This might be real dump but do you have IP forwarding enabled?  If you
+> do then NAT's isn't necessary between the LANs.
+> 
+> Gary
+> 
+> > -----Original Message-----
+> > From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> > bounces@lists.netfilter.org] On Behalf Of Greg Cope
+> > Sent: Tuesday, January 25, 2005 2:07 PM
+> > To: netfilter@lists.netfilter.org
+> > Subject: Re: Help debugging iptables firewall....
+> > 
+> 
+> > Bingo.
 > >
-> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,FIN FIN   -j DROP
-> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,PSH PSH   -j DROP
-> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,URG URG   -j DROP
-> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ALL     NONE  -j DROP
+> > Seemed to have solved it.  I noticed that without the firewall running
+> > the following rule was in the stop section:
 > >
-> >Do first 3 imply you must send ACK when you send a FIN, PSH or URG?
+> > iptables -t nat -A POSTROUTING -s 192.168.0.0/24  -j MASQUERADE
 > >
-> >And does last mean you must set *some* TCP flag always?
+> > Looking at the tcp dumps when it "worked" without the firewall the db
+> > server thought it was talking to the firewall.
 > >
-> >CS
+> > When the firewall was on the db server was failing to talk to the
+> > webserver, and the conection packet got through, but there never
+> > seemed to be an ack packet backout.
 > >
+> > I am a bit confused, but it seems to work now - which is good until
+> > tomorrow morning.
 > >
-> Exactly. The first 3 rules are used for dropping packets which have set
-> FIN, PSH and URG but without a set ACK-flag. The last one prevents empty
-> packets (none flag set) to enter your network.
-> As often such packets are used by portscans it is useful to drop them.
-> Jason posted a link some time ago with a list of rules to perform tcp
-> checks http://www.stearns.org/modwall/sample/tcpchk-sample
+> > Thanks for your help.
+> >
+> > Not sure what the right way to do it is.  I suppose the LAN should be
+> > masqueraded to the DMZ hosts, as the DMZ hosts should not have
+> > detailed knowledge of the LAN side.
+> >
+> > Greg
 >
-> --
->
-> PGP-ID 0xF8EAF138
-
-
-
---
-_______________________________________
-
-Christian Seberino, Ph.D.
-SPAWAR Systems Center San Diego
-Code 2872
-49258 Mills Street, Room 158
-San Diego, CA 92152-5385
-U.S.A.
-
-Phone: (619) 553-9973
-Fax  : (619) 553-6521
-Email: seberino@spawar.navy.mil
-_______________________________________
 
