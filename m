@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Turning on IP Forwarding
-Date: Mon, 24 Mar 2003 15:08:16 +0100
+From: "GBV" <guilherme@plannercorretora.com.br>
+Subject: (no subject)
+Date: Mon, 24 Mar 2003 11:22:41 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019C90@hslex01.hslbz.local>
-References: <20030324130221.39616.qmail@web40201.mail.yahoo.com>
+Message-ID: <004901c2f210$d4a978b0$6800817d@guilherme>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030324130221.39616.qmail@web40201.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: *netfilter <netfilter@lists.netfilter.org>
 
-> Can anyone tell me which file I need to modify to turn
-> on IP Forwarding? I know where to do it while the
-> system is on; however, since it's a multi-homed system
-> and my router, I would like to have it setup
-> correctly...
+I have an internal server 192.168.0.69, running ISS and an IRC server.
 
-Do you mean like, on a RedHat machine : 
-/etc/sysctl.conf ->
-net.ipv4.ip_forward = 1
+How can I using iptables, make this host avaiable in internet, preserving
+the IRC daemon?
 
-Or :
-echo 1 > /proc/sys/net/ipv4/ip_forward
-Which you can put in /etc/rc.d/rc.local or whatever startup file.
+my external interface is eth0
+and internal is eth1
 
+iss is using port 80
+irc is using 6669, 7000
 
-Rob
+thks
 
 
