@@ -1,15 +1,14 @@
-From: Thomas Scheffczyk <thomas.scheffczyk@verwaltung.uni-mainz.de>
-Subject: Re: DNAT NOT WORKING
-Date: Thu, 25 Dec 2003 19:31:10 +0100
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: How iptables know when an UDP connection is closed ?
+Date: Thu, 25 Dec 2003 11:27:43 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FEB2CEE.601@verwaltung.uni-mainz.de>
-References: <20031224102405.67307.qmail@web10105.mail.yahoo.com>
+Message-ID: <200312251927.hBPJRiTS000145@server5.bandwidthco.com>
+References: <1072365326.3873.6.camel@gamux>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig075359B4C9C9FDF6B723C55B"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031224102405.67307.qmail@web10105.mail.yahoo.com>
+In-Reply-To: <1072365326.3873.6.camel@gamux>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +18,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: madhav bhasin <madhavbhasin@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Eddahbi Karim' <installation_fault_association@yahoo.fr>, netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig075359B4C9C9FDF6B723C55B
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Correct.  The UDP state machine is based on "timers". 
 
-madhav bhasin wrote:
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Eddahbi Karim
+Sent: Thursday, December 25, 2003 7:15 AM
+To: netfilter@lists.netfilter.org
+Subject: How iptables know when an UDP connection is closed ?
 
- > $IT -t nat -A PREROUTING -p TCP -i $INET_IFACE -d
- > &INET_DNS  --dport 53 -j DNAT --to-destinaion $DMZ_DNS
- > $IT -t nat -A PREROUTING -p UDP -i $INET_IFACE -d
- > &INET_DNS  --dport 53 -j DNAT --to-destinaion $DMZ_DNS
+Hi,
 
-IMHO it should be '--to-destination' instead of '--to-destinaion'.
+The question is in the topic, how iptables knows that a UDP connection is
+CLOSED ?
+Does the connection close only when there's a Timeout ?
+
+--
+--
+Eddahbi Karim
+
+Phone :
+(33) (0)6 61 30 57 77
+
+France
 
 
-F&G
 
-Thomas
-
---------------enig075359B4C9C9FDF6B723C55B
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (MingW32)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD4DBQE/6yz4ICWLj6LjFjIRAja8AJiWEY4F45HTWZX3UmC+x43B5eqAAJ0akKH/
-4jM7z/eS4uxF0mBDEata+g==
-=U/Pi
------END PGP SIGNATURE-----
-
---------------enig075359B4C9C9FDF6B723C55B--
 
