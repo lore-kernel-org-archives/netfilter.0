@@ -1,13 +1,13 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: Iptables && Eroor : too long (must be under 30 chars)
-Date: 26 Mar 2003 18:46:29 +0100
+From: viclists@mail.esoo.ru>
+Subject: static/shard libs from iptables.o
+Date: Wed, 26 Mar 2003 22:43:07 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048700789.14721.124.camel@tux.rsn.bth.se>
-References: <200303261754.13392.matteo.king@libero.it>
+Message-ID: <200303262243.07297.viclists@mail.esoo.ru>
+Reply-To: viclists@mail.esoo.ru
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200303261754.13392.matteo.king@libero.it>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Matteo <matteo.king@libero.it>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wed, 2003-03-26 at 17:54, Matteo wrote:
-> Hi all , i have write a script for iptables with my rules but when I launch 
-> this script i have this error :
-> too long (must be under 30 chars)......
-> 
-> How can I resolve this??
+Is it possible create a static or shared libs(i.e libiptables.so or 
+libiptables.la) from iptables.o, which have been created after compilation of 
+iptables-1.2.7a.
 
-You can start the script with this in order to see which command it was
-that printed the error:
+If it possible,please, explain me how  can I do it.
 
-#!/bin/bash -x
+You can ask me - Why?
+Because I want to use it from my application by traditional way(as a general 
+libs).
 
-It sounds like you try to create a chain with a very long name.
+P.S. Sorry for my English. I just study it yet. :(
 
--- 
-/Martin
+Victor V Ismakaev
 
