@@ -1,9 +1,9 @@
-From: Moritz Gartenmeister <moritz@uplink-verein.ch>
-Subject: CONNMARK.so
-Date: Tue, 23 Nov 2004 22:22:25 +0100
-Message-ID: <41A3AA11.5080500@uplink-verein.ch>
+From: Brad Tilley <rtilley@vt.edu>
+Subject: Logging the whole packet
+Date: Tue, 23 Nov 2004 16:50:28 -0500
+Message-ID: <41A3B0A4.9020906@vt.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,31 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-hi all
+Is it possible to log the packet body and not just the header?
 
-how can i compile connmark.so? i allready installed iptables with l7-patch =
-and patch-o-matic. i=20
-forgot to include connmark at the beginning. how can i do this afterwards? =
-i just need the=20
-appropriate gcc -flags -ld and so on...
+Currently I have this line in my iptables start-up file:
 
-i'm now using a lot of -j MARK --set-mark, but i don't use connmark-save an=
-d connmark-restore. but i=20
-would like to ;-) or does --set-mark set a mark on the connection? imo, it =
-makes a mark on the paket=20
-and with connmark-save/restore it is possible to keep a mark on the connect=
-ion.
+/sbin/iptables -I INPUT -p tcp -s ! 128.173.120.79 -d 128.173.120.79  -j 
+LOG --log-prefix="Packet_Filter:"
 
-regards
-moritz
+And it generates log entries such as this:
 
---=20
-Uplink student association
-Moritz Gartenmeister
-B=FClachstrasse 1 F
-8057 Z=FCrich
-Switzerland
+Nov 23 16:44:28 athop1 kernel: Packet_Filter:IN=eth0 OUT= 
+MAC=00:30:6e:5e:a2:0c:00:d0:01:ab:44:00:08:00 SRC=64.81.214.131 
+DST=128.173.120.79 LEN=48 TOS=0x00 PREC=0x00 TTL=110 ID=29621 DF 
+PROTO=TCP SPT=60366 DPT=445 WINDOW=16384 RES=0x00 SYN URGP=0
+
+I'd like to capture the packet body as well. I'm new to packet logging 
+so forgive me if I'm over looking the obvious.
+
+Thanks,
+Brad
 
