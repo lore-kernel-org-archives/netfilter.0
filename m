@@ -1,13 +1,11 @@
-From: Ross Vandegrift <ross@willow.seitz.com>
-Subject: Re: Clear Iptables chains?
-Date: Mon, 8 Jul 2002 12:43:36 -0400
+From: "riffraff" <riffraff@mail.ev1.net>
+Subject: Re: trying to get one blessed thing to work
+Date: Mon,  8 Jul 2002 11:48:28 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708164335.GA25334@willow.seitz.com>
-References: <839BF5387528D311AD5D00902751CFC301B0419A@HAVASSMX> <20020708144658.GR32764@tik.ee.ethz.ch> <200207081456.g68EuF807141@vulcan.rissington.net> <200207081522.g68FMr807248@vulcan.rissington.net>
+Message-ID: <200207081148.AA469041392@mail.ev1.net>
+Reply-To: <riffraff@mail.ev1.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <200207081522.g68FMr807248@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,34 +17,34 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+To: Netfilter Mailing List <netfilter@lists.samba.org>
 
-On Mon, Jul 08, 2002 at 04:22:47PM +0100, Antony Stone wrote:
-> On Monday 08 July 2002 3:56 pm, Antony Stone wrote:
-> 
-> > On Monday 08 July 2002 3:46 pm, Lukas Ruf wrote:
-> > > iptables -P INPUT ACCEPT
-> > > iptables -P OUTPUT ACCEPT
-> > > iptables -P FORWARD ACCEPT
-> 
-> I'd prefer to see:
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -P FORWARD DROP
-> 
-> Then you add in the rules for the stuff your definitely know you want to 
-> allow.
+---------- Original Message ----------------------------------
+From: Mark Tessier <mt@open2web.com>
+Date: Mon, 8 Jul 2002 12:32:23 -0400
 
-Be careful with doing this though, if you're managing a remote box.
-It's *very* easy to cut yourself off the box when setting policy like
-this.
+>The first thing I did was to set the policy to drop for the forward chain as in:
+>
+>iptables --policy FORWARD DROP
+>
+>Next, I tried to open one door on the forward chain, allowing icmp packets of the echo request type to ping any other machine as in:
+>
+>iptables -A FORWARD -o eth0 -p icmp --icmp-type echo-request -s 192.168.0.0/24 -m state --state NEW -j ACCEPT
+>
+>The result is, it doesn't work.
+>
+No, it won't  You aren't letting the return packet of echo-reply back through.  I would do it with this:
 
-I keep a script around that flushes all rules and sets default policy to
-ACCEPT, and then make -P DROP the first three commands in the script to
-configure iptables.  This prevents me from neutering my access when I'm
-hacking around with the firewall rules.
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Ross Vandegrift
-ross@willow.seitz.com
+You could add the interface and protocol if you'd like.
+
+ 
+>Thanks,
+>
+>Mark
+>
+>
+lance
+
 
