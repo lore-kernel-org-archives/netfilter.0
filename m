@@ -1,11 +1,13 @@
-From: "markooff" <markooff@interia.pl>
-Subject: A bug with using match limit
-Date: Tue, 17 Dec 2002 03:51:27 +0100
+From: "freedom" <freedom10@idemation.com>
+Subject: RE: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination Unreachable)
+Date: Mon, 16 Dec 2002 21:53:45 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006101c2a577$32996480$0400a8c0@1>
+Message-ID: <000a01c2a57f$e7a44f90$0501020a@compname3>
+References: <1040044701.29233.1.camel@nxitmirms1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1040044701.29233.1.camel@nxitmirms1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +18,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: 'Marcello Scacchetti' <marcello.scacchetti@nextrem.it>, netfilter@lists.netfilter.org
 
-Hello!
+Marcello,
 
-Perhaps it's not a really new topic on this board, but i've found this
-problem recently
-I share my DSL connection with 4 other people and
-i was just trying to limit one of them (who used to download lots of films,
-mp3s )
-and when i tried to use inverted match limit just like
+Sure...
 
-     iptables -I FORWARD -p tcp -d 192.168.0.3 -m ! limit --limit 5/s -j
-DROP
+Is it possible to use IPTables version 1.2.7a with Redhat 7.3?  RH 7.3
+comes with a different version by default and I wanted to upgrade to
+1.2.7a.  Is it possible?
 
-i received an error message :
+Also, do you know if any RPMs exist for IPTables version 1.2.7a and RH
+7.3?
 
-iptables v1.2.6a: Couldn't load match `!':/usr/lib/iptables/libipt_!.so:
-cannot open shared object file: No such file or directory
+Thanks!
+Kameron
 
-Try `iptables -h' or 'iptables --help' for more information.
-
-This looks like iptables treats an "!" after "-m" like an sparate match ,
-not connected with limit expression
-But in the Iptables Tutorial 1.1.15 by Oskar Andreasson  there is written :
-"The limit match may also be inverted by adding a ! flag in front of the
-limit match. It would then be expressed as -m ! limit. This means that all
-packets will be matched after they have broken the limit."
-
-I don't know, perhaps i've did somethig wrong (what it could be ??? ), but i
-tried every possible combination of
-m, limit and  ! expressions, without any results.
-
-Ofcourse i'd managed to solve my problem by
-root@horus:/etc# iptables -I FORWARD -p tcp -d 192.168.0.3 -j DROP
-root@horus:/etc# iptables -I FORWARD -p tcp -d 192.168.0.3 -m limit --limit
-5/s -j allowed
-
-but it's not a proper solvation :))
-
-Thanks a LOT
-
-Pawel Markowski
-markooff@interia.pl
-markooff@uj.edu.pl
-Linux Registered User
-         #289621
-
-
-
-----------------------------------------------------------------------
-WIADOMOSCI minuta po minucie... >>> http://link.interia.pl/f16a8 
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org [mailto:netfilter-
+> admin@lists.netfilter.org] On Behalf Of Marcello Scacchetti
+> Sent: Monday, December 16, 2002 7:18 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: ICMP Destination Unreachable
+> 
+> Hi Kameron,
+> can you be a little more verbose?
+> What does "run" means? Unable to set rules? Unable to run iptables
+> command? Unable to make rules work?
+> 
+> Marcello
+> 
+> Il ven, 2002-12-06 alle 16:09, Kameron ha scritto:
+> > Hello Gurus,
+> >
+> > I have a couple of quick questions...
+> >
+> > 1) Does anybody know of any reason why I couldn't run IPTables
+1.2.7a
+> > with RH7.3.
+> >
+> > 2) Are there any .rpm's for IPTables 1.2.7.a available?  I attempted
+to
+> > compile my own, but didn't have any luck.
+> >
+> > Thanks!
+> > Kameron
+> --
+> Marcello Scacchetti <marcello.scacchetti@nextrem.it>
+> 
 
 
 
