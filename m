@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bad Argument error
-Date: Mon, 8 Jul 2002 21:38:24 +0100
+From: "Big Daddy" <bigdaddy@monster-solutions.net>
+Subject: Re: HTTP Port forwarding issues
+Date: Mon, 8 Jul 2002 16:39:16 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708203826.DOJQ4119.mta06-svc.ntlworld.com@there>
-References: <956DDDA708487D498B43C36EA4DEA4050B5C4D@SFEXCH01>
+Message-ID: <001501c226bf$875467e0$6702a8c0@internal.monstersolutions.net>
+References: <FLEKIPPLAEDMJMOOBBDPGEOBCHAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <956DDDA708487D498B43C36EA4DEA4050B5C4D@SFEXCH01>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,46 +17,66 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: stewart.thompson@shaw.ca, Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-On Monday 08 July 2002 9:29 pm, Mike G. Hammonds wrote:
+all,
+    I guess my ISP is blocking port 80. I configured the web server to use
+port 8080 and configured my rules the same as before but used port 8080 and
+it worked. thanks for all of the help!
 
-> Thanks
-> I'm also getting this error
-> Bad Argument 'LOOPBACK="lo"
+----- Original Message -----
+From: "Stewart Thompson" <stewart.thompson@shaw.ca>
+To: "Big Daddy" <bigdaddy@monster-solutions.net>; "Antony Stone"
+<Antony@Soft-Solutions.co.uk>; <netfilter@lists.samba.org>
+Sent: Monday, July 08, 2002 4:11 PM
+Subject: RE: HTTP Port forwarding issues
 
-If the script you are running is reasonably short, post it here and we'll try 
-and tell you why this error occurs.
 
-However, you should be able to find the problem for yourself by doing a grep 
-on the script for LOOPBACK and spot the line with the mistake ?
-
-Antony.
-
+> Perhaps you should publish your entire rule set. Trying to help you with
+> piecemeal rules is pretty tough.
+> The order of the rules is important. Logging is also useful as recommended
+> in an earlier post. What does
+> a TCPDUMP show for port 80 on the External and Internal Interfaces. Also,
+> what are you using to test
+> your port 80? Internal machines will act very different than machines
+coming
+> in from the Internet.
+>
+> Stu........
+>
+>
 > -----Original Message-----
-> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-> Sent: Monday, July 08, 2002 4:18 PM
-> To: netfilter
-> Subject: Re: Bad Argument error
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Big Daddy
+> Sent: July 8, 2002 1:04 PM
+> To: Antony Stone; netfilter@lists.samba.org
+> Subject: Re: HTTP Port forwarding issues
 >
-> On Monday 08 July 2002 9:00 pm, Mike G. Hammonds wrote:
-> > I'm running RH7.2 with iptables1.2.4-2
-> > every time I start iptables I get the following error
-> > Bad Argument 'LOG_LEVEL="notice" [FAILED]
+> i have the following rule as well.
+>
+> iptables -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+> ----- Original Message -----
+> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> To: <netfilter@lists.samba.org>
+> Sent: Monday, July 08, 2002 3:57 PM
+> Subject: Re: HTTP Port forwarding issues
+>
+>
+> > On Monday 08 July 2002 8:51 pm, Big Daddy wrote:
 > >
-> > any ideas on how to fix this?
->
-> Use a numeric argument to --log-level instead
->
-> "notice"=5
->
-> So you would use
->
-> iptables -A FORWARD -s 192.168.1.0/24 -j LOG --log-level=5
->
-> or whatever....
->
+> > > It worked when I was using a Linksys router. However maybe they have
+> > > changed it since then. Do my rules look fine?
+> >
+> > Well, I hope these are not your *only* rules ?   I mean, like Stewart
+> > suggested, what about the ESTABLISHED packets as well as the NEW ones ?
+> >
+> >
+> >
+> > Antony.
+> >
 >
 >
-> Antony.
+>
+
 
