@@ -1,9 +1,8 @@
-From: nedco@unacs.bg
-Subject: TOS problem
-Date: Wed, 5 Mar 2003 14:56:17 +0200
+From: Ulrich Weber <uw@imos.net>
+Subject: ICMP TTL=255
+Date: Wed, 05 Mar 2003 14:32:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3e65f3f1.49d8.0@unacs.bg>
-Reply-To: nedco@unacs.bg
+Message-ID: <3E65FC55.9050400@imos.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,38 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
+I don't think that it's iptables fault, but I don't know where to ask else.
+ICMP Ping ignores the TTL value of net/ipv4/ip_default_ttl and use 255.
 
+All other traffic use the net/ipv4/ip_default_ttl value.
 
-Hi,  
- 
-i like to set on myrouter TOS 0x0( Normal-Service ) to some packets 
-but found that on some of packets can't set TOS 
-in example  
- 
-then i ping 62.73.77.8 i get pakets with tos 0x10 and can't set to 0x0  
- 
-table mangle 
-Chain FORWARD (policy ACCEPT 1242M packets, 469G bytes) 
- pkts bytes target     prot opt in     out     source               destination
+Greets
+  Ulrich
 
- 4589 1075K TOS        all  --  *      *       0.0.0.0/0            62.73.77.8
-        TOS set 
-0x00 
- 4489  919K TOS        all  --  *      *       62.73.77.8           0.0.0.0/0
-         TOS set 
-0x00 
- 
-on tcpdump get  
-02:36:44.898854 62.176.107.193 > 62.73.77.8: icmp: echo request 
-02:36:44.956965 62.73.77.8 > 62.176.107.193: icmp: echo reply [tos 0x10] 
- 
-Am I doing something wrong? 
- 
-mandrake Linux version 2.4.19-16mdksmp, iptables v1.2.6a 
-10x in advance 
-Nedko 
 
