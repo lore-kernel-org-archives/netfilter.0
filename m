@@ -1,14 +1,14 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: NAT question (forwarding with subdomains)
-Date: Thu, 13 May 2004 16:06:02 -0400
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: pop3 and dns
+Date: Thu, 13 May 2004 16:49:50 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405131606.02858.Alistair@nerdnet.ca>
-References: <20040513172702.17791.51996.Mailman@vishnu.netfilter.org> <55621.200.107.22.222.1084470741.squirrel@www.easyteck.com> <1084472223.28188.33.camel@localhost>
+Message-ID: <200405132349.i4DNntou022561@server5.bandwidthco.com>
+References: <W123333069650381084412429@webmail2>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084472223.28188.33.camel@localhost>
-Content-Disposition: inline
+In-Reply-To: <W123333069650381084412429@webmail2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,86 +18,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+To: cldavis@speakeasy.net, netfilter@lists.netfilter.org
+
+=20
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
+cldavis@speakeasy.net
+Sent: Wednesday, May 12, 2004 6:40 PM
 To: netfilter@lists.netfilter.org
-
-On May 13, 2004 02:17 pm, John A. Sullivan III wrote:
-> On Thu, 2004-05-13 at 13:52, Paul F. Bernal B. - EasyTeck wrote:
-> > Hi!,
-> >
-> > I got an internal 192.168.0.0/24 LAN with about 5 web servers including
-> > the one which has iptables running and internet output ...
-> >
-> > in the firewall script:
-> > * INTERNALIF="eth1"
-> > * INTERNALNET="192.168.0.0/24"
-> > * INTERNALBCAST="192.168.0.255"
-> > * EXTERNALIF="eth0"
-> > * MYADDR="200.107.XXX.XXX"
-> >
-> > got a rule that works fine that forwards the mail packets to the
-> > 192.168.0.2 machine:
-> > $IPTABLES -A PREROUTING -t nat -i $EXTERNALIF -p tcp -d $MYADDR --dport
-> > 25 \ -j DNAT --to 192.168.0.2:25
-> > $IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.0.2 --dport 25 -j
-> > ACCEPT
-> >
-> > I have a couple subdomains pointing to MYADDR sub1.mydomain.com,
-> > sub2.mydomain.com, etc...
-> >
-> > What I need to do is:
-> >
-> > When someone in the Internet asks for http://sub1.mydomain.com/ respons
-> > the 192.168.0.3 machine (wich has a web server running port 80)
-> >
-> > When someone in the Internet asks for http://sub2.mydomain.com/ responds
-> > the 192.168.0.4 machine (wich has a web server running port 80)
-> >
-> > etc., etc., etc...
-> >
-> > I've tried something like this, but doesn't works !!!
-> >
-> > $IPTABLES -A PREROUTING -t nat -i $EXTERNALIF -p tcp -d sub1.mydomain.com
-> > --dport 80 \
-> >                       -j DNAT --to 192.168.0.3:80
-> > $IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.0.3 --dport 80 -j
-> > ACCEPT
-> >
-> > Pliz give me a hand on this, thanks in advance ...
-> >
-> > ----------
-> > don pool
->
-> If I understand you correctly, sub1.mydomain.com and sub2.mydomain.com
-> both point to the same public address even though you want them to map
-> to different internal servers.  Publicly, they are only distinguished by
-> url and not IP.  Is that correct?
->
-> If so, iptables will resolve the names to IP addresses when it loads.
->
-> >From then on, it will use the IP address to identify the destination and
->
-> not the url.  If you want to NAT on the url, you will need some
-> functionality to read the url from the data portion of the packet and
-> not the IP portion.  I do not know if there is a iptables patch
-> available to do that or how such a patch would be used.  Does anyone
-> else know?
+Subject: Re: pop3 and dns
 
 
-	Antony is right in this case, especially since there *might* already be a 
-webserver running on the firewall ... apache can forward the url requests to 
-the appropriate physical hardware ... not something that one wants to do with 
-string match since packet fragments will cause *huge* problems (a la POST 
-method) 
+> -----Original Message-----
+> From: Dick St.Peters [mailto:stpeters@NetHeaven.com]
+> Sent: Wednesday, May 12, 2004 09:21 PM
+> To: 'Cedric Blancher'
+> Cc: 'Netfilter Mailing List'
+> Subject: Re: pop3 and dns
+>=20
+> Cedric Blancher writes:
+> > Le mer 12/05/2004 =E0 21:14, Dana Bourgeois a =E9crit :
+> > > >>tcp for zone transfers
+> > > > and large answers ...
+> > > ...where a 'large answer' is usually taken to be a UDP packet of=20
+> > > more than 512 bytes.
+> >=20
+> > I don't quite understand the meaning of this answer... So, I =
+clarify.
+> >=20
+> > When a DNS server has to reply on UDP with more than 512 bytes of=20
+> > data, it sends back an answer with TC bit (truncated) set to let=20
+> > client know answer is not complete and have him send it again using =
+TCP.
+>=20
+> To add my own bit of clarification, it's not large answers that need=20
+> TCP open, it's requests that have large answers.  If the client gets a =
 
-	This will require *some* sort of proxy -- apache can do this itself, or there 
-are a couple of other products that can do this ... but I'd recommend apache 
-cache/forward/acceleration methods ...
+> UDP answer with the TC bit set, it should send the query again using a =
 
-	Please note  -- I haven't done this recently, but last I tried it didn't 
-require forward rules, it required rules in INPUT and OUTPUT since apache 
-(local) is actually issuing the request to apache (internal) -- they aren't 
-reallly being forwarded by iptables.
+> TCP connection ... and the server must listen for such connections ... =
 
-	Alistair.
+> and its firewall must let them through.
+<snip>
+
+In following this post...
+
+I currently only allow port 53/udp through my wall for dns. I haven't
+noticed many=20
+
+In the even that someone is able to comprimise a dns server, what would =
+be
+the best way to restrict tcp zone transfers at the firewall? Rate =
+limiting
+comes to my mind, any suggestions on the actual limits?
+
+Other suggestions?
+
+Thanks!
+Christopher Davis
+
+Christopher - You should never rely on your firewall to restrict zone
+transfers. You should create an ACL in your named.conf file for hosts
+permitted to request zone transfers, and then apply this against the
+allow-transfers parameter.  Example below:
+
+# Allow zone transfers from these name servers
+acl "xfers" {
+	192.168.1.1;
+	192.168.2.1;
+	localhost;
+};
+
+##########################
+# ZONE TRANSFER
+##########################
+# Only allow hosts in the "xfers" acl do zone transfers
+allow-transfer { xfers; };
+
+
 
