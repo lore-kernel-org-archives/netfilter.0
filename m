@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: round-robin aliases
-Date: Fri, 17 Sep 2004 14:20:45 -0400
+From: "Red Hat" <lilo123456@hotmail.com>
+Subject: What to do to protet our send from the attacks which is caused by
+	worms?
+Date: Fri, 17 Sep 2004 19:10:50 +0000
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095445245.1886.48.camel@wolfpack.ljm.dom>
-References: <20040917175729.GF2579@dearing.us>
+Message-ID: <BAY12-F11jlA733LJa500009c09@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040917175729.GF2579@dearing.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +15,33 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-09-17 at 13:57, Ryan D wrote:
-> Ive been trying to find a way to do this... I have eth0 on the
-> 192.168.2.0/24 network (eth0 has ip 192.168.2.10). I also have 5 aliases
-> on the same network with these ips:
-> 
-> eth0:1 192.168.2.11
-> eth0:2 192.168.2.12
-> eth0:3 192.168.2.13
-> eth0:4 192.168.2.14
-> 
-> 
-> Id like to round-robin the source ip on a per connection basis, meaning,
-> if I ssh to 192.168.2.100 it may come from eth0:1, if I then ssh to
-> 192.168.2.110 it will come from eth0:2, etc.  So the destination ssh
-> machines will see different source IPs.
-> 
-> Is this possible with netfilter/iproute2?  The only potential problem I
-> see is with the arp table, but I also dont understand this stuff as well
-> as I would like.
-> 
-> -Ryan
+Hi,
 
-this is the default behavior of the SNAT code:
+What to do to protet our send from the attacks which is caused by worms in
+Microsoft XP OS of our users? Our user may have worms in their system & it
+causes that our send go up & up that our send is going upper than which we
+have to use. for example if we can send 64Kb/s their worm cause our send go
+upper than this. These worms would cause our network work too bad. I mean
+the other user which doesn't have worm, can't work properly.
+Hope you understand our problem. Now I want to use a software or command in
+my Linux server which contain squid to protect our send not to go up because
+  of the worm of our users.
+I think we can protect it by iptables but I don't know how should I do this?
+So wanted to intall smoothwall to help me. Now I understand that it can't
+help me.
+what's you opinion & how should I do that?
 
-  iptables -t nat -A POSTROUTING -o eth0 \
-    -j SNAT --to-source 192.168.2.11-192.168.2.14
+Thanks in advance.
 
-layer 2 devices don't have problems with many IP's being associated with
-the same MAC address--they don't particularly like the same MAC address
-being associated with multiple ports.
+Best Regards,
+Mehdi
 
--j
-
--- 
-Jason Opperisano <opie@817west.com>
+_________________________________________________________________
+Tired of spam? Get advanced junk mail protection with MSN 8. 
+http://join.msn.com/?page=features/junkmail
 
 
