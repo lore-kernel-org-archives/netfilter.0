@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Use mode Netfiler
-Date: Thu, 19 Feb 2004 11:38:57 +0000
+From: "T. Take" <t_takejp@hotmail.com>
+Subject: ULOG:  invalid argument
+Date: Thu, 19 Feb 2004 20:46:12 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402191138.58241.Antony@Soft-Solutions.co.uk>
-References: <D269C7CBDF116A48982D4DC51F111BE324D493@nsezhpmail01.india.ipolicynet.com>
+Message-ID: <LAW12-F18Uhyx9w8OjU000276ef@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D269C7CBDF116A48982D4DC51F111BE324D493@nsezhpmail01.india.ipolicynet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 19 February 2004 11:10 am, Sood, Ashish wrote:
+I cannot use "ULOG".
 
-> Hi,
->
-> I want to extend the netfilter to user mode.
+#iptables -A INPUT -i $OUTER_PORT -s $INNER_IP -j ULOG --ulog-nlgroup 32 
+--ulog-prefix "spoofed packet "
+#iptables: Invalid argument
 
-Why?   Surely a usermode version would be (a) less efficient, with all the 
-context switching involved, and (b) less secure, because the code is out in 
-userland instead of protected inside kernelspace?
+Although I updated iptables to version 1.2.9 and installed ulogd by apt-get 
+install (Debian),  I have not used ULOG yet. And there is ipt_ULOG.o in 
+"/lib/modules/2.4.24/kernel/net/ipv4/netfilter".
 
-Efficiency and security seem both desirable qualities for a firewall.
+Did you have the same problem about ULOG?
+I hope your advises.
 
-Regards,
-
-Antony.
-
--- 
-In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-the mechanics are German, the lovers are French, the entertainment is 
-American, and everything is organised by the Swiss.
-
-In Hell, the police are German, the chefs are British, the beer is American, 
-the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-and everything is organised by the Italians.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+_________________________________________________________________
+友達と24時間ホットライン「MSN メッセンジャー」、今すぐダウンロード！  
+http://messenger.msn.co.jp 
 
 
