@@ -1,10 +1,10 @@
-From: alexb@atix.com.br
-Subject: ROUTING thru two LINKs problem
-Date: Tue, 11 Mar 2003 20:47:30 -0300 (BRT)
+From: "Paul Yip" <paulyip@hkbu.edu.hk>
+Subject: Port Forward UDP 1911
+Date: Wed, 12 Mar 2003 10:05:57 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1047426450.3e6e759219a53@www.spsul.com.br>
+Message-ID: <3E6E9605.000005.01024@paulyip>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,58 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a router conected to two diferent ISPs with diferent costs and got from
-ISP1 a Class C ip range but only one IP from ISP2. I need to direct trafic from
-a sub-range of real ISP1s IPs thru ISP2.
-I redirected trafic behind my GW with NAT and ip rule add from SUB-ISP1 table
-ISP2, but external trafic coming from ISP1 thru SUB-ISP1 ips got also out thru
-ISP2 that drops the packets probably while source-ip(realy from SUB-ISP1) aren't
-expected (some rp_filter).
-I tryed in many ways to define a rule to route the replys of incoming conections
-over ISP1 thru SUB-ISP1 back to ISP1 with no success.
-Unfortunatle ESTABLISHED also gets packets from outgoing trafick expected to be
-NATed over ISP2.
-I couldn't find a way to distinguish replys of conections coming in from ISP1
-from related packets of outgoing trafic
-
-
-    ISP1                           ISP2
-      |                              |
-      |  200.ISP.2.0/24              |  200.ISP.1.17/30
-      |                              |
-    ------------------------------------
-    | eth0    My Gateway          eth1 |
-    |                                  |
-    |                                  |
-    |                eth2              |
-    ------------------------------------
-                      |
-                      |
-      ---------------------------------
-       |        |          |           |
-                                       | 200.ISP.2.64/27
-
-
-I have something like:
-
-ip rule from 200.ISP.2.62/27 to table ISP2
-iptables -t nat -A POSTROUTING -s 200.ISP.2.64/27 -j SNAT --to 200.ISP.1.17
-
-And in table ISP1 the default gateway is from ISP1 (200.ISP.1.18)
-
-
-But when somone out in the INTERNET starts a conection to 200.ISP.2.65 this
-comes in thru eth0 (ISP1), but the reply to this conection goes thru ISP1 over
-eth1 (and with src=200.ISP.1.65, since it is a related packet and so no SNAT
-tackes place, that couse ISP2 to drop the packet).
-
-How can I route back thru ISP1(eth0) ONLY the packets of conections that first
-started over eth0 ?
-
-Thanks for any help
-
-Alex
+ Dear all, =0D
+ =0D
+3 Computers are linked together with cross over cable and computer B is t=
+he =0D
+router. =0D
+ =0D
+Computer A - Starlight Video Server(Solaris) =0D
+- 192.168.0.11 =0D
+ =0D
+Computer B - Iptables(Linux) =0D
+- eth0 - 192.168.0.12 =0D
+- eth1 - 158.192.92.102 =0D
+ =0D
+Computer C - Video receiver(Windows) =0D
+- 158.192.92.105 =0D
+ =0D
+First =0D
+# echo "1" > /proc/sys/net/ipv4/ip_forward =0D
+ =0D
+it works fine, video receiver can receive the video from 192.168.0.11. =0D
+The purpose for using iptables is that Internet use can get access our vi=
+deo
+=0D
+server, also our video server can be protected by iptables. =0D
+ =0D
+Second =0D
+modprobe iptables =0D
+for TABLE in filter nat mangle; do =0D
+iptables -t $TABLE -F =0D
+iptables -t $TABLE -X =0D
+done; =0D
+iptables -t nat -A PREROUTING -p udp --dport 1911 -i eth1 -j \ =0D
+DAT --to 192.168.0.11: 1911 =0D
+iptables -A FORWARD -p udp --dport 1911 -d 192.168.0.11 --j ACCEPT =0D
+ =0D
+Video receiver can receive the video, but when we investigate the packets=
+ go
+=0D
+into video receiver. =0D
+Source IP: 192.168.0.11:1911 =0D
+Destination IP: 158.192.92.105: 1069 =0D
+Protocol: UDP =0D
+Packet Len: 1.46KB =0D
+Data Len: 1.42KB =0D
+ =0D
+Third, we execute one more line in order to change the source IP =0D
+# iptables -nat -A POSTROUTING -o eth1 -j \ =0D
+SNAT --to 158.192.92.102 =0D
+ =0D
+But the result doesn't change, we still get packet with source IP. 192.16=
+8.0
+=0D
+11. =0D
+ =0D
+I'd be grateful for any helps or advices. =0D
+ =0D
+Paul Yip =0D
+ =0D
+ =0D
+ =0D
+ =0D
+=20
 
