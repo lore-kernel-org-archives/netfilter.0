@@ -1,9 +1,11 @@
-From: Craig <elitesyntax@yahoo.com>
-Subject: iptables dial-up
-Date: Mon, 2 Jun 2003 07:21:40 -0700 (PDT)
+From: "Pedro C. Arias" <parias@sede.unr.edu.ar>
+Subject: Re: KAZAA
+Date: Mon, 2 Jun 2003 11:45:44 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030602142140.47136.qmail@web14712.mail.yahoo.com>
+Message-ID: <013501c32915$a5c0bdb0$f000010a@pc207pca>
+References: <001301c32747$3b9e57a0$0200000a@workgroup.kev> <1054534192.13177.112.camel@raylinux.internal>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,47 +17,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+how make a rule with an string matching ?
+
+Saludos
+Pedro.
+Rosario - Argentina.
+
+----- Original Message ----- 
+From: "Ray Leach" <raymondl@knowledgefactory.co.za>
+To: "Netfilter Mailing List" <netfilter@lists.netfilter.org>
+Sent: Monday, June 02, 2003 3:09 AM
+Subject: Re: KAZAA
 
 
 
-
-I have  2 nic cards one is eth0 and the other is eth1
-and there is the same computer.The probs is i not sure
-where i  could put this in my script?
-
-
-
-OUTIP= `/sbin/ifconfig ppp0 |awk '/inet
-addr/{split($2,x,":"); print x[2]}'`
-
-
-I am useing a dial-up.Someone told me told me thid
-would work out with 2 nic cards.The other prob how
-would i srart my other put of the script with eth0 and
-eth1?
-
-
-
-
-
-
-
-
-
-
-
-
-=====
-EliteSyntax  www.linuxnewbie.org
-
-
-
-
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
-http://calendar.yahoo.com
 
