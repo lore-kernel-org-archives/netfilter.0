@@ -1,12 +1,9 @@
-From: Eric Ellis <eellis@mail.co.gilchrist.fl.us>
-Subject: Re: Vijay - port 25 to be blocked
-Date: Tue, 28 Dec 2004 11:38:10 -0500
-Message-ID: <41D18BF2.7000908@mail.co.gilchrist.fl.us>
-References: <20041228170317.34EE82BBF8@tharbad>
+From: umar draz <umar_draz@yahoo.com>
+Subject: FTP Forwarding
+Date: Tue, 28 Dec 2004 09:19:49 -0800 (PST)
+Message-ID: <20041228171949.35308.qmail@web53109.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041228170317.34EE82BBF8@tharbad>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +14,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Vijay Kumar <vijay@calsoftinc.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr NetFilter <netfilter@lists.netfilter.org>
 
-Vijay Kumar wrote:
-> Hi,
-> 
-> I want to allow my internal network to only connect to some specific email
-> servers.
-> Apart from these mail server  I want to block port 25 and 110 from my
-> internal network to anywhwere. I am doing the following : 
-> 
-> iptables -I INPUT -I eth0 --dport 25 -d  !<ip addr of mail server>  -j
-> REJECT  
->  
-> This does not seem to block the port 25 traffic. Where am I going wrong? 
-> 
-> Kindly help. 
-> 
-> Regards,
-> Vijay Kumar
-> 
->  
-> 
-Lemme try this again,
+Hi Dear Members!
+ 
+  i have linux machine which configured as a router
+ 
+  my linux router has 2 NIC one with Public ip 202.147.167.99 and other is local ip 192.168.0.1
+  i have a another linux machine which configured as a FTP server and that machine ip is 192.168.0.5. Now i want my this ftp server can be access all world. so what kind of iptables rules will be add on linux router that if some one want to access ftp 202.147.167.99 its automaticaly forward or redirect my local machine 192.168.0.5.
+ 
+ Please help me in this regard
+ 
+Thanks
+ 
+Umar
 
-I believe that this needs to be in the "forward" table, not the "input" 
-table.
-
-IIRC, Input is just for traffic destined to the firewall box itself, the 
-mail servers that you're talking to are on the far side of the firewall, 
-if I read you correctly.
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
