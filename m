@@ -1,9 +1,11 @@
-From: "dawn lin" <alantisjun@hotmail.com>
-Subject: help
-Date: Thu, 05 Jun 2003 17:19:10 +0800
+From: "Leonardo Lombardo" <leo.lombardo@tiscali.it>
+Subject: passive ftp and file sharing
+Date: Mon, 9 Jun 2003 11:42:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY7-F73hQYZkxOjmfC0003fd2e@hotmail.com>
+Message-ID: <3EE063BC000042A9@mail-4.tiscali.it>
+Reply-To: leo.lombardo@tiscalinet.it
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,33 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi,
+Hi all,
 
-i have 3 computers A, B and C.
-i need A to talk to C through B(not a router)
+a question for you: how can I set my iptables firewall so that natted lan=
 
-I was hoping iptables will help me do mac filtering.
+users can use ftp in passive mode and have winmx, dc, audiogalaxy, ....
+blocked ? I've tried out all that scripts/lists of ip/... i've found on
+the net but nothing... the only way I found to block file sharing is to
+close all ports 800:65535 but this way passive ftp is blocked too.... :((=
 
-is it possible?
+I'm a very beginner with iptables so please be patient...
 
-What i need is A is able to talk B only and B is to resend A's message to B.
-Which is in a way where A wants to talk to C but it can only go through B to 
-talk to C.
-Can anyone advice me how i can use iptables for that?
+p.s.: now I use firewall-jay script to manage iptables.
 
-one senerio:
-A send packets to C-> packet info shows MAC source=A, MAC dest=B,IP 
-source=A,IP dest=C
-When packet reaches B-> packet info shows MAC source=B,MAC dest=C,IP 
-source=A,IP dest=C
+Thanks to all in advance :)
+##############################################
 
-is that possible?
+Leonardo Lombardo - leo.lombardo@tiscalinet.it
 
-_________________________________________________________________
-Download Norah Jones, Eminem and more! http://www.msn.com.sg/ringtones/
+##############################################
+
+__________________________________________________________________
+Tiscali ADSL Light Sempre a 1 euro al giorno! E in piu' telefoni gratis.
+Abbonati entro il 31 maggio, l'attivazione e 'gratuita.    
+http://point.tiscali.it/adsl/index.shtml
+
+
 
 
