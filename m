@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Is Linux based Gateway/Firewall feasible
-Date: Thu, 8 Jul 2004 13:55:12 +0100
+From: Marco Colombo <netfilter@esiway.net>
+Subject: Re: how to automate ip_forward
+Date: Thu, 8 Jul 2004 14:54:10 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407081355.12309.Antony@Soft-Solutions.co.uk>
-References: <40ED39B9.30608@svw.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0407081443070.3962-100000@Megathlon.ESI>
+References: <16ac01c464e3$1af42c20$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40ED39B9.30608@svw.com>
+In-Reply-To: <16ac01c464e3$1af42c20$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,91 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Peter Marshall <peter.marshall@caris.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 08 July 2004 1:10 pm, Sudheer Divakaran wrote:
+On Thu, 8 Jul 2004, Peter Marshall wrote:
 
-> Hi,
->
-> I've a local LAN consisting of about 150 machines.  I'm using a machine
-> with Linux + IPTables  as the gateway machine which inturn connects to
-> two different ISPs.  My question is can a Linux based machine match the
-> performance of a hardware based routers provided by Cisco,... OR is my
-> decision to go for a Linux based solution is a wrong one?
+> Hey guys, I know this sounds stupid, but I can not seem to get the value of
+> /proc/sys/net/ipv4/ip_forward to be 1 after boot.  I tried putting the echo
+> 1 > /pro...../ip_forward in my iptables script .... (BTW, I have a bash
+> script with my rules in it and a startup script in rc2.d that calls it)
+> 
+> I also tried making a separate starup script just for the ip_forward and set
+> it to run in as the last thing in rc2,d .....
+> 
+> If anyone has any suggestions, I would greatly appreciate it.
+> 
+> Thanks.
+> Peter
 
-Are we talking about routing performance, or firewall capabilities here?
+That depends on the distro you're running. On Red Hat / Fedora distros,
+add (or change) the following line to /etc/sysctl.conf:
 
-Cisco is well known as a high-cost supplier of router hardware, which (at the 
-highest costs) is very high performance.
+net.ipv4.ip_forward = 1
 
-Netfilter is a high-reliability, high-security and flexible firewall solution 
-(with zero cost for the software, but non-zero cost for the hardware and the 
-configuration expertise).
+The echo you're using should work, just make sure nothing else
+(i.e. sysctl) resets it to 0 later at boot time (but on RH and
+Fedora, sysctl -p occurs in rc.sysinit, so before any rc.[2345]
+script).
 
-150 machines is not many - however the important question is how much traffic 
-they generate through the firewall.
+As an alternative to the echo approach, you can use the sysctl
+command directly in your script. My iptables scripts start with:
 
-> Is there so much difference between these two solutions?
+  sysctl -w net.ipv4.ip_forward=0
 
-There are many differences - cost, performance, flexibility, support, bug 
-fixes, warranty, brand-name....
+and end with:
 
-You have to decide which of these you want, and which you don't, before the 
-choice becomes clear.
+  sysctl -w net.ipv4.ip_forward=1
 
-I would say, if you want a firewall with low cost, good performance, high 
-flexibility, widespread technical support, rapid bug fixes, no warranty, and 
-the "netfilter / Linux" brand name, then choose netfilter.
+so that forwarding is disabled while the scripts are messing with rules:
+I tend to use the scripts at runtime now and then, disabling forwarding
+is just safer.
 
-If you want a high cost router, especially for very high performance (or 
-medium cost for surprisingly low performance), less flexibility, single-point 
-support, slower bug-fixes, hardware warranty, and the "Cisco" brand name, 
-then choose Cisco.
-
-> Can I achieve the same performance using a high end PC and Linux?
-
-Same as what?
-
-> I'm asking this because one guy told me that my decision to go for a
-> Linux based solution is a wrong one and it can never match the
-> performance of hardware based Routers.
-
-Well, what do you want to do with it?   Do you have an Internet connection 
-faster than 100 Mbps?   If not, then Linux / netfilter will easily do what 
-you want.   If yes, then you will need to pay a fair amount of money for the 
-hardware to run Linux / netfilter on, but you can still do it (and I'll bet 
-the cost of the hardware is still less than the equivalent system from 
-Cisco).
-
-So, you can point at a $50k Cisco fireweall / router and say "your P4 Linux 
-box with 512Mbytes RAM can't do what that can do", and you'd be right.
-
-However, you can point at a $1k or $2k P4 Linux box with 512Mbytes RAM and say 
-"this can outperform your Cisco PIX 501".
-
-The important question is always "what do you want to do with it?", and the 
-next question is "what features are important to you (technical and 
-non-technical)?"
-
-Also, if you're interested in security, check the warranties / guarantees / 
-promises made about the security of any products from a commercial vendor - 
-you might be surprised at how little they differ from netfilter (which 
-doesn't have a warranty or guarantee).
-
-Hope this helps,
-
-Antony.
-
+.TM.
 -- 
-Bill Gates has personally assured the Spanish Academy that he will never allow 
-the upside-down question mark to disappear from Microsoft word-processing 
-programs, which must be reassuring for millions of Spanish-speaking people, 
-though just a piddling afterthought as far as he's concerned.
-
- - Lynne Truss, "Eats, Shoots and Leaves"
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+      ____/  ____/   /
+     /      /       /			Marco Colombo
+    ___/  ___  /   /		      Technical Manager
+   /          /   /			 ESI s.r.l.
+ _____/ _____/  _/		       Colombo@ESI.it
 
 
