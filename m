@@ -1,65 +1,167 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: [ANNOUNCE] New Core Team Member - Patrick McHardy
-Date: Thu, 05 Feb 2004 00:38:49 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <1075937929.19762.366.camel@tux.rsn.bth.se>
+From: "ads nat" <adsnat@hotmail.com>
+Subject: Re: Setting up default policy to 'DROP' problem
+Date: Thu, 05 Feb 2004 09:00:09 +0530
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <BAY8-F254PtkyVKW44700066918@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-xs8OIU/Msa0u8a62Ubvz"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter <netfilter@lists.netfilter.org>, Netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter-announce@lists.netfilter.org
-Cc: coreteam@netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: JALaramie@Loudoun-Fairfax.com, netfilter@lists.netfilter.org
 
 
---=-xs8OIU/Msa0u8a62Ubvz
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Thanks for support.
+As per your suggestions I have changed rules as follows :
 
-The Netfilter Core Team is proud to announce the addition of
-Patrick McHardy as a new member.
+xxx.xxx.xxx.xxx is 'tunnel0' tunnel IP.
+yyy.yyy.yyy.yyy is 'eth0' Internet IP.
+192.168.0.1 is 'eth1' LAN IP.
 
-He has repetedly demonstrated high insight and coding standards in many
-areas of the project. His hard and dedicated work has significantly
-improved the quality of the codebase.
+I want to setup rules for LAN first and after getting through with this I 
+will setup rules for DMZ 'eth2'.
 
-By joining the Core Team, Patrick will definitely help advance the
-development of the Netfilter project to a higher level.
+***************
+-A INPUT -s xxx.xxx.xxx.xxx -p icmp -j ACCEPT
+-A INPUT -d xxx.xxx.xxx.xxx -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i lo -p tcp -j ACCEPT
+-A INPUT -d 127.0.0.1 -i lo -j ACCEPT
+-A INPUT -s 192.168.0.1 -i lo -j ACCEPT
+-A INPUT -d yyy.yyy.yyy.yyy -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p tcp -j LOG --log-prefix " ?????? Last INPUT RULE:"
+-A FORWARD -i eth1 -j ACCEPT
+-A FORWARD -i eth0 -j ACCEPT
+-A FORWARD -i tunnel0 -j ACCEPT
+-A OUTPUT -o lo -p tcp -m tcp -j ACCEPT
+-A OUTPUT -o tunnel0 -p tcp -m tcp -j ACCEPT
+-A OUTPUT -p tcp -m tcp -j LOG --log-prefix "***** OUTPUT LAST:"
 
-Welcome Patrick!
+**************
 
-Martin,
-on behalf of the Netfilter Core Team.
+-A INPUT -s xxx.xxx.xxx.xxx -p icmp -j ACCEPT
 
-diff -u -1 -r1.1 iptables.8.in
---- iptables/iptables.8.in	22 Jan 2004 15:04:24 -0000	1.1
-+++ iptables/iptables.8.in	4 Feb 2004 23:33:29 -0000
-@@ -457,3 +457,3 @@
- The Netfilter Core Team is: Marc Boucher, Martin Josefsson, Jozsef Kadlecs=
-ik,=20
--James Morris, Harald Welte and Rusty Russell.
-+Patrick McHardy, James Morris, Harald Welte and Rusty Russell.
- .PP
+This rule is required since my ISP wants to check continuously whether 
+connection is down due cable or any other reason.
 
+I am not getting any message from OUTPUT chain in logs.
 
---=-xs8OIU/Msa0u8a62Ubvz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Now when I want to setup default policy for OUTPUT as drop, Connection goes 
+down.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+What could be problem?
 
-iD8DBQBAIYKIWm2vlfa207ERAqqZAJ9jvXOYUmdhvOMyDdwBlX0QyxWD5gCff/gq
-cwuckcb/eOdYMcauVxddNI8=
-=dxSO
------END PGP SIGNATURE-----
+Thanks for support.
 
---=-xs8OIU/Msa0u8a62Ubvz--
+>From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+>To: netfilter@lists.netfilter.org
+>Subject: Re: Setting up default policy to 'DROP' problem
+>Date: Wed, 04 Feb 2004 09:52:28 -0500
+>
+>ads nat wrote:
+>
+>>Hi,
+>>It's working.
+>>It was my fault.
+>>I am getting Internet bandwidth through iptunnel. IP address of tunnel and 
+>>my eth0 is different. I was giving access to INPUT for eth0  IP and not 
+>>for IP of tunnel which is my Internet IP.
+>>Your suggestion of using log at the end of INPUT rule has given this hit.
+>>Thanks for support.
+>>
+>Glad it's working, you're making progress.  :-)  I made a couple of 
+>suggestions below.
+>
+>Jeff
+>
+>>
+>>
+>>>From: "ads nat" <adsnat@hotmail.com>
+>>>To: adsnat@hotmail.com, JALaramie@Loudoun-Fairfax.com, 
+>>>netfilter@lists.netfilter.org
+>>>Subject: Re: Setting up default policy to 'DROP' problem
+>>>Date: Wed, 04 Feb 2004 08:26:13 +0530
+>>>
+>>>Following are my iptable rules
+>>>
+>>>xxx.xxx.xxx.xxx is internet ip.
+>>>eth0 internet interface
+>>>eth1 lan interface
+>>>
+>>>*******************
+>>>*nat
+>>>:PREROUTING ACCEPT [678915:47234902]
+>>>:POSTROUTING ACCEPT [36934:2160799]
+>>>:OUTPUT ACCEPT [35607:2143032]
+>>>-A POSTROUTING -o tunnel0 -j MASQUERADE
+>>>COMMIT
+>>># Completed on Wed Feb  4 08:15:38 2004
+>>># Generated by iptables-save v1.2.7a on Wed Feb  4 08:15:38 2004
+>>>*mangle
+>>>:PREROUTING ACCEPT [15137995:7366304630]
+>>>:INPUT ACCEPT [5934119:3407840707]
+>>>:FORWARD ACCEPT [9046926:3942957156]
+>>>:OUTPUT ACCEPT [5005001:930279054]
+>>>:POSTROUTING ACCEPT [14042840:4872546468]
+>>>COMMIT
+>>># Completed on Wed Feb  4 08:15:38 2004
+>>># Generated by iptables-save v1.2.7a on Wed Feb  4 08:15:38 2004
+>>>*filter
+>>>:INPUT DROP [6317:1242856]
+>>>:FORWARD DROP [107:11548]
+>>>:OUTPUT ACCEPT [841:137965]
+>>>-A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+>>>-A INPUT -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+>>>-A INPUT -d 127.0.0.1 -i lo -j ACCEPT
+>>
+>
+>I don't think this rule does anything.
+>
+>>>-A INPUT -s 127.0.0.1 -i lo -j ACCEPT
+>>>-A INPUT -s 192.168.0.1 -i lo -j ACCEPT
+>>>-A INPUT -s xxx.xxx.xxx.xxx -i lo -j ACCEPT
+>>>-A INPUT -d xxx.xxx.xxx.xxx -m state --state RELATED,ESTABLISHED -j 
+>>>ACCEPT
+>>
+>
+>Except for the loopback entries the INPUT rules don't differentiate between 
+>interfaces. You may want to have different rules for eth0 and eth1. In 
+>particular your first rule lets a lot of stuff in from the outside that you 
+>may not want.
+>
+>>>-A FORWARD -i eth1 -j ACCEPT
+>>>-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+>>>-A FORWARD -i eth0 -o eth1 -j ACCEPT
+>>>-A FORWARD -i eth1 -o eth2 -j ACCEPT
+>>
+>
+>You don't identify eth2 anywhere else. Is this to the dmz?
+>
+>>>-A OUTPUT -o eth0 -p tcp -m tcp -j ACCEPT
+>>>-A OUTPUT -o eth0 -p tcp -m tcp -j ACCEPT
+>>>-A OUTPUT -s 127.0.0.1 -j ACCEPT
+>>>-A OUTPUT -s 192.168.0.1 -j ACCEPT
+>>>-A OUTPUT -s xxx.xxx.xxx.xxx -j ACCEPT
+>>
+>
+>These are all ACCEPT rules and your default OUTPUT policy is accept. You 
+>should either delete these rules or change the default policy.
+>
+>>>COMMIT
+>>
+>
+>
+>
+
+_________________________________________________________________
+Contact brides & grooms FREE! http://www.shaadi.com/ptnr.php?ptnr=hmltag 
+Only on www.shaadi.com. Register now!
+
 
