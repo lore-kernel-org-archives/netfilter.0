@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Question on PREROUTING and INPUT chains
-Date: Mon, 11 Nov 2002 23:53:04 +0000
+From: Martin Stricker <shugal@gmx.de>
+Subject: Re: Best distro for firewalls.
+Date: Tue, 12 Nov 2002 01:55:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021111235308.RPCD9836.mta01-svc.ntlworld.com@there>
-References: <3DCD21FC.6010402@offlineprovider.de> <1037058069.3178.14.camel@trent.nin>
+Message-ID: <3DD0519C.B860FCAB@gmx.de>
+References: <Pine.LNX.4.33.0211111425130.24679-100000@mail-02.swi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1037058069.3178.14.camel@trent.nin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-On Monday 11 November 2002 11:41 pm, alex wrote:
+Vladas Keparoutis wrote:
+> 
+> Hi,
+> I'd recommend gentoo (gentoo.org)
+> It is very flexible and fast with updates.
 
-> On Sat, 2002-11-09 at 14:55, Simon Kowallik wrote:
-> > Perhaps this helps to better understand the "flow":
-> > http://offlineprovider.de/site/netfilter/netfilter.php
-> >
-> > Regards,
-> > Simon
->
-> If I'm understanding the diagram correctly that might explain my
-> problems. Am I to understand that all packets on a NAT'ed connection
-> never go through the FORWARD chain of filter?
+Yeah, but you have to compile everything. On the 486 I use as a firewall
+this is more than a pain...
 
-No, that is not correct.
-
-ALL packets which get routed through a netfilter box go through the FORWARD 
-filter chain.
-
-Packets coming in to a netfilter box (and either terminating there, or going 
-through it to some other destination) go through the PREROUTING nat table.
-
-Packets leaving a netfilter box (whether they came through it from somewhere 
-else, or originated on the box) go through the POSTROUTING nat table.
-
-The only thing which normally catches people out is that reply packets which 
-are part of a NATted connection do not go through the rules in the nat tables 
-- they get "automagically reverse NATted" in the correct way to match the NAT 
-of the original packets (to which these are replies), which *was* done by a 
-rule in the tables.
-
-Basically what I'm saying is that you only need to specify nat rules for the 
-first packet in a connection - you don't need to worry about writing your own 
-rule to nat the reply.
-
-Hope this helps.
-
-Antony.
-
+Best regards,
+Martin Stricker
 -- 
-
-I vote "no" to this proposal to form a committee to investigate whether we 
-should or should not hold a ballot on whether to vote yet.
+Homepage: http://www.martin-stricker.de/
+Linux Migration Project: http://www.linux-migration.org/
+Red Hat Linux 7.3 for low memory: http://www.rule-project.org/
+Registered Linux user #210635: http://counter.li.org/
 
