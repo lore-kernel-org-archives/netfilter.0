@@ -1,14 +1,13 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: smtp
-Date: Fri, 14 May 2004 14:40:16 +0100
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: RE: Iptables do nat with Protocol 47 or GRE
+Date: Fri, 14 May 2004 11:12:40 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405141440.16991.gdh@acentral.co.uk>
-References: <BAY15-F38OoiE7FIVSi0005b8c6@hotmail.com>
+Message-ID: <E1BOdSr-0007Nt-4u@vishnu.netfilter.org>
+References: <200405141414.34877.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F38OoiE7FIVSi0005b8c6@hotmail.com>
-Content-Disposition: inline
+In-Reply-To: <200405141414.34877.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,29 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 14 May 2004 14:19, azeem ahmad wrote:
-> hi
-> please tell me how can i save the output of tcpdump to a file
->
-> i tried -F anf -w but it doesnt seem to work
+Im not shure about the question.
 
--w is the one to use, but you do need to tell it a filename. However, what I 
-meant was simply copy + paste the output you see on the console since that 
-will be a lot easier for us to glance at.. I mean the stuff like this:
+Could you be more specific?
 
-tel# tcpdump -i eth1 -n port 25
-tcpdump: listening on eth1
-14:39:37.592117 10.0.0.52.3564 > 194.200.209.13.25: S 1292097321:1292097321(0) 
-win 64240 <mss 1460,nop,nop,sackOK> (DF)
-14:39:37.592174 10.0.0.254.3564 > 10.0.0.253.25: S 1292097321:1292097321(0) 
-win 64240 <mss 1460,nop,nop,sackOK> (DF)
-14:39:37.592353 10.0.0.253.25 > 10.0.0.254.3564: S 958030498:958030498(0) ack 
-1292097322 win 5840 <mss 1460,nop,nop,sackOK> (DF)
-14:39:37.592381 194.200.209.13.25 > 10.0.0.52.3564: S 958030498:958030498(0) 
-ack 1292097322 win 5840 <mss 1460,nop,nop,sackOK> (DF)
-14:39:37.592587 10.0.0.52.3564 > 194.200.209.13.25: . ack 1 win 64240 (DF)
-14:39:37.592603 10.0.0.254.3564 > 10.0.0.253.25: . ack 1 win 64240 (DF)
+ 
 
-Cheers,
-Gavin.
+-----Mensaje original-----
+De: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] En nombre de Antony Stone
+Enviado el: Viernes, 14 de Mayo de 2004 10:15
+Para: netfilter@lists.netfilter.org
+Asunto: Re: Iptables do nat with Protocol 47 or GRE
+
+On Friday 14 May 2004 2:00 pm, Sez wrote:
+
+> I have a microsoft server to l2tp/ipsec. And my firewall is a Linux. I 
+> understand that if i create a server in micro$oft box, i can routing 
+> the traffic with Linux with any problem (no recompile, multiple users, 
+> nat with l2tp/ipsec).
+
+Can someone who knows about L2TP / IPsec step in here please?
+
+Regards,
+
+Antony.
+
+--
+The lottery is a tax for people who can't do maths.
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
+
+
+
 
