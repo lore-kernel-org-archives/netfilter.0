@@ -1,13 +1,11 @@
-From: =?us-ascii?Q?Matias_Bjorling_/_Silverwolf?= <mb@ncparty.dk>
-Subject: RE: log - kernel BUG at transaction.c
-Date: Fri, 6 Dec 2002 15:30:14 +0100
+From: Jason Liao <maillist@Gallantry.com>
+Subject: How to change a packet's arriving interface? -j ROUTE?
+Date: Fri, 06 Dec 2002 08:41:28 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GLENJAJKCCPPDAAHPEDKOELNCAAA.mb@ncparty.dk>
-References: <Mutt.LNX.4.44.0212070024500.13427-100000@blackbird.intercode.com.au>
+Message-ID: <3DF0D338.C2F4E50@Gallantry.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Mutt.LNX.4.44.0212070024500.13427-100000@blackbird.intercode.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,42 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: delaunois@info.ucl.ac.be
 
-Have it been fixed?
+Hi,
 
-Sorry for offtopic, but would like to know if its safe to install 2.4.20. i
-run ext3 on my servers.
+I have a firewall running iptables with 3 interfaces: LAN, WAN and DMZ. 
+The LAN IP address is 10.0.0.1/24, WAN 66.134.34.157/28, and DMZ
+66.134.34.249/28.  The WAN interface connects to the Internet and the
+DMZ interface connects to a stub network.
 
-. Matias Bjorling
+When someone sends a packet to the IP address of the DMZ interface from
+the Internet, the packet x.x.x.x->66.134.34.249 arrives at the WAN
+interface.  I want to know if there is a way using iptables (maybe with
+other tools such as iproute2) to make this packet to appear as if it
+arrives at the DMZ interface.  The packet itself should not be
+modified.  I need this to work because I am running an IPSec VPN with
+FreeS/WAN on the DMZ interface.  When the ESP packets arrives on the WAN
+interface, they cannot be properly processed by IPSec because the ipsec0
+interface is tied to the DMZ interface directly.  
 
------Oprindelig meddelelse-----
-Fra: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]Pa vegne af James Morris
-Sendt: 6. december 2002 14:26
-Til: Raymond Leach
-Cc: Netfilter Mailing List
-Emne: Re: log - kernel BUG at transaction.c
+I looked at the mangle table but could not figure out if it is the right
+direction.  I read about the ROUTE target but do not know if this target
+is for diverting packets to be sent OUT on another interface, or can it
+be used to change a packet's arriving interface.
 
+Thanks in advance.
 
-On 6 Dec 2002, Raymond Leach wrote:
-
-> Hi
->
-> Maybe I'm way off here, but I recall something similar being discussed
-> on this list previously and it was a file system corruption in the
-> journaling file system (reiserfs?).
->
-
-> > I use a RedHat7.2 updated and a 2.4.18-18.7 kernel.
-
-If you mean the 2.4.20 ext3 bug, no, it was introduced in 2.4.20-pre5.
-
-
---
-James Morris
-<jmorris@intercode.com.au>
-
-
-
-
+Jason Liao
 
