@@ -1,11 +1,13 @@
-From: romaniuc@edumed.org.br
-Subject: Portscan??
-Date: Tue, 12 Nov 2002 09:57:31 -0200 (BRST)
+From: Filip Sneppe <filip.sneppe@cronos.be>
+Subject: Re: NAT only - No connection tracking
+Date: 12 Nov 2002 12:14:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0211120954570.4953-100000@mestre.edumed.org.br>
+Message-ID: <1037099676.12587.8.camel@hope>
+References: <20021111192103.14755.qmail@web40910.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021111192103.14755.qmail@web40910.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,66 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Brad Chapman <kakadu_croc@yahoo.com>
+Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+
+On Mon, 2002-11-11 at 20:21, Brad Chapman wrote:
+> 
+> Basically, if this person wants to do NAT, he has to do connection tracking as well.
+> LYSB, he doesn't have to run ctrack without NAT, but without ctrack the current
+> implementation of NAT in netfilter won't work. If there are other stateless NAT
+> kernel implementations available that attach to netfilter, then I am currently
+> unaware of them.
+> 
+Hi Brad & Antony,
+
+There is one other way to do NAT without connection tracking - this is
+even possible on 2.2 kernels. There is some NAT functionality in the
+routing code (policy routing, advanced routing).
+
+This is a form of NAT where only the IP addresses in the IP header
+are changed, no data inside the packet payload is inspected or changed.
+Also, there is no automatic retranslation of return packets, like with
+iptables.
+
+The syntax is a little different and takes some time to get used to;
+basically you get something like this:
+
+ip rule add from 192.168.1.32/27 nat 10.1.1.32 prio 14000
+ip route add nat 10.1.1.32/27 via 192.168.1.32
+
+to set up NAT rules.
+
+For more info, see the iproute documentations. I can also recommend
+the book "Policy Routing with Linux" by Matthew G. Marsh, who is also
+a contributor on this list.
+
+The book is being released online at http://www.policyrouting.org/,
+but is definately worth the buy.
+
+Regards,
+Filip
 
 
-Hi all,
 
-	I=B4m trying to detect and block portscan.... and Im using=20
-rules below.....
-	It=B4s doesn=B4t work... I use a lot of portscan and no one have been=20
-detected;;; what is wrong???
-
-Thanks
-
-RULES.....
-
-
-$IPTABLES -F NOVA_CONEXAO
-$IPTABLES -X NOVA_CONEXAO > /dev/null
-
-## NAT
-$IPTABLES -t nat -F
-
-$IPTABLES -N NOVA_CONEXAO
-
-## New packets
-$IPTABLES -A INPUT -i $EXTIF -p ! icmp -m state --state NEW -j=20
-NOVA_CONEXAO
-
-## PortScanners - Detection
-#$IPTABLES -A NOVA_CONEXAO -j LOG --log-prefix=20
-"############################"
-## NMAP FIN/URG/PSH
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL FIN,URG,PSH -m limit=20
---limit 2/s -j LOG --log-prefix "(Nmap) Stealth XMAS Scan: "
-# SYN/RST
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags SYN,RST SYN,RST -m limit=20
---limit 2/s -j LOG --log-prefix "SYN/RST Scan: "
-
-# SYN/FIN (probably)
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit=20
---limit 2/s -j LOG --log-prefix "SYN/FIN Scan(?): "
-# NMAP FIN Stealth
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL FIN -m limit --limit 2/s=20
--j LOG --log-prefix "(Nmap) Stealth FYN Scan: "
-# ALL/ALL Scan
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL ALL -m limit --limit 2/s=20
--j LOG --log-prefix "ALL/ALL Scan: "
-# NMAP Null Scan (probably)
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL NONE -m limit --limit 2/s =
-
--j LOG --log-prefix "(Nmap) Stealth Null Scan(?): "
-## Now Dropping
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL FIN -j DROP
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL ALL -j DROP
-$IPTABLES -A NOVA_CONEXAO -p tcp --tcp-flags ALL NONE -j DROP
-
-################################
-## Now my rules..... INPUT
 
 
