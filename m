@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SSH Connections Lost After 1 minute idle
-Date: Tue, 13 Jul 2004 22:18:06 +0100
+From: Alejandro Flores <alejandro.flores@triforsec.com.br>
+Subject: Re: Benchmark
+Date: Tue, 13 Jul 2004 18:32:52 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407132218.06134.Antony@Soft-Solutions.co.uk>
-References: <20040713205716.58900.qmail@web40707.mail.yahoo.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1089754372.6507.19.camel@aflores>
+References: <1089752682.6507.7.camel@aflores>
+	 <20040713151747.5af1ef20@mgalepc.utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040713205716.58900.qmail@web40707.mail.yahoo.com>
+In-Reply-To: <20040713151747.5af1ef20@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +19,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Michael Gale <michael.gale@utilitran.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 13 July 2004 9:57 pm, Real Cucumber wrote:
+	Hello Michael,
 
-> Why should ICMP not be completely blocked? The machine
-> is used strictly as a port forwarding firewall/router.
+	Agreed. If well designed, it will improve performance. But, what is the
+cost to send a packet to another chain? And if you have something like:
+	iptables -A INPUT -i eth0 -p tcp -j C1
+	iptables -A C1 -p tcp --dport 22 -j C1_SSH
+	iptables -A C1_SSH -s 192.168.0.2/32 -j ACCEPT
+	iptables -A C1_SSH -s 192.168.0.7/32 -j ACCEPT
+	iptables -A C1_SSH -s 192.168.0.23/32 -j ACCEPT
 
-Because blocking all ICMP will break networking.   Look up the RFCs explaining 
-what ICMP is for if you do not understand this.
+	When the packet arrives, and it's from 192.168.0.7, it will be handled
+by INPUT, then C1 and finally C1_SSH at the second rule. What I'm trying
+to discover is, what is the cost to send the packet from one chain to
+another. It's more easy to configure and maintain your rules with
+user-chains, but how much it will cost in performance, if instead of the
+above example, I use the following rules:
 
-> Also it does appear to be arp related. On the fireawll
-> the arp -a does not keep the connecting host in its
-> cache for long.  If I connect I see it, but after a
-> few minutes it disappears.  Is there anyway to fix
-> that?
+iptables -A INPUT -i eth0 -p tcp --dport 22 -s 192.168.0.2/32 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 22 -s 192.168.0.7/32 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 22 -s 192.168.0.23/32 -j ACCEPT
 
-I am not certain of the exact solution to your problem.   It could be:
 
-1. Hardware problem (NIC)
-2. Due to your blocking ICMP (although I can't explain a complete reason why)
-3. A strange network setup (you haven't described your physical network 
-layout)
-4. Something else ?
+Regards!
+Alejandro Flores
 
-If you are having a problem with the arp cache on the firewall keeping the MAC 
-address of the SSH server, can you check to see whether it successfuly 
-retains the MAC addresses of other machines on your network?
-
-A packet sniffer (eg: ethereal) between the firewall and the SSH server may 
-show whether ARP requests are not being sent, or ARP reponses are not being 
-returned.
-
-Regards,
-
-Antony.
-
--- 
-Never automate fully anything that does not have a manual override capability. 
-Never design anything that cannot work under degraded conditions in emergency.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> Hello,
+> 
+> 	Well I am not expert but I think that user chains could improve performance. If you had in total 1000 rules and no user
+> chains, a packet may have to go through 999 rules to find a match or no match. If you broke up your 1000 rules into 25
+> different user chains a packet would at most have to be matched against 24 user chains and then only be checked against
+> required chains and not other rules.
+> 
+> Michael.
+> 
+> 
+> On Tue, 13 Jul 2004 18:04:43 -0300
+> Alejandro Flores <alejandro.flores@triforsec.com.br> wrote:
+> 
+> > 	Hello there,
+> > 
+> > 	Well, I've been teaching netfilter/iptables for a while, and always
+> > there's someone asking about performance. Normally, they use other kind
+> > of firewall, like cisco pix or checkpoint. Is there any benchmark out
+> > there?
+> > 	Another point is, how much user-chains can degrade the performance?
+> > IMHO, user chains are simple the best to help you organize and separate
+> > rules in groups. But, how can I measure if it's degrading the
+> > performance?
+> > 
+> > Thanks!
+> > Alejandro
+> > 
+> > Ps. Sorry my poor english!
+> > 
+> > 
+> > 
+> > 
+> > 
+> 
 
