@@ -1,13 +1,12 @@
-From: yann Conan <yahn_ick@yahoo.fr>
-Subject: Problem with LOG in /var/log/messages
-Date: Sat, 18 Sep 2004 19:37:31 +0200 (CEST)
+From: Alexey Toptygin <alexeyt@freeshell.org>
+Subject: Re: SNAT question
+Date: Sat, 18 Sep 2004 21:46:24 +0000 (UTC)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040918173731.14655.qmail@web20923.mail.yahoo.com>
-References: <1095365796.2489.88.camel@wolfpack.ljm.dom>
+Message-ID: <Pine.NEB.4.60.0409182138520.21976@ukato.freeshell.org>
+References: <20040917181300.76253.qmail@web61109.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1095365796.2489.88.camel@wolfpack.ljm.dom>
+In-Reply-To: <20040917181300.76253.qmail@web61109.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +16,47 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: =?iso-8859-1?q?darmian=20martinez?= <darmianm@yahoo.com.ar>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+On Fri, 17 Sep 2004, [iso-8859-1] darmian martinez wrote:
 
-I done this configuration test with iptables :
-iptables -P INPUT DROP
-iptables -A INPUT -j LOG
-iptables -P OUTPUT DROP
-iptables -A OUTPUT -j LOG
+> Alexey,
+>
+> I tried your command, but it says:
+> iptables: Target problem
 
-I done this with iptables on a mandrake and on a
-REDHAT.
-I try to ping in 127.0.0.1 and after
-On Mandrake if I do a tail -f /var/log/messages I see
-the DROP
-On RedHat it doesn't work.
+What I meant to say was:
 
-the syslog.conf on RedHat and Mandrake are:
-*.info;mail.none;;news.none;authpriv.none
--/var/log/messages
+iptables -t nat -A POSTROUTING -s [FIREWALL_IP] -p icmp -j SNAT --to-source
+[FAKE_IP]
 
-What is the problem or what is the difference about
-default configuration between Mandrake and redHat?
-
-Best Regards,
-
-Yann Conan
-Bordeaux,France
+which applies, but for some reason works only for outgoing requests.
 
 
+Can someone on the list explain why this:
 
+iptables -t nat -A POSTROUTING -s 192.168.1.9 -p icmp -j SNAT --to-source
+10.0.0.1
 
+Causes this:
 
+# tcpdump -nnvl -i eth0 "icmp"
+tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
 
-=09
+17:37:38.781912 IP (tos 0x0, ttl  64, id 0, offset 0, flags [DF], length: 84)
+10.0.0.1 > 192.168.1.2: icmp 64: echo request seq 1
 
-=09
-	=09
-Vous manquez d=92espace pour stocker vos mails ?=20
-Yahoo! Mail vous offre GRATUITEMENT 100 Mo !
-Cr=E9ez votre Yahoo! Mail sur http://fr.benefits.yahoo.com/
+17:37:49.656966 IP (tos 0x0, ttl  64, id 0, offset 0, flags [DF], length: 84)
+192.168.1.181 > 192.168.1.9: icmp 64: echo request seq 1
 
-Le nouveau Yahoo! Messenger est arriv=E9 ! D=E9couvrez toutes les nouveaut=
-=E9s pour dialoguer instantan=E9ment avec vos amis. A t=E9l=E9charger gratu=
-itement sur http://fr.messenger.yahoo.com
+17:37:49.656988 IP (tos 0x0, ttl  64, id 6381, offset 0, flags [none],
+length: 84) 192.168.1.9 > 192.168.1.181: icmp 64: echo reply seq 1
+
+Do locally generated ICMP replies not go through postrouting for some 
+reason? I'm testing with iptables v1.2.9 and Debian kernel 2.6.7-1-k7.
+
+ 			Alexey
 
