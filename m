@@ -1,14 +1,12 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: QoS using HTB and SFQ ...
-Date: Thu, 12 Dec 2002 06:34:35 -0800
+From: "Michael A. Nunes" <p@pcmike.net>
+Subject: Problems with IRC code
+Date: Thu, 12 Dec 2002 10:10:57 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <454880000.1039703675@wookie.shorewall.net>
-References: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za>
+Message-ID: <001301c2a1f0$ac9c1b90$02100e0a@jupiter>
+Reply-To: "Michael A. Nunes" <p@pcmike.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: raymondl@knowledgefactory.co.za, Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Background: I currently do NOT build my kernel with any modules, as my linux
+box is only used as a firewall/router.  I have no need to be able to
+dynamically load/unload parts of the kernel.  Therefore, I build all
+netfilter code directly into my kernel.
 
+Problem: Up until 2.4.20 it has always been possible for me to hard-code
+ports into ip_conntrack_irc.c and ip_nat_irc.c by simply adding the
+following:
 
---On Thursday, December 12, 2002 11:17:03 AM +0200 Raymond Leach 
-<raymondl@knowledgefactory.co.za> wrote:
+if (ports[0] == 0) {
+                ports[0] = 4646;
+                ports[1] = 5190;
+                ports[2] = 5554;
+                ports[3] = 6667;
+                ports[4] = 6868;
+                ports[5] = 7000;
 
-> Hi
->
-> Does anyone have any experience (good or bad) with using htb and sfq to
-> do QoS using 2.4.20 kernels?
->
-> I compiled the kernel, installed the image, but tc tells me that htb is
-> an unknown qdisc. I checked that I did select htb in the QoS section.
->
+in the respect parts of either file.  Like I said, this has ALWAYS worked up
+until 2.4.20.  DCCs in/out on any ports in the above list would always work.
+With 2.4.20 after adding the above the only thing that works is DCCs IN!
+DCCs going out from a NAT'd box no longer make it through!
 
-Works for me. Does the copy of tc that you are running have htb support?
+Question: What in the IRC code has changed so drastically that
+I can no longer use the above method for "hard-coding" ports?
 
--Tom
 --
-Tom Eastep   \ Shorewall - iptables made easy
-Shoreline,    \ http://shorewall.sf.net
-Washington USA \ teastep@shorewall.net
+Michael A. Nunes
+/p at pcmike dot net
+http://pcmike.net/
 
 
