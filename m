@@ -1,11 +1,11 @@
-From: Jun Sun <jsun@mvista.com>
-Subject: Is this firewall breakable?
-Date: Thu, 15 May 2003 18:27:28 -0700
+From: "Vladimir Getselevich" <vladg@techunix.technion.ac.il>
+Subject: flushtimeout in ipt_ULOG question
+Date: Sat, 17 May 2003 12:31:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EC43E80.3090604@mvista.com>
+Message-ID: <001001c31c5f$89043110$0200c80a@vladcomp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000307010208040606080908"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000D_01C31C70.4C694C70"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,255 +19,91 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
---------------000307010208040606080908
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi,
-
-I have a pretty standard setup.  A linux gateway connects to Internet 
-through cable modem and a subnet behind it.  I run web server, sendmail 
-and sshd on the gateway machine.
-
-I have been using ipchains and it seems to be successful so far. 
-Machine was broken twice two years ago but has not been broken ever 
-since, after I tightened the rules.
-
-I now want to move to redhat 9 and I probably want to use iptables. 
-After looking around the net, I come up with the following firewall 
-rules.  See the attachment.  I did some local tests.  It looks ok.
-
-Can some of you experts take a look, just to make sure there are no 
-obvious mistakes or holes?  I like to continue my peaceful 
-intrusion-free life that I enjoyed in the last two years ... :)
-
-Thanks in advanced.  Please cc your reply to my email address.
-
-Cheers.
-
-Jun
-
---------------000307010208040606080908
+------=_NextPart_000_000D_01C31C70.4C694C70
 Content-Type: text/plain;
- name="rc.firewall"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="rc.firewall"
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-#!/bin/sh
-#
-# rc.firewall - Initial SIMPLE IP Firewall script for Linux 2.4.x and iptables
-#
-# Copyright (C) 2001  Oskar Andreasson &lt;bluefluxATkoffeinDOTnet&gt;
-#
-
-# JSUN :
-# 	I like all allowed ports to be grouped together, easier to modify
-#	later
-#
-
-###########################################################################
-#
-# 1. Configuration options.
-#
-
-# debugs
-set -x
-DEBUG_LEVEL=INFO
-# $DEBUG_LEVEL_LEVEL=DEBUG
-
-# interfaces
-EXTIF="eth0"
-EXTIP=`ifconfig $EXTIF | awk '/inet addr/ { gsub(".*:", "", $2) ; print $2 }'`
-EXTBROAD=`ifconfig $EXTIF | awk '/inet addr/ { gsub(".*:", "", $3) ; print $3
-}'`
-EXTGW=`/sbin/route -n | grep -A 4 UG | awk '{ print $2}'`
-
-echo External IP: $EXTIP
-echo External broadcast: $EXTBROAD
-echo Default GW: $EXTGW
-echo " --- "
-
-INTIP="192.168.0.2"
-INTLAN="192.168.0.0/16"
-#INTIF="eth1"
-INTIF="wlan0"
-
-echo Internal Interface: $INTIF
-echo Internal IP: $INTIP
-echo Internal LAN: $INTLAN
-echo " --- "
-
-LOIF="lo"
-LOIP="127.0.0.1"
-
-BROADCAST="255.255.255.255"
-
-#
-# 1.5 IPTables Configuration.
-#
-
-IPTABLES="/sbin/iptables"
+If I set flushtimeout=3D0 in ipt_ULOG module how much milliseconds will =
+pass after a message was
+arrived to a linux host, that is guaranteed to me that the message will =
+be moved to the userspace?
+I run linux on Intel box and I saw the comments in ipt_ULOG.c code that: =
 
 
-# JSUN: are these necessary?
+"*   Specify, after how many clock ticks (intel: 100 per second) the =
+queue
+ * should be flushed even if it is not full yet.
 
-# /sbin/depmod -a
+Does it mean that with flushtimeout=3D0 it will be moved to userspace =
+somewhere in interval between=20
+0 and 10 ms? If it so can I somehow accelerate it?
+and what means HZ variable in:   "static unsigned int flushtimeout =3D =
+10 * HZ; "
 
-# /sbin/modprobe ip_tables
-# /sbin/modprobe ip_conntrack
-# /sbin/modprobe iptable_filter
-# /sbin/modprobe iptable_mangle
-# /sbin/modprobe iptable_nat
-# /sbin/modprobe ipt_LOG
-# /sbin/modprobe ipt_limit
-# /sbin/modprobe ipt_state
+Also is it a right syntax to run module with flushtimeout=3D0?
+'insmod ipt_ULOG set flushtimeout=3D0"=20
 
-#/sbin/modprobe ipt_owner
-#/sbin/modprobe ipt_REJECT
-#/sbin/modprobe ipt_MASQUERADE
-#/sbin/modprobe ip_conntrack_ftp
-#/sbin/modprobe ip_conntrack_irc
-#/sbin/modprobe ip_nat_ftp
-#/sbin/modprobe ip_nat_irc
+Please respond on my email (too):  vladg@tx.technion.ac.il
 
-###########################################################################
-#
-# 3. /proc set up.
-#
+Thank you,
+  Vladimir
 
-#
-# 3.1 Required proc configuration
-#
+------=_NextPart_000_000D_01C31C70.4C694C70
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-echo "1" > /proc/sys/net/ipv4/ip_forward
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2723.2500" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>If I set flushtimeout=3D0 in ipt_ULOG =
+module&nbsp;how=20
+much milliseconds will pass after&nbsp;a message was</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>arrived to a linux host,&nbsp;that is =
+guaranteed to=20
+me that the message&nbsp;will be moved to the userspace?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I run linux on Intel box and I =
+saw&nbsp;the=20
+comments in ipt_ULOG.c code that: </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>"*&nbsp;&nbsp; Specify, after how many =
+clock ticks=20
+(intel: 100 per second) the queue<BR>&nbsp;* should be flushed even if =
+it is not=20
+full yet.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Does it mean that with flushtimeout=3D0 =
+it will be=20
+moved to userspace somewhere in interval between </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>0 and 10 ms? If it so can I somehow =
+accelerate=20
+it?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>and what means HZ&nbsp;variable =
+in:&nbsp;&nbsp;=20
+"static unsigned int flushtimeout =3D 10 * HZ;&nbsp;"</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Also is it a right syntax <FONT =
+face=3DArial=20
+size=3D2>to run module with flushtimeout=3D0?</FONT></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>'insmod ipt_ULOG set flushtimeout=3D0" =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Please respond on my email (too):&nbsp; =
+<A=20
+href=3D"mailto:vladg@tx.technion.ac.il">vladg@tx.technion.ac.il</A></FONT=
+></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thank you,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp; =
+Vladimir</FONT></DIV></BODY></HTML>
 
-#
-# 3.2 Non-Required proc configuration
-#
-
-#echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter
-#echo "1" > /proc/sys/net/ipv4/conf/all/proxy_arp
-#echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-
-###########################################################################
-#
-# 4. rules set up.
-#
-
-#
-# Cleanup and set initial policies
-#
-
-# Set policies
-$IPTABLES -t filter -P INPUT DROP
-$IPTABLES -t filter -P OUTPUT DROP
-$IPTABLES -t filter -P FORWARD DROP
-
-$IPTABLES -t nat -P PREROUTING ACCEPT
-$IPTABLES -t nat -P POSTROUTING ACCEPT
-$IPTABLES -t nat -P OUTPUT ACCEPT
-
-$IPTABLES -t mangle -P PREROUTING ACCEPT
-$IPTABLES -t mangle -P OUTPUT ACCEPT
-
-# flush old chains
-$IPTABLES -t filter -F
-$IPTABLES -t nat -F
-$IPTABLES -t mangle -F
-
-# delete user defined chains
-$IPTABLES -t filter -X
-$IPTABLES -t nat -X
-$IPTABLES -t mangle -X
-
-
-#
-# 4.1.4 INPUT chain
-#
-
-# $IPTABLES -A INPUT -p tcp -j bad_tcp_packets
-
-# we trust INTIF and LOIF, to a large degree
-$IPTABLES -A INPUT -p ALL -i $INTIF -s $INTLAN -j ACCEPT
-$IPTABLES -A INPUT -p ALL -i $LOIF -s $LOIP -j ACCEPT
-$IPTABLES -A INPUT -p ALL -i $LOIF -s $INTIP -j ACCEPT
-$IPTABLES -A INPUT -p ALL -i $LOIF -s $EXTIP -j ACCEPT
-
-# we take broadcast packages from INTIF
-$IPTABLES -A INPUT -p ALL -i $INTIF -s 0.0.0.0 -d 255.255.255.255 -j ACCEPT
-
-# JSUN: can we just use a simplified version?
-#$IPTABLES -A INPUT -p ALL -i $INTIF -j ACCEPT
-#$IPTABLES -A INPUT -p ALL -i $LOIF -j ACCEPT
-
-
-# established connections can go through
-$IPTABLES -A INPUT -p ALL -d $EXTIP -m state --state ESTABLISHED,RELATED \
-	-j ACCEPT
-
-# initiation packets are allowed on selected TCP ports
-$IPTABLES -A INPUT -p TCP --syn -s 0/0 --dport ssh -j ACCEPT
-$IPTABLES -A INPUT -p TCP --syn -s 0/0 --dport smtp -j ACCEPT
-$IPTABLES -A INPUT -p TCP --syn -s 0/0 --dport http -j ACCEPT
-#$IPTABLES -A INPUT -p TCP --sync -s 0/0 --dport https -j allowed
-
-# JSUN: do we need to worry about ntp port?  We will see
-
-# only take echo-request(8), echo-reply(0) and time-exceeded(11) for icmp
-$IPTABLES -A INPUT -p ICMP -s 0/0 --icmp-type echo-reply -j ACCEPT
-$IPTABLES -A INPUT -p ICMP -s 0/0 --icmp-type echo-request -j ACCEPT
-$IPTABLES -A INPUT -p ICMP -s 0/0 --icmp-type time-exceeded -j ACCEPT
-
-#
-# If you have a Microsoft Network on the outside of your firewall, you may 
-# also get flooded by Multicasts. We drop them so we do not get flooded by 
-# logs
-#
-#$IPTABLES -A INPUT -i $EXTIF -d 224.0.0.0/8 -j DROP
-
-#
-# Log weird packets that don't match the above.
-#
-
-# exclude some annoying packets from logging
-$IPTABLES -A INPUT -d $EXTBROAD -j DROP 
-$IPTABLES -A INPUT -d $BROADCAST -j DROP 
-
-$IPTABLES -A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
-	--log-level $DEBUG_LEVEL --log-prefix "IPT INPUT packet died: "
-
-#
-# 4.1.5 FORWARD chain
-#
-
-# Accept the packets we actually want to forward
-$IPTABLES -A FORWARD -i $INTIF -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Log weird packets that don't match the above.
-$IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG \
-	--log-level $DEBUG_LEVEL --log-prefix "IPT FORWARD packet died: "
-
-#
-# 4.1.6 OUTPUT chain
-#
-
-# Special OUTPUT rules to decide which IP's to allow.
-$IPTABLES -A OUTPUT -p ALL -s $LOIP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $INTIP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $EXTIP -j ACCEPT
-
-# Log weird packets that don't match the above.
-$IPTABLES -A OUTPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
-	--log-level $DEBUG_LEVEL --log-prefix "IPT OUTPUT packet died: "
-
-######
-# 4.2 nat table
-#
-
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to-source $EXTIP
-
---------------000307010208040606080908--
+------=_NextPart_000_000D_01C31C70.4C694C70--
 
 
