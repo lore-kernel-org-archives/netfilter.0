@@ -1,8 +1,8 @@
-From: "Paul Albert" <palbert@rovingplanet.com>
-Subject: RE: Seeing all packets
-Date: Tue, 17 Jun 2003 17:47:50 -0600
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Using IPTABLES, cannot go to External Interface
+Date: Wed, 18 Jun 2003 09:11:04 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <661F9268BBA8CB4EB92CC12B8C42F06901F64E@pluto.rovingplanet.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6ED3@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,55 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.netfilter.org
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Perhaps my definition of session isn't correct.  Is the definition of
-session a connection, ie. Something that I can see in
-/proc/net/ip_conntrack?  I would like to firewall all of the traffic
-that the connection is sending and receiving so that if I were to
-dynamically put a policy in place I would disrupt a streaming
-connection, say.
+> there won't be anyone to answer ARP requests on them
+oh ok, well we have (unfortunately) a router in front of our firewall =
+which I've added host routes to go via the firewall for those =
+destinations. Just made it easier for me and I didn't have to worry =
+about multiple IPs on the firewall as they are routed to it. Probably =
+not a clean way but better than adding 32+ IPs to a firewall... not sure =
+what the Linux limit was so this was the safest way for me.
 
-So if the packets bypass the NAT table, do they definitely go to the
-filter table?
-Is there a POM module that will allow me to do DNAT from another table
-than NAT?  I thought that I saw one listed, but I could not find it.
-
-Regards,
-Paul
-
+Just for your information.
 
 -----Original Message-----
-From: Ramin Dousti [mailto:ramin@cannon.eng.us.uu.net]=20
-Sent: Tuesday, June 17, 2003 5:14 PM
-To: Paul Albert
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Seeing all packets
+From: Cedric Blancher [mailto:blancher@cartel-securite.fr]
+Sent: Monday, June 16, 2003 11:41 PM
+To: George Vieira
+Cc: Netfilter (E-mail)
+Subject: RE: Using IPTABLES, cannot go to External Interface
 
-
-Once the NAT rule kicks in for certain session all the subsequent
-packets of that session would bypass the nat rules...
-
-Ramin
-
-On Tue, Jun 17, 2003 at 02:38:55PM -0600, Paul Albert wrote:
-
-> Hi -
->=20
-> I'm trying to do some firewalling on every packet that goes through=20
-> our firewall.  We're doing our filtering in the PREROUTING chain (not=20
-> recommended, I realize), because we must do our firewalling to=20
-> determine whether we need to NAT a request.  There are times when the=20
-> NAT PREROUTING chain is bypassed, and I'm not exactly sure why.  The=20
-> docs say that "it will be bypassed in certain cases," however I cannot
-
-> determine what these cases are.
->=20
-> Why are the packets getting sent past the NAT PREROUTING chain? Is=20
-> there a way to send all of the data through this chain?
->=20
-> Regards,
-> Paul
->=20
 
