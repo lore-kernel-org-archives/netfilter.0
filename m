@@ -1,10 +1,14 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: tcpdump and Iptables
-Date: Fri, 3 Sep 2004 07:27:00 -0700
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: "No Route: Rusty's brain broke" ??????
+Date: Fri, 3 Sep 2004 10:35:24 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <7EACCDBB65D37443912D80713CC1245D02382AE9@fsnsab20.losangeles.af.mil>
+Message-ID: <200409031035.25051.Alistair@nerdnet.ca>
+References: <200409031401.i83E1R53004651@webmail2.magma.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200409031401.i83E1R53004651@webmail2.magma.ca>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,92 +19,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
-
-
-oops,,,sorry list i forgot to mention that one should
-manipulate SO_BROADCAST option on UDP sockets.
-
-this doesnt work on TCP so you are on your own on that one..
-
-ignore the bogus manner in which it treats bcast addresses.
-
-the other info is worth the trade off.
-
-v/r
-~piranha
-
------Original Message-----
-From: piranha
-Sent: Friday, September 03, 2004 7:23 AM
-To: 'Netfilter Mailing List'
-Subject: RE: tcpdump and Iptables
-
-
-netcat (nc shows up under ps) might be usefull...
-
-itsa net utility which does I-O across connex using tcp/ip.
-
-it can make its paths or driven by other programs like ssh.
-
-its got a lot of debug and discovery modules in it so it can (and has)
-create
-almost any kind of connection..........and some other `interesting
-built-ins`.
-
-does:
-
-any tcp or udp 
-any direction
-any tcp port
-any udp port
-
-sound godd...wait ther's more..
-
-tunnel with any/all params on/off.
-excellent at port-scanning YOUR own networks
-clock controlled buffered send-mode like 1 every X seconds
-hexdump
-std<err,out> available which means this stuff can be send to tthe syslogs if
-desired.
-
-
-and as usual mileage will vary.....make sure you have permission to do this
-if you aint sure ask again...
-
-nufsaid.
-
-v/r,
-~piranha
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Nick Drage
-Sent: Friday, September 03, 2004 3:23 AM
 To: netfilter@lists.netfilter.org
-Subject: Re: tcpdump and Iptables
+
+On September 3, 2004 10:01 am, dravya wrote:
+> Hi all,
+>
+> I have two ppp connections setup and I want access the internet via these
+> links.... However, I get the error message "kernel: No Route: Rusty's brain
+> broke".
+>
+> Is there a patch associated with this.... or can you suggest any fixes...
+>
+> Why would something like this happen??? Is this a problem with the
+> ipt_MASQUERADE.c code???
+>
+> any tips or suggestions are much appreciated.
+>
+> Thanks
+>
+	I think you need to look at your routing setup ...:
+	I believe this is a ROUTING error.  Not sure what caused it:
 
 
-On Fri, Sep 03, 2004 at 08:41:42AM +0800, cc wrote:
-> Nick Drage wrote:
+	 if (ip_route_output_key(&rt, &fl) != 0) {
+                        /* Funky routing can do this. */
+                        if (net_ratelimit())
+                                printk("MASQUERADE:"
+                                       " No route: Rusty's brain broke!\n");
+                        return NF_DROP;
+                }
 
-> >>If I have iptables running and I do a tcpdump -i eth0,   at what
-> >>point is tcpdump listening to the connection?
-> >
-> >tcpdump will see the packets before IPTables does anything to them.
-> 
-> Thanks NIck for the info.  Exactly what I wanted to know.
 
-Thanks... though Jason's explanation was rather better :)
+	Looks like ipt_MASQUERADE.c can't find a logical route for your packet.
 
-tcpdump is an excellent tool, but ( excuse me if I'm stating the obvious
-), don't underestimate the usefulness of the logging rules in IPTables
-combined with 
+	I take it you are trying to bind the two ppp connections into one?
 
-tail -f /var/log/$logfile | grep $string_you_are_looking_for
+	Someone else on the list will be better able to advise you on how to do 
+that... but it DOES require some work beyond the scope of iptables.
 
--- 
-mors omnia vincit
+
+	Alistair Tonner
+
+	
+
+
+> Dravya
 
