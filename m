@@ -1,8 +1,8 @@
-From: "Nikolai Dahlem" <Nikolai.Dahlem@epygi.de>
-Subject: UDP-conntrack/nat question
-Date: Thu, 25 Sep 2003 09:13:08 +0200
+From: Duane Cloud <cloud@cray.com>
+Subject: Question about a kernel module adding an iptables rule...
+Date: Thu, 25 Sep 2003 14:52:06 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DAELKAPIKOFAFFKELNHOIEADCAAA.Nikolai.Dahlem@epygi.de>
+Message-ID: <200309251952.h8PJq6f13018@kumo.us.cray.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,51 +16,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hi,
+Hello,
 
-I'm trying to conntrack/nat a udp-based protocol with a server listening on
-port x. My problem is, that the conntrack-helper sees all incoming and
-outgoing packets of the control connection, while the nat-helper is only
-called for outgoing packets. Due to the nature of the protocol I need
-IP_NAT_HELPER_F_ALWAYS to mangle the contents of both outgoing and incoming
-packets (even when there are no expected connections).
+I was wondering if there was a simple way for a kernel module
+to create a NAT rule "on the fly".  For example, a TCP connection
+request (i.e. SYN packet) is received by its destination host,
+and that host (for whatever reason) wants a different host to
+service this connection...
 
-The scenario is the following:
+I've got a kernel module listening for these "connection redirects"
+on the gateway into the complex, and would like it to be able to
+insert a rule into the NAT table then send the packet up to ip_rcv()
+such that this specific connection will end up being NAT'd to the
+other host.
 
-PC1 -> MASQ -> server
+Is there a simple way to accomplish this?  I was hoping there
+would be an insert_rule() function, but it looks like the tables
+are modified by a doing a get_table(), modify the local copy, then
+replace_table().
 
-The conntrack module gets a packet from PC1 (src port x, dst port x) and
-parses the protocol.
-The nat_module mangles the packet content and the packet is send of to the
-server with the source address of MASQ (src port x, dst port x).
-The conntrack_module receives a packet from Server (src port: high, dst port
-x) and parses the protocol.
-The nat_module isn't called.
+Any help you could pass onto me would be greatly appreciated!
 
-I reqister my modules with the following tuples:
-
-nat_module:
-hlpr->tuple.dst.protonum = IPPROTO_UDP;
-hlpr->tuple.src.u.udp.port = port x;
-hlpr->mask.src.u.udp.port = 0xFFFF;
-hlpr->mask.dst.protonum = 0xFFFF;
-hlpr->flags = IP_NAT_HELPER_F_ALWAYS;
-
-conntrack_module:
-hlpr->tuple.src.u.udp.port = port x;
-hlpr->tuple.dst.protonum = IPPROTO_UDP;
-hlpr->mask.src.u.udp.port = 0xFFFF;
-hlpr->mask.dst.protonum = 0xFFFF;
-
-
-/proc/net/ip_conntrack lists both connections (answer&reply) as unreplied.
-Can someone explain to me why the reply is seen as a new connection ?
-
-
-regards
-
-Nikolai Dahlem
-
+Thank you,
+Duane Cloud
 
