@@ -1,10 +1,9 @@
-From: seberino@spawar.navy.mil
-Subject: How multiple PCs on private LAN possible if incoming is DNAT'd to
-	*same* server *always*?
-Date: Thu, 3 Feb 2005 09:25:00 -0800
-Message-ID: <20050203172500.GB29677@spawar.navy.mil>
+From: <hamals@infinito.it>
+Subject: web client in DMZ
+Date: Thu, 03 Feb 2005 18:32:55 +0100
+Message-ID: <web-43792939@infinito.it>
 Mime-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +14,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I got an iptables script for a NAT-ing firewall that
-forwards packets between Internat and a private LAN.
 
-All incoming packets are destination NAT'd to end up
-at a single server on the private LAN.
+I've some server in my DMZ zone and they are perfectly 
+working from outside, but if I want reach my web server 
+from a client that I putted in DMZ too, it doesn't 
+work...why?
 
-**I don't understand how ANY packets can ever arrive
-at ANY other PC on the private LAN since they
-are ALL destination NAT'd to go to same private server IP
-address!?!?**
+ From client in my LAN I reach my server web by a DNAT in 
+prerouting chain but if I do the same with client in DMZ 
+it will not work...
 
-If some arbitrary client on private LAN wants to visit
-a web page, somehow his traffic arrives back at himself
-without any specific NAT rules to get packets to him!??
+someone could help me?
+_______________________________________
+Connessione ed e-mail gratuita da 10 mb
+consultabile tramite web e tramite pop.
+www.infinito.it vieni a scoprire tutti 
+i nostri servizi!
 
-I know it has something to do with ESTABLISHED,RELATED
-state ACCEPT-ing rules but this has always confused me.
+http://www.infinito.it/xmail
 
-Do you understand the question?
-
-Any help greatly appreciated.
-
-Sincerely,
-
-Chris
 
