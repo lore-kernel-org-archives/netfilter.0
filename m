@@ -1,11 +1,15 @@
-From: "Stephan Kessler" <stephankessler@gmx.de>
-Subject: Server can't send :-/
-Date: Wed, 3 Sep 2003 09:41:53 +0200
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: ipt_string problems and FAQ
+Date: 03 Sep 2003 15:16:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002b01c371ee$db4b0db0$0000fea9@kessler.local>
+Message-ID: <1062595005.18242.12.camel@kermit>
+References: <200308271319.29439.tabris@tabris.net>
+	 <Pine.LNX.4.51.0309011300560.32229@dns.toxicfilms.tv>
+	 <20030903084352.GB5028@localnet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030903084352.GB5028@localnet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,24 +19,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: sr@gimp.org
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-<-sorry for double mail, i just got mixed up with my Mail Adresses sorry
-->
+Am Mit, 2003-09-03 um 10.43 schrieb Sven Riedel:
 
-Hi List,
+> I thought iptables collects all fragments and reassembles the packet
+> before applying any rules? Or am I dead wrong here?=20
+Only if the ip_conntrack.o module is loaded.
 
-I got that Configuration of my Firewall:
-http://warpy.yomeganet.biz/fw.txt
+Cheers,
 
-It seemed to be nice, everything worked but then i tried to initiate
-outbound Traffic from my Server via SSH. The result: I can't establish
-any connection from my to an another, except DNS (via UDP?). What did i
-wrong?
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-Thank you in advance!
-
-Stephan
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
