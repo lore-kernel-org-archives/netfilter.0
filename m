@@ -1,10 +1,13 @@
-From: "Martin Leduc" <marled3@hotmail.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Problem behind my DMZ
-Date: Fri, 09 Jan 2004 09:54:42 +0000
+Date: Fri, 9 Jan 2004 10:57:18 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law9-F354jsKlkag7KO00012b91@hotmail.com>
+Message-ID: <200401091057.19282.Antony@Soft-Solutions.co.uk>
+References: <Law9-F354jsKlkag7KO00012b91@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Law9-F354jsKlkag7KO00012b91@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,94 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: ramin@cannon.eng.us.uu.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> > Good evening folks,
-> >
-> > Sorry to answer you so late, and thank you for your informations.  I'm 
->so
-> > exited, I have make test and, basicly, it's working.  Tomorow is the
-> > official test.  I keep you informed.
-> >
-> > The only thing I can't figure out is the /32 netmask address for an 
->address
-> > having a /28.  Why dont put the /28?
-> >
-> > Of course I try it but the route program have reject this entries.  Can 
->you
-> > explain to me?
-> >
-> > Other thing.  It is possible than I can't reach other machine placed 
->before
-> > the firewall BOX having address IP in the same range than my firewall 
->box
-> > after having put the /32 host in my route table?
-> >
-> > Example:
-> > 192.168.1.1  ISP GAteway
-> > 192.168.1.2  Server (Any kind)
-> > 192.168.1.3  Firewall BOX (Eth0)
-> > 192.168.1.3  Firewall BOX (eth1)
-> > 192.168.1.4  Server Behind Firewall BOX
-> >
-> > Ping Test result
-> > ---------------------------
-> > 192.168.1.4 can reach 192.168.1.3
-> > 192.168.1.4 can reach 192.168.1.1
-> > 192.168.1.4 can't reach 192.168.1.2
-> >
-> > In the same test
-> >
-> > 192.168.1.2 can reach 192.168.1.1
-> > But not 1.3 and 1.4
-> >
-> > I ask that because if I check my DSL route table, I see the same
-> > configuration like
-> >
-> > Destination     Gateway         Genmask         Flags Metric Ref    Use
-> > Iface
-> > 67.68.140.1     0.0.0.0         255.255.255.255 UH    0      0        0 
->ppp0
-> > 192.168.1.1   0.0.0.0         255.255.255.0   U     0      0        0 
->eth0
-> > 127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 
->lo
-> > 0.0.0.0         67.68.140.1     0.0.0.0         UG    0      0        0 
->ppp0
-> >
-> > I can ping 67.68.140.1, .2, .3, .4, .5, etc....
-> >
-> > Can you explain?
+On Friday 09 January 2004 9:54 am, Martin Leduc wrote:
+
+> > Is your IP forwarding turned on?
 >
->Is your IP forwarding turned on?
+> Yes, it is.  Can you explain to me why /32 against /28 netmask, or tell me
+> where I can get the documentation?
 
-Yes, it is.  Can you explain to me why /32 against /28 netmask, or tell me 
-where I can get the documentation?
+The /32 and /28 netmasks operate quite simply:
 
->
-> >
-> >
-> > Now the configuration :D
->
->Please use the "ip" utility instead of ifconfig/route/arp/... It's much 
->easier
->and more powerful...
+On one interface you use a /32 netmask, which means there is only one 
+accessible IP on that network - that of the router leading to the Internet.
 
-Ok I will tried, but is not installed by default with slackware.  I will 
-search where I can get it.
+On the other interface you use a /28 netmask, which means there are 16 IP 
+addresses (14 usable) accessible on that network.
 
->
->Ramin
+Linux uses its routing table entries from most specific to least specific, so 
+if a packet for the one IP address on the /32 network needs to be routed, it 
+will go in the direction of the Internet.   If a packet for any other address 
+in your public IP range needs to be routed, it won't match the /32 but it 
+will match the /28, so it will go to the internal network.
 
-Regards and thanks in advance
+The fact that the two network ranges overlap does not matter (despite what you 
+may read in introductory networking books - this is beyond introductory 
+networking).
 
-Martin
+Regards,
 
-_________________________________________________________________
-MSN Search, le moteur de recherche qui pense comme vous !  
-http://fr.ca.search.msn.com/
+Antony.
+
+-- 
+Documentation is like sex.
+When it's good, it's very very good.
+When it's bad, it's still better than nothing.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
