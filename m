@@ -1,14 +1,13 @@
-From: Victor Julien <victor@nk.nl>
-Subject: Re: Gate rules, is this OK
-Date: Tue, 6 Jul 2004 17:08:05 +0200
+From: "Brent Clark" <bclark@eccotours.biz>
+Subject: RE: Gate rules, is this OK
+Date: Tue, 6 Jul 2004 17:32:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407061708.06000.victor@nk.nl>
-References: <HAEOIFPIBBBLGLHOMLLIMENCCCAA.bclark@eccotours.biz>
+Message-ID: <HAEOIFPIBBBLGLHOMLLIAENECCAA.bclark@eccotours.biz>
+References: <200407061708.06000.victor@nk.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HAEOIFPIBBBLGLHOMLLIMENCCCAA.bclark@eccotours.biz>
-Content-Disposition: inline
+In-Reply-To: <200407061708.06000.victor@nk.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,12 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Victor Julien <victor@nk.nl>, netfilter@lists.netfilter.org
+
+Thanks
+
+This is just what ive been looking for
+
+Kind Regards
+Brent Clark
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Victor Julien
+Sent: Tuesday, July 06, 2004 5:08 PM
 To: netfilter@lists.netfilter.org
-Cc: Brent Clark <bclark@eccotours.biz>
+Cc: Brent Clark
+Subject: Re: Gate rules, is this OK
+
 
 Hi Brent,
 
-This is a nice tutorial. It has a few example scripts and some good 
+This is a nice tutorial. It has a few example scripts and some good
 explanations...
 
 http://iptables-tutorial.frozentux.net/iptables-tutorial.html
@@ -41,7 +55,8 @@ On Tuesday 06 July 2004 16:58, Brent Clark wrote:
 > I came across this link
 > http://www.linuxhomenetworking.com/linux-hn/iptables-intro.htm.
 >
-> Does can anyone be so kind as to give me some feedback, more pointers, what
+> Does can anyone be so kind as to give me some feedback, more pointers,
+what
 > you think etc.
 >
 > Anything would be appeciated
@@ -73,14 +88,16 @@ On Tuesday 06 July 2004 16:58, Brent Clark wrote:
 > > Also, I see that on my FW i cant resolve DNS queries.
 > > If I do a simple apt-get update (debian box). I get all this resolving
 > > error.
-> > Weird thing is though, my other linux workstation (also debian ), browses
+> > Weird thing is though, my other linux workstation (also debian ),
+browses
 > > the net, updates perfectly.
 > >
 > > Thanks in advance.
 > > Kind Regards
 > > Brent Clark
 >
-> ===========================================================================
+>
+===========================================================================
 >
 > >= ========
 > > #!/bin/sh
@@ -132,7 +149,8 @@ On Tuesday 06 July 2004 16:58, Brent Clark wrote:
 > problem described above...
 >
 > > #Allowing me to ping from here
-> > /sbin/iptables -A OUTPUT -p icmp --icmp-type ping -m state --state NEW -j
+> > /sbin/iptables -A OUTPUT -p icmp --icmp-type ping -m state --state
+NEW -j
 > > ACCEPT
 > >
 > > #Allow access to port 22
@@ -226,4 +244,6 @@ On Tuesday 06 July 2004 16:58, Brent Clark wrote:
 >
 > Hope this helps,
 > Victor
+
+
 
