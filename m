@@ -1,12 +1,11 @@
-From: "Keller Nicolas" <nicolas.keller@slb.de>
-Subject: Multiple Source Addresses
-Date: Tue, 15 Apr 2003 18:28:41 +0200
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: RE: Packet Sniffing
+Date: Tue, 15 Apr 2003 13:04:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <22FCCF057850DB48B98178E1811374830DA6D9@slra07.slb.de>
+Message-ID: <ABEKJILKOKKGGDJKHKDFIEKJCAAA.patrick@vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +16,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-Hi!
+Know of any good packet sniffer's? tcp dump with Ethereal is great, but is
+it possible to set up reports from that? I need software that will be able
+to print a report of who was looking at what web pages... and then be able
+to print out weekly reports for each employee or "IP waster" as I call them
+=). The boss is tired of employees lookin at porn during work =).
 
-I want to log every packet that *doesn't* come from IP1 and IP2 (because
-these two hosts should be the only one that communicate with the
-Firewall). Up to now I couldn't figure out a way to do this, as it is
-NOT possible to include multiple source addresses in one line, like
-this:
+Thanks,
+Patrick
 
-iptables -A INPUT -s !192.168.43.1 !192.168.43.2 -j LOG
 
-Anyone can show me a way to get this to work?
-
-Thank you very much!
-
-Nicolas Keller
 
