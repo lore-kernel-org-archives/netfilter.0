@@ -1,12 +1,16 @@
-From: "Lionel Duboeuf" <lionel.duboeuf@adpsa12.org>
-Subject: UDP port closed in an http request
-Date: Tue, 21 Jan 2003 16:04:05 +0100
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: 1:1 NAT
+Date: 22 Jan 2003 08:50:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002101c2c15e$5bb17bc0$0c1ca8c0@LionelDuboeuf>
-Reply-To: "Lionel Duboeuf" <lionel.duboeuf@adpsa12.org>
+Message-ID: <1043218220.1543.78.camel@rayw.knowledgefactory.co.za>
+References: <001301c2c166$2c7671a0$1e01a8c0@win2k.com>
+	 <1043212908.1541.67.camel@rayw.knowledgefactory.co.za>
+	 <1043217751.668.75.camel@tux.rsn.bth.se>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Zfn3dMLnvzda2OsUNk4n"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1043217751.668.75.camel@tux.rsn.bth.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +20,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Dear all,
-
-Trying to explain my problem:
-I've Linux Mandrake 8.0
-
-I use iptables for filtering but this problem still exist with transforming
-my linux box in a client of a network:
-
-i can ping 193.252.19.189 but not www.wanadoo.fr
-i can dig or nslookup www.wanadoo.fr which reports me 193.252.19.189
-of course while i'm doing http://193.252.19.189 everythings works fine but
-http://www.wanadoo.fr not.
-
-my nameservers are OK ( 193.252.19.3 and .4 in resolv.conf)
-
-I dumped the tcpdump result which give me a udp port unreachable:
-(FJT hostname of my linuxbox, 192.168.01 is my gateway)
-
-09:59:18.882158 FJT.32859 > 193.252.19.3.domain: 32456+ A? www.wanadoo.fr.
-(32) (DF)
-
-09:59:18.883391 FJT.32860 > 193.252.19.3.domain: 30805+ PTR?
-3.19.252.193.in-addr.arpa. (43) (DF)
-
-09:59:18.945537 192.168.0.1.domain > FJT.32859: 32456* 1/2/2 A
-193.252.19.189 (115) (DF)
-
-09:59:18.945582 FJT > 192.168.0.1: icmp: FJT udp port 32859 unreachable (DF)
-[tos 0xc0]
-
-09:59:18.949660 192.168.0.1.domain > FJT.32860: 30805* 1/2/2 (138) (DF)
-
-09:59:18.949678 FJT > 192.168.0.1: icmp: FJT udp port 32860 unreachable (DF)
-[tos 0xc0]
-
-09:59:23.878466 arp who-has 192.168.0.1 tell FJT
-
-09:59:23.878693 arp reply 192.168.0.1 is-at 0:a0:65:b5:71:5e
+To: Martin Josefsson <gandalf@wlug.westbo.se>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-any help would be very nice.
-Thanks a lot
+--=-Zfn3dMLnvzda2OsUNk4n
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Lionel Duboeuf
+On Wed, 2003-01-22 at 08:42, Martin Josefsson wrote:
+> On Wed, 2003-01-22 at 06:21, Raymond Leach wrote:
+> > There is a patch-o-matic patch called SAME which does 1:1 NAT.
+> >=20
+> > iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -j SAME
+> > 196.4.160.0/24
+>=20
+> No it doesn't.
+>=20
+> you are thinking of NETMAP not SAME.
+OK. Sorry ... what does SAME do?
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
 
+--=-Zfn3dMLnvzda2OsUNk4n
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
+iD8DBQA+Lj8sh1fuR/Bv+ygRAirwAKC2iFwnd4DM368TlDQZct9z94GjGgCdHnl3
+h5vzBqV9f8lHP3UiZoRgJU4=
+=rEh/
+-----END PGP SIGNATURE-----
+
+--=-Zfn3dMLnvzda2OsUNk4n--
 
 
