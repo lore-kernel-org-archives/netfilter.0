@@ -1,12 +1,13 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Problem with ssh
-Date: Wed, 25 Aug 2004 08:31:30 -0400
+From: Markus Linden <markus@drinklist.org>
+Subject: Re: Problem with ssh
+Date: Wed, 25 Aug 2004 13:32:24 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512CD@asimail2.alphanumeric.com>
+Message-ID: <1093437143.2946.178.camel@apan.drinklist.org>
+References: <412C8590.8030900@4Dllc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <412C8590.8030900@4Dllc.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +18,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Steve Comfort <steve@4Dllc.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-> Hi all,
->
-> First off, a feeble attempt at diagramming my setup :
->
-> 192.168.200.x   eth -> eth  Embedded Linux Wireless  ppp -> ppp =
-Embedded
-> Linux Access Point eth0 -> 192.168.1.x
->
-> The two Embedded Linux Wireless boxes are actually what I am working =
-on.
-> The second one in the list above is configured as a bridge, and =
-doesn't
-> currently have any firewalling (because I haven't figured out whether =
-I
-> need ebtables or iptables, but that's another story).
->
-> The client side wireless box (on the left) has the following rule in =
-it :
->
-> $IPTABLES -A bad_tcp_packets -i $INET_IFACE -s 192.168.200.0/16 -j =
-DROP
+On Wed, 2004-08-25 at 13:26, Steve Comfort wrote:
+> The client side wireless box (on the left) has the following rule in it :
+> 
+> $IPTABLES -A bad_tcp_packets -i $INET_IFACE -s 192.168.200.0/16 -j DROP
 
-192.168.200.0/16 =3D=3D 192.168.0.0 - 192.168.255.255
+Look at your netmask, should be /24 not a /16?
 
-try using 192.168.200.0/24; and if that wasn't a typo, reading up on IP =
-subnetting.
-
--j
+Markus
 
