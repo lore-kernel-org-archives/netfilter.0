@@ -1,12 +1,12 @@
-From: "Aldo S. Lagana" <alagana@discmail.com>
-Subject: RE: Argh!  I'm kicking myself
-Date: Fri, 19 Dec 2003 15:59:32 -0500
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Argh!  I'm kicking myself
+Date: Fri, 19 Dec 2003 17:06:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312192059.hBJKxgYg009761@discmail.com>
+Message-ID: <20031219220626.GF17702@cannon.eng.us.uu.net>
 References: <015b01c3c670$99b77600$3dc2a70a@melita.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 In-Reply-To: <015b01c3c670$99b77600$3dc2a70a@melita.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,34 +18,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Ian Hunter' <ihunter@hunterweb.net>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Ian Hunter <ihunter@hunterweb.net>
+Cc: netfilter@lists.netfilter.org
 
-I KNOW you can have always used the PROTOCOL numbers but the names may have
-been recently implemented...as far as where it is documented - in the
-frees/wan docs - it talks about the types of rules which you will need in
-iptables..
+On Fri, Dec 19, 2003 at 03:42:21PM -0500, Ian Hunter wrote:
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Ian Hunter
-Sent: Friday, December 19, 2003 3:42 PM
-To: netfilter@lists.netfilter.org
-Subject: Argh! I'm kicking myself
+> For days now I've been trying to figure out how to recompile my Redhat
+> 2.4.20-24.9 kernel to allow masquerading IPSec ESP traffic.  I ran the
 
-For days now I've been trying to figure out how to recompile my Redhat
-2.4.20-24.9 kernel to allow masquerading IPSec ESP traffic.  I ran the
-much-vaunted "grep -i masq /proc/ksyms" and to my chagrin got nothing back,
-but on a lark decided I'd try "iptables -A FORWARD -t nat -i ppp0 -p esp -j
-ACCEPT" just to see if it would fly and it did.  Of course.  And now you're
-all laughing at me.
+"allow masquerading IPSec ESP traffic" ?? Or just allow forwarding the
+IPsec traffic?
 
-Where is this documented, that gre, esp, ah, and the like are acceptable
-protocols?  The docs mention icmp, tcp, and udp only.
+> much-vaunted "grep -i masq /proc/ksyms" and to my chagrin got nothing back,
+> but on a lark decided I'd try "iptables -A FORWARD -t nat -i ppp0 -p esp -j
+> ACCEPT" just to see if it would fly and it did.  Of course.  And now you're
+> all laughing at me.
+> 
+> Where is this documented, that gre, esp, ah, and the like are acceptable
+> protocols?  The docs mention icmp, tcp, and udp only.
 
-Is there such a document, or have I discovered a particular cover of the
-netfilter doc-hole?
+Which doc?
 
-Ian
+> 
+> Is there such a document, or have I discovered a particular cover of the
+> netfilter doc-hole?
 
+man iptables:
 
+...
+       -p, --protocol [!] protocol
+              The protocol of the rule or of the packet to check.  The  speci-
+              fied protocol can be one of tcp, udp, icmp, or all, or it can be
+              a numeric value, representing one of these protocols or  a  dif-
+              ferent  one.   A  protocol  name  from  /etc/protocols  is  also
+              allowed.  A "!" argument before the protocol inverts  the  test.
+              The  number  zero is equivalent to all.  Protocol all will match
+              with all protocols and is taken as default when this  option  is
+              omitted.
+...
+
+Ramin
+
+> Ian
+> 
 
