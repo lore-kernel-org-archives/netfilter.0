@@ -1,12 +1,12 @@
-From: uniplex <uniplex@maximum-linux.net>
-Subject: Re: question on rating SYN packets
-Date: Fri, 07 Feb 2003 19:48:03 +0000
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: Rate my rules. Take a look ICMP only
+Date: Fri, 7 Feb 2003 19:17:05 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E440D73.6010107@maximum-linux.net>
-References: <002b01c2cef4$74f9b860$3201a8c0@ESTACAO>
+Message-ID: <20030208031705.6754.qmail@web40202.mail.yahoo.com>
+References: <200302071825.49278.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200302071825.49278.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +16,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solucoesip.net>
-Cc: netfilter ML <netfilter@lists.samba.org>
-
-Leonardo Rodrigues Magalh=E3es wrote:
->     Hello Guys,
->=20
->     I'm trying to modify my script firewalls for not allowing a LOT of
-> connections being established on a specific port in a very small period=
- of
-> time. I know I could easily do this using a rule like:
->=20
-> iptables -A INPUT -p tcp --dport XX -m state --state NEW -m limit --lim=
-it
-> Y/s -j ACCEPT
->=20
->=20
->     Altough, with this rule, I would be globally limiting connections f=
-or
-> that specific port in Y connections per second. I would like to know if=
- it's
-> possible building a rule that would allow, for example, 1 SYN packet pe=
-r
-> second PER host. In this case, I wouldnt have a 'global' limit of SYN
-> packets. In fact, I would have a SYN limitation for EACH host.
->=20
->     Question: is it possible for building a rule like this ? Is there a=
-ny
-> filter on patch-o-matic tree that would allow this kind of rule ?
->=20
->=20
->     Sincerily,
->     Leonardo Rodrigues
->     Solu=E7=F5es IP
->=20
->=20
->=20
->=20
-
-this doesn't do rate limiting but it does limit the number of parallel=20
-connections from any one IP address. This example limits parallel=20
-connections to 10 per IP.
-
-iptables -A INPUT -i eth0 -p tcp --syn --dport XX -m iplimit=20
--iplimit-above 10 -j DROP
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
+--- Joel Newkirk <netfilter@newkirk.us> wrote:
+> On Friday 07 February 2003 06:11 pm, SBlaze wrote:
+> > Recently I created what I think are some pretty decent ICMP rules to
+> > allow me to trace and ping outside of my network but not allow the
+> > same kind of activities in...I think I did a pretty good job after
+> > reading the tutorial
+> >
+> > You guys be the judge and let me know if there was better way for this
+> > to be done.
+> >
+> > iptables -A INPUT -p ICMP -i eth0 -m state --state NEW  -j DROP
+> > iptables -A INPUT -p ICMP -i eth0 -m state --state ESTABLISHED,RELATED
+> > -j ACCEPT
+> > iptables -A OUTPUT -p ICMP -o eth0 -m state --state
+> > NEW,ESTABLISHED,RELATED -j ACCEPT
+> 
+> If you have DROP policy for INPUT you don't need the first rule, and the 
+> third should work just as well without any state matching at all. (The 
+> only additional state allowed through that ways is 'INVALID' which you 
+> should explicitly DROP if you are concerned about it)  
+> 
+> Regardless, you seem to have grasped how the state matches work, and how 
+> to use them to allow only desired connections.  These rules WILL impose 
+> the limitations you desire, so that rates as a success.
+> 
+> j
+> 
+
+I thought of creating a rule that will drop invalid requests.... but I somewhat
+worry about the "logability" of a single rule that would handle so much. If
+something is invalid I would like to somewhat isolate as much information about
+it as possible.
+
+These rules do that for me...
+
+# NMAP and Incoming connection Killer(SYN/RST)
+# NMAP Xmas Tree scan Killer ( God bless Google )
+# NMAP Null scan killer (got from a IPTABLES tutorial..confirmed via the web)
+# NMAP Stealth FIN scan killer (this one was a hard one to figure out)
+
+iptables -A INPUT -p tcp --syn -m state --state NEW -i eth0 -j DROP
+iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -i eth0 -j DROP
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -i eth0 -j DROP
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -i eth0  -j DROP
+
+The SYN/RST also stops all incoming connecctions that are not already related
+or  established.
+
+I also have limited logs for these rules. If say I just set up an ALL protocol
+INVALID drop line.... could I just comment out the above rules and have the
+INVALID drop the scans... and the others still log? Is there anything that
+slips through the INVALID targets these might catch? I guess I worry about can
+one line stop ALL the baddies coming in so to speak.. especially since i have
+grown to trust the above rules.
+
+Thanks to all out there reading and posting up
+
+
+
+
+=====
+"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
