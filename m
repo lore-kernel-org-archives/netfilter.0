@@ -1,14 +1,11 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: Command not working  in latest version
-Date: 17 Feb 2003 08:30:10 +0100
+From: "Jeff Cordova" <jqcordova@yahoo.com>
+Subject: POSTROUTING, ROUTING, & Traffic Control
+Date: Sun, 16 Feb 2003 21:06:52 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045467010.681.100.camel@tux.rsn.bth.se>
-References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E9@EXCHANGE>
-	 <002901c2d616$c41d6300$0100a8c0@nikita>
+Message-ID: <PPENJEBLIPFFNCAMFNJKEEAJCIAA.jqcordova@yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002901c2d616$c41d6300$0100a8c0@nikita>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,37 +16,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
-Cc: Khanh Tran <khanh@slc.edu>, Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Mon, 2003-02-17 at 00:54, Paulo J. Matos wrote:
+I have 2 machines (A & B) behind a Linux Firewall (FW).
+I have 2 ethernet cards on the FW - eth0 talks to the internet, eth1 talks
+to machines A & B.
+Machine A has lots of inbound & outbound traffic while machine B doesn't.
+It seems reasonable that I could add 2 new ethernet cards (eth2 & eth3) to
+the FW and by configuring iptables and/or routing tables force traffic on A
+to be handled by eth0/eth1 and traffic for B to be handled by eth2/eth3.
 
-> Hi Khanh,
-> 
-> I've compiled the kernel specifically like they said in your reference
-> except those new options of 2.4.20 but still I get 'Invalid Arguments' from
-> iptables 1.2.7a. What's Full NAT in kernel config, is that useful for
-> iptables?
-> 
-> I've run the line:
-> # iptables -v -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
-> SNAT all opt -- in * out eth1 0.0.0.0/0 -> 0.0.0.0/0 to:217.129.146.56
-> iptables: Invalid Argument
-> 
-> This is indeed strange. Do you have any idea of what could I do now?
-> 
-> Is there any other iptables command line with the same outcome?
+Can I do this? If possible, please give explicit details.
 
-I just have to put an end to this thread :)
+Thankyou,
 
-The solution is simple, recompile userspace iptables against your new
-kernel.
-A major NAT patch was included in 2.4.20 that breaks compability so you
-have to recompile userspace iptables against the new kernelheaders to
-get NAT working again (same for the owner match).
+Jeff Cordova
 
--- 
-/Martin
-
-Never argue with an idiot. They drag you down to their level, then beat you with experience.
 
