@@ -1,11 +1,14 @@
-From: Gianni Pucciani <gp.puccio@tin.it>
-Subject: A simple question
-Date: Tue, 06 Apr 2004 04:25:15 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: A simple question
+Date: Mon, 5 Apr 2004 23:40:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4072150B.8060400@tin.it>
+Message-ID: <200404052340.23077.Antony@Soft-Solutions.co.uk>
+References: <4072150B.8060400@tin.it>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4072150B.8060400@tin.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,124 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-I'm new to the use of iptable. I set this script for my home 
-workstation, but when I apply these rules anything stop functioning.
-I guess I'm doing something stupid but this is my very first time with 
-iptables, so sorry.
-I use my workstation that is behind an adsl router. My workstation has a 
-fixed ip, 192.168.1.2 and I'd like to use it for Tomcat server , ssh 
-server and general client features.Can anyone give me some help?
-Thanks
+On Tuesday 06 April 2004 3:25 am, Gianni Pucciani wrote:
 
-PS Comment are italian, but hope rules be quite clear...
+> Hi all,
+> I'm new to the use of iptable. I set this script for my home
+> workstation, but when I apply these rules anything stop functioning.
+> I guess I'm doing something stupid but this is my very first time with
+> iptables, so sorry.
 
+The major problem with your ruleset is that you have no rules in either your 
+INPUT or OUTPUT chains to allow reply packets.
 
-#!/bin/sh
-#G.P
-#last update 050404
-#Script di inizializzazione per settare un insieme di regole
-#di packet filtering tramite iptables.
+My recommendation is to start simple, and add things bit by bit.   Then if 
+something goes wrong, you only need to look at the (simple) thing you added 
+most recently.
 
-#definire le policy (comportamento di default)per le catene di default
-/sbin/iptables -P INPUT DROP #ogni pacchetto in ingresso scartato
-/sbin/iptables -P OUTPUT DROP #ogni pacchetto in uscita accettato
-/sbin/iptables -P FORWARD DROP #ogni pacchetto di passaggio scartato
+For a home workstation, try the following ruleset (which will allow more 
+traffic than you say you want, but is still secure from the outside world).
 
-#flush di tutte le catene
-/sbin/iptables --flush
+You can add more specific rules to allow only the correct traffic, and to 
+allow limited connections from the outside, as you want to.
 
-#elimina le catene
-/sbin/iptables -X miacatenain
-/sbin/iptables -X miacatenaout
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -j ACCEPT
 
+Regards,
 
-#creare una nuova catena
-/sbin/iptables -N miacatenain
-/sbin/iptables -N miacatenaout
+Antony.
 
-#aggiungere una regola a INPUT e OUTPUT per passare
-#dalle regole appena definite. Ogni pacchetto fa match e passa
-#alla catena 'miacatena' corrispondente
-/sbin/iptables -A INPUT -j miacatenain
-/sbin/iptables -A OUTPUT -j miacatenaout
+-- 
+Most people have more than the average number of legs.
 
-#######aggiungere le regole alla catena di ingresso#########
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-#ICMP
-#Consentire traffico icmp
-/sbin/iptables -A miacatenain -p icmp -j ACCEPT
-
-#CUPS
-#Consentire traffico cups in ingresso
-/sbin/iptables -A miacatenain -p tcp --dport 632 -j ACCEPT
-/sbin/iptables -A miacatenain -p udp --dport 632 -j ACCEPT
-
-
-##EDONKEY
-#Consentire traffico tcp alla porta 4663
-/sbin/iptables -A miacatenain -p tcp --dport 4663 -j ACCEPT
-/sbin/iptables -A miacatenain -p udp --dport 4663 -j ACCEPT
-
-#SSH
-#Consentire traffico ssh in ingresso
-
-/sbin/iptables -A miacatenain -p tcp --dport 22 -j ACCEPT
-/sbin/iptables -A miacatenain -p udp --dport 22 -j ACCEPT
-
-#TOMCAT
-#Consentire traffico web in ingresso x Tomcat da ufficio
-/sbin/iptables -A miacatenain -p tcp --dport 8080 -d 192.168.1.2 -s 
-131.114.136.26 -j ACCEPT
-
-#Consentire traffico web in ingresso x Tomcat da rete locale
-/sbin/iptables -A miacatenain -p tcp --dport 8080 -d 192.168.1.2 -s 
-192.168.1.0/255.255.255.0 -j ACCEPT
-
-#LOOPBACK
-#Consentire tutto il traffico tramite l'interfaccia di loopback
-#/sbin/iptables -A miacatenain -i lo -j ACCEPT
-
-#######aggiungere le regole alla catena di uscita#######
-
-#Consentire connessioni ftp in ingresso
-#/sbin/iptables -A miacatena -p tcp --dport 2020 e 21 in uscita
-#/sbin/iptables -A miacatena -p tcp --dport
-
-##EDONKEY
-#Consentire traffico tcp alla porta 4663
-/sbin/iptables -A miacatenaout -p tcp --dport 4663 -j ACCEPT
-/sbin/iptables -A miacatenaout -p udp --dport 4663 -j ACCEPT
-
-#DNS
-#Consentire traffico dns in uscita
-/sbin/iptables -A miacatenaout -p tcp --dport 53 -j ACCEPT
-/sbin/iptables -A miacatenaout -p udp --dport 53 -j ACCEPT
-
-#SMTP POP3
-#Consentire traffico smtp
-/sbin/iptables -A miacatenaout -p tcp --dport 25 -j ACCEPT
-/sbin/iptables -A miacatenaout -p tcp --dport 110 -j ACCEPT
-
-#SSH
-#Consentire traffico SSH in uscita
-/sbin/iptables -A miacatenaout -p tcp --dport 22 -j ACCEPT
-/sbin/iptables -A miacatenaout -p udp --dport 22 -j ACCEPT
-
-#WEB
-#Consentire traffico web in uscita
-/sbin/iptables -A miacatenaout -p tcp --dport 80 -j ACCEPT
-
-#LOOPBACK
-#Consentire tutto il traffico tramite l'interfaccia di loopback
-#/sbin/iptables -A miacatenain -i lo -j ACCEPT
-
-
-#########applica le modifiche#########
-/sbin/service iptables save
-
-/sbin/service iptables restart
 
