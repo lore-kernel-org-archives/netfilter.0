@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Having NAT problems
-Date: Thu, 1 Apr 2004 21:45:33 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: I thought ssh is port #22 ?!!
+Date: Thu, 01 Apr 2004 23:27:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404012145.33403.Antony@Soft-Solutions.co.uk>
-References: <20040401192505.3100.69461.Mailman@vishnu.netfilter.org> <200404012119.45564.Antony@Soft-Solutions.co.uk> <20040401203013.M36511@niesc.k12.in.us>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1080854865.1601.16.camel@anduril.intranet.cartel-securite.net>
+References: <7C9884991ADAE0479C14F10C858BCDF567928A@alderaan.smgtec.com>
+	 <1080844053.26229.111.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040401203013.M36511@niesc.k12.in.us>
+In-Reply-To: <1080844053.26229.111.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +18,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Thursday 01 April 2004 9:32 pm, Adam Kennedy wrote:
+Le jeu 01/04/2004 =E0 20:27, Tony Earnshaw a =E9crit :
+> It would be better if you learned not to top post and to quote
+> correctly.
 
-> On Thu, 1 Apr 2004 21:19:45 +0100, Antony Stone wrote
->
-> > Okay, how's this then  - please post all the rules which you think
-> > are needed for this pcAnywhere setup to work (with suitable partial
-> > obscuring of IPs if you wish).   Then we'll tell you if we can see
-> > something missing?
->
-> That's actually what I wound up doing in the last post. That's all the
-> rules on the box save for a few NAT entries which I just commented out.
-> Commenting them out and re-running the file didn't do anything. I'm at my
-> wits end.
+What an amazingly useful post !
 
-In that case let's see if there's something strange about the protocol 
-pcAnywhere uses.   Set up a similar DNAT rule for something we know about, 
-like ssh (or http, or any other service you happen to be running on an 
-internal server), and see if you can connect to that from the outside world.
+Reproaching someone within the list with quoting incorrectly in a post
+that contains nearly three time more quoting lines than effective ones
+is definitly a must do.
 
-If you can, then there's obviously something about pcAnywhere which either 
-doesn't like NAT, or isn't sufficiently simple to work on a single 
-destination port.
+At least the "top poster who badly quotes" posted something useful, and
+on this point, I fully agree Antony's reaction*.
 
-If you can't connect to ssh (or whatever) either, then there's something weird 
-going on and we really would need to see more about your ruleset to help 
-further.
 
-Unless anyone else here can spot something I've missed from what's been posted 
-already....?   Maybe someone else has used pcAnywhere through NAT with 
-netfilter?
+* one day, I will stop agree Antony's point all the time :)
 
-Regards,
-
-Antony
-
--- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
