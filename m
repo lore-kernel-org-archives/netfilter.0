@@ -1,11 +1,13 @@
-From: =?iso-8859-1?q?Tato=20L?= <tatolv@yahoo.es>
-Subject: Help  NAT
-Date: Thu, 29 May 2003 08:39:53 +0200 (CEST)
+From: "Michael K" <micke@klintan.se>
+Subject: RE: where is libipt_match.so?
+Date: Thu, 29 May 2003 08:59:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030529063953.55409.qmail@web42006.mail.yahoo.com>
+Message-ID: <001f01c325af$e14cff10$0200a8c0@klintan.local>
+References: <20030529034344.GF33081@justpickone.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030529034344.GF33081@justpickone.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,66 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-Cc: dannymo20@yahoo.com
-
-Hi friends
-
-I have a problem I need help
-
-My Net is :
-
-eth0 :200.200.200.2
-eth1:192.168.20.1
-web/mail nic1:192.168.20.3   Public:200.200.200.2
-web/mail nic2:192.168.50.3
-wingate nic1:192.168.20.2
-wingate nic2:192.168.50.1
-
-workstation:192.168.50.X
-
-
-            eth0|     |eth1        =20
-ROUTER----------|LINUX|-----------|Wingate|---
-	 	|     |              192.168.50.x =20
-		|     |           |Web/Mail|---
-
-
-By administrative reasons my network is this form :(
-
-But firewall in front of the Wingate has been put
-=20
-
-The rules of firewall apparently are ok !, services as
-SMTP, POP3,Web  are ok.... but
-in my localnet since  a workstation  i cant access
-www.midomain.com( domain of my comany ), just for IP
-local (192.168.20.3)
-I dont have a separate DNS for my LAN .
-
-I tried  "Destination NAT Onto the Same Network"=20
-http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html
-but dont work
-
-Some help please, several days and I cant solve this
-problem
-
-Thanks
-
-TaTo
+Content-Type: text/plain; charset="us-ascii"
+To: 'David T-G' <davidtg-netfilter@justpickone.org>, 'NetFilter Users' List' <netfilter@lists.netfilter.org>
 
 
 
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of David T-G
+> Sent: Thursday, May 29, 2003 5:44 AM
+> To: NetFilter Users' List
+> Subject: where is libipt_match.so?
+> 
+> 
+> Hi again, all --
+> 
+> I have finally gotten my client to rebuild his SCO 
+> UnitedLinux machine from scratch to give me a 
+> guaranteed-clean base and I tried running my iptables setup 
+> script.  Everything (NIC discovery, init script creation,
+> etcetc) appears to have gone well but iptables has a problem:
+> 
+>   ...
+>   iptables -t filter -A INPUT -i eth0 -m match 
+> NEW,RELATED,ESTABLISHED -j ACCEPT
+>   iptables v1.2.7a: Couldn't load match 
+> `match':/usr/lib/iptables/libipt_match.so: cannot open shared 
+> object file: No such file or directory
+> 
+> This worked before, but I had also mucked around with the 
+> SuSEfirewall2 scripts before; sure enough, it isn't there 
+> now.  Where does that file live?  Do I need another RPM, perhaps?
+> 
+> 
+> TIA & HAND
+> 
+
+Shouldn't the line read
+iptables -t filter -A INPUT -i eth0 -m state --state
+NEW,RELATED,ESTABLISHED -j ACCEPT
+
+Did a search in the pom for *match*. Didn't find any.
 
 
-
-
-
-
-
-___________________________________________________
-Yahoo! Messenger - Nueva versi=F3n GRATIS
-Super Webcam, voz, caritas animadas, y m=E1s...
-http://messenger.yahoo.es
 
