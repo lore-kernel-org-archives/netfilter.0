@@ -1,13 +1,14 @@
-From: "Gautham Thavva" <gautham.thavva@lycos.com>
-Subject: TFTP crashes the linux system...
-Date: Mon, 26 Jan 2004 18:20:20 -0500
+From: Andy Furniss <andy.furniss@dsl.pipex.com>
+Subject: Re: IMQ Replacement
+Date: Tue, 27 Jan 2004 00:17:21 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BBKGNGAPNMGCAKAA@mailcity.com>
-Reply-To: gautham.thavva@lycos.com
+Message-ID: <4015AE11.1090607@dsl.pipex.com>
+References: <1068652569.27810.450.camel@cumulus> <Pine.LNX.4.58.0311131244400.13900@fhynpb.envafyvqr.arg> <1074352525.4761.1389.camel@peterlaptop> <400BDCB6.2000208@pobox.com> <400D0B7F.90104@o2.pl> <400E9246.3020601@pobox.com> <40150537.4040501@pobox.com> <20040126144206.GA11104@zion.homelinux.com> <40153757.2010108@dsl.pipex.com>
+Reply-To: andy.furniss@dsl.pipex.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Language: en
+In-Reply-To: <40153757.2010108@dsl.pipex.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+Andy Furniss wrote:
+
+> There is also discussion on the LARTC list at the moment - someone 
+> called roy has rewritten IMQ but still sees crashes. He thinks they are 
+> related to locally generated traffic, so IMQ for ingress should be OK.
+
+He just posted this, thought it may be of interest.
 
 
-I have enforced a firewall, using iptables-1.2.6a, on a target board running TimeSys Linux Kernel(Kernel version is 2.4.7-10).
+Finaly I made imq driver stable it did not crashed for all 5 hours under
+high load, soo looks stable.
+(old one was crashing after 1-5 min for me)
 
-I have applied the *tftp* patch available in the patch-o-matic. 
+no need to patch anything just compile and insmod, should work with any
+kernel probably must be > than 2.4.20
 
-When I try to do a tftp "get" or "put" from a PC in a different subnet to this board, the system crashes. An Oops is generated during the init_conntrack function in ip_conntrack_core.c
-
-Code Snippet (either Line #545 or Line #552) from init_conntrack where Oops is generated... 
-Line #545 expected = LIST_FIND(&expect_list, expect_cmp, struct ip_conntrack_expect *, tuple);
-
-Line #552 if (expected && is_confirmed(expected->expectant)) {
-
-But the system doesnt crash if a default route has been configured.
-
-Please can someone share their insight as to why the absence of the default route causes the system to generate Oops during TFTP operations.
-
-With regards,
-Gautham Thavva
+This is completely diferent code than old imq.
+you can find it on my server http://pupa.da.ru
+please tell how it works for you and how stable it is.
 
 
-____________________________________________________________
-Get advanced SPAM filtering on Webmail or POP Mail ... Get Lycos Mail!
-http://login.mail.lycos.com/r/referral?aid=27005
+
 
