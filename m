@@ -1,14 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: DNAT and IP aliasing - how?
-Date: Tue, 11 Mar 2003 09:10:10 -0500
+From: =?iso-8859-1?Q?Hern=E1n_Mailluquet?= <hernan@mdp.edu.ar>
+Subject: Redirection question.
+Date: Tue, 11 Mar 2003 12:04:16 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303110910.10681.netfilter@newkirk.us>
-References: <001701c2e6f4$79edee00$85200f0a@smaug>
-Reply-To: netfilter@newkirk.us
+Message-ID: <001e01c2e7df$7bfd3430$0db600c8@ANTARES1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001B_01C2E7C6.56A3C730"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001701c2e6f4$79edee00$85200f0a@smaug>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Henning Riis Rasmussen <hrr@indbakke.dk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Monday 10 March 2003 06:02 am, Henning Riis Rasmussen wrote:
+This is a multi-part message in MIME format.
 
->   LAN0  (Local protected network)
->   WAN1  (Sister organisation)
->   INET2 (Internet)
+------=_NextPart_000_001B_01C2E7C6.56A3C730
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> Hence, I need WAN1 to have more than one IP address (i.e. 10.0.0.1/24,
-> 10.0.0.2/24 and 10.0.0.3/24).
->
-> I assume I should use DNAT to provide the address translation needed
-> for the hosts on the LAN that must be visible on the WAN. But what am
-> I supposed to do about getting arp responses for the extra IP
-> addresses on the WAN1 interface? I recall using the kernel IP aliasing
-> option in previous setups, but this is no longer an option in kernel
-> 2.4.20 (as far as I can tell).
->
-> What is the "correct" way to set this up?
+Hi, i have doing transparent proxy with squid and this port redirect =
+rule:
 
-if WAN1 is eth0 with 10.0.0.1 presently, then try this:
+iptables -t nat -A PREROUTING -i eth1 -p TCP --dport 80 -j REDIRECT =
+--to-port 8080
 
-ifconfig eth0:1 10.0.0.2 netmask 255.255.255.0
-ifconfig eth0:2 10.0.0.3 netmask 255.255.255.0
+and works fine. Now, i want dont't redirect some request to destination =
+dirs like 192.168.0.0/24 and 192.168.1.0/24 (for example). How i can do =
+this?=20
 
-This creates an alias on eth0 adding 10.0.0.2 as an additional IP for=20
-that interface, then again for 10.0.0.3.  Obviously the root interface=20
-needs to match the WAN interface.  A subsequent 'ifconfig' will show=20
-these as additional interfaces on the same MAC.  Packet info (RX and TX=20
-statistics) will show only on the root interface.  In an iptables rule=20
-you can only use the root interface (eth0 in the above example) but can=20
-still match source or dest IP to distinguish one from another in most=20
-cases.
+Thanks.
 
-j
+------=_NextPart_000_001B_01C2E7C6.56A3C730
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi, i have doing transparent proxy with =
+
+squid&nbsp;and this&nbsp;port redirect rule:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -t nat -A PREROUTING -i eth1 =
+-p TCP=20
+--dport 80 -j REDIRECT --to-port 8080</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>and works fine. Now, i want dont't =
+redirect some=20
+request to destination dirs like 192.168.0.0/24 and 192.168.1.0/24 (for=20
+example). H</FONT><FONT face=3DArial size=3D2>ow i can do this? =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_001B_01C2E7C6.56A3C730--
 
 
