@@ -1,10 +1,12 @@
-From: Rajesh Pethe <rajesh_pethe2003@yahoo.com>
-Subject: Problem configuring masquerading Gateway on RedHat 9.0...
-Date: Thu, 5 Aug 2004 23:44:04 -0700 (PDT)
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Problem configuring masquerading Gateway on RedHat 9.0...
+Date: Fri, 6 Aug 2004 08:31:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040806064404.96275.qmail@web50209.mail.yahoo.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051247@asimail2.alphanumeric.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,33 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+> #iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+> and
+> #echo 1 > /proc/sys/net/ipv4/ip_forward
 
-Dear Sirs,
+are those the only commands you've issued?  do you have a script that is =
+creating additional rules that you're not including here?  the output of =
+"iptables -vnL; iptables -t nat -vnL; iptables -t mangle -vnL" would be =
+helpful.
 
-As mentioned in the 'NAT-HOWTO' I've done the
-following to configure my Linux box as masquerading
-gateway for internal network :
-#iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-and
-#echo 1 > /proc/sys/net/ipv4/ip_forward
+> The problem is I can ping or telnet a remote host from
+> an internal network but browsers say 'unknown host'
+> when I try to load a remote site.
 
-The problem is I can ping or telnet a remote host from
-an internal network but browsers say 'unknown host'
-when I try to load a remote site.
+are you pinging/telnetting by IP address, and then trying to load a web =
+page via FQDN?  if so, my guess would be that your problem is DNS =
+resolution.
 
-Please help me with this problem.
-
-Regards
-Rajesh
-
-
-
-		
-_______________________________
-Do you Yahoo!?
-Express yourself with Y! Messenger! Free. Download now. 
-http://messenger.yahoo.com
+-j
 
