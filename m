@@ -1,10 +1,9 @@
-From: =?iso-8859-1?q?Mathias=20Koehrer?= <mathias_koehrer@yahoo.de>
-Subject: iptable to pass (UDP)IP-broadcast from one LAN to another
-Date: Tue, 28 Jan 2003 15:42:23 +0100 (CET)
+From: Ilguiz Latypov <ilatypov@infradead.org>
+Subject: Re: Interesting request. block x.x.0.0
+Date: Thu, 23 Jan 2003 13:54:34 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030128144223.23892.qmail@web41002.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.44.0301231354180.13114-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,39 +14,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello everybody,
 
-I have setup with a Linux PC and two LAN adapters.
-One the first LAN, I have a subnet 192.168.10.0/24,
-on the second LAN there is a subnet 192.168.11.0/24.
+On Thu, 23 Jan 2003, Daniel F. Chief Security Engineer - wrote:
 
-Using iptables and NETMAP I am able to pass messages
-from the first LAN to the second and vice versa.
-(E.g. 192.168.10.100 will be mapped to
-192.168.11.100).
-But so far I was not able to pass an UDP broadcast
-(192.168.10.255) to the 2nd LAN as 192.168.11.255.
-Neither filtering with -d 192.168.10.255 nor -d
-0.0.0.255 worked...
-ethereal and also iptable's LOG shows me that the
-broadcast enters the PC - but it gets lost somewhere
-between the two LAN cards...
+> Anybody know of a way to block this traffic. Notice it's comming from just the
+> 0.0 addresses obviously spoofed. But can you block x.x.0.0 with out blocking
+> every thing else in the range with out a rule per IP.
 
-What is wrong there?!?!? Any help is highly welcome!!!
+Can the CIDR approach to networking be of any help?  I heard that the
+traditional imaginary separation of networks into classes A, B, C,... is
+not quite useful, so it is now possible to specify network numbers in
+format
 
-Thanks
+   X.X.X.X/N
 
-Mathias
+where N is the number of most significant bits.
 
-=====
--- 
-Mathias Koehrer - mathias_koehrer@yahoo.de
+Based on the above, will the 45.208.0.0/32 notation in an iptables rule
+filter the unwanted packets without rejecting any other possible valid
+packets coming from 45.208.0.0/16?
 
-__________________________________________________________________
+--
+Ilguiz Latypov
+Net Integration Technologies, Inc
 
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Bis zu 100 MB Speicher bei http://premiummail.yahoo.de
+tel. +1 (514) 281 9191 x 117
+
+
+
 
