@@ -1,11 +1,17 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: weird message in logs
-Date: Tue, 19 Oct 2004 13:52:28 -0300
+From: Jiann-Ming Su <sujiannming@gmail.com>
+Subject: Re: ip_conntrack_max vs ip_conntrack
+Date: Tue, 19 Oct 2004 13:21:18 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <116401c4b5fc$0485cc40$49caa8c0@caris.priv>
+Message-ID: <561dc32604101910213b360ff5@mail.gmail.com>
+References: <561dc32604092710524f3a8b5b@mail.gmail.com>
+	<1096311443.1079.11.camel@nostromo.bgsecm.com>
+	<561dc3260409301548488b387e@mail.gmail.com>
+Reply-To: Jiann-Ming Su <sujiannming@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_2293_4563351.1098206478485"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <561dc3260409301548488b387e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +21,106 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Below is a message I get in my messages file.  Basically, there is a company
-going to lease space from us.  I know it would have been easier to just
-stick another card in my firewall and give them a subnet, however, that is
-not possible for our setup (long story).  Anyway, I bult another firewall
-for them.  This firewall sits within our internal network (physically) and
-has 2 network cards.  The firewalls internal network card is for their
-netowrk; 192.168.90.0/24,  The external card has a network of its own
-10.90.0.2.  My internal firewall has a sub interface eth0:1 with the number
-10.90.0.1  (eth0 is 192.168.200.1 and is the gateway to my companys internal
-network).
+------=_Part_2293_4563351.1098206478485
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-What I am doing at the moment is ssh'ing to the newly created firewall
-called rubidium on port 15422.  I get the following in my messages file.
-Does anyone know how to correct this problem.  It does not prevent me from
-sshing, however, I would prefer to not have errors in my log files.
+On Thu, 30 Sep 2004 18:48:16 -0400, Jiann-Ming Su <sujiannming@gmail.com> wrote:
+> 
+> There's some good info on what I was looking for at the end of this section:
+> 
+> http://www.iptables.org/documentation/HOWTO//packet-filtering-HOWTO-7.html#ss7.3
+> 
 
-Oct 19 14:46:05 rubidium kernel: REJECT: INPUT IN=eth1 OUT=
-MAC=00:50:04:9b:7a:ee:00:50:04:68:df:06:08:00 SRC=10.90.0.1 DST=10.90.0.2
-LEN=484 TOS=0x10 PREC=0xC0 TTL=64 ID=58050 PROTO=ICMP TYPE=5 CODE=1
-GATEWAY=192.168.202.73 [SRC=10.90.0.2 DST=192.168.202.73 LEN=456 TOS=0x10
-PREC=0x00 TTL=64 ID=7787 DF PROTO=TCP SPT=15422 DPT=2510 WINDOW=8576
-RES=0x00 ACK PSH URGP=0 ]
+In case someone, like myself, should look through the archives,
+another good place for info is
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html.  I'm
+also including a snapshot of the rules we use to firewall off the
+dorms at an academic institution.  Someone else out there may find
+this helpful.  All IP's have been changed to protect the guilty.
 
-Thanks,
-Peter Marshall
+-- 
+Jiann-Ming Su
+"I have to decide between two equally frightening options.  
+                                            If I wanted to do that,
+I'd vote." --Duckman
 
+------=_Part_2293_4563351.1098206478485
+Content-Type: application/octet-stream; name="iptables"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="iptables"
+
+IyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS4yLjkgb24gVGh1IE9jdCAxNCAxNToxNjox
+NyAyMDA0CipuYXQKOlBSRVJPVVRJTkcgQUNDRVBUIFswOjBdCjpQT1NUUk9VVElORyBBQ0NFUFQg
+WzA6MF0KOk9VVFBVVCBBQ0NFUFQgWzA6MF0KQ09NTUlUCiMgQ29tcGxldGVkIG9uIFRodSBPY3Qg
+MTQgMTU6MTY6MTcgMjAwNAojIEdlbmVyYXRlZCBieSBpcHRhYmxlcy1zYXZlIHYxLjIuOSBvbiBU
+aHUgT2N0IDE0IDE1OjE2OjE3IDIwMDQKKm1hbmdsZQo6UFJFUk9VVElORyBBQ0NFUFQgWzA6MF0K
+OklOUFVUIEFDQ0VQVCBbMDowXQo6Rk9SV0FSRCBBQ0NFUFQgWzA6MF0KOk9VVFBVVCBBQ0NFUFQg
+WzA6MF0KOlBPU1RST1VUSU5HIEFDQ0VQVCBbMDowXQpDT01NSVQKIyBDb21wbGV0ZWQgb24gVGh1
+IE9jdCAxNCAxNToxNjoxNyAyMDA0CiMgR2VuZXJhdGVkIGJ5IGlwdGFibGVzLXNhdmUgdjEuMi45
+IG9uIFRodSBPY3QgMTQgMTU6MTY6MTcgMjAwNAoqZmlsdGVyCjpJTlBVVCBEUk9QIFswOjBdCjpG
+T1JXQVJEIERST1AgWzA6MF0KOk9VVFBVVCBBQ0NFUFQgWzA6MF0KOkZXRF9TWU4gLSBbMDowXQo6
+SU5fSUNNUCAtIFswOjBdCjpJTl9UQ1AgLSBbMDowXQo6SU5fVURQIC0gWzA6MF0KLUEgSU5QVVQg
+LWkgbG8gLWogQUNDRVBUIAotQSBJTlBVVCAtcCA4OSAtaiBBQ0NFUFQgCi1BIElOUFVUIC1tIHN0
+YXRlIC0tc3RhdGUgUkVMQVRFRCxFU1RBQkxJU0hFRCAtaiBBQ0NFUFQgCi1BIElOUFVUIC1wIHVk
+cCAtaiBJTl9VRFAgCi1BIElOUFVUIC1wIHRjcCAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtaiBJTl9U
+Q1AgCi1BIElOUFVUIC1wIGljbXAgLWogSU5fSUNNUCAKLUEgSU5QVVQgLWogVUxPRyAtLXVsb2ct
+cHJlZml4ICJpcHRhYmxlcyBpbnB1dCBjbGVhbnVwOiAiIAotQSBGT1JXQVJEIC1kICEgMTkyLjE2
+OC4wLjAvMjU1LjI1NS4wLjAgLXAgdGNwIC1tIHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgMTM1
+LDQ0NSAtaiBEUk9QIAotQSBGT1JXQVJEIC1pIGV0aDEgLXAgdGNwIC1tIG11bHRpcG9ydCAtLWRw
+b3J0cyAxMzUsNDQ1IC1qIERST1AgCi1BIEZPUldBUkQgLWkgZXRoMiAtcCB0Y3AgLW0gdGNwIC0t
+dGNwLWZsYWdzIFNZTiBTWU4gLWogRldEX1NZTiAKLUEgRk9SV0FSRCAtaSBldGgyIC1qIEFDQ0VQ
+VCAKLUEgRk9SV0FSRCAtcCA0NyAtaiBBQ0NFUFQgCi1BIEZPUldBUkQgLW0gc3RhdGUgLS1zdGF0
+ZSBSRUxBVEVELEVTVEFCTElTSEVEIC1qIEFDQ0VQVCAKLUEgRk9SV0FSRCAtcyAxOTIuMTY4LjAu
+MC8yNTUuMjU1LjAuMCAtaiBBQ0NFUFQgCi1BIEZPUldBUkQgLXMgMTAuMC4wLjAvMjU1LjI1NS4w
+LjAgLWogQUNDRVBUIAotQSBGV0RfU1lOIC1wIHRjcCAtbSB0Y3AgLS10Y3AtZmxhZ3MgRklOIEZJ
+TiAtbSBsaW1pdCAtLWxpbWl0IDEwL21pbiAtaiBVTE9HIC0tdWxvZy1wcmVmaXggImlwdGFibGVz
+IFNZTi9GSU4gYXR0YWNrIiAKLUEgRldEX1NZTiAtcCB0Y3AgLW0gdGNwIC0tdGNwLWZsYWdzIEZJ
+TiBGSU4gLWogRFJPUCAKLUEgRldEX1NZTiAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgODAgLW0gbGlt
+aXQgLS1saW1pdCAxMDAvc2VjIC0tbGltaXQtYnVyc3QgMjAwIC1qIEFDQ0VQVCAKLUEgRldEX1NZ
+TiAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgMTM1IC1tIGxpbWl0IC0tbGltaXQgNTAvc2VjIC0tbGlt
+aXQtYnVyc3QgNTAgLWogQUNDRVBUIAotQSBGV0RfU1lOIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCA0
+NDMgLW0gbGltaXQgLS1saW1pdCA1MC9zZWMgLS1saW1pdC1idXJzdCA1MCAtaiBBQ0NFUFQgCi1B
+IEZXRF9TWU4gLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDQ0NSAtbSBsaW1pdCAtLWxpbWl0IDUwL3Nl
+YyAtLWxpbWl0LWJ1cnN0IDUwIC1qIEFDQ0VQVCAKLUEgRldEX1NZTiAtcCB0Y3AgLW0gdGNwIC0t
+ZHBvcnQgODAgLW0gbGltaXQgLS1saW1pdCAxL3NlYyAtaiBVTE9HIC0tdWxvZy1wcmVmaXggImlw
+dGFibGVzIHN5biBsaW1pdDogIiAKLUEgRldEX1NZTiAtcCB0Y3AgLW0gbXVsdGlwb3J0IC0tZHBv
+cnRzIDEzNSw0NDMsNDQ1IC1tIGxpbWl0IC0tbGltaXQgMTAvbWluIC1qIFVMT0cgLS11bG9nLXBy
+ZWZpeCAiaXB0YWJsZXMgc3luIGxpbWl0OiAiIAotQSBGV0RfU1lOIC1wIHRjcCAtbSB0Y3AgLW0g
+bXVsdGlwb3J0IC0tZHBvcnRzIDgwLDEzNSw0NDMsNDQ1IC1qIERST1AgCi1BIEZXRF9TWU4gLXAg
+dGNwIC1tIHRjcCAtbSBsaW1pdCAtLWxpbWl0IDUwL3NlYyAtLWxpbWl0LWJ1cnN0IDUwIC1qIEFD
+Q0VQVCAKLUEgRldEX1NZTiAtcCB0Y3AgLW0gdGNwIC1tIGxpbWl0IC0tbGltaXQgMTAvbWluIC1q
+IFVMT0cgLS11bG9nLXByZWZpeCAiaXB0YWJsZXMgc3luIGxpbWl0OiAiIAotQSBGV0RfU1lOIC1q
+IERST1AgCi1BIElOX0lDTVAgLXMgMTAuMC45LjMwIC1wIGljbXAgLWogQUNDRVBUIAotQSBJTl9J
+Q01QIC1zIDEwLjAuMjE4LjEyOC8yNTUuMjU1LjI1NS4yMjQgLXAgaWNtcCAtaiBBQ0NFUFQgCi1B
+IElOX0lDTVAgLXMgMTAuMC4yNDYuMC8yNTUuMjU1LjI1NC4wIC1wIGljbXAgLWogQUNDRVBUIAot
+QSBJTl9JQ01QIC1zIDE5Mi4xNjguNTMuMjI0LzI1NS4yNTUuMjU1LjIyNCAtcCBpY21wIC1qIEFD
+Q0VQVCAKLUEgSU5fSUNNUCAtaiBVTE9HIC0tdWxvZy1wcmVmaXggImlwdGFibGVzIGlucHV0IGlj
+bXAgY2xlYW51cDogIiAKLUEgSU5fSUNNUCAtaiBEUk9QIAotQSBJTl9UQ1AgLXMgMTkyLjE2OC45
+OS4zNiAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgMjIgLWogQUNDRVBUIAotQSBJTl9UQ1AgLXMgMTky
+LjE2OC4xNDkuNTMgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDIyIC1qIEFDQ0VQVCAKLUEgSU5fVENQ
+IC1zIDE5Mi4xNjguOTkuMzUgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDIyIC1qIEFDQ0VQVCAKLUEg
+SU5fVENQIC1zIDE5Mi4xNjguOTkuMzQgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDIyIC1qIEFDQ0VQ
+VCAKLUEgSU5fVENQIC1zIDE5Mi4xNjguNjguMTExIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAyMiAt
+aiBBQ0NFUFQgCi1BIElOX1RDUCAtcyAxMC4wLjIxOC4xMjgvMjU1LjI1NS4yNTUuMjI0IC1wIHRj
+cCAtbSB0Y3AgLS1kcG9ydCAyMiAtaiBBQ0NFUFQgCi1BIElOX1RDUCAtcyAxMC4wLjI0Ni4wLzI1
+NS4yNTUuMjU0LjAgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDIyIC1qIEFDQ0VQVCAKLUEgSU5fVENQ
+IC1zIDE5Mi4xNjguNTMuMjI0LzI1NS4yNTUuMjU1LjIyNCAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQg
+MjIgLWogQUNDRVBUIAotQSBJTl9UQ1AgLXMgMTAuMC4yNDYuMC8yNTUuMjU1LjI1NC4wIC1wIHRj
+cCAtbSB0Y3AgLS1kcG9ydCAxMDAwMCAtaiBBQ0NFUFQgCi1BIElOX1RDUCAtcyAxMC4wLjI1NC4x
+NDQvMjU1LjI1NS4yNTUuMjQwIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAxMDAwMCAtaiBBQ0NFUFQg
+Ci1BIElOX1RDUCAtaiBVTE9HIC0tdWxvZy1wcmVmaXggImlwdGFibGVzIGlucHV0IHRjcCBjbGVh
+bnVwOiAiIAotQSBJTl9UQ1AgLWogRFJPUCAKLUEgSU5fVURQIC1zIDEwLjAuMjQ2LjIyMyAtcCB1
+ZHAgLW0gdWRwIC0tZHBvcnQgMTYxIC1qIEFDQ0VQVCAKLUEgSU5fVURQIC1zIDEwLjAuOS4zMCAt
+cCB1ZHAgLW0gdWRwIC0tZHBvcnQgMTYxIC1qIEFDQ0VQVCAKLUEgSU5fVURQIC1zIDEwLjAuMjE4
+LjEyOC8yNTUuMjU1LjI1NS4yMjQgLXAgdWRwIC1tIHVkcCAtLWRwb3J0IDE2MSAtaiBBQ0NFUFQg
+Ci1BIElOX1VEUCAtcyAxMC4wLjI0Ni42MyAtcCB1ZHAgLW0gdWRwIC0tZHBvcnQgMTYxIC1qIEFD
+Q0VQVCAKLUEgSU5fVURQIC1zIDE5Mi4xNjguNTMuMjI0LzI1NS4yNTUuMjU1LjIyNCAtcCB1ZHAg
+LW0gdWRwIC0tZHBvcnQgMTYxIC1qIEFDQ0VQVCAKLUEgSU5fVURQIC1qIFVMT0cgLS11bG9nLXBy
+ZWZpeCAiaXB0YWJsZXMgaW5wdXQgdWRwIGNsZWFudXA6ICIgCi1BIElOX1VEUCAtaiBEUk9QIApD
+T01NSVQKIyBDb21wbGV0ZWQgb24gVGh1IE9jdCAxNCAxNToxNjoxNyAyMDA0Cg==
+------=_Part_2293_4563351.1098206478485--
 
