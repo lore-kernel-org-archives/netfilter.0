@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: from firewall machine wget is not working
-Date: Tue, 5 Nov 2002 18:32:35 +0000
+Subject: Re: snmptraps incomming on udp port 162 REDIRECT to 4162 not working?
+Date: Tue, 5 Nov 2002 18:29:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211051832.gA5IWhe19780@vulcan.rissington.net>
-References: <1100D69203AAD2118E3C00508B8B9E8A67F13C@mailhost.intech.unu.edu> <005001c284ed$22276d40$8c01a8c0@sundaram>
+Message-ID: <200211051829.gA5ITOe19773@vulcan.rissington.net>
+References: <1036512998.8715.44.camel@ben.mis.tnsi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005001c284ed$22276d40$8c01a8c0@sundaram>
+In-Reply-To: <1036512998.8715.44.camel@ben.mis.tnsi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +20,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 05 November 2002 5:02 pm, Sundaram Ramasamy wrote:
+On Tuesday 05 November 2002 4:16 pm, Ben Russo wrote:
 
 > Hi,
 >
-> wget command is not working form my firewall machine, But inside my network
-> I was able to use wget command
+> I tried the following:
 >
-> What is the problem?
+> iptables -t nat -p udp -m udp --dport 162 -j REDIRECT --to-ports 4162
+>
+> Any ideas on how to make this work?
 
-Please can you post your ruleset as the iptables commands you use to set up 
-the rules, not the output of iptables -L ?
-
-The latter doesn't give us all the information we'd like to see, and I for 
-one find it much more difficult to understand...
+You should have a "-A PREROUTING" in there.   I'm not sure about the "-m udp" 
+- I presume this is something to do with loading modules for different 
+protocol support ?   (I don't use modules, but I've seen this sort of thing 
+in other people's rules before.)
 
 Antony.
 
 -- 
 
-If at first you don't succeed, destroy all the evidence that you tried.
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
