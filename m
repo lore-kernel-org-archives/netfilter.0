@@ -1,11 +1,9 @@
-From: "Kevin Smith" <kevin@perfht.com>
-Subject: kernel Modules.
-Date: Fri, 14 Nov 2003 12:01:56 -0500
+From: star fire <starfire20002010@yahoo.com>
+Subject: Wired routing problem
+Date: Fri, 14 Nov 2003 13:18:46 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBLGFEALDADHNDAAFFIEBCDNAA.kevin@perfht.com>
+Message-ID: <20031114211846.84359.qmail@web42003.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0000_01C3AAA7.1A2E2D00"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,57 +14,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter List <netfilter@lists.netfilter.org>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0000_01C3AAA7.1A2E2D00
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: iptables iptables <netfilter@lists.netfilter.org>
 
-If I find I need or want a particular module that I didn't choose when I
-first compiled the Kernel, can I compile said module w/o having to recompile
-the entire kernel?
+Dear group,
 
-Im using RH 7.3, Kernel 2.4.22 with the newest POM. 
-Kev
+I intend to use iptables in order to limit access
+trafic from our head office network(HON). The config
+is as follows.
 
-------=_NextPart_000_0000_01C3AAA7.1A2E2D00
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
+Firewall/Router
 
-eJ8+IjgRAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEGgAMADgAAANMHCwAOAAwAAQAAAAUABQEB
-A5AGAHQFAAAlAAAACwACAAEAAAALACMAAAAAAAMAJgAAAAAACwApAAAAAAADADYAAAAAAB4AcAAB
-AAAAEQAAAGtlcm5lbCBNb2R1bGVzLiAAAAAAAgFxAAEAAAAWAAAAAcOq0QJNkhOtEhaZEdi2ZgCg
-ydnZSwAAAgEdDAEAAAAWAAAAU01UUDpLRVZJTkBQRVJGSFQuQ09NAAAACwABDgAAAABAAAYOAC7s
-4NCqwwECAQoOAQAAABgAAAAAAAAAC5D+Ctke1hG2VACgydnZS8KAAAALAB8OAQAAAAIBCRABAAAA
-LAEAACgBAABpAQAATFpGdUoZIv4DAAoAcmNwZzEyNRYyAPgLYG4OEDAzM08B9wKkA+MCAGNoCsBz
-sGV0MCAHEwKAfQqBknYIkHdrC4BkNAxgjmMAUAsDC7UgSWYTwOwgZhJxE/FuCeAUUAWxpncAcAVA
-YSAKsXQN4B51C2AFwARhFeBlIHQHEPAFQBQAZGlkbiezBUAQ4G9vESAVAGgJ8O8T8xEQF2EDcHAD
-EBSxFqDFFoBLBJFlbCwXcAORcxQAGMUgcwtwFFAWNXf4L28gEPASIA8gFpAb0D8JcBp2GVIJ8BWw
-CXAgax0Zoz8KogqECoBJbSAGdQCQHDFSSCA3LgYzGfAZlCAyLjQudDIyFQBpFqAZQxSQd8MHkAVA
-UE9NLgrjCoAtGZB2HlQR4QAjgAsAAYAIIAYAAAAAAMAAAAAAAABGAAAAAAOFAAAAAAAAAwADgAgg
-BgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAAeACCAGAAAAAADAAAAAAAAARgAAAABShQAAJ2oB
-AB4ACYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAABAAAABAAAADkuMAAeAAqACCAGAAAAAADAAAAA
-AAAARgAAAAA2hQAAAQAAAAEAAAAAAAAAHgALgAggBgAAAAAAwAAAAAAAAEYAAAAAN4UAAAEAAAAB
-AAAAAAAAAB4ADIAIIAYAAAAAAMAAAAAAAABGAAAAADiFAAABAAAAAQAAAAAAAAALAA2ACCAGAAAA
-AADAAAAAAAAARgAAAACChQAAAQAAAAsAOoAIIAYAAAAAAMAAAAAAAABGAAAAAA6FAAAAAAAAAwA8
-gAggBgAAAAAAwAAAAAAAAEYAAAAAEYUAAAAAAAADAD2ACCAGAAAAAADAAAAAAAAARgAAAAAYhQAA
-AAAAAAsAUoAIIAYAAAAAAMAAAAAAAABGAAAAAAaFAAAAAAAAAwBTgAggBgAAAAAAwAAAAAAAAEYA
-AAAAAYUAAAAAAAACAfgPAQAAABAAAAALkP4K2R7WEbZUAKDJ2dlLAgH6DwEAAAAQAAAAC5D+Ctke
-1hG2VACgydnZSwIB+w8BAAAAggAAAAAAAAA4obsQBeUQGqG7CAArKlbCAABQU1RQUlguRExMAAAA
-AAAAAABOSVRB+b+4AQCqADfZbgAAAEM6XFdJTkRPV1NcTG9jYWwgU2V0dGluZ3NcQXBwbGljYXRp
-b24gRGF0YVxNaWNyb3NvZnRcT3V0bG9va1xvdXRsb29rLnBzdAAAAAMA/g8FAAAAAwANNP03AAAC
-AX8AAQAAADAAAAA8TkdCQkxHRkVBTERBREhOREFBRkZJRUJDRE5BQS5rZXZpbkBwZXJmaHQuY29t
-PgADAAYQYPzffQMABxCxAAAAAwAQEAAAAAADABEQAAAAAB4ACBABAAAAZQAAAElGSUZJTkRJTkVF
-RE9SV0FOVEFQQVJUSUNVTEFSTU9EVUxFVEhBVElESUROVENIT09TRVdIRU5JRklSU1RDT01QSUxF
-RFRIRUtFUk5FTCxDQU5JQ09NUElMRVNBSURNT0RVTEUAAAAAXxI=
+eth0
+----
+IP       10.2.248.1
+MASK     255.255.248.0
+B'CAST   10.2.255.255
+Network  10.2.248.0
 
-------=_NextPart_000_0000_01C3AAA7.1A2E2D00--
+eth1
+----
+IP       172.16.1.1
+MASK     255.255.0.0
+B'CAST   172.16.255.255
+Network  172.16.0.0
 
+
+Client A
+--------
+IP       10.2.255.254
+MASK     255.255.248.0
+Gateway  10.2.248.1
+
+Client B
+--------
+IP       172.16.1.3
+MASK     255.255.0.0
+Gateway  172.16.1.1
+
+The firewall/router is a Redhat Linux 2.4.18
+The situation where there are no iptables
+running(stopped the service) and packet forwarding is
+enables via sysctl.conf. As long as there are two(2)
+machines as client A and B they connect to each other.
+But then again when there is a CISCO route taken in as
+a client, client A/B it does not ping to the router
+from the other side. Could someone help me on this
+issue.
+
+Thanks sna regards
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
