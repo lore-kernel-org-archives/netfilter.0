@@ -1,8 +1,8 @@
-From: Esteban <esteban@alstec.fr>
-Subject: Netfilter and LDAP
-Date: Wed, 7 May 2003 15:18:24 +0200
+From: Theo Cabrerizo Diem <diem-netfilter@carpediem.sh>
+Subject: Problem determining the correct route
+Date: 07 May 2003 11:52:04 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030507151824.6acafbef.esteban@alstec.fr>
+Message-ID: <1052319124.768.28.camel@noname.javali.intranet>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,22 +18,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all,
+Hi !
 
-On a network, a have a LDAP database containing users profiles. Some
-users may access diffeent services. While some users can access http,
-some others cannot but can use ssh, etc.
-I would like to put these informations in the LDAP database, and then
-make Netfilter ask the LDAP database before accepting a packet or
-creating a nez dynamic rule.
-Is this possible ? and if yes, how ? or is there a different way to do
-what I want ?
+I have a question about conntrack ...
 
-Thank you very much in advance.
+I have one box, action as router, with 2 internet connections (one ADSL
+and one Wifi) and a connection to my network ...
 
--- 
-Stephane DESMET
-Alstec Informatique
-17, rue du Colisee
-75008 Paris
+I have some DNAT rules, for example, to redirect port 25 on my 'router'
+to my mail server (IP 192.168.1.2) ...
+
+the problem is .. actually I only use ADSL for other services and Wifi
+for email .. (I use FWMARK and IPROUTE2 to do this) ... 
+
+There isn't any way to conntrack/other methods to do a redirect in both
+links .. and conntrack (using ESTABLISHED state information) to decide
+witch route to take .. or any rules I can mark it using this info and
+decide with iproute2 ?
+
+Actually I use iptroute2 with matches a FWMARK created with this
+iptables rule :
+iptables -t mangle -A FORWARDING -s $MY_SMTP -m tcp -p tcp --sport smtp
+-j MARK --set-mark 0xa2
+
+but if my wifi link goes down, i have to manually remove this mark to
+allow packets comming from my SMTP to take ADSL route :o/ ...
+
+Thanks !
+
+Theo
+
 
