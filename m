@@ -1,12 +1,15 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Broken MS tcp new not syn: better to REJECT or DROP?
-Date: Wed, 29 Jan 2003 17:58:33 -0800 (PST)
+From: justin <cmbb@dslr.net>
+Subject: Re[2]: Broken MS tcp new not syn: better to REJECT or DROP?
+Date: Thu, 30 Jan 2003 02:35:39 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030130015833.33755.qmail@web40206.mail.yahoo.com>
-References: <106459900750.20030129180342@dslr.net>
+Message-ID: <160490618171.20030130023539@dslr.net>
+References: <3E307456.70104@orix.com.au.>
+ <106459900750.20030129180342@dslr.net> <20030130002029.GM11221@miggy.org>
+Reply-To: justin <cmbb@dslr.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <106459900750.20030129180342@dslr.net>
+In-Reply-To: <20030130002029.GM11221@miggy.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +20,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: justin <cmbb@dslr.net>, Phil Crooker <pcrooker@orix.com.au>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Fydor discusses this lightly I think in his OS Fingerprint documentation.. It's
-prob a little dated though... mayb it will help
+thanks.
+Hmm, I saw this article a few weeks ago, but confusingly, it says
+"observed in 1997"(!), then it backpedals to say it was observed in
+NT4.0 (still in 1997, presumably) and was supposedly an NT stack problem
+not a browser issue.
 
-http://www.insecure.org
+Well just for kicks, I tried XP and current MSIE to new URLs, via a
+linux router and see nothing but the correct initial SYN packet. Is
+anyone still running 1997s version of NT 4.0? seems unlikely, or a
+vanishingly small number of people?
 
+A> On Wed, Jan 29, 2003 at 06:03:42PM -0500, justin wrote:
+>> Is there a web page somewhere on this subject you can point me at?
+>> "broken ms tcp" ?
 
---- justin <cmbb@dslr.net> wrote:
-> Is there a web page somewhere on this subject you can point me at?
-> "broken ms tcp" ?
-> 
-> thanks -Justin
-> 
-> 
+A>   I presume they mean this:
 
+A>         http://slashdot.org/article.pl?sid=03/01/05/2025254&mode=thread
+A>         http://grotto11.com/blog/slash.html?+1039831658
 
-=====
-"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+A> -Ath
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
 
