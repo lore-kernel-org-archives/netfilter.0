@@ -1,11 +1,11 @@
-From: "David Luyer" <david@luyer.net>
-Subject: RE: TCP delay, solved
-Date: Fri, 14 Jun 2002 18:25:54 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: TCP delay, solved
+Date: Fri, 14 Jun 2002 10:16:11 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000001c2137d$19b6b800$638317d2@pacific.net.au>
+Message-ID: <200206140919.KAA11256@slate.rockstone.co.uk>
 References: <002101c2137b$e44d6de0$638317d2@pacific.net.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 In-Reply-To: <002101c2137b$e44d6de0$638317d2@pacific.net.au>
 Errors-To: netfilter-admin@lists.samba.org
@@ -18,39 +18,45 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
+On Friday 14 June 2002 9:17 am, David Luyer wrote:
+
+> Ah.  I missed the start of the discussion.  You're blocking ident
+> lookups on your customers, and it's causing them to have problems
+> accessing some sites and services?
+>
 > Easy solution:
-> 
+>
 >   deny (connection reset) rather than drop the connections
 
-I meant reject.  From the man page:
+Yes, that's the "hole in my firewall" I referred to.   By sending back RST to 
+packets coming in on TCP port 113, I'm telling people there's a firewall 
+there.   All other ports send back nothing, and I don't want this one to 
+stand out as being different....
 
-   REJECT
-       This  is  used to send back an error packet in response to
-       the matched packet: otherwise it is equivalent to DROP  so
-       it  is  a terminating TARGET, ending rule traversal.  This
-       target is only valid in  the  INPUT,  FORWARD  and  OUTPUT
-       chains, and user-defined chains which are only called from
-       those chains.  The following option controls the nature of
-       the error packet returned:
+> Hard solution:
+>
+>   transproxy ident
 
-       --reject-with type
-              The  type  given can be icmp-net-unreachable, icmp-
-              host-unreachable,   icmp-port-unreachable,    icmp-
-              proto-unreachable,   icmp-net-prohibited  or  icmp-
-              host-prohibited, which return the appropriate  ICMP
-              error  message  (port-unreachable  is the default).
-              The option tcp-reset can be  used  on  rules  which
-              only  match the TCP protocol: this causes a TCP RST
-              packet to be sent back.  This is mainly useful  for
-              blocking  ident  (113/tcp)  probes which frequently
-              occur when sending mail to broken mail hosts (which
-              won't accept your mail otherwise).
+Explain please ?
 
-Why connection reset?  For idiots at the other end who firewall all
-ICMP.
+>   and return a cryptographic hash representing
+>   the actual client online on the IP which the ident request is
+>   for
 
-David.
+Sounds more than most situations would need.   Why bother to send back 
+something actually related to the user (yes, I know this is what Ident's 
+expecting, but it's not necessary) ?   So long as Ident responds with 
+*something* (such as 'no-user') then the remote server will be happy and talk 
+to you without a timeout.
 
+The problem is making sure this only happens in response to an outgoing 
+packet (ie the Ident request gets treated as RELATED to the initial 
+connection), rather than providing an Ident daemon which answers any request 
+which comes in (eg port scan).
+
+ 
+
+Antony.
 
