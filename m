@@ -1,15 +1,12 @@
-From: Herman <Herman@AerospaceSoftware.com>
-Subject: Re: Block Kazaa from the internal network
-Date: Thu, 16 Oct 2003 20:51:51 -0600
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Block Kazaa from the internal network
+Date: Fri, 17 Oct 2003 13:09:36 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310162051.51440.Herman@AerospaceSoftware.com>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAA5ydvLCDFokyTKr8TUdasbQEAAAAA@petzetakis-africa.co.za> <007a01c393cb$e4156f40$0900a8c0@lowth.com> <30513.204.214.145.6.1066311236.squirrel@mail.linknet-solutions.com>
-Reply-To: Herman@AerospaceSoftware.com
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C50C@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <30513.204.214.145.6.1066311236.squirrel@mail.linknet-solutions.com>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,72 +19,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Here is something from a previous post:
-
-On Sun, 2003-10-12 at 11:35, Piotr P. wrote:
->
-> Does any body know how to
-> block traffic with this word using iptables?
-
-iptables -A FORWARD -p udp -d 0/0 --dport 1024:65535 -m string --string
-"KaZaA" -j DROP
-
-should do the trick.
-
-HTH,
-C
-
-Cheers,
-
-Herman
+> iptables -A FORWARD -p udp -d 0/0 --dport 1024:65535 -m=20
+> string --string
+> "KaZaA" -j DROP
+How about just blocking all UDP and allow only those needed?? saves =
+doing string matches on alot of ports..
+I thought Kazaa used some TCP as well..
 
 
-On Thursday 16 October 2003 7:33 am, Josh Berry wrote:
-   You could use a combination of Snort-Inline:
-   http://sourceforge.net/projects/snort-inline/
 
-   and the rules that Snort has for Kazaa and other P2P stuff.
+PS: Never seems to amaze me how many have Kazaa working and want to =
+switch it off and then there's the other half who want Kazaa and can't =
+get it working.... Beats me.. he he.. well actually I know why, =
+but............
 
-   And you could also use P2Pwall which is a P2P blocking module for
-   IPTables: http://www.lowth.com/p2pwall/
 
-   > Messagehttp://p2pwall.sourceforge.net
-   >   ----- Original Message -----
-   >   From: Lohan Spies
-   >   To: netfilter@lists.netfilter.org
-   >   Sent: Thursday, October 16, 2003 10:42 AM
-   >   Subject: Block Kazaa from the internal network
-   >
-   >
-   >   Hi All,
-   >
-   >   How can i block ALL Kazaa connections from inside my network?
-   >
-   >   Thanks,
-   >
-   >   Lohan Spies
-   >   Systems Administrator CSA / DBA / MCP
-   >   IQ Business Group
-   >   Tel: +27 12 521 7309
-   >   Fax: +27 12 541 3441
-   >   Cell: +27 83 258 2698
-   >   l.spies@petzetakis-africa.co.za
-   >
-   >
-   >
-   >
-   >
-   >   CONFIDENTIALITY CAUTION: If you have received this communication in
-   > error, please note that it is intended for the addressee only, is
-   > private and confidential and dissemination or copying prohibited. Please
-   > notify us immediately by e-mail and return the original message. We
-   > cannot assure that the integrity of this communication has been
-   > maintained nor that it is free of errors, virus, interception or
-   > interference. Thank you
 
-   Thanks,
-   Josh Berry, CTO
-   LinkNet-Solutions
-   469-831-8543
-   josh.berry@linknet-solutions.com
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
