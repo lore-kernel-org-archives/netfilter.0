@@ -1,10 +1,13 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: A simple question
-Date: Thu, 19 Aug 2004 08:15:52 -0700
+From: Alejandro Flores <alejandro.flores@triforsec.com.br>
+Subject: Re: Port Forwarding with iptables
+Date: Thu, 19 Aug 2004 13:39:19 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7EACCDBB65D37443912D80713CC1245D02382AAE@fsnsab20.losangeles.af.mil>
+Message-ID: <1092933559.3705.7.camel@aflores>
+References: <412487B7.9090505@digitalview.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <412487B7.9090505@digitalview.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,54 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'markee@bandwidthco.com'" <markee@bandwidthco.com>, 'Sudheer Divakaran' <sudheer@svw.com>, 'Netfilter mailing list' <netfilter@lists.netfilter.org>
+To: Wilson Mak <wilson.mak@digitalview.com>
+Cc: netfilter@lists.netfilter.org
 
-this should be a basic rule of netsec 101 ...
+	Hello Wilson,
 
-one should have to 'turn' on any allowed traffic out of the box.
+> iptables -t nat -A PREROUTING -i eth0 -d <ext ip> -p tcp --dport 80 -j
+> DNAT --to 10.1.0.12:80
 
-i.e......the firewall should not allow ANY traffic by default until
-specifically
-		TOLD TO DO SO BY THE ADMIN.
+	That's ok.
 
-this is a good thing.
+> iptables -A INPUT -p tcp -i eth0 -d <ext ip> --dport 80 -m state
+> --state NEW -j ACCEPT
 
+	This rule is only necessary if you have a webserver running on you
+firewall. 
 
+> iptables -A FORWARD -p tcp -i eth0 -o eth1 -d <ext ip> --dport 80 -m
+> state --state NEW -j ACCEPT
 
-####################################
-# delbert.hudson@losangeles.af.mil #
-#        61cs/scbn, 3-0182         #
-####################################
+	Ops. You made a mistake. You have added a rule which changes the
+destination IP address to your internal webserver, remember? Your
+forward rule must specify the internal address as destination.
+iptables -A FORWARD -p tcp -i eth0 -o eth1 -d 10.1.0.12/32 --dport 80
+--syn -j ACCEPT
 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Mark E.
-Donaldson
-Sent: Wednesday, August 18, 2004 9:19 PM
-To: 'Sudheer Divakaran'; 'Netfilter mailing list'
-Subject: RE: A simple question
-
-
- 
-In almost all IP Tables articles I've found that the default policy of all
-tables (INPUT,OUTPUT,FORWARD) set to DROP.  I can understand it as far as
-INPUT and FORWARD tables are concerned, but I do not understand why should
-we set the default policy of OUTPUT chain to DROP.  OUTPUT chain is
-responsible for packets originating from the firewall itself.  
-Whay should we DROP it?
-
-Thanks,
-Sudheer
-
-What you say is indeed correct. Most of the articles on the subject do
-recommend a default DROP on all three tables. However, I personally do set
-my OUTPUT default to ACCEPT, while my FORWARD and INPUT are definitely set
-to DROP. As you might expect, it is quite easy to DOS the firewall itself
-when OUTPUT is set to DROP. And that is not a real good idea. However,
-having said that, close scrutiny must be paid to what you allow out of the
-firewall and the necessary rules must be in place.
-
-
+Regards,
+-- 
+--
+Alejandro Flores
+http://www.triforsec.com.br/
+http://www.defenselayer.com/
+http://www.nabucodonosor.com/
 
