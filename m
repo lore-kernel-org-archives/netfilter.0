@@ -1,12 +1,11 @@
-From: =?ISO-8859-1?Q?M=E5rten_Segerkvist?= <volodja@acc.umu.se>
-Subject: RE: NAT doesn't work (only a fraction of the forwarded packets reach
- the postrouting chain)
-Date: Sun, 13 Mar 2005 13:01:22 +0100 (MET)
-Message-ID: <Pine.GSO.4.62.0503131236230.10059@shaka.acc.umu.se>
-References: <02BB8A4AC86C564C89C7F14CF98CE0C49B72@knowledge.wizdom.nu>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: NAT doesn't work (only a fraction of the forwarded packets
+	reach the postrouting chain)
+Date: Sun, 13 Mar 2005 13:14:31 +0100
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C49B73@knowledge.wizdom.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C49B72@knowledge.wizdom.nu>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,8 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
+
+What do you see, when you tcpdump on your external interface? (tcpdump =
+-I eth0). Can you see natted packets exiting that interface?
+
+The reason, that you only see 4 packets in the iptables -t nat -L is =
+that if you fire off 10 pings, iptables will see the latter 9 as =
+belonging to the same connection and therefor only logs 1.
+
+It might be as simple, that the host you are trying to ping is just =
+unpingable.
+
+Specify some more info, like what you are trying to ping, traceroute -I =
+output.
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org =
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of M=E5rten =
+Segerkvist
+Sent: Sunday, March 13, 2005 1:01 PM
+To: netfilter@lists.netfilter.org
+Subject: RE: NAT doesn't work (only a fraction of the forwarded packets =
+reach the postrouting chain)
 
 On Sun, 13 Mar 2005, Sietse van Zanen wrote:
 
@@ -31,7 +52,8 @@ On Sun, 13 Mar 2005, Sietse van Zanen wrote:
 >
 > Try using regular SNAT rule:
 >
-> Iptables --table nat --append POSTROUTING --out-interface eth0 -j SNAT=20
+> Iptables --table nat --append POSTROUTING --out-interface eth0 -j SNAT =
+
 > --to-source:your.pub.ip.addr
 >
 
@@ -66,4 +88,5 @@ anywhere            to:<IP>
 As before, I'd be most grateful for any suggestions!
 
 /M=E5rten Segerkvist
+
 
