@@ -1,13 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: denying local traffic
-Date: Tue, 11 Feb 2003 20:28:37 +0100
+From: Andreas Meyer <anmeyer@gmx.net>
+Subject: iptables and redirects
+Date: Tue, 11 Feb 2003 20:44:31 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030211202837.1225ac17.arnt@c2i.net>
-References: <000101c2d1df$3166fb60$bb00a8c0@DOUG1>
+Message-ID: <20030211194431.1B87617C6E@delta.meyer.home>
+Reply-To: anmeyer@anup.de
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c2d1df$3166fb60$bb00a8c0@DOUG1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +17,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: IPtables <netfilter@lists.netfilter.org>
 
-On Tue, 11 Feb 2003 10:06:40 -0500, 
-"Doug Yeager" <doug@aircomwireless.net> wrote in message 
-<000101c2d1df$3166fb60$bb00a8c0@DOUG1>:
+Hello all!
 
-> I'm using nocat as a wireless gateway w/ the hostap driver. This is 
-> Great because I should be able to use iptables firewall rules to 
-> Administer things. I've had some success w/ these rules as I'm new to 
-> iptables.
->  
-> What I can't figure out is how to block local traffic between clients 
-> on the LAN. Basically, I want them to be invisible to each other but 
-> be able to get to the internet through the gateway.
-> Right now they can get to the internet but can see each other's shares
-> and so forth.
-  
-> What should be the iptables commands for doing this.
->  
-> My lan is 192.168.19.0/255.255.255.0
 
-..ascii art figure?  We use vpn (poptop) tunnels, but your net 
-is likely different from ours.  
+I have problems getting PREROUTING to work.
+I defined two simple rules:
 
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 192.168.1.210 --dport 80  -j DNAT --to 192.168.1.3:3128
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 192.168.1.210 --dport 110 -j DNAT --to 192.168.1.75:110
+
+where 192.168.1.210 is the iptables-host with squid and 192.168.1.3 als http-accelerator
+      192.168.1.3   is the workstation
+      192.168.1.75  is the mailserver
+
+
+         |~~~~~~~~~~~~~~|----|192.168.1.75 |
+---isdn--|192.168.1.210 |
+         |______________|----|192.168.1.3  |
+
+I try to telnet to the iptables-host from workstation:
+
+telnet 192.168.1.210 80
+and the connection times out.
+
+telnet 192.168.1.210 110
+and the connection times out.
+
+Same with the Browser to the iptables-host.
+
+I have no clue what is going on. No entries in the logs, nothing.
+
+## Logging
+iptables -N nirwana
+iptables -A nirwana -p ICMP -j LOG --log-prefix "verw. ICMP Paket "  --log-level info
+iptables -A nirwana -p UDP  -j LOG --log-prefix "verw. UDP Paket "   --log-level info
+iptables -A nirwana -p TCP  -j LOG --log-prefix "verw. TCP Paket "   --log-level info
+iptables -A nirwana -j DROP
+ 
+iptables -A INPUT   -j nirwana
+iptables -A FORWARD -j nirwana
+iptables -A OUTPUT  -j nirwana
+
+Everthing works fine if I flush the tables.
+
+I defined two other rules:
+iptables -t nat -A OUTPUT -p TCP --dport 80  -j DNAT --to 192.168.1.3:3128
+iptables -t nat -A OUTPUT -p TCP --dport 110 -j DNAT --to 192.168.1.75:110
+
+and a telnet from within the iptables-host redirects me to the wanted
+host.
+What am I missing? Modules are all loaded.
+Is this a kernel thing? As long as I don't redirect to another host
+iptables are working.
+
+Who can help?
 -- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
 
+  Andreas Meyer
 
+Object Class   Common Name   userPassword
+posixAccount   andreas       {SSHA}hpyqObx1/BXbKFgXoqCayoGsvIgPYiVc
 
