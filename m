@@ -1,10 +1,12 @@
-From: Gavin Hill <gavin@beerygaz.com>
-Subject: iptables & TFTP
-Date: Wed, 23 Jun 2004 08:44:27 +0200
+From: "zze-KHOURY Jad FTRD/DMI/CAE" <jad.khoury@rd.francetelecom.com>
+Subject: NAT ICMP
+Date: Wed, 23 Jun 2004 09:02:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6.1.0.6.2.20040623084404.021d9a00@lucy>
+Message-ID: <D4EF10CCEB2CE742BEEA9838C590B0E8022590B0@ftrdmel2.rd.francetelecom.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,28 +16,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm trying to get a device to TFTP to a server through my iptables firewall 
-configured to perform NAT masquerading.
 
-The firewall itself can TFTP without a problem, but any of the machines on 
-the inside cannot.
+Hi, Does someone know how to NAT ICMP from a private Network to the
+internet.
 
-After much reading I see that there was a POM patch available to fix a TFTP 
-issues in iptables 
-(http://www.stearns.org/pomlist/20030101-output/pom-oldnat.html#tftp)  I've 
-read as much documentation as I can on POM and its use, but the latest POM 
-patches I downloaded don't seem to have anything on the TFTP patch 
-(patch-o-matic-20031219.tar.bz2).  Can you help shed some light on my 
-problem please?  I'm pretty new to iptables, so please be gentle.
+I tried to add a NAT Rule on my firewall but it seems that NAT is
+available only for UDP/TCP??
 
-Fedora Core 2 2.6.6-1.435 on Intel hardware
-iptables-1.2.9-2.3.1
+Any help would be appreciated
 
-Thanks,
-Gavin 
-
+Regards
+jad
 
