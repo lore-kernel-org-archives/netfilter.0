@@ -1,12 +1,11 @@
-From: Tom Diehl <tdiehl@rogueind.com>
-Subject: Re: linux firewall/IPTABLES Vs Mediaring VOip
-Date: Sun, 3 Aug 2003 23:34:07 -0400 (EDT)
+From: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
+Subject: Newbie: why is this packet being dropped/logged?
+Date: Mon, 04 Aug 2003 14:11:35 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308032330470.10276-100000@tigger.rogueind.com>
-References: <00a501c35a2c$beaac7b0$7700000a@lawrencewin2k>
+Message-ID: <3F2DEB07.1060801@mega-bucks.co.jp>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00a501c35a2c$beaac7b0$7700000a@lawrencewin2k>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +15,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Lawrence - D <ingsiong@daltron.com.pg>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, 4 Aug 2003, Lawrence - D wrote:
+I am relatively new to iptables. I have set up some basic rules for my 
+web server to allow only SSH and HTTP traffic (listed below). But I am 
+finding some log entries showing packets that were trying to connect to 
+port 80 getting logged (and dropped).
 
-> Hi,
->     I'm new to Linux RedHat O/S. My RedHat 8.0 is connected by  lease line
-> to internet service. I'm running Squid for proxy service. I implement the
-> medium level firewall with default setting on linux firewall/IPTABLES.
->     Now my LAN user want to use mediaring VOIP service. I check the website
-> FAQ and found the following :-
-> 
-> 10. Can the Prepaid Service work behind a firewall?
-> The Prepaid Calls Service currently supports PC-to-Phone calls from behind
-> firewalls. If you are connected to the Internet using LAN, you may be behind
-> a firewall, which will prevent you from connecting to our Internet gateways.
-> To make calls from behind your firewall, you need to set the firewall
-> settings by clicking on the link "Settings" on the web page and select "Use
-> Firewall" for SOCKS5.
-> To use NAT firewall, you will need to open or ask your Network Administrator
-> to open the following outgoing ports for UDP and TCP: 51719(UDP), 51720(TCP)
-> and 1800-1810(UDP).
-> 
->     Can anyone guide me how to open the port on server so that my LAN user
-> can use Mediaring ?
+I can't understand why these packets were logged as I thought my rules 
+would let through any packet trying to connect to port 80.
 
-I think redhat-config-network will allow you to adjust iptables rules. If not
-suggest you look at http://www.fwbuilder.org.
+# iptables -n -v -L
+Chain INPUT (policy DROP 279 packets, 14864 bytes)
+  pkts bytes target     prot opt in     out     source 
+destination
+   238 47040 ACCEPT     all  --  lo     *       0.0.0.0/0 
+0.0.0.0/0
+  366M   21G ACCEPT     all  --  *      *       0.0.0.0/0 
+0.0.0.0/0          state RELATED,ESTABLISHED
+2199K  120M ACCEPT     tcp  --  eth0   *       0.0.0.0/0 
+203.179.86.66      state NEW,RELATED,ESTABLISHED tcp dpt:80
+    38  1824 ACCEPT     tcp  --  eth0   *       219.118.175.0/24 
+203.179.86.66      state NEW,RELATED,ESTABLISHED tcp dpt:22
+     0     0 DROP       udp  --  *      *       0.0.0.0/0 
+0.0.0.0/0          udp dpt:67
+     0     0 REJECT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0          tcp dpt:113 reject-with tcp-reset
+     0     0 REJECT     udp  --  *      *       0.0.0.0/0 
+0.0.0.0/0          udp dpt:137 reject-with icmp-port-unreachable
+     0     0 REJECT     udp  --  *      *       0.0.0.0/0 
+0.0.0.0/0          udp dpt:138 reject-with icmp-port-unreachable
+     0     0 REJECT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0          tcp dpt:138 reject-with icmp-port-unreachable
+     0     0 REJECT     udp  --  *      *       0.0.0.0/0 
+0.0.0.0/0          udp dpt:139 reject-with icmp-port-unreachable
+   279 14864 LOG        all  --  *      *       0.0.0.0/0 
+0.0.0.0/0          LOG flags 0 level 7 prefix `DROP:'
 
-HTH,
+Here is one of those log entries:
 
--- 
-......Tom		Registered Linux User #14522	http://counter.li.org
-tdiehl@rogueind.com	My current SpamTrap ------->	mtd123@rogueind.com
+kernel: DROP:IN=eth0 OUT= MAC=00:d0:b7:e1:13:e7:00:90:fe:1e:50:a6:08:00 
+SRC=66.69.93.167 DST=203.179.86.66 LEN=40 TOS=0x00 PREC=0x00 TTL=105 
+ID=8622 DF PROTO=TCP SPT=1439 DPT=80 WINDOW=64952 RES=0x00 ACK URGP=0
+
+Can someone help me understand why this packet was dropped?
+
+Thanks,
+
+Jean-Christian Imbeault
 
 
