@@ -1,8 +1,8 @@
 From: "hard__ware" <hard__ware@hotmail.com>
 Subject: Getting rid of the masses of ip_conntrack messages
-Date: Mon, 2 Dec 2002 07:46:26 +1000
+Date: Mon, 2 Dec 2002 09:22:30 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE3424z7apNYVsUeRh000004460@hotmail.com>
+Message-ID: <OE28J3Ih7jtrSByh133000043af@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,24 +16,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
-Cc: pasteka@kabsi.at
+To: Othmar Pasteka <pasteka@kabsi.at>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-I will get a new email / domain when i can afford it ..
+have you made sure that the ip_conntrack_ftp module is loaded as well , #>
+lsmod
 
-anyway...
+If so the only thing i can suggest is disableing DROP on
+your output for a while and remove the output rules.
+(set its CHAIN to default of ACCEPT)
 
-Ok now you have me sort of confused i thought you had
-a Nefilter Gateway ? or maybee you do ? .
+did this stop the messages ? other than that im not sure .
+ive tried to follow the entire Kernel Source .c kode,
+and to me it looks like you may have a problem in your output and maybe
+contrack_ftp problems ...
 
-
-So all you really want is a Linux / GNU box setup as a FTP Server for the
-Inetrnet /w DoS protection ect , ect.
-
-If this is the case how is this box connected ?
-
-you did say a Default Route existed this could be a gateway on your lan or
-the ISP's gateway assigned to
-you via DHCP on a WAN Device directly connected to
-the Linux FTP box ..
+cya...
 
