@@ -1,11 +1,13 @@
-From: Saifuddin <saif@odysseytec.com>
-Subject: how to export a symbol from kernel to be accessible in module.
-Date: Mon, 26 Apr 2004 12:53:13 +0530
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: iptables and iproute
+Date: Mon, 26 Apr 2004 09:51:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040426125313.3e52dfd9.saif@odysseytec.com>
+Message-ID: <1082965885.1794.1.camel@anduril.intranet.cartel-securite.net>
+References: <1082964013.1772.14.camel@Toshiba.Toshiba>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1082964013.1772.14.camel@Toshiba.Toshiba>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,46 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Antonio Alvarez <aramirez@teneinformatica.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
+Le lun 26/04/2004 =E0 09:20, Antonio Alvarez a =E9crit :
+> The problem is how can i control the packet localy generated( ip and
+> port )??? =20
+> i can't mangle this packet before routing :-/
 
-Hello everyone,
-	
-Linux kernel version 2.4.24
+You can mangle them in OUTPUT chain...
 
-	ipc/shm.c
-		
-	static struct ipc_ids shm_ids; 
+> In sumarize it's possible to use different routing tables with packet
+> generated localy??
 
-		I want to access this variable in other kernel modules.
-	for this a macro is defined in ipc/shm.c
+Yes.
+One solution, amoung others : mark them in OUTPUT and route against
+nfmark.
 
-	#define shm_get(id)     ((struct shmid_kernel *)ipc_get(&shm_ids,id));
-
-	
-	for this I have written a function in ipc/shm.c as below: -
-
-	void *sys_getshmhandler(int id){
- 	       return (void *)shm_get(id);
-	}
-
-	EXPORT_SYMBOL(sys_getshmhandler);
-
-	ipc/Makefile
-
-	export-objs := shm.o.
-
-	The kernel compiles successfully, but when I boot the fresh kernel, I do not get the exported symbol in /proc/ksysm.
-
-	What am I missing?
-	Can anybody figure out?
-
-	Thanks in advance.
-
--- 
-Regards,
-Saifuddin,
-saif@odysseytec.com.
-saifuddin_it@yahoo.co.in.
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
