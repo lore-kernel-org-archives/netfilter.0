@@ -1,14 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: DNAT to a virtual IP problems
-Date: Wed, 19 Feb 2003 01:02:18 -0500
+From: Konstantin Dorichev <kdorichev@epicinvest.ru>
+Subject: LOG entry format: MAC field
+Date: Wed, 19 Feb 2003 12:36:04 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302190102.18012.netfilter@newkirk.us>
-References: <20030218200300.GC15233@yahoo.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <auto-000013214373@frontend4.aha.ru>
+Reply-To: kdorichev@epicinvest.ru
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030218200300.GC15233@yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +17,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Stephen Mathezer <mathezer@yahoo.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tuesday 18 February 2003 03:03 pm, Stephen Mathezer wrote:
-> I am having some trouble with DNAT. For various reasons I am running a
-> webserver that is listening on virtual IP addresses on the internal
-> interface of my firewall.  I am trying to forward ports 80 and 443
-> from the external interface to various virtual internals.  No matter
-> what I do, packets never seem to show up on the virtual interfaces.
+Hi, folks:
 
-> eth0 is external
-> eth1 is internal (192.168.8.1/24)
->
-> I have tried using an address on the same subnet (192.168.8.22) as
-> well as addresses on other subnets (192.168.3.22) for interfaces
-> eth1:0, eth1:1 etc.  NAT'ing to another box on the internal LAN works
-> fine, it is just NAT to the virtual that is broken.
->
-> I am doing the DNAT as follows:
->
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j DNAT --to
-> 192.168.8.22:443
+Could anyone please comment on MAC field in iptables log entry? Why does it 
+have 14 bytes instead of 6 as it should be for Ethernet card MAC address? Or 
+this field means something else?
 
-> Tcpdump on eth0 shows traffic arriving, iptables doesn't log anything
-> interesting, although I guess I don't have any logging configured in
-> the nat table.  Tcpdump on eth1:0 never sees any packets arriving.
+Also, since my firewall is being scanned, there are many entries in log file 
+with different source IPs, yet the same MACs. Is there a way to trace the 
+scanning host back?
 
-Try setting up a LOG rule first in each chain in filter and nat tables,=20
-and in mangle table if you have it loaded.  (just for a few packets, not=20
-too long)  What about tcpdump for eth1?
+Thanks for whatever you may suggest.
 
-> I am permitting port 443 connections inbound on eth0. An identical
-> configuration, except NAT'ing to another webserver on the LAN works
-> fine, it is just NAT'ing to a virtual that doesn't work.
+Below are a few log entries for your consideration:
 
-Hmmm.  You say you are accepting tcp 443 on eth0.  What about eth1?  That=
-=20
-is the physical interface the packets should appear 'from' when they hit=20
-INPUT chain.=20
+Feb 11 16:34:10 gateway kernel: IPT INPUT packet died: IN=eth0 OUT= 
+MAC=00:50:04:a2:08:91:00:01:42:1b:57:20:08:00 SRC=80.117.120.207 
+DST=212.85.17.62 LEN=52 TOS=0x00 PREC=0x00 TTL=48 ID=21343 DF PROTO=TCP 
+SPT=4504 DPT=57 WINDOW=60352 RES=0x00 SYN URGP=0
 
-j
+Feb 11 17:56:27 gateway kernel: IPT INPUT packet died: IN=eth0 OUT= 
+MAC=00:50:04:a2:08:91:00:01:42:1b:57:20:08:00 SRC=61.139.69.22 
+DST=212.85.17.62 LEN=404 TOS=0x00 PREC=0x00 TTL=106 ID=51580 PROTO=UDP 
+SPT=1305 DPT=1434 LEN=384
 
+Feb 11 19:35:40 gateway kernel: IPT INPUT packet died: IN=eth0 OUT= 
+MAC=00:50:04:a2:08:91:00:01:42:1b:57:20:08:00 SRC=204.31.160.26 
+DST=212.85.17.62 LEN=404 TOS=0x00 PREC=0x00 TTL=107 ID=14329 PROTO=UDP 
+SPT=1367 DPT=1434 LEN=384
 
+P.S. Many thanks to Ockar Andreasson for his Iptables Tutorial.
+-- 
+Best regards,
+
+Konstantin Dorichev
+EPIC Advisors (Russia) Ltd.
+System Administrator
 
