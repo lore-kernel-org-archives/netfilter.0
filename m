@@ -1,14 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: iptables wishes
-Date: Tue, 1 Apr 2003 09:22:19 -0500
+From: Carlos Ble <carlosble@terra.es>
+Subject: netfilter and squid transparent proxy
+Date: Tue, 1 Apr 2003 16:42:00 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304010922.19125.netfilter@newkirk.us>
-References: <200304011158.AA220332250@klintan.se>
-Reply-To: netfilter@newkirk.us
+Message-ID: <E190Ntg-0000s8-00@Alfa.linuxserver1.net>
+Reply-To: carlosble@terra.es
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304011158.AA220332250@klintan.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,38 +17,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: micke@klintan.se, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tuesday 01 April 2003 04:58 am, Michael Klinteberg wrote:
-> ---------- Original Message ----------------------------------
-> From: Joel Newkirk <netfilter@newkirk.us>
-> Reply-To: netfilter@newkirk.us
-> Date: Tue, 1 Apr 2003 03:41:48 -0500
+Hi all.I'm new in the mailinglist.
+I have a linux router with 3 ethernet interfaces:
+eth0 is my LAN, eth1 and eth2 are internet gateways.
+My system default gateway is eth2.
+At the moment im working with mangle table to mark packets and
+to use two gateways; http goes across eth1 and
+other protocols goes across eth2, for example.
+This is ok. Everything works ok.
+But now i want to run a transparent squid proxy-cache y the
+linux router machine and i have some problems.
+With the next rule, squid works fine:
+iptables -t nat -A PREROUTING -s 192.168.60.0/255.255.255.0 \
+-p tcp --dport 80 -j REDIRECT --to-port 3128
+but it use eth2, the default via, it take no notice of mangle
+table and don't goes across eth1, because squid takes the
+control. I really had proven a lot of different rules but
+i can't do simultaneously mangling and web caching.
+Can somebody help me please?
+Thanks in advance.
 
-> >I was curious to hear what people might have as a 'wishlist' for
-> >iptables/netfilter capabilities.  Every once in a while something
-> > comes
-> >up here that simply doesn't seem to have a good solution.
-> >My hope is that many of our personal wishes may already be
-> >possible, and
-> >by voicing them someone who has a solution may post it.  And for
+PS- Reading other messages from de list, i think this is
+one of the more interesting mailinglist i had subscribed.
+I hope i'll be able to help other people in the mailinglist in 
+the future.
+Thanks to all.
 
-> >2 - completely separate netfilter logging from kernel log
-> > streams.  (not
-> >just redirecting infrequently-used kernel streams, but actual
-> >dedicated netfilter streams)
->
-> Ohh yes!!! This is also "a must have". An extended to this yould
-> be to log to diffrent files for diffrent rules. Something like
-> iptables -A INPUT -s bad.host.net --log-
-> file /var/log/netfilter/bad.hosts -j LOG
 
-That can be 'fudged' right now by using --log-level debug and --log-level=
-=20
-notice, for instance, then redirecting kern.=3Ddebug to one file and=20
-kern.=3Dnotice to another from /etc/syslog.conf.  Both streams usually=20
-have very little traffic.
+-----------
+Carlos Ble
+email: carlosble@terra.es,
+       tecnico@wireless-canarias.com,
+       alu2388@csi.ull.es
+irc.oftc.net: kharly_
+irc.irc-hispano.org: kharly_
 
-j
-
+Impulsado por Debian/GNU Linux
 
