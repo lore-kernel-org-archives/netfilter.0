@@ -1,11 +1,9 @@
-From: "kaiwen" <cal_kaiwen@hotmail.com>
-Subject: Re: Match packet mark with --set-mark to ip rule fwmark
-Date: Wed, 7 Jan 2004 15:25:52 +0800
+From: "ding dang" <jiadeip@hotmail.com>
+Subject: Re: Could someone tell me the rules of port translation in SNAT ?
+Date: Wed, 07 Jan 2004 07:37:22 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law11-OE66fa281NPs60001e8d8@hotmail.com>
-References: <Law11-OE68Dt3HvoFOA00000021@hotmail.com> <3FFB927B.4010208@snapgear.com> <LAW11-OE14FjwUbowDp0001e8e9@hotmail.com> <3FFBA469.9080205@snapgear.com>
+Message-ID: <BAY10-F1037eQFo6iJk0001e3f5@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,89 +14,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Philip Craig <philipc@snapgear.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="gb2312"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
-Hi,
-
-I tried the following configurations:-
-
-(1) [root@g webauth]# ip route show table test2
-prohibit 192.168.250.197
-192.168.8.0/24 via 192.168.8.88 dev br0
-
-(2) [root@g webauth]# iptables -t mangle -L
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-MARK       all  --  anywhere             anywhere           MARK set 0x5
-
-(3) [root@g webauth]# ip ru
-0:      from all lookup local
-32765:  from all fwmark        5 lookup test2
-32766:  from all lookup main
-32767:  from all lookup 253
-
-Ping from 192.168.8.129 will go to iptables and got marked 5, it goes to
-local table, but no route match for it, so it goes to table test2.
-The destination of the packet is 192.168.250.197, so it is prohibited, I
-suppose the ping will not be successful.
-Have I got the explanation right?
-
-I have got a question, packet travles through routing table first or
-iptables?
-
-But, it is successful.
-
-
-
------ Original Message -----
-From: "Philip Craig" <philipc@snapgear.com>
-To: "kaiwen" <cal_kaiwen@hotmail.com>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Wednesday, January 07, 2004 2:17 PM
-Subject: Re: Match packet mark with --set-mark to ip rule fwmark
-
-
-> kaiwen wrote:
-> > (2)[root@g root]# ip ro show table test2
-> > prohibit 192.168.8.88
-> > prohibit 192.168.250.197
-> >
-> > (3) [root@g root]# iptables -t mangle -L
-> > Chain OUTPUT (policy ACCEPT)
-> > target     prot opt source               destination
-> > MARK       all  --  anywhere             anywhere           MARK set 0x5
->
-> But you changed both the IP address for the prohibit *and* the
-> chain the mark is in.  So you still won't get packets that match
-> both.  Just change one or the other.
->
-> That is, if you want to drop an incoming ping packet, then the
-> prohibit must specify a local IP, and the mark rule must be in
-> the PREROUTING chain.  If you want to drop an outgoing ping packet,
-> then the prohibit must specify a remote IP, and the mark rule must
-> be in the OUTPUT chain.  You could also just always put the mark
-> rule in both PREROUTING and OUTPUT.
->
-> Here's another option: change the mark rule so that it specifies
-> the source or destination, and also change the prohibit to be
-> 'prohibit any'.
->
-> > Take a look at ip rule, the first rule route all packet to table local,
-> > which has a route for 192.168.8.0/24. Is it true that once there is one
-rule
-> > which match for the packet, it will route according to it. If so, I
-remove
-> > the route from table local and put it at table test2, which is
-> > Configurations B.
->
-> Yes, it will use the first route that matches.  Note that moving the
-> route to table test2 will break routing for packets that don't use
-> table test2.  You probably want to move it to table main.
->
-> --
-> Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
->
->
-
+PiA+IFdoZW4gdXNpbmcgU05BVCBvZiBOZXRmaWx0ZXIgYXMgYW4gTkFQVCwgaG93IHdpbGwgTmV0
+ZmlsdGVyIGFzc2lnbiB0aGUKPiA+IHB1YmxpYyBVRFAgcG9ydCBmb3IgYSBVRFAgcmVxdWVzdCBm
+cm9tIHRoZSBwcml2YXRlIG5ldHdvcmsgdG8gSW50ZXJuZXQ/Cj4KPldpdGggYm90aCBUQ1AgYW5k
+IFVEUCwgbmV0ZmlsdGVyIHdpbGwgdXNlIHRoZSBzb3VyY2UgcG9ydCBjb250YWluZWQgaW4gdGhl
+Cj5vcmlnaW5hbCBwYWNrZXQgaWYgaXQgY2FuIChpZTogaWYgdGhhdCBzb3VyY2UgcG9ydCBpcyBu
+b3QgYmVpbmcgdXNlZCBmb3IKPnNvbWV0aGluZyBlbHNlIGJ5IHRoZSBuZXRmaWx0ZXIgbWFjaGlu
+ZSkuICAgSWYgdGhpcyBpcyBub3QgcG9zc2libGUsIHRoZW4KPmFub3RoZXIgcG9ydCBpcyBjaG9z
+ZW4gYXQgcmFuZG9tIHVzaW5nIHRoZSBzdGFuZGFyZCBzb2NrZXQtYmluZGluZyAKbWVjaGFuaXNt
+Cj51c2VkIGZvciBhbnkgbmV0d29yayBjb25uZWN0aW9uLgo+Cj4gPiBDb3VsZCBzb21lb25lIGRl
+dGFpbCBpdCB0byBtZSB3aGVuIHRoZSBVRFAgcmVxdWVzdCBpcwo+ID4gTkVXL0VTVEFCTElTSEVE
+L1JFTEFURUQvUkVQTElFRC9VTlJFUExJRUQ/Cj4KPlRoaXMgbWFrZXMgbm8gZGlmZmVyZW5jZS4K
+ClRoYW5rcy4KCkJ1dCB3aGF0IGkgb2JzZXJ2ZWQgaXM6KFNOQVQgdXNpbmcgVURQIHBvcnQgMjAw
+MDAtMzAwMDApCgpwcml2YXRlIGFkZHIgICAgICAgICBuZXRmaWx0ZXIgcG9ydCAgICAgICAgIElu
+dGVybmV0IGFkZHIKMTAuMC4wLjg6MjAwMCAtLS0+ICAgICAgIDIwMDAwICAgICAgIC0tLS0+ICAg
+MTkzLjAuMC44OjMwMDAKMTAuMC4wLjg6MjAwMSAtLS0+ICAgICAgIDIwMDAwICAgICAgIC0tLS0+
+ICAgMTkzLjAuMC44OjMwMDEKMTAuMC4wLjg6MjAwMiAtLS0+ICAgICAgIDIwMDAwICAgICAgIC0t
+LS0+ICAgMTkzLjAuMC44OjMwMDIKdGhhdCBtZWFucyBESUZGRVJFTlQgVURQIHJlcXVlc3RzIGZy
+b20gcHJpdmF0ZSBuZXR3b3JrIGZvciBESUZGRVJFTlQgCkludGVybmV0IGRlc3RpbmF0aW9uIHJl
+c3VsdCBpbiBhIHNhbWUgTmV0ZmlsdGVyIHBvcnQgbm8gbWF0dGVyIHRoZSBJbnRlcm5ldCAKZGVz
+dGluYXRpb24gc2VuZHMgcmVwbHkgb3Igbm90IDsKCnByaXZhdGUgYWRkciAgICAgICAgIG5ldGZp
+bHRlciBwb3J0ICAgICAgICAgSW50ZXJuZXQgYWRkcgoxMC4wLjAuODoyMDAwIC0tLT4gICAgICAg
+MjAwMDAgICAgICAgLS0tLT4gICAxOTMuMC4wLjg6MzAwMAoxMC4wLjAuODoyMDAxIC0tLT4gICAg
+ICAgMjAwMDEgICAgICAgLS0tLT4gICAxOTMuMC4wLjg6MzAwMAoxMC4wLjAuODoyMDAyIC0tLT4g
+ICAgICAgMjAwMDIgICAgICAgLS0tLT4gICAxOTMuMC4wLjg6MzAwMApESUZGRVJFTlQgVURQIHJl
+cXVlc3RzIGZyb20gcHJpdmF0ZSBuZXR3b3JrIGZvciBhIFNBTUUgSW50ZXJuZXQgZGVzdGluYXRp
+b24gCnJlc3VsdCBpbiBESUZGRVJFTlQgTmV0ZmlsdGVyIHBvcnRzLCB3aHk/CgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwrT
+68Gqu/q1xMXz09G9+NDQvbvB96Osx+vKudPDIE1TTiBNZXNzZW5nZXI6ICBodHRwOi8vbWVzc2Vu
+Z2VyLm1zbi5jb20vY24gIAoKCg==
