@@ -1,12 +1,12 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: not sure if 'iptables -Z' needed/useful/superfluous here..
-Date: 14 Jan 2005 22:38:28 +0100
-Message-ID: <1105728837.25584.63.camel@nostromo.bgsecm.com>
-References: <20050114060327.GA8917@spawar.navy.mil>
+Subject: Re: how can I test the firewall with iptable
+Date: 14 Jan 2005 22:38:32 +0100
+Message-ID: <1105729584.3672.69.camel@nostromo.bgsecm.com>
+References: <Pine.LNX.4.05.10501131452230.20258-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050114060327.GA8917@spawar.navy.mil>
+In-Reply-To: <Pine.LNX.4.05.10501131452230.20258-100000@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,14 +20,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-i	El vie, 14 de 01 de 2005 a las 07:03, seberino@spawar.navy.mil
-escribi=C3=B3:
+El jue, 13 de 01 de 2005 a las 20:57, R. DuFresne escribi=C3=B3:
+> first, iptables does not really do the part of 'intrusion detection'
+> that's a totally dfferent tool in most cases, though some other vendors
+> will  sell an applicane that does both firewalling and IDS.
 
-> I read man page on iptables but it still was not clear if I need
-> -Z to 'reset the byte count' and other stuff like it says it will do.
-
-If you delete your rules there are no counters, so you don't need
-to reset them.
+But you can use iptables+snort-inline and you have your firewall
+linked to your IPS, better than most comercial solutions...
 
 --=20
 Jose Maria Lopez Hernandez
