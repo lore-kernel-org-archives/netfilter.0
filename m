@@ -1,13 +1,10 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: Question regarding IPTables & fragemented packets.
-Date: Mon, 24 May 2004 07:14:34 -0400
+From: aksingh@hss.hns.com
+Subject: POST ROUTING and LOCAL IN
+Date: Mon, 24 May 2004 20:07:05 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5D3C2276FD64424297729EB733ED1F76060FFFC4@email1.mitretek.org>
+Message-ID: <OF3618AF1F.0C8F7861-ON65256E9E.004EED3B@hss.hns.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C44180.586D63EA"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,124 +14,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: netfilters-devel@lists.netfilter.org, jpiszcz@lucidpixels.com, ap@solarrain.com
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C44180.586D63EA
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-With IPTables, if one uses the connection trackers then one cannot see
-or block fragmented packets.
-
-Will this ever be changed?
-
-Essentially, if someone is using a connection tracker of any kind and
-gets DDoS'd with fragmented packets, they will not be able to see a
-thing (log wise) unless they use tcpdump?
-
-Is this correct?
-
-If so, will this ever be changed?
-
-I know ipfilter logs fragmented packets/attacks/blocks but it does not
-use any connection trackers.
-
-=20
+Cc: Sven Schuster <schuster.sven@gmx.de>
 
 
-------_=_NextPart_001_01C44180.586D63EA
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
 
-</head>
+Hi
 
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+   I have a kernel module that has hook call back functions for both
+POST_ROUTING and LOCAL_OUT.
 
-<div class=3DSection1>
+If I insert a new raw packet into the kernel with the dest ip address == ip
+address of this machine(the same  machine on which hooks functions lie)
+then the packets are caught by POST_ROUTING and NOT by IP_LOCAL_OUT and if
+i insert a packet with ip address==some other ip(other than this machine's
+ip address), they are first caught by the LOCAL_OUT hooks function.  Can
+someone explain this .
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>With IPTables, if one uses the connection trackers =
-then one
-cannot see or block fragmented packets.<o:p></o:p></span></font></p>
+This effectively means that only those packets hit IP_LOCAL_OUT hook fn
+that come from applications on this machine and are destined to go out.
+(addressed to same machine do not hit this hook).
+And all packets originating from this machine hit POST_ROUTING hook.
+irrespective of whether the dest ip address is of this machine or someother
+machine.(offcourse IP_POST_ROUTING is also hit in another scenarios but
+here I am concentrating on packets originating from the host machine
+itself).
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Will this ever be =
-changed?<o:p></o:p></span></font></p>
+Even rustys unreliable guide says
+"The NF_IP_LOCAL_OUT [5] hook is called for packets that are created
+  locally.  Here you can see that routing occurs after this hook is
+  called: in fact, the routing code is called first (to figure out the
+  source IP address and some IP options): if you want to alter the
+  routing, you must alter the `skb->dst' field yourself, as is done in
+  the NAT code.". But this is incomplete, NF_IP_LOCAL_OUT is hit for those
+local packets that have foriegn destinations. And also in the hook
+traversal diagram we should probably have a different arrow showing packets
+that hit IP_POST_ROUTING but do not hit IP_LOCAL_OUT (locally generated
+packets with local destination ip address, i.e ip address of the host
+machine ).
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Essentially, if someone is using a connection tracker =
-of any
-kind and gets DDoS&#8217;d with fragmented packets, they will not be =
-able to
-see a thing (log wise) unless they use =
-tcpdump?<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Is this correct?<o:p></o:p></span></font></p>
+regards
+Amit
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>If so, will this ever be =
-changed?<o:p></o:p></span></font></p>
+"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
+(HSS) and is intended solely for the use of the individual to whom it is
+addressed. It may contain  privileged or confidential information and
+should not be circulated or used for any purpose other than for what it is
+intended. If you have received this message in error, please notify the
+originator immediately. If you are not the intended recipient, you are
+notified that you are strictly prohibited from using, copying, altering, or
+disclosing the contents of this message. HSS accepts no responsibility for
+loss or damage arising from the use of the information transmitted by this
+email including damage from virus."
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I know ipfilter logs fragmented =
-packets/attacks/blocks but
-it does not use any connection trackers.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C44180.586D63EA--
 
