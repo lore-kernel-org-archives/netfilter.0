@@ -1,13 +1,12 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: how can I test the firewall with iptable
-Date: 14 Jan 2005 22:38:34 +0100
-Message-ID: <1105729654.3672.71.camel@nostromo.bgsecm.com>
-References: <20050113184512.90097.qmail@web51307.mail.yahoo.com>
-	<20050113184623.GA22272@bender.817west.com>
+Subject: Re: howto stop this packet
+Date: 14 Jan 2005 22:38:30 +0100
+Message-ID: <1105729040.25584.66.camel@nostromo.bgsecm.com>
+References: <20050114052219.9CEDF73D@smtp-01.piensasolutions.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050113184623.GA22272@bender.817west.com>
+In-Reply-To: <20050114052219.9CEDF73D@smtp-01.piensasolutions.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,18 +20,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El jue, 13 de 01 de 2005 a las 19:46, Jason Opperisano escribi=C3=B3:
-> i didn't really understand what you were asking the first time you sent
-> this, but since you sent it again--i suppose i better snap to it.
+El vie, 14 de 01 de 2005 a las 06:22, jqb@markor.net escribi=C3=B3:
+> netfilter=EF=BC=81
+>     howto stop this packet on iptables firewall;
+> tcpdump capture packet example:
+> 10:35:31.881722 IP 218.6.45.6.51755 > 228.71.74.201.7777: S 1432831257:=
+1432831257(0) win 16384 <mss 1460,nop,nop,sackOK>
 >=20
-> i *think* you're asking for something along the lines of nessus:
->=20
->   http://nessus.org/
->=20
-> -j
+> 10:35:36.214120 IP 219.147.192.18.1272 > 228.71.74.201.7777: S 490321:4=
+90321(0) win 6400 <mss 1460,nop,nop,sackOK>
 
-And he can add something like Metasploit to check the firewall.
-And all the usual tools: hping2/3, nmap, etc.
+You can stop them with the destination port: 7777
 
 --=20
 Jose Maria Lopez Hernandez
