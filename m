@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: conntrack ftp module usage
-Date: Mon, 30 Sep 2002 17:03:26 +0100
+From: "Jens =?iso-8859-15?q?Lechtenb=F6rger?=" <lechten@wi.uni-muenster.de>
+Subject: Re: NEW vs INVALID
+Date: 30 Sep 2002 17:50:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209301603.g8UG3XL04506@vulcan.rissington.net>
-References: <20020930203655.57527962.arc_of_descent@gmx.net>
+Message-ID: <m23crr4gu0.fsf@pcwi1068.uni-muenster.de>
+References: <m2elbb4w7h.fsf@pcwi1068.uni-muenster.de>
+	<1033399610.1633.38.camel@elendil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020930203655.57527962.arc_of_descent@gmx.net>
+In-Reply-To: <1033399610.1633.38.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +18,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 30 September 2002 4:06 pm, Rohan Almeida wrote:
+Cedric Blancher <blancher@cartel-securite.fr> writes:
 
-> Hi List,
-> I've loaded the ip_nat_ftp and ip_conntrack_ftp modules.
-> I also have the follwing rule in my firewall:
->
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> This is on a linux box, with 2 interfaces, one public,
-> one private and doing NATing
->
-> Most importantly, ftp from the client's end works fine
-> But when i do an `lsmod', i see that the ftp modules
-> are being used.
-> Is that normal?
-> what is happening?
+> States a completly different concept than TCP connection, for it must
+> also apply to UDP, or other layer 4 protocols, which can be
+> connectionless.
+> 
+> A NEW packet is a packet for which Netfilter cannot find an existing
+> state in conntrack table. This packet, if TCP, can be SYN, as it should,
+> but also ACK, or any flag combination you want. This packet, if allowed,
+> create a state that will match following packets.
+> 
+> An INVALID packet is a packet for which Netfilter cannot guess its
+> state. Most of the time, it is ICMP errors that cannot be associated
+> (i.e. RELATED) to an existing connection. You can also have ressources
+> lack or bugs.
 
-Modules being "used" does not indicate whether they are doing anything useful 
-on your machine.
+Thank you very much for this explanation!
 
-It tells you whether any other modules depend on them.
+> [...]
+> 
+> To be strict, your iptables command should be :
+> 
+> 	iptables -A INPUT  -m state --state NEW -p TCP --dport 22 --syn -j LOG --log-level 5 --log-prefix "IPTABLES: Legal NEW TCP: "
+> 
 
-Therefore a module which is listed by lsmod which is not being "used" may be 
-doing a splendid job for you, but no other modules are linked in to it.
+In fact, I had a similar command, but this again allows
+SYN+FIN-packets.
 
-Antony.
+What I am doing now is
+ 
+ "--state NEW --tcp-flags SYN,ACK,FIN,RST SYN"...
 
--- 
+I was just wondering about the meaning of INVALID, which you
+explained above.
 
-What is this talk of software 'release' ?
-Our software evolves and matures until it becomes capable of escape,
-leaving a bloody trail of designers and quality assurance people in its wake.
+Thanks again,
+
+Jens
+
 
