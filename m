@@ -1,237 +1,128 @@
-From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl_Le_Mignot?=)
-Subject: Re: Call for testing: patch-o-matic-ng
-Date: Wed, 24 Dec 2003 01:26:56 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <plopm3u13rysa7.fsf@drizzt.kilobug.org>
-References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
-	<plopm3zndjoexg.fsf@drizzt.kilobug.org>
-	<20031223173022.GA3879@obroa-skai.de.gnumonks.org>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: iproute2 nat and bad conntrack entries
+Date: Tue, 23 Dec 2003 20:34:10 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1072229649.2149.44.camel@jasiiitosh.nexusmgmt.com>
+References: <1072222851.2147.30.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20031223173022.GA3879@obroa-skai.de.gnumonks.org> (Harald
- Welte's message of "Tue, 23 Dec 2003 18:30:22 +0100")
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Harald Welte <laforge@netfilter.org>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1072222851.2147.30.camel@jasiiitosh.nexusmgmt.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+Cc: "@All Security SDT" <allsecuritypst@nexusmgmt.com>, "@All Network SDT" <networkpst@nexusmgmt.com>
 
+On Tue, 2003-12-23 at 18:40, John A. Sullivan III wrote:
+> 	I'm noticing bizarre behavior when using fast NAT with iproute2 and
+> connection tracking in netfilter.  Although I see the packets traversing
+> the chains with the translated address, the entries in the conntrack
+> table use the untranslated address and thus do not recognize the reply
+> packets.  Has anyone else seen this? What is the fix? Have I
+> mis-configured something? 
+> 
+> Here are the details:
+> 
+> 	The ISCS project (http://iscs.sourceforge.net) is developing a
+> management console for iptables + FreeS/WAN + iproute2 + DHCP, etc - an
+> enterprise class secure communications system to rival the Checkpoints
+> and Ciscos of the world.  We are working on the NAT modules right now
+> and would like to build in a way to handle conflicting address space
+> without having to use a separate NAT device.  We thought we had it done
+> until we discovered the above mentioned problem.
+> 
+> 	We must alter the source address before the routing decision is made
+> since, if it is destined for the VPN, the routing decision will send it
+> to be placed in an IPSec packet.  If we alter the address after it has
+> been authenticated, it will fail authentication on the receiving end. 
+> Otherwise we would gladly us the netfilter SNAT and DNAT targets to
+> enable connection tracking of the NATted sessions.
+> 
+> 	Thus we turned to iproute2 which appears to change both source and
+> destination addresses before a routing decision is made.  It all seemed
+> to work wonderfully.  We saw the address changed on the local gateway
+> and handed off the the IPSec stack.  We saw the packets arrive on the
+> remote network without being rejected for failed authentication and the
+> replies coming back.  The replies made it back to the local gateway, we
+> successfully decrypted but were lost just before being put back onto the
+> wire to return to the originating station.
+> 
+> 	We spent hours tracking the packets through every step of the journey. 
+> Here's what we found:
+> 
+> The "DNAT" rule is properly in the local route table:
+> ip route add nat 192.168.140.0/24 via 192.168.111.0
+> 
+> The "SNAT" rule appears properly in place:
+> ip rule add from 192.168.111.0/24 nat 192.168.140.0
+> 
+> Through a combination of logging and dropping we saw the outbound
+> packets (the first packet coming from the originating computer at
+> 192.168.111.8) passing through the mangle and nat tables.  It finally
+> came to a rule that says:
+> iptables -A ACCESS_GROUPS -s 192.168.140.0/24 -j Nex/HD
+> Nex/HD has a rule which says:
+> iptables -A Nex/HD -j NexDat/NexHDDat
+> and NexDat/NexHDDat has a rule which says:
+> iptables -A NexDat/NexHDDat -d 10.1.1.0/24 -p 1 --icmp-type 8 -m state
+> --state NEW -j ACCEPT
+> 
+> As soon as it is accepted, we see the following in
+> /proc/net/ip_conntrack:
+> icmp     1 27 src=192.168.111.8 dst=10.1.1.1 type=8 code=0 id=38686
+> [UNREPLIED] src=10.1.1.1 dst=192.168.111.8 type=0 code=0 id=38686 use=1
+> 
+> What shocks us is that the LOGs clearly show the source address of the
+> packet as 192.168.140.8 when it hits this rule and the entry is not made
+> until it hits this rule (we suspected that it must have been made before
+> the iproute changed the address but it does not appear so).  How can
+> this possibly be????!!!!! How do we fix it?  Thanks all - John
 
-Hello Harald, hello netfiler list ;)
+I should clarify the above just a bit.  The problem with SNAT is not
+really that the packet will fail authentication (that is the stock
+answer) but rather the packet that eventually makes it to the
+POSTROUTING chain is the already encapsulated ipsec packet and it does
+not have the source address of the sending station.  Thus, we must NAT
+before encapsulation and thus before the POSTROUTING chain.
 
-I did  some tests on which  patch from the patch-o-matic  works on 2.6
-and which ones don't compile. Here is the complete result of my tests.
+We are now working although we still do not understand the above
+behavior and have not fixed it.  However, the resolution has brought to
+light more strange behavior.  To limit the number of rules on a device
+and to reduce the amount of unnecessary WAN traffic, we use something
+called a VPN allow.  The sending gateway is responsible for
+authenticating the user and granting access to the tunnel.  The
+receiving gateway assumes that the sending gateway has done its job.
 
-I just try compiling them (after applying patches on a vanilla 2.6.0),
-I didn't try to load or use them.
+There is thus a rule deep in the chains that states:
 
-I've noticed too that when  a patch doesn't apply, pom-ng doesn't seem
-to display it - or do it so fast that I don't notice it.
+iptables -A VPN_ALLOW -i ipsec+ -m state --state NEW -j ACCEPT
 
-Here is the list from 'base' and 'extra' sets:
+We assumed that even though the packets mentioned in the first e-mail
+did not match state because of the incorrect address entry, they would
+still be allowed by this rule because they were coming in on an ipsec
+interface and did not match anything in the state table.
 
-**** BASE ****
+Well, they didn't match NEW; they matched INVALID (which leads one to
+the question of what's the difference other than that NEW can refer to a
+session that has only seen traffic in one direction).
 
-Does not compile:
-
-- pool, nf-log, raw:
-  CC      net/core/netfilter.o
-net/core/netfilter.c: In function `nf_log_register':
-net/core/netfilter.c:760: warning: implicit declaration of function `br_write_lock_bh'
-net/core/netfilter.c:760: error: `BR_NETPROTO_LOCK' undeclared (first use in this function)
-net/core/netfilter.c:760: error: (Each undeclared identifier is reported only once
-net/core/netfilter.c:760: error: for each function it appears in.)
-net/core/netfilter.c:765: warning: implicit declaration of function `br_write_unlock_bh'
-net/core/netfilter.c: In function `nf_log_unregister':
-net/core/netfilter.c:770: error: `BR_NETPROTO_LOCK' undeclared (first use in this function)
-
-- HOPLIMIT: 
-  Does not compile, but exists has ip6t_hl.o in vanilla 2.6.0
-
-- connlimit:
-  CC [M]  net/ipv4/netfilter/ipt_connlimit.o
-net/ipv4/netfilter/ipt_connlimit.c:214: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_connlimit.c: In function `init':
-net/ipv4/netfilter/ipt_connlimit.c:219: error: `ip_conntrack_module' undeclared (first use in this function)
-net/ipv4/netfilter/ipt_connlimit.c:219: error: (Each undeclared identifier is reported only once
-net/ipv4/netfilter/ipt_connlimit.c:219: error: for each function it appears in.)
-net/ipv4/netfilter/ipt_connlimit.c:220: warning: implicit declaration of function `__MOD_INC_USE_COUNT'
-net/ipv4/netfilter/ipt_connlimit.c: In function `fini':
-net/ipv4/netfilter/ipt_connlimit.c:227: error: `ip_conntrack_module' undeclared (first use in this function)
-net/ipv4/netfilter/ipt_connlimit.c:228: warning: implicit declaration of function `__MOD_DEC_USE_COUNT'
-
-It seems to be module initialisation stuff changes, probably easy to fix.
-
-- NETLINK:
-  CC [M]  net/ipv4/netfilter/ipt_NETLINK.o
-net/ipv4/netfilter/ipt_NETLINK.c:90: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_NETLINK.c:91: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_NETLINK.c: In function `fini':
-net/ipv4/netfilter/ipt_NETLINK.c:115: error: structure has no member named `socket'
-net/ipv4/netfilter/ipt_NETLINK.c:115: error: structure has no member named `socket'
-make[3]: *** [net/ipv4/netfilter/ipt_NETLINK.o] Error 1
-
-Compiles with warning:
-
-  CC [M]  net/ipv4/netfilter/ipt_quota.o
-net/ipv4/netfilter/ipt_quota.c:65: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_dstlimit.o
-net/ipv4/netfilter/ipt_dstlimit.c:468: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_mport.o
-net/ipv4/netfilter/ipt_mport.c:99: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_time.o
-net/ipv4/netfilter/ipt_time.c:124: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_random.o
-net/ipv4/netfilter/ipt_random.c:75: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_psd.o
-net/ipv4/netfilter/ipt_psd.c: In function `ipt_psd_match':
-net/ipv4/netfilter/ipt_psd.c:178: warning: comparison of distinct pointer types lacks a cast
-net/ipv4/netfilter/ipt_psd.c:178: warning: comparison of distinct pointer types lacks a cast
-net/ipv4/netfilter/ipt_psd.c: At top level:
-net/ipv4/netfilter/ipt_psd.c:336: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_nth.o
-net/ipv4/netfilter/ipt_nth.c:144: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_ipv4options.o
-net/ipv4/netfilter/ipt_ipv4options.c:155: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_fuzzy.o
-net/ipv4/netfilter/ipt_fuzzy.c:171: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_u32.o
-net/ipv4/netfilter/ipt_u32.c:198: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_TTL.o
-net/ipv4/netfilter/ipt_TTL.c:97: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_TTL.c:97: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.o
-net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:66: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:66: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv6/netfilter/ip6table_mangle.o
-net/ipv6/netfilter/ip6table_mangle.c: In function `ip6t_local_hook':
-net/ipv6/netfilter/ip6table_mangle.c:162: warning: `skb_linearize' is deprecated (declared at include/linux/skbuff.h:1136)
-  CC [M]  net/ipv6/netfilter/ip6t_REJECT.o
-net/ipv6/netfilter/ip6t_REJECT.c: In function `reject6_target':
-net/ipv6/netfilter/ip6t_REJECT.c:149: warning: passing arg 5 of `icmpv6_send' discards qualifiers from pointer target type
-net/ipv6/netfilter/ip6t_REJECT.c:152: warning: passing arg 5 of `icmpv6_send' discards qualifiers from pointer target type
-net/ipv6/netfilter/ip6t_REJECT.c:155: warning: passing arg 5 of `icmpv6_send' discards qualifiers from pointer target type
-net/ipv6/netfilter/ip6t_REJECT.c:158: warning: passing arg 5 of `icmpv6_send' discards qualifiers from pointer target type
-net/ipv6/netfilter/ip6t_REJECT.c:161: warning: passing arg 5 of `icmpv6_send' discards qualifiers from pointer target type
-  CC [M]  net/ipv4/netfilter/ipt_osf.o
-net/ipv4/netfilter/ipt_osf.c:83: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_realm.o
-net/ipv4/netfilter/ipt_realm.c:55: warning: initialization from incompatible pointer type
-
-Compiles without warning:
-
-NETMAP SAME iprange 
-
-
-**** EXTRA ****
-
-Does not compile:
-
-- rsh
-  CC      net/ipv4/netfilter/ip_conntrack_standalone.o
-In file included from net/ipv4/netfilter/ip_conntrack_standalone.c:26:
-include/linux/netfilter_ipv4/ip_conntrack.h:88: error: field `ct_rsh_info' has incomplete type
-
-- mms-conntrack-nat 
-  CC      net/ipv4/netfilter/ip_conntrack_standalone.o
-In file included from net/ipv4/netfilter/ip_conntrack_standalone.c:26:
-include/linux/netfilter_ipv4/ip_conntrack.h:89: error: field `ct_mms_info' has incomplete type
-
-- h323-conntrack-nat 
-  CC      net/ipv4/netfilter/ip_conntrack_standalone.o
-In file included from net/ipv4/netfilter/ip_conntrack_standalone.c:26:
-include/linux/netfilter_ipv4/ip_conntrack.h:90: error: field `ct_h225_info' has incomplete type
-
-- cuseemee-nat
-oops forgot to copy/paste the error message, sorry
-
-- rtsp-conntrack 
-  CC      net/ipv4/netfilter/ip_conntrack_standalone.o
-In file included from net/ipv4/netfilter/ip_conntrack_standalone.c:26:
-include/linux/netfilter_ipv4/ip_conntrack.h:74: error: field `ct_rtsp_info' has incomplete type
-
-- talk-conntrack-nat
-  CC      net/ipv4/netfilter/ip_conntrack_standalone.o
-In file included from net/ipv4/netfilter/ip_conntrack_standalone.c:26:
-include/linux/netfilter_ipv4/ip_conntrack.h:89: error: field `ct_talk_info' has incomplete type
-
-
-Compiles with warning:
-
-  CC [M]  net/ipv4/netfilter/ipt_IPMARK.o
-net/ipv4/netfilter/ipt_IPMARK.c:72: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_IPMARK.c:72: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_CONNMARK.o
-net/ipv4/netfilter/ipt_CONNMARK.c:71: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_CONNMARK.c:71: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ip_conntrack_egg.o
-net/ipv4/netfilter/ip_conntrack_egg.c: In function `init':
-net/ipv4/netfilter/ip_conntrack_egg.c:207: warning: assignment from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_XOR.o
-net/ipv4/netfilter/ipt_XOR.c:94: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_XOR.c:94: warning: initialization from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ip_conntrack_rpc_tcp.o
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c: In function `alloc_request_p':
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c:164: warning: missing braces around initializer
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c:164: warning: (near initialization for `(anonymous).timeout.lock')
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c:164: warning: excess elements in struct initializer
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c:164: warning: (near initialization for `(anonymous).timeout.lock')
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c:165: warning: initialization makes integer from pointer without a cast
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c: In function `check_rpc_packet':
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c:252: warning: operation on `data' may be undefined
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c: In function `init':
-net/ipv4/netfilter/ip_conntrack_rpc_tcp.c:457: warning: assignment from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ip_conntrack_rpc_udp.o
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c: In function `alloc_request_p':
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c:164: warning: missing braces around initializer
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c:164: warning: (near initialization for `(anonymous).timeout.lock')
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c:164: warning: excess elements in struct initializer
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c:164: warning: (near initialization for `(anonymous).timeout.lock')
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c:165: warning: initialization makes integer from pointer without a cast
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c: In function `check_rpc_packet':
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c:252: warning: operation on `data' may be undefined
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c: In function `init':
-net/ipv4/netfilter/ip_conntrack_rpc_udp.c:452: warning: assignment from incompatible pointer type
-  CC [M]  net/ipv4/netfilter/ipt_rpc.o
-net/ipv4/netfilter/ipt_rpc.c:76: warning: type defaults to `int' in declaration of `EXPORT_NO_SYMBOLS'
-net/ipv4/netfilter/ipt_rpc.c:76: warning: data definition has no type or storage class
-net/ipv4/netfilter/ipt_rpc.c:389: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_rpc.c: In function `init':
-net/ipv4/netfilter/ipt_rpc.c:398: warning: implicit declaration of function `__MOD_INC_USE_COUNT'
-net/ipv4/netfilter/ipt_rpc.c: In function `fini':
-net/ipv4/netfilter/ipt_rpc.c:421: warning: implicit declaration of function `__MOD_DEC_USE_COUNT'
-
-*** Warning: "__MOD_DEC_USE_COUNT" [net/ipv4/netfilter/ipt_rpc.ko] undefined!
-*** Warning: "__MOD_INC_USE_COUNT" [net/ipv4/netfilter/ipt_rpc.ko] undefined!
-
-  CC [M]  net/ipv4/netfilter/ipt_addrtype.o
-net/ipv4/netfilter/ipt_addrtype.c:50: warning: initialization from incompatible pointer type
-
-  CC [M]  net/ipv4/netfilter/ipt_TCPLAG.o
-net/ipv4/netfilter/ipt_TCPLAG.c: In function `divide_down':
-net/ipv4/netfilter/ipt_TCPLAG.c:102: warning: statement with no effect
-net/ipv4/netfilter/ipt_TCPLAG.c: At top level:
-net/ipv4/netfilter/ipt_TCPLAG.c:643: warning: initialization from incompatible pointer type
-net/ipv4/netfilter/ipt_TCPLAG.c:644: warning: initialization from incompatible pointer type
-
-Compiles without warning:
-
-quake3-conntrack-nat
-   
-
+Now for the real surprise.  If we use -m conntrack ---ctstate NEW
+instead of the older state match, IT WORKS!!! Can anyone tell us why and
+if this is a good thing or a bad thing? Thanks - John
 
 -- 
-Gael Le Mignot "Kilobug" - kilobug@nerim.net - http://kilobug.free.fr
-GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
-Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
-Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
