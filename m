@@ -1,16 +1,13 @@
 From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: NOT acceptable "/etc/sysconfig/network-scripts/ifup" script !!!
-Date: Fri, 16 May 2003 13:07:12 +0200
+Subject: Re: Problems with policy based routing
+Date: Fri, 16 May 2003 13:33:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030516130712.626c4b64.arnt@c2i.net>
-References: <200305142155.31623.pc-secure@home.nl>
-	<200305151742.26913.pc-secure@home.nl>
-	<20030515194843.6c8876f2.arnt@c2i.net>
-	<200305152146.17228.pc-secure@home.nl>
+Message-ID: <20030516133353.21233a21.arnt@c2i.net>
+References: <000147C2.3EC4D93D@192.168.206.251>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200305152146.17228.pc-secure@home.nl>
+In-Reply-To: <000147C2.3EC4D93D@192.168.206.251>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,44 +20,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 15 May 2003 21:46:17 +0200, 
-"P.Italiaander" <pc-secure@home.nl> wrote in message 
-<200305152146.17228.pc-secure@home.nl>:
+On 16 May 2003 10:27:47 UT, 
+<rwaeger@m-logix.de> wrote in message 
+<000147C2.3EC4D93D@192.168.206.251>:
 
-> Op donderdag 15 mei 2003 19:48, schreef u:
-> > On Thu, 15 May 2003 17:42:26 +0200,
-> > "P.Italiaander" <pc-secure@home.nl> wrote in message
-> >
-> > <200305151742.26913.pc-secure@home.nl>:
-> > > Op donderdag 15 mei 2003 14:52, schreef Arnt Karlsen:
-> > > > ..I know, ipup _is_ buggy, my hint was more on Red Hats somewhat
-> > > > sloppy QA attitude.  I mean, if I should _not_ use RH9 to route
-> > > > traffic, I would like to know _that_ from the docs.
-> > > >
-> > > > ..does Mandrake or Debian turn their rear end onto _whoever_
-> > > > like RH-9 does in
-> > > > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=89171 ???
-> > >
-> > > I've checked , but Mandrake 9.1 is not effected with that bug.
-> > > Thanks for mention it.
-> > > On Debian i don't know  ,don't have it , i use OpenBSD en Linux
-> > > SuSe , Redhat ,Mandrake.
-> > >
-> > > Does anyone have tested yet,  my patched /sbin/ifup file, for
-> > > iptables-script ??
-> >
-> > ..the wifi part of it works fine, but it _introduces_ bug # 89171,
-> > I tested with a thinkpad 760 ED I use as AP, it runs RH-7.3.
-> >
-> > ..it looks like Red Hat cannot use mac addresses to ID nics.
+> Hi!
 > 
+> Maybe a routing and iptables guru can help me....
 > 
-> hmm... , I really thought ,that after my update , this shoud be fixed
-> ?? since syntax is changed.
-> I 've looked but can't find patch anywhere , do you have one ?
+> We're trying to setup a policy based Linux router to route "normal" 
+> services (like http(s) or ftp) over a DSL line and all other services
+> (like smtp, ssh, pop3) over a leased line. The leased line router is 
+> listening to an official IP net. There are some internal servers (mail
+> and web) which are using official IPs (but nated at Firewall-1). All 
+> traffic for and from these servers have to go over eth1. 
 > 
 
-..me too. ;-)  I'll mail you what I have off-list.
+..you checked out 'ip rule help'?
+
+[arnt@lana arnt]$ /sbin/ip rule help
+Usage: ip rule [ list | add | del ] SELECTOR ACTION
+SELECTOR := [ from PREFIX ] [ to PREFIX ] [ tos TOS ] [ fwmark FWMARK ]
+            [ dev STRING ] [ pref NUMBER ]
+ACTION := [ table TABLE_ID ] [ nat ADDRESS ]
+          [ prohibit | reject | unreachable ]
+          [ realms [SRCREALM/]DSTREALM ]
+TABLE_ID := [ local | main | default | NUMBER ]
+
 
 
 -- 
