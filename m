@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DMZ suggestion?
-Date: Thu, 13 Jun 2002 20:36:44 +0100
+From: Fred Richards <Toril@twcny.rr.com>
+Subject: Re: How do you specify an odd group of hosts?
+Date: Thu, 13 Jun 2002 16:31:34 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206131936.g5DJajA17620@Networker.rockstone.co.uk>
-References: <3086.172.16.10.1.1023994540.squirrel@mail>
+Message-ID: <3D090126.1050509@twcny.rr.com>
+References: <7cc8c8300a.8300a7cc8c@uts.edu.au> <200206131638.RAA08412@slate.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3086.172.16.10.1.1023994540.squirrel@mail>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,24 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.samba.org
 
-On Thursday 13 June 2002 7:55 pm, tbsky@greenware.com.tw wrote:
+This is what I did ... write a script!  You could have several parts, 
+one for accepted hosts, etc... I actually had certain ports that I had a 
+bunch of eggdrops allowed access on... listed the rules for the ports 
+and added the IPs to the first line ...
 
-> hi:
->    i use snat for lan(192.168.10.0/24) to dmz(172.16.10.0/24),
->    but i found that way lan PC will become only one ip to dmz server.
->    so i think if i can bound another ip (eg: 192.168.10.2) to firewall,
->    and use dnat for lan to dmz. can anyone suggest which kind of DMZ is
->    better?
+for i in a.b.c.d  e.f.g.h  i.j.k.l
+do
+iptables -A inet-in -s $i  -j ACCEPT
+done
 
-Why do NAT at all between internal LAN and DMZ ?
 
-Why not just route packets with no NAT involved, and allow the ones you want, 
-block the ones you don't... ?
 
- 
+Antony Stone wrote:
 
-Antony.
+>On Thursday 16 May 2002 12:12 am, Adrian Hobbs wrote:
+>
+>  
+>
+>>I am wondering what is the best way to specify an odd group of hosts. For
+>>example, I want to allow managment hosts access to 192.168.0.5. The
+>>managment hosts are 192.168.1.4, 192.168.1.12, 192.168.1.96.
+>>
+>>eg:
+>>iptables -A FORWARD -p tcp -d 192.168.0.5 --dport 22 -j MNG_HOST
+>>
+>>iptables -A MNG_HOST -s 192.168.1.4 -j ACCEPT
+>>iptables -A MNG_HOST -s 192.168.1.12 -j ACCEPT
+>>iptables -A MNG_HOST -s 192.168.1.96 -j ACCEPT
+>>iptables -A MNG_HOST -j DENY
+>>    
+>>
+>
+>Looks like the best way of doing it to me.   There's no way to specify 
+>multiple source or destination addresses in a single iptables rule except for 
+>the contiguous network ranges you've already found in the docs.
+>
+> 
+>
+>Antony.
+>
+>
+>  
+>
+
+
+
 
