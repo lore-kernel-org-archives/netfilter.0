@@ -1,13 +1,14 @@
-From: "Michael H. Warfield" <mhw@wittsend.com>
-Subject: Proto 41 filtering and processing...
-Date: Mon, 13 Sep 2004 13:45:39 -0400
+From: srg <srgqwerty@telefonica.net>
+Subject: Re: MAC addresses
+Date: Mon, 13 Sep 2004 20:03:58 +0000
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040913174539.GA17190@alcove.wittsend.com>
+Message-ID: <4145FD2E.8060603@telefonica.net>
+References: <200409111150.50506.bulliver@badcomputer.no-ip.com>	<20040911220159.4cee40bb@oldskool.actisystem.nix>
+	<1095079543.6971.1.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-md5;
-	protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1095079543.6971.1.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,66 +18,42 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
-Cc: mhw@wittsend.com
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
+Also, note that if a router exits between your ssh clientS and your ssh=20
+server then ALL ssh incoming connections from different clients will be=20
+seen with the same source mac addr of the router (of course, each of the=20
+connections will have different src ip (if NO nat is done in the router)).
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Jose Maria Lopez wrote:
 
-Hey all,
+>El s=C3=A1b, 11 de 09 de 2004 a las 22:01, active escribi=C3=B3:
+> =20
+>
+>>On "Sat 11 of September 2004" Darren Kirby wrote:
+>>
+>>   =20
+>>
+>>>Are MAC addresses unique for all ethernet cards? What I would like to
+>>>know is could I use this rule to allow ssh connections ONLY from my
+>>>notebook no matter what its current IP address happens to be, and drop
+>>>all other connection requests?
+>>>     =20
+>>>
+>>Yes. MAC addresses are set in the card by the manufacturer. This is a
+>>good method to control input traffic.
+>>
+>>For more info: http://www.webopedia.com/TERM/M/MAC_address.html
+>>   =20
+>>
+>
+>But have in mind that some operating systems let you change the
+>MAC address of the card. By example, Linux let you do that, and
+>that can fool some kinds of traffic control.
+>
+>
+> =20
+>
 
-	I've got some questions and some observations viv-a-vis proto 41
-filtering (that "named" ipv6 but, what it really is, is 6over4 in the
-IPv4 tables).  These are problems where IPv4 and IPv6 interreact or
-interoperate and some recognition of both layers simultaniously is
-required.
-
-	There are cases where, in handling protocol 41 traffic, I want
-to respond with IPv4 errors codes.  For instance, if I receive 6to4
-traffic (protocol 41 traffic with IPv6 addresses in the 2002::/16
-range) from an IPv6 range I don't want to talk to, I want to send back
-and IPv4 ICMP protocol unreachable (indicating that I'm not going to
-talk protocol 41 with him - think scanners).  To generate the IPv4 ICMP
-unreachable error, this needs to be done in the IPv4 tables, correct?
-But to select out the packets, I need to examine the IPv6 addresses in
-the next header up.  So it's examination of the IPv6 information in the
-6over4 protocol (proto 41) by the IPv4 iptables.
-
-	Any thoughts on the best way to accomplish this?
-
-	Second problem...
-
-	Someone issues a proto 41 packet addressed to me but it doesn't
-come FROM any source address I recognize in any of my SIT tunnels.  So,
-it shows up as proto 41 in the IPv4 tables (does it?).  Does it show up
-at all in any of the IPv6 tables?  If so, what input device?  If not, how
-is the error generated?  Is it an IPv6 error from one of the IPv6 addresses
-or is it an IPv4 error?  Thoughts on that?
-
-	Mike
---=20
- Michael H. Warfield    |  (770) 985-6132   |  mhw@WittsEnd.com
-  /\/\|=3Dmhw=3D|\/\/       |  (678) 463-0932   |  http://www.wittsend.com/=
-mhw/
-  NIC whois:  MHW9      |  An optimist believes we live in the best of all
- PGP Key: 0xDF1DD471    |  possible worlds.  A pessimist is sure of it!
-
---a8Wt8u1KmwUX3Y2C
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iQCVAwUBQUXcw+HJS0bfHdRxAQH/OAP/YWpYFEUttobHnf8tnegEQZDHDw5Ddcso
-c5t/5l8S8xVvaun1kUgseMjntqbcamw8X8IwqhWJC/IBGPS6lGx44jnyJN2kJSlF
-jawPNmKAvE/cuBDc901ho6iK4+kaBstcysvqAKxjwqtYVDAgWCKe0W+13RLqIkQJ
-96NrCk00q6U=
-=8YCW
------END PGP SIGNATURE-----
-
---a8Wt8u1KmwUX3Y2C--
 
