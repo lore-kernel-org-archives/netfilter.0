@@ -1,12 +1,12 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: icmp echo requests
-Date: Mon, 29 Sep 2003 12:49:30 -0700 (PDT)
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: iptables log analysis tool
+Date: Tue, 30 Sep 2003 08:41:30 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309291238510.2782@xena.cft.ca.us>
-References: <3F77CE17.30605@kdtc.net>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C3B8@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F77CE17.30605@kdtc.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +16,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: cc <cc@kdtc.net>
-Cc: Netfilter Group <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Afshin Lamei <linux_st@hotmail.com>, netfilter@lists.netfilter.org
 
-On Mon, 29 Sep 2003, cc wrote:
-> I've been monitoring the NAT router with pktstat and am a little
-> perturbed to see quite a lot of icmp echo requests.  Now I've
-> setup my Linux firewall to reject icmp echo requests.
->
-> Is this the right(?)/correct/valid/appropriate thing to do?
+>which can generate some graphs using the log files.
 
-I see a lot of pings too.  At home my Linksys residential gateway reports
-that they look like they were address spoofed.  (So how did it figure that
-out?)  This leads me to suspect that they are part of a distributed denial
-of service attack -- the alleged origin of the ping, to which you are
-supposed to send a packet, is the victim.
+this is a small project I'm working on using php (easier/quicker to make =
+changes) and mysql to store the data in even of a reboot/etc...
 
-Before my home Linux gateway blew its motherboard, I just dropped all pings
-(in fact, just about everything) on the wild-side interface.  Best not to
-send ICMP-host-unreachable; best to drop all unsolicited packets silently,
-except for AUTH requests, for which a rejection saves you an annoying
-timeout.  Except, I like to monitor the home machine from work, so I accept
-pings from the work subnet only.
+http://mrtg.citadelcomputer.com.au
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+some of the above graphs are just scripts while others are using my =
+mysql-iptables.php script to gather the `iptables -L -t $table -v -n -x` =
+information.
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: Afshin Lamei [mailto:linux_st@hotmail.com]
+Sent: Monday, 29 September 2003 9:41 PM
+To: netfilter@lists.netfilter.org
+Subject: iptables log analysis tool
+
+
+hi all,
+I want to analyse the iptables log files (using LOG and/or ULOG target). =
+
+please help me find a proper tool for this, which can generate some =
+graphs=20
+using the log files.
+regards
+afshin
+
+_________________________________________________________________
+Add photos to your messages with MSN 8. Get 2 months FREE*.=20
+http://join.msn.com/?page=3Dfeatures/featuredemail
+
+
 
