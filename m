@@ -1,8 +1,8 @@
 From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
 Subject: RE: tcpdump and Iptables
-Date: Fri, 3 Sep 2004 07:23:01 -0700
+Date: Fri, 3 Sep 2004 07:27:00 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <7EACCDBB65D37443912D80713CC1245D02382AE8@fsnsab20.losangeles.af.mil>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382AE9@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -17,6 +17,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+
+
+oops,,,sorry list i forgot to mention that one should
+manipulate SO_BROADCAST option on UDP sockets.
+
+this doesnt work on TCP so you are on your own on that one..
+
+ignore the bogus manner in which it treats bcast addresses.
+
+the other info is worth the trade off.
+
+v/r
+~piranha
+
+-----Original Message-----
+From: piranha
+Sent: Friday, September 03, 2004 7:23 AM
+To: 'Netfilter Mailing List'
+Subject: RE: tcpdump and Iptables
+
 
 netcat (nc shows up under ps) might be usefull...
 
