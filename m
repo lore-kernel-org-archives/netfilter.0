@@ -1,15 +1,11 @@
-From: "Olexandr O. Galay" <macros@e-mail.te.ua>
-Subject: Re[2]: ipt_connlimit trouble
-Date: Sun, 1 Feb 2004 13:16:30 +0200
+From: "Michael Klinteberg" <micke@klintan.se>
+Subject: Please explain the limit match
+Date: Sun, 1 Feb 2004 22:12:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6487409109.20040201131630@e-mail.te.ua>
-References: <19730527125.20040131212831@e-mail.te.ua>
- <GFEPJIHHFOJDOFDMNAJDAECIFEAA.mark@npsl.co.uk>
-Reply-To: "Olexandr O. Galay" <macros@e-mail.te.ua>
+Message-ID: <002101c3e908$0eb37d00$c800a8c0@klintan.cjb.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <GFEPJIHHFOJDOFDMNAJDAECIFEAA.mark@npsl.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,31 +16,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
->> 4. compile and install kernel with all options of iptables sets
->> to M (module)
-M> Missing a reboot step here?
-No, installing new kernel i always reboot machine :)
->> so, now when i trying to # modprobe ipt_connlimit i get:
->> [root@test /]# modprobe ipt_connlimit
->> /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o:
->> unresolved symbol ip_conntrack_find_get
-M> Also try depmod -e -F /<path>/System.map and see if you still get the same
-M> problem.
-so, i make depmod -e -F /usr/src/linux-2.4.24/System.map
-but problem exists - i can't load module ipt_connlimit
+I have read the man page over and over again for the iptables limit
+match. Don't quite understad the --limit and --limit-burst.
 
-
+Can anyone please give me some easy LOGing examples with diffrent
+time-intervalls.
 
 -- 
-Best regards, Mark!
-
-February, 1, 2004, 13:11
-
-Olexandr O. Galay
-mailto:macros@e-mail.te.ua
-http://www.macros.org.ua
-ICQ: 29292281
-
+Thank you
+Michael K
 
