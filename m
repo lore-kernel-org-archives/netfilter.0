@@ -1,12 +1,12 @@
-From: "Matthew Simpson" <matthew@txlink.net>
-Subject: Re: netfilter digest, Vol 1 #1410 - 14 msgs
-Date: Tue, 23 Dec 2003 10:28:10 -0600
+From: ads nat <adsnat@yahoo.com>
+Subject: Re: IPTABLES syntax problem.
+Date: Tue, 23 Dec 2003 08:27:32 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009d01c3c971$c142be10$0100a8c0@KARI>
-References: <20031223161403.3308.78203.Mailman@netfilter-sponsored-by.noris.net>
+Message-ID: <20031223162732.51705.qmail@web60406.mail.yahoo.com>
+References: <1072191475.816.129.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1072191475.816.129.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,56 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: antony@soft-solutions.co.uk
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: Cedric Blancher <blancher@cartel-securite.fr>, adsnat@yahoo.com
+Cc: Chris Brenton <cbrenton@chrisbrenton.org>, netfilter@lists.netfilter.org
 
-Message: 11
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Subject: Re: using iptables to route between public networks
-Date: Tue, 23 Dec 2003 15:42:48 +0000
+O.K.
+As adviced I have uploaded all rules from command
+line. With no error. Thanks.
+saved them as follows:
+[root@allweb root]# iptables-save > iptables
 
-On Tuesday 23 December 2003 3:32 pm, Matthew Simpson wrote:
+No error. Thanks.
 
->> I must have been doing something stupid last night, because I retried it
->> this morning and it works.  Here is what I have for the forward chain:
->>
->> $IPTABLES -A FORWARD -d 209.210.10.1/28 -j ACCEPT
->> $IPTABLES -A FORWARD -d ! 209.210.10.1/28 -j DROP
->> $IPTABLES -P FORWARD ACCEPT
->> $IPTABLES -F FORWARD
->>
->> This works.
+Now I want to add following error at begining of the
+file from command prompt:
 
->When you say "this works", is assume that's only for minimal values of
->"working" :)
->
->I can't believe that a router which will drop all packets except those
->addressed to 209.210.10.0/28 (note that your address designation is
-slightly
->incorrect above) will do an effective job.
+###########
+IPTABLES -F INPUT
+IPTABLES -F OUTPUT
+IPTABLES -F FORWARD
 
-Putting 209.210.10.0/28 is what 'broke' things last night.  If I change my
-script to that, then it doesn't add that rule to the FORWARD chain.  It
-doesn't output any error, but it doesn't add the rule, either.
+IPTABLES -P INPUT DROP
+IPTABLES -P OUTPUT DROP
+IPTABLES -P FORWARD DROP
+###########
 
->
->You may want to route inbound packets only to these IP addresses, but what
->about the replies?   They are going to be going to other destination
->addresses, and need routing too.....
+Can I upload straight as done earlier and then give
+command :=20
+ iptables-save > iptables
 
-Correct me if I'm wrong, but doesn't the -destination flag only drop
-incoming FORWARD packets that do not have a DESTINATION of 209.210.10.1/28 ?
-Therefore any packets coming from the 209.210.10.1/28 subnet will be able to
-go out unimpeded because I have the default policy to ACCEPT the FORWARD
-packets.  I'm only dropping packets that are coming in the FORWARD chain and
-are not addressed to my network.
+I am adding rules on live network. I don't want it to
+stop and create any problems.
 
-This IS working like I want it to, I can telnet for example to 209.210.10.11
-and things work fine, I can go out from 209.210.10.11, and I can ping
-209.210.10.11 from the outside.
+After saving all rules, what should be command for
+rules to save permenantly so that when I reboot system
+Rules should remain.=20
 
->Antony.
+I have tried to use iptables-save and iptables-restore
+but could not use properly, Therefore asking in
+detail.
+Please guide me to do.
+Thanks for support.
 
+
+--- Cedric Blancher <blancher@cartel-securite.fr>
+wrote:
+> Le mar 23/12/2003 =E0 14:56, ads nat a =E9crit :
+> > Is it not allowed?
+>=20
+> When a file is iptables-save generated, it's better
+> not modifying it by
+> hand. Update your running ruleset then issue an
+>=20
+> 	iptables-save > iptables
+>=20
+> --=20
+> http://www.netexit.com/~sid/
+> PGP KeyID: 157E98EE FingerPrint:
+> FA62226DA9E72FA8AECAA240008B480E157E98EE
+> >> Hi! I'm your friendly neighbourhood signature
+> virus.
+> >> Copy me to your signature file and help me
+> spread!=20
+
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
