@@ -1,13 +1,14 @@
-From: Nick Taylor <nickt@lightlink.com>
-Subject: Re: nat problem
-Date: Tue, 13 Jul 2004 19:11:13 -0400 (EDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: SSH Connections Lost After 1 minute idle
+Date: Wed, 14 Jul 2004 00:11:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSU.4.58.0407131904390.14186@adore.lightlink.com>
-References: <40F448B2.AF1E21@knoware.nl> <200407132206.08404.Antony@Soft-Solutions.co.uk>
- <40F4607B.60B1E512@knoware.nl> <200407132353.57143.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407140011.29429.Antony@Soft-Solutions.co.uk>
+References: <20040713224848.99030.qmail@web40708.mail.yahoo.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407132353.57143.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040713224848.99030.qmail@web40708.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +18,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> > > > I have a little problem, which might be a bug. I have an 3COM
-> > > > ISDN-router. It broadcasts every 10 seconds its connectionstatus to the
-> > > > internal net. Now I want to forward those broadcasts to another
-> > > > network.
-> > >
-> > > > What do you mean by "broadcasts"?   What protocol is being used?   What
-> > > > address are the packets sent to?
+On Tuesday 13 July 2004 11:48 pm, Real Cucumber wrote:
+
+> > > I've done this using IPtables and the mangle table.
 > >
-> > These are real broadcasts to 192.168.1.255. The protocol is UDP, the source
-> > port is 1025 and the destination port is 2071.Isn't it weird, that at the
-> > nat-table, when I add a rule for logging, I can't see the above meant
-> > packets, but at the filter- and the mangle-table those packets are logged?
->
-> No, I don't think so.   Broadcast packets are not supposed to cross routers
-> (they will enter the router as a machine on the local subnet, but they will
-> not be routed anywhere else, because they already come from the subnet they
-> are addressed to)
->
-Not to be contrary, and *NOT* to suggest that this is correct behaviour,
-but...  The company I used to work for uses a lot of LinkSys gear for CPE,
-including their NAT routers and their VPN routers, and we've had bizarre
-problems with these products.  The VPN router, in particular *will*
-forward a packet with the destination address set to the IP broadcast
-address!  Then, they run NAT rules beyond the VPN server at the other
-side, so you get:
-192.168.1.43 -> 192.168.1.255, which getts natted to:
-real_ip -> 192.168.1.255, but of course, that's behind the VPN tunnel, so,
-the box routes it back through the VPN, where it gets spit out on the
-customer's lan, (thankfully NOT forwarded back again) but this confuses
-Windoze something aweful, and causes it to refuse to use windows
-networking, because it thinks there's another machine on the network with
-it's name registered. DOH!  Anyway, the point is that while it may or may
-not be correct, many products do it, and there must be some (twisted)
-reason that the hardware vendors chose to enhance (read break) their
-products in this way, ie, some application may depend on this (braindead)
-behaviour.
+> > Please explain how you have used the mangle table to
+> > achieve this.
+
+> --------
+> iptables -t nat -A PREROUTING -p tcp --dport
+> $WAN_SSH_PORT -i $WAN_INTERFACE -j DNAT --to
+> $INTERNAL_SERVER_IP:$INTERNAL_SERVER_SSH_PORT
+> ----------
+
+Oh good - you mean the nat table, not the mangle table.
+
+That makes good sense, then.
+
+Regards,
+
+Antony.
+
+-- 
+"I don't mind that he got rich, but I do mind that he peddles himself as the 
+ultimate hacker and God's own gift to technology when his track record 
+suggests that he wouldn't know a decent design idea or a well-written hunk of 
+code if it bit him in the face. He's made his billions selling elaborately 
+sugar-coated crap that runs like a pig on [sedatives], crashes at the drop of 
+an electron, and has set the computing world back by at least a decade."
+
+ - Eric S Raymond, about Bill Gates
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
