@@ -1,12 +1,11 @@
-From: Nick Taylor <nickt@lightlink.com>
-Subject: Re: Problem with lipq
-Date: Fri, 19 Mar 2004 13:45:11 -0500 (EST)
+From: Omar Armas <oarmas@mpsnet.net.mx>
+Subject: map internal ip
+Date: Fri, 19 Mar 2004 12:56:10 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSU.4.58.0403191341470.28117@adore.lightlink.com>
-References: <20040317203816.31110.qmail@web11302.mail.yahoo.com>
+Message-ID: <1079722569.1980.52.camel@kaos.mpsnet.net.mx>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040317203816.31110.qmail@web11302.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,63 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Srinivas <nivas_4u@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Sounds like your you're not linking against the library.  Your ld error
-is perhaps the most informative.  Once upon a time I also wrote a modules
-to use libipq, and on one system I develop on, it was properly installed,
-and 'gcc filter.c -o filter -lipq' worked perfectly, but on the other,
-libipq was not installed, so I got libipq.c, built it in the project
-directory, and did 'gcc filter.c libipq.a -o filter' and that works like a
-champ.  Hope this is helpful.
+I have the following config:
 
-On Wed, 17 Mar 2004, Srinivas wrote:
+(public ip)
+eth0
+Firewall
+eth1 (150.50.53.4)
+|
+|
+|
+148.145.133.1 (vpn router)
+|
+|
+150.50.57.0/24 
+(LAN, including a server with 150.50.57.2)
 
-> Date: Wed, 17 Mar 2004 12:38:16 -0800 (PST)
-> From: Srinivas <nivas_4u@yahoo.com>
-> To: netfilter@lists.netfilter.org
-> Subject: Problem with lipq
->
-> Hi,
->
-> while browsing for help finall I found your talks
-> about libipq. So, I wish you could help me...
-> my problem is that....
->
-> When I compile my code like
-> gcc <filename>
->
-> I am getting following error :
->
-> /tmp/ccb2U3Gs.o(.text+0x20b): In function
-> `strip_packet':
-> : undefined reference to `ipq_set_verdict'
-> /tmp/ccb2U3Gs.o(.text+0x252): In function
-> `strip_packet':
-> : undefined reference to `ipq_set_verdict'
-> /tmp/ccb2U3Gs.o(.text+0xb9d): In function `run':
-> : undefined reference to `ipq_create_handle'
-> /tmp/ccb2U3Gs.o(.text+0xbda): In function `run':
-> : undefined reference to `ipq_set_mode'
->
-> and when I compile with option,
-> gcc <filename> -lipq
->
-> it says
-> /usr/bin/ld : cannot find -lipq
->
-> I am using libipq.h library.. Please help me...
->
-> Thanks in advance.
->
-> Srinivas
->
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! Mail - More reliable, more storage, less spam
-> http://mail.yahoo.com
->
+*Class 150.50.57.0/24 is routed to 148.245.164.1
+
+I want that when people(from eth1 lan) goes to 150.50.53.5, be
+redirected to 150.50.57.2.
+
+I tried:
+
+iptables -t nat -A PREROUTING 150.50.53.5 -j DNAT --to-destination
+150.50.57.2
+
+
+But doesn't seem to be working. Any idea if it is possible and how to do
+it?
+
+
+Omar
+
 
