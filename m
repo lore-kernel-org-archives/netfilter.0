@@ -1,13 +1,12 @@
-From: Frank Gruellich <frank@home.manuelm.org>
-Subject: Re: /sbin/iptables -vnxL OUTPUT
-Date: Tue, 2 Mar 2004 18:08:49 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE:  /sbin/iptables -vnxL OUTPUT
+Date: Tue, 2 Mar 2004 09:54:16 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040302170849.GD757@home.manuelm.org>
-References: <12247.1078246023@www57.gmx.net>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F01@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <12247.1078246023@www57.gmx.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +17,90 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Mario Ohnewald <mario.Ohnewald@gmx.de>, netfilter@lists.netfilter.org
 
-* Mario Ohnewald <mario.Ohnewald@gmx.de>  2. Mar 04:
-> Hello!
+The best way to get accurate interface stats IMHO:
 
-Hi,
+iptables -t mangle -A PREROUTING  -i ${IF_WHATEVER}
+iptables -t mangle -A POSTROUTING  -o ${IF_WHATEVER}
 
-> I have got a iptables firewall running and i want to monitor my traffic,
-> therefore i played arund with the following command:   /sbin/iptables -vnxL
-> OUTPUT | grep "Chain OUTPUT"
-> It worked fine, although, after a while it kept getting the result:
-> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
-> I reloaded the filter rules, still the same.
+They get executed and get executed before anything else (I am assuming
+you don't have the raw table). They don't have a jump rule so you can
+still place mangle rules in pre/post without having a jump before
+getting to them.
 
-Please don't wrap outputs.
 
-> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
-                    These-----^----------^
-are only the counters of your default policy.  Your traffic is...
+Null jumps are giving me "iptables: Too many levels of symbolic links"
+for some reason, so I just used IPV4OPTSTRIP instead. I should really be
+using no jump, but I never got around to investigating.
 
->     pkts      bytes target     prot opt in     out     source              destination
->        9     2051 ACCEPT     all  --  *      lo      0.0.0.0/0           0.0.0.0/0
->        0        0 ACCEPT     icmp --  *      *       0.0.0.0/0           0.0.0.0/0           icmp type 11
->        2      132 ACCEPT     icmp --  *      *       0.0.0.0/0           0.0.0.0/0           icmp type 3 code 3
->        0        0 DROP       icmp --  *      *       0.0.0.0/0           0.0.0.0/0           icmp type 3
->     9535  2685876 ACCEPT     all  --  *      *       0.0.0.0/0           0.0.0.0/0           state NEW,RELATED,ESTABLISHED
-     ,^^^^--^^^^^^^
-... here.          
->        0        0 LOG        all  --  *      *       0.0.0.0/0           0.0.0.0/0           LOG flags 6 level 4 prefix `SuSE-FW-OUTPUT-ERROR '
-> 
-> [snip stuff]
-> 
+#iptables -t mangle -nvxL
+Chain PREROUTING (policy ACCEPT 3766257820 packets, 3341214673464 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
+       0        0 IPV4OPTSSTRIP  all  --  eth0   *       0.0.0.0/0
+0.0.0.0/0          =20
+  714986 677460576 IPV4OPTSSTRIP  all  --  eth1   *       0.0.0.0/0
+0.0.0.0/0          =20
+  784926 141884330 IPV4OPTSSTRIP  all  --  eth2   *       0.0.0.0/0
+0.0.0.0/0          =20
+    6536  1035116 IPV4OPTSSTRIP  all  --  eth3   *       0.0.0.0/0
+0.0.0.0/0          =20
+  662036 177634497 IPV4OPTSSTRIP  all  --  eth4   *       0.0.0.0/0
+0.0.0.0/0          =20
+   87013 21842334 IPV4OPTSSTRIP  all  --  eth5   *       0.0.0.0/0
+0.0.0.0/0          =20
+    6633   529006 IPV4OPTSSTRIP  all  --  eth6   *       0.0.0.0/0
+0.0.0.0/0          =20
+       0        0 IPV4OPTSSTRIP  all  --  eth7   *       0.0.0.0/0
+0.0.0.0/0          =20
+       0        0 IPV4OPTSSTRIP  all  --  eth8   *       0.0.0.0/0
+0.0.0.0/0          =20
+     262    26042 IPV4OPTSSTRIP  all  --  lo     *       0.0.0.0/0
+0.0.0.0/0=20
+<snip...>
+Chain POSTROUTING (policy ACCEPT 3694111642 packets, 3354474129645
+bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
+       0        0 IPV4OPTSSTRIP  all  --  *      eth0    0.0.0.0/0
+0.0.0.0/0          =20
+  595104 72600985 IPV4OPTSSTRIP  all  --  *      eth1    0.0.0.0/0
+0.0.0.0/0          =20
+  867817 486577519 IPV4OPTSSTRIP  all  --  *      eth2    0.0.0.0/0
+0.0.0.0/0          =20
+    7101  1269216 IPV4OPTSSTRIP  all  --  *      eth3    0.0.0.0/0
+0.0.0.0/0          =20
+  770445 450764605 IPV4OPTSSTRIP  all  --  *      eth4    0.0.0.0/0
+0.0.0.0/0          =20
+    7304  5864346 IPV4OPTSSTRIP  all  --  *      eth5    0.0.0.0/0
+0.0.0.0/0          =20
+   10036   781826 IPV4OPTSSTRIP  all  --  *      eth6    0.0.0.0/0
+0.0.0.0/0          =20
+       0        0 IPV4OPTSSTRIP  all  --  *      eth7    0.0.0.0/0
+0.0.0.0/0          =20
+       0        0 IPV4OPTSSTRIP  all  --  *      eth7    0.0.0.0/0
+0.0.0.0/0          =20
+     262    26042 IPV4OPTSSTRIP  all  --  *      lo      0.0.0.0/0
+0.0.0.0/0
+<snip...>
+
+Then to scrape them, you would:
+
+# Inbound interface ${ifname}
+/sbin/iptables -nxvL -t mangle | grep  "\*\ *${ifname}" | awk '{ print
+$2 }'
+# Outbound interface ${ifname}
+/sbin/iptables -nxvL -t mangle | grep  "${ifname}\ *\*" | awk '{ print
+$2 }'
+
+If you have a lot more fine grained rules, I would use regex throughout
+the entire thing. It might be tricky, so try spicing up the input, like
+"-m mark ! --mark 0x10000" and search on !0x10000 since I doubt it would
+be used elsewhere. Just remember through, if you have a large enough
+ruleset, this can eventually impact your bandwidth utilization if the
+bandwith kills your CPU trying to match these rules :-)
+
 > How come it wont count up the Accepted packaged and Bytes?
-
-It would, but as you -j ACCEPT everything before the default policy it
-can't.
-
-HTH,
- regards, Frank.
--- 
-Sigmentation fault
+> If you need any more infos, please tell me!
 
