@@ -1,11 +1,11 @@
-From: "Emmanuel \"Noel\" Gabriel" <noel@tarlac.com>
-Subject: ftp on iptables
-Date: Thu, 8 May 2003 17:01:43 +0800
+From: "Shawn Mall" <shawn@deluzion.net>
+Subject: Performance Decrease
+Date: Tue, 6 May 2003 13:54:35 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00c801c31540$72526ac0$5a2e093d@tarlac.com>
+Message-ID: <001201c31411$b3ccaa40$c90c010a@TMCSHAWN>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00C5_01C31583.80541900"
+	boundary="----=_NextPart_000_000F_01C313D7.07277A70"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,29 +20,24 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_00C5_01C31583.80541900
+------=_NextPart_000_000F_01C313D7.07277A70
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+I am running iptables version 1.2.2 -- This has never been an issue =
+until I have begun to do some bandwidth intensive stuff. I also had a =
+friend of mine point this out as well...
 
-I'm new to firewalling, i implement some built-in firewall rules of =
-RH9.0; my problem is I can not display the folders of any ftp servers i =
-connect into. i'm able to connect because i installed the ip_nat_ftp but =
-it's only up to that point. I can connect but was not able to see the =
-resources inside the ftp server.
+There seems to be a huge performance decrease when using iptables. I am =
+not sure where the bottleneck is occuring. My friend has a 3Mbit/sec =
+pipe, was getting about 500kb/sec on average, and since implenting =
+iptables, is only receiving about 50kb/sec. That is a huge decrease. Can =
+anybody point out what is going wrong?
 
-please suggest what to do on how can i see the content of the server.
-
-thanks,
-
-/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/
-   Emmanuel F. Gabriel
-   Systems Adminiistrator
-   MosCom Tarlac
-/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/
-------=_NextPart_000_00C5_01C31583.80541900
+Thanks,
+Shawn
+------=_NextPart_000_000F_01C313D7.07277A70
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -51,37 +46,29 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
-<BODY bgColor=3D#c0c8c0>
-<DIV><FONT face=3DArial size=3D2>Hi all,</FONT></DIV>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I am running iptables version 1.2.2 -- =
+This has=20
+never been an issue until I have begun to do some bandwidth intensive =
+stuff. I=20
+also had a friend of mine point this out as well...</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm new to firewalling, i implement =
-some built-in=20
-firewall rules of RH9.0; my problem is I can not display the folders of =
-any ftp=20
-servers i connect into. i'm able to connect because i installed the =
-ip_nat_ftp=20
-but it's only up to that point. I can connect but was not able to see =
-the=20
-resources inside the ftp server.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>There seems to be a huge performance =
+decrease when=20
+using iptables. I am not sure where the bottleneck is occuring. My =
+friend has a=20
+3Mbit/sec pipe, was getting about 500kb/sec on average, and since =
+implenting=20
+iptables, is only receiving about 50kb/sec. That is a huge decrease. Can =
+anybody=20
+point out what is going wrong?</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>please suggest what to do on how can i =
-see the=20
-content of the server.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>thanks,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/<BR>&nbsp;&=
-nbsp;=20
-Emmanuel F. Gabriel<BR>&nbsp;&nbsp; Systems =
-Adminiistrator<BR>&nbsp;&nbsp;=20
-MosCom =
-Tarlac<BR>/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/=3D/</FONT></D=
-IV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Shawn</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_00C5_01C31583.80541900--
+------=_NextPart_000_000F_01C313D7.07277A70--
 
 
