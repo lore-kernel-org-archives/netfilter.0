@@ -1,11 +1,13 @@
-From: skydive <skydive@megamail.pt>
-Subject: (no subject)
-Date: Fri, 21 Nov 2003 11:16:03 +0000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: FORWARD question
+Date: Fri, 21 Nov 2003 11:34:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069413363.3fbdf3f35886d@paris-hme1>
+Message-ID: <200311211134.hALBYt724579@onyx.rockstone.co.uk>
+References: <20031121104239.37088.qmail@web40804.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031121104239.37088.qmail@web40804.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,49 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi all again
+On Friday 21 November 2003 10:42 am, Nick wrote:
 
-my first question related wiht "http access - fixing=20
-DNAT port forwarding access from internal networks"=20
-was answered successfully, since it is working fine,=20
-thanks to all that could help ;)
+> Thanks Antony, I got it. Once nat and conntrack
+> helpers are implemented correctly, I don't have to
+> worry about it anymore :-)
+>
+> There is one last thing, though(I promise it's the
+> last one ;-)
+>
+> When I said that only port 21 is open I meant that on
+> the router machine only this port accepts NEW client
+> connections. The other ports will accept only
+> ESTABLISHED and RELATED. I defined this in my INPUT
+> rules.
 
-now i happen to have a proxy server running on the=20
-same machine as the web server, and i would like to=20
-block incoming traffic to my web server from addresses
-wich are not portuguese. i already got a list of the=20
-ip ranges and net masks of all autonomous systems=20
-located in portugal. i first tried to accept all those=20
-ip ranges, and then droped all other incoming. what=20
-happens is that proxy will accept connections only=20
-=66rom those ip ranges i accepted initialy ( the=20
-postuguese ones). Let=B4s say i'm trying to connect to=20
-hotmail.com. i won't work since that ip range is not=20
-being accepted.
+I hope you didn't define them in INPUT :)   I hope you mean FORWARD!?
 
-is there a way to accept connections related with=20
-previous conections made to this machine to por 3128=20
-(squid default port)?
+The INPUT chain is *only* used for packets which are addressed *to* the 
+firewall machine itself - not for packets which are being routed through it 
+to some other machine.   Those packets go through FORWARD.
 
-i want to accept conections that even if they do not=20
-match with ipranges i'm accepting, they're related=20
-with a previous connection made to the proxy server,=20
-related with proxy port whatever it'll be ;))
+> Do I need to accept NEW client connections to port 20
+> as well ? I know it's used for active FTP and I
+> thought FTP client never sends NEW to port 20, only
+> ESTABLISHED.
 
+No, packets coming in on port 20 as part of an ective FTP connection will 
+count as RELATED.
 
-i'm aware this can not be this easy... but still=20
-believe there is a way out :))
+That's the magic of protocol helpers :)
 
+Antony.
 
-[][]
+-- 
 
-thank you all
-skydive!
+Success is a lousy teacher.   It seduces smart people into thinking they 
+can't lose.
 
--------------------------------------------------
-Email Enviado utilizando o servi=E7o MegaMail
-
+ - William H Gates III
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
