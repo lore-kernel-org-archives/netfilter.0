@@ -1,14 +1,13 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: ftp connection tracking on multiple ports
-Date: Thu, 28 Oct 2004 13:10:49 +0200
+From: Sudheer Divakaran <sudheer@svw.com>
+Subject: Re: mark feature not working as expected
+Date: Thu, 28 Oct 2004 17:10:59 +0530
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a04102804107389b75e@mail.gmail.com>
-References: <BC372EA70AC7724B9DE983CBA6D1D7E5126E37@ws03-exchange.iconos.be>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Message-ID: <4180DACB.1030306@svw.com>
+References: <4180D2E2.2000606@svw.com> <200410281305.32933.victor@nk.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BC372EA70AC7724B9DE983CBA6D1D7E5126E37@ws03-exchange.iconos.be>
+In-Reply-To: <200410281305.32933.victor@nk.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +17,102 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Sneppe Filip <filip.sneppe@uptime.be>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Victor Julien <victor@nk.nl>
+Cc: netfilter@lists.netfilter.org
 
-I don't use natting, do I still need that helper ???
+Hi Victor,  Everybody,
+
+After committing too many errors while composing messages, I ran the 
+rules from the command line and the problem fixed.  The problem was that 
+I shouldn't have used the output interface name in mangle's PREROUTING 
+chain.  i.e., I should have used
 
 
-On Thu, 28 Oct 2004 12:40:37 +0200, Sneppe Filip <filip.sneppe@uptime.be> wrote:
-> Mohamed Eldesoky wrote:
-> 
-> >I do
-> >But it doesn't work when doing ftp host 45 then do ls
-> >it hangs there !!
-> 
-> Hi,
-> 
-> Don't forget you also need to add the ports for the nat helper:
-> 
-> modprobe ip_nat_ftp ports=21,45
-> 
-> (If ip_nat_ftp is already loaded, you need to rmmod the module first
-> and then load it again - same thing with ip_conntrack_ftp if you change
-> a kernel module parameter)
-> 
+iptables -t mangle -A PREROUTING -i eth0 -d 192.168.1.0/24 -j MARK 
+--set-mark 1
+iptables -t mangle -A PREROUTING -i eth1 -d 192.168.0.0/24 -j MARK 
+--set-mark 1
+
+
+I have been running these commands from a script and it didn't show the 
+error messages.  That's why I have disturbed all of you.
+
+Thanks & Regards
+Sudheer
+
+
+
+
+
+
+
+
+
+
+Victor Julien wrote:
+
+> Hi Sudheer,
+>
+> As far as i know you can only use --set-mark in the mangle table. You are
+> trying to use it in the nat table.
+>
+> Try:
+> iptables -t mangle -A PREROUTING -i eth0 -o eth2 -j MARK --set-mark 1
+> iptables -t mangle -A PREROUTING -i eth1 -o eth0 -j MARK --set-mark 1
+>
 > Regards,
-> Filip
-> 
-> 
+> Victor
+>
+> On Thursday 28 October 2004 13:07, Sudheer Divakaran wrote:
+>
+>> Hi,
+>> I'm facing a problem with MARK target.
+>>
+>> My Linux box has 3 network cards
+>>
+>> eth0 - LAN1
+>> eth2 - LAN2
+>> eth3 - ISP
+>>
+>> My problem is that my Lan machines are not able to communicate with each
+>> other (i.e. LAN1 <-> LAN2). Firewall blocks them. But my lan clients
+>> have no problem in accessing internet!!.
+>>
+>> Here is my configuration.
+>>
+>>
+>> # eth0 - LAN1
+>> # eth2 - LAN2
+>> # eth3 - ISP
+>>
+>> iptables -F
+>> iptables -X
+>> iptables -P INPUT DROP
+>> iptables -P OUTPUT DROP
+>> iptables -P FORWARD DROP
+>>
+>> iptables -t nat -A PREROUTING -i eth0 -o eth2 -j MARK --set-mark 1
+>> #THIS IS NOT WORKING
+>> iptables -t nat -A PREROUTING -i eth1 -o eth0 -j MARK --set-mark 1
+>> #THIS IS NOT WORKING
+>>
+>> #Other rules follows... Not listed here
+>>
+>> iptables -A FORWARD -m mark --mark 1 -j ACCEPT #THIS IS NOT WORKING
+>>
+>> #Other rules follows... Not listed here
+>>
+>>
+>> I know that I can do it directly from the FORWARD chain of filter table,
+>> but I'm using SQUID for transparent proxying for some machines (Those
+>> rules are not listed here), so I want to mark some packets. Could
+>> someone please help me on this?
+>>
+>>
+>> Thanks
+>> Sudheer
+>
+>
 
-
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
 
