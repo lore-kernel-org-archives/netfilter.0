@@ -1,8 +1,9 @@
-From: Rod Smart <snaketails@optushome.com.au>
-Subject: Port 3 hits from internal system to outside Question.
-Date: Fri, 10 Jan 2003 05:05:52 +0000
+From: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>
+Subject: Iptables -m limit problem
+Date: Fri, 10 Jan 2003 11:32:16 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E1E54B0.C82B849@optushome.com.au>
+Message-ID: <6337869200.20030110113216@complexsystem.ru>
+Reply-To: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,24 +17,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter List <NetFilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-    I have a problem where I have "port 3" attempts from my internal
-computer trying to connect to "port 3" on a external computer.
+Hello netfilter list,
+I want to limit connectionss to http port to maximum 2 persecond from
+one host. I wrote the following line but it's not working :(
 
-    Would anyone be able to explain to me what is happening ?
+/usr/local/sbin/iptables -A ip_limit -p tcp --dport 80 -m limit --limit 2/second -j ACCEPT
+/usr/local/sbin/iptables -A INPUT -j ip_limit
 
-    Here is a scan from my filter REJECT logs.
-
-Jan  8 17:19:58 jumpgate kernel: Packet log: output REJECT eth1 PROTO=1
-192.168.3.130:3 203.22.13.11:3 L=56 S=0x00 I=3940 F=0x0000 T=127 (#
-5)
-Jan  8 17:19:59 jumpgate kernel: Packet log: output REJECT eth1 PROTO=1
-192.168.3.130:3 203.22.13.11:3 L=56 S=0x00 I=3941 F=0x0000 T=127 (#
-5)
-Jan  8 17:19:59 jumpgate kernel: Packet log: output REJECT eth1 PROTO=1
-192.168.3.130:3 203.22.13.11:3 L=56 S=0x00 I=3941 F=0x0000 T=127 (#
-5)
+-- 
+Best regards,
+ ITM                          mailto:ruslan@complexsystem.ru
 
 
 
