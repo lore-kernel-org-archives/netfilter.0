@@ -1,13 +1,13 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Ip handling
-Date: Thu, 19 Jun 2003 09:59:24 -0400
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: pptp patch
+Date: Thu, 19 Jun 2003 09:18:41 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030619135924.GC7161@cannon.eng.us.uu.net>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DDB@alderaan.smgtec.com> <200306190151.40336.pc-secure@home.nl> <20030619033146.GA5410@cannon.eng.us.uu.net> <200306191018.02665.pc-secure@home.nl> <20030619130221.GA1373@floyd>
+Message-ID: <006101c3367e$734644b0$1001a8c0@s3ac>
+References: <84874F5F45111E48B53F4A3314BC4F3C389674@mail.columbuscontainer.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030619130221.GA1373@floyd>
+In-reply-to: <84874F5F45111E48B53F4A3314BC4F3C389674@mail.columbuscontainer.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'Hill, John'" <jhill@columbuscontainer.com>, netfilter@lists.netfilter.org
 
-Thanks, Julian, for the complement.
 
-Now back to Mr arrogant: what the original poster was asking was
-how to "spoof" back to his own network, which sounded illogical;
-hence my question. Although, George Vieira sent a very nice
-application for this in a private email to me. Now, as a general
-rule, you either know the answer to a question (even a wrong one
-will be tolerated) or just shutup.
-
-Ramin
-
-On Thu, Jun 19, 2003 at 09:02:21PM +0800, Julian Gomez wrote:
-
-> >> > Does anyone know of a way to make say all connections from the outside
-> >> > going to my outside IP address Appear to be coming from my local lan of
-> >> > 192.168.0.1
-> >>
-> >> Just out of curiosity: what is the application of such a setup?
-> >>
-> >> Ramin
-> >
-> >Find it out yourself , it's not even apropriate to ask such a thing. 
-> >
-> >Since this is a netfilter mailing-list no hackers-chat page.
-> >
-> >but nice try
 > 
-> I've seen Ramin post to this list a long time already, though he's been
-> quite for the past 6-8 months at least I think :-) So, if by the above you
-> are sorta implying he's some sort of script kiddie; you've probably got the
-> wrong person targetted. 
+> I have kernel 2.4.21 netfilter - latest cvs.
 > 
-> A number of times, knowing the problem in full can lead to better ways of
-> handling the problem, with better tools - rather than a kludged solution.
+> Built netfilter for extra added pptp support.
 > 
-> Oh,.. before I forget, a number of his posts have been nothing short of
-> extremely informative -- so the hostile behaviour is not really required.
-> -- 
-> USG && George Bush : Rot in hell. 
+> Recompiled kernel -- netfilter.
+> 
+> I have a win2000 pptp server behind a Linux firewall
+
+Well having gone yrou route here is my 2 cents. 
+
+A.) if your not married to pptp then setup a freeswan vpn on your
+firewall  freeswan accepts connection from pretty much any other vpn
+including windows2000. sorry pptp not included. I think it's generally
+accepted that pptp is out the door.
+
+B.) if you are married to pptp wait until a stable version has been
+released with netfilter. It's not wise to play with beta/experimental
+software on sensitive information.   To the best of my knowledge pptp
+can nly handle one connection at a time with the current patch. This is
+per the netfilter website.
+
+
+> 
+> I had 3 VPN connections working. When one closed the 
+> connection the kernel panicked and died. I could not recover 
+> the error message. I was forced to power off.
+
 
