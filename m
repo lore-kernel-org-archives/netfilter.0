@@ -1,8 +1,8 @@
 From: SBlaze <dagent.geo@yahoo.com>
-Subject: Sorta OT - Basic shell script to see "real time" byte/pkt counter for iptables
-Date: Tue, 9 Sep 2003 15:35:39 -0700 (PDT)
+Subject: ip_conntrack: table full, dropping packet. SAY WHA????
+Date: Tue, 9 Sep 2003 15:53:50 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909223539.82306.qmail@web40206.mail.yahoo.com>
+Message-ID: <20030909225350.6002.qmail@web40209.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,21 +18,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: nf <netfilter@lists.netfilter.org>
 
-Ok first off let me say that I am not an experienced coder/scripter
+I have a single windows machine NATED behind my Linux router/gateway/firewall.
+I use iptables 1.2.8
 
-That being said this script I put together does the very basics of what I would
-like to see. It sort of emulates a daemon like a approach in which the iptables
--vxnL (doesn't do NAT yet) command is looped in combination with sleep to
-achieve a semi real time monitoring.
+info on the module I found is this
 
-Like I said I'm not a great scripter and I would love the community to pick up
-on this and mayb sort of port the approach to PHP to work via a web page(of
-course it would be much  need to be much slower than the console).
+root@kingscross:/var/www/n00b# modinfo ip_conntrack
+filename:    /lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_conntrack.o
+description: <none>
+author:      <none>
+license:     "GPL"
+parm:        hashsize int
 
-At any rate check it out and feel free to make it your own but please observe
-the GPL.
+I like to play CounterStrike. When I update the list from Master Servers 
+I get this in my /var/log/messages file and it's sent to STDOUT
 
-http://nixn00b.net/iptstat.sh
+Sep  8 22:18:06 kingscross kernel: NET: 347 messages suppressed.
+Sep  8 22:18:06 kingscross kernel: ip_conntrack: table full, dropping packet.
+Sep  8 22:18:11 kingscross kernel: NET: 392 messages suppressed.
+Sep  8 22:18:11 kingscross kernel: ip_conntrack: table full, dropping packet.
+Sep  8 22:18:16 kingscross kernel: NET: 371 messages suppressed.
+Sep  8 22:18:16 kingscross kernel: ip_conntrack: table full, dropping packet.
+Sep  8 22:18:21 kingscross kernel: NET: 414 messages suppressed.
+Sep  8 22:18:21 kingscross kernel: ip_conntrack: table full, dropping packet.
+Sep  8 22:18:26 kingscross kernel: NET: 467 messages suppressed.
+Sep  8 22:18:26 kingscross kernel: ip_conntrack: table full, dropping packet.
+Sep  8 22:18:31 kingscross kernel: NET: 436 messages suppressed.
+Sep  8 22:18:31 kingscross kernel: ip_conntrack: table full, dropping packet.
+
+The suppressed messages vary..but what gives here? Here are my UDP rules for
+refference.
+
+# UDP Filters
+#
+#iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j LOG
+iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j DROP
+iptables -A INPUT -p udp -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+If someone could explain thhis to me I would appreciate it.
+
+Thanks 
+SBlaze
 
 =====
 In the absence of order there will be chaos.
