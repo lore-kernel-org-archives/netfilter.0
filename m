@@ -1,13 +1,12 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: bug? blocked packets get shadowed to internal network
-Date: 04 Sep 2003 12:23:42 +0530
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: samba
+Date: Thu, 4 Sep 2003 14:51:35 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062658448.2760.12.camel@india.nsecure.net>
-References: <20030814113448.A21598@rcs.ei.tum.de>
+Message-ID: <F22386C3FEB012449238672E38ED61E706C21F@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-v6jLkTBe0SwMAsOPFeqo"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030814113448.A21598@rcs.ei.tum.de>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,130 +16,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Juergen Stohr <stohr@lpr.e-technik.tu-muenchen.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
---=-v6jLkTBe0SwMAsOPFeqo
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Hello folks!
 
-hi,
+I can't seem to make samba and iptables work properly...
 
-When I saw your logs it is sending a rst packet to destination. Are you
-running any ids inside your network? 
+$IPT =3D /usr/sbin/iptables
+
+# port fritz/samba
+1) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 137:139 -j LOG =
+--log-level DEBUG --log-prefix "SAMBA: "
+2) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 137:138 -j LOG =
+--log-level DEBUG --log-prefix "SAMBA: "
+
+3) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 137 -j ACCEPT
+4) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 138 -j ACCEPT
+5) $IPT -A INPUT -i eth0 -p tcp -s 190.200.2.111 --dport 139 -j ACCEPT
+
+6) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 137 -j ACCEPT
+7) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 138 -j ACCEPT
+8) $IPT -A INPUT -i eth0 -p udp -s 190.200.2.111 --dport 139 -j ACCEPT
 
 
-Regards
-Dharmendra.T
-dharmu@nsecure.net
+Line numbers 5, 6 and 7 seem to be logging some packets.
+But when I turn the firewall off and contact samba it works even if I =
+turn the firewall back on.
+If I access Samba again after rebooting my computer it says... =
+"Microsoft Windows Network: The local device name is already in use."
+
+Hope you can help me. Thanks.
 
 
-On Thu, 2003-08-14 at 15:04, Juergen Stohr wrote:
 
-    Hi to all,
-    
-    we are using a firewall with RedHat kernel 2.4.20-19.7. The firewall is 
-    configured to block every packet with DPT 199 into our network. When doing
-    a "telnet server.in.our.network 199" from outside, the firewall correctly 
-    drops that packet, logging
-    
-    IN=eth1 OUT=eth0 SRC=xxx.xxx.11.231 DST=xxx.xxx.151.184 LEN=44 TOS=0x00 PREC=0x00 TTL=252 ID=12615 DF PROTO=TCP SPT=34869 DPT=199 WINDOW=8760 RES=0x00 SYN URGP=0
-    
-    to syslog. The external interface is eth1, internal is eth0.
-    However, at the same time, the firewall generates a packet, which is droped
-    by the output chain of the firewall. It fakes the SRC and DST and wants to send
-    that packet to the internal server:
-    
-    IN= OUT=eth0 SRC=xxx.xxx.151.184 DST=xxx.xxx.11.231 LEN=40 TOS=0x00 PREC=0x00 TTL=255 ID=0 DF PROTO=TCP SPT=199 DPT=34869 WINDOW=0 RES=0x00 ACK RST URGP=0
-    
-    When setting the output chain to accept policy, the above packet is delivered
-    xxx.xxx.151.184!
-    
-    How can we prohibit those packets to be generated? Kernel RH 2.4.18-x didn't
-    show that behaviour.
-    
-    Please CC me as I'm not subscribed.
-    
-    regards,
-    	juergen
-    
-    
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord=20
 
--- 
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
 
-This message is intended for the addressee only. It may contain
-privileged or Confidential information. If you have received this
-message in error,please notify the sender and destroy the message
-immediately.Unauthorised use or reproduction of this message is strictly
-prohibited.
-
---=-v6jLkTBe0SwMAsOPFeqo
-Content-Type: text/html; charset=utf-8
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
-<BODY>
-hi,
-<BR>
-
-<BR>
-When I saw your logs it is sending a rst packet to destination. Are you running any ids inside your network? 
-<BR>
-
-<PRE>Regards
-Dharmendra.T
-dharmu@nsecure.net</PRE>
-
-<BR>
-On Thu, 2003-08-14 at 15:04, Juergen Stohr wrote:
-    <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi to all,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>we are using a firewall with RedHat kernel 2.4.20-19.7. The firewall is </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>configured to block every packet with DPT 199 into our network. When doing</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>a &quot;telnet server.in.our.network 199&quot; from outside, the firewall correctly </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>drops that packet, logging</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>IN=eth1 OUT=eth0 SRC=xxx.xxx.11.231 DST=xxx.xxx.151.184 LEN=44 TOS=0x00 PREC=0x00 TTL=252 ID=12615 DF PROTO=TCP SPT=34869 DPT=199 WINDOW=8760 RES=0x00 SYN URGP=0</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>to syslog. The external interface is eth1, internal is eth0.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>However, at the same time, the firewall generates a packet, which is droped</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>by the output chain of the firewall. It fakes the SRC and DST and wants to send</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>that packet to the internal server:</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>IN= OUT=eth0 SRC=xxx.xxx.151.184 DST=xxx.xxx.11.231 LEN=40 TOS=0x00 PREC=0x00 TTL=255 ID=0 DF PROTO=TCP SPT=199 DPT=34869 WINDOW=0 RES=0x00 ACK RST URGP=0</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>When setting the output chain to accept policy, the above packet is delivered</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>xxx.xxx.151.184!</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>How can we prohibit those packets to be generated? Kernel RH 2.4.18-x didn't</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>show that behaviour.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Please CC me as I'm not subscribed.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>regards,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>	juergen</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
-    </BLOCKQUOTE>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-
-This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
-</TD>
-</TR>
-</TABLE>
-
-</BODY>
-</HTML>
-
---=-v6jLkTBe0SwMAsOPFeqo--
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
