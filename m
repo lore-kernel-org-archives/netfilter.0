@@ -1,14 +1,12 @@
-From: "Patrick" <pat@pat.i989.net>
+From: Anders Fugmann <afu@fugmann.dhs.org>
 Subject: Re: my system is under syn-flood attack
-Date: Mon, 23 Sep 2002 14:03:48 +0800 (HKT)
+Date: Mon, 23 Sep 2002 10:19:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1203.202.64.212.174.1032761028.squirrel@pat.i989.net>
-References: <002201c262ae$36db04b0$9801010a@redhat73>
-Reply-To: pat@pat.i989.net
+Message-ID: <3D8ECEAF.5030202@fugmann.dhs.org>
+References: <002201c262ae$36db04b0$9801010a@redhat73> <1203.202.64.212.174.1032761028.squirrel@pat.i989.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002201c262ae$36db04b0$9801010a@redhat73>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,104 +17,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: pat@pat.i989.net, chenlf@cibn.com
+Cc: netfilter@lists.netfilter.org
 
-Please try to implement the syn-flood rule in prerouting chain:
-please goto the following web site for reference:
+Patrick wrote:
+> Please try to implement the syn-flood rule in prerouting chain:
+> please goto the following web site for reference:
+> 
+> http://www.samag.com/documents/s=1824/sam0201h/0201h_s1.htm
+> 
+Please do not do as the above link suggests.
+The above link suggests putting DoS attack detection in the nat table,
+which IMHO is a very bad idea.
 
-http://www.samag.com/documents/s=1824/sam0201h/0201h_s1.htm
+The nat table should be used to changes soruce and destination of
+packets - no more.
 
+The mangle table should be used to change packets only, e.g TOS settings.
 
+The filter tables shoyld be used to accept and drop packets (filter
+packets). This tables is the one must people should use.
 
-> my box is redhat 7.3 apache 1.3.26
->
-> from last week . some guys use syn-flood and ping death to attack my
-> system
-
-> i use flowing script:
-> #!/bin/sh
->
-> IPTABLES="/sbin/iptables"
->
-> echo "Flushing rules..."
-> $IPTABLES -F
-> $IPTABLES -X
->
-> #Set default policies to DROP
-> $IPTABLES -F INPUT
-> $IPTABLES -F OUTPUT
-> $IPTABLES -F FORWARD
-> $IPTABLES -P INPUT ACCEPT
-> $IPTABLES -P OUTPUT ACCEPT
->
->
-> LOOP_IF="lo"
->
->
-> ###########################################################################
-> #----Set network sysctl options-----#
-> echo "--Setting sysctl options--"
->
-> echo "Disabling IP Spoofing attacks"
-> echo 2 > /proc/sys/net/ipv4/conf/all/rp_filter
->
-> echo "Disabling respond to broadcast pings"
-> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
->
-> echo "Blocking source routing"
-> echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
->
-> echo "Kill timestamps"
-> echo 0 > /proc/sys/net/ipv4/tcp_timestamps
->
-> echo "Enable SYN Cookies"
-> echo 1 > /proc/sys/net/ipv4/tcp_syncookies
->
-> echo "Kill redirects"
-> echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
->
-> echo "Enabling bad error message protection"
-> echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
->
-> echo "Logging martians (packets with impossible addresses)"
-> echo 1 > /proc/sys/net/ipv4/conf/all/log_martians
->
-> echo "Reducing DoS'ing ability by reducing timeouts"
-> echo 60 > /proc/sys/net/ipv4/tcp_fin_timeout
-> echo 2400 > /proc/sys/net/ipv4/tcp_keepalive_time
-> echo 0 > /proc/sys/net/ipv4/tcp_window_scaling
-> echo 0 > /proc/sys/net/ipv4/tcp_sack
-> echo "Done..."
->
-> #########################################################################
-> echo "--Setting up standard rules--"
->
-> echo "Allow unlimited traffic on the loopback interface"
-> $IPTABLES -A INPUT -i lo -j ACCEPT
-> $IPTABLES -A OUTPUT -o lo -j ACCEPT
->
-> echo "Enabling SYN-FLOODING PROTECTION"
-> $IPTABLES -N syn-flood
-> $IPTABLES -A INPUT -p tcp --syn -j syn-flood
-> $IPTABLES -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
-> $IPTABLES -A syn-flood -j DROP
->
-> echo "Making sure NEW tcp connections are SYN packets"
-> $IPTABLES -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
->
-> echo "Logging fragments caught"
-> $IPTABLES -N fragments
-> $IPTABLES -A INPUT -f -j fragments
-> $IPTABLES -A fragments -j LOG --log-prefix "IPTABLES FRAGMENTS:"
-> $IPTABLES -A fragments -j DROP
->
-> echo "Refusing spoofed packets pretending to be from your IP address"
-> #$IPTABLES -A INPUT -s $NET_IPADDR -j DROP
-> echo "Done..."
->
-> but it's no use how can i protect my system from syn flood?? i have no
-> hardware firewall a
+As for the flood attack, What do you mean by "it's no use"? (I do
+understand that you think it does not work, but could you elaborate on
+that). Are no packets dropped because of it?
 
 
+Regards
+Anders
 
 
