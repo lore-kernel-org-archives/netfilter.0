@@ -1,12 +1,10 @@
-From: Duncan Sands <duncan.sands@math.u-psud.fr>
-Subject: masquerade_check: size 24 != 20
-Date: Fri, 3 Oct 2003 14:46:18 +0200
+From: Pete Zieba <pete_1024@yahoo.com>
+Subject: Using a remote internet connection.
+Date: Fri, 3 Oct 2003 17:30:50 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310031446.18321.duncan.sands@math.u-psud.fr>
+Message-ID: <20031004003050.57956.qmail@web12701.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +15,134 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: Tom Eastep <teastep@shorewall.net>
 
-With 2.4.23-pre and 2.5/6 kernels my firewall setup fails at this line:
+Hi !
 
-iptables -t nat -A atm0_masq -s 192.168.58.0/24 -d 0.0.0.0/0 -j MASQUERADE
+I have a somewhat odd situation. I am trying to use
+the internet connection of a friend through a vpn
+tunnel. My reason for this stems from the fact that my
+ISP is rather restrictive. I cannot even ping machines
+on the internet.
+My setup is as follows:
 
-(the kernel returns -EINVAL).  On the other hand it works with 2.4.20+gentoo patches
-with the same .config.
+*I have a linux machine, and so does my friend.
+*I have iptables and OpenVPN running on both linux
+machines. The VPN is functional, so is routing.
+*Both linux machines have two NICS, eth0, and eth1.
+Both act as a firewall/gateway for the LAN side.
+*eth0 is the LAN side, eth1 the WAN.
 
-The command gets as far as the checkentry call into ipt_MASQUERADE.c
-(i.e. masquerade_check), at which point it bails out because the size of
-the ip_nat_multi_range type (20) differs from the target_size (24) passed
-to it:
+*My friend connects to the internet using a cable
+modem, and has a real IP on the net.
+*I would like to use this connection as if I were on
+his LAN side.
 
-translate_table: size 1112
-Finished chain 0
-Finished chain 3
-Finished chain 4
-find_inlist: loading `ipt_MASQUERADE'.
-masquerade_check: size 24 != 20.
-ip_tables: check failed for `MASQUERADE'.
+*OpenVPN creates a device, "tun0", which is what my
+PPP ip is on.
+my LAN subnet is 10.0.0.XXX
+my VPN PPP ip is 10.0.1.2, which connects to 10.0.1.1
+friend's LAN subnet is 10.0.3.XXX
+friend's VPN PPP ip is 10.0.1.1, which connects to
+10.0.1.2
 
-The check in question is:
+With this setup, I am currently able to get out to the
+internet, as well as ping machines on his network.
+I would also like to be able to use his gateway.
 
-        if (targinfosize != IPT_ALIGN(sizeof(*mr))) {
-                DEBUGP("masquerade_check: size %u != %u.\n",
-                       targinfosize, sizeof(*mr));
-                return 0;
-        }
+openVPN adds this entry, which allows me to see
+machines on his network:
+route add -net 10.0.3.0 netmask 255.255.255.0 gw
+10.0.1.1
 
-All this suggests to me that the size of some kernel structure has
-changed.  Now Tom Eastep tried with the same kernel and didn't
-get this, which is kind of informative: it suggests a different compiler
-version padding things differently (my gcc version is 3.2.3), or some
-config setting I have quietly changing the size of some object.  Before
-rummaging around further, I thought I'd ask here if anyone has any
-ideas.
+everything up to this point is functional.
 
-Thanks for any help,
+This is how I am using his machine as a gateway:
+On my linux box, I am doing the following steps:
 
-Duncan.
+1. route del default
+2. route add -host [friends cable modem IP] gw [my
+former default gateway]
+3. route add default gw 10.0.1.1
+
+Logic in steps:
+1. Don't want my old default gateway for all traffic.
+2. I am using my former default GW in step 2 as a
+means of connecting to his WAN IP, so that the VPN
+connection is maintained. This works.
+3. I am adding his PPP VPN ip as my default gateway.
+This kinda' works.
+
+I then do the following:
+I reconfig my workstation to use his ISP's nameserver.
+I can now ping domains (yahoo, etc.)
+I CANNOT get to MOST websites. (msn.com is one of my
+few successes)
+
+*Note that everything works fine if I try to get to
+websites using "links" as a browser in the console of
+my linux box. It is only machines on my LAN side that
+have problems.
+
+My theory on why this does not fully work:
+I am using my workstation, which uses my linux box as
+a gateway.
+My linux box uses the remote machine as a gateway.
+The remote machine uses the cable modem as the
+gateway.
+
+Wouldn't the packets trying to get to the net from me
+have an extra HOP? Could this be the cause of the
+problem?
+
+This is my linux box's routing table before my crazy 3
+step idea:
+Destination     Gateway         Genmask         Flags
+Metric Ref    Use Iface
+10.0.1.1        *               255.255.255.255 UH   
+0      0        0 tun0
+localnet        *               255.255.255.0   U    
+0      0        0 eth0
+10.0.3.1        10.0.1.1        255.255.255.0   UG   
+0      0        0 tun0
+[my WAN subnet] *               255.255.254.0   U    
+0      0        0 eth1
+loopback        *               255.0.0.0       U    
+0      0        0 lo
+default         [my WAN gw]     0.0.0.0         UG   
+0      0        0 eth1
+
+
+This is my linux box's routing table after my crazy 3
+step idea:
+Destination     Gateway         Genmask         Flags
+Metric Ref    Use Iface
+[friends WAN IP][my WAN GW]     255.255.255.255 UGH  
+0      0        0 eth1
+10.0.1.1        *               255.255.255.255 UH   
+0      0        0 tun0
+localnet        *               255.255.255.0   U    
+0      0        0 eth0
+10.0.3.1        10.0.1.1        255.255.255.0   UG   
+0      0        0 tun0
+[my WAN subnet] *               255.255.254.0   U    
+0      0        0 eth1
+loopback        *               255.0.0.0       U    
+0      0        0 lo
+default         10.0.1.1        0.0.0.0         UG   
+0      0        0 tun0
+
+Sorry about the long explanation. I do not have a mail
+account capable of receiving any decent amount of
+mail, so I cannot subscribe to the mailing list, so if
+anyone has any ideas, I would appreciate it if replies
+could also be sent to my address. Thanks for your time
+
+Peter Zieba
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
 
