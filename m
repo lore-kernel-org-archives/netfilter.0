@@ -1,13 +1,11 @@
-From: Charlie Brady <charlieb-netfilter@budge.apana.org.au>
-Subject: pptp conntrack requirements (was Re: ip_conntrack_pptp and inbound
- PPTP/GRE)
-Date: Thu, 5 Aug 2004 10:41:15 -0400 (EDT)
+From: "Daniel Wittenberg" <daniel-wittenberg@starken.com>
+Subject: ip_conntrack (again)
+Date: Thu,  5 Aug 2004 10:05:44 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0408051012120.31760-100000@e-smith.charlieb.ott.istop.com>
-References: <4111B04A.4090801@snapgear.com>
+Message-ID: <1091718344.41124cc8e830f@securemail.starken.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4111B04A.4090801@snapgear.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Philip Craig <philipc@snapgear.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Well, we had been having problems with a client's firewall not working right, 
+when there was a hardware failure, so we replaced it with a new Dell server.  
+Now we're still having the same issue.  Seems very odd this is the only 
+firewall we see this problem on, but maybe someone has an idea.  ip_conntrack 
+seems to stop working, and for awhile we were able to just unload all the ip* 
+modules, reload, and we were good.  Now, ip_conntrack seems to get stuck in a 
+weird state:
 
-On Thu, 5 Aug 2004, Philip Craig wrote:
+# lsmod |grep ip_conntrack
+ip_conntrack               0   0  (deleted)
+# rmmod ip_conntrack
+rmmod: module ip_conntrack is not loaded
+# modprobe ip_conntrack
+# lsmod |grep ip_conntrack
+ip_conntrack               0   0  (deleted)
 
-> Is there any reason you are still using 2.4.18?  It is quite likely
-> that this kernel is lacking patches that are required for PPTP
-> connection tracking.
+It doesn't seem to want to unload the module, and stays stuck in the "deleted" 
+state.  Only way to get it working again appears to be to reboot.
 
-Do you happen to know what the prerequisites are? I'll do what digging I 
-can into what I have, but it could short cut the process if you know 
-specifics.
+Any ideas on how to fix or even track down the cause of this problem?  It's 
+running standard Fedora Core 1, full patches and kernel 2.4.22-1.2197.nptlsmp.
 
-Meanwhile I'll grab a 2.4.18 kernel, and apply patch-o-matic, and see how 
-that matches what I have.
-
-Thanks
-
----
-Charlie
-
+Thanks!
+Dan
 
