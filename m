@@ -1,11 +1,9 @@
-From: "Carlos Fernandez Sanz" <cfs-netfilter@nisupu.com>
-Subject: Re: Routing problem
-Date: Sat, 14 Feb 2004 09:47:06 +0100
+From: pacific redwoods <pacificredwoods@yahoo.com>
+Subject: NAT, 2 boxes 1 in private network, is config correct? Diagram enclosed.
+Date: Fri, 13 Feb 2004 08:11:44 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c3f2d7$1ff24f50$1530a8c0@HUSH>
-References: <20040213171620.97236.qmail@web13904.mail.yahoo.com>
+Message-ID: <20040213161144.8183.qmail@web20508.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,95 +15,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Scott MacKay <scottmackay@yahoo.com>, netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Scott,
+Hello,
+I have 1 connection to the Internet(2XX.100.20.10). 1 hub, 1 firewall, 1 box in private network.
 
-By "carrier expects traffic to come from one WAN IP" I don't mean it has to
-have that origin IP but come from a router with that IP.
+The firewall has 3 NIC cards, eth0,eth1,eth2. I can't reach the private network using ssh. I have
+ssh running on the firewall on port 1229. Firewall has the NAT rule. Ssh is also running on the
+private network box(target). The firewall has port 1229 open and listening(verified).
 
-Obviously they assumed that the regular setup is
+./iptables -t nat -A PREROUTING -p tcp 1229 -i eth0 -j DNAT -to 192.168.10.100:22
 
-Internet <----> their router <-----> our router <------> Box with IP #1
-(could be a firewall) <-----> NAT
+Does anyone know why this would not work? My OS is Ferora Core1, all patched up.
 
-(i.e. there would be one router whose job in life is to get traffic from
-their router and direct it to us)
+Thank-you!
 
-However we are a small company and we need to have everything in one box,
-i.e. the router that connects with the carrier, the firewall, the web
-server, etc :-)
+(Make believe routable IP addresses to protect the innocent)
 
+     ------------------------------
+    |                              |
+    |            eth0  Nic Card 1 -|-- 2XX.100.10.14 --------->  gateway 2XX.100.20.10
+    |            eth1  Nic Card 2 -|-- 2XX.100.10.15 ------->  | gateway 2XX.100.20.10
+    |            eth2  Nic Card 3 -|-- 2XX.100.10.16 ----->  | | gateway 2XX.100.20.10
+    |                              |                       | | |                       
+    | Router/Firewall/etc box      |                       | | | 
+     ------------------------------                        | | |
+                                                           | | |
+                       --------<--------<-----------------<| | |
+                      |   ------<-----------<---------------<| |
+                      |  |   ------<-----------<--------------<|
+                      |  |  |     
+ to/from providors    |  |  |
+ gateway(Main         |  |  |
+ Internet connection) |  |  |
+ | 2XX.100.20.10      |  |  |
+ |                    |  |  |
+ |------------->|     |  |  |
+               ----------------
+              |                |
+              |  8 Port HUB    |
+               ----------------
+                     |  |  |
+                     |  |   -<-----------------<--------------<|
+                     |   ---<---------------<---------------<| |
+                      ----<-------------<-----------------<| | |
+                                                           | | |
+     ------------------------------                        | | |
+    |                              |                       | | |
+    |           eth0   Nic Card 1 -|-- 192.168.10.100 ---->| | | gateway 2XX.100.10.14
+    |           eth1   Nic Card 2 -|-- 192.168.10.101 ------>| | gateway 2XX.100.10.14
+    |           eth2   Nic Card 3 -|-- 192.168.10.102 -------->| gateway 2XX.100.10.14
+    |                              |                                              
+    | SSH/ Web Server/ Database/   |  
+    | misc applications            |
+     ------------------------------ 
 
-
------ Original Message ----- 
-From: "Scott MacKay" <scottmackay@yahoo.com>
-To: "Carlos Fernandez Sanz" <cfs-netfilter@nisupu.com>; "netfilter"
-<netfilter@lists.netfilter.org>
-Sent: Friday, February 13, 2004 18:16
-Subject: Re: Routing problem
-
-
-> AH, I think I get what you are saying.
-> You have a linux doing NAT, 1 public IP on the outside
-> and 1 private on the inside.  You also have a spare
-> public IP which you want to put on a client so they
-> can do some funky things which requires them having a
-> real IP address.
-> 1 question about your statement.  Where you say
-> "carrier expects traffic to come from one WAN IP"
-> kinda goes against what you implied by "public IP 2".
-> If you have 2 pubic IPs, they they cannot expect your
-> traffic to come from 1 WAN IP.  Even if you NAT a
-> private address explicitly to the 2nd public IP
-> address that counts as 2.  Do you have 1 or 2 public
-> IP addresses?
-> If you are given 2, then you should be able to do the
-> config mentioned, putting the client on the same side
-> as the router's public IP (since they are both in the
-> same class C).  If you have 1, well you are SOL.
->
->
->
->
->
->
->
->
-> --- Carlos Fernandez Sanz <cfs-netfilter@nisupu.com>
-> wrote:
-> > > >
-> > > > Before you ask: I can't connect this special
-> > computer to the same place
-> > I
-> > > > connect the linux box (which would be the
-> > obvious solution) because the
-> > > > carrier expects traffic to come from one WAN IP,
-> > owned by the linux box.
-> > >
-> > > How do they expect you to use any of the other IPs
-> > in the pool they have
-> > given
-> > > you?
-> >
-> > I do use them by redirecting traffic from the linux
-> > box to the destination
-> > boxes (such as all trafic for public IP 2 goes to
-> > 192.168.21.2, for
-> > example). This works fine, *except* in this
-> > particular case, where any
-> > NATing is not an option. I need the computer behind
-> > the linux box to
-> > actually own the public address, because it signs
-> > packets with it.
-> >
-> >
->
->
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! Finance: Get your refund fast by filing online.
-> http://taxes.yahoo.com/filing.html
->
-
+__________________________________
+Do you Yahoo!?
+Yahoo! Finance: Get your refund fast by filing online.
+http://taxes.yahoo.com/filing.html
 
