@@ -1,11 +1,13 @@
-From: Helge Weissig <helgew@grajagan.org>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: protocol 50 unreachable
-Date: Thu, 2 Dec 2004 12:12:25 -0800 (PST)
-Message-ID: <Pine.LNX.4.44.0412021211390.25230-100000@gollum.grajagan.net>
+Date: Thu, 2 Dec 2004 16:30:08 -0500
+Message-ID: <20041202213007.GA6394@bender.817west.com>
 References: <20041202205645.GA6266@bender.817west.com>
+	<Pine.LNX.4.44.0412021211390.25230-100000@gollum.grajagan.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041202205645.GA6266@bender.817west.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0412021211390.25230-100000@gollum.grajagan.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-My kernel is 2.4.18-24.8.0 - h.
+On Thu, Dec 02, 2004 at 12:12:25PM -0800, Helge Weissig wrote:
+> My kernel is 2.4.18-24.8.0 - h.
 
-On Thu, 2 Dec 2004 at 15:56 -0500, netfilter-bounces@lists.netfilter.org wrote:
+as much as it pains me to say this ('cause i sorta dig figuring this
+stuff out):  you've stumped me.
 
-JO> On Thu, Dec 02, 2004 at 11:26:22AM -0800, Helge Weissig wrote:
-JO> > I mean with "incomplete" that the tcpdump traffic I see does not show up 
-JO> > in the logs. I used your rules at the end of your reply and see the same 
-JO> > thing: ESP from VPN_SERVER hits $EXTIF, triggers the "protocol 50 
-JO> > unreachable" icmp response and no log entry ever shows up in the kernel 
-JO> > log from the iptables log rule. I am suspecting that your option 3) is 
-JO> > indeed the problem.
-JO> > 
-JO> > h.
-JO> 
-JO> what kernel are you running on this firewall [*]?  the only plausible
-JO> explanation at this point (and i'm not even sure that this is possible)
-JO> is that you're running an IPsec-enabled kernel that has SPD entries in
-JO> it that is scarfing up the ESP packets prior to the PREROUTING netfilter
-JO> hooks.  i'm not sure that the last part is even possible though, as i
-JO> was under the impression that ESP packets fully travel through PREROUTING
-JO> and INPUT before they get processed by the kernel IPsec code...
-JO> 
-JO> [*] if the answer is 2.6, the output of "setkey -aPD" should be:
-JO>     No SPD entries.
-JO> 
-JO> -j
-JO> 
-JO> --
-JO> "I hope I didn't brain my damage."
-JO>         --The Simpsons
-JO> 
+-j
 
+--
+"Weaseling out of things is important to learn. It's what separates
+ us from the animals...except the weasel."
+        --The Simpsons
 
