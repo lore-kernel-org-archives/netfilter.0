@@ -1,13 +1,13 @@
-From: Valentijn Sessink <valentyn+netfilter-users@nospam.openoffice.nl>
+From: Marc Haber <mh+netfilter@zugschlus.de>
 Subject: Re: [despammed] port based filtering and IPsec 2.6
-Date: Wed, 21 Jan 2004 16:39:47 +0100
+Date: Wed, 21 Jan 2004 16:44:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040121153947.GB2715@openoffice.nl>
-References: <20040114162623.GR4106@openoffice.nl> <20040117134519.GA4911@kaufbach.delug.de> <E1AhuY9-0002Ze-BK@vishnu.netfilter.org>
+Message-ID: <20040121154420.GH27986@torres.ka0.zugschlus.de>
+References: <20040114162623.GR4106@openoffice.nl> <20040117134519.GA4911@kaufbach.delug.de> <20040121153748.GA2715@openoffice.nl>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <E1AhuY9-0002Ze-BK@vishnu.netfilter.org>
+In-Reply-To: <20040121153748.GA2715@openoffice.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +19,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter.lists.samba.org@marc-haber.de
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-At Sat, Jan 17, 2004 at 06:47:46PM +0100, netfilter.lists.samba.org@marc-haber.de wrote:
-> >Okay, but you can't filtering packets. It's not possible to filter, for
-> Actually, not being able to filter traffic from an ipsec tunnel is a
-> killer.
+On Wed, Jan 21, 2004 at 04:37:48PM +0100, Valentijn Sessink wrote:
+> Yes you can. Re-read my post, and be creative.
 
-You *can* filter traffic from an ipsec tunnel. So there's no killer at all.
+That will work for incoming packets. And how do I protect myself
+against configuration errors sending out unencrypted packets? I'd need
+to put the mark on the packets for destination networks, which is
+error prone.
 
-V.
+The idea is nice, but it looks like an ugly hack. And it _is_ an ugly
+hack.
+
+Greetings
+Marc
+
 -- 
-Linux: geen virusgevaar, geen licentiekosten.
--
-http://www.openoffice.nl/   Open Office - Linux Office Solutions
-Valentijn Sessink  valentyn+sessink@nospam.openoffice.nl
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Karlsruhe, Germany |  lose things."    Winona Ryder | Fon: *49 721 966 32 15
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 721 966 31 29
 
