@@ -1,18 +1,15 @@
-From: Filip Sneppe <filip.sneppe@gmail.com>
-Subject: Re: ftp contrack
-Date: Tue, 25 Jan 2005 16:25:49 +0100
-Message-ID: <9151ac2a050125072524c0def8@mail.gmail.com>
-References: <22793.1106524634@www29.gmx.net>
-	<9151ac2a05012504156caf097b@mail.gmail.com>
-	<1106657609.22125.78.camel@nostromo.bgsecm.com>
-	<1106646626.7431.1.camel@linux.site>
-	<9151ac2a05012505432914ff51@mail.gmail.com>
-	<1106648450.7431.6.camel@linux.site>
-Reply-To: Filip Sneppe <filip.sneppe@gmail.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: about iprange
+Date: Tue, 25 Jan 2005 11:51:59 -0500
+Message-ID: <1106671920.5306.50.camel@jasiiitosh.nexusmgmt.com>
+References: <1106251621.41f00f65147cb@imp6-q.free.fr>
+	<1106252952.5024.25.camel@hubcap.ljm.dom>
+	<1106335800.41f15838d9d26@imp6-q.free.fr>
+	<1106660735.41f64d7f087a7@imp5-q.free.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1106648450.7431.6.camel@linux.site>
+In-Reply-To: <1106660735.41f64d7f087a7@imp5-q.free.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,55 +21,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mario Ohnewald <mario.ohnewald@gmx.de>
-Cc: netfilter@lists.netfilter.org
+To: "jdf [zionarea.org]" <zionarea@free.fr>
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-On Tue, 25 Jan 2005 11:20:50 +0100, Mario Ohnewald
-<mario.ohnewald@gmx.de> wrote:
-> On Tue, 2005-01-25 at 14:43, Filip Sneppe wrote:
-> > On Tue, 25 Jan 2005 10:50:26 +0100, Mario Ohnewald
-> > <mario.ohnewald@gmx.de> wrote:
+On Tue, 2005-01-25 at 14:45 +0100, jdf [zionarea.org] wrote:
+> Using network addresses like 192.168.0/8 is well, but it's not granular
+> enough: just because we cannot provide all the addresses if they don't
+> follow this contiguous rule.
 > 
-> The weird thing is that it works ONLY with the first ftp connection.
-> If i try to upload something a 2nd time, the packges wont get forwarded
-
-By first/subsequent connections, do you mean an ftp login, or a second
-ftp GET command etc over the same master connection.
-Are you able to download multiple files from within one login session ?
-
-> anymore. I can see the following packages with tcpdump:
-> (- 123.123.123.123 is the client
-> - 222.222.222.222 is the FW)
+> So I'm finally wondering about iprange. Most of linux distributions, with
+> the ones I know, don't provide iprange for the kernel. Are there any
+> performance or security issue behind this behavior ? Or is it simply a
+> 'bad' choice of those distributors ? But maybe it's simply due to the
+> kernel version. It appears 2.6.x provide this option at default; but if
+> I remember well 2.4.x didn't.
 > 
-> 15:02:45.999772 IP 123.123.123.123.42823 > 222.222.222.222.2121: SWE
-> 1965111453:1965111453(0) win 5840 <mss 1460,sackOK,timestamp 313275888
-> 0,nop,wscale 0>
-...
-> 
-> as you can see, its not even forwarding.
-> /proc/sys/net/ipv4/ip_forward is turned on.
-> 
-And on the other NIC (that goes to the ftp server on port 21), what
-are you sniffing
-there ?
+I had asked this same question as we considered enabling iprange rule
+creation for the ISCS network security management project
+(http://iscs.sourceforge.net).  We were told by the patch's creator that
+there is virtually no additional overhead compared to a subnet match
+(assuming I understood him correctly!).
 
-I see that the packets that are coming in have ECN enabled. I assume that this
-isn't causing any problems ?
+We found we needed to accommodate solutions both ways within ISCS, i.e.,
+if a gateway supports iprange, we write iptables rules with ranges.  If
+not, we use the logic found in SubnetCreator
+(http://subnetcreator.sourceforge.net) to break the range into subnets
+and then create rules for the resultant subnets.  Hope this helps - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-What does cat /proc/net/ip_conntrack show (relevant to your problem) ?
+Financially sustainable open source development
+http://www.opensourcedevel.com
 
-What kernel are you running ? Have you been able to test this
-with a specific kernel version that is not giving you any problems ?
-
-Can you sniff on both NICs with tcpdump with the -s 1500 option, write it
-to a file (-w file) and look at this file with ethereal (or tcpdump -X). Can you
-see the data ports getting rewritten by ip_nat_ftp ?
-If not, and your rulebase is ok, I guess you'll have to provide your
-kernel version
-so people can start looking into this ...
-
-The firewall rules you gave in your first mail, are they the only ones active ?
-
-Regards,
-Filip
 
