@@ -1,8 +1,8 @@
 From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: confusing explanation regarding negation of protocol filtering
-Date: Wed, 9 Oct 2002 06:21:55 -0400 (EDT)
+Subject: moving on to tcp flags filtering, more ambiguity
+Date: Wed, 9 Oct 2002 07:48:40 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210090616270.13444-100000@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0210090738460.13873-100000@localhost.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,29 +19,37 @@ Content-Transfer-Encoding: 7bit
 To: netfilter mailing list <netfilter@lists.netfilter.org>
 
 
-  (sorry if these are painfully trivial questions, but sometimes the
-docs just don't seem to be consistent.)
+first, given the flags SYN,ACK,FIN,RST,URG,PSH, and the shortcuts
+ALL and NONE, the flags filtering clause has the form
 
-  based on both the man page and andreasson's tutorial, i can filter
-on protocol with some variation of
+  --tcp-flags [!] comp mask
 
-	-p tcp
-	-p udp
-	-p udp,icmp
-	-p ! tcp
-	-p <some protocol number here>
+as an example, 
 
-and so on.  while the common filtering protocols are of course
-tcp, udp and icmp, there are far more listed in /etc/protocols
-that can be selected by name or number.
- 
-  so it's a but puzzling that andreasson's tutorial claims that
-"--protocol ! tcp would mean to match the ICMP and UDP protocols."
-really?  i would have assumed it would have matched *every* other
-protocol but TCP.
+  --tcp-flags SYN,RST,ACK SYN
 
-  am i misunderstanding the function of the "!" with respect to 
-protocol?
+means specifically to compare those three flags, and of those three,
+*only* SYN can be set.  so far, so good.
+
+  we can also incorporate ALL and NONE, for example:
+
+  --tcp-flags ALL SYN		(only SYN can be set among all flags)
+  --tcp-flags ALL NONE		(all flags must be unset -- a bit silly)
+
+so "ALL", in these cases, is short for all six flags.  but what if we
+have
+
+  --tcp-flags SYN,RST,ACK ALL
+
+as a mask, i'm assuming that "ALL" really now means just all of
+the flags that were listed in the comp list, since it wouldn't make
+much sense to mean all six flags anymore.  is this reasonable?
+and i'm also assuming this would mean the same as
+
+  --tcp-flags ! SYN,RST,ACK NONE
+
+even though that's a really hideous way of expressing it.
+
 
 rday
 
