@@ -1,14 +1,15 @@
-From: leolistas@solucoesip.net
-Subject: RE: TCM MSS control over OUTPUT chain
-Date: Sat,  3 May 2003 09:07:16 -0300
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Netfilter and SCTP
+Date: Sat, 3 May 2003 17:14:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051963636.3eb3b0f4a3a96@www.solucoesip.net>
-References: <000001c31165$b8cfc8a0$100aa8c0@bwhwangnotepc>
+Message-ID: <20030503151439.GD29373@sunbeam.de.gnumonks.org>
+References: <Law8-F94rhYQYx3G5aY000150f0@hotmail.com> <1051712682.8215.135.camel@tux.rsn.bth.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c31165$b8cfc8a0$100aa8c0@bwhwangnotepc>
 Content-Disposition: inline
+In-Reply-To: <1051712682.8215.135.camel@tux.rsn.bth.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +19,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, bwh@net-safe.co.kr
+To: Martin Josefsson <gandalf@wlug.westbo.se>
+Cc: Cyrille Colin <shishico@hotmail.com>, Netfilter <netfilter@lists.netfilter.org>
 
 
+--wULyF7TL5taEdwHz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   Houston, we have a problem !! Forwarded packets will NEVER reach OUTPUT 
-chain. OUTPUT is only reached by locally generated packets and INPUT will 
-only be reached by locally destinated packets. If the machine is 'routing' 
-that packet, no matter if it will be NATed or not, it will never reach 
-OUTPUT.
+On Wed, Apr 30, 2003 at 04:24:42PM +0200, Martin Josefsson wrote:
+> iptables doesn't have support for SCTP yet, noone has sent a patch for
+> it :)
 
-   Why cant you do this in FORWARD chain ? You should notice that MSS is 
-not a final rule, I mean, you can use this as the very first rule in 
-FORWARD chain. MSS will be mangled and other rules WILL be parsed. TCPMSS 
-is different from ACCEPT/DROP/REJECT which are final rules, that means, no 
-further rule processing will occur.
+yes, but I am very interested in SCTP (I've read all the specs some time
+ago)... unfortunately there is way too much high-priority stuff on my
+TODO list, so I don't think that I'll be able to provide a patch soon.
 
-   I've this kind of configuration running in SEVERAL machines which act 
-as gateways for their networks and it works just fine !
+What we would need is an implementation of the following modules:
 
-iptables -A FORWARD -i eth0 -o eth1 -p tcp --tcp-flags SYN,RST SYN -j 
-TCPMSS --set-mss 1400
+ip_conntrack_sctp.c
+ip_nat_sctp.c
+ipt_sctp.c
+libipt_sctp.c
 
+> /Martin
 
-   Sincerily,
-   Leonardo Rodrigues
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
+--wULyF7TL5taEdwHz
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Citando "Hwang, Byoung Woo" <bwh@net-safe.co.kr>:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-> Hi,
-> The machine where I want to try to control the size of TCP MSS
-> is a gateway. eth0 is connected to the internal lan which use
-> virtual IPs and eth1 is connected to ADSL modem and uses PPPOE.
-> After the command "iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j
-> TCPMSS --set-mss 1400"
-> packets from gateway itself to outside are controlled on TCP MSS size
-> but
-> packets from Internal LAN to Internet which are NATed by Masquerading
-> are
-> not controlled on TCP MSS size.
-> I have a reason why I cannot control on FORWARD chain.
-> 
-> Please, help
-> 
-> Reguards,
+iD8DBQE+s9zfXaXGVTD0i/8RAt0iAJsE1kquhMpjqhwkRkhdRntpJLz8SACeIHlv
+Xu+z+z/9QLSJYvAAjl9dt38=
+=acEw
+-----END PGP SIGNATURE-----
 
-
+--wULyF7TL5taEdwHz--
 
