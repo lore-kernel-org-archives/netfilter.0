@@ -1,13 +1,13 @@
-From: Wan Seman Bin Wan Ismail <wswi@scan-associates.net>
-Subject: Re: how to log dropped packet
-Date: Tue, 28 Sep 2004 18:28:12 +0800
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Iptables
+Date: Tue, 28 Sep 2004 06:36:08 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41593CBC.9010009@scan-associates.net>
-References: <web-6413785@infinito.it>
+Message-ID: <1096367768.2054.9.camel@localhost>
+References: <MAILwhABuLWBgAHM6H900000023@mail.netscan.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-6413785@infinito.it>
+In-Reply-To: <MAILwhABuLWBgAHM6H900000023@mail.netscan.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +17,39 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: hamals@infinito.it, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Contact <contact@netscan.ca>
+Cc: netfilter@lists.netfilter.org
 
-for example:-
-
-Accept Rule:
-iptables -A  block -p tcp --dport 80  -j LOG --log-level info 
---log-prefix "Allow 80 :"
-iptables -A  block -p tcp --dport 80  -j ACCEPT
-
-Drop Rule:
-iptables -A  block -p tcp --dport 139  -j LOG --log-level info 
---log-prefix "Block 139 :"
-iptables -A  block -p tcp --dport 139  -j DROP
-
-so in conclusion, the first rule u must log then follow by accpet or 
-drop :-)
-
-
-
-hamals@infinito.it wrote:
-
->
-> hello
->
-> I wrote all my firewall rules, and now I would like to log all packet 
-> that will be dropped by my policy rule..
->
-> ..how can I do it?
->
-> what kind of rules do I need?..and where have I to write them?
->
-> thanks
-> _______________________________________
-> Connessione ed e-mail gratuita da 10 mb
-> consultabile tramite web e tramite pop.
-> www.infinito.it vieni a scoprire tutti i nostri servizi!
->
-> http://www.infinito.it/xmail
->
->
->
+On Tue, 2004-09-28 at 01:07, Contact wrote:
+> Hi,
+> 
+> I'm new to iptables and having a problem grasping the concept as well as the
+> syntax. I have read a lot of sites on this but just not getting it. First -
+> running rules. From what I can gather I need to have an rc.firewall file
+> with the various rules and such in it - and have this started at boot. Am I
+> close?  Second - the syntax. I want to be able to allow my local LAN full
+> access to the Linux box (Slackware 10). I also have a website which I want
+> to allow everyone - except for a few domains and IP's, SSH which I want to
+> allow only certain IP's or domains, and Samba which I want to allow only my
+> local LAN. This is where I'm really confused putting this all together. If
+> someone could explain this in plain english - or put me on to a really easy
+> iptables for dummies type site, it would be appreciated.
+> 
+> This box is behind attached to a Linksys router and does not act as a NAT.
+> It is just a simple little setup on a p166.
+> 
+> Thanks
+> 
+I found Oskar Andreasson's tutorial most helpful
+(http://iptables-tutorial.frozentux.net/iptables-tutorial.html).  You
+can also find some slightly dated slide show training sessions at
+http://iscs.sourceforge.net Good luck - John
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
