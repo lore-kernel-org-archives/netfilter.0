@@ -1,11 +1,10 @@
-From: =?iso-8859-1?Q?Marc-Andr=E9_Boulais?= <alphaweltall@sympatico.ca>
-Subject: IPtables and DDclient
-Date: Wed, 25 Sep 2002 22:31:49 -0400
+From: Andriy T. Yanko <wireless@wireless.org.ua>
+Subject: libipfwc memory leak?
+Date: Tue, 24 Sep 2002 09:11:21 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c26504$df5d3f60$0401a8c0@crazymother>
+Message-ID: <20020924091121.44aae61d.wireless@wireless.org.ua>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C264E3.56FB78B0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,55 +15,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi people!
 
-------=_NextPart_000_0005_01C264E3.56FB78B0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I know that this letter is not for this mailllist. But I'm tired to find mistake.
 
-hi, I am currently looking for a way to let "ddclient" ( IP updater =
-program ) pass through iptables. I was first looking for the ports =
-involved with it but I can't seem to find any info on that.=20
+I just writen this smal code for example:
 
-If you know how I could build a rule to let it pass through ( cuz right =
-now, it is blocked ) iptables. Please let me know.
+--- cut ---
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
+#include "libipfwc/libipfwc.h"
 
-Appreciate it!
 
-MarK
-------=_NextPart_000_0005_01C264E3.56FB78B0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+int main( int argc, char **argv)
+{
+    pid_t pid;
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>hi, I am currently looking for a way to =
-let=20
-"ddclient" (&nbsp;IP updater program ) pass through iptables. I was =
-first=20
-looking for the ports involved with it but I can't seem to find any info =
-on=20
-that. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>If you know how I could build a rule to =
-let it pass=20
-through ( cuz right now, it is blocked ) iptables. Please let me=20
-know.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Appreciate it!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>MarK</FONT></DIV></BODY></HTML>
+    unsigned int num_chains; 
+    unsigned int num_rules; 
+    static struct ipfwc_fwchain *chains;
+    struct ipfwc_fwrule *rules;
 
-------=_NextPart_000_0005_01C264E3.56FB78B0--
+    pid=fork();
+    if ( pid == -1 ) { printf("Can't fork!\n"); exit(0); }
+    if ( pid != 0) exit(0);
+    setsid();
 
+    while(1)
+    {
+	chains=ipfwc_get_chainnames(&num_chains); 
+	rules=ipfwc_get_rules(&num_rules,0); 
+	sleep(1);
+    }
+    
+    return 0;
+}
+--- end ---
+
+When program is runnig I just type command "ps aux" 
+and I saw that my program get more and more system memory.
+
+Is this memory leak of libipfwc library?
+
+In  libipfwc.c  function ipfwc_get_chainnames & ipfwc_get_rules use malloc() but not use free().
+It's maybe ok for program ipchains but in my case is not gut.
+
+How to fix it?
+
+THANKS IN ADVANCE.
+
+
+-- 
+Andriy T. Yanko
+wireless@wireless.org.ua
+
+* Avoid The Gates of Hell use Linux
 
