@@ -1,13 +1,14 @@
 From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
 Subject: Re: 'No Route: Rusty's brain broke' ??????
-Date: Fri, 3 Sep 2004 15:10:21 -0400 (EDT)
+Date: Fri, 3 Sep 2004 15:19:19 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <62679.216.239.93.106.1094238621.squirrel@216.239.93.106>
+Message-ID: <62872.216.239.93.106.1094239159.squirrel@216.239.93.106>
 References: <200409031401.i83E1R53004651@webmail2.magma.ca>
+	<62679.216.239.93.106.1094238621.squirrel@216.239.93.106>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409031401.i83E1R53004651@webmail2.magma.ca>
+In-Reply-To: <62679.216.239.93.106.1094238621.squirrel@216.239.93.106>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +19,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: dravya <dravya@magma.ca>
+To: Samuel Jean <sj-netfilter@cookinglinux.org>
 Cc: netfilter@lists.netfilter.org
 
-On Fri, September 3, 2004 10:01 am, dravya said:
+Forget my previous post.
+I was in a bad assumption.
+
+I thought about the "MASQUERADE: Route sent us somewhere else" error.
+
+Sorry.
+
+
+On Fri, September 3, 2004 3:10 pm, Samuel Jean said:
+> On Fri, September 3, 2004 10:01 am, dravya said:
+>>
+>> Hi all,
+>>
+>> I have two ppp connections setup and I want access the internet via
+>> these
+>> links....
+>> However, I get the error message "kernel: No Route: Rusty's brain
+>> broke".
+>>
+>> Is there a patch associated with this.... or can you suggest any
+>> fixes...
+>>
 >
-> Hi all,
+> https://lists.netfilter.org/pipermail/netfilter-devel/2004-January/0136=
+95.html
 >
-> I have two ppp connections setup and I want access the internet via the=
-se
-> links....
-> However, I get the error message "kernel: No Route: Rusty's brain broke=
-".
+>> Why would something like this happen??? Is this a problem with the
+>> ipt_MASQUERADE.c code???
+>>
 >
-> Is there a patch associated with this.... or can you suggest any fixes.=
-..
+> Kinda.
 >
-
-https://lists.netfilter.org/pipermail/netfilter-devel/2004-January/013695=
-.html
-
-> Why would something like this happen??? Is this a problem with the
-> ipt_MASQUERADE.c code???
+>> any tips or suggestions are much appreciated.
+>>
 >
-
-Kinda.
-
-> any tips or suggestions are much appreciated.
+> Current ipt_MASQUERADE.c isn't supporting funky routing.
 >
-
-Current ipt_MASQUERADE.c isn't supporting funky routing.
-
-I got the same error when I was using the ROUTE target to
-force some nodes to use ppp1 instead of ppp0.
-
-Patrick's patch found in the URL below worked for me.
-
-However, this is an active topic. You should follow that
-thread:
-
-https://lists.netfilter.org/pipermail/netfilter-devel/2004-August/016620.=
-html
-
-> Thanks
+> I got the same error when I was using the ROUTE target to
+> force some nodes to use ppp1 instead of ppp0.
 >
-
-HTH
-
-> Dravya
-
-
-Samuel Jean
-CookingLinux.org
+> Patrick's patch found in the URL below worked for me.
+>
+> However, this is an active topic. You should follow that
+> thread:
+>
+> https://lists.netfilter.org/pipermail/netfilter-devel/2004-August/01662=
+0.html
+>
+>> Thanks
+>>
+>
+> HTH
+>
+>> Dravya
+>
+>
+> Samuel Jean
+> CookingLinux.org
+>
+>
+>
+>
 
 
 
