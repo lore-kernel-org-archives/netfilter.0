@@ -1,11 +1,13 @@
-From: Wolfgang Pichler <wpichler@dialog-telekom.at>
-Subject: backroute problem
-Date: 23 Jul 2003 20:00:49 +0000
+From: Xemul <epv_xemul@mail.ru>
+Subject: Re: Traffic limitation with iptables
+Date: Wed, 23 Jul 2003 19:17:30 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058990449.1963.60.camel@defiant.dialog>
+Message-ID: <20030723191730.5a3110d2.epv_xemul@mail.ru>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15BF6B@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15BF6B@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi all,
+On Wed, 23 Jul 2003 08:07:40 +1000
+"George Vieira" <georgev@citadelcomputer.com.au> wrote:
 
-we have got new ip addresses - the old one's still exists so that i can
-migrate them to the new ones.
+> Use the Quota patch and it'll limit the rule by itself..			
+> 
 
-the old ip's are directly assigned to the web/mail server (i know that
-this isn't good - but i havn't had a fireall at this time) - now i have
-a seperate firewall which has the new ip's assigned to it.
+Thank you VERY much :)
+This is exactly what I want.
+Well I've got one more question.
+Consider using 2 additional tables like this:
 
-Now i'd like to change the dns entries so that the traffic goes over the
-new ip's (a 4 MBit line ;-) ) - the problem i have is:
+iptables -N table1
+iptables -N table2
+iptbales -A FORWARD -s 192.168.2.1 -j table1
+iptables -A FORWARD -s 192.168.2.2 -j table2
+iptables -A table1 -m quota --quota 10000 -j RETURN
+iptables -A table1 -j DROP
+iptables -A table2 -m quota --quota 10000 -j RETURN
+iptables -A table2 -j DROP
 
-when a packet on the new ip comes then it gets prerouted by the firewall
-to the webserver - the webserver gets the packet with the original
-source address - now to webserver wants to answer to the packet - but
-becuase of the old ip's the webserver have a default route with the old
-ip and try's to route the packet over the old gateway - and not back to
-the firewall... You know - that can't work.
-
-I am now searching for a solution for this problem. Can netfilter help
-me with this problem - or do i have to use iproute (i havn't ever done
-something with iproute) help me ?
-
-Can i mark the packet's so the the webserver can send them back in the
-right direction ?
-
-mfG
-Wolfi
-
-
-
-
+By doing this I'll limit outgoing traffic for 192.168.2.1 and for .2
+independently and the speed won't be too small I hope.
+Then consider I have not 2 but 100 tables like table1, table2, ...
+table100. What about the perfomance in this case? Won't it be too small?
 
