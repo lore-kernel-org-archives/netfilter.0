@@ -1,12 +1,13 @@
-From: "Jan" <Oblivion@tiscali.be>
-Subject: Re: Netfilter and multiple internet connections
-Date: Wed, 16 Oct 2002 01:42:02 +0200
+From: David A Golden <david@hyperbolic.net>
+Subject: Re: IPSec passthrough with iptables
+Date: Tue, 15 Oct 2002 23:45:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002101c274a4$76ec9570$0100a8c0@obsidian>
-References: <00d701c27441$c9578e90$0100a8c0@obsidian> <34894.192.168.7.14.1034716936.squirrel@iw.k1k2.com>
+Message-ID: <5.1.0.14.2.20021015233540.03a36008@secure.hyperbolic.net>
+References: <B9D1A7D2.3DF9%george@mattandgeorge.com>
+ <B9D1A7D2.3DF9%george@mattandgeorge.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200210151300.g9FD0vL23616@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,56 +17,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Andrew Smith <nfml@k1k2.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-> My guess, based on how my dual ADSL connection works, is that you will
-> need an extra route to send out the replies to the cable modem supplier
-> via the cable modem
+Just to muddy the waters, through experimentation, I have found that using 
+Checkpoint SecuRemote (on windows) behind a Linux netfilter firewall, I can 
+achieve an IPSEC connection using just:
+
+iptables -A FORWARD -s $INTERNAL_NET -j ACCEPT
+iptables -A FORWARD -d $INTERNAL_NET -m state --state ESTABLISHED,RELATED \
+         -j ACCEPT
+
+I.e. explicit per-protocol forwarding seems unnecessary.  (Though you might 
+want to be explicit for security/control reasons.)  [Note, no UDP 
+encapsulation, either]
+
+I do experience weird time-outs occasionally, apparently connected to 
+incoming IKE packets (UDP port 500) that aren't recognized as connected, 
+but I can get around this by just accepting them to the firewall, which 
+does nothing as there is nothing running on that port.  (I'm trying 
+variations of reject/drop to see if there is a better way to reply.)
+
+Regards,
+David
+
+At 09:00 AM 10/15/2002, Antony Stone wrote:
+>On Tuesday 15 October 2002 12:09 pm, George Agnelli wrote:
 >
-> Assume Cable is NETC and ADSL is NETA
-> If your default route sends everything out NETA, then even anything
-> that "should" be sent to the cable modem provider via NETC will go
-> out NETA
-> (e.g. cable here in Australia on Telstra requires a heartbeat sent
-> back to Telstra and that MUST go out the Telstra connection)
+> > I'm having a similar problem and am not very experienced yet with iptables.
+> >
+> > > Make sure you are forwarding (both ways :-) protocol 50 (ESP), protocol
+> > > 51 (AH) and UDP sport 500 / dport 500 (IKE).
+> >
+> > Could you show me the best way to write this in iptables syntax?
 >
-> Also, if both connections are masqueraded then anything that goes out
-> NETA will say it is from an IP address provided by your ADSL provider
-> and thus will also be the wrong source for any "connection keep-alive"
-> traffic
+>iptables -A FORWARD -p esp -j ACCEPT
+>iptables -A FORWARD -p ah -j ACCEPT
+>iptables -A FORWARD -p udp --sport 500 --dport 500 -j ACCEPT
 >
-> As far as I understand also - it is common practice in the USA to use
-> egress filters that stop you from sending data out the wrong connection
-> (this is only relevant if either connection is not masqueraded)
-> - so you will need to check that also
-> (my ISP's in Aus don't do this - lucky me - no need for iproute2 :-)
+>You may wish to add some -s and/or -d source & destination address
+>restrictions on the above rules, eg:
 >
-> Hope there is something here that helps you
+>iptables -A FORWARD -p esp -s a.b.c.d -d w.x.y.z -j ACCEPT
+>iptables -A FORWARD -p esp -s w.x.y.z -d a.b.c.d -j ACCEPT
 >
-> --
-> -Cheers
-> -Andrew
-
-Thanks Andrew,
-your comments made me think.  From a remote server, I performed a constant
-ping to both of my internet IP addresses.  Only the ones for the currently
-active default gateway got trough to iptables.  Changing the default
-gateway, changed the ping that got trough.  So I started playing with the
-kernel parameters in /proc/sys/net/ipv4/conf/...
-What I saw was that setting /proc/sys/net/ipv4/conf/eth1/rp_filter to "0"
-fixed the issue I saw.  I googled for rp_filter, and found the Linux
-Advanced Routing howto explaining this setting.
-
-rp_filter = Reverse Path Filtering
-
-Basicly, a packet coming in on one interface (provider1) is dropped when the
-"reply" would go out on another interface (provider2).
-
-Now I know for sure iptables isn't faulty, I was just wondering why I only
-got firewall log entries from the active default gateway interface.
-
-Jan
-
+>where a.b.c.d and w.x.y.z are the two IPsec gateways which need to
+>communicate.
+>
+>Antony.
 
 
