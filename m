@@ -1,12 +1,14 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Squid Accelerator configuration
-Date: Tue, 20 Jul 2004 16:46:40 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Questions on DNAT and pre/postrouting...
+Date: Tue, 20 Jul 2004 22:15:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511D2@asimail2.alphanumeric.com>
+Message-ID: <200407202215.07675.Antony@Soft-Solutions.co.uk>
+References: <Pine.LNX.4.44.0407201652340.20957-100000@signals10.bu.edu>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.44.0407201652340.20957-100000@signals10.bu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,350 +19,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jim Matthews <jim.matthews@notes.duke.edu>
-Cc: netfilter@lists.netfilter.org
-
-heh--nudging myself...you'll most likely also need a rule to allow the =
-squid machine to do DNS lookups:
-
-	-A OUTPUT -p udp --dport 53 -j ACCEPT
-
--j
-
------Original Message-----
-From: Jason Opperisano=20
-Sent: Tuesday, July 20, 2004 4:41 PM
-To: 'Jim Matthews'
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Squid Accelerator configuration
-
-
-i think i have it straight in my head now.  let's start over, 'cause i =
-think this has gotten unneccessarily complicated.  my understanding is =
-that you want to:
-
-(a) allow internal clients (192.168.1.0/24) to access a squid proxy on =
-192.168.1.1 (port 3128?)
-(b) allow the squid proxy on 192.168.1.1 to fetch content from a web =
-server on 192.168.1.5 and serve cached content to those clients on =
-192.168.1.0/24
-(c) allow clients from elsewhere (the internet) to access the web server =
-directly
-
-*IF* that's the case--here are the _relevant_ rules to accomplish the =
-above (i've now switched them to the "j" style of writing rules):
-
-# first things first--allow all established replies
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# allow 192.168.1.0/24 to squid proxy
--A INPUT -p tcp --syn -s 192.168.1.0/24 --sport 1024:65535 \
-  -d 192.168.1.1 --dport 3128 -m state --state NEW -j ACCEPT
-
-#allow squid proxy to go fetch content from backend web server
--A OUTPUT -p tcp --syn -s 192.168.1.1 --sport 1024:65535 \
-  -d 192.168.1.5 --dport 80 -m state --state NEW -j ACCEPT
-
-# allow forwarding of requests (from anywhere) to fetch content from the =
-web server
--A FORWARD -p tcp --syn --sport 1024:65535 \
-  -d 192.168.1.5 --dport 80 -m state --state NEW -j ACCEPT
-
-if i've lost my mind somewhere along the way--please nudge me back to =
-reality.
-
--j
-
------Original Message-----
-From: Jim Matthews [mailto:jim.matthews@notes.duke.edu]
-Sent: Tuesday, July 20, 2004 3:50 PM
-To: Jason Opperisano
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Squid Accelerator configuration
-
-
-Jason
-
-No problem, thanks for helping.=20
-
-My rules are all whacked out now, I'm sure.  Here's what I have:
-
-# Squid
-# These rules are to allow testing from the internal network - the first =
-
-two rules are for the Squid ports
--A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport squid -m=20
-state --state NEW,ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport squid -m state --state =
-
-ESTABLISHED,RELATED -j ACCEPT
-# accept 113 connections
--A INPUT -p tcp -m tcp --sport 113 -m state --state ESTABLISHED,RELATED =
--j=20
-ACCEPT
--A OUTPUT -p tcp -m tcp --dport 113 -m state --state=20
-NEW,ESTABLISHED,RELATED -j ACCEPT
-
-# These two rules are for the http port
--A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport http -m=20
-state --state NEW,ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport http -m state --state=20
-ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -p tcp --syn -s 192.168.1.1 --sport 1024: -d 192.168.1.5 =
---dport=20
-80 -j ACCEPT
-
-# These two rules should cover teh forwarding of connections for the=20
-backend WWW server
--A FORWARD -s 0/0 -d 192.168.1.5 -p TCP --sport 1024:65535 --dport 80 -j =
-
-ACCEPT
--A FORWARD -d 0/0 -s 192.168.1.5 -p TCP -m state --state=20
-NEW,ESTABLISHED,RELATED -j ACCEPT
-
-It sortof works now.  I can access pages that have been cached on the=20
-Squid box, but if I need a page that isn't cached, I never get it.=20
-
-Thanks.
----------------------
-Jim Matthews=20
-ISS Systems Administrator=20
-Duke University - Perkins Library
-Box 90196
-Durham, NC 27708
-Email: jim.matthews@duke.edu
-Voice: 919-660-5963
-Fax: 919-684-6990
-
-
-
-"Jason Opperisano" <Jopperisano@alphanumeric.com>=20
-07/20/2004 02:03 PM
-
-To
-"Jim Matthews" <jim.matthews@notes.duke.edu>
-cc
-<netfilter@lists.netfilter.org>
-Subject
-RE: Squid Accelerator configuration
-
-
-
-
-
-
-didn't mean to be terse...
-
-what the logs are saying to me is this:  i am dropping a TCP packet with =
-
-flags A,P,F in my OUTPUT chain from 192.168.1.1:80 to 192.168.1.15:3582
-
-do you have something along the lines of:
-
-                 "-A OUTPUT -m state --state ESTABLISHED,RELATED -j=20
-ACCEPT"
-                 "-A INPUT -m state --state ESTABLISHED,RELATED -j =
-ACCEPT"
-
-at the top of your INPUT and OUTPUT chains?
-
-it appears to me that your rules are not properly allowing replies from=20
-the Squid box back to the client machine.
-
--j
-
------Original Message-----
-From: Jim Matthews [mailto:jim.matthews@notes.duke.edu]
-Sent: Tuesday, July 20, 2004 1:55 PM
-To: Jason Opperisano
-Subject: RE: Squid Accelerator configuration
-
-
-Jason
-
-Thanks for the response.  I'm not sure I understand what this line is=20
-doing.  Should I be replacing any of my entries with this line or=20
-appending this line?  I tried adding the line (I added it below my other =
-2=20
-
-http rules) and it's still not connecting.=20
-
-192.168.1.1 - Squidbox
-192.168.1.15 - Client
-
-
-Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3582 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3583 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:39 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3584 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:46 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3577 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:48 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1152 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3578 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:49 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3579 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:50 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3580 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:50 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D19532 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3581 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3582 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3583 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:51 squidbox kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-DST=3D192.168.1.15 LEN=3D1499 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF =
-PROTO=3DTCP=20
-SPT=3D80 DPT=3D3584 WINDOW=3D6432 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-Jul 20 13:51:54 squidbox52 kernel: drop-n-log:IN=3D OUT=3Deth0 =
-SRC=3D192.168.1.1=20
-
-DST=3D192.168.1.15 LEN=3D1485 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D38915 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D3576 WINDOW=3D10720 RES=3D0x00 ACK PSH FIN URGP=3D0=20
-
-Thanks again for your help and any additional help you could provide.
----------------------
-Jim Matthews=20
-ISS Systems Administrator=20
-Duke University - Perkins Library
-Box 90196
-Durham, NC 27708
-Email: jim.matthews@duke.edu
-Voice: 919-660-5963
-Fax: 919-684-6990
-
-
-
-"Jason Opperisano" <Jopperisano@alphanumeric.com>=20
-07/20/2004 01:35 PM
-
-To
-"Jim Matthews" <jim.matthews@notes.duke.edu>,=20
-<netfilter@lists.netfilter.org>
-cc
-
-Subject
-RE: Squid Accelerator configuration
-
-
-
-
-
-
--A OUTPUT -p tcp --syn -s 192.168.1.1 --sport 1024: -d 192.168.1.5 =
---dport=20
-
-80 -j ACCEPT
-
--j
-
------Original Message-----
-From: Jim Matthews [mailto:jim.matthews@notes.duke.edu]
-Sent: Thursday, July 15, 2004 10:46 AM
 To: netfilter@lists.netfilter.org
-Subject: Squid Accelerator configuration
 
+On Tuesday 20 July 2004 10:02 pm, Jeffrey C Albro wrote:
 
-Hi
+> I understand how DNAT works in the prerouting change.  You change the
+> destination and out the packet goes to the preferred server.  No problemo.
+> But when the packet comes back, the failover box appears to SNAT the
+> packet.  I've seen this referred as un-DNATing.
 
-We have a backend web server.  To off-load some of the load from the=20
-backend server, we have a Squid server in front.=20
+Correct.   If this did not happen then reply packets would not be routed 
+correctly.
 
-I am having an issue with my iptables configuration on my Squid box.=20
-Everything works correctly when I disable the firewall (no good), so I'm =
+> It makes perfect sense that due to the client expecting packets back from
+> the address it sent them to that this is required behavior, but can this be
+> turned off or controlled?  I just found it odd that this happened with no
+> iptables rules.
 
-having problems with my rules on the Squid server.  I want to configure=20
-the systems so that:
+What do you mean - "this happened with no iptables rules"?   How are you doing 
+DNAT with no iptables rules?
 
--On Squid-
--allow all requests from Internet to port 80
--allow all requests from WWW box to/from port 80
+> What's up the the "no filtering" guideline for the PRE and POST routing
+> chains?
 
--On WWW-
--allow all forwarded requests to/from Squid Box to port 80
--do not allow requests from Internet to port 80
+PREROUTING and POSTROUTING chains have nat and mangle tables only; and things 
+happen in the background (as you have already referred to above) in the nat 
+and mangle tables.
 
-Has anyone setup something similar?  Any suggestions or pointers on how =
-to=20
+Specifically, if you set any default policy other than ACCEPT on the nat or 
+mangle tables, you will be very lucky if things work.
 
+>  I'm doing it right now and it seems to work fine,
 
-configure this?
+What are you doing?   What filtering rules do you have in the nat table (and 
+why)?
 
-Here is the ruleset I'm using on my Squid box:
+> but WHY is this a problem, and how else would I do it?
 
-# Squid
-# These rules are to allow testing from the internal network - the first =
+Why is it a problem?   Hopefully explained above.
 
-two rules are for the Squid port
--A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport squid -m=20
-state --state NEW,ESTABLISHED -j ACCEPT
--A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport squid -m state --state =
+How else would you do it?   Put the filtering rules in the filtering tables, 
+in the INPUT or FORWARD chains.
 
-ESTABLISHED -j ACCEPT
+> It seems that it would result in a longer ruleset if I had to do this in the
+> FORWARD chain.
 
-# These two rules are for the http port
--A INPUT -s 192.168.1.0/24 -p tcp -m tcp --sport 1024: --dport http -m=20
-state --state NEW,ESTABLISHED -j ACCEPT
--A OUTPUT -s 192.168.1.0/24 -p tcp -m tcp --sport http -m state --state=20
-ESTABLISHED -j ACCEPT
+So?
 
-# These two rules should cover the forwarding of connections for the=20
-backend WWW server
--A FORWARD -s 0/0 -d 192.168.1.5 -p TCP --sport 1024:65535 --dport 80 -j =
+> Is lightning going to strike me down?
 
-ACCEPT
--A FORWARD -d 0/0 -s 192.168.1.5 -p TCP -m state --state ESTABLISHED -j=20
-ACCEPT
+Who knows?  I think it depends mainly on where you live and how much time you 
+spend outside :)
 
-Any help you could give would be greatly appreciated.  Thanks.
+Regards,
 
-Thanks.
----------------------
-Jim Matthews=20
-ISS Systems Administrator=20
-Duke University - Perkins Library
-Box 90196
-Durham, NC 27708
-Email: jim.matthews@duke.edu
-Voice: 919-660-5963
-Fax: 919-684-6990
+Antony.
 
+-- 
+"I don't mind that he got rich, but I do mind that he peddles himself as the 
+ultimate hacker and God's own gift to technology when his track record 
+suggests that he wouldn't know a decent design idea or a well-written hunk of 
+code if it bit him in the face. He's made his billions selling elaborately 
+sugar-coated crap that runs like a pig on [sedatives], crashes at the drop of 
+an electron, and has set the computing world back by at least a decade."
 
+ - Eric S Raymond, about Bill Gates
 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
