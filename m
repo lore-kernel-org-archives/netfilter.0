@@ -1,12 +1,13 @@
-From: "Masiero Giorgio, PD" <gmasiero@cerved.com>
-Subject: Group on Iptables
-Date: Wed, 27 Aug 2003 16:44:52 +0200
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Can IPTABLES be used to send alerts!
+Date: Wed, 27 Aug 2003 11:35:53 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E9C5F057A783F94E9868010ACFDB3AA454A2E6@srvpadovaad.cerved.com>
+Message-ID: <20030827153553.GA32148@cannon.eng.us.uu.net>
+References: <E19s10M-00014S-Ge@kashyyyk.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <E19s10M-00014S-Ge@kashyyyk.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,18 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: dir@att.net
+Cc: Deshwal Chand <CDD@kampsax.co.in>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Hy my name is Giorgio,
-	I'm tryng to translate our Checkpoint FW-1 ruleset into Iptables.
-	I do not know iptables well so I really need a suggestion to plan my =
-future efforts.
-	The problem is this:
-	Is it possible to use objects like Checkpoint Groups (that is a set of =
-host and/or networks) into an Iptables rule.
+On Wed, Aug 27, 2003 at 02:10:30PM +0000, dir@att.net wrote:
 
-	It seems to me that iptables accept souce/destination that are only one =
-host/network.
+[...]
+> With a little more code, you could demux the TCP traffic to rebuild the
+> entire TCP stream, thereby making it 100%, but that's a lot more 
+> effort for little return IMO.
 
-	Thanks			Giorgio
+Isn't it then easier to have a HTTP proxy to do exactly that?
+
+Ramin
+
+> 
+> Regards, dir
 
