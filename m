@@ -1,12 +1,13 @@
-From: David Cary Hart <DCH@TQMcube.com>
-Subject: Scary Hole in the Firewall?
-Date: Mon, 19 Jul 2004 15:29:04 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: again problem with alias / virtual interface
+Date: Mon, 19 Jul 2004 14:35:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1090265344.11052.7.camel@dchws.tqmcube.com>
-Reply-To: NetFilter List <netfilter@lists.netfilter.org>
+Message-ID: <40FC2286.3070005@pbl.ca>
+References: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Platform = Fedora 2
-IPTables firewall. Snort running inside the firewall.
+Batstru wrote:
+> Hi all!
+> I wrote days ago: I have a problem with virutal interface and iptables:
+> my pc has 2 network interface, one with a private network address and the
+> other one with 
 
-Here's the log entry. This is the default log entry prior to DROP. In
-other words, what gets logged, gets dropped.
+[snip]
 
-Jul 19 14:32:39 mail kernel: DEFAULT - Firewall: IN=eth0 OUT=
-MAC=00:4f:4e:12:f9:93:00:09:5b:c9:37:54:08:00 SRC=203.202.150.156
-DST=192.168.0.31 LEN=404 TOS=0x00 PREC=0x00 TTL=111 ID=4719 PROTO=UDP
-SPT=1042 DPT=1434 LEN=384 
+> -A INPUT -p tcp -m tcp -m state -i eth1:1 -d 82.186.92.91 --dport 25 --state
+> NEW -j ACCEPT
 
-Here's the Snort log:
+And here is the error.
 
-[**] MS-SQL Worm propagation attempt [**]
-07/19-14:32:39.314347 203.202.150.156:1042 -> 192.168.0.31:1434
-UDP TTL:111 TOS:0x0 ID:4719 IpLen:20 DgmLen:404
-Len: 376
-=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+As me (and I believe Antony, possibly others) already told you, 
+Netfilter does not know about virtual interfaces.  Virtual interfaces 
+are abstractions that exist in higher levels of kernel than Netfilter 
+is.  Netfilter is concerned only on which *physical* interface the 
+packet is.  Replace "-i eth1:1" with "-i eth1" in above rule (and same 
+for all other virtual interfaces you have) and you'll be fine:
 
-[**] MS-SQL version overflow attempt [**]
-07/19-14:32:39.314347 203.202.150.156:1042 -> 192.168.0.31:1434
-UDP TTL:111 TOS:0x0 ID:4719 IpLen:20 DgmLen:404
-Len: 376
-
-Now what?
+-A INPUT -p tcp -m tcp -m state -i eth1 -d 82.186.92.91 --dport 25 
+--state NEW -j ACCEPT
 
 -- 
-                            David Cary Hart
-                                                         Hart's PGP key:
-            http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x58A60BB1
-
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
