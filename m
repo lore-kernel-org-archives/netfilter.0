@@ -1,13 +1,10 @@
-From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Subject: Re: GRE problem
-Date: Thu, 13 Jan 2005 22:20:43 +0100
-Message-ID: <41E6E62B.4010400@eulerhermes.pl>
-References: <200501131013.17416.marcin.giedz@eulerhermes.pl>
-	<1105626751.917.21.camel@les-home.futuresource.com>
+From: henry <info@intellitree.com>
+Subject: Performance isues related to a large number of iptables rules
+Date: Thu, 13 Jan 2005 17:45:34 -0500
+Message-ID: <41E6FA0E.2060707@intellitree.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1105626751.917.21.camel@les-home.futuresource.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-U=BFytkownik Les Mikesell napisa=B3:
+I am curious what is the maximum number of iptable rules that can be 
+installed in a config before performance starts to be a problem. I have 
+looked into the possibility of using firewall rules to block "bad" 
+networks, but I have been told by most people that I have asked that 
+this is bad idea.
 
->On Thu, 2005-01-13 at 03:13, Marcin Giedz wrote:
->
-> =20
->
->>When first client is trying to connect to VPN server out side our office =
-all
->>packets are sent through "linux router". When he finishes the connection
->>and second client wants to make a new connection no GRE packets are sent
->>through router. If I down and up interfaces on "linux router" everything
->>works OK as earlier - GRE packets are transmitted through router. If I
->>don't down and up interfaces but wait eg. for next day everything also
->>works OK. It seems for me that some "timeout" variable is set on my linux
->>router but I didn't set anything.=20
->>   =20
->>
->
->Is NAT involved here? =20
->
-Yes it is
+Here are my thoughts. If a packet matches the 3rd rule, does it matter 
+if there are 100,000 rules below it? 1,000,000 rules below it? If it 
+doesn't, then does the number of allowable rules really have to do with 
+how intelligently the rules are written, and more specifically, in what 
+order?
 
->I have a similar problem where a GRE
->connection goes out the wrong interface as the gateway starts
->up, getting a NAT association in ip_conntrack and the NAT
->never goes away after the correct interface and route come
->up. =20
->
-Seems similar ;)
+For ban lists, if for example we wanted to allow everyone access to port 
+80, except a list of bad networks, we would obviously have to put a rule 
+to allow all connections on port 80 bellow our reject rules, otherwise 
+iptbales would never get to the ban rules. So lets say that we have 
+50,000 rules, 99% of them being reject rules, with a rule to allow port 
+80 to all hosts at the bottom, and a rule to allow RELATED,ESTABLISHED 
+packets at the top. When a host connects to us on port 80, iptables will 
+have to go though all 50,000 rules (assuming this host doesn't match one 
+of the reject rules) until it gets to the last one and decides to allow 
+the packet. But then, subsequent packets will have a state of 
+ESTABLISHED, and so they will match the first rule. In this case, only 
+the first packet of most sessions will the firewall have to do a lot of 
+work. Does this make any sense?
 
->I think you need to get rid of the /proc/net/ip_conntrack
->entry but there is no mechanism to do this.
->
-> =20
->
-So how this is removed from ip_conntrack after some period of time?. As
-I said before, on a next day all GRE packets are transimited through
-router, thence it seems that there is some "TTL" on "these" packets.
-
-BR,
-Marcin
-
+It seems to me, that for a reasonably powerful box, processing a large 
+number of rules on what would become a small total percentage of packets 
+shouldn't be a problem. Does anyone know what the real numbers are, and 
+what numbers are feasible and what numbers aren't?
 
