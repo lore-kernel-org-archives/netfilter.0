@@ -1,10 +1,15 @@
-From: Anders Blockmar <anders.blockmar@exicom.se>
-Subject: PPTP NAT using p-o-m and iptables 1.2.9
-Date: Tue, 27 Jan 2004 14:29:30 +0100
+From: Juan Hernandez <alucard@kanux.com>
+Subject: Re: virus warning
+Date: 27 Jan 2004 11:44:31 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <51BBF03DCE32D111841800600857DA037CF461@lima.exicom.se>
+Message-ID: <1075218271.12341.0.camel@webmail.aeropostal.com.ve>
+References: <F22386C3FEB012449238672E38ED61E71642A9@overlord.overturemedia.com>
+	 <200401270145.12799.Alistair Tonner <> >
+	  <001101c3e4a8$800f4970$88e118d2@dw1>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001101c3e4a8$800f4970$88e118d2@dw1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,37 +20,75 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
-Hi
-
-I hope I'm not posting an aldready answered queston. I read a thread
-regarding PPTP and NAT started by Joshua Jackson but I could not get that
-soultion working, thats why I'm asking something simular.
+Is this the new SCO virus? if it is... I'll infect all the computers in
+my network in purpose ;)
 
 
-I'm currently building a NAT firewall using the 2.4.24 kernel with the
-latest p-o-m and iptables 1.2.9. I have applied Harald Weltes PPTP-patch but
-I still can't get more than one PPTP connection thru the firewall (to the
-SAME host) at once.
+Juan 
 
-My goal is to make serveral PPTP-connection from different clients behind
-the firewall to an external PPTP server. I am not always using the same
-PPTP-server but must be able to make multiple connections to the same server
-at once.
+On Tue, 2004-01-27 at 03:38, Info wrote:
+> ClamAV has detected it. Stopping more than 30 emails since this morning
+> ----- Original Message ----- 
+> From: <Alistair Tonner>
+> To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+> Sent: Tuesday, January 27, 2004 2:45 PM
+> Subject: Re: virus warning
+> 
+> 
+> >
+> > Obviously this is a really new one ... F-prot didn't catch it .. and mines
+> up to date ...
+> > However ... since kmail and linux don't much like 7 bit mime ... *grin*
+> >
+> > I'm handing this one up to the folks at F-Prot to see why they didn't
+> catch it...
+> >
+> >
+> > Alistair.
+> >
+> > On January 27, 2004 12:44 am, Fritz Mesedilla wrote:
+> > > friends,
+> > >
+> > > we got a virus in our list.
+> > > clamav warned me about it.
+> > > it's now spreading like fire even on other lists.
+> > >
+> > > thought you might like to be warned.
+> > >
+> > >
+> > > Cheers,
+> > >
+> > > fritz <www.mesedilla.com>
+> > > ---
+> > > + Basta Ikaw Lord
+> > >
+> > >
+> > >
+> > >
+> > > ----------------------------------------------------------------------
+> > > This email and any files transmitted with it are confidential and
+> > > intended solely for the use of the individual or entity to whom they
+> > > are addressed. If you have received this email in error please notify
+> > > the sender immediately by e-mail and delete this e-mail from your
+> > > system. Please note that any views or opinions presented in this
+> > > email are solely those of the author and do not necessarily represent
+> > > those of the company. Finally, the recipient should check this email
+> > > and any attachments for the presence of viruses. The company accepts
+> > > no liability for any damage caused by any virus transmitted by this
+> > > email.
+> > >
+> > > Overture Media, Inc.
+> > > Direct Line: (632) 635-4785
+> > > Trunkline:   (632) 631-8971 Local 146
+> > > Fax: (632) 637-2206
+> > > Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave.,
+> > > Quezon City 1100
+> >
+> >
+> 
+> 
+> 
 
-The only way I succeded in making multiple connections what to use the
-round-robin function in SNAT, and then hoping that the FW would give my PPTH
-connections different source ips.
-
-Does anyone have any idea how I could get it work without having to use
-multiple SNAT addresses? I have already tried building the modules into the
-kernel intead of building them like modules (As sugested in the thread
-started by Joshua) but that just gave me a kernel that would not compile.
-
-
-regards,
-
-Anders
 
