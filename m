@@ -1,14 +1,14 @@
 From: Herman <Herman@AerospaceSoftware.com>
-Subject: Re: Invalid friggen argument
-Date: Sun, 12 Oct 2003 19:22:01 -0600
+Subject: Re: Port forwarding doesn't work.
+Date: Sun, 12 Oct 2003 19:30:04 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310121922.01492.Herman@AerospaceSoftware.com>
-References: <LFEHKEBEBHAFGJBMNKAOIELHCCAA.markee@bandwidthco.com>
+Message-ID: <200310121930.04757.Herman@AerospaceSoftware.com>
+References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <1066005882.1151.23.camel@valhalla> <200310121917.08663.Herman@AerospaceSoftware.com>
 Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <LFEHKEBEBHAFGJBMNKAOIELHCCAA.markee@bandwidthco.com>
+In-Reply-To: <200310121917.08663.Herman@AerospaceSoftware.com>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,34 +20,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: markee@bandwidthco.com, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sunday 12 October 2003 7:01 pm, Herman@aerospacesoftware.com wrote:
-   I understand now.  The machines that you are DNATTING to are dynamic, and
-   may or may not be on-line and listening.  The service port is Java based
-   (sounds like Sun Microsystems Netlet protocol) but I gather it will always
-   be the same listening port, it is just the IP that changes.  This is the
-   deal:  you have an extra layer of complexity here that IPTables by nature
- is not designed to handle.  That's not to say it cannot be done.  You are
- going to need to build some dynamic variables into your script that run some
- test for active IP's upon match of the port forwarding rule.  Based on the
- test results, you can tell IPTables what where to forward.  For example,
- when the rule is encountered, you could send a Ping to all the potential
- hosts, then grab the IP of the host that responds, and then set iptables to
- DNAT to that IP.  That is just one way to accomplish this.  So, it is
- possible, but it is going to take some extra work.
+Hmm, as far as I can see iptable_nat handles nat, and it is loaded:
 
-Yikes - I think I'll settle for a fixed IP on one machine for starters.  That 
-is proving to be enough of a headache.
+lsmod
+Module                  Size  Used by    Not tainted
+iptable_nat            16312   1  (autoclean)
+ip_conntrack           18624   1  (autoclean) [iptable_nat]
+appletalk              21636   1  (autoclean)
+ipx                    17188   1  (autoclean)
+iptable_filter          1644   1  (autoclean)
+ip_tables              11736   4  [iptable_nat iptable_filter]
+lp                      6752   0
+parport_pc             21736   1
+parport                23840   1  [lp parport_pc]
+i810_audio             23720   1
+soundcore               3684   0  [i810_audio]
+ac97_codec             10024   0  [i810_audio]
+nfsd                   66832   8  (autoclean)
+lockd                  46896   1  (autoclean) [nfsd]
+sunrpc                 63356   1  (autoclean) [nfsd lockd]
+ppp_async               7456   0  (unused)
+ppp_generic            20092   0  [ppp_async]
+slhc                    5072   0  [ppp_generic]
+af_packet              13000   3  (autoclean)
+ip_vs                  74424   0  (autoclean)
+sr_mod                 15096   0  (autoclean)
+floppy                 49244   0
+3c59x                  27248   1  (autoclean)
+tulip                  41088   1  (autoclean)
+supermount             14116   2  (autoclean)
+ide-cd                 30560   0
+cdrom                  27008   0  [sr_mod ide-cd]
+ide-scsi                9552   0
+scsi_mod               91060   2  [sr_mod ide-scsi]
+printer                 6944   0  (unused)
+usb-uhci               21804   0  (unused)
+usbcore                58368   1  [printer usb-uhci]
+rtc                     6556   0  (autoclean)
+ext3                   59916   4
+jbd                    38972   4  [ext3]
 
+So, why O why, doesn't nat work?
+(My Bonnie lies over the ocean...)
 
-   As for your modules, masquerade works off it's own specific module so it
-   working is no indication of NAT working.
+Am I missing something in the kernel?
 
-OK, that is beginning to make sense.  So I have to try and figure out what 
-module is used for nat and see whether it is loaded.
-
-Thanks!
+Cheers,
 -- 
 Herman Oosthuysen 
 B.Eng(E), MIEEE
