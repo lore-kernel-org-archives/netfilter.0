@@ -1,10 +1,13 @@
-From: =?iso-8859-15?Q?Mart=EDn?= <martin@familia-fiumara.com.ar>
-Subject: Redirect and change the source IP
-Date: Mon, 03 Nov 2003 11:12:20 -0300
+From: Todor Tzankov <tushe@mgu.bg>
+Subject: DNAT and broadcast packets
+Date: Mon, 3 Nov 2003 16:11:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <oprx2e2upppvmot6@192.168.2.1>
+Message-ID: <200311031611.30695.tushe@mgu.bg>
+Reply-To: tushe@mgu.bg
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,30 +17,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-En Mon, 03 Nov 2003 16:00:27 +0200, Ray Leach=20
-<raymondl@knowledgefactory.co.za> escribi=F3:
+Hi, I want	to know is it possible to DNAT broadcast packets and if yes how.
+I'm trying to acomplish that with the following rule:
+iptables -t nat -A PREROUTING -m pkttype --pkt-type broadcast -p udp -p=20
+$PORT1:$PORT2 -j DNAT --to-destination $SOME_IP
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-> On Mon, 2003-11-03 at 15:24, Mart=EDn wrote:
->> How can I redirect inbound traffic and also change the source IP of this=
-=20
->> traffic?
-> iptables -t nat -A POSTROUTING -i eth0 -s 123.321.123.321 -p tcp --dport
-> 80 -j SNAT --to 1.2.3.4
-
-
-This would change the SOURCE IP, but I need also to redirect the traffic to=
-=20
-another machine
-How can I do both things?
-Supose the linux machine has IP 192.168.1.1, the traffic is comeing from=20
-192.16.1.2 and I want to recive that traffic in 192.168.1.1 cange its=20
-source IP to 192.168.1.2 and also redirect that trafic to 192.168.2.1.
-
---=20
-Using M2, Opera's revolutionary e-mail client: http://www.opera.com/m2/
+iD8DBQE/pmIPIt5NA2WPMMURArENAJ9swWao6HA0AzJi/O4VuHy35teJEACgn93L
+z1kTxZfjixZqfOxx3Z6uxnc=3D
+=3DW06q
+=2D----END PGP SIGNATURE-----
 
