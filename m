@@ -1,12 +1,14 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Seeking assistance for broken LOG target after upgrade
-Date: Fri, 23 Jan 2004 12:10:09 +0100 (CET)
+From: Rakotomandimby Mihamina <mrakotom@free.fr>
+Subject: Re: port 389
+Date: Fri, 23 Jan 2004 13:36:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0401231209060.15698-100000@blackhole.kfki.hu>
-References: <9E0E7DA2130F1D42861EC43B568E99FC09165D@mail1.cpbinc.in>
+Message-ID: <200401231336.07836.mrakotom@free.fr>
+References: <200401230827.13331.mrakotom@free.fr> <200401230838.05694.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <9E0E7DA2130F1D42861EC43B568E99FC09165D@mail1.cpbinc.in>
+In-Reply-To: <200401230838.05694.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +18,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Chris M. Gamble" <chris.gamble@cpbinc.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Thu, 22 Jan 2004, Chris M. Gamble wrote:
+On Friday 23 January 2004 09:38, Antony Stone wrote:
+> TCP port 389 is used for LDAP.
 
-> I recently upgraded a redhat 7.3 base install to a new 2.4.24 kernel
-> and upgraded the iptables to 1.2.9. Along with this, I implemented the
-> pom base set to the kernel before installing.
->
-> Now, everything works better than ever, except when I try to use the
-> LOG target.
->
-> When using the LOG target, I get the error that no such chain/target
-> exists. Based on this, I tried to modprobe the ipt_LOG module, and
-> attached is my error:
->
-> /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: unresolved symbol nf_log_unregister
-> /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: unresolved symbol nf_log_register
-> /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: insmod /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o failed
-> /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_LOG.o: insmod ipt_LOG failed
+i knew it with a "grep 389 /etc/services"
 
-Did you recompile both the kernel and the modules after applying the base
-patches? It seems to mee, only the modules were recompiled.
+> (There is no such thing as an "answer" port. =A0 Services answer from
+> whatever port they listen on.)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+uh ! that's the proof i still need to learn about networking ...
+=20
+> I suspect your ISP has some sort of transparent authentication proxy serv=
+er
+> set up and that it is this which your friends are finding.
+
+Uh ? well . let's hope it is not a backdoor :-)=20
+( on my PC )
+
+> Regards,
+
+Thanks
+> Antony.
+
+=2D-=20
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
 
