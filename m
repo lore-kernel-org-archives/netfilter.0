@@ -1,13 +1,11 @@
-From: "Brent Clark" <bclark@eccotours.biz>
-Subject: RE: Ruleset
-Date: Tue, 10 Aug 2004 11:15:17 +0200
+From: "Daniel Boy" <dabohh@gmx.de>
+Subject: owner module
+Date: Tue, 10 Aug 2004 11:31:28 +0200 (MEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HAEOIFPIBBBLGLHOMLLIKEAKCHAA.bclark@eccotours.biz>
-References: <200408100945.18144.Antony@Soft-Solutions.co.uk>
+Message-ID: <11900.1092130288@www46.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408100945.18144.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +15,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Once again, thanks Anthony
+Hello,
 
-Correcting my mistakes right now
+I try to implement the command "--cmd-owner" for some
+services in the "filter" table.
 
-Kind Regards
-Brent Clark
+When I do so the corresponding services do not terminate
+correctly any more.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: Tuesday, August 10, 2004 10:45 AM
-To: iptables
-Subject: Re: Ruleset
-
-
-On Tuesday 10 August 2004 9:27 am, Antony Stone wrote:
-
-> On Tuesday 10 August 2004 8:22 am, Brent Clark wrote:
-> > Hi all
-> >
-> > If possible would someone be so kind as to have a look at my ruleset and
-> > if possible, share some pointers.  I have another linux box (Ip address
-> > 192.168.3.3, connected to eth1 on the FW)  I have a lan (192.168.2.0/24)
-> > connected to eth0 For my internet handling I have a ppp connection.  Im
-> > also currently toying with dyndns (ez-ipupdate).
->
-> 4. Do you *really* want to allow *all* NEW packets from the Internet to
-the
-> DMZ, no matter what protocol they are?   You might as well simply stick
-> your 192.168.3.3 machine on a public IP address with no firewall....
-
-The above comment is not quite accurate - you are, of course, only DNATting
-packets to TCP port 80, therefore only HTTP should get through to the DMZ,
-however I would still recommend narrowing down the FORWARD rule just to make
-it obvious that's what's happening when you look at the filter rules, rather
-than having to refer to the nat rules to figure out what traffic is being
-allowed.
-
-In other words, make the ruleset slightly more obvious, so you don't make
-the
-same mistake I did, when you come to read the ruleset in 3 months' time :)
-
-Regards,
-
-Antony.
-
---
-People who use Microsoft software should be certified.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
+For example I opened an SSH connection and terminated
+it after the successful login with the "logout" command.
+Afterwards on the servers side "ps" and "netstat" says
+the connection is still alive. On the client side
+"netstat" says "FIN ACK", "LAST ACK", "CLOSING" and I get
+some log entries in "messages".
 
 
+The necessary iptables-rules at client-side:
+
+iptables -A OUTPUT -m owner --cmd-owner "ssh" -p tcp -s CLIENT -d SERVER
+--sport 1024:65535 --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp -s SERVER -d CLIENT --sport 22 --dport 1024:65535
+-j ACCEPT
+
+
+Some of the drop-log entries at client-side:
+
+Aug  9 15:29:54 CLIENT kernel: DROP IN=3D OUT=3Deth0 SRC=3DCLIENT DST=3DSER=
+VER
+LEN=3D52 TOS=3D0x10 PREC=3D0x00 TTL=3D64 ID=3D129 DF PROTO=3DTCP SPT=3D3344=
+2 DPT=3D22
+WINDOW=3D24752 RES=3D0x00 ACK URGP=3D0
+Aug  9 15:29:55 CLIENT kernel: DROP IN=3D OUT=3Deth0 SRC=3DCLIENT DST=3DSER=
+VER
+LEN=3D52 TOS=3D0x10 PREC=3D0x00 TTL=3D64 ID=3D130 DF PROTO=3DTCP SPT=3D3344=
+2 DPT=3D22
+WINDOW=3D24752 RES=3D0x00 ACK URGP=3D0
+Aug  9 15:29:55 CLIENT kernel: DROP IN=3D OUT=3Deth0 SRC=3DCLIENT DST=3DSER=
+VER
+LEN=3D52 TOS=3D0x10 PREC=3D0x00 TTL=3D64 ID=3D131 DF PROTO=3DTCP SPT=3D3344=
+2 DPT=3D22
+WINDOW=3D24752 RES=3D0x00 ACK URGP=3D0
+
+
+So I would say the boolean #--cmd-owner "ssh"# is immediately
+invalid. So the client cannot inform the server about the closing.
+
+Does anybody have an idea to let only the missing packets passing?
+
+Kind regards
+Daniel
+
+--=20
+NEU: WLAN-Router f=FCr 0,- EUR* - auch f=FCr DSL-Wechsler!
+GMX DSL =3D superg=FCnstig & kabellos http://www.gmx.net/de/go/dsl
 
 
