@@ -1,12 +1,11 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: what services/protocols can't be handled by RELATED,ESTABLISHED?
-Date: Tue, 28 Oct 2003 15:54:44 -0800 (PST)
+From: "Paul J. Caritj" <pcaritj@riovia.net>
+Subject: Redirecting Traffic Locally
+Date: Tue, 28 Oct 2003 20:01:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031028235444.30427.qmail@web40203.mail.yahoo.com>
-References: <Pine.LNX.4.44.0310281643520.25084-100000@localhost.localdomain>
+Message-ID: <3F9F1163.9070008@riovia.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0310281643520.25084-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Robert P. J. Day" <rpjday@mindspring.com>, iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Ok as I understand it... if you are running the services on the same machine as
-the firewall then no special treatment is needed.
+Gents,
+Hopefully this is an easy question :)
 
-the special treatment comes from having machines MASQed or NATed behind the
-firewall and offering services on them.. When this comes to play you have to
-use connnection tracking... and in a lot of cases the community has already
-written modules for this ie the FTP and IRC contrack modules you mentioned...
+I have a firewall with a built in webserver. I want all traffic going 
+through this firewall, not to (or from) a proscribed list of IPs to be 
+redirected to the Site hosted on the firewall itself (its a signup 
+page). At present, I'm using redirection of this form:
 
-Search the following URL for modules containting 
+iptables -t nat -A UNREGISTERED -s 0/0 -d 0/0 -j DNAT --to-destination 
+XXXXXXX;
 
-=====
-In the absence of order there will be chaos.
+A rule in the PREROUTING chain bounces traffic to the UNREGISTERED 
+chain. The system works fine when XXXXXXX is outside the network. 
+However, I cannot DNAT to the firewall itself. Thoughts, anyone?
 
-__________________________________
-Do you Yahoo!?
-Exclusive Video Premiere - Britney Spears
-http://launch.yahoo.com/promos/britneyspears/
+-Paul
+
 
