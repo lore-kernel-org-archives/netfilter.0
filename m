@@ -1,9 +1,8 @@
-From: "Pablo Vila" <pvila@adinet.com.uy>
-Subject: HEEEEEEEEEELP!!!! with ip_conntrack: table full, dropping packet.
-Date: Wed, 26 Jan 2005 19:54:30 -0200
-Message-ID: <000301c503f1$9dbe6730$0b00a8c0@leeloo>
+From: Kevin Van Workum <kevin_vanw@yahoo.com>
+Subject: udp port forwarding from internal network to internet
+Date: Thu, 27 Jan 2005 05:00:55 -0800 (PST)
+Message-ID: <20050127130055.38382.qmail@web30903.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,34 +14,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have the this problem, i have compiled and installed ok a new kernel 
-(2.6.10)
+I'm new to netfilter and iptables and need to get
+something up and running fast. I don't have time to
+read up and learn the details right now.
 
- kernel: printk: 55 messages suppressed.
- kernel: ip_conntrack: table full, dropping packet.
+I have one server machine connected to the internet
+via a cable modem with a static IP and a small
+internal network (10.0.0.0). All machines have the 2.4
+kernel. I have a user who needs to run an application
+on a few machines on the internal network. This
+application needs to connect to a server located on
+the internet via a udp port. How can I use iptables
+(or a proxy or whatever) to do this?
 
-and this message repeats a lot, but i never have this problem with kernel 
-2.6.9-1-686, i have to compile a new one becouse i need suport for a new 
-device scsi i have installed. but i can't fix this message and i don't know 
-what is the problem.
-Some info:
-Proc: Celeron 333 Mhz
-Mem: 256 Mb
-if you need more info ask me!, thx to all!!!...
-
-PS: Sorry my English
-                                           Pablo <===
-
--------------------------------------------
-  Pablo Francisco Vila Silveira     CX5CM
-     email: pvila@montevideo.com.uy
-            pvila@adinet.com.uy
-       sms: 94338237@sms.bellsouth.com.uy
-   Montevideo, Uruguay, America del Sur
-------------------------------------------- 
-
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
