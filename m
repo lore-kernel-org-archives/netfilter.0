@@ -1,8 +1,8 @@
 From: Silkk <crystaldrinker@yahoo.com>
-Subject: If i follow this will ihave prblems
-Date: Thu, 12 Sep 2002 20:26:51 -0700 (PDT)
+Subject: If i follow these steps should i have prbs. with iptabls
+Date: Thu, 12 Sep 2002 20:15:19 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020913032651.34369.qmail@web40607.mail.yahoo.com>
+Message-ID: <20020913031519.10380.qmail@web40611.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -143,8 +143,7 @@ What im asking is if i follow these steps  should i
 have any problems cause this is my 3 rd try with this
 i wannaknow what i am doing wrong 
 
-thanks for the help guys!!!          
-
+thanks for the help guys!!!
 
 
 __________________________________________________
