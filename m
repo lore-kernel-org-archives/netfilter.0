@@ -1,14 +1,11 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: RFC 3514 support?
-Date: Tue, 1 Apr 2003 23:13:20 +0200
+From: alexb@atix.com.br
+Subject: packets disapiring
+Date: Tue, 01 Apr 2003 18:43:46 -0300 (BRT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030401231320.02557b12.arnt@c2i.net>
-References: <Pine.LNX.4.44.0304011310180.17145-100000@Sinister.Com>
-	<20030401183611.37140.qmail@web13904.mail.yahoo.com>
+Message-ID: <1049233426.3e8a0812621b8@www.spsul.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030401183611.37140.qmail@web13904.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,44 +18,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 1 Apr 2003 10:36:11 -0800 (PST), 
-Scott MacKay <scottmackay@yahoo.com> wrote in message 
-<20030401183611.37140.qmail@web13904.mail.yahoo.com>:
+I've a iptables firewall/router where I look the trafic at /proc/net/dev and in
+iptables rules for traffic aquisition. 
 
-..will this enhance quality of service for avian carrier 
-grade links too? (http://www.faqs.org/ftp/rfc/rfc2549.txt)
+            Internet
+                |
+                |
+                | eth0
+              -----      iptables -I FORWARD 1 -i eth0 -j eth0-in
+              |    |     iptables -I FORWARD 2 -o eth0 -j eth0-out
+              | FW |     iptables -I FORWARD 3 -i eth1 -j eth1-in
+              |    |     iptables -I FORWARD 4 -o eth1 -j eth1-out
+              ------
+                | eth1
+                | 
 
-> I plan to add it into my userspace mangler, but only
-> for suspicious source IP addresses (like ones which
-> resolve with dangerous works like 'sinister')   :)
-> 
-> I also intend to shortcut some of the design for item
-> (4) by simply having a toggled bit to determine if it
-> should be on or off (thus achieving true, pure, even
-> randomness)...
-> 
-> -Scott
-> 
-> --- Bob Keyes <bob@sinister.com> wrote:
-> > I am wondering if there are any plans to support RFC
-> > 3514 in netfilter?
-> > ftp://ftp.rfc-editor.org/in-notes/rfc3514.txt
-> > 
-> > Specifically, I'd like to tag all kazaa packets.
-> 
-> 
-> __________________________________________________
-> Do you Yahoo!?
-> Yahoo! Tax Center - File online, calculators, forms, and more
-> http://platinum.yahoo.com
-> 
+Then I use: iptables -nvxL FORWARD   and cat /proc/net/dev|grep eth
 
+The strange behavior is that there seams to be about twice the trafic coming in
+on eth1 reported by /proc/net/dev then is going out thru eth0, but byte count
+from rule 4 and 2 are the same and similar to eth0-out from /proc/net/dev.
+I used iptraf and ethereal to monitor the device and bolth reported trafic
+coming in thru eth1 consistent with /proc.
+It seams that packages came in thru eth1 and before they reach netfilters they
+disapeare. I try to understand the packeges captured by ethereal and it seams to
+me that a lot of packages are repeated (same headers, sequence,...). 
+This FW has only 32M RAM. Could it be that due to low memory packets ariving to
+eth1 are discarted presuming that tcp (ip/udp) protocol will take care to resend
+them ?
+In that case shouldn't that discarded packege show up in droped packages shown
+by ifconfig eth1 ?
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+And why doesn't I got similar behavior in oposit direction. Incoming bytes on
+eth0 are very semelar in /proc and iptables rule 1.
 
+Is there any other reason that could make incoming packages on eth1 not reach
+netfilter ? (I already activated log_martians=1 sources and accept them
+rp_filter=0, but nothing shows up)
 
+Thanks for any help or guid line how to follow up the incoming packets
 
