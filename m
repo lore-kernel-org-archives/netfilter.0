@@ -1,12 +1,13 @@
-From: "Miguel Carvalho" <miguel@ipatimup.pt>
-Subject: Iptables and shutdown trouble
-Date: Fri, 13 Sep 2002 17:11:50 +0100 (WEST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Ideal iptables, kernel configuration for stability.
+Date: Fri, 13 Sep 2002 17:29:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6873.213.13.176.13.1031933510.squirrel@www.ipatimup.up.pt>
-Reply-To: miguel@ipatimup.pt
+Message-ID: <200209131630.g8DGU7v11843@vulcan.rissington.net>
+References: <002101c25b3f$54521d10$6b01a8c0@s3ac>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <002101c25b3f$54521d10$6b01a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,19 +20,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Friday 13 September 2002 5:05 pm, Rowan Reid wrote:
 
-We are having some troubles when we try to shutdown the system.
-This appens after we put Iptables to work.
-When the shutdown enter the Ethernet interface shutdown( eth0 ), it hangs
-completelly. The solution is to turn-off the server.
-I'm not shure, but it seams to me that something is still using the
-network interface when it reaches the Interfcae shutdown stage.
-Do i have to unload the iptbales, conntrack, etc manually before shutting
-down?
-Does any one have this touble or know how can i solve it?
+> What is the ideal kernel version, and iptables version for the most
+> stable config.
 
-Miguel
+2.4.19
+1.2.7a
 
+Both latest stable.
 
+> The config should support FTP, Windows Media player, MSN
+> and Yahoo messenger, and hopefully pptp.
+
+You'll need some patch-o-matic extensions to support all those.
+
+> Key work being stable. I would
+> also like to do some content filtering i.e. code red stuff.
+
+iptables is not a content filter.
+
+Regards,
+
+Antony.
+
+-- 
+
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
+
+ - Frank Skinner
 
