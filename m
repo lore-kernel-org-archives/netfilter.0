@@ -1,14 +1,10 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: how to match connection tracker's flows?
-Date: Wed, 03 Nov 2004 20:07:48 +0100
-Message-ID: <1099508868.24863.8.camel@porky>
-References: <20041103181718.GA16850@oasis.frogfoot.net>
+From: "Joe McEachern" <joe@qacafe.com>
+Subject: RTSP alg
+Date: Wed, 3 Nov 2004 16:00:39 -0500
+Message-ID: <E1CPSFp-0000Jp-00@deer.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-W/PLQk1BkpTIyj9tX20i"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041103181718.GA16850@oasis.frogfoot.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,47 +15,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
---=-W/PLQk1BkpTIyj9tX20i
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2004-11-03 at 20:17 +0200, Abraham van der Merwe wrote:
-> Hi!
->=20
-> If I add
->=20
-> # rules to track ftp
-> iptables -t mangle -A POSTROUTING -p tcp -j CONNMARK --restore-mark
-> iptables -t mangle -A POSTROUTING -p tcp -m mark ! --mark 0 -j RETURN
+I've been looking at the behavior of the RTSP alg extension. When it parses
+a RTSP Transport that contains a RTP/AVP/UDP port range, it creates a
+conntrack update for the RTP port (low port), but not the RTCP port (high
+port). This prevents the server side from sending RTCP sender reports. 
 
-If packet are marked they return so leave mangle, so if CONNMARK works
-leave mangle.
 
-> # a rule to see how much ftp traffic is matched
-> iptables -t mangle -A POSTROUTING -m mark --mark 2
++    case pb_range:
++        for (loport = prtspexp->loport; loport != 0; loport += 2) /* XXX:
+improper wrap? */
++        {
++            t.dst.u.udp.port = htons(loport);
++            if (ip_conntrack_change_expect(exp, &t) == 0)
++            {
++                hiport = loport + ~exp->mask.dst.u.udp.port;
++                DEBUGP("using ports %hu-%hu\n", loport, hiport);
++                break;
++            }
++        }
++        if (loport != 0)
++        {
++            rbuf1len = sprintf(rbuf1, "%hu", loport);
++            rbufalen = sprintf(rbufa, "%hu-%hu", loport, loport+1);
++        }
++        break;
 
-This line is never reached if CONNMARK works.
 
-BR,
---=20
-Eric Leblond <eric@regit.org>
-NuFW, Now User Filtering Works : http://www.nufw.org
+It looks like RTSP clients can still function without this behind a NAT
+device - at least real player.
 
---=-W/PLQk1BkpTIyj9tX20i
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Has anyone created a setup that is allowing RTCP packets from the server to
+the client?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+Regards,
 
-iD8DBQBBiSyDnxA7CdMWjzIRAifNAJ46roQzgULuq50iaA7V4O8u0G4emgCfbkMt
-KX/4d+sl3IZu8kxciWaEN8w=
-=GWzX
------END PGP SIGNATURE-----
+Joe
 
---=-W/PLQk1BkpTIyj9tX20i--
+
 
 
