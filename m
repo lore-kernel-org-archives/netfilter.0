@@ -1,13 +1,11 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: conntrack records not going away?
-Date: Mon, 20 Dec 2004 14:34:33 -0500
-Message-ID: <876ef97a04122011343300233c@mail.gmail.com>
-References: <876ef97a041220111947fbeff5@mail.gmail.com>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: RE: INPUT or FORWARD;;
+Date: Mon, 20 Dec 2004 15:40:48 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10412201539220.18976-100000@darkstar.sysinfo.com>
+References: <20041220132421.DAE032F42A@kshira.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <876ef97a041220111947fbeff5@mail.gmail.com>
+In-Reply-To: <20041220132421.DAE032F42A@kshira.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 20 Dec 2004 14:19:24 -0500, Tobias DiPasquale
-<codeslinger@gmail.com> wrote:
-> Hi all,
+On Mon, 20 Dec 2004, Rob Sterenborg wrote:
+
+> netfilter-bounces@lists.netfilter.org wrote:
+> >> A multi-homed firewall having at least two interfaces, is known, at
+> >> least to itself by those IP/hostnames combos assinged to its
+> >> interfaces.  <i.e. ppp0 and eth0>  So say rules coming from the ppp0
+> >> interface into the firewall <INPUT rules> are directed to it's other
+> >> name/interface 
+> >> 
+> >> -i /dev/ppp0 -d /dev/eth0
+> > 
+> > well--those values make no sense whatsoever, but if you're
+> > asking if the following is valid:
+> > 
+> >   iptables -A INPUT -i ppp0 -d $IP_OF_ETH0 -j ACCEPT
+> > 
+> > then yes.  the INPUT chain is traversed by packets destined
+> > for a local process (IP addresses).  the input interface is
+> > just a tag attached to the packet.
 > 
-> We have a box running 2.4.26 (from kernel.org) over here that's
-> serving as a sink for test SMTP traffic. The box sits behind a Linux
-> box that is doing ProxyARP. The weird thing is, sometimes after
-> sending tons of traffic to the sink, conntrack records hang around in
-> the ESTABLISHED state, even though the sink process (the endpoint for
-> the connections in question) has been shut down. Has anyone ever seen
-> this before? TIA :)
+> I'm not sure I understand this :
+> I agree it's a valid rule (syntax), but I don't think it will ever match
+> a packet.
+> 
+> If -i and -d are specified, they both have to match to accept a packet,
+> right ?
+> Because <ip_eth0> is not assigned to ppp0, how can -i ppp0 -d <ip_eth0>
+> ever match for the INPUT chain ?
 
-More info: no NAT'ing is going on (the sink box has no firewall rules
-of any kind and all policies are ACCEPT). I read on an earlier post to
-some mailing list that this can happen if the application doesn't
-close the connections in the proper way. I will try to capture the
-packets and see what could be the issue in that respect.
+That was the rational of my asking if a rule that specified a "-i
+/dev/ppp0 -d /dev/eth0" setup would be a FORWARD rhather then a INPUT
+rule, as we are crossing interfaces with such a rule.
 
+Thanks,
+
+Ron Duresne
 -- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
+
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
+
 
