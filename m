@@ -1,13 +1,13 @@
-From: Jason Joines <support@bus.okstate.edu>
-Subject: Re: OT: iptables-like firewall for windows?
-Date: Tue, 26 Aug 2003 11:58:03 -0500
+From: =?iso-8859-1?q?Christof=20Nyffenegger?= <cnyf@yahoo.de>
+Subject: Re: unexpected behaviour...?
+Date: Tue, 26 Aug 2003 21:48:01 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4B919B.70906@bus.okstate.edu>
-References: <3F461A22.90300@bus.okstate.edu> <Pine.LNX.4.53.0308222103330.3988@xena.cft.ca.us>
+Message-ID: <20030826194801.53066.qmail@web21414.mail.yahoo.com>
+References: <Pine.LNX.4.53.0308251407140.2855@xena.cft.ca.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.53.0308222103330.3988@xena.cft.ca.us>
+In-Reply-To: <Pine.LNX.4.53.0308251407140.2855@xena.cft.ca.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,73 +17,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jim Carter <jimc@math.ucla.edu>
+Cc: netfilter@lists.netfilter.org
 
-Jim Carter wrote:
+ --- Jim Carter <jimc@math.ucla.edu> schrieb: > On Sat, 23 Aug 2003, Christ=
+of
+Nyffenegger wrote:
+> > We're in trouble with our brand new linux hot standby firewall cluster.=
+ it
+> --- snip ---
+>=20
+> > now one would expect all the sessions to freeze immediately after failo=
+ver.
+> > this is the case indeed with the ftp session and the http download - th=
+ey
+> > freeze to ice because FW B has no established sessions in its connection
+> table
+> > when it acquires the service adresses and the connections are routed
+> through it
+> > (after the gratuitous arp from heartbeat). but surpise - the ssh session
+> > survives the failover. a few seconds after the failover it shows up in =
+the
+> > connection table on FW B as an established session. Hmm.
+> --- snip ---
+> > am i getting something wrong? or is this the expected behaviour?
+>=20
+> It's the behavior I expect :-)  When the MAC address of the gateway chang=
+es
+> from firewall A to firewall B, the packets of the SSH connection go there
+> and are routed through, no sweat.
 
->On Fri, 22 Aug 2003, Jason Joines wrote:
->
->  
->
->>  We have a completely Linux back-end environment but unfortunately
->>hundreds of windows desktops.  I'm pretty tired of all the attacks on
->>the unprotected windows boxes but don't have the authority to put up a
->>network firewall.  We protect all of our Linux servers with iptables.
->>Does anyone know of a similar tool for windows, particularly w2k?  The
->>built-in stuff seems to be virtually worthless.
->>    
->>
->
->The native filter in WinXP can be configured to totally block or totally
->open selected ports.  Unfortunately you have to open 135 etc. if you expect
->to have outsiders mount your filesystems or (I think) if you want to mount
->theirs.  Not much help there.  3rd party products might be more flexible.
->
->I think you have a social engineering problem.  Has your department
->chairman or dean or whatever gotten hit by MSBlaster, SoBig, etc?  Explain
->to him/her that a virus could ruin his whole day.  Here at UCLA several
->other departments were essentially shut down because they had no firewall.
->My department has a very effective one, plus a pretty aggressive policy on
->patches, and we evaded MSBlaster, but due to the lack of internal barriers
->and some machines that were missed, SoBig got us yesterday.  The campus
->telecom service has taken the "unprecedented"  step of blocking relevant
->ports at the campus perimeter, to protect our less clueful departments from
->the worms and to protect the outside world from our less clueful
->departments.  Tell that to your chairman.
->
->James F. Carter (postmaster)         Voice 310 825 2897    FAX 310 206 6673
->UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
->Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
->  
->
+but what about the connection table on firewall B? it contains no establish=
+ed
+ssh session - in fact no session at all, since it didn't forward any traffi=
+c so
+far. only established and related sessions are allowed in its rulebase, plus
+explicitly defined NEW sessions of course (for example the forementioned ssh
+connection). now i ask myself why the ssh session appears in the connection
+table as an established session on firewall B if the session was not
+established through firewall B? or maybe i missunderstand the concept of a
+stateful firewall from the ground up...?=20
 
-  You're exactly right, it's a social/political problem.  My direct 
-supervisor, the college IT manager and his direct supervisor, the dean 
-of the college, are 100% on board.  We have asked for permission to put
-up our own firewall to protect the network many times and been denied.
-We have asked for the university network operations group to put up
-whatever they like, NAT us, etc., etc., and been denied may times.  The
-campus was hit with thousands of infections and when we asked to have
-routing of port 135 completely disabled in and out of our network and
-disabled on the switches, they couldn't believe we wanted that and had
-to have it in writing first.
+>=20
+> FTP is another matter.  The control channel is getting through, I'm sure,
+> but if you fail over, most likely firewall B would not be aware that that
+> it's a FTP control channel and would not do the conntrack magic necessary
+> to let the FTP server originate data connections to the client, or in
+> passive mode, to let the client originate data connections to the arbitra=
+ry
+> ports that the server tells it to use.  Similarly for any service that us=
+es
+> multiple connections.
 
-  We had many machines hit but were fortunate enough to be able to clean
-and patch them via network boot (PXE - Rembo Tool Kit -
-http://www.rembo.com).  Many of the other colleges had no such tool and
-are having to manually rebuild machines.  We have a new CIO over the
-university system who seems to worship microshaft.  His security
-philosophy seems to be "microsoft can release patches faster than
-hackers can come up with new attacks and viruses".  We have lots of
-unusual applications that often get broken by microshaft patches and
-like to do thorough testing before deploying them.
+the ftp session freezes because there is nor a control nor a related data
+connection in the connection table on firewall B - no surprise.
 
-  Maybe a few more attacks wacking thousands of machines will change
-their policies.
+>=20
+> On the HTTP proxy action, if you failed over in the middle of a download,
+> of course it would freeze, because the proxy on the other server would not
+> have an established connection and the packets would be tossed, but
+> subsequent downloads should work, since each one is an independently open=
+ed
+> connection.  Unless for some reason the server on firewall A answered usi=
+ng
+> its own IP address and the client said, hey, I used the proxy on
+> 192.168.2.3 (the shared address), but it's answering from 192.168.2.1, so
+> I'm supposed to use that from now on.  When the failover happened, the
+> client would find that it had been too smart for its own good.
+>=20
 
-Jason
-===========
+the proxy server is not running on the firewalls - it was a http donwload
+*through* firewall A from a browser client to a squid proxy elsewhere in the
+network. as i mentioned it's no surprise to see this session freeze after
+failover. but the point is that the ssh session did NOT freeze after failov=
+er.
+i think i understand why the ftp and http sessions froze, but i don't
+understand why the ssh session did not.
 
+Thanks for any pointers
 
+__________________________________________________________________
+
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Logos und Klingelt=F6ne f=FCrs Handy bei http://sms.yahoo.de
 
