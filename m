@@ -1,12 +1,13 @@
-From: "mailinglists" <mailinglists@belfin.ch>
-Subject: AW: natting help needed urgently.
-Date: Sat, 6 Sep 2003 13:57:02 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: Problems with DNS
+Date: Sat, 06 Sep 2003 14:49:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <65F646CE24EBF24AA3714070D537988E06FA62@gargoyle.seaan.net>
+Message-ID: <1062852576.766.68.camel@elendil.intranet.cartel-securite.net>
+References: <HMEKJPOHJKKBIDHGBCMDIEGLCAAA.varyag18@mail.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <HMEKJPOHJKKBIDHGBCMDIEGLCAAA.varyag18@mail.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Payal Rathod <payal-iptables@staticky.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: =?koi8-r?Q?=F7=CC=C1=C4=C9=CD=C9=D2_?= =?koi8-r?Q?=F0=CF=D4=C1=D0=CF=D7?= <varyag18@mail.ru>
+Cc: netfilter@lists.netfilter.org
 
+Le sam 06/09/2003 =C3=A0 12:53, =D0=92=D0=BB=D0=B0=D0=B4=D0=B8=D0=BC=D0=B8=
+=D1=80 =D0=9F=D0=BE=D1=82=D0=B0=D0=BF=D0=BE=D0=B2 a =C3=A9crit :
+> And which chain a need yo add to ruleset?
 
-Hi Payal,
+Just rewrite your ruleset as follow :
 
-just a quick one before I go home again.
+# nat table
+-A PREROUTING -t nat -d 121.1.1.1 -i eth0 -p tcp -j DNAT \
+		--to-destination 192.168.5.2
+-A PREROUTING -t nat -d 121.1.1.1 -i eth0 -p udp -j DNAT \
+		--to-destination 192.168.5.2
+-A POSTROUTING -t nat -o eth0 -j SNAT --to-source 121.1.1.1
 
-In this scenario I woudln't use NAT on the Linux box. Makes things more =
-difficult. Don't forget to set a route on your router with gw linuxbox =
-to subnet windowsbox.=20
+# filter table
+-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -d 192.168.5.2/255.255.255.255 -i eth0 -o eth1 -m state \
+		--state NEW -p tcp -m tcp --dport 53 --syn -j ACCEPT
+-A FORWARD -d 192.168.5.2/255.255.255.255 -i eth0 -o eth1 -m state \
+		--state NEW -p udp -m udp --dport 53 -j ACCEPT
+-A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -m state \
+		--state NEW -p tcp -m tcp --dport 53 --syn -j allow
+-A FORWARD -s 192.168.5.0/255.255.255.0 -i eth1 -o eth0 -m state \
+		--state NEW -p udp -m udp --dport 53 -j ACCEPT
 
-HTH
-Philipp
+It should provide the same filtering functionnalities you wanted, plus
+returning packets accept through ESTABLISHED,RELATED rule. If you really
+want to restrict it to TCP and UDP only, just replace this rule with two
+more specific ones :
 
-> I have asked this before but nobody responded. Is this un-do-able?
-> I have a windows box which is on intertnal ip 192.168.10.3. I want the
-> outside world to access the servers (ftp, http, smtp, pop3) from it.
-> The scene is something like this,
->=20
->=20
-> +----------+       +--------------+         +---------------+
-> |          +---><--+ Linux        +---->--<-+win2k          |
-> |router    |       |  (1.2.3.4)   |         | (192.168.10.3)|
-> +----------+       +--------------+         +---------------+
->                                  =20
-> I am not able to redirect any request for windows box from=20
-> outside world
-> to internal machine 192.168.10.3
->=20
-> Please help me to solve this problem.
->=20
-> Waiting eagerly for any help on this.
->=20
-> With warm regards,
-> -Payal
->=20
-> --=20
-> "Visit GNU/Linux Success Stories"
-> http://payal.staticky.com
-> Guest-Book Section Updated.
->=20
->=20
+-A FORWARD -m state --state ESTABLISHED,RELATED -p udp -j ACCEPT
+-A FORWARD -m state --state ESTABLISHED,RELATED -p tcp -j ACCEPT
+
+I removed rules that seems redundant, in particular your TCP flags check
+rule that was replaced with --syn switch addition. I also restricted
+inbound DNS filtering to 192.168.5.2 only.
+
+Hope this helps.
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
