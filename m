@@ -1,13 +1,12 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Problem with Transparent Proxy, Squid and 2.6 kernel
-Date: Fri, 09 Jan 2004 06:47:10 +0200
+From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
+Subject: RE: MRTG and IPTABLES
+Date: Fri, 9 Jan 2004 09:54:47 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073623629.2014.10.camel@raylinux.internal>
-References: <2307E2C1-4139-11D8-AFEE-000393677A36@porchlight.ca>
+Message-ID: <83055D4B014C9E478D2F04624B9E82CFAE966A@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2307E2C1-4139-11D8-AFEE-000393677A36@porchlight.ca>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,126 +17,155 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Alexis <alexis@attla.net.ar>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 2004-01-07 at 19:44, Peter Schobel wrote:
-> I have a server that was running a transparent redirection proxy - i 
-> was using 2.4.20 kernel on this system and i recently upgraded to 
-> 2.6.0.107 kernel package for redhat 9
-> 
-> Ever since i did the kernel upgrade the proxy does not work correctly.
-> 
-> As far as I know, the kernel is configured properly
-> 
-> lsmod shows these iptables modules
-> 
-> Module                  Size  Used by
-> ipt_REDIRECT            2048  0
-> iptable_nat            20140  1 ipt_REDIRECT
-> ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
-> iptable_filter          2688  0
-> ip_tables              15104  3 ipt_REDIRECT,iptable_nat,iptable_filter
-> 
-> my INPUT, FORWARD and OUTPUT policies are all set to accept
-> 
-> iptables -L
-> 
-> Chain INPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> I am using this iptables rule
-> 
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
-> --to-port 3128
-> 
-> my nat table looks like this
-> 
-> iptables -t nat --list
-> 
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> REDIRECT   tcp  --  anywhere             anywhere           tcp 
-> dpt:http redir ports 3128
-> 
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
-> 
-> ip forwarding is enabled
-> 
-> cat /proc/sys/net/ipv4/ip_forward
-> 1
-> 
-> squid is running on 3128 - the squid config looks like this
-> 
-> acl all src 0/0
-> 
-> visible_hostname proxyhost.porchlight.ca
-> 
-> http_port 3128
-> 
-> no_cache deny all
-> 
-> redirect_program /usr/local/bin/redirector.pl
-> redirect_children 5
-> redirect_rewrites_host_header on
-> redirector_access allow all
-> 
-> http_access allow all
-> http_reply_access allow all
-> 
-> httpd_accel_port 80
-> httpd_accel_host virtual
-> httpd_accel_with_proxy on
-> httpd_accel_uses_host_header on
-> 
-> This configuration has not changed since before the kernel upgrade 
-> except that there were a couple of rules preventing proxy access to the 
-> outside world which I removed in order to make things as simple as 
-> possible for debugging purposes
-> 
-> I can see by running snort that the packets destined for the remote 
-> host are arriving on the interface
-> 
-> I can see using "iptables -t nat --list -v -n" that the number of 
-> packets on the REDIRECT rule gets incremented by 1 each time I try to 
-> access a remote site - but the browser just times out waiting for a 
-> reply and the squid access.log does not record the access
-> 
-> If i type http://proxyhost.porchlight.ca into the address bar of the 
-> browser, the port redirect works perfectly and squid redirects the 
-> traffic to the proxied site without problem - it is only when I attempt 
-> to access remote sites that the redirection does not work.  As I 
-> mentioned before - this was all working and tested previous to the 
-> kernel upgrade.
-> 
-> I've been struggling with this for a couple days now.  Does anyone have 
-> any idea why this configuration is not working?
-> 
-> Thx in advance,
-> 
-> *****************************
-> Peter Schobel
-> Network Administrator
-> Porchlight.ca
-> Unlimited Internet
-> *****************************
-> In a world without walls or fences
-> We will have no need for gates or windows
-> *****************************
-> 
-> 
-What version of iptables are you using?
+That's it.=20
+Thanks very much.
 
-I use iptables v1.2.8 with the 2.6.0 kernel on SuSE and it works fine,
+gy
+
+-----Original Message-----
+From: Alexis [mailto:alexis@attla.net.ar]=20
+Sent: Thursday, January 08, 2004 5:47 PM
+To: Gilles Yue
+Subject: Re: MRTG and IPTABLES
+
+POSTROUTING match all packets leaving the firewall, so you need to add
+the
+same rule, try with
+
+
+iptables -t nat -A POSTROUTING -p udp --dport 161 -j ACCEPT
+
+
+----- Original Message -----=20
+From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
+To: "Gilles Yue" <gyue@novelgmt.intnet.mu>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Thursday, January 08, 2004 8:56 AM
+Subject: RE: MRTG and IPTABLES
+
+
+Hi,
+
+I have opened port 161 in my firewall script.
+
+$IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
+
+However, POSRTOUTING SET TO DROP By default, is preventing MRTG
+from running properly. (I have tried setting POSTROUTING TO ACCEPT
+and MRTG works fine)
+
+$IPTABLES -t nat -P POSTROUTING DROP
+
+Does anybody know how do I allow MRTG to run with POSTROUTING
+SET TO DROP?
+
+Thanks
+gy
+
+
+-----Original Message-----
+From: Gilles Yue
+Sent: Thursday, January 08, 2004 10:47 AM
+To: Daniel F. Chief Security Engineer -; netfilter@lists.netfilter.org
+Subject: RE: MRTG and IPTABLES
+
+Dear sir,
+
+Have tried your commands below but when I run my iptables script,
+
+I get "command not found" and it points to the line
+
+$SNMP_POLLER_IP=3D"xxx.xxx.xxx.xxx"
+
+Thanks
+gy
+
+
+-----Original Message-----
+From: Daniel F. Chief Security Engineer -
+[mailto:danielf@supportteam.net]
+Sent: Wednesday, January 07, 2004 6:18 PM
+To: Gilles Yue; netfilter@lists.netfilter.org
+Subject: Re: MRTG and IPTABLES
+
+try
+
+$IPTABLES -A INPUT -p udp --dport 161 -j ACCEPT
+
+assuming that yuo are tryinh to accept port 161 on the local machine. if
+you
+doing stateful it should look similar to this.
+
+# IP of machine running MRTG
+$SNMP_POLLER_IP=3D"xxx.xxx.xxx.xxx"
+
+$IPTABLES -A INPUT -p udp -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 161 -m state --state NEW -s
+$SNMP_POLLER_IP
+-j ACCEPT
+
+$IPTABLES -A OUTPUT -p udp -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPTABLES -A OUTPUT -p udp --sport 161 -m state --state NEW -s
+$SNMP_POLLER_IP
+-j ACCEPT
+
+This is assuming you have set the ploicies to drop
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT DROP
+
+On Wednesday 07 January 2004 06:46, Gilles Yue wrote:
+> Hi,
+>
+> Is this the way it should be in iptables?
+>
+> #Open SNMP Ports
+> $IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
+>
+> Have tried it, not working
+>
+> Thanks.
+> Gy
+>
+> -----Original Message-----
+> From: Daniel F. Chief Security Engineer -
+> [mailto:danielf@supportteam.net]
+> Sent: Wednesday, January 07, 2004 4:45 PM
+> To: Gilles Yue; netfilter@lists.netfilter.org
+> Subject: Re: MRTG and IPTABLES
+>
+> SNMP UDP Ports 161 and 162 MRTG typically only uses 161.
+>
+>
+> Thanks
+>
+> On Wednesday 07 January 2004 00:54, Gilles Yue wrote:
+> > MRTG cannot work properly due to iptables running.
+> >
+> >
+> >
+> > Anybody knows which port number to open to enable MRTG to work
+>
+> properly.
+>
+> > Thanks.
+> >
+> >
+> >
+> > Rgds
+> >
+> > gy
+
+--=20
+Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
+The distance between nothing and infinity is always the same no matter
+how
+close you get to nothing.
+
+
 
 
 
