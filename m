@@ -1,8 +1,8 @@
 From: "azeem ahmad" <azeem484@hotmail.com>
-Subject: wiered problem
-Date: Thu, 20 May 2004 20:45:29 +0000
+Subject: weired problem [correction]
+Date: Thu, 20 May 2004 20:56:15 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY15-F12RLNTaFagA30009460e@hotmail.com>
+Message-ID: <BAY15-F31DwAUix1Tjt0001e180@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,26 +18,16 @@ Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-i m running iptables, squid proxy, bind, and samba on same machine. it works 
-as a server for my LAN
-the script that i ran is as follow but when i stat these rules the browsing 
-stops. the squid proxy is listening on port 8080. what can be the problem. 
-while netbios sharing is doing okey.
-------------------------------------------------------------------------------------------------------------------------------
-iptables -P INPUT ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 8080 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
----------------------------------------------------------------------------------------------------------------------------
+sorry
+the default policy for INPUT chain is DROP
+
+iptables -P INPUT DROP
 
 Regards
 Azeem
 
 _________________________________________________________________
-Add photos to your e-mail with MSN 8. Get 2 months FREE*. 
-http://join.msn.com/?page=features/featuredemail
+MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*. 
+http://join.msn.com/?page=features/virus
 
 
