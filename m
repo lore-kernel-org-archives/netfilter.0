@@ -1,12 +1,12 @@
-From: Jean-Christophe Boggio <cat@thefreecat.org>
-Subject: getting mad with dynamic routing / fwmark
-Date: Thu, 16 Jan 2003 17:16:28 +0100
+From: Subba Rao <subba9@cablespeed.com>
+Subject: Logging
+Date: Tue, 14 Jan 2003 13:23:10 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <15029238171.20030116171628@thefreecat.org>
-Reply-To: Jean-Christophe Boggio <cat@thefreecat.org>
+Message-ID: <20030114182310.GA23089@cablespeed.com>
+Reply-To: Subba Rao <subba9@cablespeed.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +17,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter/Iptables Users <netfilter@lists.netfilter.org>
 
+Hi
 
-Hello,
+I have the following rules to allow traffic on SMTP port.
 
-I want to use netfilter's MARKing system to dynamically route packets
-on an interface or another based on port numbers.
+--------------------
+iptables -A INPUT -i $EXTERNAL_IF -p tcp --destination-port 25 -j LOG \
+                --log-level 4 --log-prefix "Incoming Mail Traffic "
+iptables -A INPUT -i $EXTERNAL_IF -p tcp --destination-port 25 -j ACCEPT
+--------------------
 
-One of my problem (the main one I think) is that a packet is not
-'seen' by the firewall if there is no route to it. tcpdump can see it
-but not the firewall. So if I try to MARK the packet in order to route
-it based on the mark, it fails because :
-no route=no firewall=no marking=no dynamic routing--+
-^...................................................|
+The default policy is on the INPUT chain is to drop the packets.  How do I capture
+what is being dropped?
 
-I must be missing something.
+My goal is to log the inbound traffic and my syslog has the following
+configuration:
 
-BTW, is there a decent tool to monitor what the FW does with a packet,
-why it is dropped, how it is marked, etc. without doing everything
-with -j LOG ?
+--------------------
+*.=info;*.=notice;mail.none                     /usr/adm/messages
+*.=alert                                        /usr/adm/messages
+*.=crit                                         /usr/adm/debug
+mail.*                                          /var/log/mail-log
+kern.*                                          /var/log/messages
+user.*                                          /var/log/messages
+syslog.*                                        /var/log/messages
+auth.*                                          /var/log/messages
+authpriv.*                                      /var/log/messages
+--------------------
 
-Thanks for any help, it's been a week of tests and I'm really getting
-mad with nothing working.
+Is this configuration sufficient to capture the inbound connections?
 
---
-Jean-Christophe Boggio                       
-cat@thefreecat.org                           -o)
-Independant Consultant and Developer         /\\
-Delphi, Linux, Perl, PostgreSQL, Debian     _\_V
+-- 
 
-
+Subba Rao
+subba9@cablespeed.com
 
