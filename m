@@ -1,12 +1,13 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 20:57:51 +0200 (CEST)
+Date: Thu, 27 Jun 2002 15:04:25 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.21.0206272051470.21019-100000@dns.toxicfilms.tv>
-References: <20020627182753.GS31466@cannon.eng.us.uu.net>
+Message-ID: <20020627190425.GU31466@cannon.eng.us.uu.net>
+References: <20020627182753.GS31466@cannon.eng.us.uu.net> <20020627205319.E2890@oknodo.bof.de>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020627182753.GS31466@cannon.eng.us.uu.net>
+Content-Disposition: inline
+In-Reply-To: <20020627205319.E2890@oknodo.bof.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,33 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.samba.org
+To: Patrick Schaaf <bof@bof.de>
+Cc: Ramin Alidousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.samba.org
 
-> Does anyone have a good solution to catch the third (ACK) packet
-> in a tcp connection setup?
+On Thu, Jun 27, 2002 at 08:53:19PM +0200, Patrick Schaaf wrote:
 
-# iptables -A INPUT -p tcp --tcp-flags ACK ACK -m recent --rcheck
-  --seconds 60 -j LOG --log-prefix "3rd is ack: "
+> Hi Ramin,
 
-# iptables -A INPUT -p tcp -m state --state NEW --syn -m recent --set -j
-  LOG --log-prefix "1st is syn: "
+Hi Patrick,
 
-Would not it work?
-First SYN packet triggers the recent module in the second rule.
-Second (your) syn/ack goes on your OUTPUT.
-Third ACK triggers the first rule.
+> 
+> > Does anyone have a good solution to catch the third (ACK) packet
+> > in a tcp connection setup?
+> 
+> Maybe you could use the CONNMARK patch, found in patch-o-matic?
+> Mark the conntrack one way for the first packet of a new connection,
+> and later match on that mark, changing it to something else when that
+> match hits.
 
-I am not using recent, and i just made that up from the description.
+Hmm, OK, interesting. I was thinking to play with Stephen's excellent
+module (recent) to acomplish this but I just wanted to have all the
+options open. I'll definitely dig into this solution as well :-)
 
-But it seems reasonably.
+> Thanks for a nice idea from the "how do I bend iptables into a
+> programming language" department. :-)
 
-Or does it?
+Well, you know, I'm not a kernel guy; not that I can't be one
+but I'd leave it to the gurus we have out there. I'm just trying
+to gather enough available building blocks to do my things easily :-)
 
-Regards,
-Maciej
+Ramin
 
-
+> best regards
+>   Patrick
 
