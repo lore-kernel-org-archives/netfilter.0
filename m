@@ -1,12 +1,13 @@
-From: Alok Nath Upadhyay <aloknathupadhyay@sunguru.com>
-Subject: multiple ISP routing/firewall
-Date: Fri, 23 Jul 2004 03:20:11 -0700 (PDT)
+From: =?utf-8?q?Fr=C3=A9d=C3=A9ric=20Gonzatti?= <fred99@qualiflow.com>
+Subject: Firewall IP change
+Date: Fri, 23 Jul 2004 14:57:30 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040723102011.88D9E3959@sitemail.everyone.net>
-Reply-To: aloknathupadhyay@sunguru.com
+Message-ID: <200407231457.30104.fred99@qualiflow.com>
+References: <40FEE340.8090907@ctwa.com> <200407212302.53814.Antony@Soft-Solutions.co.uk> <1090450600.2112.3.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1090450600.2112.3.camel@localhost>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,192 +21,138 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi all,
-i am in a not so common situation and i have tried to figure out the solution without luck. i have 3 leased lines from three different vendors. i want to distribute outbound traffic from my lan on these three differnet links. i have some degree of success i.e. i can route the traffic but internet access speed is very slow. i guess that this is due to differnet DNS servers of these vendors. moreover if i have the unristricted access to internet, i am fine. but not with the restrictions on services and ports. after this all internet access is denied. This is my firewalling script for ur debugging and any remedial measures.
+Hi all,
 
-#!/bin/sh               
-# Iptables userspace executable
-IPTABLES="/usr/local/sbin/iptables"
+I've got a big problem with my firewall which have three ethernet cards.
+eth0 : 172.16.2.1/255.255.255.0 ---->LAN
+eth1: 192.168.2.1/255.255.255.0----->DMZ
+eth2: 192.168.3.1/255.255.255.0-----> WAN
 
-# Internal Interface
-NET_INT_INT=eth0
-# Internal IP
-NET_INT_IP=a.b.c.201
-# Internal Subnet
-NET_INT_SUB=24
-# Internal Network
-NET_INT_NET=a.b.c.0
+This firewall is connect to a router which have Wan IP 192.168.3.254 and a 
+public IP for WAN : 62.160.X.X/255.255.255.255
+This configurations is working !!!
 
-# First external interface
-NET_EXT_INT1=eth1
-# First external IP
-NET_EXT_IP1=a.b.c.201
-# First external interface's gateway
-NET_EXT_GW1=a.b.c.1
+I have tried to replace the Wan IP of my firewall by a public IP : 62.160.X.Y
+# ifconfig eth2 62.160.X.Y netmask 255.255.255.248
+# route add default gw 62.160.X.Z (which is new Ip of the router (WAN and LAN 
+interfaces of the router are the same)
 
-# Second external interface
-NET_EXT_INT2=eth2
-# Second external IP
-NET_EXT_IP2=a.b.c.201
-# Second external interface's gateway
-NET_EXT_GW2=a.b.c.1
+I can access to the internet from my firewall but unfortunately not from my 
+LAN.
+So now I come back to my old configuration until I ask why it was not working.
+Have you got any idea please ?
 
-# Third external interface
-NET_EXT_INT3=eth3
-# Third external IP
-NET_EXT_IP3=a.b.c.201
-# Third external interface's gateway
-NET_EXT_GW3=a.b.c.1
+My iptables script is :
 
-echo "Flushing All Tables"
-$IPTABLES -F
-$IPTABLES -F -t nat
-$IPTABLES -F -t mangle
-$IPTABLES -X -t nat
-$IPTABLES -X -t mangle
-$IPTABLES -X
+iptables -t filter -F
+iptables -t nat -F
 
-$IPTABLES -t mangle -N ETH1
-$IPTABLES -t mangle -F ETH1
-$IPTABLES -t mangle -A ETH1 -j MARK --set-mark 1
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-$IPTABLES -t mangle -N ETH2
-$IPTABLES -t mangle -F ETH2
-$IPTABLES -t mangle -A ETH2 -j MARK --set-mark 2
+iptables -t filter -P INPUT DROP
+iptables -t filter -P FORWARD DROP
+iptables -t filter -P OUTPUT DROP
 
-$IPTABLES -t mangle -N ETH3
-$IPTABLES -t mangle -F ETH3
-$IPTABLES -t mangle -A ETH3 -j MARK --set-mark 3
-
-$IPTABLES -t nat -N SPOOF_ETH1
-$IPTABLES -t nat -F SPOOF_ETH1
-$IPTABLES -t nat -A SPOOF_ETH1 -j SNAT --to ${NET_EXT_IP1}
-
-$IPTABLES -t nat -N SPOOF_ETH2
-$IPTABLES -t nat -F SPOOF_ETH2
-$IPTABLES -t nat -A SPOOF_ETH2 -j SNAT --to ${NET_EXT_IP2}
-
-$IPTABLES -t nat -N SPOOF_ETH3
-$IPTABLES -t nat -F SPOOF_ETH3
-$IPTABLES -t nat -A SPOOF_ETH3 -j SNAT --to ${NET_EXT_IP3}
-
-echo "Setting some local network rules..."
-$IPTABLES -A INPUT -p icmp -s ${NET_INT_NET}/${NET_INT_SUB} -d ${NET_INT_IP} -j ACCEPT
-
-echo "Setting Mangle rules for eth1..."
-$IPTABLES -t mangle -A OUTPUT -o ! ${NET_INT_INT} -m random --average 40 -j ETH1
-$IPTABLES -t mangle -A PREROUTING -i ${NET_INT_INT} -m random --average 40 -j ETH1
-ip ro add table 10 default via ${NET_EXT_GW1} dev ${NET_EXT_INT1}
-ip ru add fwmark 1 table 10
-ip ro fl ca
-
-echo "Setting Mangle rules for eth2..."
-$IPTABLES -t mangle -A OUTPUT -o ! ${NET_INT_INT} -m random --average 40 -j ETH2
-$IPTABLES -t mangle -A PREROUTING -i ${NET_INT_INT} -m random --average 40 -j ETH2
-ip ro add table 20 default via ${NET_EXT_GW2} dev ${NET_EXT_INT2}
-ip ru add fwmark 2 table 20
-ip ro fl ca
-
-echo "Setting Mangle rules for eth3..."
-$IPTABLES -t mangle -A OUTPUT -o ! ${NET_INT_INT} -m random --average 20 -j ETH3
-$IPTABLES -t mangle -A PREROUTING -i ${NET_INT_INT} -m random --average 20 -j ETH3
-ip ro add table 30 default via ${NET_EXT_GW3} dev ${NET_EXT_INT3}
-ip ru add fwmark 3 table 30
-ip ro fl ca
-
-echo "Accept pre established connections....."
-$IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-echo "Accept everything on local loopback....."
-$IPTABLES -A INPUT  -i lo  -j ACCEPT 
-$IPTABLES -A OUTPUT  -o lo  -j ACCEPT 
-
-echo "Setting up Internet Access rules for services allowed......"
-$IPTABLES -N RULE_0
-$IPTABLES -A INPUT -p icmp  -s w.x.y.z/a  --icmp-type 11/0   -m state --state NEW  -j RULE_0 
-$IPTABLES -A INPUT -p icmp  -s w.x.y.z/a  --icmp-type 11/1   -m state --state NEW  -j RULE_0 
-$IPTABLES -A INPUT -p icmp  -s w.x.y.z/a  --icmp-type 0/0   -m state --state NEW  -j RULE_0 
-$IPTABLES -A INPUT -p icmp  -s w.x.y.z/a  --icmp-type 3  -m state --state NEW  -j RULE_0 
-$IPTABLES -A INPUT -p tcp  -s w.x.y.z/a  --source-port 20  --destination-port 1024:65535  -m state --state NEW  -j RULE_0 
-$IPTABLES -A INPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 21,20,80,443  -m state --state NEW  -j RULE_0 
-$IPTABLES -A OUTPUT -p icmp  -s w.x.y.z/a  --icmp-type 11/0   -m state --state NEW  -j RULE_0 
-$IPTABLES -A OUTPUT -p icmp  -s w.x.y.z/a  --icmp-type 11/1   -m state --state NEW  -j RULE_0 
-$IPTABLES -A OUTPUT -p icmp  -s w.x.y.z/a  --icmp-type 0/0   -m state --state NEW  -j RULE_0 
-$IPTABLES -A OUTPUT -p icmp  -s w.x.y.z/a  --icmp-type 3  -m state --state NEW  -j RULE_0 
-$IPTABLES -A OUTPUT -p tcp  -s w.x.y.z/a  --source-port 20  --destination-port 1024:65535  -m state --state NEW  -j RULE_0 
-$IPTABLES -A OUTPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 21,20,80,443  -m state --state NEW  -j RULE_0 
-$IPTABLES -A FORWARD -p icmp  -s w.x.y.z/a  --icmp-type 11/0   -m state --state NEW  -j RULE_0 
-$IPTABLES -A FORWARD -p icmp  -s w.x.y.z/a  --icmp-type 11/1   -m state --state NEW  -j RULE_0 
-$IPTABLES -A FORWARD -p icmp  -s w.x.y.z/a  --icmp-type 0/0   -m state --state NEW  -j RULE_0 
-$IPTABLES -A FORWARD -p icmp  -s w.x.y.z/a  --icmp-type 3  -m state --state NEW  -j RULE_0 
-$IPTABLES -A FORWARD -p tcp  -s w.x.y.z/a  --source-port 20  --destination-port 1024:65535  -m state --state NEW  -j RULE_0 
-$IPTABLES -A FORWARD -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 21,20,80,443  -m state --state NEW  -j RULE_0 
-$IPTABLES -A RULE_0  -j LOG  --log-level info --log-prefix "RULE 0 -- ACCEPT " 
-$IPTABLES -A RULE_0  -j ACCEPT 
-
-echo "Setting up Internet Access rules for services denied......"
-$IPTABLES -N RULE_1
-$IPTABLES -A INPUT -p tcp  -s w.x.y.z/a  --syn   -j RULE_1 
-$IPTABLES -A INPUT -p tcp  -s w.x.y.z/a  --tcp-flags ALL URG,ACK,PSH,RST,SYN,FIN  -j RULE_1 
-$IPTABLES -A INPUT -p tcp  -s w.x.y.z/a  --destination-port 1024:65535  -j RULE_1 
-$IPTABLES -A INPUT -p tcp  -s w.x.y.z/a  --destination-port 6000:6063  -j RULE_1 
-$IPTABLES -A INPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 5190,1494,709,710,1720,3268,3269,2000,5631,7070,2998,445,49,42,113  -j RULE_1 
-$IPTABLES -A INPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 13,53,2105,79,143,6667,993,88,543,544,389,636,98,515,98  -j RULE_1 
-$IPTABLES -A INPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 135,3306,1433,2049,139,119,563,110,995,5432,26000,515,512,513,514  -j RULE_1 
-$IPTABLES -A INPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 4321,554,25,5510,465,1080,1521,3128,22,111,23,540,3389,7100  -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -s w.x.y.z/a  --syn   -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -s w.x.y.z/a  --tcp-flags ALL URG,ACK,PSH,RST,SYN,FIN  -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -s w.x.y.z/a  --destination-port 1024:65535  -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -s w.x.y.z/a  --destination-port 6000:6063  -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 5190,1494,709,710,1720,3268,3269,2000,5631,7070,2998,445,49,42,113  -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 13,53,2105,79,143,6667,993,88,543,544,389,636,98,515,98  -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 135,3306,1433,2049,139,119,563,110,995,5432,26000,515,512,513,514  -j RULE_1 
-$IPTABLES -A OUTPUT -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 4321,554,25,5510,465,1080,1521,3128,22,111,23,540,3389,7100  -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -s w.x.y.z/a  --syn   -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -s w.x.y.z/a  --tcp-flags ALL URG,ACK,PSH,RST,SYN,FIN  -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -s w.x.y.z/a  --destination-port 1024:65535  -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -s w.x.y.z/a  --destination-port 6000:6063  -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 5190,1494,709,710,1720,3268,3269,2000,5631,7070,2998,445,49,42,113  -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 13,53,2105,79,143,6667,993,88,543,544,389,636,98,515,98  -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 135,3306,1433,2049,139,119,563,110,995,5432,26000,515,512,513,514  -j RULE_1 
-$IPTABLES -A FORWARD -p tcp  -m multiport  -s w.x.y.z/a  --destination-port 4321,554,25,5510,465,1080,1521,3128,22,111,23,540,3389,7100  -j RULE_1 
-$IPTABLES -A RULE_1  -j LOG  --log-level info --log-prefix "RULE 1 -- DENY " 
-$IPTABLES -A RULE_1  -j DROP 
-
-echo "Setting up internet access from firewall....."
-$IPTABLES -N RULE_2
-$IPTABLES -A OUTPUT  -s ${NET_INT_IP}  -m state --state NEW  -j RULE_2 
-$IPTABLES -A OUTPUT  -s ${NET_EXT_IP1}  -m state --state NEW  -j RULE_2 
-$IPTABLES -A OUTPUT  -s ${NET_EXT_IP2}  -m state --state NEW  -j RULE_2 
-$IPTABLES -A OUTPUT  -s ${NET_EXT_IP3}  -m state --state NEW  -j RULE_2 
-$IPTABLES -A RULE_2  -j LOG  --log-level info --log-prefix "RULE 2 -- ACCEPT " 
-$IPTABLES -A RULE_2  -j ACCEPT 
-
-echo "Setting up catch all rules......"
-$IPTABLES -N RULE_4
-$IPTABLES -A OUTPUT  -j RULE_4 
-$IPTABLES -A INPUT  -j RULE_4 
-$IPTABLES -A FORWARD  -j RULE_4 
-$IPTABLES -A RULE_4  -j LOG  --log-level info --log-prefix "RULE 4 -- DENY " 
-$IPTABLES -A RULE_4  -j DROP 
+iptables -t filter -A INPUT -i lo -j ACCEPT
+iptables -t filter -A OUTPUT -o lo -j ACCEPT
 
 
-echo "Setting up spoofing rules..."
-$IPTABLES -t nat -A POSTROUTING -o ${NET_EXT_INT1} -j SPOOF_ETH1
-$IPTABLES -t nat -A POSTROUTING -o ${NET_EXT_INT2} -j SPOOF_ETH2
-$IPTABLES -t nat -A POSTROUTING -o ${NET_EXT_INT3} -j SPOOF_ETH3
 
-echo "Adding default route..."
-ip ro add default nexthop via ${NET_EXT_GW1} dev ${NET_EXT_INT1} weight 1 nexthop via ${NET_EXT_GW2} dev ${NET_EXT_INT2} weight 1 nexthop via ${NET_EXT_GW3} dev ${NET_EXT_INT3} weight 1
+###########
+# FORWARD #
+###########
 
-echo "Disabling Reverse Path Filtering..."
-echo 0> /proc/sys/net/ipv4/conf/eth1/rp_filter
-echo 0> /proc/sys/net/ipv4/conf/eth2/rp_filter
-echo 0> /proc/sys/net/ipv4/conf/eth3/rp_filter
+			##############
+			# LAN -->DMZ #
+			##############
 
-echo "Enabling IPv4 Packet forwarding..."
-echo "1"> /proc/sys/net/ipv4/ip_forward
+
+iptables -t nat -A PREROUTING -d 172.16.2.1 -p tcp --dport 110 -j DNAT 
+--to-destination 192.168.2.150:110
+iptables -t filter -A FORWARD -i eth0 -o eth1 -s 172.16.0.0/16 -d 
+192.168.2.150/32 -p tcp --dport 110 -m state --state NEW,ESTABLISHED -j 
+ACCEPT
+iptables -t filter -A FORWARD -i eth1 -o eth0 -s 192.168.2.150/32 -d 
+172.16.0.0/16 -p tcp --sport 110 -m state --state ESTABLISHED -j ACCEPT
+
+
+
+
+			###############
+			# LAN --> WAN #
+			###############
+
+
+
+
+####################################
+# PROTOCOLE IDENT : TCP et UDP 113 #
+####################################
+iptables -t filter -A FORWARD -p tcp --dport 113 -j ACCEPT
+iptables -t filter -A FORWARD -p tcp --sport 113 -j ACCEPT
+iptables -t filter -A FORWARD -p udp --dport 113 -j ACCEPT
+iptables -t filter -A FORWARD -p udp --sport 113 -j ACCEPT
+
+
+
+###################################
+# HTTP, HTTPS : TCP 80 et TCP 443 #
+###################################
+iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tcp 
+--dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tcp 
+--sport 80 -m state --state ESTABLISHED -j ACCEPT
+iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tcp 
+--dport 443 -j ACCEPT
+iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tcp 
+--sport 443 -j ACCEPT
+iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p udp 
+--dport 443 -j ACCEPT
+iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p udp 
+--sport 443 -j ACCEPT
+
+##################
+# Protocole POP3 #
+##################
+
+iptables -t filter -A FORWARD -i eth0 -o eth2 -s 172.16.0.0/16 -d 0/0 -p tcp 
+--dport 110 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -t filter -A FORWARD -i eth2 -o eth0 -s 0/0 -d 172.16.0.0/16 -p tcp 
+--sport 110 -m state --state ESTABLISHED -j ACCEPT
+
+#################
+# Protocole FTP #
+#################
+
+
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
+
+iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 21 -m 
+state --state NEW,ESTABLISHED -j ACCEPT
+iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 21 -m 
+state --state ESTABLISHED -j ACCEPT
+iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 20 -m 
+state --state ESTABLISHED -j ACCEPT
+iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 20 -m 
+state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t filter -A FORWARD -s 172.16.0.0/16 -d 0/0 -p tcp --dport 
+1024:65535 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t filter -A FORWARD -s 0/0 -d 172.16.0.0/16 -p tcp --sport 
+1024:65535 -m state --state ESTABLISHED -j ACCEPT
+
+
+
+
+
+			
+iptables -t filter -A INPUT -j DROP
+iptables -t filter -A OUTPUT -j DROP
+iptables -t filter -A FORWARD -j DROP
+
+
+Thanks
+
+Fred99
 
 
