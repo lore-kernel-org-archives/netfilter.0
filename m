@@ -1,13 +1,13 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: Internal ip exiting network on firewall external nic despight
- rule
-Date: Fri, 20 Sep 2002 18:00:04 -0700
+From: "Darrell A. Escola" <darrell-iptables@descola.net>
+Subject: Re: HELP : How to group IP addresses by refering to them as a single name ?
+Date: Fri, 20 Sep 2002 22:34:37 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8BC494.2000409@shorewall.net>
-References: <000401c260fb$611f3c50$0801a8c0@s3ac>
+Message-ID: <20020921053437.GA30517@descola.net>
+References: <20020920124303.17644.qmail@web40209.mail.yahoo.com> <20020920190548.NZUZ16609.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms020702040007050506070209"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20020920190548.NZUZ16609.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,98 +17,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Rowan Reid <rreid@studio3arc.com>
-Cc: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
-
-This is a cryptographically signed message in MIME format.
-
---------------ms020702040007050506070209
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Rowan Reid wrote:
-> <action>
-> Kicks his networking for dummies book out the window
-> </action>
+On Fri, Sep 20, 2002 at 02:11:29PM +0100, Antony Stone wrote:
+>
+> On Friday 20 September 2002 1:43 pm, Alok Shukla wrote:
+> 
+> > HI,
+> >
+> > THANKS A LOT..!
+> >
+> > I have understood a lot of things. Now just for the
+> > sake..tell me if the following are valid
+> >
+> > iptables -t nat -A POSTROUTING -s 192.168.0.10/27 -d
+> > any/0 -J MASQUERADE
+> >
+> > for allowing all the machines starting from 11 to 41
+> 
+> Unfortunately not.   You have the right idea, but you can't simply choose the 
+> starting address anywhere you like :-(
+> 
+> The rule is this: the starting address of the block must be a multiple of the 
+> size of the block.
+> 
+> So if you're creating a block of 64 machines with a /26 netmask, the first 
+> address of the block must be 0, 64, 128 or 192.
+> 
+> Similarly, if you want a block of 32 machines with a /27 netmask, the first 
+> address of the block must be 0, 32, 64, 96, 128, 160, 192 or 224.
+> 
+> In yur case you tried to create a block of 32 machines with a starting 
+> address of 10, which I'm afraid is not allowed :-)
+> 
+> 
+> Hope this helps,
+> 
+> Antony.
 > 
 
-You really should if the book advocates a one-hub test bed for a Linux 
-firewall; that just plain doesn't work. That advice is mentioned several 
-times on my site (URL below)....
+It might be well to note that the "0" host address is reserved for the
+network and not useable as a host/node address - the last address in the
+subnet is reserved for broadcast - therefore a /27 subnet allows 30 host
+addresses. If more than 30 host addresses are needed, use a /26 subnet,
+allowing 62 hosts.
 
--Tom
 -- 
-Tom Eastep    \ Shorewall - iptables made easy
-AIM: tmeastep  \ http://www.shorewall.net
-ICQ: #60745924  \ teastep@shorewall.net
+Darrell A. Escola, CCNA(R)
+Cisco(R) Certified Network Associate
 
---------------ms020702040007050506070209
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJVDCC
-AwgwggJxoAMCAQICAwhOLTANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
-HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
-bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkxODIxMTQxN1oXDTAzMDkxODIxMTQxN1owRzEf
-MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEkMCIGCSqGSIb3DQEJARYVdGVhc3Rl
-cEBzaG9yZXdhbGwubmV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvdDPv/q5
-adQCmEtbNtdWcsmF7qO5Eg5JkvI50WkiCkcv89KfsRA6tFGtsgIOsgU5l3wDQSzqEVX0MfIV
-qpn7ycZJ6823cuvXXjBQwwpqVSlpJkHhpd1uCCLomkfPAxKdfBNAjh4E1ZgHuur7GAWc0iBd
-2n9oJ9wBg8gDQP9ViYU4+x2z/7muvY4RuzL5eF+mtzx4UtSx9CFqu1n8uNIu44T4CXRZ8HwT
-Hg2eC61x6E6XFV48Oid9t8qmKXjUGINJ3hbXwQmees3K/ZrGYZ+FPoOJyWn+PpvrNQrVvkp5
-a7YblgaoLX1dS5QGgsl9XhRz6sqzvklAd7eh4g0JoWOD4QIDAQABozIwMDAgBgNVHREEGTAX
-gRV0ZWFzdGVwQHNob3Jld2FsbC5uZXQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQQFAAOB
-gQDakl1XW6IrAL4ZG+WtwT5GqQLPnFgbHjo/s88xvvdQRRhgd//uW81hQUk5tHkBisJKgHcv
-F1trxcylWylrSSLf2TANtw0M8kvW9clJe5xZieyshemLvEWHsC4mItPiId9dWaZQX90L9yZz
-0qi8iTlmU5i8JPeiJJVwwmQJNI93LzCCAwgwggJxoAMCAQICAwhOLTANBgkqhkiG9w0BAQQF
-ADCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2Fw
-ZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2Vz
-MSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDkxODIx
-MTQxN1oXDTAzMDkxODIxMTQxN1owRzEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJl
-cjEkMCIGCSqGSIb3DQEJARYVdGVhc3RlcEBzaG9yZXdhbGwubmV0MIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAvdDPv/q5adQCmEtbNtdWcsmF7qO5Eg5JkvI50WkiCkcv89Kf
-sRA6tFGtsgIOsgU5l3wDQSzqEVX0MfIVqpn7ycZJ6823cuvXXjBQwwpqVSlpJkHhpd1uCCLo
-mkfPAxKdfBNAjh4E1ZgHuur7GAWc0iBd2n9oJ9wBg8gDQP9ViYU4+x2z/7muvY4RuzL5eF+m
-tzx4UtSx9CFqu1n8uNIu44T4CXRZ8HwTHg2eC61x6E6XFV48Oid9t8qmKXjUGINJ3hbXwQme
-es3K/ZrGYZ+FPoOJyWn+PpvrNQrVvkp5a7YblgaoLX1dS5QGgsl9XhRz6sqzvklAd7eh4g0J
-oWOD4QIDAQABozIwMDAgBgNVHREEGTAXgRV0ZWFzdGVwQHNob3Jld2FsbC5uZXQwDAYDVR0T
-AQH/BAIwADANBgkqhkiG9w0BAQQFAAOBgQDakl1XW6IrAL4ZG+WtwT5GqQLPnFgbHjo/s88x
-vvdQRRhgd//uW81hQUk5tHkBisJKgHcvF1trxcylWylrSSLf2TANtw0M8kvW9clJe5xZieys
-hemLvEWHsC4mItPiId9dWaZQX90L9yZz0qi8iTlmU5i8JPeiJJVwwmQJNI93LzCCAzgwggKh
-oAMCAQICEGZFcrfMdPXPY3ZFhNAukQEwDQYJKoZIhvcNAQEEBQAwgdExCzAJBgNVBAYTAlpB
-MRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMR
-VGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2
-aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3
-DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMDA4MzAwMDAwMDBaFw0w
-NDA4MjcyMzU5NTlaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIw
-EAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNh
-dGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAw
-gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAN4zMqZjxwklRT7SbngnZ4HF2ogZgpcO40Qp
-imM1Km1wPPrcrvfudG8wvDOQf/k0caCjbZjxw0+iZdsN+kvx1t1hpfmFzVWaNRqdknWoJ67Y
-cvm6AvbXsJHeHOmr4BgDqHxDQlBRh4M88Dm0m1SKE4f/s5udSWYALQmJ7JRr6aFpAgMBAAGj
-TjBMMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwxLTI5NzASBgNVHRMB
-Af8ECDAGAQH/AgEAMAsGA1UdDwQEAwIBBjANBgkqhkiG9w0BAQQFAAOBgQAxsUtHXfkBceX1
-U2xdedY9mMAmE2KBIqcS+CKV6BtJtyd7BDm6/ObyJOuR+r3sDSo491BVqGz3Da1MG7wD9LXr
-okefbKIMWI0xQgkRbLAaadErErJAXWr5edDqLiXdiuT82w0fnQLzWtvKPPZE6iZph39Ins6l
-n+eE2MliYq0FxjGCAycwggMjAgEBMIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2Vz
-dGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UE
-CxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJT
-QSAyMDAwLjguMzACAwhOLTAJBgUrDgMCGgUAoIIBYTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
-AQcBMBwGCSqGSIb3DQEJBTEPFw0wMjA5MjEwMTAwMDRaMCMGCSqGSIb3DQEJBDEWBBSJR40V
-i4q3IjeOTI+HoVifECy3WjBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3
-DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBrQYLKoZI
-hvcNAQkQAgsxgZ2ggZowgZIxCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUx
-EjAQBgNVBAcTCUNhcGUgVG93bjEPMA0GA1UEChMGVGhhd3RlMR0wGwYDVQQLExRDZXJ0aWZp
-Y2F0ZSBTZXJ2aWNlczEoMCYGA1UEAxMfUGVyc29uYWwgRnJlZW1haWwgUlNBIDIwMDAuOC4z
-MAIDCE4tMA0GCSqGSIb3DQEBAQUABIIBAEZWguicigxxTJevkKqHThUvu4Dkv4aFcH2/lo/K
-e0SYJWLH4/LDF1HMpIro8bJVeUYc1O5o6OzK3sulnxyd15TMxq3k6PvyyzJMinuPjbKcMCqM
-UFwHNt1/lWT8nnmfFSRUDfKk5mIgnyUY23Dwlp+DEwrNSlkirFoMp/9WElrTJviedTbNjfVu
-e78tczm1ksqKnTJW4tT6l1jp4U7kT3EpA7lnn6lIqthbQ21yX3+PG7uoYdBVpimGMKHwSpEi
-EerCSllGzZBRi35in//02hDi9eBbMoi6zCxjiO64Nt2KhBS6S2x+8WVKEPyvfB/+OBhfBKNA
-E3Mo74XkzDi/MaoAAAAAAAA=
---------------ms020702040007050506070209--
-
+This message emanates from my personal domain, and conveys solely my own
+ideas, opinions, and thoughts; not those of any employer past, present
+or future.
 
