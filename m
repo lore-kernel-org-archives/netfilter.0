@@ -1,12 +1,14 @@
-From: Devaraj Das <ddas@india.hp.com>
-Subject: iptables issue (udp -> esp)??
-Date: Tue, 20 Apr 2004 12:46:19 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IP Alias with iptables
+Date: Tue, 20 Apr 2004 08:33:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4084CE43.306546C8@india.hp.com>
-References: <010601c4263a$1268c030$68892090@grouse> <40841917.7060501@rocksteady.com>
+Message-ID: <200404200833.05963.Antony@Soft-Solutions.co.uk>
+References: <EMEKLOMJOPNJPAFKHEDJKECNCDAA.rhaces_chistes@yahoo.com.mx>
+Reply-To: Netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <EMEKLOMJOPNJPAFKHEDJKECNCDAA.rhaces_chistes@yahoo.com.mx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +19,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
-I am trying to set up a NAT for VPN access. The clients are in a private
-network. To start with, I added just one (and only one) iptables rule in the
-gateway (for one particular client-ip-addr):
-iptables -t nat -I POSTROUTING 1 -o eth0 -s 10.0.1.2  -j SNAT --to
-15.76.97.136
+On Tuesday 20 April 2004 4:08 am, Rodrigo Haces wrote:
 
-10.0.1.2 can talk (telnet, ping) to any host in 15.76.* network. However, the
-communication is problematic when the key-exchange negotiation (using racoon,
-version ipsec-tools-0.3) happens. I doubt that the issue has anything to do
-with racoon. What happens is that the VPN server 15.76.98.218 receives the
-ISAKMP packet in perfect condition and responds back with another. However,
-what reaches the client is an ESP packet!!
-All port information seems to be lost!
+> New Situation:
+>
+> eth0: 192.168.1.1 Connected to hub 1
+> eth1: 192.168.0.1 Connected to hub 2
+>
+> hub 1 is for guests
+> hub 2 is for administrative porposes, and MUST be able to use network
+> 192.168.0.x and 192.168.1.x
 
-In the tcpdump output below, read ebnt136 as the gateway, lx98218 as the VPN
-server.
+So, the firewall needs to allow 192.168.1.0/24 addresses to connect to 
+192.168.0.0/24 but not the other way round.
 
-Here is the tcpdump output on the vpn server machine (when the client starts
-the isakmp exchange):
-ebnt136.india.hp.com.4500 > lx98218.india.hp.com.isakmp: isakmp: phase 1
-I ident: [|sa] (DF)
-lx98218.india.hp.com.isakmp > ebnt136.india.hp.com.4500: isakmp: phase 1
-R ident: [|sa] (DF)
+> so this is something i thought.
+>
+> eth0... 192.168.1.1 netmask 255.255.255.0
+> eth1... 192.168.0.1 netmask 255.255.0.0
 
-Here is the output on the client (10.0.1.2):
-10.0.1.2:4500 > lx98218.india.hp.com.isakmp: isakmp: phase 1 I ident:
-[|sa] (DF)
-10.0.1.2:4500 > lx98218.india.hp.com.isakmp: isakmp: phase 1 I ident:
-[|sa] (DF)
-lx98218.india.hp.com > 10.0.1.2: ESP(spi=0x..., seq=0x...)
-lx98218.india.hp.com > 10.0.1.2: ESP(spi=0x..., seq=0x...)
+Doesn't look good.
 
-The response packets never reaches racoon on the client.
+> eth1:1. 192.168.1.101 netmask 255.255.0.0
 
-I am using Linux Kernel 2.6.0 on the client and the server and Linux Kernel
-2.4.6 on the gateway. The version of iptables on the gateway is 1.2.2.
+Looks as bad as the first idea, with only one interface.
 
-Is this an iptables/kernel (on the gateway) issue? Would really appreciate
-any help in this regard.
+> my laptop is part of the administrative sector, i have 192.168.0.10 ip, but
+> i need to be able to use also 192.168.1.10 so i can monitor guests,
 
-Thanks,
-Devaraj.
+What is wrong with yur laptop havign just one IP address (that *is* 
+conventional, after all), and the firewall allowing it to "monitor" addresses 
+in the other subnet?   Perhaps you should explain more about what you mean by 
+"monitor"?
+
+> Any ideas
+
+Yes.   Have two subnets with separate address ranges, a firewall in between, 
+and allow one subnet to connect to the other, but not the other way round.
+
+eg:
+eth0 192.168.1.1 netmask 255.255.255.0
+eth1 192.168.0.1 netmask 255.255.255.0
+
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
+
+Regards,
+
+Antony.
+
+-- 
+Success is a lousy teacher.  It seduces smart people into thinking they can't 
+lose.
+
+ - William H Gates III
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
