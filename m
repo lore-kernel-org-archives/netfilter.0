@@ -1,11 +1,11 @@
-From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
-Subject: RE: iptables accounting problem
-Date: Wed, 18 Dec 2002 15:00:36 +0100
+From: Bill Dossett <bd@emtex.com>
+Subject: question about NAT
+Date: Wed, 18 Dec 2002 14:51:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B32154A93A@hslex01.hslbz.local>
+Message-ID: <3E008B78.2000900@emtex.com>
+Reply-To: bd@emtex.com
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2A69D.D6FCC040"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,79 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Hi,
 
-------_=_NextPart_001_01C2A69D.D6FCC040
-Content-Type: text/plain
+I'm trying to get a firewall working with iptables.
 
->       I'm sorry for asking this question, I red all the documentation
->       and still got no clue how to make ip accounting work.
->       I got a pc with 2 ethernet cards all traffics goes through it.
->       i created a rule like
->       iptables -N xxx.xxx.xxx.xxx
->       iptables -A input -d xxx.xxx.xxx.xxx -j xxx.xxx.xxx.xxx
->       when i type
->       iptables -L xxx.xxx.xxx.xxx -n -v
->       i get 0 traffic information. How could be? Or whereis my
->       mistake?
+My internal network uses real IP numbers, not private
+address ranges.  I need to do this as I need to allow
+another network access to multiple machines, all ports,
+on my network at times.
 
-What if you did it like this :
-iptables -A INPUT -d xxx.xxx.xxx.xxx
-Then iptables -L INPUT -nv should tell you how much traffic has passed by.
+I am using Firestarter.. or at least started off with
+it and I am modifying the rules and using firestarter
+for a monitor.
 
-You could also create your own rule of course, but I think it's overkill.
-iptables -N testrule
-iptables -A testrule -d xxx.xxx.xxx.xxx
-iptables -A INPUT -j testrule
-Then to check the traffic that passed by : iptables -L testrule -nv
+My problem is... and I was somewhat surprised by it...
 
+Enabling NAT with firestarter works ok, but, because
+I am using real IP numbers and have a smart router,
+machines on the Internet side of my firewall could still
+ping, etc, machines on internal side of the firewall as they
+have real IP addresses... which sort of makes sense as
+ip_forward is enabled... though I thought I would need
+a static route to actually forward things... not sure
+I'm using Redhat 8.0 .. .my older system uses Redhat
+6.2 and it doesn't do this.
 
-Rob
+So.. after poking around and trying to stop this, I finally
+seem to have found the place to stop this happening,
+in the PREROUTING chain, I have done a
 
-------_=_NextPart_001_01C2A69D.D6FCC040
-Content-Type: text/html
+iptables -t nat -I PREROUTING -d 193.243.232.0/26 -j LOG
+iptables -t nat -I PREROUTING -d 193.243.232.0/26 -j DROP
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
-<TITLE>RE: iptables accounting problem</TITLE>
-</HEAD>
-<BODY>
+the first bit works... but the second bit doesn't... machines
+on the Internet side of the firewall can't see internal network
+machines, however, if you do try and ping one of them, nothing
+goes in the logs. I've read the NAT howto and a few other docs,
+but I can't see any reason why this would be, I would like to
+monitor this for scans and stuff.  Can anyone enlighten, or
+point me to docs that would?  And as usual, if I am doing this
+complete wrong, I'm certainly open to any comments on how it
+should be done.
 
-<P><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I'm sorry for asking this question, I red all the documentation</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and still got no clue how to make ip accounting work.</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I got a pc with 2 ethernet cards all traffics goes through it.</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i created a rule like</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -N xxx.xxx.xxx.xxx</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -A input -d xxx.xxx.xxx.xxx -j xxx.xxx.xxx.xxx</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when i type</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -L xxx.xxx.xxx.xxx -n -v</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i get 0 traffic information. How could be? Or whereis my</FONT>
-<BR><FONT SIZE=2>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mistake?</FONT>
-</P>
+Thanks
 
-<P><FONT SIZE=2>What if you did it like this :</FONT>
-<BR><FONT SIZE=2>iptables -A INPUT -d xxx.xxx.xxx.xxx</FONT>
-<BR><FONT SIZE=2>Then iptables -L INPUT -nv should tell you how much traffic has passed by.</FONT>
-</P>
+Bill
 
-<P><FONT SIZE=2>You could also create your own rule of course, but I think it's overkill.</FONT>
-<BR><FONT SIZE=2>iptables -N testrule</FONT>
-<BR><FONT SIZE=2>iptables -A testrule -d xxx.xxx.xxx.xxx</FONT>
-<BR><FONT SIZE=2>iptables -A INPUT -j testrule</FONT>
-<BR><FONT SIZE=2>Then to check the traffic that passed by : iptables -L testrule -nv</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=2>Rob</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2A69D.D6FCC040--
 
