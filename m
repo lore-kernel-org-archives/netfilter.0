@@ -1,13 +1,14 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Scary Hole in the Firewall?
-Date: Mon, 19 Jul 2004 14:42:38 -0500
+From: Jamie Pratt <jamie@nucdc.org>
+Subject: Re: again problem with alias / virtual interface
+Date: Mon, 19 Jul 2004 15:46:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40FC242E.3050504@pbl.ca>
-References: <1090265344.11052.7.camel@dchws.tqmcube.com>
+Message-ID: <40FC251E.8090506@nucdc.org>
+References: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108>
+Reply-To: jamie@nucdc.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090265344.11052.7.camel@dchws.tqmcube.com>
+In-Reply-To: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +19,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: NetFilter List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-David Cary Hart wrote:
-> Platform = Fedora 2
-> IPTables firewall. Snort running inside the firewall.
 
-Question.  Iniside firewall as in "on separate machine inside firewall", 
-or as in "on the same machine as firewall"?
 
-In former case, it might as well be that the packet you are seeing had 
-spoofed IP address, and that it originated inside your network.  Is eth0 
-on your LAN or outside.  Another case could be that you have ommision in 
-firewall rules (so that "what is logged is not always dropped").
+Batstru wrote:
+> Hi all!
+> I wrote days ago: I have a problem with virutal interface and iptables:
+> my pc has 2 network interface, one with a private network address and the
+> other one with 
+> public network addresses:
+> eth0 --> 192.168.1.254 / 255.255.255.0
+> eth1 --> 82.186.92.90 / 255.255.255.248
+> eth1:1 --> 82.186.92.91 / 255.255.255.248
+> eth1:2 --> 82.186.92.92 / 255.255.255.248
+> eth1:3 --> 82.186.92.93 / 255.255.255.248
+> eth1:4 --> 82.186.92.93 / 255.255.255.248
 
-In later case, what you are seeing is what you were supposed to see (if 
-I'm correct on how snort works, by sniffig network traffic directly from 
-the network interface).
+> 
+> The problem is that I can't access to services running at virtual
+> interfaces. 
+> I tried to solve the problem as suggested me: I've seen that using alias is
+> deprecated so I 
+> tried using iproute: I set up with 
+> ip addr add 82.186.92.90/24 brd 82.186.92.95 dev eth1 label eth1:0
+> ip addr add 82.186.92.91/24 brd 82.186.92.95 dev eth1 label eth1:1
+> ip addr add 82.186.92.92/24 brd 82.186.92.95 dev eth1 label eth1:2
+> ip addr add 82.186.92.93/24 brd 82.186.92.95 dev eth1 label eth1:3
+> ip addr add 82.186.92.94/24 brd 82.186.92.95 dev eth1 label eth1:4
+> but after service iptables restart anything changes, alias's rules doesn't
+> be applied and no 
+> errors is reported. 
+> I think I'm doing something wrong with iproute but I don't know what: shoud
+> I give any command 
+> to enable iproute?
+> 
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+
+well, for starters, a /24 network of your ip addressing should have a 
+broadcast address of 82.186.92.255 - if your broadcast ip you have there 
+*is* your broadcast address (.95), your network is diced up a bit more.. 
+if you know the size of your ip address space, this may help?
+
+http://www.dnsstuff.com/tools/cidr.ch?ip=82.186.92.91
+
+maybe this too:
+
+http://www.cotse.com/networkcalculator.html
+
+regards,
+jamie
 
