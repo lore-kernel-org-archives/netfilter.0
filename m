@@ -1,10 +1,9 @@
-From: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
-Subject: /proc/net/ip_conntrack problem
-Date: Fri, 6 Feb 2004 17:28:51 +0000 (GMT)
+From: Hideaki Nemoto <eme@bg8.so-net.ne.jp>
+Subject: can't delete with iptables
+Date: Sat, 07 Feb 2004 16:23:07 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1Ap9md-000c35-CG@alf1.lmb.internal>
+Message-ID: <200402070721.i177LxJ09969@mail.bg8.so-net.ne.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,47 +15,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-I need to maintain a log of SNAT'd connections/disconnections
-which contain the source/dest ip/port of the host before
-SNAT'ing. As discussed on this list before, the POSTROUTING -j LOG
-target doesnt provide this information, so I've written a crude
-logger of my own.
+I can't delete the rule by iptables, that I inserted
+with my program using libiptc.
 
-This logger is a perl script which does the following:
+I've managed to insert, replace, and delete the rulesfrom my program.
+But I can't delete that rule by iptables, or the ip6tables.
 
-Every second:
+It tells me,
 
-. Reads the content of /proc/net/ip_conntrack.
+ "Bad rule (does a matching rule exist in that chain?)"
 
-. Searches for entries in the ip_conntrack data which it
-  doesnt have in its own list, adds them to its own
-  list and logs a 'connect' for that entry.
+Could any one give me some clues to solve this problem?
 
-. Searches for entries in its own list which no longer
-  appear in the ip_conntrack data, removes them from
-  its own list and logs a 'disconnect' for that entry.
+I'll show the structure of my ipt_entry at the bottom.
+Is there something wrong with this?Anything missing?
+I've seen in a web site, that I need to build something about
+matching if I wanted to delete the rule, but ipt_delete_num_entry
+doesn't require that....
 
+I'd really be happy for your help.
 
-This seems to work OK apart from one thing. From time
-to time, the output from /proc/net/ip_conntrack seems
-to get truncated. This means that I erroneously flag
-all the missing items as 'disconnected', and then next
-time I read ip_conntrack (this time without truncation)
-all the previously missing entries reapper and then get
-flagged as 'connected' again.
-I can also experience the truncation if I repeatedly grep
-for a known src= + dst= line in ip_conntrack. Occasionally
-grep doesnt find it.
+Thanks in advance.
 
-What happens if the ip_conntrack data is being updated
-at the instant /proc/net/ip_conntrack is being read?
-Is there the possibility of a race condition here which
-might explain what I'm seeing? Any suggestions welcome.
+   +---------------------+
+   |______ipt_entry______|
+   |                     |
+   | next_offset---------|--->to the next rule(end of the struct)
+   |                     |
+ +-|-target_offset       |
+ | |              elems--|-->+----------------------+
+ | +---------------------+   |_ipt_standard_target__|
+ |                           |                      |
+ |                           |  ipt_entry_target    |
+ |                           |                      |
+ |                           |  name=udp            |
+ |                           |                      |
+ |                           |                      |
+ |      +---------------+ <--|--data                |
+ |      |___ipt_udp_____|    +----------------------+ 
+ |      |               |
+ |      |               |
+ |      |_______________|
+ |
+ |
+ +->+---------------------+
+    |_ipt_standard_target_|
+    |  ipt_entry_target   |
+    |                     |
+    |                     |
+    | name=ACCEPT         |
+    +---------------------+
+ 
 
-Cheers,
-Terry.
-
+-- 
+Hideaki Nemoto mailto:eme@bg8.so-net.ne.jp
 
