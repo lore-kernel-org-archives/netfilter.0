@@ -1,13 +1,9 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: How multiple PCs on private LAN possible if incoming is DNAT'd
- to *same* server *always*?
-Date: Fri, 04 Feb 2005 15:41:12 +0200
-Message-ID: <42037B78.8080605@hotpop.com>
-References: <20050203172500.GB29677@spawar.navy.mil>	<20050203173506.GA4619@bender.817west.com>	<20050203225936.GA31268@spawar.navy.mil>	<1107472297.3866.12.camel@hubcap.ljm.dom>
-	<20050204004651.GA31859@spawar.navy.mil>
+From: Michael Thompson <mike@thompsonmike.co.uk>
+Subject: Filtering on MAC Addresses
+Date: Fri, 04 Feb 2005 13:58:21 +0000
+Message-ID: <42037F7D.2070804@thompsonmike.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050204004651.GA31859@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: seberino@spawar.navy.mil
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-seberino@spawar.navy.mil wrote:
+I am trying to filter on MAC addresses and have alittle problem.
 
->>>Doesn't EVERY incoming packet go through PREROUTING?? And hence,
->>>the rule above will be applied to ALL incoming packets right?!?
->>>      
->>>
->>your statement is true for -t mangle PREROUTING, -t nat is not traversed
->>by every packet, no.
->>    
->>
->
->Whoa! I didn't know that there is a PREROUTING for //both//
->mangle and nat tables!!!
->
->So mangle PREROUTING for all packets and net PREROUTING only for
->NEW state packets.  Beautiful!!! Now I get it!!!
->
->Thanks again for the help!
->
->Chris
->
->
->  
->
-Take a look at this:
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TRAVERSINGOFTABLES
+I use a rule like the following
+
+/sbin/iptables -A MACALLOW -p ALL -i eth0 -m mac --mac-source 
+'MACADDRESS' -j ACCEPT
+
+Where MACADDRESS is replaced by the MAC CODE of the machine.
+
+However, the MAC address that the Network card uses is not being used by 
+IPTables. It tries to use a larger MAC Code, which appears to be two mac 
+addresses pinned together.
+
+So if I use the MAC code of 00:10:5a:14:50:db, it gets rejected because 
+IPTables uses the MAC Code of 00:09:5b:1b:52:77:00:10:5a:14:50:db:08:00
+Which does not match obviously. So why is IPTables using this, and how 
+can I get round it to use IPTables MAC Code rules?
+
+Many Thanks for any help you can offer
 
 
-Georgi Alexandrov
+Mike.
+
+
+
+
+
+
 
