@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: local NAT of connections conflicts with ftp conntrack?
-Date: Fri, 14 Jun 2002 13:47:08 +0200 (CEST)
+Subject: Re: SNAT of icmp: fragmentation-needed
+Date: Fri, 14 Jun 2002 13:50:05 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206141342430.17402-100000@blackhole.kfki.hu>
-References: <Pine.LNX.4.44.0205251129250.6374-100000@onyx4.dhs.org>
+Message-ID: <Pine.LNX.4.33.0206141348470.17402-100000@blackhole.kfki.hu>
+References: <Pine.LNX.4.44.0206041715120.27892-100000@albert.ha-vel.cz>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.44.0205251129250.6374-100000@onyx4.dhs.org>
+In-Reply-To: <Pine.LNX.4.44.0206041715120.27892-100000@albert.ha-vel.cz>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,37 +18,24 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Christian Lambert <clambert@sgi.com>
+To: jn@angel.cz
 Cc: netfilter@lists.samba.org
 
-On Sat, 25 May 2002, Christian Lambert wrote:
+On Tue, 4 Jun 2002 jn@angel.cz wrote:
 
-> I enabled "local natting of connections" in the kernel so that I can
-> do transparent proxy from the local host itself running squid, and
-> I only use these two rules in the new table called "OUTPUT" for nat.
+> I would like to SNAT icmp fragmentation-needed messages that have source
+> address from private network range (RFC1918), I have tried something like:
 >
-> # transparent proxy for localhost
-> iptables -t nat -A OUTPUT -p tcp --dport 80 -m owner --uid-owner squid -j ACCEPT
-> iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-port 3128
+> iptables -t nat  -I POSTROUTING -j SNAT --to real_address -p icmp  \
+> --icmp-type fragmentation-needed -s 192.168.0.0/16
 >
-> Now the problem that I have is that when the box itself tries to ftp
-> to the outside world, it just hangs as soon as it does the PORT command.
->
-> Then in syslog I see a couple of these messages:
->
-> ip_conntrack: max number of expected connections 1 of ftp reached for
-> <hideen ip>-><hidden ip>, reusing
+> but it does not work. I think that because these packets are part of
+> valid TCP connection, they are somehow processed by ip_conntrack
+> module and do not pass this rule....
 
-Ha! That's interesting and smells like a bug.
-
-> I'm using kernel 2.4.19-pre7 with the newnat patch applied and h323,
-> but no other patches.   Iptables userspace 1.2.6a.    My POSTROUTING
-> of nat contains a typical SNAT setting to let my internal machines
-> access the internet.
-
-Did you apply the newnat patch from iptables-1.2.6a or from a recent cvs
-donwload? iptables-1.2.6a contains newnat8 while in cvs we have newnat13
-with a couple of bugs fixed.
+Yes, ICMP error messages related to already existing connections are
+handled by conntrack and NAT automatically. There is no need to setup any
+rule for them. One only have to let trough packets with state RELATED.
 
 Regards,
 Jozsef
