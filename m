@@ -1,12 +1,13 @@
-From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
-Subject: RE: MRTG and IPTABLES
-Date: Thu, 8 Jan 2004 15:56:53 +0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: MRTG and IPTABLES
+Date: Thu, 8 Jan 2004 12:07:48 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <83055D4B014C9E478D2F04624B9E82CFD4D8@noveldc.novelgmt.mu>
+Message-ID: <200401081207.48443.Antony@Soft-Solutions.co.uk>
+References: <83055D4B014C9E478D2F04624B9E82CFD4D8@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFD4D8@noveldc.novelgmt.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,125 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Gilles Yue <gyue@novelgmt.intnet.mu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+On Thursday 08 January 2004 11:56 am, Gilles Yue wrote:
 
-	I have opened port 161 in my firewall script.=20
-=09
-	$IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
-
-	However, POSRTOUTING SET TO DROP By default, is preventing MRTG
-from 	running properly. (I have tried setting POSTROUTING TO ACCEPT
-and MRTG 	works fine)
-
-	$IPTABLES -t nat -P POSTROUTING DROP
-
-	Does anybody know how do I allow MRTG to run with POSTROUTING
-SET TO 	DROP?
-
-Thanks
-gy
-
-
------Original Message-----
-From: Gilles Yue=20
-Sent: Thursday, January 08, 2004 10:47 AM
-To: Daniel F. Chief Security Engineer -; netfilter@lists.netfilter.org
-Subject: RE: MRTG and IPTABLES
-
-Dear sir,
-
-Have tried your commands below but when I run my iptables script,=20
-
-I get "command not found" and it points to the line=20
-
-$SNMP_POLLER_IP=3D"xxx.xxx.xxx.xxx"
-
-Thanks
-gy
-
-
------Original Message-----
-From: Daniel F. Chief Security Engineer -
-[mailto:danielf@supportteam.net]=20
-Sent: Wednesday, January 07, 2004 6:18 PM
-To: Gilles Yue; netfilter@lists.netfilter.org
-Subject: Re: MRTG and IPTABLES
-
-try
-
-$IPTABLES -A INPUT -p udp --dport 161 -j ACCEPT=20
-
-assuming that yuo are tryinh to accept port 161 on the local machine. if
-you=20
-doing stateful it should look similar to this.=20
-
-# IP of machine running MRTG
-$SNMP_POLLER_IP=3D"xxx.xxx.xxx.xxx"
-
-$IPTABLES -A INPUT -p udp -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A INPUT -p udp --dport 161 -m state --state NEW -s
-$SNMP_POLLER_IP=20
--j ACCEPT
-
-$IPTABLES -A OUTPUT -p udp -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-$IPTABLES -A OUTPUT -p udp --sport 161 -m state --state NEW -s
-$SNMP_POLLER_IP=20
--j ACCEPT
-
-This is assuming you have set the ploicies to drop
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-
-On Wednesday 07 January 2004 06:46, Gilles Yue wrote:
 > Hi,
 >
-> Is this the way it should be in iptables?
+> 	I have opened port 161 in my firewall script.
 >
-> #Open SNMP Ports
-> $IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
+> 	$IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
 >
-> Have tried it, not working
+> 	However, POSRTOUTING SET TO DROP By default, is preventing MRTG
+> from 	running properly. (I have tried setting POSTROUTING TO ACCEPT
+> and MRTG 	works fine)
 >
-> Thanks.
-> Gy
->
-> -----Original Message-----
-> From: Daniel F. Chief Security Engineer -
-> [mailto:danielf@supportteam.net]
-> Sent: Wednesday, January 07, 2004 4:45 PM
-> To: Gilles Yue; netfilter@lists.netfilter.org
-> Subject: Re: MRTG and IPTABLES
->
-> SNMP UDP Ports 161 and 162 MRTG typically only uses 161.
->
->
-> Thanks
->
-> On Wednesday 07 January 2004 00:54, Gilles Yue wrote:
-> > MRTG cannot work properly due to iptables running.
-> >
-> >
-> >
-> > Anybody knows which port number to open to enable MRTG to work
->
-> properly.
->
-> > Thanks.
-> >
-> >
-> >
-> > Rgds
-> >
-> > gy
+> 	$IPTABLES -t nat -P POSTROUTING DROP
 
---=20
-Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
-The distance between nothing and infinity is always the same no matter
-how=20
-close you get to nothing.
+That is a very bad idea.
+
+The nat tables are for address translation, not for filtering.
+
+The filter tables are for filtering - that's where you should be DROPping 
+packets.
+
+Set the policy on POSTROUTING back to ACCEPT, and by all means tell us if this 
+causes you any problems.
+
+Regards,
+
+Antony.
+
+-- 
+If at first you don't succeed, destroy all the evidence that you tried.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
