@@ -1,13 +1,13 @@
 From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: traffic control
-Date: Thu, 27 Jun 2002 16:49:30 +0200
+Subject: Re: DCC Nat Trouble
+Date: Thu, 27 Jun 2002 16:51:18 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627144930.GH9003@naboo.rchrd.phub.net.cable.rogers.com>
-References: <3D136AB0.8010801@objetivo-americana.com.br>
+Message-ID: <20020627145118.GI9003@naboo.rchrd.phub.net.cable.rogers.com>
+References: <1024401382.3010.7.camel@force>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <3D136AB0.8010801@objetivo-americana.com.br>
+In-Reply-To: <1024401382.3010.7.camel@force>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,22 +19,21 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: zeluis@objetivo-americana.com.br
+To: Frederik Bijlsma <frederik@killesberg.org>
 Cc: netfilter@lists.samba.org
 
-On Fri, Jun 21, 2002 at 03:04:32PM -0300, Z? Lu?s wrote:
-> Hi everybody,
+On Tue, Jun 18, 2002 at 01:56:22PM +0200, Frederik Bijlsma wrote:
+> Dear list,
 > 
-> iptables can be used to control traffic (to limit band)?
-> Which tool I use for this end?
-> 
-> Example: to limit traffic of ftp for 10 kbps for IP 192.168.1.10
+> I've got trouble setting up DCC Transfers using netfilter modules. 
+> ip_nat_irc ip_conntrack_irc are both loaded and assigned to the right
+> ports.
 
-look for the Linux Advanced Routing and Traffic Control HOWTO at 
-www.lartc.org.
+no idea. it works for a lot of people. maybe you can compile them with
+debugging enabled and see where the problem is.
 
-> thanks a lot.
-> Ze Luis
+it's also interesting if /proc/net/ip_conntrack shows the correct
+expectation(s) at the bottom.
 
 -- 
 Live long and prosper
