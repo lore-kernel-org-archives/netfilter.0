@@ -1,11 +1,9 @@
-From: Jay Eno <JEno@finali.com>
-Subject: Session State question
-Date: Tue, 2 Sep 2003 16:10:19 -0600
+From: "akshaysalkar" <akshaysalkar@indiatimes.com>
+Subject: http page opens very slowly
+Date: Wed, 03 Sep 2003 13:53:44 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D73ABBB16E06D411B60F00508B6DD9F80474AE40@postoffice.finali.com>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3719E.FED48D60"
+Message-ID: <200309030808.NAA16858@WS0005.indiatimes.com>
+Reply-To: "akshaysalkar"<akshaysalkar@indiatimes.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,49 +14,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter Group <netfilter@lists.netfilter.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+I have set up a basic firewall for a linuxbox. and blocked quite some ports. 
+out of which http port 80 is not blocked.
 
-------_=_NextPart_001_01C3719E.FED48D60
-Content-Type: text/plain
+when i open the page to the server. ie. the apache test page. it opens up fast.
+however i have php-nuke also working on the server.
+that page opens up however it takes very long to open.
+ie. more than 3 mins. / page
+any idea why??
 
-Hi,
 
-     I'm trying to do an HA firewall scendario, with the ability to failover
-session state. This works OK, for everything but the session state. Anybody
-have any idea if there's a way to do this with iptables between 2 boxes?
 
--= Jay =-
+Get Your Private, Free E-mail from Indiatimes at http://email.indiatimes.com
 
-------_=_NextPart_001_01C3719E.FED48D60
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+ Buy The Best In BOOKS at http://www.bestsellers.indiatimes.com
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2654.45">
-<TITLE>Session State question</TITLE>
-</HEAD>
-<BODY>
+Bid for for Air Tickets on Air Sahara Flights at Prices Lower Than Before. Just log on to http://airsahara.indiatimes.com and Bid Now!
 
-<P><FONT SIZE=3D2>Hi,</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&nbsp;&nbsp;&nbsp;&nbsp; I'm trying to do an HA =
-firewall scendario, with the ability to failover session state. This =
-works OK, for everything but the session state. Anybody have any idea =
-if there's a way to do this with iptables between 2 boxes?</FONT></P>
-
-<P><FONT SIZE=3D2>-=3D Jay =3D-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C3719E.FED48D60--
 
