@@ -1,11 +1,13 @@
-From: dhiraj.2.bhuyan@bt.com
-Subject: RE: redirection
-Date: Wed, 9 Apr 2003 09:40:25 +0100
+From: xchris <lyra@fastwebnet.it>
+Subject: Re: redirection
+Date: Wed, 9 Apr 2003 11:13:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7497DCA1C240C042B28F6657ADFD8E09268773@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <200304091113.48665.lyra@fastwebnet.it>
+References: <7497DCA1C240C042B28F6657ADFD8E09268773@i2km11-ukbr.domain1.systemhost.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E09268773@i2km11-ukbr.domain1.systemhost.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: lyra@fastwebnet.it, netfilter@lists.netfilter.org
+To: dhiraj.2.bhuyan@bt.com, netfilter@lists.netfilter.org
 
-You do infact need DNAT and not SNAT
-
-iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j DNAT
---to-destination x.y.z.2:80
-
-this should work.
-dhiraj
-
-
------Original Message-----
-From: xchris [mailto:lyra@fastwebnet.it]
-Sent: 08 April 2003 23:17
-To: netfilter@lists.netfilter.org
-Subject: Re: redirection
+On Wednesday 09 April 2003 10:40 am, you wrote:
+> You do infact need DNAT and not SNAT
+>
+> iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j DNAT
+> --to-destination x.y.z.2:80
+>
+> this should work.
 
 
+I tried but all connections go in timeout.
+I first flushed every chain,set default policy everywhere,and then added =
+DNAT=20
+rule...
 
------ Original Message -----
-From: "Eric Joe" <sysop@tje1.com>
+no result...
 
+The strange thing is :
+if i DNAT on another interface everything is ok.
+if i DNAT through the incoming connection interface... it fails.
 
-> I didnt catch the fact that you need the source address. Are you tracking
-> this for a reason? You can probably have iptables log the source address.
-> This does in fact work, been using it for  about 6 months now. Let me post
-> my exact rules (IPs are obsfucated)
-
-i need it because i'm trying to do a simple load balancing between 2 local
-servers running opennap.
-(and opennap needs to know the IP address otherwise downloads dont start)
-thnak you
-
-xchris
-
-
+strange...
+I think i miss something..
+Thank you
+Chris
 
