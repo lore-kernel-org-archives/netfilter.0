@@ -1,9 +1,10 @@
-From: "dravya" <dravya@magma.ca>
-Subject: latest version of ipt_MASQUERDADE.c ????
-Date: Fri, 10 Sep 2004 10:23:48 -0400 (EDT)
+From: =?iso-8859-1?q?Giancarlo=20Boaron?= <gboaron@yahoo.com.br>
+Subject: No Internet Connection
+Date: Fri, 10 Sep 2004 11:49:01 -0300 (ART)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409101423.i8AENmq1013420@webmail1.magma.ca>
+Message-ID: <20040910144901.42036.qmail@web50204.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,89 +16,183 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+Ok. So that's my super mega power iptables script I'm
+testing for my internet server.
+
+I already put the DHCP rules (my ISP doesn't have a
+fixed IP address for the DHCP server. They are always
+changing it... don't ask me why) but I didn't test it
+yet.
+
+I developed this script using the very good classic
+idea: block everything and allow just what I want.
+
+So, this internet server will be a firewall (as soon
+as this script works), making NAT (with MASQUERADING).
+I also have the SQUID for proxing and caching. 
+
+Some users in my LAN have free pass for everything
+while the rest of my users just can connect to the
+mail servers (POP and SMTP) and a few users can
+connect to ICQ, Messenger, etc (I really don't like
+this idea, but I have to do it).
+
+I don't use any authentication method based on user
+and password. Instead, I use rules based on the MAC
+address for the computers with free pass. (Ok. I know
+it isn't a very safe aproach).
+
+So, here goes my script:
+
+INET_IP=`ifconfig eth0 | grep inet | cut -d : -f 2 |
+cut -d ' ' -f 2`
+INET_IFACE="eth0"
+
+LAN_IP="192.168.0.41"
+LAN_IP_RANGE="192.168.0.0/24"
+LAN_IFACE="eth1"
+
+LO_IFACE="lo"
+LO_IP="127.0.0.1"
+
+Mac1="00:e0:18:3b:af:78"
+Mac2="00:50:04:9c:42:23"
+Mac3="00:0e:a6:bd:e7:7f"
+Mac4="00:c0:df:a5:0c:a5"
+
+IPTABLES="/usr/sbin/iptables"
+
+/sbin/depmod -a
+/sbin/modprobe ip_tables
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_filter
+/sbin/modprobe iptable_nat
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_limit
+/sbin/modprobe ipt_state
+/sbin/modprobe ipt_REJECT
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+$IPTABLES -F
+$IPTABLES -X
+
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT DROP
+$IPTABLES -P FORWARD DROP
+
+$IPTABLES -N tcp_invalidos
+
+$IPTABLES -A tcp_invalidos -p tcp --tcp-flags SYN,ACK
+SYN,ACK \
+-m state --state NEW -j REJECT --reject-with tcp-reset
+$IPTABLES -A tcp_invalidos -p tcp ! --syn -m state
+--state NEW -j LOG \
+--log-prefix "Novo nao SYN:"
+$IPTABLES -A tcp_invalidos -p tcp ! --syn -m state
+--state NEW -j DROP
+
+$IPTABLES -A OUTPUT -p tcp -j tcp_invalidos
+
+$IPTABLES -A OUTPUT -p udp --sport 68 --dport 67 -j
+ACCEPT
+
+$IPTABLES -A OUTPUT -p all -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+
+$IPTABLES -A OUTPUT -p icmp --icmp-type 8 -j ACCEPT
+
+$IPTABLES -A OUTPUT -p tcp --dport 53 -j ACCEPT
+$IPTABLES -A OUTPUT -p udp --dport 53 -j ACCEPT
+
+$IPTABLES -A OUTPUT -p tcp --dport 80 -s $INET_IP -o
+$INET_IFACE -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 443 -s $INET_IP -o
+$INET_IFACE -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 21 -s $INET_IP -o
+$INET_IFACE -j ACCEPT
+
+# ICQ:
+$IPTABLES -A OUTPUT -p tcp -d 64.12.163.197 -o
+$INET_IFACE -j ACCEPT
+
+$IPTABLES -A INPUT -p tcp -j tcp_invalidos
+
+$IPTABLES -A INPUT -p udp --sport 67 --dport 68 -j
+ACCEPT
+
+$IPTABLES -A INPUT -p ALL -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+
+$IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT
+
+# SQUID:
+$IPTABLES -A INPUT -i $LAN_IFACE -p tcp --dport 80 -j
+ACCEPT
+
+$IPTABLES -A FORWARD -p tcp -j tcp_invalidos
+
+$IPTABLES -A FORWARD -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+
+$IPTABLES -A FORWARD -m mac --mac-source $Mac1 -j
+ACCEPT
+
+$IPTABLES -A FORWARD -m mac --mac-source $Mac2 -j
+ACCEPT
+
+$IPTABLES -A FORWARD -m mac --mac-source $Mac3 -j
+ACCEPT
+
+$IPTABLES -A FORWARD -m mac --mac-source $Mac4 -j
+ACCEPT
+
+$IPTABLES -A FORWARD -p tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -p udp --dport 53 -j ACCEPT
+
+$IPTABLES -A FORWARD -d <my pop server> -p tcp --dport
+110 \
+-i $LAN_IFACE -j ACCEPT
+
+$IPTABLES -A FORWARD -d <my smtp server> -p tcp
+--dport 25 \
+-i $LAN_IFACE -j ACCEPT
+
+$IPTABLES -A FORWARD -p tcp --dport 21 -i $LAN_IFACE
+-j ACCEPT
+$IPTABLES -A FORWARD -p tcp --dport 80 -i $LAN_IFACE
+-j ACCEPT
+$IPTABLES -A FORWARD -p tcp --dport 443 -i $LAN_IFACE
+-j ACCEPT
+
+$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT
+--to-source $INET_IP
+
+That's it. Another question: When I configure this
+script to run automatically after rebooting the
+server, I receive this error message (3 times): "Bad
+argument eth0" so the script doesn't work, neither my
+Internet access from my LAN and I can't find where is
+the error.
+
+However, after rebooting the server and loggin in as
+root, I can run the script from command line. It works
+and my LAN can access the Internet during that short
+time (about 20 minutes. However, I didn't test the
+DHCP rules to ckeck if it continues to happen).
+
+Regards
+Giancarlo
 
 
-Hi I am wondering what is the latest version of the ipt_MASQUERADE.c out there. I guess it
-comes with the 2.6.* kernels... I am using 2.4.20-8.
 
-Rusty had posted a patch (on devel list) for ipt_MASQUERADE.c for the kernel 2.6.9. I
-tried to match the (2.4.20-8) code with the patch and there seem to be some differences.
-Can anyone help me in making the transition, or can anyone advise me as to how to test the
-patch. The following link is the patch for MASQUERADE that I am refering to:
-
-http://lists.netfilter.org/pipermail/netfilter-devel/2004-September/016708.html
-
-and the following is the code snippet of the ipt_MASQUERADE.c of my kernel:
-
-static unsigned int
-masquerade_target(struct sk_buff **pskb,
-		  unsigned int hooknum,
-		  const struct net_device *in,
-		  const struct net_device *out,
-		  const void *targinfo,
-		  void *userinfo)
-{
-	struct ip_conntrack *ct;
-	enum ip_conntrack_info ctinfo;
-	const struct ip_nat_multi_range *mr;
-	struct ip_nat_multi_range newrange;
-	u_int32_t newsrc;
-	struct rtable *rt;
-	struct rt_key key;
-
-	IP_NF_ASSERT(hooknum == NF_IP_POST_ROUTING);
-
-	/* FIXME: For the moment, don't do local packets, breaks
-	   testsuite for 2.3.49 --RR */
-	if ((*pskb)->sk)
-		return NF_ACCEPT;
-
-	ct = ip_conntrack_get(*pskb, &ctinfo);
-	IP_NF_ASSERT(ct && (ctinfo == IP_CT_NEW
-				  || ctinfo == IP_CT_RELATED));
-
-	mr = targinfo;
-
-	key.dst = (*pskb)->nh.iph->daddr;
-	key.src = 0; /* Unknown: that's what we're trying to establish */
-	key.tos = RT_TOS((*pskb)->nh.iph->tos)|RTO_CONN;
-	key.oif = out->ifindex;
-#ifdef CONFIG_IP_ROUTE_FWMARK
-	key.fwmark = (*pskb)->nfmark;
-#endif
-	
-	printk("MASQUERADE: output iface: %d\n", key.oif);
-	if (ip_route_output_key(&rt, &key) != 0) {
-		/* Shouldn't happen */
-		printk("MASQUERADE: No route: Rusty's brain broke!\n");
-		return NF_DROP;
-	}
-
-	newsrc = rt->rt_src;
-              printk("newsrc = %u.%u.%u.%u\n", NIPQUAD(newsrc));
-	DEBUGP("newsrc = %u.%u.%u.%u\n", NIPQUAD(newsrc));
-	ip_rt_put(rt);
-
-	WRITE_LOCK(&masq_lock);
-	ct->nat.masq_index = out->ifindex;
-	WRITE_UNLOCK(&masq_lock);
-
-	/* Transfer from original range. */
-	newrange = ((struct ip_nat_multi_range)
-		{ 1, { { mr->range[0].flags | IP_NAT_RANGE_MAP_IPS,
-			 newsrc, newsrc,
-			 mr->range[0].min, mr->range[0].max } } });
-
-	/* Hand modified range to generic setup. */
-	return ip_nat_setup_info(ct, &newrange, hooknum);
-}
-
-
-I really appreciate any help or suggestions
-
-thank you
-
-dravya
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
