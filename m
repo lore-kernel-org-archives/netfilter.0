@@ -1,13 +1,14 @@
-From: "Darrell A. Escola" <darrell-iptables@descola.net>
-Subject: Re: portforward of port 80 not working
-Date: Sat, 1 Feb 2003 17:37:43 -0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: netfilter/iptables LOG not logging MAC addresses
+Date: Sat, 1 Feb 2003 20:34:24 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030202013743.GA29181@descola.net>
-References: <5.1.0.14.2.20030201201121.02dcdeb0@linda.kadnet.dom> <200302011545.31115.netfilter@newkirk.us>
+Message-ID: <200302012034.24812.netfilter@newkirk.us>
+References: <01CEA3A5B8B2D511890F0002A5870AEC5FB575@EXCHANGE>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200302011545.31115.netfilter@newkirk.us>
+In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC5FB575@EXCHANGE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,76 +19,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Joel Newkirk <netfilter@newkirk.us>
-Cc: netfilter@lists.netfilter.org
+To: Khanh Tran <khanh@slc.edu>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-If you are adding these lines to a script that removes your current rules,
-then re-applies your rules, the PREROUTING and 2 FORWARD rules should work.
+On Saturday 01 February 2003 07:21 pm, Khanh Tran wrote:
+> OK, so I tried to do:
+>
+> iptables -A POSTROUTING -j LOG --log-tcp-options --log-ip-options
+>
+> but all that gives me is an iptables error about that not being a
+> valid chain.  I do get the MAC address info if I log the INPUT chain,
+> but all that gives me is the info about the originating IP with a
+> destination of the internal interface of my firewall.  That's not much
+> help for keeping track of the activity of all my internals.  This is
+> essentially all I am trying to do.  If anyone has a better solution,
+> I'm up for suggestions.
 
-If you are inserting the new rules from the command line:
+The nat and mangle tables each have a POSTROUTING chain, but the filter=20
+table does not.  If you don't specify a table, iptables uses "-t filter"=20
+as the default.  In any case, you won't see MAC information in the=20
+POSTROUTING logs. (If you want to try my dirty fix, you should be able=20
+to get it in POSTROUTING, with "-t nat" before "-A" in your rule above) =20
+In your situation you will only find it in logs from a PREROUTING chain. =
+=20
+Try:
 
-iptables -A ............ appends to the end of the chain
-iptables -I ............ inserts at the beginning of the chain
+iptables -t nat -I PREROUTING 1 -j LOG --log-tcp-options --log-ip-options
 
-Hope this helps,
+And you should see the "MAC=3D" field in each log entry.  You will likely=
+=20
+want to add some matches, however, like "-s 10.10.0.0/16" or "-p tcp=20
+--dport 80" or such to keep it from logging unneeded info.  I'd also=20
+suggest you consider "-m state --state NEW" in the log rule, if this is=20
+compatible with your needs, so that you only log the first packet of=20
+each connection.  You'll accurately log the activity but not the volume=20
+that way.
 
--- 
-Darrell A. Escola, CCNA(R), MCSE(R), A+(R), Linux+(R)
+BTW, If you are going to use this for everyday purposes, you will want to=
+=20
+redirect the logs to their own logfile, if you aren't already (IE with=20
+'kern.=3Ddebug  /var/log/firewall" in /etc/syslog.conf, and append=20
+"--log-level 7" to logging rules).  Also, you really might want to look=20
+into some of the ULOG-based accounting packages available, that will=20
+track a variety of packet information and store it - often without=20
+consuming the immense storage required to log ALL traffic through a=20
+gateway system using the LOG target.  You will probably also gain the=20
+ability to easily create a report listing any machines conducting=20
+unusual communications, exceeding given parameters, etc.
 
-On Sat, Feb 01, 2003 at 03:45:31PM -0500, Joel Newkirk wrote:
-> On Saturday 01 February 2003 02:23 pm, Rasmus Reinholdt Nielsen wrote:
-> > Hi
-> >
-> > I have a problem forwarding port 80. I can forward any ofter port,
-> > like 81 or 8080. I juse
-> > iptables -t nat -A PREROUTING -p tcp -i eth2 -s 0/0 --dport 80 -j DNAT
-> > --to 172.16.1.7:80
-> >
-............
-> >
-> > iptables -A INPUT -j ACCEPT
-> > iptables -A FORWARD -j ACCEPT
-> > iptables -t nat -A POSTROUTING -j MASQUERADE
-> > iptables -t nat -A PREROUTING -p tcp -i eth2 -s 0/0 --dport 80 -j DNAT
-> > --to 172.16.1.7:80
-> >
-> > just to try it - and that too didn't work.
-> >
-> > I am running kernel 2.4.19-pre9 and iptabels 1.2.7 on a redhat 7.3
-> >
-> > Hope somebody have an idea, and thanks in advance.
-> >
-> > /Rasmus
-> 
-> If you are /really/ using 1.2.7, update it now.  1.2.7 is considered 
-> "broken" by the Netfilter team, and is supposed to be replaced with 
-> 1.2.7a in all installations.
-> 
-> That said, and updated if necessary, try:
-> 
-> iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 80 -j   \
-> 	DNAT --to 172.16.1.7
-> iptables -t nat -A POSTROUTING -d 172.16.1.7 -j SNAT --t ?.?.?.?
-> iptables -A FORWARD -d 172.16.1.7 -j ACCEPT
-> iptables -A FORWARD -s 172.16.1.7 -j ACCEPT
-> 
-> These four should do it, provided another rule is not diverting or 
-> blocking the traffic.  If Apache logs show it arriving, then that is not 
-> likely to be the case.  The ?.?.?.? in the SNAT needs to be the static 
-> IP of the interface the traffic between the firewall and the server will 
-> flow through.  If it is a dynamic IP, then you would need the MASQUERADE 
-> target as you tried above, but you must also have 
-> "echo 1 > /proc/sys/net/ipv4/ip_dynaddr" to allow the MASQ target to 
-> track the IP of the interface, otherwise the target won't work.
-> 
-> The two forward rules are just generalizations that allow ANY traffic to 
-> and from the server.  In a 'real' situation you'd want to tighten this 
-> up, probably with port 80 allowed to the server, and ESTABLISHED and 
-> RELATED allowed each direction.
-> 
-> j
-> 
-> 
+j
+
+> Khanh Tran
+> Network Operations
+> Sarah Lawrence College
+
 
 
