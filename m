@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IP Traffic Accounting
-Date: Mon, 24 Jun 2002 11:33:00 +0100
+From: lcef <lcef@eb3cef.net>
+Subject: Nat PROBLEM
+Date: Mon, 24 Jun 2002 13:11:56 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206241033.LAA14840@slate.rockstone.co.uk>
-References: <NFBBLDBMIDIOFPBNLEAJCEIOCHAA.yomega@wahooo.net> <20020623225040.A26831@tiger.csl.uiuc.edu> <3D16B131.4090202@ozemail.com.au>
+Message-ID: <13475154937.20020624131156@eb3cef.net>
+Reply-To: lcef <lcef@eb3cef.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3D16B131.4090202@ozemail.com.au>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,20 +17,27 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: IPtables Users <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Monday 24 June 2002 6:42 am, Michael wrote:
+Hello netfilter,
 
-> I have had experience with similar programs, for example ipmeter
-> (http://www.ipmeter.org).
+  Hello:
+  I have a problem with IP translation.
+  I have 2 machines, with DSL conection.
+  First machine have eth0 (213.23.xxx.xxx) and second machine with a
+  second ethernet named eth1(192.168.2.1).
+  I have a webcam in the second machine(192.168.1.21 eth1)and i want
+  who any people go to first machine (213.23.xxx.xxx)can look the
+  webcam who are installed in de second machine 192.168.2.1:8080.
+  In others words when you type http://213.23.xxx.xxx:8080  go to
+  192.168.2.1:8080.
+  What rules need i to put with IPFILTER?
+  Can you help me please.
+  Thanks for your time
 
-Hi Michael.
+-- 
+Best regards,
+ lcef                          mailto:lcef@eb3cef.net
 
-Could you check and confirm that URL please ?
 
-Doesn't work from where I am.....
-
- 
-
-Antony.
 
