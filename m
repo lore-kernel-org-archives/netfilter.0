@@ -1,14 +1,10 @@
-From: Esteban Ribicic <eribicic@UolSinectis.com>
-Subject: Re: masquerading
-Date: 24 Feb 2003 07:33:13 -0300
+From: "Pham tuan Ngoc" <ngocgl@hotmail.com>
+Subject: <I can't find libiptc ?>
+Date: Mon, 24 Feb 2003 15:30:08 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1046082793.12102.29.camel@debian>
-References: <1046076608.12098.24.camel@debian> 
-	<004e01c2dbee$71539e40$13fcc5cb@Housecall>
+Message-ID: <F24UTBnxARhnHcWhlEq000072b8@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004e01c2dbee$71539e40$13fcc5cb@Housecall>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +14,9 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: hare ram <hareram@sol.net.in>
-Cc: Esteban <eribicic@uolsinectis.com.ar>, netfilter@lists.netfilter.org
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-thanks for the tip..but
-ive tryed that, but the second rule does not match..any ther idea?
-another:
-is any diference on doing -j snat --to--source {internet ip} and give
-{internet ip} two values or something like that? instead -j masquerade?
-thanks again
-
-
-On Mon, 2003-02-24 at 07:21, hare ram wrote:
-> Hi
-> 
-> AFAIK
-> 
-> set another rule with ppp0 instead of eth2
-> i think it should work
-> 
-> hare
-> ----- Original Message ----- 
-> From: "Esteban" <eribicic@sinectis.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Monday, February 24, 2003 2:20 PM
-> Subject: masquerading
-> 
-> 
-> > hello,
-> > im masquerading my local network like this by now:
-> > iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
-> > everything works fine.
-> > but, now i added another internet gw (ppp0) wich is balanced (iproute2)
-> > with eth2.
-> > how do i set the masquerading to balance both gws? (eth2 and ppp0) ?
-> > thanks in advance
-> > Steve
-> > 
-> > 
-> > 
-> > 
-> 
-> 
-> 
-
-
+<html><div style='background-color:'><DIV>sorry, I can't find libiptc libraly in my Linux Redhat 8.0 , please show me how to find it ?.</DIV></div><br clear=all><hr>Help STOP SPAM with <a href="http://g.msn.com/8HMBEN/2731">the new MSN 8 </a> and get 2 months FREE*</html>
 
