@@ -1,10 +1,10 @@
-From: =?iso-8859-1?q?Mladen=20Meduric?= <mladen_meduric@yahoo.com>
-Subject: patching iptables - how?
-Date: Wed, 8 Jan 2003 22:16:16 +0000 (GMT)
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: Net modules fail on compile with 2.5.52 and up kernel
+Date: Wed, 08 Jan 2003 13:46:05 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030108221616.1503.qmail@web12706.mail.yahoo.com>
+Message-ID: <001f01c2b75f$58e453d0$6601a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,22 +18,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
 
-just joined the list. 
-Pretty new to linux/iptables (on SuSE8.0). I'm trying to patch from 1.2.5
-to 1.2.6a and then to 1.2.7a.
-Do have all patches. Tried "patch" command, but I seem can't figure it out
-properly. Would someone explain how to do this in couple of steps, please?
-Also, from reading other articles, after patching up or reinstalling
-iptables from scratch, is it necessary to recompile the kernel?
 
-Cheers,
-Mladen
+Anyone who has been keeping up with my post probale is aware of my
+plight trying to set up a VPN. Initially I had an IPTables firewall and
+tried to allow PPTP traffic through with unsatisfying results. Then I
+scrapt the idea to use IPSec I passed over freeswan and tried to use the
+2.5.50 Kernel level IPSEC implimentation. My problem is the 2.5.50
+version has problems booting to a resierfs using initrd so I decided to
+use 2.5.52, then 2.5.54 both of which crap out while compiling the net
+modules. Eg below
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+
+I keep getting errors  simular to that listed below when I run make
+modules_install. This happens for 2.5.52, and 2.5.54. 
+
+depmod: *** Unresolved symbols in
+/lib/modules/2.5.54/kernel/net/netlink/netlink_dev.ko
+ 
+Rowan Reid
+Job Captain, 
+Systems Administrator
+STUDIO 3 ARCHITECTS
+909  982  1717
+
 
