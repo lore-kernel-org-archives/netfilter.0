@@ -1,13 +1,13 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Internet Servers behind firewall (passthrough)
-Date: Wed, 11 Feb 2004 07:58:56 +0200
+From: <enosp.netmeeting@onlinehome.de>
+Subject: Packet loss at routing to own machine
+Date: Wed, 11 Feb 2004 08:42:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076479135.2747.44.camel@raylinux.internal>
-References: <E1AqjCT-0004ja-FZ@vishnu.netfilter.org>
+Message-ID: <6747028$10764848284029dadca902c5.74025880@config16.schlund.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-zhy75ygZj6i2pjZ4kNvG"
+Content-Type: multipart/mixed; boundary="----_=_NextPart_10764848284029dadca902c5.74025880";
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1AqjCT-0004ja-FZ@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +17,108 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: =?iso-8859-1?Q?netfilter_user?= <netfilter@lists.netfilter.org>
 
 
---=-zhy75ygZj6i2pjZ4kNvG
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
 
-On Wed, 2004-02-11 at 03:29, Yuta Kawamoto wrote:
-> Hi, I am not a very netfilter savvy person. (beginner)
-> My problem is this:
->=20
-> I have 10 public(internet) IP addresses, each for a server.
-> These servers run a variety of OS-es, from RedHat Linux to MaxOSX
-> the only path for them to the internet, is a single network cable(a "red"
-> colored wire).
-> Right now, I have a RedHat Linux 9 machine connected to this red wire.
-> I have installed IPTABLES, but do not really know how to configure rules.
->=20
-> I would like this Linux "routing machine" to take all traffic to the 10
-> internet IP's
-> and pass them straight on to the servers connected on the other side of t=
-his
-> machine.
->=20
-You need to investigate DNAT.
+------_=_NextPart_10764848284029dadca902c5.74025880
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 
->=20
-> Internet(red wire) -> [eth0]Linux Routing PC[eth1] -> Switch/Hub -> 10
-> servers
->=20
-> I would need all ports on each of the machines,
-> as they would be serving all forms of traffic.
->=20
-> I have asked some friends who know more about Linux than I do, to no avai=
-l.
-> I would really appreciate any and all help in this matter.
->=20
-> Yuta Kawamoto
->=20
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+Please see appended text,
+beacause my web-mailer reformats the ascii layout
 
---=-zhy75ygZj6i2pjZ4kNvG
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+------_=_NextPart_10764848284029dadca902c5.74025880
+Content-Type: text/plain; name=udp-packet-loss.txt
+Content-Disposition: attachment; filename="udp-packet-loss.txt"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Packet loss at routing to own machine!
 
-iD8DBQBAKcSfh1fuR/Bv+ygRAhQPAKC7oTxYFDtv3urqk1pLMs+Yj5nU/wCeM07l
-a7Hau0dJahGZF0Vr3zIACbQ=
-=tr8s
------END PGP SIGNATURE-----
 
---=-zhy75ygZj6i2pjZ4kNvG--
+
+I have following test configuration to measure udp round trip time:
+
+(ADR is set to 192.168)
+
+                                             |--------| 
+
+|---------|eth1 (ADR.1.2)<---->(ADR.1.1) eth1|router 1|eth0 (ADR.3.1)<-   
+
+|Test PC  |           cross cable 1          |--------|                |
+
+|reflect. |                                                   cross    |
+
+|         |                                                   cable 3  |
+
+|send/rec.|                                  |--------|                |
+
+|---------|eth0 (ADR.2.2)<---->(ADR.2.1) eth1|router 2|eth1 (ADR.3.2)<-
+
+                      cross cable 2          |--------|
+
+
+
+The linux routers 1 and 2 have activated forwarding.
+
+On the Test PC is running an udp Sender program, which sends udp packets from 
+
+eth0 (192.168.2.2) over the routers 2 and 1 to eth1 (192.168.1.2) on the Test PC.
+
+An udp reflector program receiving the packets on eth1 sends it back over both
+
+routers to eth0 where the packets arrive.
+
+With etheral it can be seen, that the reflected packets arrive at eth0 of the
+
+Test PC, but the receive call of the send/receive program does not get the packets.
+
+
+
+When the Sender program and the reflector program run on separate machines,
+
+it works fine.
+
+
+
+To avoid an internal shortcut,
+
+(udp packets sent from eth0 to eth1 over the loop back interface)
+
+I shut down the loop back interface with 
+
+ifconfig lo down
+
+
+
+Following routing table entries were set:
+
+route add -host 192.168.1.1 dev eth1
+
+route add -host 192.168.2.2 gw 192.168.1.1 dev eth1
+
+route add -host 192.168.2.1 dev eth0
+
+route add -host 192.168.1.2 gw 192.168.2.1 dev eth0
+
+
+
+All other routing entries were deleted.
+
+
+
+Who throws away the received udp packets, when the send/receive program
+
+and the reflector program runs on the same machine ?
+
+
+
+Have I to set iptables rules, if so, which rules have I to use ? 
+
+    
+
+
+
+------_=_NextPart_10764848284029dadca902c5.74025880--
 
 
