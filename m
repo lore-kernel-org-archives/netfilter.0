@@ -1,13 +1,11 @@
-From: "Marcin Michalak" <marcin@telscom.ch>
-Subject: Policy routing for IPv4 and IPv6
-Date: Wed, 03 Mar 2004 12:00:07 +0100
+From: "-iYung-" <iyung@ibs.ath.cx>
+Subject: IPPROTO_SCTP compile error
+Date: Wed, 03 Mar 2004 18:07:03 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4045C8C7.16258.29A8EEBA@localhost>
-Reply-To: marcin@telscom.ch
+Message-ID: <200403031807030225.00ACD163@smtp.jkt.pearlenergy.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,47 +18,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
- I have the following situation: two interfaces, eth0 and eth1 with 
-different IPv4 and IPv6 addresses. I want to send some type of 
-traffic, let's say web requests over eth1, and everything else over 
-eth0.
- I created the table table1 in the /etc/ip_route2/rt_tables by 
-putting:
-167 table1
+does anyone knows about this, i am trying to compile iptables on slack 9.1,=
+ with 2.4.24 kernel version, here are the error message whe i run make:
 
-Then I issue:
-ip[6]tables -t mangle -A PREROUTING --protocol tcp --destination-port 
-80 -j MARK --set-mark 1
-ip rule add fwmark 1 table table1
-ip route add default via 192.168.19.1 dev eth1 table table1
+iptables.c:238: `IPPROTO_SCTP' undeclared here (not in a function)
+iptables.c:238: initializer element is not constant
+iptables.c:238: (near initialization for `chain_protos[5].num')
+iptables.c:238: initializer element is not constant
+iptables.c:238: (near initialization for `chain_protos[5]')
+iptables.c:239: initializer element is not constant
+iptables.c:239: (near initialization for `chain_protos[6]')
+make: *** [iptables.o] Error 1
 
-But it doesn't work :-( I also can't issue:
-ip -f inet6 rule add fwmark 1 table table1
-, because I get: RTNETLINK answers: Invalid argument
- I have kernel 2.6.1 with following modules loaded:
 
-Module                  Size  Used by
-ip6t_LOG                5312  -
-ip6t_MARK               2272  -
-ip6table_filter         2816  -
-ipt_mark                1920  -
-ipt_MARK                2240  -
-ipt_CLASSIFY            2336  -
-ipt_LOG                 5696  -
-iptable_filter          2976  -
-ip6table_mangle         2816  -
-ip6_tables             17040  -
-iptable_mangle          2976  -
-ip_tables              16112  -
+cheers.
+julius.
 
-Any ideas/hints? Would be very grateful. My aim is to make the 
-interface selection work over IPv6, but I wanted to start with IPv4 
-first.
- Regards,
-  Marcin
-----------------------------------------------------------
-Marcin Michalak		Research Engineer
-Mobile: +41 79 330 83 51	Telscom AG		
+
+
 
 
