@@ -1,13 +1,14 @@
-From: "Sundaram" <sun@percipia.com>
-Subject: Routing rule for two gateways.
-Date: Thu, 19 Sep 2002 22:19:59 -0400
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: HELP : How to group IP addresses by refering to them as a single name ?
+Date: Thu, 19 Sep 2002 22:55:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ce01c26051$994ca630$0200000a@ramasamy>
-Reply-To: "Sundaram" <sun@percipia.com>
+Message-ID: <200209192255.41959.netfilter@newkirk.us>
+References: <20020919180021.80821.qmail@web40206.mail.yahoo.com> <20020919193311.UPJU287.mta02-svc.ntlworld.com@there>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_009F_01C2602A.B13070F0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20020919193311.UPJU287.mta02-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,92 +18,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+On Thursday 19 September 2002 03:33 pm, Antony Stone wrote:
+> On Thursday 19 September 2002 7:00 pm, Alok Shukla wrote:
+> > Let me say if i am able to sort out the lab in the
+> > accordance that i start my ip settings of lab2
+> >  like 192.168.9.1-63 for lab 1
+> >
+> > and next 64 for lab 2 , would that help and how ?
+>
+> I think it would help a lot, yes.   I would recommend putting machines =
+into
+> three groups:
+> 1. User machines in Lab1
+> 2. User machines in Lab2
+> 3. System machines such as servers, routers, etc.
+>
+> Separate the IP addresses for each of these three groups so that you ca=
+n
+> specify a single group with an easy netmask.
 
-------=_NextPart_000_009F_01C2602A.B13070F0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+[snip excellent mask explanation, insert quick'n'dirty script excerpts]
 
-Routing rule for two gateways.
+# define convenient symbols for the IPTables rules
+#
+IPTABLES=3D/sbin/iptables
+# everything from 0.0 to 0.63 is administrator territory
+SERVERS=3D"192.168.0.0/26"
+# Lab 1 from 0.64 to 0.127
+LAB1=3D"192.168.0.64/26"
+#Lab2 from 0.128 to 0.191
+LAB2=3D"192.168.0.128/26"
+#0.192 to 0.255 unassigned for now
+FUTUREEXPANSION=3D"192.168.0.192/26"
+#
+$IPTABLES -t nat -A POSTROUTING -s $LAB1 -j MASQUERADE
+# et cetera
 
-=20
+The four address ranges can of course be used in any order, this one mean=
+s reconfiguring 54 machines, changing the server addresses would mean rec=
+onfiguring all machines.  (Of course, you'll use student labor anyway... =
+;^)
 
-I have two Linux netfilter gateways for my network  (1) 192.168.1.10, =
-(1) 192.168.1.100 public IP in the external interface. Inside LAN I am =
-running ftp server (192.168.1.50) with default gateway as 192.168.1.10. =
-From Internet using Fist gateway public IP address I was able to access =
-the ftp server, but using second gateway public IP address I was not =
-able to access the ftp server.
+You can also create simple scripts to run either manually or on schedule,=
+ that do nothing but -A(dd) and -D(elete) the rule for a given lab's addr=
+ess range.
+like:
 
-=20
+#!/bin/sh
+# lab1off
+/sbin/iptables -t nat -D -s 192.168.0.64/26 -j MASQUERADE
 
-Where I need to set the routing, so that I can access the ftp server =
-using both gateway.
-
-=20
-
-Thanks in advance=20
-
--SR
-
-=20
-
-
-------=_NextPart_000_009F_01C2602A.B13070F0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3D"Times =
-New Roman"=20
-size=3D3>Routing rule for two gateways.</FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT size=3D3><FONT=20
-face=3D"Times New Roman">&nbsp;<?xml:namespace prefix =3D o ns =3D=20
-"urn:schemas-microsoft-com:office:office" =
-/><o:p></o:p></FONT></FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3D"Times =
-New Roman"=20
-size=3D3>I have two Linux netfilter gateways for my network <SPAN=20
-style=3D"mso-spacerun: yes">&nbsp;</SPAN>(1) 192.168.1.10, (1) =
-192.168.1.100=20
-public IP in the external interface. Inside LAN I am running ftp server=20
-(192.168.1.50) with default gateway as 192.168.1.10. From Internet using =
-Fist=20
-gateway public IP address I was able to access the ftp server, but using =
-second=20
-gateway public IP address I was not able to access the ftp =
-server.</FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT size=3D3><FONT=20
-face=3D"Times New Roman">&nbsp;<o:p></o:p></FONT></FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3D"Times =
-New Roman"=20
-size=3D3>Where I need to set the routing, so that I can access the ftp =
-server=20
-using both gateway.</FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT size=3D3><FONT=20
-face=3D"Times New Roman">&nbsp;<o:p></o:p></FONT></FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3D"Times =
-New Roman"=20
-size=3D3>Thanks in advance </FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3D"Times =
-New Roman"=20
-size=3D3>-SR</FONT></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT size=3D3><FONT=20
-face=3D"Times New =
-Roman">&nbsp;<o:p></o:p></FONT></FONT></P></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_009F_01C2602A.B13070F0--
 
 
