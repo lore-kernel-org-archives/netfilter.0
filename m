@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: NAT issues on a VPN tunnel
-Date: Fri, 5 Nov 2004 11:57:39 -0500
-Message-ID: <20041105165739.GA1553@bender.817west.com>
-References: <1099651214.4891.105.camel@localhost>
-	<CARBON5MNNmPrdKz1EQ00002b82@carbon.netsvcs.com>
+From: a.ledvinka@promon.cz
+Subject: Re: 2 NICs on same subnet
+Date: Fri, 5 Nov 2004 18:07:13 +0100
+Message-ID: <OF74BCB516.8410C7F4-ONC1256F43.005D4240-C1256F43.005E0B73@promon.cz>
+References: <418B9272.8040706@pbl.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <CARBON5MNNmPrdKz1EQ00002b82@carbon.netsvcs.com>
+In-Reply-To: <418B9272.8040706@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,23 +20,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Nov 05, 2004 at 08:44:05AM -0800, Chris Lyon wrote:
-> I am still trying to get a match rule going but it is saying something about
-> libipt_match.so not being loaded. I did try to load it but it can't so I am
-> digging around the kernel to find out what the hell is missing.
+netfilter-bounces@lists.netfilter.org wrote on 05.11.2004 15:47:14:
 
-libipt_*.so are library file for the iptables command, not the kernel.
+> Probably not easilly solvable.  The thing is that both interfaces are 
+> valid for sending responses out.  So the kernel will probably use the 
+> first where it gets the match (not sure about exact algorithm, so it may 
 
-i am not aware of any file called "libipt_match.so" so i'm not sure what
-that error means...but you need to be looking at the iptables side of
-things, not the kernel.
+> as well be the last, or random).
 
-are your kernel and userspace out of sync (i.e. you patched your kernel
-from POM, and rebuilt the kernel but not the iptables package)?
+check the iproute2 package (program called "ip") and look at the grammar 
+in "ip route help" output. there is way to assign "source" ip per route. 
+so if you use the system for backups (initiated by the host in question) 
+then it should work if you can't use binding.
 
--j
+btw is not this thread a little offtopic on this list then? ;-)
 
---
-"I'll be deep in the cold, cold ground before I recognize Missoura!"
-        --The Simpsons
+example:
+here is what i used some time ago for nat box to set it's ip traffic the 
+only allowed source address on firewall short after booting.
+ip route change default via 212.96.166.17 dev eth1 src 212.96.166.18
+you just substitute the "default" which is alias for 0.0.0.0 and also 
+"eth1" for wahtever you want.
+
+you possibly need 2.2+ kernel (which is true with iptables) and not sure 
+if advanced routing enabled in kernel (i guess not because this is 
+somewhat trivial function)
 
