@@ -1,14 +1,9 @@
-From: skydive <skydive@megamail.pt>
-Subject: Re: http acces
-Date: Fri, 21 Nov 2003 10:47:04 +0000
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: quick question re: natting
+Date: Fri, 21 Nov 2003 10:58:44 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069411624.3fbded284f7f1@paris-hme1>
-References: <1069364822.3fbd3656723b4@roma-hme1>
- <200311202254.hAKMss723777@onyx.rockstone.co.uk>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57A69@OST_EXCH_USR5>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200311202254.hAKMss723777@onyx.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,88 +13,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-C=F3pia Antony Stone <Antony@Soft-Solutions.co.uk>:
+Hi there
 
-> On Thursday 20 November 2003 9:47 pm, skydive
-> wrote:
->
-> > hi all
-> >
-> > i have been experienced a problem since i'm
-> trying to
-> > access my web server from my lan through my
-> internet ip.
-> >
-> > i have no problems doing DNAT, from those who
-> access my
-> > web page form the outside:
-> >
-> > iptables -A PREROUTING -t nat -i eth0 -p tcp
-> --dport 80
-> > -j DNAT --to 192.168.0.1:80
-> >
-> > this is solving the problem
-> >
-> > let's say my web page has the following
-> address
-> > www.example.org, and that it is host  [like
-> it is ;)) ]
-> > in one machine on my lan with the following
-> IP:
-> >
-> > 192.168.0.1
-> >
-> > when i write www.example.org on my web
-> browser, it just
-> >  hits eth1 on my gateway/firewall and stucks
-> there.
-> > maybe i'm missing something on my prerouting
-> rules, or
-> > maybe my small brain just can't reach it :)
->
-> See if
-> http://www.netfilter.org/documentation/HOWTO//NAT-
-HOWTO-10.html
->
-> answers your question.
->
-> Antony.
->
-> --
->
-> Having been asked to provide a reference for
-> this man,
-> I can confidently state that you will be very
-> lucky indeed
-> if you can get him to work for you.
->                                               =20
->      Please reply to the list;
->                                               =20
->            please don't CC me.
->
->=20
+I've got ADSL ppp0 facing the net, at x.x.x.47 [as part of a x.x.x.46/29
+subnet], and I want to do static NAT for hosts 48,49 and 50.
+
+I have a quick question, and my Ziegler book is at home at the moment.  Back
+in the days when I worked with Checkpoint, I would have had to have ARPed
+48, 49 and 50 onto the external interface via the operating system, for the
+one-to-one static NAT to work.  Do I need to ARP the IP addresses onto ppp0
+under Linux / iptables also?
+
+This is a Linux RH9 / ADSL WAN connection / iptables situation.
+
+Thanks in advance for any answers!
+
+Steve
 
 
-
-skydive!
-
-
-Antony:
-
-
-ok.. i got it to work just fine. although i need 3=20
-rules: 1 prerouting,1 forward, 1 postrouting!=20
-i'll be glad to help if i can!
-
-danke !
-
-
-[] ;)))
-
--------------------------------------------------
-Email Enviado utilizando o servi=E7o MegaMail
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
