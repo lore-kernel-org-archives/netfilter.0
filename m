@@ -1,10 +1,9 @@
-From: "XouS - Jose R Negreira" <xous@xouslab.com>
-Subject: article: Learning iptables from scratch - feedback appreciated :)
-Date: Tue, 22 Mar 2005 17:04:14 -0300 (ART)
-Message-ID: <4931.200.32.13.162.1111521854.squirrel@200.32.13.162>
-Reply-To: xous@xouslab.com
+From: "Andrew Hall" <temp02@bluereef.com.au>
+Subject: Using SNAT through a 26sec tunnel
+Date: Tue, 22 Mar 2005 18:20:56 +1100
+Message-ID: <00cb01c52eaf$b0981ac0$5001010a@bluereef.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,32 +14,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Hi everyone, this is my first post on the group.
+Hello,
 
-I sent a mail to the netFilter webmaster and he encouraged me to post it
-here, so...here we go!
+I need some clarification on native 26sec packet processing in relation to 
+NAT with Netfilter, and I'm hoping someone can enlighten me once and for 
+all.
 
-I've written a little article about iptables some time ago, easy to
-understand, originally in spanish, it had quite nice feedback, so I
-decided to translate it to english, and publish it on its own website.
+Basically what I want to be able to do is translate (SNAT) traffic before 
+ipsec encapsulation in tunnel mode from LANA to LANB. I've set this up and 
+applied the relevant patches against 2.6.11.5 and included the policy match 
+from the latest snapshot of patch-o-matic. It seems to work, although not 
+how I expected it to.
 
-It's name: Learning iptables from scratch
-the url: http://www.iptableslinux.com
+What I don't really understand is where the encapsulation is really done by 
+Netfilter. According to the mail archives I've read, when traffic leaving a 
+Linux box that is to have ipsec encapsulation performed, will pass the 
+POSTROUTING chain twice - first time plain/normal (before encryption) 
+processing, second time is after encryption. If this is the case then I 
+should be able to apply SNAT policies on traffic that passes the POSTROUTING 
+chain the first time (before encryption). I had assumed I could do this with 
+the policy match (--pol = none ), but this doesn't seem to be the case.
 
-(spanish version coming soon!)
+By looking at what the other end is expecting for bring up phase one and 
+two, it seems to be expecting sainfo that will match traffic that is NOT a 
+translated source, and if I only specify SA filters matching the translated 
+source as the origin, it complains that there is no proper SAinfo matching 
+the case for traffic coming from the other LAN's source (LANA). What this 
+seems to be tell me is that the SNAT is done as requested, but it is somehow 
+performed after the encapsulation and not before. I've tried altering the 
+policy match to --pol = ipsec, but this seems to make no difference.
 
-Hope you like it and find it useful. Of course, any suggestions,
-corrections, and all kind of constructive feedback will be appreciated. :)
+So if someone can tell me how this is meant to work, I'd be really 
+appreciative.
 
-Regards,
+Thanks,
 
---
-Jose R. "Xous" Negreira
-[ *xous*at*xouslab_dot_com* ]
-XousLAB - http://www.xouslab.com
-iptableslinux - http://www.iptableslinux.com
+andrew. 
 
 
