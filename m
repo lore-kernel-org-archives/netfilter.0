@@ -1,13 +1,11 @@
-From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: [Fwd: [suse-security] iptables rules for HTML Form Protocol
- Attack]
-Date: Mon, 14 Jul 2003 10:54:16 +0100 (BST)
+From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
+Subject: [RE: marking in output mangle with route lookup]
+Date: 14 Jul 2003 10:59:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0307141028560.10510-100000@localhost>
-References: <1057826036.4367.1.camel@linux.local>
+Message-ID: <1058173141.2871.3.camel@drs0.manchotnetworks.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1057826036.4367.1.camel@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +15,103 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ruprecht Helms <rhelms@mayn.de>
-Cc: Muammer.Arslan@experteach.de, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all,
+Hi Gerorge,
 
-> > From: Muammer Arslan <Muammer.Arslan@experteach.de>
-[...]
-> > Last days I often see below messages in Apache log files:
-> > 1.1.1.1         - - [09/Jul/2003:17:32:00+0200] "POST http://11.1.106.18:25/ HTTP/1.1" 200 475 "-" "-"
-> >
-> > I suspect some kind of HTML protocol attack and want to stop this.
-> > Can I do it somehow with IP-Tables as it is already installed on the
-> > server or do you have any other ideas? I use SuSE 8.1 and
-> > SuSEfirewall2 with SuSEfirewall2-custom rules.
+Tried ( and failed ) with ip assigning. bummer. :-(
 
-iptables is a firewall which works at the IP packet layer, while this is
-an attack against the HTTP protocol layer. Specifically, the attacker is
-asking a proxy server to connect to a mail server, which it should never
-allow.
+Thanks for your sugesstions -- my actual iptables enrty will read:
 
-If you can block all external access to your proxy server, you should do
-so, and this can be done at the IP layer using iptables. For example,
-assuming that your firewall and proxy server are separate 
-machines, and that the attacker is outside your network and the 
-proxy is inside, you can add a rule to block access to the proxy with a 
-command like this on the firewall:
+iptables --append OUTPUT --table mangle --match owner \ 
+  --uid-owner 500 --jump MARK --set-mark 0x2
 
-  iptables -I FORWARD -i <external-interface> -d <proxy-server> \
-	-p tcp --dport <proxy-port> -j DROP
+(I reduced the entry for the post because I couldn't get the fwmark to 
+do a routing table lookup)
 
-But you would still be better off (more secure) if you deny access to all 
-services (including the proxy) which you have not explicitly decided to 
-allow.
+In general terms, I am generating traffic on this local box on behalf of
+a network behind it -- the network behind gets billed for their traffic.
+The match owner directive seemed a decent way to assign an ip that will
+be correctly accounted for.
 
-If you must provide public access to your proxy server (which is a VERY 
-bad idea in my opinion), then it would be easier and more secure for you 
-to configure the proxy server not to allow POST and CONNECT requests to 
-ports other than 80 (and possibly 443). 
+Do you know of another technique yielding the same result?
 
-The only way to do this with iptables is to abuse the string match (from 
-patch-o-matic) to detect and drop packets which contain the words "POST " 
-and ":25". This will cause you false positives and is easy to bypass, so I 
-don't recommend it.
+Ciao
 
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+Charles
+
+
+
+
+
+On Sun, 2003-07-13 at 23:59, George Vieira wrote:
+> Try using iproute2 ip assigning and not ip aliasing as I find aliasing=evil for some things.
+> 
+> ip addr add 192.168.1.101/24 dev eth1
+> 
+> Also, have you tried using SNAT instead of iproute for a simple snat of the source address?
+> 
+> iptables -I POSTROUTING -o eth1 -t nat -s 192.168.1.1 -d 192.168.1.250 -j SNAT --to 192.168.1.101
+> 
+> Thanks,
+> ____________________________________________
+> George Vieira
+> Systems Manager
+> 
+> Citadel Computer Systems Pty Ltd
+> http://www.citadelcomputer.com.au
+> 
+> -----Original Message-----
+> From: lartc@manchotnetworks.net [mailto:lartc@manchotnetworks.net]
+> Sent: Sunday, July 13, 2003 5:40 PM
+> To: netfilter
+> Subject: marking in output mangle with route lookup
+> 
+> 
+> hello all,
+> 
+> i posted this to the lartc forum, and received no response, so i am hopeful
+> that someone here can advise.
+> 
+> i have come accross a curious issue:
+> 
+> +----------------------+            +---------------+
+> | eth1   192.168.1.1   |------------| 192.168.1.250 |
+> | eth1:1 192.168.1.101 |            |               |
+> +----------------------+            +---------------+
+> 
+> 
+> iptables --append OUTPUT --table mangle --jump MARK --set-mark 0x2
+> ip rule add fwmark 0x2 table 2
+> ip route add 192.168.1.0/24 dev eth1 src 192.168.1.101 table 2
+> ip route flush cache
+> 
+> 
+> telnet 192.168.1.250 ; and tcpdump gives src ip address as 192.168.1.1
+> 
+> 
+> ip rule add to 192.168.1.250 table 2
+> ip route flush cache
+> 
+> 
+> telnet 192.168.1.250 ; and tcpdump gives src ip address as 192.168.1.101
+> 
+> 
+> 
+> are there issues concerning the marking of OUTPUT packets generated on
+> the local box that i should be aware of?
+> 
+> 
+> many, many thanks
+> 
+> charles
+> 
+> 
+> 
+> 
+
+
 
 
 
