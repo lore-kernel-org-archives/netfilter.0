@@ -1,10 +1,12 @@
-From: iv <iv@fnet.pl>
-Subject: problem with connlimit
-Date: Mon, 31 Jan 2005 15:21:39 +0100
-Message-ID: <41FE3EF3.7020909@fnet.pl>
+From: "Andy Van Hoof" <andy.van.hoof@pandora.be>
+Subject: RE: ARP Proxy
+Date: Mon, 31 Jan 2005 22:06:58 +0100
+Message-ID: <20050131210535.93E3B19818A@europa.telenet-ops.be>
+References: <3063e505013106055a0be747@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <3063e505013106055a0be747@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +17,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have the problem with compilling the 2.6.10 with applied connlimit 
-from patch-o-matic-ng-20040302.
-it looks like this:
+You shouldn't do this.
 
-  CC      net/ipv4/netfilter/ipt_connlimit.o
-net/ipv4/netfilter/ipt_connlimit.c: In function `count_them':
-net/ipv4/netfilter/ipt_connlimit.c:100: structure has no member named 
-`infos'
-net/ipv4/netfilter/ipt_connlimit.c:107: structure has no member named 
-`infos'
-make[3]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
-make[2]: *** [net/ipv4/netfilter] Error 2
-make[1]: *** [net/ipv4] Error 2
-make: *** [net] Error 2
+A better way would bet to split the subnet into 2 subnets and use a router.
 
- all i have done was follow: just run .*/runme base*, then *make 
-menuconfig* and "yes" for *Connections/IP limit match support* in 
-*Netfilter Configuration*, then *make* for kernel sources.
+Why would you want to keep all those clients in 1 subnet? If it's because of
+netbios, use wins/dns? That's gonna lower your broadcasting quite a bit on
+its own.
 
-so my question is: did i do anything wrong, or maybe i forgot to do 
-anything, or it is a bug?
-thanks in advance,
- iv
+Andy
+-----Oorspronkelijk bericht-----
+Van: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] Namens George Alexandru
+Dragoi
+Verzonden: maandag 31 januari 2005 15:05
+Aan: Moritz Gartenmeister
+CC: netfilter@lists.netfilter.org
+Onderwerp: Re: ARP Proxy
+
+why bridge when it can be .. router? or you can use a central switch
+that can do vlans (with so many client there should be enough funds
+for a 2950 catalyst :) .
+
+
+On Mon, 31 Jan 2005 15:01:21 +0100, Moritz Gartenmeister
+<moritz@uplink-verein.ch> wrote:
+> hi
+> 
+> i'm not sure, if am right here, so if i am wrong, pleas point me to a
+source ;-)
+> 
+> how can i reduce arp-broadcasts without routing?
+> 
+> i have physically 2 subnets (500 and 300 clients), logically this is one
+subnet. my premature/naive
+> idea is, to install a linux-bridge and put arp-proxy on it. as long as the
+proxy has the correct
+> entry, broadcasts are not propagated. this will reduce arp-broadcasts.
+> 
+> i know, i have to bend alot of principles, but will it work?
+> 
+> cheers
+> moritz
+> 
+> 
+
+
+-- 
+Bla bla
+
+
+
+
 
