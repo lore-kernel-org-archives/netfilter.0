@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: newbie question : ip_conntrack_ftp
-Date: Tue, 23 Mar 2004 16:48:44 +0000
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: I have the script with the rules, what now?
+Date: Tue, 23 Mar 2004 09:10:27 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403231648.44421.Antony@Soft-Solutions.co.uk>
-References: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF567923A@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Andrew Schulman <andrex@alumni.utexas.net>, netfilter@lists.netfilter.org
 
-On Tuesday 23 March 2004 3:24 pm, Mihael Kukec wrote:
+Don't forget to also place the following line at the beginning of the
+file:
+#!/bin/bash
 
-> Hello!
->
-> I'm using latest stable Debian, with 2.4.18 kernel. Unfortunately it does
-> not have ip_conntrack_ftp module included and I need it. Can someone give
-> me short instructions on that to do? Where to get source, and if there
-> are, some special instructions for compiling etc...
 
-It's a kernel compile option when you "make config" or "make menuconfig" etc.
-
-You don't need any extra source code - just the standard kernel source.
-
-Regards,
-
-Antony,
-
--- 
-All matter in the Universe can be placed into one of two categories:
-
-1. Things which need to be fixed.
-2. Things which need to be fixed once you've had a few minutes to play with 
-them.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Andrew Schulman wrote:
+>> Hi everyone,
+>>=20
+>> I am a newbie, and I am probably asking a silly question, but anyway!
+>>=20
+>> I have 3 network cards (2 for internal networks and the other one to
+>> Internet), and I have already started with my ruleset and have made a
+>> script, based on the scripts I have found in several HOWTOs and
+>> tutorials.=20
+>>=20
+>> My question is: how do I execute this script now?
+>=20
+> At a command prompt,
+>=20
+> chmod u+x script
+> ./script
+>=20
+> Saioa, it sounds to me as though you need to learn some Unix/Linux
+> fundamentals, in order to tackle the other problems that will surely
+> come up when you're building a firewall.  I suggest that you get a
+> good book about Unix or Linux, and read it.  For an introductory
+> book, lots of people like Running Linux, from O'Reilly.  For an
+> intermediate book, Unix Power Tools, also from O'Reilly, is terrific.
+>=20
+> Good luck,
+> Andrew.
 
