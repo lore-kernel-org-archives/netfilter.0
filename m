@@ -1,12 +1,13 @@
-From: "Bill Binko" <Bill.Binko@trcinc.com>
-Subject: RE: Simulate Poor Network Conditions?
-Date: Fri, 27 Dec 2002 12:42:50 -0500
+From: Dan Egli <dan@shortcircuit.dyndns.org>
+Subject: Re: How to disable ip_contrack_irc when its compiled into the kernel?
+Date: Fri, 27 Dec 2002 11:27:43 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3BAC15E02315BC4783152AC5E9621BB501C7BA20@trcexcsrv01.trcinc.com>
+Message-ID: <3E0C9B9F.80200@shortcircuit.dyndns.org>
+References: <1041008143.15849.81.camel@fish-dt.dmz.dynam.ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <1041008143.15849.81.camel@fish-dt.dmz.dynam.ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +17,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Michael B. Allen" <miallen@eskimo.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Justin Hammond <fish@dynam.ac>
+Cc: netfilter@lists.netfilter.org
 
-NISTNet is what you want to use for this.  It is not related to =
-Netfilter, but it does exactly what you want.  When we used it, the X =
-client was very buggy, but the command line rocked:
-http://snad.ncsl.nist.gov/itg/nistnet/
+Justin Hammond wrote:
 
-(Not only that, but you get to use some of those tax dollars :)
-Bill
+>Hi all
+>
+>We have a problem on one of our servers. Its running:
+>
+>Linux 2.4.17 on a Sparc Box with IPtables 1.2.4
+>
+>The Kernel support for IPtables was compiled into the kernel, not as
+>loadable modules, and now we have some problems. 
+>
+>We recently setup a IRC server for a customer, and they came back and
+>told us that DCC sending was not working for any client connected to
+>this IRC server. A quick check of the logs revealed:
+>
+>Forged DCC command from 218.103.157.103: 1.154.254.169:0
+>Forged DCC command from 218.103.157.103: 1.154.254.169:0
+>Forged DCC command from 218.103.157.103: 1.154.254.169:0
+>Forged DCC command from 218.103.157.103: 1.154.254.169:0
+>
+>
+>Throughout the entire kernel log. 
+>
+>(I believe the problem has been fixed in later releases of iptables, so
+>I'm not after a fix)
+>
+>Now here is my problem. The Server is in Sydney, Australia, and I'm in
+>Singapore, around 8000Miles away, so doing a remote kernel compile and
+>reboot to remove the contrack_irc module is not something that I fancy. 
+>
+>I'm wondering if there is a Rule or way that I can disable the contrack
+>module from operating?
+>
+>Thanks :)
+>
+>Justin
+>
+>
+>
+>  
+>
+Unfortunately, I believe that once a module is compiled into the kernel 
+it's present, end of discussion. And besides. thats not quite what you 
+want is it? removing ip_conntrack_irc would kill ALL irc abilities, not 
+just DCC. After all, doens't IRC operate on multiple ports, similiar to FTP?
 
-> -----Original Message-----
-> From: Michael B. Allen [mailto:miallen@eskimo.com]
-> Sent: Thursday, December 26, 2002 3:18 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Simulate Poor Network Conditions?
->=20
->=20
-> I'm writing network software and would like to test it under adverse
-> network conditions. Is there a netfilter module that can=20
-> simulate slow,
-> sticky, and downright errant network conditions over loopback with RH
-> Linux 2.4.9-13?
->=20
-> Mike
->=20
-> --=20
-> A  program should be written to model the concepts of the task it
-> performs rather than the physical world or a process because this
-> maximizes  the  potential  for it to be applied to tasks that are
-> conceptually  similar and, more important, to tasks that have not
-> yet been conceived.=20
->=20
->=20
 
