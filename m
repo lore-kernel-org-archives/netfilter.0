@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IP Spoofing
-Date: Wed, 5 Nov 2003 19:51:34 +0000
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Problem with PAT - HARD lock-up
+Date: Wed, 5 Nov 2003 15:08:36 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311051951.hA5Jpdr13332@agate.rockstone.co.uk>
-References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>
+Message-ID: <200311051508.36925.Alistair@nerdnet.ca>
+References: <3FA92644.91C0E53D@scs.carleton.ca>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>
+In-Reply-To: <3FA92644.91C0E53D@scs.carleton.ca>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +19,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Lista de Mail netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Peter Choynowski <pkc@scs.carleton.ca>, netfilter@lists.netfilter.org
 
-On Wednesday 05 November 2003 7:31 pm, Leandro Takashi Hirano wrote:
-
-> Thanks for the port scanner help....
+On November 5, 2003 11:33 am, Peter Choynowski wrote:
+> I need some ideas how to debug a hard lock-up problem with PAT.
 >
-> Now I would like to know about the IP Spoofing rule, how does it works?
+> The setup - my test setup consists of 2 hosts, one running PAT, the
+> other running Apache.  Both hosts are RH 8.0 with 2.4.22, iptables
+> v1.2.8, P4 with 1GB of ram. I am using a default route pointing to the
+> PAT for the return traffic from the web server.  The PAT rules are:
 >
-> -	iptables -A INPUT -s 192.168.1.0/24 -i ! eth0 -j DROP
+>         iptables -t nat -F
+>         iptables -F
+>
+>         iptables -P FORWARD DROP
+>         iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j
+> ACCEPT
+>
+>         iptables -A FORWARD -i eth0 -o eth1 -p $proto --dport $port_numb
+> -j ACCEPT
+>         iptables -t nat -A PREROUTING -i eth0 -p $proto --dport
+> $port_numb \
+>           -j DNAT --to ${host_ip}:$port_numb
+>
+>
+> Problem description - I am using wget from 2 or 3 outside hosts doing
+> continuous gets of a 1Mb file from the web server - things work for
+> about 5 to 40 min. after that that the PAT host locks up, the web server
+> stays up.  Average transfer rate is about 60 Mbits/s.
+>
+> Actions taken - I have enabled SysRq, and other kernel debugging
+> options, as well  added KDB code to the kernel, but when the lock-up
+> happens neither can be invoked, there are no oops on the screen or logs
+> of any kind - only reset button can bring it back.   I tried both 2.4.20
+> and 2.4.22 with the same results.
+>
+> Any ideas ?
 
-Any packet with a source address in the Class C range 192.168.1.x which d=
-oes=20
-not come from eth0 will be DROPped.
+	I doubt (if Magic SysRq doesn't work) this will help much, but console over 
+	serial port? 
+	
+	There are several kernel debuggng flags in 2.4.22 ... which do you have 
+turned on other than SysRq? 
 
-> -	iptables -A INPUT ! -s 192.168.1.0/24 -i eth0 -j DROP
+	You can turn on debugging in the iptables stuff in 
+	/path/to/kernel/source/net/ipv4/netfilter/ip_tables.c
+	there are three options in there that can be #defined and will 
+	spew tons of info.
+	
 
-Any packet which comes from eth0 and has a source address other than the=20
-Class C  192.168.1.x will be DROPped.
+>
+> Thx,
+> Peter
 
-> I don=B4t know how can it block ip spoofing attack...
+-- 
 
-These rules assume that eth0 is your internal network, and your internal=20
-network range is 192.168.1.0/24.
-
-No packets with your own source address should come from outside (rule 1)=
- and=20
-all packets from inside should have your own source address (rule 2).
-
-Therefore these two rules stop people on the outside pretending that they=
-=20
-live on your network, and people on the inside pretending that they don't.
-
-Antony.
-
---=20
-
-In Heaven, the police are British, the chefs are Italian, the beer is=20
-Belgian, the mechanics are German, the lovers are French, the entertainme=
-nt=20
-is American, and everything is organised by the Swiss.
-
-In Hell, the police are German, the chefs are British, the beer is Americ=
-an,=20
-the mechanics are French, the lovers are Swiss, the entertainment is Belg=
-ian,=20
-and everything is organised by the Italians.
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
