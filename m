@@ -1,15 +1,13 @@
-From: Peteris Krumins <newsgroups@lf.lv>
-Subject: Re[2]: REJECT target
-Date: Thu, 10 Apr 2003 22:33:54 +0300
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: What ports need to be open to allow for mail?
+Date: Thu, 10 Apr 2003 21:43:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <119615248079.20030410223354@lf.lv>
-References: <43614623471.20030410222329@lf.lv>
- <008701c2ff97$9d98b310$3201a8c0@ESTACAO>
-Reply-To: Peteris Krumins <newsgroups@lf.lv>
+Message-ID: <004901c2ff99$7cb12ae0$0401000a@sterenborg.info>
+References: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008701c2ff97$9d98b310$3201a8c0@ESTACAO>
+In-Reply-To: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,21 +20,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello Leonardo,
+> I'm trying to set up my mail server; however I want to
+> make sure that I have the correct port(s) open. I
+> already have TCP port 25 open; however do I also have
+> to have UDP port 25 open as well? Any help would be appreciated.
 
-Thursday, April 10, 2003, 10:30:07 PM, you wrote:
-
-
-LRM>     Use DROP instead of REJECT ....  you can only REJECT in filter tables.
-LRM> nat and mangle tables can only DROP packets ....
-
-There are certain cases i want to REJECT --reject-with tcp-reset, or
---reject-with icmp-port-unreachable.
-
-So from what you are saying, REJECT is impossible in not filter table?
-(or is it just not implemented?)
+No, just port 25/tcp is fine.
 
 
-P.Krumins
+Gr,
+Rob
 
 
