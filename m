@@ -1,11 +1,12 @@
-From: fear81@gazeta.pl
-Subject: Windows Update through Mandrake firewall
-Date: Tue, 5 Apr 2005 02:48:18 +0200
-Message-ID: <1098547239.20050405024818@gazeta.pl>
-Reply-To: fear81@gazeta.pl
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: travelling the tables and chains...
+Date: Tue, 5 Apr 2005 00:28:28 -0400
+Message-ID: <20050405042828.GA1197@bender.817west.com>
+References: <4250A5A6.6040509@lorenzutti.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <4250A5A6.6040509@lorenzutti.com.ar>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Message connected with:
-https://lists.netfilter.org/pipermail/netfilter/2004-February/050393.html
+On Sun, Apr 03, 2005 at 11:25:42PM -0300, Guido Lorenzutti wrote:
+> Hi people, i would like to clean up my firewall script by creating new 
+> chains in the filter table. Like this:
+> 
+> iptables -N FORWARD_WAN_TO_LAN
+> 
+> Then, call the traffic in the FORWARD chain:
+> 
+> iptables -A FORWARD -i $WAN -o $LAN -j FORWARD_WAN_TO_LAN
+> 
+> Now how can i discriminate the DNATed packets from that rule? It's OK if 
+> i MARK them in the PREROUTING chain and create a rule BEFORE in the 
+> FORWARD chain to check if the packet im MARKed then -j DNATED_WAN_TO_LAN?
+> 
+> Any better ideas?
 
-<< It was a Squid problem. Squid had disabled several applications. Once I
-<< enabled those web apps, Windows Update worked fine. Thanks for the
-<< suggestion, even though this wasn't an IP tables issue.
+MARK-ing is a pretty decent general-purpose way of keeping track of
+where a packet has been.  in your case--if you need to find all DNAT-ed
+packets, you could use the more specialized:
 
-Could you tell me what did you change from the default settings of
-squid. And if you could paste your squid.conf it also could be very
-helpful. THX
+  "-m conntrack --ctstate DNAT"
 
+to match a DNAT-ed packet.
 
-
-
+-- 
+"Baby needs to suck ash. Baby needs to suck ash. Not ass, you pervert. 
+ Save it for the interns."
+	--Family Guy
 
