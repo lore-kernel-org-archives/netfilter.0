@@ -1,12 +1,12 @@
 From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: Exposing an internal server through an iptables firewall
-Date: Fri, 15 Aug 2003 10:37:36 +0100 (BST)
+Subject: Re: BroadCast, Multicast and Unicast..
+Date: Fri, 15 Aug 2003 10:52:35 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308151025340.31438-100000@localhost>
-References: <DB7AEF327F702A4FA4D6E130C51BE756245A48@mainserver.amfeslan.local>
+Message-ID: <Pine.LNX.4.44.0308151043350.31438-100000@localhost>
+References: <009101c362d3$294a42e0$cc9b7ad5@AlienW>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <DB7AEF327F702A4FA4D6E130C51BE756245A48@mainserver.amfeslan.local>
+In-Reply-To: <009101c362d3$294a42e0$cc9b7ad5@AlienW>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +18,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Daniel L. Miller" <dmiller@amfes.com>
-Cc: Netfilter Users <netfilter@lists.netfilter.org>
+To: sarky <sarky@raycon.net>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Hi Daniel,
+Hi Sarky,
 
-> Postfix is running on the gateway server - works fine.
-> 
-> What do I need to set on the firewall/gateway to make my Postfix server
-> available to the internet?  I've tried:
-> 
-> iptables -t nat -A PREROUTING -p tcp --dport 25 -i eth1 -j DNAT --to
-> 192.168.69.2:25
+> Just wondering what ports do those work on, if someone wants to try to limit
+> the broadcast and the rest coming out of the system what is the best method.
 
-This looks wrong to me:
+They don't work on "ports" as such, they are above the TCP/UDP layer that 
+knows about ports.
 
-[Firewall]
-> Chain PREROUTING (policy ACCEPT 68 packets, 4258 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->     2   120 DNAT       tcp  --  eth1   *       0.0.0.0/0
-> 67.106.235.126     tcp dpt:25 to:192.168.0.2:25
+There are two "types" of broadcast and multicast which are commonly 
+encountered: Ethernet (layer 2) and IP (layer 3).
 
-Isn't your Postfix server on 192.168.69.2 port 25? If so, then change the 
-PREROUTING rule to DNAT to that address instead. If not, then change this 
-one:
+Ethernet broadcast is where an Ethernet frame is sent to the special MAC
+address FF:FF:FF:FF:FF:FF on an Ethernet network. Ethernet multicast is
+where a frame is sent to an address with the top bit set (e.g.
+01:00:00:5e:00:00).
 
-[Firewall]
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
-[...]
->     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-> 192.168.69.2       tcp dpt:25
+Both of these are used extensively for protocols such as ARP, Spanning
+Tree Protocol, and to support IP broadcast and multicast over Ethernet.
 
-Otherwise, the rules look OK to me.
+IP broadcast is where an IP packet is sent to a broadcast address. The 
+definition of an IP broadcast address is usually the last IP address in a 
+subnet (e.g. 192.168.0.255 if your network is 192.168.0.0/24). IP 
+multicast is where a packet is sent to an address in 224.0.0.0/4.
+
+IP broadcast packets sent over Ethernet should be sent to the Ethernet 
+broadcast address. The rules for multicast are less clear (to me, at 
+least).
+
+> At the moment my Switch is recieving low amount of Broadcast and MultiCast
+> but transmitting a lot of it..
+> And i dont know what to do or where to start.
+
+Find out what kind of broadcast/multicast by looking at "tcpdump -e" and 
+checking the MAC addresses that the packets were sent to. Often the 
+traffic can be disabled by setting options on the switch (e.g. disabling 
+Spanning Tree Protocol/STP). However, it usually doesn't take a lot of 
+traffic and performs a useful service, so it might not be wise to disable 
+it.
+
+Hope this helps,
 
 Cheers, Chris.
 -- 
