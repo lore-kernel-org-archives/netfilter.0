@@ -1,14 +1,10 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: Virus Attack & String Matching
-Date: Fri, 06 Aug 2004 16:21:56 +1000
+From: Andrej Martchouk <martchouk@yahoo.de>
+Subject: Multicast rules problem
+Date: Fri, 6 Aug 2004 00:19:38 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <41132384.9000601@wildcash.com>
-References: <54a712f004080523095fc37bee@mail.gmail.com>
-Reply-To: tech@wildcash.com
+Message-ID: <20040806071941.24804.qmail@web12706.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <54a712f004080523095fc37bee@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +14,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: ebaar@purdue.edu
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi Erik,
+Hello everybody,
 
-You can use mod_security, http://www.modsecurity.org/,
-to match strings and drop packets for your Apache web server.
+I'm trying to create the correct rules for Multicast
+Traffic across the firewall.
+On firewall machine runs the multicast router (pimd).
+So I need to enable UDP traffic from outside. 
+But I can't see any solution to create a statefull
+configuration for Multicast, so that any host from
+internal network can subscribe for another group, and
+the firewall allows streams for this group adress only
+from one sender.
+The another question is, how to handle PIM SM traffic?
 
-An option is to use Iptables for rate limiting and mod_security
-for string matching and http deny.
-
-This is my tatic, would be keen to hear of any better techniques.
-
-HTH
-
-Kind regards,
-Rudi.
-
-erikbaar@gmail.com wrote:
-
-> Hello,
-> 
-> I've recently had to setup string matching to save a sever that was
-> the subject of a virus DDOS attack, two of the domains on the server
-> were recieving thousands of HTTP Get requests.  After setting up a
-> limit rule to slow it down and patch the kernel, I setup a filter like
-> this:
-> 
-> iptables -I INPUT -p tcp -d DEST_IP --dport -m string --string "GET
-> /1.jpg" -j DROP
-> iptables -I INPUT -p tcp -d DEST_IP --dport -m string --string "GET
-> /get.php" -j DROP
-> 
-> Which dropped the traffic but caused Apache to generate 408 errors for
-> every connection that was made.  First question, is there a better or
-> alternate way to do this?  I've read people have recommended against
-> string matching before but never found a good alternative.  Second, is
-> there a way I can have IP tables on a match insert a DROP rule for the
-> source IP address?  I wrote a script which did this based out of -j
-> LOG output but would rather have it run everything automagically.
-> 
-> Regards,
-> 
-> Erik
-> 
-> 
-> 
+regards
+buslik 
 
 
--- 
-
-Regards,
-Rudi.
-
-Internet Media Productions
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - Helps protect you from nasty viruses.
+http://promotions.yahoo.com/new_mail
 
