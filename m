@@ -1,10 +1,12 @@
-From: "Igor Osin" <osin@vita-samara.ru>
-Subject: Re: pom-ng h323-conntrack-nat failure
-Date: Tue, 22 Mar 2005 15:48:13 +0400
-Message-ID: <003401c52ed5$0721bb10$7900000a@vita.local>
-References: <F8B974E70BDE1745ABB27AF04788FA0025AE74@mail1.dulles.sv.int>
+From: "Nicolas Ross" <rossnick-lists@cybercat.ca>
+Subject: Re: Altering a packet's port
+Date: Tue, 22 Mar 2005 09:42:43 -0500
+Message-ID: <01a401c52eed$67fd5670$bf07a8c0@civicXp>
+References: <00c501c52e56$acbe6070$bf07a8c0@civicXp><opsn0cqeu476nf2y@xonix>
+	<002201c52e7e$4fe76950$6500a8c0@DEFIANT>
+	<1111490995.4267.18.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +17,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="koi8-r"; reply-type="original"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-$ls -l patch-o-matic-ng-20050320/h323-conntrack-nat
-total 20
--rw-r--r--  1 5500 5100  864 =E4=C5=CB 18  2003 help
--rw-r--r--  1 5500 5100  195 =E6=C5=D7 22 00:05 info
-drwxr-xr-x  5 5500 5100 4096 =ED=C1=D2 21 02:55 linux
-drwxr-xr-x  4 5500 5100 4096 =ED=C1=D2 21 02:55 linux-2.6
-drwxr-xr-x  4 5500 5100 4096 =ED=C1=D2 21 02:55 linux-2.6.11
+What I'm trying to do isn't working...
 
-$cat patch-o-matic-ng-20050320/h323-conntrack-nat/info
-Title: h323 connection tracking and NAT helper
-Author: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Max Kellermann=20
-<max@duempel.org>
-Status: Alpha
-Repository: extra
-Requires: linux-2.6 >=3D 2.6.11
+In my nat table I have :
+
+-A PREROUTING -s 192.168.7.0/24 -d e.f.g.h -p tcp \
+  --dport 22 -j DNAT --to-destination e.f.g.h:8022
+
+So that when a host on the local subnet open a ssh connection to e.f.g.h, 
+the destination port is changed to 8022.
+
+The connection starts, on e.f.g.h, I see a tcp connection (with netstat), at 
+SYN_SENT state.
+
+On the router, in /proc/net/ip_conntrack, I see :
+
+tcp      6 97 SYN_SENT src=192.168.7.191 dst=e.f.g.h sport=2983 dport=8022 
+[UNREPLIED] src=e.f.g.h dst=192.168.7.191 sport=8022 dport=2983 use=1
+
+and the ssh connection never establish.
+
+On my desktop, if I establish a ssh connection on port 8022, it works ok.
+
+What am I missing ?
+
+Nicolas
+
+----- Original Message ----- 
+From: "Jason Opperisano" <opie@817west.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, March 22, 2005 6:29 AM
+Subject: Re: Altering a packet's port
 
 
------ Original Message -----=20
-From: "Justin Piszcz" <jpiszcz@servervault.com>
-To: "=E9=C7=CF=D2=D8 =EF=D3=C9=CE" <osin@vita-samara.ru>; <netfilter@list=
-s.netfilter.org>
-Sent: Tuesday, March 22, 2005 3:39 PM
-Subject: RE: pom-ng h323-conntrack-nat failure
-
-
-This patch is for 2.4.x kernels only.
-
+> On Mon, 2005-03-21 at 20:27, Nicolas Ross wrote:
+>> I saw that in the man page, but I need to do this for ALL hosts to
+>> specific
+>> subnets, and many hosts. So I'll have to define one rule for EACH host I
+>> need a redirect (something like 50 to 75) ?
+>
+> for loop?
+>
+> -j
+>
+> --
+> "How much is your penny candy?
+> Surprisingly expensive."
+> --The Simpsons
+>
+>
+>
 
 
