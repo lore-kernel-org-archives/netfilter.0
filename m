@@ -1,13 +1,11 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: delay
-Date: Fri, 31 Oct 2003 16:44:26 -0500
+From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
+Subject: question regarding netfilter and Kernel 2.6
+Date: Fri, 31 Oct 2003 22:37:50 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031031214426.GA31510@cannon.eng.us.uu.net>
-References: <1067626591.1451.21.camel@pauloric.intranet> <20031031191507.GC30565@cannon.eng.us.uu.net> <1067634823.1430.40.camel@pauloric.intranet>
+Message-ID: <000d01c3a018$c3af4a10$8b00000a@casa>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1067634823.1430.40.camel@pauloric.intranet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +16,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Paulo Ricardo Bruck <pauloric@contato.com.br>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Fri, Oct 31, 2003 at 07:13:44PM -0200, Paulo Ricardo Bruck wrote:
-> > > 
-> > > c) iptables -A POSTROUTING -o eth2 -j SNAT --to-source 192.168.1.1
-> > > 
-> > > 
-> > > What happens:
-> > > 
-> > > - all desktops ( M$windows) access webmail and email w/ no problems, but
-> > > if I insert rule c) above it causes a delay when any desktop hit
-> > > get/post e-mail in Outlook and it takes +- 40 seconds to "connenct".
-> > 
-> > Let me not ask you why you have rule (c). 
-> c) I insert because we have in DMZ a IIS and as far as I known I could
-> protect it putting PREROUTING rules.... who knows??? If someone invade
-> IIS at least I'll be protecting LAN changing their IP ....80)
 
-And changing their IP to 192.168.1.1 protects you, how?
+    Hello Guys,
 
-> > But in general a long delay
-> > is most of the time related to a faulty or non-existent reverse DNS.
-> > But in case of SMTP it also might have something to do with ident
-> > being dropped...
-> maybe it can help: 
->  iptables -N AUTH
-> iptables -A FORWARD -d $LAN -p tcp --dport 113 -j AUTH
-> iptables -A FORWARD -d $REDEDMZ -p tcp  --dport 113 -j AUTH
-> iptables -A AUTH  -j REJECT -p tcp --reject-with tcp-reset
-> 
-> As you can see I'm rejecting ident.... Is that the problem ??
+    I'm working on a presentation about netfilter/iptables and I could not
+find interesting text regarding netfilter/iptables/kernel 2.6 compatibility
+with netfilter/iptables/kernel v2.4. I'd like you to help me answering some
+simple questions and/or pointing me some URLs where I can find something
+regarding this subject.
 
-Try tcpdump and see what is happening. I'm not sure but some of the
---reject-with options didn't do their job correctly (AFAICR).
+    Well, I'm trying to figure out:
 
-Ramin
+    1) will kernel 2.6 iptables/netfilter rules be compatible with
+iptables/netfilter kernel 2.4 rules ? (i think the answer is obvious, yes,
+no matter if internally netfilter will chagne a lot)
+    2) will iptables/netfilter v2.4 rules be 100% compatible with
+iptables/netfilter v2.6 rules ?
+    3) if NOT 100%, how compatible it will be: a) NOT compatible, you'll
+have to rewrite rules (ipchains and iptables for example); b) compatible BUT
+you'll have to rewrite lots of rules; c) VERY compatible, you'll have to
+change some minor details
+
+    Please note tham I'm not interested (for this presentation) on how
+netfilter v2.6 has changed internally. I've read a lot about all the work
+done on statefull inspecting and failover solutions. I'm just worried about
+the iptables rules.
+
+    Can you help me and/or sending me some URLs where I can look further on
+this subject ?
+
+    Thanks,
+    Leonardo Rodrigues
+
 
