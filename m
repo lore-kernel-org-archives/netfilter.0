@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Stateful firewalling via IPTABLES fails to track FTP passive connections?
-Date: Mon, 7 Oct 2002 10:48:46 +0100
+Subject: Re: problems in tcp connection tracking
+Date: Mon, 7 Oct 2002 10:43:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210070948.g979mqL13972@vulcan.rissington.net>
-References: <000a01c26d18$2e24c6c0$0500000a@widgets>
+Message-ID: <200210070943.g979hdL13956@vulcan.rissington.net>
+References: <20021002194011.GB16386@firestorm.zhadum.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000a01c26d18$2e24c6c0$0500000a@widgets>
+In-Reply-To: <20021002194011.GB16386@firestorm.zhadum.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,31 +20,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 06 October 2002 10:10 am, Hubris_1 wrote:
+On Wednesday 02 October 2002 8:40 pm, pfy wrote:
 
-> I'm setting up a basic IPTables filter (IPTables v. 1.2.5 running on a
-> RedHat Linux 7.3 machine).  Configuring the IPTABLES is pretty
-> straightforward, except that IPTABLES does not detect the port change that
-> occurs just after the server accepts the clients PASV request.
->
-> My firewall setup is listed below
+> hi
+> there sems to be a bug in tcp connection tracking: if a
+> connection does NOT close with a RST, then the state of the
+> connection rests ESTABLISHED.
 
-Please post your ruleset in the form of the commands which create the rules.  
-We don't have enough information from the listing output you've provided here.
+I disagree.   Standard FIN-ACK packets close connections perfectly well.
 
-Maybe it's just me, but I find understanding rulesets from the commands I 
-would type in to make it work much easier than looking at the listing output 
-from iptables -L
+> So if you put a rule up like this on a attacker machine:
+> iptables -A OUTPUT --dst <victim> -p tcp --tcp-flags ALL, RST  -j DROP
 
-Thanks,
+Let's see, what does this rule do ?   On *my* machine (assuming I'm the 
+attacker :-), it stops me sending RST (only) packets to the specific 
+destination....
+
+Now, why would my machine want to send a RST packet anyway ?
+
+> and then connection flood the victim, the connection track table
+> will overflow
+
+Well, yes, this is pretty much the definition of a connection flood.   
+Nothing to do with RST packets....
+ 
+
+Have I misunderstood something significant here ?
+ 
 
 Antony.
 
 -- 
 
-KDE 3.0.3 contains an important fix for handling SSL certificates.  Users of 
-Internet Explorer, which suffers from the same problem but which
-does not yet have a fix available, are also encouraged to switch to KDE 3.0.3.
+Anything that improbable is effectively impossible.
 
-http://www.kde.org/announcements/announce-3.0.3.html
+ - Murray Gell-Mann, Nobel Prizewinner in Physics
 
