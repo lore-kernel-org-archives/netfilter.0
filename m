@@ -1,11 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: How to drop/reject packets amongst LAN clients?
-Date: Mon, 10 May 2004 19:14:48 +0200
+Date: Mon, 10 May 2004 12:16:51 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084209288.1804.13.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <409FB903.1090005@pbl.ca>
 References: <1084206191.409fac6f1176a@webmail.floog.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <1084206191.409fac6f1176a@webmail.floog.net>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,46 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: michael@floog.net
 Cc: netfilter@lists.netfilter.org
 
-Le lun 10/05/2004 =E0 18:23, michael@floog.net a =E9crit :
-> The LAN currently has 5 computers connected to it with static IP
-> addresses:
-> 192.168.1.2
-[...]
-> 192.168.1.6
-> I will be adding 3 more machines with with static IP addresses:
-> 192.168.1.7
-> 192.168.1.8
-> 192.168.1.9
-> Issue:
-> *.9 needs to remain accessible from *.7 and *.8; however, I need to
-> restrict any connection or accessibility to *.9 from *.2 - *.6.
+michael@floog.net wrote:
+> Hi Group:
+> But I don't know how to craft a rule that allows only some machines to
+> send/receive data packets to/from *.9 while blocking other machines'
+> access to *.9 on the LAN.
 
-You can't restrict this kind of communication for it does not go through
-your box. If you want to achieve this, then you have a Linux box a a
-filtering bridge. Cheap quick recipe would be to add a third ethernet
-interface to your box and configure it like this :
+Machines on LAN talk directly to each other.  Those packets do not go 
+through your firewall, so you can't block them there.
 
-eth0 gos to the internet
-eth1 goes to a switch where *.2 to *.6 are connected
-eth2 goes to a switch where *.7 to *.9 are connected
-create a bridge (br0) to which belong eth1 and eth2.
-assign br0 former eth1 IP
+There are two solution to your problem:
 
-Activate bridge filtering (available in stock 2.6 kernels) using
-Netfilter and you're done. Just filter traffic in FORWARD chain, using
-physdev match to specify eth1 and eth2 and incoming and/or outgoing
-interface, and restrict traffic other than IP stuff using ebtables.
+If 192.168.1.9 is a Linux box, configure Netfilter on it so that 
+anything not from 7 or 8 is dropped.
 
-See http://ebtables.sourceforge.net/ documentation section.
+Second solution would be to put new server onto separate LAN. 
+192.168.1.9 will become 192.168.2.9 (or whatever).  Than clients on your 
+first LAN (192.168.1.0/24) will have to talk to your firewall/router to 
+get to the server on your second LAN (192.168.2.0/24).
 
+You will need one more ethernet card for second solution.  If additional 
+server is going to be the only host in second LAN, you can connect it 
+directly with cross over cable.  If you are going to add more servers to 
+second LAN, you will also need additional hub or switch (do not connect 
+two LANs into same hub).
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
