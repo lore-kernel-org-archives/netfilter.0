@@ -1,10 +1,12 @@
-From: "jrs _" <jrsx13@hotmail.com>
-Subject: Browsers & Blocked IPs
-Date: Mon, 11 Aug 2003 03:31:00 -0700
+From: "Herry Wild" <herry.wild@TENDI.COM>
+Subject: pptp-conntrack-nat problem
+Date: Tue, 5 Aug 2003 10:38:45 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LAW11-F70dT6d3OCcSk0004337f@hotmail.com>
+Message-ID: <87D4F492F75B66408915EF4FE28149269ADE@mail-pfr.corp.tendi.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,66 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi this is a short sample of my set up... and I am hoping someone with more 
-experience can give me some good advice... I want to block some ips... but 
-in a nice way
+Hello everybody,
 
-Okay everything is good so far... but when I load slashdot.org everything 
-pops up VERY fast... as it seems to get the reject accessing ads.osdn.com at 
-the top... and as it so happens ads.osdn.com is linked to a single ip
+i have the following configuration:
+-----------------------------------------------
+W2k client -> SuSE Linux 8.2 router with iptables (NAT) -> W2k PPTP =
+Server
 
-ar.atwola.com on the other hand is linked to several ips. And a page like 
-netscape.com takes forever to load. It hangs on trying to get info from 
-ar.atwola.com
+on linux i use:
+--------------------
+2.4.20 kernel source
+patch-o-matic Patch
+   i ran ./run extra and applied:
+      submitted/01_2.4.19 (already applied)
+      submitted/01_2.4.20 (already applied)
+      submitted/63_ip_conntrack_destroy (already applied)
+      base/REJECT-ipv6 (already applied)
+      base/psd (already applied)
+      extra/pptp-conntrack-nat
+      extra/string (already applied)
+   i ran make menuconfig
+      <*> Connection tracking
+      <*>    FTP protocol support
+      <*>    IRC protocol support
+      <*>    GRE protocol support
+      <*>       PPTP protocol support
+iptables 1.2.8
 
-Is there a way I can improve this?
+i compiled the kernel (once Connection tracking and once as kernel =
+embedded)
+i compiled iptables
 
-thanks and example is below
+my iptables script lock like:
+----------------------------------------
+iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i ! eth1 -m state --state NEW,ESTABLISHED,RELATED =
+-j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A PREROUTING -i eth1 -p 47 -j DNAT --to-destination =
+$VPN_SERVER
+iptables -t nat -A POSTROUTING -o eth0 -p 47 -j SNAT --to-source $LAN_IP
+iptables -A FORWARD -i eth1 -m state --state NEW -p 47 -d $VPN_SERVER -j =
+ACCEPT
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 1723 -j DNAT =
+--to-destination $VPN_SERVER
+iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 1723 -j SNAT =
+--to-source $LAN_IP
+iptables -A FORWARD -i eth1 -m state --state NEW -p tcp -d $VPN_SERVER =
+--dport 1723 -j ACCEPT
 
-#####EXAMPLE below... short... and lots cut out... but salient bits all 
-here...i hope
-#block ar.atwola.com and ads.osdn.com
-BLOCKHOSTS="205.188.165.185
-205.188.165.249
-152.163.208.57
-152.163.208.121
-152.163.208.185
-152.163.208.249
-64.12.174.57
-64.12.174.121
-64.12.174.185
-64.12.174.249
-205.188.165.57
-205.188.165.121
-66.35.250.124"
+eth1 is the external network interface.
 
-#Block Bad IPs
-echo -e "      - Disallowing EXTERNAL access from Bad IPs to the network"
-for i in $BLOCKHOSTS;
-do
-$IPTABLES -I INPUT 2 -i $EXTIF -s $i -j DROP
-done
+and now the problem:
+------------------------------
+I made connections to the VPN Server which is working very well. Now =
+sending data through this connection
+like FTP, HTTP or Terminalsessions. During the data transfer the linux =
+box is closing the connecting and the
+LAN is no longer available. If i try this a couple of times the linux =
+box is going down and i have to reboot!
 
-#Block Bad IPs
-echo -e "      - Disallowing INTERNAL access to Bad IPs from the network"
-for i in $BLOCKHOSTS;
-do
-$IPTABLES -I OUTPUT 2 -o $EXTIF -d $i -j REJECT
-done
+have somebody an idea?
 
-#Block Bad IPs
-echo -e "      - Disallowing Masq'ed access to Bad IPs from the network"
-for i in $BLOCKHOSTS;
-do
-$IPTABLES -I FORWARD 2 -o $EXTIF -d $i -j REJECT
-done
+thank you for your help
 
-_________________________________________________________________
-MSN 8 with e-mail virus protection service: 2 months FREE*  
-http://join.msn.com/?page=features/virus
-
+Herry Wild
 
