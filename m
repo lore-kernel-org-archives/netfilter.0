@@ -1,11 +1,12 @@
-From: Aki Karjalainen <akarjala@sci.fi>
-Subject: IPTables design question (nat)
-Date: 01 Nov 2002 21:41:34 +0200
+From: Mark Atwood <mra@pobox.com>
+Subject: Using mangle table to change source address, how?
+Date: 01 Nov 2002 16:05:33 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1036179693.23663.10.camel@localhost.localdomain>
+Message-ID: <m3ela425v6.fsf_-_@khem.blackfedora.com>
+References: <200209040943.25411.roy@karlsbakk.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209040943.25411.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hi.
-
-I've got a question about IPTables.
-
-Let's say I want to "hide" a public IP pool (e.g. 144.50.50.0/24) behing
-NAT. Easy.
-
-Let's say I want to provide SMTP port from LAN to the outside world. I'd
-say "-t nat -A PREROUTING -p tcp -d FWexternalIP --dport smtp -j DNAT
---to 144.50.50.12:smtp".
-
-Ok, I'd still have to allow the connection in the BAD-GOOD chain for
-this to work.
-
-The result is that the outside world sees the smtp port from the
-firewall external IP _as well as_ directly from 144.50.50.12. 
-
-The question is how to hide 144.50.50.12:smtp but still allow firewall
-external ip:smtp (DNATted port)?
+Content-Transfer-Encoding: 7bit
+To: Netfilter <netfilter@lists.netfilter.org>
 
 
-Summary: How to DNAT some port and still hide the destination IP+port in
-the case the real destination IP is a public IP address?
+I have an interface eth1, with an IP address 192.168.23.100
 
+I've configured eth1 to have a subinterface eth1:1, and
+have given that subinterface an IP address 172.23.1.3.
 
+There is a host on the segment that this interface is connected to
+with an IP address of 172.23.1.2.
+
+If I send packets to that host 172.23.1.2, the packets from me have a
+source address of 192.168.23.100, not 172.23.1.3!
+
+Can I use the mangle table to rewrite the source address?  If so,
+what is the iptable command line?
+
+Or is there an easier way?
+
+-- 
+Mark Atwood   | Well done is better than well said.
+mra@pobox.com | 
+http://www.pobox.com/~mra
 
