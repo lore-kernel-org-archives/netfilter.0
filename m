@@ -1,12 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: How to flush the connection state in the linux
-Date: 01 Jan 2005 23:08:28 +0100
-Message-ID: <1104617295.25908.10.camel@nostromo.bgsecm.com>
-References: <000b01c4ebe5$64dab730$aa0ba8c0@l7.com.tw>
+Subject: Re: nmap protection rules
+Date: 01 Jan 2005 23:08:25 +0100
+Message-ID: <1104616912.18651.4.camel@nostromo.bgsecm.com>
+References: <41D2F4DE.11586.29F761B5@localhost>
+	<1104409107.2011.119.camel@grendel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-CBfGQYnzBojAuRWW4LOF"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000b01c4ebe5$64dab730$aa0ba8c0@l7.com.tw>
+In-Reply-To: <1104409107.2011.119.camel@grendel>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter <netfilter@lists.netfilter.org>
 
-
---=-CBfGQYnzBojAuRWW4LOF
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-El lun, 27 de 12 de 2004 a las 08:26, Vincent escribi=C3=B3:
-> Hello,
+El jue, 30 de 12 de 2004 a las 13:18, Chris Brenton escribi=C3=B3:
+> On Wed, 2004-12-29 at 18:18, Jorge Agrelo wrote:
+> > Does anyone can help me to write iptables rules to?:
+> >=20
+> > * block IP protocol scans (nmap -sO)
 >=20
-> Does any one know how to flush the connection state in the linux (Not
-> flush iptables rule -F).
-> I used transparent mode in the linux (use brctl to bridge eth & eth1).
-> When I tried to use iptables to drop some specified packet and it was
-> fail.
-> So I doubt there are some established connection state exist in the
-> linux to pass these
-> Forbidden connections.
+> When performing a protocol scan, nmap sends an IP packet with no
+> transport header. So for example to check for AH support, byte 9 in the
+> IP header is set to "51" but no AH header is included in the packet. Th=
+e
+> concept is a system which supports AH will ignore the packet and not
+> respond. A system that does not support AH will return an ICMP type 3
+> code 2 (protocol unreachable).
 >=20
-> My enviroment
-> Linux 2.4.25
-> Iptables 1.2.11=20
+> So, provided your iptables default policy is "deny all", you should be
+> fine.
+>=20
 
-I send attached to this message the script that uses our firewall
-bastion-firewall to clear the conntrack entries, one by one or
-everything. Hope it helps.
+Unless someone does a completely normal connection to maybe port
+80 of your server and uses something like p0f. That's much more
+effective that the nmap -s0 command. I agree with all the rest.
 
-(sorry, the comments are in Spanish, but I think you will see
-very easily how it works)
+I also use this rules to drop some kind of strange tcp flags that
+indicates you are having a portscan:
+
+iptables -A PORTSCANDROPLAN -o ppp0 -p tcp --tcp-flags ALL FIN,URG,PSH
+-j DROP
+ptables -A PORTSCANDROPLAN -o ppp0 -p tcp --tcp-flags SYN,RST SYN,RST -j
+DROP
+iptables -A PORTSCANDROPLAN -o ppp0 -p tcp --tcp-flags SYN,FIN SYN,FIN
+-j DROP
+iptables -A PORTSCANDROPLAN -o ppp0 -p tcp --tcp-flags ALL FIN -j DROP
+iptables -A PORTSCANDROPLAN -o ppp0 -p tcp --tcp-flags ALL ALL -j DROP
 
 --=20
 Jose Maria Lopez Hernandez
@@ -60,126 +68,5 @@ mad to talk, mad to be saved, desirous of everything at the same time,
 the ones who never yawn or say a commonplace thing, but burn, burn, burn
 like fabulous yellow Roman candles.
                 -- Jack Kerouac, "On the Road"
-
---=-CBfGQYnzBojAuRWW4LOF
-Content-Disposition: attachment; filename=bsf_clearconntrack
-Content-Type: text/x-sh; name=bsf_clearconntrack; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-#!/bin/bash
-
-
-#########################################################################
-## bastion-firewall GPL (www.bgsec.com)                                 #
-#########################################################################
-## Este archivo es parte de la version GPL de bastion-firewall, un      #
-## firewall completo basado en Netfilter e iptables y desarrollado por  #
-## bgSEC (www.bgsec.com). La licencia de bastion-firewall se            #
-## encuentra en el archivo: /etc/bastion-firewall/LICENCIA.txt          #
-##                                                                      #
-## bastion-firewall es copyright de Jose Maria Lopez Hernandez          #
-## (jkerouac@bgsec.com) y bgSEC (www.bgsec.com)                         #
-#########################################################################
-
-
-# Quitar todas las conexiones de la tabla de conntrack para una
-# determinada IP o borrar la tabla completamente.
-
-# Forma de usarlo: bsf_clearconntrack [-a] [IP]
-
-# Comprobamos que se ha tecleado bien el comando
-if [ "$#" != "1" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-    echo 
-    echo " Ayuda de bsf_clearconntrack:"
-    echo "   bsf_clearconntrack direccionip (xxx.xxx.xxx.xxx)"
-    echo "   bsf_clearconntrack -a : Borra todas las entradas de la tabla" 
-    echo "   bsf_clearconntrack [-h] [--help]: Muestra esta ayuda" 
-    echo " Borrar todas la conexiones TCP de la tabla de conntrack para una"
-    echo " direccion IP o borrar la tabla completamente. Se cortan las"
-    echo " sesiones mandando un RST."
-    echo " ES TOTALMENTE NORMAL QUE APAREZCAN ERRORES INDICANDO QUE SE HA"
-    echo " TERMINADO hping2. SE LO EJECUTA Y LUEGO SE LO MATA PARA NO TENER"
-    echo " QUE ESPERAR LAS RESPUESTAS A LOS RESET."
-    echo " SOLO SIRVE PARA TCP."
-    echo
-    echo " Licencia de bastion-firewall en /etc/bastion-firewall/LICENCIA.txt"
-    echo 
-    exit 1
-fi
-
-if [ "$MYTAIL" = "" ]; then
-   source /etc/bastion-firewall/firewall.conf
-   source /usr/lib/bastion-firewall/bsf/functions.bsf
-fi
-
-
-
-# Puede cambiar la ubicacion de estos
-CONNTRACKFILE=/proc/net/ip_conntrack
-HPING2=$(which hping2 2>/dev/null)
-
-
-if [ "$HPING2" = "" ]; then
-    echo 
-    echo " Error: Este programa necesita hping2 para funcionar"
-    echo
-fi
-
-RESETIP=$1
-DIDIT=0
-
-if [ "$RESETIP" = "-a" ]; then
-  $MYCAT $CONNTRACKFILE|$MYGREP -E "^tcp .{10,25}ESTABLISHED"| \
-   while read TMPCONN ; do
-     echo $TMPCONN
-  
-     # Sacamos los datos de cada conexion
-     SRCIP=$(echo $TMPCONN|$MYCUT -d '=' -f 2|$MYCUT -d ' ' -f 1)
-     DSTIP=$(echo $TMPCONN|$MYCUT -d '=' -f 3|$MYCUT -d ' ' -f 1)
-     SRCPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 4|$MYCUT -d ' ' -f 1)
-     DSTPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 5|$MYCUT -d ' ' -f 1)
-
-     # Mandamos el reset a la IP de destino y al puerto de destino, como si
-     # fueramos la conexion verdadera
-     echo hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n
-     hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-
-     # Mandamos tambien el reset al lado contrario
-     echo hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n
-     hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-  done
-else
-  $MYCAT $CONNTRACKFILE|$MYGREP -E "^tcp .{10,25}ESTABLISHED src=$RESETIP"| \
-   while read TMPCONN ; do
-     echo $TMPCONN
-  
-     # Sacamos los datos de cada conexion
-     SRCIP=$(echo $TMPCONN|$MYCUT -d '=' -f 2|$MYCUT -d ' ' -f 1)
-     DSTIP=$(echo $TMPCONN|$MYCUT -d '=' -f 3|$MYCUT -d ' ' -f 1)
-     SRCPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 4|$MYCUT -d ' ' -f 1)
-     DSTPORT=$(echo $TMPCONN|$MYCUT -d '=' -f 5|$MYCUT -d ' ' -f 1)
-
-     # Mandamos el reset a la IP de destino y al puerto de destino, como si
-     # fueramos la conexion verdadera
-     echo hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n
-     hping2 $DSTIP -R -s $SRCPORT -p $DSTPORT -a $SRCIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-
-     # Mandamos tambien el reset al lado contrario
-     echo hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n
-     hping2 $SRCIP -R -s $DSTPORT -p $SRCPORT -a $DSTIP -k -c 1 -n &
-     usleep 100000
-     killall -9 hping2
-  done
-fi
-
-# bsf_clearconntrack end
-
---=-CBfGQYnzBojAuRWW4LOF--
 
 
