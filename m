@@ -1,10 +1,9 @@
-From: "Samuel Jean" <sjean@cookinglinux.org>
-Subject: Re: routing mail traffic through a second interface
-Date: Mon, 26 Jul 2004 08:47:08 -0400 (EDT)
+From: "Small, Jim" <jim.small@eds.com>
+Subject: Questions about the workings of iptables
+Date: Mon, 26 Jul 2004 08:51:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4459.216.239.71.162.1090846028.squirrel@216.239.71.162>
+Message-ID: <564DE4477544D411AD2C00508BDF0B6A21C4DABE@usahm018.exmi01.exch.eds.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,89 +15,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+I've been using netfilter/iptables for some time and I'm planning on doing a
+presentation on it to a local user group.  I've used most of the major
+firewalls (pf, ipfilter, iptables, PIX, and CheckPoint) and I've been
+comparing features.  Note--I know there are other firewalls like G2,
+NetScreen, and CyberGuard and I'm not trying to knock them by leaving them
+out!
 
-Hi Julien,
+Two popular firewall features I'm exploring are stateful inspection and
+initial TCP sequence randomizing.  I've looked in the archives and couldn't
+find very much.  So please allow me to ask:
 
-Julien <dyna@tri-oxyde.org> wrote:
+1)  How extensive is IPTables stateful packet filtering?  Especially with
+TCP and the recent reset paranoia
+(http://www.uniras.gov.uk/vuls/2004/236929/index.htm), what is checked for
+stateful TCP inspection?  Are the sequence numbers carefully scrutinized as
+part of the state check?  For an excellent paper on TCP state checking, I
+like the following:
+http://home.iae.nl/users/guido/papers/tcp_filtering.ps.gz
 
-> Hi,
->
-> I have been trying for a few days now to route mail traffic on a=3D20
-different connection than rest of traffic using iproute2, I already
-did=3D20 some posts regarding this problem, and thanks to help of guys
-here and=3D20 in the lartc mailing list I succedeed to have a little
-improvement.
->
-> Here are the box infos :
->
-> Slackware 9.1 (Linux 2.4.22)
-> Two dsl connections via pppoe
->
-> I only care about locally generated mail traffic but I didn't succeed=3D=
-20
-making it as the mta level.
->
-> I did :
-> iptables =3DE2=3D88=3D92A OUTPUT =3DE2=3D88=3D92i eth0 =3DE2=3D88=3D92t=
- mangle =3DE2=3D88=3D92p
-t=3D cp =3DE2=3D88=3D92=3DE2=3D88=3D92dport 25 =3DE2=3D88=3D92j MARK
-=3DE2=3D88=3D92=3DE2=3D88=3D92set=3DE2=3D88=3D =3D92mark 1
-> echo 201 mail.out >> /etc/iproute2/rt_tables
-> ip rule add fwmark 1 table mail.out
-> ip route add default via [Second's ISP Gateway] dev ppp1 table mail.out
->
-
-Why not use the ROUTE target ?
-
-Let's say your normal flow goes through ppp0 by default.
-
-def_int=3Dppp0
-iptables -t mangle -I OUTPUT -o $def_int -p tcp --dport 25 -j ROUTE --oif
-ppp1 --continue
-
-So now, all traffic generated from the computer itself will use ppp1 as
-the outgoing interface. Do not forget the --continue which means the
-packet will continue traversing other rules.
-
-> In order to make packets go out with correct source ip address :
-iptables -t nat --append POSTROUTING -p tcp --dport 25 --jump SNAT=3D20
---to-source [Second's ISP external IP]
->
-
-Correct.
-
-> The current situation :
-> I can see with tcpdump packets going out, and back but if I do telnet=3D=
-20
-someisp.com 25 I see nothing in the terminal.
->
-
-Are you sniffing on ppp1 ?
-Did you enable NAT of local connection ?
-
-> I really don't know what can be wrong and found no answer neither in th=
-e=3D20
-> mailing list archive, in the lartc howto or in the advanced routing
-howto=3D .
->
-
-I can actually not answer.  Please provide more details such as related
-Conntrack entries, commands you executed to troubleshoot, etc.
+Is there a listing of everything the connection tracking modules do?
+If connection tracking or stateful inspection does not include TCP sequence
+checking, is there a way to add it?  Is it well tested/supported?
 
 
+2)  Can IPTables randomize initial TCP sequence numbers?  If not, is there
+an add-on that can?  I saw IP Personality, that's not really what I want.  I
+would prefer something that can randomize all initial TCP sequence numbers
+traversing an IPTables firewall.
 
---=20
-Samuel Jean
-SysAdmin & NetAdmin
-at cookinglinux.org
+As to why this is important, many clients have weak TCP ISN (Initial TCP
+Sequence Number) generators.  While Linux is good in this aspect, many
+clients like Windows are not.  And it is not always possible to replace
+Windows clients or other clients with weak ISNs.  Proxying might be an
+option, but I would really like to know if there is a stateful firewall
+option or add-on.
 
 
-
---=20
-Samuel Jean
-SysAdmin & NetAdmin
-at cookinglinux.org
+Thanks,
+   <> Jim
 
 
