@@ -1,12 +1,10 @@
-From: Brad Chapman <kakadu_croc@yahoo.com>
-Subject: Re: NAT only - No connection tracking
-Date: Mon, 11 Nov 2002 03:34:18 -0800 (PST)
+From: Patrick van der Smagt <smagt@dlr.de>
+Subject: How to assign an external IP to a host?
+Date: Mon, 11 Nov 2002 15:32:34 +0100 (MET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021111113418.87092.qmail@web40907.mail.yahoo.com>
-References: <00ff01c28971$0a0429f0$0bc8c80a@dolphin>
+Message-ID: <Pine.GSO.4.40.0211111529590.23175-100000@amazonas.robotic.dlr.de>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00ff01c28971$0a0429f0$0bc8c80a@dolphin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +14,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi,
 
---- Jet <yenjet.chan@eglobal.com.my> wrote:
-> Hi all,
-> 
-> How can I make my iptable to do just NAT, no connection tracking?
-> 
-> No matter how hard I tried to configure netfilter to load only iptable_nat,
-> it will load ip_conntrack too.
-> 
-> Basically, I want to make my iptable to become a NAT device without stateful
-> inspection.
-> It this possible?
+I have a host connected via a PPP-connection to a Linux host.  I want to
+give the PPP-host a permanent IP.  I use nat-tables to do so, but it
+doesn't work: I can reach my PPP-host from all other machines, except the
+one on which I defined the two eth0 interfaces (despite the nat OUTPUT
+rule I defined).
 
-No.
+Any ideas?
 
-> 
-> .//Jet
-> 
-> 
 
-Brad
+Patrick
 
-=====
-Brad Chapman
-
-Permanent e-mail: kakadu_croc@yahoo.com
-
-__________________________________________________
-Do you Yahoo!?
-U2 on LAUNCH - Exclusive greatest hits videos
-http://launch.yahoo.com/u2
 
