@@ -1,12 +1,15 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Problems after recompiling iptables 1.2.7 ..
-Date: 20 Jan 2003 09:59:50 +0200
+From: Peter Johnson <peter@thejohnsons.com.au>
+Subject: Re: Strange setup
+Date: 20 Jan 2003 18:50:29 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043049590.1543.5.camel@rayw.knowledgefactory.co.za>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <1043049030.24581.76.camel@wizardslair>
+References: <1648.10.35.120.83.1043012159.squirrel@mail.unixpimps.org>
+	<1043015513.24583.16.camel@wizardslair> 
+	<1084.10.35.120.83.1043023502.squirrel@mail.unixpimps.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-3BJsblbe9A7Ps8HynMG7"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1084.10.35.120.83.1043023502.squirrel@mail.unixpimps.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +19,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfiler E-Mail List <netfilter@lists.netfilter.org>
+
+Ok, gotcha now...
+
+Still do 
+ip rule add from $WAN_IP table $WAN_TABLE
+ip rule add from $WLAN_IP table $WLAN_TABLE
+and 
+ip route add default via $WAN_PEER_IP dev $WAN_IF table $WAN_TABLE
+ip route add default via $WLAN_PEER_IP dev $WAN_IF table $WLAN_TABLE
+
+Add iptables rules approximately as follows:
+
+$IPTABLES -t nat -A PREROUTING -i $WAN_IF -j DNAT $DMZ_IP_0-16
+$IPTABLES -t nat -A PREROUTING -i $WLAN_IF -j DNAT $DMZ_IP_17-32
+
+$IPTABLES -t nat -A POSTROUTING -o $WAN_IF -j SNAT $WAN_IP
+$IPTABLES -t nat -A POSTROUTING -o $WLAN_IF -j SNAT $WLAN_IP
+
+$IPTABLES -t filter -A FORWARD -i $WAN_IF -o $DMZ_IF -j ACCEPT
+$IPTABLES -t filter -A FORWARD -i $WLAN_IF -o $DMZ_IF -j ACCEPT
+
+That takes care of the initial connection i.e. SYN packets. The IPTables
+nat table is only used on the initial packet on each connection.
+
+For the actual routing, the only thing that I can think of is assigning
+two IPs (aliases) to each server in the DMZ say .0-16 for WAN and 17-32
+for WLAN then using
+
+$IPTABLES -t mangle -A PREROUTING -s $DMZ_IP_0-16 -j MARK --set-mark 1
+and
+$IPTABLES -t mangle -A PREROUTING -s $DMZ_IP_17-32 -j MARK --set-mark 2
+
+then add
+
+ip rule add fwmark 1 table $WAN_TABLE
+and
+ip rule add fwmark 2 table $WLAN_TABLE
 
 
---=-3BJsblbe9A7Ps8HynMG7
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Sorry but that is all I can come up with at the moment.
 
-Hi
+PJ
 
-I have a problem with NAT after recompiling iptables and my kernel.
+-- 
 
-This line gives an 'invalid argument' error:
-iptables -t nat -A PREROUTING -i eth0 -s 192.168.0.0/24 -j SNAT
---to-source 196.4.160.2
+Quitters never win, and winners never quit, but those who never quit AND
+never win are idiots.
 
-Is there something wrong with the above line, or is there something
-wrong with my kernel or iptables?
 
-kernel version =3D 2.4.20 - 'Full Nat' is enabled
-patch-o-matic 'time' patch applied
-iptables version =3D 1.2.7
-
-There were no errors during compile. Although, after rebooting the
-machine complains about a missing map file.
-
-Regards
-
-Ray
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
-
---=-3BJsblbe9A7Ps8HynMG7
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA+K6x2h1fuR/Bv+ygRAumCAJ4pgZmYWN3qSvmAknE+OUPWEIjyswCeMBX6
-PAXmf5kHxS2KY1vYQFJ0YVM=
-=9Bp7
------END PGP SIGNATURE-----
-
---=-3BJsblbe9A7Ps8HynMG7--
 
 
