@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: iptables and SMP performance
-Date: Mon, 24 Jan 2005 18:58:18 -0500
-Message-ID: <1106611098.5057.61.camel@hubcap.ljm.dom>
-References: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
+From: Guilherme Cesar Soares Ruppert <ruppert@las.ic.unicamp.br>
+Subject: Help!! How to steal UDP traffic?
+Date: Mon, 24 Jan 2005 22:12:04 -0200 (BRST)
+Message-ID: <Pine.LNX.4.61.0501242211240.6917@quasar.las.ic.unicamp.br>
+References: <Pine.LNX.4.61.0501221918080.6027@quasar.las.ic.unicamp.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
+In-Reply-To: <Pine.LNX.4.61.0501221918080.6027@quasar.las.ic.unicamp.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, 2005-01-24 at 12:42, Patrick Higgins wrote:
-> Any suggestions?
 
-have you considered (or are you already using) better NICs?  this is
-mostly hearsay gleaned from listening to the developers on various lists
-(netfilter-dev and openbsd-misc), but certain cards seem to be more
-"interrupt heavy" than others.  the ones that seemed to get bashed the
-most are the broadcom cards, and the ones that seem to receive the most
-praise are the intel gigabit server adapters (i assume you are using
-gigE adapters regardless of the speed of your links, i further assume
-that these gigE cards are plugged into independent 64-bit PCI-X buses). 
-also--if you're already using the intel gigE cards--are you using the
-less "free-as-in-speech" but less buggy and better performing driver
-from intel vs. the one that RH ships with their kernel?
 
-just a few thoughts outside the "we need more CPU" box...as i have never
-been under the impression that something like an in-kernel packet filter
-could benefit from multiple CPUs (other than the fact that you can bind
-all non-kernel processes to other CPU, for a minimal 10% or so
-performance gain).
+  Hi everyone, please I need some help!!
 
--j
+  I'm developing a program that needs to intercept an UDP traffic generated
+  locally by another application. It's like a tunnel. My program will steal the
+  outgoing packets from the application (in the same machine) and will send to
+  a tcp tunnel.
 
---
-"If something is to hard to do, then it's not worth doing."
-	--The Simpsons
+  I am using Libipq to do that, but I have a BIG problem. After send the UDP
+  packets to my tunnel, I need to DROP the packets because I don't want them to
+  be sent over the network. So I am doing:
+  ipq_set_verdict(handle, m->packet_id, NF_DROP, 0, NULL);
+
+  But the problem is that when I drop the packet, the application that
+  generated the packet remains blocked in sendto() until the packet is
+  accepted. When I change to NF_ACCEPT, the application doesn't block but the
+  packets are sent to the network and I don't want it.
+
+  How could I drop a packet silently, without blocking the application? Is
+  there any way to intercept outgoing packets locally without let the
+  applications notice that their packet were stolen?
+
+  Here is the same example using netcat:
+  $ iptables -A OUTPUT -p udp -j QUEUE
+  $ echo "Test" | nc -n -u 10.1.1.23 800
+  And this last remains blocked, not returning to shell.
+
+  I tested will ping (icmp echo) also and the same happened, but ping didn't
+  block. Instead, it said "operation not permitted".
+
+  Please give me some hope!!! :-)
+
+  Thanks
+
+  Guilherme Ruppert
+
+
 
 
