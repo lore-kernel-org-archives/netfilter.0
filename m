@@ -1,8 +1,9 @@
-From: Peng Gao <gao@lkn.ei.tum.de>
-Subject: Destination NAT question
-Date: Tue, 24 Sep 2002 18:47:40 +0200
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Fwd: Re: FreeS/WAN + static NAT + 2 machines
+Date: Tue, 24 Sep 2002 22:17:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D90972C.70204@lkn.e-technik.tu-muenchen.de>
+Message-ID: <3D90C852.9090104@fugmann.dhs.org>
+References: <OF97101FEC.E6B99807-ONC1256C3E.005480B2-C1256C3E.0054FC9A@GEHAG-DSK.DE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,26 +17,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Walther@gehag-dsk.de
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Walther@gehag-dsk.de wrote:
+> 
+> but i cannot mount any Windows or SAMBA share. do you know something about 
+> this???
+> 
+As Anthony pointed out, it proberbly because its using broadcast to 
+locate machines, which cannot be routed. You can circumvent this by 
+setting up a wins server on the network, and let all windows machines 
+use this. A wins server is a kind of name server for the netbios 
+protocol. All clients in "hybrid" or "Peer" mode will query this machine 
+to get a list of available servers, and fall back on broadcast if the 
+machine could not be contacted.
 
-I am a student at Technical University of Munich.  I am doing my thesis 
-about Netfilter.  
+To make windows use a wins server you must of cource set one up. The 
+samba server can easily do this. Then make sure that all clients are 
+using a wins server (it should be easy to find in the network settings), 
+and make sure that they run in the hybrid/H-mode.
 
-I set up the NAPT to do the Source Address Translation by the command:
-iptables -t nat  -A POSTROUTING -p udp -o eth0 -j SNAT --to 1.2.3.4:1-1023
+If you are using a DHCP server for your windows clients, you can set it 
+up to send these parameters automatically to the clients.
 
-But my question is:
-Could you please tell me the command to do the Destination Address 
-Translation for the reverse direction (from the public network to 
-private network)?
+I have no experience with other DHCP server than unix dhcp3-server.
+The options here are:
+	option netbios-name-servers <wins-ip-address>;
+	option netbios-node-type 8;
 
-Thanks a lot!
+(node type 8 is the hybrid mode)
 
-Best wishes!
+Thats it.
+Anders Fugmann
 
-Peng Gao
+P.s.
+Sorry for getting a bit offtopic, but usually windoes machines are setup 
+to broadcast, which is a totally waste of bandwidth and has big flaws. 
+This letter may correct some of this.
+
 
 
 
