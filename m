@@ -1,7 +1,7 @@
 From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: Port 25
-Date: Tue, 8 Feb 2005 07:32:06 -0800
-Message-ID: <186AC876521E0F46BDE77079A6567FD0F0DDA8@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
+Subject: RE: ever block *outgoing* packets on your firewall?
+Date: Tue, 8 Feb 2005 07:37:04 -0800
+Message-ID: <186AC876521E0F46BDE77079A6567FD0F0DDA9@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-class: urn:content-classes:message
@@ -16,54 +16,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-jason,
+drops are kool. this the way i want to treat an intruder.
+i dont want a bunch of bells and whistles going off.
+i want whatever queries be attempted to be logged, if interesting,
+and therewith sent to /dev/null with a resounding thud then....
 
-afraid i've gotta agree with you on this. i'd take it a step further,
-it probably makes the environment more difficult to figure out as the =
-RST
-would alert me to the fact that i PROBABLY can DOS this guy whereas if i =
-get
-no response, i'm left to me own devices. every step that makes the life =
-of
-"UNINVITED GUESTS" harder is worth doing especially if it can be =
-accomplished with
-LESS effort. good catch here.
+...silence....
 
-jose,
-when you get a chance could you post a link to the docs you refer to.
+frustration is the number one method of turning an intruder away.
+
+he will simply get bored if the box getting pounded on doesnt =
+over-react.
+
+try it.
 
 -----Original Message-----
 From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Jason
-Opperisano
-Sent: Tuesday, February 08, 2005 5:16 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Port 25
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Nick Drage
+Sent: Monday, February 07, 2005 5:08 PM
+To: Netfilter Mailing List
+Subject: Re: ever block *outgoing* packets on your firewall?
 
 
-On Tue, 2005-02-08 at 04:32, Jose Maria Lopez wrote:
-> I don't have the documentation handy, but it said making just a
-> DROP could lead you to being DOS attacked. Have anybody heard
-> something about this?
+On Mon, Feb 07, 2005 at 10:28:46AM -0800, seberino@spawar.navy.mil =
+wrote:
 
-i propose that the exact opposite is true.  why should i make my
-firewall undertake the effort of generating a RST packet for every yahoo
-on the Internet that wants to scan my IP range for TCP 139, 445, etc.
+> > > i run a default DROP policy on the OUTPUT chain of my firewalls
+> > > and only allow out necessary traffic (DNS, HTTP/FTP to update
+> > > servers, NTP, etc).  but i'm pretty odd when it comes to these
+> > > things--i don't know how necessary it is.  the one nice
+> > > side-effect is that is keeps me from doing something stupid when
+> > > i'm ssh-ed into a firewall.
+> >
+> > Out of interest why "DROP" rather than "REJECT"?  With reject users,
+> > hosts or programs on the inside tend to fail straight away rather
+> > than taking a while to time out annoyingly.
+>
+> please remind me of difference between REJECT and DROP.
+>=20
+> Perhaps I should use REJECT then!
 
-DROP-ing a packet doesn't take any real effort on the firewall's part;
-whereas generating a RST packet adds at least some overhead--which in
-the extreme case could be significant.
+From the "man iptables" pages ;)
 
--j
+DROP means to drop the packet on the floor.
 
---
-"Here are your messages: 'You have thirty minutes to move your
- car.' 'You have ten minutes to move your car.' 'Your car has been
- impounded.' 'Your car has been crushed into a cube.' 'You have thirty
- minutes to move your cube.'"
-	--The Simpsons
+REJECT
+This is used to send back an error packet in response to the matched
+packet.
 
+Really that's it, a DROP rule with just eat the packet and not do
+anything else or tell anyone or anything, hence the remote end of the
+connection will presume the packet or its reply got lost along the way
+and try again.  A REJECT rule will send something back saying "I don't
+talk that protocol".
+
+--=20
+Where are we going and what's with the hand basket?
 
 
