@@ -1,12 +1,12 @@
-From: eanhard@inorbit.com
-Subject: Script Help
-Date: Thu, 27 Jun 2002 20:47:05 -0500
+From: "Mika Ullgren" <mika.ullgren@lemonplanet.com>
+Subject: RE: Nat with virtual interfaces - Solved
+Date: Fri, 28 Jun 2002 08:21:59 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020628014705.57287.qmail@iname.com>
+Message-ID: <BACC2B29B574704A8494EAD86EDBB9501C6135@stosrv-0003.lemonplanet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,18 +17,55 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-Hi,
-I am having problems with some scripts, i use lines like this ( export IP_INET=`/sbin/ifconfig $IP_ETH0 | grep inet | cut -d: -f2 | cut -d\  -f1`; ) in my .bash_profile file to add environment variable to use with my firewall script then call them like iptables -A INPUT -s $IP_NET -j ACCEPT this works ok. The problem i am having is i have a dhcp assigned connection to another office, i am trying to add this line to my firewall script so it will check the ipaddress of my work connection and set the environvemt variable from there (ie: export IP_WORK=`host work.net.au | grep address | cut -f4 -d" "`; ), can anyone tell me how i can run this line from my firewall script and not my .bash_profile script, i can t seem to get it working, is it possible to have an env script that sets all the variables first??.. sorry if this is not totally iptables realted but some help would be apreciated so i can fine tune my firewall.
+Thanks to all that answere to this thread.=20
 
-ps: yes im a newbie.....
--- 
-__________________________________________________________
-Sign-up for your own FREE Personalized E-mail at Mail.com
-http://www.mail.com/?sr=signup
+And a special thanks to Antony for solving the problem. Works like a
+charm. This help was very appreciated since I'm not used to use
+iptables. I come from the world of OpenBSD so in pf lies my strenght.=20
 
-Save up to $160 by signing up for NetZero Platinum Internet service.
-http://www.netzero.net/?refcd=N2P0602NEP8
+Thanks once again Antony.
 
+// Mika Ullgren
+
+> -----Original Message-----
+> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]=20
+> Sent: den 27 juni 2002 17:36
+> To: netfilter@lists.samba.org
+> Subject: Re: Nat with virtual interfaces
+>=20
+>=20
+> On Thursday 27 June 2002 2:49 pm, Mika Ullgren wrote:
+>=20
+> > Yes I did. Sorry I forgot to mention that... If I use DNAT=20
+> exactly the
+> > same thing happens as with REDIRECT.
+> >
+> > Any other ideas?
+>=20
+> Here's a bit of a daft idea, but you never know.....
+>=20
+> Try using DNAT to a completely different address (which you=20
+> still add to eth0=20
+> and include in the apache httpd.conf file) ?
+>=20
+> eg ifconfig eth0:0 172.16.64.75 netmask 255.255.255.0
+>=20
+> iptables -A PREROUTING -t nat -d 192.168.64.75 -p tcp --dport=20
+> 80 -j DNAT --to=20
+> 172.16.64.75:8080
+>=20
+> etc....
+>=20
+> I have no idea if this would work (or if it did, why it's a=20
+> better idea than=20
+> the other things you've tried) but it's got to be worth a=20
+> quick go.....
+>=20
+> =20
+>=20
+> Antony.
+>=20
+>=20
 
