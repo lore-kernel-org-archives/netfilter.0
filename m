@@ -1,12 +1,15 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: a sort of n00b question here but I'ld like to know.
-Date: Tue, 21 Oct 2003 15:36:48 -0700 (PDT)
+From: Fernando Barrocal <fbarrocal@uol.com.br>
+Subject: RE: iptables1.2.7 + pptp + rh9
+Date: Tue, 21 Oct 2003 21:05:48 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031021223648.2693.qmail@web40204.mail.yahoo.com>
-References: <00ea01c39818$162e5c80$0301a8c0@SIMON>
+Message-ID: <6.0.0.22.0.20031021210350.01b66818@pop3.uol.com.br>
+References: <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com> <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com
+ >
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00ea01c39818$162e5c80$0301a8c0@SIMON>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com
+ >
+References: <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +19,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Simon Garner <sgarner@expio.co.nz>, netfilter@lists.netfilter.org
+To: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
 
 
---- Simon Garner <sgarner@expio.co.nz> wrote:
-> On Wednesday, October 22, 2003 7:11 AM [GMT+1200=NZT],
-> SBlaze <dagent.geo@yahoo.com> wrote:
-> 
+Let me ask another question ... a newbie one ...
+
+Is that order correct ?
+
+- apply pptp patch
+- compile iptables
+- compile kernel (config, dep, clean, image, modules)
+
+
+
+At 20:06 21/10/2003, Daniel Chemko wrote:
+>Um, yeah. You need to compile the userspace tools against the kernel
+>that you are installing.
+>
+>-----Original Message-----
+>From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]
+>Sent: Tuesday, October 21, 2003 3:00 PM
+>To: Daniel Chemko; netfilter@lists.netfilter.org
+>Subject: RE: iptables1.2.7 + pptp + rh9
+>
+>
+>Still after installing 1.2.8 it does not work. Do I need to compile ipt
+>?
+>and the kernel ?
+>
+>At 19:15 21/10/2003, Daniel Chemko wrote:
+> >Download ipt 1.2.8 or 1.2.9 if it is out.
+> >Or, use the CVS userspace
 > >
-> > Wouldn't ntop be considered a "probing" tool?
+> ># KERNEL_DIR=<yourkerneldir> make
+> ># make install
 > >
-> 
-> I wouldn't consider it a probing tool... something like nmap would be
-> probing, ntop just listens. And although it puts your eth into
-> promiscuous mode, I wouldn't call it a packet sniffer since it won't
-> tell you the contents of any packets, only where they're going and how
-> big they are etc. I don't think you have anything to worry about.
-> 
-> Now I have no experience with cable or cable modems (they're practically
-> non-existent over here) but wouldn't running this on your linux box only
-> show you whatever data your cable modem is sending to you anyway...
-> you'd need to put the *cable modem* into promiscuous mode (or
-> equivalent) to actually receive any data you shouldn't.
-> 
+> >You might want to change the destination directories in the Makefile to
+> >conform to the Redhat deployment layout
+> >LIBDIR=/lib/
+> >MANDIR=/usr/man
+> >etc..
 > >
-> > And getting back to my original reason and question for this post. How
-> > statistically can you see just how much iptables/netfilter is using
-> > of system resources?
+> >-----Original Message-----
+> >From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]
+> >Sent: Tuesday, October 21, 2003 2:04 PM
+> >To: netfilter@lists.netfilter.org
+> >Subject: iptables1.2.7 + pptp + rh9
 > >
-> 
-> I think we're agreed that the level of data you're seeing wouldn't cause
-> any problems CPU-wise. You can see kernel CPU usage as "system CPU%" in
-> top and vmstat and they're saying 0, which would be expected.
-> 
-> -Simon
-> 
-> 
-
-Ok guys well I think that just about wraps this thread up. Special thanks go
-out to Jeffery, Simon, and Daniel for all thier help. Really THANKS ALOT
-GUYS!!!
-
-
+> >
+> >Hi,
+> >
+> >I am applying the pptp patch with patch-o-matic in my redhat 9.0.
+> >Somebody
+> >have somer step by step to patch the kernel, compile the iptable
+> >userspace
+> >and compile the kernel to accept DNAT ?
+> >
+> >Thanks in advance
+> >
+> >Fernando Barrocal
 
 
-=====
-In the absence of order there will be chaos.
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
 
