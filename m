@@ -1,11 +1,11 @@
-From: "Johannes Walch" <j.walch@nwe.de>
+From: "Jesper Lund" <jesper@ballbreaker.dk>
 Subject: Re: What ports need to be open to allow for mail?
-Date: Thu, 10 Apr 2003 12:42:43 +0200
+Date: Thu, 10 Apr 2003 12:43:51 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003b01c2ff4d$eb5d2530$5863a8c0@note>
+Message-ID: <1450.212.242.51.102.1049971431.squirrel@www.ramstedt.dk>
 References: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20030410093951.97924.qmail@web40207.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,23 +18,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: james_marcinek@yahoo.com
+Cc: netfilter@lists.netfilter.org, jmarc1@eckerd.com
 
-> Hello All,
->
-> I'm trying to set up my mail server; however I want to
-> make sure that I have the correct port(s) open. I
-> already have TCP port 25 open; however do I also have
-> to have UDP port 25 open as well? Any help would be
-> appreciated.
->
-> Thanks,
-> James
 
-If you want to run SMTP (the standard case) with your mail server port
-25/TCP ist sufficient. Port 25/UDP is not used by sendmail or any other SMTP
-server software (as far as I know).
+> however do I also have to have UDP port 25 open as well?
 
-johannes walch
+No you don't. Byt maybe consider port 110 and 143 for pop3 and imap.
+
+//Jesper
+
+-- 
+www.ballbreaker.dk/antispam.html
+
 
 
