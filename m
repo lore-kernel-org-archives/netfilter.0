@@ -1,15 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: HELP!!! (ip_conntrack: table full)
-Date: Tue, 28 Oct 2003 20:58:18 -0500
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: RE: Port Forwarding
+Date: Wed, 29 Oct 2003 10:24:23 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310282058.18831.Alistair@nerdnet.ca>
-References: <007e01c39dbc$d606fae0$de0018ac@admin.monash.edu.my>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8DB3@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007e01c39dbc$d606fae0$de0018ac@admin.monash.edu.my>
-Content-Disposition: inline
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,80 +17,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: eturner@monash.edu.my, netfilter@lists.netfilter.org
-
-On October 28, 2003 08:34 pm, Edmund Turner wrote:
-> Hey guys, its been awhile,(im getting old and my memory seems to escape
-> me.) so please bear with me. :)
->
-> TO remove the module
->  rmmod ip_conntrack.o
-> How do I reinstate the module?????
+To: Jason Mallory <jason@phxrising.com>, netfilter@lists.netfilter.org
 
 
+I think we may be able to help you. Please give us what config you have =
+done.
 
-	*THWACK* 
+For a web server, some need to have 4 rules... prerouting a forward =
+rule, postrouting and another forward rule.
 
-	insmod
-	modprobe
-	
-	(oops .. that fish was dead .. .sorry)
+If you have set iptables -P forward ACCEPT then you only need 2 rules... =
+prerouting and postrouting rules.
 
->
->
-> Regards
-> edmund
->
->
+Send us what you have done and we will try to help you.
+
+
+Cheers,
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+
+
 > -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of NightHawk
-> Sent: Tuesday, October 28, 2003 4:22 AM
+> From: Jason Mallory [mailto:jason@phxrising.com]
+> Sent: Tuesday, October 28, 2003 6:17 AM
 > To: netfilter@lists.netfilter.org
-> Subject: Re: HELP!!! (ip_conntrack: table full)
->
-> Warren,
->    I would only raise the value in /proc/net/ip_conntrack a little bit
-> at a
-> time till you find the lowest number that works for your situation.
-> Once you
-> have everything under control, the number shouldn't have to be too high,
-> at
-> least this has been my experience.  I only raise the number when having
-> a
-> "situation", and then lower it back down once things are calmed down.
->
-> And yes, I did mean to rmmod ip_conntack, when I mentioned dropping
-> ip_conntrack.  Although, this tends to require dropping a few other
-> modules
-> as well, and also tends to require stopping iptables while you do so.
-> (due to
-> some of the modules that you have to remove.)  Which is why it is not
-> the
-> best solution for all situations....
->
-> NH
->
-> On Monday 27 October 2003 2:52 pm, Warren P wrote:
-> > hi
-> >
-> > WRT echo ## > /proc/net/ip_conntrack
-> >
-> > Considering i've got 1gig of RAM ... what is a safe value i
-> > can set ip_conntrack_max to? The current value is 65528
-> >
-> > Also when you refer to dropping ip_conntrack ... do mean
-> > like rmmod ip_conntrack.o?
-> >
-> > Regards,
-> > Warren P
+> Subject: Port Forwarding
+>=20
+>=20
+> I am tring to do a simple port forwarding from the Internet=20
+> to a mcahine=20
+> on my LAN. This has proven IMPOSSIBE! No matter how I try to forward=20
+> ports, its not working. I am thinking about just setting up a simple=20
+> Windows XP box and doing it that way after trying for 12 hours and 5=20
+> different configuration methods. Any last suggestions before I switch?
+>=20
+>=20
+>=20
 
--- 
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
+
 
