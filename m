@@ -1,14 +1,12 @@
-From: William Stearns <wstearns@pobox.com>
-Subject: Re: Iptables & Patch-o-matic
-Date: Thu, 27 Nov 2003 10:15:04 -0500 (EST)
+From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Subject: pptp-conntrack-nat
+Date: Thu, 27 Nov 2003 18:34:15 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0311271012430.21792-100000@sparrow>
-References: <BAY10-F81wYYGE4V0Ov0001d1a1@hotmail.com>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <13121614429.20031127183415@internetplustravel.ru>
+Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY10-F81wYYGE4V0Ov0001d1a1@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: "Sergio S. Fenoglio" <sebasf9@hotmail.com>
-Cc: ML-netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Good day, Sergio,
+I tryed to install extra package - pptp-conntrack-nat
+but failed to do this.
 
-On Thu, 27 Nov 2003, Sergio S. Fenoglio wrote:
+The script tells me "Could not find place to slot in
+ip_conntrack.h line", while testing and if I force it to install,
+it installs.
+And after that I do not see additional configure options while
+configuring my kernel.
+Do you have any ideas what to do?
 
-> How to install iptables-1.2.9.tar.tar and patch-o-matic-20030912.tar.ta=
-r?
-> I can=B4t do it.
 
-	You haven't given us enough information on how we can help you=20
-solve your problem; see http://www.stearns.org/doc/howtoask.current.html .
-	For some starter information on patch-o-matic, see:
-http://www.netfilter.org/documentation/FAQ/netfilter-faq-1.html#ss1.5
-	Cheers,
-	- Bill
+Welcome to Rusty's Patch-o-matic!
+Kernel:    /usr/src/kernel-source-2.4.18
+Userspace: /usr/src
+Each patch is a new feature: many have minimal impact, some do not.
+Almost every one has bugs, so I don't recommend applying them all!
+-------------------------------------------------------
+Testing... pptp-conntrack-nat.patch NOT APPLIED (8 missing files)
+The extra/pptp-conntrack-nat patch:
+   Author: Harald Welte <laforge@gnumonks.org>
+   Status: Beta
+   This adds CONFIG_IP_NF_PPTP:
+   Connection tracking and NAT support for PPTP.
+   Note that this code currently has limitations
+   - can only NAT connections from PNS to PAC
+   - doesnt' support multiple calls within one session
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?]
+Testing patch extra/pptp-conntrack-nat.patch...
+   Placed new Config.in line
+   Placed new Configure.help entry
+   Placed new Makefile line
+   Placed new Makefile line
+   Placed new ip_conntrack.h line
+   Placed new ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+TEST FAILED: patch NOT applied.
+[Press enter to continue]
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] f
+Applying patch extra/pptp-conntrack-nat.patch...
+Failed to patch copy of /usr/src/kernel-source-2.4.18
 
--------------------------------------------------------------------------=
---
-	"I don't have any solution but I certainly admire the problem."
-	- Ashleigh Brilliant
-(Courtesy of Steve Dodd <dirk@loth.demon.co.uk>)
--------------------------------------------------------------------------=
--
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.or=
-g
-Linux articles at:                         http://www.opensourcedigest.co=
-m
--------------------------------------------------------------------------=
--
+  
+
+-- 
+working tel.+7-095-933-2033
+mob. tel.+7-095-790-5354
+Regards Oleg
+Oleg                          mailto:savostyanov@internetplustravel.ru
 
 
