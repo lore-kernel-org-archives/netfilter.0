@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Dynamically Updating Rules
-Date: Thu, 27 Jun 2002 19:30:48 +0100
+From: eanhard@inorbit.com
+Subject: Script Help
+Date: Thu, 27 Jun 2002 20:47:05 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627183051.FHYK16050.mta01-svc.ntlworld.com@there>
-References: <200206271331.09893.lee@ricis.com>
+Message-ID: <20020628014705.57287.qmail@iname.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206271331.09893.lee@ricis.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,36 +19,16 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 27 June 2002 7:31 pm, Lee Leahu wrote:
+Hi,
+I am having problems with some scripts, i use lines like this ( export IP_INET=`/sbin/ifconfig $IP_ETH0 | grep inet | cut -d: -f2 | cut -d\  -f1`; ) in my .bash_profile file to add environment variable to use with my firewall script then call them like iptables -A INPUT -s $IP_NET -j ACCEPT this works ok. The problem i am having is i have a dhcp assigned connection to another office, i am trying to add this line to my firewall script so it will check the ipaddress of my work connection and set the environvemt variable from there (ie: export IP_WORK=`host work.net.au | grep address | cut -f4 -d" "`; ), can anyone tell me how i can run this line from my firewall script and not my .bash_profile script, i can t seem to get it working, is it possible to have an env script that sets all the variables first??.. sorry if this is not totally iptables realted but some help would be apreciated so i can fine tune my firewall.
 
-> Is there a way to dynamically add and remove rules to an iptables live
-> configuration?
->
-> For example:
->
-> I have a server and a workstion.  the workstation is locked down tightly. 
-> I would like for when i ssh to a remote server, that iptables automatically
-> opens the ident port on the workstation to that remote server, and after a
-> connection is made, to automatically close it back up again.
->
-> Is this possible???
+ps: yes im a newbie.....
+-- 
+__________________________________________________________
+Sign-up for your own FREE Personalized E-mail at Mail.com
+http://www.mail.com/?sr=signup
 
-You can create a script to add or remove rules whenever you like - the trick 
-is working out how to call the script.
+Save up to $160 by signing up for NetZero Platinum Internet service.
+http://www.netzero.net/?refcd=N2P0602NEP8
 
-If the daemon / service / application you're using doesn't easily support the 
-idea of calling a script when a connection comes in, you could perhaps log 
-the appropriate events (either with netfilter, or the daemon), either to a 
-log file which a background job is continually scanning, or pipe them to a 
-process which parses and handles the log entries as they come in ?
-
-You could even do something like run snort on the machine, and trigger on 
-certain events, or monitor the conntection tracking table and respond to new 
-connections which appear ?
-
-No doubt there are plenty of other ways of doing what you want.
-
- 
-
-Antony
 
