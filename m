@@ -1,12 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: h323
-Date: Mon, 23 Sep 2002 12:27:35 +0200 (CEST)
+From: "Matt Parlane" <matt@zevi.net>
+Subject: Multiple conditions for logging packets
+Date: Mon, 23 Sep 2002 23:06:50 +1200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0209231226050.26544-100000@blackhole.kfki.hu>
-References: <001d01c262a2$e2cbdb70$ccf8a8c0@monday>
+Message-ID: <09d001c262f1$50f418d0$0200a8c0@bart>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001d01c262a2$e2cbdb70$ccf8a8c0@monday>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Toshihiro Sonoda <toshihiro@jp.fujitsu.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 23 Sep 2002, Toshihiro Sonoda wrote:
+Hi list...
 
-> does the new nat patch have h.225ras, or ldap for NAT problems.
+I have a simple linux machine acting as a firewall/gateway, and I'm after a
+way to specify multiple conditions for rules.  Basically I want to create a
+rule for packets which are either coming from or going to the internet - not
+packets which are both sourced and destined for the local network.  The
+reason is that I am logging the packets to MySQL using ULogD - and I really
+can't afford to be periodically removing all the records from the table
+which are only for internal traffic.
 
-The h323 patch does not support RAS.
+I haven't been able to do this so far using iptables rules.  Does anyone
+have any ideas about how this might be achieved?
 
-> before, when i applied the h.323 patch, the patchs
-> have a part of h.323, but not h.225.
-> Is that ok?
+Many thanks in advance...
 
-Yes, that's OK.
-
-> Can you use ILS server, or Gatekeeper?
-
-The h323 patch does not support gatekeepers.
-
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Matt Parlane
+Zevi Interactive
+matt@zevi.net
 
 
