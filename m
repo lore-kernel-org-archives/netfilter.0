@@ -1,13 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: moving old ips to new ips..forwarding
-Date: Fri, 5 Jul 2002 14:48:20 +0100
+From: Martin Tomasek <mtd@mk.cvut.cz>
+Subject: Re: how to delete *some* netfilter rules?
+Date: Fri, 5 Jul 2002 15:57:43 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207051348.g65DmS801996@vulcan.rissington.net>
-References: <Pine.LNX.4.21.0207051257520.5181-100000@grabak.talker.com>
+Message-ID: <20020705135743.GB4851@mt.mk.cvut.cz>
+References: <20020614161800.GA6137@kostra.uh.cz> <02070513492203.14428@Lms>
+Reply-To: mtd@mk.cvut.cz
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.21.0207051257520.5181-100000@grabak.talker.com>
+Content-Disposition: inline
+In-Reply-To: <02070513492203.14428@Lms>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,74 +20,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Pavel Mores <pvl@uh.cz>, netfilter@lists.samba.org
 
-On Friday 05 July 2002 2:27 pm, Cygnus - Flirttown Coder wrote:
 
-> Scenario:
-> X number of clients (with 1 or more ips bound to a box)
-> behind Cisco Catalysts, behind Cisco 3600, behind Internet
->
-> Problem:
-> We want to move clients off our non-portable IP range and onto our arin
-> range.
+--5I6of5zJg18YgZEa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Why ?   This sounds less secure, less portable, more expensive and less 
-future-proof to me.
+using iptables without full path is insecure, I would modify this script
+this way:
 
-> I was thinking of setting up a linux box with iptables (call it
-> 'forwarder'), and pointing the old ips, inbound, to 'forwarder' on the
-> cisco 3600 (forwarder is not a pass-through, just a box hanging off a
-> switch port), then using iptables to forward each old ip to the new
-> one.
+> Your bash script could look like this:
+>=20
+> #!/bin/bash
++IPT=3D/usr/sbin/iptables
+>=20
+-> ADD=3D-A
++ADD=3D"$IPT -A"
+-> INS=3D-I
++INS=3D"$IPT -I"
+>=20
+> if [ -n "$1" ]; then
+> 	if [  "$1" !=3D "delete" ]; then
+> 		echo usage: $0 [delete]
+> 		exit 1
+> 	fi
 
-Why do you want to carry on using the old IP for a client after you've 
-changed that client to a new IP ?
+these two too:
+> 	ADD=3D-D
+> 	INS=3D-D
 
-> 1. Is there a better or easier way to do this?
+> fi
+>=20
+> #examples:
+-> iptables $ADD INPUT -i eth0 10.0.0.0/8 -j DROP
++$ADD INPUT -i eth0 10.0.0.0/8 -j DROP
+-> iptables $INS OUTPUT -i eth0 192.168.0.0/16 -j DROP
++$INS OUTPUT -i eth0 192.168.0.0/16 -j DROP
+>=20
 
-What are you currently using for a firewall ?   Can't you do the necessary 
-NAT on there ?
+there is other way of rules deletion:
 
-> 2. Is there a way to get the forwarder to route the old
->    ips to the client even if, especially if, they haven't changed them
->    yet? i.e. say the client has an old ip of x.x.x.x and is moving to a
->    new one of y.y.y.y, the forwarder would say, ok, traffic for x.x.x.x
->    send to x.x.x.x AND y.y.y.y (because the forwarder doesn't know if the
->    ip has moved yet). Maybe i'm overcomplicating it?
+iptables -D chain num
 
-You can't duplicate packets - you can only change a packet so it goes to a 
-different address, but it's still only one packet.
+where num is rule number in chain. in some cases it is better to
+use this command.
 
-Assuming that your terminology 'client' means these are machines initiating 
-communications, and they're not servers being accessed from other systems on 
-some presumed IP address, then once you've changed the IP on the client, why 
-would there ever be any packets destined for the old address ?
+--=20
+Martin Tomasek, mtd@email.cz
+BOFH excuse #27:
+radiosity depletion
 
-> 3. iptable rules to do this?
+--5I6of5zJg18YgZEa
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Depends on whether you really do mean client as in 'system which initiates 
-connections and does not have connections initiated to it' or whether other 
-machines out on the Internet might suddenly decide to connect to one of these 
-old or new IPs and you have to route the inbound packets appropriately ?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-> 4. will outbound traffic from the new ipcs need to go through 'forwarder',
->    or do programs not care if they receive answers from ips other than the
->    one they sent them too?
+iD8DBQE9JaXXzWKqGie3rqoRAs0+AJ44dPal85oIdqlPQuIlXHXpX4FVbgCePexg
+QpVQ1Y5ZfzgADDf75XiSajI=
+=84xd
+-----END PGP SIGNATURE-----
 
-If you NAT them in one direction, they must be NATted in the other direction 
-as well.   Machines WILL get extremely upset if they contact IP a.b.c.d and 
-then get a reply from IP w.x.y.z (ie it simply won't work).
-
-> 5. any other caveats?
-
-What is the physical network structure - if you are changing machines from 
-one IP range to another, are they getting plugged into a physically different 
-port on your firewall / router, or how else are you making sure that packets 
-can find the correct new gateway address for the outside world ?
-
- 
-
-Antony.
+--5I6of5zJg18YgZEa--
 
