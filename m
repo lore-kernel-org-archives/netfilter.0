@@ -1,12 +1,11 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Question about MARK target
-Date: Wed, 18 Aug 2004 14:32:04 -0400
+From: Eric Jarman <ehj38230@cmsu2.cmsu.edu>
+Subject: Question about MARK target
+Date: Wed, 18 Aug 2004 13:22:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512A4@asimail2.alphanumeric.com>
+Message-ID: <41239E7C.1010506@cmsu2.cmsu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,20 +15,11 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> In the PREROUTING table in mangle, is the MARK target a final target, =
-or
-> will a packet keep traversing the PREROUTING chain after getting =
-marked?
->
-> Thank you.
+In the PREROUTING table in mangle, is the MARK target a final target, or 
+will a packet keep traversing the PREROUTING chain after getting marked?
 
-MARK is not a final target--it just sets the mark on the packet.  you =
-can then use these marks as a match in later rules within =
-mangle:PREROUTING or other chains in other tables.
-
--j
-
+Thank you.
 
