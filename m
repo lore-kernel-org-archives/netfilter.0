@@ -1,11 +1,13 @@
-From: tfischer@abh.de
-Subject: UDP in PREROUTING mangle
-Date: Wed,  9 Apr 2003 12:01:06 +0200
+From: Carlos Ble <carlosble@terra.es>
+Subject: new tcp connections, without SYN
+Date: Wed, 9 Apr 2003 12:16:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049882465.3e93ef6202375@www.intranet.abh.de>
+Message-ID: <200304091216.28528.carlosble@terra.es>
+Reply-To: carlosble@terra.es
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi all. Two days ago, i added the policy that drops all new tcp connections
+that starts without SYN to prevent port scaners and other attacks:
 
-I've setup a routing based only on fwmarks with iproute 2 and discovered a
-Problem with UDP Packets. I mark the packets in the PREROTUING Chain, that works
-great for tcp, but for UDP Packets i have to mark them in the POSTROUTING Chain
-also. It seems that the UDP Packets "loose" their mark somewhere.
+iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG \
+--log-prefix "NEW tcp try no SYN:"
+iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
 
-iptables -A PREROUTING -t mangle -p udp -s xxx.xxx.xxx.xxx -d 0/0 -j MARK
---set-mark 1
+Now the system is registering this event every minute from diferents ip. 
+Is this usual?. What kind of programs tries to start a new tcp connection 
+without a SYN ?. 
+Im no so worried because scaning the ports of my server from another computer 
+in the internet, using nmap , the answer is that all ports al filtered. 
 
-doesn't work.
+Another question: I had disabled the icmp answers :
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+to try to be "invisible" for some wicked programs .
+will i have problems with some other programas that makes ping 
+before establish a connection? 
 
-iptables -A PREROUTING -t mangle -p udp -s xxx.xxx.xxx.xxx -d 0/0 -j MARK
---set-mark 1
-iptables -A POSTROUTING -t mangle -p udp -s xxx.xxx.xxx.xxx -d 0/0 -j MARK
---set-mark 1
-
-works.
-
-Greets,
-
-Tom Fischer
-
+Thanks in advance
 
