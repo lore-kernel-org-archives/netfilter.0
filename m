@@ -1,12 +1,13 @@
-From: "Bret Holbrook" <bholbrook@michiganfamilyresources.org>
-Subject: Gaming Server Woes
-Date: Sun, 13 Apr 2003 13:25:54 -0400
+From: "Farshad" <farshadas@excite.com>
+Subject: the right way to grab UDPs
+Date: Sun, 13 Apr 2003 17:25:18 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <se996577.022@michiganfamilyresources.org>
+Message-ID: <20030413212518.073493E10@xmxpita.excite.com>
+Reply-To: farshadas@excite.com
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,27 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.netfilter.org'", netfilter@lists.netfilter.org, , 
+To: netfilter@lists.netfilter.org
 
-Hi all,
 
-I purchased a Quad Xeon server to start hosting games over the
-internet.  I've got basic rules in place for surfing the net, etc., but
-opening ports for directx and gaming in general is a real trial.  I
-checked the IPmasq website, but it is horribly outdated.  I'd rather not
-use dmz as I want the server to be mostly an insecure gaming machine
-behind the firewall.
+Hi,
 
-Are there any sites out there up to date with regards to specific
-iptables rules to host games through the firewall?  For starters, I'm
-looking for Neverwinter Nights, UT2003, and Counter-strike.  But I would
-like to host just about everything under the sun.
+ I want to intercept UDP packets from a specific IP when they are 
+going to be forwarded though a machine. There are basically two ways
+to do this using iptables:
 
-What are people doing these days in regards to gaming to effectively
-game through an iptables based firewall?
+- sending packets to the userspace by libipq and then reinjecting them
+- opening a dummy socket, making packets forwarded to the dummy socket
+  instead, then resending them over another dummy socket, setting the
+  iptables to spoof their source IP to the original IP of the sender
 
-Any help would be greatly appreciated.  Thank You!
+ What do you think of these ways? Thanks for any comments.
 
-Bret
+      ciao,
+      Farshad
+
+
+
+
+
+_______________________________________________
+Join Excite! - http://www.excite.com
+The most personalized portal on the Web!
 
