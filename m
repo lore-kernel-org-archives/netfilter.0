@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: String
-Date: Wed, 30 Jun 2004 22:57:48 +0100
+Subject: Re: track bandwith used
+Date: Wed, 30 Jun 2004 23:03:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406302257.48060.Antony@Soft-Solutions.co.uk>
-References: <1088624701.19430.17.camel@localhost>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <200406302303.05668.Antony@Soft-Solutions.co.uk>
+References: <00e501c45ea3$28e2d110$49caa8c0@caris.priv> <200406301807.57782.Antony@Soft-Solutions.co.uk> <13c101c45ed2$8db2b9a0$49caa8c0@caris.priv>
+Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088624701.19430.17.camel@localhost>
+In-Reply-To: <13c101c45ed2$8db2b9a0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,37 +21,66 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 30 June 2004 8:45 pm, David Cary Hart wrote:
+On Wednesday 30 June 2004 7:46 pm, Peter Marshall wrote:
 
-> The string module seems like a great idea to filter some of the httpd
-> attacks.
+> yes it does.  Thank you very much.  I have been looking for an explanation
+> like that on the net. :)
+>
+> Do you have a link to where this netfilter documentation is ?
 
-It may seem like a great idea, but it has limitations which (IMHO) mean it's 
-just not worth using (for this sort of task).
+These might help fill in a few more details:
 
-The two major limitations are:
-
-1. It will only match on a string which is completely contained within one 
-packet - therefore a string "GET /index.html" which has the "GET " at the end 
-of one packet, and the "/index.html" at the start of the next will not be 
-matched.
-
-2. The string match works on literal text characters, and therefore will not 
-match anything at all for a gzip-compressed HTTP stream (quite commonly 
-encountered with modern servers).
-
-> In the alternative is there something else that might do similar filtering?
-
-Yes, Squid, Dan's Guardian - something which truly understands HTTP, rather 
-than just TCP/IP.
-
-Regards,
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#USERLANDSTATES
+http://www.sns.ias.edu/~jns/security/iptables/iptables_conntrack.html
 
 Antony.
 
+> ----- Original Message -----
+> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> To: "netfilter" <netfilter@lists.netfilter.org>
+> Sent: Wednesday, June 30, 2004 2:07 PM
+> Subject: Re: track bandwith used
+>
+> On Wednesday 30 June 2004 5:51 pm, Peter Marshall wrote:
+> > You could make a connection out to a remote server.  That remote server
+> > might try to make a connection back to us that has nothing to do with the
+> > reason we connected to them.
+>
+> Such a connection would not be regarded as RELATED by the netfilter code.
+>
+> >  But the server may see it as related and allow it.
+>
+> I think you should read about netfilter's definition of RELATED.   It
+> doesn't
+> just mean "any packet which comes back from an IP address we're already
+> talking to".
+>
+> For example, I said that FTP data connections were RELATED to the FTP
+> control
+> connection - but that is only if you have loaded the FTP Conntrack Helper
+> module, or compiled FTP Conntrack support into your kernel.   That helper
+> is what RELATEs the two parts of FTP together in netfilter.
+>
+> Basically, if you don't have a helper module which understands why a
+> connection should be RELATED to another one, then it won't be.
+>
+> Arbitrary packets from IP addresses which happen to be part of an
+> ESTABLISHED
+> connection don't count - they will be seen as NEW incoming connections, and
+> make their own way through your ruleset (until they are persumably
+> DROPped), having no assiciation whatever to anything else which may be in
+> your connection tracking table.
+>
+> Hope this clarifies things?
+>
+> Regards,
+>
+> Antony.
+
 -- 
-The difference between theory and practice is that in theory there is no 
-difference, whereas in practice there is.
+The truth is rarely pure, and never simple.
+
+ - Oscar Wilde
 
                                                      Please reply to the list;
                                                            please don't CC me.
