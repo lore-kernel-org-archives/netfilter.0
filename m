@@ -1,13 +1,12 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: frox ftp proxy and port range.
-Date: Fri, 23 Apr 2004 11:06:06 -0600
+From: "Joao TERRA" <j_petrucci@terra.com.br>
+Subject: Re: bytes counting
+Date: Fri, 23 Apr 2004 14:22:20 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040423110606.49547586@mgalepc.utilitran.com>
-References: <20040423105735.560edace@mgalepc.utilitran.com>
+Message-ID: <008501c42957$8b4895a0$6300a8c0@netsolutionsfort.com.br>
+References: <086C43C9A9A1A541BFDFABCFDA05F58901448BAB@mailnew.tecnun.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040423105735.560edace@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,48 +19,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-
-I am dumbass -- I forgot to put "-j ACCEPT" at the end ... I need more tea.
-
-Michael..
-
-On Fri, 23 Apr 2004 10:57:35 -0600
-Michael Gale <michael.gale@utilitran.com> wrote:
-
-> Hello,
-> 
-> 	I am trying to use frox which is a transparent ftp proxy, I have tested
-> 	it in
-> transparent and non-transparent mode.
-> 
-> In non-trans mode the client specifies a proxy of internal gw and port 2121
-> and I allow a port range for the box that frox is running on.
-> 
-> But it seems the port range section is not working, here is my iptables rule,
-> which I believe is correct, I want the box it accept traffic between 41000 and
-> 419999 from all internal clients.
-> 
-> from iptables -vnL
-> 
->    24  1440            tcp  --  eth1   *       192.168.7.0/24       gwIP 
->       tcp dpts:41000:41999
-> 
-> So does the about rule look correct ?
-> 
-> 
-> -- 
-> Michael Gale
-> Network Administrator
-> Utilitran Corporation
-> 
-> 
-> 
-> 
-> 
+You can put the rule on:
+#iptables -t mangle -I POSTROUTING -o INTERFACE_OF_192.168.0.50_SUBNET -d
+192.168.0.50
+then you can account in both directions separately
+----- Original Message -----
+From: "Arrizabalaga, Saioa" <sarrizabalaga@ceit.es>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, April 23, 2004 10:42 AM
+Subject: bytes counting
 
 
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+Hello everyone,
+
+I have been reading some mails in this listing and it is said the best
+place to count bytes/packets is the mangle table, but I have a problem.
+
+I have three network cards in my linux box: eth0 (private LAN), eth1
+(private LAN) and eth2 (internet).
+
+I would like to count the bytes/packets from/to 192.168.0.50 (it is in
+eth0) that goes/comes to/from internet (eth2).
+
+These are the rules I have:
+
+iptables -A POSTROUTING -t mangle -o eth2 -s 192.168.0.50
+
+With this rule I catch all the packets going from 192.168.0.50 to eth2,
+but I know where to put the rule to catch the packets going from eth2 to
+192.168.0.50, because as far as I can see it, when I put the rule:
+iptables -A PREROUTING -t mangle -i eth2 -d 192.168.0.50 nothing is
+caught because the packet has not been SNAT-ed yet. Am I wrong?
+
+Any help would be appreciated.
+
+Saioa Arrizabalaga
+
+
+
+
 
