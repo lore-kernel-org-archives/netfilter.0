@@ -1,15 +1,15 @@
 From: Stephen Frost <sfrost@snowman.net>
 Subject: Re: Doing Bridge with firewalling
-Date: Tue, 31 Dec 2002 15:54:17 -0500
+Date: Tue, 31 Dec 2002 15:27:09 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021231205417.GQ677@ns>
-References: <20021231202708.GP677@ns> <20021231204756.1918.qmail@web40306.mail.yahoo.com>
+Message-ID: <20021231202708.GP677@ns>
+References: <20021231190312.98050.qmail@web40908.mail.yahoo.com> <20021231202321.1635.qmail@web40307.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LvAn5G4Ewe70kJ1i"
+	protocol="application/pgp-signature"; boundary="TxukmIqg3MmZ0Kmh"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20021231204756.1918.qmail@web40306.mail.yahoo.com>
+In-Reply-To: <20021231202321.1635.qmail@web40307.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,57 +23,46 @@ To: Kevin McConnell <kevymac@yahoo.com>
 Cc: Brad Chapman <kakadu_croc@yahoo.com>, Afshin Lamei <linux_st@hotmail.com>, netfilter@lists.netfilter.org
 
 
---LvAn5G4Ewe70kJ1i
+--TxukmIqg3MmZ0Kmh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 * Kevin McConnell (kevymac@yahoo.com) wrote:
 >=20
-> --- Stephen Frost <sfrost@snowman.net> wrote:
-> > The two havn't got anything to do with each other.=20
-> > NATing is modifying
-> > packets as they pass through the router.  Addressing
-> > is the IP address
-> > and whatnot to access the firewall/router.  One does
-> > not require the
-> > other.
+> --- Brad Chapman <kakadu_croc@yahoo.com> wrote:
+> > Yes. You have to remove all addressing data from the
+> > config files your distro uses
+> > to configure eth0 and eth1. Then you need to use a
+> > kernel with CONFIG_BRIDGE and the
+> > netfilter-bridge patches applied, and you need the
+> > bridge-utils package installed.
+> > Those thre items can be found at kernel.org and
+> > http://www.math.leidenuniv.nl/~buytenh/bridge. The
+> > Red Hat 8.0 2.4.18-14 kernel has
+> > the appropriate infrastructure present.
 >=20
-> This leads me to another question then. What are the
-> advantages of not having an IP address assigned to=20
-> interface(s) of the firewall? Like for instance, if my
-> firewall was the gateway to the outside world, how
-> would I tell machines behind the firewall to get out
-> to the outside world if they didn't have a default
-> route pointing to the internal address of the
-> firewall? Also, how would packets that hit the
-> firewall get routed through the other side?
+> I have a question though. If he removes all addressing
+> data, how can he do NAT'ing properly?
 
-A router is not a bridge.  The two are different things.  You're
-thinking of things in terms of a 'router'.  In order for your computers
-to reach the external network they have to go through a router, true.  A
-firewall can be implemented as part of a router or as part of a bridge.
-The only requirement being that the packets are required to pass through
-the device.  If you implemented your firewall as a bridge then the
-machines on the network wouldn't 'see' it, they would point their
-default routes to the router on the opposite side of the bridge.
-
-I think the critical point here is that you need to understand what a
-bridge is and how it works and how it's different from a router.
+The two havn't got anything to do with each other.  NATing is modifying
+packets as they pass through the router.  Addressing is the IP address
+and whatnot to access the firewall/router.  One does not require the
+other.
 
 	Stephen
 
---LvAn5G4Ewe70kJ1i
+--TxukmIqg3MmZ0Kmh
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE+EgP5rzgMPqB3kigRAtuvAJwLr3xOtMnmCG4HvULOhg76k+hurgCfaDNF
-2Fbe5waiHoRtfPcCha8Ednc=
-=qbek
+iD8DBQE+Ef2crzgMPqB3kigRAooLAJ43tuCQHcuWkQQV3tdCqDX0T5VQSACcDY0i
+Q0Zjmg3C2KIIqSoiXTTZ6vA=
+=XLi4
 -----END PGP SIGNATURE-----
 
---LvAn5G4Ewe70kJ1i--
+--TxukmIqg3MmZ0Kmh--
 
