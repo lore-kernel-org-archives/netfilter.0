@@ -1,11 +1,12 @@
-From: "Sebastian" <netfilter@basti79.de>
-Subject: CONNMARK Target Problem
-Date: Thu, 25 Mar 2004 16:07:56 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Can netfilter do this?
+Date: Thu, 25 Mar 2004 09:23:52 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c4127a$f6338c60$0200a8c0@basti79>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679255@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +17,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: David Cannings <lists@edeca.net>, netfilter@lists.netfilter.org
 
-Hi List...
 
-I tried to insert a rule using the CONNMARK-Target:
-# iptables -t mangle -A OUTPUT -j CONNMARK --set-mark 1
-iptables: Invalid argument
 
-Dmesg say's: 
-CONNMARK: targinfosize 8 != 12
+> When text
+> wraps the boundary of one packet netfilter can no longer help, some
+> form of reassembly is required before the "full" text can be read and
+> taken into context.=20
 
-Kernel is 2.4.25 with pom snapshot 20040319.
-Iptables is debian package 1.2.9-6:
-# iptables --version
-iptables v1.2.9
-
-Any suggestions what i can do to get the CONNMARK target working?
-
-Greets
-  Sebastian.
-
+Apparently when you use the QUEUE extension the packet is re-assembled
+before the packet is passed to the userspace application. This makes
+proper filtering and detection possible. You still have to track the
+entire session from userspace if you want to be accurate, but that
+depends on what userspace tool you're plugging into. I know of Snort and
+Squid which have 'inline' modes. These programs should have some ability
+to filter out the garbage.
 
