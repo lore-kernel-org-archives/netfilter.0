@@ -1,16 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: OT: iptables-like firewall for windows?
-Date: Mon, 25 Aug 2003 22:33:44 +0200
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: Need help have some questions...
+Date: 25 Aug 2003 22:30:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030825223344.3428b707.arnt@c2i.net>
-References: <3F461A22.90300@bus.okstate.edu>
-	<1061586399.18527.102.camel@localhost>
-	<20030823013338.597ce26e.arnt@c2i.net>
-	<3F4A2B92.2010805@bus.okstate.edu>
+Message-ID: <1061843428.1507.86.camel@kermit>
+References: <20030825200507.25987.qmail@web40207.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F4A2B92.2010805@bus.okstate.edu>
+In-Reply-To: <20030825200507.25987.qmail@web40207.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,65 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 25 Aug 2003 10:30:26 -0500, 
-Jason Joines <joines@bus.okstate.edu> wrote in message 
-<3F4A2B92.2010805@bus.okstate.edu>:
+Am Mon, 2003-08-25 um 22.05 schrieb SBlaze:
+> > Now, what does the circuit relay do? Does it just amplify the signal? O=
+r does
+> > it terminate, reconstruct and forward the information?
+> >=20
+> Ralf seems to disagree that the second layer is a bridge... I never thoug=
+h of a
+> bridge as a dumb proxy...but thats essentially what it is right?? Anyway =
+this
+> isn't really the focus of what I want to know...=20
+Circuit Relay operates on Application layer. A typical circuit relay is
+socks. It just forwards connections.
 
-> Arnt Karlsen wrote:
-> 
-> >On Fri, 22 Aug 2003 16:06:39 -0500, 
-> >Shawn <core@enodev.com> wrote in message 
-> ><1061586399.18527.102.camel@localhost>:
-> >
-> >  
-> >
-> >>On Fri, 2003-08-22 at 08:26, Jason Joines wrote:
-> >>    
-> >>
-> >>>  We have a completely Linux back-end environment but unfortunately
-> >>>hundreds of windows desktops.  I'm pretty tired of all the attacks
-> >>>on the unprotected windows boxes but don't have the authority to
-> >>>put up a network firewall.  We protect all of our Linux servers
-> >>>with iptables. Does anyone know of a similar tool for windows,
-> >>>particularly w2k?  The built-in stuff seems to be virtually
-> >>>worthless.
-> >>>      
-> >>>
-> >>I take issue with that statement. It's /actually/ worthless!
-> >>
-> >>google kerio personal firewall
-> >>    
-> >>
-> > 
-> >..you have no autority???  Lay off!  "Not my problem.". 
-> >
-> >..defend your own turf, the Linux boxes.  _I_ would make 
-> >_sure_ I had _no_ responsibility on the Wintendos.  
-> >
-> >..be _evil_, if any Wintendoite whines, tell'em about knoppix.net, 
-> >netfilter, shorewall.net and webmin.com, ipcop.org if they can spare 
-> >an extra old box in their home lan, "but here at work I have _no_ 
-> >authority, and, thank God, _no_ responsibility, Insh'Allah!", etc.
-> >
-> >..you _have_ such responsibility?  Show your spine.  Quit.  
-> >Let them wail.  Tell'em your price.  No time for mercy.  
-> >
-> >..if they fall into bankruptcy, with _your_ hand on the Wintendo 
-> >wheel, it _is_ _your_ _own_ fault.
-> >
-> 
->   I share views but it's also nice to be able to eat and pay the rent!
- 
-..sure, and with the dreaded Soebig.G etc lurking around, 
-you dine _nicely_ too.  ;-)
+> So if I understand what Ramen is saying. It is possible to do this with a
+> module  that could be loaded into iptables. Aside from the CPU argument i=
+s
+> there any other reason why this isn't being done? It seems to come up tim=
+e and
+> time again.
+>=20
+You could, if you would write the module. But this is better done in
+userspace.=20
+> > >=20
+> Again no one really shed any light on what I'm supposed to do here. What =
+proxy
+> am I supposed to use? Everyone is saying use a proxy but no one is giving=
+ any
+> specifics as to what kind or what software?.
+Sure, I did: Use Apache. Apache can work as a webserver for you on your
+Linux box and at the same time as a proxy for the Windows box.
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Cheers,
 
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
+
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
