@@ -1,13 +1,9 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: iptables jump to userdefined chain and ESTABLISHED,RELATED rules
-Date: Thu, 9 Oct 2003 22:20:51 +0200
+From: Evan Harris <eharris@puremagic.com>
+Subject: Problem/Question with DNAT on OUTPUT chain (-t nat -A OUTPUT)
+Date: Thu, 9 Oct 2003 16:26:50 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031009222051.40231552.mailinglists@lucassen.org>
-Reply-To: netfilter@lucassen.org
+Message-ID: <Pine.LNX.4.44.0310091616530.1382-100000@kinison.puremagic.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="pgp-sha1";
- boundary="Signature=_Thu__9_Oct_2003_22_20_51_+0200_bHO1Ikt_OVpK19d6"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,68 +14,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
---Signature=_Thu__9_Oct_2003_22_20_51_+0200_bHO1Ikt_OVpK19d6
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
 
-Hello,
+I'm trying to setup a linux kernel box that runs a proxy to DNAT certain
+types of traffic to a different IP address that is on a different interface.
 
-I want all traffic on port 80 be handled by a userdefined chain
-"CH_WWW". Now my question: What is better, this way (I let the port
-80 packets jump first, then I have _two_ ESTABLISHED,RELATED rules, as
-well in the INPUT as in the CH_WWW chain):
+I have no problem creating PREROUTING nat table entries, but when I change
+it to OUTPUT (to mangle locally generated packets), iptables gives me
+"iptables: Invalid argument".
 
-********************************************************************
-${IPT} -A INPUT -p tcp --dport 80 -j CH_WWW
-${IPT} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-[..]
+Here are example simplified commands, the first works, the second fails.
 
-And an extra ESTABLISHED,RELATED in the CH_WWW:
-${IPT} -A CH_WWW -m state --state ESTABLISHED,RELATED -j ACCEPT
-${IPT} -A CH_WWW (first rule)
-[..]
-********************************************************************
+# iptables -v -t nat -A PREROUTING -p tcp  -d tunnelserver -j DNAT --to-destination 172.31.255.1
+DNAT  tcp opt -- in * out *  0.0.0.0/0  -> 10.100.100.101  to:172.31.255.1
 
-or this (I have _one_ ESTABLISHED,RELATED rule, and then let port 80 
-jump):
+# iptables -v -t nat -A OUTPUT -p tcp  -d tunnelserver -j DNAT --to-destination 172.31.255.1
+DNAT  tcp opt -- in * out *  0.0.0.0/0  -> 10.100.100.101  to:172.31.255.1
+iptables: Invalid argument
 
-********************************************************************
-${IPT} -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-${IPT} -A INPUT -p tcp --dport 80 -j CH_WWW
-[..]
+What am I doing wrong?  What is the proper way to DNAT locally generated
+packets?
 
-And an extra ESTABLISHED,RELATED in the CH_WWW:
-${IPT} -A CH_WWW (first rule)
-[..]
-********************************************************************
+I am using linux kernel 2.4.20, with iptables 1.2.8.  Both of these are
+recent enough that I wouldn't expect a bug, so it's probably my usage.  But
+from the manpage it looks like my syntax is correct.
 
-Both ways work, but I'd say the second way is the best. Am I right?
+Please CC me, as I am not on the mailing list.
 
-Richard.
+Evan
 
--- 
-___________________________________________________________________
-Recursion: see recursion
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
-
---Signature=_Thu__9_Oct_2003_22_20_51_+0200_bHO1Ikt_OVpK19d6
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE/hcMjyG85G+teVsIRAujIAJwJAE3+V3oKxfWdmFFztCEqb2zlIACghJ5y
-R7Wnr5Zpmj3RNGdCYtG428w=
-=2LfE
------END PGP SIGNATURE-----
-
---Signature=_Thu__9_Oct_2003_22_20_51_+0200_bHO1Ikt_OVpK19d6--
 
