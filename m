@@ -1,11 +1,15 @@
-From: Leandro Rodrigo Saad Cruz <leandro@ibnetwork.com.br>
-Subject: a couple of questions about PPTP
-Date: 14 Nov 2002 15:49:16 -0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Redhat linux disconnecting telnet session
+Date: Thu, 14 Nov 2002 18:11:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037296161.20600.14.camel@zacarias>
+Message-ID: <20021114181143.5d3812fe.arnt@c2i.net>
+References: <000e01c28b5c$29656c40$8c01a8c0@sundaram>
+	<200211141040.30235.dharmu@nsecure.net>
+	<008a01c28be9$7f19bff0$8c01a8c0@sundaram>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <008a01c28be9$7f19bff0$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +22,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all, I'm trying to setup a VPN gateway to route PPTP traffic, but I
-have some questions :
+On Thu, 14 Nov 2002 09:24:09 -0500, 
+"Sundaram Ramasamy" <sun@percipia.com> wrote in message 
+<008a01c28be9$7f19bff0$8c01a8c0@sundaram>:
 
-(My box is running linux 2.4.19)
+> Red Hat Linux release 7.1 (Seawolf)
+> Kernel 2.4.2-2 on an i686
 
-1) Do I have to use the MASQUERADE target to route PPTP traffic or using
-SNAT is ok ?
-
-2) I think linux 2.4.19 supports 1 PPTP client through the gateway, so I
-don't heave to apply the patch from
-http://www.impsec.org/linux/masquerade/ip_masq_vpn.html in order to
-enable PPTP, I just have to enable GRE options and netfilter om my
-kernel. Right ?
-
-3) What has to be done in order to masquerade more that one PPTP client
-through the VPN gateway ? is the patch from
-http://www.impsec.org/linux/masquerade/ip_masq_vpn.html intented to do
-this ?
-
-I've read Linux VPN Masquerade and some other docs but I still don't
-have my mind clear about the way PPTP masq should be done.
-
-Thanx for your help !
-
+..you _really_ wanna 'rpm -Fvh ftp://your.favorite.site/updates/*.rpm'.
 
 -- 
-Leandro Rodrigo Saad Cruz
-IT - Inter Business Tecnologia e Servicos (IB)
-http://www.ibnetwork.com.br
-http://jakarta.apache.org/ojb
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
 
