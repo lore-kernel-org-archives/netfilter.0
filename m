@@ -1,14 +1,13 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: how to block files with specific extensions
-Date: Fri, 06 Sep 2002 03:25:12 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: forward is not forwarding
+Date: Fri, 6 Sep 2002 10:45:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPEEMGCNAA.stewart.thompson@shaw.ca>
-References: <20020906100410.27681.qmail@web12902.mail.yahoo.com>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <200209060945.g869jav01774@vulcan.rissington.net>
+References: <EF33C96B91C212479FA2B0B0A96868F80102C887@sydxch02.veritas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020906100410.27681.qmail@web12902.mail.yahoo.com>
+In-Reply-To: <EF33C96B91C212479FA2B0B0A96868F80102C887@sydxch02.veritas.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: saravanan sakthi <lxsara@yahoo.com>, netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-Hi Saravanian:
+On Friday 06 September 2002 7:22 am, Abraham Kim wrote:
 
-	Netfilter is a packet based system. So, it don't think
-you can do what your proposing with it. There may be other
-applications that could that operate at a higher level in the
-OSI stack. If you give the list a better description of  your
-exact requirements. Someone might be able to make a
-suggestions.
+> Dear Stewart, Chris, Steve, and many others...
+>
+> Thanks for giving me help on this.
+>
+> I changed "0" to "1" in the ip_forward and
+> those 2 machines can talk to each other now. (Wow!)
+>
+> Everything's perfect, except (this except is always a pain...)
+> telnet from Linux to Solaris takes too long to be established
+> (it looks hung after the Escape character... message)
+>
+> It almost takes 1 minutes to give login prompt!
+> rlogin is the same (get the command prompt after 1 min!)
+> (did not test ssh yet...)
+>
+> From Solaris to Linux or Solaris to Solaris is not a problem.
 
-Stu.......
+Your Solaris box is running tcpwrappers, and is trying to do an IDENT lookup 
+to the Linux box, and either your firewall is blocking it or the Linux box 
+isn't running an IDENT daemon and therefore doesn't respond.
 
+The Linux box either isn't running tcpwrappers, so the lookup doesn't happen, 
+or else it is, and the firewall is allowing the request, and the Solaris box 
+is running an IDENT daemon, and replies.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of saravanan sakthi
-Sent: September 6, 2002 3:04 AM
-To: netfilter@lists.samba.org
-Subject: how to block files with specific extensions
+Probably your quickest and easiest solution to this is to get the firewall to 
+REJECT the IDENT packets (TCP port 113) from the Solaris box so that it 
+doesn't have to wait for a timeout.
 
-Dear friend,
- iam usind rc.firewall for NATing. This Linux box acts
-as a gateway for my client systems to connect to the
-internet. now here i want to block files with certain
-extensions passing to my client machines. please help
-me ...
+Antony.
 
-Regards,
-Saravanan
+-- 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
-
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
