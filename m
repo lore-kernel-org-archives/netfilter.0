@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Iptables bug?!
-Date: Fri, 21 Feb 2003 01:39:31 -0500
+Subject: Re: Reverse SNAT routes out wrong interface
+Date: Fri, 21 Feb 2003 01:36:35 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302210139.31884.netfilter@newkirk.us>
-References: <20030220220143.4515.qmail@web10302.mail.yahoo.com>
+Message-ID: <200302210136.35536.netfilter@newkirk.us>
+References: <1045773286.2306.77.camel@thizzy>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030220220143.4515.qmail@web10302.mail.yahoo.com>
+In-Reply-To: <1045773286.2306.77.camel@thizzy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +19,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Fabrizio Di Meo <fabriziodimeo@yahoo.it>, netfilter@lists.netfilter.org
+To: Del Winiecki <delw@wildapache.net>, netfilter@lists.netfilter.org
 
-On Thursday 20 February 2003 05:01 pm, Fabrizio Di Meo wrote:
-> Hi,
+On Thursday 20 February 2003 03:34 pm, Del Winiecki wrote:
+> Ok, another challenge.
 >
->  I'm using suse 7.3 and iptables v1.2.2.
+> SNAT works fine, but I need the outside WAN address to look as if it
+> came from an address on the eth1 network, not the Upstream WAN
+> network. My linux router ports:
 >
-> Performing a prerouting operation like the folowing one:
+> eth4 192.168.1.0/24 ------------ (local offices, admin net)
 >
-> iptables -t nat -A PREROUTING -p tcp --dport 139 -i ppp0 -j DNAT --to
-> 192.168.1.5:139
+> eth1 209.x.x.x/24 -------- (downstream WAN)
 >
-> I got an anomaly because even though it's really working fine it goes
-> on to forward the packets when removed by this:
+> WAN1 64.x.x.x/30 ---------  (upstream provider)
 >
-> iptables -t nat -D PREROUTING -p tcp --dport 139 -i ppp0 -j DNAT --to
-> 192.168.1.5:139
+> all traffic from 192.168.1.0/24 must look like its from 209.x.x.13
 >
-> I couldn't explain that such iptables' behaviour....is here anyone who
-> can?
+> traffic flowing into WAN1 with a destination address of 209.x.x.13
+> somehow needs to get routed out the eth4 interface and "un-natted"
+> instead of routing out eth1.
+>
+> I have:
+> iptables -t nat -A POSTROUTING -o WAN1 -j SNAT --to 209.x.x.13
+>
+> Is there some way to use DNAT to fool the kernel routing into properly
+> routing this?
 
-Very likely connection tracking still has 'live' connections, and it is=20
-allowing them to continue.  If the connection is already ESTABLISHED=20
-then NAT will normally continue to function for that connection even if=20
-the rule that initiated it is removed.
+Since you only want traffic from the 192.168.1.x network to be SNATted,=20
+you should construct your rule with that requirement:
+
+iptables -t nat -A POSTROUTING -i 192.168.1.0/24 -o WAN1 -j SNAT --to=20
+209.x.x.13
+
+Netfilter will then reverse SNAT those packets correctly. (the rule you=20
+have above will make ALL traffic going out WAN1 appear from that single=20
+IP)=20
+
+If you want NEW traffic addressed to 209.x.x.13 to be DNATted into the=20
+192.168.1.x network that isn't a problem, but you have to specify a=20
+precise destination (or destinations) for the traffic in one or more=20
+DNAT rules.
 
 j
+
+> Thanks,
+> Del W.
 
 
