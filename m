@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: DHCP /MAC
-Date: Sat, 8 Nov 2003 10:59:22 +0000
+Date: Sat, 8 Nov 2003 11:29:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311081059.hA8AxRj15401@agate.rockstone.co.uk>
-References: <20031108104200.61132.qmail@web60205.mail.yahoo.com>
+Message-ID: <200311081129.hA8BTgj15423@agate.rockstone.co.uk>
+References: <20031108111214.61915.qmail@web60201.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031108104200.61132.qmail@web60205.mail.yahoo.com>
+In-Reply-To: <20031108111214.61915.qmail@web60201.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,41 +20,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 08 November 2003 10:42 am, kannel sms wrote:
+On Saturday 08 November 2003 11:12 am, kannel sms wrote:
 
-> Dear Friends ,
+> Dear Sir ,
 >
-> I have DHCP server . That is allow for dialup/Cable modem users . So that
-> users use that certain modems . That all modems have MAC adderesses . Those
-> modems providing by us . So those valid modems has known MAC addresses . If
-> unknow modem connected to the modem that will be restyrict by the firewall
+> if i put in the DHCP server that ip will fixed for the
+> relavent user. So i can't server the ip like that .
+> Dynamically that all ips must assign to the users.so
+> tha's why i try use iptables firewall .
 
-I have never seen a modem with a MAC address.
+Okay, that's a good reason why you can't use the bootp mode of your DHCP 
+server.
 
-> Actually i want  to block unknown MACs and allow the other all known MACs .
->
-> I have did some configurations in iptables but it doesn't work . Currently
-> i'm testing this concept in a LAN with 5 PCs .
+> Sir , actually i'm new to iptables . pls guide me how
+> to do this configuration for DHCP via iptables .
 
-When you say "it doesn't work", what do you mean?   Valid users are not 
-allowed access, or invalid users are not denied access?
+I still find it hard to believe that your modem users have MAC addresses - 
+all dialup systems I have seen use PPP Point to Point Protocol and there is 
+no MAC address identifying the remote system.
 
-I think a good move would be to put a LOG rule into your ruleset so that you 
-can see the MAC address of the packets being seen by netfilter as well as the 
-source & destination IP addresses - that should help you to identify why your 
-rules are not matching packets the way you want them to.
-
-Regarding what you are trying to do, however, why not simply set the DHCP 
-server to only give out IP addresses to an approved list of MAC addresses 
-(what is generally called bootp mode)?
+However, I could be wrong, and the way to check this is with the LOG rule I 
+already recommended, so you can see the MAC address and source / destination 
+IP addresses of the packets coming in to your netfilter machine.
 
 Antony.
 
 -- 
 
-Documentation is like sex:
-when it's good, it's very very good;
-when it's bad, it's still better than nothing.
+If at first you don't succeed, destroy all the evidence that you tried.
                                                      Please reply to the list;
                                                            please don't CC me.
 
