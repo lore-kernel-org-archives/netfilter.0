@@ -1,13 +1,13 @@
-From: "Unzeitig Lumir" <lumir.unzeitig@gatc.com>
-Subject: PPTP - more connections from a  NATed LAN to LAN behind PPTP Linux box doesn't work
-Date: Wed, 21 Jan 2004 15:47:25 +0100
+From: "Patrick Ahler" <pmahler@vikus.com>
+Subject: routing
+Date: Thu, 22 Jan 2004 11:10:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0807917940AEF54F9A0C3096A0ED03AB40EDD0@gatc-ex1.gatc.com>
+Message-ID: <810BC538117E9F4E9BB152E0C100DF1F0A4F3B@farmer.vikus.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3E02D.7C15C51C"
+	boundary="----_=_NextPart_001_01C3E102.4D86EF46"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +21,39 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C3E02D.7C15C51C
+------_=_NextPart_001_01C3E102.4D86EF46
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-I applied the PPTP patch and it solved what I needed. (=3Dmore =
-connections
-from NATed LAN behind Linux box to a PPTP server) - it's OK.
-But oposit direction (=3Dmore connections from NATed LAN behind a PPTP
-server to theLAN which is behind PPTP Linux box) works only for 1 PPTP
-client. It stays in verification process and ends by error.
+I have a router setup to forward 192.168.1.x (private/internal)
+addresses to A.B.C.x (public) addresses and public to private. The x
+variable remains the same.
 
-Is there way how to solve it?
+192.168.1.x <-- --> eth0 (router/iptables) eth1 <-- --> A.B.C.x =20
 
-Thanks
-Lumir Unzeitig
+Using the following configuration I have had no luck getting anything to
+forward. (yes I've enabled ip_forward and correctly compiled the
+kernel). If I run a traceroute from a machine outside our network it
+will find the router, but if I traceroute a machine behind the firewall
+(A.B.C.x), the trace will hang just before it gets to my router and then
+won't find my router.
 
+Route:
+Route add -net A.B.C.x netmask 255.255.255.255 dev eth1
+(also add default gateway and loopback interface)
 
+iptables:
+iptables -t nat -A PREROUTING -d A.B.C.x -I eth0 -j DNAT -to 192.168.1.x
+iptables -t nat -A POSTROUTING -s 192.168.1.x -I eth0 -j SNAT -to
+A.B.C.x
 
+Thanks,
+Patrick A.
 
-------_=_NextPart_001_01C3E02D.7C15C51C
+------_=_NextPart_001_01C3E102.4D86EF46
 Content-Type: text/html;
-	charset="US-ASCII"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
@@ -53,35 +62,171 @@ Content-Transfer-Encoding: quoted-printable
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
 charset=3Dus-ascii">
 <META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6396.0">
-<TITLE>PPTP - more connections from a  NATed LAN to LAN behind PPTP =
-Linux box doesn&#8217;t work</TITLE>
+6.5.6944.0">
+<TITLE>routing </TITLE>
 </HEAD>
 <BODY>
 <!-- Converted from text/rtf format -->
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">I =
+h</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
+SIZE=3D2 FACE=3D"Arial">ave a router setup to forward =
+192.168.1.x</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> =
+(private/internal)</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> addresses to =
+A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial"> (public) addresses</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial"> and public to</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">private.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">The x variable remains the same.</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
 
-<BR><FONT SIZE=3D2 FACE=3D"Arial">I applied the PPTP patch and it solved =
-what I needed. (=3Dmore connections from NATed LAN behind Linux box to a =
-PPTP server) - it's OK.</FONT></P>
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">192.168.1.x</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
+SIZE=3D2>&#223;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
+SIZE=3D2>&#224;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">eth</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">0</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial"> (router</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">/iptables</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">)</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">eth1</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
+SIZE=3D2>&#223;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
+SIZE=3D2>&#224;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">&nbsp;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> </SPAN></P>
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">But oposit direction (=3Dmore =
-connections from NATed LAN behind a PPTP server to theLAN which is =
-behind PPTP Linux box) works only for 1 PPTP client. It stays in =
-verification process and ends by error.</FONT></P>
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">Using =
+the following configuration I have had no luck getting anything to =
+forward.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> (yes I</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">ve enabled ip_forward and =
+correctly compiled the kernel)</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">. If I run a traceroute from a machine outside our =
+network it will find the router, but if I</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">traceroute a machine behind the firewall =
+(A.B.C.x)</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">, the trace will hang just =
+before it gets to my router</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial"> and then won</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">t find my =
+router</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">.</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Is there way how to solve it?</FONT>
-</P>
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">Route:</FONT></SPAN></P>
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Thanks</FONT>
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">Route =
+add</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT =
+SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">net A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial"> netmask 255.255.255.255 dev eth</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">1</FONT></SPAN></P>
 
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Lumir Unzeitig</FONT>
-</P>
-<BR>
-<BR>
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">(also =
+add default gateway and loopback interface)</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">iptables:</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">iptables</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">t nat</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">A PREROUTING</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">d A.B.C.</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">x</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;I</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> eth0</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">j DNAT</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">to 1</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">9</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">2.168.1.x</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">iptables</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">t nat</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">A</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">POSTROUTING</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">s =
+192.168.1.x</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;I</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> eth0</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">j SNAT</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">to =
+A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
+LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">Thanks,</FONT></SPAN></P>
+
+<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
+FACE=3D"Arial">Patrick A.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"></SPAN></P>
 
 </BODY>
 </HTML>
-------_=_NextPart_001_01C3E02D.7C15C51C--
+------_=_NextPart_001_01C3E102.4D86EF46--
 
