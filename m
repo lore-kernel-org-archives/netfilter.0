@@ -1,12 +1,12 @@
 From: =?unknown-8bit?q?J=F6rgen?= Danielsson <jorgen_d@yahoo.com>
 Subject: Re: alias
-Date: Mon, 3 Jun 2002 14:57:51 -0700 (PDT)
+Date: Mon, 3 Jun 2002 15:03:45 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020603215751.1543.qmail@web9903.mail.yahoo.com>
-References: <3CFBD80F.5080105@technosoft.ro>
+Message-ID: <20020603220345.61683.qmail@web9904.mail.yahoo.com>
+References: <200206032037.g53KbHA20127@Networker.rockstone.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CFBD80F.5080105@technosoft.ro>
+In-Reply-To: <200206032037.g53KbHA20127@Networker.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,56 +20,42 @@ Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.samba.org
 
-Hello
+Running a firewall with 6 diff networks, and using a
+default policy that is drop, then as far as i know you
+have to add -i and -o option to forward rules in order
+for them to work. Or am I wrong there (quite new to
+this, hehe)?
 
-is that label thing supposed to be addad when setting
-the interface with ifconfig ?
+/J=F6rgen
 
-No option called label there (slackware 8)
 
-/J=F6rgen=20
-
---- Alin Nastac <mrness@technosoft.ro> wrote:
-> There is a solution:
->     ip addr add w.x.y.z/bits dev eth0 label eth00
+--- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> On Monday 03 June 2002 8:59 pm, "J=F6rgen" Danielsson
+> wrote:
 >=20
-> and use -i/-o eth00 in iptables.
->=20
-> In fact, I believe you could use any alphanumeric
-> characters after=20
-> 'eth0'. I'm not sure.
->=20
-> J=F6rgen Danielsson wrote:
->=20
-> >Hello
-> >
-> >I have a little question that perhaps someone knows
-> >the answer to.
-> >
-> >Is it inpossible to use a alias in a rule. With
+> > Is it inpossible to use a alias in a rule. With
 > that I
-> >mean refer to a interface called eth1:0.
-> >
-> >I get this from every version of iptable i have
-> tried
-> >(1.2.2, 1.2.4, 1.2.6a):
-> >
-> >Warning: wierd character in interface `eth1:0' (No
-> >aliases, :, ! or *).
-> >
-> >/J=F6rgen
-> >
-> >__________________________________________________
-> >Do You Yahoo!?
-> >Yahoo! - Official partner of 2002 FIFA World Cup
-> >http://fifaworldcup.yahoo.com
-> >
+> > mean refer to a interface called eth1:0.
 >=20
+> Correct.
+>=20
+> Why do you want to refer to the name ?   If you want
+> to specify the interface=20
+> a packet is coming in on, use the plain name (eg
+> eth1).   If you want to=20
+> specify the address a packet was going to, use -d
+> aa.bb.cc.dd
+>=20
+> I can't think of another reason you should need the
+> interface name.
+>=20
+>=20
+> Antony.
 >=20
 
 
 __________________________________________________
 Do You Yahoo!?
-Yahoo! Health - your guide to health and wellness
-http://health.yahoo.com
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
