@@ -1,10 +1,12 @@
-From: nakisawame <nakisawame@yahoo.com>
-Subject: SSL Question
-Date: Tue, 29 Jul 2003 15:49:58 -0700 (PDT)
+From: Illes Marton <illes@c3.hu>
+Subject: u32 pom errors
+Date: Wed, 30 Jul 2003 05:41:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030729224958.57764.qmail@web41303.mail.yahoo.com>
+Message-ID: <20030730034140.GA867@c3.hu>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,38 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
 
-I am wondering if this will work... We are using NAT,
-and I currently have 2 different webservers that we
-need to put SSL on.
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 
-Each webserver has a different external DNS entry (I
-am using 55.55.55.56 and 55.55.55.57 as examples).
-Each actual webserver is on its own internal IP
-address (192.158.0.14 and 192.168.0.15, respectively).
+Hi,
 
-Can I do something like this:
+I tried to post it once, but got lost. :(
 
-iptables -t nat -A PREROUTING -p tcp -d 55.55.55.56
---dport https -j DNAT --to 192.168.0.14:443
-iptables -t nat -A PREROUTING -p tcp -d 55.55.55.57
---dport https -j DNAT --to 192.168.0.15:443
+In the POM the u32 match misses some files:
+u32.patch.config.in
+u32.patch.configure.help
+u32.patch.makefile
 
-Does this work? If it doesn't, how do I do this? This
-is driving me nuts!
+Please find them attached
 
-TIA!!!
+Marton
 
--N
+-- 
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: attachment; filename="u32.patch.config.in"
+
+  dep_tristate '  LENGTH match support' CONFIG_IP_NF_MATCH_LENGTH $CONFIG_IP_NF_IPTABLES
+  dep_tristate '  U32 match support' CONFIG_IP_NF_MATCH_U32 $CONFIG_IP_NF_U32
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: attachment; filename="u32.patch.configure.help"
+
+CONFIG_IP_NF_MATCH_LENGTH
+U32 patch support
+CONFIG_IP_NF_MATCH_U32
+  U32 allows you to extract quantities of up to 4 bytes from a packet,
+  AND them with specified masks, shift them by specified amounts and
+  test whether the results are in any of a set of specified ranges.
+  The specification of what to extract is general enough to skip over
+  headers with lengths stored in the packet, as in IP or TCP header
+  lengths.
+
+  Details and examples are in the kernel module source.
 
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: attachment; filename="u32.patch.makefile"
+
+obj-$(CONFIG_IP_NF_MATCH_LENGTH) += ipt_length.o
+
+obj-$(CONFIG_IP_NF_MATCH_U32) += ipt_u32.o
+
+
+--OXfL5xGRrasGEqWY--
 
