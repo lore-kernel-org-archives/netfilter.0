@@ -1,10 +1,10 @@
-From: tlussnig@bewegungsmelder.de
-Subject: NAT
-Date: Wed,  1 Oct 2003 04:11:50 -0700
+From: Carlo Pires <carlo@uga.com.br>
+Subject: iptables-1.2.8-20030929 does not compile connmark match lib module
+Date: Tue, 30 Sep 2003 16:22:54 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065006710.3f7ab6766809d@mail.bewegungsmelder.de>
+Message-ID: <3F79D80E.2010903@uga.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,28 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="macroman"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.samba.org
 
-Hi,
-i use iproute2 for statical nat.
-My Problem is that connect from intern-extern and extern-intern work fine.
-But if i try to connect my external ip from an internal box it does not w=
-ork.
+Well, after compile k2.4.22 with patch-o-matic-20030929 from snapshot I 
+had some problems to compile iptables-1.2.8-20030929. The match lib 
+module libipt_connmark didn't compile.
 
-Intern:
-1.1.1.10/24 (ssh-server)
-Extern:
-217.0.0.10 (ssh-server
-Gateway:
-1.1.1.1
-217.0.0.1
+iptables-1.2.8-20030929 seens to lack some .xxx-test file in extensions 
+after I check this I found missing the following files:
 
+.NETLINK.test
+.connmark-test
 
-1.1.1.10/24--------[1.1.1.1/217.0.0.1](217.0.0.10)-----------Internet
+Then I just put these files from iptables-1.2.8.tar.bz2 package to 
+extensions dir of iptables-1.2.8-20030929 package and everything 
+compiled well.
 
-what i can't do it from 1.1.1.10: telnet 217.0.0.10.
-Any hint? I can also use iptables to get this point working.
+[]s
+Carlo
 
-Cu Thomas Lu=DFnig
 
