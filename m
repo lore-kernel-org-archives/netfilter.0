@@ -1,9 +1,11 @@
-From: Mason Schmitt <mason.schmitt@sunwave.net>
-Subject: rewriting destination port of outbound packets
-Date: Thu, 10 Mar 2005 11:20:10 -0800
-Message-ID: <42309DEA.4040308@sunwave.net>
-Mime-Version: 1.0
+From: Thilo Schulz <arny@ats.s.bawue.de>
+Subject: Re: [OT] LARTC list
+Date: Thu, 10 Mar 2005 21:52:24 +0100
+Message-ID: <200503102152.32530.arny@ats.s.bawue.de>
+References: <20050304174505.GA13405@rfa.org>
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050304174505.GA13405@rfa.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,43 +16,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-I am attempting to configure a Linux box (mandrake 10.1 - iptables
-1.2.9) to redirect http, ftp, real, winmedia, quicktime, and nntp to a
-Netapp NetCache transparent caching proxy.
+On Friday 04 March 2005 18:45, Eric Dantan Rzewnicki wrote:
+> Does anyone here know what happened to the LARTC list? It appears to
+> have died Feb 18th, 2005.
 
-Here is my network layout:
+The lartc mailing list is back again.
 
-~       Net
-~        |
-~  Linux router/fw
-~        |
-- ------switch-------
-|             |
-clients     cache
+from Bert Hubert:
 
-Starting first with http, I have made use of fwmark and iproute2 to
-first mark traffic from our network to destination port 80 and then
-route that traffic, out the same interface it came in on, to the web
-cache.  The problem I am trying to resolve is that the traffic that I am
-routing to the cache still has the  destination port 80.  I think this
-needs to be 3128 (The cache accepts connections on port 3128).
+> I finally caved in an did a full reinstall of Mailman. I nearly decided on
+> rewriting the damn thing. Might do so later on hehe, but probably not.
+>
+> Biggest apologies to those users that had disabled delivery of our list. I
+> have not found a way to retain user settings in this recovery. Our
+> Mailman install was hosed so severely that nothing short of a complete purge
+> would do the job.
+>
+> I apologise for the long delay in doing this. Furthermore, not everything is
+> back, like the archives. Some details might be wrong. It is well possible
+> that the archives will remain split. 
+>
+> Thanks to Wichert Akkerman for his services as 'Mailman doctor'!
+>
+> Let me know if anything is wrong. I've tried to retain important settings
+> but I might've missed some things.
 
-So, is it possible to rewrite the destination port in this scenario?
-
-- --
-Mason Schmitt
+- -- 
+Thilo Schulz
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+Version: GnuPG v1.2.6 (GNU/Linux)
 
-iD8DBQFCMJ3qbip6upg8pq8RAomJAKCVqlt6m45/Ib/mBX5SSTH/7aqVegCgj8Y1
-4bV9hrjcqvqXxRv3jA2Vqt4=
-=uNK8
+iD8DBQFCMLOQZx4hBtWQhl4RArDKAKC+Q0MwBug6h5JAUSRCq/4gNDaYVgCePNeM
+hRXUix0Vob8uuSCBp9dcjcM=
+=PWmh
 -----END PGP SIGNATURE-----
 
