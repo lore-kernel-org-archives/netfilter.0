@@ -1,12 +1,11 @@
-From: Kelly Scroggins <kelly@cliffhanger.com>
-Subject: Re: 26sec problems
-Date: Wed, 6 Apr 2005 07:05:40 -0500
-Message-ID: <20050406120540.GC12451@nlb0>
-References: <42539B3D.2090407@century.cz>
+From: "Allain Yoann" <Yoann.Allain@thomson.net>
+Subject: RE: 26sec+forwarding, bug or PEBKAC?
+Date: Wed, 6 Apr 2005 14:36:10 +0200
+Message-ID: <9C1918067C3BC14C9C351C206D8A8437372FF2@rennsmail03.eu.thmulti.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <42539B3D.2090407@century.cz>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,107 +17,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-The first thing that comes to mind is the rules
-defining the traffic that will be encrypted, has
-to 'match', or rather, be mirrored.
 
-In other words ...
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Allain Yoann
+> Sent: mercredi 6 avril 2005 10:54
+> To: netfilter@lists.netfilter.org
+> Subject: Re: 26sec+forwarding, bug or PEBKAC?
+>=20
+> On Tue, 31 Mar 2005 22:16:40, rsnel at cube.dyndns.org wrote
+>=20
+> >Hello list,
+> >
+> >I hope this is the right list, as my problem appears to be about both
+> >iptables and (native (as in: managed with setkey)) IPSec.
+> >
+> >Short version:
+> >
+> >packets from ipsec tunnel seem to get lost before they enter the the
+> >FORWARD chain with kernel 2.6.11. There is no problem with 2.6.8-2-k6
+> >(Debian kernel with 26sec) and there is no problem with ipsec turned
+> >off.
+> >
 
-  FWA will permit traffic from host-A to host-Z
-  FWB will permit traffic from host-Z to host-A
+...
 
-You may already have them configured this way, but
-it's the first thing I'd check.
+> >This happens with linux-2.6.11 (vanilla). The ping works if IPSec is
+> >turned off (i.e. setkey -F -P on cube and toppie). And it also works
+> >in 2.4.27-2-k6 (a Debian kernel (which has 26sec patched in)).
+> >
+> >So, is it a bug, feature, or just misconfiguration? Can you
+reproduce?
+> >I would appreciate any insight on this problem.
+> >
+> >Thanks.
+> >
+> >Greetings,
+> >
+> >Rik.
+>=20
+> Hello Rik,
+>=20
+> I got the same problem, with the same kernel version. So I'm asking
+you
+> if you resolved it and if someone of the kernel has been awared of
+this
+> problem.
+> I've tried to debug it with an UML version but didn't succeed.
+>=20
+> Greetz
+>=20
+> Yoann
 
-kelly
+Hi again,
 
+I solved the problem:
+Since the kernel 2.6.10, we must set a "fwd" policy in the same way we
+did for the "in" policy on each host-end of the tunnel.
 
+I just found one reference on the web:
+http://www.ipsec-howto.org/x277.html (one line in the middle)
 
-Quoting Petr Titera <P.Titera@century.cz>:
-        Hello,
-        
-           I have a problem with 26sec tunnel setup. My network configuration 
-        looks as follows:
-        
-               
-                 |
-                 |eth0
-             +-------+                                      +-------+
-         eth1|       |eth2                              eth0|       |eth1
-         ----|  FWA  |------------IPSEC VPN-----------------|  FWB  |----
-             |       |                                      |       |
-             +-------+                                      +-------+
-        
-        Both firewalls have kernel version 2.6.10.
-        
-        I have ADSL modem connected on eth0 and eth2 at FWA site. I've setted up 
-        VPN tunel between both firewals and there fun begins.
-        
-           I can ping the computers in internal networks from both direction.
-        
-           Users from unternal network of FWB can connect to computers in 
-        internal network of FWA without any problem, but
-        users from FWA network cannot conect at all.
-        
-           When I trace traffic from FWA network to FWB network I see strange 
-        things happen. SYN packets are transfered, but when real communication 
-        starts I see this:
-        
-           on FWA:eth1 I see packets to other computer
-           on FWA:eth2 I see packets going to tunnel and packets going from 
-        tunnel without a change
-           on FWB:eth0 I see packets from tunnel without a change
-           on FWB:eth1 I see communication in both direction
-        
-        BUT on FWA:eth1 I see packets from other direction as going from another 
-        port than I have connected:
-        
-        This is communication as I see it on FWA:eth1 port. Note change from 
-        http port to tcpmux port.
-        
-        09:23:46.372945 IP 192.168.17.200.60424 > 192.168.1.200.http: S 
-        3072626488:3072626488(0) win 5840 <mss 1460,sackOK,timestamp 3092376420 
-        0,nop,wscale 0>
-        09:23:46.485595 IP 192.168.1.200.http > 192.168.17.200.60424: S 
-        2915082851:2915082851(0) ack 3072626489 win 65535 <mss 1460,nop,wscale 
-        0,nop,nop,timestamp 0 0,nop,nop,sackOK>
-        09:23:46.485715 IP 192.168.17.200.60424 > 192.168.1.200.http: . ack 1 
-        win 5840 <nop,nop,timestamp 3092376478 0>
-        09:23:51.963654 IP 192.168.17.200.60424 > 192.168.1.200.http: F 1:1(0) 
-        ack 1 win 5840 <nop,nop,timestamp 3092379283 0>
-        09:23:52.065913 IP 192.168.1.200.tcpmux > 192.168.17.200.60424: . ack 
-        3072626490 win 65535 <nop,nop,timestamp 10752655 3092379283>
-        09:23:52.066028 IP 192.168.17.200.60424 > 192.168.1.200.tcpmux: R 
-        3072626490:3072626490(0) win 0
-        09:23:52.171022 IP 192.168.1.200.tcpmux > 192.168.17.200.60424: F 0:0(0) 
-        ack 1 win 65535 <nop,nop,timestamp 10752656 3092379283>
-        
-        Any idea what is wrong?
-        
-        
-        Petr Titera
-        
+I hope others newbies like me won't lose too much time on it...
 
--- 
+Yoann
 
-   /\                                                                          
-   \ \                                                                         
-    ) \                                                                        
-    )  \                                                                       
-    )   \                                                                      
-   <=====>                                                                     
-    )   /                                                                      
-    )  /                                                                       
-    ) /                                                                        
-   / /    
-   \/     
-
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-http://home1.gte.net/res0psau
-
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
