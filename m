@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: RE: How to block only MX query made to DNS server
-Date: Tue, 30 Nov 2004 09:28:57 -0500
-Message-ID: <1101824937.2881.20.camel@hubcap.ljm.dom>
-References: <20041130072636.72194.qmail@web12308.mail.yahoo.com>
-	<1101820669.2881.11.camel@hubcap.ljm.dom>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: iptables and wireless card in promiscuous mode
+Date: Tue, 30 Nov 2004 07:38:49 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019809@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1101820669.2881.11.camel@hubcap.ljm.dom>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,64 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Claudio Lavecchia <Claudio.Lavecchia@eurecom.fr>, netfilter@lists.netfilter.org
 
-On Tue, 2004-11-30 at 08:17, Jason Opperisano wrote:
+Try pre and post routing...  It might be a start
 
-whoops...
 
-> my $listenip = "127.0.0.1";
-                  ^^^^^^^^^
-
-that should be the inside IP of the firewall in order for it to work
-properly with the REDIRECT statement...
-
-> my $listenport = "5353";
-> my $verbose = 1;
-> 
-> my $ns = Net::DNS::Nameserver->new(
->        LocalAddr        => $listenip,
->        LocalPort        => $listenport,
->        ReplyHandler     => \&reply_handler,
->        Verbose          => $verbose
-> );
-> 
-> sub reply_handler {
->   my ($qname, $qclass, $qtype, $peerhost) = @_;
->   my ($rcode, @ans, @auth, @add);
-> 
->   if ($qtype eq "MX") {
->     $rcode = "NXDOMAIN";
->     return ($rcode, \@ans, \@auth, \@add, { aa => 1 });
->   } else {
->     my $res   = Net::DNS::Resolver->new;
->     my $query = $res->search("$qname", "$qtype", "$qclass");
->     if ($query) {
->       foreach my $rr ($query->answer) {
->         next if $rr->type eq "CNAME";
->         push @ans, Net::DNS::RR->new($rr->string);
->         $rcode = "NOERROR";
->         return ($rcode, \@ans, \@auth, \@add);
->       }
->     }
-# i also forgot to add this here
-# if query fails, send negative response
-else {
-        $rcode = "NXDOMAIN";
-        return ($rcode, \@ans, \@auth, \@add, { aa => 1 });
-    }
-
->   }
-> }
-> 
-> $ns->main_loop;
-> ---  END PERL SCRIPT  ---
-
--j
-
---
-"Be careful when we capture him! We cannot claim the reward unless
- we have 51% of the carcass"
-	--The Simpsons
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Claudio Lavecchia
+> Sent: Tuesday, November 30, 2004 4:54 AM
+> To: netfilter@lists.netfilter.org
+> Subject: iptables and wireless card in promiscuous mode
+>=20
+> Hello People,
+>=20
+> I have a little question:
+>=20
+> I have two laptops that have 802.11 wireless cards. I am developing
+some
+> application that essentially perform sniffing functions using wireless
+> cards in promiscuous mode. To test my code, I need those two laptops
+not
+> to "see" each other (--> I do not want the wireless card of laptop A,
+> which is operating in promiscuous mode to process packets coming from
+> laptop B) and I tought to do it using iptables. so on laptop A i added
+> the following rule:
+>=20
+> iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_B -j DROP
+>=20
+> and on laptop B I added the rule:
+>=20
+> iptables -A INPUT -mac --mac-source MAC_ADDRESS_LAPTOP_A -j DROP
+>=20
+> I just executed my first tests and the feeling  I got is that, for
+> example, the wlan card of  laptop B still passes through the packet
+> coming from laptop A.
+>=20
+> Can anyone confirm  this analysis? If I am right, can anyone give me a
+> hint to possibly workaround this?
+>=20
+> Thank you very much
+>=20
+> Claudio
 
 
