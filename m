@@ -1,15 +1,13 @@
 From: David T-G <davidtg-netfilter@justpickone.org>
-Subject: tears of joy! (was "Re: ready to cry over NATting!")
-Date: Tue, 20 May 2003 21:11:46 -0400
+Subject: how to handle ftp data stream?
+Date: Tue, 20 May 2003 22:36:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030521011146.GC33081@justpickone.org>
-References: <20030520102957.GA98543@justpickone.org>
+Message-ID: <20030521023658.GD33081@justpickone.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cQXOx3fnlpmgJsTP"
+	protocol="application/pgp-signature"; boundary="Lb0e7rgc7IsuDeGj"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20030520102957.GA98543@justpickone.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,39 +20,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: NetFilter Users' List <netfilter@lists.netfilter.org>
 
 
---cQXOx3fnlpmgJsTP
+--Lb0e7rgc7IsuDeGj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi, all --
+Hi again, all --
 
-I am thrilled to say that I FINALLY had my first successful test tonight:
+One last thing...  My client wants to be able to use ftp and we've run
+into trouble with ftp and the data port looking unconnected.  How do I
+handle that so that it's expected?
 
-  linux:/tmp # iptables -t nat -vL
-  Chain PREROUTING (policy ACCEPT 567 packets, 47480 bytes)
-   pkts bytes target     prot opt in     out     source           destinati=
-on =20
-
-  Chain POSTROUTING (policy ACCEPT 527 packets, 32365 bytes)
-   pkts bytes target     prot opt in     out     source           destinati=
-on   =20
-     20  1118 MASQUERADE  all  --  any    eth1    anywhere         anywhere=
-   =20
-
-  Chain OUTPUT (policy ACCEPT 307 packets, 18553 bytes)
-   pkts bytes target     prot opt in     out     source           destinati=
-on =20
-
-Woo hoo!  Thanks to the invaluable help of Ralf and Julian and Guillermo,
-in particular, as well as the other notes and tips that rolled in.
-
-Now to 1) make it a boot script so that it will run all of the time and 2)
-make it a wee bit more secure (though it's not as loose as it could be)
-and then post a summary :-)
+We'll need this both on the box itself and on the clients who are NATting
+through it.
 
 
-Thanks again & HAND & stay tuned
+TIA & HAND
 
 :-D
 --=20
@@ -64,17 +45,17 @@ David T-G                      * There is too much animal courage in=20
 http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl Npg!
 
 
---cQXOx3fnlpmgJsTP
+--Lb0e7rgc7IsuDeGj
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.0.7 (FreeBSD)
 
-iD8DBQE+ytJSGb7uCXufRwARAoK8AKCAdLYhcSQgGOnUN83djxGxPcsfggCgnRcs
-uANCuoksG+VsUDsA2iyoYYA=
-=rCWU
+iD8DBQE+yuZKGb7uCXufRwARAovOAJ0cZAsfDnSlRk79R8YjQucNpcmtTQCg0FrR
+dGfbm5+kNsVJWpVW5a8Q84M=
+=6ZQb
 -----END PGP SIGNATURE-----
 
---cQXOx3fnlpmgJsTP--
+--Lb0e7rgc7IsuDeGj--
 
