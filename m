@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Logging of kernel packets dropped for lack of a route
-Date: Tue, 6 Apr 2004 00:28:49 +0100
+Subject: Re: How to differentiate packets generated locally or received from the network using the NF_IP_PRE_ROUTING filter
+Date: Tue, 6 Apr 2004 00:31:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404060028.49546.Antony@Soft-Solutions.co.uk>
-References: <4071A85F.E2D9D7ED@vrml.k12.la.us>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200404060031.36959.Antony@Soft-Solutions.co.uk>
+References: <2F1FC1DEA077D5119FAD00508BCFD6D20BBB0110@zsc3c030.us.nortel.com>
+Reply-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4071A85F.E2D9D7ED@vrml.k12.la.us>
+In-Reply-To: <2F1FC1DEA077D5119FAD00508BCFD6D20BBB0110@zsc3c030.us.nortel.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,26 +19,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Monday 05 April 2004 7:41 pm, root wrote:
+On Monday 05 April 2004 11:02 pm, George Gao wrote:
 
-> How may one log packets the kernel drops because  no route exists ???
+> Hi there,
+>      I'm working on the sample Netfilter driver to put something together
+> for a prototype. I ran into a problem which I wish you can help me out.
+> When I set my input filter hook number to NF_IP_PRE_ROUTING, I saw local
+> generated IP multicast/Broadcast packets and inbound packets from network.
+> Is there any way to differentiate a local IP Multicast or IP brocast from
+> an inbound mal-formed packet with the exact same content? Thanks much in
+> advance!
 
-Perhaps by adding a default route and then dropping the packets with 
-netfilter, after logging them?
+Um, what do you mean by "malformed"?
 
-It's certainly the only way I can think to answer this question using 
-netfilter.
+The most obvious difference I can think of between a Multicast packet, a 
+Broadcast packet, and a "normal" (Unicast) packet is the destination address, 
+so is there some reason why you can't use this to distinguish them?
 
 Regards,
 
 Antony.
 
 -- 
-Microsoft may sell more software than any other company, but McDonald's sell 
-more burgers than any other company, and I think the other similarities are 
-obvious...
+"Linux is going to be part of the future. It's going to be like Unix was."
+
+ - Peter Moore, Asia-Pacific general manager, Microsoft
 
                                                      Please reply to the list;
                                                            please don't CC me.
