@@ -1,8 +1,8 @@
 From: Paul Caritj <pcaritj@riovia.net>
-Subject: Deleting Rules
-Date: Sun, 14 Sep 2003 05:00:11 -0400
+Subject: Another interesting question...
+Date: Sun, 14 Sep 2003 05:01:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F642E1B.8010801@riovia.net>
+Message-ID: <3F642E74.80808@riovia.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,19 +18,11 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Simple Question:
 
-Is it possible to delete rules without complete knowledge of its 
-contents? E.g., Would it be possible to delete all rules that match a 
-source ip of X?
+Does anyone have any experience with 4000 chains in one table? What sort 
+of hardware might I want? :)
 
-If not, can anyone reccomend a workaround? I am creating rules on the 
-fly and setting them to mark packets with a flag that would not be 
-knowable subsequently. (Rather, unknowable unless there is no solution 
-to this problem and I am forced to keep some sort of log...eew)
-
-
-Thanks,
-Paul
+As usual, many thanks and I hope everyone is well.
+-Paul
 
 
