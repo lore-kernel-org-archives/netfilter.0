@@ -1,11 +1,11 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: NAT with REDIRECT #$%@ up...
-Date: Tue, 01 Feb 2005 08:26:43 -0500
-Message-ID: <1107264403.4330.11.camel@hubcap.ljm.dom>
-References: <41FE2118.8020108@euclolland.dk>
+Subject: Re: netfilter accounting problem
+Date: Tue, 01 Feb 2005 08:37:20 -0500
+Message-ID: <1107265040.4330.22.camel@hubcap.ljm.dom>
+References: <20050201051322.69937.qmail@web54401.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <41FE2118.8020108@euclolland.dk>
+In-Reply-To: <20050201051322.69937.qmail@web54401.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,47 +19,43 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2005-01-31 at 07:14, Lennart A. Hansen wrote:
-> Hey ppl..
+On Tue, 2005-02-01 at 00:13, Vincent Chen wrote:
+> Hi, all
 > 
-> I have of cause searched before posting, but havent found anything 
-> simmilar..
+> I tried to analyze log from netfilter to have a picture about my network's
+> activity. I study and look around for days and found it's not easy. Here I what
+> I found:
 > 
-> Short story is that i want to redirect proxy request to host1:9001 to 
-> host2:3128, host2 is a bridge i'm on eth1 and host1 is on eth0
-> 
-> My intenstion is to catch all request to host1:9001 and redirect them to 
-> host2:3128.
-> 
-> iptables command:
-> iptables -t nat -A PREROUTING -i br0 -p tcp --dport 8080 -j REDIRECT 
-> --to-port 3128
-> 
-> This worked at first, but stopped working just like that..
-> 
-> I have sniffed on it, and attached it here.. 12kb Ethercap format
-> 
-> It looks really fucked up, check sum error and so on...
-> 
-> Anyone have any idea why it's fucking up?
+> 1. Most firewall use stateful inspection and log entry generated after
+> connection terminated. Byte transfered included in log. It's easy for
+> reporting. It seems that netfilter logging is based on packet header. If I want
+> a connection information, I have to trace the log from 3 way tcp handshake
+> until FIN ACK received. Is this true? If so, it's not friendly to reporting
+> system.
 
-according to packet 6 in your capture, your proxy requires
-authentication.  you cannot combine authentication and transparent
-proxying; which will makes perfect sense if you think about it long
-enough.
+if you're looking to do some accounting--look at the various patches for
+this in POM, such as:  account, ACCOUNT, conntrack-acct.
 
-as far as the checksum errors go--do you have an IP bound to br0?
+> 2. The logging file will be very huge and hard to process. My network generated
+> > 300M logfile in 1 day. And the log mixed with system entry. Can I send
+> netfilter log to local0~local7? If yes, how can I do that?
+
+two options come to mind:  1) use ULOG which will allow you to send
+iptables logs to their own file or 2) replace your standard syslogd with
+syslog-ng which will allow you to filter the iptables messages into
+their own file.
+
+> 3. I can tell the whether the log come from accept rule or drop rule. Is there
+> a column for this? I can't find more detailed information.
+
+yeah--use the "--log-prefix" option to add a comment to your log
+entries.
 
 -j
 
-PS - amongst my friends i have a mouth like a sailor, but i don't see
-how it's appropriate to set a subject line as you did, no matter how
-frustrated you may be.
-
 --
-"I've added an extra ingredient just for you.  The merciless peppers
- of Quetzlzacatenango!  Grown deep in the jungle primeval by the
- inmates of a Guatemalan insane asylum."
+"Man, you go through life, you try to be nice to people, you struggle
+ to resist the urge to punch 'em in the face, and for what?"
 	--The Simpsons
 
 
