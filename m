@@ -1,11 +1,11 @@
-From: Kelly Setzer <Kelly.Setzer@placemark.com>
-Subject: iptables immutable
-Date: Thu, 6 Feb 2003 19:44:37 -0600
+From: Ben Woodard <ben@zork.net>
+Subject: turning on automatic packet reassembly
+Date: 07 Feb 2003 20:14:46 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030207014437.GC28004@placemark.com>
+Message-ID: <1044677686.3182.52.camel@flix>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-We are in the process of implementing a firewall based on iptables.
-Our basic implementation is laid out, and now we are searching for
-every scrap that might improve security.  One thing I'd like is the
-ability to "lock" the iptables configuration so that no further
-changes can be made (without rebooting).
+I know that with the new netfilter code in 2.4, fragments are
+automatically reassembled if you have connection tracking on. The thing
+that I haven't figured out is how to turn connection tracking on. Do I
+just load the ip_conntrack module. I don't need to do anything but
+reassemble the fragments. 
 
-I don't see that iptables supports that directly.  I would be willing
-to put my effort into such a project, although it's at the limits of
-my expertise.  I have been trying to think of a way to emulate this
-behavior.
+Basically, what I need to do is unfragment NFS traffic from a non-jumbo
+frame enabled gigabit ethernet to a jumbo frame enabled gigabit. 
 
-The only reasonable idea I've had is using Linux Capabilities:
-http://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.4/capfaq-0.2.txt
-
-However, I'm not even sure how I'd apply that to iptables to prevent
-changes to the iptables chains.
-
-Thoughts?
-
-Kelly
+-ben
 
 
