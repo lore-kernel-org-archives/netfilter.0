@@ -1,11 +1,11 @@
-From: "tim" <twr@bellsouth.net>
-Subject: DNAT & Host Headers
-Date: Mon, 30 Jun 2003 21:32:25 -0400
+From: "Christo Bezuidenhout" <christo@it4africa.co.za>
+Subject: Firewall Setup on RH 9
+Date: Tue, 1 Jul 2003 10:04:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001701c33f70$a07b7b80$0101a8c0@techinitiatives.com>
+Message-ID: <016201c33fa7$5c755eb0$660210ac@christo>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0014_01C33F4F.19080C70"
+	boundary="----=_NextPart_000_0163_01C33FB8.1FFE2EB0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,87 +16,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0014_01C33F4F.19080C70
+------=_NextPart_000_0163_01C33FB8.1FFE2EB0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-First here is the rules within their respective chains:=20
+I need to do the following.
+ 
+1. I have a Redhat 9 Box with Two nics. NIC1 is my Private Network. NIC2
+is connected to my PPP0 interface for internet access. I need to add
+NIC3 which will be second Private Network.
+ 
+2. Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet. 
+NIC1 Should be able to connect to NIC3 but NIC3 must not be ABLE to
+Connect to NIC1 's network
+ 
+I have my network already setup as in 1 above and it working very well.
+I'm using iptables to get this running. 
+ 
+Please mail me offline if more info needed or with a suggestion
+ 
+Christo
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -d $INTERNET -j DNAT =
---to $NEMESIS
-
-iptables -A FORWARD -p tcp --dport 80 -d $NEMESIS -j ACCEPT
-
-I'm running this particular web-site with a host header, when I type in =
-the www.mydomain.com address on the browser and the packets hit the =
-prerouting chain then the forward chain how will the communication still =
-know that it is meant for www.mydomain.com
-
-Will this work or do I need to modify the rules in order for my web =
-server to recognize that the information is intended for =
-www.mydomain.com. As it is there are several web-sites within my =
-web-server utilizing the same ip address, including the default =
-web-site.
-
-Any insight will be gratefully appreciated.
-
-Thanks in advance
-Tim--Mia/Fla.
-
-------=_NextPart_000_0014_01C33F4F.19080C70
+------=_NextPart_000_0163_01C33FB8.1FFE2EB0
 Content-Type: text/html;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>First here is the rules within their =
-respective=20
-chains: </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -t nat -A PREROUTING -p tcp =
---dport 80 -d=20
-$INTERNET -j DNAT --to $NEMESIS</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -p tcp --dport 80 =
--d $NEMESIS=20
--j ACCEPT</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm running this particular web-site =
-with a host=20
-header, when I type in the www.mydomain.com address on the browser and =
-the=20
-packets hit the prerouting chain then the forward chain how will the=20
-communication still know that it is meant for =
-www.mydomain.com</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Will this work or do I need to modify =
-the rules in=20
-order for my web server to recognize that the information is intended =
-for=20
-www.mydomain.com. As it is there are several&nbsp;web-sites within my =
-web-server=20
-utilizing the same ip address, including the default =
-web-site.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Any insight will be gratefully=20
-appreciated.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks in advance</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Tim--Mia/Fla.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
 
-------=_NextPart_000_0014_01C33F4F.19080C70--
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>I need=20
+to do the following.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>1. I=20
+have a Redhat 9 Box with Two nics. NIC1 is my Private Network. NIC2 is =
+connected=20
+to my PPP0 interface for internet access. I need to add NIC3 which will =
+be=20
+second Private Network.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>2.=20
+Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet.=20
+</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>NIC1=20
+Should be able to connect to NIC3 but NIC3 must not be ABLE to Connect =
+to NIC1=20
+'s network</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>I have=20
+my network already setup as in 1 above and it working very well. I'm =
+using=20
+iptables to get this running. </FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+size=3D2>Please=20
+mail me offline if more info needed or with a =
+suggestion</FONT></SPAN></DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+
+size=3D2>Christo</FONT></SPAN></DIV></DIV></BODY></HTML>
+
+------=_NextPart_000_0163_01C33FB8.1FFE2EB0--
 
 
