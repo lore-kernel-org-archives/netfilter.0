@@ -1,16 +1,11 @@
-From: Mike <1100100@gmail.com>
-Subject: Re: Port 21, 23, and 80 are open according to Shields Up at grc.com
-Date: Tue, 14 Sep 2004 01:09:07 -0400
+From: "Eric Geater 9/01/04" <egeater@mscoinc.com>
+Subject: Port forwarding or NAT?
+Date: Tue, 14 Sep 2004 08:32:44 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <8ca4228204091322097d44fbc1@mail.gmail.com>
-References: <1095079786.1899.8.camel@wolfpack.ljm.dom>
-	<200409132122.i8DLM1i6001590@bassett.home.org>
-	<8ca42282040913164724b70aa4@mail.gmail.com>
-Reply-To: Mike <1100100@gmail.com>
+Message-ID: <01ef01c49a5f$51824900$6300a8c0@93egeater>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8ca42282040913164724b70aa4@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,40 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-SOLVED.
+I have one crazy machine at our home office that must communicate on
+port 6847 to an outside company.  This one machine went through our old
+proxy server until it died last week.  We're using IPTABLES through
+rc.firewall-2.4 on a Linux proxy, but it doesn't seem to be allowing
+this communication to occur.
 
-This is pretty embarassing but I will go ahead and post it so that it
-is forever archived under the "silly noobs on routers" directory.
+Would this be handled through port forwarding or NAT?  I was under the
+impression that our firewall was set up to allow all traffic, initated
+from the LAN, through.  This apparently isn't the case, however.
 
-1.  I've been too lazy to get the roaring penguin dsl client working
-on my routerbox.  Historically, I've had trouble with making the right
-data packet sizes and providing headroom for packet headers, etc.
+Eric
 
-2.  So, I'm still using a simple $50 Netgear cable/dsl router to act
-as my LAN's DHCP server.
-
-3.  The LAN diagram looks like:  Internet --> Netgear Router --> Linux
-firewall/router/gateway --> LAN clients.
-
-4.  A while back I needed to set up some video conferencing for my
-boss.  I wanted to make sure there were no issues with the Netgear
-router so I simply turned it into a DMZ that let everything through to
-the Linux routerbox.
-
-5.  Forgetful as I am, I modified the linux firewall back to its
-original state once the video conferencing was completed, but never
-turned off the DMZ settings on the Netgear router.  That was the
-entire problem.  The netgear was responding and opening ports as it is
-designed to do while set on DMZ.
-
-Long story, short.  I tested the linux box on its own with no Netgear
-in front of it, and then also tested it with the Netgear set up as the
-DHCP server, but no longer set up as a DMZ.  Both tests yielded
-results of complete stealth.
-
-Where's the beer.
-
-Mike
 
