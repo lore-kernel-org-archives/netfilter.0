@@ -1,13 +1,15 @@
-From: William Stearns <wstearns@pobox.com>
-Subject: Re: Need urgent help on NAT/load sharing
-Date: Thu, 5 Feb 2004 22:36:18 -0500 (EST)
+From: Tom Marshall <tommy@home.tig-grr.com>
+Subject: Re: Forwarding DNS
+Date: Thu, 5 Feb 2004 21:12:51 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0402052234430.28123-100000@sparrow>
-References: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <20040206051251.GA2721@home.tig-grr.com>
+References: <40228B0E.3080906@amfes.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
+Content-Disposition: inline
+In-Reply-To: <40228B0E.3080906@amfes.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +19,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Saeed Zamani <szamani@concept.ae>
-Cc: ML-netfilter <netfilter@lists.netfilter.org>, William Stearns <wstearns@pobox.com>
+To: Daniel Miller <dmiller@amfes.com>
+Cc: netfilter@lists.netfilter.org
 
-Good morning, Saeed,
 
-On Thu, 5 Feb 2004, Saeed Zamani wrote:
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->    I am new to list and have a basic nat question on Redhat Linux 9. I
-> have to translate my local IP ( 192.168.1.0/24 ) to two different public
-> IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
-> example for every 4 received packet, one have to translate to IPE1 and
-> other three to IPE2. I need this for load balacing the internet traffic
-> between two isp. At the end, it is excellent if there is an option that
-> If one the ISP gateway is dead, all packets have to translate to other
-> public IP. Please help me. 
+It's not silly to implement your own DNS cache.  Why not try dnsmasq?
 
-	I don't know the answer off the top of my head, but you might want 
-to take a look at the Linux Advanced Routing and Traffic Control HOWTO at 
-http://www.lartc.org/ .
-	Cheers,
-	- Bill
+  http://www.thekelleys.org.uk/dnsmasq/doc.html
 
----------------------------------------------------------------------------
-	"All programs evolve until they can send email."
--- Richard Letts
-	"Except Microsoft Exchange."
--- Art
-	(found on the Snort web site)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+On Thu, Feb 05, 2004 at 10:27:26AM -0800, Daniel Miller wrote:
+> Can I setup a DNS forward for my LAN to point to my ISP's DNS servers=20
+> for internet name resolution?  As I'm on a high-speed connection, and my=
+=20
+> provider has already implemented their own caching DNS servers, it seems=
+=20
+> (at least on the surface) silly for me to implement my own caching-only=
+=20
+> server.  This way, I can choose to implement direct forwarding to my=20
+> ISP's servers, or use an internal caching-only server, and have it=20
+> transparent to the LAN.
+>=20
+> Daniel
 
+--=20
+The nice thing about standards is that there are so many of them to choose =
+from.
+        -- Andrew Tanenbaum
+
+--5vNYLRcllDrimb99
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAkAjIlMACgkQFMm9uvwPXW4V2QCfRytH7N4uW4brVfJbn9Xx91Ug
+zHEAniu4cD+O34+JH5swW6vEOXHFbwia
+=CZar
+-----END PGP SIGNATURE-----
+
+--5vNYLRcllDrimb99--
 
