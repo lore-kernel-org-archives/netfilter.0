@@ -1,12 +1,13 @@
-From: Brad Chapman <kakadu_croc@yahoo.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: NAT only - No connection tracking
-Date: Mon, 11 Nov 2002 11:21:03 -0800 (PST)
+Date: Mon, 11 Nov 2002 20:05:34 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021111192103.14755.qmail@web40910.mail.yahoo.com>
-References: <200211111303.gABD39e28156@vulcan.rissington.net>
+Message-ID: <20021111200541.IDEJ3711.mta02-svc.ntlworld.com@there>
+References: <00f701c28970$f3587bc0$0bc8c80a@dolphin> <200211111106.gABB6ue27802@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200211111303.gABD39e28156@vulcan.rissington.net>
+In-Reply-To: <200211111106.gABB6ue27802@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,60 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: "netfilter@lists" <netfilter@lists.netfilter.org>
 
-Mr. Antony,
+On Monday 11 November 2002 11:06 am, Antony Stone wrote:
 
---- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> On Monday 11 November 2002 11:34 am, Brad Chapman wrote:
-> 
-> > > How can I make my iptable to do just NAT, no connection tracking?
-> > >
-> > > Basically, I want to make my iptable to become a NAT device without
-> > > stateful inspection.
-> > > It this possible?
+> On Monday 11 November 2002 10:56 am, yenjet.chan@eglobal.com.my wrote:
+> > Hi all,
 > >
-> > No.
-> 
-> Hi Brad - long time no hear...
+> > How can I make my iptable to do just NAT, no connection tracking?
+>
+> Yes - just don't compile connection tracking support in, and don't try to
+> use the -m state match.
 
-When you don't have all day to bathe your retina in EM radiation, then your presence
-sometimes decreases ;)
+I was wrong.   I forgot that when you compile the kernel, the netfilter 
+options start with "Connection tracking (required for NAT) ?"
 
-> 
-> Why do you think this is not possible ?
+Therefore you are correct, you cannot do NAT without connection tracking.
 
-Sorry for being so short, I was busy.
+Sorry for the misleading (nay, incorrect !) advice earlier....
 
-Basically, if this person wants to do NAT, he has to do connection tracking as well.
-LYSB, he doesn't have to run ctrack without NAT, but without ctrack the current
-implementation of NAT in netfilter won't work. If there are other stateless NAT
-kernel implementations available that attach to netfilter, then I am currently
-unaware of them.
+Antony.
 
-> 
-> Antony.
+-- 
 
-Brad
-
-> 
-> -- 
-> 
-> What is this talk of software 'release' ?
-> Our software evolves and matures until it becomes capable of escape,
-> leaving a bloody trail of designers and quality assurance people in its wake.
-> 
-
-
-=====
-Brad Chapman
-
-Permanent e-mail: kakadu_croc@yahoo.com
-
-__________________________________________________
-Do you Yahoo!?
-U2 on LAUNCH - Exclusive greatest hits videos
-http://launch.yahoo.com/u2
+The difference between theory and practice is that
+in theory there is no difference, whereas in practice there is.
 
