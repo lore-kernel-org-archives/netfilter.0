@@ -1,13 +1,10 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: iptables on a bridge interface
-Date: Mon, 2 Jun 2003 09:51:09 +1000
+From: "Vijay Saha, Noida" <vsaha@noida.hcltech.com>
+Subject: queries
+Date: Mon, 2 Jun 2003 11:11:59 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D77@wardrive.citadelcomputer.com.au>
+Message-ID: <E04CF3F88ACBD5119EFE00508BBB212109A2CCC8@exch-01.noida.hcltech.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C32898.ACC3C21A"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,149 +14,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: subramanya <angeeras@satyam.net.in>, netfilter@lists.netfilter.org
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C32898.ACC3C21A
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-If you want a bridge then bridge it, if you want NAT then NAT it.... but =
-you want BOTH??
-=20
-Bridge is like fusing 2 network cards together as if the firewall didn't =
-exist.. but at some stage you want it to exist so why put a bridge?
-
-Thanks,
-
-=20
-____________________________________________
-George Vieira
-Citadel Computer Systems Pty Ltd Systems Manager georgev AT =
-citadelcomputer DOT com DOT au=20
-Citadel Computer Systems Pty Ltd
-Phone : +61 2 9955 2644 HelpDesk: +61 2 9955 2698  =
-<http://www.citadelcomputer.com.au/> http://www.citadelcomputer.com.au
-=20
-=20
------Original Message-----
-From: subramanya [mailto:angeeras@satyam.net.in]
-Sent: Saturday, May 31, 2003 1:32 PM
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: iptables on a bridge interface
 
+Hi
+I have got few querries related to my project.
+I have got a Linux m/c with two network interfaces...wireless LAN (Aironet)
+as "eth0" and GPRS PC card as "ppp0" .
+I have to implement seamless roaming, so what I want to achieve is that by
+default I would be connected to wireless LAN interface and as soon as Access
+Point signal strength weakens, I have to switch dynamically to "ppp"
+interface.The "ppp" interface accepts the AT command sets for connecting to
+GPRS network.
+I have two approaches:-
 
-how is the working of iptables (specially DNATing) different on a bridge =
-interface than on a router interface?
+1) An alternative is using bridge as a virtual interface which enslaves
+"eth0" and "ppp0" ...where the logic of bridging will be modified. We shall
+continuosly check the "eth0" signal strength and if it weakens switch to the
+"ppp0" within the bridge module logic. The advantage here is that the
+application layer always bind with the same virtual bridge device "br0".
+The disadvantage,probably, would be to translate between the Ethernet and
+PPP frames within bridging module..??
 
-------_=_NextPart_001_01C32898.ACC3C21A
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+2) How do I get switch to the ppp0 interface dynamically??
+Can I accomplish my goal just by modifying the Kernel FIB default interface
+dynamically and flushing the routing cache table of Linux as per the
+connectivity??? Will the previous session be maintained after I increase the
+kernel TCP/UDP Timeout values ..??
+I am using the SIOCADDRT/SIOCDELRT to modify the default route in IP routing
+table dynamically.'
+But this approach has got some issues while handover... will the session be
+maintained??
+"qdisc" related problems???
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
+netfilters can help in solving the problesm related to second approach...
+Can you help me..??
 
-
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><SPAN class=3D186544923-01062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>If you=20
-want a bridge then bridge it, if you want NAT then NAT it.... but you =
-want=20
-BOTH??</FONT></SPAN></DIV>
-<DIV><SPAN class=3D186544923-01062003><FONT face=3DArial color=3D#0000ff =
-
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D186544923-01062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>Bridge=20
-is like fusing 2 network cards together as if the firewall didn't =
-exist.. but at=20
-some stage you want it to exist so why put a bridge?</FONT></SPAN></DIV>
-<DIV>
-<P><FONT face=3DArial size=3D2><SPAN=20
-class=3D674251008-03092002>Thanks,</SPAN></FONT></P></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D674251008-03092002></SPAN></FONT>&nbsp;</DIV>
-<DIV style=3D"WIDTH: 305px; HEIGHT: 232px">
-<MARQUEE id=3DMarquee1 style=3D"WIDTH: 220px; HEIGHT: 57px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D20 direction=3Ddown behavior=3Dslide loop=3D1 =
-border=3D"2"><FONT=20
-size=3D1>____________________________________________</FONT></MARQUEE><BR=
-><B><FONT=20
-color=3D#000066 size=3D2></FONT><FONT face=3DVerdana color=3D#000066 =
-size=3D2>George=20
-Vieira<BR></FONT></B>
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D3 behavior=3Dslide loop=3D1 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
-size=3D1><B>Citadel=20
-Computer Systems Pty Ltd</B></FONT></MARQUEE>
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D3 behavior=3Dslide loop=3D1 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3Dblack =
-size=3D1><B>Systems=20
-Manager</B></FONT></MARQUEE><FONT face=3DVerdana>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 255px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D2 scrollDelay=3D5 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-width=3D300 height=3D16 border=3D"0"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
-size=3D1>georgev AT=20
-citadelcomputer DOT com DOT au</FONT></MARQUEE>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1=20
-border=3D"0"></MARQUEE></FONT>
-<DIV><FONT face=3D"Verdana, Verdana, Helvetica, sans-serif" =
-color=3Dblack=20
-size=3D1>Citadel Computer Systems Pty Ltd</FONT><FONT =
-face=3DVerdana></DIV>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><FONT color=3Dblack size=3D1>Phone : +61 2 9955=20
-2644</FONT></MARQUEE></FONT><FONT face=3DVerdana>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><FONT color=3Dblack size=3D1>HelpDesk: +61 2 9955=20
-2698</FONT></MARQUEE></FONT>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D4 scrollDelay=3D5 direction=3Dright =
-behavior=3Dslide loop=3D1=20
-border=3D"0"><A href=3D"http://www.citadelcomputer.com.au/"><FONT=20
-face=3D"Verdana, Verdana, Helvetica, sans-serif" color=3D#000099 =
-size=3D1><A=20
-href=3D"http://www.citadelcomputer.com.au/">http://www.citadelcomputer.co=
-m.au</FONT></A></MARQUEE></DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial color=3D#0000ff size=3D2></FONT>&nbsp;</DIV>
-<DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
-face=3DTahoma=20
-size=3D2>-----Original Message-----<BR><B>From:</B> subramanya=20
-[mailto:angeeras@satyam.net.in]<BR><B>Sent:</B> Saturday, May 31, 2003 =
-1:32=20
-PM<BR><B>To:</B> netfilter@lists.netfilter.org<BR><B>Subject:</B> =
-iptables on a=20
-bridge interface<BR><BR></FONT></DIV>
-<DIV><FONT face=3DArial color=3D#000000 size=3D2>how is the working of =
-iptables=20
-(specially DNATing) different on a bridge interface than on a router=20
-interface?</FONT></DIV></BODY></HTML>
-
-------_=_NextPart_001_01C32898.ACC3C21A--
+Any suggestions are welcome.
+Anticipating a reply
+thanks and regards
+Vijay
 
