@@ -1,8 +1,8 @@
-From: Ben Russo <ben@umialumni.com>
+From: Marcello Scacchetti <marcello.scacchetti@nextrem.it>
 Subject: Re: how to forward packets to another gateway, if i'm one
-Date: 17 Dec 2002 10:16:47 -0500
+Date: 17 Dec 2002 15:00:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040138207.8941.9.camel@ben.mis.tnsi.com>
+Message-ID: <1040133623.11478.22.camel@nxitmirms1>
 References: <ISPFE7vXn10A5fpk965000657df@mail.takas.lt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -21,7 +21,21 @@ Content-Type: text/plain; charset="us-ascii"
 To: Saulius Menkevicius <razzmatazz@mail.lt>
 Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Fri, 2002-12-06 at 12:28, Saulius Menkevicius wrote:
+Hi Saulius,
+i think your solution is to use advanced kernel routing options using
+the ip tool. This will allow you to use source based routing. route
+command allows only setup destination based routes.
+I think that http://lartc.org/ will come really in help to you, look for
+Linux Advanced Routing & Traffic Control HOWTO.
+Hope this helps,
+
+Marcello
+
+Il ven, 2002-12-06 alle 18:28, Saulius Menkevicius ha scritto:
+> Hi,
+>   I've spend some time searching Google on the topic, however 
+> eventually gave up. So..
+> 
 >   Is there any way of forwarding packets to another gateway, which, 
 > besides, is on the same network. Say, I'm on IP 10.0.0.2, and I act 
 > as a gateway (ADSL, really) for a number of machines on the same LAN. 
@@ -30,9 +44,26 @@ On Fri, 2002-12-06 at 12:28, Saulius Menkevicius wrote:
 > hosts 10.0.0.1 and 10.0.0.2 are identic and perform the same 
 > function.
 > 
-If both 10.0.0.1 and 10.0.0.2 are on the same subnet then just find 
-the client machines that you want to use 10.0.0.1 as their gateway
-and change their default route. No changes at all would be required
-on either gateway.
-
+>   Now, I want to make some traffic that comes from some client and 
+> that should go through gateway 10.0.0.1 to be forwarded to 10.0.0.2 
+> (without any changes). The need is to make the forwarding transparent 
+> to both 10.0.0.2 and the client.
+> 
+>   So it's the way I suppose it should be done:
+> 	a) No changes to be made 10.0.0.2's firewalling rules (in fact, it 
+> runs FreeBSD);
+> 	b) Make 10.0.0.1 to forward them to 10.0.0.2 transparently. 
+> 
+> _This_is_the_culprit_. I don't know how to make them (packets) go 
+> that way. DNAT/SNAT doesn't suit, neither does REDIRECT, as they 
+> modify packets they filter.
+> 
+> 	In FreeBSD, there's ipfw rule fwd, e.g. if 10.0.0.1 ran bsd, i'd 
+> type "ipfw add fwd 10.0.0.2 ip from some_client to any". I'm looking 
+> for the a way on how to make the same effect on Linux/iptables.
+> 	Wrote to much of blurb. Guess I didn't mess it up too much :)
+> 
+> 	Thanks. 
+-- 
+Marcello Scacchetti <marcello.scacchetti@nextrem.it>
 
