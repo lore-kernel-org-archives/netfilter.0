@@ -1,9 +1,11 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: Command not working  in latest version
-Date: Sun, 16 Feb 2003 19:13:27 -0500
+From: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
+Subject: Re: Command not working  in latest version
+Date: Sun, 16 Feb 2003 23:54:38 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5EB@EXCHANGE>
+Message-ID: <002901c2d616$c41d6300$0100a8c0@nikita>
+References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E9@EXCHANGE>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,25 +17,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Paulo J. Matos" <pocm@mega.ist.utl.pt>, netfilter@lists.netfilter.org
-
-Well, Full NAT might take care of your "arguments" problem.  I don't know
-exactly what it affects, but it's NAT and that's what you are trying to do.
-Plus, the instructions say so!  What kernel are you using?  What
-OS/distribution?
-
-Khanh Tran
-Network Operations
-Sarah Lawrence College
-
-
------Original Message-----
-From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-Sent: Sunday, February 16, 2003 6:55 PM
-To: Khanh Tran; netfilter@lists.netfilter.org
-Subject: Re: Command not working in latest version
-
+To: Khanh Tran <khanh@slc.edu>, netfilter@lists.netfilter.org
 
 
 > You may not have all of the proper elements compiled into your kernel.
@@ -177,6 +161,5 @@ the
 >
 >
 >
-
 
 
