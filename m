@@ -1,13 +1,12 @@
-From: "Sez" <sezmillenium@yahoo.es>
-Subject: RE: Iptables do nat with Protocol 47 or GRE
-Date: Fri, 14 May 2004 12:50:50 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Unable to apply pptp conntrack patch
+Date: Fri, 14 May 2004 12:56:47 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BOaGK-00023A-8n@vishnu.netfilter.org>
-References: <200405141139.39356.Antony@Soft-Solutions.co.uk>
+Message-ID: <Pine.LNX.4.33.0405141253510.21804-100000@blackhole.kfki.hu>
+References: <GHEILNONPACCGBGKBEKKCEMPCFAA.manikandan@manikandan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405141139.39356.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <GHEILNONPACCGBGKBEKKCEMPCFAA.manikandan@manikandan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Manikandan <manikandan@manikandan.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-How can i know if i use connection trackink helper module??
-Where can i obtain this? 
+On Fri, 14 May 2004, Manikandan wrote:
 
------Mensaje original-----
-De: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] En nombre de Antony Stone
-Enviado el: divendres, 14 / maig / 2004 12:40
-Para: netfilter@lists.netfilter.org
-Asunto: Re: Iptables do nat with Protocol 47 or GRE
-
-On Friday 14 May 2004 11:24 am, Sez wrote:
-
-> Hi people,
+>         I am trying to patch my RedHat kernel kernel-2.4.20-31.9 with pptp
+> conntrack patch as my NAT clients requires access to one of my Windows 2000
+> VPN server. I am getting the following error when I patch my kernel.
 >
-> I have a a vpn server in my Intranet. If i want access to this server 
-> i will pass my firewall.
->
-> The diagram is
->
-> VPN_CLIENT(W2k box) ---- router ---- (192.168.55.94 eth0) FIREWALL
-> (192.168.55.95 eth1)-------- (192.168.55.92)VPN_SERVER
->
-> I create all iptables rules and VPN_CLIENT can connect to server. One 
-> client go well. But if another client try to connect he has this error
-> 		*** error  721: Remote server don't response. ***
+> [root@manikandan patch-o-matic-ng-20040302]# ./runme pptp-conntrack-nat/
+> Hey! KERNEL_DIR is not set.
+> Where is your kernel? [/usr/src/linux] /usr/src/linux-2.4.20-31.9
+> Where is your iptables source code? [/usr/src/iptables]
+> /usr/src/iptables-1.2.9
+> Loading patchlet definitions... done
 
-Are you using the PPTP NAT connection tracking helper module?   If not, you 
-will not be able to support more than one connection at a time.
+Your kernel, iptables source and patch-o-matic versions are too old:
+oldest supported kernel is 2.4.23, iptables is 1.2.10 (from cvs).
+And definitely use newer pom-ng.
 
-Regards,
-
-Antony.
-
---
-There are two possible outcomes:
-
- If the result confirms the hypothesis, then you've made a measurement.
- If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
