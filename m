@@ -1,9 +1,8 @@
-From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
-Subject: Re: How to disable ip_contrack_irc when its compiled into the kernel?
-Date: Fri, 27 Dec 2002 19:47:02 +0100
+From: Bobo <boboaq@163.com>
+Subject: Are there some good  IPTABELS WEBMIN modules?
+Date: Sat, 28 Dec 2002 15:18:18 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003801c2add8$58da06e0$026410ac@honor>
-References: <1041008143.15849.81.camel@fish-dt.dmz.dynam.ac> <3E0C9B9F.80200@shortcircuit.dyndns.org>
+Message-ID: <20021228071629.35B611CB680C2@sm206.163.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,20 +16,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Justin Hammond <fish@dynam.ac>, Dan Egli <dan@shortcircuit.dyndns.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-> Unfortunately, I believe that once a module is compiled into the kernel
-> it's present, end of discussion. And besides. thats not quite what you
-> want is it? removing ip_conntrack_irc would kill ALL irc abilities, not
-> just DCC. After all, doens't IRC operate on multiple ports, similiar to
-FTP?
+hi
 
-No irc just uses a single connection for all the basic stuff (usually from a
-random port/tcp clientside to port 6667/tcp serverside)
+   In these days,I am learning using WEBMIN to  manager LINUX remotely.
+   Are there some good  IPTABELS WEBMIN modules?
+   I have used two kinds,but each one is not good. one is a standard module of webmin(http://freshmeat.net/users/tniemueller),
+but it's function is too simple. 
+  The other is turtle firewall module for  webmin,it is not perfect too.
 
-just DCC (direct client connection) uses additional ports. DCC is used for
-the inter user communication.
+   Are there any good iptables modules for mebmin?
 
+   Thanks
 
 
