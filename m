@@ -1,8 +1,9 @@
-From: Ludo Stellingwerff <ludo@protactive.nl>
-Subject: Some more IPSec - IPTables issues?
-Date: Thu, 27 May 2004 10:55:21 +0200
+From: "lololo" <lololo@seed.net.tw>
+Subject: Proxy-arp & DHCP conflict
+Date: Thu, 27 May 2004 18:11:40 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1085648121.3864.58.camel@laptop.stwerff.xs4all.nl>
+Message-ID: <012501c443d3$00f7d960$260a0a0a@koxp>
+References: <679890948@web.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,49 +17,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi all,
+Hello,
 
-I have a similar question about the combination Netfilter and in-kernel
-IPSec. Most of the discussion about this combination is focussed on
-filtering incomming and/or outgoing traffic, both encrypted and
-decrypted. But my issue is about SNAT. I've googled around for an
-answer, but beside some people mentioning the problem I have not found a
-proper solution, yet.
+I'm setting the proxy-arp ,but comes a problem:
 
-The problem is about SNAT'ing traffic originating in the LAN, and being
-send out a IPSec tunnel at the gateway-router. With the current
-implementation of both IPSec and Netfilter this doesn't work, because
-POSTROUTING is applied only after the SPD gets a chance to decide on the
-pakket.
+My understanding to set the proxy-arp is simply enable the function in
+Kernel.
+echo 1 > /proc/sys/net/ipv4/conf/{interface}/proxy_arp
+and then add routings.It surely worked well.
 
-Can anybody give some hints or inside on this subject? Is there a known
-work-around or a road-map to a solution?
+But if I have a server running DHCP in the same LAN,it(proxy-arp server)
+failed ,something like I can't type any words in console or slow down the
+action that i do.After unplugging  the wire ,it worked again.
 
-I need this functionality to be able to create a VPN-tunnel between to
-networks, one of which is behind a dynamic IP-address. I have a working
-solution by (dirty)-hacking Racoon, but that hack is unmaintainable.
+So now i must type the following command manually
+arp -Ds {IP} eth0 pub
+........
 
-What I like to build looks like this:
+Does anyone know what's happened?
 
-|    /---\       /---\     |
-|----| A |--//---| B |-----|
-|    \---/       \---/     |
+Thnaks!
 
-Where host B has a dynamic IP-Address. The network behind B should be
-able to enter network A, but the IPSec tunnel will only see a
-road-warrior host B:
-
-|    /---\       /---\
-|----| A |--//---| B |
-|    \---/       \---/
-
-
-Thanks in advanced,
-
-Ludo Stellingwerff.
-
-
+Lo
 
 
