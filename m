@@ -1,12 +1,14 @@
-From: "Paul Fontenot" <paul@pitbull-racing.com>
-Subject: Groups in iptables
-Date: Sat, 29 Nov 2003 10:18:30 -0700
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Groups in iptables
+Date: Sat, 29 Nov 2003 17:24:35 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c3b69c$d013d560$6400a8c0@pfontenot>
-Reply-To: <paul@pitbull-racing.com>
+Message-ID: <1070144674.2884.2.camel@grendel>
+References: <000301c3b69e$3e4122d0$6400a8c0@pfontenot>
+	 <001301c3b6ab$d569cf10$8b00000a@casa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001301c3b6ab$d569cf10$8b00000a@casa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +18,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Leonardo Rodrigues =?ISO-8859-1?Q?Magalh=E3es?= <leolistas@solutti.com.br>
+Cc: paul@pitbull-racing.com, "Net Filter (E-mail)" <netfilter@lists.netfilter.org>
 
-I would imagine the answer to this is yes, but I haven't found anything on
-the subject. If you wanted to limit outbound traffic for a certain port to
-certain group of servers is that possible?
+On Sat, 2003-11-29 at 14:06, Leonardo Rodrigues Magalh=E3es wrote:
+>
+>     In your case, 192.168.0.25, 192.168.0.26 and 192.168.0.27 cannot be
+> written as network/mask. So you CANNOT write one SINGLE rule to do what=
+ you
+> want. You'll probably need to write a single rule for each address.
 
-For example, can I create a group:
+You could use 192.168.1.24/30, but that would include the address
+192.168.1.24 as well. Not sure what's more important in this case, fewer
+rules or limiting the access from 192.168.1.24.
 
-MAILSERVERS = 192.168.0.25, 192.168.0.26, 192.168.0.27
+C
 
-and use that in a ruleset:
--A INSIDE_ACCESS_OUT -s $MAILSERVERS -p tcp -m tcp --dport 25 --tcp-flags
-SYN,RST,ACK SYN -j ACCEPT
-
-and then drop the rest:
--A INSIDE_ACCESS_OUT -p tcp -m tcp --dport 25 -j DROP
 
 
