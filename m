@@ -1,13 +1,10 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: Re: natting help needed urgently.
-Date: Tue, 9 Sep 2003 01:09:18 -0700 (PDT)
+From: "jimbo jones" <jdvuyk_crap@hotmail.com>
+Subject: Re: Kazaa Ports
+Date: Tue, 09 Sep 2003 08:21:52 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909080918.28191.qmail@web20710.mail.yahoo.com>
-References: <20030909031922.GB2818@linux.local>
+Message-ID: <Sea1-F28DUggCXOFTYv00010938@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-793284888-1063094958=:28177"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030909031922.GB2818@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +14,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Payal Rathod <payal-iptables@staticky.com>, "Dharmendra.T" <dharmu@nsecure.net>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: JALaramie@Loudoun-Fairfax.com, dagent.geo@yahoo.com
 Cc: netfilter@lists.netfilter.org
 
---0-793284888-1063094958=:28177
-Content-Type: text/plain; charset=us-ascii
 
-Requesting you to specify how you have solved yourself. It will help us .
-Thanks
+Have you fiddled with the firewall settings in Kazaa that supposedly let you 
+change the outgoing port to anything you like.  I have heard in cases that 
+you can change this to, say, port 80 and suddenly everything goes (web port 
+and all).  However I have exactly the same setup with exactly the same issue 
+and this option didnt work for me.  But maybe it will for someone else.  
+Would also like to get this solved.
 
+Suggestions appreciated.
 
-Payal Rathod <payal-iptables@staticky.com> wrote:
-On Mon, Sep 08, 2003 at 10:19:30AM +0530, Dharmendra.T wrote:
-> Hi Payal,
-> 
-> What error you get while connecting from outside? This info will help us
-> in solving your problem.
-
-Thanks but I solved it myself. I will get back on this in case of more
-difficulties.
-
-With warm regards,
--Payal
-
--- 
-"Visit GNU/Linux Success Stories"
-http://payal.staticky.com
-Guest-Book Section Updated.
+Cheers
 
 
----------------------------------
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
---0-793284888-1063094958=:28177
-Content-Type: text/html; charset=us-ascii
+>From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+>To: SBlaze <dagent.geo@yahoo.com>
+>CC: netfilter@lists.netfilter.org
+>Subject: Re: Kazaa Ports
+>Date: Mon, 08 Sep 2003 18:47:18 -0400
+>
+>Thanks for answering
+>
+>>Assuming that you are running the Kazza on a Internal windows machine the
+>>POSTROUTING should handle all of the out going of the Kazza Client...
+>>
+>>
+>
+>hmmm . . . I revised my rule set recently using the iptables tutorial  by 
+>Oskar Andreasson as a guide, and he recommends again doing any filtering in 
+>the nat tables.
+>
+>http://iptables-tutorial.frozentux.net/chunkyhtml/traversingoftables.html#TRAVERSINGGENERAL
+>
+>
+>>what is probably not making it through is the returning connection 
+>>attempts of
+>>the Kazza servers? In which case... you shouldn't be using FORWARD lines 
+>>at all
+>>sinnce these are supposedly destined for the local machine(as in the Linux 
+>>box
+>>itself and not anything in your lan).
+>>
+>
+>If you look further down in the link I posted, there is a diagram that 
+>shows INPUT going to the localhost and the FORWARD being used for packets 
+>destined for other hosts.  Hmmm again . . .  :-)
+>
+>>What I think is needed here is the
+>>PREROUTING of a range or specific ports. I think this will solve your 
+>>problem
+>>for Kazza but it offers very little as in the way of security for those 
+>>ports.
+>>
+>>An example of this is when I used to run my Half-Life Deadicated Server on 
+>>my
+>>internal Windows Machine I used a PREROUTING line such as...
+>>
+>>iptables -t nat -A PREROUTING -p udp --dport 27015 -i eth0 -j DNAT
+>>--to-destination 192.168.1.25:27015
+>>
+>>While my scenerio was alot simpler than yours it's similar I think. Your
+>>problem will be of course finding the range of ports. I would also say 
+>>take
+>>note of the use of limiting it to one protocol(if you can). Better to have 
+>>a
+>>straw open to the world than a big ol sewer pipe!
+>>
+>>
+>>
+>Absolutely! That's what makes this an issue for me. I can't nail down the 
+>ports Kazaa needs and the more I open up the less protection I have. I need 
+>to find a better strategy and I'm open to suggestions.
+>
+>Jeff
+>
+>
+>
 
-<DIV>Requesting you to specify how you have solved yourself. It will help us .</DIV>
-<DIV>Thanks</DIV>
-<DIV><BR><BR><B><I>Payal Rathod &lt;payal-iptables@staticky.com&gt;</I></B> wrote:</DIV>
-<BLOCKQUOTE class=replbq style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px">On Mon, Sep 08, 2003 at 10:19:30AM +0530, Dharmendra.T wrote:<BR>&gt; Hi Payal,<BR>&gt; <BR>&gt; What error you get while connecting from outside? This info will help us<BR>&gt; in solving your problem.<BR><BR>Thanks but I solved it myself. I will get back on this in case of more<BR>difficulties.<BR><BR>With warm regards,<BR>-Payal<BR><BR>-- <BR>"Visit GNU/Linux Success Stories"<BR>http://payal.staticky.com<BR>Guest-Book Section Updated.<BR></BLOCKQUOTE><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
---0-793284888-1063094958=:28177--
+_________________________________________________________________
+Tired of 56k? Get a FREE BT Broadband connection 
+http://www.msn.co.uk/specials/btbroadband
+
 
