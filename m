@@ -1,8 +1,8 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Problems with connection
-Date: Mon, 13 Sep 2004 16:16:35 -0500
+Date: Mon, 13 Sep 2004 17:18:49 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41460E33.7040403@pbl.ca>
+Message-ID: <1095110328.1899.26.camel@wolfpack.ljm.dom>
 References: <20040913210115.54459.qmail@web50202.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -17,51 +17,81 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Giancarlo Boaron <gboaron@yahoo.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Giancarlo Boaron wrote:
-> Hello!
-> 
-> I have a client in my LAN that must access a server on
-> the Internet listening for requests on 3456 port.
-> 
-> Using the FORWARD chain (default police = DROP) I have
-> the following lines:
-> 
-> iptables -A FORWARD -m state ESTABLISHED,RELATED -j
-> ACCEPT
-> 
-> <... my rules ...>
-> 
-> iptables -A FORWARD -d X.Y.0.0/16 -p tcp --dport 3456
-> -j ACCEPT
+On Mon, 2004-09-13 at 17:01, Giancarlo Boaron wrote:
+> 11:22:09.252058 IP_client.2611 > IP_server.3456: S
+> 9014409:9014409(0) win 8192 <mss 1460,nop,nop,sackOK>
+> (DF)
+> 11:22:09.327363 IP_server.3456 > IP_client.2611: S
+> 1138155720:1138155720(0) ack 9014410 win 65535 <mss
+> 1460,nop,nop,sackOK> (DF)
+> 11:22:09.327650 IP_client.2611 > IP_server.3456: . ack
+> 1 win 8760 (DF)
+> 11:22:09.410734 IP_server.3456 > IP_client.2611: P
+> 1:140(139) ack 1 win 65535 (DF)
+> 11:22:09.559431 IP_client.2611 > IP_server.3456: . ack
+> 140 win 8621 (DF)
+> 11:22:09.565804 IP_client.2611 > IP_server.3456: P
+> 1:140(139) ack 140 win 8621 (DF)
+> 11:22:09.656090 IP_server.3456 > IP_client.2611: P
+> 140:154(14) ack 140 win 65396 (DF)
+> 11:22:09.656516 IP_client.2611 > IP_server.3456: F
+> 140:140(0) ack 154 win 8607 (DF)
 
-[snip]
+note:  the client machine is the one initiating the closing of the
+connection here.
 
+> 11:22:09.737150 IP_server.3456 > IP_client.2611: . ack
+> 141 win 65396 (DF)
+> 11:22:09.737357 IP_server.3456 > IP_client.2611: F
+> 154:154(0) ack 141 win 65396 (DF)
+> 11:22:09.737471 IP_client.2611 > IP_server.3456: . ack
+> 155 win 8607 (DF)
+> 
+> It means that my client can reach the server, a
+> connection is established, they send some data but
+> they close the connection very fast.
+> Besides, it repeats this traffic about 10 times, with
+> the client application changing its source port
+> number, and then it returns the error messages.
+> 
 > Does it mean that the server is trying to start a new
 > back connection to the client and my DROP policy is
 > applied? (since I don't permit new incoming
 > connections?)
-> 
+
+well--if you're logging those DROP-ed packets--the logs will tell the
+tale...
+
+  iptables -A INPUT -j LOG --log-prefix "FW DROP IN: "
+  iptables -A OUTPUT -j LOG --log-prefix "FW DROP OUT: "
+  iptables -A FORWARD -j LOG --log-prefix "FW DROP FWD: "
+
+(make sure those are the *last* rules in each chain)
+
 > I read the application documents and it only says that
 > I must allow outgoing traffic to and from
 > X.Y.0.0/16:3456 using TCP protocol.
+> 
+> So, what do you think about some HELP!!!!!!!! :)
 
-The easiest way to see if your firewall is dropping anything is to add 
-something like this to the end of your firewall rules (provided you 
-don't have any DROP targets beforehand):
+1)  log the packets you drop--it's the only way to know if you are the
+problem...
 
-iptables -A FORWARD -s X.Y.0.0/16 -j LOG --log-prefix "FWD_FRM_X_Y "
-iptables -A FORWARD -d X.Y.0.0/16 -j LOG --log-prefix "FWD_TO_X_Y "
+2)  try doing a tcpdump on the outside interface and capture the packet
+data as well:
 
-If there is any callback connection, it will show in kernel log (on Red 
-Hatish systems /var/log/messages).  It will also show if your firewall 
-is blocking any other packets between your network and X.Y.0.0/16.
+  tcpdump -i $OUTSIDE -s 1500 -w output.cap host $SERVER_MACHINE
+
+then open that capture file (output.cap) in something (ethereal is
+nice), and if the protocol exchanges data in clear text--you may gain a
+better grasp of what's going on...
+
+-j
 
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Jason Opperisano <opie@817west.com>
+
 
