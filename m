@@ -1,12 +1,13 @@
-From: "Jambunathan Jambunathan" <kjambunathan@novell.com>
+From: Michael Kearey <mutk@iprimus.com.au>
 Subject: Re: iptc_* implementation queries
-Date: Mon, 02 Feb 2004 21:39:41 -0700
+Date: Tue, 03 Feb 2004 14:54:12 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <s01ec3af.054@prv-mail25.provo.novell.com>
+Message-ID: <401F2974.1040902@iprimus.com.au>
+References: <s01e5eb1.078@prv-mail25.provo.novell.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <s01e5eb1.078@prv-mail25.provo.novell.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: immidi_kiran@yahoo.com
 
-Sorry if I am sounding stupid. Though I could see
-the declarations in the 1.2.9 archive I am unable
-to find the definition of iptc_* functions themselves.
-Can you point me to the file that you are talking of ?
+Jambunathan Jambunathan wrote:
+> I am interested in knowing the netfilter infrastructure and I would
+> like to know how iptables communicates with netfilter ( user to
+> kernel space communication ) I understand that it happens through
+> raw sockets through setsockot and getsockopt. Also there are a
+> good number of iptc_* calls that are declared in libiptc.h which
+> are used by the iptables user space tool. I would like to know 
+> where I can see the implementations for these iptc_* calls. 
+> I am unable to see this either in the kernel code nor in the
+> iptables bz2 package. I am looking at 2.4.18 code of linux
+> kernel fyi.
+> 
+> I will appreciate a mini code walk through or example.
+> 
 
-Please can someone give an hint on the user to kernel
-space communication.
+(Jambunathan sorry about replying directly to you..here is message to 
+list)
 
-Regards,
-Jambunathan K.
-
->>> Kiran Kumar <immidi_kiran@yahoo.com> 02/03/04 9:27 AM >>>
---- Jambunathan Jambunathan <kjambunathan@novell.com>
-wrote:
-> I am interested in knowing the netfilter
-> infrastructure and I would
-> like to know how iptables communicates with
-> netfilter ( user to
-> kernel space communication ) I understand that it
-> happens through
-> raw sockets through setsockot and getsockopt. Also
-> there are a
-> good number of iptc_* calls that are declared in
-> libiptc.h which
-> are used by the iptables user space tool. I would
-> like to know 
-> where I can see the implementations for these iptc_*
-> calls. 
-
-  These are in the libiptc directory of the iptables
-module of cvs.
+Here is a reasonably good 'walk through'. It's ever so slightly 
+inaccurate in some of the example code with redundant #includes, but 
+is pretty good as a starting point. It really should 'This is how *I* 
+did it', as there are several ways to acheive same thing...
 
 
-=====
-Regards,
-Kiran Kumar Immidi
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free web site building tool. Try it!
-http://webhosting.yahoo.com/ps/sb/
+http://www.tldp.org/HOWTO/Querying-libiptc-HOWTO/index.html
 
 
+BTW, the libiptc isn't meant to be used as an 'API' to manipulate 
+tables etc. Several reasons are given see 
+http://netfilter.org/documentation/FAQ/netfilter-faq-4.html#ss4.5
+
+Cheers,
+Michael
 
