@@ -1,68 +1,48 @@
-From: Patrick Schaaf <bof@bof.de>
-Subject: Re: how to add packet or byte couters to connection tracking module
-Date: Thu, 20 Feb 2003 19:33:40 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030220183340.GA17248@oknodo.bof.de>
-References: <Pine.LNX.4.44.0302200959310.13403-100000@ski.isi.edu>
+From: Del Winiecki <delw@wildapache.net>
+Subject: Reverse SNAT routes out wrong interface
+Date: 20 Feb 2003 13:34:46 -0700
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1045773286.2306.77.camel@thizzy>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0302200959310.13403-100000@ski.isi.edu>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Xuan Chen <xuanc@isi.edu>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> I want to add a packet or byte counter to the connection tracking module 
-> in netfilter. That is, I want to track how many packets and bytes having 
-> been sent through one connection. Where should I start?
+Ok, another challenge.
 
-1) Get the kernel source code.
+SNAT works fine, but I need the outside WAN address to look as if it
+came from an address on the eth1 network, not the Upstream WAN network.
+My linux router ports:
 
-2) Get enough RAM to hold the full kernel source code, and your normal apps.
-   To test whether you have enough RAM, use 'vmstat' to see whether you
-   start swapping on this command:
-	find /usr/src/linux -type f | grep -l 'struct ip_conntrack'
+eth4 192.168.1.0/24 ------------ (local offices, admin net)
 
-3) you are set up for work with the kernel. "grep for this" is the
-   basic navigation aid. Now that you have found the include file
-   (they end in '.h') where 'struct ip_conntrack' is defined,
-   add the neccessary counter fields to it.
+eth1 209.x.x.x/24 -------- (downstream WAN)
 
-4) Study the other files the find/grep above found, especially the files
-   with 'conntrack' in their names. Add the counter updates to the
-   relevant files.
+WAN1 64.x.x.x/30 ---------  (upstream provider)
 
-5) Provide ways for userlevel to access those counters. I would be
-   interested to hear about the access methods you imagine.
+all traffic from 192.168.1.0/24 must look like its from 209.x.x.13
 
-6) Test. Test. Test.
+traffic flowing into WAN1 with a destination address of 209.x.x.13
+somehow needs to get routed out the eth4 interface and "un-natted"
+instead of routing out eth1.
 
-> Any examples will be very helpful!
+I have:
+iptables -t nat -A POSTROUTING -o WAN1 -j SNAT --to 209.x.x.13
 
-A concrete example, would mean writing the code. I hope you persist
-and implement and share your code, because if you do, we will have
-an example. I hope my six step program, above, helps you along a bit.
- 
-> btw, is there a search engine on netfilter's web page? I think that's 
-> really helpful if people want to search for previous work and discussions.
+Is there some way to use DNAT to fool the kernel routing into properly
+routing this?
 
-I'm sure that google has it indexed fully; use the advanced search
-features, there, to restrict any search to a particular domain.
-An example URL, searching for "byte counters" on www.netfilter.org,
-would be:
+Thanks,
+Del W.
 
-	http://www.google.com/search?q=+site%3Awww.netfilter.org+byte+counters
-
-best regards
-  Patrick
 
