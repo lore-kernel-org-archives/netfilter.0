@@ -1,11 +1,14 @@
-From: Alejandro Flores <alejandro.flores@triforsec.com.br>
-Subject: Benchmark
-Date: Tue, 13 Jul 2004 18:04:43 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: nat problem
+Date: Tue, 13 Jul 2004 22:06:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1089752682.6507.7.camel@aflores>
+Message-ID: <200407132206.08404.Antony@Soft-Solutions.co.uk>
+References: <40F448B2.AF1E21@knoware.nl>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40F448B2.AF1E21@knoware.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +21,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-	Hello there,
+On Tuesday 13 July 2004 9:40 pm, Frans Luteijn wrote:
 
-	Well, I've been teaching netfilter/iptables for a while, and always
-there's someone asking about performance. Normally, they use other kind
-of firewall, like cisco pix or checkpoint. Is there any benchmark out
-there?
-	Another point is, how much user-chains can degrade the performance?
-IMHO, user chains are simple the best to help you organize and separate
-rules in groups. But, how can I measure if it's degrading the
-performance?
+> I have a little problem, which might be a bug. I have an 3COM
+> ISDN-router. It broadcasts every 10 seconds its connectionstatus to the
+> internal net. Now I want to forward those broadcasts to another network.
 
-Thanks!
-Alejandro
+On Wednesday 07 July 2004 2:07 pm, Antony Stone wrote:
 
-Ps. Sorry my poor english!
+> On Monday 05 July 2004 5:33 pm, Frans Luteijn wrote:
+> >
+> > I have a little problem, which might be a bug. I have an 3COM
+> > ISDN-router. It broadcasts every 10 seconds its connectionstatus to the
+> > internal net.
+>
+> What do yuo mean by "broadcasts"?   What protocol is being used?   What
+> address are the packets sent to?
+>
+> > Now I want to forward those broadcasts to another network.
+>
+> If, by broadcasts, you mean packets addressed to the "broadcast address" of
+> your subnet, it can't be done - you cannot route broadcast packets across a
+> router (that's why people use bridges).   The only way it could be done is
+> to have a machine which understands the protocol, and is connected to both
+> networks, picking up the broadcast packets on one subnet, and then creating
+> new broadcast packets to send to the other network (and, of course, dealign
+> sensibly with the replies).
+>
+> This, for example, is how you get Windows NetBios share browsing to work
+> across network boundaries - it's not pretty, but if broadcast packets are
+> what you're starting from then it's the only way.
+>
+> Regards,
+>
+> Antony.
+
+-- 
+"Linux is going to be part of the future. It's going to be like Unix was."
+
+ - Peter Moore, Asia-Pacific general manager, Microsoft
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
