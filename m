@@ -1,15 +1,12 @@
-From: Alpt <alpt@freaknet.org>
-Subject: Re: Ipv6 array ORDER
-Date: Mon, 19 Jul 2004 17:20:20 +0200
+From: Frans Luteijn <f.a.g.luteijn@knoware.nl>
+Subject: Re: Problem: ISA card & iptables (2.4.26) - disappearing packets
+Date: Mon, 19 Jul 2004 17:29:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040719152017.GA27631@darkalpt>
-References: <20040719142833.GA26461@darkalpt> <200407191539.15333.Antony@Soft-Solutions.co.uk>
+Message-ID: <40FBE8C1.CF721322@knoware.nl>
+References: <40F8D503.3040608@polbox.com> <200407180939.37668.Antony@Soft-Solutions.co.uk> <40F8E16B.2020808@polbox.com> <200407181140.35100.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200407191539.15333.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +16,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Antony Stone schreef:
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >
+> > It's ISA PnP card so it's autoconfigured. I've checked and there is no
+> > conflicts :(
+>
+> Are you sure it is actually being fully configured?   Are you doing the PnP
+> setup in the Bios, or under Linux?
+>
 
-On Mon, Jul 19, 2004 at 03:39:15PM +0100, Antony Stone after a spiritual ca=
-ll wrote  :
-~> This sort of question is probably better suited to the netfilter develop=
-ers'=20
-~> mailing list rather than the netfilter users' list.   Somebody here migh=
-t=20
-~> know, but I wouldn't bet on it.   Somebody on the developers' list reall=
-y=20
-~> should know.
+In my firewall based on Debian I have a 3Com Etherlink III card. I have
+the
+drivers for that card build in the kernel, not as modules (why using
+modules if a
+module is constantly loaded).Next I have written a script to activate
+the card
+(/etc/init.d/isapnp):
+#!/bin/sh
+#
+# isapnp initialize isa-pnp devices
+#
+PATH="/sbin:/bin:/usr/sbin:/usr/bin"
+case "$1" in
+  start|restart)
+    if [ -r /etc/isapnp.conf ]
+    then
+      if [ ! -e /proc/isapnp ]
+      then
+        if [ -e /lib/modules/`uname -r`/kernel/drivers/pnp/isa-pnp.o ]
+        then
+          modprobe isa-pnp
+          result=$?
+          if [ $result -ne 0 ]
+          then
+            exit 2
+          fi
+        else
+          exit 1
+        fi
+      fi
 
-I'm very sorry. I made a mistake while pasting the email. I wanted to
-send it to linux-net.
+      cat /etc/isapnp.conf >/proc/isapnp
+    fi
+    ;;
+  stop)
+    ;;
+esac
 
-Sorry again.
---=20
-:wq!
-"I don't know nothing" The One Who reached the Thinking Matter   '.'
+And the configuration in /etc/isapnp.conf:
+card 0 TCM5095
+dev 0 TCM5095
+port 0 0x220
+irq 0 5
+activate
 
-[ Alpt --- Freaknet Medialab ]
-[ GPG Key ID 441CF0EE ]
-[ Key fingerprint =3D 8B02 26E8 831A 7BB9 81A9  5277 BFF8 037E 441C F0EE ]
+Read kernel-source-'version'/Documentation/isapnp.txt for the options
+Finaly I have created a symlink from /etc/rcS.d/S15isapnp to
+../init.d/isapnp
 
---zYM0uCDKw75PZbzx
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Be sure that there are no IRQ's or Port conflicts, or you will find
+difficulties
+activating cards.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQFA++axv/gDfkQc8O4RAmGOAJ91d/u+bnkxQlblOKSo7lED2YnJJQCfaPKU
-BSFxMomUflKisxwTqpr1Jm0=
-=Po9S
------END PGP SIGNATURE-----
+>
+>
+> Regards,
+>
+> Antony.
+>
+> --
 
---zYM0uCDKw75PZbzx--
+
+Regards
+--
+Frans Luteijn
+PGP PblKey fprnt=C4 87 CE AF BC B6 98 C1  EF 42 A1 9A E2 C0 42 5B
+GPG PblKey fprnt=ED20 0F25 C233 DC59 3FFA  170E D0BF 15F5 0BA6 1355
+
 
