@@ -1,11 +1,11 @@
-From: Dominic Irrcher <dirrcher@colosseum.com>
-Subject: RE: blocking Emails using ip address or domain name
-Date: Wed, 9 Oct 2002 10:17:46 -0400
+From: "Sundaram Ramasamy" <rsundaram@hotmail.com>
+Subject: blocking Emails using ip address or domain name
+Date: Wed, 9 Oct 2002 09:28:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <A0B5F46E38ADD411967800805F777E9830C116@colosrva.colosseum.com>
+Message-ID: <OE33K5uA7liRtUvh18c00008bd4@hotmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C26F9E.A607E860"
+	boundary="----=_NextPart_000_000B_01C26F76.2A5DF560"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,55 +16,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: 'Sundaram Ramasamy' <sun@percipia.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C26F9E.A607E860
+------=_NextPart_000_000B_01C26F76.2A5DF560
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-sure ... you could always configure your ruleset to drop anything coming
-from those ips !!!
- 
-something like:
- 
-iptables -A INPUT -p all -s <ip> -j DROP
- 
-HTH
- 
+Hi,
 
-------_=_NextPart_001_01C26F9E.A607E860
+We are getting lot of porn Email from mailme.dk, kiwwi.cz domain =
+address. I have NATed mail server. Is it possible to block all incoming =
+mails from these domains.
+
+Thanks
+
+
+
+$ ping mailme.dk
+
+Pinging mailme.dk [194.234.11.210] with 32 bytes of data:
+
+Reply from 194.234.11.210: bytes=3D32 time=3D280ms TTL=3D39
+Reply from 194.234.11.210: bytes=3D32 time=3D281ms TTL=3D39
+
+
+$ ping www.kiwwi.cz
+
+Pinging syst.globaltel.cz [217.66.160.2] with 32 bytes of data:
+
+Reply from 217.66.160.2: bytes=3D32 time=3D131ms TTL=3D240
+Reply from 217.66.160.2: bytes=3D32 time=3D130ms TTL=3D240
+
+------=_NextPart_000_000B_01C26F76.2A5DF560
 Content-Type: text/html;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-
-
-<META content="MSHTML 6.00.2716.2200" name=GENERATOR>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4807.2300" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
-<BODY bgColor=#ffffff>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff size=2>sure 
-... you could always configure your ruleset to drop anything coming from those 
-ips !!!</FONT></SPAN></DIV>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff 
-size=2>something like:</FONT></SPAN></DIV>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff 
-size=2>iptables -A INPUT -p all -s &lt;ip&gt; -j DROP</FONT></SPAN></DIV>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff 
-size=2>HTH</FONT></SPAN></DIV>
-<DIV><SPAN class=997361714-09102002><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV></BODY></HTML>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>We are&nbsp;getting lot of porn Email =
+from=20
+mailme.dk, kiwwi.cz domain address. I have NATed mail server. Is it =
+possible to=20
+block all incoming mails from these domains.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2><A=20
+href=3D"mailto:netfilter@lists.netfilter.org">$ ping =
+mailme.dk</A></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2>Pinging mailme.dk =
+[194.234.11.210]=20
+with 32 bytes of data:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2>Reply from =
+194.234.11.210: bytes=3D32=20
+time=3D280ms TTL=3D39<BR>Reply from 194.234.11.210: bytes=3D32 =
+time=3D281ms=20
+TTL=3D39</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>$ ping <A=20
+href=3D"http://www.kiwwi.cz">www.kiwwi.cz</A></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Pinging syst.globaltel.cz =
+[217.66.160.2] with 32=20
+bytes of data:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Reply from 217.66.160.2: bytes=3D32 =
+time=3D131ms=20
+TTL=3D240<BR>Reply from 217.66.160.2: bytes=3D32 time=3D130ms=20
+TTL=3D240</FONT></DIV></BODY></HTML>
 
-------_=_NextPart_001_01C26F9E.A607E860--
+------=_NextPart_000_000B_01C26F76.2A5DF560--
 
