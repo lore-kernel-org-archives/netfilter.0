@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: HTTP Port forwarding issues
-Date: Mon, 8 Jul 2002 21:42:46 +0100
+From: "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
+Subject: Defining Variables
+Date: Mon, 8 Jul 2002 16:45:17 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708204248.DTQF4119.mta06-svc.ntlworld.com@there>
-References: <FLEKIPPLAEDMJMOOBBDPGEOBCHAA.stewart.thompson@shaw.ca> <001501c226bf$875467e0$6702a8c0@internal.monstersolutions.net>
+Message-ID: <956DDDA708487D498B43C36EA4DEA4050B5C4F@SFEXCH01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001501c226bf$875467e0$6702a8c0@internal.monstersolutions.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,18 +15,39 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: "Iptables-User-list (E-mail)" <netfilter@lists.samba.org>
 
-On Monday 08 July 2002 9:39 pm, Big Daddy wrote:
+How do you define variables in the /etc/sysconfig/iptables file?
+Here is what I'm trying to do:
+## Variables ##
+IPTABLES="/usr/local/sbin/iptables"	## Default IPTables >= v. 1.2.0
+#IPTABLES="/usr/local/bin/iptables"	## Default IPTables <= v. 1.1.2
 
-> all,
->     I guess my ISP is blocking port 80. I configured the web server to use
-> port 8080 and configured my rules the same as before but used port 8080 and
-> it worked. thanks for all of the help!
+LOOPBACK="lo"			## Loopback Interface
+EXTERNAL="eth0"			## External Interface
+INTERNAL="eth1"			## Internal Interface
+DMZ_IF="eth2"			## DMZ Interface
 
-Round of applause to Tom Eastep, I think :-)
+INTERNAL_NET="10.97.160.0/24"	## Network address for the internal network
+DMZ_NET="192.168.11.0/24"	## Network address for the DMZ
 
+## INT_IP="10.97.160.1"	## IP Address of Internal Interface
+   INT_IP=`ifconfig eth1 | grep inet | cut -d : -f 2 | cut -d \  -f 1`
+
+## DMZ_IP="192.168.11.1"	## IP Address of DMZ Interface
+   DMZ_IP=`ifconfig $DMZ_IF | grep inet | cut -d : -f 2 | cut -d \  -f 1`
+
+   EXT_IP="10.97.170.4"	        ## IP Address of External Interface
+	   	
+## EXT_IP=`ifconfig $EXTERNAL | grep inet | cut -d : -f 2 | cut -d \  -f 1`
+
+LOG_LEVEL="notice"		## Default log level: kern.notice 
+
+Mike Hammonds
+Fellon-McCord & Associates, Inc.
+Information Services Manager
+Voice (502) 214-6324 Fax (502)426-8800
+mhammonds@knowledgeinenergy.com <mailto:mhammonds@knowledgeinenergy.com >
  
-
-Antony.
 
