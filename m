@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Problem with Port forwarding
-Date: Mon, 5 Apr 2004 18:54:13 +0100
+From: Gianni Pucciani <gp.puccio@tin.it>
+Subject: A simple question
+Date: Tue, 06 Apr 2004 04:25:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404051854.13708.Antony@Soft-Solutions.co.uk>
-References: <146373237921.20040405211401@internetplustravel.ru>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <4072150B.8060400@tin.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <146373237921.20040405211401@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +15,124 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Monday 05 April 2004 6:14 pm, Oleg Savostyanov wrote:
+Hi all,
+I'm new to the use of iptable. I set this script for my home 
+workstation, but when I apply these rules anything stop functioning.
+I guess I'm doing something stupid but this is my very first time with 
+iptables, so sorry.
+I use my workstation that is behind an adsl router. My workstation has a 
+fixed ip, 192.168.1.2 and I'd like to use it for Tomcat server , ssh 
+server and general client features.Can anyone give me some help?
+Thanks
 
-> I get lost, trying to do a very simple thing...
-> My mail server is inside my lan with IP 10.10.10.252
-> I need to open port 25 of my mailserver  to the universe
-> I made following
-> 1)I permit in forward chain packets with dest. port 25
-> and
-> 2)do DNAT in PREROUTING chain
->
-> when I try to telnet to $EXTIP on 25 from outside
-> telnet: Unable to connect to remote host: Connection refused
+PS Comment are italian, but hope rules be quite clear...
 
-Your FORWARD rule needs to allow the packets to the real IP address 
-(10.10.10.252) because the packets have already been translated by the 
-PREROUTING rule by the time they get to FORWARD.
 
-Regards,
+#!/bin/sh
+#G.P
+#last update 050404
+#Script di inizializzazione per settare un insieme di regole
+#di packet filtering tramite iptables.
 
-Antony.
+#definire le policy (comportamento di default)per le catene di default
+/sbin/iptables -P INPUT DROP #ogni pacchetto in ingresso scartato
+/sbin/iptables -P OUTPUT DROP #ogni pacchetto in uscita accettato
+/sbin/iptables -P FORWARD DROP #ogni pacchetto di passaggio scartato
 
--- 
-I want to build a machine that will be proud of me.
+#flush di tutte le catene
+/sbin/iptables --flush
 
- - Danny Hillis, creator of The Connection Machine
+#elimina le catene
+/sbin/iptables -X miacatenain
+/sbin/iptables -X miacatenaout
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+#creare una nuova catena
+/sbin/iptables -N miacatenain
+/sbin/iptables -N miacatenaout
+
+#aggiungere una regola a INPUT e OUTPUT per passare
+#dalle regole appena definite. Ogni pacchetto fa match e passa
+#alla catena 'miacatena' corrispondente
+/sbin/iptables -A INPUT -j miacatenain
+/sbin/iptables -A OUTPUT -j miacatenaout
+
+#######aggiungere le regole alla catena di ingresso#########
+
+#ICMP
+#Consentire traffico icmp
+/sbin/iptables -A miacatenain -p icmp -j ACCEPT
+
+#CUPS
+#Consentire traffico cups in ingresso
+/sbin/iptables -A miacatenain -p tcp --dport 632 -j ACCEPT
+/sbin/iptables -A miacatenain -p udp --dport 632 -j ACCEPT
+
+
+##EDONKEY
+#Consentire traffico tcp alla porta 4663
+/sbin/iptables -A miacatenain -p tcp --dport 4663 -j ACCEPT
+/sbin/iptables -A miacatenain -p udp --dport 4663 -j ACCEPT
+
+#SSH
+#Consentire traffico ssh in ingresso
+
+/sbin/iptables -A miacatenain -p tcp --dport 22 -j ACCEPT
+/sbin/iptables -A miacatenain -p udp --dport 22 -j ACCEPT
+
+#TOMCAT
+#Consentire traffico web in ingresso x Tomcat da ufficio
+/sbin/iptables -A miacatenain -p tcp --dport 8080 -d 192.168.1.2 -s 
+131.114.136.26 -j ACCEPT
+
+#Consentire traffico web in ingresso x Tomcat da rete locale
+/sbin/iptables -A miacatenain -p tcp --dport 8080 -d 192.168.1.2 -s 
+192.168.1.0/255.255.255.0 -j ACCEPT
+
+#LOOPBACK
+#Consentire tutto il traffico tramite l'interfaccia di loopback
+#/sbin/iptables -A miacatenain -i lo -j ACCEPT
+
+#######aggiungere le regole alla catena di uscita#######
+
+#Consentire connessioni ftp in ingresso
+#/sbin/iptables -A miacatena -p tcp --dport 2020 e 21 in uscita
+#/sbin/iptables -A miacatena -p tcp --dport
+
+##EDONKEY
+#Consentire traffico tcp alla porta 4663
+/sbin/iptables -A miacatenaout -p tcp --dport 4663 -j ACCEPT
+/sbin/iptables -A miacatenaout -p udp --dport 4663 -j ACCEPT
+
+#DNS
+#Consentire traffico dns in uscita
+/sbin/iptables -A miacatenaout -p tcp --dport 53 -j ACCEPT
+/sbin/iptables -A miacatenaout -p udp --dport 53 -j ACCEPT
+
+#SMTP POP3
+#Consentire traffico smtp
+/sbin/iptables -A miacatenaout -p tcp --dport 25 -j ACCEPT
+/sbin/iptables -A miacatenaout -p tcp --dport 110 -j ACCEPT
+
+#SSH
+#Consentire traffico SSH in uscita
+/sbin/iptables -A miacatenaout -p tcp --dport 22 -j ACCEPT
+/sbin/iptables -A miacatenaout -p udp --dport 22 -j ACCEPT
+
+#WEB
+#Consentire traffico web in uscita
+/sbin/iptables -A miacatenaout -p tcp --dport 80 -j ACCEPT
+
+#LOOPBACK
+#Consentire tutto il traffico tramite l'interfaccia di loopback
+#/sbin/iptables -A miacatenain -i lo -j ACCEPT
+
+
+#########applica le modifiche#########
+/sbin/service iptables save
+
+/sbin/service iptables restart
 
