@@ -1,10 +1,11 @@
-From: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
-Subject: Re: Reasons for INVALID packets ?
-Date: Sun, 27 Feb 2005 15:32:12 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0502271529200.32119@L01.THNET>
-References: <200502271432.00952.e-boogie@yandex.ru>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: HTTP Port-forwarding
+Date: Mon, 28 Feb 2005 22:18:58 -0500
+Message-ID: <1109647138.5880.3.camel@hubcap.ljm.dom>
+References: <4223C0BD.1080804@wildcash.com>
 Mime-Version: 1.0
-In-Reply-To: <200502271432.00952.e-boogie@yandex.ru>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <4223C0BD.1080804@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,23 +16,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Mikhail Zotov <e-boogie@yandex.ru>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
->
-> IN= OUT=eth0 SRC=ROUTER DST=193.108.155.115 LEN=68 TOS=0x00 PREC=0xC0 TTL=64
-> ID=22467 PROTO=ICMP TYPE=11 CODE=0 [SRC=193.108.155.115 DST=A.LAN.HOST LEN=40
-> TOS=0x00 PREC=0x00 TTL=1 ID=40760 PROTO=ICMP TYPE=8 CODE=0 ID=20244
-> SEQ=45126 ]
->
-[...]
+On Mon, 2005-02-28 at 20:09, Rudi Starcevic wrote:
+> Hi,
+> 
+> I have these rules below to enable:
+> 
+> a) http port-forwarding in requests
+> b) masquerading rules for http replies.
+> 
+> It does seem to work OK but is very slow. After hours of looking I think
+> the problem as to why it is so slow may be in my Iptables rules.
+> 
+> Can you see a double up or something that may cause a problem ?
+> Or would you say it all looks fine and my problem is elsewhere ?
+> 
+> Thank you ..
+> 
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -P OUTPUT DROP
+> $IPTABLES -P FORWARD DROP
+> 
+> # http requests:
+> # Port-Forwarding setup
+> $IPTABLES -t nat -A PREROUTING -i $ETH0 -p tcp --dport 80 -d 
+> 66.xxx.xx.100 -j DNAT --to 192.168.0.10:80
+> 
+> # http replies:
+> # ENABLE NAT
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+> 
+> # NAT Forwarding Setup
+> $IPTABLES --table nat --append POSTROUTING --out-interface $ETH0 -j 
+> MASQUERADE
+> $IPTABLES -A FORWARD -i $ETH1 -j ACCEPT
+> $IPTABLES -A FORWARD -i $ETH0 -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Why would you consider these packets invalid - TYPE=11 is "time exceeded", 
-CODE=0 is "maximum lifetime of the datagram exceeded" - for whatever 
-reason those packets are generated ...
+you're basically not running a firewall at all--i would look elsewhere. 
+the usual suspects:
 
-Regards,
-Michael
+* DNS resolution timing out
+* Network interface speed/duplex mismatches
+
+-j
+
+--
+"Another day, another box of stolen pens."
+	--The Simpsons
+
 
