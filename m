@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: PPTP port forwarding
-Date: Thu, 19 Feb 2004 12:04:57 +0000
+From: "John Black" <black@arbbs.net>
+Subject: Re: netfilter question
+Date: Thu, 19 Feb 2004 07:06:22 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402191204.57391.Antony@Soft-Solutions.co.uk>
-References: <4034A3CF.20307@able.be>
+Message-ID: <000501c3f6e9$3d4a53c0$ed02fea9@black>
+References: <004f01c3f699$0ad70a00$ed02fea9@black> <008301c3f6c1$1cbceb90$6a02a8c0@klemen>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4034A3CF.20307@able.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +19,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 19 February 2004 11:53 am, Wim Ceulemans wrote:
 
-> Hi
+> $IPT -A POSTROUTING -t nat -s $IP_LAN_RNG -o $IF_NET -j SNAT --to-source
+> $IP_NET
+i have that line in my firewall script. but it still doesn't mask my
+internet work
+
+> That is for routing. If you want to secure your network and the router
+> itselfe it takes alot more .. like setting up a firewall :)
 >
-> We have noticed a problem with PPTP forwarding not working as it should.
->
-> We have a system on kernel 2.4.24 with latest pom and iptables 1.2.9.
-> There is a port forwarding PPTP to a windows 2000 server behind the
-> firewall.
->
-> We noticed that when someone connects with PPTP the connection is closed
-> after 3 to 4 minutes. This problem only occurs if there is a router in
-> nat mode between the firewall and the internet. If the public ip is on
-> the firewall then this problem does not occur.
-
-You cannot operate PPTP across a NATted connection without a special helper 
-module (hence your need for pom as stated above).
-
-If the other nat-mode router does not have a suitable helper for PPTP then you 
-can't use this combination.
-
-Regards,
-
-Antony.
-
--- 
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+I have that part setup.  All ports a block but the ones that I need. the
+firewall will drop all pings to the outside nic and inside nic.  I just have
+to mask the internal network
 
 
