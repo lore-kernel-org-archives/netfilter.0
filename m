@@ -1,12 +1,13 @@
-From: Rickard Eriksson <riceri@home.se>
-Subject: Re: PPTP
-Date: Wed, 09 Oct 2002 22:25:23 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: doing NAT on udp broadcast traffic (for LAN tcp/ip gaming)
+Date: Wed, 9 Oct 2002 22:09:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DA490B3.9050001@home.se>
-References: <E131E9F1848D0148813EAF06A846608F615F70@w2ks-e2k.iconos.be>
+Message-ID: <20021009210911.KFIZ459.mta02-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210091128000.4531-100000@home.apu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0210091128000.4531-100000@home.apu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,57 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sneppe Filip <Filip.Sneppe@cronos.be>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Sneppe Filip wrote:
+On Wednesday 09 October 2002 7:49 pm, Chris Len wrote:
 
-> Rickard Eriksson [mailto:riceri@home.se] wrote:
-> >
-> >The z-newnet patch? I can't install that patch.
-> >
-> >BTW, this is the first time i am patching a kernel.
-> >
+> I'm trying to create a psuedo-bridge between wireless and ethernet
+> interface. All works well, except detection of lan game servers. These
+> clients send out a global udp broadcast (255.255.255.255) to the game
+> server's dst port, and the server replies. Currently however, I cannot nat
+> this traffic.
 >
-> Hi Rickard,
->
-> What kernel version are you working from ?
-> Basically, newnat is a new API for writing connection tracking/nat
-> modules.
->
-> The patch has been sitting in p-o-m for a long time now, and all the
-> modules from recent iptables have been converted to work with newnat
-> and don't apply on kernels witout newnat.
->
-> Newnat has been included in the early 2.4.20-pre kernels, so from
-> 2.4.20 (or the -pre releases if you don't mind running these) onwards,
-> there will be no need to patch the kernel with newnat support anymore
-> before adding conntrackers.
->
-> Now, if you're working from a pre-2.4.20 kernel, you need to download
-> iptables or check out CVS, then from the patch-o-matic directory
-> run "./runme *" and apply the newnat patch before trying any
-> conntrackers. That sould do the trick. You may need to apply some
-> additional stuff. IIRC, the pptp patch also needs an "unregister"
-> fix of some kind that's probably in p-o-m/pending or /submitted.
->
-> Good luck,
-> Filip
->
->
->
+> Is there any way to make this work?
 
-Well i want to install 2.4.19.
+I do not believe there is unless you turn your pseudo-bridge into a real 
+bridge.
 
-I have installed conntrack+nat-helper-unregister and then i could
-install znewnat-16 and then i could install pptp conntrack module.
+The reason is simple: broadcasts do not get routed.   A firewall with 
+different network ranges on the two interfaces is a router.   Therefore you 
+cannot send broadcasts across a firewall set up the way yours is.
 
-I hope it will work when i have build the kernel.
+If you set up full bridging, so that both interfaces were on the same IP 
+address and therefore both sides of the machine were the same network, then 
+broadcasts would travel across it.
 
-Thanks for all your help!!!
+You can't send broadcasts across a router even if you NAT them first.
 
-/ Rickard
+Antony.
 
+-- 
 
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
