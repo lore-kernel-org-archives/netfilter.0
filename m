@@ -1,12 +1,14 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Is this firewall good enough?
-Date: Tue, 8 Jun 2004 11:44:25 +0200
+Date: Tue, 8 Jun 2004 10:55:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001c01c44d3d$31567530$1201a8c0@admin>
+Message-ID: <200406081055.55531.Antony@Soft-Solutions.co.uk>
 References: <20040608091436.84113.qmail@web14712.mail.yahoo.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040608091436.84113.qmail@web14712.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,99 +21,130 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tuesday 08 June 2004 10:14 am, Sagara Wijetunga wrote:
+
+> Hi all
+>
+> I have set up my first firewall using iptables. I want
+> to check with more experienced users of iptables
+> whether my firewall is good enough to protect the
+> server.
+>
+> My server expressly offer following services only:
+> 1.  FTP server
+> 2.  SSH server
+> 3.  SMTP server
+> 4.  DNS server
+> 5.  HTTP server
+> 6.  POP3 server
+> 7.  IMAP server
+> 8.  HTTPS server
+> 9.  SMTP over SSL
+> 10. IMAP over SSL
+> 11. POP3 over SSL
+
+Are all these services being offered to *any* IP address, or do you want to 
+offer some things to internal users and some things to external users 
+perhaps?
+
 > I have set up the firewall with following rules:
 >
 > 1.  /sbin/iptables -A INPUT -s 127.0.0.1 -d 127.0.0.1
 > -j ACCEPT
-
-You could place this rule below the next, because this rule only matches
-the first packet and the rest will be RELATED or ESTABLISHED.
-This is done for performance reasons. When you look at the byte counters
-of each rule, you'll notice that the rule below matches the most packets
-by far.
-However, you don't have a large script so I think you won't notice the
-difference.
-
 > 2.  /sbin/iptables -A INPUT -p tcp -m state --state
 > ESTABLISHED,RELATED -j ACCEPT
 
-I don't think you'll use tcp only. E.g. for DNS you need udp too, see
-below.
-Maybe it's better not to specify a protocol at all since this rule is
-supposed to match all subsequent packets that have matched below.
+Don't restrict this just to TCP.   You need UDP as well, and ICMP will be 
+important.
 
 > 3.  /sbin/iptables -A INPUT -p tcp --dport 20  --syn
-> -j ACCEPT #ftp-data
+> -j ACCEPT	#ftp-data
 
-You don't need the above rule. The initial connection is made to port
-21/tcp. Port 20/tcp is RELATED.
+No need for this rule given the above ESTABLISHED,RELATED rule - ftp data is 
+considered RELATED to ftp-control
 
 > 4.  /sbin/iptables -A INPUT -p tcp --dport 21  --syn
-> -j ACCEPT #ftp
+> -j ACCEPT	#ftp
 > 5.  /sbin/iptables -A INPUT -p tcp --dport 22  --syn
-> -j ACCEPT #ssh
+> -j ACCEPT	#ssh
 > 6.  /sbin/iptables -A INPUT -p tcp --dport 25  --syn
-> -j ACCEPT #smtp
-
+> -j ACCEPT	#smtp
 > 7.  /sbin/iptables -A INPUT -p tcp --dport 53  --syn
-> -j ACCEPT #DNS
+> -j ACCEPT	#DNS
 
-DNS uses udp for normal lookups. Only in special cases tcp is used.
+You need to allow UDP port 53 for DNS as well as TCP port 53
 
 > 8.  /sbin/iptables -A INPUT -p tcp --dport 80  --syn
-> -j ACCEPT #http
+> -j ACCEPT	#http
 > 9.  /sbin/iptables -A INPUT -p tcp --dport 110 --syn
-> -j ACCEPT #POP3
+> -j ACCEPT	#POP3
 > 10. /sbin/iptables -A INPUT -p tcp --dport 143 --syn
-> -j ACCEPT #IMAP
+> -j ACCEPT	#IMAP
 > 11. /sbin/iptables -A INPUT -p tcp --dport 443 --syn
-> -j ACCEPT #https
+> -j ACCEPT	#https
 > 12. /sbin/iptables -A INPUT -p tcp --dport 465 --syn
-> -j ACCEPT #smtp over SSL
+> -j ACCEPT	#smtp over SSL
 > 13. /sbin/iptables -A INPUT -p tcp --dport 993 --syn
-> -j ACCEPT #IMAP over SSL
+> -j ACCEPT	#IMAP over SSL
 > 14. /sbin/iptables -A INPUT -p tcp --dport 995 --syn
-> -j ACCEPT #POP3 over SSL
-
+> -j ACCEPT	#POP3 over SSL
 > 15. /sbin/iptables -P INPUT DROP
 > 16. /sbin/iptables -P FORWARD DROP
 > 17. /sbin/iptables -P OUTPUT ACCEPT
-
-Put these 3 on top of your script so that the server is closed (almost)
-immediately, depending on the script startup order, and after that the
-appropriate ports are opened.
-
+>
+> Ofcourse, the comment style #string is not included in
+> the real rule.
+>
 > I have following queries regarding the above firewall:
 >
 > 1. Does this effectively offer connections ONLY to the
 > services I offer and nothing more than that?
 
-Yes.
+I would say yes.
 
 > 2. Does the rule 2 create any security loophole?
 
-No, not that I know of.
+Depends on the applications running on the machine and what outbound 
+connections they open - for example, if someone can start netcat on the 
+machine, OUTPUT is completely open, and Rule 2 will allow replies; you then 
+have an open link to some system on the outside world.   However, if you 
+don't trust the applications (or users) on your server, then a firewall is 
+not your solution.
 
 > 3. This firewall allows passive as well as non-passive
 > FTP connections. Is passive FTP connections   a
 > security threat?
 
-FTP is not secure by nature ; nothing is encrypted so everything can be
-sniffed etc.
-You could also do sftp (from OpenSSH, also running on port 22/tcp) but
-that's a subsystem of SSH and not as customizable as most FTP servers
-(afaik : on or off).
+Not with a stateful firewall, no.   Passive FTP is no less secure than active 
+FTP.
 
 > 4. Is this firewall good enough to protect the server?
+
+Look good enough to me.   Of course, you haven't said how valuable the data on 
+the server is, how attractive a target it might be, etc (a server run by GCHQ 
+or the NSA is more likely to get challenged than a server run by Joe Brown's 
+Motor Trading Company).
+
 > If no, could you kindly comment how could I improve
 > further?
 
-You could check for tcp_flags. Certain combinations can be logged and/or
-dropped.
-Packets with state INVALID could normally be safely dropped.
+You might want to add a LOGging rule at the end of the INPUT chain, just to 
+get an idea of what stuff you're blocking - it's a way of finding out how 
+good a job the firewall is doing for you.
 
+Regards,
 
-Gr,
-Rob
+Antony.
+
+-- 
+There are two possible outcomes:
+
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
