@@ -1,8 +1,8 @@
-From: "/\\. /\\/\\annini" <mannini@email.it>
-Subject: Iptables, NAT and Netmeeting
-Date: Thu, 25 Mar 2004 14:58:57 +0100
+From: "Sebastian" <netfilter@basti79.de>
+Subject: CONNMARK Target Problem
+Date: Thu, 25 Mar 2004 16:07:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01c701c41271$8a4f6540$0100a8c0@landia>
+Message-ID: <000501c4127a$f6338c60$0200a8c0@basti79>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,23 +16,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Hi, i have to use netmeeting from a LAN computer under a Linux box with
-iptables and NAT.
+Hi List...
 
-I'm using a 2.4.22 Kernel and i read i need the ip_conntrack_h323 and
-ip_nat_h323 modules.
+I tried to insert a rule using the CONNMARK-Target:
+# iptables -t mangle -A OUTPUT -j CONNMARK --set-mark 1
+iptables: Invalid argument
 
-My question are:
+Dmesg say's: 
+CONNMARK: targinfosize 8 != 12
 
-- how can i get that modules? or the source and compile?
-- next version of kernel or next RedHat distribution already contains that
-modules?
+Kernel is 2.4.25 with pom snapshot 20040319.
+Iptables is debian package 1.2.9-6:
+# iptables --version
+iptables v1.2.9
 
-Thanks
+Any suggestions what i can do to get the CONNMARK target working?
 
-                /\lessandro
-
+Greets
+  Sebastian.
 
 
