@@ -1,13 +1,17 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: Vijay - port 25 to be blocked
-Date: Tue, 28 Dec 2004 22:42:33 +0500
-Message-ID: <a0f69e5041228094227df9b62@mail.gmail.com>
-References: <1581342731182665558@unknownmsgid>
-Reply-To: Askar <askarali@gmail.com>
+From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
+Subject: Re: Vijay - port 25 to be blocked (nfcan: addressed to exclusive
+	sender for this address)
+Date: Tue, 28 Dec 2004 13:05:43 -0500
+Message-ID: <20041228180543.GA30059@salty>
+References: <200412281624.iBSGOEHc027426@gourmet.spamgourmet.com>
+Reply-To: nfcan.x.jimlaur@dfgh.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1581342731182665558@unknownmsgid>
+Content-Disposition: inline
+In-Reply-To: <200412281624.iBSGOEHc027426@gourmet.spamgourmet.com> (from
+	+nfcan+jimlaur+38cfe066fc.vijay#calsoftinc.com@spamgourmet.com
+	on Tue, Dec 28, 2004 at 11:22:46 -0500)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +22,10 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Vijay Kumar <vijay@calsoftinc.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-try this ,
-#iptables -A FORWARD -i eth0 -o ppp0 --dport 25 -d  !<ip addr of mail
-server>  -j
-DROP
-
-don't forget to replace -i eth0 with your LAN inteface and -o ppp0
-with your external interface
-
-
-
-
-On Tue, 28 Dec 2004 21:52:46 +0530, Vijay Kumar <vijay@calsoftinc.com> wrote:
+On 2004.12.28 11:22, Vijay Kumar - vijay@calsoftinc.com wrote:
 > Hi,
 > 
 > I want to allow my internal network to only connect to some specific email
@@ -45,18 +37,27 @@ On Tue, 28 Dec 2004 21:52:46 +0530, Vijay Kumar <vijay@calsoftinc.com> wrote:
 > REJECT
 > 
 > This does not seem to block the port 25 traffic. Where am I going wrong?
+
+The INPUT rules only apply to packets destined for the firewall computer.
+Try this in FORWARD instead.
+
+Another thing, a default drop policy might be simpler to administer.
+Then only specifically allowed packets would be forwarded.
+This approach more closely matches your intention, stated above.
+Also, the approach above is hard to extend to multiple mail servers.
+
+If you do this though, it is a good idea to log unexpected dropped
+packets and analyze them to see what is being blocked.
+
 > 
 > Kindly help.
 > 
 > Regards,
 > Vijay Kumar
-> 
->  
-> 
-> 
-
-
+>
 -- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-your life a little easier)
+Jim Laurino
+nfcan.x.jimlaur@dfgh.net
+Please reply to the list.
+Only mail from the listserver reaches this address.
 
