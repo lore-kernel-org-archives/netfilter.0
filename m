@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewall question...
-Date: Tue, 30 Mar 2004 08:56:27 +0100
+Subject: Re: netfilter digest, Vol 1 #1663 - 11 msgs
+Date: Tue, 30 Mar 2004 09:02:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403300856.27236.Antony@Soft-Solutions.co.uk>
-References: <20040330005904.81980.qmail@web41401.mail.yahoo.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200403300902.22454.Antony@Soft-Solutions.co.uk>
+References: <JFEPKPDIGFAKJOGHOICDCECDCAAA.mani@manikandan.org>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040330005904.81980.qmail@web41401.mail.yahoo.com>
+In-Reply-To: <JFEPKPDIGFAKJOGHOICDCECDCAAA.mani@manikandan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,54 +21,32 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 30 March 2004 1:59 am, V. A.H. wrote:
+On Tuesday 30 March 2004 6:28 am, Manikandan wrote:
 
-> Hello,
+> Dear Antony,
 >
-> Considering the folowing network scheme:
+> Thanks for your reply. I am trying to connect to my Windows 2000 VPN server
+> using PPTP. The error 721 is dialup networking error. I have got the
+> following modules loaded in my iptables.
 >
-> Internet (Different ISP)
+> iptable_nat            21720   1  (autoclean)
+> ipt_state               1048   2  (autoclean)
+> ip_conntrack           26976   2  (autoclean) [iptable_nat ipt_state]
+> iptable_filter          2412   1  (autoclean)
+> ip_tables              15096   5  [iptable_nat ipt_state iptable_filter]
 >
-> Subnet Y (10.0.0.0/20)
->
->  (eth0)
-> Firewall
->  (eth1)
->
-> My Subnet(10.0.1.0/24)
->
-> Firewall/Router(SNAT)
->
-> Internet (My ISP).
->
-> I have to filter all traffic between Subnet Y and My Subnet with a firewall
-> box. And I don't know how to forward this traffic between those two
-> interfaces presented in this scheme.
+> What are the other modules I would need to load?
 
-You don't need to do anything special on the top firewall shown here - what 
-you need to do is make sure the bottom firewall (which I assume is the 
-default route for the machines in your Subnet 10.0.1.0/24) has a route for 
-Subnet Y pointing to eth1 as the next hop.
+http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-pptp-conntrack-nat
 
-The top firewall just needs to know about the two networks on either side of 
-it, which is automatic under Linux - it will only need a default gateway of 
-its own if it needs to contact the Internet for its own reasons (eg DNS?).
-
-If this still isn;t quite clear to you, repost your diagram with all IP subnet 
-addresses shown, and IP addresses for each interface.   Then I can give a 
-clearer answer.
+Please don't post an entire digest when replying to one message.
 
 Regards,
 
 Antony.
 
 -- 
-Programming is a Dark Art, and it will always be. The programmer is
-fighting against the two most destructive forces in the universe:
-entropy and human stupidity. They're not things you can always
-overcome with a "methodology" or on a schedule.
-
- - Damian Conway, Perl God
+This email was created using 100% recycled electrons.
 
                                                      Please reply to the list;
                                                            please don't CC me.
