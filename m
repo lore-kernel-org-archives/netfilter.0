@@ -1,12 +1,15 @@
-From: "Toshihiro Sonoda" <toshihiro@jp.fujitsu.com>
+From: Stephen Frost <sfrost@snowman.net>
 Subject: Re: Doing Bridge with firewalling
-Date: Mon, 6 Jan 2003 23:16:56 +0900
+Date: Mon, 6 Jan 2003 10:03:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01db01c2b58e$45d585c0$4f1ae2da@monday>
-References: <20021231205417.GQ677@ns> <001001c2b113$e2181800$0100a8c0@zultys.com> <20030101150801.GR677@ns>
+Message-ID: <20030106150316.GC677@ns>
+References: <20021231205417.GQ677@ns> <001001c2b113$e2181800$0100a8c0@zultys.com> <20030101150801.GR677@ns> <01db01c2b58e$45d585c0$4f1ae2da@monday>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ggC1wwkyYWqEab//"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <01db01c2b58e$45d585c0$4f1ae2da@monday>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,44 +19,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Toshihiro Sonoda <toshihiro@jp.fujitsu.com>
+Cc: netfilter@lists.netfilter.org
 
-hi,
 
-What is eptables?
-Where can I get the information about it.
+--ggC1wwkyYWqEab//
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-toshihiro
+* Toshihiro Sonoda (toshihiro@jp.fujitsu.com) wrote:
+> What is eptables?
+> Where can I get the information about it.
 
------ Original Message ----- 
-From: "Stephen Frost" <sfrost@snowman.net>
-To: "Ranjeet Shetye" <ranjeet.shetye@zultys.com>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Thursday, January 02, 2003 12:08 AM
-Subject: Re: Doing Bridge with firewalling
+Sorry, ebtables: http://users.pandora.be/bart.de.schuymer/ebtables/
 
-* Ranjeet Shetye (ranjeet.shetye@zultys.com) wrote:
-> I think I got it right :D.
+	Stephen
 
-Unfortunately not quite.
+--ggC1wwkyYWqEab//
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-> Hence when you downsize your (layer 3) router into a (layer 2) bridge,
-> your neo-bridge becomes a layer 2 entity and disappears from the layer 3
-> i.e. it is no longer visible at layer 3. Therefore no firewalling, no
-> NAT.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-See, this isn't entirely correct.  A bridge passes around ethernet
-frames, yes, *but* that does *NOT* mean that it can't modify those
-frames.  It can, in fact, modify those frames for NATing purposes.
-It can also do full state-based firewalling by watching the frames go by
-and doing exactly what netfilter does today.
+iD8DBQE+GZq0rzgMPqB3kigRAtBWAJ0V+o4DupTD12zOHz64GCW71QkJRgCfaSvn
+JO0UHKM0EKRZAoaj9r2180Y=
+=7DeO
+-----END PGP SIGNATURE-----
 
-There's also an eptables or some such out there for filtering based on
-raw ethernet frames but basically everything in iptables will work too
-with the right patches.  The only thing that won't is MASQ because your
-ethernet interfaces don't have an IP address for MASQ to use, *however*,
-you *CAN* to SNAT/DNAT/etc.
-
- Stephen
+--ggC1wwkyYWqEab//--
 
