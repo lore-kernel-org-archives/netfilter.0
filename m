@@ -1,12 +1,12 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: Allow active and passive FTP connections
-Date: Thu, 17 Jun 2004 08:13:07 -0400
+From: Jamie Pratt <jamie@nucdc.org>
+Subject: compile problem with 1.2.10
+Date: Thu, 17 Jun 2004 08:12:36 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E894F8D@email1.mitretek.org>
+Message-ID: <40D18AB4.4070101@nucdc.org>
+Reply-To: jamie@nucdc.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Chris Brenton <cbrenton@chrisbrenton.org>, Sagara Wijetunga <sagaralists@yahoo.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I think he meant, modprobe ip_conntrack_ftp and if you are behind nat
-there is a module for that as well.
+Hi, I'm trying to compile 1.2.10 on a RH 7.2 box, running kernel 2.4.26.
+(The prior version is 1.2.9, no POM or anything fancy, just the default 
+stuff..)
 
+I get the following error upon running 'make KERNEL_DIR=/usr/src/linux' :
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Chris Brenton
-Sent: Thursday, June 17, 2004 8:08 AM
-To: Sagara Wijetunga
-Cc: netfilter
-Subject: Re: Allow active and passive FTP connections
-
-On Thu, 2004-06-17 at 07:03, Sagara Wijetunga wrote:
->
-> I have following issues relating to above rules:
-> 1. For active FTP requests by remote clients, it drops
-> the data connection request to the remote client from
-> the server on the OUTPUT chain.=20
->=20
-> 2. For passive FTP requests by remote clients, it
-> drops the data connection request to the server from
-> remote clients on the INPUT chain.
-
-Try:
-insmod ip_conntrack_ftp
-
-HTH,
-C
+cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
+-DIPTABLES_VERSION=\"1.2.10\"  -DIPT_LIB_DIR=\"/usr/local/lib/iptables\" 
+-rdynamic -o iptables iptables-standalone.c iptables.o libiptc/libiptc.a 
+-ldl -lnsl
+/bin/sh: -c: line 1: syntax error near unexpected token `;'
+/bin/sh: -c: line 1: `if [ -n "" ]; then  for ext in ; do  echo ".SS 
+$ext (not supported, see Patch-O-Matic)" ; cat 
+extensions/libipt_$ext.man ; done ; fi >>extensions/libipt_matches.man'
+make: *** [extensions/libipt_matches.man] Error 2
+rm libiptc/libip6tc.o libiptc/libip4tc.o
 
 
+Any ideas?
 
-
+regards,
+jamie
 
 
