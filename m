@@ -1,8 +1,9 @@
-From: "Dennis Cardinale" <dennis@core-enterprises.com>
-Subject: Help with invalid argument
-Date: Fri, 5 Jul 2002 22:03:03 -0400
+From: "deepali" <deepali@gecsl.com>
+Subject: Re: port forward using iptables not happening
+Date: Sat, 6 Jul 2002 08:04:48 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <EPEHIDPIPEBFNAHLCHPGAEMCCEAA.dennis@core-enterprises.com>
+Message-ID: <008201c22495$b59a98d0$0805010a@gecs.net>
+References: <001e01c223ef$7bdc0d50$0805010a@gecs.net> <02070513202502.14428@Lms>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -16,89 +17,79 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: jan.humme@xs4all.nl, netfilter@lists.samba.org
 
-I have Mandrake Linux 8.2 (kernel 2.4.18) installed in a box I use as a
-router for my DSL connection.  I use a firewall script that I have been
-running since 2.4.3 using netfilter.
+Dear
+There was a typing mistake in syntax which i had given
+I have entered the correct one in my iptable.
+IF i am enabling ip_forward then there is no need to put put another iptable
+prerouting rule for LAN ip the request should automatically get forwarded to
+other interface ..which is not happening.
+CAN u pls help me to get thru for my first case.
+in tcp dump i can see the packet getting forwarded to 192.168.220.90:25 port
+but cant see the reverse packet??
+What could be the problem
 
-Lately, I have had a need to run Netmeeting from behind my router, so I
-pom'd the h323 conntrack and rebuilt my kernel.  Here are the steps I used:
+Thanks and Regards
+Deepali
+
+----- Original Message -----
+From: "Jan Humme" <jan.humme@xs4all.nl>
+To: "deepali" <deepali@gecsl.com>; <netfilter@lists.samba.org>
+Sent: Friday, July 05, 2002 4:50 PM
+Subject: Re: port forward using iptables not happening
 
 
-cd /usr/src
-cp -R linux-2.4.18-6mdk linux-2.4.18-6h323   	#copy old src installation
-ln -s linux-2.4.18-6h323 linux		   	#link to new source tree
-cd linux
-vi Makefile						   	#and change EXTRAVERSION = -6h323
-make mrproper					   	#clean (also erases .config)
-cp arch/i386/defconfig .config			#restore Mandrake default configuration
-make oldconfig
-make dep
-cd /root/pom/netfilter/userspace			#POM userspace
-make patch-o-matic
-	apply:	arptables
-			config-cleanup
-			conntrack+nat-helper-unregister
-			ip_conntrack_protocol_unregister
-			macro-trailing-semicolon-fix
-			nat-export_symbols
-			netfilter-arp
-			REJECT-don't fragment
-			pptp_conntrack_nat		#just in case
-			h323_conntrack_nat		#this patch done last
-cd /usr/src/linux
-make oldconfig						#answer <m>odule for pptp & h323
-make dep
-make clean
-make bzImage && make modules && make modules_install
-make install						#Mandrake automated script for setting up /boot & lilo
-lilo
-cd /root/pom/netfilter/userspace
-make install all						#install netfilter stuff
-
-and reboot!
-
-The new kernel boots fine.  Unfortunately, the following happens:
-
-[root@...]# iptables -t nat -A POSTROUTING -o eth0 -s 192.168.10.0/24 -j
-SNAT --to-source $INET_IP
-iptables: Invalid Argument
-
-The same happens if I change SNAT to MASQUERADE (w/o --to-source).
-
-If I do:
-
-[root@...]# iptables -t nat -I POSTROUTING 1 -o eth0 -s 192.168.10.0/24 -j
-SNAT --to-source $INET_IP
-iptables: Target Problem
-
-I've spent hours on Google & found similar problems with different targets,
-but not exactly this one.  The rest of the firewall script runs fine. This
-is the only problem I have.
-
-The following modules are loaded, by the way:
-
-ip_nat_h323
-ip_conntrack_h323
-ip_nat_ftp
-ip_conntrack_ftp
-ipt_LOG
-ipt_MASQUERADE
-iptable_nat
-ip_conntrack
-iptable_filter
-iptable_mangle
-ip_tables
-
-Please keep in mind that the SNAT target worked just fine (for a very long
-time) until I pom'd the kernel.  Now I can't nat at all, even if I unload
-the h323 stuff.  All I can do to make things work is to reboot into the old
-kernel.  I would like the get the h323 to work.  All help would be
-appreciated.
-
-Thank you,
-
-Dennis Cardinale
+> On Friday 05 July 2002 08:44, deepali wrote:
+> > Dear Support
+> > My setup is ..I have one linux box having eth0(valid ip202.140.152.33)
+and
+> > eth1(invalid ip-local lan192.168.220.250) .I have one more machine in my
+> > Local Lan (192.168.220.90) which is a mail server in my local LAN.Now I
+> > want to 1.enable port forwarding ie any request comming on
+202.140.152.33
+> > port 285 should get forwarded to 192.168.220.90 port 25 my mail server.
+> >
+> > 2.Also any request comming from my lan ie 192.168.220.0/24 to invalid ip
+of
+> > linux box ie 192.168.220.90 285 should also forwarded to my Mail server
+in
+> > lan ie 192.168.220.30 port 25.
+> >
+> > My first synario is also not working.
+> >
+> > my rules are
+> >
+> > iptables -t nat -A PREROUTING -i eth0  -p tcp -d 202.140.136.90 --dport
+285
+> > -j DNAT 182.168.220.90:25
+>
+> You must have seen syntax error complaints about the DNAT option from
+> iptables; in fact it should be:
+>
+> #iptables -t nat -A PREROUTING -i eth0 -p tcp -d 202.140.136.90 --dport
+285
+> -j DNAT --to-destination 192.168.220.90:25
+>
+> > iptables -t nat -A POSTROUTING  -o eth0 -j MASQURADE
+>
+> Should read: MASQUERADE, but in that case is OK, and allows your local
+> machines to get out to the internet.
+>
+> > iptables -t nat -A POSTROUTING -s 192.168.220.0/24 -j MASQURADE
+>
+> ?? Why? Isn't this already covered by the previous masquerading rule?
+>
+> And how about:
+>
+> #iptables -t nat -A PREROUTING -p tcp -d 192.168.220.90 --dport 285 -j
+DNAT
+> --to-destination 192.168.220.90:25
+>
+> This is the exact equivalent of your point 2), only expressed in iptables
+> syntax.
+>
+> Jan Humme.
+>
 
 
