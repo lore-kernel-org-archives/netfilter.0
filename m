@@ -1,12 +1,13 @@
-From: "Paridhi Bansal" <paridhibansal@mail.com>
+From: Ray Leach <raymondl@knowledgefactory.co.za>
 Subject: Re: help iptables queuing
-Date: Wed, 18 Jun 2003 05:48:33 -0500
+Date: 18 Jun 2003 12:33:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030618104833.68889.qmail@mail.com>
+Message-ID: <1055932392.2530.48.camel@raylinux.internal>
+References: <20030618093855.41783.qmail@mail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-togof5NfyiIsESYp214i"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20030618093855.41783.qmail@mail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,18 +17,9 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: IPtables <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-hi
 
-how do i check that whether conn tracking module is installed or not??
-
-Actually, this problem was not coming earlier..suddenly has it statred coming..now what is really puzzling me is that when i also queue packets from FORWARD chain(i did this just to check in case pkts were being directly sent to this chain instead of prerouting), i receive all the packets through prerouting, forward and postrouting chains..and when i change the FORWARD back to ACCEPT all without queuing, again,the same problem..i receive only the first pktof every TCP session in prerouting and postrouting chains....
-
-Paridhi
-
-paridhi
 --=-togof5NfyiIsESYp214i
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
@@ -46,10 +38,10 @@ On Wed, 2003-06-18 at 11:38, Paridhi Bansal wrote:
 ing to get the packets to my application...I have used thefollowing
 > iptables' commands:
 >=20
->       iptables -t nat -A OUTPUT -j QUEUE
->       iptables -t nat -A PREROUTING -j QUEUE
->       iptables -t nat -A POSTROUTING -j QUEUE
->       iptables -A INPUT -j QUEUE
+> 	iptables -t nat -A OUTPUT -j QUEUE
+> 	iptables -t nat -A PREROUTING -j QUEUE
+> 	iptables -t nat -A POSTROUTING -j QUEUE
+> 	iptables -A INPUT -j QUEUE
 >=20
 > But instead of getting all the packets,i just get first packet of every c=
 onnection.For example, just first packet of TCP telnet, FTP connection (wit=
@@ -82,12 +74,5 @@ J8Gn0UxV7ikesTV83upYooA=
 -----END PGP SIGNATURE-----
 
 --=-togof5NfyiIsESYp214i--
--- 
-__________________________________________________________
-Sign-up for your own FREE Personalized E-mail at Mail.com
-http://www.mail.com/?sr=signup
-
-CareerBuilder.com has over 400,000 jobs. Be smarter about your job search
-http://corp.mail.com/careers
 
 
