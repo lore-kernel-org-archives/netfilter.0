@@ -1,13 +1,10 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: eth0, ppp0 & ppp1
-Date: Fri, 6 Jun 2003 11:07:43 -0400
+From: Carol Anne Ogdin <caogdin@deepwoods.com>
+Subject: Re:  eth0, ppp0 & ppp1
+Date: Fri, 6 Jun 2003 16:22:30 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030606150743.GA11486@cannon.eng.us.uu.net>
-References: <20030606141249.GA4652@corky.voltar-confed.org>
+Message-ID: <OF302FFB4C.F7623848-ON88256D3D.007BF360-88256D3D.00806763@deepwoods.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030606141249.GA4652@corky.voltar-confed.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,91 +19,108 @@ Content-Transfer-Encoding: 7bit
 To: Paul Miller <iptabler@voltar-confed.org>
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-There is no need for marking the packets. A simple rule associated
-with a default route (in different tables) does the trick:
+It appears to me that you may need to be using rules (ip rule <stuff> table
+<name>) and separate routing tables for each connection.  That's how I've
+managed (after a long, long time) to get all responses back out on the same
+connection they from at all times.
 
-# this takes care of the main default route through your cable access
-ip ro add default via <IP of upstream cable router> dev eth0
+First, read the iptables tutorial
+(http://iptables-tutorial.frozentux.net/), Linux Advanced Routing
+(http://lartc.org/howto/) and Guide to IP Layer Network Admin
+(http://linux-ip.net/html/linux-ip.html).
 
-# these take care of the outgoing traffic from ppp0
-ip ro add default scope global dev ppp0 table 100
-ip ru add from 208.31.142.43/32 table 100
+The trick is to keep every incoming connection on a separate path into your
+network and back out again.  That is implemented through tables with names
+that are unique to each connection.
 
-# these take care of the outgoing traffic from ppp1
-ip ro add default scope global dev ppp1 table 101
-ip ru add from 208.31.142.23/32 table 101
+To implement this kind of solution, you will need to create four sets of
+rules (one each for eth0, ppp0, ppp1 and the "main"; actually, you can do
+it with three, if you make one of them synonymous with "main," but I prefer
+to keep them separated for clear modularity.  Then, you create three sets
+of rules and three associated (i.e., same table name) sets of routes, and a
+fourth routing table for everything else (the "main" table, which is what
+gets used for outbound and internal traffic).
 
-# reset the cache
-ip ro flush cache
+Here's a prototype for two WAN connections and a LAN, as reported with the
+appropriate 'ip' commands.  The work of creating the script of commands,
+and extending it to your three external connections is up to you,
 
-Keep in mind that the routes you want to set up are _only_ used for
-the outgoing traffic. You have no control whatsoever for the incoming
-traffic. But I guess it's pretty obvious...
+My configuration:
+      WAN1 is 111.111.111.0/29 (with 111.111.111.1 as gateway) on eth1
+      WAN2 is 222.222.222.0/29 (with 222.222.222.1 as gateway) on eth2
+      LAN is 192.168.1.0/24 on eth0
 
-Ramin
+      111.111.111.2 is DNAT'd to 192.168.1.12  (one NIC on webserver A)
+      111.111.111.3 is DNAT'd to 192.168.1.54  (one NIC on webserver B)
+      222.222.222.2 is DNAT'd to 192.168.1.13  ('nuther NIC on webserver A)
+      222.222.222.3 is DNAT'd to 192.168.1.55  ('nuther NIC on webserver B)
 
-On Fri, Jun 06, 2003 at 10:12:49AM -0400, Paul Miller wrote:
+      Server A (accessed as 111.111.111.2 or 222.222.222.2)
+                  has two NICs (192.168.1.12 and 192.168.1.13)
+      Server B (accessed as 111.111.111.3 or 222.222.222.3)
+                  has two NICs (192.168.1.54 and 192.168.1.55)
 
-> Sorry this is so long, I wanna be specific.
-> 
-> I've got a routing issue that I think should be really easy
-> to solve.  It's baffled me for over 4 hours now, so I'm
-> going to ask.
-> 
-> eth0 - my cable internet 24.247.240.235
-> ppp0 - 208.31.142.43
-> ppp1 - 208.31.142.23
-> 
-> My employer makes money for having my modems connected.
-> That's a long story, and hard to explain.  Anyway, ppp0 and
-> ppp1 are just sitting there doing nothing.
-> 
-> The other day my cable went out, and with it, my default
-> route.  I tried to telnet into my ppp devices, but they
-> didn't work because the return path was trying to go through
-> the cable.
-> 
-> Even when the cable is working, I can't telnet into the ppp
-> devs unless I make a specific route.  
-> 
-> route add 208.31.142.2 gw 208.31.142.43 dev ppp0
-> 
-> That may look odd, trust me, my ip is my gateway.  Anyhoo,
-> after that it works great.  That's less than desireable
-> though -- then all traffic to my webserver goes through
-> ppp0.  What I really want, is any traffic that SYNs to
-> 208.31.142.43 from the outside, should automagically route
-> back out that device.  I hope that made sense.
-> 
-> So, I tried to mark the packets with 0x04 then route them
-> based on that...
-> 
-> iptables -t mangle -A PREROUTING -p tcp -d 208.31.142.43 -j TOS --set-tos 0x04
-> ip route add default via 208.31.142.43 dev ppp0 tos 0x04
-> 
-> I've had success routing on those tos values before.  But
-> this solution didn't work for obvious reasons.  I need to
-> mark the whole session, not just packets that are destined
-> to 208.31.142.43.
-> 
-> Questions:
-> 
-> Is there a way to mark the entire session in such a way that
-> I can do sorta this type of routing?
-> 
-> Is there a cleaner way to make sure that:
-> 
-> a) my default route for anything starting from my box goes
->     out the cable modem...
-> 
-> b) any traffic initiated to one of the ppp devs
->     automagically routes back out the same ppp dev?
-> 
-> 
-> -- 
-> If riding in an airplane is flying, then riding in a boat
-> is swimming.  33 jumps, 6.7 minutes of freefall, 14.4 ff vertical miles.
-> Key fingerprint = CEAC EBBE C541 B1E0 3174  81E0 E4E5 4D11 9A0C DA99
+>ip rule list
+         0: from all lookup local
+
+     32754: from 192.168.1.55 lookup WAN2
+     32755: from all to 192.168.1.55 lookup WAN2   # Server A behind DNAT
+     32756: from 192.168.1.13 lookup WAN2
+     32757: from all to 192.168.1.13 lookup WAN2   # Server B behind DNAT
+     32758: from all to 222.222.222.24/29 lookup WAN2
+     32759: from 222.222.222.24/29 lookup WAN2
+
+     32760: from 192.168.1.54 lookup WAN1
+     32761: from all to 192.168.1.54 lookup WAN1   # Server A behind DNAT
+     32762: from 192.168.1.12 lookup WAN1
+     32763: from all to 192.168.1.12 lookup WAN1   # Server B behind DNAT
+     32764: from all to 111.111.111.0/29 lookup WAN1
+     32765: from 111.111.111.0/29 lookup WAN1
+
+     32766: from all lookup main
+     32767: from all lookup default
+
+This says, in essence, "if you're to or from 192.168.1.55 or to or from
+192.168.1.13 or from 22.222.222.24/29, use routing table WAN2."  If the
+rule fails, or there's no route found in the routing table that matches,
+then repeat the process for WAN1.  If both those fail, try the "main"
+table.
+
+Now, here're the routing tables for WAN1, WAN2, and "main":
+
+>ip route list table WAN1
+     111.111.111.0/29 dev eth1  scope link
+     192.168.1.0/24 dev eth0  scope link
+     127.0.0.0/8 dev lo  scope link
+     default via 111.111.111.1 dev eth1
+
+>ip route list table WAN2
+     222.222.222.24/29 dev eth2  scope link
+     192.168.1.0/24 dev eth0  scope link
+     127.0.0.0/8 dev lo  scope link
+     default via 222.222.222.1 dev eth2
+
+>ip route list
+     192.168.1.0/24 dev eth0  scope link
+     127.0.0.0/8 dev lo  scope link
+     default
+      nexthop via 111.111.111.1 dev eth1 weight 1
+      nexthop via 222.222.222.1 dev eth2 weight 1
+
+The last three lines allow outbound connections to go over either of the
+two available connections.
+
+There're more to it, but the hard bit was figuring out (with the help of
+many folks in this list) how to structure the individual routing tables for
+each physical connection.  This solution is probably overkill, but it's a
+practical example you can use to undertand the relationship between rules
+and routes.
+
+This is the bare outline.  I hope it points you in the right direction to
+solve the problem of keeping responses going back out in the connection
+they arrived from.
+
+--Carol Anne
 
 
 
