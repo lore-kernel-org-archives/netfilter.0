@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Re-2: connection to vpn Server (pptp) behind iptables FW
-Date: Fri, 12 Mar 2004 10:50:32 +0000
+From: Per Jessen <per@computer.org>
+Subject: simple load-distribution setup - but weird behaviour
+Date: Fri, 12 Mar 2004 11:49:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403121050.32048.Antony@Soft-Solutions.co.uk>
-References: <DIIE.000000F200002A31@sbgit.com>
+Message-ID: <c2s4k0$35s$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <DIIE.000000F200002A31@sbgit.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,23 +18,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 12 March 2004 10:34 am, peter.gehle@sbgit.com wrote:
+Hi,
 
-> > Micro$oft has a 'technote' on this in their technet section on the
-> > website. AFAIR you need to allow protocol 37 to be forwarded between the
-> > two.
->
-> I have added a rule that forwards the protocol 37, but it still not works?
+we're using iptables in a fairly primitive load-distribution setup - 
 
-Have you tried adding my suggested LOGging rules to see if there's something 
-important still being DROPped?
+iptables -t nat -A OUTPUT -d 192.168.3.200 -j DNAT --to
+192.168.3.101-192.168.3.108
 
-Antony.
+All traffic originates on the local machine. It's been working fine for
+quite a while, but today I noticed that only 7 of the 8 machines in the
+cluster are being distributed to - 101,102,104,105,106,107,108 but not 103. 
 
--- 
-I'm pink, therefore I'm Spam.
+There isn't an awful lot of traffic, perhaps 2-3 msgs/min. Kernel is 2.4.24. 
+I tried telnet'ing to 103 (port 10025) which worked fine - and following
+that 103 was suddenly also being distributed to automagically.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Is there a way of determining why 103 was not being distributed to? Or when
+if this happens again, what can/should I look at? 
+
+
+cheers
+/Per Jessen, Zurich
 
 
