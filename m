@@ -1,13 +1,14 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: Re: A practical problem regarding  IP Accounting ...?
-Date: Mon, 08 Mar 2004 21:53:32 -0500
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Being selective about traffic and interfaces
+Date: Mon, 8 Mar 2004 21:07:29 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078800811.20494.26.camel@tarkus>
-References: <20040309000955.96297.qmail@web14101.mail.yahoo.com>
+Message-ID: <200403082107.29626.rob0@gmx.co.uk>
+References: <20040308150758.GB16848@virgin.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20040309000955.96297.qmail@web14101.mail.yahoo.com>
+In-Reply-To: <20040308150758.GB16848@virgin.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,64 +18,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: toto eucup <toteucup@yahoo.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Create a logging rule based upon the criteria you want.=20
-You can go as granular as you like.
+On Monday 08 March 2004 09:07, Richard Bellamy wrote:
+> I have just set up an ecrypted connection (with OpenVPN) between my
+> laptop and router currently all traffic goes down the vpn. I would
+> like to allow ssh traffic to bypass the vpn.
 
-Ted
+FWIW, if what you're seeking is a performance improvement, you would 
+probably do better by changing your sshd/ssh client to use something 
+faster than the default 3DES encryption. Blowfish (which of course is 
+openvpn's default) is a good choice: fast and not known to be weak.
 
-On Tue, 2004-03-09 at 01:09 +0100, toto eucup wrote:
+> I would be very grateful for any assistance.
 
-> I have 32 IP ADDRESSE 11.22.33.64-96=20
-> 11.22.33.65 Router (cisco) I do not have access on it=20
-> Big Brother proprerty-- BELL you know already :( ...
-> :)
-> =20
->=20
->=20
-> My linux box 2 net interface
-> 11.22.33.66 running DNS on eth0 and
-> 11.22.33.67 on eth1
->=20
->=20
-> Here comes the scenario:
-> Betwen the router and Swich is my machine and I want
-> all the trafic to go through my Linux Box to be able
-> to account the trafic per IP addres.
->=20
->               ROUTER -->INPUT<-- eth0
-> My Linux Box: eth0-->Accounting FILTER<--eth1
->               eth1-->SWITCH<--  11.22.33.68 to 95
->=20
->=20
-> I want to be able  in my linux box to measure trafic
-> for all the station which are pluged in switch from 68
-> to 95
->=20
-> Thanks for an eventual complet solution.
->=20
->    =20
->=20
->=20
-> =20
-> I tried to do so
-> =20
->  [INTERNET] -->[ ROUTER:11.22.33.65] -->[ eth0(66)
->  --eth1(67)] -->[HUB/switch]--> [station ([68].. to
->  [95])]
->=20
-> How can I masure the trafic on each IP address in 68
-> to 95 range using your software.
->=20
->=20
->=20
->=20
-> =09
-> =09=09
-> Mit sch=F6nen Gr=FC=DFen von Yahoo! Mail - http://mail.yahoo.de
-
-
+I am pretty sure that what you want can be done with MARK in the mangle 
+table and complex routing (iproute2). Unfortunately that's all a bit 
+beyond me. I hope the blowfish suggestion is helpful.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
