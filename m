@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: state NEW
-Date: Fri, 19 Nov 2004 08:37:52 -0500
-Message-ID: <1100871472.3874.20.camel@hubcap.ljm.dom>
-References: <D3DD55FDB74AD511BA5100500416368053EB16@ORION>
+Subject: Re: Destination nat for a local (sendmail) process
+Date: Fri, 19 Nov 2004 08:56:22 -0500
+Message-ID: <1100872582.3874.36.camel@hubcap.ljm.dom>
+References: <OF8AE127F7.13302693-ONC1256F50.005BCE0C@actuera.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D3DD55FDB74AD511BA5100500416368053EB16@ORION>
+In-Reply-To: <OF8AE127F7.13302693-ONC1256F50.005BCE0C@actuera.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,50 +20,60 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-11-19 at 04:31, Jochen Vogel wrote:
-> hi,
+On Thu, 2004-11-18 at 12:07, Michiel Lange wrote:
+> Dear list,
 > 
-> i have the following forwarding rule
+> I am having some troubles getting a good redirection working for the 
+> following situation:
 > 
-> $IPT -A FORWARD -i $INT -o $EXT -m state --state NEW,ESTABLISHED,RELATED -j
-> QUEUE
-> $IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED     -j
-> ACCEPT
+> [OUTSIDE WORLD]<--->[IN-BETWEEN NETWORK]<--->[OUR FIREWALL/MTA]<--->[REAL 
+> MAILSERVER]
+>  \---->[OTHER FIREWALL / MAILSERVER]
 > 
-> if i send an ACK with hping from INT to EXT it reaches the target system
+> We can send mail to the outside world fine, but not to the "other" 
+> mailserver. Some looking showed that connecting to the 'real internet 
+> address' of the 'other' host was not possible at all.
+> A small fix was to create a DNAT rule which would redirect traffic to that 
+> machine to it's 'internal' IP address. It works fine... if this is done 
+> from a machine within the network, but not from the local machine.
 > 
-> if i do
+> It appears that outgoing packets do not go through the firewall but just 
+> go out by themselves. 
 > 
-> $IPT -A FORWARD -i $INT -o $EXT -m state --state NEW -j ACCEPTLOG
-> $IPT -A FORWARD -i $EXT -o $INT -m state --state ESTABLISHED,RELATED-j
-> ACCEPT
+> Trying to get locally generated packages go through the firewall and make 
+> use of the PREROUTING chain is not working yet... 
 > 
-> i can see the following
+> These are the rules that work for traffic going from our inside NIC to the 
+> outside NIC, but not from local processes:
+> $iptables -A PREROUTING -t nat --dest out.side.address1 -j DNAT 
+> --to-destination 10.0.100.1
+> $iptables -A PREROUTING -t nat --dest out.side.address2 -j DNAT 
+> --to-destination 10.0.100.2
 > 
-> Nov 19 12:05:20 snolin kernel: ACPT IN=eth0 OUT=ppp0 SRC=1.1.1.1 DST=2.2.2.2
-> LEN=40 TOS=0x00 PREC=0x00 TTL=63 ID=12368 PROTO=TCP SPT=2618 DPT=63
-> WINDOW=512 RES=0x00 ACK URGP=0
+> putting these rules in the POSTROUTING chain results in errormessages.
+> I am using Iptables 1.2.7a on kernel 2.4.20
 > 
-> did i have a false understanding from NEW or whats wrong
+> Anyone any suggestions how I can solve this problem?
 
-you have a false understanding of NEW.
+i'll be honest--i don't understand your question.
 
-NEW == packet does not match an entry in the conntrack table.
+first, if your trying to DNAT locally-generated packets on your
+firewall--your kernel needs to be compiled with "IP_NF_NAT_LOCAL"
+support.
 
-there is a common misconception that "-m state --state NEW" performs
-some sort of intelligent enforcement on valid flag combinations (i.e
-only matches TCP SYN packets), which is simply not true.
+second, NAT is not the magic solution to all things networking, as seems
+to be the impression on this list.  if you're trying to get a mail
+server to forward all of its mail to another mail server, simply set
+that in your MTA configuration, rather than trying to use NAT.  sendmail
+(which makes my head hurt) refers to this as a SMARTHOST.  in postfix
+(which i use) this can be set in your transport map:
 
-if you want this type of enforcement, write your rules like:
-
-  iptables -A FORWARD -p tcp --syn -m state --state NEW [ ... ]
-
-which enforces that NEW packets must be SYN packets.
+  actuera.com smtp:[MAILSERVER_IP]
 
 -j
 
 --
-"If something is to hard to do, then it's not worth doing."
+"Please do not offer my god a peanut"
 	--The Simpsons
 
 
