@@ -1,12 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
 Subject: Re: how can I test the firewall with iptable
-Date: 14 Jan 2005 22:38:32 +0100
-Message-ID: <1105729584.3672.69.camel@nostromo.bgsecm.com>
-References: <Pine.LNX.4.05.10501131452230.20258-100000@darkstar.sysinfo.com>
+Date: 14 Jan 2005 22:38:34 +0100
+Message-ID: <1105729654.3672.71.camel@nostromo.bgsecm.com>
+References: <20050113184512.90097.qmail@web51307.mail.yahoo.com>
+	<20050113184623.GA22272@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.05.10501131452230.20258-100000@darkstar.sysinfo.com>
+In-Reply-To: <20050113184623.GA22272@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,13 +21,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El jue, 13 de 01 de 2005 a las 20:57, R. DuFresne escribi=C3=B3:
-> first, iptables does not really do the part of 'intrusion detection'
-> that's a totally dfferent tool in most cases, though some other vendors
-> will  sell an applicane that does both firewalling and IDS.
+El jue, 13 de 01 de 2005 a las 19:46, Jason Opperisano escribi=C3=B3:
+> i didn't really understand what you were asking the first time you sent
+> this, but since you sent it again--i suppose i better snap to it.
+>=20
+> i *think* you're asking for something along the lines of nessus:
+>=20
+>   http://nessus.org/
+>=20
+> -j
 
-But you can use iptables+snort-inline and you have your firewall
-linked to your IPS, better than most comercial solutions...
+And he can add something like Metasploit to check the firewall.
+And all the usual tools: hping2/3, nmap, etc.
 
 --=20
 Jose Maria Lopez Hernandez
