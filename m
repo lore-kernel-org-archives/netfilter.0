@@ -1,12 +1,13 @@
-From: Andreas Meyer <anmeyer@anup.de>
-Subject: iptables and redirects
-Date: Mon, 10 Feb 2003 12:12:16 +0100 (CET)
+From: FM Taylor <ftaylor1@indstate.edu>
+Subject: Re: Firewall hacking tools
+Date: Tue, 11 Feb 2003 08:01:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030210111216.D8E2717D3A@delta.meyer.home>
-Reply-To: anmeyer@anup.de
+Message-ID: <200302110801.07960.ftaylor1@indstate.edu>
+References: <000101c2d1c5$ddc25c20$0200a8c0@klintan.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000101c2d1c5$ddc25c20$0200a8c0@klintan.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Michael K <micke@klintan.se>, netfilter@lists.netfilter.org
 
-Hello!
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have problems getting PREROUTING to work.
-I defined to simple rules:
+You need nmap, nessus, and hping2.
 
-iptables -t nat -A PREROUTING -i $loc -p TCP --sport 1024: \
-                  --dport 80  -j DNAT --to 192.168.1.3:3128
-iptables -t nat -A PREROUTING -i $loc -p TCP --sport 1024: \
-                  --dport 110 -j DNAT --to 192.168.1.75:110
+Start at www.nessus.org
 
-The connection with Netscape accesing the firewall-host times out.
-Squid is configured as accelerator to 192.168.1.3.
 
-A telnet to the firewall-host on port 110 (mailseerver) times out too.
-Tried to add forwarding:
+On Tuesday 11 February 2003 07:05 am, Michael K wrote:
+> Hi
+>
+> I'm setting up a firewall-lab using Redhat 7.3 and iptables. And wish t=
+o
+> try the firewall capabilities and my security. Any tools that can: prob=
+e
+> my ports, send DOS attacks, TCP syn flooding, Udp flooding, ping
+> flooding, fragment bombs and other things that I don't know of.
+>
+> What tools do I need? Don't care if the utils run on Linux or Windows.
+>
+> Regards Michael "Klintan"
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-iptables -A FORWARD -p TCP -d 192.168.1.75  --dport 3128 -j ACCEPT
-iptables -A FORWARD -p TCP -d 192.168.1.75  --dport 110 -j ACCEPT
+iD8DBQE+SPQTkY6o2Wb0+c0RAjXAAJ4hce41qJGaMiAld3yn7wQtlKi5TwCg1pEh
+vnIJaQqQZ4pDewjeMxMI9sQ=3D
+=3DsYJF
+-----END PGP SIGNATURE-----
 
-No luck. What am I missing? No entries in the logs, nothing.
-Just found one:
-kernel: host 192.168.1.3/if2 ignores redirects for 192.168.1.75 to 192.168.1.75
-
-Is this a kernel thing? As long as I don't redirect to another host
-iptables are working.
-
-Can someone help? Absolutly frustrated....
-
--- 
-
-  Andreas Meyer
-
-Object Class   Common Name   userPassword
-posixAccount   andreas       {SSHA}hpyqObx1/BXbKFgXoqCayoGsvIgPYiVc
 
