@@ -1,12 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: port 113 ?
-Date: Thu, 13 Jan 2005 08:39:07 -0500
-Message-ID: <1105623547.8185.16.camel@hubcap.ljm.dom>
-References: <41E62A5A.9000106@eccotours.biz>
+From: Mohamed Nassih <nassihmohamed@yahoo.com>
+Subject: performence of firewall with iptable
+Date: Wed, 12 Jan 2005 20:47:35 -0800 (PST)
+Message-ID: <20050113044735.21513.qmail@web51308.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E62A5A.9000106@eccotours.biz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +15,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, 2005-01-13 at 02:59, Brent Clark wrote:
-> Soo I would like to know, if it is advisable to stop identd. I have
-> googled abit and from what I gather, its considered as dangerous and
-> basically pointless to run. By removing / stopping this service, will it
-> hamper hinder my users, other servers in any other way. I only run a
-> mail and ftp server.
+Hi,
+ 
+My question is :
+   is there any tool for testing a firewall with iptable and have a report with statistics to analyse the performence(...intrusion detection ...).
+   if this tool exist. is it easy to use and to install..
+ 
+Thanks in advance.
+ 
+ 
 
-there are still mail servers out there configured to do an ident lookup
-prior to sending mail to you.  i normally disable identd, but i always
-add a rule like this to speed up services that still request it:
-
-  iptables -N ident
-  iptables -A ident -p tcp --syn --dport 113 \
-    -j REJECT --reject-with tcp-reset
-
-  iptables -A INPUT -j ident
-  iptables -A FORWARD -j ident
-
--j
-
---
-"Ahh the Luftwaffe--the Washington Generals of the History Channel."
-	--The Simpsons
-
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
