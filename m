@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: nat problem
-Date: Tue, 13 Jul 2004 22:06:08 +0100
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: Benchmark
+Date: Tue, 13 Jul 2004 15:17:47 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407132206.08404.Antony@Soft-Solutions.co.uk>
-References: <40F448B2.AF1E21@knoware.nl>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040713151747.5af1ef20@mgalepc.utilitran.com>
+References: <1089752682.6507.7.camel@aflores>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40F448B2.AF1E21@knoware.nl>
+In-Reply-To: <1089752682.6507.7.camel@aflores>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,47 +20,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 13 July 2004 9:40 pm, Frans Luteijn wrote:
+Hello,
 
-> I have a little problem, which might be a bug. I have an 3COM
-> ISDN-router. It broadcasts every 10 seconds its connectionstatus to the
-> internal net. Now I want to forward those broadcasts to another network.
+	Well I am not expert but I think that user chains could improve performance. If you had in total 1000 rules and no user
+chains, a packet may have to go through 999 rules to find a match or no match. If you broke up your 1000 rules into 25
+different user chains a packet would at most have to be matched against 24 user chains and then only be checked against
+required chains and not other rules.
 
-On Wednesday 07 July 2004 2:07 pm, Antony Stone wrote:
+Michael.
 
-> On Monday 05 July 2004 5:33 pm, Frans Luteijn wrote:
-> >
-> > I have a little problem, which might be a bug. I have an 3COM
-> > ISDN-router. It broadcasts every 10 seconds its connectionstatus to the
-> > internal net.
->
-> What do yuo mean by "broadcasts"?   What protocol is being used?   What
-> address are the packets sent to?
->
-> > Now I want to forward those broadcasts to another network.
->
-> If, by broadcasts, you mean packets addressed to the "broadcast address" of
-> your subnet, it can't be done - you cannot route broadcast packets across a
-> router (that's why people use bridges).   The only way it could be done is
-> to have a machine which understands the protocol, and is connected to both
-> networks, picking up the broadcast packets on one subnet, and then creating
-> new broadcast packets to send to the other network (and, of course, dealign
-> sensibly with the replies).
->
-> This, for example, is how you get Windows NetBios share browsing to work
-> across network boundaries - it's not pretty, but if broadcast packets are
-> what you're starting from then it's the only way.
->
-> Regards,
->
-> Antony.
+
+On Tue, 13 Jul 2004 18:04:43 -0300
+Alejandro Flores <alejandro.flores@triforsec.com.br> wrote:
+
+> 	Hello there,
+> 
+> 	Well, I've been teaching netfilter/iptables for a while, and always
+> there's someone asking about performance. Normally, they use other kind
+> of firewall, like cisco pix or checkpoint. Is there any benchmark out
+> there?
+> 	Another point is, how much user-chains can degrade the performance?
+> IMHO, user chains are simple the best to help you organize and separate
+> rules in groups. But, how can I measure if it's degrading the
+> performance?
+> 
+> Thanks!
+> Alejandro
+> 
+> Ps. Sorry my poor english!
+> 
+> 
+> 
+> 
+> 
+
 
 -- 
-"Linux is going to be part of the future. It's going to be like Unix was."
-
- - Peter Moore, Asia-Pacific general manager, Microsoft
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
