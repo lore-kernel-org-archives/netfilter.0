@@ -1,11 +1,12 @@
-From: Renee Darby <reneedarby@earthlink.net>
-Subject: Is there a "sync" for iptables?
-Date: Thu, 16 Dec 2004 10:11:44 -0700
-Message-ID: <41C1C1D0.4090400@earthlink.net>
-Reply-To: reneedarby@earthlink.net
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: PROBLEMS YOU WILL ENCOUNTER
+Date: Fri, 17 Dec 2004 14:48:52 +0100
+Message-ID: <20041217134835.2A8482F42A@kshira.sterenborg.info>
+References: <200412161611.18551.debian_sid@linuxmail.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200412161611.18551.debian_sid@linuxmail.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,13 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+netfilter-bounces@lists.netfilter.org wrote:
+> Just downloaded the iptables-1.2.11 from your site Here s an extract
+> from the INSTALL : 
+> 
+> 
+>  PROBLEMS YOU MAY ENCOUNTER:
+> 
+>  1) This package requires a 2.4.4 kernel, or above.
+> 
+> 
+> hail to thee with the 2.4.4 kernel
 
-How does the iptables interface work?   It looks like the user command 
-sends a message in to the kernel which responds immediately,   the 
-kernel appears to queue that command up and not actually commit the 
-firewall until it can get a globla lock or somethnig.   Is this how it 
-works?   Is there a sync or a way to nknow when the rule was comitted?
+Soo. And your point is ?
+You're still using a < 2.4.4 kernel ?
+
+
+Gr,
+Rob
+
 
