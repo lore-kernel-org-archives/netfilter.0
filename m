@@ -1,13 +1,9 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Forwarding help
-Date: Thu, 27 Nov 2003 12:58:29 +0000
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: quick questions ---
+Date: Thu, 27 Nov 2003 13:02:06 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311271258.29327.Antony@Soft-Solutions.co.uk>
-References: <000701c3b469$17203ba0$14d36c50@anonymous> <200311271134.06406.Antony@Soft-Solutions.co.uk> <000701c3b4e4$b32a8fc0$14d36c50@anonymous>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57B26@OST_EXCH_USR5>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000701c3b4e4$b32a8fc0$14d36c50@anonymous>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +13,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 27 November 2003 12:48 pm, sc2@gmx.at wrote:
+Hi chaps
 
-> > So "iptables -I FORWARD -m state --state >ESTABLISHED,RELATED -j ACCEPT"
-> > might be a good idea.
->
-> i should include this ?
+Had a bit of a google, and of course consulted Ziegler, but I'm still not
+100% on either of these, so ---
 
-This will alloow the reply packets pack again - if you don't have this, you 
-need a specific rule to allow those the same as you have a specific rule to 
-allow the original packets.   Don't forget communications go both ways 
-through a firewall :)
+1) can iptables use eth0:0 as a valid interface distinct from eth0 ?  So I
+can use eth0 as LAN internal i/f and eth0:0 as DMZ internal i/f.
 
-> b.) the port / service is a udp/tcp , port of a half - life game server, so
-> the clients are not on the same subnet
-> they are connecting to x.24.51 > and should FW to .24.58:
+and ...
 
-Does halflife work through NAT?
+2) Back when I did my checkpoint certs we covered "static NAT" - simple
+one-to-one address translation, rather than "hide NAT" - aka iptables SNAT /
+MASQUERADE....
 
-I don't know (maybe someone else here does), but you should be aware that 
-there are some protocols which just work through NAT, some which are a bit of 
-a challenge, and some which won't work at all.
+...the question I have is - 
 
-I don't know which group halflife falls into.
+is the example given in Ziegler starting on p280 and table 7.1 "Host
+Forwarding to Servers in a Privately Addressed DMZ" an example of "static
+NAT"?
 
-Antony.
+Thanks for any pointers
 
--- 
-Most people have more than the average number of legs.
+Steve
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
