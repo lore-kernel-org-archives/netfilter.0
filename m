@@ -1,14 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: linux-2.6.9-rc1 compilation and configuration issue (fwd)
-Date: 08 Sep 2004 19:39:59 +0200
+Subject: Re: problem applying dscp.patch(iptables)
+Date: 08 Sep 2004 19:37:26 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094665198.23966.21.camel@nostromo.bgsecm.com>
-References: <200409072333.i87NXJZA012251@bassett.home.org>
-	<413F12D1.3050108@pbl.ca>
+Message-ID: <1094665045.11117.18.camel@nostromo.bgsecm.com>
+References: <D855E501E69F9A4FBA902D10A630482B146F2D@hermes2.aegean.gr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <413F12D1.3050108@pbl.ca>
+In-Reply-To: <D855E501E69F9A4FBA902D10A630482B146F2D@hermes2.aegean.gr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +20,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mi=C3=A9, 08 de 09 de 2004 a las 16:10, Aleksandar Milivojevic escribi=
-=C3=B3:
-> James B. Hiller wrote:
-> > Hi!
-> >=20
-> > No takers?  Or have I put this in the wrong forum?  If I have, please
-> > let me know where to go with it.
+El mi=C3=A9, 08 de 09 de 2004 a las 18:33, Reklitis Georgios escribi=C3=B3=
+:
+> kernel 2.4.20
+> iptables-1-2-4-0.2-dscp
 >=20
-> Wish I could help you.  But I never seem to get past the point of even=20
-> applying the patches ;-)
->=20
-> Sure, those I don't need apply clean, those that I'm interested in like=
-=20
-> tcp windows tracking always fail.
->=20
-> BTW, why do we need to recompile entire kernel and iptables, just to ge=
-t=20
-> one tiny miny module installed?  It kind of beats the hole idea of=20
-> modularity and loadable modules, isn't it?  (well, at least half of the=
-=20
-> idea behind it, anyhow) Why can't we just compile two source files and=20
-> place resulting object files into appropriate directories=20
-> (kernel/iptables version independent)?  And not to have to worry about=20
-> recompiling them when new kernel release is out there.
 
-Patches changes the source code of the kernel and iptables in a lot
-of places, not just a modular place in the code you can separate from
-the rest, that's why you can't patch code from modules or pieces of
-code, because many places in the code are changed when you apply the
-patches.
+What patch-o-matic are you using? You are using very old kernel and
+iptables versions. At least you should upgrade your iptables and use
+the las patch-o-matic. Patch both the kernel source and the iptables
+source and compile them. It should work that way.
 
+>  I'm trying to install iptables,using command "make patch-o-matic", I'm=
+ being asked about some patches to install, but dscp.patch which I need, =
+cannot be applied-I receive an error (failed to patch copy of /usr/src/li=
+nux-2.4.20). Also I'm not being questioned about applying or not ftos.pat=
+ch.
+> Why did that happened?
+> Thank you=20
 --=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
