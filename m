@@ -1,11 +1,10 @@
-From: "pengjie" <bill.peng@ocamar.com>
-Subject: h323 & nat
-Date: Tue, 11 May 2004 09:39:25 +0800
+From: "R D" <rkd@myrealbox.com>
+Subject: Port forwarding across two firewalls
+Date: Mon, 10 May 2004 16:00:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003101c436f8$cb052d80$0f6ea8c0@acamarpeng>
+Message-ID: <000301c4369f$8f8710b0$0f01020a@taita>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002E_01C4373B.D91C3880"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,104 +15,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_002E_01C4373B.D91C3880
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Hi all,
 
-aSBoYWQgcmVhZCBtYW55IGRvY3VtZW50cyBidXQgaSBkaWRuJ3QgZmluZCBhbnN3ZXIuDQoNCmkg
-aGF2ZSBhIG5ldHdvcmsgYXMgZm9sbG93aW5nOg0KDQogICAgICAgIEEtLS0tLS0tLS0tLS0tLS0t
-LS1CPT09PT09PT09PT09PT09PT09PT1DDQoxOTIuMTY4LjExMC54ICAxOTIuMTY4LjExMC55ICAy
-MDIuMTAxLmsubSAgICAgMjAyLjEwMS5rLm4NCg0KdGhlIEIgaXMgYSBnYXRld2F5IGRvaW5nIE5B
-VC4gaXQncyBldGgwIGlzIDE5Mi4xNjguMTEwLnkgYW5kIGV0aDEgaXMgMjAyLjEwMS5rLm0uIHRo
-ZXJlIGlzIFJIOSBydW5uaW5nIG9uIGl0LGl0J3Mga2VybmVsIGlzIDIuNC4yMS4gaSBoYXZlIHBh
-dGhjaGVkIHRoZSBoMzIzLGFuZCBydW5uZWQgdXAgdGhlIG1vZHVsZXMgaXBfY29ubnRyYWNrX2gz
-MjMgYW5kIGlwX25hdF9oMzIzLg0KDQp0aGUgQSBhbmQgdGhlIEMgYXJlIG5ldG1lZXRpbmcgY2xp
-ZW50cy4NCg0KaSB0ZXN0IGl0IHdpdGggMiBtZXRob2RzOg0KDQoxKWJvdGggQSBhbmQgQyBsb2dv
-biB0byBhIElMUy4NCg0KUkVTVUxUUzoNCkEgY2FsbHMgQyBpcyBvaywgYW5kIHRoZXkgY2FuIGNo
-YXQgdG8gZWFjaCBvdGhlci4NCg0KQyBjYWxscyBBIGlzIGZhaWx1cmUsIGkgc2VlIHRoZSBhZGRy
-ZXNzIGNhbGxlZCBpcyB0aGUgcHJpdmF0ZSBhZGRyZXNzIG9mIEEuIHNvIHNldHRpbmcgdXAgaXMg
-ZmFpbHVyZS4NCg0KDQpRVUVTVElPTjogZG9lc24ndCB0aGUgcGF0Y2ggZG8gc29tZXRoaW5nIHdo
-ZW4gY2xpZW50IGxvZ29uIHRvIGEgSUxTPw0KDQoyKWNhbGwgZWFjaCBvdGhlciB3aXRob3V0IHRo
-ZSBJTFMuDQoNCmkgYWRkIGEgcnVsZTogaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkg
-ZXRoMSAtcCB0Y3AgLW0gbXVsdGlwb3J0IC0tZHBvcnRzIDE1MDMsMTcyMCAtaiBETkFUIC0tdG8t
-ZGVzdGluYXRpb24gMTkyLjE2OC4xMTAueA0KDQp0aGV5IGNhbGwgZWFjaCBvdGhlciB3aXRoIElQ
-IGFkZHJlc3MuIEEgY2FsbHMgQyB3aXRoIEMncyBJUCBhcyB0aGUgZGVzdGluYXRpb24sIGFuZCBD
-IGNhbGxzIEEgd2l0aCBnYXRld2F5J3MgdmFsaWQgSVAgYXMgdGhlIGRlc3RpbmF0aW9uLg0KDQpS
-RVNVTFRTOg0KQSBjYWxscyBDIGlzIG9rLCBhbmQgdGhleSBjYW4gY2hhdCB0byBlYWNoIG90aGVy
-Lg0KQyBjYWxscyBBIGlzIG9rLCBidXQgdGhleSBjYW4ndCBjaGF0IHRvIGVhY2ggb3RoZXIuDQoN
-ClFVRVNUSU9OOiBpcyB0aGUgcnVsZSByaWdodD8gaC4zMjMgc3RyZWFtaW5nIHBvcnQgaXMgZHlu
-YW1pYywgZG9lcyBpdCByZXN1bHQgdGhpcyBzeW1wdG9tPw0KICAgICAgICAgIGV2ZW4gdGhvdWdo
-IGkgYWRkIHRoZSBydWxlIHJpZ2h0LGkgdGhpbmsgaXQncyBubyB1c2UuaXQganVzdCBlbmFibGUg
-b25lIGNsaWVudCB0byBnbyB0aHJvdWdoIHRoZSBnYXRld2F5LmlzIGl0Pw0KDQphbnkgaGVscCBp
-cyBhcHByZWNpYXRlZC4=
+I sent this before but got no reply...is there nobody out there that can
+help
+ me!?
 
-------=_NextPart_000_002E_01C4373B.D91C3880
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+I have a static IP (10.2.1.15) on which I need to have both TCP and UDP
+ports 5000 appearing to be external! The subnet I'm on has a
+firewall(Debian) with an int IP 10.2.1.1 & ext 10.1.1.77 with gw 10.2.1.1
+obviously. The second firewall/router is a US Robotics ADSL
+Modem/Router with int IP 10.1.1.1 & ext 1.2.3.4.
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
-MC4yODAwLjE0MDAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
-Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj4NCjxESVY+PEZPTlQgc2l6
-ZT0yPmkgaGFkIHJlYWQgbWFueSBkb2N1bWVudHMgYnV0IGkgZGlkbid0IGZpbmQgDQphbnN3ZXIu
-PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJ
-Vj48Rk9OVCBzaXplPTI+aSBoYXZlIGEgbmV0d29yayBhcyBmb2xsb3dpbmc6PC9GT05UPjwvRElW
-Pg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXpl
-PTI+Jm5ic3A7Jm5ic3A7Jm5ic3A7ICZuYnNwOyZuYnNwOyZuYnNwOyANCkEtLS0tLS0tLS0tLS0t
-LS0tLS1CPT09PT09PT09PT09PT09PT09PT1DPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXpl
-PTI+MTkyLjE2OC4xMTAueCZuYnNwOyZuYnNwOzE5Mi4xNjguMTEwLnkmbmJzcDsgDQoyMDIuMTAx
-LmsubSZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAyMDIuMTAxLmsubjwvRk9OVD48L0RJVj4NCjxE
-SVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPnRo
-ZSBCIGlzIGEgZ2F0ZXdheSBkb2luZyBOQVQuIGl0J3MgZXRoMCBpcyAxOTIuMTY4LjExMC55IGFu
-ZCANCmV0aDEgaXMgMjAyLjEwMS5rLm0uIHRoZXJlIGlzIFJIOSBydW5uaW5nIG9uIGl0LGl0J3Mg
-a2VybmVsIGlzIDIuNC4yMS4gaSBoYXZlIA0KcGF0aGNoZWQgdGhlIGgzMjMsYW5kIHJ1bm5lZCB1
-cCB0aGUgbW9kdWxlcyBpcF9jb25udHJhY2tfaDMyMyBhbmQgDQppcF9uYXRfaDMyMy48L0ZPTlQ+
-PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05U
-IHNpemU9Mj50aGUgQSBhbmQgdGhlIEMgYXJlIG5ldG1lZXRpbmcgY2xpZW50cy48L0ZPTlQ+PC9E
-SVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNp
-emU9Mj5pIHRlc3QgaXQgd2l0aCAyIG1ldGhvZHM6PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBz
-aXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+MSlib3RoIEEgYW5k
-IEMgbG9nb24gdG8gYSBJTFMuPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05U
-PiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+UkVTVUxUUzo8L0ZPTlQ+PC9ESVY+DQo8
-RElWPjxGT05UIHNpemU9Mj5BIGNhbGxzIEMgaXMgb2ssIGFuZCB0aGV5IGNhbiBjaGF0IHRvIGVh
-Y2ggb3RoZXIuPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwv
-RElWPg0KPERJVj48Rk9OVCBzaXplPTI+QyBjYWxscyBBIGlzIGZhaWx1cmUsIGkgc2VlIHRoZSBh
-ZGRyZXNzIGNhbGxlZCBpcyB0aGUgcHJpdmF0ZSANCmFkZHJlc3Mgb2YgQS4gc28gc2V0dGluZyB1
-cCBpcyBmYWlsdXJlLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJz
-cDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZP
-TlQgc2l6ZT0yPlFVRVNUSU9OOiBkb2Vzbid0Jm5ic3A7dGhlIHBhdGNoIGRvIHNvbWV0aGluZyB3
-aGVuIGNsaWVudCANCmxvZ29uIHRvIGEgSUxTPzwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6
-ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjIpY2FsbCBlYWNoIG90
-aGVyIHdpdGhvdXQgdGhlIElMUy48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZP
-TlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5pIGFkZCBhIHJ1bGU6IGlwdGFibGVz
-IC10IG5hdCAtQSBQUkVST1VUSU5HIC1pIGV0aDEgLXAgdGNwIC1tIA0KbXVsdGlwb3J0IC0tZHBv
-cnRzIDE1MDMsMTcyMCAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC4xMTAueDwvRk9O
-VD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZP
-TlQgc2l6ZT0yPnRoZXkgY2FsbCBlYWNoIG90aGVyIHdpdGggSVAgYWRkcmVzcy4gQSBjYWxscyBD
-IHdpdGggQydzIElQIGFzIA0KdGhlIGRlc3RpbmF0aW9uLCBhbmQgQyBjYWxscyBBIHdpdGggZ2F0
-ZXdheSdzIHZhbGlkIElQIGFzIHRoZSANCmRlc3RpbmF0aW9uLjwvRk9OVD48L0RJVj4NCjxESVY+
-PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPlJFU1VM
-VFM6PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+QSBjYWxscyBDIGlzIG9rLCBhbmQg
-dGhleSBjYW4gY2hhdCB0byBlYWNoIG90aGVyLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6
-ZT0yPkMgY2FsbHMgQSBpcyBvaywgYnV0IHRoZXkgY2FuJ3QgY2hhdCB0byBlYWNoIA0Kb3RoZXIu
-PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJ
-Vj48Rk9OVCBzaXplPTI+UVVFU1RJT046IGlzIHRoZSBydWxlIHJpZ2h0PyBoLjMyMyBzdHJlYW1p
-bmcgcG9ydCBpcyANCmR5bmFtaWMsJm5ic3A7ZG9lcyBpdCByZXN1bHQgdGhpcyBzeW1wdG9tPzwv
-Rk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBldmVuIA0KdGhvdWdoJm5ic3A7aSBhZGQgdGhl
-IHJ1bGUgcmlnaHQsaSB0aGluayBpdCdzIG5vIHVzZS5pdCBqdXN0IGVuYWJsZSBvbmUgY2xpZW50
-IA0KdG8gZ28gdGhyb3VnaCB0aGUgZ2F0ZXdheS5pcyBpdD88L0ZPTlQ+PC9ESVY+DQo8RElWPjxG
-T05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5hbnkgaGVs
-cCBpcyANCmFwcHJlY2lhdGVkLjwvRk9OVD48L0RJVj48L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRN
-TD4NCg==
+When I lived in a house with just a Debian firewall and nothing configured
+on the modem the following worked:
 
-------=_NextPart_000_002E_01C4373B.D91C3880--
+iptables -A FORWARD -p udp -d 10.2.1.15 --dport 5000 -j ACCEPT
+iptables -A PREROUTING -t nat -p udp -d fw-ext --dport 5000 -j DNAT --to
+10.2.1.15:5000
+
+iptables -A FORWARD -p tcp -d 10.2.1.15 --dport 5000 -j ACCEPT
+iptables -A PREROUTING -t nat -p tcp -d fw-ext --dport 5000 -j DNAT --to
+10.2.1.15:5000
+
+I've tried the same commands with fw-ext=10.1.1.77 and setting a 'port range
+mapping' on the modem 10.1.1.77:5000-1.2.3.4:5000 for both UDP/TCP, but to
+no avail!
+
+Any gurus out there that can help/explain!?
+
+
+Many thanks,
+R
 
 
