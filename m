@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Different routes for different src addresses
-Date: Wed, 7 Jul 2004 22:36:32 +0100
+Subject: Re: IPSec Transport Mode
+Date: Wed, 7 Jul 2004 22:42:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407072236.32644.Antony@Soft-Solutions.co.uk>
-References: <20040707120502.GA23120@nihil> <200407071410.02752.Antony@Soft-Solutions.co.uk> <Pine.GSU.4.58.0407071653430.21043@adore.lightlink.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407072242.09330.Antony@Soft-Solutions.co.uk>
+References: <1089207305.788.14.camel@PCA-ARNSTR.ee-consultants.de> <200407072154.52923.Antony@Soft-Solutions.co.uk> <20040707211122.GA15747@zion.homelinux.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.GSU.4.58.0407071653430.21043@adore.lightlink.com>
+In-Reply-To: <20040707211122.GA15747@zion.homelinux.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +19,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 07 July 2004 10:02 pm, Nick Taylor wrote:
+On Wednesday 07 July 2004 10:11 pm, Sven Schuster wrote:
 
-> > > is it possible to create a route for a single src address?
-> > > I mean _routing_, not natting. If I nat the pkts their destination will
-> > > change and I need to keep it intact.
-> >
-> > As you say, you mean _routing_, therefore this a routing question, not a
-> > netfilter question.
-> >
-> > You need iproute2 (see http://lartc.org)
+> Hi Antony,
 >
-> This is true, but misleading.  Netfilter does provide a nice interface to
-> iproute2 with the fwmark feature.
+> On Wed, Jul 07, 2004 at 09:54:52PM +0100, Antony Stone told us:
+> > ESP is for tunnel mode, and works fine through NAT.
+> >
+> > Transport mode uses AH (protocol 51), and that's the one which breaks
+> > through NAT.
+>
+> Isn't using AH or ESP independent from tunnel/transport mode?? AH
+> mode is just authentication, ESP is authentication + encryption. You
+> can use AH with tunnel mode and ESP with transport mode like you
+> wish I think.
 
-This is true, but unnecessary :)
+Hm, not sure about this - I've never wanted a VPN without encryption, so I've 
+not experimented with AH tunnels.
 
-If all you want to match on is source IP (which is what the original poster 
-asked about), then iproute2 can do it quite neatly on its own.
-
-Mixing netfilter MARKs and iproute2 tables is a neat solution to some 
-problems, but not required for the simple ones.
+Also, if you can do transport mode with ESP, then it should work through NAT 
+without problems, because the original packet gets encapsulated (as per my 
+previous explanation).
 
 Regards,
 
 Antony.
 
 -- 
-These clients are often infected by viruses or other malware and need to be 
-fixed.  If not, the user at that client needs to be fixed...
+"There is no reason for any individual to have a computer in their home."
 
- - Henrik Nordstrom, on Squid users' mailing list
+ - Ken Olsen, President of Digital Equipment Corporation (DEC, later consumed 
+by Compaq, later merged with HP)
 
                                                      Please reply to the list;
                                                            please don't CC me.
