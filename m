@@ -1,10 +1,11 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: iptables + access-list
-Date: Wed, 28 May 2003 16:54:06 +1000
+From: "Urban Spielmann" <spielmann@it-insourcing.ch>
+Subject: pptp NAT modules prevent pptp-server behind NAT machine
+Date: Wed, 28 May 2003 09:25:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D25@wardrive.citadelcomputer.com.au>
+Message-ID: <A9B668705BE3754790A3C32C768214946DB5@pluto.insourcing.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C324EA.556EDF5C"
 Return-path: <netfilter-admin@lists.netfilter.org>
 content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,72 +17,144 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Burak Sahin <burak.sahin@is.net.tr>, netfilter@lists.netfilter.org
+To: laforge@netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-Just ACCEPT those wanting to bypass squid and REDIRECT into squid (as =
-the last line) for the rest of the networks.....
+This is a multi-part message in MIME format.
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+------_=_NextPart_001_01C324EA.556EDF5C
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
+On Mon, 19 May 2003 18:14:02 +0200, Harald Welte wrote:
+=20
+> There is a bug in the current helper, which prevents a locally-running
+> pptp server on the NAT machine.  I have a fix here, but I still need
+to
+> test it...
+=20
+Dear Harald Welte,
+=20
+this fix looks exactly what I would need.
+=20
+I patched my kernel with this pptp_nat stuff.
+And did:
+modprobe ip_conntrack_proto_gre
+modprobe ip_nat_pptp
+modprobe ip_nat_proto_gre
 
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
+So now I could work with multiple pptp-clients behind my firewall. Very
+good :-)
+But now I could not reach my pptp-server anymore from outside. :-(
+=20
+If I do not start this three modules above my pptp-server is reachable,
+but then I cannot do multiple pptp-client connections anymore.
+=20
+Will your fix solve this problem?
+Where can I get it?
+=20
+Thank for any help.
+=20
+Best regards,
+Urban Spielmann
 =20
 
------Original Message-----
-From: Burak Sahin [mailto:burak.sahin@is.net.tr]
-Sent: Wednesday, May 28, 2003 4:33 PM
-To: netfilter@lists.netfilter.org
-Subject: iptables + access-list
+------_=_NextPart_001_01C324EA.556EDF5C
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-
-Hi to all,
-
-I am using squid as transparent proxy. So I use iptables.Command I use =
-is:
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-REDIRECT --to-port 3128
-
-I want to use such an access-list: For instance if you want a page from
-nework A.B.C.D/a.b.c.d, you do not use squid. It is possible doing with
-squid, however I need to do this with iptables. I changed my command =
-such
-that:
-
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
-A.B.C.D/a.b.c.d -j REDIRECT --to-port 3128
-
-
-
-MY QUESTION is;
-
-For two networks, A.B.C.D/a.b.c.d and E.F.G.H/e.f.g.h how can I do this?
-
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
-A.B.C.D/a.b.c.d -j REDIRECT --to-port 3128
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
-E.F.G.H/e.f.g.h -j REDIRECT --to-port 3128
-
-Does not work. Because, when a request comes for an ip in the network
-E.F.G.H/e.f.g.h, it is forwarded to squid, because of the iptabes first
-rule...
-
-How can I do access-list with iptables?
-
-I need help
-
-Thanks for your attention
-
-
-
-
-
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Nachricht</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D337524006-28052003>On =
+<FONT=20
+size=3D3><FONT face=3D"Times New Roman"><EM>Mon, 19 May 2003 18:14:02 =
++0200,=20
+</EM><STRONG>Harald Welte =
+wrote:</STRONG></FONT></FONT></SPAN></FONT></DIV>
+<DIV><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+class=3D337524006-28052003><STRONG></STRONG></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Times New Roman" size=3D3><SPAN =
+class=3D337524006-28052003>&gt;=20
+There is a bug in the current helper, which prevents a =
+locally-running<BR>&gt;=20
+pptp server on the NAT machine.&nbsp; I have a fix here, but I still =
+need=20
+to<BR>&gt; test it...</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+class=3D337524006-28052003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Times New Roman" size=3D3><SPAN =
+class=3D337524006-28052003><FONT=20
+face=3DArial size=3D2>Dear Harald Welte,</FONT></SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D337524006-28052003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D337524006-28052003>this =
+fix looks=20
+exactly what I would need.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D337524006-28052003></SPAN></FONT><FONT=20
+face=3D"Times New Roman" size=3D3><SPAN =
+class=3D337524006-28052003>&nbsp;</DIV>
+<DIV><SPAN class=3D337524006-28052003></SPAN><FONT face=3DArial><FONT =
+size=3D2>I<SPAN=20
+class=3D337524006-28052003> patched my kernel with this pptp_nat=20
+stuff.</SPAN></FONT></FONT></DIV>
+<DIV><FONT><FONT size=3D2><SPAN=20
+class=3D337524006-28052003></SPAN></FONT></FONT><SPAN=20
+class=3D337524006-28052003></SPAN><FONT face=3DArial><FONT =
+size=3D2>A<SPAN=20
+class=3D337524006-28052003>nd did:</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN =
+class=3D337524006-28052003>modprobe=20
+ip_conntrack_proto_gre<BR>modprobe ip_nat_pptp<BR>modprobe=20
+ip_nat_proto_gre<BR></SPAN></FONT></FONT></DIV>
+<DIV><SPAN class=3D337524006-28052003></SPAN><FONT face=3DArial><FONT =
+size=3D2>S<SPAN=20
+class=3D337524006-28052003>o now I could work with multiple pptp-clients =
+behind my=20
+firewall. Very good :-)</SPAN></FONT></FONT></DIV>
+<DIV><FONT><FONT size=3D2><SPAN=20
+class=3D337524006-28052003></SPAN></FONT></FONT><SPAN=20
+class=3D337524006-28052003></SPAN><FONT face=3DArial><FONT =
+size=3D2>B<SPAN=20
+class=3D337524006-28052003>ut now I could not reach&nbsp;my pptp-server =
+anymore=20
+from outside. :-(</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN=20
+class=3D337524006-28052003></SPAN></FONT></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN =
+class=3D337524006-28052003>If I do not=20
+start this three modules above&nbsp;my pptp-server is reachable, but =
+then I=20
+cannot do multiple pptp-client connections =
+anymore.</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN=20
+class=3D337524006-28052003></SPAN></FONT></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN =
+class=3D337524006-28052003>Will your fix=20
+solve this problem?</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN =
+class=3D337524006-28052003>Where can I=20
+get it?</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN=20
+class=3D337524006-28052003></SPAN></FONT></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN =
+class=3D337524006-28052003>Thank for any=20
+help.</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN=20
+class=3D337524006-28052003></SPAN></FONT></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN =
+class=3D337524006-28052003>Best=20
+regards,</SPAN></FONT></FONT></DIV>
+<DIV><FONT face=3DArial><FONT size=3D2><SPAN =
+class=3D337524006-28052003>Urban=20
+Spielmann</SPAN></FONT></FONT></DIV></SPAN></FONT>
+<DIV>&nbsp;</DIV></BODY></HTML>
+=00
+------_=_NextPart_001_01C324EA.556EDF5C--
 
