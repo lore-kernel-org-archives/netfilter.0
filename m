@@ -1,8 +1,8 @@
-From: "Matthieu Turpault" <matthieu.turpault@comelis.fr>
+From: "Matthieu Turpault" <mt.netfilter@comelis.fr>
 Subject: ip_conntrack module, advanced routing and multiple ISP
-Date: Mon, 15 Sep 2003 10:55:09 +0200
+Date: Mon, 15 Sep 2003 12:28:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <MGEFIJGLOCLFFKBKAFEPMEKOEGAA.matthieu.turpault@comelis.fr>
+Message-ID: <MGEFIJGLOCLFFKBKAFEPAENBEGAA.mt.netfilter@comelis.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
