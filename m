@@ -1,13 +1,11 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: RE: Time based rules ...
-Date: 13 Nov 2002 19:53:16 +0200
+From: "Nix N. Nix" <nix@go-nix.ca>
+Subject: DNAT to localhost
+Date: 13 Nov 2002 15:35:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037209996.4557.41.camel@rayw.knowledgefactory.co.za>
-References: <FD8F124A387AD6119F7900A0D218B321019992@hslex01.hsl-brabantzuid.nl>
+Message-ID: <1037219719.6450.5.camel@tux.go-nix.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-hoo7I8US0nply21isvrS"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FD8F124A387AD6119F7900A0D218B321019992@hslex01.hsl-brabantzuid.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +15,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hi ! I sent the following message to netfilter@lists.samba.org as well,
+so, if it hits this list twice, please forgive me.
+
+Here it is:
+
+Why doesn't this work ?
+
+/sbin/iptables -t nat -A PREROUTING -p udp --destination 192.168.1.1/32
+--dport 80 -j DNAT --to-destination 127.0.0.1:8080
+
+The idea is:  The Web server listens solely on 127.0.0.1:8080 .  This
+allows me to run a Web server as a non-root user.  But then, I want
+${OUTSIDE_IP}:80 and 192.168.1.1:80 (my interface) to be forwarded to
+127.0.0.1:8080 .  I'm sure you've guessed by now that I'm running the
+Web server on my firewall ;o)
+
+Anyway, I tried setting /proc/sys/net/ipv4/conf/lo/rp_filter to 0, but
+that didn't help either.
+
+IMHO, the reason this doesn't work is that the above rule is added at
+the PREROUTING stage of the game.  So, when the packet is routed, the
+routing decision is based on 
++----------------------+
+|  Packet              |
++----------------------+
+|source:<192.168.1.xxx>|
+|dest:  <127.0.0.1>    |
++----------------------+
+and, of course, somewhere, this packet gets dropped, because nothing
+should be able to reach 127.0.0.0/8 but 127.0.0.0/8, right ?  But hell,
+I'm no expert.
+
+So, is there any way to forward TCP ports from local interfaces to the
+loopback interface ?
 
 
---=-hoo7I8US0nply21isvrS
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2002-11-13 at 17:50, Rob Sterenborg wrote:
-> > Is there a way to put time restrictions on rules?
-> > For eaxmple, something like:
-> >
-> > iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
-> > 0700:1700 -j DROP
->=20
-> There is a time patch in pom (base).
->=20
-OK. Thanks I'll check it out.
-
-> >From the website :
-> This option adds CONFIG_IP_NF_MATCH_TIME, which supplies a time match
-> module.
-> This match allows you to filter based on the packet arrival time
-> (arrival time at the machine which the netfilter is running on) or
-> departure time (for locally generated packets).
->=20
->=20
-> Rob
---=20
-
---=-hoo7I8US0nply21isvrS
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA90pGLh1fuR/Bv+ygRAj6YAJ9KLunUYY8U53d+c13i80FLbM8jAACghnLu
-ReAi2Ax7vCgFNYxxeZQXaFY=
-=LdF7
------END PGP SIGNATURE-----
-
---=-hoo7I8US0nply21isvrS--
+Thanks for your advice.
 
 
