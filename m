@@ -1,13 +1,12 @@
-From: "R. Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: forward is not forwarding
-Date: Fri, 6 Sep 2002 08:14:44 +0200
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: forward is not forwarding
+Date: Fri, 06 Sep 2002 08:40:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c2556c$b228c340$0401000a@win2k>
-References: <Pine.LNX.4.44.0209060140001.413-100000@triton.neptune.on.ca>
+Message-ID: <3D784DD0.8010301@fugmann.dhs.org>
+References: <EF33C96B91C212479FA2B0B0A96868F80102C887@sydxch02.veritas.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0209060140001.413-100000@triton.neptune.on.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Abraham Kim <Abraham.Kim@veritas.com>
+Cc: netfilter@lists.netfilter.org
 
-> > iptables -i eth0 -o eth1 -A FORWARD -j ACCEPT
-> > iptables -i eth1 -o eth0 -A FORWARD -j ACCEPT> Did you enable IP
-forwarding at the kernel level ?
+Abraham Kim wrote:
+> telnet from Linux to Solaris takes too long to be established
+> (it looks hung after the Escape character... message)
+This has been seen before, and is easy to fix if my assumption is correct.
 
-> what does "cat /proc/sys/net/ipv4/ip_forward" show ?
->
-> If 0, then you need to enable IP fowarding by doing this:
->
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->
->
+Try adding this to your firewall:
+$ iptables -A FORWARD -p tcp --dports auth -j REJECT \
+         --reject-with tcp-reset
 
-Do you need netfilter ?
-How about your routing table (route -n). Do you have routings like :
+This will "reject" any packet destined for the auth port.
+My guess is that the Solaris box does not have a auth deamon running, 
+and therefore Linux clients will "hang" while waiting for an answer from 
+the port.
 
-Destination     Gateway         Genmask
-...
-10.1.1.0        10.1.1.1        255.255.255.0
-192.168.1.0     192.168.1.1     255.255.255.0
-...
+Regards
+Anders Fugmann
 
-
-Rob
+-- 
+Author of FIAIF
+Fiaif is an intelligent firewall
+http://fiaif.fugmann.dhs.org
 
 
