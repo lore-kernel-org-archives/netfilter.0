@@ -1,12 +1,10 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Blocking Streaming Media (Was: Re: (no subject)..)
-Date: Mon, 31 May 2004 22:37:50 -0700 (PDT)
+From: aksingh@hss.hns.com
+Subject: ipq_read return values when timeout is specified
+Date: Tue, 1 Jun 2004 12:06:25 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040601053750.50670.qmail@web61008.mail.yahoo.com>
-References: <200406010943.02317.rio@martin.mu>
+Message-ID: <OF79639C38.78EA339D-ON65256EA6.0023ED00@hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406010943.02317.rio@martin.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,101 +16,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rio Martin <rio@martin.mu>, netfilter@lists.netfilter.org
+To: Sven Schuster <schuster.sven@gmx.de>
+Cc: netfilter@lists.netfilter.org
 
 
---- Rio Martin <rio@martin.mu> wrote:
-> On Monday 31 May 2004 18:18, Ivan wrote:
-> > Hi,
-> > I am looking for a solution to block streaming media using iptables.
-> > I have found that some of my users are listening to radio stations using
-> > internet, which has pumped up the
-> > internet bill significantly, and of course put a choke on my internet
-> > links. Does anyone know of a solution for blocking just the streaming media
-> > traffic from any web site, while still allowing
-> > the access to the website it self?
-> > Thanks,
-> > Ivan
-> 
-> 
-> Hiye Ivan,
-> The problem you faced was users connecting to Internet Radio Stations using 
-> web port (port 80) isnt it ? I give u an example like LaunchCast from Yahoo 
-> or other stations using port 80 as their service port.
-> 
-> This is become a serious problem when bandwidth allocated not so wide. The 
-> only thing in my mind, try to apply the magic of patch-o-matic STRING. 
-> Examine correctly what packets arrived or what kind of streaming packets sent
-> 
-> by server. Block using those STRING.
-> 
-> Regards,
-> Rio Martin.
-> 
-
-STRING matching is at best a primative method of any kind of filtration. It has
-been demonstrated and documented many times here that it's simply not an
-efficent option. However I do think I might can help with this. First you need
-to identify what and where the radio stations are coming from. If they are from
-the new Yahoo LAUNCHcast...stoping them should be fairly easy...with some work.
-
-First this is good info to know...
-http://search1.cc.dcn.yahoo.com/cct_search.php?ui_mode=answer&prior_transaction_id=248668163&action_code=5&answer_id=14755094#__highlight
-
-It contains info for firewalls and LAUNCHcast.
-
-Assuming you are NATing your internal machines.... set up rules to block
-certain hosts at yahoo.
-
-From personal experience I connect to this one
-re2wmcontent24.bcst.re2.yahoo.com (at least at this time I'm connected to it)
-
-By doing some DNS snooping... It apears that there are 43 of these with this
-being the first...
-
-hogwarts:~# nslookup -silent re2wmcontent01.bcst.re2.yahoo.com
-Server:         66.190.172.252
-Address:        66.190.172.252#53
-
-Name:   re2wmcontent01.bcst.re2.yahoo.com
-Address: 206.190.44.76
-
-and this being the last...
-
-hogwarts:~# nslookup -silent re2wmcontent43.bcst.re2.yahoo.com
-Server:         66.190.172.252
-Address:        66.190.172.252#53
-
-Non-authoritative answer:
-Name:   re2wmcontent43.bcst.re2.yahoo.com
-Address: 206.190.44.118
-
-with 44 returning this...
-
-hogwarts:~# nslookup -silent re2wmcontent44.bcst.re2.yahoo.com
-Server:         66.190.172.252
-Address:        66.190.172.252#53
-
-** server can't find re2wmcontent44.bcst.re2.yahoo.com: NXDOMAIN
-
-So we can reasonably assume that if we block 206.190.44.76 thorugh
-206.190.44.118 we could stop the LAUNCHcast broadcasts.... Dealing with NAT is
-a tad tricky though... since we need to stop it before it gets "NATED".
 
 
-With My setup my eth0 is the "wire" and my eht1 is LAN... so if I drop these on
-my LAN device(eth1)..theoretically I would stop the broadcast. If I wanted to
-stop it this would be the approach I would use. I hope it helps.... keep me
-posted if you try it.
 
-=====
-In the absence of order there will be chaos.
+Hi,
 
+   Correct me if I am wrong, if I give -1 as the timeout parameter to
+ipq_read, then ipq_read returns :
 
-	
-		
-__________________________________
-Do you Yahoo!?
-Friends.  Fun.  Try the all-new Yahoo! Messenger.
-http://messenger.yahoo.com/ 
+-1 incase of an error,
+a +ve non zero value, if there was something to read
+0 if there was nothing to read, or a non-blocked signal was caught .
+
+Also, since I gave this -ve value as timeout parameter ipq_read would
+return immediately if there was nothing to read .
+
+regards
+Amit
+
+"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
+(HSS) and is intended solely for the use of the individual to whom it is
+addressed. It may contain  privileged or confidential information and
+should not be circulated or used for any purpose other than for what it is
+intended. If you have received this message in error, please notify the
+originator immediately. If you are not the intended recipient, you are
+notified that you are strictly prohibited from using, copying, altering, or
+disclosing the contents of this message. HSS accepts no responsibility for
+loss or damage arising from the use of the information transmitted by this
+email including damage from virus."
+
 
