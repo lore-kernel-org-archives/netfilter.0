@@ -1,7 +1,7 @@
 From: "primero@hdr-roma.it" <primero@fastwebnet.it>
 Subject: Re: NATTING for a whole network.
-Date: Fri, 10 Dec 2004 19:56:56 +0100
-Message-ID: <41B9F178.40109@hdr-roma.it>
+Date: Fri, 10 Dec 2004 19:58:39 +0100
+Message-ID: <41B9F1DF.4030102@hdr-roma.it>
 References: <4D7EBAB4CCB6DB4AB7EE598E9ED186950474D69B@asusfl45cex08.us-fl.cards.citicorp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -35,20 +35,18 @@ Irvin, Michael Thad wrote:
 >
 > 
 >
+>Michael "Thad" Irvin
+>Lead Analyst - Internet Engineering
+>Citibank Cards Technology
+>904.954.2213
+>michael.irvin@citicorp.com
+>
+>
 >  
 >
-Check out "MASQUERADE" target ;)
+sorry , reading again the message made me see that i've not understood 
+the problem cause you want to NAT to a complete lan address;)  ... i 
+should need some rest maybe :)
 
-with masquerade u can SNAT all comunication that "match" your rule with 
-the IP Address of output interface.
-
-so a rule like
-
-$ipt -t nat -A POSTROUTING -o $outside -j MASQUERADE
-
-should be the trick.
-
-Byez
-
-
+byez
 
