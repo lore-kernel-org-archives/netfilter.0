@@ -1,13 +1,13 @@
-From: "Jan Kaastrup" <jka@protego.dk>
-Subject: RE: Iptables and SNAT
-Date: Tue, 17 Feb 2004 15:39:37 +0100
+From: Marc Haber <mh+netfilter@zugschlus.de>
+Subject: Re: [despammed] port based filtering and IPsec 2.6
+Date: Tue, 17 Feb 2004 16:02:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c3f563$de6ba5b0$2d64a8c0@pcjka>
-References: <200402171428.52966.mark@vevers.net>
+Message-ID: <20040217150214.GB32337@torres.ka0.zugschlus.de>
+References: <20040114162623.GR4106@openoffice.nl> <20040117134519.GA4911@kaufbach.delug.de> <20040121153748.GA2715@openoffice.nl> <20040121154420.GH27986@torres.ka0.zugschlus.de> <20040121163130.GC2715@openoffice.nl> <20040121214643.GA1308@torres.ka0.zugschlus.de> <20040122124323.GA12974@openoffice.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200402171428.52966.mark@vevers.net>
+Content-Disposition: inline
+In-Reply-To: <20040122124323.GA12974@openoffice.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +18,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mark@vevers.net
+Content-Transfer-Encoding: 7bit
+To: Valentijn Sessink <valentyn+netfilter-users@nospam.openoffice.nl>
 Cc: netfilter@lists.netfilter.org
 
-Hi
-Thanks for the answer.
-I found out that recompiling the iptables with
-KERNEL_DIR=<my-kernel-source> did the trick!
+Hi Valentijn,
 
+sorry for not getting back to you for a long time, but there have been
+significant changes in my life recently :-(
 
------Original Message-----
-From: Mark Vevers [mailto:mark@vevers.net] 
-Sent: 17. februar 2004 15:29
-To: Jan Kaastrup
-Subject: Re: Iptables and SNAT
+On Thu, Jan 22, 2004 at 01:43:23PM +0100, Valentijn Sessink wrote:
+> At Wed, Jan 21, 2004 at 10:46:43PM +0100, Marc Haber wrote:
+> > > Why is that error prone? If your concern is putting out unencrypted packets
+> > > to certain networks, you can just use -p esp.
+> > My concern is that I'd need to maintain the list of networks that
+> > should be reached only via ipsec twice: Once in the ipsec setup, and
+> > once in the packet filter. With a dedicated interface, I'd only have
+> > to maintain it in the ipsec setup with the packet filter automatically
+> > following with rules on --out-int ipsecfoo.
+> 
+> That wouldn't help you with egress-filtering. You'd still need a rule to
+> prevent unencrypted packets going out to your eth0 interface.
 
+yes, but that rule would only contain interface names, and no IP
+addresses.
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+[Other stuff snipped, but kept for later reference. I won't need it at
+the moment, but maybe in a few months].
 
-On Tuesday 17 Feb 2004 11:03 am, you wrote:
-> Hi
-> I have iptable module loaded
-Ok - are you using RedHat's IP tables?  Or have you compiled
-your own and your own patch-o-matic additions?  - I've seen
-problems before where people have mixed & matched. On RH
-if using patch-o-matic patches and upgrading iptables to match
-I uninstall the iptables rpm, compile from a vanilla kernel and
-then add the patch-o-matic patches and then recompile the 
-userspace apps from scratch.
+> > Well, most systems make a tunnel look like a dedicated connection on a
+> > "virtual network interface". This makes sense, and is more natural to
+> > handle, IMO, than having to fiddle with marks in a number space that
+> > might already be populated for traffic shaping or policy routing.
+> 
+> I now understand. Yes, the concept is different and there is not enough
+> documentation about the table traversing of the packets. I did some testing
+> to find this out, but still have no 100% idea of the route packets take. A
+> nice ASCII drawing could really help here ;-)
 
-BTW You need to be careful using vanilla kernels with 
-multi-threaded apps on Fedora as it appears there are 
-problems with fedora and a kernel which doesn't have 
-NPTL support.  RH.9 seems not to mind even though the 
-vanilla kernel doesn't support NPTL.
+Yes, documentation is an issue. However, not having a virtual
+interface for the unencrypted packages will also break a lot of
+pcap-based applications, for example ippl and tcpdump. With 2.6 ipsec,
+it is not possible any more to debug on application level with
+tcpdump, since tcpdump only sees the encrypted packets - useless.
 
-Cheers
-Mark
-- -- 
-Mark Vevers.    mark@ifl.net / mark@vevers.net
-Principal Internet Engineer, Internet for Learning,
-Research Machines Plc. (AS5503)
-- --
-GPG Key: http://pgp.mit.edu:11371/pks/lookup?op=get&search=0xB08F3CA3
-Fingerprint: 85BA 30C4 9EC8 1792 4C8C   C31E 58B5 3D1C B08F 3CA3
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+Greetings
+Marc
 
-iD8DBQFAMiUjWLU9HLCPPKMRAi0wAJ9/8W/vNs6+jP70KGtvMc8mQkOongCcCp5Y
-DQnQ4zyWomkhPaW0gj26rJk=
-=C7Qg
------END PGP SIGNATURE-----
-
-
+-- 
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Karlsruhe, Germany |  lose things."    Winona Ryder | Fon: *49 721 966 32 15
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 721 966 31 29
 
