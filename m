@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Logging source mac address
-Date: Sun, 3 Oct 2004 01:26:23 -0400
+From: "www.piratehosting.net" <webmazter@gmail.com>
+Subject: ipconntrack
+Date: Sun, 3 Oct 2004 02:41:42 -0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200410030126.23983.Alistair@nerdnet.ca>
-References: <414B19D30064B70D@vsmtp12.tin.it> (added by postmaster@virgilio.it)
+Message-ID: <e73cec800410030141797418ff@mail.gmail.com>
+Reply-To: "www.piratehosting.net" <webmazter@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <414B19D30064B70D@vsmtp12.tin.it>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,38 +19,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On October 2, 2004 05:24 pm, mlist@libero.it wrote:
-> Hi
->
-> I installed Fedora core 2 and configured iptables with Guarddog and all
-> works correctly (I know to configure iptables manually is better but I need
-> to study it before manually write a configuration file).
-> My problem is that I need to know if is possible or not always logging
-> source mac address. With guarddog I tried all log levels ("debug", "alert",
-> "critical") but the problem is that mac address is not always registered.
-> Is there a way to log in all conditions (not only with drop or reject) the
-> source mac address???
->
-	You do realize that you can only see the MAC address if you happen to be 
-connected to the same network segment -- okay make that physical connection 
--- as the other end of the connection?  (there are instances of bridged 
-networks where you won't see mac from other end even on the same segment)
+i run 2 irc servers for a small hosting company.
+ip contrack gets full all the time no matter what limits i set 
+echo 40192 > /proc/sys/net/ipv4/ip_conntrack_max
 
-	You will NOT be able to see the MAC address of the other end of a connection 
-if it has been routed.   Although you might see a MAC address in say 
-ethereal, it will be the MAC address of the other end of that physical hop -- 
-i.e. the next router in the link.
+My question is:
+can i safely remove ip conntrack all together?
+rmmod ip_conntrack
+rmmod ip_conntrack_ftp
+rmmod ip_conntrack_irc
+rmmod ip_conntrack
+rmmod ipt_state
 
-	( I think I said that straight --- but I'm kinda sleepy)
+I dont really understand what it does but the table keep filling up im
+sure its some kinda attact on my servers.
+does it do anything at all i use a simple firewall (apf) and only these rules.
+in
+/etc/sysctl.conf
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+net.ipv4.icmp_echo_ignore_all = 1
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+net.ipv4.tcp_syncookies = 1
 
-	Alistair Tonner
-
-> Thanks a lot
-> Marco
-> Italy
->
-> ---
-> Outgoing mail is certified Virus Free.
-> Checked by AVG anti-virus system (http://www.grisoft.com).
-> Version: 6.0.771 / Virus Database: 518 - Release Date: 28/09/2004
+-- 
+www.piratehosting.net
 
