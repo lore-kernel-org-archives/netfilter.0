@@ -1,11 +1,16 @@
-From: John McMonagle <johnm@advocap.org>
-Subject: Allowing ping cauing problems with udp
-Date: Thu, 24 Jun 2004 10:27:14 -0500
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: ACK,RST getting dropped in the firewall.
+Date: Thu, 24 Jun 2004 11:48:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40DAF2D2.9090706@advocap.org>
+Message-ID: <1088092124.2029.28.camel@grendel>
+References: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org>
+	 <200406241144.10450.Antony@Soft-Solutions.co.uk>
+	 <1088084177.2029.8.camel@grendel>
+	 <200406241454.28088.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200406241454.28088.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,86 +20,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Think I have found a bug in either netfilter or the 2.6.6 kernel.
+On Thu, 2004-06-24 at 09:54, Antony Stone wrote:
+>
+> > > No harm done though, because the first one has done the job.
+> >
+> > Actually not quite true as both sides will enter a fin-wait state (RFC
+> > 793 page 20) till the second FIN/ACK-ACK exchange takes place.
+> 
+> Depends what you mean by "done the job".   I meant the phrase in the sense of 
+> "no more data is going to pass across the connection".
 
-Main system I'm testing is using debian sarge.
-kernel 2.6.6-1-386
-iptables v1.2.9
+I *think* this may be the point of confusion. A FIN/ACK only means that
+the _sender_ is done transmitting data, To quote from 793:
 
-Did the same with
-kernel  2.6.5-1-386
+"The user who CLOSEs may continue to RECEIVE until he is told that the
+other side has CLOSED also.  Thus, a program could initiate several
+SENDs followed by a CLOSE, and then continue to RECEIVE until signaled
+that a RECEIVE failed because the other side has CLOSED."
 
-Also same problem on a similar k7 system.
+So just because one side of the connection issues a FIN/ACK, it does not
+mean the session is over. The other side of the session may have a lot
+more data to transmit so the session can stay active for some additional
+period of time. Here in lies out problem. Netfilter is reacting to the
+first FIN/ACK and killing off the session before the other end finishes
+communicating and issues it's own FIN/ACK. 
 
-Also the same on Fedora core 2 with 2.6.6 kernel
-Also tried different version of nmap.
+The problem *appears to be* (based on my limited testing) in how the
+timer is implemented. In an ESTABLISHED state there is a 5 day timer
+that gets reset when ever a new packet crosses the firewall. The FIN/ACK
+timer seems to be an absolute timer that kicks off at the first FIN/ACK
+and continues to count down regardless of whether the session is still
+active or not. If it acted more like the ESTABLISHED timer, this problem
+would go away.
 
-I'm working on a new firewall.
-While testing nmap reported that all udp ports were open :-(
-Any I mean ALL tested ports.
+I can understand wanting a low timer to conserve resources. At the same
+time however its killing legitimate RFC compliant sessions. :(
 
-Finally figured out allowing ping was doing it.
+HTH,
+Chris
 
-Here is a test script:
-#!/bin/bash
-#
-# flush all the rules in the filter and nat tables.
-#
-/sbin/iptables -F
-/sbin/iptables -t nat -F
-#
-# erase all chains that's not default in filter and nat table.
-/sbin/iptables -X
-/sbin/iptables -t nat -X
-#
-/sbin/iptables -P INPUT DROP
-/sbin/iptables -P FORWARD ACCEPT
-/sbin/iptables -P OUTPUT ACCEPT
-/sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-/sbin/iptables -A INPUT -p TCP --dport ssh -j ACCEPT
-/sbin/iptables -A INPUT -p ICMP  --icmp-type 8 -j ACCEPT
-#
-# reset the default policies in the nat table.
-#
-/sbin/iptables -t nat -P PREROUTING ACCEPT
-/sbin/iptables -t nat -P POSTROUTING ACCEPT
-/sbin/iptables -t nat -P OUTPUT ACCEPT
 
-Only the icmp rule is needed in INPUT to cause the problem.
 
-nmap -sU -p 1-10 -PI -PT fw
-Starting nmap 3.50 ( http://www.insecure.org/nmap/ ) at 2004-06-24 09:18 CDT
-Interesting ports on fw (192.168.101.254):
-PORT   STATE SERVICE
-1/udp  open  tcpmux
-2/udp  open  compressnet
-3/udp  open  compressnet
-4/udp  open  unknown
-5/udp  open  rje
-6/udp  open  unknown
-7/udp  open  echo
-8/udp  open  unknown
-9/udp  open  discard
-10/udp open  unknown
 
-Nmap run completed -- 1 IP address (1 host up) scanned in 0.950 seconds
-
-Only did 1-10 believe me they are all shown as open!
-
-Without icmp rule no ports open.
-
-Starting nmap 3.50 ( http://www.insecure.org/nmap/ ) at 2004-06-24 09:33 CDT
-Note: Host seems down. If it is really up, but blocking our ping probes, 
-try -P0
-Nmap run completed -- 1 IP address (0 hosts up) scanned in 12.053 seconds
-
-Also should note they really are not open. I have named running and was 
-unable to access it.
-
-Any way to fix this?
-
-John
 
