@@ -1,14 +1,14 @@
-From: Tom Eastep <teastep@shorewall.net>
+From: David Cary Hart <dch@TQMcube.com>
 Subject: Re: Shorewall vs. Iptables
-Date: Thu, 12 Feb 2004 13:56:56 -0800
+Date: Thu, 12 Feb 2004 17:17:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402121356.56294.teastep@shorewall.net>
+Message-ID: <1076624237.3037.26.camel@dchws.TQMcube.com>
 References: <004201c3f1af$b16d7fa0$2405010a@rsa>
+	 <200402121356.56294.teastep@shorewall.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-qp4Wyd6H1LpWFQqkAgT5"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004201c3f1af$b16d7fa0$2405010a@rsa>
-Content-Disposition: inline
+In-Reply-To: <200402121356.56294.teastep@shorewall.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +18,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ray Anderson <rsa@prideindustries.com>, netfilter@lists.netfilter.org
+To: Tom Eastep <teastep@shorewall.net>
+Cc: Ray Anderson <rsa@prideindustries.com>, Netfilter Users' List <netfilter@lists.netfilter.org>
 
-On Thursday 12 February 2004 01:32 pm, Ray Anderson wrote:
-> Is any one better than the other?
->
-> I'm currently running a RedHat box that's soon to be replaced with a
-> Mandrake machine.  Of course I threw out the Shorewall stuff in favor of
-> manually implementing the same Iptables ruleset(s) that I have for the RH
-> machine.
 
-Who wouldn't? :-)
+--=-qp4Wyd6H1LpWFQqkAgT5
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Actually, I recommend against using the Mandrake Shorewall two-interface 
-configuration.
+On Thu, 2004-02-12 at 16:56, Tom Eastep wrote:
 
-a) it matches my documentation enough that cutting and pasting from the 
-documentation doesn't produce errors; but
-b) it is different enough that the such cutting and pasting doesn't produce 
-the desired results.
+> My opinion is far from unbiased but here goes. Shorewall is a high-level =
+tool=20
+> for configuring netfilter. It uses the iptables utility to do so. As a=20
+> result, it cannot offer any more protection than the iptables utility use=
+d=20
+> alone can provide.
+>=20
+Correct me if I am wrong but Shorewall only works properly on a
+dedicated box. In other words, if you are running netfilter on the same
+machine as a server then Shorewall doesn't work properly.
 
->
-> Does Shorewall give any more protection or is it a simply complicated
-> front-end to iptables?
+--=-qp4Wyd6H1LpWFQqkAgT5
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-My opinion is far from unbiased but here goes. Shorewall is a high-level tool 
-for configuring netfilter. It uses the iptables utility to do so. As a 
-result, it cannot offer any more protection than the iptables utility used 
-alone can provide.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-As for being complicated, if you already understand iptables then Shorewall 
-would be something else to learn. If you don't, then most people find 
-Shorewall easier to learn. I definitely believe it to be easier to set up 
-complex router/firewall configurations using Shorewall than it is using 
-iptables directly unless you have spent a long time developing your own very 
-flexible firewall/router framework (in other words, your own Shorewall-like 
-facility).
+iD8DBQBAK/ttol4OE0cpGaIRAjXuAJwPTjcG2Fw6L0xFER2kIstJdAezNACfYOlh
+LrQoLksaOvoKtytenHf9R9Y=
+=KQCq
+-----END PGP SIGNATURE-----
 
--Tom
--- 
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
-
+--=-qp4Wyd6H1LpWFQqkAgT5--
 
 
