@@ -1,8 +1,8 @@
-From: "Leonardo Rodrigues ( listas )" <leolistas@solucoesip.net>
-Subject: detect portscans in DNATed ports
-Date: Thu, 10 Oct 2002 09:33:59 -0300
+From: Julio Cesar Ody <julioody@bol.com.br>
+Subject: making services invisible
+Date: Thu, 10 Oct 2002 10:13:52 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004001c27059$4ede7fc0$3201a8c0@leonardo>
+Message-ID: <3DA57D10.8040904@bol.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,26 +15,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter ML <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+Hello. I'm using Slackware 8.1, kernel 2.4.18 and iptables v1.2.7a. I 
+blocked external acess to some services using the following rule:
+
+iptables -A INPUT -i ! eth0 -p tcp -m multiport --destination-port 
+<port1>,<port2>,<blablabla> -j REJECT
+
+However, when I perform a stealth scan using nmap on my host, I still 
+can see them running, but instead of "opened" I get them as "filtered". 
+Is there a way to block these results, making the services literally 
+invisible ? Appreciate any help, and also any technical information 
+(links, docs) regarding the answer.
 
 
-    Hello Guys,
 
-    I've a firewall script that deals with portscan in its external
-interface. I'm doing that using psd module, which works just fine for this
-situation. psd module is being called on INPUT rule.
-
-    Altough it works absolutely fine when someone tries to portscan the
-firewall, it seems to show all DNATed ports on the scanner. I'm sure it's
-doing that because no DNATed packet reached INPUT rule, where psd is being
-applied.
-
-    Question is: in which chain/rule should I use psd module to get portscan
-in DNATed ports ?? I was thinking in doing this on NAT OUTPUT .... what do
-you think ?
-
-    Sincerily,
-    Leonardo Rodrigues
+Julio Cesar Ody
 
 
