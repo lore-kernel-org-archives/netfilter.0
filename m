@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <John.Sullivan@nexusmgmt.com>
-Subject: Re: SNAT
-Date: Fri, 09 Jul 2004 00:58:33 -0400
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Is Linux based Gateway/Firewall feasible
+Date: Fri, 09 Jul 2004 09:46:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40EE25F9.2010806@nexusmgmt.com>
-References: <f51b72bc04070820577fd223df@mail.gmail.com>
+Message-ID: <1089359194.1993.3.camel@anduril.intranet.cartel-securite.net>
+References: <Pine.LNX.4.44.0407081537580.3962-100000@Megathlon.ESI>
+	 <40ED5A89.1040002@svw.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <f51b72bc04070820577fd223df@mail.gmail.com>
+In-Reply-To: <40ED5A89.1040002@svw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +18,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Payal Rathod <payalrathod@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Sudheer Divakaran <sudheer@svw.com>
 Cc: netfilter@lists.netfilter.org
 
+Le jeu 08/07/2004 =E0 16:30, Sudheer Divakaran a =E9crit :
+>     If I'have mislead anyone, I'm Sorry.  I was talking about NATing.
+
+Definitly use Linux then. From all the firewalls I tested and used,
+Netfilter is the most complete, efficient and easy-going NAT solution I
+ever seen. You can perform any kind of NAT you want, either for good or
+baaaaaaad stuff :P
 
 
-Payal Rathod wrote:
-> Hi,
-> While reading man page of iptables I stumbled in MASQUERADE section,
-> 
-> | This  target  is only valid in the nat table, in the POSTROUTING chain.
-> |  It should only be used with dynamically assigned  IP  (dialup)  connec-
-> |  tions: if you have a static IP address, you should use the SNAT target.
-> 
-> Can someone explain please why this is not valid when I am using a
-> permanent conneciton terminating at say eth0 and also a small example
-> on how SNAT can be used in the place?
-> 
-> Thanks a lot in advance.
-> With warm regards,
-> Payal
-It is indeed valid, it is just slower than SNAT.  MASQUERADE must look 
-up the address for each packet it alters (or so I believe).  That is why 
-it can be used on connections which do not have a static IP address.  If 
-one has a static IP address, one can save the overhead by using SNAT.
-
-You'll find an excellent tutorial by Oskar Andreasson at 
-http://www.netfilter.org in the tutorials section.  You can also find a 
-training slide show in the training section at 
-http://iscs.sourceforge.net.  Good luck - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
