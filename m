@@ -1,12 +1,11 @@
-From: Mikhail Zotov <e-boogie@yandex.ru>
-Subject: Re: Dropping network "noise"
-Date: Wed, 16 Feb 2005 10:34:50 +0300
-Message-ID: <200502161034.50448.e-boogie@yandex.ru>
-References: <200502130928.41225.e-boogie@yandex.ru>
-	<20050215161520.GA19496@bender.817west.com>
+From: rowdy <rowdy@fishpuppy.com>
+Subject: Re: IPSec through my firewall
+Date: Wed, 16 Feb 2005 01:29:26 -0800
+Message-ID: <200502160129.26423.rowdy@com>
+References: <200502151715.j1FHFtfO029324@pepsi.fishpuppy.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050215161520.GA19496@bender.817west.com>
+In-Reply-To: <200502151715.j1FHFtfO029324@pepsi.fishpuppy.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,37 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tuesday 15 February 2005 19:15, Jason Opperisano wrote:
-> On Sun, Feb 13, 2005 at 09:28:41AM +0300, Mikhail Zotov wrote:
-> > I have a Linux machine (with a static routable IP address)
-> > connected to a windoops LAN.  As is known, there is certain
-> > "noise" in windoops networks, which can be silently dropped
-> > by a rule like this:
-> > 
-> > iptables -A INPUT -p udp --dport 135:139 -j DROP
-> > 
-> > I have found that this "noise" can also be effectively blocked
-> > by the following rule:
-> > 
-> > iptables -A INPUT -d ! $IP.ADDRESS.OF.MY_BOX -j DROP
-[snip]
-> you can also use the pkttype match to drop broadcast/multicast traffic,
-> without having to calculate the broadcast address for every interface,
-> and having another rule for the all-ones broadcast:
-> 
->   -m pkttype --pkt-type broadcast -j DROP
->   -m pkttype --pkt-type multicast -j DROP
-> 
-> -j
+On Tuesday 15 February 2005 09:15, Ola Nilsson wrote:
+> I've got problems with getting IPSec (using NAT-T) traffic through my
+> Linux 2.6.10 based firewall. I've now changed my iptables script to
+> something rather simple:
+>
+> iptables -P INPUT ACCEPT
+> iptables -P OUTPUT ACCEPT
+> iptables -P FORWARD ACCEPT
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-Great.  Thanks a lot for the idea.  These rules call another question:
-Are broadcast/multicast messages used in Linux/UNIX or other than
-windoops networks?  If so, will not these rules break anything?
-I haven't seen such rules in any iptables guides/scripts available in
-the Internet.
+I've been struggling with this as well.  Take a look at 
+http://www.freeswan.org/freeswan_snaps/CURRENT-SNAP/doc/firewall.html .
 
-Regards,
-Mikhail
+I used this query to find this link and a number of others that could be 
+helpful: "esp ipsec firewall rule"
+
+I added rules like the following (but to user chains that I then added to the 
+input, output and forward chains) to solve my hassles (clipped from the 
+freeswan link above):
+ 
+# allow IPsec
+#
+# IKE negotiations
+iptables -I INPUT  -p udp --sport 500 --dport 500 -j ACCEPT
+iptables -I OUTPUT -p udp --sport 500 --dport 500 -j ACCEPT
+# ESP encryption and authentication
+iptables -I INPUT  -p 50 -j ACCEPT
+iptables -I OUTPUT -p 50 -j ACCEPT
+
+Good luck.
 
