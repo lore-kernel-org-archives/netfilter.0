@@ -1,13 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: zynkx <skydive@megamail.pt>
 Subject: Re: (no subject)
-Date: Wed, 26 Nov 2003 22:36:39 +0000
+Date: Wed, 26 Nov 2003 22:41:18 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311262236.39590.Antony@Soft-Solutions.co.uk>
-References: <1069853846.3fc4ac966be15@paris-hme1> <1069880102.3fc513260c677@paris-hme1> <3FC51BC8.1000403@Loudoun-Fairfax.com>
+Message-ID: <1069886478.3fc52c0e61202@paris-hme1>
+References: <1069853846.3fc4ac966be15@paris-hme1>
+ <20031126151015.GB4486@cannon.eng.us.uu.net>
+ <1069879109.3fc50f45e7331@paris-hme1>
+ <200311262048.49827.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FC51BC8.1000403@Loudoun-Fairfax.com>
+In-reply-to: <200311262048.49827.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +20,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 26 November 2003 9:31 pm, Jeffrey Laramie wrote:
+antony:=20
 
-> zynkx wrote:
-> >hi again Antony:
-> >
-> >you just said it all. no use for me to add not even
-> >one line to what you just wrotte :))
-> >
-> >now if anyone has got those masks i would appreciate
-> >it :))
-> >
-> >tanx again and sorry for this mess ;)))
+the only reason why i am doing this is because i am=20
+blocking all incoming connectios to my box except=20
+portuguese connections. i manage to get all the=20
+portuguese ip ranges, put the forward chain to drop=20
+and a accepted all the sources i want to get=20
+connections from. this way i will only be accepting=20
+connetions from portugal, since that the ammount of=20
+users i administrate is not enough for that machine to=20
+be opened to the whole world.=20
+
+there are in fact lots of users expecting mail to come=20
+=66rom those 2 most known smtps, so this forces me to=20
+accept connectiosn from those domains :))
+
+the way i see it, filtering with qmail doesn=B4t make=20
+any sense, because what i want is not to filter but to=20
+accept :)))
+
+please call back to earth if this thoughts are not=20
+quite right :))) i will be greatfull
+
+thank you very much for your time and for your=20
+words ;))
+
+ZyNkz
+
+C=F3pia Antony Stone <Antony@Soft-Solutions.co.uk>:
+
+> On Wednesday 26 November 2003 8:38 pm, zynkx
+> wrote:
 >
-> zynkx:
+> > hi Ramin and tanx for your trouble ;))
+> >
+> > what i am looking for is the adresses from
+> hotmail and
+> > yahoo from wich smtp connections may come
+> from :)
+> >
+> > i have a smtp running and i need to allow
+> traffic
+> > coming from these two, (hotmail and yahoo).
 >
-> If your mail server is running qmail, then your best bet is to read the
-> qmail documentation and learn how to apply filters for the mail server.
-> If you do use iptables, you will need to create a FORWARD rule to allow
-> mail from each of the smtp servers that Ramin listed. Since any message
-> from a Yahoo or Hotmail account will be sent from one of those servers
-> you don't *have* to know every ip range that they've been assigned. The
-> only problem doing it this way is if they change smtp server IPs you'll
-> need to change your rules. I would do this with qmail if I were you.
-
-I agree, and zynkx, I can't tell you how to do this with qmail because I'm a 
-sendmail person.   Do what Jeff suggests and look at the qmail documentation, 
-and if it's not clear ask on a qmail list.
-
-I really think you should not try doing this by IP address because those may 
-change and you won't find out until things start going wrong.
-
-> Antony:
+> I'm not quite sure why you want to accept email
+> only from Hotmail and Yahoo,
+> and from nowhere else (a lot of people I know
+> do the exact opposite!),
+> however I still think an easier solution to
+> your erquirement is to accept all
+> email through your firewall, and then accept
+> only mail from Hotmail / Yahoo
+> on your mail server - because that can select
+> based on the sender's address,
+> without needing to know the IPs of their mail
+> servers (which may change one
+> day without you knowing).
 >
-> It sounds like you have the "We're behind schedule and you got to get
-> this done before the holidays blues!"
+> Antony.
+>
+> --
+> If at first you don't succeed, destroy all the
+> evidence that you tried.
+>
+>                                               =20
+>      Please reply to the list;
+>                                               =20
+>            please don't CC me.
+>
+>
+>=20
 
-Not quite - the satellite link got installed very suddenly (phone call Friday, 
-two men and a long ladder on Monday...) and we now have a month to evaluate 
-it and see if it's a suitable replacement for the leased line - so I have to 
-get as much of it working as possible so people can test it properly.
 
-Antony.
 
--- 
-The truth is rarely pure, and never simple.
+unix is user friendly. it's just selective when=20
+choosing=20
+friends.
 
- - Oscar Wilde
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+-------------------------------------------------
+Email Enviado utilizando o servi=E7o MegaMail
 
 
