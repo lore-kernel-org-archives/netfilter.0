@@ -1,10 +1,9 @@
-From: Peter Schobel <pschobel@porchlight.ca>
-Subject: Problem with Transparent Proxy, Squid and 2.6 kernel
-Date: Wed, 7 Jan 2004 12:44:26 -0500
+From: "Martin Leduc" <marled3@hotmail.com>
+Subject: Re: Problem behind my DMZ
+Date: Fri, 09 Jan 2004 02:19:54 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2307E2C1-4139-11D8-AFEE-000393677A36@porchlight.ca>
-Mime-Version: 1.0 (Apple Message framework v553)
-Content-Transfer-Encoding: 7bit
+Message-ID: <Law9-F44y5JrmDLaA4J00011e46@hotmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,119 +15,119 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: ramin@cannon.eng.us.uu.net, Antony@Soft-Solutions.co.uk
+Cc: netfilter@lists.netfilter.org
 
-I have a server that was running a transparent redirection proxy - i 
-was using 2.4.20 kernel on this system and i recently upgraded to 
-2.6.0.107 kernel package for redhat 9
+Good evening folks,
 
-Ever since i did the kernel upgrade the proxy does not work correctly.
+Sorry to answer you so late, and thank you for your informations.  I'm so 
+exited, I have make test and, basicly, it's working.  Tomorow is the 
+official test.  I keep you informed.
 
-As far as I know, the kernel is configured properly
+The only thing I can't figure out is the /32 netmask address for an address 
+having a /28.  Why dont put the /28?
 
-lsmod shows these iptables modules
+Of course I try it but the route program have reject this entries.  Can you 
+explain to me?
 
-Module                  Size  Used by
-ipt_REDIRECT            2048  0
-iptable_nat            20140  1 ipt_REDIRECT
-ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
-iptable_filter          2688  0
-ip_tables              15104  3 ipt_REDIRECT,iptable_nat,iptable_filter
+Other thing.  It is possible than I can't reach other machine placed before 
+the firewall BOX having address IP in the same range than my firewall box 
+after having put the /32 host in my route table?
 
-my INPUT, FORWARD and OUTPUT policies are all set to accept
+Example:
+192.168.1.1  ISP GAteway
+192.168.1.2  Server (Any kind)
+192.168.1.3  Firewall BOX (Eth0)
+192.168.1.3  Firewall BOX (eth1)
+192.168.1.4  Server Behind Firewall BOX
 
-iptables -L
+Ping Test result
+---------------------------
+192.168.1.4 can reach 192.168.1.3
+192.168.1.4 can reach 192.168.1.1
+192.168.1.4 can't reach 192.168.1.2
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
+In the same test
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+192.168.1.2 can reach 192.168.1.1
+But not 1.3 and 1.4
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+I ask that because if I check my DSL route table, I see the same 
+configuration like
 
-I am using this iptables rule
+Destination     Gateway         Genmask         Flags Metric Ref    Use 
+Iface
+67.68.140.1     0.0.0.0         255.255.255.255 UH    0      0        0 ppp0
+192.168.1.1   0.0.0.0         255.255.255.0   U     0      0        0 eth0
+127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
+0.0.0.0         67.68.140.1     0.0.0.0         UG    0      0        0 ppp0
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
---to-port 3128
+I can ping 67.68.140.1, .2, .3, .4, .5, etc....
 
-my nat table looks like this
+Can you explain?
 
-iptables -t nat --list
 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-REDIRECT   tcp  --  anywhere             anywhere           tcp 
-dpt:http redir ports 3128
+Now the configuration :D
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
+This is the prompt command I have and will do, for other who using Slackware 
+(and for me is a test to see if I understand correctly ;) ):
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+We asume my ISP router is 20.0.0.14/28
 
-ip forwarding is enabled
+On the Firewall BOX
 
-cat /proc/sys/net/ipv4/ip_forward
-1
+1- Connect your ISP gateway RJ-45 cable to your eth0 NIC
+2- Connect your Server Switch in your eth1 NIC
 
-squid is running on 3128 - the squid config looks like this
+On the Firewall shell
 
-acl all src 0/0
+#Clean your interface and the route table
+ifconfig eth0 down
+ifconfig eth1 down
 
-visible_hostname proxyhost.porchlight.ca
+#Configure the both NIC using your public address you choose
+ifconfig eth0 20.0.0.1 netmask 255.255.255.240 broadcast 20.0.0.15
+ifconfig eth1 20.0.0.1 netmask 255.255.255.240 broadcast 20.0.0.15
 
-http_port 3128
+#Change your route setting
+route del -net 20.0.0.0/28 eth0
+route add -host 20.0.0.14/32 eth0
 
-no_cache deny all
+#Set your firewall your ISP default Gateway
+route add default gw 20.0.0.14
 
-redirect_program /usr/local/bin/redirector.pl
-redirect_children 5
-redirect_rewrites_host_header on
-redirector_access allow all
+#Test
+ping 20.0.0.14
 
-http_access allow all
-http_reply_access allow all
+(Should Work)
 
-httpd_accel_port 80
-httpd_accel_host virtual
-httpd_accel_with_proxy on
-httpd_accel_uses_host_header on
+#On your server shell
 
-This configuration has not changed since before the kernel upgrade 
-except that there were a couple of rules preventing proxy access to the 
-outside world which I removed in order to make things as simple as 
-possible for debugging purposes
+#Clean your interface and the route table
+ifconfig eth0 down
 
-I can see by running snort that the packets destined for the remote 
-host are arriving on the interface
+#Configure with your other public ip address
+ifconfig eth0 20.0.0.2 netmask 255.255.255.240 broadcast 20.0.0.15
 
-I can see using "iptables -t nat --list -v -n" that the number of 
-packets on the REDIRECT rule gets incremented by 1 each time I try to 
-access a remote site - but the browser just times out waiting for a 
-reply and the squid access.log does not record the access
+#Configure the default route
+route add defaut gw 20.0.0.1
 
-If i type http://proxyhost.porchlight.ca into the address bar of the 
-browser, the port redirect works perfectly and squid redirects the 
-traffic to the proxied site without problem - it is only when I attempt 
-to access remote sites that the redirection does not work.  As I 
-mentioned before - this was all working and tested previous to the 
-kernel upgrade.
+#Test
+ping 20.0.0.14
 
-I've been struggling with this for a couple days now.  Does anyone have 
-any idea why this configuration is not working?
+(Should Work)
 
-Thx in advance,
+I'll tell you tomorow if it's work!, it's work on public address 
+(192.168.0.1).  I dont think that will not work.
 
-*****************************
-Peter Schobel
-Network Administrator
-Porchlight.ca
-Unlimited Internet
-*****************************
-In a world without walls or fences
-We will have no need for gates or windows
-*****************************
+All the rest is done by the FORWARD filter rule, use the state rules to 
+allow on each machine only what you want.
+
+Martin
+
+_________________________________________________________________
+MSN Messenger : discutez en direct avec vos amis !  
+http://messenger.fr.msn.ca/
 
 
