@@ -1,13 +1,12 @@
-From: Patrick Schaaf <bof@bof.de>
-Subject: Re: Chain tests
-Date: Sun, 2 Jun 2002 20:15:41 +0200
+From: "Santiago Gutierrez" <santiagog@wi-net.net>
+Subject: I cannot apply newnat/h323 patch
+Date: Sun, 2 Jun 2002 14:24:06 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020602201541.E12326@oknodo.bof.de>
-References: <Pine.LNX.4.40.0206021920280.5006-100000@syrius.myhome>
+Message-ID: <000401c20a6b$10c639c0$cc07a8c0@winet.net>
+Reply-To: <santiagog@wi-net.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.40.0206021920280.5006-100000@syrius.myhome>; from mkrzych@kki.net.pl on Sun, Jun 02, 2002 at 07:30:27PM +0200
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,20 +17,28 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Maj Krzysztof <mkrzych@kki.net.pl>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Hello Krzysztof,
+Hi, I am following the steps of the patch-o-matic to install iptables-1.2.6a
+but I can not apply the  newnat/h323 patch.
+That I need to do?
+I have kernel 2.4.18-4 installed.
 
-> How I can test iptables chain rules, ipchains has a '-C' option, but netfilter?
+This it is the message that appears to me when I make the test.
+Thanks,
 
-I vaguely remember two discussions on this topic. About three and seven
-days ago. Maybe a look at the archive could help you?
+Santiago
 
-Short summary: -C is not supported by iptables.
-
-regards
-  Patrick
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] t
+Testing patch newnat/h323-conntrack-nat.patch...
+   Placed new Config.in line
+   Placed new Config.in line
+   Placed new Configure.help entry
+   Placed new Makefile line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?]
 
 
