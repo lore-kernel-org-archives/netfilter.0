@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: how to block packets with specific words inside udp datagram???
-Date: Sun, 12 Oct 2003 18:19:55 +0200
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: Invalid friggen argument
+Date: Sun, 12 Oct 2003 10:44:54 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065975594.4914.46.camel@elendil.intranet.cartel-securite.net>
-References: <000d01c390d6$89b13900$0201a8c0@leonardo>
+Message-ID: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com>
+References: <200310120141.15894.Herman@AerospaceSoftware.com>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000d01c390d6$89b13900$0201a8c0@leonardo>
+In-reply-to: <200310120141.15894.Herman@AerospaceSoftware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Piotr P." <peterp@poczta.onet.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Herman@AerospaceSoftware.com, netfilter@lists.netfilter.org
 
-Le dim 12/10/2003 =E0 17:35, Piotr P. a =E9crit :
->     Kazza jump over ports, and hosts (if yopu block destinations to
-> kazza.com, rr1.kazza.com & rr2.kazza.com kazza uses ip's of other users=
- that
-> was cached during last downloading anything from anyone). The key is, k=
-azza
-> use tah same word "KaZaA" inside an uupd datagram. Does any body know h=
-ow to
-> block traffic with this word using iptables?
+I don't think you have a versioning problem.  Some of the more recent
+releases of netfilter are more sensitive about arguments and argument
+ordering I have found.  Are you able to slip in a destination address into
+that rule:
 
-You should have a look to string match that is available in
-patch-o-matic. It will allow you to match an arbitrary string within
-packet payload.
+iptables -t nat -A PREROUTING -i eth1 -p tcp -d xxx.xxx.xxx.xxx --dport 6390
+\
+ -j DNAT --to 192.168.10.245
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+It may be looking for a dest address.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Herman
+Sent: Sunday, October 12, 2003 12:41 AM
+To: netfilter@lists.netfilter.org
+Subject: Invalid friggen argument
+
+
+Hi everybody,
+
+I am trying to get port forwarding to work.  I had it working some time ago
+gawdknows what changed...
+
+Now, I get this result with iptables 1.2.7a-2mdk and with 1.2.9rc1:
+
+# iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 6390 \
+ -j DNAT --to 192.168.10.245
+iptables: Invalid argument
+
+I can cut and paste a line from a howto and I still get 'invalid argument' -
+grrr...
+
+Any ideas?
+
+Cheers
+--
+Herman
+
+
 
