@@ -1,13 +1,13 @@
-From: Patrick Dung <patrick_dkt@yahoo.com.hk>
-Subject: Re: How to use netfilter to do static IP mapping?
-Date: Fri, 24 Sep 2004 16:17:37 +0800 (CST)
+From: Javier Sanchez <sjllera@ya.com>
+Subject: Re: Urgent Request
+Date: Fri, 24 Sep 2004 14:48:02 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040924081737.46229.qmail@web51806.mail.yahoo.com>
-References: <1096009057.9581.68.camel@wolfpack.ljm.dom>
+Message-ID: <1096030082.12444.0.camel@horus>
+References: <200409231635.AEM39648@mailhost.interdata.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1096009057.9581.68.camel@wolfpack.ljm.dom>
+In-Reply-To: <200409231635.AEM39648@mailhost.interdata.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,53 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="big5"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: cvonhausen@cimatelecom.com
+Cc: netfilter@lists.netfilter.org
 
-VGhhbmtzLCB0aGF0IHJvY2tzLgoKUmVnYXJkcwpQYXRyaWNrCgogLS0tIEphc29uIE9wcGVyaXNh
-bm8gPG9waWVAODE3d2VzdC5jb20+IKS6rmWhRwo+IE9uIFRodSwgMjAwNC0wOS0yMyBhdCAyMzoy
-NCwgUGF0cmljayBEdW5nIHdyb3RlOgo+ID4gRGVhciBBbGwKPiA+IAo+ID4gVGhpcyBpcyB3aGF0
-IEkgd2FudDoKPiA+IAo+ID4gZXRoMCBhcyBpbnRlcm5ldCAoMS4xLjEuMSkKPiA+IGV0aDEgYXMg
-ZG16ICgxMC4xLjEuMSkKPiA+IAo+ID4gZG16IGhhcyBhIHdlYiAoMTAuMS4xLjIpIGFuZCBkbnMg
-KDEwLjEuMS4zKSBzZXJ2ZXIKPiA+IHdpdGggcHJpdmF0ZSBJUC4KPiA+IFRoZSBuZXRmaWx0ZXIg
-Zncgd2lsbCBkbyB0aGUgc3RhdGljIElQIChwdWJsaWMgdG8KPiA+IHByaXZhdGUpIElQIG1hcHBp
-bmcuCj4gPiBBdmFsaWFibGUgcHVibGljIElQIChleGFtcGxlKToKPiA+IDEuMS4xLjEgKGV0aDAp
-LCAxLjEuMS4yIChmb3Igd2ViKSwgMS4xLjEuMyAoZm9yCj4gZG5zKQo+ID4gCj4gPiBOb3cgSSBo
-YXZlIHRoZXNlIHJ1bGVzOgo+ID4gCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAt
-aSBldGgwIC1kIDEuMS4xLjIKPiAtcAo+ID4gdGNwIC0tZHBvcnQgODAgLWogRE5BVCAtLXRvIDEw
-LjEuMS4yOjgwCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgwIC1kIDEu
-MS4xLjMKPiAtcAo+ID4gdWRwIC0tZHBvcnQgNTMgLWogRE5BVCAtLXRvIDEwLjEuMS4zOjUzCj4g
-PiAKPiA+IFRoZSBwcm9ibGVtIGlzIHRoYXQgdGhlcmUgaXMgbm8gcmVzcG9uc2UgZnJvbQo+IDEu
-MS4xLjIKPiA+IGFuZCAxLjEuMS4zLgo+ID4gRG8gSSBuZWVkIG90aGVyIHNwZWNpYWwgc2V0dGlu
-ZyAocHJveHkgYXJwPykKPiAKPiB5dXAuICBvbiBuZXRmaWx0ZXIgbWFjaGluZToKPiAKPiAgIGlw
-IGFkZHJlc3MgYWRkIDEuMS4xLjIgZGV2IGV0aDAKPiAgIGlwIGFkZHJlc3MgYWRkIDEuMS4xLjMg
-ZGV2IGV0aDAKPiAKPiAgcmVtZW1iZXIgdG8gdXNlIDEwLjEuMS5bMjNdIGluIHlvdXIgZmlsdGVy
-IHJ1bGVzCj4gYW5kIG5vdCAxLjEuMS5bMjNdLgo+IAo+IC1qCj4gCj4gLS0gCj4gSmFzb24gT3Bw
-ZXJpc2FubyA8b3BpZUA4MTd3ZXN0LmNvbT4KPiAKPiAKPiAgCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KpbKx/qfeoUK2vLpxoUKkcKxQ
-rFAuLi4Krva6qblhwW4gILGhpN+zc8O0Cmh0dHA6Ly91cy5yZC55YWhvby5jb20vZXZ0PTIyMjgx
-LypodHRwOi8vcmluZ3RvbmUueWFob28uY29tLmhrLwoK
+
+You should do tar -jxvvf iptables-1.2.11.tar.bz2, or bunzip2 the file
+and the issue a tar -xvvf 
+
+Cheers
+
+On Thu, 2004-09-23 at 18:36, Christian von Hausen wrote:
+> Hello
+> 
+>             Unable to uncompress iptables-1.2.11 file... 
+> 
+>  
+> 
+> [root@sipxpbx src]# uncompress -v iptables-1.2.11.tar.bz2
+> 
+> iptables-1.2.11.tar.bz2 - no .Z suffix
+> 
+>  
+> 
+>             Please advice.
+> 
+>  
+> 
+> Thx
+> 
+>  
+> 
+> Christian von Hausen
+> 
+> Senior Systems Engineer
+> 
+> Cima Telecom
+> 
+> Tel: 1-305-261-7778 x 153
+> 
+> Direct: 1-786-539-5139
+> 
+> Cell: 1-305-525-6303
+> 
+> cvonhausen@cimatelecom.com
+> 
+>  
+> 
+> 
+
+
