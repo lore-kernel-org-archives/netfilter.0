@@ -1,13 +1,13 @@
-From: Ruprecht Helms <rhelms@mayn.de>
-Subject: Re: Kernel 2.6.5 - iptables 1.2.9 problems
-Date: Wed, 30 Jun 2004 14:11:20 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: how to build a routing/packet filtering experimental environment
+ on single PC
+Date: Wed, 30 Jun 2004 14:14:11 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E2ADE8.4020401@mayn.de>
-References: <1088179390.2701.14.camel@despair.kent-music.com>	 <40DC4F0E.5040609@kanux.com> <1088590006.667.7.camel@despair.kent-music.com>
+Message-ID: <Pine.LNX.4.33.0406301410001.25868-100000@blackhole.kfki.hu>
+References: <BAY8-F96k6GW1lnU0290007fff2@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088590006.667.7.camel@despair.kent-music.com>
+In-Reply-To: <BAY8-F96k6GW1lnU0290007fff2@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Karl Lattimer <karl@kms-lan.co.uk>
-Cc: Juan Hernandez <alucard@kanux.com>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Li Xinyi <xinyeeli@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Karl Lattimer wrote:
+On Tue, 29 Jun 2004, Li Xinyi wrote:
 
->Hi IP-Tables isn't outputting any error messages at all. Heres my
->script. Or there abouts.
->
->The problems i am getting are the port forwards for 4662 and 4672 arn't
->working correctly. I'm getting port forwards adding themselves in for
->ports 5800,5900,3372,6502,1025,1026,42 and 366. 
->
-please be so kind and post your ruleset into the list. So it`s better to 
-say what you have to change.
+> I started to learn iptables a few weeks ago. I am stuck at moment because I
+> dont have many machines to play with. I am wondering is there any tools,
+> which can be used to build a virtual envionment to play with routing and
+> packet filtering on sinple machine. Tools like VMware would not be my
+> choice because I only have 1GHz PIII with 256M memory.
 
-Regards,
-Ruprecht
+UML (User-Mode Linux) is excellent for such purposes. You can definitely
+run several virtual machines in 256M.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
 
