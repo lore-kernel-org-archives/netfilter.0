@@ -1,14 +1,11 @@
-From: KOVACS Krisztian <piglet@sch.bme.hu>
-Subject: Re: Server crash after LIST_DELETE in Log
-Date: Wed, 24 Mar 2004 21:41:19 +0100
+From: Pierre Ossman <drzeus@drzeus.cx>
+Subject: Conntrack full, but not really
+Date: Wed, 24 Mar 2004 22:13:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040324204118.GA18860@sch.bme.hu>
-References: <s061bfaf.021@odnw1.minimaxgmbh.de>
+Message-ID: <4061FA01.4050604@drzeus.cx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <s061bfaf.021@odnw1.minimaxgmbh.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?Bj=F6rn?= Reese <ReeseB@minimax.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi!
 
-  Hi,
+I'm having the standard problem of the connection tracker running out of 
+space, but this time with a twist. If I check how many connections it is 
+currently tracking it is nowhere near the upper limit. I've searched 
+through the archives and haven't found anything like this.
 
-On Wed, Mar 24, 2004 at 05:04:20PM +0100, Bj=F6rn Reese wrote:
->  I have a strange Problem with (I guess) the Netfilter. I have a Proxy-=
-Server running, that is dual-homed with a transparent Squid on one Interf=
-ace listening. After some time, the syslog lists these messages:
->=20
-> Mar 24 15:36:18 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntr=
-ack_core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(e96c0d64) not in &ip_con=
-ntrack_hash[hr].
-> Mar 24 15:36:39 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntr=
-ack_core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(dd67fd24) not in &ip_con=
-ntrack_hash[hr].
-> Mar 24 15:36:55 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntr=
-ack_core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(dc976864) not in &ip_con=
-ntrack_hash[hr].
->=20
-> 5 seconds more...
-> and the server freezes...
+The machine is a P-2 333 MHz with 96 MB of RAM doing nothing but 
+routing. It's running Red Hat 9 with kernel 2.4.20-28.9 (although the 
+problem exists with other Red Hat kernels). The problem appears after 
+about a month of uptime. After that the machine needs to be rebooted to 
+recover (flushing out the connection tracker might work aswell but that 
+doesn't really make the problem less severe).
 
-  Although without your kernel config and exact iptables ruleset I cannot
-be sure, but I think you've found the same bug as Jonathan Cooper (and a
-few others). See the thread about the problem on netfilter-devel:
+What happens is that it starts complaining that the connection tracking 
+table is full:
+"ip_conntrack: table full, dropping packet."
+But when I check /proc/net/ip_conntrack there are only about 120 tracked 
+connections (out of about 6000). Something really weird is going on.
+To make things worse it's not really out of memory. Large portions of 
+the memory is occupied by the cache so it could kick stuff out if it 
+wants to. If I kill of some processes to get some free memory *and* 
+write a new number to ip_max_track (any number whatsoever will suffice) 
+the system works again. At least for a while.
 
-http://lists.netfilter.org/pipermail/netfilter-devel/2004-March/014532.ht=
-ml
+I have no idea how to diagnose this thing. I thought the connection 
+tracker allocated the memory it needed when it was loaded, not dynamically.
 
-Basically, you should try two things:
+The machine was recently rebooted so there's probably not much I can 
+check that can help right now. But please give me some tips on what I 
+should check the next time it starts acting up.
 
-- check if using CONFIG_IP_NF_NAT_LOCAL (NAT of local connections)
-  solves the problem
+Rgds
+Pierre Ossman
 
-- if i does, please try if Henrik's patch at=20
-http://lists.netfilter.org/pipermail/netfilter-devel/2004-March/014616.ht=
-ml
-solves your problem
-
-  To try the patch would be especially useful.
-
---=20
- KOVACS Krisztian
+PS. Please cc me, I'm not a subsriber.
 
 
