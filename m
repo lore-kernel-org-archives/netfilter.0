@@ -1,13 +1,12 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: Traffic accounting over ULOG inefficient?
-Date: Thu, 10 Jun 2004 21:33:13 +0200
+From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
+Subject: Why I can not logon to a DC through my Linux box gateway?
+Date: Thu, 10 Jun 2004 22:58:26 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040610193313.GA3966@torres.ka0.zugschlus.de>
-References: <200406102005.20214.arny@ats.s.bawue.de>
+Message-ID: <001101c44efb$6230f530$1d01a8c0@palettemm.com>
+Reply-To: <bassam@palettemm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200406102005.20214.arny@ats.s.bawue.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Thilo Schulz <arny@ats.s.bawue.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, Jun 10, 2004 at 08:05:14PM +0200, Thilo Schulz wrote:
-> Since all of the other traffic accounting implementations I have met right now 
-> are inflexible, I decided to write my own one. There are some 
-> implementations, that parse the byte counters displayed by iptables and feed 
-> their traffic databases by this output. A dirty hack in my opinion. Something 
-> that knows about traffic instantly is just better .. so ULOG is a bit more 
-> interesting.
+I am sorry for resending the email again, but it seemed that you
+received un-clear graph, so I changed it.
 
-Make sure to take a look at ulog-acctd before re-inventing a wheel
-that has probably already been invented.
+Dear Fellows,
+   I am developing a Wi-Fi project and I got stuck in my progress when I
+tried to logo on to a domain controller through my Linux gateway box. In
+fact I have the following depicted scenario:
 
-> The only thing that disturbs me: Just for counting packet lengths
-> queue whole packets to userspace?
++-----------------+
+|Client		|
+|User name:		|
+|Password:		|
+|Domain		|
+|eth0:192.168.0.3	|
++-----------------+ 
+|
+| LAN2: 192.168.0/24
+|
++-----------------------+
+|eth1:192.168.0.1		|
+|Gate Way			|
+|eth0:192.168.1.232	|
++-----------------------+
+|
+| LAN1: 192.168.1/24
+|
++-----------------------+
+|eth0:192.168.1.231	|
+|Domain			|
+|Controller			|
++-----------------------+ 
 
-You can control how much of the packet should be copied to userspace
-in the iptables statement and takt the packet length from the IP header.
 
-Greetings
-Marc
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Karlsruhe, Germany |  lose things."    Winona Ryder | Fon: *49 721 966 32 15
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 721 966 31 29
+When I try to logon to the DC by using this above scenario I get the
+following message "The system cannot log you on because the domain
+<xxxx> is not available". It seems that the client is not able to see
+the domain controller the my linux gateway.
+Note: I wrote my own firewall by using iptables, and I tried my best to
+overcome this problem but I couldn't.
+
+So any idea or support I can find from your side, your cooperation is
+highly appreciated.
+
+Regards
+Bassam
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.516 / Virus Database: 313 - Release Date: 9/1/2003
+ 
+
 
