@@ -1,11 +1,9 @@
-From: Arindam Haldar <arindamhaldar@inbox.lv>
-Subject: Re: messages in /var/log/message file
-Date: Wed, 09 Oct 2002 16:58:15 +0530
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: confusing explanation regarding negation of protocol filtering
+Date: Wed, 9 Oct 2002 06:21:55 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DA412CF.5010107@inbox.lv>
-References: <Pine.LNX.4.44.0210091216330.29480-100000@dns.toxicfilms.tv>
+Message-ID: <Pine.LNX.4.44.0210090616270.13444-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,44 +14,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-hi
-thanx for responding. some info to you all...
-the linux box with 2.4.19 kernel & iptables 1.2.7a has 768mb ram its 
-ip_conntrack_max shows 48632.
-moreover the ip(=>> ipA) in the message file is a valid ip and not a 
-private one & its going to a valid ip in internet.
-the very interesting & confusing part for me(& hope for others?? ) is 
-why a day ago with iptables 1.2.6a there was no error message ???.. as i 
-mentioned in last mail the only difference is that i have as module--> 
-ip_nat_h323.o & also ipt_helper.o
-one last info to add here---why only this message for >>ipA<< when the 
-box is handling more than 500 valid ip & above 200 private ip( of 10 
-series),..slabinfo shows...
-ip_conntrack        5150   6660    320  490  555  1
 
-pls i need help to know where things went wrong for me.. if someone else 
-have experienced the same can they give their experience/suggestions ??
-thanx in anticipation...
-A.H
+  (sorry if these are painfully trivial questions, but sometimes the
+docs just don't seem to be consistent.)
 
-Maciej Soltysiak wrote:
- >>Oct  9 12:25:24 ICG kernel: NET: 5 messages suppressed.
- >>Oct  9 12:26:31 ICG kernel: NET: 1 messages suppressed.
- >>Oct  9 12:26:31 ICG kernel: ip_conntrack: max number of expected 
- >>connections 1 of ftp reached for <ipA> -> <ipB>, reusing
- >>Oct  9 12:27:12 ICG kernel: ip_conntrack: max number of expected 
- >>connections 1 of ftp reached for <ipA> -> <ipB>, reusing
->>these messages are piling the message file.
->>am cusrious now why so ?.. what does this message signify ?
-> 
-> Read the FAQ, and then increase your /proc/net/ip_conntrack_max
-> 
-> Best Regards,
-> Maciej Soltysiak
-> 
+  based on both the man page and andreasson's tutorial, i can filter
+on protocol with some variation of
+
+	-p tcp
+	-p udp
+	-p udp,icmp
+	-p ! tcp
+	-p <some protocol number here>
+
+and so on.  while the common filtering protocols are of course
+tcp, udp and icmp, there are far more listed in /etc/protocols
+that can be selected by name or number.
+ 
+  so it's a but puzzling that andreasson's tutorial claims that
+"--protocol ! tcp would mean to match the ICMP and UDP protocols."
+really?  i would have assumed it would have matched *every* other
+protocol but TCP.
+
+  am i misunderstanding the function of the "!" with respect to 
+protocol?
+
+rday
 
 
