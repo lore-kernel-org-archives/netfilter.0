@@ -1,8 +1,9 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: FTP server behind a load balancer
-Date: Sun, 7 Nov 2004 10:12:55 +0200
-Message-ID: <1403218a041107001226656b10@mail.gmail.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?=
+	<leolistas@solutti.com.br>
+Subject: Re: For Mailers
+Date: Sun, 7 Nov 2004 14:50:03 -0300
+Message-ID: <009c01c4c4f2$388f9480$8b00000a@casa>
+References: <000101c4c413$f014bc50$0b0210ac@mangesh>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,29 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: kerneltrap@v1khelkedekho.com, 'Netfilter users list' <netfilter@lists.netfilter.org>
 
-Dear all,
-I have two FTP servers behind a load balancer.
-Furthermore, those FTP servers, listen on both ports 21, 45 (for some reasons)
-I am not using NAT, they have public IPs.
-When the client connects from the outside world, to port 21, passive
-FTP works fine.
-When the client connects to port 45, it doesn't work !!
-I did modprobe ipt_conntrack_ftp ports=21,45
-But during debugging I noticed something, when working with port 21,
-the response of the passive FTP, it returns with the loadbalancer IP
-(The IP the client has talked to in the first place), but when talking
-to port 45, it returns with the server IP address (The real IP of the
-server, not the load balancer), and this causes IPTables to think it
-is a new connection, to a random IP.
 
-Should ipt_conntrack_ftp track only the ports, or also the ports and
-IPs returned in the response of the FTP server ??
-Any clue ?
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+    Sure you can do any kind of filtering in mail attachments. But this is a 
+tooooo-complex-specific-protocol-handling to being handled by netfilter. 
+Please take a look in your MTA documentation and check some mailing list of 
+your MTA.
+
+
+    Sincerily,
+    Leonardo Rodrigues
+
+----- Original Message ----- 
+From: "Mangesh Rakhunde" <kerneltrap@v1khelkedekho.com>
+To: "'Netfilter users list'" <netfilter@lists.netfilter.org>
+Sent: Saturday, November 06, 2004 12:18 PM
+Subject: For Mailers
+
+
+> Hi
+> Can we put any filters for mail attachments. Like discarding mails with
+> infected attachments
+
+
 
