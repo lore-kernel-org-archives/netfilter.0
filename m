@@ -1,8 +1,8 @@
 From: "Philippe Anctil" <z77y16@hotmail.com>
 Subject: Re: safe default chain policies
-Date: Fri, 02 Apr 2004 14:02:00 -0500
+Date: Fri, 02 Apr 2004 14:12:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY16-F74E0ivR0wzGD000006a0@hotmail.com>
+Message-ID: <BAY16-F20adOQ2IR5a800037809@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,7 +14,7 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
@@ -48,7 +48,7 @@ reconsider this, but my current ruleset does not make sense anyway:
 iptables -P OUTPUT DROP
 iptables -A OUTPUT -s 127.0.0.1 -j ACCEPT
 iptables -A OUTPUT -s $internal_ip -j ACCEPT
-iptables -A OUTPUT -s $external_ip -j ACCEPT
+iptables -A OUTPUT -s $xternal_ip -j ACCEPT
 
 Now what about the FORWARD chain? Traffic hitting this chain has two 
 possible origins and a corresponding destination.
@@ -85,8 +85,7 @@ Thank you very much for your helpful feedback! I hope you enjoyed the read
 ;-)
 
 _________________________________________________________________
-Watch LIVE baseball games on your computer with MLB.TV, included with MSN 
-Premium! 
-http://join.msn.com/?page=features/mlb&pgmarket=en-us/go/onm00200439ave/direct/01/
+MSN Search, le moteur de recherche qui pense comme vous !  
+http://fr.ca.search.msn.com/
 
 
