@@ -1,10 +1,12 @@
-From: "jimbo jones" <jdvuyk_crap@hotmail.com>
-Subject: Re: Kazaa Ports
-Date: Tue, 09 Sep 2003 08:21:52 +0000
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: RE: shorewall
+Date: Tue, 9 Sep 2003 17:15:24 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea1-F28DUggCXOFTYv00010938@hotmail.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8CC2@overlord.overturemedia.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,90 +16,78 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: JALaramie@Loudoun-Fairfax.com, dagent.geo@yahoo.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-Have you fiddled with the firewall settings in Kazaa that supposedly let you 
-change the outgoing port to anything you like.  I have heard in cases that 
-you can change this to, say, port 80 and suddenly everything goes (web port 
-and all).  However I have exactly the same setup with exactly the same issue 
-and this option didnt work for me.  But maybe it will for someone else.  
-Would also like to get this solved.
+I was playing with shorewall and I was able to make the nat thing for a =
+web server inside the firewall work.
+Now what I want to know is what shorewall did to make it work. :D
 
-Suggestions appreciated.
+I have been helped by many people here already but I can't make it work. =
+I don't want to use shorewall for permanent use because it made a lot of =
+rules that might not helpful and instead make my system prone to =
+attacks.
 
-Cheers
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
 
 
->From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
->To: SBlaze <dagent.geo@yahoo.com>
->CC: netfilter@lists.netfilter.org
->Subject: Re: Kazaa Ports
->Date: Mon, 08 Sep 2003 18:47:18 -0400
->
->Thanks for answering
->
->>Assuming that you are running the Kazza on a Internal windows machine the
->>POSTROUTING should handle all of the out going of the Kazza Client...
->>
->>
->
->hmmm . . . I revised my rule set recently using the iptables tutorial  by 
->Oskar Andreasson as a guide, and he recommends again doing any filtering in 
->the nat tables.
->
->http://iptables-tutorial.frozentux.net/chunkyhtml/traversingoftables.html#TRAVERSINGGENERAL
->
->
->>what is probably not making it through is the returning connection 
->>attempts of
->>the Kazza servers? In which case... you shouldn't be using FORWARD lines 
->>at all
->>sinnce these are supposedly destined for the local machine(as in the Linux 
->>box
->>itself and not anything in your lan).
->>
->
->If you look further down in the link I posted, there is a diagram that 
->shows INPUT going to the localhost and the FORWARD being used for packets 
->destined for other hosts.  Hmmm again . . .  :-)
->
->>What I think is needed here is the
->>PREROUTING of a range or specific ports. I think this will solve your 
->>problem
->>for Kazza but it offers very little as in the way of security for those 
->>ports.
->>
->>An example of this is when I used to run my Half-Life Deadicated Server on 
->>my
->>internal Windows Machine I used a PREROUTING line such as...
->>
->>iptables -t nat -A PREROUTING -p udp --dport 27015 -i eth0 -j DNAT
->>--to-destination 192.168.1.25:27015
->>
->>While my scenerio was alot simpler than yours it's similar I think. Your
->>problem will be of course finding the range of ports. I would also say 
->>take
->>note of the use of limiting it to one protocol(if you can). Better to have 
->>a
->>straw open to the world than a big ol sewer pipe!
->>
->>
->>
->Absolutely! That's what makes this an issue for me. I can't nail down the 
->ports Kazaa needs and the more I open up the less protection I have. I need 
->to find a better strategy and I'm open to suggestions.
->
->Jeff
->
->
->
 
-_________________________________________________________________
-Tired of 56k? Get a FREE BT Broadband connection 
-http://www.msn.co.uk/specials/btbroadband
+> -----Original Message-----
+> From: Arnt Karlsen [mailto:arnt@c2i.net]
+> Sent: Monday, September 08, 2003 7:09 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: shorewall
+>=20
+>=20
+> On Mon, 8 Sep 2003 17:26:10 +0800,=20
+> "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com> wrote=20
+> in message=20
+> <F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>:
+> >=20
+> > Has anybody used shorewall?=20
+>=20
+> ..yup.
+>=20
+> > If I try shorewall to fix my nat problem (make it easier) and still
+> > does not work, will I be able to disable shorewall and implement a
+> > manual setup of iptables again?
+>=20
+> ..yup.
+>=20
+> ..check out http://webmin.com/ ,   has a neat shorewall module.
+>=20
+> ..also check out ipcop-1.3.0 at http://ipcop.org/ is a firewall=20
+> distro with proxy server, 5 minute setup time, a good tutor=20
+> towards shorewall.
+>=20
+> --=20
+> ..med vennlig hilsen =3D with Kind Regards from Arnt... ;-)
+> ...with a number of polar bear hunters in his ancestry...
+>   Scenarios always come in sets of three:=20
+>   best case, worst case, and just in case.
+>=20
+>=20
+>=20
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
