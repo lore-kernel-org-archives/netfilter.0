@@ -1,13 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Problem behind my DMZ
-Date: Wed, 07 Jan 2004 21:27:42 -0500
+From: jr@troncale.com
+Subject: help with LAN to DMZ Forward rules
+Date: Wed, 7 Jan 2004 21:30:58 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073528862.2049.825.camel@grendel>
-References: <001b01c3d57d$15123950$0296a8c0@martin>
+Message-ID: <200401080230.i082Uwg03789@marisa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="bound1073528998"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001b01c3d57d$15123950$0296a8c0@martin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +15,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Martin Leduc <marled3@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Greetings!
+This is a multi-part message in MIME format.
 
-On Wed, 2004-01-07 at 19:19, Martin Leduc wrote:
->
-> One of my server is DNS.  My trouble is if I tried to send Email FROM
-> one of this third server, my DNS return to sender server the public IP
-> and my Email as send to my firewall, not my internal Server.
+--bound1073528998
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Common problem. You have two potential solutions:
+I'd like to request help with an iptables ruleset. There are 3 adapters on my Redhat 7.3, running iptables 1.2.8. EXTIF faces the Internet, and DMZ_IF and LAN_IF use reserved addresses in distinct subnets.
 
-1) Use public IPs on your DMZ/service network. This will also give you a
-performance boost as you will drop the NAT overhead. You don't mention
-how many legal IPs you have, but if you have enough address space to
-carve off a /29 or /28 for your DMZ, this would be your best bet.
+So far I've had success configuring it so the firewall allows access to the DMZ from the Internet, while only ESTABLISHED or RELATED packets are forwarded back into the LAN. That's the only FORWARDing happening on the firewall at this point.
 
-2) Use split DNS. Setup another name server that is accessible only from
-internal systems and populate it with your private addresses.
+What's got me stumped is how to FORWARD packets from the LAN to the DMZ.
 
-HTH,
-C
+There are a number of tutorials on the Internet that suggest the following code is the best way to achieve this:
 
 
+# This one allows traffic from the DMZ to the LAN if it originated in the LAN:
+
+$IPTABLES -A FORWARD -i $DMZ_IF -o $LAN_IF -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+# And this one is supposed to allow hosts within the LAN to initiate an HTTP session with the webserver in the DMZ:
+
+$IPTABLES -A FORWARD -i $LAN_IF -o $DMZ_IF -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+
+The webserver in the DMZ is definitely working, and can be reached from the Internet. The tutorials point out that INPUT and OUTPUT rules would not affect what I'm trying to do here. My browser times out when I try to access the DMZ webserver from the LAN. There is an entry in the LAN computer's 'hosts' file for the webserver; typing the ip address of the DMZ webserver into the address bar of the browser also results in a times out.
+
+Thank you very much for your help.
+
+Jamie
+
+
+
+--bound1073528998--
 
