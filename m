@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Problem with ppt_conntrack_nat
-Date: Thu, 16 Sep 2004 08:37:05 -0400
+Subject: Re: Linux kernel module and -m owner match
+Date: Thu, 16 Sep 2004 08:41:51 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095338224.2045.17.camel@wolfpack.ljm.dom>
-References: <020101c49b05$5dc59c70$0a00a8c0@admin>
+Message-ID: <1095338510.2045.20.camel@wolfpack.ljm.dom>
+References: <20040916113433.35523.qmail@web21003.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <020101c49b05$5dc59c70$0a00a8c0@admin>
+In-Reply-To: <20040916113433.35523.qmail@web21003.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +17,26 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset=; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-15 at 05:21, Pawe=C5=82 Filutowski wrote:
-> Hello,
-> I have just compiled a new kernel 2.4.27 with iptables 1.2.11 and patch=
--o-matic-ng-20040621
-> First i tried to compile only kernel and iptables.
-> Finally, everythings worked fine.
-> But when I added the ppt_conntrack_nat (./runme pptp-conntrack-nat) and=
- I compiled kernel - I noticed that NAT(MASQUARADE) didn`t work (although=
- there wasn`t any errors during setting iptables).
-> I use rc.firewall to setup iptables.
->=20
-> Can anyone help me ?
+On Thu, 2004-09-16 at 07:34, Nicolas Boiteux wrote:
+> yep , i use the kernel of kernel.org . But, in fact
+> since the 2.4.23, i use the same .config file . 
+> 
+> I copy the oldone it in the /usr/src/linux-2.4.x and
+> override the new one . Is it a bad way to do like that
+> ?
 
-this has got to go into a FAQ somewhere...oh wait--it already is...
+do you have:
 
-http://netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.ht=
-ml#ss2.3
-
-after you patch with POM, you need to rebuild your userspace iptables
-package.
+        CONFIG_EXPERIMENTAL=y
+        
+set?  if not--you won't get prompted for the owner match.
 
 -j
 
---=20
+-- 
 Jason Opperisano <opie@817west.com>
 
 
