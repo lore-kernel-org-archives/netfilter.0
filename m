@@ -1,12 +1,12 @@
-From: "Daniel Curry" <dcurry@cariocas.com>
-Subject: Examples
-Date: Thu, 27 Jun 2002 12:51:13 -0700
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: detection of the third tcp packet in a tcp connection setup
+Date: Thu, 27 Jun 2002 21:49:59 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
+Message-ID: <Pine.LNX.4.21.0206272145310.15727-100000@dns.toxicfilms.tv>
+References: <20020627193932.GY31466@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20020627193932.GY31466@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,30 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Cc: Patrick Schaaf <bof@bof.de>, Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-I was just at the netfilter.org web site, looking for some example
-IPTables scripts for various solutions.  Does anyone have any
-suggestions on where I might find some well documented examples to
-satisfy a server with an internal and external network connection,
-sendmail, apache, DHCP (internal only), MySQL, IPSEC/PPTP services
-(hosted and pass through), inbound POP/IMAP?
+> > How to TCP keepalive packets look like? Also, isn't it possible that the
+> > third packet already carries data, in the general (read TCP protocol as
+> > it is written) case? You probably won't get that with the normal socket
+> > interface from userlevel, but does TCP forbid it? I don't think so.
+> 
+> Correct. And besides when you receive data and have nothing to send
+> you'll ack with a zero-length packet.
+I agree.
 
-Thanks
+But that reminds me something.
+I had a problem once (not solved) with a novell server that used to send
+TCP packets with 2 bytes of data, then 52, then 2, then 52.
+It never sent packets filled to the MSS size as negotiated at the
+beginning.
 
-Daniel Curry
-IT Manager
-Cariocas
-625 Second Street=20
-Suite 201
-San Francisco, CA 94107=20
-ph: 415-348-6516
-fx: 415-348-6505=20
-cell: 510-579-6680
+That caused the pop3 traffic to go terribly slow, and finally the server
+decided to close the connection due to timeout of not sending a mail
+message in time.
 
-"If A equals success, then the formula is: A =3D X + Y + Z,=20
-X is work. Y is play. Z is keep your mouth shut."=20
-  - Albert Einstein
+I tcpdumped the session, and did not see any, in my opinion, valid cause,
+like advertising a smaller tcp window.
+
+Also some (but not all) modem connection to the server had full 576 byte
+packets
+
+Any ideas on the cause?
+
+Regards,
+Maciej Soltysiak
+
 
 
