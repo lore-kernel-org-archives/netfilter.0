@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: I need a clever solution for two Bittorrent machines behind
-	afirewall
-Date: Thu, 18 Nov 2004 09:33:07 -0800
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E395@alderaan.smgtec.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: I need a clever solution for two Bittorrent machines behind a
+	firewall
+Date: Thu, 18 Nov 2004 12:43:09 -0500
+Message-ID: <20041118174309.GA16065@bender.817west.com>
+References: <00c801c4cd90$8980f090$0400a8c0@bradmorgan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <00c801c4cd90$8980f090$0400a8c0@bradmorgan>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +19,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Brad Morgan <B-Morgan@concentric.net>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-> Anyone have any suggestions?  Pointers to solutions or other places
-> to ask the question will be gladly accepted.
+On Thu, Nov 18, 2004 at 10:03:33AM -0700, Brad Morgan wrote:
+> I'm using a Linux firewall with IPTables as my home firewall.  Both my son
+> and I are gamers and my son actually has a couple of machines so he and his
+> friends can game together.
+> 
+> Blizzard's new World of Warcraft uses a custom Bittorrent for their patches
+> and it looks like both my son and I will be playing this one.  At the
+> moment, I manually switch the target computer before going online (we only
+> had one login during the open beta) but since you don't know until you login
+> if there's a patch and we may buy two copies for simultaneous use, I'd like
+> to figure out how a clever way to switch the target machine "on the fly" so
+> we both take advantage of the increased download speed of a cooperating
+> Bittorrent client.  I've experienced the speed difference because our first
+> install didn't have any ports open and it was SLOW (over an hour).  The
+> second install took maybe 10 minutes to download patches with the proper
+> ports open and forwarded.
+> 
+> Anyone have any suggestions?  Pointers to solutions or other places to ask
+> the question will be gladly accepted.
 
-Does your ISP supply more than a single IP? If you do, you could bind
-two IP's to the external interface and DNAT them seperately. Beyond
-that, you could write a web page to choose who gets the BT ports on the
-fly.
+i suppose it depends on the flexibility of the bittorrent client.  the
+one i use has the option to specify my "incoming TCP listen port."
+so each machine behind the firewall just needs to specify a different
+port, and you can forward accordingly.
 
-The other option that doesn't look like its going to happen would be
-writing a Bit torrent CONNTRACK/NAT module. Although, I don't know if
-there's enough DNA in the BT request to determine which PC the
-connection its destined for. Seems like a good feature for BT Version 2
-:-)
+i'm not familiar with the game your talking about or how it implements
+its BT client.
+
+-j
+
+--
+"The only monster here is the gambling monster that has enslaved your
+ mother! I call him Gamblor, and it's time to snatch your mother from
+ his neon claws!"
+        --The Simpsons
 
