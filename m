@@ -1,8 +1,8 @@
 From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: Change of ip addresses continues.... :(
-Date: Thu, 26 Aug 2004 14:36:14 -0700
+Date: Thu, 26 Aug 2004 14:48:16 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E360@alderaan.smgtec.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E361@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,67 +17,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: dravya <dravya@magma.ca>, Netfilter mailing list <netfilter@lists.netfilter.org>
+To: Eric Leblond <eric@inl.fr>, netfilter@lists.netfilter.org
+Cc: dravya@magma.ca
 
-First, you must understand that PREROUTING will only handle policy
-routing FORWARDED traffic, and will not properly deal with traffic from
-the firewall itself. Please make sure to duplicate the rules with:
-"iptables -t mangle -A OUTPUT". That means, if the firewall gets an
-invalid TCP connection attempt, it will send the ICMP reply out the
-correct interface.=20
+Eric Leblond wrote:
+> On Thu, 2004-08-26 at 23:26, Jason Opperisano wrote:
+>>> I have been trying various set of rules in various table in order
+>>> to have packets go over the right link. ie. packet's src add should
+>>> match outgoing link's ip address.YET, there iptables -t mangle -A
+>>> PREROUTING -j CONNMARK --restore-mark=20
+>>> iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
+>>> iptables -t mangle -A PREROUTING -m mark ! --mark 0 -p icmp -j MARK
+>>> --set-mark 1 iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j
+>>> MARK --set-mark 2=20
+>=20
+> There's something weird here :
+> -m mark ! --mark 0
+> at each line you should better do
+> -m mark --mark 0
+> at the two last lines.
+>=20
+> BR,
 
-Ok, to make your routes, here's a pre-canned function:
+Just to confirm, Eric is correct, you should be using -m mark --mark 0
+for the last two rules. In conclusion, for the most simple of setups for
+this, we'd have the following:
 
-You'll have to fix up the following function to create the default route
-the way that ppp assigns them. What I'd do is add this to ppp's ip-up
-script so that as soon as you know your new ppp address, you change the
-table to reflect the new value.=20
+	iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+# Skip through any pre-classifed traffic
+	iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
+# Define inbound policies
+	iptables -t mangle -A PREROUTING -m mark --mark 0 -m state
+--state NEW -i ppp0 -j MARK --set-mark 1
+	iptables -t mangle -A PREROUTING -m mark --mark 0 -m state
+--state NEW -i ppp1 -j MARK --set-mark 2
+# Default policy route for any internal traffic
+	iptables -t mangle -A PREROUTING -m mark --mark 0 -j MARK
+--set-mark 2
+	iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
 
+	iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
+	iptables -t mangle -A OUTPUT -m mark ! --mark 0 -j ACCEPT
+# Make sure any packets that have existing IP's before this networking
+level to keep their existing IP's
+	iptables -t mangle -A OUTPUT -m mark --mark 0 --source
+${ppp0_ip} -j MARK --set-mark 1
+	iptables -t mangle -A OUTPUT -m mark --mark 0 --source
+${ppp1_ip} -j MARK --set-mark 2
+# Default policy route for this firewall
+	iptables -t mangle -A OUTPUT -m mark --mark 0 -j MARK --set-mark
+2
+	iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
 
-Here 'might' be a way to do it. I don't have ppp lines so I couldn't say
-if its right or not.
-
-_mark=3D"$((`echo "${1}" | sed s/ppp//`+1))"
-_ext_gw=3D"${5}";
-_local_ip=3D"${4}";
-
-route_builder "${_mark}" "${_ext_gw}" "${_local_ip}"
-
-
-The following IS what I use to build routes. I'm pretty sure it'll work
-as advertised.
-#
-# Notes:
-#    This function generates a new routing table based on the currect
-main
-#    routing table. The difference is that the default route is user
-specified.
-#=20
-# Arguments:
-#    1 - Table ID to create
-#    2 - IP Address, Gateway Address=20
-#    3 - IP Address, Local Source
-#
-IP=3Dip
-function route_builder
-{
-   _table_id=3D${1}
-   _table_gateway=3D${2}
-   _table_source=3D${3}
-   if [ "${1}" !=3D "" -a "${2}" !=3D "" ]; then
-      ${IP} rule del fwmark ${_table_id} table ${_table_id}
-      ${IP} rule add fwmark ${_table_id} table ${_table_id}
-      ${IP} route flush table ${_table_id}
-      ${IP} route show table main | grep -Ev ^default
-\
-      | while read ROUTE ; do  =20
-         ${IP} route add table ${_table_id} $ROUTE
-      done
-      ${IP} route add table ${_table_id} default via ${_table_gateway}
-\
-         src ${_table_source}
-   else
-      echo "route_builder: Invalid arguments specified."
-   fi
-}
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o ppp1 -j MASQUERADE
 
