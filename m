@@ -1,14 +1,11 @@
-From: "Daniel Camacho" <dcamacho@saipan.com>
-Subject: Re: IPTables & Squid
-Date: Sat, 2 Aug 2003 07:25:44 +1000 (ChST)
+From: Paul Baxter <ppabaxte@bigpond.net.au>
+Subject: Newbie question about iptables an gateway boxes
+Date: Sat, 02 Aug 2003 08:03:36 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1102.202.128.1.252.1059773144.squirrel@mail.saipan.com>
-References: <5.1.0.14.2.20030801094250.02f127f0@mail.saipan.com>
-    <3F2A2093.8020200@snapgear.com>
+Message-ID: <3F2AE3B8.1090008@bigpond.net.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F2A2093.8020200@snapgear.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,39 +15,164 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Philip Craig <philipc@snapgear.com>
-Cc: Daniel Camacho <dcamacho@saipan.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-<BR>Hi Philip,<BR><BR>Thanks for the reply. I want to pass the connection
-through and not go through the Squid server. Basically, my intention is to
-filter certain customers from accessing the Squid server but still have
-full connectivity. Thanks.<BR><BR>Daniel<BR><BR><BR>-----<BR>Philip Craig
-said:<BR>&gt; Daniel Camacho wrote:<BR>&gt; &gt; I'm new to this list and
-to IPtables. I recently installed a<BR>&gt; transparent<BR>&gt; &gt; proxy
-using Squid and IPtables. On one computer, I installed IPtables<BR>&gt;
-and<BR>&gt; &gt; forward all port 80 requests to the Squid server, which
-is running on a<BR>&gt; &gt; separate server. On that same computer I want
-to be able to filter<BR>&gt; certain<BR>&gt; &gt; connections from using
-the Squid. I know I can do this with Squid, but<BR>&gt; I<BR>&gt; &gt;
-want to know how to do it with IPtables. Does anyone know how may I
-go<BR>&gt; &gt; about doing this? Thanks.<BR>&gt; <BR>&gt; Do you want to
-just pass these connections through directly instead of<BR>&gt; forwarding
-them to the Squid server, or do you want to drop them<BR>&gt;
-completely?<BR>&gt; <BR>&gt; If you just want to pass them through, you
-need to stop them reaching the<BR>&gt; DNAT rule. You have already done
-this for the squid server itself, but<BR>&gt; that method only allows you
-to pass through one IP address. A more<BR>&gt; general<BR>&gt; method is
-to add ACCEPT rules for each address (just repeat the first<BR>&gt; rule
-for each address to pass through):<BR>&gt; <BR>&gt; # start up filter
-rules for traffic redirection to Squid<BR>&gt; iptables -t nat -A
-PREROUTING -i eth0 -s 192.168.0.1 -p tcp --dport 80 -j<BR>&gt;
-ACCEPT<BR>&gt; iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-DNAT --to<BR>&gt; 192.168.0.1:3128<BR>&gt; <BR>&gt; If you want to drop
-the connections, then you need to put DROP or REJECT<BR>&gt; rules in the
-FORWARD chain of the filter table. Make sure you put them<BR>&gt; before
-the rules ACCEPTing traffic from each subnet.<BR>&gt; <BR>&gt; --<BR>&gt;
-Philip Craig - philipc@snapgear.com - http://www.SnapGear.com<BR>&gt;
-SnapGear - Custom Embedded Solutions and Security Appliances<BR>&gt;
-<BR>&gt; <BR>&gt; <BR>
+Hi I have a small net at home with linux box as gateway hopefully. I can 
+ping the net from my windows box and get email...,but web pages don't 
+open, the DNS numbers are correct in /etc/resolv.conf and it will 
+resolve when I  "ping  -c 5 www.atomicmpc.com.au ".
+I am thinking it is todo with my iptables script...here it is;   Thanks 
+for all help Paul
+
+#!/bin/sh
+#
+# Atomic IPTables firewall script v1.0
+#
+# Simple but effective firewall for use
+# in home/small office installations.
+#
+# Ashton Mills
+# Written for the Atomic Uber Linux box guide,
+# Issue 21, Oct 2002.
+#
+# Props to Con Tassios and Technion for their sample scripts.
+
+# Environment variables, change these values accordingly
+
+    EXT_IF="ppp0"
+    INT_IF="eth0"
+    INT_NET="192.168.1.0/24"
+
+    ANY="0.0.0.0/0"
+
+    IPTABLES="/sbin/iptables"
+    MODPROBE="/sbin/modprobe"
+
+#
+# You shouldn't need to touch anything below here
+#
+
+# Load appropriate iptables modules, others will be loaded dynamically 
+on demand
+
+    $MODPROBE ip_tables
+    $MODPROBE iptable_filter
+    $MODPROBE ip_nat_ftp
+    $MODPROBE ip_conntrack
+    $MODPROBE ip_conntrack_ftp
+
+# Set proc values for TCP/IP. In order:
+#
+# Disable IP spoofing attacks
+# Ignore broadcast pings
+# Block source routing
+# Kill redirects
+# Set acceptable local port range
+# Allow dynamic IP addresses
+# Enable forwarding (gateway)
+
+    echo "2" > /proc/sys/net/ipv4/conf/all/rp_filter
+    echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+    echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
+    echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects
+    echo "32768 61000" > /proc/sys/net/ipv4/ip_local_port_range
+    echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+    echo "1" > /proc/sys/net/ipv4/ip_forward
+
+# Flush everything
+
+    $IPTABLES -F INPUT
+    $IPTABLES -F OUTPUT
+    $IPTABLES -F FORWARD
+    $IPTABLES -t nat -F
+   
+#
+## --- DEFAULT POLICY --- ##
+#
+
+# Drop everything on INPUT and FORWARD chains, accept OUTPUT
+
+    $IPTABLES -P INPUT DROP
+    $IPTABLES -P FORWARD DROP
+    $IPTABLES -P OUTPUT ACCEPT
+
+#
+## --- INPUT CHAIN --- ##
+#
+
+# Allow Telstra hearbeat -- BPA users uncomment this
+
+#    $IPTABLES -A INPUT -p udp --sport 5050 -j ACCEPT
+#    $IPTABLES -A INPUT -p udp --sport 5051 -j ACCEPT
+
+# Allow bootp port -- Optus users need this apparently
+   
+    $IPTABLES -A INPUT -p udp -d 255.255.255.255 --dport 68 -j ACCEPT
+
+# Accept all connections on local and internal interfaces
+
+    $IPTABLES -A INPUT -i lo -j ACCEPT
+    $IPTABLES -A INPUT -i $INT_IF -j ACCEPT
+
+# Stateful inspection -- Allow packets in from connections already 
+established
+
+    $IPTABLES -A INPUT -i $EXT_IF -m state --state ESTABLISHED,RELATED 
+-j ACCEPT
+
+# Drop packets from invalid sources (reserved networks and localhost)
+
+    $IPTABLES -A INPUT -i $EXT_IF -s 10.0.0.0/8 -j DROP
+    $IPTABLES -A INPUT -i $EXT_IF -s 172.16.0.0/12 -j DROP
+    $IPTABLES -A INPUT -i $EXT_IF -s 192.168.0.0/16 -j DROP
+    $IPTABLES -A INPUT -i $EXT_IF -s 169.254.0.0/16 -j DROP
+    $IPTABLES -A INPUT -d 127.0.0.0/8 -j DROP
+   
+# Don't log igmp, ident, web or ssl. More noise we don't need to log.
+
+    $IPTABLES -A INPUT -p igmp -j DROP
+    $IPTABLES -A INPUT -p tcp --dport 113 -j DROP
+    $IPTABLES -A INPUT -p tcp --dport 80 -j DROP
+    $IPTABLES -A INPUT -p tcp --dport 443 -j DROP
+
+# Log everything else
+
+    $IPTABLES -A INPUT -i $EXT_IF -j LOG --log-prefix "|iptables -- "
+
+#
+## --- FORWARD CHAIN --- ##
+#
+
+# Stateful inspection -- Allow packets in from connections already 
+established
+
+    $IPTABLES -A FORWARD -i $EXT_IF -o $INT_IF -s $ANY -d $INT_NET -m 
+state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow all traffic out
+
+    $IPTABLES -A FORWARD -i $INT_IF -d $ANY -j ACCEPT
+
+#
+## --- OUTPUT CHAIN --- ##
+#
+
+# Follows policy
+
+#
+## --- NAT --- ##
+#
+
+# Enable masquerade
+
+    $IPTABLES -A POSTROUTING -t nat -o $EXT_IF -j MASQUERADE
+
+#
+## -- Transparent proxy to Squid --- ##
+#
+
+    $IPTABLES -t nat -A PREROUTING -i $INT_IF -p tcp --dport 80 -j 
+REDIRECT --to-port 3128
+
 
