@@ -1,10 +1,13 @@
-From: Carlos Lopez <chlopezl@yahoo.com>
-Subject: dual homed problem.
-Date: Fri, 14 Jun 2002 11:25:32 -0700 (PDT)
+From: "Joe Patterson" <jpatterson@asgardgroup.com>
+Subject: RE: TCP delay, solved
+Date: Fri, 14 Jun 2002 16:29:45 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020614182532.43867.qmail@web13903.mail.yahoo.com>
+Message-ID: <NJEFLNJDIFFNMHDEBKMJOEHCDOAA.jpatterson@asgardgroup.com>
+References: <200206140919.KAA11259@slate.rockstone.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200206140919.KAA11259@slate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,41 +17,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.samba.org
-Cc: raymondl@knowledgefactory.co.za
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-Hi all,
-I'm working on a dual homed configuration. I have a
-firewall that makes the routing.
-the configurations is as follows:
+How about this as a possible solution:
 
-public-ip-eth0 --\
-                  FIREWALL ----> private-ip-eth2
-public-ip-eth1 --/
+in your OUTPUT chain and in FORWARD -o $EXTERNAL_INT, have a rule something
+like (with the recent patch compiled in):
 
-I want to be able to have access to a server with a
-private ip throughout a public ip and DNAT.
-I understand that DNAT has session management so I did
-as follows:
+$IPT -A OUTPUT -m state --state NEW -m recent --name validconn --set
+$IPT -A FORWARD -m state --state NEW -o $EXTERNAL_INT -m recent --name
+validconn --set
 
-on the firewall I configured public ips as aliases
-ie:
-ifconfig eth1:0 200.62.53.226 netmask 255.255.255.240
+and then:
 
-then added in the firewall the following line:
-iptables -A PREROUTING -t nat -d 200.62.53.226 -j DNAT
---to-destination 172.28.16.4
+$IPT -A INPUT -m recent --name validconn -rcheck --seconds 20 -p tcp --dport
+113 -j REJECT --reject-with tcp-reset
 
-is there something wrong?
-Why it doesn't work?
+and let everything else fall through to a default DROP rule.  This way you
+will only send tcp resets for ident lookups if you have made a connection to
+the source of the ident lookup in the last 20 seconds.  Otherwise (for
+general nmappers out there), everything gets dropped.  Add this to some -m
+psd magic and some other judicious use of the recent patch, and you should
+be able to have a firewall that denies all evidence that you exist.
 
-thanks in advance,
-Carlos L=F3pez.
+-Joe
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! - Official partner of 2002 FIFA World Cup
-http://fifaworldcup.yahoo.com
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org
+> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
+> Sent: Friday, June 14, 2002 5:19 AM
+> To: netfilter@lists.samba.org
+> Subject: Re: TCP delay, solved
+>
+>
+> On Friday 14 June 2002 9:25 am, David Luyer wrote:
+>
+> > > Easy solution:
+> > >
+> > >   deny (connection reset) rather than drop the connections
+> >
+> > I meant reject.  From the man page:
+> >
+> > Why connection reset?  For idiots at the other end who firewall all
+> > ICMP.
+>
+> Same problem.   Leaves me with a port on my Firewall which
+> responds to nmap
+> etc.   All other ports on my Firewall return nothing, so the machine is
+> invisible - I don't want port 113 standing out by doing something
+> different.
+>
+>
+>
+> Antony.
+>
+>
+>
+
 
