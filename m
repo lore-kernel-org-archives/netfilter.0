@@ -1,12 +1,13 @@
 From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Dual ISPs - controlled path for certain ports - ip route 2
-	balancing for others
-Date: Wed, 22 Sep 2004 13:15:05 -0400
+Subject: Re: Can anyone tell me how to do this?
+Date: Wed, 22 Sep 2004 13:29:22 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409221315.05822.Alistair@nerdnet.ca>
+Message-ID: <200409221329.22258.Alistair@nerdnet.ca>
+References: <7C9884991ADAE0479C14F10C858BCDF591E375@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E375@alderaan.smgtec.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,40 +21,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-	
-	
-	Okay folks, I've been poking at iptables for a while and I suspect that I've 
-got the basics down.  However I've stumped myself and see that I'll have to 
-fiddle this on the fly.
+On September 22, 2004 12:59 pm, Daniel Chemko wrote:
+> > learning more about iptables is a nice goal to have.  sometimes i wish
+> > it was just as glamorous for people to want to learn more about
+> > routing and the OSI model, before becoming super l33t firewall
+> > gurus...but i digress...
+>
+> Problem is: Neither of these topics can easily be approached by network
+> newbs without a lot of setup. There aren't many visiting this list with
+> routing more complicated than ip route add x via y
+>
+> As for OSI, any casual admin wouldn't find much real world value in it.
+> I'd say OSI influences programmers more than admins. Experienced admins
+> do need to understand programming and OSI's a good practical example of
+> basic layered approaches, etc.. Plus, since others use OSI as a mindset
+> when developing, its good to know where they get their ideas from.
 
-	(yes the isp's are in the same class A address range. *sigh*)
-
-	ISP1 (AA.bb.0.0)      ISP2 (AA.abc.0.0)
-                     |                                  |
-          DSL link                       cable link
-                    |                                    |
-                    Linux firewall/gateway
-     (gulp) -- and a few other services (YES  I KNOW ITS BAD!!!)
-                                     |
-                                     | 
-                        Internal LAN (10.0.0.0)	
-
-
-	I've managed to get both links working as individual default gateways
-	however ISP2 suppresses ports to minimize the traffic (i.e. 80/25/110/etc)
-	When I try to setup dual routing at all using LARTC, I have problems, and I
-	realize that this is not the place to ask those questions.  I'm wondering if 
-	there are rules I can use (consider that the webserver/mailserver and FTP 
-	server are sadly on the firewall at the moment) to force the servers to reply
-	via the DSL or internal lan only, even if the default route points at the
-	cable link? (this would be a quick and dirty solution for me) -- the cable
-	link will have to shortly support a VPN tunnel back to work.
-
-	(Fyi -- This is all part of a promotion I just got at work ... *grin* since 
-I'm now a unix admin I'm gonna look pretty silly if I barf on this)
+	Trust me -- when troubleshooting a distributed application you *really* need 
+to know OSI.  I've found often that developers like to yell that the network 
+is the problem.  Lots of developers have no idea about networking, and seem 
+to believe that it can magically disappear, mangle, harrass, alter and chew 
+up their data.  Now .. that might happen on some networks, but not on ours, 
+or at least not without setting off a bunch of nasty alerts.... 
 
 
-	Alistair 
+> Firewalls are an inevitability these days. You either: Don't use a
+> firewall and get viruses, or you do use a firewall and you're forced to
+> fiddle with it when one of your programs doesn't work. See, your forced
+> to learn it if you like networking and administration or not.
 
-	(p.s. -- Antony ?? ?? anyone seen Antony lately??? hope he's doing well)
+	Using a firewall that blocks certain ports may prevent certain virii from 
+being able to connect and spread, but it wont STOP virii, -- they seem to be 
+getting multitalented these days.  Security as allways is very much like OSI.  
+Layered, purpose driven components.  Each component must do its job, and 
+scream blue bloody murder when it can't/doesn't or fails.
+
+	Alistair.
 
