@@ -1,14 +1,10 @@
-From: "Dan Crooks" <dcrooks@succeed.net>
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
 Subject: RE: Dual Internet Connection
-Date: Wed, 3 Jul 2002 22:46:02 -0700
+Date: Thu, 4 Jul 2002 17:03:30 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NEBBKAFNMLLNBNGMMLLLOEKJCJAA.dcrooks@succeed.net>
-References: <20020701132713.2C4E7456D@lists.samba.org>
-Reply-To: <dcrooks@succeed.net>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA224@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020701132713.2C4E7456D@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,7 +15,53 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'dcrooks@succeed.net'" <dcrooks@succeed.net>
+Cc: netfilter@lists.samba.org
+
+iptables <> router
+
+It tracks connections and not which device it came from. You need iproute 2
+to do something like you need.
+
+I wonder what it would be like to have 2 default gateways and DROP packets
+on each gateway depending on the source address.. wouldn't routes then try
+the other link????
+
+Say
+
+192.168.0.1      192.168.0.2
+|       eth0     |
+-------------------
+        FW
+`add default gw 203.x.x.x`
+`add default gw 210.x.x.x`
+iptables -A FORWARD -s 192.168.0.1 -i eth1 -j DROP
+iptables -A FORWARD -s 192.168.0.2 -i eth2 -j DROP
+iptables -A POSTROUTING -s 192.168.0.1 -o eth2 -j MASQUERADE
+iptables -A POSTROUTING -s 192.168.0.2 -o eth1 -j MASQUERADE
+-------------------
+|eth1            |eth2
+203.x.x.x        210.x.x.x
+
+Would Host Unreachable make the route try the other default gateway??? Not a
+pretty sight though.....
+Sorry if it's a bit messed up.. I'm about to leave work..
+
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: Dan Crooks [mailto:dcrooks@succeed.net]
+Sent: Thursday, 04 July 2002 3:46 PM
 To: netfilter@lists.samba.org
+Subject: RE: Dual Internet Connection
+
 
 >Message: 9
 >From: Antony Stone <Antony@Soft-Solutions.co.uk>
