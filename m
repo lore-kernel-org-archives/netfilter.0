@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "david" <david@aid.inf.cu>
 Subject: Re: I need help , please
-Date: Fri, 5 Jul 2002 20:03:50 +0100
+Date: Fri, 5 Jul 2002 14:56:53 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020705190352.UMUN4119.mta06-svc.ntlworld.com@there>
-References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com> <019f01c22422$852d6d30$8703000a@aid.inf.cu>
+Message-ID: <01b501c22423$6fb6a010$8703000a@aid.inf.cu>
+References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com> <200207051655.g65Gt3802651@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <019f01c22422$852d6d30$8703000a@aid.inf.cu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,44 +17,43 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-On Friday 05 July 2002 1:50 pm, david wrote:
+Tony:
 
-> which iptables
-> /sbin/iptables
+#echo $PATH
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/X11R6/bin:
+/root/bin
 
-Okay, and what is the answer to
-file `which iptables`
+how you can see iptables is in the PATH
 
-What is the response to
-iptables -P INPUT DROP
 
-What is the result of
-echo $PATH
+david
 
-> Let me say you something.I have a smp kernel(simetric multi procesor
-> kernel) , maybe that is the reason
 
-No, iptables works fine on SMP machines.
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.samba.org>
+Sent: Friday, July 05, 2002 6:54 PM
+Subject: Re: I need help , please
 
- 
 
-Antony.
-
-> ----- Original Message -----
-> From: "Joe Patterson" <jpatterson@asgardgroup.com>
-> To: "david" <david@aid.inf.cu>; "Antony Stone"
-> <Antony@Soft-Solutions.co.uk> Cc: <netfilter@lists.samba.org>
-> Sent: Friday, July 05, 2002 6:45 PM
-> Subject: RE: I need help , please
+> On Friday 05 July 2002 5:45 pm, Joe Patterson wrote:
 >
 > > next tell us the output of these commands:
 > >
 > > which iptables
 > > file `which iptables`
-> >
-> > and did you mean to mis-spell INPUT as INPUD?
-> >
-> > -Joe
+>
+> I think we should point out that the ` symbols above are the backtick
+> character (probably at the top left of your keyboard), and not the
+apostrophe.
+>
+> Also, please can you tell us what you get in response to
+> echo $PATH
+>
+>
+>
+> Antony.
+
 
