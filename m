@@ -1,11 +1,15 @@
-From: MOUDARIR Mohamed <moudarir@Richbond.ma>
-Subject: RE: MSN throught Linux
-Date: Mon, 6 Oct 2003 09:04:29 -0000
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: MSN throught Linux
+Date: Mon, 6 Oct 2003 11:09:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <14C5057BC852D611BAC400E0299AA10F02043F@MAILSERV>
+Message-ID: <20031006090928.GY5758@sunbeam.de.gnumonks.org>
+References: <14C5057BC852D611BAC400E0299AA10F02042D@MAILSERV> <3.0.1.16.20031006084006.1a5fcc36@s-net-04.besancon.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZsL4FDf0fo3JYnEE"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3.0.1.16.20031006084006.1a5fcc36@s-net-04.besancon.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,62 +19,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 'Thierry ITTY' <thierry.itty@besancon.org>, Harald Welte <laforge@netfilter.org>
-Cc: netfilter@lists.netfilter.org
-
-Thank you, but i try linux-igd and doesn't work.
-After few seconde, upnpd stop being runing without any  reason !
-I can see 4 process of upnpd eth0 eth2, when i run it the first time.
-But stoped quickly less than one minute !
-I have no probleme compiling and installing the source ( upnp-sdk and
-linux-igd )
-
------Message d'origine-----
-De : Thierry ITTY [mailto:thierry.itty@besancon.org]
-Envoy=E9 : lundi 6 octobre 2003 08:40
-=C0 : Harald Welte; MOUDARIR Mohamed
-Cc : netfilter@lists.netfilter.org
-Objet : Re: MSN throught Linux
+To: Thierry ITTY <thierry.itty@besancon.org>
+Cc: MOUDARIR Mohamed <moudarir@Richbond.ma>, netfilter@lists.netfilter.org
 
 
-Use linux internet gateway device (aka linux-igd) from sourceforge
-It relies on netfilter
+--ZsL4FDf0fo3JYnEE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I already posted some answers on this list about msn, have a look at =
-the
-archives
+On Mon, Oct 06, 2003 at 08:40:06AM +0000, Thierry ITTY wrote:
+> Use linux internet gateway device (aka linux-igd) from sourceforge
 
-I intend to write a micro (don't dare say mini) howto on msn/netfilter =
-very
-soon
+*sigh*.  I hope you are aware that upnp is inherently insecure, and you
+can actually have the same security by removing your firewall alltogether ?
 
-hth
-
-
-A 12:43 03/10/2003 +0200, Harald Welte a =E9crit :
->On Fri, Sep 26, 2003 at 06:48:34PM -0000, MOUDARIR Mohamed wrote:
->> Hi
->> Can we use MSN voice conversation behind a Linux firwall ( redhat )=20
->
->No.  I think they are using SIP (no idea, I haven't used windofs for 8
->years) for which you would need a conntrack+nat helper on the linux
->firewall.  Since nobody has written such a helper yet, it doesn't =
-work.
->
->--=20
->- Harald Welte <laforge@netfilter.org>
-http://www.netfilter.org/
->=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D
->  "Fragmentation is like classful addressing -- an interesting early
->   architectural error that shows how much experimentation was going
->   on while IP was being designed."                    -- Paul Vixie
->
->Attachment Converted: "d:\app\net\eudora\attach\ReMSNthr"
->
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
+--ZsL4FDf0fo3JYnEE
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/gTFIXaXGVTD0i/8RAt2+AJ9yYN8SssxA5ygzYLazlG+VtE89zgCdHBxA
+P1G+AvhDEOqNKa//6oLQLD8=
+=PUos
+-----END PGP SIGNATURE-----
+
+--ZsL4FDf0fo3JYnEE--
 
