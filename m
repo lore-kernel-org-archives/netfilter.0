@@ -1,14 +1,15 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: :INPUT DROP [82:20563]
-Date: Mon, 24 Feb 2003 12:20:08 -0500
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: How to send all packets to a router
+Date: Mon, 24 Feb 2003 13:10:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302241220.08835.netfilter@newkirk.us>
-References: <001c01c2dc22$60a80ca0$11eb7080@princeton.edu>
-Reply-To: netfilter@newkirk.us
+Message-ID: <200302241310.52400.Alistair@nerdnet.ca>
+References: <3C792059.865B267B@acabtu.com.mx>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001c01c2dc22$60a80ca0$11eb7080@princeton.edu>
+In-Reply-To: <3C792059.865B267B@acabtu.com.mx>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,44 +20,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chi <clu@Princeton.EDU>, netfilter@lists.netfilter.org
+To: Karina <kgs@acabtu.com.mx>, netfilter@lists.netfilter.org
 
-On Monday 24 February 2003 11:32 am, Chi wrote:
-> I'm new to iptables so ....
-
-If you haven't already, bookmark and read through the documentation at=20
-http://netfilter.org , and Oskar Andreasson's fantastic tutorial at=20
-http://iptables-tutorial.frozentux.net .
-
-
-> After I use #iptables -P INPUT DROP
->                 #iptables -P FORWARD DROP
->                 #iptables -P OUTPUT DROP
-> and # service iptables save
+On February 24, 2002 12:18 pm, Karina wrote:
+> Hi, i have this problem..
 >
-> I have this in the /etc/sysconfig/iptables:
-> :INPUT DROP [82:20563]
-> :FORWARD DROP [0:0]
-> :OUTPUT DROP [0:0]
+> I have an iptables-box, that is the default gateway for all my internal
+> addresses, after this box all the packets are sending to my main router.
+> But now, I need to send one of my internal Class C to another router
+> instead of the main one.
 >
-> So what is exactly those numbers for? and can I manually change it?
-> also I have noticed that those numbers changes every time when I
-> changed the rules.
-
-The numbers are Packets:Bytes that have matched.  If you have several=20
-rules (instead of simply a DROP policy for the chain) this will show you=20
-how much traffic matched each rule.  You shouldn't manually edit it, but=20
-if you want to reset it use "iptables -Z" (to zero the counts for the=20
-default table, filter) and/or "iptables -t nat -Z". (to zero counts for=20
-the NAT table)  If you list the active rules with "iptables -v -n -L" it=20
-will list all the filter table rules along with packets and bytes that=20
-matched each, and here again "-t nat" will specify the nat table instead=20
-of the default filter table.
-
-j
-
-> Thanks.
+> I try with this line:
 >
-> Chi
+> $IPTABLES -T NAT -a PREROUTING -i eth0 -s $THISCLASS -j DNAT --to
+> other.router.ip
+>
+> but it seems this is not working.
+>
+> If i setup a computer and i put as gateway directly the new router ip
+> all works. But , if i setup this same comptuer and i put as gateway my
+> iptables-box (all the computers have this settings) this doesn't work.
+> The packets sent by my other ip addresses are going to main router as
+> usual, but the other class is not going to the alternate router.
+>
+> Any ideas ?
 
+	Perhaps you have the order of the NAT rules incorrect?
+	This rule should occurr in the table *before* the default one
+	that routes the rest of your network.
+
+	Alistair
 
