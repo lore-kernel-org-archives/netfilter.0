@@ -1,13 +1,10 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: Trying to setup two ethernet cards with two websites
-Date: Thu, 2 Jan 2003 22:40:31 +0100
+From: "Simpson, Doug" <dsimpson@friedmancorp.com>
+Subject: SMTP external
+Date: Thu, 2 Jan 2003 16:40:05 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GOEDLKDBKHLHGAKAGFGKOEOGLLAA.rsterenborg@xs4all.nl>
-References: <se1459fa.075@butchers.com>
+Message-ID: <20ED00AA0BC135449469D6EF0AE79C970FAB@ozlan.fcdomain.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <se1459fa.075@butchers.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +15,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-> To streamline the firewall I am writing, can I be safe to
-> assume that:
->
-> CLASS_A="10.0.0.0/8"
-> IF1="eth0"
-> IF2="eth1"
->
-> (For example, I will drop anything claiming to be from a Class A
-> Private Network on either interface)
-> iptables -A INPUT  -i $IF1 -s $CLASS_A -j DROP
-> iptables -A INPUT  -i $IF2 -s $CLASS_A -j DROP
->
-> can be written in one line as:
-> iptables -A INPUT -s $CLASS_A -j DROP
-
-Yes.
-You'd only specify the incoming interface if you were to expect
-$CLASS_A on one interface, but not on the other interface. If you
-don't specify -i, iptables won't match the incoming interface, so it
-would only look at the source address.
-
-
-Rob
-
+I do not really want to do it but I need to open my firewall to allow smtp
+access from the internet.  
+First is there a safe way to do it? (HA)
+Second, what is the correct command to do this?
+Thanks,
+Doug
 
