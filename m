@@ -1,15 +1,12 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: A secure router, by MAC address
-Date: Wed, 20 Oct 2004 21:12:42 +0200
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: semi OT: default route
+Date: Wed, 20 Oct 2004 12:56:28 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1098299562.8628.48.camel@porky>
-References: <1098297965.5686.9.camel@6-allhosts>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E389@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-6KaRev4xZcf+/Ivb83aV"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1098297965.5686.9.camel@6-allhosts>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,73 +16,38 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "jgalvez@webpipe.net" <jgalvez@webpipe.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Lopsch <lopsch@lopsch.com>, Netfilter-Mailinglist <netfilter@lists.netfilter.org>
 
+> Quote from LARTC-Howto Chapter 4:
+*snip*
 
---=-6KaRev4xZcf+/Ivb83aV
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Just on this topic, I haven't looked at this for a long time, but with
+said configuration, how is the traffic balanced exactly?
 
-Hi,
+Route A1 and Route A2 are main routes for the network interface.
 
-It really looks like you want to distinguish between well know users and
-a set of mobile users.
-NuFW (http://www.nufw.org) is done to distinguish between users because
-it's an authentication firewall. It authenticates connection in a secure
-manner, so you're sure of the identity of users that you let go accross
-your firewall.
+I have a single connection, say A:1111 -> B:80. If I send it through the
+firewall, will it always use route A1/A2, or will it use the line's
+weight as a differentiator? I must assume that 1. The source IP of the
+connection will always return on the same path A1/A2 but not balanced
+over both. 2. Not all ISP's will route packets sourced from another ISP.
+I'm pretty sure the bandwidth splitter in iproute2 is stateless, so it
+won't split up SYN's between each line's source IP.=20
 
-You can easily manage to build a solution comparable to the one you
-describe below with NuFW. With more flexibility and more security.
+So you could have a perfect 50:50 split of outgoing packets and
+potentially end up with a horribly unbalanced 100:0 inbound rate if the
+source IP ip of each connection isn't equalized based on the weight as
+well. My previously stated nth example forces connection based
+equalization which I think is a better balancing scheme than a single
+direction flow control of a stateless round robbin balance. Man, that's
+a long description.
 
-On Wed, 2004-10-20 at 12:46 -0600, jgalvez@webpipe.net wrote:
-> I am trying to setup a router, that forwards traffic from one interface
-> for only a specific set of MAC addresses.
->=20
-> Users on eth1 side will use a static IP address with a known MAC
-> address. DHCP will be running on eth1 for rogue users. If the source IP
-> is 10.0.0.0/8 all port 80 traffic needs to be redirected to localhost
-> port 80. ONLY traffic from a listed IP and MAC should be allowed to be
-> forwarded out.
->=20
-> I need some recommendation on how to accomplish this.  If you could
-> point me to a similar example or something I can figure it out . The
-> more specific the better.  I have a few of my notes and attempts below.
->=20
-> TIA
-> -Josh
->=20
-> eth0:
->  -Allow all traffic, in and out
-> eth1:
->  -Allow all DHCP traffic - something like below
->   #iptables -I INPUT -i eth1 -p udp --dport 67:68 --sport 67:68 \
->   -j ACCEPT
->  -Allow all incoming traffic by source IP and MAC address
->   #iptables -A PREROUTING -i eth1 -t mangle -m mac \
->   --source 208.5.x.242 --mac-source 00:30:65:0e:91:d6 -j ACCEPT
->  -Redirect all port 80 traffic from 10.0.0.0/8 to localhost:80
->  -Drop all other incoming traffic
->   #iptables -A PREROUTING -i eth1 -t mangle -j DROP
-
-BR,
---=20
-Eric Leblond <eric@regit.org>
-NuFW, Now User Filtering Works : http://www.nufw.org
-
---=-6KaRev4xZcf+/Ivb83aV
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBBdriqnxA7CdMWjzIRAmQdAJ4wOVMcwU1K1WyDT6tXfniCtrddNQCeOlZc
-o5e2Gi2OeCjY+QiM6OqABdo=
-=CQGc
------END PGP SIGNATURE-----
-
---=-6KaRev4xZcf+/Ivb83aV--
-
+Assuming you have many similar sessions, my stated solution works great.
+The worst case is when you have connections that vary from bandwidth
+usage. If you have 1 http connection sucking up 800MB, and 30 10kb http
+sessions, the balance will place 800.018MB on one line while the other
+line only utilizes 150kbits. What we need is a netfilter match rule that
+works better than the round robbin 'nth' rule to select the best
+outgoing route... (*dreaming*)
 
