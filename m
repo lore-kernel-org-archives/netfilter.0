@@ -1,15 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Memory leaks in ip_conntrack?
-Date: Tue, 11 Nov 2003 08:54:44 -0500
+From: Vigil <nvnwdfuq02@sneakemail.com>
+Subject: Re: iprange
+Date: Tue, 11 Nov 2003 16:01:05 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311110854.44805.Alistair@nerdnet.ca>
-References: <Pine.LNX.4.44.0311111424150.16497-100000@filer.marasystems.com>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <Pine.LNX.4.58.0311111558160.8003@fhynpb.envafyvqr.arg>
+References: <Pine.LNX.4.33.0311110937110.24817-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0311111424150.16497-100000@filer.marasystems.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0311110937110.24817-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,35 +16,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Henrik Nordstrom <hno@marasystems.com>, Daniel Chemko <dchemko@smgtec.com>
-Cc: Kishore Dharmavaram <kishored@servgate.com>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On November 11, 2003 08:24 am, Henrik Nordstrom wrote:
-> On Mon, 10 Nov 2003, Daniel Chemko wrote:
-> > Ack! (slaps head)
-> >
-> > I was a victim of this! I finally have a reason for all those annoying
-> > TCP window error messages! Who knows, I may actually have 'traffic'
-> > through my gateway at this rate.
->
-> tcp_wmem should not be related to forwarded traffic at all, only for local
-> TCP sockets..
->
-> Regards
-> Henrik
+Oh, ngh. Excuse me, I read it being built into iptables as I wouldn't have to
+build it into the kernel. As I say, ngh.
 
+On Tue, 11 Nov 2003, Jozsef Kadlecsik kadlec-at-blackhole.kfki.hu |Netfilter Mailing List| wrote:
 
-	Okay -- thanks Henrik ... I wasn't sure of where that allocation applied, and 
-my problem is I *firmly* disbelieve in coincidence .... 
-
+>I still suspect you have got two iptables binaries on your system and you start
+>the previous one instead what you installed from source.
 
 -- 
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+.
 
