@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: Port forwarding problem...
-Date: Tue, 11 Feb 2003 20:14:10 +0100
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: denying local traffic
+Date: Tue, 11 Feb 2003 20:28:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002601c2d201$c163d220$0401000a@robbysan.org>
-References: <001601c2d1fa$669894e0$990da8c0@..153.service>
+Message-ID: <20030211202837.1225ac17.arnt@c2i.net>
+References: <000101c2d1df$3166fb60$bb00a8c0@DOUG1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001601c2d1fa$669894e0$990da8c0@..153.service>
+In-Reply-To: <000101c2d1df$3166fb60$bb00a8c0@DOUG1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +20,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> internet=20
-> <------>(eth0)[web,smtp,pop3,ftp](eth1)<------>LAN(192.168.13.0/24)
->=20
-> i have only one "real" IP on eth0.
->=20
-> can you tell me how can i use something like :
->=20
-> http://www.myserver.xxx:33333 to redirect to .. let's say
-192.168.13.147:80 ??
->=20
+On Tue, 11 Feb 2003 10:06:40 -0500, 
+"Doug Yeager" <doug@aircomwireless.net> wrote in message 
+<000101c2d1df$3166fb60$bb00a8c0@DOUG1>:
 
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -d 192.168.13.147 -j ACCEPT
+> I'm using nocat as a wireless gateway w/ the hostap driver. This is 
+> Great because I should be able to use iptables firewall rules to 
+> Administer things. I've had some success w/ these rules as I'm new to 
+> iptables.
+>  
+> What I can't figure out is how to block local traffic between clients 
+> on the LAN. Basically, I want them to be invisible to each other but 
+> be able to get to the internet through the gateway.
+> Right now they can get to the internet but can see each other's shares
+> and so forth.
+  
+> What should be the iptables commands for doing this.
+>  
+> My lan is 192.168.19.0/255.255.255.0
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 3333 -j DNAT
---to-destination 192.168.13.147:80
+..ascii art figure?  We use vpn (poptop) tunnels, but your net 
+is likely different from ours.  
 
-> the main problem that i see here is that on port 33333 i have no
-services running.
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-If port forwarding doesn't work, you don't see a service running on the
-port.
-OTOH if portforwarding works but the service isn't running, the port
-isn't open on <inet_ip> either.
-
-
-Gr,
-Rob
 
 
