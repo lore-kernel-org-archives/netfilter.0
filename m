@@ -1,13 +1,17 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: iptables scripts
-Date: 31 Oct 2003 08:11:13 -0500
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: "selective" connection tracking?
+Date: Fri, 31 Oct 2003 14:18:21 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067605873.1137.62.camel@valhalla>
-References: <Pine.LNX.4.44.0310310723500.6263-100000@localhost.localdomain>
+Message-ID: <1067606301.4568.11.camel@elendil.intranet.cartel-securite.net>
+References: <3F9EA786.5060401@otaku42.de>
+	 <1067591422.812.13.camel@elendil.intranet.cartel-securite.net>
+	 <3FA23DB7.3010300@otaku42.de>
+	 <1067598149.4557.7.camel@elendil.intranet.cartel-securite.net>
+	 <3FA252E2.4010304@otaku42.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0310310723500.6263-100000@localhost.localdomain>
+In-Reply-To: <3FA252E2.4010304@otaku42.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +21,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: Gilles Yue <gyue@novelgmt.intnet.mu>, iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Michael Renzmann <mrenzmann@otaku42.de>
+Cc: netfilter@lists.netfilter.org
 
-On Fri, 2003-10-31 at 07:26, Robert P. J. Day wrote:
->
-> for the iptables tutorial i was talking about that i'm giving on monday,
-> here's the first part of my script, just to show folks what they can do:
+Le ven 31/10/2003 =E0 13:17, Michael Renzmann a =E9crit :
+> > You're able to do anything you want, as you have to explicitly implem=
+ent
+> > which traffic you do not want to track. Suppose your local IP is
+> > A.B.C.D, then doing something like this should do the trick :
+> > 	iptables -t raw -A PREROUTING -d ! A.B.C.D -j NOTRACK
+> > Do this to exclude all traffic destined to local box.
+> You mean "not destined to the local box", right? :)
 
-This is *totally* cool. Thank you for sharing this with the list! :)
+I do mean "destined to the local box". You exclude from NOTRACK target
+al traffic destined to the local box, meaning you include it in
+conntrack ;)))
 
-The only thing I would add would be:
-iptables -F INPUT
-iptables -F OUTPUT
-iptables -F FORWARD
-iptables --table nat --flush
+We do agree, for sure.
 
-or what ever you need. This way you can run it from the command line and
-clear out all existing rules before you write everything back in.
-
-HTH,
-C
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
