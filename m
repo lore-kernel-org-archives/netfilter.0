@@ -1,12 +1,13 @@
-From: u9067580@cis.nctu.edu.tw
-Subject: Re: Re: Can I only allow those normal TCP 3-handshake packets through
- my firewall?
-Date: Fri, 30 Apr 2004 11:03:04 +0800
+From: "zze-KHOURY Jad FTRD/DMI/CAE" <jad.khoury@rd.francetelecom.com>
+Subject: (no subject)
+Date: Fri, 30 Apr 2004 10:32:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4091C1E8.3020401@cis.nctu.edu.tw>
+Message-ID: <D4EF10CCEB2CE742BEEA9838C590B0E801AA2B1C@ftrdmel2.rd.francetelecom.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C42E8D.B4EDC700"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +17,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: David Cannings <lists@edeca.net>
 
-On Wednesday 28 April 2004 15:50, David Cannings Wrote:
- > On Wednesday 28 April 2004 13:45, u9067580@cis.nctu.edu.tw wrote:
- >> I use a test tool to verify my iptables firewall, but unfortunately it
- >> doesn't pass. The test tool doesn't follow the normal TCP 3-handshake
- >> Syn->SynAck->Ack, it goes as below.
- >> 1. A:25205 ---SYN---> B:80
- >> 2. A:25205 <---SYN--- B:80
- >> (ie. 25205 and 80 are port numbers)
- >> My test report tells me that it can successfully send a reply (2nd)
- >> packet, which only has SYN flag, through my firewall. I found the tcp
- >> tracking state is SYN_RECV from the /proc/net/ip_conntrack after the
- >> 2nd packet is pass. As my understood, the SYN_RECV only happens when
- >> the "Syn+Ack" packet is pass, doesn't it?
- >
- > No. If a packet with the SYN and ACK packets is received in response 
-to a
- > packet with only SYN sent, you send an ACK (the third part of the three
- > way handshake) and enter the ESTABLISHED state. The "normal" three way
- > handshake does not enter the SYN_RECEIVED state on the client side.
- >
- > What you are seeing is perfectly valid, receiving a packet with only SYN
- > set in response to the first step of the three way handshake enters
- > SYN_RECEIVED and is called a "simultaneous open". Using Google Image
- > Search for "tcp state diagram" will bring up a multitude of diagrams
- > which show this.
- >
+This is a multi-part message in MIME format.
 
-Yes, "simultaneous open".
-The test suite is 'CDRouter', and it verifies the piggyback TCP SYN 
-connections from WAN.  Have you ever heard this kind of attack?  I 
-consider the test suite can't simply accuse my firewall of allowing this 
-attack, however this behavior is acceptable.
+------_=_NextPart_001_01C42E8D.B4EDC700
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
- >> Besides, can I only allow those normal TCP 3-handshake packets through
- >> my firewall?
- >
- > Just using conntrack as normal and denying any NEW packets to ports that
- > shouldn't have daemons listening on them probably will not stop these
- > packets. Denying these packets using the --syn flag, for ports that
- > should not have daemons on, should work. I have not tested it but I
- > believe this would stop the situation you describe. If you do test this,
- > please post your results so I and others know whether it works or not.
- > Note that what you are seeing is an acceptable situation however, you 
-may
- > not wish to block it.
- >
+Hi,
+ I'm having some problems finding how to log ONLY iptable log messages
+to another file other than messages. So I made some changes in the
+"sylsog.conf" file by adding: kern.warning /var/log/firewall since the
+Default log level entry is" warning". But I still reveive some message
+other than the packets, from the kernel itself!
+ how can I limit the input messages to only Netfilter packets?
+What should I change in the syslog.conf file If I don't want to receive
+Netfilter messages in this file?
+=20
 
-I believe it can work, too. But, it's hard to specify those open ports 
-to me. I would like to modify the 'state' match or create a new match 
-for Syn->SynAck->Ack.
+regards
+Jad=20
 
-Thanks,
-/Jason
+------_=_NextPart_001_01C42E8D.B4EDC700
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6487.1">
+<TITLE></TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;I'm having some problems finding =
+how to log ONLY iptable log messages to another file other than =
+messages. So I made some changes in the &quot;sylsog.conf&quot; file by =
+adding:<B> kern.warning /var/log/firewall</B> since the Default log =
+level entry is&quot; warning&quot;. But I still reveive some message =
+other than the packets, from the kernel itself!</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;how can I limit the input =
+messages to only Netfilter packets?</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">What should I change in the =
+syslog.conf file If I don't want to receive Netfilter messages in this =
+file?</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">regards</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Jad </FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C42E8D.B4EDC700--
 
