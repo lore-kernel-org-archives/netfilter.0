@@ -1,9 +1,9 @@
-From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
-Subject: Re: NetBIOS browsing across subnets
-Date: Fri, 5 Jul 2002 19:40:57 +0100
+From: "david" <david@aid.inf.cu>
+Subject: Re: I need help , please
+Date: Fri, 5 Jul 2002 14:50:19 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02bd01c22453$80863600$3200a8c0@jungle.funkybadger.org>
-References: <31f101c22452$88c3b280$2901a8c0@amos>
+Message-ID: <019f01c22422$852d6d30$8703000a@aid.inf.cu>
+References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -17,20 +17,136 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Joe Patterson <jpatterson@asgardgroup.com>, Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-Nathan Cassano wrote:
+which iptables
+/sbin/iptables
 
-> A simple google search for "routing NetBIOS linux" reveals the
-> following.
+Let me say you something.I have a smp kernel(simetric multi procesor kernel)
+, maybe that is the reason
+
+
+----- Original Message -----
+From: "Joe Patterson" <jpatterson@asgardgroup.com>
+To: "david" <david@aid.inf.cu>; "Antony Stone" <Antony@Soft-Solutions.co.uk>
+Cc: <netfilter@lists.samba.org>
+Sent: Friday, July 05, 2002 6:45 PM
+Subject: RE: I need help , please
+
+
+> next tell us the output of these commands:
 >
-> Routing NetBIOS with Linux
-> http://www.linuxplanet.com/linuxplanet/tutorials/1159/1/
-
-In which the link to the most important bit (nbfw) is 404-compliant...
-
-http://sourceforge.net/projects/nbfw/
-
-Adam
+> which iptables
+> file `which iptables`
+>
+> and did you mean to mis-spell INPUT as INPUD?
+>
+> -Joe
+>
+>
+> > -----Original Message-----
+> > From: netfilter-admin@lists.samba.org
+> > [mailto:netfilter-admin@lists.samba.org]On Behalf Of david
+> > Sent: Friday, July 05, 2002 6:37 AM
+> > To: Antony Stone
+> > Cc: netfilter@lists.samba.org
+> > Subject: Re: I need help , please
+> >
+> >
+> > Antony;
+> >
+> > #iptables -P INPUD DROP
+> > iptables:Bad built in chain name
+> >
+> > if I turn to:
+> > #iptables -P inpud DROP
+> > iptables:Bad built in chain name
+> >
+> > if I try:
+> > #iptables -p inpud DROP
+> > iptables v1.2.3: unknown protocol `inpud` specified
+> >
+> > thanks again tony
+> >
+> > david
+> >
+> > ----- Original Message -----
+> > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> > To: <netfilter@lists.samba.org>
+> > Sent: Friday, July 05, 2002 6:35 PM
+> > Subject: Re: I need help , please
+> >
+> >
+> > > On Friday 05 July 2002 11:18 am, david wrote:
+> > >
+> > > > iptables:Bad built-in change name
+> > >
+> > > What *exactly* did you type (punctuation as well) and what *exactly*
+is
+> > the
+> > > response ?
+> > >
+> > > The command I want you to try is
+> > >
+> > > iptables -P INPUT DROP
+> > >
+> > > That is:
+> > > "iptables" in lower case
+> > > a space
+> > > a hyphen or minus sign
+> > > a capital P
+> > > a space
+> > > "INPUT" in capitals
+> > > a space
+> > > "DROP" in capitals
+> > > <enter>.
+> > >
+> > > If you really do get an error in response to this, your system is very
+> > sick.
+> > >
+> > >
+> > >
+> > > Antony.
+> > >
+> > > >  ----- Original Message -----
+> > > > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> > > > To: <netfilter@lists.samba.org>
+> > > > Sent: Friday, July 05, 2002 6:00 PM
+> > > > Subject: Re: I need help , please
+> > > >
+> > > > > On Friday 05 July 2002 10:25 am, david wrote:
+> > > > > > OK , I agree.In fact I  am just trying.
+> > > > > > I heve tested a simpler script :
+> > > > > >
+> > > > > > # Standard default policies
+> > > > > > iptables -P INPUT DROP
+> > > > > > iptables -P FORWARD DROP
+> > > > > > iptables -P OUTPUT DROP
+> > > > > >
+> > > > > > am here you have the output.
+> > > > > > /etc/rc.d/init.d/iptables : command not found
+> > > > > > iptables: bad police name
+> > > > > > iptables: bad police name
+> > > > > > iptables: bad police name
+> > > > > > /etc/rc.d/init.d/iptables : command not found
+> > > > >
+> > > > > Do you have . in your path ???   It looks to me as though you're
+in
+> > > > > /etc/rc.d/init.d when you type this, and it's trying to run the
+> > iptables
+> > > > > script in the local directory instead of the iptables
+> > binary in /sbin
+> > > > >
+> > > > > What happens if you cd to /root and type
+> > > > > iptables -P INPUT DROP
+> > > > >
+> > > > >
+> > > > >
+> > > > > Antony.
+> >
+> >
+> >
+> >
 
 
