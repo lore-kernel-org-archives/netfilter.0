@@ -1,8 +1,9 @@
-From: "Patrick Ahler" <patrick@vikus.com>
-Subject: Thanks
-Date: Thu, 6 Mar 2003 17:08:24 -0500
+From: "Willem Oldeman" <willem@king-pin.nl>
+Subject: Re: Problem Regarding Forwarding
+Date: Fri, 7 Mar 2003 00:35:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ABEKJILKOKKGGDJKHKDFEEBKCAAA.patrick@vikus.com>
+Message-ID: <004c01c2e439$050270b0$0301a8c0@hotpop3>
+References: <20030302210529.74972.qmail@web8206.mail.in.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,14 +17,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter EMAIL <netfilter@lists.netfilter.org>
+To: honey grp <honeypict@yahoo.co.in>, netfilter@lists.samba.org
 
-Just want to say thanks to all the helpful people on this mail list, I've
-only been on it a couple days and already learned a great deal about
-netfilter. I'm a Jr. CSA major and just got my first job as a sys admin.
-Would have taken me forever to learn how to build this firewall with you,
-thanks alot.
+It seems you're making things very hard for yourself this way.
+Why would you want CompB and CompC to have the same IP address?
+Things will be so much easier when you give them different IP's, then you
+could use the simplest of forwarding rules.
 
-Patrick
+Life is supposed to be easy: It should be like a stroll in the park on a
+sunny day :-)
+
+Regards,
+Willem
+
+----- Original Message -----
+From: "honey grp" <honeypict@yahoo.co.in>
+To: <netfilter@lists.samba.org>
+Sent: Sunday, March 02, 2003 10:05 PM
+Subject: Problem Regarding Forwarding
+
+
+>
+> Hi,
+>
+> I have my network setup as
+>
+>                                eth1-----------COMP B
+>
+> Comp A ------eth0----Gateway---|
+>
+>                                eth2------------COMP C
+>
+> I want to  forward the traffic from CompA to both CompB as well as CompC.
+The problem is I want to keep same IP address for Both Comp B and Comp C. (I
+know there will be conflict but I am keeping CompB OFF when CompC is ON and
+vice versa).
+>
+> Now, how should I write iptable rules so that traffic will be forwarded to
+both eth1 as well as eth2 so that the host that is ON will respond
+>
+> Thanking you,
+>
+> Regards,
+>
+> Honeypict group
 
 
