@@ -1,13 +1,13 @@
 From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: Ip handling
-Date: Thu, 19 Jun 2003 09:30:45 -0400
+Date: Thu, 19 Jun 2003 09:32:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030619133045.GA7161@cannon.eng.us.uu.net>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DDB@alderaan.smgtec.com> <200306190201.21883.pc-secure@home.nl> <20030619040249.GB5744@cannon.eng.us.uu.net> <200306191008.54741.pc-secure@home.nl>
+Message-ID: <20030619133238.GB7161@cannon.eng.us.uu.net>
+References: <7C9884991ADAE0479C14F10C858BCDF5122DDB@alderaan.smgtec.com> <200306190151.40336.pc-secure@home.nl> <20030619033146.GA5410@cannon.eng.us.uu.net> <200306191000.20197.pc-secure@home.nl>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200306191008.54741.pc-secure@home.nl>
+In-Reply-To: <200306191000.20197.pc-secure@home.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,38 +22,32 @@ Content-Transfer-Encoding: 7bit
 To: Pascal Italiaander <pc-secure@home.nl>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, Jun 19, 2003 at 10:08:54AM +0200, Pascal Italiaander wrote:
+On Thu, Jun 19, 2003 at 10:00:20AM +0200, Pascal Italiaander wrote:
 
-> Op donderdag 19 juni 2003 06:02, schreef Ramin Dousti:
-> > On Thu, Jun 19, 2003 at 02:01:21AM +0200, Pascal Italiaander wrote:
-> > > small errors were in it, fixed:
-> > >
-> > >  iptables -I INPUT -p all -m mac --mac-source 10:20:30:40:05:06 -m \
-> > >  	state --state NEW -j ACCEPT
-> > >  iptables -I OUTPUT -p all -m state --state ESTABLISHED,RELATED -j ACCEPT
+> Op donderdag 19 juni 2003 05:31, schreef Ramin Dousti:
+> > > Does anyone know of a way to make say all connections from the outside
+> > > going to my outside IP address Appear to be coming from my local lan of
+> > > 192.168.0.1
 > >
-> > Just a performance note. Since a high percentage of the packets are
-> > ESTABLISHED,RELATED it is recommended to have this rule at the
-> > beginning of the rule set prior to any other rule and also "-p all"
-> > is redundant...
+> > Just out of curiosity: what is the application of such a setup?
 > >
 > > Ramin
-> >
-> > > Pascal
 > 
+> No official application excists.
 > 
-> huhum....  , did you notice the -I insert rule ?
-> 
-> The -I rule means that the rule is placed at the beginning of the chain.  :-)
+> I will not explain you howto setup a spoofed connection , thats out of order.
+> This mailing-list is ment to keep "hackers" out of the door, not howto gain 
+> acces to others.
 
-Yes, sorry. I'm used to -A... which gives you a chronological order of
-the rule setup. With -I you have to read the rules in the reverse order ;-)
+Well, the best way of securing a network is to know exactly how it
+can be insecured...
 
 Ramin
 
 > 
+> But if you want to know more about these issues look for the subject 
+> "exploits".
+> 
 > Pascal
-> 
-> 
 > 
 
