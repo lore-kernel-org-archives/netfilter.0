@@ -1,11 +1,13 @@
-From: "LiMeiYong" <jobsli@21cn.com>
-Subject: Chains policy and rules
-Date: Mon, 28 Jul 2003 13:47:25 +0800
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: iptables and wifi access point
+Date: 28 Jul 2003 08:41:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <87969271865366.03228@send3.inner-21cn.com>
+Message-ID: <1059374464.837.5.camel@elendil.intranet.cartel-securite.net>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15BFD0@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,49 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: George Vieira <georgev@citadelcomputer.com.au>
+Cc: Jason <arnjuka@optonline.net>, netfilter@lists.netfilter.org
 
-I use a PC with 3 NICs. 
-Their configurations are:
-eth0: 152.201.3.179 mask 255.255.0.0
-eth1: 152.20.3.181 mask 255.255.0.0
-eth2: 192.168.1.181 mask 255.255.255.0
+Le lun 28/07/2003 =E0 00:04, George Vieira a =E9crit :
+> 1. Security =3D Forget WEP (or even 128bit WEP.. it sucks.). Use IPSEC
+> tunnels over wifi.
 
-I use two group commands. 
-1.
-#!/bin/sh
-echo "Starting iptables rules..."
-#Refresh all chains
-/sbin/iptables -F
-/sbin/iptables -A INPUT -p tcp -d 192.168.1.165 --dport 80 -i eth2 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 192.168.1.165 --dport 22 -i eth2 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.179 --dport ! 80 -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.179 --dport ! 22 -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.177 --dport ! 80 -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.177 --dport ! 22   -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.20.3.181 --dport ! 80 -i eth1 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.20.3.181 --dport ! 22 -i eth1 -j ACCEPT
-/sbin/iptables -A INPUT -i eth0 -j DROP
-/sbin/iptables -A INPUT -i eth1 -j DROP
-/sbin/iptables -A INPUT -i eth2 -j DROP
+It's better than nothing. I would say "do not have your secrity rely on
+WEP". WEP sucks, that's a fact, but it introduces an authentication
+scheme (i.e. have the right key to access network) that frightens most
+of script kiddies.
 
-2.
-/sbin/iptables -F
-/sbin/iptables -A INPUT -p tcp -d 192.168.1.165 --dport 80 -i eth2 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 192.168.1.165 --dport 22 -i eth2 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.179 --dport ! 80 -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.179 --dport ! 22 -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.177 --dport ! 80 -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.201.3.177 --dport ! 22   -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.20.3.181 --dport ! 80 -i eth1 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -d 152.20.3.181 --dport ! 22 -i eth1 -j ACCEPT
-/sbin/iptables -P INPUT DROP
+> 3. DO NOT USE MAC FILTERING... Wifi can easily be spoofed mac
+> addresses hence the reason for number 1 above.
 
-    I think both of them shoud do the same things. Yes it does work. But when I use the second group, the connection to 192.168.1.165:80 become very slow. The same thing happend on ssh connection to 192.168.1.165. If I use the first group command, everything is normal! Who can tell me why this happend? What's the difference between droping packets on the chain and droping packets on every ethernet card?
-    Thanks a million to you who answer this question.
+Same than above. Yes, you can abuse easily this kind of security
+setting, but it does not mean you do not have to use it. And you forgot
+to mention BSSID broadcast disabling in beacon frames.
 
- :)
+You have security features in WiFi that are not efficient enough to
+bouild your security on top of them. But using them can make 90%
+wardrivers to skip your AP just because they're activated.
 
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
