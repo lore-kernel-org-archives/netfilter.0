@@ -1,10 +1,13 @@
-From: Matthew Schumacher <matt.s@aptalaska.net>
-Subject: ip_conntrack table is full with razor requests.  Something isn't
- timing out.
-Date: Tue, 01 Mar 2005 08:32:05 -0900
-Message-ID: <4224A715.8030907@aptalaska.net>
+From: Metal Gear <finattack@gmail.com>
+Subject: Port forwarding error
+Date: Tue, 1 Mar 2005 22:45:30 +0500
+Message-ID: <110c78440503010945afcfa69@mail.gmail.com>
+References: <110c784405030102077fa30d3e@mail.gmail.com>
+	<42244EE2.5000206@mnemon.de>
+Reply-To: Metal Gear <finattack@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <42244EE2.5000206@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,51 +18,83 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-List,
+Hi, 
 
-Since upgrading to 2.6.10 I have been having problems with my 
-ip_conntrack table filling up.  It appears it is full of razor 
-(http://razor.sf.net) requests from my internal mail server.
+First of all thanks for quick reply.
+After reading the reply throughly i completed my rulesets and sending
+it for ur review. I m need little explanation regarding rules u sent
+to me
+[Quote]
+You can do it this way. Remember, that only NEW packages (with SYN
+set) will hit this rule. Next step is to allow these connection in
+FORWARD chain (assuming the policy id DROP or REJECT).
+[/Quote] and
 
-I raised the ip_conntrack_max to 8192 and there are only a few hosts 
-behind nat so I am certain something isn't getting flushed out.
+[Quote]
+And don't forget to allow ICMP "Destination Unreachable" :)
+[/Quote]
 
-How do I go about diagnosing this.  What specifically does ip_conntrack 
-need to see in the tcp session to mark the session as expired in the table?
+Why is this sooo??? Why we need the above two rules.
 
-Thanks,
+And for the rules for pop, smtp and dns forwarding what i understood
+from the diagram (tables_traverse.jpg) of
+(http://iptables-tutorial.frozentux.net/)
+- We got a packet from network
+- We done NAT PREROUTING
+- We FORWARDED the packet
+- We done NAT POSTROUTING
+- The packet agains flow the interface
+Am i right???????
 
-schu
+Below is my final rules script based on your help
 
-tcp      6 424864 ESTABLISHED src=192.168.98.2 dst=66.151.150.12 
-sport=51075 dport=2703 packets=9 bytes=421 src=66.151.150.12 
-dst=64.181.100.18 sport=2703 dport=51075 packets=7 bytes=577 [ASSURED] 
-mark=0 use=1
-tcp      6 401401 ESTABLISHED src=192.168.98.2 dst=66.151.150.35 
-sport=50791 dport=2703 packets=7 bytes=317 src=66.151.150.35 
-dst=64.181.100.18 sport=2703 dport=50791 packets=5 bytes=370 [ASSURED] 
-mark=0 use=1
-tcp      6 393358 ESTABLISHED src=192.168.98.2 dst=66.151.150.12 
-sport=50627 dport=2703 packets=8 bytes=365 src=66.151.150.12 
-dst=64.181.100.18 sport=2703 dport=50627 packets=5 bytes=370 [ASSURED] 
-mark=0 use=1
-tcp      6 376557 ESTABLISHED src=192.168.98.2 dst=66.151.150.35 
-sport=49950 dport=2703 packets=9 bytes=421 src=66.151.150.35 
-dst=64.181.100.18 sport=2703 dport=49950 packets=7 bytes=577 [ASSURED] 
-mark=0 use=1
-tcp      6 369805 ESTABLISHED src=192.168.98.2 dst=66.151.150.12 
-sport=48990 dport=2703 packets=7 bytes=317 src=66.151.150.12 
-dst=64.181.100.18 sport=2703 dport=48990 packets=5 bytes=370 [ASSURED] 
-mark=0 use=1
-tcp      6 368538 ESTABLISHED src=192.168.98.2 dst=66.151.150.35 
-sport=48738 dport=2703 packets=7 bytes=317 src=66.151.150.35 
-dst=64.181.100.18 sport=2703 dport=48738 packets=5 bytes=370 [ASSURED] 
-mark=0 use=1
-tcp      6 365641 ESTABLISHED src=192.168.98.2 dst=66.151.150.12 
-sport=47914 dport=2703 packets=9 bytes=421 src=66.151.150.12 
-dst=64.181.100.18 sport=2703 dport=47914 packets=7 bytes=577 [ASSURED] 
-mark=0 use=1
+Thanks
+-----------------------------------------------------------------------------------
+#!/bin/sh
+
+# Flushing the chains
+iptables -F
+iptables -F -t nat
+
+# Allow icmp destination unreacable
+iptables -A INPUT -p icmp -m icmp --icmp-type destination-unreachable -j ACCEPT
+
+# Rules for Squid
+iptables -A INPUT -p tcp -s $LAN_ADDRESS/$NETMASK --dport 3128 -m
+state --state NEW,ESTABLISHED,RELATED -j accept
+iptables -A OUTPUT -p tcp -d $LAN_ADDRESS/$NETMASK --sport 3128 -m
+state --state ESTABLISHED,RELATED -j accept
+
+# Enabling POP3 Forwarding
+iptables -A PREROUTING -t nat -d squidip -p tcp --dport 110 -j DNAT
+--to $POPSERVER
+iptables -A FORWARD -p tcp --dport 110 -d $POPSERVER -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p tcp --sport 110 -s $POPSERVER -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A POSTROUTING -p tcp --dport 110 -d $POPSERVER -j
+SNAT --to $SQUIDIP
+
+# Enabling SMTP Forwarding
+iptables -A PREROUTING -t nat -d squidip -p tcp --dport 25 -j DNAT
+--to $SMTPSERVER
+iptables -A FORWARD -p tcp --dport 25 -d $SMTPSERVER -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p tcp --sport 25 -s $SMTPSERVER -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A POSTROUTING -p tcp --dport 25 -d $SMTPSERVER -j
+SNAT --to $SQUIDIP
+
+# Enabling DNS Forwarding
+iptables -A PREROUTING -t nat -d squidip -p udp --dport 53 -j DNAT
+--to $DNSSERVER
+iptables -A FORWARD -p udp --dport 53 -d $DNSSERVER -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p udp --sport 53 -s $DNSSERVER -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A POSTROUTING -p udp --dport 53 -d $DNSSERVER -j SNAT
+--to $SQUIDIP
 
