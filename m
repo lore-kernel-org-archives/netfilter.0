@@ -1,14 +1,12 @@
-From: Luigi Corsello <mlreader@lucomp.net>
-Subject: Re: broken SNAT with fixed external MTU
-Date: Thu, 14 Oct 2004 21:52:05 +0200
+From: Nicolas Martin <nico.martin@gmail.com>
+Subject: Problems to get TARPIT functionnality with iptables
+Date: Thu, 14 Oct 2004 22:05:17 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <416ED8E5.7000501@lucomp.net>
-References: <416EA61A.9030600@lucomp.net>
-	<20041014181747.GA3929@bender.817west.com>
+Message-ID: <487eee530410141305460b18ca@mail.gmail.com>
+Reply-To: Nicolas Martin <nico.martin@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041014181747.GA3929@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +16,53 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
+I'm using Debian GNU/Linux and I'd like to get iptables working with
+the tarpit function.
+I have my 2.6.8 kernel in /usr/src/linux.
+I've downloaded patch-o-matic with cvs as told in the netfilter
+modification tutorial. It created me /usr/src/linux/netfilter and
+/usr/src/linux/netfilter/patch-o-matic (no
+/usr/src/linux/netfilter/userspace as told in the tutorial).
 
-Jason Opperisano wrote:
-> On Thu, Oct 14, 2004 at 06:15:22PM +0200, Luigi Corsello wrote:
-> 
->>Hello everybody,
->>
->>My DSL router (very bad firmwares) wants me to force the MTU
->>(buggy MTU auto-setting). The firewall has a public IP and mtu 1500:
->>
->>---snip
->>#route to the router net
->>ip route add 192.168.1.0/24 dev eth1 mtu 1440
->># default to the router (mtu not needed here)
->>ip route add default via 192.168.1.1 mtu 1440
->>--snip
->>
->>the firewall itself NATs one client back-to-back connected
->>
->>---snip
->>#mss clamping 1)
->>iptables -A FORWARD -d $net1 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
->>--set-mss 1440
->>iptables -A FORWARD -s $net1 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
->>--set-mss 1440
-> 
-> 
-> try not to confuse MTU with MSS, as they are not the same.  if you're
-> going for an MTU of 1440--you should be setting MSS to 1400 (MSS = MTU -
-> 40).
+After that I launch ./runme ./extra/ipt_TARPIT.patch and if I apply the pat=
+ch :
 
-Ykes! that was it. Too many sleepless nights flashing crappy firmwares.
-Thanks a lot!
+Testing patch extra/ipt_TARPIT.patch...
+Warning - no help text file could be found in either
+/usr/src/linux/net/ipv4/netfilter/Config.help
+or /usr/src/linux/Documentation/Configure.help
+grep: /usr/src/linux/net/ipv4/netfilter/Config.in: Aucun fichier ou
+r=E9pertoire de ce type
+Could not find place to slot in Config.in line
+TEST FAILED: patch NOT applied
 
-/lc
+If I force with f :
 
-> 
-> -j
-> 
+Applying patch extra/ipt_TARPIT.patch...
+Warning - no help text file could be found in either
+/usr/src/linux/net/ipv4/netfilter/Config.help
+or /usr/src/linux/Documentation/Configure.help
+grep: /usr/src/linux/net/ipv4/netfilter//Config.in: Aucun fichier ou
+r=E9pertoire de ce type
+Could not find place to slot in Config.in line
+grep: /usr/src/linux//dev/null: Aucun fichier ou r=E9pertoire de ce type
+Could not find place to slot in null entry
+Could not find place to slot in Makefile line
+Patch extra/ipt_TARPIT.patch applied cleanly.
+=20
+But I can't find the tarpit item when I use make xconfig which should be in=
+=20
+networking_options -> network packet filtering -> IP:Netfilter configuratio=
+n=20
+
+Thanks for your help because I spent a lot of time trying to figure
+this out... I'm quite sure it's something quite silly that I forgot to
+do ...
+
+Nicolas
 
