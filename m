@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Ethernet port redirection
-Date: Wed, 5 Jan 2005 10:52:39 -0500
-Message-ID: <20050105155239.GB24445@bender.817west.com>
-References: <000d01c4f33a$5ac1f590$eaab9385@gagan>
+Subject: Re: input filter
+Date: Wed, 5 Jan 2005 10:48:57 -0500
+Message-ID: <20050105154857.GA24445@bender.817west.com>
+References: <20050104223520.2120.qmail@web53904.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <000d01c4f33a$5ac1f590$eaab9385@gagan>
+In-Reply-To: <20050104223520.2120.qmail@web53904.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,35 +21,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Jan 05, 2005 at 08:52:06PM +0530, Navneet wrote:
+On Tue, Jan 04, 2005 at 02:35:20PM -0800, Bhasker Allam wrote:
 > Hi,
+> I am a newbie and I was reading the howto for packet
+> filter. The howto has the following picture:
 > 
-> Now, pease check this out :-
-> I was trying to run squid in transparent mode(Transparent Proxying) ?
+> Incoming                 /     \         Outgoing
+>        -->[Routing ]--->|FORWARD|------->
+>           [Decision]     \_____/        ^
+>                |                        |
+>                v                       ____
+>               ___                     /    \
+>              /   \                   |OUTPUT|
+>             |INPUT|                   \____/
+>              \___/                      ^
+>                |                        |
+>                 ----> Local Process ----
 > 
-> System details:
-> RedHat Linux 9
-> eth0 133.147.171.169/8 [Internal NIC]
-> eth1 172.21.133/14        [External NIC]
+> The input filtering is done only for local bound
+> packets and after the routing decision. Is the above
+> true ?
 
-maybe i'm being silly--but it sure looks to me like eth0 is external and
-eth1 is internal.
+yes.
 
-> All http request get REDIRECTED to squid  at eth0(Internal).It should work
-> as Gateway by means of eth1(External).
-> 
-> i've done this:
-> 1.Enabled IP forwarding
-> #echo "1" >/proc/sys/net/ipv4/ip_forward
-> 2.iptables (Netfilter) PORT REDIRECTION:
-> #iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-> REDIRECT --to-port 3128
+> Is there a facility to perform input filtering
+> before the routing decision ? Thanks.
 
-are you *positive* that you don't mean eth1 there?
+yes:  -t mangle PREROUTING
 
 -j
 
 --
-"Ah, good ol' trustworthy beer. My love for you will never die."
+"Look, just give me some inner peace, or I'll mop the floor with ya!"
         --The Simpsons
 
