@@ -1,11 +1,11 @@
 From: Samuel Jean <sj-netfilter@cookinglinux.org>
-Subject: Re: problem with connlimit
-Date: Mon, 31 Jan 2005 19:57:47 -0500
-Message-ID: <41FED40B.2040307@cookinglinux.org>
-References: <41FE3EF3.7020909@fnet.pl>
+Subject: Re: netfilter accounting by stateful session
+Date: Mon, 31 Jan 2005 20:07:32 -0500
+Message-ID: <41FED654.5080606@cookinglinux.org>
+References: <20050131020647.30751.qmail@web54405.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <41FE3EF3.7020909@fnet.pl>
+In-Reply-To: <20050131020647.30751.qmail@web54405.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,22 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iv <iv@fnet.pl>
+Content-Type: text/plain; charset="us-ascii"
+To: Vincent Chen <vctw@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-iv wrote:
-> so my question is: did i do anything wrong, or maybe i forgot to do 
-> anything, or it is a bug?
-> thanks in advance,
-> iv
+Vincent Chen wrote:
+> Hi, all
+
+Hi Vincent,
+
 > 
-No, that's not a bug.. with older kernel. Stuff in patch-o-matic belong to it
-because they are unmaintained to be synced with kernel.
+> I have been looking around for accounting solution by stateful session.
+> FreeBSD's ipfilter have done a pretty good job. Can netfilter do that?
 
-Yes, connlimit is unsynced since 2.6.8.1 IIRC.
+Of course, search for 'ctstat' which is a conntrack accounting tool.
+IIRC, you may or may not need a patch for your conntrack, depending on
+the linux kernel release you have.
 
-Regards,
+> 
+> 
+> Thanks,
+> 
+> Vincent Chen
+> 
+HTH,
 
 Samuel
+
 
