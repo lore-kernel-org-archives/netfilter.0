@@ -1,15 +1,12 @@
-From: Etienne Ledoux <etienne@unix.za.org>
-Subject: Re: 3 iptables accounting questions
-Date: Wed, 7 Jul 2004 09:10:23 +0200
+From: Tomasz Czapiewski <xeros@irc.pl>
+Subject: Re: netfilter digest, Vol 1 #1942 - 8 msgs
+Date: Wed, 7 Jul 2004 09:13:20 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407070910.23721.etienne@unix.za.org>
-References: <200407061017.43252.etienne@unix.za.org> <200407061107.25731.etienne@unix.za.org> <20040706215524.GB30118@samad.com.au>
-Reply-To: etienne@unix.za.org
+Message-ID: <Pine.LNX.4.58L0.0407070907140.8585@debian.telesat.eu.org>
+References: <20040706214011.26343.22595.Mailman@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040706215524.GB30118@samad.com.au>
-Content-Disposition: inline
+In-Reply-To: <20040706214011.26343.22595.Mailman@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,93 +16,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: Alexander Samad <alex@samad.com.au>
+
+I've got exactly the same problem with Mandrake Cooker 2.6.7-rc3,
+2.6.7-1 and 2.6.7-2 kernels.
+I've tried both iptables 1.2.10 and 1.2.11 - the problem stil exists.
+I get binary iptables 1.2.10 compiled on debian with 2.6.7 kernel and it
+works, but I still can't use 'nat' (SNAT/DNAT/MASQUERADE).
+
+Can someone point me how to get rid of this (using the same kernel) - or
+give me any patch for that to even vanilla kernel 2.6.7?
+
+--
+xeros
 
 
-**ninja-bow**
-
-On Tuesday 06 July 2004 23:55, Alexander Samad wrote:
-> On Tue, Jul 06, 2004 at 11:07:25AM +0200, Etienne Ledoux wrote:
-> > super answer! tx!
-> >
-> > 1)
-> > Should I change the 10.168.0.2/32 to 0.0.0.0/0 ? Would that catch
-> > everything on eth0 ? My internal lan is 192.168.0.0/24. But mail is
-> > delivered directly to the fw which wont pass to the internal network but
-> > is also part of the internet traffic. So I guess I have to types of
-> > internet traffic. 192.168.0.0/24 which is the internal network doing the
-> > usual stuff on the internet like browsing etc. and mail which is going
-> > to/from 10.168.0.2 which is the external ethernet of the firewall.
-> >
-> > 2) iptables-save -c ACCT
-> > Unknown arguments found on commandline
-> >
-> > I guess I'm doing something stupid here. What would the right syntax be ?
-> >
-> > e.
-> >
-> > On Tuesday 06 July 2004 10:45, Antony Stone wrote:
-> > > On Tuesday 06 July 2004 9:17 am, Etienne Ledoux wrote:
-> > > > Greetings,
-> > > >
-> > > > 1) I have a firewall and would like to count all the traffic
-> > > > entering/leaving the external interface (I want to count only
-> > > > internet traffic, which is the traffic entering/leaving the external
-> > > > if). Is this rule right ?
-> > > >
-> > > > iptables -N ACCT
-> > > > iptables -I FORWARD -j ACCT
-> > > > iptables -I INPUT -j ACCT
-> > > > iptables -I OUTPUT -j ACCT
-> > > > iptables -A ACCT -s 10.168.0.2/32 -d 0.0.0.0/0 -o eth0
-> > > > iptables -A ACCT -s 0.0.0.0/0 -d 10.168.0.2/32 -i eth0
+> --__--__--
 >
-> why not something like
+> Message: 6
+> Reply-To: "Eric Poulin" <epoulin@onepost.net>
+> From: "Eric Poulin" <epoulin@onepost.net>
+> To: <netfilter@lists.netfilter.org>
+> Subject: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
+> Date: Tue, 6 Jul 2004 15:28:53 -0400
 >
-> iptables -t mangle -N ACCT
-> iptables -t mangle -I PREROUTING 1 -i eth0 -j ACCT
-> iptables -t mangle -I POSTROUTING 1 -o eth0 -j ACCT
+> Hello Guys,
 >
-> iptables -A ACCT -i eth0
-> iptables -A ACCT -o eth0
+> Any people succesfully compiled iptables 1.2.11 on 2.6.7?  Oddly, even
+> without applying any patch-o-matics packages, I'm getting the following
+> error while doing the make:
+>
+> # make BINDIR=/sbin KERNEL_DIR=/usr/src/linux
+> Making dependencies: please wait...
+> Extensions found: IPv4:ROUTE IPv4:recent IPv6:ROUTE IPv6:ah IPv6:esp
+> IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+> gcc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSIO
+> N=\"1.2.11\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
+> In file included from include/libiptc/libiptc.h:6,
+>                  from include/iptables.h:5,
+>                  from extensions/libipt_ah.c:8:
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: no
+> semicolon at end of struct or union
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: syntax
+> error before '*' token
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: syntax
+> error before '}' token
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: type
+> defaults to `int' in declaration of `DECLARE_MUTEX'
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+> parameter names (without types) in function declaration
+> /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+> `DECLARE_MUTEX' declared `static' but never defined
+> make: *** [extensions/libipt_ah_sh.o] Error 1
 >
 >
-> This should capture every thing entering and leave via eth0
+> I'm getting this with a vanilla source code of the kernel and iptables. I
+> was getting those with the patch-o-matic installed, but I wanted to narrow
+> it down. Kernel can compile easily those modules that are coming from
+> iptables 1.2.9.
 >
-> > > > 10.168.0.2 is my external interface ip and is also the ip which my
-> > > > internal network is natted behind.
-> > >
-> > > You want to count traffic addressed *to this machine* from the
-> > > Internet, and traffic addressed *from this machine* to the Internet,
-> > > yes?   In that case these rules will work, but there is no point in
-> > > jumping to the ACCT chain from the FORWARD chain.
-> > >
-> > > Remember that FORWARD is *only* for traffic going through the machine,
-> > > and INPUT and OUTPUT are *only* for traffic to/from the machine (ie:
-> > > *never* for traffic going through it).
-> > >
-> > > If you want to count traffic addressed *to any machine on your internal
-> > > network* from the Internet, and traffic addressed *from any machine on
-> > > your network* to the Internet, then you should use your subnet address
-> > > in the -s and -d options, not the address of your firewall.
-> > >
-> > > At a guess this subnet is going to be 10.168.0.0/24, but I don't know
-> > > what netmask you're using.
-> > >
-> > > > 2) I would like to save/restore only this accounting rule. I thought
-> > > > 'iptables-save -c -t ACCT' would work but it doesn't.
-> > >
-> > > No, ACCT is not a table (like filter, nat and mangle are) - it is a
-> > > chain (like FORWARD, INPUT and OUTPUT are).   Don't use -t
-> > >
-> > > > 3) How do I flush the accounting stats.
-> > >
-> > > iptables -Z ACCT, or iptables -L -Z ACCT -nvx if you want to see the
-> > > counters immediately before zeroing them.
-> > >
-> > > Regards,
-> > >
-> > > Antony.
+> Any idea?
+>
+> Eric
 
