@@ -1,13 +1,16 @@
-From: michael@floog.net
-Subject: RE: Iptables/Iproute2/Load-Balancing 2 Broadband Connections
-Date: Fri, 28 May 2004 13:33:36 -0700
+From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
+Subject: Re: Static/Dynamic NAT Combination
+Date: Fri, 28 May 2004 23:08:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1085776416.40b7a2205a3d1@webmail.floog.net>
-References: <7C9884991ADAE0479C14F10C858BCDF591E318@alderaan.smgtec.com>
+Message-ID: <20040528230807.21ed5eae.leslie.polzer@gmx.net>
+References: <20040528175829.7b5a6da6.leslie.polzer@gmx.net>
+	<40B79B3E.2050504@nicaraguarealestate.com>
+	<20040528221802.47e2957c.leslie.polzer@gmx.net>
+	<200405282127.42236.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E318@alderaan.smgtec.com>
+In-Reply-To: <200405282127.42236.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,31 +23,41 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Blammo, you dropped the book on me.  :-)
-Thanks for the link; it looks chock full of ip goodness.
+On Fri, 28 May 2004 21:27:42 +0100
+Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
 
-Have a great weekend.
+> 1. Give us a specific example of what you want to happen, showing us the 
+> source & destination addresses & port numbers for machines A & B, so we can 
+> see exactly what you want to do
+Okay, maybe this time I'm better at it.
 
-Mike
+There is a thing called 'binat' on OpenBSD.
+'binat' does NAT on _all_ incoming and outgoing connections on a specific
+interface, so I guess it is basically SNAT and DNAT combined in Netfilter
+jargon.
+So let's say there a router "R" with an interface called ppp0
+(1.1.1.1) and another one called eth0 (192.168.1.1/24), and a last
+one called eth1 (192.168.2.1/24).
+Moreover assume a box called 'A' on the eth0 network, and another one
+called 'B' on the eth1 network.
+So think of 'A' as my main working machine - it runs a webserver
+and maybe a lot more listening daemons. So I'd like to redirect
+any connections to R/ppp0:* to 'A' - with ports preserved of course.
+Also, any connection from eth0 which is routed via R/ppp0 must get
+translated - again, preferably (but this time not a must) without
+any port changing. That's the thing for box 'A' - not much of a problem
+for Netfilter, I suppose. Now 'B' comes into play. 'B' wants the standard
+NAT via R/ppp0 to the internet - no special stuff with ports here, just
+standard SNAT.
+Now, will there be any conflicts with this setup? Is it possible at all?
+To make things even more complicated, some ports should be excluded from
+the DNAT R/ppp0:* -> A, like 6667, because I want to run an IRC server
+on R (which is up 24/7).
 
-Quoting Daniel Chemko <dchemko@smgtec.com>:
+I hope this time my explanations are easier to understand as I don't
+like wasting other people's time for nothing.
 
-> 
-> > Any/all guidance is greatly appreciated.
-> 
-> There's always:
-> 
-> http://linux-ip.net/html/linux-ip.html - Large HOWTO on how to
-> configure
-> IP networks. 
-> 	10.4. Multiple Connections to the Internet ...
-> 
-> www.lartc.org - Really good at QOS configurations
-> 
-> 
+Thanks!
 
-
-
-
-
+Leslie
 
