@@ -1,13 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: connlimit against flashget
-Date: Mon, 31 Jan 2005 18:31:14 -0500
-Message-ID: <1107214274.4330.5.camel@hubcap.ljm.dom>
-References: <87vf9fz31o.fsf@c3po.zlatenlist.net>
-	<20050131160805.GA24888@bender.817west.com>
+From: dwhite@speakeasy.net
+Subject: Re: FTP Bounce Attack.
+Date: Mon, 31 Jan 2005 16:28:43 -0800 (PST)
+Message-ID: <Pine.LNX.4.61.0501311608270.13730@willie>
+References: <41FA594A.1000103@multitech.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050131160805.GA24888@bender.817west.com>
+In-Reply-To: <41FA594A.1000103@multitech.co.in>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +15,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Vinod Chandran <vinod_chandran@multitech.co.in>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 2005-01-31 at 11:08, Jason Opperisano wrote:
-> just as an FYI--that rule does not limit the "number of parallel TCP
-> connections to a server per client IP address."  it limits the total
-> number of connections to that destination to 2, regardless of client IP
-> address.
-> 
-> someone more adept with the connlimit match will hopefully jump in and
-> correct me, but i *believe* if you want your limit to be 2 connections
-> per host IP, you would use:
-> 
->   iptables -p tcp --syn --dport 80 --dst www.warez.net -m connlimit \
->     --connlimit-above 2 --connlimit-mask 32 -j REJECT
 
-i just tested this syntax on a test machine with:
 
-  iptables -A INPUT -p tcp --syn --dport 22 \
-    -m connlimit --connlimit-above 2 --connlimit-mask 32 \
-    -j REJECT --reject-with tcp-reset
+Vinod,
 
-and appeared to work just as i thought--i could make 2 ssh connections
-per source IP to this host.
+I was able to confirm this (iptables 1.2.11, kernel 2.6.9).  The PORT 
+command is indeed forwarded and unmangled, even if NAT is being used for 
+the control session.
 
-test machine details (i know, i know--it needs to be updated):
+However, it appears that, while the PORT command is allowed and passed on 
+to the server, the resulting "EXPECTING" connection (data channel) is not 
+made available.  So in that way the bounce attack is stopped.  It appears, 
+by glancing through the code, that this is the intended design.
 
-$ uname -a
-Linux vmg2 2.4.26-gentoo-r9 #2 Fri Sep 3 07:13:35 EDT 2004 i686 Intel(R)
-Pentium(R) M processor 1.70GHz GenuineIntel GNU/Linux
+But, this amounts to only disabling a bounce attack *through* the 
+firewall.  It does *not* restrict me from connecting to another device 
+*behind* the firewall (or more specifically, to any host on the same side 
+of the firewall as the server).
 
-$ iptables -V
-iptables v1.2.11
+I think this has some significant security implications.  I think you're 
+right to raise the issue.
 
-connlimit match is from patch-o-matic-ng-20040621
+-dave
 
-HTH...
+On Fri, 28 Jan 2005, Vinod Chandran wrote:
 
--j
-
---
-"You must be the man who didn't know whether it was a blister or
- a boil.
- It was a gummi bear."
-	--The Simpsons
-
+> Hi,
+>
+> I am currently using iptables 1.2.11 with the patch-o-matic patch applied.
+> Its documented that netfilter is patched to  protect against FTP bounce 
+> attacks, when an invalid IP is given in the FTP PORT command.
+> I can detect the PORT command reaching the FTP server through the router( 
+> containing netfilter), even when I give an ivalid IP.
+> I would like to know whether the patch is not working or whether the patch is 
+> meant to not allow the resulting bounce attack, even with allowing the PORT 
+> command to pass through.
+>
+> Thanks and Regards,
+> Vinod C
+>
+>
 
