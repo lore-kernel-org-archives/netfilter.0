@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I need help , please
-Date: Thu, 4 Jul 2002 19:20:38 +0100
+Subject: Re: IPsec & FreeS/WAN
+Date: Thu, 4 Jul 2002 19:28:31 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020704182042.XIE16050.mta01-svc.ntlworld.com@there>
-References: <001e01c22321$e86018a0$2400a8c0@inq7.net> <200207041453.g64ErIU32086@vulcan.rissington.net> <00fc01c22352$6a2168a0$8703000a@aid.inf.cu>
+Message-ID: <20020704182835.BEFN16050.mta01-svc.ntlworld.com@there>
+References: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER> <20020703191224.LSGV19225.mta07-svc.ntlworld.com@there> <20020704175913.GA27072@willow.seitz.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <00fc01c22352$6a2168a0$8703000a@aid.inf.cu>
+In-Reply-To: <20020704175913.GA27072@willow.seitz.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,60 +20,36 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 04 July 2002 1:00 pm, david wrote:
+On Thursday 04 July 2002 6:59 pm, Ross Vandegrift wrote:
 
-> I amtrying to set a dns and proxy server
+> On Wed, Jul 03, 2002 at 08:12:22PM +0100, Antony Stone wrote:
 
-I assume this means you want to run DNS and an http proxy such as squid on 
-the machine running the Firewall.   If this is not correct, post again and 
-tell us what iptables rules you are trying to set up (which is what I was 
-trying to ask).
+> > What kernel source do you start from ?
+>
+> I start from a clean, bleeding edge tree in the 2.4 series.  I usually
+> apply a few misc patches: Andrew Morton's lowlatency, any available
+> reiserfs fixes, sometime and AC series patch.
 
-Anyway, if that is the correct assumption, how about a set of rules such as 
-this ?
+> Part of the problem was that there wasn't an easy way to just run the
+> kernel patching script.  IIRC, the scripts configure FreeS/WAN, and then
+> run something like "make config dep clean bzImage modules" in the kernel
+> source tree.  I'd much rather do "make patch" in the FreeS/WAN source tree,
+> and then be left to my own devices to build the KLIPS kernel.
 
-# Standard default policies
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT DROP
-# Allow in DNS requests
-iptables -A INPUT -p tcp --dport 53 -j ACCEPT
-iptables -A INPUT -p udp --dport 53 -j ACCEPT
-# Allow out DNS requests
-iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
-iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
-# Redirect http requests to local proxy
-iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT 127.0.0.1:80
-# Allow proxy requests out of machine
-iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
-# Allow replies etc back in again
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+You should have a quick look at the Makefile for FreeS/WAN.
+
+I've just had a look, and it's rather nicely split up into different sections 
+/ modules for doing different bits, and for example, "make menugo" (which is 
+the one I normally use) does:
+make precheck verset insert
+make mcf
+make confcheck programs install kernel
+
+Therefore I'm sure you could use this list to start working out which bits 
+you'd like to run with the make script and which bits you want to do later on 
+by hand...
 
  
 
 Antony.
-
-> ----- Original Message -----
-> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> To: <netfilter@lists.samba.org>
-> Sent: Thursday, July 04, 2002 4:53 PM
-> Subject: Re: I need help , please
->
-> > On Thursday 04 July 2002 9:38 am, david wrote:
-> > > It was a mistake.What I do is
-> > >
-> > > # service iptables save
-> > > after that  I got a new file in /etc/sysconfig/iptables .
-> > > and then :
-> > > #/etc/rc.d/init.d/iptables restart 2>salida8
-> > > .And here you see all the errors.
-> >
-> > What rules are you trying to set ?
-> >
-> > Have you compiled all the required bits of iptables into the kernel or
-> > are you loading modules ?
-> >
-> >
-> >
-> > Antony.
 
