@@ -1,12 +1,11 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: ether source/dest from userspace?
-Date: Wed, 14 Jan 2004 07:50:47 -0800 (PST)
+From: Alain FORCIOLI <Alain.Forcioli@cyber-networks.fr>
+Subject: Linux kernel IP fragmentation
+Date: Wed, 14 Jan 2004 18:41:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040114155047.4851.qmail@web13905.mail.yahoo.com>
-References: <20040112175640.GC8023@cannon.eng.us.uu.net>
+Message-ID: <1074102090.11499.38.camel@psylocke>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-FOOquEh08fxdcHT8ZpWS"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040112175640.GC8023@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-  When you get a packet to process in the userspace
-QUEUE, is there any way to get the source and
-destination ethernet addresses?
 
+--=-FOOquEh08fxdcHT8ZpWS
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+Hello,
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
-http://hotjobs.sweepstakes.yahoo.com/signingbonus
+Sorry for this post which is off topic but I think it might interrest
+some of subscribers.
+
+It seems that the default linux kernel behavior, in case of IP
+fragmentation, is to start to send the last ip fragmented packet first.
+
+Does someone can confirm this behavior ?
+
+Regards,
+
+--=20
+Alain FORCIOLI			OpenPGP: 1024D/73855675
+
+--=-FOOquEh08fxdcHT8ZpWS
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQBABX9KhXJCkXOFVnURAkmlAJ0dEZ0QgeiLZNJ/m3OGYBtcC+zQdwCfVg94
+c1pp0koPQTjsYPepVMnDAEQ=
+=nr4K
+-----END PGP SIGNATURE-----
+
+--=-FOOquEh08fxdcHT8ZpWS--
 
