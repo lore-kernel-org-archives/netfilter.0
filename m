@@ -1,16 +1,11 @@
 From: Michael Gale <mgale@utilitran.com>
-Subject: Re: Setting a default policy does not work :(
-Date: Tue, 2 Dec 2003 17:49:13 -0700
+Subject: default policies for the NAT chains
+Date: Tue, 2 Dec 2003 18:03:02 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031202174913.2a61fc64.mgale@utilitran.com>
-References: <20031202083315.212b9e05.mgale@utilitran.com>
-	<1070380411.2057.21.camel@grendel>
-	<200312021107.39011.JALaramie@Loudoun-Fairfax.com>
-	<20031202210347.3e151a19.arnt@c2i.net>
+Message-ID: <20031202180302.32601c1d.mgale@utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031202210347.3e151a19.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,56 +18,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-
 Hello,
 
-	Thanks for the help so far -- it must of been the location I had placed the default policy in the file or maybe some other rule. But everything is working fine now. 
+	Ok -- I had my firewall working perfectly with a default policy in affect:
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
 
-Michael
+It was also working great for the 22 virtual IP addresses.
 
+I then though about the NAT chains (PREROUTING,OUTPUT and POSTROUTING) and figured they should have a default policy as well.
 
-On Tue, 2 Dec 2003 21:03:47 +0100
-Arnt Karlsen <arnt@c2i.net> wrote:
+I added that to the list and not I can not start a out going connection from the firewall.
 
-> On Tue, 2 Dec 2003 11:07:39 -0500, 
-> Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote in message 
-> <200312021107.39011.JALaramie@Loudoun-Fairfax.com>:
-> 
-> > On Tuesday 02 December 2003 10:53, Chris Brenton wrote:
-> > > On Tue, 2003-12-02 at 10:33, Michael Gale wrote:
-> > > > Inserting the following to the bottom of my firewall script:
-> > > >
-> > > > ### Causes all traffic to or from the box on either interface to
-> > > > #be
-> > > > dropped regardless of all other rules.
-> > > >
-> > > > iptables --policy INPUT DROP
-> > > > iptables --policy OUTPUT DROP
-> > > > iptables --policy FORWARD DROP
-> > >
-> > > Try:
-> > > iptables -P INPUT DROP
-> > > iptables -P OUTPUT DROP
-> > > iptables -P FORWARD DROP
-> > >
-> > > Works for me on multiple firewalls using multiple interfaces.
-> > >
-> > 
-> > OK, now *I'm* confused. Aren't they the same command?
-> 
-> ..supposely, according to the man page, but if OP is using a 
-> development version off his own cvs tree or somesuch, all 
-> bets are off.  ;-)
-> 
-> -- 
-> ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-> ...with a number of polar bear hunters in his ancestry...
->   Scenarios always come in sets of three: 
->   best case, worst case, and just in case.
-> 
-> 
-> 
+So my question is do I need default policies for the NAT chains ? If so it would seem like I need some rules added twice ? 
 
+Any suggestions would be appreciated :)
 
 -- 
 Michael Gale
