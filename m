@@ -1,13 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: squid and iptables
-Date: Sat, 8 Nov 2003 19:39:35 +0100
+From: Leonid Veytser <veytser@cs.bu.edu>
+Subject: Re: Forwarding traffic destined to local machine
+Date: Sat, 8 Nov 2003 15:25:59 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031108193935.68eaf508.arnt@c2i.net>
-References: <007a01c3a2b1$5dca5c80$6a1f68c8@proxy>
+Message-ID: <Pine.SOL.4.20.0311081517280.3735-100000@csa.bu.edu>
+References: <200311081726.hA8HQCj15653@agate.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007a01c3a2b1$5dca5c80$6a1f68c8@proxy>
+In-Reply-To: <200311081726.hA8HQCj15653@agate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: diseno1 <diseno1@puntozeropublicidad.cl>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@soft-solutions.co.uk>
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 4 Nov 2003 09:55:16 +0100, 
-"diseno1" <diseno1@puntozeropublicidad.cl> wrote in message 
-<007a01c3a2b1$5dca5c80$6a1f68c8@proxy>:
+  I have a kernel module that registers to listen on netfilter
+hooks. I also have a user level program that uses libipq to
+receive packets that were received by the module.
+   Now, the user application registers to listen to all packets coming in
+on NF_IP_PRE_ROUTING hook. If, the packet is destined to the local
+machine, I change the destination at iph->daddr to another destination and
+I recalculate the checksum.
 
-> hello...
-> i need set up a firewall/proxy...
-> with smtp, pop3,www, ssh, and the most security posibility...
-> no hablo bien ingles...
+  By this, the packet should show up at the NF_IP_FORWARD hook, but it
+doesn't. It just gets dropped somewere beforehand.
 
-..no need to: http://www.google.com/language_tools?hl=en
-or http://www.google.com/language_tools?hl=es
+What am I doing wrong?
 
-..just write in your own language and pop it into the 
-translator and paste the translation into your posting, 
-so _both_ your original message and your translated 
-message appears in your post.
 
-..if it gets really bad, we can try your original message in other
-translators so we can figure out what you try to ask, regardless 
-of language, like in http://www.google.com/intl/xx-klingon/ and
-http://www.google.com/intl/xx-bork/  ;-)
+On Sat, 8 Nov 2003, Antony Stone wrote:
 
-> si alguien me pudiera ayudar estaria agradecido...
+> On Saturday 08 November 2003 5:08 pm, Leonid Veytser wrote:
 > 
-
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+> > How can I forward traffic(to some different machine) that is destined to
+> > the local machine using netfilter?
+> >
+> > Changing destination address at the prerouting hook doesn't seem to work.
+> 
+> Tell us what you did and how you know it didn't work and we may be able to 
+> help.
+> 
+> Antony
+> 
+> -- 
+> 
+> G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+> w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+> !X- !R K--?
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+> 
 
 
