@@ -1,12 +1,13 @@
-From: Cory Visi <merlin@phear.lwz.org>
-Subject: Re: Static compile issues
-Date: Wed, 28 May 2003 17:11:42 -0400 (EDT)
+From: xavier renaut <list.netfilter@natch.dyndns.org>
+Subject: Re: How to block the real IP rather than an entire proxy?
+Date: Wed, 28 May 2003 21:50:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>
-References: <1054158893.21086.62.camel@dejawu>
+Message-ID: <20030529015019.GM4866@natch.8d.com>
+References: <Law15-F579atA2PrCsP0001d012@hotmail.com> <Pine.LNX.4.44.0305132003290.13227-100000@marx.gruntwerk.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1054158893.21086.62.camel@dejawu>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0305132003290.13227-100000@marx.gruntwerk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,70 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-When I compile the kernel statically and enable IP Tables support,
-ipchains compatibilty is becomes no longer available. I have the Invalid
-Argument problem with the static kernel.
+On Tue, May 13, 2003 at 08:05:45PM -0700, Myles Uyema wrote:
+|It's the job of the proxy to block out the offender.  There's nothing you 
+|can do with netfilter to prevent him from accessing your website through 
+|other proxies.
 
-When I compile the kernel with module support, I do _not_ enable
-the ipchains compatibility module.
+what about scanning the content of the packet (-m string)
+to find thee http header ?
 
-Should I try enabling this? Obviously, I cannot insert it when the IP
-tables module is loaded. Also, this doesn't help my situation with the
-static kernel.
+bye
 
-Thanks,
-Cory
 
-On 28 May 2003, Esteban wrote:
+|
+|On Tue, 13 May 2003, J and T wrote:
+|
+|My question is about blocking IPs from my network. It's a piece of cake to 
+|block static IPs. But there are times when someone sitting behind a proxy 
+|whos IP doesn't change, but the proxy in which he is accessing us does. 
+|There's no way I can figure out how to keep these people out. For example; 
+|Apache only shows the IP of the visitor and not the real IP of the visitor. 
+|Here's an example of what I mean using environment variables:
+|
+|$ENV{'REMOTE_ADDR'};
+|
+|One might believe this is the IP of the visitor. But...
+|
+|$ENV{'HTTP_X_FORWARDED_FOR'}
+|
+|if the above is present it is most likely the true IP of the visitor and the 
+|"REMOTE_ADDR" is just the proxy in which they are accessing the Net with.
+|
+|$ENV{'HTTP_CLIENT_IP'}
+|
+|Which you may need to deal with as well.
+|
+|So how can I block a visitor who is jumping around through proxies? I don't 
+|want to block out the proxy as this could ultimately block out all AOL users 
+|for example.
+|
+|Thanks!
+|John
+|
+|_________________________________________________________________
+|STOP MORE SPAM with the new MSN 8 and get 2 months FREE*  
+|http://join.msn.com/?page=features/junkmail
+|
+|
+|
+|
+|
 
-> did you enable the ipchains cmpatibility module?
-> (i think is the last one one the netfiler menu con make menuconfig)
->
-> good luck
->
-> On Wed, 2003-05-28 at 17:09, Cory Visi wrote:
-> > I am using a 2.4.20 kernel with pom-20030107 and iptables v1.2.7a. From
-> > pom-20030107, I have installed all the pending patches and all the base
-> > patches. In addition, I have installed the following extra patches:
-> >
-> > amanda-conntrack-nat.patch
-> > eggdrop-conntrack.patch
-> > ip_tables-proc.patch
-> > mms-conntrack-nat.patch
-> > pptp-conntrack-nat.patch
-> > quake3-conntrack.patch
-> > rsh.patch
-> > tftp-conntrack-nat.patch
-> >
-> > The problem is, when I compile the kernel statically and enable all the
-> > iptables options, I cannot do NAT. Any iptables line that specifies a
-> > chain in the nat table causes an Invalid Argument:
-> >
-> > # iptables -t nat -A POSTROUTING -o $EXTERNAL -s $INTERNAL_NETWORK -j SNAT --to-source $EXTERNAL_IP
-> > Invalid argument
-> >
-> > Another interesting thing to point out, is that I also compiled this
-> > kernel with modules and experienced the same problem. I was, however, able
-> > to fix it by disabling the IPv4 netfilter option for "NAT of local
-> > connections". For the module kernel, disabling this option fixes the
-> > problem. For the staticly compiled kernel, disabling this option has no
-> > effect-- the error persists.
-> >
-> > Anyone have any ideas?
-> > Please CC me directly if you respond to the list, since I am not
-> > subscribed (yet).
-> >
-> > Thank you,
-> > Cory Visi
-> >
-> >
-> >
->
->
->
-
+-- 
+xavier renaut, 514 906 1212 x226  
 
