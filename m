@@ -1,8 +1,8 @@
-From: "Peter Hurley" <phurley@imaginexd.com>
-Subject: SNMP device replies by alternate address
-Date: Thu, 13 Feb 2003 11:55:13 -0500
+From: Dieter Raith <raith@rus.uni-stuttgart.de>
+Subject: netfilter and cipe
+Date: Thu, 13 Feb 2003 18:09:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000101c2d380$ae062c70$3201a8c0@BEOWULF>
+Message-ID: <3E4BD158.8080705@rus.uni-stuttgart.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,41 +15,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Is there an extension target that can be used in the PREROUTING chain of
-nat and/or mangle to alter the incoming source ip address? Say something
-in the form of...
+I installed CIPE 1.54 on two Linux systems.
+One running 2.2.19 the other 2.4.18
+The UDP tunnel connection has problems.
+The log on 2.4.18 shows the following entries:
 
-iptables -t nat -A PREROUTING -i eth1 -m mac --mac-source
-xx.xx.xx.xx.xx.xx -j SRC_MANGLE --from_src 192.168.50.17/32
+Feb 13 17:40:42 sysrai kernel: ip_finish_output: bad owned skb = 
+da0aaca0: POST_ROUTING
+Feb 13 17:40:42 sysrai kernel: skb: pf=2 (owned) dev=eth0 len=132
+Feb 13 17:40:42 sysrai kernel: PROTO=17 129.69.3.3:4444 129.69.90.9:4444 
+L=132 S=0x00 I=9147 F=0x0000 T=255
 
-The situation is this:  a SNMP device accepts SNMP requests on two
-separate ip addresses.  One ip is fixed and private, the other is
-dynamic/unknown.  This device is on the outside of a private network
-being SNAT'ed.  The problem is that even though it receives SNMP
-requests on the private ip address it replies with the other
-dynamic/unknown ip address as the source.
 
-This means that ip_conntrack_core doesn't recognize the reply packet as
-belonging to the previous outgoing request.
+I have traced that down to netfilter.c where this messages is generated.
+It does not tell me anything and I do not find information about it.
 
-Matching the reply packet is easy with the mac address which is fixed.
-But I can't seem to get past that.  Marking and using iproute2 won't
-work since only ip_conntrack* knows the reply path.  Mapping both
-request and reply packets onto the same network (say 10.x.x.x) won't
-work because the two SNMP addresses aren't simple
-reflections/derivatives of each other (e.g., 192.168.50.17 and
-xx.xx.72.116).
+On both systems the following device is created (inet addr and P-t-P of 
+course flipped)
 
-Perhaps I'm missing something that already exists in the stock
-netfilter?
+cipcb0    Link encap:IPIP Tunnel  HWaddr
+           inet addr:172.16.100.2  P-t-P:172.16.100.1  Mask:255.255.255.255
+           UP POINTOPOINT RUNNING NOARP  MTU:1442  Metric:1
+           RX packets:234 errors:2 dropped:0 overruns:0 frame:2
+           TX packets:329 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:100
 
-Thanks in advance,
 
-Peter Hurley
-phurley@imaginexd.com
+Before I go into further details within CIPE I hope to get some 
+information on the above kernel messages
 
+
+
+
+-- 
+Dieter Raith 					Phone:	++49-711-685-4516
+Computing Center University of Stuttgart	Fax:	++49-711-682-357
+Allmandring 30 					E-Mail:	raith@rus.uni-stuttgart.de
+70550 Stuttgart, Germany
 
 
