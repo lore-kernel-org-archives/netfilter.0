@@ -1,9 +1,9 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: stability of IMQ?
-Date: Wed, 1 Sep 2004 16:01:42 -0400
+From: "Shaun T. Erickson" <ste@smxy.org>
+Subject: OT: Watchguard firewalls: opinions wanted.
+Date: Wed, 01 Sep 2004 16:40:54 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <876ef97a040901130117c0e91a@mail.gmail.com>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+Message-ID: <413633D6.8060600@smxy.org>
+Reply-To: ste@smxy.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,19 +16,13 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>, netfilter-devel <netfilter-devel@lists.netfilter.org>, linux-net <linux-net@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi all,
+Watchguard firewalls are based on linux/iptables. I can either build one 
+myself or go with their commercial item. I was wondering if anyone here 
+has any experience with them and could comment on it to me. Feel free to 
+reply offline, since this is off-topic.
 
-I am considering using IMQ for some ingress shaping action and I was
-wondering if anyone else was using it and how stable it is. Have their
-been an persistent Oops problems? Any other serious issues? The site
-seems to indicate some problems in certain situations, so I was
-wondering about this before I got into it too heavily. Thanks for all
-the help in advance!
-
--- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+	-ste
 
