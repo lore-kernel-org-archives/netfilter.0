@@ -1,14 +1,16 @@
-From: Darren Kirby <bulliver@badcomputer.no-ip.com>
-Subject: MAC addresses
-Date: Sat, 11 Sep 2004 11:50:38 -0700
+From: Mike <1100100@gmail.com>
+Subject: Re: Port 21, 23, and 80 are open according to Shields Up at grc.com
+Date: Tue, 14 Sep 2004 01:09:07 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409111150.50506.bulliver@badcomputer.no-ip.com>
-Reply-To: bulliver@badcomputer.no-ip.com
+Message-ID: <8ca4228204091322097d44fbc1@mail.gmail.com>
+References: <1095079786.1899.8.camel@wolfpack.ljm.dom>
+	<200409132122.i8DLM1i6001590@bassett.home.org>
+	<8ca42282040913164724b70aa4@mail.gmail.com>
+Reply-To: Mike <1100100@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1142899.Wa3TfR1JRP";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <8ca42282040913164724b70aa4@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,59 +20,41 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---nextPart1142899.Wa3TfR1JRP
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+SOLVED.
 
-Hello netfilter list,
+This is pretty embarassing but I will go ahead and post it so that it
+is forever archived under the "silly noobs on routers" directory.
 
-I have a fairly good knowledge of iptables etc...but there is one point I=20
-would like some clarification on.
+1.  I've been too lazy to get the roaring penguin dsl client working
+on my routerbox.  Historically, I've had trouble with making the right
+data packet sizes and providing headroom for packet headers, etc.
 
-This is from the iptables tutorial located here:
-http://iptables-tutorial.frozentux.net
+2.  So, I'm still using a simple $50 Netgear cable/dsl router to act
+as my LAN's DHCP server.
 
-"6.4.3.2. MAC match
-The MAC (Ethernet Media Access Control) match can be used to match packets=
-=20
-based on their MAC source address. As of writing this documentation, this=20
-match is a little bit limited, however, in the future this may be more=20
-evolved and may be more useful. This match can be used to match packets on=
-=20
-the source MAC address only as previously said"
+3.  The LAN diagram looks like:  Internet --> Netgear Router --> Linux
+firewall/router/gateway --> LAN clients.
 
-Are MAC addresses unique for all ethernet cards? What I would like to know =
-is=20
-could I use this rule to allow ssh connections ONLY from my notebook no=20
-matter what its current IP address happens to be, and drop all other=20
-connection requests?
+4.  A while back I needed to set up some video conferencing for my
+boss.  I wanted to make sure there were no issues with the Netgear
+router so I simply turned it into a DMZ that let everything through to
+the Linux routerbox.
 
-Thanks for any insight...
+5.  Forgetful as I am, I modified the linux firewall back to its
+original state once the video conferencing was completed, but never
+turned off the DMZ settings on the Netgear router.  That was the
+entire problem.  The netgear was responding and opening ports as it is
+designed to do while set on DMZ.
 
-=2Dd
+Long story, short.  I tested the linux box on its own with no Netgear
+in front of it, and then also tested it with the Netgear set up as the
+DHCP server, but no longer set up as a DMZ.  Both tests yielded
+results of complete stealth.
 
-=2D-=20
-Part of the problem since 1976
-http://badcomputer.no-ip.com
-Get my public key from=20
-http://keyserver.linux.it/pks/lookup?op=3Dindex&search=3Dbulliver
-"...the number of UNIX installations has grown to 10, with more expected..."
-=2D Dennis Ritchie and Ken Thompson, June 1972=20
+Where's the beer.
 
---nextPart1142899.Wa3TfR1JRP
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBBQ0kKOrzWcOwL7mwRAkaqAJ0RVAyw4D5b2okJ53epxwwnLjaoqQCgghVn
-KMdYcK3LYVUIL7lccMtSxko=
-=xJn4
------END PGP SIGNATURE-----
-
---nextPart1142899.Wa3TfR1JRP--
+Mike
 
