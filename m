@@ -1,12 +1,15 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Port forwarding
-Date: Fri, 6 Jun 2003 09:08:57 +1000
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Two IP add
+Date: Thu, 5 Jun 2003 18:56:48 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019263@wardrive.citadelcomputer.com.au>
+Message-ID: <200306051856.48803.Alistair@nerdnet.ca>
+References: <200306051156.45624.pandre@darkstar.nom.za> <200306051951.33575.pc-secure@home.nl> <200306051954.50078.pc-secure@home.nl>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200306051954.50078.pc-secure@home.nl>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,68 +20,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Dhyanesh Ramaiya <dhyanesh@intafrica.com>, netfilter@lists.netfilter.org
+To: Pascal Italiaander <pc-secure@home.nl>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-PREROUTING only works for packets passing through the firewall and not =
-FOR the firewall to itself. There is no NAT for an incoming connection =
-on it's local process as it's ALREADY there at the service not a packet =
-that's coming in. if you know what I mean.
-
-If you had multiple IPs which were NATted to an internal server then you =
-can NAT the OUTPUT chain but not when the destination IP is the firewall =
-itself..
-
-One sneaky what of doing it is to put a /etc/hosts file of the internal =
-machine.. eg.
-
-192.168.0.1           www.yourdomain.com
-
-When you browse the name it'll go directly to the internal machine. But =
-remember to use names not IPs..
-Outsiders get NATed and the firewall browses by the internal machine.
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-=20
-
------Original Message-----
-From: Dhyanesh Ramaiya [mailto:dhyanesh@intafrica.com]
-Sent: Thursday, June 05, 2003 7:49 PM
-To: netfilter@lists.netfilter.org
-Subject: Port forwarding
+On June 5, 2003 01:54 pm, Pascal Italiaander wrote:
+> Op donderdag 5 juni 2003 19:51, schreef u:
+> > Op donderdag 5 juni 2003 15:29, schreef Ray Leach:
+> > > On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
+> > > > On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
+> > > >         I would like to do the following:
+> > > >
+> > > >         Stop MASQUESRADING to two servers say. 10.10.10.5 and
+> > > > 10.10.10.8, how would i do this with a rule.
+> > > >
+> > > >         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip'
+> > > > -j MASQUERADE now how would i put in two ip address's ?
+> >
+> > Ok , you could do something like this:
+>
+> sorry in the first reply was an error !!
+> this is fixed now.
+>
+>  NO_MASK="10.10.10.5 10.10.10.8"
+>
+>  if [ ${NO_MASK} != "" ] ; then
+>    for nomask in ${NO_MASK}; do
+>   	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j MASQUERADE
+>  done;
+>  fi
+>
+> > this is a bit more flexible, cause , you can ad more ip's the NO_MASK
+> > easily without changing the rule itself, or have to write a new line.
+>
+>  Pascal
 
 
-Dear all,
+	I somehow don't think this will do what we want here.
+	rule 1 from this loop will MASQUERADE any ip that is 
+	NOT 10.10.10.5, which unfortunately includes 10.10.10.8
+	and rule #2 will never be hit by the 10.10.10.8 packet.
 
-I have a linux router (Redhat 9.0) with iptables 1.2.7a-2. I have setup =
-port
-forwarding rules as below to allow SMTP and POP3 to a machine on the
-internal network.
+	I would suggest that we want to take the entire segment
+	and manage it separately, but I have no experience with
+	creating user chains in the nat table, although this *might* 
+	work -- ymmv
+	
 
-iptables -t nat -A PREROUTING -j DNAT -p tcp -d <public_ip> --dport 110 =
---to
-<private_ip>:110
-iptables -t nat -A PREROUTING -j DNAT -p tcp -d <public_ip> --dport 25 =
---to
-<private_ip>:25
+iptables -t nat -N masq_filter
+iptables -t nat -A POSTROUTING -s x.x.x.x -d 10.10.10.0/24 -j masq_filter 
+# the above line includes an assumption that MIGHT BE WRONG!!!! I dont know 
+# what your netmask is!!!!!!!!!
+iptables -t nat -A masq_filter -d 10.10.10.5 -j RETURN
+iptables -t nat -A masq_filter -d 10.10.10.8 -j RETURN
+iptables -t nat -A masq_filter -j MASQUERADE
 
-What happens, is that when I try to telnet port 25 or 110 from the =
-router
-itself, it doesn't connect and gives the error "Connection refused".
-However, from any other machine on the network it connects. Thinking =
-that
-some firewall rules might be blocking the connection, the default policy =
-of
-all chains is set to accept.
+	filling in out the ips to NOT masquerade one at a time, perhaps with a loop
+	as pascal suggests above, with appropriate modifications... 	
+-- 
 
-Dhyanesh Ramaiya
-dhyanesh@intafrica.com
-
-
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
