@@ -1,12 +1,14 @@
-From: Devaraj Das <ddas@india.hp.com>
-Subject: Re: kernel 2.6 IPsec and netfilter
-Date: Mon, 29 Mar 2004 20:51:53 +0530
+From: "Erik Bourget" <erik@midmaine.com>
+Subject: Re: Three kernel Oops/panic/BUG ksymoopses (kernel BUG at buffer.c:539)
+Date: Mon, 29 Mar 2004 16:40:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40683F11.92AD4E22@india.hp.com>
-References: <4068040C.AA93F507@india.hp.com> <40681861.1030704@mis.net>
+Message-ID: <014a01c415a4$33983750$d100000a@sbs2003.local>
+References: <Pine.LNX.4.44.0401031352040.2301-100000@poirot.grange>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.44.0401031352040.2301-100000@poirot.grange> (Guennadi Liakhovetski's message of "Sat, 3 Jan 2004 13:54:27 +0100 (CET)")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,84 +19,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Lane Powers <lpowers@mis.net>
-Cc: netfilter@lists.netfilter.org
+To: Administrator
+Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
 
-Lets take for this discussion a simple case where
-* we want to disable 10.0.1.5's access to port 5000 on another machine 10.0.1.1.
+Guennadi Liakhovetski <g.liakhovetski@gmx.de> writes:
 
-* 10.0.1.5, however, has access to all other ports on 10.0.1.1.
-* Another machine 10.0.1.6 has access to all ports on 10.0.1.1.
-* Creating tunnels to 10.0.1.1 may not be possible on all machines.
-* All the clients have to necessarily go through the ipsec protocols...
-* racoon is the key mgmt daemon.
+> On Fri, 2 Jan 2004, Erik Bourget wrote:
+>
+>> I had a very bizarre situation where four boxes in the same rack all
+>> simultaneously (within 30 minutes) hard-locked with Oops messages.  The
+>> boxes
+>
+> An obvious idea - after reading an article about a break-in into Debian
+> and others' boxes - sure you weren't cracked?
 
-Please let me know your inputs...
+Yeah, that was a concern and I'm relatively sure that's not the case because
 
-Thanks,
-Devaraj.
+*) chkrootkit says so (mod some hidden processes that are reported by a bug in
+ chkrootkit according to Google)
 
-Lane Powers wrote:
+*) The crashy boxes were all installed with 2.4.23, not upgraded, so the big
+ Debian vulnerability didn't exist
 
-> Well, it might not be perfect, but here is what I do, and it 'works for me'
->
-> In my ipsec.conf I use the updown script functionality of pluto, i.e. in
-> my conn default I put
->          leftupdown=/usr/local/bin/updown.sh
->
-> and then that script is responsible for setting netfilter rules for that
-> ip while the tunnel is up, i.e.
->
-> #!/bin/bash
-> if [ "$PLUTO_VERB" == "up-client" ] || [ "$PLUTO_VERB" == "up-host" ] ; then
->          iptables -N $PLUTO_CONNECTION;
->          iptables -A  $PLUTO_CONNECTION -p tcp --dport 22 -j ACCEPT;
->          iptables -A  $PLUTO_CONNECTION -p tcp --dport 23 -j ACCEPT;
->          iptables -A  $PLUTO_CONNECTION -p tcp --dport 80 -j ACCEPT;
->          iptables -A  $PLUTO_CONNECTION -p tcp --dport 443 -j ACCEPT;
->          iptables -A  $PLUTO_CONNECTION -p tcp --dport 3389 -j ACCEPT;
->          iptables -A  $PLUTO_CONNECTION -p tcp --dport 5900 -j ACCEPT;
->          iptables -A  $PLUTO_CONNECTION -p icmp --icmp-type echo-reply
-> -j ACCEPT;
->          iptables -A  $PLUTO_CONNECTION -p icmp --icmp-type echo-request
-> -j ACCEPT;
->          iptables -A $PLUTO_CONNECTION -j ACCEPT
->          iptables -I INPUT -s $PLUTO_PEER -j $PLUTO_CONNECTION;
->          iptables -I FORWARD -s $PLUTO_PEER -j $PLUTO_CONNECTION;
->          exit 0;
-> elif [ "$PLUTO_VERB" == "down-client" ] || [ "$PLUTO_VERB" ==
-> "down-host" ] ; then
->          iptables -D INPUT -s $PLUTO_PEER -j $PLUTO_CONNECTION;
->          iptables -D FORWARD -s $PLUTO_PEER -j $PLUTO_CONNECTION;
->          iptables -F $PLUTO_CONNECTION;
->          iptables -X $PLUTO_CONNECTION;
->          exit 0;
-> fi
->          exit 0;
->
-> obviously if you needed different rules per tunnel you could just move
-> the updown into the individual conn and define a seperate script per
-> connection with different rules.  all of the $PLUTO_... stuff is set in
-> the ENV while the connection is being built... obviously for me, my
-> FORWARD chain is a default drop, so I am just inserting at the top and
-> allowing what I want for the duration of the tunnel.
->
-> Hope that helps.
->
-> Lane
->
-> Devaraj Das wrote:
-> > Hi,
-> > I wanted to know whether there is a working solution for the issue that
-> > was discussed sometime back:
-> > http://www.spinics.net/lists/netfilter/msg22099.html
-> > In short is there any solution to enable blocking selective ports in a
-> > machine running Linux 2.6.0 + in-kernel ipsec.
-> > I would be very helpful if I can get a working solution or some
-> > information on a possible solution.
-> > Thanks,
-> > Devaraj.
-> >
-> >
+*) The only open ports to the outside world are running SMTP and POP3 as
+ non-root no-shell accounts, and it's running qmail which seems simple and
+ safe enough.
 
+- Erik Bourget
 
