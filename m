@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: packet capturing
-Date: Mon, 1 Jul 2002 08:37:58 +0100
+Subject: Re: Dual Internet Connection
+Date: Mon, 1 Jul 2002 08:52:20 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020701073800.HHEW4119.mta06-svc.ntlworld.com@there>
-References: <20020630232050.3847.qmail@webmail9.rediffmail.com>
+Message-ID: <20020701075222.ROAE19225.mta07-svc.ntlworld.com@there>
+References: <NEBBKAFNMLLNBNGMMLLLGEJNCJAA.dcrooks@succeed.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020630232050.3847.qmail@webmail9.rediffmail.com>
+In-Reply-To: <NEBBKAFNMLLNBNGMMLLLGEJNCJAA.dcrooks@succeed.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,29 +20,29 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Monday 01 July 2002 12:20 am, angela  cearns wrote:
+On Monday 01 July 2002 12:45 am, Dan Crooks wrote:
 
-> hello group,
->    i want to check if there is anyway  i can measure the # of
-> packets after the iptables acted on them i.e. after dropping the
-> packets. i use ethereal, it gives me all the packets before the
-> iptables have acted on?
+> I have two internet connections, one DSL and one Cable.  I want to run both
+> connections to one machine using seperate NIC's.  Can I apply the same
+> rules to both interfaces?  I can't see a problem with incoming connections
+> but not sure about the outgoing.
+>
+> I want to be able to select what connection each computer on my LAN uses
+> for it's internet connection by changing their gateway.  I'm just not sure
+> how to implement the firewall.
 
-What do you mean by "the number of packets after iptables dropped the 
-packets" ?
+You will find this a *little* tricky using a single firewall - it would be 
+easier to use two firewalls, possibly with 3 NICs each - internal, external, 
+and to the other firewall, but if you want to do it on one machine, you'll 
+need to learn about iproute2 and special routing table methods for specifying 
+different external routes depending on the source address from your internal 
+machines.
 
-I assume you don't mean the packets which got dropped, and I assume you don't 
-mean the further packets in the communication stream which never even arrive, 
-because the earlier ones got dropped, so which packets are you trying to 
-capture / count ?
+The netfilter rules are no problem - just specify whatever you want and they 
+will do their job - the less simple part is getting the underlying routing on 
+the machine to send the packets out where you want them to go...
 
-Does it help to remind you that almost all packets dropped by netfilter rules 
-are SYN packets (ie the first part of the TCP three-way handshake) and the 
-very purpose of dropping them is so that the 3-way handshake does not 
-complete, and the session does not start transmitting data ?
-
-Give us an example of a TCP or UDP session with a drop rule, and tell us 
-which packets you want to count, and we'll have a think.....
+Hope this helps,
 
  
 
