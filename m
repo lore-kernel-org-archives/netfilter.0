@@ -1,13 +1,12 @@
-From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: Re: vpn under linux
-Date: Sat, 10 Apr 2004 19:23:43 +0200
+From: Jay Levitt <lists-netfilter@shopwatch.org>
+Subject: RST instead of FIN?
+Date: Sat, 10 Apr 2004 14:33:16 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081617821.18498.58.camel@localhost>
-References: <4077B7EF.5070805@tin.it>  <1081600210.491.12.camel@localhost>
+Message-ID: <05c301c41f2a$4a6ef650$9701a8c0@office>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_05C0_01C41F08.C3458890"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1081600210.491.12.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +16,97 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-l=F8r, 10.04.2004 kl. 14.30 skrev John A. Sullivan III:
-[...]
+This is a multi-part message in MIME format.
 
-> The closest solution we could find to rival the commercial offerings on
-> such a large scale is netfilter + freeS/WAN + iproute2 + ISC DHCP +
-> StrongSec DHCP Relay + OpenCA.  There are reasonable alternatives to
-> OpenCA.
->=20
-> The FreeS/WAN code is alive and healthy.  Two major cooperative forks
-> are available.  One is at www.openswan.org and the other is at
-> www.strongswan.org.  Both are well supported and helpful.
->
-> There a fairly complete although slightly dated slide shows on tying al=
-l
-> these technologies together (other than OpenCA) in the training section
-> of http://iscs.sourceforge.net.
->=20
-> The only major missing piece right now to make this combination a
-> full-fledged competitor to the largest and most expensive commercial
-> players is a sophisticated management front end such as those offered b=
-y
-> Solsoft, SmartPipes, NetScreen, Checkpoint, etc.  That is the hole I am
-> trying to fill with the ISCS project.  It is the last piece that we nee=
-d
-> before we can do with open source tools what we have previously only
-> been able to do with commercial tools to achieve the scale and
-> complexity we need. If anyone wants to help, it is a huge project and I
-> can use all the help I can get!
+------=_NextPart_000_05C0_01C41F08.C3458890
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This was an enormously valuable precis and greatly appreciated. I wish I
-could help, but don't have access to a lab. If there's anything a single
-user set-up can do, let me know *at my sig below*.
+On my Mandrake 9.0 box (2.4.19-38 kernel), a few times an hour I see TCP =
+packets after the end of a TCP session, which result in log/drops in =
+iptables.  I ran ethereal to capture one such session, and found that in =
+this instance I seem to be the party at fault - but I have no idea why =
+or what to do...
 
---Tonni
+66.35.250.206, a sourceforge.net box, connects to my mail server to =
+deliver an e-mail, as follows:
 
---=20
-Kattekots op de vloer
-na de moe=EB thuiskomst
-weinig walg
-getrouw als kind
-de kat heet welkom.
+sourceforge: [SYN]
+me: [SYN, ACK]
+sourceforge: [ACK]
+[SMTP conversation ensues, switches to TLS, sends me an e-mail.  at the =
+end..]
+me: [RST]
+sourceforge: [FIN, ACK]
+me: [RST]
+me: [RST]
 
-mail: billy - at - billy.demon.nl
-http://www.billy.demon.nl
+Since I'd already RST the connection, the [FIN, ACK] was of course =
+treated as un-ESTABLISHED, and so was logged and dropped. =20
+
+But what could cause me to be sending three RSTs at the end of a =
+conversation instead of a FIN?  Could that be a sendmail problem (I'm =
+running 8.12.10), a kernel problem, something else?  The whole =
+conversation took 5 seconds, so there are no timeouts occurring...
+
+Jay Levitt
+------=_NextPart_000_05C0_01C41F08.C3458890
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>On my Mandrake 9.0 box (2.4.19-38 =
+kernel), a few=20
+times an hour&nbsp;I see TCP packets after the end of a TCP session, =
+which=20
+result in log/drops in iptables.&nbsp; I ran ethereal to capture one =
+such=20
+session, and found that in this instance I seem to be the party at fault =
+- but I=20
+have no idea why or what to do...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>66.35.250.206, a&nbsp;sourceforge.net =
+box, connects=20
+to my mail server to deliver an e-mail, as follows:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>sourceforge: [SYN]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>me: [SYN, ACK]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>sourceforge: [ACK]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>[SMTP conversation ensues, switches to =
+TLS, sends=20
+me an e-mail.&nbsp; at the end..]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>me: [RST]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>sourceforge: [FIN, ACK]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>me: [RST]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>me: [RST]</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Since I'd already RST the connection, =
+the [FIN,=20
+ACK] was of course treated as un-ESTABLISHED, and so was logged and=20
+dropped.&nbsp; </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>But what could cause me to be sending =
+three RSTs at=20
+the end of a conversation instead of a FIN?&nbsp; Could that be a =
+sendmail=20
+problem (I'm running 8.12.10), a kernel problem, something else?&nbsp; =
+The whole=20
+conversation took 5 seconds, so there are no timeouts =
+occurring...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Jay Levitt</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_05C0_01C41F08.C3458890--
 
 
