@@ -1,13 +1,13 @@
-From: Dax Kelson <Dax.Kelson@gurulabs.com>
-Subject: Re: SNAT & Squence Numbers
-Date: 12 Nov 2002 01:22:42 -0700
+From: Alexey Sheshka <pulsar@magister.by>
+Subject: Re: FTP Forwarding
+Date: Fri, 22 Nov 2002 12:24:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037089362.16667.13.camel@thud>
-References: <3DCFE7AC.9867DF43@bomberjacketproductions.com>
+Message-ID: <20021122122402.064d280c.pulsar@magister.by>
+References: <00a801c2920f$1322d5d0$e6353fc1@nexor.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DCFE7AC.9867DF43@bomberjacketproductions.com>
+In-Reply-To: <00a801c2920f$1322d5d0$e6353fc1@nexor.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mike bramm <mike.bramm@bomberjacketproductions.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, 2002-11-11 at 10:23, mike bramm wrote:
-> Hi, 
->     I'm a Router/PIX guy that is just getting into the Linux/IPTables
-> scene. I've read the man pages and searched the web for information on
-> IPTables. And I'm not able to find answers to some of my questions.
-> Maybe you can help? 
->       * If SNAT is configured for many to one (PAT), then I would
->         presume that the connections are tracked by sequence numbers.
->         Are the sequence numbers picked randomly, like the PIX? And is
->         there a range in with they are picked from? What mod does
->         this?
+On Fri, 22 Nov 2002 10:08:16 -0000
+Bantam <netfilter@end.yorks.com> wrote:
 
-AFAIK, the sequence numbers are left intact. I could be wrong though. A
-quick check with a packet sniffer should answer this.
+> Hi,
+> 
+> I've been trying to forward port 21 to an ftp server on another machine, IP
+> address  10.0.0.199.
+> 
+> eth1 - external (connected to the net)
+> eth0 - internal
+> 
+> /sbin/iptables -A FORWARD -p tcp -i eth1 --dport 21 -j ACCEPT
+> /sbin/iptables -A PREROUTING -t nat -p tcp -i eth1 --dport 21 -j DNAT --to
+> 10.0.0.199:21
+> 
+> but can't get it to work..
+> 
+> any ideas ?
+> 
 
->       * A syntax question. I've looked at alot of syntax examples and
->         I've noticed one character that I can't seem to match up with
->         any of the tutorials or man
->         pages.                                                                                                         $IPTABLES -A INPUT $WAN_IFACE \ -j DROP   What the heck is "\"? It looks like it would be used to separate the match and the target, but is not really necessary. Is this just a personal preference or is it needed?
+FTP is a complex protocol .
+http://www.freesoft.org/CIE/Topics/69.htm
 
-This isn't iptables syntax at all. 
+> Thanks
+> 
+> Wasim
+> 
+> 
+> 
 
-The "\" at the end of a line is known as the continuation character.
-This is bourne shell syntax. It means that the next line should be
-treated as a continuation of the current line. The "\" character NOT at
-the end of the line, is the escape character and removes any special
-treatment of the following character and causes it to be treated
-literally.
 
-Dax
+-- 
+Sheshka Aleksey
+Senior Security Administrator
 
+PGP key : http://pgp.dtype.org:11371/pks/lookup?op=get&search=0x0BE90515
 
