@@ -1,11 +1,13 @@
-From: "americo.sb" <americo.sb@uol.com.br>
-Subject: DNAT error in access from lan
-Date: Fri, 22 Nov 2002 10:59:21 -0200
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: Re: FTP Forwarding
+Date: Fri, 22 Nov 2002 14:02:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <H5ZAQX$IF5rET4To2FJV6LeiS1fcilU4uXas7y7I_R@uol.com.br>
+Message-ID: <200211221402.43903.roy@karlsbakk.net>
+References: <FD8F124A387AD6119F7900A0D218B3210199CB@hslex01.hslbz.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FD8F124A387AD6119F7900A0D218B3210199CB@hslex01.hslbz.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,45 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Rob Sterenborg <rsterenborg@xs4all.nl>, 'Erdal Mutlu' <emutlu@fonts.de>, 'Bantam' <netfilter@end.yorks.com>
+Cc: 'netfilter' <netfilter@lists.netfilter.org>
 
-I have 2 domains 
- work.com ----------------------- my.work.com
-         |                           |
-         |                           |
- ns_server.work.com             ns1_server.my.work.com
- stations.work.com               stations.my.work.com
-                                 http_server.work.com
- 
- into ns1_server.my.work.com there are 2 nic, eth0 
- (200.200.200.200) and eth1 (10.0.0.1/24) 
- into firewall i have http_server.work.com with 1 nic, eth0 
-(10.0.0.254/24)
- 
- I create 2 rolles one to my lan access web and other for 
-access http_server into my lan
+On Friday 22 November 2002 13:02, Rob Sterenborg wrote:
+> > You will also need:
+> >
+> > /sbin/iptables -A FORWARD -p tcp -i eth0 -o eth1 --sport 21 -j ACCEPT
+>
+> Doesn't the "-m state --state RELATED,ESTABLISHED -j ACCEPT" take care =
+of
+> all this ?
 
-1 - snat 
-iptables -t nat -A POSTROUTING -o eth0 -p tcp -j SNAT --to-
-source 200.200.200.200
- 2 - dnat
-iptables -t nat -A PREROUTING -i eth0 -d 200.200.200.200 -p 
-tcp -m tcp --dport 80 -j DNAT --to-destination 10.0.0.254:8080
- 
- the problem =EDs:
- if i write www.work.com from my house OK  - go to my 
-ns_server.work.com 
-go ns1_server.my.work.com  (iptables server - Name Server)
-go http_server.work.com
- if i write www.work.com from my lan, error, server not found.
- 
- thanks for help.
+it does on my host. I'm doing DNATing of ftp too, and it works fine
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
 
-
- 
----
-UOL, o melhor da Internet
-http://www.uol.com.br/
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
