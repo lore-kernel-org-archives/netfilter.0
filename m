@@ -1,11 +1,12 @@
-From: gui <whereisgui@gmail.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Protecting multiple webservers
-Date: Wed, 19 Jan 2005 12:37:06 -0800
-Message-ID: <48be50bb0501191237386d15c8@mail.gmail.com>
-Reply-To: gui <whereisgui@gmail.com>
+Date: Wed, 19 Jan 2005 15:58:00 -0500
+Message-ID: <20050119205800.GA13202@bender.817west.com>
+References: <48be50bb0501191237386d15c8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <48be50bb0501191237386d15c8@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,114 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Wed, Jan 19, 2005 at 12:37:06PM -0800, gui wrote:
+> # allow outgoing connections from web servers.
+> # added these lines so I can browse the web from the web servers 
+> -A OUTPUT -d 0/0 -m state --state NEW -p tcp -m multiport --dport
+> http,https -o eth0 -j ACCEPT
+> 
+> -A FORWARD -s 192.168.0.3 -d 0/0 -m state --state NEW -p tcp -m
+> multiport --dport http,https -o eth0 -i eth1 -j ACCEPT
+> -A FORWARD -s 192.168.0.2 -d 0/0 -m state --state NEW -p tcp -m
+> multiport --dport http,https -o eth0 -i eth1 -j ACCEPT
 
-I did some work but I still can't get my new set up to work.
+uh--where are the "allow incoming connections to my web servers" lines?
 
-I'm going describe my problem again to avoid confusions.
+  -A FORWARD -i eth0 -o eth1 -p tcp --syn -d 192.168.0.2 --dport 80 \
+    -j ACCEPT
 
-Some background info:
-Firewall: linux kernel 2.6.9-1.667 & iptables v1.2.11
-Zinfandel and Cabernet (not the actual names) are web servers with
-real domain names and public IP addresses.
-Zinfandel's  public IP address x.x.174.104
-Cabernet's   public IP address x.x.174.106		     
-I don't have access to the DNS server and the IT dept doesn't want to
-make any changes to the DNS server.
+  -A FORWARD -i eth0 -o eth1 -p tcp --syn -d 192.168.0.3 --dport 80 \
+    -j ACCEPT
 
-Problem: I need to put two web servers behind a firewall without
-making changes to the DNS server.
+make sure you also enabled IP forwarding:
 
-My new set up:
+  sysctl -w net.ipv4.ip_forward=1
 
-   Zinfandel              Cabernet    
-  192.168.0.2	     192.168.0.3
-	 |		             |
-	 `---------- ------------'
-	            |
-	          switch        
-	            |
-	            |    eth1 192.168.01  
-	       FIREWALL
-		    |    eth0 x.x.174.103 (Primary address)
-		    |    eth0:0 x.x.174.104
-		    |    eth0:1 x.x.174.106
-		    |
-		Internet  
+-j
 
-I added the two IP addresses to eth0 using iproute2 as previously
-suggested and I can ping the new addresses without a problem. I can
-even connect to the firewall with SSH using those addresses. This
-tells me that anti-arp spoofing is not an issue on the network and
-that I can have multiple IP addresses binded to one NIC. However, the
-forward rules don't work. I will appreciate any help that you can
-provide.
-
-The following is my ruleset file:
-
-# Firewall configuration written by system-config-securitylevel
-# Manual customization of this file is not recommended.
-*filter
-
-:INPUT DROP
-:FORWARD DROP
-:OUTPUT ACCEPT
-
-# allow local loopback connections
--A INPUT -i lo -j ACCEPT
-
-# allow pings
--A INPUT -i eth0 -p icmp -j ACCEPT
-
-# drop INVALID connections
--A INPUT   -m state --state INVALID -j DROP
--A OUTPUT  -m state --state INVALID -j DROP
--A FORWARD -m state --state INVALID -j DROP
-
-# allow all established and related
--A INPUT        -m state --state ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT    -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-
-# allow connections to DNS servers
--A OUTPUT  -d x.x.100.129 -m state --state NEW -p udp --dport 53 -o
-eth0 -j ACCEPT
-
-#allow computers behind the firewall to access the DNS servers.
--A FORWARD -d x.x.100.129 -m state --state NEW -p udp --dport 53 -i
-eth1 -o eth0 -j ACCEPT
-
-# allow incoming SSH connections
-#Only my desktop can ssh to the firewall
--A INPUT -i eth0 -s x.x.174.12 -p tcp --dport ssh -j ACCEPT 
-
-# allow outgoing connections from web servers.
-# added these lines so I can browse the web from the web servers 
--A OUTPUT -d 0/0 -m state --state NEW -p tcp -m multiport --dport
-http,https -o eth0 -j ACCEPT
-
--A FORWARD -s 192.168.0.3 -d 0/0 -m state --state NEW -p tcp -m
-multiport --dport http,https -o eth0 -i eth1 -j ACCEPT
--A FORWARD -s 192.168.0.2 -d 0/0 -m state --state NEW -p tcp -m
-multiport --dport http,https -o eth0 -i eth1 -j ACCEPT
-
-COMMIT
-
-*nat
-#set up IP forwarding and nat
-#This is the primary IP address for eth0
--A POSTROUTING -o eth0 -j SNAT --to x.x.174.103
-
-# forward ports to the proper servers
--A PREROUTING -i eth0 -p tcp -d 130.17.174.104 --dport 80 -j DNAT --to
-192.168.0.2:80
--A PREROUTING -i eth0 -p tcp -d 130.17.174.106 --dport 80 -j DNAT --to
-192.168.0.3:80
-
-COMMIT
-
-Thanks.
+--
+"Look, just give me some inner peace, or I'll mop the floor with ya!"
+        --The Simpsons
 
