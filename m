@@ -1,14 +1,10 @@
-From: cc <cc@kdtc.net>
-Subject: Re: tcpdump and Iptables
-Date: Fri, 03 Sep 2004 08:41:42 +0800
+From: Marcelo Eller de Amorim - CAT <eller@cbpf.br>
+Subject: string match
+Date: Thu, 2 Sep 2004 14:01:33 +0000 (Brazil/East)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4137BDC6.9070303@kdtc.net>
-References: <41375ED1.5090400@kdtc.net>
-	<20040902180705.GG3755@metastasis.org.uk>
+Message-ID: <Pine.GSO.4.60.0409021351530.17248@positron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040902180705.GG3755@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +14,32 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Nick Drage <nickd@metastasis.org.uk>, netfilter@lists.netfilter.org
-
-Nick Drage wrote:
-
-> On Fri, Sep 03, 2004 at 01:56:33AM +0800, CC wrote:
-> 
-> 
->>If I have iptables running and I do a tcpdump -i eth0,   at what point
->>is tcpdump listening to the connection?
-> 
-> 
-> tcpdump will see the packets before IPTables does anything to them.
-> 
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-Thanks NIck for the info.  Exactly what I wanted to know.
+Hi!
 
-Edmund
+I would like to know how to use the STRING MATCH module under kernel 
+2.6.x, I tried to use the patch-o-matic-ng and this patch said that this 
+module is already applied, but when I access the configuration menu of the 
+kernel, this module does not appear to be selected.
+
+I set the configuration menu to show all the option including the 
+(EXPERIMENTAL) ones, but it does not take effect.
+
+
+I'm suspecting that this module isn't compile on the kernel anymore 
+becouse the iptables-2.6.11 has this module inside it, but I tried to use 
+it without success.
+
+
+I'm using the SuSE 9.1 | Kernel 2.6.4-52-default | iptables-2.6.9
+
+
+Any help would be usefull.
+
+
+Thanks
 
