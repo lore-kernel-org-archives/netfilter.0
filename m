@@ -1,12 +1,13 @@
-From: Dan Egli <dan@shortcircuit.dyndns.org>
-Subject: Re: Bad Filter Set?
-Date: Tue, 12 Nov 2002 16:31:40 -0700 (MST)
+From: Dax Kelson <dax@gurulabs.com>
+Subject: Re: Is dropping all ICMP traffic valid?
+Date: 12 Nov 2002 17:36:12 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0211121629140.19945-100000@shortcircuit.dyndns.org>
-References: <3DCFB217.4030501@fugmann.dhs.org>
+Message-ID: <1037147772.25372.6.camel@aramis>
+References: <1037143537.8023.4.camel@trent.nin>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DCFB217.4030501@fugmann.dhs.org>
+In-Reply-To: <1037143537.8023.4.camel@trent.nin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,94 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Anders Fugmann <afu@fugmann.dhs.org>
+Content-Type: text/plain; charset="us-ascii"
+To: alex <alex@bennee.com>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, 11 Nov 2002, Anders Fugmann wrote:
+On Tue, 2002-11-12 at 16:25, alex wrote:
+> I'm still trying to figure out why I'm losing connection on my
+> portforwarded webserver. One thing I have noticed is the gateway is
+> dropping ICMP packets back to the webserver:
+> 
+> Nov 12 23:01:16 gateway kernel: [Dropped to-lan]IN= OUT=eth0
+> SRC=192.168.1.250 DST=192.168.1.110 LEN=576 TOS=0x00 PREC=0xC0 TTL=64
+> ID=13411 PROTO=ICMP TYPE=3 CODE=4 [SRC=192.168.1.110 DST=213.155.151.41
+> LEN=1500 TOS=0x00 PREC=0x00 TTL=63 ID=8806 DF PROTO=TCP SPT=80 DPT=4776
+> WINDOW=7504 RES=0x00 ACK URGP=0 ] MTU=1478 
+> 
+> which seem to be related to the web connection. I thought ICMP packets
+> were not needed for general operation, and even if they where they would
+> be covered by the nat and FORWARD tables not being dropped on the local
+> process OUTPUT chain.
+> 
+> Any ideas?
 
-> Dan Egli wrote:
-> > 
-> > 1) Block all ports EXCEPT:
-> > FTP, SSH, TELNET (yes there is a reason for telnet!), SMTP, DNS, NNTP, NTP,
-> > ROUTED (520), PRINTER (515), POP3, IMAP, HTTP, HTTPS, and ports 4000 & 5000
-> > (special programs run on those ports and they need to be open).
-> You do realize that many of these protocols are very insecure, and 
-> should not be opend to the public. Also do you really want to allow 
-> everyone (on the intra- and inter-net ) to use your printers?
+Yes. This is a classic beginner/expert mistake.
 
-Ok. This is true, so let me clarify. the INTERNAL net should have access 
-to all those. The EXTERNAL side needs:
-SMTP, FTP, TELNET, SSH, 4000 & 5000
-> 
-> > 
-> > 2) Forward Inbound traffic from port 5000 to IP 192.168.0.5. Should be a
-> > Transparent NAT (If I hit 192.168.0.1 port 5000, then the firewall forwards
-> > it to 192.168.0.5 5000,  and any packets sent from 192.168.0.5:5000 [which
-> > would only be in reply to an inbound packet] should appear as coming from
-> > 192.168.0.1:5000). Here's a basic setup of the machine so you have that to
-> > go on:
-> This is impossible. A machine with IP 192.168.0.6 cannot be redirected 
-> to 192.168.0.5 through 192.168.0.1. But in the example below, all 
-> connections to 64.122.31.38:5000 (through eth1) will be redirected to 
-> 192.168.0.5.
-That is what I wanted. On the internal side all machines will have access 
-to the 192.168.0.5 machine directly, no need for nat. It was only for 
-external that this was needed. 
+ICMP *is* needed for general operation, specifically ICMP Type 3, Code
+4.
 
-> > 
-> > EXTERNAL IP:  64.122.31.38 on eth1
-> > internal IP: 192.168.0.1 on eth0
-> > 
-> > 3) Perform basic IP Masquerading for unlisted machines on the 192.168.0.x
-> > net. So if a machine addressed as 192.168.0.26 requests www.yahoo.com, it
-> > goes in from eth0, then goes out eth1 as from eth1's address, and the return
-> > comes in eth1 and goes back out eth0 to the correct machine.
-> > 
-> > 4) Log any blocked traffic in the syslog.
-> > 
-> > Your help is greatly appreciated!
-> > 
-> Here is your rules. I have not tested them, so minor changes may be 
-> nessesary.
-> --------------------------------
-> 
-> # Set default policies.
-> iptables -P INPUT DROP
-> iptables -P OUTPUT ACCEPT
-> iptables -P FORWARD DROP
-> 
-> # Flush all tables.
-> iptables -F INPUT
-> iptables -F OUTPUT
-> iptables -F FORWARD
-> iptables -t NAT -F PREROUTING
-> iptables -t NAT -F POSTROUTING
-> iptables -t NAT -F OUTPUT
-> 
-> iptables -A INPUT -p tcp -m multiport --dports \
->    SMTP,DNS,NNTP,NTP,ROUTED,520,PRINTER,POP3,IMAP,HTTP,\
->    HTTPS,4000,5000 -j ACCEPT
-> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A INPUT -j LOG
-> 
-> iptables -A FORWARD -i eth0 -j ACCEPT
-> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -j LOG
-> 
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 5000 \
->    -j DNAT --to-destination 192.168.0.5:5000
-> 
-> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 64.122.31.38
-> 
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> -------------------------
-> 
-> Regards
-> Anders Fugmann
-> 
-> 
-> 
+This is needed for proper MTU path discovery (PMTU). Go google and learn
+about this.
+
+If you are doing stateful filtering, then "RELATED" will automatically
+match those ICMP packets. For example as the first rule in your INPUT,
+or OUTPUT, and/or FORWARD chain (depending on how you have stuff
+configured) have:
+
+iptables -A INPUT/FORWARD/OUTPUT -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+
+
 
 
