@@ -1,11 +1,10 @@
-From: "Paul Cousins" <paul@pimper.fsnet.co.uk>
-Subject: Re: [iptables] Help Required
-Date: Wed, 30 Jul 2003 15:29:17 +0100
+From: Steve <smgarret@yahoo.com>
+Subject: RH9 question
+Date: Wed, 30 Jul 2003 07:25:07 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c356a6$f990eb90$0300a8c0@frodo>
-References: <20030730093120.M51327@vfmindia.biz>
+Message-ID: <20030730142507.90882.qmail@web11006.mail.yahoo.com>
+Reply-To: steveng@cometsystems.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,54 +16,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-iptables -t -A PREROUTING -i eth1 -p TCP --dport 1494 -j DNAT --to
-192.168.0.1:1494
-iptables -A FORWARD -i eth1 -o eth0 -p TCP -d 192.168.0.1 --dport 22 -j
-ACCEPT
+Hi,
 
-of course your -i and -o interfaces may have different names. -i being the
-external and -o being the internal in this scenario. an dof course the
-address will be different but you should get the idea.
-------------------------------------------------
-Paul Cousins
-Canterbury Computer Services
-paul@canterburycomputerservices.co.uk
+So I've just upgraded my RH9 kernel to 4.2.21 and now
+I get this goofy message that the kernel can't find
+the module for iptables.  I didn't see anything when
+configuring the kernel to add this as a module or
+built in.  Am I just blind or is this not the case
+with the newer kernel?
 
+Thanks in advance,
 
------ Original Message ----- 
-From: "Sridhar Murthy" <sridhar@vfmindia.biz>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, July 30, 2003 10:40 AM
-Subject: [iptables] Help Required
+Steve
 
-
->
->
-> Hi Team,
->
-> I require help to my following setup:
->
-> I have a Redhat 8 Server with squid,smtp & pop3 with iptables running.
->
-> My requirement is we have a citrix server with local LAN ipaddress. People
-> from Internet will have to access this server from outside(my firewall is
-> having a public ipaddress which is dynamic assigned). I want to know what
-is
-> the rules that i have to add to allow the traffic which uses port number
-> 1494, to get into my network and access my citrix server which is having
-LAN
-> ip. Should any nat be added.
->
-> Thanks in advance.
->
-> Regards,
->
-> Sridhar
->
->
->
-
-
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
