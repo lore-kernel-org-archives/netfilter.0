@@ -1,9 +1,9 @@
-From: "krv" <krv@kaevee.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
 Subject: Re: Synfloods - SNAT slow down
-Date: Fri, 23 Apr 2004 19:13:04 +0530
+Date: Fri, 23 Apr 2004 16:37:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007601c42938$e74199c0$2800a8c0@jupiter>
-References: <005201c428d1$a2ab2ea0$2800a8c0@jupiter> <200404230801.57077.lists@edeca.net>
+Message-ID: <005f01c42940$79a18210$1202a8c0@admin>
+References: <005201c428d1$a2ab2ea0$2800a8c0@jupiter> <200404230801.57077.lists@edeca.net> <007601c42938$e74199c0$2800a8c0@jupiter>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,43 +19,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------ Original Message -----
-From: "David Cannings" <lists@edeca.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, April 23, 2004 12:31 PM
-Subject: Re: Synfloods - SNAT slow down
+> I have two thousand hosts and two thousand forward rules :(
+
+With so many hosts/rules you should be able to match subnets instead of
+each host separately, reducing the number of rules greatly which in turn
+improves Netfilter performance. Or do you have a special reason to do
+this ?
 
 
-> On Friday 23 April 2004 02:23, krv wrote:
-> > We have a Linux gateway (2.4.22) which does NAT for all local hosts.
-> > Where there is ICMP or SYN floods to be forwarded, the gateway starts
-> > slowing down an there will be serious drop in packets being forwarded.
->
-> You could try using the limit match in your FORWARD chain, with --limit
-> and --limit-burst to limit the number of ICMP or packets with only the
-> SYN flag set per second.  Your gateway would still have to process the
-> packets, at least as far as deciding to drop them, but would not have to
-> forward them on so you might see an improvement in performance.
->
-> If you do examine this route, be careful you don't quench good ICMP
-> packets as there is no retransmission in ICMP and you'll never know if
-> certain wanted messages didn't get through.  For example, host X is
-> sending you an ICMP flood so netfilter starts to drop ICMP packets, but
-> host Y tries to send you a host unreachable message.
->
-> Also don't forget that even if you decide not to forward the packets they
-> are still there "on the wire", thus you will not see any improvement with
-> external speeds.
->
-> David
->
-I have two thousand hosts and two thousand forward rules :(
-
-Even if I completely block a attacking host, the gateway is getting bogged
-down.
-The gateway would be processing atleast 30Mbps at peak loads.
-
-KRV
-
+Gr,
+Rob
 
 
