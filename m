@@ -1,14 +1,12 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: H/A
-Date: Mon, 26 May 2003 17:59:09 +0800
+From: "Wan System S.R.L." <wansys@terra.com.pe>
+Subject: iptables
+Date: Mon, 26 May 2003 08:34:38 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030526095909.GC1568@floyd>
-References: <27597.200.48.226.214.1053917112.squirrel@www.netfids.com>
-Reply-To: kluivert@tm.net.my
+Message-ID: <001001c3238e$ab428f20$7a1c6ac8@microsoft>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0042_01C32361.A537C000"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <27597.200.48.226.214.1053917112.squirrel@www.netfids.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sun, May 25, 2003 at 09:45:12PM -0500, g_netfilter@netfids.com spoke thusly:
+This is a multi-part message in MIME format.
 
->Hi friends, I have some boxes running iptables and i works well. But now I
->need to configure a failover solution, please could you give me some links
->to start reading? I need to consider Netfilter/Iptables and FreeSwan in
->the same box and with a failover configuration.
+------=_NextPart_000_0042_01C32361.A537C000
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-A few things you need to clarify :
+I have installed a Red Hat 8.0 iptables 1.27a to make NAT. I have 2 net =
+cards   =20
+The computers of the internal net have MS Windows XP.  the www doesn't =
+have any problem. When they try to make ftp it leaves the following =
+error:   =20
+200 ASCII tastes bad, dude.
+500 Illegal PORT command.
+500 Unknow command.
 
-	a) What are the failover criteria ? Does the other box need to
-	   maintain full state, or can you accept that all connections will
-	   die for the moment, and can be re-established with the new
-	   master server ?
+Please some tip=20
 
-           If state is required, iptables2 should contain failover
-	   capability according to some previous posts by Harald. There was
-	   some experimental work being done by someone, in regards to
-	   exporting the entries out (you'll have to check the archives for
-	   details). I'm not sure how you'll get freeswan to play nice
-	   though.
+thank
 
-	b) If you merely want dumb failover, then google around for VRRP.
-	   But understand the drawbacks in each circumstance.
+wansys 
+------=_NextPart_000_0042_01C32361.A537C000
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I have installed a Red Hat 8.0 iptables =
+1.27a to=20
+make NAT. I have 2 net cards&nbsp;&nbsp;&nbsp; <BR>The computers of the =
+internal=20
+net have MS Windows XP.&nbsp; the www doesn't have any problem. When =
+they try to=20
+make ftp it leaves the following error:&nbsp;&nbsp;&nbsp; <BR>200 ASCII =
+tastes=20
+bad, dude.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>500 Illegal PORT command.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>500 Unknow command.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</DIV></FONT>
+<DIV><FONT face=3DArial size=3D2>Please&nbsp;some tip </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>thank</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>wansys</FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0042_01C32361.A537C000--
+
 
