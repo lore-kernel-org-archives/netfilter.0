@@ -1,12 +1,13 @@
-From: "Allan Gee" <AllanG@Equation.co.za>
-Subject: nf-bridging and iproute2 won't work
-Date: Tue, 29 Oct 2002 11:47:46 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DHCRELAY through IPTABLES Firewall
+Date: Tue, 29 Oct 2002 10:29:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c27f30$3cf76840$0eb2a8c0@equation.co.za>
-Reply-To: <Allang@equation.co.za>
+Message-ID: <200210291030.g9TAU5e09742@vulcan.rissington.net>
+References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <000b01c27f1d$f805e430$8f33e40f@lsmith5953> <001701c27f32$4c7a21c0$8f33e40f@lsmith5953>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001701c27f32$4c7a21c0$8f33e40f@lsmith5953>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,66 +20,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Guys I would like some help on the following:
-Excuse my asci-art!
+On Tuesday 29 October 2002 10:02 am, bigman@monster-solutions.net wrote:
 
-	Web Server
-		|
-		|
-	Bridge 1 --tunnel-10.4.0.1--|
-		|                     |
-		|                     |
-	Std Router 10.1.1.1         |
-		|                     |
-		|                     |
-	Slow 64kbit line            |
-		|                     |
-		|                     |
-	Std router 10.1.2.1         |
-		|                     |
-		|                     |
-	Bridge 2 --tunnel-10.4.0.2--|
-		|
-		|
-	LAN network
+> and I have also looked into this further by putting a sniffer on my DHCP
+> server. I see the request come in from the system that is getting an IP
+> successfully, but I never see a request from the system that is failing.
+> Both systems are on the same subnet so they should be using the same
+> netfilter rules.
 
+Would I be right in guessing that the system which works already has a DHCP 
+address, and is either renewing it (before its lease runs out) or is 
+requesting the same address again (after the lease has run out), whereas the 
+system which fails has never had a DHCP address and is trying to get one for 
+the first time ?
 
-without the tunnel running the route for LAN is via 10.1.1.1 and route for
-Web Server is via 10.1.2.1
-All is fine!
-Now I want the Web Server traffic to go via the tunnel end point(10.4.0.2)
-so it will be compressed and encrypted but I Don't want to have to change
-ANY gateway's on either the LAN devices or the Web Server.
-When the tunnel comes up I thought I would use Iptables to catch traffic
-going to each router and somehow redirect it to the tunnel.
-I've tried to MARK packets and then send them via a rt_table but it still
-goes to the default gateway on the std router. I think it's the bridging
-that is messing me up but I don't no why?
-My netfilter IS patched with nf-bridge V0.0.6 ON KERNEL 2.4.17 etc.. I get
-the packets to the MARK mangle table but they don't go to the rt_table
+Antony.
 
-This is the script that runs when the tunnel comes up :
+-- 
 
-FOR Web Server side bridge:
-iptables -A PREROUTING -t mangle -d 10.1.2.0/24 -j MARK --set-mark 1
-ip rule add fwmark 1 table for.tun
-ip route del 10.1.2.0/24 via 10.1.2.1  #the original gateway for LAN but I
-keep a static for the
-						# single IP so the tunnel keeps going
-ip route add 10.1.2.0/24 via dev tune table for.tun
-ip route flush cache
-#END
-in rt_tables
-202 for.tun
-The same mirrored on the LAN bridge side!
-I use OPENVPN for the tunnel!
-NO GO!!
-Please give me some ideas as to what's going wrong or to whether I should
-use some other plan.
-
-Regards Allan Gee
-Equation
-021 4181777
-www.equation.co.za
-
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
 
