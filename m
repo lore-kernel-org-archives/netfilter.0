@@ -1,11 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: browser header
-Date: Thu, 17 Feb 2005 14:15:52 -0500
-Message-ID: <1108667752.4629.69.camel@hubcap.ljm.dom>
-References: <web-638429877@mail01.infosat.net>
+From: Cristi Mitrana <cristi.mitrana@gmail.com>
+Subject: Re: mldonkey
+Date: Thu, 17 Feb 2005 21:23:07 +0200
+Message-ID: <f1de940b050217112357028ebf@mail.gmail.com>
+References: <421272E1.6000607@ergolight-sw.com>
+Reply-To: Cristi Mitrana <cristi.mitrana@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <web-638429877@mail01.infosat.net>
+In-Reply-To: <421272E1.6000607@ergolight-sw.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,42 +20,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2005-02-17 at 14:01, it clown wrote:
-> Hi All,
+On Wed, 16 Feb 2005 00:08:33 +0200, David Harel
+<hareldvd@ergolight-sw.com> wrote:
+> Any idea how I should configure iptables to allow mldonkey?
 > 
-> I am running iptables with squid. I did a Browser header
-> test and the test shows the following:
+> --
+> Thanks.
 > 
-> Via: 1.1 pc.domain.net:3128 (squid/2.5.STABLE5), 1.0
-> netcache2-ctn (NetCache NetApp/5.3.1R2)
+> David Harel,
 
-you're running iptables and squid on a Network Appliance NetCache?  or
-is there a NetCache between you and the web server that isn't under your
-control?
+See:
+http://mldonkey.berlios.de/modules.php?name=Wiki&pagename=WhatFirewallPortsToOpen
+it's pretty explanatory.
 
-> Why is it showing my pc's host name? 
-
-because it's supposed to.
-
-> How do i prevent it
-> from happening?
-> 
-> Do i need to do something in iptables or squid?
-
-well--which one handles all your HTTP connections?
-
-never mind...add these to squid.conf:
-
-  header_access Via deny all
-  header_access X-Forwarded-For deny all
-
-this assumes that the proxy server that's selling you out is actually
-under your control, and not somewhere upstream from you.
-
--j
-
---
-"If something is to hard to do, then it's not worth doing."
-	--The Simpsons
-
+mitu
 
