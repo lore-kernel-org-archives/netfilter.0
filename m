@@ -1,12 +1,13 @@
-From: "Carl Farrington" <carl@compsup.net>
-Subject: p-o-m NG will not apply to kern 2.6.2
-Date: Tue, 17 Feb 2004 20:16:53 -0000
+From: Ben Goedeke <goedeke-netfilter@gmx.net>
+Subject: Re: NATed and direct connection to one server
+Date: Tue, 17 Feb 2004 21:33:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <739652C2AFA4834AAB5986A215F68CEC016595@svr1.home.compsup.net>
+Message-ID: <40327A98.1010603@gmx.net>
+References: <40326B8E.10303@gmx.net> <200402171949.02795.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200402171949.02795.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,22 +17,11 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have 2.6.2 kernel sources in /usr/src/linux and iptables-1.2.9 in
-/usr/src/iptables, I have built a kernel and now am running "./runme
-extra" to apply the ip_conntrack_pptp patch, but it will not apply.
+Ok, thanks Antony.
 
-There is no error reported, but when I choose either (t)est or (y)apply
-patch, it just moves onto the next patch in the list.
-
-I have been back through and it doesn't show the patch as 'already
-applied'.
-
-Is it necessary to apply some of the 'base' patches before the 'extra'
-ones can be used?
-
-Cheers,
-Carl
+It's been bugging me for a few days now cause I just couldn't imagine 
+the software being "intelligent" enough to make this so easy.
 
