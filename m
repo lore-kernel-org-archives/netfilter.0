@@ -1,11 +1,13 @@
-From: "Andrew Smith" <nfml@k1k2.com>
-Subject: Un-MASQ'd Packets
-Date: Fri, 25 Oct 2002 18:53:38 +1000 (EST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: what do the contents of /proc/net/ip_tables_names mean?
+Date: Fri, 25 Oct 2002 08:45:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <36337.192.168.7.14.1035536018.squirrel@iw.k1k2.com>
+Message-ID: <20021025074540.GMFV459.mta02-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210241927030.3938-100000@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0210241927030.3938-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,53 +18,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-Hi,
-this is probably something very simple and it must be very commonly
-done and is documented somewhere obvious - but I can't seem to work
-out how to identify the packets coming back matching outgoing
-MASQUERADE packets:
+On Friday 25 October 2002 12:30 am, Robert P. J. Day wrote:
 
-iptables -t nat -A POSTROUTING -o $inetif -s 192.168.a.b -j MASQUERADE
+> On Thu, 24 Oct 2002, Antony Stone wrote:
+> > On Thursday 24 October 2002 7:44 pm, Robert P. J. Day wrote:
+> > >   in looking through the system script for iptables under red hat 8.0,
+> > > i notice the occasional reference to the file
+> > > /proc/net/ip_tables_names, which contains, one per line, the names
+> > > of one of more of the possible netfilter tables (filter, nat
+> > > and/or mangle).
+> > >
+> > >   what does it mean for a table to have its name in this file?
+> >
+> > It means that this particular netfilter system supports rules in those
+> > tables.
+> >
+> > If you compile netfilter without mangle table support and then try to add
+> > rules to the mangle table, you will get errors.
+> >
+> > By reading this file you can find out which tables are supported on a
+> > given machine.
+>
+> not quite.  as i see it, that a table name is in that file means nothing
+> more than that it's currently being *required* by your rule set.
 
-this of course MASQUERADE's 192.168.a.b to my outgoing DHCP IP address
-on the device $inetif (yes it works fine :-)
+No - it's nothing really to do with the rule set.   You can have support for 
+the mangle table, with a "mangle" entry in /proc/net/ip_tables_names, and 
+have no mangle table rules at all (and not intend to have any either).
 
+What the file indicates is whether your machine is *capable* of accepting 
+rules in particular tables, either becuase you compiled them in, or because 
+you loaded a module.
 
-How do I identify reply packets coming in that come to 192.168.a.b?
+> so, if all your table support is modular, it looks like that file
+> will represent just those modules that had to be loaded for your
+> rule set.  if you're not mangling, it won't show mangle since that
+> module never needed to be loaded.
 
-I'd like to be able to count incoming packets/bytes to 192.168.a.b
-that are of course just replies back to 192.168.a.b since nothing
-will actually be able to connect to 192.168.a.b (I have no DNAT/SNAT
-rules to these machines) so I want something like:
+If you don't load the mangle module, then no, you won't get a "mangle" entry 
+in /proc/net/ip_tables_names, and you can't add any mangling rules.
 
-iptables -A FORWARD -i $inetif -d 192.168.a.b -j ACCEPT
+If you do load the mangle module, then you will get a "mangle" entry in 
+/proc/net/ip_tables_names, and you can add mangling rules.
 
-but of course this isn't correct - is it somehow identified coming in
-the FORWARD table? Or some other way? (some other standard module needs
-to be loaded? - hopefully not a p-o-m) I'm running RH7.3 at the moment
-and it has RedHat iptables-1.2.5-3 (there appear to have been no updates
-for iptables on RH 7.3)
+> what i *don't* know is what that file will show if your table
+> support is compiled directly into the kernel.  and that's what
+> i'm asking here.  anyone know?
 
-When I count the packets/bytes going out from 192.168.a.b I do that in
-the FORWARD table (well actually a table I create that comes from the
-FORWARD table)
-so it could be just the following for simplification:
-iptables -A FORWARD -o $inetif -s 192.168.a.b -j ACCEPT
-(but mine is more complex - but essentially the same)
+Yes.   It will show the tables for which you have compiled in support.
 
-but I really have no idea how to identify the return packets after
-they have been de-MASQUERADEd (of course they will have the DCHP
-address in the FORWARD table - but I have more than 1 machine being
-MASQUERADE'd and also of course the DHCP address is not constant)
-
-any help greatly appreciated
+Antony.
 
 -- 
--Cheers
--Andrew
 
-MS ... if only he hadn't been hang gliding!
+It is also possible that putting the birds in a laboratory setting
+inadvertently renders them relatively incompetent.
 
+ - Daniel C Dennett
 
