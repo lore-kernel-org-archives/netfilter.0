@@ -1,12 +1,10 @@
-From: Nick Taylor <nickt@lightlink.com>
-Subject: Re: telnet question
-Date: Wed, 7 Jul 2004 16:15:45 -0400 (EDT)
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: telnet question
+Date: Wed, 7 Jul 2004 13:30:09 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSU.4.58.0407071551100.21043@adore.lightlink.com>
-References: <a0f69e5040706225576326815@mail.gmail.com>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D4728C6@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <a0f69e5040706225576326815@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,10 +14,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Askar Ali Khan <askarali@gmail.com>
+To: 'Nick Taylor' <nickt@lightlink.com>, Askar Ali Khan <askarali@gmail.com>
 Cc: netfilter <netfilter@lists.netfilter.org>
+
+nick,,,bingo...
+
+
+####################################
+# delbert.hudson@losangeles.af.mil #
+#        61cs/scbn, 3-0182         #
+####################################
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Nick Taylor
+Sent: Wednesday, July 07, 2004 1:16 PM
+To: Askar Ali Khan
+Cc: netfilter
+Subject: Re: telnet question
+
 
 > we got a machine to which we telnet only telnet is allow on that
 > machine (C) no ssh thingy, the problem is that we telnet the machine
@@ -28,14 +44,17 @@ Cc: netfilter <netfilter@lists.netfilter.org>
 >
 > Linux Box :A tracetroute output for the machine C
 >
->      traceroute to xxx.xxx.xx.x (xxx.xxx.xx.x), 30 hops max, 38 byte packets
+>      traceroute to xxx.xxx.xx.x (xxx.xxx.xx.x), 30 hops max, 38 byte
+packets
 >      1  abc.foo.net (xxx.xxx.xx.x)  4.440 ms  3.931 ms  4.406 ms
 > <---direct to machine C
 >
 > Linux Box: B tracetroute output for the machine C
 > traceroute to xxx.xxx.xx.x (xxx.xxx.xx.x), 30 hops max, 38 byte packets
->  1  xxx.xxx.xx.1 (xxx.xxx.xx.1)  5.056 ms  1.088 ms  1.109 ms <-----gateway
->  2  xxx.xxx.xx.x (xxx.xxx.xx.x)  5.198 ms  5.887 ms  14.429 ms <-----machine C
+>  1  xxx.xxx.xx.1 (xxx.xxx.xx.1)  5.056 ms  1.088 ms  1.109 ms
+<-----gateway
+>  2  xxx.xxx.xx.x (xxx.xxx.xx.x)  5.198 ms  5.887 ms  14.429 ms
+<-----machine C
 >
 > my question is that how to makes Linux Box (B) direct to machine C i-e
 > like that Linux Box A.
