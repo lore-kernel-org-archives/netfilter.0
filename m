@@ -1,13 +1,13 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: NAT and MTU issues
-Date: Sat, 20 Sep 2003 21:04:23 +0200
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: destinations interface must be eth0?
+Date: Sat, 20 Sep 2003 21:14:54 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064084662.28506.42.camel@tux.rsn.bth.se>
-References: <1063985328.28941.37.camel@angua.localnet>
+Message-ID: <20030921011454.GA29628@cannon.eng.us.uu.net>
+References: <1063637259.2318.3.camel@dod-secure.e-masi.com> <20030916142218.GC16559@cannon.eng.us.uu.net> <1063738659.5701.4.camel@dod-secure.e-masi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063985328.28941.37.camel@angua.localnet>
+Content-Disposition: inline
+In-Reply-To: <1063738659.5701.4.camel@dod-secure.e-masi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Nigel Metheringham <Nigel.Metheringham@InTechnology.co.uk>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Jim Burnett <jburnett@e-masi.com>
+Cc: Ramin Dousti <ramin@cannon.eng.us.uu.net>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Fri, 2003-09-19 at 17:28, Nigel Metheringham wrote:
+On Tue, Sep 16, 2003 at 01:57:39PM -0500, Jim Burnett wrote:
 
-> Having looked closer at this I find there is an ICMP dest unreach packet
-> emitted from my box back to the originator.  However inside the packet
-> the SNAT has been undone, but the DNAT is still in place.
+> Correct.
 > 
-> Any ideas how I can fix this...?
-> This is all on a 2.4.21 kernel.
+> You cant DNAT to an IP which isnt bound to eth0 of that DNATed machine.
+> The gateway of the DNATed machine must point to the firewall also. This
+> isnt document. This was the case with 9 diferent tested linux distros.
 
-Gah, I hoped we had fixed all these problems. Getting all the
-corner-cases right isn't as easy as one thinks when we perform multiple
-translations.
-I've looked at the code responsible for the rewriting of the inner
-ipheader and it looks ok to me.
+I'm sorry. You lost me here. What is "DNATed machine"? And what do you
+mean by "The gateway of the DNATed machine must point to the firewall"?
 
-Is the NAT-rules on the machine that has the tunnel? If they are that
-might explain a thing or two since the code looks correct for the case
-where the packets pass through and another machine down the pipe sends
-the icmp message back.
+Ramin
 
--- 
-/Martin
 
