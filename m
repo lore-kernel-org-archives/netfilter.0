@@ -1,11 +1,9 @@
-From: Justin Piszcz <jpiszcz@lucidpixels.com>
-Subject: Re: NetMeeting
-Date: Thu, 13 Mar 2003 13:10:25 -0500
+From: "Robert K. Johnson" <johnson60@llnl.gov>
+Subject: iptables config for netperf
+Date: Thu, 13 Mar 2003 10:04:30 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E70C991.7080906@lucidpixels.com>
-References: <ABEKJILKOKKGGDJKHKDFAEDECAAA.patrick@vikus.com>
+Message-ID: <5.1.0.14.2.20030313100406.020e85e0@poptop.llnl.gov>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,26 +15,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Patrick Ahler <patrick@vikus.com>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Use patch-o-matic, patch w/h323 support, rebuild kernel, reboot with new 
-kernel, voila.
+I am having trouble getting netperf to work through a Linux iptables firewall.
+I have created an allow rule for TCP/12865 and for TCP with 
+state=Established,Related on the machine that will be running netserver. 
+However, after successfully connecting from a client machine, the server 
+drops TCP packets that are destined for ports in the 1024-1030 range. Here 
+is an excerpt from /var/log/messages:
 
+Mar 12 13:39:59 basis16 authpriv.info netserver[440]: connect from 
+10.1.253.254
+Mar 12 13:39:59 basis16 daemon.info klogd: Pkt Dropped IN=eth1 OUT= 
+MAC=00:09:b7:f1:05:17:00:09:b7:f1:07:b4:08:00 SRC=10.1.253.254 
+DST=10.1.253.115 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=3424 DF PROTO=TCP 
+SPT=1029 DPT=1026 WINDOW=5840 RES=0x00 SYN URGP=0
+Mar 12 13:40:02 basis16 daemon.info klogd: Pkt Dropped IN=eth1 OUT= 
+MAC=00:09:b7:f1:05:17:00:09:b7:f1:07:b4:08:00 SRC=10.1.253.254 
+DST=10.1.253.115 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=3425 DF PROTO=TCP 
+SPT=1029 DPT=1026 WINDOW=5840 RES=0x00 SYN URGP=0
 
-Patrick Ahler wrote:
-
->I am attempting to use NetMeeting behind my router/firewall(with NAT) ... I
->am using iptables version 1.2.6a. Does anybody know how to do this? I know
->that netmeeting uses an h.323 streaming protocol just not sure of how to set
->it all up.
->
->
->
->
->
->  
->
-
+What iptables configuration is required to get netperf to be fully operational? 
 
 
