@@ -1,11 +1,9 @@
-From: "Aldo Lagana" <alagana@discmail.com>
-Subject: Re: Packet Sniffing
-Date: Tue, 15 Apr 2003 13:22:35 -0400
+From: Doug Johnson <doug.johnson@vifanusa.com>
+Subject: RE: Packet Sniffing
+Date: Tue, 15 Apr 2003 13:20:53 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <011401c30373$9b64c220$6d64a8c0@discmail.com>
-References: <ABEKJILKOKKGGDJKHKDFIEKJCAAA.patrick@vikus.com>
+Message-ID: <1AEB768E2548D611869F000255478B0A3550C3@NTUSA2>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,36 +15,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Patrick Ahler <patrick@vikus.com>, netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: 'Patrick Ahler' <patrick@vikus.com>, netfilter EMAIL <netfilter@lists.netfilter.org>
 
-The way I do it: forward ports 80 & 443 to Squid and then report on it with
-Sarg - which is then published to an internal web server.  The problem w/
-straight netfilter data was that it contained too much - I don't care about
-SYN versus RST (in my web usage reports) - just tell me who went where and
-when they went there.
+In that scenario it is best use use a proxy server (such as Squid) and find
+one of many analysis tools http://www.squid-cache.org/Scripts/ to do the
+reporting for you. You can even use a redirector to block porn from
+precompiled db's. Such redirectors can be found at
+http://www.squid-cache.org/related-software.html . And the neat thing is
+that some of the analysys tools are setup with the redirectors listed such
+as squidGuard and Sarg. They are fairly east to setup.
 
-Sarg web reports are management-friendly too...you won't have to give him
-the executive summary ;-\
+Good Luck Patrick.
+Doug
 
-
------ Original Message -----
-From: "Patrick Ahler" <patrick@vikus.com>
-To: "netfilter EMAIL" <netfilter@lists.netfilter.org>
-Sent: Tuesday, April 15, 2003 1:04 PM
+-----Original Message-----
+From: Patrick Ahler [mailto:patrick@vikus.com]
+Sent: Tuesday, April 15, 2003 1:05 PM
+To: netfilter EMAIL
 Subject: RE: Packet Sniffing
 
 
-> Know of any good packet sniffer's? tcp dump with Ethereal is great, but is
-> it possible to set up reports from that? I need software that will be able
-> to print a report of who was looking at what web pages... and then be able
-> to print out weekly reports for each employee or "IP waster" as I call
-them
-> =). The boss is tired of employees lookin at porn during work =).
->
-> Thanks,
-> Patrick
->
->
->
+Know of any good packet sniffer's? tcp dump with Ethereal is great, but is
+it possible to set up reports from that? I need software that will be able
+to print a report of who was looking at what web pages... and then be able
+to print out weekly reports for each employee or "IP waster" as I call them
+=). The boss is tired of employees lookin at porn during work =).
+
+Thanks,
+Patrick
+
 
 
