@@ -1,8 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Port forwarding or NAT?
-Date: Tue, 14 Sep 2004 13:13:56 -0400
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Port forwarding or NAT?
+Date: Tue, 14 Sep 2004 19:18:22 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095182036.1895.4.camel@wolfpack.ljm.dom>
+Message-ID: <20040914171822.956213FD5@sterenborg.info>
 References: <01ef01c49a5f$51824900$6300a8c0@93egeater>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,23 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
 
-On Tue, 2004-09-14 at 09:32, Eric Geater 9/01/04 wrote:
-> I have one crazy machine at our home office that must communicate on
-> port 6847 to an outside company.  This one machine went through our old
-> proxy server until it died last week.  We're using IPTABLES through
-> rc.firewall-2.4 on a Linux proxy, but it doesn't seem to be allowing
-> this communication to occur.
+netfilter-bounces@lists.netfilter.org wrote:
+> I have one crazy machine at our home office that must
+> communicate on port 6847 to an outside company.  This one
+> machine went through our old proxy server until it died last
+> week.  We're using IPTABLES through
+> rc.firewall-2.4 on a Linux proxy, but it doesn't seem to be
+> allowing this communication to occur.
 > 
-> Would this be handled through port forwarding or NAT?  
+> Would this be handled through port forwarding or NAT?  I was
+> under the impression that our firewall was set up to allow
+> all traffic, initated from the LAN, through.  This apparently isn't
+> the case, however. 
 
-it would be handled by the FORWARD chain of the filter table, and by a
-SNAT/MASQ rule in the POSTROUTING chain of the nat table.
+From inside (LAN) to outside (internet or something) = SNAT/MASQUERADE.
+From outside to inside = DNAT (port forwarding).
+In case of a proxy you'd probably be using Squid, and I doubt Squid will
+let you communicate on port 6847.
 
--j
+I'm not familiar with the script so I can't say what's wrong.
 
--- 
-Jason Opperisano <opie@817west.com>
+
+Gr,
+Rob
 
 
