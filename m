@@ -1,10 +1,9 @@
-From: "Johannes Walch" <j.walch@nwe.de>
-Subject: patch-o-matic automatic build ?
-Date: Fri, 4 Apr 2003 12:12:16 +0200
+From: =?iso-8859-1?Q?St=E9phane_Klein?= <sklein@aquitaine-valley.fr>
+Subject: sqlnet 8 connexion and iptables 1.2.6a
+Date: Fri, 4 Apr 2003 13:05:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c2fa92$abef6f80$5863a8c0@note>
+Message-ID: <C92390AC8CA2D3119A2800508B6711B401406B14@PHOSOIRAK>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,16 +15,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-hi all,
+Hi ,
 
-does anyone know if its possible to select the patch-o-matic modules
-automatically (e.g by a file / list) rather then executign ./runme extra and
-doing it interactively ?
+I'm trying to connect to an oracle 8.1.7 server behind a linux iptables
+firewall.
+I've opened the 1521/tcp port.
+the tnsping response is OK, but when i'm trying to connect with SQLPLUS,
+logs tell me SQLPLUS 
+try to connect to a random port ( i think oracle server give sqlnet a port
+to connect to).
 
-for example sth. like ./runme extra h323-patch ....
+I think sqlnet protocol is similar to ftp protocol. if it is the case, is
+there a ip_conntrack_sqlnet module
+to solve the problem. 
 
-johannes walch
+Could you tell me what to do to make this work?
+Thanks,
 
+Stephane
 
