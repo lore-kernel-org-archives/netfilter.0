@@ -1,14 +1,15 @@
-From: Peteris Krumins <newsgroups@lf.lv>
-Subject: Re: Kernel: NET: messages suppressed (I am sure it has been covered before)
-Date: Fri, 24 Oct 2003 19:46:56 +0300
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Help with port forwarding
+Date: Fri, 24 Oct 2003 13:04:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <117167515885.20031024194656@lf.lv>
-References: <3F41DBB59549A54482D4FC25AEEDCBE18B9AA2@MAIL-06VS.atlarge.net>
-Reply-To: Peteris Krumins <newsgroups@lf.lv>
+Message-ID: <200310241304.41754.Alistair@nerdnet.ca>
+References: <FDAFEC98D318F74CA26B5A26F2B4965227C54A@exchange.jfctechnologies.com>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F41DBB59549A54482D4FC25AEEDCBE18B9AA2@MAIL-06VS.atlarge.net>
+In-Reply-To: <FDAFEC98D318F74CA26B5A26F2B4965227C54A@exchange.jfctechnologies.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +20,98 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Frischknecht Peter <peter@empoweringsolutions.com>
-Cc: netfilter@lists.netfilter.org
+To: "Kleiner, Peter" <kleinerp@smbmicro.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hello Frischknecht,
+On October 24, 2003 09:34 am, Kleiner, Peter wrote:
 
-Friday, October 24, 2003, 5:35:05 AM, you wrote:
-
-FP> I appreciate the suggestions for using a network analizer...I will be
-FP> implementing them as soon as I get on-site.
-FP> In the mean time, it would be very helpful if I had an answer to the
-FP> first question:  
-FP> "What message is being suppressed?"
-
-<N> Messages suppressed, it means the messages are repeating.
-So not to print them N times, a single message is printed telling
-that the last N messages were the same.
+	Just a bizarre thought, since you seem to be looking at forwarded traffic not 
+	getting out .. .did you check /proc/sys/net/ipv4/ip_forward to ensure it 
+exists on PC2 and contains 1? -- not sure why but I have seen an install 
+where it did NOT exist.  -- rebuilt the kernel to fix it .. .so I suppose the 
+kernel that was in place was not properly configured. *shrugs* ... I'm only 
+asking since it wasn't said.. and sometimes the simple answer is the fast 
+one.
 
 
-P.Krumins
+> Thus spake Mark E. Donaldson:
+> > Peter - I don't see anything obvious in the script that could be
+> > problematic.  What do you mean by "port forwarding not
+> > working"?
+>
+> When I run the script as shown, I can telnet through any of the filtered
+> ports (110, 143, 443) on the working PC, but not on the not-working PC.
+>
+> > Are you
+> > getting any error messages?
+>
+> None whatsoever.  I tried logging the traffic, but nothing showed up.
+> Interestingly, when I had logging on, it showed various attempts at
+> port 135:
+> Oct 21 16:55:45 gw kernel: IN=eth1 OUT=
+> MAC=00:30:21:07:ef:94:00:02:b9:91:7d:40:08:00 SRC=63.67.218.114
+> DST=XX.XX.4.7 LEN=64 TOS=0x00 PREC=0x00 TTL=115 ID=44619 DF PROTO=TCP
+> SPT=4168 DPT=135 WINDOW=64240 RES=0x00 SYN URGP=0
+> Oct 21 16:55:46 gw kernel: IN=eth1 OUT=
+> MAC=00:30:21:07:ef:94:00:02:b9:91:7d:40:08:00 SRC=63.67.218.114
+> DST=XX.XX.4.7 LEN=64 TOS=0x00 PREC=0x00 TTL=115 ID=44889 DF PROTO=TCP
+> SPT=4168 DPT=135 WINDOW=64240 RES=0x00 SYN URGP=0
+> Oct 21 16:55:46 gw kernel: IN=eth1 OUT=
+> MAC=00:30:21:07:ef:94:00:02:b9:91:7d:40:08:00 SRC=63.67.218.114
+> DST=XX.XX.4.7 LEN=64 TOS=0x00 PREC=0x00 TTL=115 ID=45129 DF PROTO=TCP
+> SPT=4168 DPT=135 WINDOW=64240 RES=0x00 SYN URGP=0
+> Oct 21 16:59:23 gw kernel: IN=eth1 OUT=
+> MAC=00:30:21:07:ef:94:00:02:b9:91:7d:40:08:00 SRC=66.156.169.85
+> DST=XX.XX.4.7 LEN=48 TOS=0x00 PREC=0x00 TTL=112 ID=47221 DF PROTO=TCP
+> SPT=2180 DPT=135 WINDOW=16384 RES=0x00 SYN URGP=0
+> Oct 21 16:59:24 gw kernel: IN=eth1 OUT=
+> MAC=00:30:21:07:ef:94:00:02:b9:91:7d:40:08:00 SRC=66.156.169.85
+> DST=XX.XX.4.7 LEN=48 TOS=0x00 PREC=0x00 TTL=112 ID=47351 DF PROTO=TCP
+> SPT=2180 DPT=135 WINDOW=16384 RES=0x00 SYN URGP=0
+> [sorry for the long text lines]
+> But nothing was recorded when I tried to telnet to ports 110, 143 or 443.
+>
+> > Is translation being performed
+> > but the packets
+> > are not routed?
+>
+> I'm not sure how to tell that.  Possibly.  Running nmap of the public
+> address shows:
+> Starting nmap V. 3.00 ( www.insecure.org/nmap/ )
+> Interesting ports on  (XX.XX.4.7):
+> (The 1596 ports scanned but not shown below are in state: closed)
+> Port       State       Service
+> 22/tcp     open        ssh
+> 25/tcp     open        smtp
+> 110/tcp    filtered    pop-3
+> 143/tcp    filtered    imap2
+> 443/tcp    filtered    https
+>
+> > I might be able to generate some ideas here
+> > if you can be
+> > more specific.
+>
+> Please let me know what else you need.  I am completely baffled.  Why would
+> the same
+> script work on one machine and not the other?  That is why I listed the
+> lsmod in my
+> original post.  I wonder if it's something not related to iptables.....?
+>
+> > By the way, I believe you are meaning to
+> > block the Auth
+> > protocol (port 113):  that being the case, you need to
+> > specify TCP and not
+> > UDP.
+>
+> Fixed.  Thanks!
+>
+> Pete
 
+-- 
+
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
