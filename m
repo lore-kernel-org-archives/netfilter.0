@@ -1,13 +1,13 @@
-From: Stephen Smoogen <smoogen@lanl.gov>
-Subject: Re: comments about lokkit default script
-Date: Fri, 12 Sep 2003 13:36:58 -0600
+From: Payal Rathod <payal-iptables@staticky.com>
+Subject: Re: FORWARD rules
+Date: Sat, 13 Sep 2003 07:56:58 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063395418.5967.22.camel@smoogen1.lanl.gov>
-References: <Pine.LNX.4.44.0309121456140.1054-100000@Chrestomanci>
+Message-ID: <20030913022658.GD1667@linux.local>
+References: <20030910175253.GA2752@linux.local> <1063260568.26703.1.camel@risingsun.penguindia.com> <20030912100957.GA3360@linux.local> <1063363533.879.52.camel@elendil.intranet.cartel-securite.net> <20030912163656.19b9fb66.arnt@c2i.net> <1063378301.888.66.camel@elendil.intranet.cartel-securite.net> <20030912201425.25ca0ab4.arnt@c2i.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0309121456140.1054-100000@Chrestomanci>
+Content-Disposition: inline
+In-Reply-To: <20030912201425.25ca0ab4.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Faheem Mitha <faheem@email.unc.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Yes.. sorry I went too fast. If you had multiple computers sitting
-behind the computer running iptables then the forward rule is used (EG
-something like this:
-
-[Computer 1] <->[switch]->[Netfilter Computer]<->[Earthlink]
-[Computer 2] <-----^
-
-In your case the rules below are secure.
-
-[Netfilter computer] <-> [Earthlink]
-
-On Fri, 2003-09-12 at 13:01, Faheem Mitha wrote:
-> On Fri, 12 Sep 2003, Stephen Smoogen wrote:
+On Fri, Sep 12, 2003 at 08:14:25PM +0200, Arnt Karlsen wrote:
+> On Fri, 12 Sep 2003 16:51:41 +0200, 
+> > > ..lose "NEW".
+> > 
+> > Just what I said, wasn't it ?
 > 
-> >
-> > Basically to understand the script a bit better you should look at how
-> > the rules look in the table.
-> >
-> > iptables -nxvL
-> >
-> > should give you some output. If the default policies are to ACCEPT
-> > things then what is happening is that you are accepting ALL outbound
-> > traffic and very little inbound traffic. The newest
-> > redhat-config-firewall in their rawhide has some changes to this, but I
-> > have been doing custom firewalls for too long now to remember what they
-> > are (I think they put in an ESTABLISHED,RELATED rule in now.)
-> >
-> > Are you forwarding traffic through your firewall or just using it as a
-> > client. If you are using it as a client it is pretty ok and secure. If
-> > you are using it as a forwarder you will probably want to make some
-> > changes for interfaces to be semi-trusted.
-> 
-> I'm not sure what this means. The firewall is set up on my home computer's
-> kernel, which is also the only computer I have, no LAN (I think they call
-> it). As I understand it, all packets coming and going from my computer
-> pass through this firewall. I don't think I am doing any forwarding. Is
-> this done for other computers connected to the net through the firewall?
-> 
->                                                                 Faheem.
+> ..nah, but you probably _meant_ it.  ;-)
+
+I think he said it :). Look below.
+
+
+| $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+| $IPTABLES -A FORWARD -m state --state NEW -s 125.125.125.0/32 -p tcp \
+|        -m tcp --dport 53 -j ACCEPT
+
+-Payal
+
 -- 
-Stephen John Smoogen		smoogen@lanl.gov
-Los Alamos National Labrador  CCN-5 Sched 5/40  PH: 4-0645 (note new #)
-Ta-03 SM-1498 MailStop B255 DP 10S  Los Alamos, NM 87545
--- So shines a good deed in a weary world. = Willy Wonka --
-
+"Visit GNU/Linux Success Stories"
+http://payal.staticky.com
+Guest-Book Section Updated.
 
