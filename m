@@ -1,9 +1,10 @@
-From: Aldo Lagana <ALagana@p21.com>
-Subject: RE: Poll on large sites that deploy Iptables.
-Date: Thu, 3 Jun 2004 12:59:27 -0400
+From: "Johan Seibel" <johan.seibel@gmx.de>
+Subject: Prerouting to broadcast (or directed-broadcast)
+Date: Fri, 4 Jun 2004 00:28:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0776B9DA384FFB4C94A6B73F7DC87A6003F35CC8@newman.p21.com>
+Message-ID: <001f01c449ba$1796a5b0$0301a8c0@Seibel1>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,77 +16,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Brett Simpson' <simpsonb@hillsboroughcounty.org>, netfilter@lists.netfilter.org
-
-First off - like AOL, IBM, etc - all use high-end probably cisco routers
-which do their firewalling - one cannot get the packet per second throughput
-they need without dedicated ASIC-based router/firewalls...
-
-Second - you come from checkpoint world...thats software only - right?  if
-so, then netfilter is the equivalent...with netfilter, and added modules
-(Squid, KAME IPSec, etc..) you can/will achieve the functionality that
-checkpoint had/did...when you worry about thousands of users, then you will
-simply have to place your netfilter firewall on a powerful box...one with
-good network cards and a fast processor(s)...the same would be true in a
-checkpoint implementation to support thousands of users....
-
-short story long - netfilter has all the equivalents of checkpoint including
-the hardware requirements for many concurrent connections.
-
-
------Original Message-----
-From: Brett Simpson [mailto:simpsonb@hillsboroughcounty.org]
-Sent: Thursday, June 03, 2004 9:19 AM
 To: netfilter@lists.netfilter.org
-Subject: Re: Poll on large sites that deploy Iptables.
 
+hello,
 
-On Wednesday 02 June 2004 03:54 pm, Brett Simpson wrote:
-> We are a large organization, 3000 plus users, considering switching from
-> Checkpoint FW1 to Iptables. I was wondering how many large organizations
-> (1000 plus users) are using Iptables in a production environment?
->
-> For those that are using Iptables and were previously using a commercial
-> product what were your reasons for switching and what issues have you seen
-> using Iptables?
+I have a problem with my router. I want to wake up Computers in my LAN from
+the Internet and therefore I have to make the router send a
+broadcast-message to all computers in the LAN. Ofcourse the router has a
+Linux operating system and works with iptables v1.2.8
+Well, I have already tried something: I thought that it would be possible to
+send a magic packet from the Internet to a special port e.g. port 2222 and
+the router changes the destination address to a local broadcast address (I
+have a lan with 192.168.1.1/255.255.255.0)
+The rule I tried is:
+    iptables -t nat -I PREROUTING -p udp -i ppp0 --dport 2222 -j
+DNAT --to-destination 192.168.1.255
+When I send a magic packet to this address the packet goes to this rule and
+the I guess the destination address is corrected. But the router does not
+send the packet to the local LAN, but it is lost somehow. I added another
+rule
+    iptables -t nat -I POSTROUTING -p udp --dport 2222
+but the packet never reaches this rule.
+Another experiment was to send the magic packet from a local linux box and
+adding the following rule to the iptables of that computer:
+    iptables -t nat -I OUTPUT -p udp --dport 2222 -j DNAT --to-destination
+192.168.1.255
+When I send a magic packet to the address 192.168.1.100 the destination
+address is corrected and my computer wakes up.
 
+So, why doesn't this work in the PREROUTING chain???
+Or is there perhaps another solution for my problem?
 
-Thanks for the responses.
+(My router has no function where I can enable directed broadcast (like the
+Cisco-routers have) and I do not know how this works.)
 
-I have a few more questions:
-Does anyone know of any large firewall sites? Large site would consist of 
-large numbers of users, rules, routes, tunnels, or high bandwidth use.
-
-Of those who answered the above question:
-Are any of those well known companies (i.e. like AOL, IBM, etc... ) who use 
-Iptables?
-
-What version of Linux are they using?
-
-What are they doing for support? (i.e. Redhat, IBM, 3rd party support,
-mailing 
-lists, etc)
-
-How many physical firewalls are deployed?
-
-Is it known if they converted from a commercial firewall? (i.e Checkpoint, 
-NetScreen, Cisco PIX, etc)
-
-Thanks in advance,
-Brett
-
-
-
-Visit our website at http://www.p21.com/visit 
-The information in this e-mail is confidential and may contain legally
-privileged information.  It is intended solely for the person or entity to
-which it is addressed.  Access to this e-mail by anyone else is
-unauthorized. If you are not the intended recipient, any disclosure,
-copying, distribution, action taken, or action omitted to be taken in
-reliance on it, is prohibited and may be unlawful.  If you received this
-e-mail in error, please contact the sender and delete the material from any
-computer. 
-
+Any explanations or solutions are very welcome, please help me!
+Thanks in advise
+Johan
 
 
