@@ -1,13 +1,11 @@
-From: "Dennis O. Aliev" <doa@einsteinindustries.com>
-Subject: Re: Multiple Source IP Addresses
-Date: Fri, 11 Mar 2005 12:37:31 -0800
-Message-ID: <20050311123731.223acf05.doa@einsteinindustries.com>
-References: <201E6F5AC48C274996A5AD8304FAEF869A04@p001ex03.porta.local>
-	<20050311114010.7d7207ec.daliev@etecom.com>
-	<1110570591.4767.57.camel@hubcap.ljm.dom>
+From: Denilson Guedes Duarte <denilson@bnet.com.br>
+Subject: Help iplimit-patch
+Date: Mon, 14 Mar 2005 09:24:56 +0000
+Message-ID: <200503140924.56831.denilson@bnet.com.br>
+Reply-To: denilson@bnet.com.br
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1110570591.4767.57.camel@hubcap.ljm.dom>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,40 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Jason,
+sorry by my english,
 
-This is a great solution, but it has 1 limitation. There would be no way for webserver to track how many requests went through each external IP. Would you have any further suggestions?
+I reading for a iptables because I need to make a solution to my case: 
+I have a sever that I use only to redirect packets to another sever, I control by IP source like example:
 
-Thanks a lot.
+iptables -A INPUT -s 200.sss.sss.sss -j ACCEPT -p tcp --dport 23
+/usr/sbin/iptables -t nat -A PREROUTING -s 200.sss.sss.sss -j DNAT -d 200.lll.lll.lll -p tcp --dport 23 --to 172.ddd.ddd.ddd:23
 
-Dennis O. Aliev
+/usr/sbin/iptables -t nat -A POSTROUTING -j SNAT -d 172.ddd.ddd.ddd -p tcp --dport 23 --to-source 172.aaa.aaa.aaa
 
+200.sss.sss.sss = IP source Client
+200.lll.lll.lll = IP Server localhost - extern IP
+172.ddd.ddd.ddd = IP destination Server
+172.aaa.aaa.aaa = IP configured to accept conections on 172.ddd.ddd.ddd
 
-On Fri, 11 Mar 2005 14:49:51 -0500
-Jason Opperisano <opie@817west.com> wrote:
+I want to control the limit of conections by IP source simultaneous-use, Ex. IP 200.sss.sss.sss can use 3 conections in the same time.
 
-> On Fri, 2005-03-11 at 14:40, Dennis O. Aliev wrote:
-> > Baake,
-> > 
-> > Thank you for reply.
-> > 
-> > What you suggesting will take care of routing incomming packets (from internet) to web server. In my scenario, I have a bot that parses sites and so the packets are coming from webserver to internet and source addresses must be different to load balance between internet connections.
-> 
-> use multiple "--to-source" options in your SNAT rule:
-> 
->   iptables -t nat -A POSTROUTING -o $EXT_IF -s $WEB_SRV_IP \
->     -j SNAT --to-source $EXTIP1 --to-source $EXTIP2  --to-source $EXTIP3
-> 
-> outbound connections will round-robin between the source addresses.
-> 
-> -j
-> 
-> --
-> "Alright brain, you don't like me and I don't like you. But let's just
->  get through this and then I can get back to killing you with beer."
-> 	--The Simpsons
-> 
+It's possible?
+
+Thanks.
+
+-- 
+Denilson Guedes Duarte
+ISPbnet - Provedor de Internet
+Uruguaiana - RS
+denilson@bnet.com.br
+(55) 411 6350
+
 
