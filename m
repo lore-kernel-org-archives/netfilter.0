@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: is iptable being commercially used???
-Date: Wed, 30 Oct 2002 13:03:43 +0000
+From: Vicky Shrestha <mail@vickysh.wlink.com.np>
+Subject: ip_conntrack: table full, dropping packet.
+Date: Wed, 30 Oct 2002 19:28:42 +0545
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210301303.g9UD3ne11638@vulcan.rissington.net>
-References: <005e01c27ffe$8f793020$1801010a@demo>
+Message-ID: <200210301928.42300.mail@vickysh.wlink.com.np>
+Reply-To: mail@vickysh.wlink.com.np
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005e01c27ffe$8f793020$1801010a@demo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-On Wednesday 30 October 2002 10:24 am, Ben Tan wrote:
+I have built a firewall on 2.4.8-17 kernel which has 2 Mb of traffic going in 
+an out of it. 
 
-> hi,
->     I am currently picking to learn this wonderful free tool.
->
->     but would like to know whether it is being used commercially. However,
-> I would like to know why it is not as popular as checkpoint or cisco pix?
+I recently added a line :
+iptables -A FORWARD -m state --state ESTABLISED,RELATED -J ACCEPT
 
-They have a bigger marketing budget.
+Now I can see the lines "ip_conntrack : table full, dropping packet" in my 
+kern.log.
 
-Same reason why so many people use Microsoft Windows - doesn't mean they've 
-looked around for the best O/S, realised that MS write the best software, and 
-paid the money for it - it means they got it free on their PC when they 
-bought it, they don't know there's an alternative available, or they believe 
-that all the advertising they see must mean it's the best thing to use.
-
-There are more commercial products using netfilter than you might realise.
-
-With some of them it can be difficult to find out whether they're based on 
-netfilter or not.   I don't know why.
-
-Antony.
+Does dropping packets means that it is actually dropping the packets or just 
+truncating the file /proc/net/ip_conntrack , does this affect my client's  
+connections???
 
 -- 
+Best regards,
 
-What is this talk of software 'release' ?
-Our software evolves and matures until it becomes capable of escape,
-leaving a bloody trail of designers and quality assurance people in its wake.
+
+Vicky Shrestha
+System Administrator
+WorldLink Communications Pvt.Ltd
+Jawalakhel, Kathmandu, Nepal.
+
 
