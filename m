@@ -1,13 +1,12 @@
-From: "Luis Fernando Barrera" <luba@assist.com.gt>
-Subject: ICMP question
-Date: Thu, 14 Nov 2002 12:28:29 -0600
+From: "vincent blondel" <vincent.blondel@chello.be>
+Subject: h.323 firewall
+Date: Thu, 14 Nov 2002 19:18:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NABBIDJPNCAGKGOFGHBFOELFPIAA.luba@assist.com.gt>
-References: <1037211234.2257.14.camel@mentor>
+Message-ID: <000d01c28c0a$473ff290$057ba8c0@wxcsmtp450>
+Reply-To: "vincent blondel" <vincent.blondel@chello.be>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1037211234.2257.14.camel@mentor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,49 +19,125 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi,
 
-I have a RedHat 7.3 box which I use as a dual homed firewall.
+I want to implement in our organisation a complete video conferencing
+infrastructure but I am completely novice
+in this matter. I read a lot of documentation these last days but there are
+some points that stay not clear.
 
-One of the rules is that I allow all the ICMP traffic from one
-PC in the protected LAN to the Internet.
+As you can see it above, we want to open domains DEV1 and DEV2 to the net
+for h.323 traffic.
 
-Here it is one set of rules
+The current situation incorporates :
 
-iptables -A FORWARD -p ICMP -s 192.168.1.37 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -p ICMP -d 192.168.1.37 -m state --state ESTABLISHED -j
-ACCEPT
+          10.66.0.xxx
+     +---------------+
+     | SMC7008BR |
+     +---------------+
+          10.66.1.xxx
+                   DEV2
+                |           |
+  +---------+-+   +--+--------+
+  | slack 8.0 |   | Slack 8.0 |
+  +-----------+   +-----------+
+                      192.168.0.xxx   +-----+       10.66.0.xxx
+                                             | pp0 |  +---------------+
+                                             +--+--+  |   switch      |
+                                                 |       +---------------+
+                                                 |         DMZ
+                                                 +-------+  +-------------+
+                                                 |  NS2  |   | NS1
+|
+                      10.66.0.xxx          |  HTTP2| | HTT1        |
+                 +---------------+         +-------+  | FTP           +--ISP
+                 |  SMC7008BR|                        | SMTP       |
+                 +---------------+                        +-------------+
+                  192.168.0.xxx                            192.168.0.xxx
+                     DEV1
+                  |            |
+ +-----------+-+      +-+---------+
+ |   linux         | .... |    w2k      |
+ +-------------+      +-----------+
+  GnomeMeeting         NetMeeting
 
-I've been experiencing the problem that with this set of rules, suddenly,
-the PC in the LAN cannot "ping" any hosts in the Internet. To solve the
-problem
-I delete all my user's chains and flush them, and I worked again.
-I already asked if there is a buffer or counter that gets filled, and
-someone
-told me to watch the number of connections being tracked. I did that and it
-seems
-that the number of connections being tracked is very low (about 160).
+- a firewall iptables on NS1 and NS2
+- communcication with the net is passing through our DMZ zone
+- DMZ integrates 2 servers linux slackware 8.0 / kernel 2.4.18 /
+patch-o-matic-20020825 / iptables 1.2.7a
+- DMZ is configured with nat feature for traffic between DEV1/DEV2 and the
+net
+- DEV1/DEV2 includes some 15 users with webcams and/or H323 compliant
+equipment.
 
-Since the problem was a "mistery", I changed the rules to this:
+So the problems I encounter are the following :
 
-iptables -A FORWARD -p ICMP -s 192.168.1.37 -j ACCEPT
-iptables -A FORWARD -p ICMP -d 192.168.1.37 -j ACCEPT
+- As all I could see on the net, all config examples represent configuration
+with one client using h.323 protocol
 
-These are the same rules, except that don't track the state of the
-connections...
+  #! /bin/bash
+  EXTERNAL_IF=eth0
+  EXTERNAL_IP=mon.ip.pub.lic
+  PCA_HOST=mon.ip.pri.vee
 
-Could someone tell me what is the risk asociated to NOT to track the
-connections?
+  $IPTABLES=/usr/local/sbin/iptables
 
-One more question... Is it true that when you specify the ICMP protocol,
-iptables only
-applies the rule to the type 0?
+  /sbin/modprobe -a -k -s -v ip_nat_h323
 
-thanks in advance
+  logger -s "H323 Ports"
+  H323_PORTS="389 522 1503 1720 1731 8080"
+  for PORT in $H323_PORTS; do
+  $IPTABLES -t nat -A PREROUTING -i $EXTERNAL_IF -p tcp -d $EXTERNAL_IP \
+  --dport $PORT -m state --state NEW,ESTABLISHED,RELATED \
+  -j DNAT --to-destination $PCA_HOST -v
+  done
 
-Luis Fernando Barrera
-luba@assist.com.gt
+  logger -s "H323 Ports"
+  H323_PORTS="389 522 1503 1720 1731 8080"
+  for PORT in $H323_PORTS; do
+  $IPTABLES -t nat -A PREROUTING -i $EXTERNAL_IF -p udp -d $EXTERNAL_IP \
+  --dport $PORT -m state --state NEW,ESTABLISHED,RELATED \
+  -j DNAT --to-destination $PCA_HOST -v
+
+  ... I found above iptables config example but problem for me is I have 15
+users and not one
+
+- I have installed iptables/NAT on my DMZ servers but I remarked some
+clients as GnomeMeeting 0.94 are full NAT compliant
+  ... so what does it mean, that my linux clients will have some troubles
+because I use two products producing NAT
+  ... capabilities ??? and what about Ms Netmeeting and ip_nat_h323 ???
+
+- I patched my kernels 2.4.18 with patch-o-matic-20020825 to use ip_nat_h323
+  ... ok but is this module a solution for me to redirect h.323 traffic
+between
+  ...     internet          --> 10.66.0.xxx --> 192.168.0.xxx
+  ...     internet          --> 10.66.0.xxx --> 10.66.1.xxx
+  ...     192.168.0.xxx --> 10.66.0.xxx --> internet
+  ...     10.66.1.xxx     --> 10.66.0.xxx --> internet
+
+  but the problem is I have concurrent connections .
+
+- I read yesterday that it is possible to concentrate h.323 connections on a
+gatekeeper as OpenH323 Gatekeeper
+  ... do you think I have to use a gatekeeper with iptables ???
+
+So maybe you can find my questions stupid or without any sense but I repeat
+it I got no experience with this.
+
+So, with information I received I imagine to impelement my h.323
+infrastructure as mentionned below.
+
+- configuring iptables on NS1 (10.66.0.1) with the script mentionned above
+and replacing PCA_HOST with ip adress of NS2 (10.66.0.2)
+- installing OpenH323 gatekeeper on NS2 (10.66.0.2)
+- configuring all clients with gatekeeper NS2 (10.66.0.2).
+
+So, thanks for any comment, remark, experience, suggestions and/or
+corrections on what I mentionned above.
+Thanks in advance.
+
+Vincent
 
 
 
