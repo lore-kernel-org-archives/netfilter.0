@@ -1,14 +1,12 @@
-From: "Edmund Turner" <eturner@monash.edu.my>
-Subject: Modules and others
-Date: Mon, 3 Nov 2003 13:20:00 +0800
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: FW: logging a range of ips
+Date: Mon, 3 Nov 2003 14:08:42 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b401c3a1ca$215fad50$de0018ac@admin.monash.edu.my>
-References: <oprx1ox5f3pvmot6@192.168.2.1>
-Reply-To: <eturner@monash.edu.my>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8DD7@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <oprx1ox5f3pvmot6@192.168.2.1>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,18 +17,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
 
-Hey everyone, 
-	Hope someone can help me with this. Well, here it goes:
-1.)If I recompile IP tunneling and IP GRE into the kernel as to
-compiling it as a module, how do I check to see if its properly
-installed? If I had compiled it as a module, I would simply do a
-'lsmod'. 
-Any help is appreciated!
+Sorry for sending that too quickly.
 
-Regards
-edmund 
+Here is what I want to achieve...
+$IPTABLES -A INPUT -p tcp -s 190.201.0.0 -j LOG --log-level DEBUG =
+--log-prefix "***LOGTCP: "
+$IPTABLES -A INPUT -p udp -s 190.201.0.0 -j LOG --log-level DEBUG =
+--log-prefix "***LOGUDP: "
+
+It doesn't seem to work. I want to log all transactions of the network =
+of 190.201.x.x.
+
+Thanks.
+
+Cheers,
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+
+
+> -----Original Message-----
+> From: Fritz Mesedilla=20
+> Sent: Monday, November 03, 2003 2:07 PM
+> To: Netfilter Mailing List (E-mail)
+> Subject: logging a range of ips
+>=20
+>=20
+>=20
+> Greetings!
+> How do I log a range of ips?
+>=20
+>=20
+> Cheers,
+>=20
+> fritz <www.mesedilla.com>
+> ---
+> + Basta Ikaw Lord
+>=20
+>=20
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
