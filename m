@@ -1,13 +1,13 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: monitor masq. packets
-Date: Sat, 7 Dec 2002 17:41:59 +0100
+From: "Nigel Clarke" <nigel@forever-networks.com>
+Subject: RE: monitor masq. packets
+Date: Sat, 7 Dec 2002 11:26:59 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212071741.59268.roy@karlsbakk.net>
-References: <BDEFKJOAPEBPJCGDAGMFIEMGCAAA.nigel@forever-networks.com>
+Message-ID: <BDEFKJOAPEBPJCGDAGMFIEMGCAAA.nigel@forever-networks.com>
+References: <3DF1E43F.8040008@karlsbakk.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BDEFKJOAPEBPJCGDAGMFIEMGCAAA.nigel@forever-networks.com>
+In-Reply-To: <3DF1E43F.8040008@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +18,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Nigel Clarke <nigel@forever-networks.com>, zmooth <zmooth@btinternet.com>
+To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>, zmooth <zmooth@btinternet.com>
 Cc: netfilter@lists.netfilter.org
 
-On Saturday 07 December 2002 20:26, Nigel Clarke wrote:
-> What kernel version are you using?
+What kernel version are you using?
 
-[root@fw root]# uname -r
-2.4.18-17.7.x
+--
+Nigel Clarke                 Forever Networks
+Network Security Engineer    Consultant
+*********www.forever-networks.com************
 
-this is the latest one from Debian
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Roy Sigurd
+Karlsbakk
+Sent: Saturday, December 07, 2002 4:06 AM
+To: zmooth
+Cc: netfilter@lists.netfilter.org
+Subject: Re: monitor masq. packets
 
-Computers are like air conditioners.
-They stop working when you open Windows.
+
+zmooth wrote:
+
+>Hi, ive noticed that : netstat -M does not work anymore. Is it just me ? i
+>get :
+>
+>    netstat: no support for 'ip_masquerade' on this system, while iptables
+>is loaded and masquerading already. Please help
+>
+>
+>  
+>
+it's not only you
+
+[root@fw root]# netstat -M
+netstat: no support for `ip_masquerade' on this system.
+
+and I'm using the MASQUERADE target, yes
+
+roy
+
+
+
 
 
