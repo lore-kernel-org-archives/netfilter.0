@@ -1,8 +1,8 @@
-From: "masroor" <masroor@cc.iut.ac.ir>
-Subject: Howto Make a gateway with iptables rules?
-Date: Wed, 10 Mar 2004 13:53:56 +0800
+From: "rohit persaie" <persaie@hotmail.com>
+Subject: related to -z option
+Date: Wed, 10 Mar 2004 11:47:09 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040310054905.M99122@cc.iut.ac.ir>
+Message-ID: <BAY12-F12shalxyPyF10000278a@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,24 +14,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Dear All,
 
-Hi,
-  I have a linux redhat9.0 - I want to create an gateway between our 
-sections  and central site.
-It have 4 ethernet cards. 2 cards for internal LANs with 2 invalid sunbet 
-192.168.101.x and 192.168.102.x range. 3th card for intranet use such connect 
-to our web-server or email-server, 4th card for internet connection and when 
-they want go to internet.i want also close all extra ports and close udp + 
-icmp protocols. 
-How i could do this with IPTABLES Rules? Anybody have such this schema?
-Any help would be appriciated
+There is one option in iptables .....-Z , used for  the  packet  and byte 
+counters in all the chains.
 
-thanks a lot,
-mojgan
---
+Please tell me the use of this option, with example.
+
+with regards ,
+
+persaie
+
+_________________________________________________________________
+Take a loan. Win great prizes! Handsome prizes to be won!  Take a loan & win 
+TV, Fridge & many more prizes ! http://go.msnserver.com/IN/44044.asp
 
 
