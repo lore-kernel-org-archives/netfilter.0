@@ -1,8 +1,8 @@
-From: "Afshin Lamei" <linux_st@hotmail.com>
-Subject: FORWARD chain problem
-Date: Sat, 19 Apr 2003 09:48:27 +0430
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: "-o" specifier in DNAT definition?
+Date: Sat, 19 Apr 2003 07:54:25 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law15-F1070ymQ1WE9q00000641@hotmail.com>
+Message-ID: <Pine.LNX.4.44.0304190750340.26698-100000@dell>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,24 +14,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-
-Hi,
-I've a problem with my bridged iptables. my local chains (input and output) 
-works well, but my FORWARD doesn't. I even could not apply a default policy 
-on it.
-can any body help me?
-thanks
-afshin
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
 
+  in a book i'm reading discussing (among other things),
+setting up DNAT, there is a sample rule:
 
+  # iptables -t nat -A PREROUTING -i eth0 -o eth1
+	-d <internal server IP address>
+	-j DNAT --to-destination 192.168.0.1
 
+the question: how can the explicit specification of the
+"-o" interface affect this?
+  
+  after all, it's quite possible that the interface that
+would normally be chosen to forward to the internal
+server would not be the one listed with "-o".  (perhaps
+the admin made a mistake.)
 
-_________________________________________________________________
-Tired of spam? Get advanced junk mail protection with MSN 8. 
-http://join.msn.com/?page=features/junkmail
+  if there is an obvious conflict here, what happens?
+does this DNAT just go unsatisfied?
+
+rday
 
 
