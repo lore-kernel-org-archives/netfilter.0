@@ -1,13 +1,15 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Upper limit of users for iptables firewall
-Date: 16 Oct 2004 14:29:43 +0200
+Subject: Re: Limiting access to some number from random users.
+Date: 16 Oct 2004 14:30:05 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097856872.31365.22.camel@nostromo.bgsecm.com>
-References: <20041015054725.8539.qmail@web60403.mail.yahoo.com>
+Message-ID: <1097857100.16630.27.camel@nostromo.bgsecm.com>
+References: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
+	<1097755804.1708.14.camel@wolfpack.ljm.dom>
+	<200410151048.28634.rio@martin.mu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041015054725.8539.qmail@web60403.mail.yahoo.com>
+In-Reply-To: <200410151048.28634.rio@martin.mu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +20,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: ads nat <adsnat@yahoo.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El vie, 15 de 10 de 2004 a las 07:47, ads nat escribi=C3=B3:
-> hi,
-> I am having 512 Mbps bandwidth. Users are mainly
-> browsing Web and using email facility. I am using
-> squid for cache. I have about 10 % cache so i think
-> total upper bandwidth availability will be aroung 600
-> Kbps. Bandwidthwise there is no problem. My worry is
-> if iptables processing for 400 users with various acl
-> s should not slow down firwall processing due to
-> hardware configuration.
-> Thanks for support.
+El vie, 15 de 10 de 2004 a las 12:48, Rio Martin. escribi=C3=B3:
+> Folks,
+> I need to know how to limit access to some number from bulk random user=
+s.
+> Let say, i have 256 PCs connecting to Internet daily.=20
+> I want to limit my users accessing to Internet only for 100 users durin=
+g peak=20
+> time. But these 100users must be selected in random.
+>=20
+> Need a fresh idea how to do that with iptables. Should i apply special=20
+> patches?
+> Thanks ..
+>=20
+> Regards,
+> Rio Martin.
 
-In my experience you should not have any problem to
-manage that number of users even if you have a huge
-number of rules with your machine. But you can always
-make some tests to see if the machine slows down, but
-I think it should be ok.
+Maybe you can use conntrack and limit the SYN packets (NEW packets)
+with the limit match, this will give you some control over the
+number of connections that are made (not the total number but the
+number of connections in a given time).
 
+But have in mind that this will not work for sessions, just for
+connections, that means that maybe someone it's using the www and
+some connections will work and some not, because a huge number of
+connections are made for the same page (ads, images from other
+sites, etc). Maybe you can use persistent connections in the
+browsers so the connections are not broken.
 --=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
