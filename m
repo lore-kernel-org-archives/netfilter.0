@@ -1,14 +1,13 @@
-From: Jean-Marie Orset <jm.nfilter@laposte.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: mangle + TCP Flags
-Date: Thu, 11 Dec 2003 16:32:02 +0100
+Date: Thu, 11 Dec 2003 15:43:30 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031211163202.57af9256.jm.nfilter@laposte.net>
-References: <20031211105506.6c530c5a.jm.nfilter@laposte.net>
-	<20031211145408.GB32747@legolas.on.net.mk>
+Message-ID: <200312111543.30807.Antony@Soft-Solutions.co.uk>
+References: <20031211105506.6c530c5a.jm.nfilter@laposte.net> <20031211145408.GB32747@legolas.on.net.mk> <20031211163202.57af9256.jm.nfilter@laposte.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031211145408.GB32747@legolas.on.net.mk>
+In-Reply-To: <20031211163202.57af9256.jm.nfilter@laposte.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,22 +20,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Well, you could just:
-> -p tcp -j REJECT --reject-with tcp-reset (uses tcp rst)
-> -p udp -j REJECT (uses icmp port-unreach)
->That makes nmap say: ports closed.
+On Thursday 11 December 2003 3:32 pm, Jean-Marie Orset wrote:
 
-Yes, that's what I should do but My idea was to answer false SYN,ACK
-even if the ports are closed. In that way a scan would declare all my ports open but in reality, they would be closed.
-But I recognize that it is a a little tortured idea.. ;-)
+> > Well, you could just:
+> > -p tcp -j REJECT --reject-with tcp-reset (uses tcp rst)
+> > -p udp -j REJECT (uses icmp port-unreach)
+> >That makes nmap say: ports closed.
+>
+> Yes, that's what I should do but My idea was to answer false SYN,ACK
+> even if the ports are closed. In that way a scan would declare all my ports
+> open but in reality, they would be closed.
 
-> I saw yesterday that Craig Shelley did provide such a module on the
-devel-list
-> in june but I can't recover the tarball he sended in attachment.
-> :-) Maybe you could try email him and ask for publishing it somewhere
+Why is that better for security?
 
-Yes it's done, but he seems to be in holliday :-)
+Antony.
 
-Thank you
+-- 
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
