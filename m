@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I need help , please
-Date: Thu, 4 Jul 2002 20:01:28 +0100
+From: "Dan Crooks" <dcrooks@succeed.net>
+Subject: RE: Dual Internet Connection
+Date: Thu, 4 Jul 2002 12:20:48 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020704190130.YPAF4626.mta02-svc.ntlworld.com@there>
-References: <001e01c22321$e86018a0$2400a8c0@inq7.net> <20020704185114.YCLZ4626.mta02-svc.ntlworld.com@there> <02070420590401.06327@Lms>
+Message-ID: <MCBBLECNEOEMJOAANHHGEEKNCJAA.dcrooks@succeed.net>
+References: <20020704114405.C47C6442E@lists.samba.org>
+Reply-To: <dcrooks@succeed.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <02070420590401.06327@Lms>
+In-Reply-To: <20020704114405.C47C6442E@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,34 +21,51 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 04 July 2002 7:59 pm, Jan Humme wrote:
+To all, I have found what appears to be an excellent article on this
+subject.
+I did not plan to use load balancing, but I am going to dig out an old
+machine
+and follow the directions in the article.  For anyone else who is in a
+similar
+position here is the link:
 
-> On Thursday 04 July 2002 20:51, Antony Stone wrote:
-> > On Thursday 04 July 2002 7:48 pm, Jan Humme wrote:
-> > > On Thursday 04 July 2002 20:20, Antony Stone wrote:
-> > > > # Redirect http requests to local proxy
-> > > > iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT 127.0.0.1:80
-> > >
-> > > Antony, just for my understanding: is this any different from:
-> > >
-> > > iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT   ?
-> >
-> > No.   I just find the name 'redirect' a bit ambiguous (I mean, it could
-> > redirect it somewhere else, couldn't it, but no, it only redirects it to
-> > the local machine...) therefore I use DNAT which I'm familiar with from
-> > other uses.
+http://www.samag.com/documents/s=1824/sam0201h/
+
+It is from Sys Admin on redundant internet connections using linux.
+
+
+
+>Subject: RE: Dual Internet Connection
+>Date: Thu, 4 Jul 2002 17:03:30 +1000
 >
-> OK, and agree.
+>iptables <> router
 >
-> But I am somewhat surprised to find such redundant syntax at this level.
+>It tracks connections and not which device it came from. You need iproute 2
+>to do something like you need.
+>
+>I wonder what it would be like to have 2 default gateways and DROP packets
+>on each gateway depending on the source address.. wouldn't routes then try
+>the other link????
+>
+>Say
+>
+>192.168.0.1      192.168.0.2
+>|       eth0     |
+>-------------------
+>        FW
+>`add default gw 203.x.x.x`
+>`add default gw 210.x.x.x`
+>iptables -A FORWARD -s 192.168.0.1 -i eth1 -j DROP
+>iptables -A FORWARD -s 192.168.0.2 -i eth2 -j DROP
+>iptables -A POSTROUTING -s 192.168.0.1 -o eth2 -j MASQUERADE
+>iptables -A POSTROUTING -s 192.168.0.2 -o eth1 -j MASQUERADE
+>-------------------
+>|eth1            |eth2
+>203.x.x.x        210.x.x.x
+>
+>Would Host Unreachable make the route try the other default
+>gateway??? Not a
+>pretty sight though.....
+>Sorry if it's a bit messed up.. I'm about to leave work..
 
-I could have written it as
-
-iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT 127.0.0.1
-
-if you prefer :-)
-
- 
-
-Antony.
 
