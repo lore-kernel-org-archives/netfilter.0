@@ -1,14 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: FTP Connection problems.
-Date: Wed, 25 Aug 2004 09:13:36 -0500
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: FTP Connection problems.
+Date: Wed, 25 Aug 2004 10:14:28 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <412C9E90.90902@pbl.ca>
-References: <1093352834.1894.16.camel@lbedlbxl.dev.xtra-net.org>	<412B685E.2080000@pbl.ca>
-	<1093428637.1781.17.camel@lbedlbxl.dev.xtra-net.org>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512D7@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1093428637.1781.17.camel@lbedlbxl.dev.xtra-net.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,76 +16,53 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: vincent.blondel@chello.be
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Vincent Blondel wrote:
-> Thanks a lot for all the details but I still get some problems. As I
-> said it all the netfilter source code is compiled in a custom kernel
-> without any modules. 
-> 
-> Concerning the little iptables script I have written, I updated it with
-> your comments and now I get the next script 
+> Here you are ...
+>
+> tcpdump.firewall.log
+>
+> 15:59:24.071217 IP 192.168.124.1.32796 > 192.168.125.1.ftp: S
+> 3496999441:3496999441(0) win 5840 <mss 1460,sackOK,timestamp
+> 16200055[|tcp]>
+> 15:59:24.072144 arp who-has 192.168.124.1 tell pix1
+> 15:59:24.072464 arp reply 192.168.124.1 is-at 00:50:ba:e2:a9:ed
+> 15:59:24.072499 IP 192.168.125.1.ftp > 192.168.124.1.32796: S
+> 4161421847:4161421847(0) ack 3496999442 win 5792 <mss
+> 1460,sackOK,timestamp 1692753[|tcp]>
+> 15:59:24.072847 IP 192.168.124.1.32796 > 192.168.125.1.ftp: . ack 1 =
+win
+> 5840 <nop,nop,timestamp 16200057 1692753>
+> 15:59:34.085569 IP 192.168.125.1.ftp > 192.168.124.1.32796: P 1:66(65)
+> ack 1 win 5792 <nop,nop,timestamp 1693755 16200057>
+> 15:59:34.085984 IP 192.168.124.1.32796 > 192.168.125.1.ftp: . ack 66 =
+win
+> 5840 <nop,nop,timestamp 16210073 1693755>
+>
+> tcpdump.ftp.log
+>
+> 15:52:48.574738 192.168.124.1.32796 > iptables.ftp: S
+> 3496999441:3496999441(0) win 5840 <mss 1460,sackOK,timestamp 16200055
+> 0,nop,wscale 0>
+> 15:52:48.574908 arp who-has 192.168.125.240 tell iptables
+> 15:52:48.575204 arp reply 192.168.125.240 is-at 0:30:4f:5:74:39
+> 15:52:48.575226 iptables.ftp > 192.168.124.1.32796: S
+> 4161421847:4161421847(0) ack 3496999442 win 5792 <mss
+> 1460,sackOK,timestamp 1692753 16200055,nop,wscale 0> (DF)
+> 15:52:48.576318 192.168.124.1.32796 > iptables.ftp: . ack 1 win 5840
+> <nop,nop,timestamp 16200057 1692753>
+> 15:52:48.597025 iptables.33254 > 192.168.124.1.auth: S
+> 4154447273:4154447273(0) win 5840 <mss 1460,sackOK,timestamp 1692755
+> 0,nop,wscale 0> (DF)
+> 15:52:51.587881 iptables.33254 > 192.168.124.1.auth: S
+> 4154447273:4154447273(0) win 5840 <mss 1460,sackOK,timestamp 1693055
+> 0,nop,wscale 0> (DF)
 
-[snip]
+IDENT request...bingo...
 
-> if [ "$CONN_TRACK" = "1" ]; then
->         $fw -A INPUT -m state --state ESTABLISHED -j ACCEPT
->         $fw -A OUTPUT -m state --state ESTABLISHE -j ACCEPT
->         $fw -A FORWARD -m state --state ESTABLISHED -j ACCEPT
->         $fw -A INPUT -p icmp -m state --state RELATED -j ACCEPT
-> fi
+iptables -I FORWARD -p tcp --syn --dport 113 -j REJECT --reject-with =
+tcp-reset
 
-Add these too:
-
-$fw -A OUTPUT -p icmp -m state --state RELATED -j ACCEPT
-$fw -A FORWARD -p icmp -m state --state RELATED -j ACCEPT
-
-> ... but the connection takes a long time to terminate. If I disable all
-> the rules, ftp connection goes directly but with iptables enabled it
-> takes such 8 seconds to accomplish the annonymomus connection ( with
-> data port and passive models ).
-> 
-> What is this all about ???
-
-You could use a bit of logging.  Add these as last rules (at the very 
-end of your script):
-
-iptables -A INPUT -j LOG --log-prefix "INPUT "
-iptables -A OUTPUT -j LOG --log-prefix "OUTPUT "
-iptables -A FORWARD -j LOG --log-prefix "FORWARD "
-
-Logs will go wherever your kernel logs go.  Usually /var/log/messages.
-
-Since these will be at the end of your rules, they will log all packets 
-dropped by policy just before they are dropped.  My guess is that you 
-will either find TCP SYN packets to port 113 (ident) or UDP packets to 
-port 53 (DNS).
-
-To silently disable ident (incoming and outgoing) on FTP server, you 
-could do something like this (you can add line for FORWARDED packets, if 
-you wish):
-
-iptables -A INPUT -p tcp --sport 1024: --dport 113 \
-    -j REJECT --reject-with tcp-reset
-iptables -A OUTPUT -p tcp --sport 1024: --dport 113 \
-    -j REJECT --reject-with tcp-reset
-iptables -A OUTPUT -p tcp --sport 113 --dport 1024: \
-    -m state --state RELATED -j ACCEPT
-
-If you want your FTP server to be able to resolve names and reverse 
-lookup IP addresses:
-
-iptables -A OUTPUT -p udp --sport 1024: --dport 53 \
-    -m state --state NEW -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 1024: --dport 53 \
-    -m state --state NEW -j ACCEPT
-
-(you can add IP address(es) of your DNS server(s) there)
-
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+-j
 
