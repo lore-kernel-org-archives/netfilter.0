@@ -1,13 +1,15 @@
-From: Jeroen Vriesman <j.vriesman@prompt.nl>
-Subject: Re: 2 WAN port,, 1 LAN port on one machine
-Date: Thu, 26 Feb 2004 14:32:21 +0100
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: [ANNOUNCE] call for testing of patch-o-matic-ng
+Date: Wed, 25 Feb 2004 21:28:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040226143221.1cbc5749.j.vriesman@prompt.nl>
-References: <3100.202.171.14.2.1077798799.squirrel@jkt.pearlenergy.com>
+Message-ID: <20040225202805.GA4040@obroa-skai.de.gnumonks.org>
+References: <20040225182828.GP13386@sunbeam.de.gnumonks.org> <001101c3fbd6$0310ed80$32640a0a@robopc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3100.202.171.14.2.1077798799.squirrel@jkt.pearlenergy.com>
+Content-Disposition: inline
+In-Reply-To: <001101c3fbd6$0310ed80$32640a0a@robopc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +19,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Yes, 
-
-you can use multiple routing tables, enable it in the kernel and make two routing tables, both with a default route, one using eth0, the other eth1, and some "ip rule.. " things to make it do the right thing.
-
-To me it's not clear if you have only one, or two routers to the internet, if there is only one, which will route every incoming packet to eth1, you will need the CONNMARK ipt module to mark incoming packets which are related to outgoing-eth0 traffic, and use that mark in your multiple routing tables.
-
-Good luck.
+To: rruegner <robowarp@gmx.de>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
-On Thu, 26 Feb 2004 19:33:19 +0700 (WIT)
-"-iYung-" <iyung@ibs.ath.cx> wrote:
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Currently i have one linux bos as internet gateway, and i have three
-> different LAN segemnts connected to the machine.
-> 
-> a. 172.16.30.0/24
-> b. 172.16.40.0/24
-> c. 159.163.123.0/24
-> 
-> What i wanted to do is, I would like to have 2 WAN port and 1 LAN port.
-> 
->                LINUX
->              -----------
->             |           |
->             |           |---eth0 (a.a.a.a)
->             |           |
->     eth1 ---|           |
->             |           |
->             |           |---eth1 (b.b.b.b)
->             |           |
->              -----------
-> 
-> all segments connected to one router, and the router will route everthing
-> to 0.0.0.0/0.0.0.0 to eth1 (c.c.c.c)
-> 
-> My question is, was it possible if:
-> 
-> a. all internet traffic request coming from segment 172.16.30.0/24 and
-> 159.163.123.0/24 will go out from eth0
-> 
-> and...
-> 
-> b. all internet traffic request coming from segment 172.16.40.0/24 will go
-> out from eth1
-> 
-> thank you.
-> julius.
-> 
+On Wed, Feb 25, 2004 at 08:31:47PM +0100, rruegner wrote:
+> Hi Harald,
+>=20
+> do you mean something like this ?
+
+no.
+
+> fresh 2.6.3 kernel with patch-o-matic-ng-20040224
+
+as i stated in my original email, you will not be prompted for patches
+that have not yet been ported.
+
+>  requirement 'linux < 2.6.0' not fulfilled
+
+this clearly indicates that the quake3 patch is only available for
+kernel 2.4.x
+
+my main question was:  Does pom-ng still work with 2.4.x kernels as
+expected.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--pf9I7BMVVzbSWLtt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAPQVUXaXGVTD0i/8RAilKAJ0ULm6NZp+2ETKsH7FT5E8RsjVcLwCaAzvF
+4qBNgGZ8Gc79Bv7h/M44T68=
+=y46t
+-----END PGP SIGNATURE-----
+
+--pf9I7BMVVzbSWLtt--
 
