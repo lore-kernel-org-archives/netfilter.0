@@ -1,14 +1,14 @@
-From: Daniel Chemko <dchemko@smgtec.com>
-Subject: Re: Clients joining a host on a private LAN behind a NAT
-Date: Thu, 25 Sep 2003 20:26:57 -0700
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: inconsistant behaviour
+Date: Thu, 25 Sep 2003 20:48:31 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F73B201.1020600@smgtec.com>
-References: <000001c383da$f2ba2320$0200a8c0@knighthawk>
+Message-ID: <LFEHKEBEBHAFGJBMNKAOIEMICBAA.markee@bandwidthco.com>
+References: <3F72778D.2080207@didymodesigns.com.au>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------010409010901060605030303"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c383da$f2ba2320$0200a8c0@knighthawk>
+In-Reply-To: <3F72778D.2080207@didymodesigns.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,208 +18,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Thomas Stian Bergheim <bjartebe@eunet.no>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ashley Maher <ashley.maher@didymodesigns.com.au>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------010409010901060605030303
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Ashley - you are setting your Default Policy with -P, and then immediately
+flushing it with -F.  This is not what you want to do.  Flush first and set
+your rules after that.  You will find the results much more to your liking.
 
-Not sure about WarIII, but some games need online auth before they can 
-connect to the game. Is the game started in Internet or LAN mode?
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Ashley Maher
+Sent: Wednesday, September 24, 2003 10:05 PM
+To: netfilter@lists.netfilter.org
+Subject: inconsistant behaviour
 
-When you say you can host the game, does that mean people from the 
-internet can join, or does it mean that you can start the server program?
 
-Thomas Stian Bergheim wrote:
+G'day,
 
-> Hi,
->
->  
->
-> I've asked this question before and got a few replies, nothing that 
-> made it work, though.
->
->  
->
-> I am behind a nat-firewall, and I want to be able to host a warcraft3 
-> game (this works), and have other clients on my internal network join 
-> my game. Right now they will see the game, but can't join it (which is 
-> understandable).
->
->  
->
-> I've tried a few starcraft-scripts, without much luck..
->
->  
->
-> I'm using iptables. Any ideas?
->
->  
->
-> Thanks,
->
->  
->
->  - Thomas
->
->  
->
+I've built a firewall-gateway for a Uni.
 
---------------010409010901060605030303
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+The initial script sets up:
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body>
-Not sure about WarIII, but some games need online auth before they can
-connect to the game. Is the game started in Internet or LAN mode?<br>
-<br>
-When you say you can host the game, does that mean people from the
-internet can join, or does it mean that you can start the server
-program?<br>
-<br>
-Thomas Stian Bergheim wrote:<br>
-<blockquote type="cite"
- cite="mid000001c383da$f2ba2320$0200a8c0@knighthawk">
-  <meta content="text/html; " http-equiv="Content-Type">
-  <meta content="Word.Document" name="ProgId">
-  <meta content="Microsoft Word 10" name="Generator">
-  <meta content="Microsoft Word 10" name="Originator">
-  <link href="cid:filelist.xml@01C383EB.B5143720" rel="File-List">
-<!--[if gte mso 9]><xml>
- <o:OfficeDocumentSettings>
-  <o:DoNotRelyOnCSS/>
- </o:OfficeDocumentSettings>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:SpellingState>Clean</w:SpellingState>
-  <w:GrammarState>Clean</w:GrammarState>
-  <w:DocumentKind>DocumentEmail</w:DocumentKind>
-  <w:HyphenationZone>21</w:HyphenationZone>
-  <w:EnvelopeVis/>
-  <w:Compatibility>
-   <w:BreakWrappedTables/>
-   <w:SnapToGridInCell/>
-   <w:WrapTextWithPunct/>
-   <w:UseAsianBreakRules/>
-  </w:Compatibility>
-  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
- </w:WordDocument>
-</xml><![endif]-->
-  <style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0cm;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;
-	text-underline:single;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;
-	text-underline:single;}
-span.EpostStil17
-	{mso-style-type:personal-compose;
-	mso-style-noshow:yes;
-	mso-ansi-font-size:10.0pt;
-	mso-bidi-font-size:10.0pt;
-	font-family:Arial;
-	mso-ascii-font-family:Arial;
-	mso-hansi-font-family:Arial;
-	mso-bidi-font-family:Arial;
-	color:windowtext;}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:70.85pt 70.85pt 70.85pt 70.85pt;
-	mso-header-margin:35.4pt;
-	mso-footer-margin:35.4pt;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-  </style><!--[if gte mso 10]>
-<style>
- /* Style Definitions */ 
- table.MsoNormalTable
-	{mso-style-name:"Vanlig tabell";
-	mso-tstyle-rowband-size:0;
-	mso-tstyle-colband-size:0;
-	mso-style-noshow:yes;
-	mso-style-parent:"";
-	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
-	mso-para-margin:0cm;
-	mso-para-margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-</style>
-<![endif]-->
-  <div class="Section1">
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;">Hi,<o:p></o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;"><o:p>&nbsp;</o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I&#8217;ve asked
-this
-question before and got a few replies, nothing that made it work,
-though.<o:p></o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I am behind
-a <span class="SpellE">nat</span>-firewall, and I want to be able to
-host a warcraft3
-game (this works), and have other clients on my internal network join
-my game. Right
-now they will see the game, but can&#8217;t join it (which is understandable).<o:p></o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I&#8217;ve tried a
-few <span class="SpellE">starcraft</span>-scripts, without much luck<span
- class="GramE">..</span><o:p></o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB">I&#8217;m using <span
- class="SpellE">iptables</span>. <span class="GramE">Any ideas?</span><o:p></o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB">Thanks,<o:p></o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
-  <p class="MsoNormal"><font face="Arial" size="2"><span
- style="font-size: 10pt; font-family: Arial;" lang="EN-GB"><span
- style="">&nbsp;</span>- Thomas<o:p></o:p></span></font></p>
-  <p class="MsoNormal"><font face="Times New Roman" size="3"><span
- style="font-size: 12pt;" lang="EN-GB"><o:p>&nbsp;</o:p></span></font></p>
-  </div>
-</blockquote>
-</body>
-</html>
+IPTABLES=/sbin/iptables
 
---------------010409010901060605030303--
+EXTIF="eth1"
+INTIF="eth0"
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -N ACCT
+$IPTABLES -F ACCT
+$IPTABLES -N ALLOW
+$IPTABLES -P ALLOW DROP
+$IPTABLES -F ALLOW
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -j ACCT
+$IPTABLES -I FORWARD -d 202.129.z.y -j ACCEPT
+$IPTABLES -A FORWARD -s 203.220.a.0/22 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.220.b.0/24 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.221.c.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.220.d.0/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+$IPTABLES -A FORWARD -s 203.220.e.128/25 -d 0.0.0.0/0 -o $EXTIF -j ALLOW
+
+When a student logs on this instruction is given:
+
+/sbin/iptables -A ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
+/sbin/iptables -A ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
+
+This works well.
+
+When a student logs off these instructions are given:
+
+/sbin/iptables -D ALLOW -s $IP/32 -d 0.0.0.0/0 -o $EXTIF -j ACCEPT
+/sbin/iptables -D ACCT -s 0.0.0.0/0 -d $IP/32 -i $EXTIF
+
+Now this works fairly well. Less than 1% of the time it fails to remove
+the entry from the ALLOW chain and very rearly it fails to remove from
+the ACCT chain.
+
+Where can I look to find this error. Though rare the 1% ends up being a
+significant number given the load is high.
+
+Also msn messagenger packets do not seam to be counted by the iptables
+chain?? This is an observation from the help desk as students are
+complaining they are being logged off for inactivity and they are using
+messanger. When I hand check packets using iptables there appears to be
+no packet count. Whe they do a download there is.
+
+I'm not an iptables guru so hints and or suggestions appreciated.
+
+thanks
+
+Ashley
+
+
+
+
 
 
