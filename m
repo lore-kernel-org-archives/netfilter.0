@@ -1,12 +1,10 @@
 From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: "-o" specifier in DNAT definition?
-Date: Sat, 19 Apr 2003 13:39:41 -0400 (EDT)
+Subject: [OT?] iptables <-> shorewall equivalence and zones
+Date: Sat, 19 Apr 2003 13:49:49 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304191337390.28238-100000@dell>
-References: <1050772769.21700.8.camel@alpha.newkirk.us>
+Message-ID: <Pine.LNX.4.44.0304191340000.28238-100000@dell>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1050772769.21700.8.camel@alpha.newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +16,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Joel Newkirk <netfilter@newkirk.us>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
-On 19 Apr 2003, Joel Newkirk wrote:
 
-> On Sat, 2003-04-19 at 07:54, Robert P. J. Day wrote:
-> >   in a book i'm reading discussing (among other things),
-> > setting up DNAT, there is a sample rule:
-> > 
-> >   # iptables -t nat -A PREROUTING -i eth0 -o eth1
-> > 	-d <internal server IP address>
-> > 	-j DNAT --to-destination 192.168.0.1
-> > 
-> > the question: how can the explicit specification of the
-> > "-o" interface affect this?
-> >   
-> >   after all, it's quite possible that the interface that
-> > would normally be chosen to forward to the internal
-> > server would not be the one listed with "-o".  (perhaps
-> > the admin made a mistake.)
-> > 
-> >   if there is an obvious conflict here, what happens?
-> > does this DNAT just go unsatisfied?
-> 
-> 
-> Everything before "-j" is matching, the "-j" tells it what you want done
-> if the packet matches.  So the "-o" is simply testing which interface
-> the packet is targetted to go out.  
-> 
-> The problem here is that the "-o" match isn't valid in PREROUTING, since
-> (as the name implies) it takes place before the routing decision, so the
-> destination (obviously since this is where we can DNAT) and therefore
-> the outbound interface are still unknown.
-> 
-> So there IS a conflict here, between "-o" and PREROUTING in a sense, and
-> the result will be that the rule won't even be created.  If you try to
-> enter this rule manually you will be informed "Can't use -o with
-> PREROUTING".
+  perhaps more a shorewall firewall question than strictly iptables,
+but i'll give this a shot.
 
-yup, that makes sense.  it's getting tiring perusing books that
-sell themselves as howto-iptables-firewall books that have these
-kinds of errors.  argh.
+  i was curious about using shorewall to set up my iptables rules
+since it seemed to have a fairly direct equivalence to the basic
+iptables rules, and wouldn't require a lot of translation.
+
+  from what i see, the shorewall package is based on defining
+what it calls "zones", and you get to set policies and rules
+based on the traffic that's allowed between one zone and another.
+so far, that maps to iptables nicely.
+
+  however, it *appears* (and i stress "appears") that zones
+are defined as being what lives beyond an interface, and you can't
+get more detailed than that.
+
+  in a single host case, there would be two zones -- out there
+("net"), and "fw", the host itself (the host always being considered
+the "fw" zone).  but this doesn't seem to be sufficient for what
+i'm trying to do.
+
+  currently, i have a single RH 9 box, on an in-house LAN.
+the LAN connects thru a linksys hub to the outside world.
+so, from my perspective, i'd like to think i have the following
+zones:
+
+  fw)	my RH 9 box itself
+  lan)	the internal in-house LAN (192.168.1.x)
+  hub)  the linksys hub itself
+  net)  the internet out there in the big bad world
+
+certainly, with straight iptables rules, i can define rules
+to accept or reject traffic to and from these entities.  but i don't 
+see how shorewall will let me define zones that aren't immediately
+adjacent to this host (that is, that don't map directly to an
+interface).
+
+  if that's not possible, then i might as well stick with
+straight iptables rules.
+
+  thoughts?
 
 rday
 
