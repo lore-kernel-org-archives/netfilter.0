@@ -1,11 +1,9 @@
-From: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
-Subject: Re: SSH request comes in as DNS?
-Date: Mon, 17 Feb 2003 13:01:45 +0900
+From: "SB CH" <chulmin2@hotmail.com>
+Subject: standby port at the bridge firewall ?
+Date: Mon, 17 Feb 2003 04:31:30 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E505EA9.6050200@mega-bucks.co.jp>
-References: <3E5055FF.4090808@mega-bucks.co.jp>
+Message-ID: <F93GsRbHozNNrUIY7Hp0001b6f5@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,33 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="euc-kr"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
-In case it help anyone in diagnosing my problem, I found that if I had 
-the following two rules my problem goes away:
-
-$IPT -A INPUT -p tcp --sport 53 -j ACCEPT
-$IPT -A INPUT -p udp --sport 53 -j ACCEPT
-
-But I still don't understand why these packets with a SPT of 53 are 
-coming from the firewall to my machine when I try and establish an SSH 
-connection.
-
-Seems like the Firewall (which is also a DNS server) is repling to a DNS 
-query from SERVER1?? Why would SERVER1 be doing DNS queries?
-
-It's true that SSH does do a DNS query when a machine tries to connect 
-but even if this fails SSH just issues a warning. And Both SERVER1 and 
-SERVER2 are configured the same way in regards to SSH so I can't see 
-that SSH is actually the problem.
-
-Hope the info is useful in helping me debug this problem ...
-
-Thanks,
-
-Jc
-
-
-
-
+CkhlbGxvLCBhbGwuCgpJIHdvdWxkIGxpa2UgdG8gc2V0IHN0YW5kYnkgc3dpdGNoIGxpa2UgdGhp
+cy4KU28gaWYgYSBtYWluIHN3aXRjaCBpcyBkb3duLCBJIHdvdWxkIGxpa2UgdG8gc2VydmljZSB3
+aXRoIHN0YW5kYnkgc3dpdGNoIAppbnN0ZWFkIG9mIG1haW4gc3dpdGNoLgoodHJhZmZpYyB1c2lu
+ZyBvbmx5IG1haW4gc3dpdGNoIGFuZCBqdXN0IGNvbm5lY3RzIHdpdGggc3RhbmRieSBzd2l0Y2gg
+YXQgCm5vcm1hbCBzdGF0ZSkKYW5kIEkgY29ubmVjdGVkIG1haW4gc3dpdGNoIHdpdGggZXRoMCwg
+U3ViIHN3aXRjaCB3aXRoIGV0aDEsCmFuZCBhZGRpdGlvbmFsbHkgY29ubmVjdHMgc3RhbmRieSBz
+d2l0Y2ggd2l0aCBldGgyIGF0IHRoZSBicmlkZ2UgZmlyZXdhbGwuCgoKICAgICAgIE1haW4gU3dp
+dGNoICAgICAgICAgICAgICAgU3RhbmRieSBTd2l0Y2ggCiAgICAgICAgICAgIHwgICAgICAgICAg
+ICAgICAgICAgICAgICAgfAogICAgICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgIHwK
+ICAgICAgICAgICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICAgICAgICAgICAgICAg
+ICAgICAgIHwKICAgICAgICAgICAgICAgICAgIEJyaWRnZSBGaXJld2FsbAogIAogICAgICAgICAg
+ICAgICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAgIFN1YiBTd2l0Y2ggCgoKVGhlbiwg
+SG93IGNhbiBJIGNoYW5nZSB0aGlzIGJyY3RsIHNjcmlwdD8KCiMjIyBwcmUgY29uZmlndXJhdGlv
+biBqdXN0IHVzaW5nIGV0aDAgYW5kIGV0aDEKYnJjdGwgYWRkYnIgYnIwCmJyY3RsIHN0cCBicjAg
+b2ZmCmJyY3RsIGFkZGlmIGJyMCBldGgwCmJyY3RsIGFkZGlmIGJyMCBldGgxCmlmY29uZmlnIGV0
+aDAgZG93bgppZmNvbmZpZyBldGgxIGRvd24KaWZjb25maWcgZXRoMCAwLjAuMC4wIHByb21pc2Mg
+dXAKaWZjb25maWcgZXRoMSAwLjAuMC4wIHByb21pc2MgdXAKaWZjb25maWcgYnIwIDIxMS4xLjEu
+MSBwcm9taXNjIHVwCnJvdXRlIGFkZCBkZWZhdWx0IGd3IDIxMS4xLjEuMQoKc2hvdWxkIGRvIEkg
+Y2hhbmdlIGxpa2UgdGhpcyB0byB1cyBzdGFuZGJ5IHN3aXRjaD8KV2lsbCBpdCB3b3JrcyB3ZWxs
+Pwpkb2Vzbid0IGRvIGxvb3A/CgojIyBtb2RpZmllZCBjb25maWd1cmF0aW9uIHVzaW5nIGV0aDAs
+IGV0aDEgYW5kIGV0aDIuCiAKYnJjdGwgYWRkYnIgYnIwCmJyY3RsIHN0cCBicjAgb2ZmCmJyY3Rs
+IGFkZGlmIGJyMCBldGgwCmJyY3RsIGFkZGlmIGJyMCBldGgxCmJyY3RsIGFkZGlmIGJyMCBldGgy
+CmlmY29uZmlnIGV0aDAgZG93bgppZmNvbmZpZyBldGgxIGRvd24KaWZjb25maWcgZXRoMiBkb3du
+CmlmY29uZmlnIGV0aDAgMC4wLjAuMCBwcm9taXNjIHVwCmlmY29uZmlnIGV0aDEgMC4wLjAuMCBw
+cm9taXNjIHVwCmlmY29uZmlnIGV0aDIgMC4wLjAuMCBwcm9taXNjIHVwCmlmY29uZmlnIGJyMCAy
+MTEuMS4xLjEgcHJvbWlzYyB1cApyb3V0ZSBhZGQgZGVmYXVsdCBndyAyMTEuMS4xLjEKClNvIHNv
+cnJ5IG15IHBvb3IgZW5nbGlzaC4KCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCrvzxa3H0SC4uLOysPogtfu25sfRILD4
+tb/DvCC7/ciwLi4uICDB9rHdIE1TTiDEv7nCtM/GvL+hvK0gvcPA28fPvLy/5CEgICAKaHR0cDov
+L2dyb3Vwcy5tc24uY29tLz9wZ21hcmtldD1rby1rciAgCgoK
