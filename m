@@ -1,12 +1,13 @@
-From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
 Subject: Re: How to make a computer invisible
-Date: Sun, 30 Nov 2003 16:32:29 -0300
+Date: Sun, 30 Nov 2003 13:31:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006301c3b778$b22259a0$8b00000a@casa>
+Message-ID: <1070217100.2884.9.camel@grendel>
 References: <20031130181240.GD6930@zeus.tpfm.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031130181240.GD6930@zeus.tpfm.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Preissler <tomjohn@gmx.de>, netfilter-user Mailinglist <netfilter@lists.netfilter.org>
+To: Thomas Preissler <tomjohn@gmx.de>
+Cc: netfilter-user Mailinglist <netfilter@lists.netfilter.org>
 
-
-    AFAIK, iptables can use some 'layer 2' information such as MAC Address
-for doing some filtering in some tables, but it CANT be used for filtering
-those 'layer 2' packets. That means iptables CANNOT modify ARP/RARP
-behavior.
-
-    Sincerily,
-    Leonardo Rodrigues
-
------ Original Message ----- 
-From: "Thomas Preissler" <tomjohn@gmx.de>
-To: "netfilter-user Mailinglist" <netfilter@lists.netfilter.org>
-Sent: Sunday, November 30, 2003 3:12 PM
-Subject: How to make a computer invisible
-
-
-> Hello folks,
+On Sun, 2003-11-30 at 13:12, Thomas Preissler wrote:
 >
 > how do I really make a computer totally invisibly as it would be
 > when it does not exist?
->
+
+Leave the power switch in the "off" position. ;-)
+
 > It is clear, that the simplest solution is to DROP all incoming
-> packets, but what's about (R)ARP packets? Can they be blocked anyway?
->
+> packets,
+
+Actually, dropping packets is a clear indication that you do in fact
+have a firewall protecting one or more systems. Its the only condition
+which will cause ICMP error packets to not be returned consistently. 
+
+You would be better off rejecting with host unreachables. then your
+firewall looks like a simple router, and the host in question looks like
+it is powered down.
+
+HTH,
+C
+
 
 
