@@ -1,11 +1,13 @@
-From: Simone Sestini <simone.sestini@eutelia.it>
-Subject: NAT Box
-Date: Wed, 16 Jun 2004 15:07:04 +0200
+From: Akao <technique@akao.fr>
+Subject: Relay to DNS Server ?
+Date: Wed, 16 Jun 2004 15:31:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40D045F8.9070101@eutelia.it>
+Message-ID: <40D04BB9.2030907@akao.fr>
+References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108>    <1087319969.3576.12.camel@anduril.intranet.cartel-securite.net> <1724.64.2.245.108.1087321922.squirrel@64.2.245.108>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1724.64.2.245.108.1087321922.squirrel@64.2.245.108>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +20,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all..
+Hello
+I have set up a netfilter box as a gateway.
+The network lookis like this:
 
-I'm developing a nat box for some special Internet Value Added Services.
-I have a lot of NAS boxes that receives calls and then the default 
-router for all is the nat box.
-The box has 2 ethernet interfaces, one public for internet acces and one 
-over my intranet lan.
-I have just done a lot of special configuration but right now i'm in 
-front of a problem..
-Normaly a /23 subnet is always natted with a public ip address.
-Now.. i need to resolve a problem..
+subnet ---- eth1 - Netfilter box - eth0 --- modem/router --- FAI
 
-A special /23 need to browse only on some specific destination.. but if 
-one client with the ip into the /23 try to
-browse out of the range of the ip permitted i need to redirect the 
-request automatically to 1 or more specific
-ip address.
+The forwarding/masquerading is working fine, subnet boxes can ping 
+external ip like.
 
+But they can' t resolve domain names, because there isn' t any DNS 
+server in the subnet.
+I d like to use DNS Servers of the ISP, or another DNS Server I would 
+set up OUTSIDE the subnet.
+The netfilter box has the ISP DNS servers in resolv.conf and its gateway 
+is the router.It  resolves domains names without problems.
 
-This is the example that is working correct without the automatically 
-redirection.
-The 10.30.14.0 /23 can browse some public ip addresses but if it try to 
-go out of the range the REJECT rules
-block the packet and the final client will not browse..
+Is it possible to use netfilter rules to "relay" clients DNS requests ?
+Sorry but I m new to netfilter.
 
-/usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.30.14.0/23 -o eth0 
--j SNAT --to PUBLIC_IP_FOR_NAT
+Thanks in advance.
+Regards
 
-/usr/local/sbin/iptables -N PERSONAL_RULES
-/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
-First_Public_IP
-/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
-Second_Public_IP
-/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
-Third_Public_IP
-/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
-Other_Public_IP
-/usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
-Other_Public_IP
-/usr/local/sbin/iptables -A PERSONAL_RULES -j REJECT -s 10.30.14.0/23 -d 0/0
-
-/usr/local/sbin/iptables -A FORWARD -s 10.30.14.0/23 -p tcp --dport 80 
--j PERSONAL_RULES
-
-Now i have to do something that permit me to add a new feature..
-I have to remove the REJECT rules and have to find the way to redirect 
-the request to a specific ip.. maybe with a DNAT ??
-
-Any idea ? all is appreciated..
-
-Best Regards.
+Axel
 
