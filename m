@@ -1,12 +1,14 @@
-From: "david brant" <dbrant@medexpert.com>
-Subject: redirect port 80 to another port > 1024 on same machine
-Date: Mon, 18 Aug 2003 15:37:51 -0700
+From: Frank Smith <fsmith@hoovers.com>
+Subject: Re: Messages to console
+Date: Mon, 18 Aug 2003 17:45:45 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005901c365d9$5c127d10$6564a8c0@redwood.medexpert.com>
+Message-ID: <83470000.1061246744@hoovers-59.hoovers.com>
+References: <12CC60849165134FB7DF8570B621F4D558B079@mailxserver.euler.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0056_01C3659E.AF5669E0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <12CC60849165134FB7DF8570B621F4D558B079@mailxserver.euler.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +18,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Len L." <len@euler.com>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+--On Monday, August 18, 2003 17:29:13 -0500 "Len L." <len@euler.com> wrote:
 
-------=_NextPart_000_0056_01C3659E.AF5669E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> Hey guys,
+>  
+> Not a killer, but I get all the iptable log messages to /dev/console.  I
+> can not find where to control this.  I checked /etc/syslog.conf, but
+> kernal messages was turned off (in fact if I turn kernal logging on I
+> get duplicate messages to the console).  I also did man on iptables, but
+> I do not see any reference to logging to /dev/console 
+>  
+> Can anyone point me in the right direction?
 
-I need to forward tcp port 80 to tcp port 8080 on the same box.  The =
-machine does not function as a NAT box and has only a single interface.  =
-Has anyone come across a rule that might help me out?=20
+Look at the klogd '-c' option and add it to whatever starts klogd
+on your system (/etc/init.d/klod on Debian). Adjust the number as
+appropriate for what you don't want logged to the console.
 
+Frank
 
-------=_NextPart_000_0056_01C3659E.AF5669E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial><FONT face=3D"Courier New"><FONT =
-size=3D2>I&nbsp;need to=20
-forward tcp port&nbsp;80 to tcp port&nbsp;8080 on the same box.&nbsp; =
-The=20
-machine does not function as a NAT box and has only a single =
-interface.&nbsp;=20
-Has anyone come across a rule that might help me=20
-out?</FONT>&nbsp;<BR></FONT><BR></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0056_01C3659E.AF5669E0--
+-- 
+Frank Smith                                      fsmith@hoovers.com
+Systems Administrator                           Voice: 512-374-4673
+Hoover's Online                                   Fax: 512-374-4501
 
 
