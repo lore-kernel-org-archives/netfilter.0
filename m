@@ -1,14 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Static compile issues
-Date: Thu, 29 May 2003 03:48:28 +0200
+From: David T-G <davidtg-netfilter@justpickone.org>
+Subject: where is libipt_match.so?
+Date: Wed, 28 May 2003 23:43:44 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030529034828.0cb748aa.arnt@c2i.net>
-References: <1054158893.21086.62.camel@dejawu>
-	<Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>
+Message-ID: <20030529034344.GF33081@justpickone.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="O8XZ+2Hy8Kj8wLPZ"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-On Wed, 28 May 2003 17:11:42 -0400 (EDT), 
-Cory Visi <merlin@phear.lwz.org> wrote in message 
-<Pine.LNX.4.30.0305281709290.30704-100000@phear.lwz.org>:
-
-> When I compile the kernel statically and enable IP Tables support,
-> ipchains compatibilty is becomes no longer available. I have the
-> Invalid Argument problem with the static kernel.
-> 
-> When I compile the kernel with module support, I do _not_ enable
-> the ipchains compatibility module.
-> 
-> Should I try enabling this? Obviously, I cannot insert it when the IP
-> tables module is loaded. Also, this doesn't help my situation with the
-> static kernel.
-
-.._no_ and no.  Ipchains would require the removal of iptables and that 
-on top of all the good reasons not to, makes it off-topic here.  ;-)
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+To: NetFilter Users' List <netfilter@lists.netfilter.org>
 
 
+--O8XZ+2Hy8Kj8wLPZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi again, all --
+
+I have finally gotten my client to rebuild his SCO UnitedLinux machine
+from scratch to give me a guaranteed-clean base and I tried running my
+iptables setup script.  Everything (NIC discovery, init script creation,
+etcetc) appears to have gone well but iptables has a problem:
+
+  ...
+  iptables -t filter -A INPUT -i eth0 -m match NEW,RELATED,ESTABLISHED -j A=
+CCEPT
+  iptables v1.2.7a: Couldn't load match `match':/usr/lib/iptables/libipt_ma=
+tch.so: cannot open shared object file: No such file or directory
+
+This worked before, but I had also mucked around with the SuSEfirewall2
+scripts before; sure enough, it isn't there now.  Where does that file
+live?  Do I need another RPM, perhaps?
+
+
+TIA & HAND
+
+:-D
+--=20
+David T-G                      * There is too much animal courage in=20
+(play) davidtg@justpickone.org * society and not sufficient moral courage.
+(work) davidtgwork@justpickone.org  -- Mary Baker Eddy, "Science and Health"
+http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl Npg!
+
+
+--O8XZ+2Hy8Kj8wLPZ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (FreeBSD)
+
+iD8DBQE+1YHwGb7uCXufRwARAmwBAJ9ee2dt8CMGwDLjb+L1kUsRdktTmACeLZaz
+uNY0c84bJwPoNy4wv1NrBKw=
+=G33C
+-----END PGP SIGNATURE-----
+
+--O8XZ+2Hy8Kj8wLPZ--
 
