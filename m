@@ -1,9 +1,10 @@
-From: "Hanz F." <hanz852@yahoo.com>
-Subject: IRC, ICQ ,......
-Date: Fri, 27 Sep 2002 00:25:05 -0700 (PDT)
+From: "Krishna" <Krishna_shekhar@vsnl.net>
+Subject: Redirect Rule for PPP users!!
+Date: Fri, 27 Sep 2002 14:07:36 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020927072505.23993.qmail@web40016.mail.yahoo.com>
+Message-ID: <001501c26601$28d45640$2900a8c0@spectranet.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,49 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello all,
-Anyone could help me plz ?
-I am running a server with the following iptables
-rules in order to prevent anyone to have access to the
-internet if not allowed :
+Hi,
+      I want to redirect packet from the ppp interface. I made rules in the
+auth-up script
 
-iptables -t nat -P POSTROUTING DROP
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to
-192.168.3.133
+     /sbin/iptables -A INPUT -p udp -i $1 -d 0.0.0.0/0 --dport 53 -j
+REDIRECT --to-ports 3128
+     /sbin/iptables -A INPUT -p tcp -i $1 -d 0.0.0.0/0 --dport 53 -j
+REDIRECT --to-ports 3128
+     /sbin/iptables -A INPUT -p tcp -i $1 -d 0.0.0.0/0 --dport 80 -j
+REDIRECT --to-ports 3128
 
-
-iptbales -P INPUT DROP
-iptbales -P FORWARD DROP
-iptbales -P OUTPUT ACCEPT
-
-iptables -A INPUT -p all -s client -m mac --mac-source
-client's mac -j ACCEPT
-iptables -A FORWARD -p all -s client -m mac
---mac-source client's mac -j ACCEPT
-
-iptables -A INPUT -p all -s 0/0 -j DROP
-iptables -A FORWARD -p all -s 0/0 -j DROP
+But they don't work. Here $1 is the interface through which the ppp users
+are logging.
 
 
+regards
+Krishna
 
-The Problem is that no one can use IRC ,ICQ and many
-other software when the firewall is running. I have
-read that iptables needs modules for these protocoles,
-but didn't find any !
-Is there any solution to maintain the control of
-internet access without stopping any of these
-softwares ?
-thank you
+Krishna Shekhar
+Network Administrator
+Wiplash Wireless
 
-Hanz
-
-
-
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
 
