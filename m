@@ -1,15 +1,15 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Masquerade and NAT
-Date: Thu, 13 Mar 2003 21:49:36 +0000
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: help on DMZ project
+Date: Fri, 14 Mar 2003 00:35:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030313214936.GB19656@miggy.org>
-References: <ABEKJILKOKKGGDJKHKDFEEDGCAAA.patrick@vikus.com>
+Message-ID: <20030314003543.2367553d.arnt@c2i.net>
+References: <20030313114142.2704C1BB2FE@mail.powweb.com>
+	<20030313145842.44367092.arnt@c2i.net>
+	<1047581684.1686.4.camel@runabout.noc.starken.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PmA2V3Z32TCmWXqI"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <ABEKJILKOKKGGDJKHKDFEEDGCAAA.patrick@vikus.com>
+In-Reply-To: <1047581684.1686.4.camel@runabout.noc.starken.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +19,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Patrick Ahler <patrick@vikus.com>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On 13 Mar 2003 12:54:43 -0600, 
+Daniel Wittenberg <daniel-wittenberg@starken.com> top posted, _and_,
+cc'ed, in message<1047581684.1686.4.camel@runabout.noc.starken.com>:
+> 
+> On Thu, 2003-03-13 at 07:58, Arnt Karlsen wrote:
+> > On Thu, 13 Mar 2003 11:41:42 -0000, 
+> > "Chris Partsenidis" <Chris@Firewall.cx> top posted in message 
+> > <20030313114142.2704C1BB2FE@mail.powweb.com>:
+> > > > 
+> > > > ---------- Original Message -------------
+> > > > Subject: help on DMZ project
+> > > > Date: Thu, 13 Mar 2003 17:16:27 +0800
+> > > > From: "louie miranda" <lmiranda@chikka.com>
+> > > > To: <netfilter@lists.samba.org>
+> > > > 
+> > > > 
+> > > > I currently have a project to make a DMZ farm of servers. I
+> > > > actually want to make this firewall
+> > > > be splitted in to 4 or more networks. I'll be trying to host 3
+> > > > different company, I would like to
+> > > > try using Iptables as my main firewall and gateway before the
+> > > > internet.
+> > > > 
+> > > > Could this be done? And which documents should i read? I
+> > > > currently
+> > 
+> > ..piece of cake, several ways:  http://ipcop.org/  needs its 
+> > own box, http://shorewall.net/ does really does too in your 
+> > case, add in http://webmin.com/ to control it too, from a web 
+> > browser, or, you can control both from ssh.  
+> 
+> I personally would avoid ipcop because the last time I checked it was
+> still 2.2 based and was not a stateful firewall.  I can't speak for
 
---PmA2V3Z32TCmWXqI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+..ipcop-0.1.1 thru 1.2.0 are 2.2/ipchains and _not_ stateful, 
+1.3 upwards is 2.4/iptables and stateful, just like shorewall.  
+For production requiring statefulness, you want shorewall, 
+until ipcop-1.3beta1 is found demonstrably stable.  
 
-On Thu, Mar 13, 2003 at 04:20:47PM -0500, Patrick Ahler wrote:
-> Hi,
-> I am hoping to be able to run IP Masquerade and NAT on the same
-> firewall/router. ie 192.168.1.1-61 use NAT to translate their internal IP=
-'s
-> to external IP's (a.b.c.1-61), and have a variety of internal hosts on the
-> same subnet(as the other machines using NAT) using IP masquerading to pass
-> through the firewall.. ie 192.168.1.62-140 use IPMASQUERADE to translate
-> their internal ip's to a.b.c.62
->=20
-> Is this possible? If so how? I've found that in order to use IP MASQUERADE
-> you have to specify a subnet of internal ip's that will use IP MASQUERADE,
-> but what if I only want to select specific internal ip's that will use it?
-> Help? Thanks!
+> shorewall, I haven't had a chance to play with it yet (we wrote our
+> own firewall code + web interface so I haven't kept up too much on
+> some of these other projects).
 
-   Um, why do MASQ at all ?  It's only really of use when your external
-IP is dynamic.  If you've a static IP to use for the purpose just use
-SNAT.
+..ah, time to back off on the panting and _take_ that time.  ;-) 
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+> Dan
+> 
 
---PmA2V3Z32TCmWXqI
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj5w/PAACgkQzbc+I5XfxKfm3wCfctkYAHWcdidLQ2YSowTUtbZr
-lC8AoIxvg7+3H6TUa07Q0KCONumXUfWr
-=hMc4
------END PGP SIGNATURE-----
-
---PmA2V3Z32TCmWXqI--
 
