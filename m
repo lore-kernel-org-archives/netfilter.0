@@ -1,13 +1,12 @@
-From: "Jerry M. Howell II" <jmhowell@jmhowell.com>
-Subject: Re: Help with iptables
-Date: Wed, 4 Jun 2003 22:41:31 -0600
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: MSN Voice chat with Iptables
+Date: Thu, 5 Jun 2003 15:02:42 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030604224131.D4450@jmhowell.com>
-References: <sedc84e5.061@smtp.nu.ac.za>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DD1@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <sedc84e5.061@smtp.nu.ac.za>; from quazit@nu.ac.za on Tue, Jun 03, 2003 at 11:22:08AM +0200
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +17,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
 
-On Tue, Jun 03, 2003 at 11:22:08AM +0200, Tahmid Quazi wrote:
-> Hi
->  
-> I am trying to use the iptables command on an iPaq running Familiar. The kernel version is 2.4.18-rmk3-hh6. 
-> The kernel does not have netfilter configured so for any functionality I need, I have to install a module.
->  
-> I have installed the following modules:
-> iptable_filter
-> ip_tables
->  
-> successfully. ( i can see them when i type /proc/modules)
->  
-> But when i try a simple iptables command (i got this from the "howto" document)
-> / # iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
->  
-> I get the following output:
-> 
-> iptables: No such file or directory
->  
-> Please could someone tell me what i am doing wrong or missing.
->  
-> Many thanks in advance for your help!
->  
-Try something like
+I have successfully used NetMeeting between 2 users both behind a redhat =
+firewall.. We had gotten video,voice and paint all working working fine =
+using the H323 patch.
 
-/sbin/iptables /usr/sbin/iptables or usr/local/sbin/iptables
+The only thing we noticed as a glitch is that he could not connect to me =
+unless I hosted a Meeting which only then he could connect to. =
+Connecting to other non firewalled users was a piece of cake. It could =
+not be just a simple listening host but had to be in a meeting which I =
+found weird..
+Maybe it was just my luck but at least I got them both working as we =
+both were behind iptables machines..
 
-it's probably not in your path
--- 
-Jerry M. Howell II
+Hope this boosts your confidence in iptables ;)
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: hare ram [mailto:hareram@sol.net.in]
+Sent: Thursday, June 05, 2003 1:39 PM
+To: netfilter@lists.samba.org
+Subject: Re: MSN Voice chat with Iptables
+
+
+Hi  all
+Does any one installed
+
+Upnp Successfully in REDHAT
+i been doing this practice more than 30 days now
+but no luck, any expert can guide me how can i process
+even i have posted in to linux-igd group, looks like the news group =
+dead, no
+responce also for the same
+
+any help will be great
+
+hare
+
+
 
