@@ -1,13 +1,14 @@
-From: "Dharmendra T." <dharmu@nsecure.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Routing between two firewalls
-Date: 23 Jun 2004 15:34:05 +0530
+Date: Wed, 23 Jun 2004 11:00:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087985129.7945.64.camel@dharmu.nsecure.net>
-References: <40D94B3D.8050308@openscroll.org>
+Message-ID: <200406231100.55116.Antony@Soft-Solutions.co.uk>
+References: <40D94B3D.8050308@openscroll.org> <1087985129.7945.64.camel@dharmu.nsecure.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D94B3D.8050308@openscroll.org>
+In-Reply-To: <1087985129.7945.64.camel@dharmu.nsecure.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sudhakar Chandra <thaths@openscroll.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-06-23 at 14:49, Sudhakar Chandra wrote:
-> Hi,
-> 
-> I am having some trouble routing some packets between two dual-homed 
-> machines both running iptables.
-> 
-> I have a setup that I assume should be pretty common.  I have a LAN 
-> (192.168.100.0/24) which has two gateways / firewalls on it.  Both the 
-> gateways are dual-homed.
-> 
-> My setup is something like so:
-> 
-> LAN ---> (192.168.100.1) Gateway 1 (isp1.global.ip) --->
-> LAN ---> (192.168.100.2) Gateway 2 (isp2.global.ip) --->
-> 
-> Gateway 1 routes through ISP1 and Gateway 2 through ISP2.  Some machines 
-> in my LAN have .1 set as the gateway and some have .2 as the gateway.
-> 
-> I have my mail server connected to one of the global IPs that ISP2 has 
-> given me.  Or in other words, mail server is on the same subnet as the 
-> external interface of Gateway 2.
-> 
-> As things are today, packets originating on machines having Gateway 1 as 
-> their default gateway traverse out through ISP1, the global internet, 
-> back through ISP2 into my global ISP2 subnet.  This is a waste of 
-> bandwidth as well as slow.
-> 
-> I want to set up a rule on Gateway 1 such that all packets destined to 
-> my mail server (actually, my entire ISP2 subnet) should be sent to 
-> Gateway 2 for routing.
-> 
-> I tried adding a static route on Gateway 1 to route all packets destined 
-> to the mail server to Gateway 2 like so:
-> 
-> route add -host mail.server.ip gw 192.168.100.2
-> 
-> After I set this up, I am able to traceroute to mail server (packets 
-> flow through Gateway 2).  But when I try connecting to port 25, nothing 
-> happens.
-> 
-> 1. What is the fastest and easiest way to do what I want?
-> 2. Should I be doing DNAT?
-> 3. Should I be doing something using iptables AND routing?
-> 
-> Your help would be much appreciated.
-> 
-> Thaths
-> -- 
->    "Trying is the first step towards failure." -- Homer J. Simpson
-> Slacker Without Borders                        http://openscroll.org/
-> Key fingerprint = 8A 84 2E 67 10 9A 64 03  24 38 B6 AB 1B 6E 8C E4
-> 
+On Wednesday 23 June 2004 11:04 am, Dharmendra T. wrote:
 
-Does both the LANs are in the same physical network? Could you send us
-the network diagram? 
+> On Wed, 2004-06-23 at 14:49, Sudhakar Chandra wrote:
+> >
+> > My setup is something like so:
+> >
+> > LAN ---> (192.168.100.1) Gateway 1 (isp1.global.ip) --->
+> > LAN ---> (192.168.100.2) Gateway 2 (isp2.global.ip) --->
+> >
+> > Gateway 1 routes through ISP1 and Gateway 2 through ISP2.  Some machines
+> > in my LAN have .1 set as the gateway and some have .2 as the gateway.
+
+> Does both the LANs are in the same physical network? Could you send us
+> the network diagram?
+
+There is only one LAN.   The above information seems like a perfectly good 
+network diagram, I think.
+
+Antony.
+
 -- 
-Dharmendra T.
-Linux Security and Admin,
-www.nsecure.net
+GIT/E d- s+:--(-) a+ C++++$(---) UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) 
+o? w--(---) O !M V+++(--) !PS !PE Y+ PGP+> t- !tv@ b+++ DI++ D--- e+++(*) h++ 
+5? !X- !R K--? G-
 
-This message is intended for the addressee only. It may contain
-privileged or confidential information. If you have received
- this message in error, please notify the sender and destroy the message
-immediately. Unauthorised use or reproduction of 
-this message is strictly prohibited.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
