@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: netfilter and IIS5
-Date: Mon, 7 Oct 2002 20:48:47 +0100
+From: "Keith R. Weiner" <keith@valiant.com>
+Subject: RE: netfilter and IIS5
+Date: Mon, 7 Oct 2002 15:46:30 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021007194849.DSNA7631.mta03-svc.ntlworld.com@there>
-References: <AF435BB1224A4C4888B58C546728EE322FF3@s2.valiant.com>
+Message-ID: <AF435BB1224A4C4888B58C546728EE322FF4@s2.valiant.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <AF435BB1224A4C4888B58C546728EE322FF3@s2.valiant.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,45 +19,80 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 07 October 2002 8:41 pm, Keith R. Weiner wrote:
+As a matter of fact I think that you have the answer.
 
-> I actually got it working.  However, I remember having problems in the past
-> with IIS running behind an netfilter firewall.  The problem was when I
-> changed the external address to forward to the same internal address.
+I remember having problems in the past with IIS running behind an =
+netfilter firewall.  The problem was when I changed the external address =
+to forward to the same internal address.  Even rebooting both the linux =
+and the windows servers didn't help.  Microsoft had a bulletin on the =
+subject of IIS having problems behind a natted firewall, but offered no =
+solution.
 
-What do you mean by that ?
+It magically started working again.
+I will focus on IIS and see the logs.  I will try your solutions for the =
+future should this occur again.
 
-> Even rebooting both the linux and the windows servers didn't help.
-> Microsoft had a bulletin on the subject of IIS having problems behind a
-> natted firewall, but offered no solution.
+Once again, your help was greatly appreciated.
 
-When you say you are running IIS, what network services are you talking 
-about?   Is this HTTP, FTP, SMB file sharing, or what ?
+-----Original Message-----
+From: Darrell Dieringer [mailto:netfilter@darrelldieringer.com]
+Sent: Monday, October 07, 2002 3:42 PM
+To: Keith R. Weiner; netfilter@lists.netfilter.org
+Subject: RE: netfilter and IIS5
 
-Antony.
+
+Awhile ago I was dealing with what amounted to be an IIS issue.
+
+First, are you doing any NAT?  Specifically, are you NAT-ing any
+ports?
+
+In my network setup (cable ISP, single real IP address, LAN plus
+separate DMZ - all NAT-ed to the Internet with some services being
+forwared to the DMZ), where my ISP blocked incomming port 80 requests
+somewhere upstream from me, I had the following problem:
+
+If I forwarded w.x.y.z:3080 to dmz.a:80 (where IIS was listening), the
+first thing IIS did was issue a redirect.  Check your IIS logs for
+HTTP code 302 (IIRC) - redirect - that tells the requesting client
+"Reach me on port 80 instead".  Since my port 80 was blocked upstream
+by the ISP, the new request from the client never got to me.
+
+But it worked fine inside my LAN since I didn't block port 80 to the
+DMZ.
+
+Since at the time I was a newbie to netfilter, I naturally assumed it
+was a problem with my rules / setup.  Instead, it was a feature of IIS
+(in my case IIS 4), combined with my ISP blocking port 80.
+
+I changed IIS4 to listen on 3080 and changed my NAT to forward
+w.x.y.z:3080 -> dmz.a:3080.  IIS no longer issued the redirect to the
+blocked port, and everything worked fine.
+
+This may not be your situation, but lacking most specifics about your
+network, I'm taking a guess.  Hope it helps.
+
+Darrell
+
 
 > -----Original Message-----
-> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-> Sent: Monday, October 07, 2002 3:14 PM
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
+> Keith R. Weiner
+> Sent: Monday, October 07, 2002 11:21 AM
 > To: netfilter@lists.netfilter.org
-> Subject: Re: netfilter and IIS5
+> Subject: netfilter and IIS5
 >
-> On Monday 07 October 2002 5:21 pm, Keith R. Weiner wrote:
-> > Excuse me if this is a newbie question.
-> >
-> > I am running IIS on Windows 2000 behind the DMZ.  The first linux box is
-> > using the old ipchains.  The second box is using netfilter.  From within
-> > the DMZ, I can access it.  From the outside world, it is not accessible.
-> > Other services are, but not IIS.
 >
-> Tell us your firewall rules and show us your network configuration.
+> Excuse me if this is a newbie question.
 >
-> Antony.
+> I am running IIS on Windows 2000 behind the DMZ.  The first
+> linux box is using the old ipchains.  The second box is
+> using netfilter.  From within the DMZ, I can access it.
+> From the outside world, it is not accessible.  Other
+> services are, but not IIS.
+>
+> Any help would be greatly appreciated.  Thanks.
+>
+>
 
--- 
-
-Success is a lousy teacher.   It seduces smart people into thinking they 
-can't lose.
-
- - William H Gates III
 
