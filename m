@@ -1,13 +1,13 @@
-From: =?iso-8859-1?Q?Gunnar_Fr=F6din?= <gunnar68@gunfro.com>
-Subject: Re: Port forwarding.
-Date: Mon, 28 Jun 2004 15:21:00 +0200
+From: Feizhou <feizhou@linuxmail.org>
+Subject: Re: over a 1,000,000,000 individual ips to block
+Date: Mon, 28 Jun 2004 21:36:25 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c45d12$c159aa50$6600a8c0@simba>
-References: <001301c45cf0$9f7cf710$6600a8c0@simba> <200406281134.37964.Antony@Soft-Solutions.co.uk> <001b01c45d0a$5529b7b0$6600a8c0@simba> <200406281352.20521.Antony@Soft-Solutions.co.uk>
-Reply-To: =?iso-8859-1?Q?Gunnar_Fr=F6din?= <gunnar68@gunfro.com>
+Message-ID: <40E01ED9.6050607@linuxmail.org>
+References: <20040624145732.25300.qmail@team.outblaze.com>    <20040628064501.3bab3f3c@mgalepc.utilitran.com> <42481.194.102.197.244.1088427899.squirrel@www.as.ro>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <42481.194.102.197.244.1088427899.squirrel@www.as.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Alex Sirbu <alex@as.ro>
+Cc: netfilter@lists.netfilter.org
 
-Okey it works now........
-The fault was in question 3.
-the mail server pointed at another router/firewall.
-and the mail server reported the "external" ip# in response to a smtp helo
-command. nice :-) but as I understan it shound't well well.
+Alex Sirbu wrote:
+> For blocking pourposes why don't you use blackholes ?
+> I have a webserver that is permanently under DoS attacks , so I use blackholes.
+> 
+> Routing table can have million of rules or static routes, so is not a problem .
+> 
+> Let's say you want to block ip 11.22.33.44 . just type :
+> 
+> #ip route add blackhole 11.22.33.44/32
+> 
+> and all packets to 11.22.33.44  will be discarded.
 
-Thanks for now Antony.
+All packets to 11.22.33.44 is discarded...but will 11.22.33.44 be able 
+to generate a connection socket?
+> 
+> if you type than :
+> #ip ro | grep blackhole
+> you will see all blackholes defined by you
 
-Regards Gunnar
+How maintainable is such a list compared to iptables which has 
+iptables-save and iptables-restore?
+> 
+> you can blackhole your incomming traffic, but be carefull what you are doing .
+> 
 
-
-
-Okay, three more questions:
-
-1. Is a mail server running on 192.168.0.100 (!) ?   Can you telnet to it on
-the real 192.168.0.100 address from a local client?
-
-2. Are there any access controls on the mail server, restricting the IPs
-from
-which it will accept connections?
-
-3. Does the default route of the mail server point back to the firewall?
-
-Regards,
-
-Antony
-
---
-Software development can be quick, high quality, or low cost.
-
-The customer gets to pick any two out of three.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-
-
+Is there something I am missing here?
 
