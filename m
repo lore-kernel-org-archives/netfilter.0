@@ -1,13 +1,14 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Newbie netfi;ter question
-Date: 20 May 2003 09:48:24 +0200
+Subject: Re: Strange MAC address
+Date: 20 May 2003 08:10:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053416904.2024.83.camel@kermit.spenneberg.de>
-References: <3EBD073B.2050603@verizon.net>
+Message-ID: <1053411035.2024.14.camel@kermit.spenneberg.de>
+References: <Pine.OSF.3.91.1030518215213.1714B-100000@delta.ntu.ac.sg> 
+	<Pine.LNX.4.51.0305192026090.897@dns.toxicfilms.tv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EBD073B.2050603@verizon.net>
+In-Reply-To: <Pine.LNX.4.51.0305192026090.897@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +19,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Ken Kachnowich <ken.kachnowich@verizon.net>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: LI GUOJIE <p1436630@delta.ntu.ac.sg>, Netfilter <netfilter@lists.netfilter.org>
 
-Am Sam, 2003-05-10 um 16.05 schrieb Ken Kachnowich:
+Am Mon, 2003-05-19 um 20.27 schrieb Maciej Soltysiak:
 > Hi,
 >=20
->    I have created a very simple module to use netfilters. I
-> display some info from the sk_buff structures.
-> The protocol field always has an 8 in it.
-If you are reading the ethernet header, the protocol field is supposed
-to be 8!
-
->=20
-> What does the 8 mean? I would expect this to indicate this is
-> an IP packet of some type, but so far I have not found a header
-> or any docs that explains it. Where would be a good place for me
-> to find these things out (please don't say read the kernel source).
-8 means IP (in the ethernet header).
+> > MAC=3D00:a0:cc:28:56:c4:00:09:b6:13:9a:7c:08:00
+> There are 12 octets here, so it is:
+> Source MAC: 00:a0:cc:28:56:c4:00
+> Dest   MAC: 09:b6:13:9a:7c:08:00
+Unfortunately this is not fully correct. The first 12 octetts are the
+MAC addresses. The last two specify the protocol. All in all it is the
+*whole* ethernet header:
+Source MAC 00:a0:cc:28:56:c4
+Dest MAC   00:09:b6:13:9a:7c
+Protocol   08:00  (see RFC894)
 
 Cheers,
 
