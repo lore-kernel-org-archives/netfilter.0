@@ -1,13 +1,15 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: physdev and snat problems
-Date: Fri, 5 Dec 2003 11:51:42 -0500
+From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Subject: Re[2]: Invalid argument in -j SNAT
+Date: Fri, 5 Dec 2003 18:55:29 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031205165142.GA1079@cannon.eng.us.uu.net>
-References: <Pine.LNX.4.58.0312051020210.10989@picea.navaho>
+Message-ID: <190115679638.20031205185529@internetplustravel.ru>
+References: <13211830200.20031202215027@internetplustravel.ru>
+ <20031202201831.EAB3C1710@sterenborg.info>
+Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0312051020210.10989@picea.navaho>
+In-Reply-To: <20031202201831.EAB3C1710@sterenborg.info>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +20,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andy Loukes <andy@navaho.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, Dec 05, 2003 at 10:20:59AM +0000, Andy Loukes wrote:
+Hello Rob,
 
-> > I'm using iptables 1.2.9 and kernel 2.6.0-test11..
+Yes sure
 
-> OK, no-one answered this but
+firewall:# lsmod   Module                  Size  Used by    Not tainted
+ipt_state                608   2  (autoclean)
+ipt_REJECT              3424   1  (autoclean)
+ipt_LOG                 3296   1  (autoclean)
+iptable_filter          1728   1  (autoclean)
+ip_nat_pptp             2304   0  (unused)
+ip_nat_ftp              3488   0  (unused)
+ip_conntrack_pptp       2720   1  [ip_nat_pptp]
+ip_conntrack_proto_gre    3168   0  [ip_nat_pptp ip_conntrack_pptp]
+ip_conntrack_ftp        4192   1  [ip_nat_ftp]
+iptable_nat            20756   2  (autoclean) [ip_nat_pptp ip_nat_ftp]
+ip_conntrack           24852   5  (autoclean) [ipt_state ip_nat_pptp ip_nat_ftp ip_conntrack_pptp ip_conntrack_proto_gre ip_conntrack_ftp iptable_nat]
+ip_tables              13504   7  [ipt_state ipt_REJECT ipt_LOG iptable_filter iptable_nat]
+firewall:#
 
-The one who could answer should have had all the information you had who is
-most likely to be you ;-)
 
-Ramin
 
-> I figured it out (isn't it always the 
-> same!), so I thought I'd reply in case any finds it useful
-> 
-> It was nothing to do with physdev. I installed the iptables 1.2.9 and 
-> appararently it needs to be compiled with the 2.6 kernel for nat to work.
-> A bit odd but there you go...
+
+Tuesday, December 2, 2003, 11:18:29 PM, you wrote:
+
+>> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 
+>> XXX.XXX.XXX.XXX
+>> with an error "iptables: Invalid argument" I suspect, that an argument
+>> is XXX.XXX.XXX.XXX
+
+RS> Did you compile and load the module iptable_nat ?
+
+
+RS> Gr,
+RS> Rob
+
+
+-- 
+Best regards,
+ Oleg                            mailto:savostyanov@internetplustravel.ru
+
 
