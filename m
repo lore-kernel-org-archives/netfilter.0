@@ -1,12 +1,13 @@
-From: "Carlos Fernandez Sanz" <cfs-netfilter@nisupu.com>
-Subject: Re: Strange logs...
-Date: Sun, 11 Jan 2004 14:59:40 +0100
+From: Romain Moyne <aero_climb@yahoo.fr>
+Subject: Re: port translation
+Date: Sun, 11 Jan 2004 15:03:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004f01c3d84b$28d3c5a0$1530a8c0@HUSH>
-References: <002201c3d837$a6c70e90$1530a8c0@HUSH> <200401111251.15250.Antony@Soft-Solutions.co.uk> <004001c3d846$e4e85e90$1530a8c0@HUSH> <200401111340.27973.Antony@Soft-Solutions.co.uk>
+Message-ID: <400157A0.70902@yahoo.fr>
+References: <4001239D.7010904@yahoo.fr> <1073827964.769.16.camel@elendil.intranet.cartel-securite.net> <40015381.1090803@yahoo.fr> <200401111355.44937.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200401111355.44937.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +17,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-> That is just plain wrong.   You should not need a connection to your
-external
-> router in order to ping between two internal machines (assuming you are
-> pinging the real IP addresses, and not relying on a DNS lookup or
-something).
+Antony Stone a =E9crit :
 
-Indeed....
+>On Sunday 11 January 2004 1:45 pm, Romain Moyne wrote:
+>
+> =20
+>
+>>Cedric Blancher a =E9crit :
+>>
+>>   =20
+>>
+>>>	iptables -t nat -A POSTROUTING -s $LAN -d $WB -j SNAT --to $ETH0
+>>>     =20
+>>>
+>>What must I write instead of $LAN and $ETH0 ?
+>>   =20
+>>
+>
+>$LAN is the network range of the machines you might have packets coming fr=
+om=20
+>(note it is the source address in the above rule) and $ETH0 is the IP addr=
+ess=20
+>of the interface on your netfilter machine.
+>
+>Perhaps $LAN=3D192.168.0.0/24 and $ETH0=3D192.168.0.1 for your network?
+>
+>Antony.
+>
+> =20
+>
+Thanks to everybody ! It works fine now ;)
+Thanks you
 
-> Your IRQ/address etc setup looks fine to me, however there is clearly
-> something weird about the network hardware arrangement for you to get the
-> above-described ping behaviour.
-
-Such as the router and the switch being connected for no reason? I was
-obviously on crack when I set that up.... just found out that was the
-problem.... strange that everything would work perfectly for hours then stop
-working for minutes, etc... probably a table filling up in the switch or the
-router or both :-)
-
-Well, I made you waste a few minutes and wasted a nice sunday morning doing
-this instead of being with my girlfriend, on the bright side I got a spare
-network cable, give me your address if you want a slice :-)
-
-Thanks!
+Romain
 
 
