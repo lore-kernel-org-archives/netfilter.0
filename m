@@ -1,10 +1,12 @@
-From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
+From: Steve Mickeler <steve@warning.ca>
 Subject: RE: Using heartbeat for fall over on IPTables Firewall
-Date: Mon, 17 Mar 2003 19:46:22 -0300
+Date: Mon, 17 Mar 2003 17:08:26 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF7B17CCF3.AB54FAD5-ON83256CEC.007C125F@LocalDomain>
+Message-ID: <Pine.LNX.4.53.0303171701120.7151@gypsy>
+References: <3019863CF306D211BA4500A0CC30812DC67938@exchange.cyberwolf.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3019863CF306D211BA4500A0CC30812DC67938@exchange.cyberwolf.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,44 +16,10 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Steve Mickeler <steve@warning.ca>
-Cc: Chip Upsal <cupsal@cyberwolf.com>, netfilter@lists.netfilter.org
-
-
-
-a few more reasons:
-
-3)  faster takeover;
-
-4)  "guaranteed persistence routing path" (from keepalived.org) -  the
-famous  sync_groups
-
-5) interface flags monitoring (through VRRP framework);
-
-6) etc;
-
-7) etc;
-
-IMHO, heartbeat is great for applications servers such as DBs, web servers,
-(using) shared disks,  etc.  For routers, firewalls or load balancers,
-keepalived rulez.
-
-Read the documentation at web site...
-
-Forster
-
-
-
-Steve Mickeler <steve@warning.ca> on 03/17/2003 07:08:26 PM
-
-To:    Chip Upsal <cupsal@cyberwolf.com>
-cc:    Antonio Paulo Salgado Forster/Brazil/IBM@IBMBR,
-       netfilter@lists.netfilter.org
-Subject:    RE: Using heartbeat for fall over on IPTables Firewall
-
-
+To: Chip Upsal <cupsal@cyberwolf.com>
+Cc: Antonio Paulo Salgado Forster <aforster@br.ibm.com>, netfilter@lists.netfilter.org
 
 
 
@@ -114,13 +82,11 @@ On Mon, 17 Mar 2003, Chip Upsal wrote:
 > >
 > > I plan to use RH7.2 on the firewalls.
 > >
-> > I made some attempts at implementing such a solution but i ran into a
-few
+> > I made some attempts at implementing such a solution but i ran into a few
 > > problems.
 > >
 > > I would like suggestions on setup of the heartbeat configuration files.
-> > Pointers on the iptables startup script. and advice on what kernel
-version
+> > Pointers on the iptables startup script. and advice on what kernel version
 > > to use and if any patches need to be applied.
 > >
 > > Thanks in advance,
@@ -139,7 +105,4 @@ version
 > >
 > >
 >
-
-
-
 
