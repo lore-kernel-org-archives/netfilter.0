@@ -1,13 +1,13 @@
-From: John <futurasci@gmail.com>
-Subject: Re: Strange ip_conntrack values
-Date: Sun, 18 Jul 2004 18:19:19 +0200
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: LAN accessing DMZ
+Date: Sun, 18 Jul 2004 12:24:09 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ef83df6b04071809196afdf5aa@mail.gmail.com>
-References: <ef83df6b040718033163810a15@mail.gmail.com> <200407181313.47640.Antony@Soft-Solutions.co.uk> <ef83df6b04071806565f854eb6@mail.gmail.com> <200407181617.52652.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040718162409.GA30107@tranquility.scriptkitchen.com>
+References: <f51b72bc040718062373640612@mail.gmail.com> <200407181610.52327.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407181617.52652.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
+In-Reply-To: <200407181610.52327.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-> Good.   That to me looks like a good TCP sequence, however there is one packet
-> missing - the ACK response from "mydomain" to 24.33.232.227 in response to
-> the FIN-ACK sent by 24.33.232.227 in packet number 1488.   Until this missing
-> response is seen by netfilter, it will regard that connection as being in the
-> TIME_WAIT state, however this will expire after 2 minutes.
+On Sun, Jul 18, 2004 at 04:10:51PM +0100, Antony Stone wrote:
+> You are missing either a "-s" source address or "-i" input interface 
+> specification for the rule allowing access to the DMZ machine, or else you 
 
-yep strange ... for many sequences it's the same thing. the web server
-is under Red Hat 7.2. Could it come from it? This phenomenon with many
-network interrupts appeared one day without any important change from
-us ...
+Which rule are you referring to exactly?
 
-is it possible to exclude the IP that run this sequence ?
+> are missing either a "-d" destination address or "-o" output interface 
+> specification for the rules allowing access from the LAN.
 
-what could I check ? do you think it could be a kind of attack? thanks
-because I'm lost ... don't konw what to do with this problem
+Can you tell me something more specific. I am still unable to figure that
+if I have dropped all connections to outside, DMZ which is outside for the 
+LAN how can connections be allowed for it?
+Do you want me to post the entire firewall file somwhere on net?
+
+Waiting eagerly for the reply.
+With warm regards,
+-Payal
 
