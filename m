@@ -1,13 +1,11 @@
-From: Yuwen Dai <yuwend@gmail.com>
+From: Wenzhuo Zhang <wenzhuo@zhmail.com>
 Subject: Re: internal host can not access hotmail
-Date: Tue, 22 Feb 2005 09:13:32 +0800
-Message-ID: <f7e5481105022117134ebaa1b8@mail.gmail.com>
+Date: Tue, 22 Feb 2005 10:55:27 +0800
+Message-ID: <421A9F1F.5080906@zhmail.com>
 References: <f7e5481105022104583d0d3b19@mail.gmail.com>
-	<004c01c51828$eedd0db0$0700a8c0@sistema2>
-Reply-To: Yuwen Dai <yuwend@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <004c01c51828$eedd0db0$0700a8c0@sistema2>
+In-Reply-To: <f7e5481105022104583d0d3b19@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,15 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Luis Nieto <luismnieto@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, 21 Feb 2005 12:20:52 -0300, Luis Nieto <luismnieto@gmail.com> wrote:
-> Try put the DNS servers in the TCP/IP configurations
- 
-Would you please give me the details?
+Yuwen Dai wrote:
+> Any advice to diagnose this problem?  I once thought maybe something
+> wrong with the FORWARD rules, and tried to log the blocked
+> packages. But there's no log info.
 
-Best regards,
-Dai Yuwen
+Probably you're encoutering the Path MTU Discovery problem. There are 
+serveral solutions to this problem.
+
+1. Lower the MTU of the network interface of your internal host.
+
+2. Use the clamp-mss-to-pmtu feature of iptables:
+    # iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS \
+         --clamp-mss-to-pmtu
+
+3. Use the clamp MSS feature of rp-pppoe (e.g. -m 1412).
+
+Wenzhuo
+-- 
+Wenzhuo Zhang <wenzhuo@zhmail.com>  GnuPG Key ID 0xBA586A68
+Key fpr: 89C7 C6DE D956 F978 3F12  A8AF 5847 F840 BA58 6A68
 
