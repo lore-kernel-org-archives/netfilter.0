@@ -1,9 +1,11 @@
-From: "A. Sayler" <asayler@qorvus.net>
-Subject: PPTP Server and PPTP clients on a firewalled gateway
-Date: Sat, 4 Dec 2004 16:30:25 -0800
-Message-ID: <001b01c4da61$9df07180$0401a8c0@dell>
+From: Phil Dibowitz <phil@ipom.com>
+Subject: nfnetlink, cfnetlink, and iptables2
+Date: Sat, 04 Dec 2004 23:40:08 -0800
+Message-ID: <41B2BB58.3070601@ipom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary=------------enig093A9D136F70C7FA943FAB71
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,55 +17,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig093A9D136F70C7FA943FAB71
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-If anybody might some insight into this problem I would certainly =
-appreciate it.
+Hey folks,
 
-I have multiple wireless clients that need access to outside corporate =
-VPN servers through my system.  I also have a PPTP server listening on =
-the local gateway host for other users to connect to our internal =
-network from outside.
+I posted this to the netfilter-devel list, but got no response. I'm not 
+sure if they felt it wasn't appropriate for the devel list, so I'm 
+posting it here in hopes of more information.
 
-I have a 2 NIC system.=20
+A while back Herald Welte emailed me and suggested I port my application 
+(iptstate) to use the new ctnetlink/nfnetlink framework (as opposed to 
+reading data out of /proc).
 
-I have an internal interface of WLAN0 and the external interface of =
-ETH0.
+I haven't had much time since then, but I decided to sit down and look 
+at this, and I'm a bit confused by what I found. I found libnfnetlink here:
+http://ftp.iasi.roedu.net/netfilter/libnfnetlink/snapshot/
+and libctnetlink here:
+http://ftp.iasi.roedu.net/netfilter/libctnetlink/snapshot/
 
-I have made sure to load the following modules...
-ip_conntrack_proto_gre
-ip_conntrack_pptp
-ip_nat_pptp
-ip_nat_proto_gre
+And since cfnetlink requires nfnetlink, I went to compile that first. 
+And ran into some problems. So I started browsing the archives, and it 
+seems people refer to an old "ctnetlink/nfnetlink" and a new one... and 
+the new one is part of "iptables2" ? I haven't followed 
+netfilter/iptables developement very carefully, so I don't know what 
+iptables2 is, but seems to be the latest suite of "frontend" 
+applications to netfilter.
 
-I have added the following commands to the rest of my firewall rules
+At the very least, libnfnetlink requires nfnetlink.h, which I would have 
+thought was part of libnfnetlink, but it appears it's not. I found a 
+mention of a "release" of iptables2 here:
 
-iptables -I INPUT -p 47 -j ACCEPT
-iptables -I INPUT -p tcp --dport 1723 -j ACCEPT
+http://lists.netfilter.org/pipermail/netfilter/2001-November/016646.html
 
-iptables -I OUTPUT -p 47 -j ACCEPT
-iptables -I OUTPUT -p tcp --dport 1723 -j ACCEPT
+but the download requires a password which I don't have. Additionally 
+the post talkes about a whole lot of kernel incompatibilities between 
+old versions and new versions and it doesn't appear the latest versions 
+have made it into the main kernel tree yet. Is this correct? If so, this 
+doesn't actually sound like something ready for primetime yet...
 
-iptables -I FORWARD -p 47 -j ACCEPT
-iptables -I FORWARD -p tcp --dport 1723 -j ACCEPT
+Perhaps someone can relate ctnetlink/nfnetlink (old and new) to 
+libcfnetlink/libnfnetlink and iptables2, and the current kernels for me?
 
-iptables -I FILTER -p 47 -j ACCEPT
-iptables -I FILTER -p tcp --dport 1723 -j ACCEPT
+Thanks...
 
-I'm masquerading all connections out.
+-- 
+Phil Dibowitz                             phil@ipom.com
+Freeware and Technical Pages              Insanity Palace of Metallica
+http://www.phildev.net/                   http://www.ipom.com/
 
-currently the clients can get out and connect properly but the outside =
-clients trying to connect to our local system via the PPTP server on the =
-gateway box can not get a connection.
+"They that can give up essential liberty to obtain a little temporary
+safety deserve neither liberty nor safety."
+  - Benjamin Franklin, 1759
 
-I think it has something to do with how I'm routing the connection to =
-the local host but I'm not sure what I need to change. Or is this even =
-possible?
 
-Any thoughts?
+--------------enig093A9D136F70C7FA943FAB71
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Thanks,
-Adam
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFBsrtYN5XoxaHnMrsRArGCAJ4loOJfLz4R9weK7P2ICDtmjLqtlACeIGa7
+MPmuDVCaQj9xNre3lZS467I=
+=CxCl
+-----END PGP SIGNATURE-----
+
+--------------enig093A9D136F70C7FA943FAB71--
+
