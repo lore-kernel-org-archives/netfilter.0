@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: A practical problem regarding  IP Accounting ...?
-Date: Mon, 8 Mar 2004 17:02:00 -0800
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Re: Testing iptables setup
+Date: Mon, 08 Mar 2004 21:51:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F0B@alderaan.smgtec.com>
+Message-ID: <1078800686.20494.23.camel@tarkus>
+References: <404C8AA2.6060208@teleport.com>
+ <200403081518.17402.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-reply-to: <200403081518.17402.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,64 +18,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: toto eucup <toteucup@yahoo.de>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-# Outbound to PC
-iptables -t mangle -A PREROUTING -i eth1 --source <ip_address>
-# Inbound to PC
-iptables -t mangle -A POSTROUTING -o eth1 --destination <ip_address>
+hping and nmap do wonders for me :-)
 
-Then use your own accounting tool to rip the byte count from "iptables =
--t mangle -nvxL". Remember though, the byte count can reset or overflow =
-to 0, so make sure your accounting package can handle this.
+Ted
+On Mon, 2004-03-08 at 15:18 +0000, Antony Stone wrote:
 
-toto eucup wrote:
-> I have 32 IP ADDRESSE 11.22.33.64-96
-> 11.22.33.65 Router (cisco) I do not have access on it
-> Big Brother proprerty-- BELL you know already :( ...
-> :)
->=20
->=20
->=20
-> My linux box 2 net interface
-> 11.22.33.66 running DNS on eth0 and
-> 11.22.33.67 on eth1
->=20
->=20
-> Here comes the scenario:
-> Betwen the router and Swich is my machine and I want
-> all the trafic to go through my Linux Box to be able
-> to account the trafic per IP addres.
->=20
->               ROUTER -->INPUT<-- eth0
-> My Linux Box: eth0-->Accounting FILTER<--eth1
->               eth1-->SWITCH<--  11.22.33.68 to 95
->=20
->=20
-> I want to be able  in my linux box to measure trafic
-> for all the station which are pluged in switch from 68
-> to 95
->=20
-> Thanks for an eventual complet solution.
->=20
->=20
->=20
->=20
->=20
-> I tried to do so
->=20
->  [INTERNET] -->[ ROUTER:11.22.33.65] -->[ eth0(66)
->  --eth1(67)] -->[HUB/switch]--> [station ([68].. to
->  [95])]
->=20
-> How can I masure the trafic on each IP address in 68
-> to 95 range using your software.
->=20
->=20
->=20
->=20
->=20
->=20
-> Mit sch=F6nen Gr=FC=DFen von Yahoo! Mail - http://mail.yahoo.de
+> On Monday 08 March 2004 3:00 pm, Richard L. Dery wrote:
+> 
+> > I have the following setup in my /etc/ppp/ip-up.d directory:
+> >
+> > ## Create chain which blocks new connections, except if coming from inside.
+> > # iptables -N block
+> > # iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > # iptables -A block -m state --state NEW -i ! ppp0 -j ACCEPT
+> > # iptables -A block -j DROP
+> >
+> > ## Jump to that chain from INPUT and FORWARD chains.
+> > # iptables -A INPUT -j block
+> > # iptables -A FORWARD -j block
+> >
+> > When I run iptables -L after connecting these rules are displayed.
+> >
+> > Is there a way to test to show that these rules work?
+> 
+> I can think of two meanings of the word "work" here:
+> 
+> 1. Do they allow the traffic you want?
+> 2. Do they block the traffic you don't want?
+> 
+> I suggest you test them by setting the packet counters to zero ("iptables 
+> -Z"), then sending some traffic through your firewall which is expected to 
+> work (eg: browse an Internet website from a LAN client), and make sure you 
+> see a small increase in the packet counters for the NEW rule in the 
+> user-defined chain (using "iptables -L -nvx"), and a larger increase in the 
+> counters for the ESTABLISHED rule (since this is where the reply packets, and 
+> further request packets, will go after the initial connection is made).
+> 
+> Then try something which should be blocked by the above rules (eg: try to 
+> connect to your public IP address from somewhere else on the Internet - it 
+> doesn't matter what protocol you try to use - HTTP, telnet, SSH, POP3 etc 
+> should all be blocked), and make sure (a) you can't connect, and (b) you see 
+> some packets build up in the counters for the DROP rule.
+> 
+> If in doubt, put a LOG rule just before the DROP rule, and you'll sson see 
+> packets from all over the Internet trying to connect to your address, and 
+> failing :)
+> 
+> Regards,
+> 
+> Antony.
+> 
+> -- 
+> The words "e pluribus unum" on the Great Seal of the United States are from a 
+> poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
+> dressing.
+> 
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+
 
