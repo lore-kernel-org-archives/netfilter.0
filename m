@@ -1,12 +1,14 @@
-From: "John A. Novak" <jnovak@blueshiftinc.com>
-Subject: RE: DNAT and multiple public IP addresses; was RE: netfilter and multiple virtual interfaces
-Date: Fri, 3 Jan 2003 17:04:27 -0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Using an device alias?
+Date: Fri, 3 Jan 2003 22:33:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F635E25A78F69C41B85DC6CB18972A9A474710@kepler.blueshiftinc.com>
+Message-ID: <200301032233.47877.netfilter@newkirk.us>
+References: <b74ecb8788.b8788b74ec@cvip.net>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <b74ecb8788.b8788b74ec@cvip.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,97 +19,72 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: David Boone <netfilter@wizdom.net>, Andy Meader <ameader@corp.Lcom.net>
-Cc: netfilter@lists.netfilter.org
+To: Steve M Bibayoff <smb23@csufresno.edu>, netfilter@lists.netfilter.org
 
-I have a firewall configured to work similarly with the exception that =
-the public IP addresses are all on the same subnet, so my public web =
-servers would be at 1.1.1.2, 1.1.1.3 and 1.1.1.4, with the external =
-interface as 1.1.1.1.  This works as long as the external interface has =
-all the public IP addresses used assigned to it.
+On Friday 03 January 2003 02:28 pm, Steve M Bibayoff wrote:
+> Is it possible to use iptables with a device alias
+> (ex.. eth0:1)? I tries to add a filter rule and got
+> an error:
+> % iptables -t filter -I INPUT -i eth0:1 -j ACCEPT
+> Warning: wierd character in interface `eth0:1' (No
+> aliases, :, ! or *).
 
-JN =20
+Well, the warning says it pretty clearly, it seems.  However, I have an=20
+idea on this.  Actually three, presented in order from simplest to most=20
+complicated.
 
------Original Message-----
-From: David Boone [mailto:netfilter@wizdom.net]
-Sent: Friday, January 03, 2003 4:15 PM
-To: 'Andy Meader'
-Cc: netfilter@lists.netfilter.org
-Subject: DNAT and multiple public IP addresses; was RE: netfilter and
-multiple virtual interfaces
+Solution #1:
+Since this is the INPUT chain, then the local machine clearly is the=20
+destination.  (unless you are using the REDIRECT target in nat=20
+PREROUTING)  I suggest you try something like:
 
+iptables -A INPUT -i eth0 -d a.b.c.d...
+iptables -A INPUT -i eth0 -d e.f.g.h...
 
-netfilter won't work with virtual interfaces, so I'm left trying to get
-packets to flow between a public and a private network.
+This should catch the two aliased IP's independantly. =20
 
-How would be a good way to assign multiple IP addresses to the same
-interface and then have answers to those IP addresses be forwarded to
-servers on a private network?
+Now if this were FORWARD chain traffic, this test wouldn't work, since=20
+the destination IP can in principle be anything at all, but by=20
+definition will NOT be an IP of the local box.  Even if it originally=20
+WAS addressed to this box, to appear in FORWARD it would have to be=20
+DNATted, and would then have the new IP.
 
-Here's an example:
+Solution #2:
+If eth0 is local, then I presume you have two different subnets connected=
+=20
+to it, and want it to respond to both.  If this is the case, then you=20
+could test for which subnet the source IP is in rather than which destip=20
+is used.  Testing the source ip range would work in both INPUT and=20
+FORWARD chains, for traffic coming in on that interface (or its alias),=20
+while the same approach for destip should work for FORWARD or OUTPUT=20
+traffic going back out that interface. (note that -o eth0 would NOT be a=20
+valid test in FORWARD or OUTPUT, however, so you'd only be able to test=20
+destination IP)  Something like:
 
-Internet
-   |
-eth0 (1.1.1.1/24)
-   |
-netfilter Router=20
-   |
-eth1 (192.168.1.1/24)
-          |
-   +------+-----------+-------------+
-   |                  |             |
-Web server 1     Web server 2    Web server 3
-(192.168.1.2)   (192.168.1.3)    (192.168.1.4)
+iptables -A FORWARD -i eth0 -s 10.0.0.0/16...
+iptables -A FORWARD -i eth0 -s 10.1.0.0/16...
 
-Where:
-web server 1 has public IP 1.1.2.1/24
-web server 2 has public IP 1.1.2.2/24
-web server 3 has public IP 1.1.2.3/24
+Solution #3:
+If however eth0 is a connection to the internet with multiple IP's, (or=20
+for some unfathomable reason you have two independant IP's on the same=20
+interface that are on the same subnet...) NEITHER of these approaches=20
+can work in FORWARD chain, but there's still a possibility, by catching=20
+them inbound in mangle PREROUTING and marking them based on destIP,=20
+which will still be the 'real' IPs prior to DNAT in nat PREROUTING=20
+(which is implicit in such packets being in the FORWARD chain) and then=20
+in FORWARD you can match marks and handle them separately based on that.
 
-I've tried setting up static arp entries, but I'm having some
-difficulties with routing, I think, since the web server's public IP's
-are on a separate network than the firewall's Internet IP (1.1.2 instead
-of 1.1.1).
+iptables -t mangle -A PREROUTING -i eth0 -d a.b.c.d -j MARK --set-mark 2
+iptables -t mangle -A PREROUTING -i eth0 -d e.f.g.h -j MARK --set-mark 3
+iptables -A FORWARD -m mark --mark 2...
+iptables -A FORWARD -m mark --mark 3...
 
-Thanks for any suggestions,
-Dave Boone
+This presumes that you aren't using packet marking for anything else,=20
+like routing decisions or load balancing, but if you are then you can=20
+possibly dovetail the two uses. (or switch to marks for filtering, TOS=20
+for routing)  This has the advantage of being a valid test in any chain=20
+and table, once the mark is in place.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Andy Meader
-Sent: Friday, December 20, 2002 9:05 PM
-To: David Boone
-Cc: netfilter@lists.netfilter.org
-Subject: Re: netfilter and multiple virtual interfaces
-
-
-Hi Dave,
-
-I know that on RH 7.1 that netfilter only sees an interface and its
-multineted (virtual) interfaces as the same interface. Possibly newer
-versions are different.
-
-Good luck.
-
-Andy
-
-On Fri, 20 Dec 2002, David Boone wrote:
-
-> Hi,
->
-> I know you can apply a + (plus sign) to adapters in the form eth+ or
-> ppp+, but I'm setting up a firewall that will have several web servers
-> behind it and I would like to do something like eth0+ and/or eth0:+ in
-> the rules.  Does anyone know if this will work or do I have to enter
-> every single virtual adapter by hand?
->
-> Thanks,
-> Dave Boone
->
->
->
-
-
-
+j
 
 
