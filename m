@@ -1,13 +1,12 @@
-From: "Brad Morgan" <B-Morgan@concentric.net>
-Subject: RE: Denying output to irc servers on std. tcp ports from router and behind  NAT
-Date: Mon, 9 Sep 2002 21:45:29 -0600
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: one to one NAT
+Date: Tue, 10 Sep 2002 08:29:26 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NABBJOOEOFODEALNMJAJEEBAGLAA.B-Morgan@concentric.net>
-References: <3D7C874B.A69024FC@sympatico.ca>
+Message-ID: <3D7D9146.3080905@fugmann.dhs.org>
+References: <200209100010.g8A0AAr9027286@ns2.is.bizsystems.com> <20020910002200.VICK295.mta06-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D7C874B.A69024FC@sympatico.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jimmy James <jamesstickland@sympatico.ca>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org, michael@insulin-pumpers.org
 
-James,
+Antony Stone wrote:
+> On Tuesday 10 September 2002 2:10 am, Michael wrote:
+>>I want to map 1.2.3.5 to a single address behind the linux box
+>>1.2.3.5 is mapped to eth1:0
+ >
+> iptables -A PREROUTING -a nat -d 1.2.3.5 -j DNAT --to 192.168.1.19
+> iptables -A FORWARD -d 192.168.1.19 -j ACCEPT
+> 
+This only takes care of the ingoring part. Outgoing would be solved
+by using SNAT:
+$ iptables -A POSTROUTING -t nat -s 1.2.3.5 -j SNAT \
+	--to-source 192.168.1.19
+$ iptables -A FORWARD -s 192.168.1.19 -j ACCEPT
 
-> I changed the output chain for the filter table on the router by typing
-> "iptables -t filter -A OUTPUT -o ppp0 -p tcp --dport 6666:7000 -j DROP"
+(Antony made a small typo - it should have been '-t nat' and not '-a 
+nat', unless Im mistaken)
 
-> Once this entry was made, i could no longer connect to any irc server
-> (that runs standard port settings) from my router.
+I would suggest that you apply network interface names, where possible.
 
-> Using the following rule, "iptables -t nat -A PREROUTING -i eth1 -p tcp
-> --dport 6666:7000 -j DROP,"
+Regards
+Anders Fugmann
 
-You need two rules.  One in the OUTPUT chain for your router (you have this
-one), and one in the FORWARD chain to drop packets passing through your
-router (you were close).
-
-"iptables -t nat -A FORWARD -i eth1 -p tcp --dport 6666:7000 -j DROP"
-
-There is a good diagram in the Netfilter documentation that shows how
-packet flow through the firewall.  The INPUT and OUTPUT chains on the
-firewall are for packets originating (or terminating) on the firewall.
-Packets passing through use the FORWARD chain.  PREROUTING and POSTROUTING
-are used to do modify packets.
-
-Regards,
-
-Brad Morgan
-
-
-
-
-
-
-
-
-
-
+-- 
+Author of FIAIF
+FIAIF Is An Intelligent/Iptables Firewall
+http://fiaif.fugmann.dhs.org
 
 
