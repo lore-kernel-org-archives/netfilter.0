@@ -1,13 +1,10 @@
-From: "Michael K" <micke@klintan.se>
-Subject: RE: Iptables:  Bad policy name
-Date: Mon, 31 Mar 2003 01:45:58 +0200
+From: "John Lumby" <johnlumby@hotmail.com>
+Subject: migrating ipchains to iptables
+Date: Mon, 31 Mar 2003 21:27:54 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c2f716$8378d2f0$0200a8c0@klintan.local>
-References: <se886948.098@michiganfamilyresources.org>
+Message-ID: <F78G1vzGbjkJ3FvTFnQ00016fee@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <se886948.098@michiganfamilyresources.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +14,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+I'm running a 2.4.18-3 kernel but for strange reasons have always used 
+ipchains.   Now want to switch to iptables.   Wondering if anyone has ever 
+written a script which will read an ipchains file as created by
+
+       /etc/rc.d/init.d/ipchains save
+
+and either convert it to /etc/rc.d/init.d/iptables save format or set up the 
+"corresponding" iptables chains directly.
+
+John
 
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
-> Bret Holbrook
-> Sent: Monday, March 31, 2003 11:13 PM
-> To: >
-> Subject: Iptables: Bad policy name
-> 
-> 
-> Hi all,
-> 
-> Having a small problem with the error message in the subject. 
->  I'm running Slackware 9.0, Iptables 1.2.7a, 
-> rc.firewall-2.4-stronger version .77s.  Basically it gives me 
-> the above error on each of the following commands trying to 
-> set up my default policy:
-> 
-> iptables -P INPUT REJECT
-> iptables -P OUTPUT REJECT
-> iptables -P FORWARD REJECT
-> 
-> Same error wether I punch it in from the command line or it 
-> runs in the script.  Alternately, the same commands with 
-> ACCEPT instead of REJECT works fine.  I've used these very 
-> same fw rules on various other machines with different 
-> versions of Linux and they have worked just fine.  This is 
-> the first time I've used slackware 9 and the newest iptables 
-> though.  Is there something I'm missing here?  Thanks for the help!
-> 
-> Bret
-> 
 
-The reject don't work as a defult policy. Use the drop target instead.
-However, the reject work on rules.
-
-Iptables -P INPUT DROP
-Iptables -A INPUT ...... -j REJECT
-
-PS: Please read this topic, "what are the possible chain policies?"
-someware in this list. Ds
-
-/Klintan
-
+_________________________________________________________________
+The new MSN 8: advanced junk mail protection and 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
 
