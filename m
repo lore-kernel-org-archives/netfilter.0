@@ -1,11 +1,11 @@
-From: "Shazad Malik" <smalik@vistawiz.com>
-Subject: H323..... and getting close! anyone tell me whats going wrong!
-Date: Tue, 4 Jun 2002 19:55:53 -0400 (EDT)
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: Re: Help NEEDED--sos !!
+Date: Wed, 05 Jun 2002 10:17:09 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3051.24.168.132.35.1023234953.squirrel@mail.vistawiz.com>
-Reply-To: smalik@vistawiz.com
+Message-ID: <3CFD97CD.7010306@inbox.lv>
+References: <Pine.LNX.4.33.0206041007010.6390-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,96 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.samba.org
 
-Hello -
+no this is not htb or imq specific problem !!...  i have tried 
+with/without imq/htb/ vanila iptables... at this point of time thereis 
+no htb or imq ie not complied in kernel or with iptables... but i still 
+get the messages !....:(
+friends do any of u faced this problem or is it the first time ?
+Plsssssssssssssssssssssssssss i NEEEEEEEEEEED help !!!!
 
-I have the following settings:
-iptables 1.2.6a
-linux kerbel 2.4.18
-pwlib (latest)
-and openh323 (latest)
+Jozsef Kadlecsik wrote:
+> On Tue, 4 Jun 2002, Arindam Haldar wrote:
+> 
+>>>yes..:)... sorry for being a little cryptic ;)... but u guessed it right
+>>>!..so i will summarize my 2 Question in this listing-->
+>>>1)i am getting these messages in my /var/log/messages..
+>>>
+>>> iptables v1.2.7-20020423 with  kernel 2.4.18 & patched htb3.3-020512 &
+>>>imq-2.4.18...
+>>>May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840
+>>>&ip_conntrack_lock not readlocked
+ >>>May 30 05:09:58 cab1 kernel: ASSERT: ip_conntrack_core.c:91
+ >>>&ip_conntrack_lock_R71150de5 readlocked
+>>can someone tell me whats wrong ?..how can i solve this problem??
 
-This is the error messages I'm getting, which I have seen from other sites
-but not sure how to tackle the problem:
-
-=======================================================================
-Testing... 0-newnat13.patch NOT APPLIED (98 rejects out of 100 hunks)
-The newnat/0-newnat13 patch:
-   Author: Harald Welte <laforge@gnumonks.org>,
-   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-   Status: Pending for kernel inclusion
-
-   Implementation of the new nat API for kernel 2.4.18 and above.
-
-   - enables us to have multiple related expectations
-   (necessarry for H.323, real IRC and PPTP tracking, ...)
-   - allows expectations to have timeouts
-   - adds full SACK support to the NAT code (we no longer strip
-   SACKPERM option out of all SYN patckes for ftp/irc connections)
-
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
-Testing patch newnat/0-newnat13.patch...
-Failed to patch copy of /usr/src/linux
-TEST FAILED: patch NOT applied.
-
-Aonther ERRROR:
-
- 1731         Audio call control (TCP)
-   Dynamic              H.245 call control (TCP)
-   Dynamic              RTCP/RTP streaming (UDP)
-
-   The H.323 conntrack/NAT modules support the connection tracking/NATing of
-   the data streams requested on the dynamic ports. The helpers use the
-   search/replace hack from the ip_masq_h323.c module for the 2.2 kernel
-   series.
-
-   At the very minimum, H.323/netmeeting (video/audio) is functional by
-letting
-   trough the 1720 port and loading these H.323 module(s).
-
-   The H.323 conntrack/NAT modules do not support
-
-   - H.245 tunnelling
-   - H.225 RAS (gatekeepers)
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
-Testing patch newnat/h323-conntrack-nat.patch...
-   Placed new Config.in line
-   Placed new Config.in line
-   Placed new Configure.help entry
-   Placed new Makefile line
-Could not find place to slot in ip_conntrack.h entry
-Could not find place to slot in ip_conntrack.h entry
-Could not find place to slot in ip_conntrack.h entry
-
-===================================================================
-
-This is what I have done:
-1) I have grabbed the latest newnat from the CVS directory which is
-newnat13 from the samba.netfiler web site.
-
-2) With iptables under patch-o-matic/newnat, there is newnat8, h323, and
-talk files residing.  I bundled the h323, talk, and the latest newnat13 as
-tgz files in the patch-o-matric box.
-
-3) I grabbed the convert and convert-patch-o-matic
-http://www.kfki.hu/~kadlec/sw/netfilter/newnat-suite webs site.  I modified
-the convert script to see all the new tgz file thats I created which  are:
-h323.tgz talk.tgz and newnat13.tgz
-
-4) Then I run ./runme; ./runme suite and then I jump onto ./runme newnat
-and thats when I get the error.
-
-Is this the right? or something major missing......?? Help would be
-appreciated!
-
--- 
-Shazad Malik
-work: (845)623-2161
-fax: (845) 623-1154
+> I'd suggest to start with a new 2.4.18 kernel, without the htb3 and imq
+> patches applied. Check out that it works, without emitting such messages.
+> 
+> If the problem persists, then it might be a netfilter related problem
+> (there still can be bad hardvare...). If the problem disappears then
+> it is related to the two additional extra patches.
+> 
+> Regards,
+> Jozsef
 
 
 
