@@ -1,13 +1,14 @@
-From: Frank Gruellich <frank@home.manuelm.org>
-Subject: Re: Logging default drop
-Date: Thu, 8 Apr 2004 19:02:59 +0200
+From: "Stuart Lamble" <stu@gateway10.homeip.net>
+Subject: RE: Logging default drop
+Date: Thu, 8 Apr 2004 19:24:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040408170259.GL10272@home.manuelm.org>
-References: <200404072134.30328.Antony@Soft-Solutions.co.uk> <000a01c41d86$ee20b2c0$0464a8c0@stu>
+Message-ID: <000401c41d8e$5acdba10$0464a8c0@stu>
+References: <20040408170259.GL10272@home.manuelm.org>
+Reply-To: <stu@gateway10.homeip.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000a01c41d86$ee20b2c0$0464a8c0@stu>
+In-Reply-To: <20040408170259.GL10272@home.manuelm.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,8 +19,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+
+Ok, so what does "toppost" mean?
+
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Frank
+Gruellich
+Sent: Thursday, April 08, 2004 7:03 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: Logging default drop
+
 
 * Stuart Lamble <stu@gateway10.homeip.net>  8. Apr 04:
 > Hi All
@@ -46,4 +59,18 @@ HTH,
  regards, Frank.
 -- 
 Sigmentation fault
+
+
+---
+Incoming mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.654 / Virus Database: 419 - Release Date: 4/6/2004
+ 
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.654 / Virus Database: 419 - Release Date: 4/6/2004
+ 
+
 
