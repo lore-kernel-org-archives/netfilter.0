@@ -1,11 +1,10 @@
-From: "Christo Bezuidenhout" <christo@it4africa.co.za>
-Subject: Firewall Setup on RH 9
-Date: Thu, 3 Jul 2003 08:37:39 +0200
+From: =?ISO-8859-1?Q?Cilli=E8_Burger?= <security@sadomain.co.za>
+Subject: Memory problem
+Date: Thu, 03 Jul 2003 09:53:19 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <015201c3412d$992c0ac0$660210ac@christo>
+Message-ID: <3F03FD0F.5070509@sadomain.co.za>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0153_01C3413E.5CB66160"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,93 +15,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi Everyone
 
-------=_NextPart_000_0153_01C3413E.5CB66160
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+I was wondering if anyone has a solution to this problem.
 
-I need to do the following.
- 
-1. I have a Redhat 9 Box with Two nics. NIC1 is my Private Network. NIC2
-is connected to my PPP0 interface for internet access. I need to add
-NIC3 which will be second Private Network.
- 
-2. Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet. 
-NIC1 Should be able to connect to NIC3 but NIC3 must not be ABLE to
-Connect to NIC1 's network
- 
-I have my network already setup as in 1 above and it working very well.
-I'm using iptables to get this running. 
- 
-Please mail me offline if more info needed or with a suggestion
- 
-Christo
+I have a the following box that sits between our router and switch:
 
-------=_NextPart_000_0153_01C3413E.5CB66160
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Pentium 200, 64 Mbyte RAM, Linux version 2.4.18-3=20
+(bhcompile@stripples.devel.redhat.com)
+(gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)), iptables v1.2.5
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
+I almost never reboot this box, but lately I have noticed a dramatic=20
+increase in memory consumption.
 
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>I need=20
-to do the following.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+I start out on bootup with about 40 MB or so free and in a weeks time=20
+its down to about 800KB.
+When iptables is restarted and the rules flushed and reloaded I reclaim=20
+about 6024 KB, which then gradually
+decreases back to about a meg in a 16 hour period.
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>1. I=20
-have a Redhat 9 Box with Two nics. NIC1 is my Private Network. NIC2 is =
-connected=20
-to my PPP0 interface for internet access. I need to add NIC3 which will =
-be=20
-second Private Network.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+I run about 400 rules on this box and ipt_conntrack_max is set at 4096.
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>2.=20
-Both NIC1 and NIC3 Should be able to Connect VIA NIC2 to Internet.=20
-</FONT></SPAN></DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>NIC1=20
-Should be able to connect to NIC3 but NIC3 must not be ABLE to Connect =
-to NIC1=20
-'s network</FONT></SPAN></DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>I have=20
-my network already setup as in 1 above and it working very well. I'm =
-using=20
-iptables to get this running. </FONT></SPAN></DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+I do want to add more memory to the box, but i have this strange feeling=20
+that it will just consume all of that aswell until
+it reaches some kind of lower limit on allowable free memory.
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
-size=3D2>Please=20
-mail me offline if more info needed or with a =
-suggestion</FONT></SPAN></DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+Unfortunately I am not sure of how to count the number of simultaneous=20
+connection
+but since we run a few mail and web-servers and also a few busy dns servers.
+I estimate that there are about 300 connections per second.
 
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D308123315-23062003><FONT face=3DArial color=3D#0000ff =
+My questions, if anyone has payed attention thus far :)
 
-size=3D2>Christo</FONT></SPAN></DIV></DIV></BODY></HTML>
+Why does iptables consume so much memory ?
+Why does iptables appear to loose so much memory ? When regarding this=20
+question, consider the following:
 
-------=_NextPart_000_0153_01C3413E.5CB66160--
+On reboot and before loading of rules there is about 40 MB free ram.=20
+After loading the rules, and about two weeks uptime
+there is about 800KB of free memory. After flushing the rules, theres=20
+only 6024 KB free.
+Is there a slight possibility that this may be due to a memory leak of=20
+some sort ?
+
+Thanks in advance for your help. Keep up the good work Netfilter .
+
+Regards,
+
+Cillii=E8 Burger
+SA-DOMAIN Internet Services
+
+
+
+
+
+
+
+
+
+
 
 
