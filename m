@@ -1,10 +1,9 @@
-From: "GBV" <guilherme@plannercorretora.com.br>
-Subject: (no subject)
-Date: Mon, 24 Mar 2003 11:22:41 -0300
+From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
+Subject: FW: logging
+Date: Mon, 24 Mar 2003 15:09:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004901c2f210$d4a978b0$6800817d@guilherme>
+Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6C994@server10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,19 +15,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: *netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I have an internal server 192.168.0.69, running ISS and an IRC server.
-
-How can I using iptables, make this host avaiable in internet, preserving
-the IRC daemon?
-
-my external interface is eth0
-and internal is eth1
-
-iss is using port 80
-irc is using 6669, 7000
-
-thks
-
+> hi all,
+> 
+> i use fwbuilder to configure a firewall script
+> This seems to work but all my logging comes into my command prompt and in
+> my /var/log/messages
+> Now, i only want them in my /var/log/messages and NOT on my screen (very
+> annoying)
+> what do i have to do for that ?
+> 
+> regards,
+> 
+> Philippe Dhont 
+> 
 
