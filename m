@@ -1,8 +1,8 @@
-From: "Marco" <marco@noope.de>
+From: "Marco Balle" <mb@monsterserver.de>
 Subject: iptables source net and layer7
-Date: Sat, 23 Oct 2004 14:17:50 +0200
+Date: Sat, 23 Oct 2004 14:16:38 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200410231218.i9NCI4r9028417@post.webmailer.de>
+Message-ID: <200410231216.i9NCGIew025529@web01.monsterserver.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
