@@ -1,12 +1,14 @@
-From: "Bo Jacobsen" <subs@systemhouse.dk>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Redirection to local lan, isn't DNAT method unsafe.
-Date: Thu, 1 Apr 2004 10:55:50 +0200
+Date: Thu, 1 Apr 2004 10:05:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004301c417c7$232981b0$de0aa8c0@comp>
-References: <40696C1A.5080400@personalsoft.com.br> <002a01c417c2$d94db7e0$de0aa8c0@comp> <200404010937.47442.Antony@Soft-Solutions.co.uk>
+Message-ID: <200404011005.30735.Antony@Soft-Solutions.co.uk>
+References: <40696C1A.5080400@personalsoft.com.br> <200404010937.47442.Antony@Soft-Solutions.co.uk> <004301c417c7$232981b0$de0aa8c0@comp>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <004301c417c7$232981b0$de0aa8c0@comp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +21,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> > I use DNAT to redirect traffic from the external lan eth0 =
-(192.168.1.1) to
-> > a specific host (192.168.10.10) on the internal lan (eth1) like =
-this:
+On Thursday 01 April 2004 9:55 am, Bo Jacobsen wrote:
+
+> > It is normally recommended *not* to do filtering in the nat or mangle
+> > tables, however in this case if you really want to do what you say then
+> > that is the solution.
 > >
-> > iptables -t nat -A PREROUTING  -p tcp --dport 80  -d 192.168.1.1 -j =
-DNAT
-> >     --to 192.168.10.10 -i eth0
+> > iptables -I PREROUTING -t nat -s 192.168.1.0/24 -d 192.168.10.10 -p tcp
+> > --dport 80 -j DROP
 > >
-> > and then I allow the redirected traffic:
-> > iptables -a FORWARD -p tcp --dport 80  -d 192.168.10.10 ........
-> >
-> > It works as expected but with this aproach, it's actually possible =
-from the
-> > outside to find out what internal ip, the http server is located at =
-!.
-> > All one has to do is sending to 192.168.10.1, 192.168.10.2, =
-192.168.10.3
-> > etc.  (to eth0 on the outside) until one hits the server. The rules =
-allows
-> > it.
-> >
-> > I have not been able to figure out how to solve this problem.
->=20
-> It is normally recommended *not* to do filtering in the nat or mangle =
-tables,=20
-> however in this case if you really want to do what you say then that =
-is the=20
-> solution.
->=20
-> iptables -I PREROUTING -t nat -s 192.168.1.0/24 -d 192.168.10.10 -p =
-tcp=20
-> --dport 80 -j DROP
->=20
-> Note the -I which inserts the rule before the prerouting rule you =
-listed=20
-> above.
->=20
-> Regards,
->=20
-> Antony.
+> > Note the -I which inserts the rule before the prerouting rule you listed
+> > above.
+>
+> Thanks.
+>
+> > however in this case if you really want to do what you say then that is
+> > the solution.
+>
+> Is there another and better way to redirect traffic to the inside ?
 
-Thanks.
+Well, DNAT is normally used to map externally-accessible public IPs to real 
+internal systems on non-routable 10.x.y.z, 172.16.a.b or 192.168.c.d 
+addresses, therefore the problem never arises (since people across the 
+Internet can't send packets to the real private addresses even if they knew 
+what they were).
 
-> however in this case if you really want to do what you say then that =
-is the=20
-> solution.
+There's isn't a "better" way to redirect traffic to other IP addresses, 
+however why do you think it's a problem for people to use the "real" address 
+instead of the one you're telling them to use.   They have access to the 
+machine, so why does it really matter which address they use to connect to 
+it?
 
-Is there another and better way to redirect traffic to the inside ?
+Regards,
 
-Bo
+Antony.
 
+-- 
+RTFM may be the appropriate reply, but please specify exactly which FM to R.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
