@@ -1,8 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: droping too many ports
-Date: Thu, 23 Sep 2004 17:01:06 -0400
+Date: Thu, 23 Sep 2004 16:14:53 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095973266.8527.6.camel@wolfpack.ljm.dom>
+Message-ID: <41533CCD.1060706@pbl.ca>
 References: <a0f69e504092313454a9090b3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -17,32 +17,37 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2004-09-23 at 16:45, Askar wrote:
+Askar wrote:
 > hi all
 > 
 > what if I do (and im doing this from last two hours ;))
 > 
 > iptables -A FORWARD -p tcp --dport 31000:65500 -j DROP
 > iptables -A FORWARD -p udp --dport 31000:65500 -j DROP
-> 
 
-uh...depending on your other rules--you could be dropping tons o'
-legitimate traffic; i.e, inbound replies to your outbound requests.
+[snip]
 
-how's about showing us:
+> iptables -L -nvx  gives too many counts whenever I checked, especailly
+> numbers are very high for UDP "udp --dport 31000:65500 -j DROP"
 
-  iptables -vnxL FORWARD
+Depending on your other rules this might not be good idea.  Here's an 
+example why.  If client connects to say your web server, it may look 
+something like this:
 
-a better approach (in general) is to set the policy of FORWARD to DROP,
-and only allow through that which you need to allow through.  it keeps
-you from getting tempted to do what you just did, as well.
+  client sport 54321 to server dport 80     for incoming packets
+  server sport 80    to client dport 54321  for outgoing packets
 
--j
+As you can guess by now, your rules are blocking outgoing packets of an 
+perfectly legal connection.
+
+BTW, you should really consider setting default policy to DROP, and 
+allow only what you need.
 
 -- 
-Jason Opperisano <opie@817west.com>
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
