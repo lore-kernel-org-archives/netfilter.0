@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: ip masqurade
-Date: Sun, 8 Jun 2003 23:21:57 +0200
+From: Salman Ahmed <syd_salman@yahoo.com>
+Subject: ftp problem!
+Date: Sun, 8 Jun 2003 15:12:35 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00eb01c32e03$fe2b5c60$0401000a@sterenborg.info>
-References: <3EE14B43.7060102@lou-telecom.net>
+Message-ID: <20030608221235.92699.qmail@web11507.mail.yahoo.com>
+Reply-To: syd_salman@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-2147220904-1055110355=:92682"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EE14B43.7060102@lou-telecom.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> computers on my LAN to gateway to the internet via my Linux Modem. My 
-
-You use a modem, so I guess you have aa ppp internet interface and a
-dynamic IP address.
-That's why we'll be using MASQUERADE. Otherwise use SNAT.
-
-> my lan which will fall in the ip range of 192.168.168.0/24. 
-
-# First disable forwarding so that nothing will happen before your rules
-are set.
-echo 0 > /proc/sys/net/ipv4/ip_forward
-
-# Forward packets coming from your LAN to internet, DROP everything
-else.
-# When not specifying a table, the filter table is assumed.
-iptables -P FORWARD DROP
-iptables -A FORWARD -i <if_lan> -o <if_inet> -s 192.168.168.0/24 -j
-ACCEPT
-iptables -t nat -A POSTROUTING -o <if_inet> -s 192.168.168.0/24 -j
-MASQUERADE 
-
-# Enable forwarding.
-echo 1 > /proc/sys/net/ipv4/ip_forward
+--0-2147220904-1055110355=:92682
+Content-Type: text/plain; charset=us-ascii
 
 
-Gr,
-Rob
 
+Hello,
+
+I am using iptalbes with kernel 2.4.7-10. I have configured IP Masquerading for my gateway server. I am having problem regarding ftp as my clients are not accessing ftp service.any suggestion would be admirable about how to access ftp on my server or onto the Internet?
+
+please help me..
+
+Salman 
+
+
+---------------------------------
+Do you Yahoo!?
+Free online calendar with sync to Outlook(TM).
+--0-2147220904-1055110355=:92682
+Content-Type: text/html; charset=us-ascii
+
+<DIV></DIV>
+<P>Hello,</P>
+<P>I am using iptalbes with kernel 2.4.7-10. I have configured IP Masquerading for my gateway server. I am having problem regarding ftp as my clients are not accessing ftp service.any suggestion would be admirable about how to access ftp on my server or onto the Internet?</P>
+<P>please help me..</P>
+<P>Salman </P><p><hr SIZE=1>
+Do you Yahoo!?<br>
+Free <a href="http://us.rd.yahoo.com/mail_us/tag/*http://calendar.yahoo.com">online calendar</a> with sync to Outlook(TM).
+--0-2147220904-1055110355=:92682--
 
