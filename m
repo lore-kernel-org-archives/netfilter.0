@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SNAT does not work
-Date: Thu, 6 Jun 2002 14:40:02 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: dns server
+Date: Thu, 6 Jun 2002 15:45:38 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206061340.g56DeAA31074@vulcan.rissington.net>
-References: <3CFF6327.5020306@globit.com>
+Message-ID: <Pine.LNX.4.21.0206061542060.7290-100000@dns.toxicfilms.tv>
+References: <200206061537.28204.raymondl@knowledgefactory.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CFF6327.5020306@globit.com>
+In-Reply-To: <200206061537.28204.raymondl@knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,25 +16,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Raymond Leach <raymondl@knowledgefactory.co.za>
+Cc: Francois Peyron <lists@peyron.nom.fr>, netfilter@lists.samba.org
 
-On Thursday 06 June 2002 2:27 pm, Uwe Eisner wrote:
+Hello,
 
-> My problem is, that this rule does not work. When I start a Perl-code at
-> the www, witch shows me my ip-address, it showes me the IP-address of
-> the external interface of the router/firewall. I can not find the
-> problem. If I set no POSTROUTING rule, it is the same game...
->
-> Is it possible, that NAT is not activeted at my kernel. How can I test it?
+i think somebody should write a short and simple FAQ for this.
+This type of questions are appearing very often.
 
-If that were true you would not be able to enter the "-t nat -j SNAT" rule - 
-you would get an error message.
+I belive that, you do not need to add special filtering rules for
+forwarders, secondaries, etc.
 
-I cannot see an obvious problem with your rules.   I suggest you put a LOG 
-rule at the end of your FORWARD chain and see what gets logged (just before 
-it gets default DROPped).
+Properly configure your DNS server, use ACLs.
+
+Using netfilter you can not judge whether TCP:53 packet is a zone transfer
+or just a query.
+
+Regards,
+Maciej Soltysiak
 
 
-Antony.
 
