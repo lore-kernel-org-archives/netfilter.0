@@ -1,11 +1,14 @@
-From: zakinthinos@freemail.gr
-Subject: script for home dialup / ppp0 link
-Date: Thu, 7 Oct 2004 09:35:39 +0300
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: gateway without nat
+Date: Thu, 7 Oct 2004 19:28:26 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4164e3bbe289b5.57642435@freemail.gr>
-Reply-To: zakinthinos@freemail.gr
+Message-ID: <1403218a0410071028b497f60@mail.gmail.com>
+References: <200410071631.58038.lcml@pixel.it>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200410071631.58038.lcml@pixel.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,119 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: lcml@pixel.it, netfilter <netfilter@lists.netfilter.org>
+
+Bridge ??
 
 
-to keep it simple it mainly works with tha input chain
+On Thu, 7 Oct 2004 16:31:58 +0200, Lucio <lcml@pixel.it> wrote:
+> Hello everybody.
+> 
+> I need to setup a linux firewall with iptables with 3 NICs (LAN, WAN, DMZ).
+> The LAN/WAN routing is no problem because I'm going to use NAT and a couple
+> of rules to filter out the packets; so is the LAN/DMZ routing. However the
+> computers that make up the DMZ are already in place (with an old firewall
+> that's being substituted by the linux box), and they are already configured
+> with their respective public ip addresses. What I need is a gateway for the
+> DMZ that doesn't translate those public ip addresses, because I cannot modify
+> the configurations of the computers in the DMZ to make them become
+> 192.168.whatever.youwant.
+> The problem is that I don't know how to make the kernel route packets between
+> the DMZ and WAN NICs without using a SNAT rule: can anyone help me please?
+> 
+> Thanks in advance,
+> Lucio.
+> 
+> 
 
 
-it does not have the -f flag to handle fragments
-because i want only 1 rule to handle all
-fragmants that match and not only head fragment
-(or only fragments 2-3)
-
-
-in one point it uses both conntrack and -m state
-(in similar rules)
-for testing/illustration purposes
-
-
-i hope that wrapping is not too bad
-
-any comments welcome
-
-
-# echo 1 >/proc/sys/net/ipv4/conf/ppp0/rp_filter
-# bad fragments can (?) pass through
-# spoofed still pass through
-
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-
-#assymetrical attack on interfaces
-#spooffed with localhost from ppp0 dropped
--A INPUT -i ppp0 -s 127.0.0.1 -j DROP
-#whatever come to lo must be from localhost or DROP
--A INPUT -i lo -s ! 127.0.0.1 -j DROP
--A INPUT -i lo -s 127.0.0.1 -j ACCEPT
-#DROP others that try reach loopback
--A INPUT -i lo -j DROP
-
-
-#put a limit for DoS on ppp0
-#  possibly limits speed too much  -A INPUT -m limit -i ppp0 -j DROP
-
-#no accept icmp 
--A INPUT -p icmp --icmp-type any -j LOG --log-prefix "ICMP  " --log-level debug
--A INPUT -p icmp --icmp-type any -j DROP
-
-
-
-
-#only ACK flag  == stealth portscanner --- TOO MANY BROKEN HTTPD
-#-A INPUT -p tcp --tcp-flags ALL SYN,ACK -j LOG --log-prefix "port scan  " --log-level debug
-#-A INPUT -p tcp --tcp-flags ALL ACK -j LOG --log-prefix "port scan  " --log-level debug
-
-
-#-A INPUT -p tcp --tcp-flags ALL SYN,ACK -j DROP
-#-A INPUT -p tcp --tcp-flags ALL ACK -j DROP
-
-
-
-
-# only rst flag , DROP
--A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -j LOG --log-prefix "port scan  " --log-level debug
--A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -j DROP
-
-
-#no accept NEW for tcp
--A INPUT -p tcp --syn -j LOG --log-prefix "bad tcp pakt  " --log-level debug
--A INPUT -p tcp --syn -j DROP
-
-#match unclean 
--A INPUT -m unclean -j LOG --log-prefix "unclean found   " --log-level debug
--A INPUT -m unclean -j DROP
-
-
-
-
-
-
-#no accept new connections
--A INPUT -m state --state NEW,INVALID -j LOG --log-prefix "NEW at input " --log-level debug
--A INPUT -m state --state NEW,INVALID -j DROP
-
-
-#no accept new connections, use CONNTRACK
--A INPUT -m conntrack --ctstate NEW,INVALID -j LOG --log-prefix "NEW conn at input  " --log-level debug
--A INPUT -m conntrack --ctstate NEW,INVALID -j DROP
-
-
-#accept tcp on ports>1024, only established conns
--A INPUT -m state --state ESTABLISHED,RELATED -p tcp -j ACCEPT --dport 1025:
--A INPUT -m state --state ESTABLISHED,RELATED -p udp -j ACCEPT --dport 1025:
-
-#drop all that did not match
--A INPUT -j DROP
-
-#disallow X win traffic to go through OUTPUT
-#someone to start a bad xterm = no
--A OUTPUT -p tcp -j DROP --dport 6000:6010 
--A OUTPUT -p udp -j DROP --dport 6000:6010 
-
-
-
-
-#set policy , accept all in output, dissallow others
--P OUTPUT ACCEPT
--P INPUT DROP
--P FORWARD DROP
-
-
-COMMIT
-
-
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
