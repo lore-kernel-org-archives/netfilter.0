@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: forward for some IPs and SNAT the rest
-Date: Tue, 16 Mar 2004 16:09:32 +0000
+From: Ronny Fauth <jadefalkner@imperium-noctem.de>
+Subject: Re: Problems with Portforwarding -- Loopback problems---
+Date: Tue, 16 Mar 2004 17:18:26 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403161609.32504.Antony@Soft-Solutions.co.uk>
-References: <40572436.9080308@di.uminho.pt>
+Message-ID: <405728D2.5010603@imperium-noctem.de>
+References: <405624A2.60906@imperium-noctem.de> <200403152159.27405.Antony@Soft-Solutions.co.uk> <40562EC9.5050604@imperium-noctem.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40572436.9080308@di.uminho.pt>
+In-Reply-To: <40562EC9.5050604@imperium-noctem.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +17,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 16 March 2004 3:58 pm, Jose Luis Faria wrote:
+I've found out what the Problem is, well i tried to connect to my other
+Computer  at my homenetwork via Inet, well it looks like this
 
-> Hello,
->
-> I have a firewall inside my organization, but I want to preserve some
-> source IPs, and the rest must be SNATed:
->
-> the host 1 and host 2 must arrive to the license server with the original
-> IP( 192.168.0.1/2) and the others host must be translated with SNAT into
-> 193.137.1.1.
+Test --> Router/Gateway ---> Inet --> Router/Gateway --> Test2
 
-I assume you currently have a POSTROUTING rule:
-
-iptables -A POSTROUTING -t nat -o $extIF -j SNAT --to 193.137.1.1
-
-Well, simply put two rules in front of this:
-
-iptables -I POSTROUTING -t nat -s 192.168.0.1 -d a.b.c.d -j ACCEPT
-iptables -I POSTROUTING -t nat -s 192.168.0.2 -d a.b.c.d -j ACCEPT
-
-Where a.b.c.d is the IP address of the licence server.
-
-Make sure the routing table on the licence server knows how to send packets to 
-192.168.0.1 correctly.
-
-Antony.
-
--- 
-If builders made buildings the way programmers write programs, then the first 
-woodpecker to come along would destroy civilisation.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+and this isn't acceptet by my Gateway... connections from outside my
+network are redirected properly. Well, how cann i tell my Router/Gateway 
+that
+it should accept Loopback's ?
 
