@@ -1,14 +1,14 @@
-From: "Shaun T. Erickson" <ste@smxy.org>
-Subject: [SOLVED] Re: incoming interface confusion question
-Date: Mon, 21 Jun 2004 20:13:30 -0400
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: ECN problem?
+Date: Mon, 21 Jun 2004 19:16:33 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40D779AA.4040905@smxy.org>
-References: <40D71EC4.7090900@smxy.org> <1087849139.17067.25.camel@localhost> <40D74F60.6030105@smxy.org> <200406212328.19329.Antony@Soft-Solutions.co.uk> <40D76A3F.90503@smxy.org>
-Reply-To: ste@smxy.org
+Message-ID: <200406220216.i5M2GXh6002287@server5.bandwidthco.com>
+References: <20040621085901.47720.qmail@web13422.mail.yahoo.com>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D76A3F.90503@smxy.org>
+In-Reply-To: <20040621085901.47720.qmail@web13422.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +18,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: 'Pawel Pilat' <poster_pl@yahoo.com>, netfilter@lists.netfilter.org
+
+ 
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Pawel Pilat
+Sent: Monday, June 21, 2004 1:59 AM
 To: netfilter@lists.netfilter.org
+Subject: ECN problem?
 
-Thanks for your comments and questions, everyone - they got me onto a 
-different train of thought which quickly led me to a resolution - I'm in 
-your debt. :)
+Hello everyone,
+it's my first post on this list so plese understanding ...
+I think that i have problem with ECN , this is my
+situation:
 
-The traffic was indeed response packets to connections made from systems 
-on my lan. It seems that I put in a rule on my netfilter box, Friday, 
-that allowed out some traffic that had been bottled up, just waiting to 
-get to the internet. This traffic turned out to be windows servers 
-looking for updates from microsoft. The firewall did let the return 
-packets back, but logged them as if it hadn't. The log rule was supposed 
-to log anything that was about to hit the default chain policy of drop, 
-but the rule I added Friday got added after the logging rule, instead of 
-before it. So, it was logged, then accepted.
+IN--->R--->ISP
 
-Mystery solved.
+where:
+IN - my internal net
+R - my linux router (2.4.25, ipt-1.2.9)
+ISP - my ISP
 
-Now, if I were a networking guy, instead of a sysadmin, or at least one 
-with more networking knowledge, I'd've figured this out this morning, 
-and saved myself a day's wild goose chase, and the additional gray 
-hairs. Sigh.
+so when i trying to connect from internal net to Internet i expirencing very
+slow transfers (500 - 700
+bps) but from router everything is ok (transfer rate 50 - 60 kbps) when i
+used tcpdump on external interfece on router i realized that my ISP sends to
+me in every TCP packet TOS field set to 0x03 (ECN-CT + ECN-CE) i think that
+is the problem
 
-Again, thanks.
+i tried using:
 
-	-ste
+iptables -t mangle -A PREROUTING -i $EXTIF -j TOS --set-tos 0x00 but without
+any result
+
+my question is:
+1.it is possible to set linux box to ignore this fields in packets?
+2. there is another way to solve the problem?
+
+thank for advices
+best regards
+
+POSTER PL
+
+
+
+		
+__________________________________
+Do you Yahoo!?
+Take Yahoo! Mail with you! Get it on your mobile phone.
+http://mobile.yahoo.com/maildemo 
+
+Most ISP have ECN enabled on their routers today, so this is not unusual. If
+the packets you are receiving from your ISP have Cx=1 (0x03) then this means
+it is indeed experiencing congestion, and if your box is also ECN enabled,
+then the congestion windows on both devices are probably being cut in half.
+This needs to be confirmed before you do anything. To confirm this, I would
+suggest that you first check and see if you box is ECN enabled by checking
+your kernel config for CONFIG_INET_ECN=y. If it is, check the two high-order
+bits of bite 13 of the suspect TCP packet headers to see if the congestion
+windows are being cut. If so, then this is probably a correct assumption on
+your part. If so, the easiest solution would be to disable ECN on your box.
+You would need to recompile the kernel to that of course. However, it would
+seem as though ECN is only doing its job and you may want to explore that
+avenue.
+
+
+
+########################################################
+This message has been scanned for viruses and dangerous 
+content by MailScanner, and is believed to be clean.
+
+postmaster@bandwidthco.com
+MailScanner at bandwidthco.com is for your absolute protection.
+########################################################
+
 
