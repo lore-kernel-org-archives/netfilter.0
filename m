@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Internet Servers - DNAT/SNAT
-Date: Sun, 9 Jun 2002 17:25:03 +0100
+Subject: Re: Masquerade (Newbie)
+Date: Sun, 9 Jun 2002 22:26:13 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206091625.g59GP4A06543@Networker.rockstone.co.uk>
-References: <001f01c20fd0$8aa72820$fb00a8c0@escritoriomundial.com.br>
+Message-ID: <200206092126.g59LQEA23512@Networker.rockstone.co.uk>
+References: <200206091647.32562.richard.downing@bcs.org.uk> <200206091621.g59GLrA06315@Networker.rockstone.co.uk> <200206092118.53543.richard.downing@bcs.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001f01c20fd0$8aa72820$fb00a8c0@escritoriomundial.com.br>
+In-Reply-To: <200206092118.53543.richard.downing@bcs.org.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,24 +20,31 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Sunday 09 June 2002 5:13 pm, Roberto Campos wrote:
+On Sunday 09 June 2002 9:18 pm, Richard A Downing wrote:
 
-> Hi,
+> ifconfig ppp0
+> ppp0      Link encap:Point-to-Point Protocol
+>           inet addr:213.104.157.9  P-t-P:62.255.122.225 
 >
-> I'm dealing with nat for the last 3 years but I have never tried to
-> SNAT/DNAT.
+> root:/usr/lib/iptables$: iptables -t nat -F
+> root:/usr/lib/iptables$: iptables -t nat -A POSTROUTING -o ppp0 -j
+> MASQUERADE
+> iptables: No chain/target/match by that name
 
-Fascinating....   If you have not been doing Source NAT, and you have not 
-been doing Destination NAT, then what sort of NAT *have* you been doing:-) ?
+Okay.   I still do not know why you cannot use the MASQUERADE target, but I 
+do not use modules - I have everything compiled-in to the kernel, so I don't 
+know what you need to look for to find out why that command isn't working.   
+Hopefully someone else can help on that one ?
 
-> We are using SNAT/DNAT to translate the ports 25, 110, 80, 443 and 53
-> (UDP and TCP) to the internal IP of the server.
->
-> Some problems are occurring:
+However, the ppp0 info you posted tells me that your local address is 
+213.104.157.9, so this is the address you should be using in your SNAT rule 
+as a workaround.
 
-Please can you post your ruleset so that we can see what you are trying to 
-do, and we might be able to tell you what to change.
-
-
+The 62.255.122.225 address is the other end of the link, which your machine 
+is routing to, therefore you shouldn't be trying to masquerade your outgoing 
+packets on this address.
+ 
+ 
+ 
 Antony.
 
