@@ -1,14 +1,13 @@
-From: "Manikandan.P" <linuxmani@myrealbox.com>
-Subject: Re: strange
-Date: 08 Nov 2002 20:49:57 +0530
+From: Jacob Helwig <jhelwig@cs.purdue.edu>
+Subject: Re: Patch-o-Matic problems
+Date: Fri, 8 Nov 2002 10:03:53 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1036768809.16762.58.camel@mani.cybernetsoft.com>
-References: <20021108145227.GA20828@myrealbox.com> 
-	<032d01c28737$3ae2fa60$13fcc5cb@nextto>
+Message-ID: <20021108150353.GB32438@Parkmoor.dyndns.org>
+References: <20021107005515.GB490@Parkmoor.dyndns.org> <200211071655.00285.fabrice@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <032d01c28737$3ae2fa60$13fcc5cb@nextto>
+Content-Disposition: inline
+In-Reply-To: <200211071655.00285.fabrice@netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,58 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: hare ram <hareram@sol.net.in>
-Cc: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Fri, 2002-11-08 at 20:27, hare ram wrote:
-> hi
-> 
-> can you just type 
-> iptables -nL -t nat
-> and paste here, or
-> just do iptable -F and check and u able to ping ?
-> 
-i hv set the default policy as drop hence if i flush 
-the rules i cannot ping it.
-moreover the problem is only with the linux boxes ,all my windows
-machines happily use the gateway.
+Fabrice,
 
-Manikandan P. 
-> hare
-> ----- Original Message ----- 
-> From: "Manikandan.P" <linuxmani@myrealbox.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Friday, November 08, 2002 8:22 PM
-> Subject: (no subject)
+I'm not sure if it's just me, but I'm not seeing the updated documentation on
+the site.  If you could point me to where I should be looking for the updated
+docs, or let me know what I should be doing to run Patch-o-Matic, that would
+be greatly appreciated.
+
+Thanks,
+Jacob
+
+On Thu, Nov 07, 2002 at 04:55:00PM +0800, Fabrice MARIE wrote:
 > 
-> 
-> > Hi all,
-> > 
-> >  In my n/w iam using iptables firewall in my gateway and now the problem
-> > is iam able to use that machine as a default gateway for all the
-> > windows machines in my network but i cannot even ping the
-> > gateway/firewall from linux machine.
-> >  the strange thing is if i ping a client linux machine from the firewall
-> > it pings and from then onwards i can ping/use the gateway to browse the
-> > net even from a linux machine.
-> >  every time if i want to use that g/w from a linux  machine i had to
-> > ping the client machine from the firewall to enable it.
-> >  iam using iptables 1.2.5/Redhat Linux 7.3
-> >  
-> > 
-> >  can any body help me out to resolve this strange problem
-> > 
-> > Manikandan P.
-> >  
-> > -- 
-> >  # get Subject header, but remove initial "Subject: " portion
-> >  sed '/^Subject: */!d; s///;q'
-> > 
-> > 
-> 
-> 
+> My fault, I forgot to update that part of the doc back then. Just updated the
+> SGML master of the documentation..
+> Thanks. [...]
+
 -- 
- # add a leading angle bracket and space to each line (quote a message)
- sed 's/^/> /'
-
+-----BEGIN GEEK CODE-----
+Version: 3.12
+GCS/MU d- s+:- a-- C++++>$ UL+++ P++++ L+++>++++ !E
+W+++ N++ K? W--- M-- PS+ PE Y+ PGP++(+++) t+ 5+ X+
+R(+) tv b++(+++) DI++ D++(+++) G(++) e* h* r++>+++ y?
+------END GEEK CODE------
 
