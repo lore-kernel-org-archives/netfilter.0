@@ -1,13 +1,12 @@
-From: Feizhou <feizhou@linuxmail.org>
-Subject: Re: over a 1,000,000,000 individual ips to block
-Date: Mon, 28 Jun 2004 22:14:00 +0800
+From: Folkert van Heusden <folkert@vanheusden.com>
+Subject: Re: transparent proxying NTP
+Date: Mon, 28 Jun 2004 16:38:58 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E027A8.9080402@linuxmail.org>
-References: <20040624145732.25300.qmail@team.outblaze.com>       <20040628064501.3bab3f3c@mgalepc.utilitran.com>    <42481.194.102.197.244.1088427899.squirrel@www.as.ro>    <40E01ED9.6050607@linuxmail.org> <45879.194.102.197.244.1088430724.squirrel@www.as.ro>
+Message-ID: <Pine.LNX.4.33.0406281636350.12956-100000@muur.intranet.vanheusden.com>
+References: <006401c45c84$05827250$8b00000a@casa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <45879.194.102.197.244.1088430724.squirrel@www.as.ro>
+In-Reply-To: <006401c45c84$05827250$8b00000a@casa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alex Sirbu <alex@as.ro>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
 Cc: netfilter@lists.netfilter.org
 
-Alex Sirbu wrote:
->>Alex Sirbu wrote:
->>
->>>For blocking pourposes why don't you use blackholes ?
->>>I have a webserver that is permanently under DoS attacks , so I use blackholes.
->>>
->>>Routing table can have million of rules or static routes, so is not a problem .
->>>
->>>Let's say you want to block ip 11.22.33.44 . just type :
->>>
->>>#ip route add blackhole 11.22.33.44/32
->>>
->>>and all packets to 11.22.33.44  will be discarded.
->>
->>All packets to 11.22.33.44 is discarded...but will 11.22.33.44 be able
->>to generate a connection socket?
-> 
-> 
-> if you put a blackhole to destination, all pakets to that ip addres will get "Network is
-> unrecheable" so a TCP connection will never be established.
+>     I think SNATing to 127.0.0.1 would break things, unless this linux
+> router IS your timeserver, which i believe isn't. You should SNAT to your
+> linux router IP not 127.0.0.1.
 
-So if my problem was that 11.22.33.44 was taking up all my SMTP 
-connections, doing ip route add blackhole 11.22.33.44/32 means that all 
-my ACK's get discarded silently and if the blackhole was done locally 
-the processes just get a EINVAL error. So basically MY processes have to 
-wait for a timeout. What I'd rather achieve is that the SYN from 
-11.22.33.44 not even get through.
+Yes it is actually. Its load is aprox. > 2.0 most of the time but it works
+:)
 
-Looks like it's still something for iptables.
+>     Last ...... are you sure protocol used for time syncing works fine when
+> DNATted ?? I dont know, never tried this.
+
+I don't know that yet, that is a thing I want to try. And if it doesn't
+work, I'll try to write a wrapper around it.
+
+
+Folkert
+
++--------------------------------------------------------------------------+
+| UNIX sysop? Then give MultiTail ( http://www.vanheusden.com/multitail/ ) |
+| a try, it brings monitoring logfiles to a different level! See:          |
+| http://www.vanheusden.com/multitail/features.html for a feature list.    |
++---------------------------------------------------= www.vanheusden.com =-+
+
 
