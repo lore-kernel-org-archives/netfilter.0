@@ -1,11 +1,16 @@
-From: - = k o l i s k o = - <kolisko@penguin.cz>
-Subject: h323 in 2.5.X kernel
-Date: 18 Feb 2003 15:19:27 +0100
+From: "Miguel Amador L." <amador@puc.cl>
+Subject: How to Block MSN
+Date: Tue, 18 Feb 2003 13:40:09 GMT
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045577967.14083.15.camel@kolisko>
+Message-ID: <20030218134009.93454.qmail@smtp.puc.cl>
+References: <1045555939.94722.jacob_chan@so-net.net.tw>
+            <1045558628.1967.29.camel@kermit.spenneberg.de>
+            <1045560648.1913.39.camel@kermit.spenneberg.de>
+            <3E5207B9.7C2BEDFA@patrick.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E5207B9.7C2BEDFA@patrick.at> 
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,28 +20,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+How to block MSN Messenger ?
+when MSN search Proxy server... send a HTTP HEADER... how to block this HEAD 
+with iptables ? (with out Squid) 
 
-where can i get a h323 patch for 2.5 kernels?=20
+C U 
 
-Tx
-kolisko
-
---=20
-
----
-Michal Koles=E1r
-kolisko@penguin.cz
-http://kolisko.penguin.cz
-+420.777.225.297
-
-
-Don't send me any attachment in Micro$oft (.DOC, .PPT) format please
-Read http://www.fsf.org/philosophy/no-word-attachments.html
-Preferable attachments: .PDF, .HTML, .TXT
-Thanx for adding this text to Your signature
-
+Miguel Angel Amador L.
+e-mail:amador@puc.cl 
 
