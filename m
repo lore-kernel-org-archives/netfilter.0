@@ -1,11 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: List of all modules with their utilization
-Date: Thu, 03 Feb 2005 17:43:20 -0500
-Message-ID: <1107470600.3866.7.camel@hubcap.ljm.dom>
-References: <BAY22-F15234DA3B6F75D3C1C495EF37F0@phx.gbl>
+From: seberino@spawar.navy.mil
+Subject: Re: How multiple PCs on private LAN possible if incoming is DNAT'd
+	to *same* server *always*?
+Date: Thu, 3 Feb 2005 14:59:36 -0800
+Message-ID: <20050203225936.GA31268@spawar.navy.mil>
+References: <20050203172500.GB29677@spawar.navy.mil>
+	<20050203173506.GA4619@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <BAY22-F15234DA3B6F75D3C1C495EF37F0@phx.gbl>
+Content-Disposition: inline
+In-Reply-To: <20050203173506.GA4619@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-On Thu, 2005-02-03 at 17:25, Alexander Bellia wrote:
-> Thanks Samuel,
-> 
-> But what about just the regular modules that comes under the 
-> /lib/modules/..../netfiller directories. There are a lot of modules like 
-> ipt_owner, ipt_physdev, etc....
+>   iptables -t nat -A PREROUTING -i $EXT_IF \
+>     -j DNAT --to-destination $SINGLE_SERVER_IP
 
-so much for thinking for one's self...
+> sorta.  keep in mind that rules in "-t nat" are only applied to packets
+> with state NEW--this is probably the piece you're missing.
 
-the link Samuel provided was to the pom-base modules.  there are also
-pom-extra modules--which if you look over to the left-hand side of the
-web page, you'll see a link to "extra repository."  if you wanna get
-fancy you could just s/base/extra/ in the link that was already
-provided.
+Jason
 
-also--all that information listed there is in the "help" file of each
-POM patch directory.  if i ever need to know what a POM module does; i
-just:
+I appreciate the care you've put into making strong iptables scripts
+and helping people on this list.  I understand your explanation
+but I don't see how a newbie would have known that the iptables
+rule above is to be ONLY applied to NEW state packets.
+Doesn't EVERY incoming packet go through PREROUTING?? And hence,
+the rule above will be applied to ALL incoming packets right?!?
 
-cd /path/to/extracted/pom
-less patchname/help
+I don't see any place above where it says '**this only applies
+to NEW state packets**'.  You must be right but I'm just wondering
+how I would have figured that out on my own. :)
 
-but that's just me...
-
--j
-
---
-"When will I learn? The answer to life's problems aren't at the bottom
- of a bottle, they're on TV!"
-	--The Simpsons
-
+Chris
 
