@@ -1,10 +1,11 @@
-From: dwhite@speakeasy.net
-Subject: Re: Usage of CONNMARK
-Date: Fri, 4 Feb 2005 13:35:42 -0800 (PST)
-Message-ID: <Pine.LNX.4.61.0502041331160.7246@willie>
-References: <42032EC5.4090303@multitech.co.in>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: What is the application sending packet out?
+Date: Fri, 4 Feb 2005 22:35:52 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502042231340.352-100000@darkstar.sysinfo.com>
+References: <1107551244.24666.21.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-In-Reply-To: <42032EC5.4090303@multitech.co.in>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1107551244.24666.21.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,43 +16,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Vinod Chandran <vinod_chandran@multitech.co.in>
-Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Jose Maria Lopez <jkerouac@bgsec.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
+On 4 Feb 2005, Jose Maria Lopez wrote:
 
-Hi vinod,
+> El vie, 04 de 02 de 2005 a las 21:41, Mohammad Khan escribi=C3=B3:
+> > Hello List,
+> >=20
+> > I am not sure about some packet was trying to go out from my router.
+> > Is there a way to know, what application(s) is/are sending those
+> > packets?
+> >=20
+> > Thanks
+> > Mohammad
+>=20
+> Yes, it's very easy. Just use ethereal to capture the packets
+> and identify the ports the application it's using to send the
+> packets, then use lsof -i to see what application it's using
+> that port.
+>=20
+> Regards.
+>=20
+>=20
 
-I could be wrong, but if you want to mark a connection, use CONNMARK, if 
-you want to mark a packet, use MARK.
+In most cases it is easier then that.  Knowing the ports that specific
+apps use can be the first determiner or narrower for making a possible
+answer pop up.  Netstat on the server in qustion is another method, lsof
+is not as common a tool on many vendor offerings still, and then if all
+else is failing falling back upon traffic captures from the wire.  Most
+the time the level of paranoia of going to the most aggresive and
+technically challenging mode is a 'ramp-up' kinda thing.
 
-perhaps there is a better way, but I don't know of one at this point.
+Thanks,
 
--dave
+Ron DuFresne
+--=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-On Fri, 4 Feb 2005, Vinod Chandran wrote:
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
-> Hi,
->
-> I am using the CONNMARK patch.
-> Inside conntrack_core, in case of special conditions, I have modified the 
-> mark value in the conntrack.
->
-> I then added the following rules in FORWARD chain.
->
-> iptables -t mangle -A FORWARD -m connmark --m mark 1 -j DROP
->
-> where the CONNMARK is set in case of the illegal packet.
->
-> However this CONNMARK value is getting effective only for the next packet and 
-> not for the same packet.
->
-> Is there some way by which, I can make the settings applicable to the same 
-> packet itself?
->
-> Thanks and Regards,
-> Vinod C
->
->
 
