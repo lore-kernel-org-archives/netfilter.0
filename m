@@ -1,13 +1,12 @@
-From: Frank Gruellich <frank@home.manuelm.org>
-Subject: Re: Filtering multiple networks
-Date: Mon, 31 May 2004 12:08:04 +0200
+From: "Markus Zeilinger" <mz@sea.uni-linz.ac.at>
+Subject: FW: Filtering multiple networks
+Date: Mon, 31 May 2004 12:32:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040531100803.GZ26731@home.manuelm.org>
-References: <E1BUjWm-0005kj-GQ@vishnu.netfilter.org>
+Message-ID: <E1BUk4b-0006Wv-Cf@vishnu.netfilter.org>
+Reply-To: <mz@sea.uni-linz.ac.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <E1BUjWm-0005kj-GQ@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,8 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
+
+Hi Frank,
+
+thx for you prompt answer! Two questions on your comments:
+
+- Thy is DROP bad here? As I see REJECT would send an error message back to
+the source, but this would not make any sense on packets coming on the WAN
+interface with private IP addresses, or am I wrong?
+
+- Why is INPUT not appropriated here? Should I do the dropping earlier
+perhaps in the mangle table?
+
+And yes I will do something similiar in the FORWARD chain :-)
+
+Thx again!
+
+Cheers,
+Markus
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Frank Gruellich
+Sent: Monday, May 31, 2004 12:08 PM
+To: netfilter
+Subject: Re: Filtering multiple networks
 
 * Markus Zeilinger <mz@sea.uni-linz.ac.at> 31. May 04:
 > Hi all,
@@ -60,4 +83,5 @@ HTH,
  regards, Frank.
 -- 
 Sigmentation fault
+
 
