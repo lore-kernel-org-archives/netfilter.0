@@ -1,13 +1,15 @@
-From: Anoop S <anoop@it-om.com>
-Subject: RE: Protocol wise graphs
-Date: 17 Feb 2003 15:48:44 +0530
+From: Chris Barnes <runtimeerror@bigpond.com>
+Subject: Re: newbie problem
+Date: 17 Feb 2003 21:31:02 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045477125.15042.4.camel@brahmos>
-References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5C7@EXCHANGE>
+Message-ID: <1045477862.21055.7.camel@billybob.back2front.homelinux.org>
+References: <1045467799.20801.22.camel@billybob.back2front.homelinux.org> 
+	<200302170309.16516.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-P5SD/Sbyc0/RZ6orvQoW"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC5FB5C7@EXCHANGE>
+In-Reply-To: <200302170309.16516.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +19,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter List <netfilter@lists.netfilter.org>
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2003-02-13 at 19:09, Khanh Tran wrote: 
-> ntop is supposed to do this well, but it was always a bit unstable for me...
-> 
-Thanx for that 
-but i have tried ntop and fortunately :-) it has worked very well on my
-system. however it doesnt give what i want (maybe i din look at it
-fully). 
 
-i ll give an idea as to what i m looking to. 
+--=-P5SD/Sbyc0/RZ6orvQoW
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
----> statistics as to what ports and services are being used by a
-particular user of my LAN with amount of traffic (inbound/outbound)
-generated.
----> auto protocol discover
+On Mon, 2003-02-17 at 19:09, Joel Newkirk wrote:
+>=20
+> You have to accept connections TO port 80, not FROM port 80...
+>=20
+> Try these:
+>=20
+> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>=20
+> They will allow clients to connect and retrieve http documents, as well=20
+> as allowing the very useful ICMP controls like source_quench=20
+> fragmentation control and such that really make web browsing work=20
+> properly, but no other communication in OR out is allowed by these=20
+> rules.  (assuming DROP policy on OUTPUT)  Add appropriate ACCEPT rules=20
+> to OUTPUT if the server needs to initiate connections for some reason.
+>=20
 
-sori for the language if it aint clear.
-thanx
+source_quench (sounds like a fruit juice drink :p ) and all that is
+really important? hmm, i had no idea such things existed (excuse my
+ignorance..newbie here).
+
+I'll make sure i add those rules...
+
+thanks heaps.
+
+
+--=-P5SD/Sbyc0/RZ6orvQoW
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA+ULnlMutcjt77K+ARAp4GAJ94cV9bjN4JbgDry9M/5QlEZdjIYACgiNGW
+dzktnHGsEWyjRh26EcN60ug=
+=VI8u
+-----END PGP SIGNATURE-----
+
+--=-P5SD/Sbyc0/RZ6orvQoW--
 
 
