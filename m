@@ -1,8 +1,8 @@
-From: Cris Harrison <Webmaster@phoenixcomm.net>
-Subject: netfilter & OpenBSD
-Date: Mon, 24 Feb 2003 16:56:26 -0600
+From: Bob <q@umn.edu>
+Subject: Restricting IP addresses from ports
+Date: Wed, 26 Feb 2003 09:33:16 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.0.20030224165453.019993f0@mail.phoenixcomm.net>
+Message-ID: <Pine.LNX.4.44.0302260931300.23134-100000@ns1.teamraf.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,12 +14,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-how can I run netfilter on a SPARC OpenBSD box??????
 
-Cris Harrison
+  Or better yet, how do I allow a specific IP address access to a port 
+like SSH?  I want to deny all access to ports on a system that I manage 
+except for specific addresses.
+
+  Thanks!
+   Bob
 
 
