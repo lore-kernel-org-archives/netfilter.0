@@ -1,13 +1,13 @@
 From: "Ferry van Steen" <ferry.van.steen@infopart.nl>
 Subject: RE: Hosts.Deny Question??
-Date: Thu, 12 Sep 2002 15:01:46 +0200
+Date: Thu, 12 Sep 2002 14:48:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000101c25a5c$8cb49090$1be02a0a@infopart.nl>
-References: <9AB58396B028D411B2110050040C7AD801910D77@pc213-104.indigo.ie>
+Message-ID: <000001c25a5a$a0b3f560$1be02a0a@infopart.nl>
+References: <9AB58396B028D411B2110050040C7AD801910D75@pc213-104.indigo.ie>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <9AB58396B028D411B2110050040C7AD801910D77@pc213-104.indigo.ie>
+In-Reply-To: <9AB58396B028D411B2110050040C7AD801910D75@pc213-104.indigo.ie>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +20,6 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: 'Niall Murphy' <nmurphy@viking.ie>
 Cc: netfilter@lists.netfilter.org
-
-Ofcourse you could use any file to put configuration options in it but I
-advise strongly against putting firewall rules into
-/etc/hosts.(allow/deny) as they are for TCP Wrappers and NOT for
-firewalling. Firewall rules should go in /etc/rc.d/rc.firewall or
-/etc/init.d/rc.firewall or whatever your favorite distro uses as start
-up scripts.
-
-Concerning the firewall rules itself, Antony Stone already answered
-those. 
-
-Kind regards,
-
-Ferry van Steen
-
-
-
------Original Message-----
-From: Niall Murphy [mailto:nmurphy@viking.ie] 
-Sent: donderdag 12 september 2002 14:49
-To: 'Ferry van Steen'
-Subject: RE: Hosts.Deny Question??
-
-thats what i mean sorry!! i have a red hat 7.2 firewall in front of a nt
-email and proxy server etc.
-but i want to use host.deny in the firewall rules to block certain ip
-and
-email addresses
-
------Original Message-----
-From: Ferry van Steen [mailto:ferry.van.steen@infopart.nl]
-Sent: Thursday, September 12, 2002 1:48 PM
-To: 'Niall Murphy'
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Hosts.Deny Question??
-
 
 1. Wrong mailinglist
 2. Not enough info (what SMTP server are you running)
