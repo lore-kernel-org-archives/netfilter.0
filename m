@@ -1,14 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: How to DNAT the only NetBios broadcast traffic
-	(03:00:00:00:00:01)??
-Date: Mon, 14 Jun 2004 10:45:43 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DNAT question
+Date: Mon, 14 Jun 2004 15:51:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087224343.5243.39.camel@localhost>
-References: <001b01c451c5$3c734150$1d01a8c0@palettemm.com>
+Message-ID: <200406141551.28214.Antony@Soft-Solutions.co.uk>
+References: <519AD2BA94FC6E4DB5DE078B2E37CB10A37999@PDBEX01E.pdb.fsc.net>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001b01c451c5$3c734150$1d01a8c0@palettemm.com>
+In-Reply-To: <519AD2BA94FC6E4DB5DE078B2E37CB10A37999@PDBEX01E.pdb.fsc.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +18,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: bassam@palettemm.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-06-14 at 00:08, Bassam A. Al-Khaffaf wrote:
-> Dear All,
->=20
->    I am implementing a Linux box gateway that lunch my own firewall (I
-> wrote my own iptables rules). The gateway connects two LANs, LAN1:
-> 192.168.1.0/24 and LAN2: 192.168.0.0/24. LAN1 contains a windows 2000
-> server domain controller IP: 192.168.1.231 and LAN2 contains my
-> clients based on windows xp.
->=20
-> =20
->=20
-> In fact I got stuck on how to forward ONLY and ONLY the NETBIOS
-> broadcast traffic (03:00:00:00:00:01) from any machine on LAN2 to the
-> domain controller on LAN1. Take note that the NETBIOS traffic is
-> carried on IEEE 802.3 Ethernet.
->=20
-> =20
->=20
-> I wrote the following iptable rule, but here all the traffic will be
-> directed from LAN2 to the domain controller on LAN1
->=20
-> Iptables =E2=80=93t nat =E2=80=93A PREROUTING =E2=80=93I eth1 =E2=80=93j =
-DNAT =E2=80=93to-destination
-> 192.168.1.231
->=20
-> =20
->=20
-> So can anybody help me on how can I forward the traffic with
-> destination MAC address 03:00:00:00:00:01 from LAN2 to the domain
-> controller (192.168.1.231) on LAN1?
->=20
-> =20
-<snip>
-I have always used some kind of NetBIOS Name Service in a routed
-environment just so that I do not have to handle the broadcasts.  In
-fact, I usually do this in a large switched environment as well to
-minimize the broadcast traffic.
+On Monday 14 June 2004 3:35 pm, Arnauts, Bert wrote:
 
-Where it is absolutely necessary, I have implemented a UDP helper to
-turn the broadcast packets into unicast packets (similar to DHCP relay).
---=20
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net=20
+> Hello all,
+>
+> I want to DNAT some machines in another subnet.
+> The target machines have ip's like 11.0.0.x/24
+>
+> My available lan ip's are 172.239.239.x/27 (255.255.255.224)
+>
+> These are my rules. Wich are apparently not working.
+
+How are you trying to test the rules?   What tells you they're not working?
+
+Where are you testing from?
+
+> I created virtual interfaces on eth1, one for each DNAT'ed ip.
+
+Can you ping one of those addresses fom a machine directly connected to eth1, 
+qand then check the arp cache (arp -an under Linux) to be sure that the IP / 
+MAC address link is working correctly?
+
+> What am I missing ? Forget about normal tables stuff, I only want this
+> machine to do DNAT.
+
+What does "iptables -L -t nat -nvx" show you for the packet / byte counters?   
+Does it look like netfilter thinks it's doing any NAT?
+
+> INET_IP="172.25.239.208"
+> INET_IFACE="eth1"
+> INET_BROADCAST="172.25.239.223"
+> LAN_IP="11.0.0.1"
+> LAN_IP_RANGE="11.0.0.0/24"
+> LAN_IFACE="eth0"
+> LO_IFACE="lo"
+> LO_IP="127.0.0.1"
+> IPTABLES="/sbin/iptables"
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+> $IPTABLES --flush
+> $IPTABLES --table nat --flush
+> $IPTABLES --delete-chain
+> $IPTABLES --table nat --delete-chain
+> $IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source
+> $INET_IP
+> $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+> $IPTABLES -t nat -A PREROUTING -d 172.25.239.220/255.255.255.224 -j DNAT
+> --to 11.0.0.9
+
+Try $IPTABLES -t nat -A PREROUTING -d 172.25.239.220/27 -j DNAT --to 11.0.0.9 
+instead of the above netmask.
+
+Regards,
+
+Antony.
+
+-- 
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
