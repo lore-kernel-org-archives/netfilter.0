@@ -1,11 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: open ports 25/tcp and 110/tcp
-Date: Wed, 3 Dec 2003 23:01:11 +0000
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: open ports 25/tcp and 110/tcp
+Date: Thu, 4 Dec 2003 00:08:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312032301.11900.Antony@Soft-Solutions.co.uk>
+Message-ID: <20031203230801.40CDE9A9@sterenborg.info>
 References: <002101c3b9ef$53e5d780$0201a8c0@OurPC>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <002101c3b9ef$53e5d780$0201a8c0@OurPC>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -20,44 +20,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 03 December 2003 10:46 pm, David F. Strauch wrote:
+> Although my script seems to be correct namp is finding ports 25/tcp
+> and 110/tcp open.  To start troubleshooting this problem I've
+> commented everything out and stripped down the ruleset to just the
+> default DROP policy.  Yet nmap -sT -F -P0 -0 xx.xx.xx.xx still
+> returns 25/tcp and 110/tcp as open!
 
-> Hello All,
->
-> I've been working with giptables firewall and have run into a big issue.
-> Although my script seems to be correct namp is finding ports 25/tcp and
-> 110/tcp open.  To start troubleshooting this problem I've commented
-> everything out and stripped down the ruleset to just the default DROP
-> policy.  Yet nmap -sT -F -P0 -0 xx.xx.xx.xx still returns 25/tcp and
-> 110/tcp as open!
->
-> Now I'm starting to think that iptables is broken. I've built iptables with
-> grsecurity-1.9.12 and iptables1.2.8 with a plain vanilla kernel 2.4.22   Is
-> anyone aware of any issues?
+Did you check the PC from another host ? If you do that, the ports 
+will show open even if they are closed.
+Check from another host and it should show closed or filtered.
 
-Where are you testing from?
 
-Is there any chance (particularly with port 25) that the requests are being 
-redirected to some other server, and this is what is being reported as open?
-
-Try doing "telnet xx.xx.xx.xx 25" and see what login banner you get for the 
-SMTP service - does this correspond to the machine you're testing, or any 
-other machine you know about?
-
-Try the same thing on port 110 and see if that login banner reveals a clue 
-either.
-
-Antony.
-
--- 
-The idea that Bill Gates appeared like a knight in shining armour to lead all 
-customers out of a mire of technological chaos neatly ignores the fact that 
-it was he who, by peddling second-rate technology, led them into it in the 
-first place.
-
- - Douglas Adams in The Guardian, 25th August 1995
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Gr,
+Rob
 
 
