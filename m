@@ -1,11 +1,11 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Re: Redhat linux disconnecting telnet session
-Date: Thu, 14 Nov 2002 09:24:09 -0500
+From: Tom Elsesser <tom@acalgrinding.dyndns.org>
+Subject: http forwarding
+Date: Thu, 14 Nov 2002 09:59:42 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008a01c28be9$7f19bff0$8c01a8c0@sundaram>
-References: <000e01c28b5c$29656c40$8c01a8c0@sundaram> <200211141040.30235.dharmu@nsecure.net>
+Message-ID: <cld7tugoh1bo72ihi68e98j7sh2a19kqn4@4ax.com>
+Reply-To: tom@acalgrinding.dyndns.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,81 +17,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: dharmu@nsecure.net, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+I have 2 linux boxes on a network. One box (yzerman)is connected to an
+EN5861 router by eth1 and the network by eth0, the other (ulysses)is
+just on the network from eth0. I have iptables on yzerman and am
+trying to forward http request to ulysses. The router and eth1 are on
+a 10.10.10.0 subnet, while the rest of the network is on a 10.1.1.0
+subnet. The router cannot directly route the http requests from the
+outside to ulysses, so I am trying to forward them from yzerman, but
+it is not working as the connection times out if I try to connect from
+the outside. I pieced together the iptables rulesets from what I've
+gather from this list and other resources, but if someone could point
+me in the correct direction I would appreciate it.
 
-I am getting the login screen after some time, its closing the telnet
-session.
+Nics on yzerman:
+eth0 =3D 10.1.1.1
+eth1 =3D10.10.10.1
 
-Thanks
+Nics on ulysses:
+eth0 =3D 10.1.1.2
 
-sample steps:
-========
-$ date
-Thu Nov 14 08:37:10  2002
+Router ip addy:=20
+10.10.10.2
 
-Administrator@SUNDARAM ~
-$ telnet 192.168.1.180
-Trying 192.168.1.180...
-Connected to 192.168.1.180.
-Escape character is '^]'.
+Thanks in advance.
 
-Red Hat Linux release 7.1 (Seawolf)
-Kernel 2.4.2-2 on an i686
-login: ptce
-Password:
-Last login: Thu Nov 14 01:46:31 from 192.168.1.37
-[ptce@ptcedemo ptce]$ ls
-Desktop  nsmail
-[ptce@ptcedemo ptce]$ who
-ptce     pts/0    Nov 14 14:27
-ptce     :0       Nov 11 15:51
-ptce     pts/1    Nov 11 15:52
-ptce     pts/2    Nov 12 21:46
-ptce     pts/3    Nov 12 22:10
-[ptce@ptcedemo ptce]$ ls
-Desktop  nsmail
-[ptce@ptcedemo ptce]$ Connection closed by foreign host.
+#!/bin/sh
 
-Administrator@SUNDARAM ~
-$ date
-Thu Nov 14 09:22:10  2002
+# Turn on ipforwarding just in case
+echo "1" > /proc/sys/net/ipv4/ip_forward
 
+# Flush old rulesets
+/sbin/iptables -F
+/sbin/iptables -F -t nat
 
+# Default policies
+/sbin/iptables -P INPUT ACCEPT
+/sbin/iptables -P OUTPUT ACCEPT
+/sbin/iptables -P FORWARD DROP
 
------ Original Message -----
-From: "Dharmendra.T" <dharmu@nsecure.net>
-To: "Sundaram Ramasamy" <sun@percipia.com>; <netfilter@lists.netfilter.org>
-Sent: Thursday, November 14, 2002 12:10 AM
-Subject: Re: Redhat linux disconnecting telnet session
+# Masq out eth1 (to router)
+/sbin/iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 
+# Allow packets to return
+/sbin/iptables -A FORWARD -i eth1 -m state --state RELATED,ESTABLISHED
+-j ACCEPT
 
-> Could you say it briefly as the information given by you is not
-sufficient.
-> Like what happen when you enter
-> #telnet host
->
-> All these information will help us i solving your problem.
->
-> Regards,
-> Dharmendra.T
-> Linux Security Expert
-> www.nsecure.net
-> dharmu@nsecure.net
-> On Thursday 14 November 2002 03:02, Sundaram Ramasamy wrote:
-> > HI,
-> >
-> > I have redhat Linux 7.1, when ever I do telnet session it disconnecting
-> > after some time ( Even When I was doing something).
-> >
-> > How will I fix this?, What should I look for?
-> >
-> > Thanks
-> > Sundaram
->
-> --
->
->
+# Allow packets out
+/sbin/iptables -A FORWARD -i eth0 -s 10.1.1.0/8 -j ACCEPT
+
+# Forward squirrelmail http request to ulysses
+/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT
+--to 10.1.1.2
+
+# Connect to port 81 (squirrelmail) from outside
+/sbin/iptables -A INPUT -i eth1 -d 0/0 -p tcp --dport 80 -j ACCEPT
+
+# Connect via ssh from outside
+/sbin/iptables -A INPUT -i eth1 -d 0/0 -p tcp --dport 22 -j ACCEPT
+
+# Log to syslog
+# /sbin/iptables -A INPUT -j LOG
 
 
