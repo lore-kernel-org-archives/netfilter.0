@@ -1,15 +1,15 @@
-From: =?ISO-8859-1?Q?Bj=F8rn?= Ruberg <bjorn@ruberg.no>
-Subject: Re: DNAT to localhost
-Date: 14 Nov 2002 07:02:50 +0100
+From: Fabrice MARIE <fabrice@netfilter.org>
+Subject: Re: Time based rules ...
+Date: Thu, 14 Nov 2002 14:54:03 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037253770.11775.18.camel@lilleulv>
-References: <1037219719.6450.5.camel@tux.go-nix.ca>
-	<1037225641.10536.1.camel@lilleulv> 
-	<1037231613.6791.13.camel@tux.go-nix.ca>
+Message-ID: <200211141454.03963.fabrice@netfilter.org>
+References: <1037199668.4556.30.camel@rayw.knowledgefactory.co.za> <1037248941.4556.54.camel@rayw.knowledgefactory.co.za> <200211141144.21999.dharmu@nsecure.net>
+Reply-To: fabrice@netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1037231613.6791.13.camel@tux.go-nix.ca>
+In-Reply-To: <200211141144.21999.dharmu@nsecure.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,44 +19,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: dharmu@nsecure.net, Raymond Leach <raymondl@knowledgefactory.co.za>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Thu, 2002-11-14 at 00:53, Nix N. Nix wrote:
-> On Wed, 2002-11-13 at 17:14, Bj=F8rn Ruberg wrote:
-> > On Wed, 2002-11-13 at 21:35, Nix N. Nix wrote:
 
-[snip]
+Hi,
 
-> I wrote a util that would open a SOCK_DGRAM socket and bind it to a
-> specific interface, like 127.0.0.1:<some_port> or
-> 192.168.1.1:<some_port> .  Thus, I had something listening on
-> localhost:8080/udp.  I added the rule, then tried this from a computer
-> on the 192.168.1.0/24 network (in bash):
->=20
-> echo -n 'Abracadabra' > /dev/udp/192.168.1.1/80
->=20
-> This had no effect.  It did have an effect without the rule and with my
-> util listening on 192.168.1.1:80 .
+On Thursday 14 November 2002 14:14, Dharmendra.T wrote:
+> But I don't think we can specify the time option in iptables. If any
+> modules are there using which we can specify the time let us know.
+> [...]
 
-Are you familiar with the brilliant tool netcat? You find it at
-http://www.atstake.com/research/tools/
+You can have a look at:
+http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.html
+and particularly at :
+http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-3.html#ss3.17
 
-> > When you debug your iptables rules, turn on full logging to see what is
-> > being dropped.
->=20
-> How do I do that ?
+> > > On Wednesday 13 November 2002 20:31, Raymond Leach wrote:
+> > > > Hi
+> > > > Is there a way to put time restrictions on rules?
+> > > > For eaxmple, something like:
+> > > > iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
+> > > > 0700:1700 -j DROP
+> > > > It would be nice ...
+> > > > Ray
 
-Check out the LOG target (you'll find it in the netfilter docs) and find
-out how it works. Then apply a LOG rule before you redirect. If what you
-see there makes sense, apply (or add) a LOG rule after the redirect.
-Then you will be able to debug your redirection properly.
+Have a nice day,
 
-You may also want to take a look at the utilities tcpdump and ethereal.
-Be, however, aware that the source code to tcpdump has been trojaned in
-at least one of the versions. Check with your Linux vendor
-(www.redhat.com etc) for precompiled packages.
+Fabrice.
+--
+Fabrice MARIE
 
-Bj=F8rn
-
+"Silly hacker, root is for administrators"
+       -Unknown
 
