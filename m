@@ -1,11 +1,11 @@
-From: "Younger Wang" <younger.wang@42networks.com>
-Subject: What targets are available in mangle table
-Date: Wed, 7 Apr 2004 14:42:39 +0800
+From: Jochen Vogel <jvogel@it-sec.de>
+Subject: AW: bootp problems
+Date: Wed, 7 Apr 2004 09:50:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000101c41c6b$86d682a0$1664640a@Younger>
+Message-ID: <D3DD55FDB74AD511BA5100500416368053E843@ORION>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Received: **stripped**
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,18 +16,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi, 
+> > [DialIn]2.2.2.2----2.2.2.1[FW]1.1.1.1---1.1.1.2[DHCP]
+> >
+> > the DialIn tries to get an IP from the DHCP Server.
+> 
+> You need a DHCP relay on the 2 network to do this.
+> 
+> DHCP requests do not cross routers (they are ethernet broadcasts).
 
-In iptables tutorial, it says "Targets that are only valid in the mangle
-table: TOS, TTL and MARK".. 
+Hi antony,
 
-Does it mean that only TOS TTL and MARK are valid in mangle table or TOS
-TTL and MARK are valid only in mangle table? I am confused. Thank you!
+The DialIN should play Relay
 
-BR
-Younger Wang
+FIRST the DialIn try it DIRECTLY to the DHCP Server
+with tcpdump on 2.1 i can see 0.0.0.0:68 > 1.1.1.2:67
+It doesnt work and i CANT see any entry in the iptables log
 
+SECOND the DialIn try it with BROADCAST
+with tcpdump on 2.1 i can see 0.0.0.0:68 > 255.255.255.255:67
+It doesnt work and i CAN see an entry in the iptables log
 
+Thx for more informations
+Jo
 
