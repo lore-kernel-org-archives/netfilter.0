@@ -1,13 +1,14 @@
-From: "Kevin L. Collins" <kcollins@qx.net>
-Subject: RE: Trying to get a Subnet NATted
-Date: Sun, 8 Dec 2002 22:52:20 -0500
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: How to change a packet's arriving interface? -j ROUTE?
+Date: 09 Dec 2002 07:32:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c29f36$62cbd0d0$6401a8c0@athlon>
-References: <000f01c29f2f$9390b9d0$020aa8c0@winxp>
+Message-ID: <1039411928.1714.3.camel@rayw.knowledgefactory.co.za>
+References: <3DF0D338.C2F4E50@Gallantry.com>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-cXl92us0/3MQXsV/GjzV"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000f01c29f2f$9390b9d0$020aa8c0@winxp>
+In-Reply-To: <3DF0D338.C2F4E50@Gallantry.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,118 +18,87 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Matthew Hellman' <mhellman@raccoon.com>, netfilter@lists.samba.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Matthew:
 
-Thanks for responding....
+--=-cXl92us0/3MQXsV/GjzV
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> I'm not exactly sure I understand your network setup, but in 
-> a more typical setup one normally SNAT's all connections 
-> going out the external interface (because everything behind 
-> the firewall is "private").
-> 
-> You seem to be saying that you are receiving packets with 
-> private source addresses on the "external" interface of your 
-> linux box and that these packets are destined for the 
-> Internet?  Why would you Linux box be receiving these packets 
-> for routing?  It doesn't seeem like it should be in the routing path.
+Hi
 
-You're right, This isn't typical.  I have my WAN lines terminating at my
-ISP. They in turn forward these packets to me via the aDSL line.  That's
-the whole problem.  Because the Linux box "sees" them as being bound for
-another destination (the Internet in this case), The machine just
-forwards them along without modifing them (i.e. leaving the source
-address is unmodified) and my ISP's routers then kill these packets for
-being like this.
+Use SNAT on the POSTROUTING chain in the NAT table.
 
-The funny thing about this is:  I've got a MS Proxy Server 2.0, that's
-doing the natting for me now.  So it is possible - somehow.  I think I
-need to somehow tell my Linux machine that the packets with the
-10.200.9.x and 10.200.10.x source addresses should be NATted as they
-leave the routing process, but I can't get this done.  I grant you my
-knowledge of Linux and IPTABLES is weak, which is why (after a week of
-pulling teeth) I've posed the problem the list. 
+iptables -t nat -A POSTROUTING -d $NET_DMZ -j SNAT --to-source
+$IP_DMZ_IFACE
 
-I've got this command in my script:
-iptables -t nat -A POSTROUTING -o EXTIF -j SNAT --to-source EXTIP
+also you would need a FORWARD rule to route the initial traffic:
+iptables -A FORWARD -d $NET_DMZ -j ACCEPT
 
-Which (the way I read it) should NAT ALL packets going OUT across the
-external interface.  But I think what's happening is ONLY the packets
-coming from the Linux box ir it's internal interface is getting natted
-(which would be typical).  But I need to "tell" Linux that the other
-subnets NEED the NATting as well.  Is that possible?
+These are the least restrictive examples of possible rules. The above
+assumes you have public ips in your DMZ.
 
-I've also tried this:
-iptables -t nat -A POSTROUTING -o EXTIF -j SNAT --to-source EXTIP
-iptables -t nat -A POSTROUTING -s 10.200.9.0/24 -o EXTIF -j SNAT
---to-source EXTIP
-iptables -t nat -A POSTROUTING -s 10.200.10.0/24 -o EXTIF -j SNAT
---to-source EXTIP
+Ray
 
-And that didn't work either.
+On Fri, 2002-12-06 at 18:41, Jason Liao wrote:
+> Hi,
+>=20
+> I have a firewall running iptables with 3 interfaces: LAN, WAN and DMZ.=20
+> The LAN IP address is 10.0.0.1/24, WAN 66.134.34.157/28, and DMZ
+> 66.134.34.249/28.  The WAN interface connects to the Internet and the
+> DMZ interface connects to a stub network.
+>=20
+> When someone sends a packet to the IP address of the DMZ interface from
+> the Internet, the packet x.x.x.x->66.134.34.249 arrives at the WAN
+> interface.  I want to know if there is a way using iptables (maybe with
+> other tools such as iproute2) to make this packet to appear as if it
+> arrives at the DMZ interface.  The packet itself should not be
+> modified.  I need this to work because I am running an IPSec VPN with
+> FreeS/WAN on the DMZ interface.  When the ESP packets arrives on the WAN
+> interface, they cannot be properly processed by IPSec because the ipsec0
+> interface is tied to the DMZ interface directly. =20
+>=20
+> I looked at the mangle table but could not figure out if it is the right
+> direction.  I read about the ROUTE target but do not know if this target
+> is for diverting packets to be sent OUT on another interface, or can it
+> be used to change a packet's arriving interface.
+>=20
+> Thanks in advance.
+>=20
+> Jason Liao
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
 
-Kevin 
+--=-cXl92us0/3MQXsV/GjzV
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-> 
-> ----- Original Message -----
-> From: "Kevin L. Collins" <kcollins@qx.net>
-> To: <netfilter@lists.samba.org>
-> Sent: Sunday, December 08, 2002 7:57 PM
-> Subject: FW: Trying to get a Subnet NATted
-> 
-> 
-> > First I want to appologize if this makes it to the list more than 
-> > once, I've been having trouble joinging the list.
-> >
-> > I've got a strange situation where I receive data from my WAN links 
-> > across the same Interface as my External Interface.
-> >
-> > Let me try to explain it with ACSII art....
-> > +--------------+
-> > |     WAN      |
-> > |10.200.9.x/24 |
-> > |10.200.10.x/24|
-> > +------+-------+
-> >        |
-> >       aDSL
-> >        |
-> > +------+------+
-> > |Real Internet|
-> > |   Subnet    |
-> > |   eth0 of   |
-> > |  Linux Box  |
-> > +-------------+
-> >
-> > I need to be able to bring the packets from the WAN subnet and then 
-> > "SNAT" them to allow them to go back out on to their final Internet 
-> > Destination.  As it stands right now, the Linux machine is simply 
-> > routing them through to the Default Gateway and my ISP's router is 
-> > killing the packets because they are "improper" as they have a 
-> > destination address in the Private LAN subnets.
-> >
-> > What I would to do is have IPTABLES apply the SNAT 
-> arrangement that I 
-> > have configured for my Internal LAN.  Is this even 
-> possible?  And if 
-> > so, how would I go about doing it?  I've tried several 
-> things over the 
-> > past week tro make it happen, but nothing is working.  I 
-> think I have 
-> > to do something BEFORE the routing takes place, but I'm not 
-> sure what.  
-> > ANY help would be GREATLY appreciated.
-> >
-> > Kevin L. Collins, MCSE
-> > Systems Manager
-> > Nesbitt Engineering, Inc.
-> >
-> >
-> >
-> 
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
+iD8DBQA99CrYh1fuR/Bv+ygRAgQ+AJ0dkkwFf9lZ1oSetE4b+zotUz6Z4gCePLpr
+Sj2mbALOAjo0N/hmBmdb13c=
+=F5Ri
+-----END PGP SIGNATURE-----
+
+--=-cXl92us0/3MQXsV/GjzV--
 
 
