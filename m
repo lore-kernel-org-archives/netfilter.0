@@ -1,14 +1,11 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: IPTables & HTTPD Conflict
-Date: Mon, 4 Apr 2005 15:40:21 +0600
-Message-ID: <a0f69e5050404024079ea9980@mail.gmail.com>
-References: <200504031339.j33DdR2X003262@osprey.tkevans.com>
-	<249c202905040319115c97c290@mail.gmail.com>
-Reply-To: Askar <askarali@gmail.com>
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Load balancing
+Date: Mon, 4 Apr 2005 13:46:20 +0400
+Message-ID: <9927912d05040402467fd411c7@mail.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <249c202905040319115c97c290@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,35 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: J A <jake.lists@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-how should we suggest something without watchen your iptables rules set?
+Hi to all,
 
-regards
+I have this rule:
 
+iptables -t nat -A PREROUTING -i eth0 -o eth1 -d 192.0.34.72 -j dnat
+--to-destination 192.168.1.3-192.168.1.4
 
-On Apr 4, 2005 8:11 AM, J A <jake.lists@gmail.com> wrote:
-> Hello All,
-> 
-> We're using Redhat 9
-> We've been running a Web Server (Apache & Tomcat), and were told to
-> run a firewall, in this case IPTables.  When we enabled IPTables, many
-> of our web sites (BUT not all) could no longer be browsed from the
-> Internet.
-> 
-> Could you tell us which specific IPTables parameter is doing this, so
-> we could disable only the specific parameter?
-> Or is it not advisable to run IPTables side-by-side with Web services?
-> 
-> Thanks, appreciate your ideas.
-> 
-> ---jake
-> 
-> 
+It is supposed to be load balancing by taking the traffic from the
+host (192.168.1.2)on which this rule is used and balancing between the
+PCs with the ip addrs specified by the ip addr range
+192.168.1.3-192.168.1.4.
 
+What I would like to know what will happen if I apply this rule on the
+PCs doing the load balancing (192.168.1.3-192.168.1.4). The two PCs
+are connected back to back with a cross-over cable. The interfaces
+used for this connection are both eth1.
 
--- 
-I love deadlines. I like the whooshing sound they make as they fly by.
-Douglas Adams
+                                                                      
+ __________
+ <MY NET>---->    -------- PC2 (192.168.1.3)------->|                 |
+ 192.168.1.2/24    |                                            | ROUTER   |
+                           -------- PC1 (192.168.1.4)------->|__________|
+
+If I apply the above rule on PC (192.168.1.3 instead of MY NET, will
+it still load balance the traffic on the two PCs.
+
+Regards,
+Visham
 
