@@ -1,11 +1,13 @@
-From: "Aaron Clausen" <techlists@alberni.net>
-Subject: Re: Iptables 1.2.8 Compile Errors
-Date: Wed,  2 Jul 2003 15:26:25 -0700
+From: "Sebastian" <netfilter@basti79.de>
+Subject: RE: Iptables 1.2.8 Compile Errors
+Date: Thu, 3 Jul 2003 00:54:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307021526.AA497484112@mail.alberni.net>
-Reply-To: <techlists@alberni.net>
+Message-ID: <000001c340ec$d9d377c0$0200a8c0@basti79>
+References: <200307021526.AA497484112@mail.alberni.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200307021526.AA497484112@mail.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +18,78 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>, David Busby <busby@pnts.com>
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
----------- Original Message ----------------------------------
-From: "David Busby" <busby@pnts.com>
-Reply-To: "David Busby" <busby@pnts.com>
-Date:  Wed, 2 Jul 2003 12:27:37 -0700
+Hello...
 
->Show us the errors?
+I'm not so familiar with the sources, but I think the problem is the
+different definition of the struct ipt_route_target_info (in
+include/linux/netfilter_ipv4/ipt_ROUTE.h) between POM you use and the
+laterst CVS. The patch-o-matic 20030107 was release long befor
+iptables-1.2.8, you should probably try a CVS version of patch-o-matic.
 
-Sorry, here's the whole error:
+Greets
+Sebastian.
 
-ld -shared -o extensions/libipt_NETMAP.so extensions/libipt_NETMAP_sh.o
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_ROUTE_sh.o -c extensions/libipt_ROUTE.c
-extensions/libipt_ROUTE.c: In function `init':
-extensions/libipt_ROUTE.c:44: structure has no member named `oif'
-extensions/libipt_ROUTE.c:45: structure has no member named `iif'
-extensions/libipt_ROUTE.c:46: structure has no member named `gw'
-extensions/libipt_ROUTE.c: In function `parse':
-extensions/libipt_ROUTE.c:73: structure has no member named `oif'
-extensions/libipt_ROUTE.c:76: structure has no member named `oif'
-extensions/libipt_ROUTE.c:78: structure has no member named `oif'
-extensions/libipt_ROUTE.c:78: structure has no member named `oif'
-extensions/libipt_ROUTE.c:78: structure has no member named `oif'
-extensions/libipt_ROUTE.c:91: structure has no member named `iif'
-extensions/libipt_ROUTE.c:94: structure has no member named `iif'
-extensions/libipt_ROUTE.c:96: structure has no member named `iif'
-extensions/libipt_ROUTE.c:96: structure has no member named `iif'
-extensions/libipt_ROUTE.c:96: structure has no member named `iif'
-extensions/libipt_ROUTE.c:105: structure has no member named `gw'
-extensions/libipt_ROUTE.c: In function `print':
-extensions/libipt_ROUTE.c:142: structure has no member named `oif'
-extensions/libipt_ROUTE.c:143: structure has no member named `oif'
-extensions/libipt_ROUTE.c:145: structure has no member named `iif'
-extensions/libipt_ROUTE.c:146: structure has no member named `iif'
-extensions/libipt_ROUTE.c:148: structure has no member named `gw'
-extensions/libipt_ROUTE.c:149: structure has no member named `gw'
-extensions/libipt_ROUTE.c: In function `save':
-extensions/libipt_ROUTE.c:161: structure has no member named `oif'
-extensions/libipt_ROUTE.c:162: structure has no member named `oif'
-extensions/libipt_ROUTE.c:164: structure has no member named `iif'
-extensions/libipt_ROUTE.c:165: structure has no member named `iif'
-extensions/libipt_ROUTE.c:167: structure has no member named `gw'
-extensions/libipt_ROUTE.c:168: structure has no member named `gw'
-make: *** [extensions/libipt_ROUTE_sh.o] Error 1
 
--- 
-Aaron Clausen
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+> Aaron Clausen
+> Sent: Thursday, July 03, 2003 12:26 AM
+> To: Netfilter Mailing List; David Busby
+> Subject: Re: Iptables 1.2.8 Compile Errors
+> 
+> 
+> ---------- Original Message ----------------------------------
+> From: "David Busby" <busby@pnts.com>
+> Reply-To: "David Busby" <busby@pnts.com>
+> Date:  Wed, 2 Jul 2003 12:27:37 -0700
+> 
+> >Show us the errors?
+> 
+> Sorry, here's the whole error:
+> 
+> ld -shared -o extensions/libipt_NETMAP.so 
+> extensions/libipt_NETMAP_sh.o cc -O2 -Wall -Wunused 
+> -I/usr/src/linux/include -Iinclude/ 
+> -DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o 
+> extensions/libipt_ROUTE_sh.o -c extensions/libipt_ROUTE.c
+> extensions/libipt_ROUTE.c: In function `init':
+> extensions/libipt_ROUTE.c:44: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:45: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:46: structure has no member named `gw'
+> extensions/libipt_ROUTE.c: In function `parse':
+> extensions/libipt_ROUTE.c:73: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:76: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:78: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:78: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:78: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:91: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:94: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:96: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:96: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:96: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:105: structure has no member named `gw'
+> extensions/libipt_ROUTE.c: In function `print':
+> extensions/libipt_ROUTE.c:142: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:143: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:145: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:146: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:148: structure has no member named `gw'
+> extensions/libipt_ROUTE.c:149: structure has no member named `gw'
+> extensions/libipt_ROUTE.c: In function `save':
+> extensions/libipt_ROUTE.c:161: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:162: structure has no member named `oif'
+> extensions/libipt_ROUTE.c:164: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:165: structure has no member named `iif'
+> extensions/libipt_ROUTE.c:167: structure has no member named `gw'
+> extensions/libipt_ROUTE.c:168: structure has no member named `gw'
+> make: *** [extensions/libipt_ROUTE_sh.o] Error 1
+> 
+> -- 
+> Aaron Clausen
+> 
+> 
+
 
