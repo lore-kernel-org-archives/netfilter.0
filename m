@@ -1,46 +1,54 @@
-From: "Leonardo Rodrigues ( listas )" <leolistas@solucoesip.net>
-Subject: question on recent module
-Date: Fri, 24 Jan 2003 11:17:40 -0300
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001901c2c3b3$5adfe4a0$3201a8c0@leonardo>
+From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
+Subject: Re: Fwd: Re: Interesting request. block x.x.0.0
+Date: Fri, 24 Jan 2003 08:53:13 -0600
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <200301240853.13635.danielf@supportteam.net>
+References: <20030123232639.14408.11687.Mailman@kashyyyk> <15920.37125.743591.125495@isis.cs3-inc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <15920.37125.743591.125495@isis.cs3-inc.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter ML <netfilter@lists.samba.org>
+To: Don Cohen <don-netf@isis.cs3-inc.com>, netfilter <netfilter@lists.netfilter.org>, netfilter-devel@lists.netfilter.org
+
+Patrick Schaaf kindly pointed out that I could do this. 
+
+iptables -I INPUT -s 0.0.0.0/0.0.255.255 -j DROP
+
+That will drop any IP that ends in 0.0
+
+Thanks for every ones help. 
+
+I will also look into the u32 patch thanks again. 
 
 
-    Hello Guys,
 
-    I'm trying to setup recent module for doing some great things here :)
-Basically what I want is. Match some kind of traffic and, if that happens,
-traffic for that source address will be completly and silently dropped. All
-examples of recent module I found were used on FORWARD chain, which is not
-my case, as machine running recent will be the final destination of the
-connection.
+On Thursday 23 January 2003 19:04, you wrote:
+>  > I do not want to block every IP on say 45.208.0.0/16 just the ips ending
+>  > in 0.0 as the last two octets.
+>  >
+>  > I can write a tcpdump filter to find the traffic Im just not sure if we
+>  > have a way to craft a netfilter rule to do so. Or maybe the "recent"
+>  > patch could be of use. Although the dDoS included 65000 source IP
+>  > addresses. all ending in 0.0 for the ip address.
+>  >
+>  > the tcdump filter looks like this.
+>  >
+>  > tcpdump -nn -i eth0 'ip[18:2] == 00'
+>
+> The u32 match I recently posted can do this.
 
-    So, seems I'm successfully matching packets I need (
-/proc/net/ipt_recent/myrulename ) is created and sources are being added
-there. What I need now is: how can I make a rule on filter OUTPUT to DROP
-all traffic if the source address was matched by recent module ? As I read,
-I can only check recent matches against source address ( --rcheck ). In
-OUTPUT chain, source address is my own address and the address I need to
-match is the DESTINATION one.
-
-    Can recent module help me in this situation ? Hope you understood it.
-
-    Anyway, thanks for your attention :)
-
-    Sincerily,
-    Leonardo Rodrigues
-
+-- 
+Daniel Fairchild - Chief Security Engineer | danielf@supportteam.net
+The distance between nothing and infinity is always the same no matter how 
+close you get to nothing.
 
