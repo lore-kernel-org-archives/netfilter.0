@@ -1,13 +1,14 @@
-From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Subject: Re: iptables installation problem
-Date: 05 Sep 2003 13:52:50 +0200
+From: "Dharmendra.T" <dharmu@nsecure.net>
+Subject: Re: Difficulties in stopping mass advertisement IP directed
+	broadcast popup windows
+Date: 05 Sep 2003 17:25:13 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062762770.6117.19.camel@drs0.manchotnetworks.net>
-References: <20030905111754.9251.qmail@web20701.mail.yahoo.com>
+Message-ID: <1062762992.1174.10.camel@india.nsecure.net>
+References: <88116A11E9DFD411870900508BEC3831803CB6@CPQ01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=-Dpv9KfzIHsIb6fd06e+d"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030905111754.9251.qmail@web20701.mail.yahoo.com>
+In-Reply-To: <88116A11E9DFD411870900508BEC3831803CB6@CPQ01>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +18,102 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: ads nat <adsnat@yahoo.com>
-Cc: netfilter-users <netfilter@lists.netfilter.org>
-
-Hi,
-
-To save yourself a bit of trouble, you may download the Red Hat rpm for 
-
-iptables-1.2.8-8.80.2.i386.rpm
-
-either using up2date, or checking their ftp site.
-
-ciao
-
-charles
+To: Deshwal Chand <CDD@kampsax.co.in>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
 
-On Fri, 2003-09-05 at 13:17, ads nat wrote:
-> Hi,
-> I am trying to install iptables-1.2.8.tar.bz2 on Linux 8.0 server.
-> I have downloaded iptables-1.2.8.tar.bz2 file from netfilter downloads to /root/iptables-1.2.8 directory. 
-> by using command 
-> "tar -xf iptables-1.2.8.tar"
-> It has created iptables-1.2.8 directory in which all files are extracted.
->  
-> I don't know how to go further.
-> I tried make and make install.
->  
-> Then when i gave command "/etc/rc.d/rc.local"
-> it gives following error.
-> "[root@xyz iptables-1.2.8]# /etc/rc.d/rc.local
-> SIOCDELRT: No such process
-> RTNETLINK answers: File exists
-> SIOCADDRT: File exists
-> SIOCADDRT: File exists
-> iptables v1.2.6a: can't initialize iptables table `-nat': Table does not exist (do you need to insmod?)
-> Perhaps iptables or your kernel needs to be upgraded.
->  
-> How to go ahead now?
->  
-> Thanks
-> 
-> 
-> 
-> 
-> ---------------------------------
-> Do you Yahoo!?
-> Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--=-Dpv9KfzIHsIb6fd06e+d
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+iptabels logs should give more detail on this, from where it is coming
+and where it is going. Based on this u may take some action.
 
+Regards
+Dharmendra T.
+
+On Fri, 2003-09-05 at 10:16, Deshwal Chand wrote:
+
+    Hi
+    
+    We used to receive ip directed popup windows mass messages. I
+    blocked 135,137-39, 445 ports and they stopped. Now they have
+    started to come again.
+    
+    Any comments!
+    
+    
+    BR
+    Chand
+
+-- 
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+
+This message is intended for the addressee only. It may contain
+privileged or Confidential information. If you have received this
+message in error,please notify the sender and destroy the message
+immediately.Unauthorised use or reproduction of this message is strictly
+prohibited.
+
+--=-Dpv9KfzIHsIb6fd06e+d
+Content-Type: text/html; charset=utf-8
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
+  <TITLE>Difficulties in stopping mass advertisement IP directed broadcast popup windows</TITLE>
+</HEAD>
+<BODY>
+iptabels logs should give more detail on this, from where it is coming and where it is going. Based on this u may take some action.
+<BR>
+
+<BR>
+Regards
+<BR>
+Dharmendra T.
+<BR>
+
+<BR>
+On Fri, 2003-09-05 at 10:16, Deshwal Chand wrote:
+    <BLOCKQUOTE>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I>Hi</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I></FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I>We used to receive ip directed popup windows mass messages. I blocked 135,137-39, 445 ports and they stopped. Now they have started to come again.</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I></FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I>Any comments!</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I></FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I></FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I>BR</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="2"><I>Chand</FONT></FONT></I>
+    </BLOCKQUOTE>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<PRE>-- 
+Regards
+Dharmendra.T
+dharmu@nsecure.net
+
+This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
+</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>
+
+--=-Dpv9KfzIHsIb6fd06e+d--
 
 
