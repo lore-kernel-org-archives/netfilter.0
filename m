@@ -1,15 +1,13 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: opening a port..
-Date: 08 Jan 2003 15:54:40 +0200
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: opening a port..
+Date: Wed, 8 Jan 2003 15:24:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042034080.26554.86.camel@rayw.knowledgefactory.co.za>
-References: <1042027958.606.7.camel@nirvana>
-	 <1042030413.590.13.camel@nirvana>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019A9D@hslex01.hslbz.local>
+References: <1042030327.590.10.camel@nirvana>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-TOEPcKoh/4nwGtBIEDW0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1042030413.590.13.camel@nirvana>
+In-Reply-To: <1042030327.590.10.camel@nirvana>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,93 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: mdew <mdew@mdew.dyndns.org>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-
---=-TOEPcKoh/4nwGtBIEDW0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2003-01-08 at 14:53, mdew wrote:
-> On Thu, 2003-01-09 at 01:12, mdew wrote:
-> >=20
-> > Hi,
-> > Just *testing* this out..
-> >=20
-> > iptables -A INPUT -i eth0 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth0 -p udp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p udp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p tcp --sport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth1 -p udp --sport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth0 -p udp --sport 4662 -j ACCEPT
-> > iptables -A INPUT -i eth0 -p tcp --sport 4662 -j ACCEPT
-> >=20
-> > iptables -A FORWARD -o eth0 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p tcp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p udp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth0 -p udp --dport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth0 -p udp --sport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p udp --sport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p tcp --sport 4662 -j ACCEPT
-> > iptables -A FORWARD -o eth0 -p tcp --sport 4662 -j ACCEPT
-> >=20
-> > yet, when i try to telnet to it,
-> >=20
-> > mdew:~# telnet 127.0.0.1 4662
-> > Trying 127.0.0.1...
-> > telnet: Unable to connect to remote host: Connection refused
-> >=20
-> > Yeah I know I have lots of unnessary rules, but im only testing 'em...i=
-t
-> > just seems a little strange that i cant see 4662 (Edonkey port) on the
-> > router.
-> >=20
-> > -mdew
->=20
-> ok, from another machine->router. (same problem)
->=20
+> ok, telnet from another machine to the router.
+> 
 > telnet 10.0.0.6 4662
 > Trying 10.0.0.6...
 > telnet: Unable to connect to remote host: Connection refused
->=20
-Connection refused means the router is not listening on that port ...
+> 
+> what "service" should I be running? I simply want 4662 open both ways.
 
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
+# netstat -an|grep 4662
+should tell you if your box is listening at all on port 4662.
 
---=-TOEPcKoh/4nwGtBIEDW0
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+If you run eDonkey server on the firewall box, open port in the INPUT
+chain.
+If your eDonkey server is *behind* the firewall, open the port in the
+FORWARD chain, and add a DNAT rule in the nat table -> PREROUTING chain.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
 
-iD8DBQA+HC2gh1fuR/Bv+ygRAiCJAJwMOzqqkSAxBCqmKWXEGDt9RIJNSwCfdVLY
-RvCYjFWoATOj5gPxr7T6/jg=
-=y6Cg
------END PGP SIGNATURE-----
-
---=-TOEPcKoh/4nwGtBIEDW0--
+Rob
 
 
