@@ -1,14 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
+From: Lopsch <lopsch@lopsch.com>
 Subject: Re: Does anybody work on supporting SPD matching Netfilter MARKS?
-Date: Wed, 19 Jan 2005 13:58:59 -0500
-Message-ID: <20050119185859.GA12706@bender.817west.com>
+Date: Wed, 19 Jan 2005 20:12:55 +0100
+Message-ID: <41EEB137.1030901@lopsch.com>
 References: <41EE01DF.5040707@protactive.nl>
-	<1106145684.4934.32.camel@hubcap.ljm.dom>
-	<41EEAD74.4030804@protactive.nl>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigBBEE0FF227DFE0CFD733F59C"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41EEAD74.4030804@protactive.nl>
+In-Reply-To: <41EE01DF.5040707@protactive.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +19,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Jan 19, 2005 at 07:56:52PM +0100, Ludo Stellingwerff wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> Thank for you reaction Jason,
-> and sorry about the cross post, you're right, my mistake:(
-> 
-> The question I raised was not about the filtering side, but about the
-> policy match. What NetBSD is capable of is to use it's packetfilter
-> for deciding ipsec policies, by using a "tag".
-> 
-> In Linux terms this would mean that by using a firewall mark you could
-> use the netfilter matching structure instead of the SPD internal matches.
-> 
-> spdadd mark 1 -P out esp/transport//require
-> 
-> This would read: All packages marked with firewall mark 1 should be
-> encrypted and send on a transport mode ipsec connection.
-> 
-> Does anyone know some sort of implementation doing this?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigBBEE0FF227DFE0CFD733F59C
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-ah--i misunderstood what you were asking.  i think your question is
-probably better suited to the ipsec-tools list, as all you need
-netfilter to do is set the mark, which it can already do.
+Ludo Stellingwerff schrieb:
+> Hi All,
+>
+> I was wondering if someone has been working on and/or has a patch
+> which implement's the use of Netfilter Marks for ipsec spd matching
+> under the linux kernel 2.6. This would be similar to the NetBSD
+> "tagged" option of 'setkey':
+>
+> spdadd tagged "ssh" -P out esp/transport//require
+>
+> But then something like:
+>
+> ~     spdadd tagged 1 -P out esp/transport//require
+> or  spdadd mark 1 -P out esp/transport//require
+>
+> Thank in advance,
+> greetings,
+>
+> Ludo Stellingwerff.
+>
+> --
+> Ludo Stellingwerff
+>
+> V&S B.V. The Netherlands
+> ProTactive firewall solution.
+> Tel: +31 172 416116
+> Fax: +31 172 416124
+>
+> site: www.protactive.nl
+> demo: http://www.protactive.nl:81/netview.html
 
--j
+Taken from the policy match from p-o-m: "This patch adds the policy
+match to netfilter.
+
+The policy match is used to match the IPsec policy
+used for handling a packet."
+
+Perhaps what you are looking for.
+
 
 --
-"It takes two to lie. One to lie and one to listen."
-        --The Simpsons
+
+PGP-ID 0xF8EAF138
+
+--------------enigBBEE0FF227DFE0CFD733F59C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1-nr1 (Windows XP)
+
+iQIVAwUBQe6xOiXe0Lt4Z4FpAQIeTRAA0PwW/LvYeUbZZi8KUL+QesxKCWxFR2FC
+B62V8e3QRcHtrcYO2N7gzfEjgAZ7a71e7jTAI7uFZ2ciKqQ6Q3gykkQ217mxTeYt
+vsEHblBBpZYSPrVv8EamfPbfDFGleWMk5TMHvTcrGyc7z5OjL3kWAOrrGPc3+Y7o
+ef6tdNVHIFbG/E1pCZGzXKwTzkkrmhNNeMOYIFRK6IoDeTs1A3X3hxDfM9xMIC8G
+Oe3CROb6wf125xk9QaX/sDzi0CzAMyRAono9/LbxB/NsKcOKBw37X5+4m3hmE/xF
+PXjj9Rc/9SCawkcn80OwiXp3LMMqezzMGLsNDoCF+fiG4Wq3E44KZKwGGq2UOpza
+2IG+jTKuGnfeaWdc/XRv/8yjQqIMRlhRJZ0p+FFg4IiBpmGmwgMzMQS0kwpLoIul
+/FF6rxEq/N4fPOkv9CDB2yXdfrWGEX/kIfYPxPwqS2rfnWrkt9KYdideNya9svfp
+bd33M1w3OK0S4EwrZrrgPG+6GeZaLPUp50TdZHNKvKz2SiTZO+vKDrr9FjV+hm4p
+CXTRay5XNc/ZPMnQ0ADtRrhwdKtQ+jchMq4SF7bH2e1faYNo/FlGYuIPDDr7y1hS
+KdhIkAqmHE5xladOuqsEwIkvIghUzpcdHFetgJsXCNBVwe9M2ALA8pRDWN8VHz2e
+trEklpQ7FHs=
+=bQEs
+-----END PGP SIGNATURE-----
+
+--------------enigBBEE0FF227DFE0CFD733F59C--
 
