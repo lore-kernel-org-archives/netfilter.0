@@ -1,12 +1,16 @@
-From: Alexey Toptygin <alexeyt@freeshell.org>
-Subject: Re: SNAT question
-Date: Sat, 18 Sep 2004 21:46:24 +0000 (UTC)
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Fwd: set up my DMZ
+Date: Sun, 19 Sep 2004 11:12:41 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <Pine.NEB.4.60.0409182138520.21976@ukato.freeshell.org>
-References: <20040917181300.76253.qmail@web61109.mail.yahoo.com>
+Message-ID: <1403218a040919011254781075@mail.gmail.com>
+References: <web-3246067@infinito.it>
+	<1095356390.2489.70.camel@wolfpack.ljm.dom>
+	<1403218a0409190112632977da@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040917181300.76253.qmail@web61109.mail.yahoo.com>
+In-Reply-To: <1403218a0409190112632977da@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,47 +20,65 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: =?iso-8859-1?q?darmian=20martinez?= <darmianm@yahoo.com.ar>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Fri, 17 Sep 2004, [iso-8859-1] darmian martinez wrote:
+---------- Forwarded message ----------
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Date: Sun, 19 Sep 2004 11:12:13 +0300
+Subject: Re: set up my DMZ
+To: Jason Opperisano <opie@817west.com>
 
-> Alexey,
+On Thu, 16 Sep 2004 13:39:51 -0400, Jason Opperisano <opie@817west.com> wrote:
+> On Thu, 2004-09-16 at 10:44, hamals@infinito.it wrote:
+> > I've a DMZ with two server, I would like to acces them
+> > through my iptables firewall.
+> >
+> > IP_serve1_DMZ =192.168.2.2
+> > IP_serve2_DMZ =192.168.2.3
+> >
+> > IP_server1_public = x.x.x.52
+> > IP_server2_public = x.x.x.53   (x is for privacy..)
+> >
+> >
+> > My firewall has
+> >
+> > eth1 internet interface = x.x.x.50
+> > eth0 dmz interface = 192.168.2.1
+> >
+> > I need to have my server access with their pubbic IP, but
+> > I've only eth1 as inteface to internet.
+> >
+> > I read that I can't use alias in iptables rules (like
+> > eth1:1 etc) , then what kind of rules have I to write to
+> > solve my problem?
 >
-> I tried your command, but it says:
-> iptables: Target problem
+>   ip address add x.x.x.52 dev eth1
+>   ip address add x.x.x.53 dev eth1
+>
 
-What I meant to say was:
-
-iptables -t nat -A POSTROUTING -s [FIREWALL_IP] -p icmp -j SNAT --to-source
-[FAKE_IP]
-
-which applies, but for some reason works only for outgoing requests.
+He really needs to do this step ????
+The firewall is his gateway !!
 
 
-Can someone on the list explain why this:
 
-iptables -t nat -A POSTROUTING -s 192.168.1.9 -p icmp -j SNAT --to-source
-10.0.0.1
 
-Causes this:
+> --
+> Jason Opperisano <opie@817west.com>
+>
+>
 
-# tcpdump -nnvl -i eth0 "icmp"
-tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
 
-17:37:38.781912 IP (tos 0x0, ttl  64, id 0, offset 0, flags [DF], length: 84)
-10.0.0.1 > 192.168.1.2: icmp 64: echo request seq 1
+--
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
-17:37:49.656966 IP (tos 0x0, ttl  64, id 0, offset 0, flags [DF], length: 84)
-192.168.1.181 > 192.168.1.9: icmp 64: echo request seq 1
 
-17:37:49.656988 IP (tos 0x0, ttl  64, id 6381, offset 0, flags [none],
-length: 84) 192.168.1.9 > 192.168.1.181: icmp 64: echo reply seq 1
 
-Do locally generated ICMP replies not go through postrouting for some 
-reason? I'm testing with iptables v1.2.9 and Debian kernel 2.6.7-1-k7.
 
- 			Alexey
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
