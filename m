@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Ideal iptables, kernel configuration for stability.
-Date: Fri, 13 Sep 2002 17:29:58 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Measuring traffic
+Date: Fri, 13 Sep 2002 10:05:10 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209131630.g8DGU7v11843@vulcan.rissington.net>
-References: <002101c25b3f$54521d10$6b01a8c0@s3ac>
+Message-ID: <002801c25b47$b8007ac0$6b01a8c0@s3ac>
+References: <00bb01c25afc$80e56190$37d2a8c0@nikodimov>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002101c25b3f$54521d10$6b01a8c0@s3ac>
+In-reply-to: <00bb01c25afc$80e56190$37d2a8c0@nikodimov>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"
+To: 'dizma' <nick@riskeng.bg>, netfilter@lists.netfilter.org
 
-On Friday 13 September 2002 5:05 pm, Rowan Reid wrote:
 
-> What is the ideal kernel version, and iptables version for the most
-> stable config.
 
-2.4.19
-1.2.7a
+Hi,
 
-Both latest stable.
+Thanks for the recommendation, Since you suggested I figured I would
+ask. D you have a sampl ipac.conf file. The source file and compile
+didn=92t' create one and I'm having a hard time understanding the  =
+exaple
+. See insert.
 
-> The config should support FTP, Windows Media player, MSN
-> and Yahoo messenger, and hopefully pptp.
+INSTALLATION / CONFIG FILE.
 
-You'll need some patch-o-matic extensions to support all those.
+The ipac.conf file is '/etc/ipac-ng/ipac.conf'. ipac.conf controls what
+data
+is collected. Each line which begins with a '#' is ignored. All the
+other lines have the format
 
-> Key work being stable. I would
-> also like to do some content filtering i.e. code red stuff.
+  Name of rule|direction|interface|protocol|source|destination
 
-iptables is not a content filter.
+  where
+  Name of rule          Any string to identify this rule
+  direction             'in' or 'out'
+  interface             ip number or interface name or empty
+  protocol              'tcp' or 'udp' or 'icmp' or 'all'
+  source                \
+  destination           both as described in ipfwadm(8), or empty
+=20
+In the summaries, the 'Name of rule' string identifies the counter.
+Both the source and destination must be in ipfwadm/ipchains syntax -
+consult the man page.
 
-Regards,
+The interface can be named (for example, eth0) or its IP number can be
+given.
+Linux IP accounting always counts at one interface or at any interface.
+The
+direction means in or out of this interface.
 
-Antony.
+* You must run the fetchipac -S after changing the=20
+* ipac.conf file every time for the changes to take effect!
 
--- 
+An example ipac.conf file comes with the distribution.
 
-You can spend the whole of your life trying to be popular,
-but at the end of the day the size of the crowd at your funeral
-will be largely dictated by the weather.
+Cant' find it anywhere in the source
 
- - Frank Skinner
+> try ipac-ng packet
+>=20
+> http://sourceforge.net/projects/ipac-ng/
+>=20
+
 
