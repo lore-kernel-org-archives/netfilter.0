@@ -1,13 +1,12 @@
-From: pammann@execomm.net (Paul Ammann)
-Subject: Re: Firewall software
-Date: Tue, 5 Aug 2003 04:46:08 -0700
+From: "Herry Wild" <herry.wild@TENDI.COM>
+Subject: pptp-conntrack-nat problem
+Date: Tue, 5 Aug 2003 10:45:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001201c35b47$2c5c06a0$6ee00b42@na6xxo6g5tg9af>
-References: <003801c35b2a$c9a8c1e0$7700000a@lawrencewin2k>
+Message-ID: <87D4F492F75B66408915EF4FE2814926509D@mail-pfr.corp.tendi.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000D_01C35B0C.7CA6FEC0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,86 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Lawrence - D <ingsiong@daltron.com.pg>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello everybody,
 
-------=_NextPart_000_000D_01C35B0C.7CA6FEC0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+i have the following configuration:
+-----------------------------------------------
+W2k client -> SuSE Linux 8.2 router with iptables (NAT) -> W2k PPTP =
+Server
 
-Go to Sourceforge, and look up Firewall Builder. This VERY user friendly =
-interface interacts with IPtables as well as PIX.
+on linux i use:
+--------------------
+2.4.20 kernel source
+patch-o-matic Patch
+   i ran ./run extra and applied:
+      submitted/01_2.4.19 (already applied)
+      submitted/01_2.4.20 (already applied)
+      submitted/63_ip_conntrack_destroy (already applied)
+      base/REJECT-ipv6 (already applied)
+      base/psd (already applied)
+      extra/pptp-conntrack-nat
+      extra/string (already applied)
+   i ran make menuconfig
+      <*> Connection tracking
+      <*>    FTP protocol support
+      <*>    IRC protocol support
+      <*>    GRE protocol support
+      <*>       PPTP protocol support
+iptables 1.2.8
 
-Best regards,
+i compiled the kernel (once Connection tracking and once as kernel =
+embedded)
+i compiled iptables
 
-Paul Ammann
+my iptables script lock like:
+----------------------------------------
+iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i ! eth1 -m state --state NEW,ESTABLISHED,RELATED =
+-j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A PREROUTING -i eth1 -p 47 -j DNAT --to-destination =
+$VPN_SERVER
+iptables -t nat -A POSTROUTING -o eth0 -p 47 -j SNAT --to-source $LAN_IP
+iptables -A FORWARD -i eth1 -m state --state NEW -p 47 -d $VPN_SERVER -j =
+ACCEPT
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 1723 -j DNAT =
+--to-destination $VPN_SERVER
+iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 1723 -j SNAT =
+--to-source $LAN_IP
+iptables -A FORWARD -i eth1 -m state --state NEW -p tcp -d $VPN_SERVER =
+--dport 1723 -j ACCEPT
 
-  ----- Original Message -----=20
-  From: Lawrence - D=20
-  To: Netfilter=20
-  Sent: Tuesday, August 05, 2003 1:22 AM
-  Subject: Firewall software
+eth1 is the external network interface.
 
+and now the problem:
+------------------------------
+I made connections to the VPN Server which is working very well. Now =
+sending data through this connection
+like FTP, HTTP or Terminalsessions. During the data transfer the linux =
+box is closing the connecting and the
+LAN is no longer available. If i try this a couple of times the linux =
+box is going down and i have to reboot!
 
-  Hi,
-      Can anyone recommend firewall software that can work together with =
-IPtables ? User friendly interface.
+have somebody an idea?
 
+thank you for your help
 
-  Lawrence Tang=20
-
-------=_NextPart_000_000D_01C35B0C.7CA6FEC0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Go to Sourceforge, and look up Firewall =
-Builder.=20
-This VERY user friendly interface interacts with IPtables as well as=20
-PIX.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Best regards,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Paul Ammann</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3Dingsiong@daltron.com.pg=20
-  href=3D"mailto:ingsiong@daltron.com.pg">Lawrence - D</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
-  title=3Dnetfilter@lists.netfilter.org=20
-  href=3D"mailto:netfilter@lists.netfilter.org">Netfilter</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Tuesday, August 05, 2003 =
-1:22=20
-  AM</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Firewall =
-software</DIV>
-  <DIV><BR></DIV>
-  <DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-  <DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Can anyone=20
-  recommend&nbsp;firewall software that can work together with IPtables =
-? User=20
-  friendly interface.</FONT></DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-  <DIV><FONT face=3DArial size=3D2>Lawrence Tang=20
-<BR></FONT></DIV></BLOCKQUOTE></BODY></HTML>
-
-------=_NextPart_000_000D_01C35B0C.7CA6FEC0--
-
+Herry Wild
 
