@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: FTP Connection problems.
-Date: Wed, 25 Aug 2004 07:48:11 -0400
+Subject: RE: Is it possible to Jam windows network neighbour?
+Date: Wed, 25 Aug 2004 08:10:03 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512CA@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512CC@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,20 +19,63 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> ... but the connection takes a long time to terminate. If I disable =
-all
-> the rules, ftp connection goes directly but with iptables enabled it
-> takes such 8 seconds to accomplish the annonymomus connection ( with
-> data port and passive models ).
+> O.K.
+> I am putting a fictitious situation as follows :
 >
-> What is this all about ???
+> Linux server with iptables firewall acts as Gateway
+> for internet configured as DHCP server with only mac
+> address setup in DHCP configuration file, having win
+> 98 clients.
+> Another Linux server acts as File server, having it's
+> owm iptables rules to block unwanted mac-addresses
+> same win 98 clients also acts as DHCP server.
 >
-> Regards
-> Vincent
+> Now win client setup have Gateway IP as IP of Internet
+> Gateway and WIN server IP as IP of file server.
+>
+> DHCP HOWTO asks to add following lines for individual
+> clients in DHCP configuration file.
+>
+> ####
+> host xyz {
+>    hardware ethernet 08:00:2b:4c:59:23;
+>    fixed-address 192.168.1.222;
+> }
+>
+> ####
+> In this case Can i use above setting by eliminating
+> line specifying IP address (fixed-address
+> 192.168.1.222;
+> )?
 
-your server is trying to do a reverse DNS lookup on the IP address of =
-the connecting client.  either disable reverse lookups on your FTP =
-server, or allow it to resolve DNS through your firewall.
+you can use the combination of "host xyz { hardware ethernet =
+08:00:2b:4c:59:23; }" in combination with "deny unknown clients;" in you =
+pool declaration to achieve this.
+
+> so that IP addrress/subnet of client will not be known
+> to anybody.
+>
+> Now if outside user with Laptop try to connect to this
+> network with one of the network switch, with concent
+> of any win 98 client user and in absence of
+> administator by assigning any IP address of any subnet
+> (By trying permutation combination of 192.0.0.0,
+> 10.0.0.0, 172.0.0.0) then will not get access to any
+> win 98 machine by netbour neighbour.
+
+if the laptop is connecting to the same switch as the "known" win 98 =
+client, your internet gateway firewall is not really going to help you.  =
+fancy DHCP isn't going to help you either.  the person with laptop can =
+sit on the wire and figure out *very* quickly what IP addresses are =
+assigned to the "known" win 98 clients.
+
+your situation is one of the hardest to secure:  your attacker with the =
+laptop not only has physical access, but also have the consent of the =
+victim, and there's no administrative presence...  one defense would be =
+to use win2000/xp on the "known" clients and lock them down via group =
+policy and remove admin privileges from the users of those machines in =
+an effort to save the users from themselves.  my guess is that this is =
+completely infeasible for your situation.
 
 -j
 
