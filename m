@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipip tunnel connection tracking
-Date: Sun, 11 Apr 2004 21:34:40 +0100
+From: Shashidhar Lakkavalli <lakkavas@yahoo.com>
+Subject: High speed filtering using RAW sockets and NetFilter
+Date: Sun, 11 Apr 2004 16:47:13 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404112134.40862.Antony@Soft-Solutions.co.uk>
-References: <EXCFE04GjcAbeYrvKM9000011ef@smtp.e-kolay.net>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040411234713.98707.qmail@web41811.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative; boundary="0-1002485539-1081727233=:98705"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <EXCFE04GjcAbeYrvKM9000011ef@smtp.e-kolay.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Sunday 11 April 2004 8:09 pm, =D6mer Ak=F6z wrote:
+--0-1002485539-1081727233=:98705
+Content-Type: text/plain; charset=us-ascii
 
-> I am working on connection tracking of ipip tunnel packets, while using
-> ipip tunneling, in the ip_conntrack file, I see the outer src. and dst.
-> addresses, I try to see original src and dst addresses.
->
-> Is there any module to do this ? I see the "ip_conntrack_proto_gre", I
-> think it makes this shows original addresses in gre packets ?
+Hi,
+ 
+I am trying to use iptables to drop all packets received by my interface, so that there could be no IP stack processing. I am then trying to filter specific packets using RAW sockets. For up to 10-12Mbps, my filter accepts 90% of the packets... but increasing the data rate, causes my filter to accept negligible number of packets... I am using IXIA to generate packets, and a LINUX box (2.4 kernel), with a Pentium II CPU.
+ 
+Is my CPU a bottleneck for my filtering??? If someone can guide me on this, it would be very helpful.
+ 
+Thanks,
+Lakkavas.
+ 
 
-Why would a connection tracking module need to know about the addreses in=
-side=20
-the packets, rather than the addresses in the headers?
 
-I might be wrong (I haven't used the GRE conntrack module), but I would e=
-xpect=20
-it to be interested in the source & destination addresses of the packets =
-it's=20
-handling through the machine, rather than the source & destination addres=
-ses=20
-of the packets inside the packets.
+---------------------------------
+Do you Yahoo!?
+Yahoo! Tax Center - File online by April 15th
+--0-1002485539-1081727233=:98705
+Content-Type: text/html; charset=us-ascii
 
-After all, isn't that what a tunnel is all about?   The routers along the=
- way=20
-just deal with the outer addresses, not the addresses inside?
-
-Regards,
-
-Antony.
-
---=20
-Most people have more than the average number of legs.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+<DIV>Hi,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am trying to use iptables to drop all packets received by my interface, so that there could be no IP stack processing. I am then trying to filter specific packets using RAW sockets. For up to 10-12Mbps, my filter accepts 90% of the packets... but increasing the data rate, causes my filter to accept negligible number of packets... I am using IXIA to generate packets, and a LINUX box (2.4 kernel), with a Pentium II CPU.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is my CPU a bottleneck for my filtering??? If someone can guide me on this, it would be very helpful.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks,</DIV>
+<DIV>Lakkavas.</DIV>
+<DIV>&nbsp;</DIV><p><hr size=1><font face=arial size=-1>Do you Yahoo!?<br>
+Yahoo! Tax Center - <a href="http://taxes.yahoo.com/filing.html">File online by April 15th</a>
+--0-1002485539-1081727233=:98705--
 
