@@ -1,13 +1,13 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Multi PPTP clients behind iptables firewall
-Date: 20 May 2003 08:16:03 +0200
+Subject: Re: Performance losings with iptables
+Date: 20 May 2003 09:50:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053411363.1993.18.camel@kermit.spenneberg.de>
-References: <A9B668705BE3754790A3C32C768214946DA8@pluto.insourcing.local>
+Message-ID: <1053417001.1964.86.camel@kermit.spenneberg.de>
+References: <007d01c31965$fe099ce0$3a51a8c0@memmingen>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <A9B668705BE3754790A3C32C768214946DA8@pluto.insourcing.local>
+In-Reply-To: <007d01c31965$fe099ce0$3a51a8c0@memmingen>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Urban Spielmann <spielmann@it-insourcing.ch>
+To: Michael Albrecht <michael@crypta.net>
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Am Sam, 2003-05-17 um 05.41 schrieb Urban Spielmann:
-> Hi
-> =20
-> I have Windows-XP-Clients behind a linux firewall ( kernal 2.4.20).
-> I do VPN over PPTP to a VPN-Server on the internet.
-> =20
-> I configured the iptables and it works fine for ONE client.
-> =20
-> But a second client at the same time does not :-(
-> =20
-> Do I have to use any patches for kernal 2.4.20?
-Yes.
-You have to use the nat_pptp module. Depending on your kernel you have
-to patch and recompile your kernel. You will find the patch on=20
-http://www.netfilter.org.
-Then do a=20
-modprobe ip_nat_pptp
-And it should work.
+Am Die, 2003-05-13 um 17.40 schrieb Michael Albrecht:
+> Hello,
+> i use iptables with Debian-Linux (2.4.20).
+> Wenn i install 150 Input-Chains like this:
+> iptables -A input -s 192.168.81.xxx
+> i will lose a lot of perfomance (for example: apache take a lot of time, =
+ssh ...)
+> Wenn i show the perfomance with vmstat - vmstat says that 99 % is idel...
+> Wer is the Problem ???
+I doubt that iptables itself is responsible for the performance loss. I
+rather suspect name resolution.
+Can you post you rules or at least some timing information?
 
 Cheers,
 
