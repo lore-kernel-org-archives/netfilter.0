@@ -1,14 +1,13 @@
-From: "John Jones" <jjones@merlintechnologies.com>
-Subject: RE: Help needed understanding what I am doing wrong.
-Date: Mon, 3 Jun 2002 14:09:14 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Help needed understanding what I am doing wrong.
+Date: Mon, 3 Jun 2002 22:32:41 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <002a01c20b42$ea39aa70$6301a8c0@JJONES1>
-References: <005801c20b32$3e913810$c764a8c0@aldoxp>
-Reply-To: <jjones@merlintechnologies.com>
+Message-ID: <200206032132.g53LWgA23232@Networker.rockstone.co.uk>
+References: <002a01c20b42$ea39aa70$6301a8c0@JJONES1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <005801c20b32$3e913810$c764a8c0@aldoxp>
+In-Reply-To: <002a01c20b42$ea39aa70$6301a8c0@JJONES1>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -21,98 +20,62 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: 'Iptables' <netfilter@lists.samba.org>
 
-Okay, with Aldo's 2nd email (sent to me) advice:
+On Monday 03 June 2002 10:09 pm, John Jones wrote:
 
-> You should not need the return rules if you have rules like 
-> these: iptables -A FORWARD -m state --state 
-> ESTABLISHED,RELATED -j ACCEPT
-> 
-> The ESTABLISHED,RELATED allows a path for return packets.
-> 
-> If your nslookup times out, then it may be your aliases - is 
-> that still setup?
-> 
-> Typically your best bet is to allow everything at first, then 
-> tighten things down as your understanding increases - Try 
-> tcpdumps on the outside interface while you attempt your 
-> nslookup - you should see the port 53 requests...
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -p tcp -d 10.0.0.10 --dport 53 -j ACCEPT
+> iptables -A FORWARD -p udp -d 10.0.0.10 --dport 53 -j ACCEPT
+> iptables -t nat -I PREROUTING 1 -p tcp -d 66.38.133.120 --dport 53 -j
+> DNAT --to 10.0.0.10:53
+> iptables -t nat -I PREROUTING 1 -p udp -d 66.38.133.120 --sport 53 -j
+> DNAT --to 10.0.0.10:53
 
-At first, running his suggested rule was returning errors.  I suspected
-kernel configuration issues... So I went back in, enabled everything for
-IPTABLES and recompiled. So, now the command works, and the entire
-firewall ruleset (from first to last) follows:
+If this is your entire ruleset, the problem is that your name server is ging 
+out to the Internet with a source address of 10.0.0.10, therefore nothing 
+else can reply to it.
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
+(By the way, you should change that --sport in the last rule to --dport.)
+
+Anyway, I'm happy to have a go at a ruleset for you, but please can you 
+remind me exactly what you're trying to do ?   Looking back over the thread 
+of this question, you've said you're trying to redirect DNS requests to a 
+name server on the DMZ - is this DNS requests from machines on the internal 
+LAN, or machines on the outside (or both) ?
+
+I'll assume for the moment you've got an internal LAN, a DMZ with a DNS 
+server on it, and you want to make sure that all DNS requests from machines 
+on the internal LAN get redirected to the DMZ DNS server, which can then go 
+out to the Internet to resolve queries.   If that's wrong, just let me know 
+and I'll have another go.
+
+iptables -A PREROUTING -t nat -i $LAN_IF -p tcp --dport 53 -j DNAT --to 
+10.0.0.10
+iptables -A PREROUTING -t nat -i $LAN_IF -p udp --dport 53 -j DNAT --to 
+10.0.0.10
+
+These two rules will catch all DNS lookups from internal machines and send 
+them to the DNS server on 10.0.0.10
+
+iptables -A POSTROUTING -t nat -o $EXT_IF -j SNAT --to $EXT_IP
+
+This rule will masquerade all your outgoing packets (from either the internal 
+LAN or the DMZ) behind the external address of the firewall
+
+iptables -A FORWARD -i $LAN_IF -j ACCEPT
+iptables -A FORWARD -i $DMZ_IF -j ACCEPT
+
+These two rules will forward all packets which come from either the internal 
+LAN or the DMZ through the firewall (ie they will not allow packets which 
+come from the external interface)
+
 iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -p tcp -d 10.0.0.10 --dport 53 -j ACCEPT
-iptables -A FORWARD -p udp -d 10.0.0.10 --dport 53 -j ACCEPT
-iptables -t nat -I PREROUTING 1 -p tcp -d 66.38.133.120 --dport 53 -j
-DNAT --to 10.0.0.10:53
-iptables -t nat -I PREROUTING 1 -p udp -d 66.38.133.120 --sport 53 -j
-DNAT --to 10.0.0.10:53
+
+This will allow all replies through the box, no matter where they're from.
 
 
---------------------------
-
-[gemini:~] tcpdump -pq -i eth1 port 53
-tcpdump: listening on eth1
-13:56:06.101114 merlintechnologies.com.3375 >
-h66-38-133-120.gtconnect.net.domain:  udp 48
-13:56:06.104001 h66-38-133-120.gtconnect.net.1024 >
-merlintechnologies.com.domain:  udp 44 (DF)
-13:56:06.105434 merlintechnologies.com.domain >
-h66-38-133-120.gtconnect.net.1024:  udp 181
-13:56:06.106343 h66-38-133-120.gtconnect.net.1024 >
-merlintechnologies.com.domain:  udp 46 (DF)
-13:56:06.107284 merlintechnologies.com.domain >
-h66-38-133-120.gtconnect.net.1024:  udp 161
-13:56:06.108100 h66-38-133-120.gtconnect.net.1024 >
-merlintechnologies.com.domain:  udp 44 (DF)
-13:56:06.109056 merlintechnologies.com.domain >
-h66-38-133-120.gtconnect.net.1024:  udp 178
-
---------------------------
-
-The client (W2KPro nslookup) response is immediate:  
-
-> chickens.com
-Server:  h66-38-133-120.gtconnect.net
-Address:  66.38.133.120
-
-*** h66-38-133-120.gtconnect.net can't find chickens.com: No response
-from server
-
---------------------------
-
-Does anyone else have any ideas?  I really thank Aldo for his help, I
-just do not want to monopolize his time by emailing him alone (which can
-sometimes happen when someone is nice enough to help people out on
-mailing lists).
+I think that should do it.
 
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org 
-> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Aldo S. Lagana
-> Sent: Monday, June 03, 2002 12:10 PM
-> To: jjones@merlintechnologies.com; 'Iptables'
-> Subject: RE: Help needed understanding what I am doing wrong.
-> 
-> 
-> Answering backwards...
-> 
-> IP aliasing is fine with iptables - I have 35 IPs aliased to 
-> one NIC and it works fine
-> 
-> You only need DNAT in PREROUTING and FORWARD rules to allow 
-> incoming traffic to pass through your Gateway.  So I think 
-> you have the DNAT rules right, you just need to add some 
-> FORWARD rules - my FORWARD rules go like this: iptables -A 
-> FORWARD -p tcp -d 192.168.101.54 --dport 80 -j ACCEPT
-> 
-> Where my -d address is obviously internal, so in your case it 
-> will be 10.x.x.x
-> 
-> Aldo
-> 
-
+Antony.
 
