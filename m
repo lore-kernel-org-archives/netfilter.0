@@ -1,13 +1,15 @@
-From: Michelle Konzack <linux4michelle@freenet.de>
-Subject: Re: ULOG
-Date: Thu, 22 Jan 2004 14:53:32 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: iptables abilities
+Date: Thu, 22 Jan 2004 09:47:29 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040122135332.GD13388@freenet.de>
-References: <20040121004046.GG8389@freenet.de> <001f01c3e002$4ea294a0$0300a8c0@indoaksesbno>
+Message-ID: <1089.12.75.166.13.1074782849.squirrel@nmibwkrf1.nexusmgmt.com>
+References: <400FC047.4010208@objeng.ch>
+    <200401221233.18553.Antony@Soft-Solutions.co.uk>
+    <400FD514.9060500@objeng.ch>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <001f01c3e002$4ea294a0$0300a8c0@indoaksesbno>
+In-Reply-To: <400FD514.9060500@objeng.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +20,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Sven Burgener <sburgener@objeng.ch>
+Cc: netfilter@lists.netfilter.org
 
-Am 2004-01-21 16:38:18, schrieb bino-psn:
->What you want to log ?
->- the "content of the traffic"
->- or the size of the traffic (bandwith occupation)
+Is there any point at which you could use DNAT/SNAT to change each private
+address to a public address? Alternately, can you build a VPN tunnel
+between the two and tunnel the private addresses through the tunnel?
+
+> Antony Stone wrote:
+>>>I'm looking for a way to connect two parties (computers) that both have
+>>>a private IP address.
+>>>
+>>>          (Internet)       (Internet)
+>>>      A <------------> X <------------> B
+>>>
+>>>A: 192.168.1.13
+>>>B: 192.168.1.99
+>>>X: public IP address
 >
->Sincerely
->-bino-
+> Isnt't there a way that both, A and B initiate a connection to X where
+> the two connections are then 'merged'?
+>
+> Or, could B connect to X whereafter A 'hijacks' the connection between X
+> and B? ;-)
+>
+> Cheers
+> Sven
+>
+>
 
-1)	The IN/OUT traffic on ppp0 to some (all) internel IP's
-2)	IP's of incoming requests and the internal destination IP/Port
-
-Greetings
-Michelle
 
 -- 
-Registered Linux-User #280138 with the Linux Counter, http://counter.li.org/ 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+
 
