@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: pom for 2.6
-Date: Tue, 9 Dec 2003 10:27:07 +0000
+From: =?iso-8859-1?q?ONeill=20Jack?= <jackoneill9@yahoo.fr>
+Subject: Firewall with PCI ADSL
+Date: Tue, 9 Dec 2003 12:06:33 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312091027.07453.Antony@Soft-Solutions.co.uk>
-References: <3635.10.1.1.181.1070963759.squirrel@mail>
+Message-ID: <20031209110633.30090.qmail@web25201.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3635.10.1.1.181.1070963759.squirrel@mail>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Tuesday 09 December 2003 9:55 am, Laurens Blankers wrote:
+Hello,
 
-> Hello,
->
-> This question has been asked a number of times on this list already but I
-> can't find an answer to it: When can we expect a patch-o-matic for kernel
-> 2.6?
->
-> The first final version of 2.6 is coming closer and it would be really
-> nice to have a pom for it when it is released.
+Simple question :
+Has anyone ever used iptables on a linux box with a
+PCI ADSL Card (aka INTERNAL MODEM) on the 'Net side ?
 
-Try asking the developers list - they're more likely to be involved with 
-getting pom ready for 2.6.
+I'm not talking about USB or external modem + eth intf
+on the box, and I insist on PCI and ADSL.
+Actually it seems like there's a problem with
+filtering... The driver creates a "nas0" interface, so
+no 'ppp0'... I don't know a lot more because it's not
+my pb but a friend's.
 
-Antony.
+If you succeeded in making such a firewall, well,
+thanks for your configs !
+Please reply to my address and list
 
--- 
-Programming is a Dark Art, and it will always be. The programmer is
-fighting against the two most destructive forces in the universe:
-entropy and human stupidity. They're not things you can always
-overcome with a "methodology" or on a schedule.
+Regards
 
- - Damian Conway, Perl God
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+___________________________________________________________________________=
+_________
+Do You Yahoo!? -- Avec Yahoo! soyez au coeur de la r=E9colte de dons pour l=
+e T=E9l=E9thon.
+http://fr.promotions.yahoo.com/caritatif/
 
