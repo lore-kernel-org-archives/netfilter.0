@@ -1,12 +1,12 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Question about REJECT in FORWARD rule
-Date: Wed, 11 Aug 2004 15:01:11 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: IPTABLES for dual homed machine and public IP addresses
+Date: Wed, 11 Aug 2004 11:50:18 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051270@asimail2.alphanumeric.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E351@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: lists@neteconomist.com, netfilter@lists.netfilter.org
 
-> Now with some -j LOG i can see the packet going
-> into OUTPUT with eth1 as dst interface
->
-> Now it gets into my anti-spoof rule :
-> Aug 11 13:20:17 natasha kernel: firewall::OUT_IP_CHECK IN=3D =
-OUT=3Deth1
-> SRC=3Dsql.se.rv.er DST=3D192.168.0.149 LEN=3D40 TOS=3D0x00
->  PREC=3D0x00 TTL=3D255 ID=3D0 DF PROTO=3DTCP SPT=3D445 DPT=3D3394 =
-WINDOW=3D0 RES=3D0x00 ACK
-> RST URGP=3D0
->
-> If i open this rule, i can see the packet adressed to 192.168.0.149
-> sent on eth1 (WAN) with tcpdump.
->
-> Any other ideas ?
+Eddie wrote:
+> I am trying to setup a firewall for a LAN that has more than 40
+> servers in production. All the production servers have public IP
+> addresses. I have looked at several scripts available on line to
+> build from and I have failed to get one that caters for this type of
+> scenario. My router's internal interface is 65.x.x.1. Does anybody
+> know of a way around this while keeping my external IP's or must I
+> use private IP's for my internal machines? Do I have to set up the
+> default gateway on production servers as my routers internal
+> interface of use my firewall trusted interface as default gateway?
 
-yeah--in order for your netfilter machine to be able to reset the =
-connection--it has to spoof/pretend to be the original destination of =
-the packet (sql.se.rv.er).  i.e. it generates a packet locally with a =
-source IP of the SQL server and a destination of the client that is =
-subject to the OUTPUT chain filters.  your OUT_IP_CHECK chain only =
-allows the source IP to be the actual IP's of the netfilter machine =
-(this is actually a good thing).
 
-my guess is adding this:
+You can bin all the prod server's IP ports to the outside of the
+firewall, or just simply proxy-arp the addresses. Then, apply the
+patch-o-matic ROUTE patch to your kernel in order to forward the traffic
+to your internal servers.
 
-  -I OUTPUT -p tcp --tcp-flags SYN,RST,FIN RST -j ACCEPT
+Then, on the internal side of the network proxy-arp whatever IP address
+that the internal prod servers are using for a gateway and add ROUTE
+rules for that.
 
-would fix the situation.  if it does--i'll leave it to you to decide how =
-you want to incorporate it into your custom chains.
+Example:
 
--j
+This demonstration will assume default forward allowed. I assume you
+know how to lock it down. I've used the prod addresses as described to
+simplify selection of the ip range.
 
+Prod Machines (65.10.10.64-104)
+Firewall
+   eth1-DMZ=3D(65.10.10.3)
+   eth0-INET=3D(65.10.10.2)
+Router
+   65.10.10.1
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "1" > /proc/sys/net/ipv4/conf/eth0/proxy_arp
+echo "1" > /proc/sys/net/ipv4/conf/eth1/proxy_arp
+
+iptables -t mangle -A PREROUTING -i eth0 --destination 65.10.10.64/26 -j
+ROUTE --oif eth1
+iptables -t mangle -A PREROUTING -i eth1 --destination ! 65.10.10.0/24
+-j ROUTE --gw 65.10.10.1
+
+Refer to http://www.sjdjweis.com/linux/proxyarp/ for an alternative
+iproute2 based solution to this as well.
 
